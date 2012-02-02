@@ -162,8 +162,21 @@ public:
     sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
     const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
 
+    /// Store the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
+    void setModelViewMatrix( const GLdouble m[16] ) { for(unsigned i=0; i<16; i++ ) m_modelViewMatrix[i] = m[i]; }
+    /// Get the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
+    void getModelViewMatrix( GLdouble m[16] ) const { for(unsigned i=0; i<16; i++ ) m[i] = m_modelViewMatrix[i]; }
+
+    /// Store the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
+    void setProjectionMatrix( const GLdouble m[16] ) { for(unsigned i=0; i<16; i++ ) m_projectionMatrix[i] = m[i]; }
+    /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
+    void getProjectionMatrix( GLdouble m[16] ) const { for(unsigned i=0; i<16; i++ ) m[i] = m_projectionMatrix[i]; }
+
+
+    /// @todo clarify what this is with respect to ModelView and Perspective matrices
     sofa::helper::gl::Transformation& sceneTransform() { return m_sceneTransform; }
     const sofa::helper::gl::Transformation& sceneTransform() const { return m_sceneTransform; }
+
 
     bool isSupported(unsigned int api) const
     {
@@ -195,6 +208,10 @@ protected:
     ConstMultiVecDerivId m_v;
     /// Mask of supported graphics API
     unsigned int m_supportedAPIs;
+
+
+    GLdouble m_modelViewMatrix[16];  ///< model view matrix.
+    GLdouble m_projectionMatrix[16]; ///< projection matrix.
 
 };
 

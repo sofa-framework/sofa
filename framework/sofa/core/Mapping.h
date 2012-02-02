@@ -38,10 +38,9 @@ namespace core
 {
 
 /**
-*  \brief Specialized interface to convert a model of type TIn to an other model of type TOut
+*  \brief Specialized interface to convert a model state of type TIn to a model state of type TOut.
+* This is basically a sofa::core::BaseMapping with given input and output types.
 *
-*  This Interface is used for the Mappings. A Mapping can convert one model to an other.
-*  For example, we can have a mapping from a BehaviorModel to a VisualModel.
 *
 */
 
@@ -73,24 +72,16 @@ public:
 protected:
     /// Input Model, also called parent
     SingleLink<Mapping<In,Out>, State< In >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
-    //State< In >* fromModel;
     /// Output Model, also called child
     SingleLink<Mapping<In,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
-    //State< Out >* toModel;
 public:
-    /// Name of the Input Model
-    //Data< std::string > object1;
-    //objectmodel::DataObjectRef m_inputObject;
-    /// Name of the Output Model
-    //Data< std::string > object2;
-    //objectmodel::DataObjectRef m_outputObject;
 
-    Data<bool> f_applyRestPosition;
-    Data<bool> f_checkJacobian;
+    Data<bool> f_applyRestPosition; ///< @todo document this
+    Data<bool> f_checkJacobian;     ///< @todo document this
 protected:
     /// Constructor, taking input and output models as parameters.
     ///
-    /// Note that if you do not specify these models here, you must called
+    /// Note that if you do not specify these models here, you must call
     /// setModels with non-NULL value before the intialization (i.e. before
     /// init() is called).
     Mapping(State< In >* from=NULL, State< Out >* to=NULL);
@@ -99,6 +90,8 @@ protected:
 public:
     /// Specify the input and output models.
     virtual void setModels(State< In > * from, State< Out >* to);
+    /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
+    virtual bool setTo( BaseState* to );
 
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
@@ -232,6 +225,7 @@ public:
     {}
 #endif //SOFA_DEPRECATE_OLD_API
 
+    /// Propagate positions and velocities to the output
     virtual void init();
 
     ///<TO REMOVE>
@@ -296,13 +290,13 @@ public:
 
         if (stin == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as input model is missing or invalid." << context->sendl;
+            context->serr << "Cannot create "<<className(obj)<<" as input model "<< inPath << " is missing or invalid." << context->sendl;
             return false;
         }
 
         if (stout == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as output model is missing or invalid." << context->sendl;
+            context->serr << "Cannot create "<<className(obj)<<" as output model "<< outPath << " is missing or invalid." << context->sendl;
             return false;
         }
 

@@ -174,9 +174,9 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 /// Initialize the components of this node and all the nodes which depend on it.
 void Node::init(const core::ExecParams* params)
 {
-//     cerr<<"Node::init() begin node "<<getName()<<endl;
+    //     cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::InitVisitor>(params);
-//     cerr<<"Node::init() end node "<<getName()<<endl;
+    //     cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// ReInitialize the components of this node and all the nodes which depend on it.
@@ -729,9 +729,13 @@ core::visual::VisualLoop* Node::getVisualLoop() const
 /// Find a child node given its name
 Node* Node::getChild(const std::string& name) const
 {
+//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name << endl;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+//        cerr<<"Node::getChild, see " << (*it)->getName() << endl;
         if ((*it)->getName() == name)
             return it->get();
+    }
     return NULL;
 }
 
@@ -867,18 +871,18 @@ void Node::setDefaultVisualContextValue()
 {
     /// @TODO: This method is now broken because getShow*() methods never return -1
     /*
-        if (getShowVisualModels() == -1)            setShowVisualModels(true);
-        if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
-        if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
-        if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
-        if (getShowMappings() == -1)                setShowMappings(false);
-        if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
-        if (getShowForceFields() == -1)             setShowForceFields(false);
-        if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
-        if (getShowWireFrame() == -1)               setShowWireFrame(false);
-        if (getShowNormals() == -1)                 setShowNormals(false);
+    if (getShowVisualModels() == -1)            setShowVisualModels(true);
+    if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
+    if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
+    if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
+    if (getShowMappings() == -1)                setShowMappings(false);
+    if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
+    if (getShowForceFields() == -1)             setShowForceFields(false);
+    if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
+    if (getShowWireFrame() == -1)               setShowWireFrame(false);
+    if (getShowNormals() == -1)                 setShowNormals(false);
     #ifdef SOFA_SMP
-        if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
+    if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
     #endif
     */
 }
@@ -901,23 +905,23 @@ void Node::initialize()
 
     initVisualContext();
     sortComponents();
-//     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
-//     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
-//     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-//     for ( ; i!=iend && dynamic_cast<core::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
-//         {}
-//     if ( i!=iend && !object.empty() ) // found
-//     {
-//         // put it first
-//         // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
-//         // object.swap( i, object.begin() );
-//         while (i!=object.begin())
-//         {
-//             Sequence<BaseObject>::iterator i2 = i;
-//             --i;
-//             object.swap(i, i2);
-//         }
-//     }
+    //     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
+    //     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
+    //     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
+    //     for ( ; i!=iend && dynamic_cast<core::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+    //         {}
+    //     if ( i!=iend && !object.empty() ) // found
+    //     {
+    //         // put it first
+    //         // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
+    //         // object.swap( i, object.begin() );
+    //         while (i!=object.begin())
+    //         {
+    //             Sequence<BaseObject>::iterator i2 = i;
+    //             --i;
+    //             object.swap(i, i2);
+    //         }
+    //     }
 
     //
     updateSimulationContext();
@@ -941,7 +945,7 @@ void Node::updateSimulationContext()
     {
         contextObject[i]->init();
         contextObject[i]->apply();
-//       cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
+        //       cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
     }
 }
 
@@ -976,7 +980,7 @@ void Node::executeVisitor(Visitor* action)
     static int level = 0;
     for (int i=0; i<level; ++i) std::cerr << ' ';
     std::cerr << ">" << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " on " << this->getPathName();
-//     if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
+    //     if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
     if (!action->getInfos().empty())
         std::cerr << "  : " << action->getInfos();
     std::cerr << std::endl;

@@ -94,13 +94,13 @@ private:
     GLUquadricObj*	_tube;
     GLUquadricObj*	_sphere;
     GLUquadricObj*	_disk;
-    GLuint			_numOBJmodels;
-    GLuint			_materialMode;
-    GLboolean		_facetNormal;
+    GLuint _numOBJmodels;
+    GLuint _materialMode;
+    GLboolean _facetNormal;
 
-    int				_renderingMode;
+    int _renderingMode;
 
-    ctime_t			_beginTime;
+    ctime_t _beginTime;
 
 
     bool _waitForRender;
@@ -164,18 +164,15 @@ private:
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
     void	DrawBox(Real* minBBox, Real* maxBBox, Real r=0.0);
-    void	DrawXYPlane(double zo, double xmin, double xmax, double ymin,
-            double ymax, double step);
-    void	DrawYZPlane(double xo, double ymin, double ymax, double zmin,
-            double zmax, double step);
-    void	DrawXZPlane(double yo, double xmin, double xmax, double zmin,
-            double zmax, double step);
+    void	DrawXYPlane(double zo, double xmin, double xmax, double ymin, double ymax, double step);
+    void	DrawYZPlane(double xo, double ymin, double ymax, double zmin, double zmax, double step);
+    void	DrawXZPlane(double yo, double xmin, double xmax, double zmin, double zmax, double step);
     void	CreateOBJmodelDisplayList(int material_mode);
     //int     loadBMP(char *filename, TextureImage *texture);
     //void	LoadGLTexture(char *Filename);
     void	DisplayOBJs();
     void	DisplayMenu(void);
-    void MakeStencilMask();
+    void        MakeStencilMask();
 
     //int		handle(int event);	// required by FLTK
 
@@ -192,7 +189,7 @@ protected:
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
     virtual void wheelEvent(QWheelEvent* e);
-    bool mouseEvent( QMouseEvent * e );
+    bool         mouseEvent( QMouseEvent * e );
 
 
 

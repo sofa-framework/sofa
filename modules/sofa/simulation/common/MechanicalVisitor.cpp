@@ -51,8 +51,10 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
         }
     }
 
+
     if (res != RESULT_PRUNE)
     {
+
         if (node->mechanicalState != NULL)
         {
             if (node->mechanicalMapping != NULL)
@@ -100,6 +102,29 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
                     debug_write_state_after(node->mechanicalState);
                 }
             }
+        }
+        else if (node->mechanicalMapping != NULL) // rare case of a mechanical mapping which controls a state located elsewhere.
+        {
+            if (stopAtMechanicalMapping(node, node->mechanicalMapping))
+            {
+                // stop all mechanical computations
+                //std::cerr << "Pruning " << this->getClassName() << " at " << node->getPathName() << " with non-mechanical mapping" << std::endl;
+                return RESULT_PRUNE;
+            }
+            //else if (!node->mechanicalMapping->isMechanical()) std::cerr << "Continuing " << this->getClassName() << " at " << node->getPathName() << " with non-mechanical mapping" << std::endl;
+
+            Result res2 = RESULT_CONTINUE;
+            if(testTags(node->mechanicalMapping))
+            {
+                debug_write_state_before(node->mechanicalMapping);
+                ctime_t t = begin(node, node->mechanicalMapping, "fwd");
+                res = this->fwdMechanicalMapping(ctx, node->mechanicalMapping);
+                end(node, node->mechanicalMapping , t);
+                debug_write_state_after(node->mechanicalMapping);
+            }
+
+            if (res2 == RESULT_PRUNE)
+                res = res2;
         }
     }
 
@@ -1025,7 +1050,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
     //mm->setX(x);
     //mm->setV(v);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-//    mm->setDx(a);
+    //    mm->setDx(a);
     mm->resetAcc(mparams /* PARAMS FIRST */, a.getId(mm));
 #endif
     return RESULT_CONTINUE;
@@ -1040,9 +1065,9 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapp
     }
     //map->propagateX();
     //map->propagateV();
-//#ifdef SOFA_SUPPORT_MAPPED_MASS
+    //#ifdef SOFA_SUPPORT_MAPPED_MASS
     //map->propagateA();
-//#endif
+    //#endif
     map->apply(mparams /* PARAMS FIRST */, x, x);
     map->applyJ(mparams /* PARAMS FIRST */, v, v);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -1200,8 +1225,8 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
         ForceMaskActivate(map->getMechFrom() );
         ForceMaskActivate(map->getMechTo() );
         //map->accumulateDf();
-//         if( !this->mparams->symmetricMatrix() )
-//             map->applyDJT(mparams /* PARAMS FIRST */, res, res);
+        //         if( !this->mparams->symmetricMatrix() )
+        //             map->applyDJT(mparams /* PARAMS FIRST */, res, res);
         map->applyJT(mparams /* PARAMS FIRST */, res, res);
         ForceMaskDeactivate( map->getMechTo() );
     }
@@ -1246,8 +1271,8 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 
         //map->accumulateDf();
         map->applyJT(mparams /* PARAMS FIRST */, res, res);
-//        if( !this->mparams->symmetricMatrix() )
-//            map->applyDJT(mparams /* PARAMS FIRST */, res, res);
+        //        if( !this->mparams->symmetricMatrix() )
+        //            map->applyDJT(mparams /* PARAMS FIRST */, res, res);
         ForceMaskDeactivate( map->getMechTo() );
     }
 }

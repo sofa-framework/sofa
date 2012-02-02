@@ -43,12 +43,13 @@ namespace sofa
 namespace core
 {
 
-/**
- *  \brief An interface to convert a model to an other model
- *
- *  This Interface is used for the Mappings. A Mapping can convert one model to an other.
- *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
- *
+/** An interface to convert a model state to tan other model state.
+The model states are positions and velocities or generalizations of these (class sofa::core::BaseState).
+The source is denoted using various names: from, input, master, parent…
+The target is denoted using various names: to, output, slave, child…
+The mapping must be located somewhere between the master and the slave, so that the visitors traverse it after the master and before the slave during the top-down traversals, and the other way round during the bottom-up traversals.
+It is typically located in the same graph node as the slave, with the master in the parent node, but this is not a must.
+Mappings typically store constant local coordinates of the output points, and update the output points by applying input displacements to the local coordinates.
  */
 class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
 {
@@ -70,11 +71,17 @@ public:
     virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
     virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
+    /// Compute the local coordinates based on the current output coordinates.
+    /// This is typically used at initialization time, to attach a slave model defined in world coordinates to a master model.
+    virtual void computeLocalCoordinates();
+
     /// Accessor to the input model of this mapping
     virtual helper::vector<BaseState*> getFrom() = 0;
 
     /// Accessor to the output model of this mapping
     virtual helper::vector<BaseState*> getTo() = 0;
+    /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
+    virtual bool setTo( BaseState* to );
 
     // BaseMechanicalMapping
     virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;

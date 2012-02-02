@@ -120,6 +120,9 @@ public:
 
     virtual void init();
 
+    /// Compute the local coordinates based on the current output coordinates.
+    virtual void computeLocalCoordinates();
+
 
     virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecCoord>& out, const Data<InVecCoord>& in);
 

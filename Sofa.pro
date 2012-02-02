@@ -53,7 +53,7 @@ contains (DEFINES, SOFA_HAVE_QTOGREVIEWER) {
 
 } # END !SOFA_RELEASE
 
-contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV 
 
 	contains (DEFINES, SOFA_HAVE_VULCAIN) {
                 usePlugin(vulcain)
@@ -147,6 +147,7 @@ contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
 	usePlugin(ManifoldTopologies)
 }
+
 
 } # END SOFA_DEV
 

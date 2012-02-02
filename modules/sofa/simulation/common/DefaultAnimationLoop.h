@@ -57,8 +57,13 @@ protected:
 
     virtual ~DefaultAnimationLoop();
 public:
+    /// Set the simulation node this animation loop is controlling
+    virtual void setNode( simulation::Node* );
+
+    /// Set the simulation node to the local context if not specified previously
     virtual void init();
 
+    /// perform one animation step
     virtual void step(const core::ExecParams* params, double dt);
 
 
@@ -75,7 +80,7 @@ public:
 
 private :
 
-    simulation::Node* gnode;
+    simulation::Node* gnode;  ///< the node controlled by the loop
 
 };
 

@@ -738,6 +738,8 @@ void QtGLViewer::DrawScene(void)
         DrawLogo();
 
     camera()->getModelViewMatrix( lastModelviewMatrix );
+    vparams->setModelViewMatrix( lastModelviewMatrix );
+    vparams->setProjectionMatrix( lastProjectionMatrix );
     //camera()->frame()->getMatrix( lastModelviewMatrix );
 
     //for(int i=0 ; i<16 ;i++)
@@ -905,13 +907,13 @@ void QtGLViewer::draw()
     // Use this to avoid unneccessarily initializing the OpenGL context.
     //static double lastOrthoTransZ = 0.0;
     /*
-      if (!valid())
-      {
-      InitGFX();		// this has to be called here since we don't know when the context is created
-      _W = w();
-      _H = h();
-      reshape(_W, _H);
-      }
+    if (!valid())
+    {
+    InitGFX();		// this has to be called here since we don't know when the context is created
+    _W = w();
+    _H = h();
+    reshape(_W, _H);
+    }
     */
     // clear buffers (color and depth)
     if (_background==0)
@@ -980,7 +982,7 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
     }
     else  // control the GUI
     {
-//                            cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" without Control pressed "<<endl;
+        //                            cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" without Control pressed "<<endl;
         switch(e->key())
         {
         case Qt::Key_A: //axis
@@ -1217,37 +1219,37 @@ QString QtGLViewer::helpString()
 
     QString text(
         (QString)"<H1>QtGLViewer</H1><hr>\
-                                <ul>\
-                                <li><b>Mouse</b>: TO NAVIGATE<br></li>\
-                                <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-                                <li><b>A</b>: TO DRAW AXIS<br></li>\
-                                <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
-                                <li><b>C</b>: TO CENTER THE VIEW<br></li>\
-                                <li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
-                                <li><b>O</b>: TO EXPORT TO .OBJ<br>\
-                                The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
-                                <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
-                                Each time the frame is updated an obj is exported<br></li>\
-                                <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
-                                <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-                                The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-                                <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
-                                <li><b>V</b>: TO SAVE A VIDEO<br>\
-                                Each time the frame is updated a screenshot is saved<br></li>\
-                                <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
+                <ul>\
+                <li><b>Mouse</b>: TO NAVIGATE<br></li>\
+                <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                <li><b>A</b>: TO DRAW AXIS<br></li>\
+                <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+                <li><b>C</b>: TO CENTER THE VIEW<br></li>\
+                <li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
+                <li><b>O</b>: TO EXPORT TO .OBJ<br>\
+                The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
+                <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+                Each time the frame is updated an obj is exported<br></li>\
+                <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
+                <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+                <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
+                <li><b>V</b>: TO SAVE A VIDEO<br>\
+                Each time the frame is updated a screenshot is saved<br></li>\
+                <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
 #ifdef SOFA_HAVE_SENSABLE
         +(QString)"<H1>Sensable</H1>\
-								<ul>\
-								<li><b>Ctrl + index interface</b>: TO DRAW AXIS<br></li>\
-								<li><b>Option OmniVisu</b>: TO DRAW INTERFACE<br></li>\
-								<li>If <b>OmniVisu</b> and <b>axis</b> are active:<br></li>\
-								<ul>\
-								<li><b>Ctrl + Axis: x, y or z + arrow left or right</b>: TO MOVE THE INTERFACE ON THE AXIS<br></li>\
-								<li><b>Ctrl + Axis: x, y or z + arrow up or down</b>: TO ROTATE THE INTERFACE ON THE AXIS<br></li>\
-								<li><b>Ctrl + Q + arrow left or right</b>: TO CHANGE THE SCALE OF THE INTERFACE<br></li>\
-								<li><b>Ctrl + E </b>: TO RESET THE POSITION OF THE INTERFACE<br></li>\
-								</ul>\
-								</ul>"
+                <ul>\
+                <li><b>Ctrl + index interface</b>: TO DRAW AXIS<br></li>\
+                <li><b>Option OmniVisu</b>: TO DRAW INTERFACE<br></li>\
+                <li>If <b>OmniVisu</b> and <b>axis</b> are active:<br></li>\
+                <ul>\
+                <li><b>Ctrl + Axis: x, y or z + arrow left or right</b>: TO MOVE THE INTERFACE ON THE AXIS<br></li>\
+                <li><b>Ctrl + Axis: x, y or z + arrow up or down</b>: TO ROTATE THE INTERFACE ON THE AXIS<br></li>\
+                <li><b>Ctrl + Q + arrow left or right</b>: TO CHANGE THE SCALE OF THE INTERFACE<br></li>\
+                <li><b>Ctrl + E </b>: TO RESET THE POSITION OF THE INTERFACE<br></li>\
+                </ul>\
+                </ul>"
 #endif
     );
 
