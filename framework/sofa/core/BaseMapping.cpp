@@ -44,6 +44,18 @@ BaseMapping::BaseMapping()
 BaseMapping::~BaseMapping()
 {}
 
+void BaseMapping::computeLocalCoordinates()
+{
+    serr<<"Mapping "<< getName() <<", BaseMapping::computeLocalCoordinates() is not implemented for this class. It may be still implemented in the init() method." << sendl;
+}
+
+bool BaseMapping::setTo( BaseState*  )
+{
+    this->serr<<"BaseMapping::setTo is not implemented for " << this->getName()<< sendl;
+    return false;
+}
+
+
 bool BaseMapping::areForcesMapped() const
 {
     return f_mapForces.getValue();

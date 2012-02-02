@@ -178,6 +178,17 @@ declare(houseOfCards,        applications/tutorials/houseOfCards,     sofa_compo
 declare(mixedPendulum,       applications/tutorials/mixedPendulum,    sofa_component sofaguimain)
 declare(oneParticule,        applications/tutorials/oneParticule,     sofa_component sofaguimain)
 declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofa_component sofaguimain)
+
+
+contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
+    declare(ModelHierarchies, applications/plugins/ModelHierarchies, sofa_component sofa_component_dev )
+    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_component_dev sofa_base_animation_loop )
+    enable(ModelHierarchies)
+    enable(ModelHierarchies_test)
+}
+
+
+
 ######################################################################
 # Enable artifacts
 ######################################################################

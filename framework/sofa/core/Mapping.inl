@@ -282,9 +282,21 @@ void Mapping<In,Out>::setModels(State<In>* from, State<Out>* to)
 }
 
 template <class In, class Out>
+bool Mapping<In,Out>::setTo(BaseState* to)
+{
+    if( to!=NULL && dynamic_cast< State<Out>* >(to)==NULL )
+        return false;
+    State<Out>* out = dynamic_cast< State<Out>* >(to);
+    this->toModel.set( out );
+    if( !testMechanicalState(out))
+        setNonMechanical();
+    return true;
+}
+
+template <class In, class Out>
 std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
 {
-//	return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
+    //	return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
     return In::Name() + std::string(",") + Out::Name();
 }
 

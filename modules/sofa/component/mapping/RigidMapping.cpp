@@ -83,6 +83,11 @@ template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 
+/// used to put a breakpoint, because gdb not always succeed in breaking within template methods
+void rigidMappingDummyFunction()
+{
+    cerr << "rigidMappingDummyFunction()" << endl;
+}
 
 } // namespace mapping
 

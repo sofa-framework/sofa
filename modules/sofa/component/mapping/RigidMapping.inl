@@ -56,6 +56,9 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+extern void rigidMappingDummyFunction(); ///< Used for setting breakpoints, since gdb sometimes fails at breaking within template methods. Implemented in RigidMapping.C
+
+
 template <class TIn, class TOut>
 class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
     public helper::io::SphereLoader
@@ -176,9 +179,52 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 
 
 template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::computeLocalCoordinates()
+{
+    const VecCoord& xTo = *this->toModel->getX();
+    points.beginEdit()->resize(xTo.size());
+    unsigned int i = 0, cpt = 0;
+    const InVecCoord& xFrom = *this->fromModel->getX();
+    switch (pointsPerFrame.getValue().size())
+    {
+    case 0:
+        for (i = 0; i < xTo.size(); i++)
+        {
+            (*points.beginEdit())[i] = xFrom[0].inverseRotate(xTo[i]- xFrom[0].getCenter());
+        }
+        break;
+    case 1:
+        for (i = 0; i < xFrom.size(); i++)
+        {
+            for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
+            {
+                (*points.beginEdit())[cpt]
+                    = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+            }
+        }
+        break;
+    default:
+        for (i = 0; i < xFrom.size(); i++)
+        {
+            for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
+            {
+                (*points.beginEdit())[cpt]
+                    = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+            }
+        }
+        break;
+
+    }
+//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xfrom " << xFrom << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xto " << xTo << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), local coordinates: " << points.getValue() << endl;
+}
+
+template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
-
+    //    rigidMappingDummyFunction();
     if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
     {
         maskFrom = &stateFrom->forceMask;
@@ -191,56 +237,29 @@ void RigidMapping<TIn, TOut>::init()
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
 
-    if (this->points.getValue().empty() && this->toModel != NULL
-        && !useX0.getValue())
+    if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
-        const VecCoord& x = *this->toModel->getX();
-        points.beginEdit()->resize(x.size());
-        unsigned int i = 0, cpt = 0;
+//        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+        const VecCoord& xTo = *this->toModel->getX();
+        points.beginEdit()->resize(xTo.size());
+        unsigned int i = 0;
         if (globalToLocalCoords.getValue() == true)
         {
-            //test booleen fromWorldCoord
-            const InVecCoord& xfrom = *this->fromModel->getX();
-            switch (pointsPerFrame.getValue().size())
-            {
-            case 0:
-                for (i = 0; i < x.size(); i++)
-                {
-                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]
-                            - xfrom[0].getCenter());
-                }
-                break;
-            case 1:
-                for (i = 0; i < xfrom.size(); i++)
-                {
-                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
-                    {
-                        (*points.beginEdit())[cpt]
-                            = xfrom[i].inverseRotate(x[cpt]
-                                    - xfrom[i].getCenter());
-                    }
-                }
-                break;
-            default:
-                for (i = 0; i < xfrom.size(); i++)
-                {
-                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
-                    {
-                        (*points.beginEdit())[cpt]
-                            = xfrom[i].inverseRotate(x[cpt]
-                                    - xfrom[i].getCenter());
-                    }
-                }
-                break;
-            }
+//            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
+            computeLocalCoordinates();
         }
         else
         {
-            for (i = 0; i < x.size(); i++)
+            for (i = 0; i < xTo.size(); i++)
             {
-                (*points.beginEdit())[i] = x[i];
+                (*points.beginEdit())[i] = xTo[i];
             }
+//            cerr<<"globalToLocal is false, points in local coordinates : " << points << endl;
         }
+    }
+    else
+    {
+//        cerr << "RigidMapping<TIn, TOut>::init(), points not empty or toModel is null or useX0" << endl;
     }
 
     this->Inherit::init();
@@ -250,13 +269,13 @@ void RigidMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::disable()
 {
-if (!this->points.getValue().empty() && this->toModel!=NULL)
-{
-	VecCoord& x = *this->toModel->getX();
-	x.resize(points.getValue().size());
-	for (unsigned int i=0;i<points.getValue().size();i++)
-		x[i] = points.getValue()[i];
-}
+ if (!this->points.getValue().empty() && this->toModel!=NULL)
+ {
+  VecCoord& x = *this->toModel->getX();
+  x.resize(points.getValue().size());
+  for (unsigned int i=0;i<points.getValue().size();i++)
+   x[i] = points.getValue()[i];
+ }
 }
 */
 
@@ -317,7 +336,6 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
 {
     helper::WriteAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
-
     const VecCoord& pts = this->getPoints();
 
     updateJ = true;
@@ -383,6 +401,11 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
             out[outIdx] += translation;
         }
     }
+
+//    cerr<<"RigidMapping<TIn, TOut>::apply, " << this->getName() << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::apply, in = " << dIn << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::apply, points = " << pts << endl;
+//    cerr<<"RigidMapping<TIn, TOut>::apply, out = " << dOut << endl;
 }
 
 template <class TIn, class TOut>
@@ -531,12 +554,12 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
             }
             getVCenter(out[outIdx]) += in[inIdx];
             getVOrientation(out[outIdx]) +=  (typename InDeriv::Rot)cross(rotatedPoints[inIdx], in[inIdx]);
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, inIdx = "<< inIdx << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoint[inIdx] = "<< rotatedPoints[inIdx] << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, cross(rotatedPoints[inIdx], in[inIdx]) = "<< cross(rotatedPoints[inIdx], in[inIdx]) << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, force(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, torque(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, inIdx = "<< inIdx << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoint[inIdx] = "<< rotatedPoints[inIdx] << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, cross(rotatedPoints[inIdx], in[inIdx]) = "<< cross(rotatedPoints[inIdx], in[inIdx]) << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, force(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, torque(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
 
         }
         if (isMaskInUse)
@@ -647,15 +670,15 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
             }
             typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIdx]);
             const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIdx]);
-//                        const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
+            //                        const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
             const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
             parentTorque -=  torqueDecrement;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentRotation = "<< parentRotation << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT,  kfactor = "<<  kfactor << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque increment = "<< -torqueDecrement << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque = "<< parentTorque << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentRotation = "<< parentRotation << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT,  kfactor = "<<  kfactor << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque increment = "<< -torqueDecrement << endl;
+            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque = "<< parentTorque << endl;
 
 
 
@@ -955,7 +978,7 @@ void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings())
+    if (!vparams->displayFlags().getShowMappings() || this->toModel==NULL )
         return;
     std::vector<Vector3> points;
     Vector3 point;

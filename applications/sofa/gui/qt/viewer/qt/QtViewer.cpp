@@ -766,6 +766,8 @@ void QtViewer::DrawScene(void)
     glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX, lastModelviewMatrix);
+    vparams->setModelViewMatrix(lastModelviewMatrix);
+    vparams->setProjectionMatrix(lastProjectionMatrix);
 
     //for(int i=0 ; i<16 ;i++)
     //	std::cout << lastModelviewMatrix[i] << " ";

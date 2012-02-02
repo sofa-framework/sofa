@@ -108,13 +108,13 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     {
         firstNodeVisited=true;
 
-        core::behavior::BaseAnimationLoop* presenceAnimationManager;
-        node->get(presenceAnimationManager, core::objectmodel::BaseContext::SearchDown);
-        if (!presenceAnimationManager)
-        {
-            std::cerr << "ERROR: no BaseAnimationLoop found while searching down from node: " << node->getName() << std::endl;
+//        core::behavior::BaseAnimationLoop* presenceAnimationManager;
+//        node->get(presenceAnimationManager, core::objectmodel::BaseContext::SearchDown);
+//        if (!presenceAnimationManager)
+//        {
+//          std::cerr << "AnimateVisitor::processNodeTopDown, ERROR: no BaseAnimationLoop found while searching down from node: " << node->getName() << std::endl;
 
-        }
+//        }
         sofa::core::MechanicalParams mparams(*this->params);
         mparams.setDt(dt);
         MechanicalResetConstraintVisitor resetConstraint(&mparams);
