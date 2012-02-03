@@ -128,7 +128,7 @@ void LineModel::init()
     {
 
         myActiver = new LineActiver();
-        serr<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
+        sout<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
     }
     else
     {

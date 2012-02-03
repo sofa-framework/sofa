@@ -113,7 +113,7 @@ void PointModel::init()
     {
 
         myActiver = new PointActiver();
-        serr<<"path = "<<path<<" no Point Activer found for PointModel "<<this->getName()<<sendl;
+        sout<<"path = "<<path<<" no Point Activer found for PointModel "<<this->getName()<<sendl;
     }
     else
     {
