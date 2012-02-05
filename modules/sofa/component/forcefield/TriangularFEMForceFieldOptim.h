@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -104,6 +105,8 @@ protected:
 //    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
 //    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     typedef Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
+    enum { DerivSize = DataTypes::deriv_total_size };
+    typedef Mat<DerivSize, DerivSize, Real> MatBloc;
 
 protected:
     /// ForceField API
@@ -116,10 +119,22 @@ public:
     virtual void reinit();
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
     //}
+
+    // parse method attribute (for compatibility with non-optimized version)
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        const char* method = arg->getAttribute("method");
+        if (method && *method && std::string(method) != std::string("large"))
+        {
+            serr << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring..." << sendl;
+        }
+        Inherited::parse(arg);
+    }
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInfo
@@ -275,21 +290,71 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    /// @name Get/Set methods
-    /// @{
-    Real getPoisson() const { return (f_poisson.getValue()); }
-    void setPoisson(Real val)
+    template<class MatrixWriter>
+    void addKToMatrixT(MatrixWriter m, Real kFactor);
+
+    class BaseMatrixWriter
     {
-        f_poisson.setValue(val);
-    }
-    Real getYoung() const { return (f_young.getValue()); }
-    void setYoung(Real val)
+        BaseMatrix* m;
+        unsigned int offset;
+    public:
+        BaseMatrixWriter(BaseMatrix* m, unsigned int offset) : m(m), offset(offset) {}
+        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
+        {
+            unsigned int i0 = offset + bi*DerivSize;
+            unsigned int j0 = offset + bj*DerivSize;
+            for (unsigned int i=0; i<DerivSize; ++i)
+                for (unsigned int j=0; j<DerivSize; ++j)
+                    m->add(i0+i,j0+j,b[i][j]);
+        }
+    };
+
+    class BlocBaseMatrixWriter
     {
-        f_young.setValue(val);
-    }
-    Real getDamping() const { return f_damping.getValue(); }
-    void setDamping(Real val) { f_damping.setValue(val); }
-    /// @}
+        BaseMatrix* m;
+        unsigned int boffset;
+    public:
+        BlocBaseMatrixWriter(BaseMatrix* m, unsigned int boffset) : m(m), boffset(boffset) {}
+        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
+        {
+            unsigned int i0 = boffset + bi;
+            unsigned int j0 = boffset + bj;
+            m->blocAdd(i0,j0,b.ptr());
+        }
+    };
+
+    template<class MReal>
+    class BlocCRSMatrixWriter
+    {
+        sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,MReal> >* m;
+        unsigned int boffset;
+    public:
+        BlocCRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,MReal> >* m, unsigned int boffset) : m(m), boffset(boffset) {}
+        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
+        {
+            unsigned int i0 = boffset + bi;
+            unsigned int j0 = boffset + bj;
+            //defaulttype::Mat<DerivSize,DerivSize,MReal> bconv = b;
+            *m->wbloc(i0,j0,true) += b;
+        }
+    };
+
+    template<class MReal>
+    class CRSMatrixWriter
+    {
+        sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m;
+        unsigned int offset;
+    public:
+        CRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m, unsigned int offset) : m(m), offset(offset) {}
+        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
+        {
+            unsigned int i0 = offset + bi*DerivSize;
+            unsigned int j0 = offset + bj*DerivSize;
+            for (unsigned int i=0; i<DerivSize; ++i)
+                for (unsigned int j=0; j<DerivSize; ++j)
+                    *m->wbloc(i0+i,j0+j,true) += (MReal)b[i][j];
+        }
+    };
 
 public:
 

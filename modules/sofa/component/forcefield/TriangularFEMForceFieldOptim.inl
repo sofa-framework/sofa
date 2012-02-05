@@ -320,9 +320,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Real dcy = ts.frame[1]*dac;
 
         Vec<3,Real> dstrain (
-            ti.cy  * dbx, // (cy,  0, 0, 0) * (dbx, dby, dcx, dcy)
-            ti.bx * dcy - ti.cx * dby, // (0, -cx, 0, bx) * (dbx, dby, dcx, dcy)
-            ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx, cy, bx, 0) * (dbx, dby, dcx, dcy)
+            ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
+            ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
+            ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
 
@@ -344,6 +344,124 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
 }
 
 
+// --------------------------------------------------------------------------------------
+// ---
+// --------------------------------------------------------------------------------------
+
+template <class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset)
+{
+    if ((offset % DerivSize) == 0 && m->getBlockRows() == DerivSize && m->getBlockCols() == DerivSize)
+    {
+        unsigned int boffset = offset / DerivSize;
+        if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,double> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,double> > * >(m))
+        {
+            addKToMatrixT(BlocCRSMatrixWriter<double>(mat, boffset), (Real)kFactor);
+        }
+        else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,float> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,float> > * >(m))
+        {
+            addKToMatrixT(BlocCRSMatrixWriter<float>(mat, boffset), (Real)kFactor);
+        }
+        else
+        {
+            addKToMatrixT(BlocBaseMatrixWriter(m, boffset), (Real)kFactor);
+        }
+    }
+    else
+    {
+        if (sofa::component::linearsolver::CompressedRowSparseMatrix<double> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<double> * >(m))
+        {
+            addKToMatrixT(CRSMatrixWriter<double>(mat, offset), (Real)kFactor);
+        }
+        else if (sofa::component::linearsolver::CompressedRowSparseMatrix<float> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<float> * >(m))
+        {
+            addKToMatrixT(CRSMatrixWriter<float>(mat, offset), (Real)kFactor);
+        }
+        else
+        {
+            addKToMatrixT(BaseMatrixWriter(m, offset), (Real)kFactor);
+        }
+    }
+}
+
+template<class DataTypes>
+template<class MatrixWriter>
+void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(MatrixWriter mwriter, Real kFactor)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
+
+    const unsigned int nbTriangles = _topology->getNbTriangles();
+    const VecElement& triangles = _topology->getTriangles();
+    const Real gamma = this->gamma;
+    const Real mu = this->mu;
+
+    for ( Index i=0; i<nbTriangles; i+=1)
+    {
+        Triangle t = triangles[i];
+        const TriangleInfo& ti = triInfo[i];
+        const TriangleState& ts = triState[i];
+        sofa::defaulttype::Mat<3,4,Real> KJt;
+        Real factor = -kFactor * ti.ss_factor;
+        Real fG = factor * gamma;
+        Real fGM = factor * (gamma+mu);
+        Real fM_2 = factor * (0.5f*mu);
+        KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
+        KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
+
+        KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
+        /*
+        sofa::defaulttype::Mat<4,4,Real> JKJt;
+        for (int j=0;j<4;++j)
+        {
+            JKJt[0][j] = cy*KJt[0][j] - cx*KJt[2][j];
+            JKJt[1][j] = cy*KJt[2][j] - cx*KJt[1][j];
+            JKJt[2][j] = bx*KJt[2][j];
+            JKJt[3][j] = bx*KJt[1][j];
+        }
+        */
+        sofa::defaulttype::Mat<2,2,Real> JKJt11, JKJt12, JKJt22;
+        JKJt11[0][0] = ti.cy*KJt[0][0] - ti.cx*KJt[2][0];
+        JKJt11[0][1] = ti.cy*KJt[0][1] - ti.cx*KJt[2][1];
+        JKJt11[1][0] = JKJt11[0][1]; //ti.cy*KJt[2][0] - ti.cx*KJt[1][0];
+        JKJt11[1][1] = ti.cy*KJt[2][1] - ti.cx*KJt[1][1];
+
+        JKJt12[0][0] = -ti.cx*KJt[2][2];
+        JKJt12[0][1] =  ti.cy*KJt[0][3];
+        JKJt12[1][0] =  ti.cy*KJt[2][2];
+        JKJt12[1][1] = -ti.cx*KJt[1][3];
+
+        JKJt22[0][0] = ti.bx*KJt[2][2];
+        JKJt22[0][1] = 0; //ti.bx*KJt[2][3];
+        JKJt22[1][0] = 0; //ti.bx*KJt[1][2];
+        JKJt22[1][1] = ti.bx*KJt[1][3];
+
+        sofa::defaulttype::Mat<2,2,Real> JKJt00, JKJt01, JKJt02;
+        // fA = -fB-fC, dxB/dxA = -1, dxC/dxA = -1
+        // dfA/dxA = -dfB/dxA - dfC/dxA
+        //         = -dfB/dxB * dxB/dxA -dfB/dxC * dxC/dxA   -dfC/dxB * dxB/dxA -dfC/dxC * dxC/dxA
+        //         = dfB/dxB + dfB/dxC + dfC/dxB + dfC/dxC
+        JKJt00 = JKJt11+JKJt12+JKJt22+JKJt12.transposed();
+        // dfA/dxB = -dfB/dxB -dfC/dxB
+        JKJt01 = -JKJt11-JKJt12.transposed();
+        // dfA/dxC = -dfB/dxC -dfC/dxC
+        JKJt02 = -JKJt12-JKJt22;
+
+        Transformation frame = ts.frame;
+
+        mwriter.add(t[0],t[0],frame.multTranspose(JKJt00*frame));
+        MatBloc M01 = frame.multTranspose(JKJt01*frame);
+        mwriter.add(t[0],t[1],M01);    mwriter.add(t[1],t[0],M01.transposed());
+        MatBloc M02 = frame.multTranspose(JKJt02*frame);
+        mwriter.add(t[0],t[2],M02);    mwriter.add(t[2],t[0],M02.transposed());
+
+        mwriter.add(t[1],t[1],frame.multTranspose(JKJt11*frame));
+        MatBloc M12 = frame.multTranspose(JKJt12*frame);
+        mwriter.add(t[1],t[2],M12);    mwriter.add(t[2],t[1],M12.transposed());
+
+        mwriter.add(t[2],t[2],frame.multTranspose(JKJt22*frame));
+    }
+}
 
 
 // --------------------------------------------------------------------------------------

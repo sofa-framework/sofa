@@ -375,6 +375,15 @@ public:
         return r;
     }
 
+    /// Matrix negation operator.
+    Mat<L,C,real> operator-() const
+    {
+        Mat<L,C,real> r(NOINIT);
+        for(int i = 0; i < L; i++)
+            r[i] = -(*this)[i];
+        return r;
+    }
+
     /// Multiplication operator Matrix * Line.
     Col operator*(const Line& v) const
     {
@@ -480,7 +489,7 @@ public:
         BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
             for(int j=0; j<L; j++)
-                (*this)[i][j] += m[j][i];
+                (*this)[i][j] -= m[j][i];
     }
 
     /// Substraction assignment operator.
