@@ -393,6 +393,22 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
                 m_pointsOnBorder.push_back (firstVertex);
             }
 
+            newPoint = true;
+            firstVertex = m_edge[i][1];
+            for (unsigned int j = 0; j < m_pointsOnBorder.size(); j++) // Loop to avoid duplicated indices
+            {
+                if (m_pointsOnBorder[j] == firstVertex)
+                {
+                    newPoint = false;
+                    break;
+                }
+            }
+
+            if(newPoint) // If index doesn't already exist, add it to the list of points On border.
+            {
+                m_pointsOnBorder.push_back (firstVertex);
+            }
+            //------------------------
 
             newTriangle = true; //reinitialize tests variables
             newEdge = true;
