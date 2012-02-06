@@ -14,9 +14,8 @@ DEFINES += CUDPP_STATIC_LIB
 win32 {
 	CONFIG(debug, debug|release) {
 		QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
-	} else {
-		QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
 	}
+	QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
 	QMAKE_CXXFLAGS += /bigobj
 }
 
