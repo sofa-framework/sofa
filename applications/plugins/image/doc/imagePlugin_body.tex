@@ -34,6 +34,8 @@
 \noindent Currently, linear (scale+rotation+translation) and perspective transforms are implemented using a single structure. Therefore, components do not need to be instantiated on the transformation types (yet). A transformation vector is a concatenation of $12$ parameters: spatial translation + rotation ($3$ Euler angles in degrees) + spatial scale (=pixel spacing) + temporal offset + temporal scale + a boolean to switch between linear and perspective transforms. For instance the translation  $[1,2,3]$ and orientation $[10,20,30]$ of a 3D image of voxel size $[4,5,6]$ can be described in a scene as : $transform="1 \ 2 \ 3 \ 10 \ 20 \ 30 \ 4 \ 5 \ 6 \ 0 \ 1 \ 0"$.
 
 \noindent Perspective transforms (only for 2D and 2D+t images) model pinhole cameras. Cameras are located in space at the position $[scale_x(dim_x-1)/2, scale_y(dim_y-1)/2, -scale_z/2]$. 
+Note that the image origin (=value of translation vector) is kept at the image corner, and not displaced to the camera location as in the classic pinhole camera model (\url{http://opencv.willowgarage.com/documentation/cpp/camera_calibration_and_3d_reconstruction.html}). 
+Changing coordinates, we get the classic amera intrinsics: $f_x=scale_z/(2\times scale_x)$, $f_y=scale_z/(2\times scale_y)$, $c_x=(dim_x-1)/2$ and $c_y=(dim_y-1)/2$.
 
 \noindent Transformations are encapsulated into \sofa{} \texttt{Data}, and can therefore be easily transmitted from one component to another. 
 

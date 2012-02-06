@@ -115,7 +115,7 @@ public:
                     serr << "ImageContainer: no input image "<<sendl;
                 }
 
-        wtransform->setCamPos((Real)wimage->getDimensions()[0]/2.0,(Real)wimage->getDimensions()[1]/2.0); // for perspective transforms
+        wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
         wtransform->update(); // update of internal data
     }
 

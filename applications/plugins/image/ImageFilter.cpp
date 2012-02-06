@@ -46,6 +46,8 @@ int ImageFilterClass = core::RegisterObject("Filter an image")
 
         .add<ImageFilter<ImageUC,ImageD    > >()
 
+        .add<ImageFilter<ImageD,ImageUC    > >()
+
 #ifdef BUILD_ALL_IMAGE_TYPES
         .add<ImageFilter<ImageC ,ImageC     > >()
         .add<ImageFilter<ImageI ,ImageI     > >()
@@ -73,6 +75,8 @@ template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageUC    >;
 template class SOFA_IMAGE_API ImageFilter<ImageD   ,ImageD     >;
 
 template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageD    >;
+
+template class SOFA_IMAGE_API ImageFilter<ImageD  ,ImageUC    >;
 
 #ifdef BUILD_ALL_IMAGE_TYPES
 template class SOFA_IMAGE_API ImageFilter<ImageC   ,ImageC     >;

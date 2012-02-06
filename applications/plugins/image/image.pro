@@ -20,6 +20,12 @@ contains(DEFINES, SOFA_IMAGE_HAVE_OPENCV) { # should be "SOFA_HAVE_OPENCV" -> us
         LIBS += -lml  -lcvaux -lhighgui -lcv -lcxcore
         }
 
+contains(DEFINES, SOFA_HAVE_LIBFREENECT) {
+        INCLUDEPATH += $$SOFA_LIBFREENECT_PATH
+        LIBS += -lfreenect -lfreenect_sync
+        HEADERS += Kinect.h
+        SOURCES += Kinect.cpp
+        }
 
 HEADERS += \
 	initImage.h \

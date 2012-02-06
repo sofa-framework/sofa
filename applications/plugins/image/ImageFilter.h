@@ -235,7 +235,7 @@ protected:
                 if(updateTransform)
                 {
                     outT->getTranslation()=outT->fromImage( Coord((Real)xmin,(Real)ymin,(Real)zmin) );
-                    outT->setCamPos((Real)out->getDimensions()[0]/2.0,(Real)out->getDimensions()[1]/2.0);
+                    outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
                 }
             }
             break;
@@ -253,7 +253,7 @@ protected:
                         if(dimx!=1) outT->getScale()[0]*=((Real)in->getDimensions()[0]-1.0)/((Real)dimx-1.0);
                         if(dimy!=1) outT->getScale()[1]*=((Real)in->getDimensions()[1]-1.0)/((Real)dimy-1.0);
                         if(dimz!=1) outT->getScale()[2]*=((Real)in->getDimensions()[2]-1.0)/((Real)dimz-1.0);
-                        outT->setCamPos((Real)out->getDimensions()[0]/2.0,(Real)out->getDimensions()[1]/2.0);
+                        outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
                     }
             }
 

@@ -66,7 +66,8 @@ public:
     typedef SReal Real;
 
     Data< Real > depthFactor;
-    Data< bool > invert;
+    Data< Real > minThreshold;
+    Data< Real > diffThreshold;
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -106,7 +107,8 @@ public:
 
     DepthMapToMeshEngine()    :   Inherited()
         , depthFactor(initData(&depthFactor,(Real)(1.0),"depthFactor","Intensity to depth factor"))
-        , invert(initData(&invert,false,"invert","Invert intensities"))
+        , minThreshold(initData(&minThreshold,(Real)(0.1),"minThreshold","minimal depth for point creation"))
+        , diffThreshold(initData(&diffThreshold,(Real)(1.0),"diffThreshold","maximal depth variation for triangle creation"))
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
         , texImage(initData(&texImage,TextureTypes(),"texImage",""))
@@ -186,27 +188,33 @@ protected:
         pos.resize(dimx*dimy);
         tc.resize(dimx*dimy);
         vector<bool> isValid(dimx*dimy);
+        Real cameraZ= 0.5; // camera position relative to image plane = offset for depth
+        Real minT= minThreshold.getValue();
         for(unsigned int y=0; y<dimy; y++)
             for(unsigned int x=0; x<dimx; x++)
             {
                 tc[count][0]=(Real)x/(Real)(dimx-1) + texOffset.getValue()[0];
                 tc[count][1]=(Real)y/(Real)(dimy-1) + texOffset.getValue()[1];
-                T val=this->invert.getValue()?(cimg::type<T>::max()-img(x,y)):img(x,y);
-                if(val==cimg::type<T>::max()) {val=0; isValid[count]=false;}
+                Real val=(Real)img(x,y)*f;
+                if(val<minT) { isValid[count]=false; val=0;}
                 else isValid[count]=true;
-                pos[count++]=inT->fromImage(Coord((Real)x,(Real)y,(Real)val*f));
+                pos[count++]=inT->fromImage(Coord((Real)x,(Real)y,(Real)val-cameraZ));
+
             }
 
         // update triangles
         tri.clear();
+        Real diffT= diffThreshold.getValue(),diff1,diff2,diff3;
         for(unsigned int y=0; y<dimy-1; y++)
             for(unsigned int x=0; x<dimx-1; x++)
             {
+                diff1 = abs((Real)img(x,y) - (Real)img(x+1,y)); diff2 = abs((Real)img(x+1,y) - (Real)img(x,y+1)); diff3 = abs((Real)img(x,y+1) - (Real)img(x,y));
                 p1=x+y*dimx; p2=x+1+y*dimx; p3=x+(y+1)*dimx;
-                if(isValid[p1] && isValid[p2] && isValid[p3]) tri.push_back(Triangle(p1,p2,p3));
+                if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
 
+                diff1 = abs((Real)img(x+1,y) - (Real)img(x+1,y+1)); diff2 = abs((Real)img(x+1,y+1) - (Real)img(x,y+1)); diff3 = abs((Real)img(x,y+1) - (Real)img(x+1,y));
                 p1=x+1+y*dimx; p2=x+1+(y+1)*dimx; p3=x+(y+1)*dimx;
-                if(isValid[p1] && isValid[p2] && isValid[p3]) tri.push_back(Triangle(p1,p2,p3));
+                if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
             }
     }
 
@@ -256,7 +264,7 @@ protected:
             const Vec<3,Real>& a = pos[ tri[i][0] ];
             const Vec<3,Real>& b = pos[ tri[i][1] ];
             const Vec<3,Real>& c = pos[ tri[i][2] ];
-            Vec<3,Real> n = cross((b-a),(c-a));	n.normalize();
+            Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
             glNormal3d(n[0],n[1],n[2]);
 
             glTexCoord2d(tc[tri[i][0]][0],tc[tri[i][0]][1]); glVertex3d(a[0],a[1],a[2]);
