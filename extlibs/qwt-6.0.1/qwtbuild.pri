@@ -14,7 +14,15 @@
 CONFIG           += qt     
 CONFIG           += warn_on
 CONFIG           += no_keywords
-CONFIG           += silent
+
+win32 {
+	# On Windows this adds an "echo" command in moc additionnal dependencies
+	# that causes perpetual moc rebuild since VC10 version
+	# CONFIG       += silent
+}
+else {
+	CONFIG       += silent
+}
 
 ######################################################################
 # release/debug mode
