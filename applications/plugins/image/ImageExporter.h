@@ -154,7 +154,7 @@ protected:
         }
         else rimage->getCImg(this->time).save(fname.c_str());
 
-        sout << "Saveed image " << fname <<" ("<< rimage->getCImg(this->time).pixel_type() <<")"  << sendl;
+        sout << "Saved image " << fname <<" ("<< rimage->getCImg(this->time).pixel_type() <<")"  << sendl;
 
         return true;
     }

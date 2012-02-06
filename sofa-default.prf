@@ -351,6 +351,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to use the plugin Image
 # DEFINES += SOFA_HAVE_IMAGE
+# Uncomment if you want to use kinect in Image plugin
+# DEFINES += SOFA_HAVE_LIBFREENECT
+# SOFA_LIBFREENECT_PATH = /usr/include
 
 # Uncomment if you want to use the plugin Registration
 # DEFINES += SOFA_HAVE_REGISTRATION

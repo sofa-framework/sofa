@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initImage.h"
+#define SOFA_IMAGE_KINECT_CPP
+
+#include "Kinect.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -31,65 +33,22 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_API void initExternalModule();
-    SOFA_IMAGE_API const char* getModuleName();
-    SOFA_IMAGE_API const char* getModuleVersion();
-    SOFA_IMAGE_API const char* getModuleLicense();
-    SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace container
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Image Plugin";
-}
-
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+using namespace defaulttype;
 
 
-const char* getModuleDescription()
-{
-    return "Image support in SOFA";
-}
+SOFA_DECL_CLASS (Kinect);
+// Register in the Factory
 
-const char* getModuleComponentList()
-{
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
-}
+int KinectClass = core::RegisterObject ( "Container for color and depth images from Kinect device" )
+        .add<Kinect>(true)
+        ;
 
-} // namespace image
+
+} // namespace container
+
+} // namespace component
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(ImageContainer)
-SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageViewer)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(DepthMapToMeshEngine)
-SOFA_LINK_CLASS(MeshToImageEngine)
-#ifdef SOFA_HAVE_LIBFREENECT
-SOFA_LINK_CLASS(Kinect)
-#endif
-

@@ -361,7 +361,7 @@ struct ImageLPTransform : public TImageTransform<12,_Real>
     typedef typename Inherited::Coord Coord;
 
 protected:
-    Real camx;	Real camy; // used only for perpective transforms (camera offset)
+    Real camx;	Real camy; // used only for perpective transforms (camera offset = c_x and c_y pinhole camera intrinsic parameters)
 
 public:
     Coord& getTranslation() { return *reinterpret_cast<Coord*>(&this->P[0]); }
@@ -399,6 +399,7 @@ public:
     }
 
     //transform functions
+    // note: for perpective transforms (f_x and f_y pinhole camera intrinsic parameters are scalez/2*scalex and scalez/2*scaley)
     virtual Coord fromImage(const Coord& ip) const
     {
         if(!isPerspective()) return qrotation.rotate( ip.linearProduct(getScale()) ) + getTranslation();
