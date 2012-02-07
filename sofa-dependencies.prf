@@ -110,7 +110,7 @@ declare(sofa_misc_collision, modules/sofa/component/sofa_misc_collision.pro, sof
 declare(sofa_misc_collision_dev, modules/sofa/component/sofa_misc_collision_dev.pro, sofa_mesh_collision sofa_misc_collision sofa_volumetric_data sofabgl)
 declare(sofa_misc_solver, modules/sofa/component/sofa_misc_solver.pro, sofatree)
 declare(sofa_misc_solver_dev, modules/sofa/component/sofa_misc_solver_dev.pro, sofatree)
-declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision)
+declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping)
 declare(sofa_misc_dev, modules/sofa/component/sofa_misc_dev.pro, sofa_base_collision sofa_misc_topology sofa_boundary_condition sofa_deformable sofa_advanced_fem  sofa_constraint)
 
 declare(sofa_component_base, modules/sofa/component/sofa_component_base.pro, sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)

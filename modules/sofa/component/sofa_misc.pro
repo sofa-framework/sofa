@@ -6,10 +6,13 @@ TARGET = sofa_misc
 DEFINES += SOFA_BUILD_MISC
 
 HEADERS += initMisc.h \
-           misc/MeshTetraStuffing.h
+           misc/MeshTetraStuffing.h \
+           misc/BezierCubicInterpolation.h \
+           misc/BezierCubicInterpolation.inl
 
 SOURCES += initMisc.cpp \
-           misc/MeshTetraStuffing.cpp
+           misc/MeshTetraStuffing.cpp \
+          misc/BezierCubicInterpolation.cpp
 
 
 contains(DEFINES,SOFA_SMP){
