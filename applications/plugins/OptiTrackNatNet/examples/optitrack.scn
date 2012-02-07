@@ -1,4 +1,16 @@
 <?xml version="1.0"?>
 <Node animate="1">
-  <OptiTrackNatNetClient serverName="134.206.17.253" />
+  <OptiTrackNatNetClient NOserverName="134.206.17.253" />
+  <Node name="Head">
+    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" trackableID="4" scale="10" />
+  </Node>
+  <Node name="Cut">
+    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" scale="10" />
+  </Node>
+  <Node name="Grab">
+    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" scale="10" />
+  </Node>
+  <Node name="Phaco">
+    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" scale="10" />
+  </Node>
 </Node>

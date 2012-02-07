@@ -26,6 +26,8 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+
 
 namespace SofaOptiTrackNatNet
 {
@@ -43,8 +45,9 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     , simGlobalFrame(initData(&simGlobalFrame, "simGlobalFrame", "Input: world position and orientation of the reference point in the simulation"))
     , inGlobalFrame(initData(&inGlobalFrame, "inGlobalFrame", "Input: world position and orientation of the reference point in the real (camera) space"))
     , simLocalFrame(initData(&simLocalFrame, "simLocalFrame", "Input: position and orientation of the center of the simulated object in the simulation"))
-    , inLocalFrame(initData(&simLocalFrame, "inLocalFrame", "Input: position and orientation of the center of the simulated object in the real (camera) space"))
+    , inLocalFrame(initData(&inLocalFrame, "inLocalFrame", "Input: position and orientation of the center of the simulated object in the real (camera) space"))
     , scale(initData(&scale, (Real)1, "scale", "Input: scale factor to apply to coordinates (using the global frame as fixed point)"))
+    , markers(initData(&markers, "markers", "Output: markers as tracked by the cameras"))
 {
     this->f_listening.setValue(true);
     this->f_printLog.setValue(true);
@@ -93,7 +96,7 @@ void OptiTrackNatNetDevice::processModelDef(const ModelDef* data)
             if (data->rigids[i].name && name == data->rigids[i].name)
             {
                 id = data->rigids[i].ID;
-                sout << "Found trackable " << name << " as ID " << id << sendl;
+                serr << "Found trackable " << name << " as ID " << id << sendl;
                 trackableID.setValue(id);
                 break;
             }
@@ -142,9 +145,13 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
     }
     if (tracked)
     {
-        Coord frame ( pos, rot);
-        sout << "Tracked frame: " << frame << sendl;
+        Coord frame (pos, rot);
+//        sout << "Tracked frame: " << frame << sendl;
         this->trackedFrame.setValue(frame);
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > > markers = this->markers;
+        markers.resize(rigid.nMarkers);
+        for (int m=0; m<rigid.nMarkers; ++m)
+            markers[m] = rigid.markersPos[m];
         if (this->inLocalFrame.isSet())
         {
             Coord frame2 = this->inLocalFrame.getValue();
@@ -164,27 +171,40 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             Coord frame2 = this->inGlobalFrame.getValue();
             frame.getCenter() = frame2.getOrientation().inverse().rotate(frame.getCenter()) - frame2.getCenter();
             frame.getOrientation() = frame2.getOrientation().inverse() * frame.getOrientation();
+            for (int m=0; m<rigid.nMarkers; ++m)
+                markers[m] = frame2.getOrientation().inverse().rotate(markers[m]) - frame2.getCenter();
             sout << "   inGlobalFrame " << frame2 << " -> " << frame << sendl;
         }
         if (this->scale.isSet())
         {
-            frame.getCenter() *= scale.getValue();
-            sout << "   scale         " << scale << " -> " << frame << sendl;
+            Real scale = this->scale.getValue();
+            frame.getCenter() *= scale;
+            for (int m=0; m<rigid.nMarkers; ++m)
+                markers[m] *= scale;
+            //sout << "   scale         " << scale << " -> " << frame << sendl;
         }
         if (this->simGlobalFrame.isSet())
         {
             Coord frame2 = this->simGlobalFrame.getValue();
             frame.getCenter() = frame2.getOrientation().rotate(frame.getCenter()) + frame2.getCenter();
             frame.getOrientation() = frame2.getOrientation() * frame.getOrientation();
+            for (int m=0; m<rigid.nMarkers; ++m)
+                markers[m] = frame2.getOrientation().rotate(markers[m]) + frame2.getCenter();
             sout << "  simGlobalFrame " << frame2 << " -> " << frame << sendl;
         }
-        sout << "Output frame: " << frame << sendl;
+//        sout << "Output frame: " << frame << sendl;
         this->frame.setValue(frame);
         pos = frame.getCenter();
         rot = frame.getOrientation();
         this->position.setValue(pos);
         this->orientation.setValue(rot);
     }
+}
+
+void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams)
+{
+    if (!this->tracked.getValue()) return;
+    vparams->drawTool()->drawPoints(markers.getValue(), 2, sofa::defaulttype::Vec<4,float>(1,0,0,1));
 }
 
 void OptiTrackNatNetDevice::update()
