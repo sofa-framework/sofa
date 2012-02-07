@@ -2449,15 +2449,13 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
     if (showIndices.getValue())
     {
         context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
 
         for (int i=0 ; i< vsize ; i++)
         {
