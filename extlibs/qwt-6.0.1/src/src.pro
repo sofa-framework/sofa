@@ -215,26 +215,28 @@ contains(QWT_CONFIG, QwtWidgets) {
 
 # Install directives
 
-target.path    = $${QWT_INSTALL_LIBS}
-
-doc.files      = $${QWT_ROOT}/doc/html 
-unix:doc.files += $${QWT_ROOT}/doc/man
-doc.path       = $${QWT_INSTALL_DOCS}
-
-INSTALLS       = target doc
-
-CONFIG(lib_bundle) {
-
-    FRAMEWORK_HEADERS.version = Versions
-    FRAMEWORK_HEADERS.files = $${HEADERS}
-    FRAMEWORK_HEADERS.path = Headers
-    QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
-}
-else {
-
-    headers.files  = $${HEADERS}
-    headers.path   = $${QWT_INSTALL_HEADERS}
-    INSTALLS += headers
-}
+#FIX: disable install primitives as they conflict with Sofa build system
+#target.path    = $${QWT_INSTALL_LIBS}
+#
+#doc.files      = $${QWT_ROOT}/doc/html 
+#unix:doc.files += $${QWT_ROOT}/doc/man
+#doc.path       = $${QWT_INSTALL_DOCS}
+#
+#INSTALLS       = target doc
+#ENDFIX
+#
+#CONFIG(lib_bundle) {
+#
+#    FRAMEWORK_HEADERS.version = Versions
+#    FRAMEWORK_HEADERS.files = $${HEADERS}
+#    FRAMEWORK_HEADERS.path = Headers
+#    QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
+#}
+#else {
+#
+#    headers.files  = $${HEADERS}
+#    headers.path   = $${QWT_INSTALL_HEADERS}
+#    INSTALLS += headers
+#}
 
 load(sofa/post)

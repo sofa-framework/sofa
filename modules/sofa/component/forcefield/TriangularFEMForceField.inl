@@ -356,6 +356,8 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements[2] = R_0_1 * ((*initialPoints)[c] - (*initialPoints)[a]);
     }
 
+    computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+
     triangleInfo.endEdit();
 }
 
@@ -787,29 +789,29 @@ void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplac
         Real y23 = -c[1] / determinant; // since a=(0,0) and b[1] = 0
         Real y31 = c[1] / determinant; // since a=(0,0)
 
-        J[0][0] = y23;
-        J[0][1] = 0;
-        J[0][2] = x32;
+        J[0][0] = y23; // -cy   / det
+        J[0][1] = 0;   // 0
+        J[0][2] = x32; // cx-bx / det
 
-        J[1][0] = 0;
-        J[1][1] = x32;
-        J[1][2] = y23;
+        J[1][0] = 0;   // 0
+        J[1][1] = x32; // cx-bx / det
+        J[1][2] = y23; // -cy   / det
 
-        J[2][0] = y31;
-        J[2][1] = 0;
-        J[2][2] = x13;
+        J[2][0] = y31; // cy    / det
+        J[2][1] = 0;   // 0
+        J[2][2] = x13; // -cx   / det
 
-        J[3][0] = 0;
-        J[3][1] = x13;
-        J[3][2] = y31;
+        J[3][0] = 0;   // 0
+        J[3][1] = x13; // -cx   / det
+        J[3][2] = y31; // cy    / det
 
-        J[4][0] = y12;
-        J[4][1] = 0;
-        J[4][2] = x21;
+        J[4][0] = y12; // 0
+        J[4][1] = 0;   // 0
+        J[4][2] = x21; // bx    / det
 
-        J[5][0] = 0;
-        J[5][1] = x21;
-        J[5][2] = y12;
+        J[5][0] = 0;   // 0
+        J[5][1] = x21; // bx    / det
+        J[5][2] = y12; // 0
     }
     triangleInfo.endEdit();
 }
@@ -1120,10 +1122,10 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     {
         // classic linear elastic method
         computeDisplacementSmall(D, elementIndex, p);
-        if (_anisotropicMaterial)
-            computeStrainDisplacement(J, elementIndex, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
-        else
-            J = triangleInf[elementIndex].strainDisplacementMatrix;
+        //if (_anisotropicMaterial)
+        computeStrainDisplacement(J, elementIndex, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
+        //else
+        //    J = triangleInf[elementIndex].strainDisplacementMatrix;
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         F = J * stress * triangleInf[elementIndex].area;
@@ -1140,12 +1142,16 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         computeRotationLarge( R_0_2, p, a, b, c);
         // then compute displacement in this frame
         computeDisplacementLarge(D, elementIndex, R_0_2, p);
+        //sout << "Elem"<<elementIndex<<": D=" << D << sendl;
         // and compute postions of a, b, c in the co-rotational frame
         Coord A = Coord(0, 0, 0);
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        computeStrainDisplacement(J, elementIndex, A, B, C);
+        if (_anisotropicMaterial)
+            computeStrainDisplacement(J, elementIndex, A, B, C);
+        else
+            J = triangleInf[elementIndex].strainDisplacementMatrix;
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
@@ -1170,6 +1176,8 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
 
         // Since J has been "normalized" we need to multiply the force F by the area of the triangle to get the correct force
         F *= triangleInf[elementIndex].area;
+
+        //sout << "Elem"<<elementIndex<<": F=" << F << sendl;
 
         // store newly computed values for next time
         R_2_0.transpose(R_0_2);
