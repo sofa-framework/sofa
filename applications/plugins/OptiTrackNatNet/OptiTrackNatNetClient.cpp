@@ -109,9 +109,11 @@ OptiTrackNatNetClient::OptiTrackNatNetClient()
     , data_socket(NULL)
     , recv_command_packet(new sPacket)
     , recv_data_packet(new sPacket)
+    , serverInfoReceived(false)
+    , modelInfoReceived(false)
 {
     this->f_listening.setValue(true);
-    this->f_printLog.setValue(true);
+    //this->f_printLog.setValue(true);
 }
 
 OptiTrackNatNetClient::~OptiTrackNatNetClient()
@@ -260,17 +262,42 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
         case NAT_MODELDEF:
         {
             sout << "Received MODELDEF" << sendl;
-            decodeModelDef(PacketIn);
+            if (serverInfoReceived)
+            {
+                decodeModelDef(PacketIn);
+            }
+            else if (!this->serverName.isSet())
+            {
+                server_endpoint = recv_command_endpoint;
+                server_endpoint.port(PORT_COMMAND);
+                serr << "Requesting server info to " << server_endpoint << sendl;
+                boost::array<unsigned short, 2> helloMsg;
+                helloMsg[0] = NAT_PING; helloMsg[1] = 0;
+                command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
+            }
             break;
         }
         case NAT_FRAMEOFDATA:
         {
             sout << "Received FRAMEOFDATA" << sendl;
-            decodeFrame(PacketIn);
+            if (serverInfoReceived)
+            {
+                decodeFrame(PacketIn);
+            }
+            else if (!this->serverName.isSet())
+            {
+                server_endpoint = recv_command_endpoint;
+                server_endpoint.port(PORT_COMMAND);
+                serr << "Requesting server info to " << server_endpoint << sendl;
+                boost::array<unsigned short, 2> helloMsg;
+                helloMsg[0] = NAT_PING; helloMsg[1] = 0;
+                command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
+            }
             break;
         }
         case NAT_PINGRESPONSE:
         {
+            serverInfoReceived = true;
             serverString = PacketIn.Data.Sender.szName;
             for(int i=0; i<4; i++)
             {
@@ -348,13 +375,37 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
         case NAT_MODELDEF:
         {
             sout << "Received MODELDEF" << sendl;
-            decodeModelDef(PacketIn);
+            if (serverInfoReceived)
+            {
+                decodeModelDef(PacketIn);
+            }
+            else if (!this->serverName.isSet())
+            {
+                server_endpoint = recv_data_endpoint;
+                server_endpoint.port(PORT_COMMAND);
+                serr << "Requesting server info to " << server_endpoint << sendl;
+                boost::array<unsigned short, 2> helloMsg;
+                helloMsg[0] = NAT_PING; helloMsg[1] = 0;
+                command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
+            }
             break;
         }
         case NAT_FRAMEOFDATA:
         {
             sout << "Received FRAMEOFDATA" << sendl;
-            decodeFrame(PacketIn);
+            if (serverInfoReceived)
+            {
+                decodeFrame(PacketIn);
+            }
+            else if (!this->serverName.isSet())
+            {
+                server_endpoint = recv_data_endpoint;
+                server_endpoint.port(PORT_COMMAND);
+                serr << "Requesting server info to " << server_endpoint << sendl;
+                boost::array<unsigned short, 2> helloMsg;
+                helloMsg[0] = NAT_PING; helloMsg[1] = 0;
+                command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
+            }
             break;
         }
         default:
@@ -368,27 +419,66 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
 }
 
 template<class T>
-static void memread(T& dest, const unsigned char*& ptr)
+static void memread(T& dest, const unsigned char*& ptr, const unsigned char*& end, const char* fieldName=NULL)
 {
-    dest = *(const T*)ptr;
-    ptr += sizeof(T);
+    if (end-ptr >= sizeof(T))
+    {
+        dest = *(const T*)ptr;
+        ptr += sizeof(T);
+    }
+    else
+    {
+        memset(&dest,0,sizeof(T));
+        if (ptr != end)
+        {
+            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
+            if (fieldName) std::cerr << " while reading " << fieldName << std::endl;
+            ptr = end;
+        }
+    }
 }
 
-static void memread(const char*& dest, const unsigned char*& ptr)
+static void memread(const char*& dest, const unsigned char*& ptr, const unsigned char*& end, const char* fieldName=NULL)
 {
-    dest = (const char*) ptr;
-    ptr += strlen(dest)+1;
+    unsigned int len = 0;
+    while (ptr+len < end && ptr[len])
+        ++len;
+    if (end-ptr > len)
+    {
+        dest = (const char*) ptr;
+        ptr += len+1;
+    }
+    else
+    {
+        dest = "";
+        if (ptr != end)
+        {
+            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
+            if (fieldName) std::cerr << " while reading string " << fieldName << std::endl;
+            ptr = end;
+        }
+    }
 }
 
 template<class T>
-static void memread(const T*& dest, int n, const unsigned char*& ptr)
+static void memread(const T*& dest, int n, const unsigned char*& ptr, const unsigned char*& end, const char* fieldName=NULL)
 {
     if (n <= 0)
         dest = NULL;
-    else
+    else if (end-ptr >= n*sizeof(T))
     {
         dest = (const T*)ptr;
         ptr += n*sizeof(T);
+    }
+    else
+    {
+        dest = NULL;
+        if (ptr != end)
+        {
+            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
+            if (fieldName) std::cerr << " while reading " << n << " values for array " << fieldName << std::endl;
+            ptr = end;
+        }
     }
 }
 
@@ -400,10 +490,11 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     FrameData frame;
 
     const unsigned char *ptr = data.Data.cData;
+    const unsigned char *end = ptr + data.nDataBytes;
 
-    memread(frame.frameNumber,ptr);
+    memread(frame.frameNumber,ptr,end,"frameNumber");
 
-    memread(frame.nPointClouds,ptr);
+    memread(frame.nPointClouds,ptr,end,"nPointClouds");
     if (frame.nPointClouds <= 0)
         frame.pointClouds = NULL;
     else
@@ -412,15 +503,15 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
         for (int iP = 0; iP < frame.nPointClouds; ++iP)
         {
             PointCloudData& pdata = frame.pointClouds[iP];
-            memread(pdata.name,ptr);
-            memread(pdata.nMarkers,ptr);
-            memread(pdata.markersPos, pdata.nMarkers, ptr);
+            memread(pdata.name,ptr,end,"pointCloud.name");
+            memread(pdata.nMarkers,ptr,end,"pointCloud.nMarkers");
+            memread(pdata.markersPos, pdata.nMarkers, ptr, end, "pointCloud.markersPos");
         }
     }
-    memread(frame.nOtherMarkers,ptr);
-    memread(frame.otherMarkersPos, frame.nOtherMarkers, ptr);
+    memread(frame.nOtherMarkers,ptr,end,"nOtherMarkers");
+    memread(frame.otherMarkersPos, frame.nOtherMarkers, ptr,end,"otherMarkersPos");
 
-    memread(frame.nRigids,ptr);
+    memread(frame.nRigids,ptr,end,"nRigids");
     if (frame.nRigids <= 0)
         frame.rigids = NULL;
     else
@@ -429,11 +520,11 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
         for (int iR = 0; iR < frame.nRigids; ++iR)
         {
             RigidData& rdata = frame.rigids[iR];
-            memread(rdata.ID,ptr);
-            memread(rdata.pos,ptr);
-            memread(rdata.rot,ptr);
-            memread(rdata.nMarkers, ptr);
-            memread(rdata.markersPos, rdata.nMarkers, ptr);
+            memread(rdata.ID,ptr,end,"rigid.ID");
+            memread(rdata.pos,ptr,end,"rigid.pos");
+            memread(rdata.rot,ptr,end,"rigid.rot");
+            memread(rdata.nMarkers, ptr,end,"rigid.nMarkers");
+            memread(rdata.markersPos, rdata.nMarkers, ptr,end,"rigid.markersPos");
             if (major < 2)
             {
                 rdata.markersID = NULL;
@@ -442,9 +533,9 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
             }
             else
             {
-                memread(rdata.markersID, rdata.nMarkers, ptr);
-                memread(rdata.markersSize, rdata.nMarkers, ptr);
-                memread(rdata.meanError, ptr);
+                memread(rdata.markersID, rdata.nMarkers, ptr,end,"rigid.markersID");
+                memread(rdata.markersSize, rdata.nMarkers, ptr,end,"rigid.markersSize");
+                memread(rdata.meanError, ptr,end,"rigid.meanError");
             }
         }
     }
@@ -456,7 +547,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     }
     else
     {
-        memread(frame.nSkeletons,ptr);
+        memread(frame.nSkeletons,ptr,end,"nSkeletons");
         if (frame.nSkeletons <= 0)
             frame.skeletons = NULL;
         else
@@ -465,8 +556,8 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
             for (int iS = 0; iS < frame.nSkeletons; ++iS)
             {
                 SkeletonData& sdata = frame.skeletons[iS];
-                memread(sdata.ID,ptr);
-                memread(sdata.nRigids, ptr);
+                memread(sdata.ID,ptr,end,"skeleton.ID");
+                memread(sdata.nRigids, ptr,end,"skeleton.nRigids");
                 if (sdata.nRigids <= 0)
                     sdata.rigids = NULL;
                 else
@@ -475,20 +566,24 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
                     for (int iR = 0; iR < sdata.nRigids; ++iR)
                     {
                         RigidData& rdata = sdata.rigids[iR];
-                        memread(rdata.ID,ptr);
-                        memread(rdata.pos,ptr);
-                        memread(rdata.rot,ptr);
-                        memread(rdata.nMarkers, ptr);
-                        memread(rdata.markersPos, rdata.nMarkers, ptr);
-                        memread(rdata.markersID, rdata.nMarkers, ptr);
-                        memread(rdata.markersSize, rdata.nMarkers, ptr);
-                        memread(rdata.meanError, ptr);
+                        memread(rdata.ID,ptr,end,"rigid.ID");
+                        memread(rdata.pos,ptr,end,"rigid.pos");
+                        memread(rdata.rot,ptr,end,"rigid.rot");
+                        memread(rdata.nMarkers, ptr,end,"rigid.nMarkers");
+                        memread(rdata.markersPos, rdata.nMarkers, ptr,end,"rigid.markersPos");
+                        memread(rdata.markersID, rdata.nMarkers, ptr,end,"rigid.markersID");
+                        memread(rdata.markersSize, rdata.nMarkers, ptr,end,"rigid.markersSize");
+                        memread(rdata.meanError, ptr,end,"rigid.meanError");
                     }
                 }
             }
         }
     }
-    memread(frame.latency, ptr);
+    memread(frame.latency, ptr,end,"latency");
+    if (ptr != end)
+    {
+//        serr << "decodeFrame: extra " << end-ptr << " bytes at end of message" << sendl;
+    }
 
     processFrame(&frame);
 
@@ -514,7 +609,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
 void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
 {
     const int major = natNetVersion[0];
-    const int minor = natNetVersion[1];
+    //const int minor = natNetVersion[1];
 
     ModelDef model;
     sofa::helper::vector<PointCloudDef> pointClouds;
@@ -522,21 +617,22 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
     sofa::helper::vector<SkeletonDef> skeletons;
 
     const unsigned char *ptr = data.Data.cData;
+    const unsigned char *end = ptr + data.nDataBytes;
 
     int nDatasets = 0;
-    memread(nDatasets,ptr);
+    memread(nDatasets,ptr,end,"nDatasets");
 
     for(int i=0; i < nDatasets; i++)
     {
         int type = 0;
-        memread(type,ptr);
+        memread(type,ptr,end,"type");
         switch(type)
         {
         case 0: // point cloud
         {
             PointCloudDef pdef;
-            memread(pdef.name,ptr);
-            memread(pdef.nMarkers,ptr);
+            memread(pdef.name,ptr,end,"name");
+            memread(pdef.nMarkers,ptr,end,"nMarkers");
             if (pdef.nMarkers <= 0)
                 pdef.markers = NULL;
             else
@@ -544,7 +640,7 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
                 pdef.markers = new PointCloudDef::Marker[pdef.nMarkers];
                 for (int j=0; j<pdef.nMarkers; ++j)
                 {
-                    memread(pdef.markers[j].name,ptr);
+                    memread(pdef.markers[j].name,ptr,end,"markers.name");
                 }
             }
             pointClouds.push_back(pdef);
@@ -554,20 +650,20 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
         {
             RigidDef rdef;
             if(major >= 2)
-                memread(rdef.name,ptr);
+                memread(rdef.name,ptr,end,"rigid.name");
             else
                 rdef.name = NULL;
-            memread(rdef.ID,ptr);
-            memread(rdef.parentID,ptr);
-            memread(rdef.offset,ptr);
+            memread(rdef.ID,ptr,end,"rigid.ID");
+            memread(rdef.parentID,ptr,end,"rigid.parentID");
+            memread(rdef.offset,ptr,end,"rigid.offset");
             rigids.push_back(rdef);
             break;
         }
         case 2: // skeleton
         {
             SkeletonDef sdef;
-            memread(sdef.name,ptr);
-            memread(sdef.nRigids,ptr);
+            memread(sdef.name,ptr,end,"skeleton.name");
+            memread(sdef.nRigids,ptr,end,"skeleton.nRigids");
             if (sdef.nRigids <= 0)
                 sdef.rigids = NULL;
             else
@@ -576,10 +672,10 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
                 for (int j=0; j<sdef.nRigids; ++j)
                 {
                     RigidDef& rdef = sdef.rigids[j];
-                    memread(rdef.name,ptr);
-                    memread(rdef.ID,ptr);
-                    memread(rdef.parentID,ptr);
-                    memread(rdef.offset,ptr);
+                    memread(rdef.name,ptr,end,"skeleton.rigid.name");
+                    memread(rdef.ID,ptr,end,"skeleton.rigid.ID");
+                    memread(rdef.parentID,ptr,end,"skeleton.rigid.parentID");
+                    memread(rdef.offset,ptr,end,"skeleton.rigid.offset");
                 }
             }
             skeletons.push_back(sdef);

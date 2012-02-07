@@ -88,12 +88,14 @@ public:
     sofa::core::objectmodel::Data<Coord> simLocalFrame;
     sofa::core::objectmodel::Data<Coord> inLocalFrame;
     sofa::core::objectmodel::Data<Real> scale;
+    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > markers;
 
     OptiTrackNatNetDevice();
     virtual ~OptiTrackNatNetDevice();
 
     virtual void init();
     virtual void reinit();
+    virtual void draw(const sofa::core::visual::VisualParams* vparams);
 
 public:
 

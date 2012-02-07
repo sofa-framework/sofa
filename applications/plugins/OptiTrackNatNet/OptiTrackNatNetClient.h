@@ -108,6 +108,9 @@ protected:
     sofa::helper::fixed_array<unsigned char,4> serverVersion; // sending app's version [major.minor.build.revision]
     sofa::helper::fixed_array<unsigned char,4> natNetVersion; // sending app's NatNet version [major.minor.build.revision]
 
+    bool serverInfoReceived;
+    bool modelInfoReceived;
+
     static boost::asio::io_service& get_io_service();
     static boost::asio::ip::udp::resolver& get_resolver();
 
