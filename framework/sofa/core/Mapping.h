@@ -290,13 +290,15 @@ public:
 
         if (stin == NULL)
         {
-            context->serr << "Cannot create "<<className(obj)<<" as input model "<< inPath << " is missing or invalid." << context->sendl;
+//            This warning seems irrelevant, as it is raised multiple times while the creation works fine (Francois Faure, Feb. 2012)
+//            context->serr << "Cannot create "<<className(obj)<<" as input model "<< inPath << " is missing or invalid." << context->sendl;
             return false;
         }
 
         if (stout == NULL)
         {
-            context->serr << "Cannot create "<<className(obj)<<" as output model "<< outPath << " is missing or invalid." << context->sendl;
+//            This warning seems irrelevant, as it is raised multiple times while the creation works fine (Francois Faure, Feb. 2012)
+//            context->serr << "Cannot create "<<className(obj)<<" as output model "<< outPath << " is missing or invalid." << context->sendl;
             return false;
         }
 

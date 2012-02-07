@@ -1,5 +1,5 @@
-<!-- Mechanical DeformableOnRigidFrameMapping Example -->
 <?xml version="1.0" ?>
+<!-- Mechanical DeformableOnRigidFrameMapping Example -->
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showBehavior showVisual" />
     <CollisionPipeline depth="6" verbose="0" draw="0" />

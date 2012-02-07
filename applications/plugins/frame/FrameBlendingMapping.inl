@@ -180,7 +180,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
     this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
     if ( !gridMaterial )
     {
-        serr << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
+        sout << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
     }
     else
     {
