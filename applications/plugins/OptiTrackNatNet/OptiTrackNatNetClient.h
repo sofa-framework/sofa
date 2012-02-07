@@ -46,6 +46,17 @@ struct ModelDef;
 /// decoded frame of tracked data
 struct FrameData;
 
+class OptiTrackNatNetDataReceiver : public virtual sofa::core::objectmodel::BaseObject
+{
+public:
+    SOFA_ABSTRACT_CLASS(OptiTrackNatNetDataReceiver, sofa::core::objectmodel::BaseObject);
+protected:
+    virtual ~OptiTrackNatNetDataReceiver() {}
+public:
+    virtual void processModelDef(const ModelDef* data) = 0;
+    virtual void processFrame(const FrameData* data) = 0;
+};
+
 class OptiTrackNatNetClient :  public virtual sofa::core::objectmodel::BaseObject
 {
 public:
@@ -60,6 +71,7 @@ protected:
 public:
     sofa::core::objectmodel::Data<std::string> serverName;
     sofa::core::objectmodel::Data<std::string> clientName;
+    sofa::core::objectmodel::MultiLink<OptiTrackNatNetClient, OptiTrackNatNetDataReceiver, 0> natNetReceivers;
 
     OptiTrackNatNetClient();
     virtual ~OptiTrackNatNetClient();

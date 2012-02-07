@@ -104,6 +104,7 @@ boost::asio::ip::udp::resolver& OptiTrackNatNetClient::get_resolver()
 OptiTrackNatNetClient::OptiTrackNatNetClient()
     : serverName(initData(&serverName, std::string("localhost"), "serverName", "NatNet server address (default to localhost)"))
     , clientName(initData(&clientName, std::string(""), "clientName", "IP to bind this client to (default to localhost)"))
+    , natNetReceivers(initLink("natNetReceivers", "List of data receiver components"))
     , command_socket(NULL)
     , data_socket(NULL)
     , recv_command_packet(new sPacket)
@@ -512,90 +513,255 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
 
 void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
 {
+    const int major = natNetVersion[0];
+    const int minor = natNetVersion[1];
+
+    ModelDef model;
+    sofa::helper::vector<PointCloudDef> pointClouds;
+    sofa::helper::vector<RigidDef> rigids;
+    sofa::helper::vector<SkeletonDef> skeletons;
+
+    const unsigned char *ptr = data.Data.cData;
+
+    int nDatasets = 0;
+    memread(nDatasets,ptr);
+
+    for(int i=0; i < nDatasets; i++)
+    {
+        int type = 0;
+        memread(type,ptr);
+        switch(type)
+        {
+        case 0: // point cloud
+        {
+            PointCloudDef pdef;
+            memread(pdef.name,ptr);
+            memread(pdef.nMarkers,ptr);
+            if (pdef.nMarkers <= 0)
+                pdef.markers = NULL;
+            else
+            {
+                pdef.markers = new PointCloudDef::Marker[pdef.nMarkers];
+                for (int j=0; j<pdef.nMarkers; ++j)
+                {
+                    memread(pdef.markers[j].name,ptr);
+                }
+            }
+            pointClouds.push_back(pdef);
+            break;
+        }
+        case 1: // rigid
+        {
+            RigidDef rdef;
+            if(major >= 2)
+                memread(rdef.name,ptr);
+            else
+                rdef.name = NULL;
+            memread(rdef.ID,ptr);
+            memread(rdef.parentID,ptr);
+            memread(rdef.offset,ptr);
+            rigids.push_back(rdef);
+            break;
+        }
+        case 2: // skeleton
+        {
+            SkeletonDef sdef;
+            memread(sdef.name,ptr);
+            memread(sdef.nRigids,ptr);
+            if (sdef.nRigids <= 0)
+                sdef.rigids = NULL;
+            else
+            {
+                sdef.rigids = new RigidDef[sdef.nRigids];
+                for (int j=0; j<sdef.nRigids; ++j)
+                {
+                    RigidDef& rdef = sdef.rigids[j];
+                    memread(rdef.name,ptr);
+                    memread(rdef.ID,ptr);
+                    memread(rdef.parentID,ptr);
+                    memread(rdef.offset,ptr);
+                }
+            }
+            skeletons.push_back(sdef);
+            break;
+        }
+        default:
+        {
+            serr << "decodeModelDef: unknown type " << type << sendl;
+        }
+        }
+    }
+
+    model.nPointClouds = pointClouds.size();
+    model.pointClouds = (pointClouds.size() > 0) ? &(pointClouds[0]) : NULL;
+    model.nRigids = rigids.size();
+    model.rigids = (rigids.size() > 0) ? &(rigids[0]) : NULL;
+    model.nSkeletons = skeletons.size();
+    model.skeletons = (skeletons.size() > 0) ? &(skeletons[0]) : NULL;
+
+    processModelDef(&model);
+
+    for (int i=0; i<model.nPointClouds; ++i)
+    {
+        if (model.pointClouds[i].markers)
+            delete[] model.pointClouds[i].markers;
+    }
+
+    for (int i=0; i<model.nSkeletons; ++i)
+    {
+        if (model.skeletons[i].rigids)
+            delete[] model.skeletons[i].rigids;
+    }
 }
 
 void OptiTrackNatNetClient::processFrame(const FrameData* data)
 {
+    if (this->f_printLog.getValue())
+    {
 #define ENDL sendl
 //#define ENDL "\n"
-    sout << "Frame # : " << data->frameNumber << ENDL;
-    sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
-    for (int iP = 0; iP < data->nPointClouds; ++iP)
-    {
-        sout << ENDL;
-        if (data->pointClouds[iP].name)
-            sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
-        sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
-        for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
-            sout << " [" << data->pointClouds[iP].markersPos[i] << "]";
-        sout << ENDL;
-    }
-
-    sout << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
-    for (int i = 0; i < data->nOtherMarkers; ++i)
-        sout << " [" << data->otherMarkersPos[i] << "]";
-    sout << ENDL;
-
-    sout << "\tRigid Body Count : " << data->nRigids << ENDL;
-    for (int iR = 0; iR < data->nRigids; ++iR)
-    {
-        sout << ENDL;
-        sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
-        sout << "\t\tpos : " << data->rigids[iR].pos << ENDL;
-        if (data->rigids[iR].rot[0] != 0.0f
-            || data->rigids[iR].rot[1] != 0.0f
-            || data->rigids[iR].rot[2] != 0.0f
-            || data->rigids[iR].rot[3] != 0.0f)
-            sout << "\t\trot : " << data->rigids[iR].rot << ENDL;
-        sout << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
-        for (int i = 0; i < data->rigids[iR].nMarkers; ++i)
-        {
-            sout << " [" << data->rigids[iR].markersPos[i] << "]";
-            if (data->rigids[iR].markersID)
-                sout << ",id=" << data->rigids[iR].markersID[i];
-            if (data->rigids[iR].markersSize)
-                sout << ",size=" << data->rigids[iR].markersSize[i];
-        }
-        sout << ENDL;
-    }
-
-    sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
-    for (int iS = 0; iS < data->nSkeletons; ++iS)
-    {
-        sout << ENDL;
-        sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
-
-        sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
-        for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
+        sout << "Frame # : " << data->frameNumber << ENDL;
+        sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
+        for (int iP = 0; iP < data->nPointClouds; ++iP)
         {
             sout << ENDL;
-            sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
-            sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << ENDL;
-            if (data->skeletons[iS].rigids[iR].rot[0] != 0.0f
-                || data->skeletons[iS].rigids[iR].rot[1] != 0.0f
-                || data->skeletons[iS].rigids[iR].rot[2] != 0.0f
-                || data->skeletons[iS].rigids[iR].rot[3] != 0.0f)
-                sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << ENDL;
-            sout << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
-            for (int i = 0; i < data->skeletons[iS].rigids[iR].nMarkers; ++i)
+            if (data->pointClouds[iP].name)
+                sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
+            sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
+            for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
+                sout << " [" << data->pointClouds[iP].markersPos[i] << "]";
+            sout << ENDL;
+        }
+
+        sout << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
+        for (int i = 0; i < data->nOtherMarkers; ++i)
+            sout << " [" << data->otherMarkersPos[i] << "]";
+        sout << ENDL;
+
+        sout << "\tRigid Body Count : " << data->nRigids << ENDL;
+        for (int iR = 0; iR < data->nRigids; ++iR)
+        {
+            sout << ENDL;
+            sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
+            sout << "\t\tpos : " << data->rigids[iR].pos << ENDL;
+            if (data->rigids[iR].rot[0] != 0.0f
+                || data->rigids[iR].rot[1] != 0.0f
+                || data->rigids[iR].rot[2] != 0.0f
+                || data->rigids[iR].rot[3] != 0.0f)
+                sout << "\t\trot : " << data->rigids[iR].rot << ENDL;
+            sout << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
+            for (int i = 0; i < data->rigids[iR].nMarkers; ++i)
             {
-                sout << " [" << data->skeletons[iS].rigids[iR].markersPos[i] << "]";
-                if (data->skeletons[iS].rigids[iR].markersID)
-                    sout << ",id=" << data->skeletons[iS].rigids[iR].markersID[i];
-                if (data->skeletons[iS].rigids[iR].markersSize)
-                    sout << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
+                sout << " [" << data->rigids[iR].markersPos[i] << "]";
+                if (data->rigids[iR].markersID)
+                    sout << ",id=" << data->rigids[iR].markersID[i];
+                if (data->rigids[iR].markersSize)
+                    sout << ",size=" << data->rigids[iR].markersSize[i];
             }
             sout << ENDL;
         }
-    }
-    sout << "latency : " << data->latency << ENDL;
+
+        sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
+        for (int iS = 0; iS < data->nSkeletons; ++iS)
+        {
+            sout << ENDL;
+            sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
+
+            sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
+            for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
+            {
+                sout << ENDL;
+                sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
+                sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << ENDL;
+                if (data->skeletons[iS].rigids[iR].rot[0] != 0.0f
+                    || data->skeletons[iS].rigids[iR].rot[1] != 0.0f
+                    || data->skeletons[iS].rigids[iR].rot[2] != 0.0f
+                    || data->skeletons[iS].rigids[iR].rot[3] != 0.0f)
+                    sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << ENDL;
+                sout << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
+                for (int i = 0; i < data->skeletons[iS].rigids[iR].nMarkers; ++i)
+                {
+                    sout << " [" << data->skeletons[iS].rigids[iR].markersPos[i] << "]";
+                    if (data->skeletons[iS].rigids[iR].markersID)
+                        sout << ",id=" << data->skeletons[iS].rigids[iR].markersID[i];
+                    if (data->skeletons[iS].rigids[iR].markersSize)
+                        sout << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
+                }
+                sout << ENDL;
+            }
+        }
+        sout << "latency : " << data->latency << ENDL;
 #undef ENDL
-    sout << sendl;
+        sout << sendl;
+    }
+
+    for (unsigned int i=0,n=natNetReceivers.size(); i<n; ++i)
+        if (natNetReceivers[i]) natNetReceivers[i]->processFrame(data);
 }
 
 void OptiTrackNatNetClient::processModelDef(const ModelDef* data)
 {
+    if (this->f_printLog.getValue())
+    {
+#define ENDL sendl
+//#define ENDL "\n"
+        sout << "ModelDef : " << ENDL;
+        sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
+        for (int iP = 0; iP < data->nPointClouds; ++iP)
+        {
+            sout << ENDL;
+            if (data->pointClouds[iP].name)
+                sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
+            sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
+            for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
+                sout << " " << data->pointClouds[iP].name;
+            sout << ENDL;
+        }
 
+        sout << "\tRigid Body Count : " << data->nRigids << ENDL;
+        for (int iR = 0; iR < data->nRigids; ++iR)
+        {
+            sout << ENDL;
+            if (data->rigids[iR].name)
+                sout << "\t\tname : " << data->rigids[iR].name << ENDL;
+            sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
+            sout << "\t\tparentID : " << data->rigids[iR].parentID << ENDL;
+            if (data->rigids[iR].offset[0] != 0.0f
+                || data->rigids[iR].offset[1] != 0.0f
+                || data->rigids[iR].offset[2] != 0.0f)
+                sout << "\t\toffset : " << data->rigids[iR].offset << ENDL;
+            sout << ENDL;
+        }
+
+        sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
+        for (int iS = 0; iS < data->nSkeletons; ++iS)
+        {
+            sout << ENDL;
+            if (data->skeletons[iS].name)
+                sout << "\t\tname : " << data->skeletons[iS].name << ENDL;
+            sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
+
+            sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
+            for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
+            {
+                sout << ENDL;
+                if (data->skeletons[iS].rigids[iR].name)
+                    sout << "\t\t\tname : " << data->skeletons[iS].rigids[iR].name << ENDL;
+                sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
+                sout << "\t\t\tparentID : " << data->skeletons[iS].rigids[iR].parentID << ENDL;
+                if (data->skeletons[iS].rigids[iR].offset[0] != 0.0f
+                    || data->skeletons[iS].rigids[iR].offset[1] != 0.0f
+                    || data->skeletons[iS].rigids[iR].offset[2] != 0.0f)
+                    sout << "\t\t\toffset : " << data->skeletons[iS].rigids[iR].offset << ENDL;
+                sout << ENDL;
+            }
+        }
+#undef ENDL
+        sout << sendl;
+    }
+
+    for (unsigned int i=0,n=natNetReceivers.size(); i<n; ++i)
+        if (natNetReceivers[i]) natNetReceivers[i]->processModelDef(data);
 }
 
 void OptiTrackNatNetClient::handleEvent(sofa::core::objectmodel::Event *event)

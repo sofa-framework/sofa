@@ -6,9 +6,11 @@ TARGET = OptiTrackNatNet
 DEFINES += SOFA_BUILD_OPTITRACKNATNET
 
 HEADERS +=  initOptiTrackNatNet.h \
-			OptiTrackNatNetClient.h
+			OptiTrackNatNetClient.h \
+			OptiTrackNatNetDevice.h
    
 SOURCES += 	initOptiTrackNatNet.cpp \
-			OptiTrackNatNetClient.cpp
+			OptiTrackNatNetClient.cpp \
+			OptiTrackNatNetDevice.cpp
 
 load(sofa/post)
