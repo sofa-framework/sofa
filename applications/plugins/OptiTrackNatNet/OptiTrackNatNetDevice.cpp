@@ -48,6 +48,9 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     , inLocalFrame(initData(&inLocalFrame, "inLocalFrame", "Input: position and orientation of the center of the simulated object in the real (camera) space"))
     , scale(initData(&scale, (Real)1, "scale", "Input: scale factor to apply to coordinates (using the global frame as fixed point)"))
     , markers(initData(&markers, "markers", "Output: markers as tracked by the cameras"))
+    , drawAxisSize(initData(&drawAxisSize, sofa::defaulttype::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
+    , drawMarkersSize(initData(&drawMarkersSize, 0.1f, "drawMarkersSize", "Size of displayed markers"))
+    , drawMarkersColor(initData(&drawMarkersColor, sofa::defaulttype::Vec4f(1,1,1,1), "drawMarkersColor", "Color of displayed markers"))
 {
     this->f_listening.setValue(true);
     this->f_printLog.setValue(true);
@@ -198,13 +201,37 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
         rot = frame.getOrientation();
         this->position.setValue(pos);
         this->orientation.setValue(rot);
+
+        sofa::defaulttype::BoundingBox bb(pos, pos);
+        const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+        if (axisSize.norm2() > 0.0f)
+        {
+            bb.include(pos+rot.rotate(CPos(axisSize[0],0,0)));
+            bb.include(pos+rot.rotate(CPos(0,axisSize[1],0)));
+            bb.include(pos+rot.rotate(CPos(0,0,axisSize[2])));
+        }
+        const float markersSize = drawMarkersSize.getValue();
+        if (markersSize > 0)
+        {
+            for (int m=0; m<rigid.nMarkers; ++m)
+            {
+                bb.include(markers[m] - CPos(markersSize,markersSize,markersSize));
+                bb.include(markers[m] + CPos(markersSize,markersSize,markersSize));
+            }
+        }
+        this->f_bbox.setValue(bb);
     }
 }
 
 void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if (!this->tracked.getValue()) return;
-    vparams->drawTool()->drawPoints(markers.getValue(), 2, sofa::defaulttype::Vec<4,float>(1,0,0,1));
+    const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+    const float markersSize = drawMarkersSize.getValue();
+    if (axisSize.norm2() > 0)
+        vparams->drawTool()->drawFrame(position.getValue(), orientation.getValue(), axisSize);
+    if (markersSize > 0)
+        vparams->drawTool()->drawSpheres(markers.getValue(), markersSize, drawMarkersColor.getValue());
 }
 
 void OptiTrackNatNetDevice::update()

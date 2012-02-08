@@ -1,16 +1,19 @@
 <?xml version="1.0"?>
 <Node animate="1">
-  <OptiTrackNatNetClient NOserverName="134.206.17.253" />
+  <OptiTrackNatNetClient serverName="169.254.165.78" />
   <Node name="Head">
-    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" trackableID="4" scale="10" />
+    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" trackableID="4" scale="10" drawMarkersColor="0 1 0 1" drawAxisSize="0.5 0.1 0.5" drawMarkersSize="0.02" />
   </Node>
   <Node name="Cut">
-    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" scale="10" />
+    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" scale="10" drawMarkersColor="1 0 1 1" drawAxisSize="0.1 0.1 0.1" drawMarkersSize="0.02" />
   </Node>
   <Node name="Grab">
-    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" scale="10" />
+    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" scale="10" drawMarkersColor="1 1 0 1" drawAxisSize="0.1 0.1 0.1" drawMarkersSize="0.02" />
   </Node>
   <Node name="Phaco">
-    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" scale="10" />
+    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" scale="10" drawMarkersColor="0 1 1 1" drawAxisSize="0.1 0.1 0.1" drawMarkersSize="0.02" />
+  </Node>
+  <Node name="Floor">
+    <OglModel name="FloorV" filename="mesh/floor.obj" scale="0.01" dy="-2" />
   </Node>
 </Node>

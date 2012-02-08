@@ -89,6 +89,9 @@ public:
     sofa::core::objectmodel::Data<Coord> inLocalFrame;
     sofa::core::objectmodel::Data<Real> scale;
     sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > markers;
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize;
+    sofa::core::objectmodel::Data<float> drawMarkersSize;
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor;
 
     OptiTrackNatNetDevice();
     virtual ~OptiTrackNatNetDevice();
