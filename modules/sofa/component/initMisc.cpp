@@ -43,7 +43,7 @@ void initMisc()
 }
 
 SOFA_LINK_CLASS(MeshTetraStuffing)
-SOFA_LINK_CLASS( BezierCubicInterpolation )
+
 } // namespace component
 
 } // namespace sofa
