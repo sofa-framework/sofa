@@ -42,7 +42,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
+#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
@@ -98,11 +98,11 @@ void Controller::handleEvent(core::objectmodel::Event *event)
         sofa::core::objectmodel::JoystickEvent *jev = dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event);
         onJoystickEvent(jev);
     }
-    //else if (dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event))
-    //{
-    //	sofa::core::objectmodel::HapticDeviceEvent *oev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
-    //	onHapticDeviceEvent(oev);
-    //}
+    else if (dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event))
+    {
+        sofa::core::objectmodel::HapticDeviceEvent *oev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
+        onHapticDeviceEvent(oev);
+    }
 }
 
 } // namespace controller

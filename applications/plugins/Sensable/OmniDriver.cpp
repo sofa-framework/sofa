@@ -198,6 +198,9 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
         hdSetDoublev(HD_CURRENT_FORCE, currentForce);
     }
 
+
+
+
     ++data->servoDeviceData.nupdates;
     hdEndFrame(hapticHD);
 
@@ -240,6 +243,8 @@ HDCallbackCode HDCALLBACK copyDeviceDataCallbackOmni(void *pUserData)
     memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
     data->servoDeviceData.nupdates = 0;
     data->servoDeviceData.ready = true;
+
+
     return HD_CALLBACK_DONE;
 }
 
@@ -269,6 +274,7 @@ int OmniDriver::initDevice(OmniData& data)
     data.servoDeviceData.quat[3] = 1;
 
     HDErrorInfo error;
+
     // Initialize the device, must be done before attempting to call any hd functions.
     if (hHD == HD_INVALID_HANDLE)
     {
@@ -470,10 +476,35 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             xfree[0].getCenter() = world_H_virtualTool.getOrigin();
             x[0].getCenter() = world_H_virtualTool.getOrigin();
 
+            //      std::cout << world_H_virtualTool << std::endl;
+
             xfree[0].getOrientation() = world_H_virtualTool.getOrientation();
             x[0].getOrientation() = world_H_virtualTool.getOrientation();
+
+            // launch events on buttons changes
+            static bool btn1 = false;
+            static bool btn2 = false;
+            bool newBtn1 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_1);
+            bool newBtn2 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_2);
+            if (btn1!=newBtn1 || btn2!=newBtn2)
+            {
+                btn1 = newBtn1;
+                btn2 = newBtn2;
+                unsigned char buttonState = 0;
+                if(btn1) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button1Mask;
+                if(btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2Mask;
+                Vector3 dummyVector;
+                Quat dummyQuat;
+                sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,buttonState);
+                simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+            }
+
+
         }
         else std::cout<<"data not ready"<<std::endl;
+
+
     }
 
     if (dynamic_cast<core::objectmodel::KeypressedEvent *>(event))
