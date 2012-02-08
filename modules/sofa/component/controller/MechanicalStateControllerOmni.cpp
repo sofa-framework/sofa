@@ -101,13 +101,13 @@ void MechanicalStateControllerOmni<Vec1dTypes>::applyController(const double dt)
             helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
             if(buttonDevice)
             {
-                double angle = x0[0].x() - dt; if (angle<0.05) angle = 0.05;
+                double angle = x0[0].x() - dt*0.3; if (angle<0) angle = 0;
                 x0[0].x() = angle;
                 x0[1].x() = angle;
             }
             else
             {
-                double angle = x0[0].x() + dt; if (angle>0.5) angle = 0.5;
+                double angle = x0[0].x() + dt*0.3; if (angle>0.1) angle = 0.1;
                 x0[0].x() = angle;
                 x0[1].x() = angle;
             }
