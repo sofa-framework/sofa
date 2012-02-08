@@ -217,7 +217,8 @@ SOURCES += \
 	loader/MeshLoader.cpp \
   loader/VoxelLoader.cpp \
 	visual/DisplayFlags.cpp \
-	visual/DrawToolGL.cpp
+	visual/DrawToolGL.cpp \
+    objectmodel/HapticDeviceEvent.cpp
 
 contains(DEFINES,SOFA_HAVE_BOOST) {
 
@@ -250,3 +251,4 @@ contains(DEFINES, SOFA_SUPPORT_MOVING_FRAMES){
 }
 
 load(sofa/post)
+

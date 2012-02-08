@@ -49,7 +49,7 @@ namespace objectmodel
 
 class Event;
 class MouseEvent;
-//class HapticDeviceEvent;
+class HapticDeviceEvent;
 class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
@@ -97,7 +97,7 @@ public:
     /**
     * @brief HapticDevice event callback.
     */
-    //virtual void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *){};
+    virtual void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *) {};
 
     /**
     * @brief Xitact event callback.

@@ -35,6 +35,7 @@ HEADERS += initUserInteraction.h \
            collision/RemovePrimitivePerformer.inl \
            collision/InciseAlongPathPerformer.h \
            collision/TopologicalChangeManager.h \
+    controller/MechanicalStateControllerOmni.h
 
 
 SOURCES += initUserInteraction.cpp \
@@ -57,6 +58,8 @@ SOURCES += initUserInteraction.cpp \
            collision/RemovePrimitivePerformer.cpp \
            collision/InciseAlongPathPerformer.cpp \
            collision/TopologicalChangeManager.cpp \
+    controller/MechanicalStateControllerOmni.cpp \
+    controller/MechanicalStateControllerOmni.inl
 
 
 # Make sure there are no cross-dependencies
@@ -67,3 +70,7 @@ DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
 load(sofa/post)
  
+
+
+
+
