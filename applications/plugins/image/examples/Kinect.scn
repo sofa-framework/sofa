@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-  <Kinect  name="Kinect"  transform="0 0 0 0 0 0 .001 .001 1 0 1 1" depthTransform="0 0 0 0 0 0 0.001 0.001 1 0 1 1" tiltAngle="15" />
+  <Kinect  name="Kinect"  transform="0 0 0 0 0 0 .001 .001 1 0 1 1" depthTransform="0 0 0 0 0 0 0.001 0.001 1 0 1 1" tiltAngle="0" />
   <ImageViewer  name="viewer" image="@Kinect.image" transform="1 0 0 0 0 0 .001 .001 1 0 1 1"  />
   <ImageViewer template="ImageUS" name="viewer2" image="@Kinect.depthImage" transform="2 0 0 0 0 0 .001 .001 1 0 1 1"/>
 <ImageFilter template="ImageUC,ImageD" filter="0" name="castToD" inputImage="@Kinect.image" inputTransform="@Kinect.transform" />

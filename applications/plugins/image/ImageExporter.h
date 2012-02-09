@@ -182,6 +182,7 @@ protected:
 
             // get current time modulo dimt
             const unsigned int dimt=in->getDimensions()[4];
+            if(!dimt) return;
             Real t=inT->toImage(this->getContext()->getTime()) ;
             t-=(Real)((int)((int)t/dimt)*dimt);
             t=(t-floor(t)>0.5)?ceil(t):floor(t); // nearest
