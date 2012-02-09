@@ -34,6 +34,7 @@ HEADERS += \
    	ImageViewer.h \
 	ImageFilter.h \
         MergeImages.h \
+        ImageAccumulator.h \
         DepthMapToMeshEngine.h \
         MeshToImageEngine.h \
         MarchingCubesEngine.h \
@@ -48,6 +49,7 @@ SOURCES += \
 	ImageViewer.cpp \
 	ImageFilter.cpp \
         MergeImages.cpp \
+        ImageAccumulator.cpp \
         DepthMapToMeshEngine.cpp \
         MeshToImageEngine.cpp \
         MarchingCubesEngine.cpp \

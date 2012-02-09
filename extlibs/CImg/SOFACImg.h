@@ -75,9 +75,9 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
     else if(cimg::type<T>::id()==1U) fileStream << "MET_BOOL" << std::endl;
     else fileStream << "MET_UNKNOWN" << std::endl;
 
-    if(scale) { fileStream << "ElementSpacing = "; for(unsigned int i=0;i<3;i++) if(i<nbdims) fileStream << scale[i] << " "; if(nbdims==4) fileStream << scaleT; fileStream << std::endl; }
+    if(scale) { fileStream << "ElementSpacing = "; for(unsigned int i=0;i<3;i++) if(i<nbdims) fileStream << scale[i] << " "; if(nbdims==4) fileStream << *scaleT; fileStream << std::endl; }
 
-    if(translation) { fileStream << "Position = "; for(unsigned int i=0;i<3;i++) if(i<nbdims) fileStream << translation[i] << " "; if(nbdims==4) fileStream << offsetT; fileStream << std::endl; }
+    if(translation) { fileStream << "Position = "; for(unsigned int i=0;i<3;i++) if(i<nbdims) fileStream << translation[i] << " "; if(nbdims==4) fileStream << *offsetT; fileStream << std::endl; }
 
     if(affine) { fileStream << "Orientation = "; for(unsigned int i=0;i<9;i++) fileStream << affine[i] << " "; fileStream << std::endl; }
 
@@ -145,7 +145,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             for(unsigned int i=0;i<nbdims;i++) fileStream >> val[i];
             if(scale) for(unsigned int i=0;i<3;i++) if(i<nbdims) scale[i] = (F)val[i];
             if(scaleT) if(nbdims>3) *scaleT = (F)val[3];
-       }
+        }
         else if(!str.compare("Position") || !str.compare("Offset") || !str.compare("translation") || !str.compare("origin"))
         {
             fileStream >> str2; // '='
@@ -157,9 +157,9 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         else if(!str.compare("Orientation"))
         {
             fileStream >> str2; // '='
-            double val[4*4];
-            for(unsigned int i=0;i<nbdims*nbdims;i++) fileStream >> val[i];
-            if(affine) { for(unsigned int i=0;i<3;i++) if(i<nbdims) for(unsigned int j=0;j<3;j++) if(j<nbdims) affine[i*3+j] = (F)val[i*nbdims+j]; }
+            double val[9];
+            for(unsigned int i=0;i<9;i++) fileStream >> val[i];
+            if(affine) { for(unsigned int i=0;i<9;i++) affine[i] = (F)val[i]; }
             // to do: handle "CenterOfRotation" Tag
         }
         else if(!str.compare("isPerpective")) { fileStream >> str2; bool val; fileStream >> val; if(isPerspective) *isPerspective=val; }
@@ -191,21 +191,27 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         imageFilename .replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"raw");
     }
     else // add path to the specified file name
-    {
-        std::string tmp(headerFilename);
-        std::size_t pos=tmp.find_last_of('/');
-        if(pos==std::string::npos) pos=tmp.find_last_of('\\');
-        if(pos!=std::string::npos) {tmp.erase(pos+1); imageFilename.insert(0,tmp);}
-    }
+        if(imageFilename.find_last_of('/')==std::string::npos && imageFilename.find_last_of('\\')==std::string::npos) // test if file path is relative
+        {
+            std::string tmp(headerFilename);
+            std::size_t pos=tmp.find_last_of('/');
+            if(pos==std::string::npos) pos=tmp.find_last_of('\\');
+            if(pos!=std::string::npos) {tmp.erase(pos+1); imageFilename.insert(0,tmp);}
+        }
 
     ret.assign(dim[3],dim[0],dim[1],dim[2],nbchannels);
     unsigned int nb = dim[0]*dim[1]*dim[2]*nbchannels;
+
     std::FILE *const nfile = std::fopen(imageFilename.c_str(),"rb");
-    if(!nfile) return ret;
+    if(!nfile)
+    {
+        std::cout<<"Can not open "<<imageFilename.c_str()<<std::endl;
+        return ret;
+    }
 
     if(inputType==cimg::type<T>::id())
     {
-        cimglist_for(ret,l)  cimg::fread(ret(l)._data,nb,nfile);
+        cimglist_for(ret,l) cimg::fread(ret(l)._data,nb,nfile);
     }
     else
     {

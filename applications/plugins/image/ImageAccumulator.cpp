@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initImage.h"
+#define SOFA_IMAGE_IMAGEACCUMULATOR_CPP
+
+#include "ImageAccumulator.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -31,66 +33,47 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_API void initExternalModule();
-    SOFA_IMAGE_API const char* getModuleName();
-    SOFA_IMAGE_API const char* getModuleVersion();
-    SOFA_IMAGE_API const char* getModuleLicense();
-    SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Image Plugin";
-}
+using namespace defaulttype;
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
+SOFA_DECL_CLASS(ImageAccumulator)
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+int ImageAccumulatorClass = core::RegisterObject ( "Wraps images from a video stream into a single image" )
+        .add<ImageAccumulator<ImageUC> >(true)
+        .add<ImageAccumulator<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageAccumulator<ImageC> >()
+        .add<ImageAccumulator<ImageI> >()
+        .add<ImageAccumulator<ImageUI> >()
+        .add<ImageAccumulator<ImageS> >()
+        .add<ImageAccumulator<ImageUS> >()
+        .add<ImageAccumulator<ImageL> >()
+        .add<ImageAccumulator<ImageUL> >()
+        .add<ImageAccumulator<ImageF> >()
+        .add<ImageAccumulator<ImageB> >()
+#endif
+        ;
+
+template class SOFA_IMAGE_API ImageAccumulator<ImageUC>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageAccumulator<ImageC>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageI>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageUI>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageS>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageUS>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageL>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageUL>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageF>;
+template class SOFA_IMAGE_API ImageAccumulator<ImageB>;
+#endif
 
 
-const char* getModuleDescription()
-{
-    return "Image support in SOFA";
-}
 
-const char* getModuleComponentList()
-{
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
-}
-
-} // namespace image
+} //
+} // namespace component
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(ImageContainer)
-SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageViewer)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(DepthMapToMeshEngine)
-SOFA_LINK_CLASS(MeshToImageEngine)
-SOFA_LINK_CLASS(ImageAccumulator)
-#ifdef SOFA_HAVE_LIBFREENECT
-SOFA_LINK_CLASS(Kinect)
-#endif
 
