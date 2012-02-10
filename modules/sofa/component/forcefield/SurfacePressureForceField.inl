@@ -91,11 +91,52 @@ void SurfacePressureForceField<DataTypes>::init()
 
 
 template <class DataTypes>
+void SurfacePressureForceField<DataTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind,
+        const VecDeriv& Din)
+{
+
+    std::cout<<" enters verifyDerivative"<<std::endl;
+
+    std::cout<<" verifyDerivative : vplus.size()="<<v_plus.size()<<"  v.size()="<<v.size()<<"  DVval.size()="<<DVval.size()<<" DVind.size()="<<DVind.size()<<"  Din.size()="<<Din.size()<<std::endl;
+
+
+    for (unsigned int i=0; i<v.size(); i++)
+    {
+
+        Deriv DV;
+        DV.clear();
+        std::cout<<" DVnum["<<i<<"] ="<<v_plus[i]-v[i];
+
+        for(unsigned int j=0; j<DVval[i].size(); j++)
+        {
+            DV+=DVval[i][j]*Din[ (DVind[i][j]) ];
+        }
+        std::cout<<" DVana["<<i<<"] = "<<DV<<" DVval[i].size() = "<<DVval[i].size()<<std::endl;
+
+        /*
+                for(unsigned int j=0; j<DVval[i].size(); j++)
+                {
+                    std::cout<<" M["<<DVind[i][j]<<"] ="<<DVval[i][j]<<std::endl;
+                }
+         */
+
+    }
+
+}
+
+
+template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
+
+    VecCoord xPlus = x;
+    VecDeriv fplus = f;
+
+
+
 
     Real p = m_pulseMode.getValue() ? computePulseModePressure() : m_pressure.getValue();
 
@@ -115,7 +156,29 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         if (m_topology->getNbTriangles() > 0)
         {
-            addTriangleSurfacePressure(f,x,v,p);
+            addTriangleSurfacePressure(f,x,v,p, true);
+
+            /*
+
+                        VecDeriv Din;
+                        Din.resize(x.size());
+                       for (unsigned int i=0; i<Din.size(); i++)
+                       {
+                           Real i1,i2,i3;
+                           i1=(Real)(i%3+1);
+                           i2=-(Real)(i%2)+0.156;
+                           i3=(Real)(i%5+2);
+                           Din[i]=Deriv(0.0000123*i1,0.0000152*i2,0.00000981*i3);
+                           xPlus[i]=x[i]+Din[i];
+                       }
+                       addTriangleSurfacePressure(fplus,xPlus,v,p, false);
+
+
+                       verifyDerivative(fplus, f,  derivTriNormalValues,derivTriNormalIndices, Din);
+
+            */
+
+
         }
 
         if (m_topology->getNbQuads() > 0)
@@ -125,6 +188,58 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
     }
 
     d_f.endEdit();
+}
+
+template <class DataTypes>
+void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
+{
+    double kFactor     =   mparams->kFactor() ;
+    VecDeriv& df       = *(d_df.beginEdit());
+    const VecDeriv& dx =   d_dx.getValue()  ;
+
+
+//    std::cout<<" addDForce computed on SurfacePressureForceField Size ="<<derivTriNormalIndices.size()<<std::endl;
+
+
+    /*
+    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+    {
+        Deriv DFtri;
+        DFtri.clear();
+
+        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+        {
+            unsigned int v = derivTriNormalIndices[i][j];
+            DFtri += derivTriNormalValues[i][j] * dx[v];
+        }
+
+        DFtri*= kFactor;
+
+        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+        {
+            unsigned int v = derivTriNormalIndices[i][j];
+            df[v] += DFtri;
+        }
+
+
+    }
+    */
+
+    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+    {
+
+        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+        {
+            unsigned int v = derivTriNormalIndices[i][j];
+            df[i] += (derivTriNormalValues[i][j] * dx[v])*kFactor;
+
+        }
+
+    }
+
+    d_df.endEdit();
+
+
 }
 
 
@@ -162,21 +277,84 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
+void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
 {
     typedef BaseMeshTopology::Triangle Triangle;
 
+
+    if(computeDerivatives)
+    {
+        derivTriNormalValues.clear();
+        derivTriNormalValues.resize(x.size());
+        derivTriNormalIndices.clear();
+        derivTriNormalIndices.resize(x.size());
+
+        for (unsigned int i=0; i<x.size(); i++)
+        {
+            derivTriNormalValues[i].clear();
+            derivTriNormalIndices[i].clear();
+        }
+
+    }
+
+
+
+    std::cout<<" addTriangleSurfacePressure x.size() = "<<x.size()<<std::endl;
+
     for (int i = 0; i < m_topology->getNbTriangles(); i++)
     {
+
         Triangle t = m_topology->getTriangle(i);
+
+
+
+
 
         if ( isInPressuredBox(x[t[0]]) && isInPressuredBox(x[t[1]]) && isInPressuredBox(x[t[2]]) )
         {
 
+
             Deriv ab = x[t[1]] - x[t[0]];
             Deriv ac = x[t[2]] - x[t[0]];
+            Deriv bc = x[t[2]] - x[t[1]];
 
             Deriv p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+
+
+            if(computeDerivatives)
+            {
+                Mat33 DcrossDA;
+                DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
+                DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
+                DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
+
+                Mat33 DcrossDB;
+                DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
+                DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
+                DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
+
+
+                Mat33 DcrossDC;
+                DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
+                DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
+                DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
+
+                for (unsigned int j=0; j<3; j++)
+                {
+                    derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
+                    derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
+                    derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
+
+                    derivTriNormalIndices[t[j]].push_back( t[0] );
+                    derivTriNormalIndices[t[j]].push_back( t[1] );
+                    derivTriNormalIndices[t[j]].push_back( t[2] );
+                }
+
+
+
+            }
+
+
 
             if (m_mainDirection.getValue() != Deriv())
             {
@@ -186,10 +364,17 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& 
                 p *= fabs(scal);
             }
 
+
             f[t[0]] += p;
             f[t[1]] += p;
             f[t[2]] += p;
+
+
+
         }
+
+
+
     }
 }
 
@@ -199,6 +384,8 @@ template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
 {
     typedef BaseMeshTopology::Quad Quad;
+
+    std::cout<<" addQuadSurfacePressure "<<std::endl;
 
     for (int i = 0; i < m_topology->getNbQuads(); i++)
     {

@@ -61,6 +61,11 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+    typedef Mat<3,3,Real> Mat33;
+    typedef helper::vector< Mat33 > Vec3DerivValues;
+    typedef helper::vector< unsigned int > Vec3DerivIndices;
+    typedef helper::vector< Vec3DerivValues> VecVec3DerivValues;
+    typedef helper::vector< Vec3DerivIndices > VecVec3DerivIndices;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
@@ -92,11 +97,8 @@ public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
-    {
-        //TODO: remove this line (avoid warning message) ...
-        mparams->kFactor();
-    };
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
+
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -116,7 +118,7 @@ protected:
      * @brief Triangle based surface pressure computation method.
      * Each vertice receives a force equal to 1/3 of the pressure applied on its belonging triangle.
      */
-    virtual void addTriangleSurfacePressure(VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+    virtual void addTriangleSurfacePressure(VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
 
 
     /**
@@ -137,6 +139,14 @@ protected:
      * Pressure is computed according to the pressureSpeed attribute and the simulation time step.
      */
     const Real computePulseModePressure(void);
+
+
+    /**
+     * @brief Computation of the derivative values
+     */
+    VecVec3DerivValues derivTriNormalValues;
+    VecVec3DerivIndices derivTriNormalIndices;
+    void verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
 };
 
 
