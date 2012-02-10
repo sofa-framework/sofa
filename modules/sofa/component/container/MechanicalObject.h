@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+ *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_H
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 
@@ -51,6 +51,74 @@ namespace component
 
 namespace container
 {
+
+static defaulttype::Vec3f ColorMap[64] =
+{
+    defaulttype::Vec3f( 0.0,        0.0,       0.5625 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.625  ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.6875 ),
+    defaulttype::Vec3f( 0.0,        0.0,         0.75 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.8125 ),
+    defaulttype::Vec3f( 0.0,        0.0,        0.875 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.9375 ),
+    defaulttype::Vec3f( 0.0,        0.0,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.0625,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.125,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.1875,          1.0 ),
+    defaulttype::Vec3f( 0.0,       0.25,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.3125,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.375,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.4375,          1.0 ),
+    defaulttype::Vec3f( 0.0,        0.5,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.5625,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.625,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.6875,          1.0 ),
+    defaulttype::Vec3f( 0.0,       0.75,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.8125,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.875,           1.0 ),
+    defaulttype::Vec3f( 0.0,     0.9375,          1.0 ),
+    defaulttype::Vec3f( 0.0,        1.0,          1.0 ),
+    defaulttype::Vec3f( 0.0625,     1.0,          1.0 ),
+    defaulttype::Vec3f( 0.125,      1.0,       0.9375 ),
+    defaulttype::Vec3f( 0.1875,     1.0,        0.875 ),
+    defaulttype::Vec3f( 0.25,       1.0,       0.8125 ),
+    defaulttype::Vec3f( 0.3125,     1.0,         0.75 ),
+    defaulttype::Vec3f( 0.375,      1.0,       0.6875 ),
+    defaulttype::Vec3f( 0.4375,     1.0,        0.625 ),
+    defaulttype::Vec3f( 0.5,        1.0,       0.5625 ),
+    defaulttype::Vec3f( 0.5625,     1.0,          0.5 ),
+    defaulttype::Vec3f( 0.625,      1.0,       0.4375 ),
+    defaulttype::Vec3f( 0.6875,     1.0,        0.375 ),
+    defaulttype::Vec3f( 0.75,       1.0,       0.3125 ),
+    defaulttype::Vec3f( 0.8125,     1.0,         0.25 ),
+    defaulttype::Vec3f( 0.875,      1.0,       0.1875 ),
+    defaulttype::Vec3f( 0.9375,     1.0,        0.125 ),
+    defaulttype::Vec3f( 1.0,        1.0,       0.0625 ),
+    defaulttype::Vec3f( 1.0,        1.0,          0.0 ),
+    defaulttype::Vec3f( 1.0,       0.9375,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.875,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.8125,        0.0 ),
+    defaulttype::Vec3f( 1.0,         0.75,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.6875,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.625,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.5625,        0.0 ),
+    defaulttype::Vec3f( 1.0,          0.5,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.4375,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.375,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.3125,        0.0 ),
+    defaulttype::Vec3f( 1.0,         0.25,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.1875,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.125,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.0625,        0.0 ),
+    defaulttype::Vec3f( 1.0,          0.0,        0.0 ),
+    defaulttype::Vec3f( 0.9375,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.875,        0.0,        0.0 ),
+    defaulttype::Vec3f( 0.8125,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.75,         0.0,        0.0 ),
+    defaulttype::Vec3f( 0.6875,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.625,        0.0,        0.0 ),
+    defaulttype::Vec3f( 0.5625,       0.0,        0.0 )
+};
 
 using core::objectmodel::Data;
 using sofa::component::topology::PointData;
@@ -168,6 +236,9 @@ public:
     Data< float > showObjectScale;
     Data< bool >  showIndices;
     Data< float > showIndicesScale;
+    Data< bool >  showVectors;
+    Data< float > showVectorsScale;
+    Data< int > drawMode;
 
     virtual void init();
     virtual void reinit();
@@ -207,6 +278,10 @@ public:
     double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)x; }
     double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)y; }
     double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)z; }
+
+    double getVX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getV())[i]); return (SReal)x; }
+    double getVY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getV())[i]); return (SReal)y; }
+    double getVZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getV())[i]); return (SReal)z; }
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
