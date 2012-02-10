@@ -30,6 +30,7 @@
 #include <sofa/component/controller/Controller.h>
 //#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include "OptiTrackNatNetClient.h"
 
 #include <iostream>
@@ -69,6 +70,13 @@ protected:
 
 public:
 
+    OptiTrackNatNetDevice();
+    virtual ~OptiTrackNatNetDevice();
+
+    virtual void init();
+    virtual void reinit();
+    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+
     virtual void processModelDef(const ModelDef* data);
     virtual void processFrame(const FrameData* data);
 
@@ -78,6 +86,9 @@ public:
     sofa::core::objectmodel::Data<int> trackableID;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,OptiTrackNatNetClient,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> natNetClient;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,sofa::core::behavior::MechanicalState<DataTypes>,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> mstate;
+    sofa::core::objectmodel::DataFileName markersMeshFile;
+    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > inLocalMarkers;
+    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > simLocalMarkers;
     sofa::core::objectmodel::Data<bool> tracked;
     sofa::core::objectmodel::Data<Coord> frame;
     sofa::core::objectmodel::Data<CPos> position;
@@ -92,17 +103,6 @@ public:
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize;
     sofa::core::objectmodel::Data<float> drawMarkersSize;
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor;
-
-    OptiTrackNatNetDevice();
-    virtual ~OptiTrackNatNetDevice();
-
-    virtual void init();
-    virtual void reinit();
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
-
-public:
-
-protected:
 
 };
 
