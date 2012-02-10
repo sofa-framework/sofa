@@ -331,7 +331,7 @@ int NewOmniDriver::initDevice()
         autreOmniDriver[i]->data.servoDeviceData.stop = false;
     }
 
-    hStateHandle = hdScheduleAsynchronous( stateCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
+    hStateHandle = hdScheduleAsynchronous( stateCallback, (void*) &autreOmniDriver, HD_MIN_SCHEDULER_PRIORITY);
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
@@ -381,7 +381,7 @@ void NewOmniDriver::cleanup()
 {
     cout << "NewOmniDriver::cleanup()" << endl;
     if(firstDevice)
-        hdScheduleSynchronous(stopCallback, (void*) &autreOmniDriver, HD_MIN_SCHEDULER_PRIORITY);
+        hdScheduleSynchronous(stopCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
     isInitialized = false;
 }
 
@@ -886,7 +886,7 @@ void NewOmniDriver::onAnimateBeginEvent()
 {
     // copy data->servoDeviceData to gDeviceData
     if(firstDevice)
-        hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MIN_SCHEDULER_PRIORITY);
+        hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
     if (data.deviceData.ready)
     {
         data.deviceData.quat.normalize();
