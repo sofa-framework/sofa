@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+ *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
@@ -102,6 +102,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices"))
     , showIndicesScale(initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Scale for indices display"))
+    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
+    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
+    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow."))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -361,9 +364,9 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-//#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-//    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-//#else
+    //#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
+    //#else
     using sofa::core::topology::TopologyChange;
 
     std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
@@ -484,7 +487,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
         ++itBegin;
     }
-//#endif
+    //#endif
 }
 
 template <class DataTypes>
@@ -2449,6 +2452,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
+    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
     if (showIndices.getValue())
     {
@@ -2492,7 +2496,51 @@ void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams
             glPopMatrix();
         }
     }
+    if (showVectors.getValue())
+    {
+        glPushAttrib(GL_LIGHTING_BIT);
+        glDisable(GL_LIGHTING);
+        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        glColor3f(1.0,1.0,1.0);
+        glDisable(GL_LIGHTING);
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
+        float scale = showVectorsScale.getValue();
+        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(ConstVecDerivId::velocity());
+        //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
+        vector<Vector3> points;
+        points.resize(2);
+        for( unsigned i=0; i<v_rA.size(); ++i )
+        {
+            Real vx=0.0,vy=0.0,vz=0.0;
+            DataTypes::get(vx,vy,vz,v_rA[i]);
+            //v = DataTypes::getDPos(v_rA[i]);
+            //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
+            //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
+            Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
+            Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
+            float rad = (p1-p2).norm()/20.0;
+            switch (drawMode.getValue())
+            {
+            case 0:
+                points[0] = p1;
+                points[1] = p2;
+                vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0,1.0,1.0,1.0));
+                break;
+            case 1:
+                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                break;
+            case 2:
+                vparams->drawTool()->drawArrow(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                break;
+            default:
+                serr << "No proper drawing mode found!" << sendl;
+                break;
+            }
+        }
+        glPopAttrib();
+    }
     if (showObject.getValue())
     {
         glPushAttrib(GL_LIGHTING_BIT);
@@ -2576,8 +2624,8 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                      (unsigned) (this->vsize));
 
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                    ExecutionGraph::read_var(vt,vv);
-                    ExecutionGraph::write_var(vt,vv); */
+                     ExecutionGraph::read_var(vt,vv);
+                     ExecutionGraph::write_var(vt,vv); */
                 }
                 else
                 {
@@ -2585,10 +2633,10 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                     (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
                      (unsigned) (this->vsize));
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                    ExecutionGraph::read_var(vt,vv);
-                    ExecutionGraph::write_var(vt,vv);
-                    vv->resize(this->this->vsize);
-                    */
+                     ExecutionGraph::read_var(vt,vv);
+                     ExecutionGraph::write_var(vt,vv);
+                     vv->resize(this->this->vsize);
+                     */
                 }
             }
             else
@@ -2606,19 +2654,19 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
                     {
 
                         /*VecCoord* vv = getVecCoord(v.index);
-                        unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                        ExecutionGraph::read_var(vt,vv);
-                        ExecutionGraph::write_var(vt,vv); */
+                         unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                         ExecutionGraph::read_var(vt,vv);
+                         ExecutionGraph::write_var(vt,vv); */
                         BaseObject::Task < vTEq < VecCoord, Real > >
                         (this,**defaulttype::getShared(*this->write(VecCoordId(v))), f);
                     }
                     else
                     {
                         /*
-                        unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                        ExecutionGraph::read_var(vt,vv);
-                        ExecutionGraph::write_var(vt,vv);
-                        */
+                         unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                         ExecutionGraph::read_var(vt,vv);
+                         ExecutionGraph::write_var(vt,vv);
+                         */
                         BaseObject::Task < vTEq < VecDeriv, Real > >
                         (this,**defaulttype::getShared(*this->write(VecDerivId(v))), f);
                     }
