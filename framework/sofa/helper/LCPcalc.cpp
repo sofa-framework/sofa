@@ -2367,7 +2367,8 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     int numContacts =  (int) floor(test);
     test = dim/3 - numContacts;
 
-    ctime_t t0 = CTime::getTime()/CTime::getTicksPerSec();
+    ctime_t t0 = CTime::getTime();
+    ctime_t tdiff = (ctime_t)(timeout*CTime::getTicksPerSec());
 
     if (test>0.01)
     {
@@ -2449,8 +2450,8 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
 
             set3Dof(f,index1,fn,ft,fs);
 
-            ctime_t t1 = CTime::getTime()/CTime::getTicksPerSec();
-            if((t1-t0) > timeout)
+            ctime_t t1 = CTime::getTime();
+            if((t1-t0) > tdiff)
             {
                 free(d);
                 for (int i = 0; i < numContacts; i++)
