@@ -43,7 +43,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 //sensable namespace
-
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -300,7 +300,7 @@ int OmniDriver::initDevice(OmniData& data)
 
     data.servoDeviceData.ready = false;
     data.servoDeviceData.stop = false;
-    hStateHandle = hdScheduleAsynchronous( stateCallbackOmni, (void*) &data, HD_MAX_SCHEDULER_PRIORITY);
+    hStateHandle = hdScheduleAsynchronous( stateCallbackOmni, (void*) &data, HD_MIN_SCHEDULER_PRIORITY);
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
@@ -336,7 +336,7 @@ OmniDriver::~OmniDriver() {}
 void OmniDriver::cleanup()
 {
     sout << "OmniDriver::cleanup()" << sendl;
-    hdScheduleSynchronous(stopCallbackOmni, (void*) &data, HD_MIN_SCHEDULER_PRIORITY);
+    hdScheduleSynchronous(stopCallbackOmni, (void*) &data, HD_MAX_SCHEDULER_PRIORITY);
     isInitialized = false;
 }
 
@@ -456,15 +456,20 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MIN_SCHEDULER_PRIORITY);
+        sofa::helper::AdvancedTimer::stepBegin("OmniDriver::1");
+        hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MAX_SCHEDULER_PRIORITY);
+        sofa::helper::AdvancedTimer::stepEnd("OmniDriver::1");
         if (data.deviceData.ready)
         {
+            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::2");
             data.deviceData.quat.normalize();
 
             /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
             SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
             SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
+            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::2");
 
+            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::3");
             // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
             data.forceFeedback->setReferencePosition(world_H_virtualTool);
 
@@ -472,7 +477,9 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
             helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
             helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
+            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::3");
 
+            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::4");
             xfree[0].getCenter() = world_H_virtualTool.getOrigin();
             x[0].getCenter() = world_H_virtualTool.getOrigin();
 
@@ -480,14 +487,19 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
             xfree[0].getOrientation() = world_H_virtualTool.getOrientation();
             x[0].getOrientation() = world_H_virtualTool.getOrientation();
+            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::4");
+            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::5");
 
             // launch events on buttons changes
             static bool btn1 = false;
             static bool btn2 = false;
             bool newBtn1 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_1);
             bool newBtn2 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_2);
+            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::5");
+
             if (btn1!=newBtn1 || btn2!=newBtn2)
             {
+                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::6");
                 btn1 = newBtn1;
                 btn2 = newBtn2;
                 unsigned char buttonState = 0;
@@ -498,6 +510,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,buttonState);
                 simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
                 groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::6");
             }
 
 
