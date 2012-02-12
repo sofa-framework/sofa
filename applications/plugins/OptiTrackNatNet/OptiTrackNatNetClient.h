@@ -71,6 +71,11 @@ protected:
 public:
     sofa::core::objectmodel::Data<std::string> serverName;
     sofa::core::objectmodel::Data<std::string> clientName;
+    sofa::core::objectmodel::Data<double> scale;
+
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > trackedMarkers;
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > otherMarkers;
+
     sofa::core::objectmodel::MultiLink<OptiTrackNatNetClient, OptiTrackNatNetDataReceiver, 0> natNetReceivers;
 
     OptiTrackNatNetClient();
@@ -78,6 +83,13 @@ public:
 
     virtual void init();
     virtual void reinit();
+
+    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+
+    sofa::core::objectmodel::Data<float> drawTrackedMarkersSize;
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor;
+    sofa::core::objectmodel::Data<float> drawOtherMarkersSize;
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawOtherMarkersColor;
 
 public:
 

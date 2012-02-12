@@ -64,7 +64,6 @@ public:
     typedef DataTypes::VecDeriv VecDeriv;
 
 protected:
-//    void handleEvent(sofa::core::objectmodel::Event *);
 
     virtual void update();
 
@@ -81,29 +80,49 @@ public:
     virtual void processFrame(const FrameData* data);
 
     virtual void onBeginAnimationStep(const double /*dt*/);
+    virtual void onKeyPressedEvent(sofa::core::objectmodel::KeypressedEvent* ev);
 
     sofa::core::objectmodel::Data<std::string> trackableName;
     sofa::core::objectmodel::Data<int> trackableID;
+    sofa::core::objectmodel::Data<bool> controlNode;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,OptiTrackNatNetClient,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> natNetClient;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,sofa::core::behavior::MechanicalState<DataTypes>,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> mstate;
-    sofa::core::objectmodel::DataFileName markersMeshFile;
+    sofa::core::objectmodel::DataFileName inMarkersMeshFile;
+    sofa::core::objectmodel::DataFileName simMarkersMeshFile;
     sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > inLocalMarkers;
     sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > simLocalMarkers;
     sofa::core::objectmodel::Data<bool> tracked;
+    sofa::core::objectmodel::Data<Coord> trackedFrame;
     sofa::core::objectmodel::Data<Coord> frame;
     sofa::core::objectmodel::Data<CPos> position;
     sofa::core::objectmodel::Data<CRot> orientation;
-    sofa::core::objectmodel::Data<Coord> trackedFrame;
     sofa::core::objectmodel::Data<Coord> simGlobalFrame;
     sofa::core::objectmodel::Data<Coord> inGlobalFrame;
     sofa::core::objectmodel::Data<Coord> simLocalFrame;
     sofa::core::objectmodel::Data<Coord> inLocalFrame;
-    sofa::core::objectmodel::Data<Real> scale;
     sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > markers;
+    sofa::core::objectmodel::Data<sofa::helper::vector<int> > markersID;
+    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > markersSize;
+
+    sofa::core::objectmodel::Data<sofa::helper::fixed_array<int,2> > distanceMarkersID;
+    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > distanceMarkersPos;
+    sofa::core::objectmodel::Data<Real> openDistance;
+    sofa::core::objectmodel::Data<Real> closedDistance;
+    sofa::core::objectmodel::Data<Real> distance;
+    sofa::core::objectmodel::Data<Real> distanceFactor;
+    sofa::core::objectmodel::Data<bool> open;
+    sofa::core::objectmodel::Data<bool> closed;
+
+
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize;
     sofa::core::objectmodel::Data<float> drawMarkersSize;
+    sofa::core::objectmodel::Data<float> drawMarkersIDSize;
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor;
 
+protected:
+    int writeInMarkersMesh;
+    int readSimMarkersMesh;
+    Real smoothDistance;
 };
 
 
