@@ -47,12 +47,78 @@ SOFA_DECL_CLASS(RestShapeSpringsForceField)
 #ifndef SOFA_FLOAT
 
 template<>
-void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void RestShapeSpringsForceField<Rigid3dTypes>::addSpringForce(Deriv &/*f*/, const Coord &/*x0*/, const Coord &/*x1*/, const Deriv &/*v0*/, const Deriv &/*v1*/, const Real &/*k*/, const Real &/*kd*/)
+{
+
+}
+
+template<>
+void RestShapeSpringsForceField<Rigid3dTypes>::addSpringForce(Deriv &f, const Coord &x0, const Coord &x1, const Deriv &v0, const Deriv &v1, const Real &k, const Real &kd, const Real &k_a, const Real &kd_a, CPos *pivot)
+{
+    // translation
+    if (pivot == 0)
+    {
+        Vec3d dx = x1.getCenter() - x0.getCenter();
+        Vec3d dv = v1.getVCenter() - v0.getVCenter();
+
+        Vec3d u = dx;
+        u.normalize();
+
+        const Real forceIntensity = dx.norm() * k +  dot(u, dv) * kd;
+
+        getVCenter(f) -=  dx * forceIntensity;
+    }
+    else
+    {
+        const CPos &piv = *pivot;
+
+        CPos localPivot = x0.getOrientation().inverseRotate(piv - x0.getCenter());
+        //std::cout << "localPivot = " << localPivot << std::endl;
+        CPos rotatedPivot = x1.getOrientation().rotate(localPivot);
+        CPos pivot2 = x1.getCenter() + rotatedPivot;
+        CPos dx = pivot2 - piv;
+
+        // @TODO Manage damping
+
+        getVCenter(f) -= dx * k;
+        //getVOrientation(f1[index]) -= cross(rotatedPivot, dx * k[i]);
+    }
+
+    // rotation
+    Quatd dq = x1.getOrientation() * x0.getOrientation().inverse();
+    Vec3d dv = v1.getVOrientation() - v0.getVOrientation();
+    Vec3d dir;
+    double angle=0;
+    dq.normalize();
+
+    if (dq[3] < 0)
+    {
+        //std::cout<<"WARNING inversion quaternion"<<std::endl;
+        dq = dq * -1.0;
+    }
+
+    if (dq[3] < 0.999999999999999)
+        dq.quatToAxis(dir, angle);
+
+    //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<"  index : "<<index<<"  f1.size() : "<<f1.size()<<std::endl;
+    //Vec3d m1 = getVOrientation(f1[index]) ;
+    //std::cout<<"m1 = "<<m1<<std::endl;
+
+    getVOrientation(f) -= (dir * angle * k_a + dv * kd_a);
+
+    //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
+}
+
+template<>
+void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
 
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v0 = *(useRestMState ? restMState->read(core::VecDerivId::velocity()) : this->mstate->read(core::VecDerivId::null()));
 
     //std::cout<<"addForce with p_0 ="<<p_0<<" getX0"<<(*this->mstate->getX0())<<std::endl;
 
@@ -67,57 +133,23 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
 
+    const VecReal& kd = m_damping.getValue();
+    const VecReal& kd_a = m_angularDamping.getValue();
+
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
-        //std::cout<<"i="<<i<<std::endl;
         const unsigned int index = m_indices[i];
         const unsigned int ext_index = m_ext_indices[i];
 
-        // translation
         if (i >= m_pivots.size())
         {
-            Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
-            //std::cout<<"dx = "<< dx <<std::endl;
-            getVCenter(f1[index]) -=  dx * k[i] ;
+            addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd[i], k_a[i], kd_a[i]);
         }
         else
         {
-            CPos localPivot = p0[ext_index].getOrientation().inverseRotate(m_pivots[i] - p0[ext_index].getCenter());
-            //std::cout << "localPivot = " << localPivot << std::endl;
-            CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
-            CPos pivot2 = p1[index].getCenter() + rotatedPivot;
-            CPos dx = pivot2 - m_pivots[i];
-            //std::cout << "dx = " << dx << std::endl;
-            getVCenter(f1[index]) -= dx * k[i] ;
-            //getVOrientation(f1[index]) -= cross(rotatedPivot, dx * k[i]);
+            addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd[i], k_a[i], kd_a[i], &(m_pivots[i]));
         }
-
-        // rotation
-        Quatd dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
-        Vec3d dir;
-        double angle=0;
-        dq.normalize();
-
-        if (dq[3] < 0)
-        {
-            //std::cout<<"WARNING inversion quaternion"<<std::endl;
-            dq = dq * -1.0;
-        }
-
-        if (dq[3] < 0.999999999999999)
-            dq.quatToAxis(dir, angle);
-
-        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<"  index : "<<index<<"  f1.size() : "<<f1.size()<<std::endl;
-        //Vec3d m1 = getVOrientation(f1[index]) ;
-        //std::cout<<"m1 = "<<m1<<std::endl;
-
-        getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
-
-        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
-
     }
-
-    //std::cout<<" f1 = "<<f1<<std::endl;
 }
 
 
@@ -194,7 +226,13 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 #ifndef SOFA_DOUBLE
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void RestShapeSpringsForceField<Rigid3fTypes>::addSpringForce(Deriv &f, const Coord &x0, const Coord &x1, const Deriv &v0, const Deriv &v1, const Real &k, const Real &kd)
+{
+
+}
+
+template<>
+void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */, CPos *pivot)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
