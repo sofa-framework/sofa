@@ -26,6 +26,9 @@
 #define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_INL
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -131,22 +134,23 @@ struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
 #endif /* SOFA_SMP */
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId)
+void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if (!isActive())
         return;
-
     if (mstate)
     {
+//        cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << endl;
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
+            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
                     **defaulttype::getShared(*dxId[mstate.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate.get(mparams)].write());
+            projectResponse(mparams, *dxId[mstate.get(mparams)].write());
     }
+    else serr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName() << sendl;
 }
 
 template<class DataTypes>

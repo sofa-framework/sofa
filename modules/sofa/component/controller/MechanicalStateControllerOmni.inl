@@ -82,7 +82,7 @@ void MechanicalStateControllerOmni<DataTypes>::init()
 
 
 template <class DataTypes>
-void MechanicalStateControllerOmni<DataTypes>::applyController(double dt)
+void MechanicalStateControllerOmni<DataTypes>::applyController(double /*dt*/)
 {
     /*
     using sofa::defaulttype::Quat;

@@ -159,7 +159,8 @@ void FixedConstraint<DataTypes>::init()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
-    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
+//    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
+//    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
     //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
