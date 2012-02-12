@@ -25,6 +25,7 @@
 #include "OptiTrackNatNetClient.h"
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <boost/bind.hpp>
@@ -104,7 +105,14 @@ boost::asio::ip::udp::resolver& OptiTrackNatNetClient::get_resolver()
 OptiTrackNatNetClient::OptiTrackNatNetClient()
     : serverName(initData(&serverName, std::string("localhost"), "serverName", "NatNet server address (default to localhost)"))
     , clientName(initData(&clientName, std::string(""), "clientName", "IP to bind this client to (default to localhost)"))
+    , scale(initData(&scale, (double)1, "scale", "Scale factor to apply to coordinates (using the global frame as fixed point)"))
+    , trackedMarkers(initData(&trackedMarkers,"trackedMarkers", "Position of received known markers"))
+    , otherMarkers(initData(&otherMarkers,"otherMarkers", "Position of received unknown markers"))
     , natNetReceivers(initLink("natNetReceivers", "List of data receiver components"))
+    , drawTrackedMarkersSize(initData(&drawTrackedMarkersSize, 0.01f, "drawTrackedMarkersSize", "Size of displayed markers"))
+    , drawTrackedMarkersColor(initData(&drawTrackedMarkersColor, sofa::defaulttype::Vec4f(1,1,1,1), "drawTrackedMarkersColor", "Color of displayed markers"))
+    , drawOtherMarkersSize(initData(&drawOtherMarkersSize, 0.01f, "drawOtherMarkersSize", "Size of displayed unknown markers"))
+    , drawOtherMarkersColor(initData(&drawOtherMarkersColor, sofa::defaulttype::Vec4f(1,0,1,1), "drawOtherMarkersColor", "Color of displayed unknown markers"))
     , command_socket(NULL)
     , data_socket(NULL)
     , recv_command_packet(new sPacket)
@@ -421,7 +429,7 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
 template<class T>
 static void memread(T& dest, const unsigned char*& ptr, const unsigned char*& end, const char* fieldName=NULL)
 {
-    if (end-ptr >= sizeof(T))
+    if (ptr + sizeof(T) <= end)
     {
         dest = *(const T*)ptr;
         ptr += sizeof(T);
@@ -465,7 +473,7 @@ static void memread(const T*& dest, int n, const unsigned char*& ptr, const unsi
 {
     if (n <= 0)
         dest = NULL;
-    else if (end-ptr >= n*sizeof(T))
+    else if (ptr + n*sizeof(T) <= end)
     {
         dest = (const T*)ptr;
         ptr += n*sizeof(T);
@@ -489,6 +497,9 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
 
     FrameData frame;
 
+    int nTrackedMarkers = 0;
+    int nOtherMarkers = 0;
+
     const unsigned char *ptr = data.Data.cData;
     const unsigned char *end = ptr + data.nDataBytes;
 
@@ -505,10 +516,12 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
             PointCloudData& pdata = frame.pointClouds[iP];
             memread(pdata.name,ptr,end,"pointCloud.name");
             memread(pdata.nMarkers,ptr,end,"pointCloud.nMarkers");
+            nTrackedMarkers += pdata.nMarkers;
             memread(pdata.markersPos, pdata.nMarkers, ptr, end, "pointCloud.markersPos");
         }
     }
     memread(frame.nOtherMarkers,ptr,end,"nOtherMarkers");
+    nOtherMarkers += frame.nOtherMarkers;
     memread(frame.otherMarkersPos, frame.nOtherMarkers, ptr,end,"otherMarkersPos");
 
     memread(frame.nRigids,ptr,end,"nRigids");
@@ -524,6 +537,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
             memread(rdata.pos,ptr,end,"rigid.pos");
             memread(rdata.rot,ptr,end,"rigid.rot");
             memread(rdata.nMarkers, ptr,end,"rigid.nMarkers");
+            nTrackedMarkers += rdata.nMarkers;
             memread(rdata.markersPos, rdata.nMarkers, ptr,end,"rigid.markersPos");
             if (major < 2)
             {
@@ -570,6 +584,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
                         memread(rdata.pos,ptr,end,"rigid.pos");
                         memread(rdata.rot,ptr,end,"rigid.rot");
                         memread(rdata.nMarkers, ptr,end,"rigid.nMarkers");
+                        nTrackedMarkers += rdata.nMarkers;
                         memread(rdata.markersPos, rdata.nMarkers, ptr,end,"rigid.markersPos");
                         memread(rdata.markersID, rdata.nMarkers, ptr,end,"rigid.markersID");
                         memread(rdata.markersSize, rdata.nMarkers, ptr,end,"rigid.markersSize");
@@ -583,6 +598,69 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     if (ptr != end)
     {
 //        serr << "decodeFrame: extra " << end-ptr << " bytes at end of message" << sendl;
+    }
+    // Copy markers to stored Data
+    {
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->otherMarkers;
+        markers.resize(nOtherMarkers);
+        int m0 = 0;
+        for (int i = 0; i < frame.nOtherMarkers; ++i)
+            markers[m0+i] = frame.otherMarkersPos[i];
+        frame.otherMarkersPos = &(markers[m0]);
+        m0 += frame.nOtherMarkers;
+    }
+
+    {
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->trackedMarkers;
+        markers.resize(nTrackedMarkers);
+        int m0 = 0;
+
+        for (int iP = 0; iP < frame.nPointClouds; ++iP)
+        {
+            for (int i = 0; i < frame.pointClouds[iP].nMarkers; ++i)
+                markers[m0+i] = frame.pointClouds[iP].markersPos[i];
+            frame.pointClouds[iP].markersPos = &(markers[m0]);
+            m0 += frame.pointClouds[iP].nMarkers;
+        }
+        for (int iR = 0; iR < frame.nRigids; ++iR)
+        {
+            for (int i = 0; i < frame.rigids[iR].nMarkers; ++i)
+                markers[m0+i] = frame.rigids[iR].markersPos[i];
+            frame.rigids[iR].markersPos = &(markers[m0]);
+            m0 += frame.rigids[iR].nMarkers;
+        }
+
+        for (int iS = 0; iS < frame.nSkeletons; ++iS)
+        {
+            for (int iR = 0; iR < frame.skeletons[iS].nRigids; ++iR)
+            {
+                for (int i = 0; i < frame.skeletons[iS].rigids[iR].nMarkers; ++i)
+                    markers[m0+i] = frame.skeletons[iS].rigids[iR].markersPos[i];
+                frame.skeletons[iS].rigids[iR].markersPos = &(markers[m0]);
+                m0 += frame.skeletons[iS].rigids[iR].nMarkers;
+            }
+        }
+    }
+
+    // Apply scale factor
+    if (this->scale.isSet())
+    {
+        const double scale = this->scale.getValue();
+        {
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->trackedMarkers;
+            for (unsigned int i=0; i<markers.size(); ++i)
+                markers[i] *= scale;
+        }
+        {
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->otherMarkers;
+            for (unsigned int i=0; i<markers.size(); ++i)
+                markers[i] *= scale;
+        }
+        for (int iR = 0; iR < frame.nRigids; ++iR)
+            frame.rigids[iR].pos *= scale;
+        for (int iS = 0; iS < frame.nSkeletons; ++iS)
+            for (int iR = 0; iR < frame.skeletons[iS].nRigids; ++iR)
+                frame.skeletons[iS].rigids[iR].pos *= scale;
     }
 
     processFrame(&frame);
@@ -694,6 +772,23 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
     model.rigids = (rigids.size() > 0) ? &(rigids[0]) : NULL;
     model.nSkeletons = skeletons.size();
     model.skeletons = (skeletons.size() > 0) ? &(skeletons[0]) : NULL;
+
+    // Apply scale factor
+    if (this->scale.isSet())
+    {
+        const double scale = this->scale.getValue();
+        for (int iR = 0; iR < model.nRigids; ++iR)
+        {
+            model.rigids[iR].offset *= scale;
+        }
+        for (int iS = 0; iS < model.nSkeletons; ++iS)
+        {
+            for (int iR = 0; iR < model.skeletons[iS].nRigids; ++iR)
+            {
+                model.skeletons[iS].rigids[iR].offset *= scale;
+            }
+        }
+    }
 
     processModelDef(&model);
 
@@ -873,6 +968,27 @@ void OptiTrackNatNetClient::update()
     get_io_service().poll();
 }
 
+void OptiTrackNatNetClient::draw(const sofa::core::visual::VisualParams* vparams)
+{
+    const float trackedMarkersSize = drawTrackedMarkersSize.getValue();
+    if (trackedMarkersSize > 0)
+    {
+        //sofa::helper::vector<sofa::defaulttype::Vector3> markers = trackedMarkers.getValue();
+        const sofa::helper::vector<sofa::defaulttype::Vec3f>& val = trackedMarkers.getValue();
+        sofa::helper::vector<sofa::defaulttype::Vector3> markers(val.size());
+        for (unsigned int i=0; i<val.size(); ++i) markers[i] = val[i];
+        vparams->drawTool()->drawSpheres(markers, trackedMarkersSize, drawTrackedMarkersColor.getValue());
+    }
+    const float otherMarkersSize = drawOtherMarkersSize.getValue();
+    if (otherMarkersSize > 0)
+    {
+        //sofa::helper::vector<sofa::defaulttype::Vector3> markers = otherMarkers.getValue();
+        const sofa::helper::vector<sofa::defaulttype::Vec3f>& val = otherMarkers.getValue();
+        sofa::helper::vector<sofa::defaulttype::Vector3> markers(val.size());
+        for (unsigned int i=0; i<val.size(); ++i) markers[i] = val[i];
+        vparams->drawTool()->drawSpheres(markers, otherMarkersSize, drawOtherMarkersColor.getValue());
+    }
+}
 
 SOFA_DECL_CLASS(OptiTrackNatNetClient)
 
