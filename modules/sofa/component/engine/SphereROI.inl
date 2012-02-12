@@ -70,6 +70,7 @@ SphereROI<DataTypes>::SphereROI()
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
+    , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
     , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -174,6 +175,7 @@ void SphereROI<DataTypes>::init()
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
     addOutput(&f_tetrahedraInROI);
+    addOutput(&f_indicesOut);
 
     setDirtyValue();
 }
@@ -283,6 +285,7 @@ void SphereROI<DataTypes>::update()
     SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
     SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
     SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
+    SetIndex& indicesOut = *(f_indicesOut.beginEdit());
 
     // Write accessor for toplogical element in SPHERE
     helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
@@ -295,6 +298,7 @@ void SphereROI<DataTypes>::update()
     edgeIndices.clear();
     triangleIndices.clear();
     tetrahedronIndices.clear();
+    indicesOut.clear();
 
     pointsInROI.clear();
     edgesInROI.clear();
@@ -313,6 +317,10 @@ void SphereROI<DataTypes>::update()
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
                 break;
+            }
+            else
+            {
+                indicesOut.push_back(i);
             }
         }
     }
