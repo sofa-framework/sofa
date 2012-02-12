@@ -226,13 +226,13 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 #ifndef SOFA_DOUBLE
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addSpringForce(Deriv &f, const Coord &x0, const Coord &x1, const Deriv &v0, const Deriv &v1, const Real &k, const Real &kd)
+void RestShapeSpringsForceField<Rigid3fTypes>::addSpringForce(Deriv &/*f*/, const Coord &/*x0*/, const Coord &/*x1*/, const Deriv &/*v0*/, const Deriv &/*v1*/, const Real &/*k*/, const Real &/*kd*/)
 {
 
 }
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */, CPos *pivot)
+void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
