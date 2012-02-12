@@ -158,6 +158,7 @@ public:
     Data<helper::vector<Edge> > f_edgesInROI;
     Data<helper::vector<Triangle> > f_trianglesInROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
+    Data<SetIndex> f_indicesOut;
 
     //Parameter
     Data<bool> p_drawSphere;
