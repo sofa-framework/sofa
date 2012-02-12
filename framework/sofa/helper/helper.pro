@@ -96,7 +96,8 @@ HEADERS += helper.h \
     io/ImageDDS.h \
 	OptionsGroup.h \ 
     Polynomial_LD.h \
-    Polynomial_LD.inl
+    Polynomial_LD.inl \
+    UnitTest.h
 
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
@@ -144,7 +145,8 @@ SOURCES += ArgumentParser.cpp \
     AdvancedTimer.cpp \
     io/ImageDDS.cpp \
     OptionsGroup.cpp \
-	Polynomial_LD.cpp
+    Polynomial_LD.cpp\
+    UnitTest.cpp
 
 contains(DEFINES,SOFA_HAVE_GLEW) { 
     HEADERS += gl/FrameBufferObject.h \

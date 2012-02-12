@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+//#include <sofa/helper/accessor.h>
 #include <limits>
 
 namespace sofa
@@ -77,6 +78,37 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     /// Vector of Jacobians (sparse constraint matrices).
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+
+    /** @name Accessors
+     *  Types and functions to ease data access
+     */
+    //@{
+    typedef helper::ReadAccessor <Data<Real> >    ReadReal;
+    typedef helper::WriteAccessor<Data<Real> >    WriteReal;
+    typedef helper::ReadAccessor <Data<VecReal> > ReadVecReal;
+    typedef helper::WriteAccessor<Data<VecReal> > WriteVecReal;
+
+    typedef helper::ReadAccessor <Data<Coord> >    ReadCoord;
+    typedef helper::WriteAccessor<Data<Coord> >    WriteCoord;
+    typedef helper::ReadAccessor <Data<VecCoord> > ReadVecCoord;
+    typedef helper::WriteAccessor<Data<VecCoord> > WriteVecCoord;
+    ReadVecCoord  readPositions() const     { return ReadVecCoord (*this->read (core::ConstVecCoordId::position())); }
+    WriteVecCoord writePositions()          { return WriteVecCoord(*this->write(core::VecCoordId::position())); }
+    ReadVecCoord  readRestPositions() const { return ReadVecCoord (*this->read (core::ConstVecCoordId::restPosition())); }
+    WriteVecCoord writeRestPositions()      { return WriteVecCoord(*this->write(core::VecCoordId::restPosition())); }
+
+    typedef helper::ReadAccessor <Data<Deriv> >    ReadDeriv;
+    typedef helper::WriteAccessor<Data<Deriv> >    WriteDeriv;
+    typedef helper::ReadAccessor <Data<VecDeriv> > ReadVecDeriv;
+    typedef helper::WriteAccessor<Data<VecDeriv> > WriteVecDeriv;
+    ReadVecDeriv  readVelocities() const { return ReadVecDeriv (*this->read (core::ConstVecDerivId::velocity())); }
+    WriteVecDeriv writeVelocities()      { return WriteVecDeriv(*this->write(core::VecDerivId::velocity())); }
+    ReadVecDeriv  readForces() const     { return ReadVecDeriv (*this->read (core::ConstVecDerivId::force())); }
+    WriteVecDeriv writeForces()          { return WriteVecDeriv(*this->write(core::VecDerivId::force())); }
+    ReadVecDeriv  readNormals() const    { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
+    //@}
+
+
 protected:
     virtual ~State() { }
 public:
