@@ -71,7 +71,7 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
-        if (d<0)
+        if (bilateral.getValue() || d<0 )
         {
             //serr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<sendl;
             Real forceIntensity = -this->stiffness.getValue()*d;
@@ -235,7 +235,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         Coord p2 = p1[i];
         p2 += planeNormal.getValue()*(-d);
-        if (d<0)
+        if (d<0 || bilateral.getValue())
         {
             point1 = DataTypes::getCPos(p1[i]);
             point2 = DataTypes::getCPos(p2);

@@ -76,8 +76,12 @@ public:
     Data<bool> bDraw;
     Data<Real> drawSize;
 
+
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
+
+    /// option bilateral : if true, the force field is applied on both side of the plane
+    Data<bool> bilateral;
 protected:
     PlaneForceField()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
@@ -88,6 +92,7 @@ protected:
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+        , bilateral( initData(&bilateral, false, "bilateral", "if true the plane force field is applied on both sides"))
     {
         Deriv n;
         DataTypes::set(n, 0, 1, 0);
