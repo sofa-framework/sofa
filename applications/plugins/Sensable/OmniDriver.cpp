@@ -560,6 +560,46 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             positionBase_buf.y()=2.5;
             positionBase_buf.z()=2.6;
         }
+
+
+        // emulated haptic buttons B=btn1, N=btn2
+        if (kpe->getKey()=='H' || kpe->getKey()=='h')
+        {
+            std::cout << "emulated button 1 pressed" << std::endl;
+            Vector3 dummyVector;
+            Quat dummyQuat;
+            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,
+                    sofa::core::objectmodel::HapticDeviceEvent::Button1Mask);
+            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+        }
+        if (kpe->getKey()=='J' || kpe->getKey()=='j')
+        {
+            std::cout << "emulated button 2 pressed" << std::endl;
+            Vector3 dummyVector;
+            Quat dummyQuat;
+            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,
+                    sofa::core::objectmodel::HapticDeviceEvent::Button2Mask);
+            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+        }
+
+    }
+
+    if (dynamic_cast<core::objectmodel::KeyreleasedEvent *>(event))
+    {
+        core::objectmodel::KeyreleasedEvent *kre = dynamic_cast<core::objectmodel::KeyreleasedEvent *>(event);
+        // emulated haptic buttons B=btn1, N=btn2
+        if (kre->getKey()=='H' || kre->getKey()=='h'
+            || kre->getKey()=='J' || kre->getKey()=='j')
+        {
+            std::cout << "emulated button released" << std::endl;
+            Vector3 dummyVector;
+            Quat dummyQuat;
+            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,0);
+            simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+        }
     }
 }
 
