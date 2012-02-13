@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/DataEngine.h>
 
+//#define SOFA_DDG_TRACE
+
 namespace sofa
 {
 
@@ -68,11 +70,12 @@ void DDGNode::setDirtyValue(const core::ExecParams* params)
     {
         dirtyValue = true;
 
+#ifdef SOFA_DDG_TRACE
         // TRACE LOG
         Base* owner = getOwner();
         if (owner)
             owner->sout << "Data " << getName() << " is now dirty." << owner->sendl;
-
+#endif
         setDirtyOutputs(params);
     }
 }
@@ -97,9 +100,11 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
     {
         dirtyValue = false;
 
+#ifdef SOFA_DDG_TRACE
         Base* owner = getOwner();
         if (owner)
             owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
+#endif
 
         for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
             (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;

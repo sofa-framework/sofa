@@ -496,7 +496,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         currentTopology->getContext()->get(triangleGeometry);
 
 
-        // -- STEP 3: Initilisation
+        // -- STEP 3: Initialization
 
         // Mechanical coord of points a & b:
         Vector3 coord_a(firstPoint);
@@ -519,12 +519,12 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
-        // Snaping value: input are pourcentage, we need to transform it as real epsilon value;
+        // Snaping value: input are percentages, we need to transform it as real epsilon value;
         double epsilonSnap = (double)snapingValue/200;
         double epsilonBorderSnap = (double)snapingBorderValue/210; // magic number (0.5 is max value and must not be reached, as threshold is compared to barycoord value)
 
 
-        // -- STEP 4: Creating path throw different elements
+        // -- STEP 4: Creating path through different elements
         bool path_ok = triangleGeometry->computeIntersectedObjectsList(last_indexPoint, coord_a, coord_b, idxA, idxB, topoPath_list, indices_list, coords2_list);
 
         if (!path_ok)
@@ -536,7 +536,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         }
 
 
-        // -- STEP 5: Spliting elements along path (incision path is stock inside "new_edges")
+        // -- STEP 5: Splitting elements along path (incision path is stored inside "new_edges")
         sofa::helper::vector< unsigned int > new_edges;
         int result = triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 

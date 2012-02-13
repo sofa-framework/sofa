@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<Node animate="0" gravity="0 0.1 0" >
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
+
+  <Node name="Grab">
+    <Euler />
+    <MechanicalObject name="ms1" template="Rigid" />
+    <UniformMass name="mass" />
+  <LinearMovementConstraint name="keyframes" keyTimes="0 1 5 6" movements="20 60 70 0 0 0    20 50 70 0 0 0    20 50 110 0 0 0     20 60 110 0 0 0" showMovement="1" />
+    <Node name="CutEdges">
+      <Mesh position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />
+      <MechanicalObject name="vertices" />
+      <LineModel name="CM" group="1" simulated="0" moving="1" contactStiffness="0" />
+      <RigidMapping index="0" />
+
+    </Node>
+    <Node name="GrabSurfaceL">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" />
+      <Mesh src="@loaderPince" />
+      <MechanicalObject name="vertices" src="@loaderPince" />
+      <TriangleModel group="1" simulated="0" moving="1" />
+      <LineModel group="1" simulated="0" moving="1" />
+      <PointModel group="1" simulated="0" moving="1" />
+      <RigidMapping index="0" />
+    </Node>
+    <Node name="GrabSurfaceR">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" />
+      <Mesh src="@loaderPince" />
+      <MechanicalObject name="vertices" src="@loaderPince" />
+      <TriangleModel group="1" simulated="0" moving="1" />
+      <LineModel group="1" simulated="0" moving="1" />
+      <PointModel group="1" simulated="0" moving="1" />
+      <RigidMapping index="0" />
+    </Node>
+    <Node name="GrabVisualL">
+      <OglModel name="vm" filename="./data/pince_left.obj" />
+      <RigidMapping index="0" />
+    </Node>
+    <Node name="GrabVisualR">
+      <OglModel name="vm" filename="./data/pince_right.obj" />
+      <RigidMapping index="0" />
+    </Node>
+  </Node>
+    <Node name="SquareGravity">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" />
+        <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
+        <MechanicalObject rx2="90" dy2="50" />
+        <DiagonalMass massDensity="0.15" />
+        <FixedConstraint indices="0 1 2 3" />
+        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
+        <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
+        <TriangleModel name="cmTriangles" contactStiffness="5000" />
+        <LineModel name="cmLines" contactStiffness="5000" />
+        <PointModel name="cmPoints" contactStiffness="5000" />
+        <Node name="VM">
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping />
+        </Node>
+        <CuttingManager modelSurface="cmTriangles" modelTool="/Grab/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" />
+        <BruteForceDetection name="N2" />
+        <DiscreteIntersection name="CutIntersection" />
+    </Node>
+  <Node name="Floor">
+    <OglModel name="FloorV" filename="mesh/floor.obj" scale="1" dy="-100" />
+  </Node>
+</Node>

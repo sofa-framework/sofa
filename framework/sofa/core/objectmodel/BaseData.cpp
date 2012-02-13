@@ -174,8 +174,10 @@ void BaseData::update()
     }
     if (parentBaseData)
     {
+#ifdef SOFA_DDG_TRACE
         if (m_owner)
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
+#endif
         updateFromParentValue(parentBaseData);
     }
 }
