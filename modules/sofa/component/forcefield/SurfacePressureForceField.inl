@@ -131,9 +131,15 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
+    /*
+        VecCoord xPlus = x;
+        VecDeriv fplus = f;
+      */
 
-    VecCoord xPlus = x;
-    VecDeriv fplus = f;
+    const Data<VecCoord>* xRest= this->mstate->read(core::ConstVecCoordId::restPosition()) ;
+
+    const VecCoord &x0 = xRest->getValue();
+
 
 
 
@@ -156,7 +162,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         if (m_topology->getNbTriangles() > 0)
         {
-            addTriangleSurfacePressure(f,x,v,p, true);
+            addTriangleSurfacePressure(f,x0,v,p, true);
 
             /*
 
@@ -193,10 +199,11 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
+
+
     double kFactor     =   mparams->kFactor() ;
     VecDeriv& df       = *(d_df.beginEdit());
     const VecDeriv& dx =   d_dx.getValue()  ;
-
 
 //    std::cout<<" addDForce computed on SurfacePressureForceField Size ="<<derivTriNormalIndices.size()<<std::endl;
 
@@ -242,6 +249,41 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 
 }
 
+
+template<class DataTypes>
+void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+{
+
+
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+    double kFact = mparams->kFactor();
+    return;
+
+    const int N = Coord::total_size;
+
+    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+    {
+
+        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+        {
+            unsigned int v = derivTriNormalIndices[i][j];
+
+            Mat33 Kiv = derivTriNormalValues[i][j];
+
+            for (unsigned int l=0; l<3; l++)
+            {
+                for (unsigned int c=0; c<3; c++)
+                {
+                    mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
+
+
+                }
+            }
+        }
+    }
+}
 
 template <class DataTypes>
 typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
