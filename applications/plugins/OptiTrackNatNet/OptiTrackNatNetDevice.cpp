@@ -42,6 +42,7 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     : trackableName(initData(&trackableName, std::string(""), "trackableName", "NatNet trackable name"))
     , trackableID(initData(&trackableID, -1, "trackableID", "NatNet trackable number (ignored if trackableName is set)"))
     , controlNode(initData(&controlNode, false, "controlNode", "True to enable activating and disabling the node when this device appears and disappears"))
+    , isGlobalFrame(initData(&isGlobalFrame, false, "isGlobalFrame", "True if this trackable should be considered as the global frame (i.e. all other trackables are computed relative to its position). This requires linking other trackables' \"inGlobalFrame\" to this \"frame\")"))
     , natNetClient(initLink("natNetClient","Main OptiTrackNatNetClient instance"))
     , mstate(initLink("mstate","MechanicalState controlled by this device"))
     , inMarkersMeshFile(initData(&inMarkersMeshFile, "inMarkersMeshFile", "OBJ file where markers in the object's input local frame are written. This file is created if it does not exist and/or when Ctrl+M is pressed"))
@@ -68,6 +69,11 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
 
     , closed(initData(&closed, false, "closed", "Output: true if measured distance is below closedDistance"))
 
+    , jointCenter(initData(&jointCenter, CPos(0,0,0), "jointCenter", "Input: rotation center (for articulated instruments)"))
+    , jointAxis(initData(&jointAxis, CPos(0,0,1), "jointAxis", "Input: rotation axis (for articulated instruments)"))
+    , jointOpenAngle(initData(&jointOpenAngle, (Real)10, "jointOpenAngle", "Input: rotation angle when opened (for articulated instruments)"))
+    , jointClosedAngle(initData(&jointClosedAngle, (Real)-10, "jointClosedAngle", "Input: rotation angle when closed (for articulated instruments)"))
+
     , drawAxisSize(initData(&drawAxisSize, sofa::defaulttype::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
     , drawMarkersSize(initData(&drawMarkersSize, 0.1f, "drawMarkersSize", "Size of displayed markers"))
     , drawMarkersIDSize(initData(&drawMarkersIDSize, 0.0f, "drawMarkersIDSize", "Size of displayed markers ID"))
@@ -93,6 +99,11 @@ void OptiTrackNatNetDevice::init()
     Inherit1::init();
     if (!mstate.get())
         mstate.set(dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
+    if (jointCenter.isSet())
+    {
+        if (mstate->getSize() < 3)
+            mstate->resize(3);
+    }
     if (!natNetClient.get())
     {
         OptiTrackNatNetClient* p = NULL;
@@ -632,10 +643,10 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
         if (this->inGlobalFrame.isSet())
         {
             Coord frame2 = this->inGlobalFrame.getValue();
-            frame.getCenter() = frame2.getOrientation().inverse().rotate(frame.getCenter()) - frame2.getCenter();
+            frame.getCenter() = frame2.getOrientation().inverse().rotate(frame.getCenter() - frame2.getCenter());
             frame.getOrientation() = frame2.getOrientation().inverse() * frame.getOrientation();
             for (int m=0; m<rigid.nMarkers; ++m)
-                markers[m] = frame2.getOrientation().inverse().rotate(markers[m]) - frame2.getCenter();
+                markers[m] = frame2.getOrientation().inverse().rotate(markers[m] - frame2.getCenter());
             //sout << "   inGlobalFrame " << frame2 << " -> " << frame << sendl;
         }
         if (this->simGlobalFrame.isSet())
@@ -728,7 +739,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     //bool isOpen = (smoothDist >= openDist);
                     //bool isClosed = (smoothDist <= closedDist);
                     if (!open.isSet() || isOpen != open.getValue() || !closed.isSet() || isClosed != closed.getValue())
-                        sout << "Dist " << std::fixed << dist << "smooth " << std::fixed << smoothDist << "  interval " << closedDist << " - " << openDist << (isOpen ? " OPEN" : "") << (isClosed ? " CLOSED" : "") << sendl;
+                        sout << "Dist " << std::fixed << dist << " smooth " << std::fixed << smoothDist << "  interval " << closedDist << " - " << openDist << (isOpen ? " OPEN" : "") << (isClosed ? " CLOSED" : "") << sendl;
                     if (!open.isSet() || isOpen != open.getValue())
                     {
                         open.setValue(isOpen);
@@ -754,6 +765,16 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
     const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
     const float markersSize = drawMarkersSize.getValue();
     const float markersIDSize = drawMarkersIDSize.getValue();
+    if (isGlobalFrame.getValue())
+    {
+        vparams->drawTool()->pushMatrix();
+        float glTransform[16];
+        Coord xform = frame.getValue();
+        xform.getOrientation() = xform.getOrientation().inverse();
+        xform.getCenter() = -xform.getOrientation().rotate(xform.getCenter());
+        xform.writeOpenGlMatrix ( glTransform );
+        vparams->drawTool()->multMatrix( glTransform );
+    }
     if (axisSize.norm2() > 0)
         vparams->drawTool()->drawFrame(position.getValue(), orientation.getValue(), axisSize);
     if (markersSize > 0)
@@ -809,6 +830,18 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         }
         glPopMatrix();
     }
+    if (jointCenter.isSet())
+    {
+        sofa::helper::vector<CPos> points;
+        Coord xform = frame.getValue();
+        points.push_back(xform.pointToParent(jointCenter.getValue() - jointAxis.getValue()));
+        points.push_back(xform.pointToParent(jointCenter.getValue() + jointAxis.getValue()));
+        vparams->drawTool()->drawLines(points, markersSize, sofa::defaulttype::Vec4f(0,0,1,1));
+    }
+    if (isGlobalFrame.getValue())
+    {
+        vparams->drawTool()->popMatrix();
+    }
 }
 
 void OptiTrackNatNetDevice::update()
@@ -818,8 +851,32 @@ void OptiTrackNatNetDevice::update()
     {
         sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *this->mstate->write(sofa::core::VecCoordId::position());
         sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *this->mstate->write(sofa::core::VecCoordId::freePosition());
-        x[0] = frame.getValue();
-        xfree[0] = frame.getValue();
+        Coord pos = frame.getValue();
+        if (!isGlobalFrame.getValue())
+            pos = frame.getValue();
+        x[0] = pos;
+        xfree[0] = pos;
+
+        if (jointCenter.isSet() && x.size() >= 3)
+        {
+            CPos jointCenter = this->jointCenter.getValue();
+            Real angle = jointClosedAngle.getValue() + distanceFactor.getValue() * (jointOpenAngle.getValue() - jointClosedAngle.getValue());
+            CRot rotation(jointAxis.getValue(), (Real)(angle*(M_PI/180.0)));
+
+            Coord posLeft, posRight;
+            posLeft.getOrientation() = pos.getOrientation() * rotation;
+            posRight.getOrientation() = pos.getOrientation() * rotation.inverse();
+            // pos.center + pos.orientation*(jointCenter) = posLeft.center + posLeft.orientation*(jointCenter)
+            // posLeft.center = pos.center + pos.orientation(jointCenter) - posLeft.orientation(jointCenter)
+            posLeft.getCenter() = pos.getCenter() + pos.getOrientation().rotate(jointCenter) - posLeft.getOrientation().rotate(jointCenter);
+            posRight.getCenter() = pos.getCenter() + pos.getOrientation().rotate(jointCenter) - posRight.getOrientation().rotate(jointCenter);
+            x[1] = posLeft;
+            xfree[1] = posLeft;
+            x[2] = posRight;
+            xfree[2] = posRight;
+        }
+
+
         sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
         if (node)
         {

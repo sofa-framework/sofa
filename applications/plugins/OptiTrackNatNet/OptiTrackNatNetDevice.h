@@ -85,6 +85,7 @@ public:
     sofa::core::objectmodel::Data<std::string> trackableName;
     sofa::core::objectmodel::Data<int> trackableID;
     sofa::core::objectmodel::Data<bool> controlNode;
+    sofa::core::objectmodel::Data<bool> isGlobalFrame;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,OptiTrackNatNetClient,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> natNetClient;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,sofa::core::behavior::MechanicalState<DataTypes>,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> mstate;
     sofa::core::objectmodel::DataFileName inMarkersMeshFile;
@@ -112,6 +113,11 @@ public:
     sofa::core::objectmodel::Data<Real> distanceFactor;
     sofa::core::objectmodel::Data<bool> open;
     sofa::core::objectmodel::Data<bool> closed;
+
+    sofa::core::objectmodel::Data<CPos> jointCenter;
+    sofa::core::objectmodel::Data<CPos> jointAxis;
+    sofa::core::objectmodel::Data<Real> jointOpenAngle;
+    sofa::core::objectmodel::Data<Real> jointClosedAngle;
 
 
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize;
