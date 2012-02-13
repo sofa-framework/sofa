@@ -2,28 +2,39 @@
 <Node animate="1">
   <OptiTrackNatNetClient NOserverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
   <Node name="Head">
-    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" inMarkersMeshFile="./data/optitrack-markers-Head.obj" simMarkersMeshFile="./data/markers-Head.obj" drawMarkersColor="0 1 0 1" drawAxisSize="50 10 50" drawMarkersSize="2" />
+    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" isGlobalFrame="1" inMarkersMeshFile="./data/optitrack-markers-Head.obj" simMarkersMeshFile="./data/markers-Head.obj" drawMarkersColor="0 1 0 1" drawAxisSize="50 10 50" drawMarkersSize="2" />
   </Node>
   <Node name="Cut">
-    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inMarkersMeshFile="./data/optitrack-markers-Cut.obj" simMarkersMeshFile="./data/markers-Cut.obj" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
+    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Cut.obj" simMarkersMeshFile="./data/markers-Cut.obj" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
   </Node>
   <Node name="Grab">
     <MechanicalObject name="ms1" template="Rigid" />
-    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
-    <Node name="GrabSurface">
-      <MeshObjLoader name="loaderPince" filename="./data/pince.obj" />
+    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" jointCenter="0 33.7158 17.7522" jointAxis="0 4 -2.8" jointOpenAngle="5" jointClosedAngle="-0.1" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
+    <Node name="GrabSurfaceL">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_left.obj" />
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleModel />
-      <RigidMapping />
+      <RigidMapping index="1" />
     </Node>
-    <Node name="GrabVisual">
-      <OglModel name="vm" filename="./data/pince.obj" />
-      <RigidMapping />
+    <Node name="GrabSurfaceR">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_right.obj" />
+      <Mesh src="@loaderPince" />
+      <MechanicalObject name="vertices" src="@loaderPince" />
+      <TriangleModel />
+      <RigidMapping index="2" />
+    </Node>
+    <Node name="GrabVisualL">
+      <OglModel name="vm" filename="./data/pince_left.obj" />
+      <RigidMapping index="1" />
+    </Node>
+    <Node name="GrabVisualR">
+      <OglModel name="vm" filename="./data/pince_right.obj" />
+      <RigidMapping index="2" />
     </Node>
   </Node>
   <Node name="Phaco">
-    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" inMarkersMeshFile="./data/optitrack-markers-Phaco.obj" simMarkersMeshFile="./data/markers-Phaco.obj" drawMarkersColor="0 1 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
+    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Phaco.obj" simMarkersMeshFile="./data/markers-Phaco.obj" drawMarkersColor="0 1 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
   </Node>
   <Node name="Floor">
     <OglModel name="FloorV" filename="mesh/floor.obj" scale="1" dy="-100" />
