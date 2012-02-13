@@ -197,7 +197,7 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv&
                 const unsigned int indexIn = colIt.index();
                 const OutDeriv data = colIt.val();
 
-                const unsigned int tIndicesSize = table_indices[i].size();
+                const unsigned int tIndicesSize = table_indices[indexIn].size();
 
                 for(unsigned int j = 0; j < tIndicesSize; j++)
                 {
