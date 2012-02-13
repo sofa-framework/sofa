@@ -35,7 +35,8 @@ HEADERS += initUserInteraction.h \
            collision/RemovePrimitivePerformer.inl \
            collision/InciseAlongPathPerformer.h \
            collision/TopologicalChangeManager.h \
-    controller/MechanicalStateControllerOmni.h
+    controller/MechanicalStateControllerOmni.h \
+    controller/NodeToggleController.h
 
 
 SOURCES += initUserInteraction.cpp \
@@ -59,7 +60,8 @@ SOURCES += initUserInteraction.cpp \
            collision/InciseAlongPathPerformer.cpp \
            collision/TopologicalChangeManager.cpp \
     controller/MechanicalStateControllerOmni.cpp \
-    controller/MechanicalStateControllerOmni.inl
+    controller/MechanicalStateControllerOmni.inl \
+    controller/NodeToggleController.cpp
 
 
 # Make sure there are no cross-dependencies

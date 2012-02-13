@@ -22,9 +22,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initUserInteraction.h>
+//
+// C++ Interface: NodeToggleController
+//
+// Description:
+//
+//
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
 
+#ifndef SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
+
+#include <sofa/component/controller/Controller.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/component/component.h>
+#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
 namespace sofa
 {
@@ -32,30 +50,86 @@ namespace sofa
 namespace component
 {
 
-
-void initUserInteraction()
+namespace controller
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(RayTraceDetection)
-SOFA_LINK_CLASS(RayContact)
-SOFA_LINK_CLASS(MouseInteractor)
-SOFA_LINK_CLASS(ArticulatedHierarchyController)
-SOFA_LINK_CLASS(ArticulatedHierarchyBVHController)
-SOFA_LINK_CLASS(EdgeSetController)
-SOFA_LINK_CLASS(MechanicalStateController)
-SOFA_LINK_CLASS(MechanicalStateControllerOmni)
-SOFA_LINK_CLASS(Ray)
-SOFA_LINK_CLASS(RayDiscreteIntersection)
-SOFA_LINK_CLASS(RayNewProximityIntersection)
-SOFA_LINK_CLASS(NodeToggleController)
+//using namespace sofa::defaulttype;
 
+/**
+ * @brief NodeToggleController Class
+ *
+ * Provides a Mouse & Keyboard user control on a Mechanical State.
+ * On a Rigid Particle, relative and absolute control is available.
+ */
+class NodeToggleController : public Controller
+{
+public:
+    SOFA_CLASS(NodeToggleController, Controller);
+protected:
+    /**
+     * @brief Default Constructor.
+     */
+    NodeToggleController() {}
+
+    /**
+     * @brief Default Destructor.
+     */
+    virtual ~NodeToggleController() {};
+public:
+    /**
+     * @brief SceneGraph callback initialization method.
+     */
+    void init();
+
+    /**
+     * @brief Switch between subnodes
+     */
+    void toggle();
+
+
+    /**
+     * @name Controller Interface
+     */
+    //@{
+
+    /**
+     * @brief HapticDevice event callback.
+     */
+    void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev);
+
+    /**
+     * @brief Mouse event callback.
+     */
+//	void onMouseEvent(core::objectmodel::MouseEvent *mev);
+
+    /**
+     * @brief HapticDevice event callback.
+     */
+//    void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev);
+
+    /**
+     * @brief Begin Animation event callback.
+     */
+//	void onBeginAnimationStep(const double dt);
+
+    //@}
+
+    /**
+     * @name Accessors
+     */
+    //@{
+
+
+    //@}
+
+protected:
+
+};
+
+} // namespace controller
 
 } // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
