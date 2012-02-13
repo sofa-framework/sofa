@@ -30,9 +30,7 @@ HEADERS += initMiscMapping.h \
            mapping/TubularMapping.inl \
            mapping/VoidMapping.h \
            mapping/BarycentricMappingRigid.h \
-           mapping/BarycentricMappingRigid.inl \
-           mapping/BezierTriangleMapping.h \
-           mapping/BezierTriangleMapping.inl
+           mapping/BarycentricMappingRigid.inl
 
 SOURCES += initMiscMapping.cpp \
            mapping/BeamLinearMapping.cpp \
@@ -45,8 +43,7 @@ SOURCES += initMiscMapping.cpp \
            mapping/SubsetMultiMapping.cpp \
            mapping/TubularMapping.cpp \
            mapping/VoidMapping.cpp \
-           mapping/BarycentricMappingRigid.cpp \
-           mapping/BezierTriangleMapping.cpp
+           mapping/BarycentricMappingRigid.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
