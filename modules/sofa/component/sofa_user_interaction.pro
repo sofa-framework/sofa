@@ -36,6 +36,7 @@ HEADERS += initUserInteraction.h \
            collision/InciseAlongPathPerformer.h \
            collision/TopologicalChangeManager.h \
     controller/MechanicalStateControllerOmni.h \
+	controller/MechanicalStateControllerOmni.inl \
     controller/NodeToggleController.h
 
 
@@ -60,7 +61,6 @@ SOURCES += initUserInteraction.cpp \
            collision/InciseAlongPathPerformer.cpp \
            collision/TopologicalChangeManager.cpp \
     controller/MechanicalStateControllerOmni.cpp \
-    controller/MechanicalStateControllerOmni.inl \
     controller/NodeToggleController.cpp
 
 

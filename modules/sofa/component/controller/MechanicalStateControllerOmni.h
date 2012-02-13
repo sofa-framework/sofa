@@ -182,7 +182,7 @@ protected:
     bool buttonDevice;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_CPP)
+#if defined(WIN32) && !defined(SOFA_BUILD_USER_INTERACTION)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec3dTypes>;
