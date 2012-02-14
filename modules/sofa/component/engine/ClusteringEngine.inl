@@ -48,12 +48,13 @@ using namespace core::objectmodel;
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
     : useTopo(initData(&useTopo, true, "useTopo", "Use avalaible topology to compute neighborhood."))
-//,maxIter(initData(&maxIter, unsigned(500), "maxIter", "Max number of Lloyd iterations."))
+    //,maxIter(initData(&maxIter, unsigned(500), "maxIter", "Max number of Lloyd iterations."))
     , radius(initData(&radius, (Real)1.0, "radius", "Neighborhood range."))
+    , fixedRadius(initData(&fixedRadius, (Real)1.0, "fixedRadius", "Neighborhood range (for non mechanical particles)."))
     , number(initData(&number, (int)-1, "number", "Number of clusters (-1 means that all input points are selected)."))
+    , fixedPosition(initData(&fixedPosition,"fixedPosition","Input positions of fixed (non mechanical) particles."))
     , position(initData(&position,"position","Input rest positions."))
     , cluster(initData(&cluster,"cluster","Computed clusters."))
-    , indices( initData(&indices,indicesType(0,0),"indices","Interval of the clustered points subset (0->all clustered)") )
     , input_filename(initData(&input_filename,"inFile","import precomputed clusters"))
     , output_filename(initData(&output_filename,"outFile","export clusters"))
     , topo(NULL)
@@ -65,7 +66,9 @@ void ClusteringEngine<DataTypes>::init()
 {
     this->mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&radius);
+    addInput(&fixedRadius);
     addInput(&number);
+    addInput(&fixedPosition);
     addInput(&position);
     addInput(&input_filename);
     addOutput(&cluster);
@@ -80,20 +83,21 @@ void ClusteringEngine<DataTypes>::init()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::update()
 {
-    if(load()) {cleanDirty(); return;}
-
     cleanDirty();
 
+    if(load()) return;
+
+    sofa::helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     sofa::helper::ReadAccessor< Data< VecCoord > > restPositions = this->position;
     sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
-    const unsigned int nbPoints =  restPositions.size();
+    const unsigned int nbPoints =  restPositions.size(), nbFixed = fixedPositions.size();
 
     // get cluster centers
     VI ptIndices,voronoi;
     if(this->number.getValue() == -1)
     {
         ptIndices.clear();	voronoi.clear();
-        for (unsigned int i=0; i<nbPoints; ++i) if(inIndices(i)) { ptIndices.push_back(i); voronoi.push_back(i); }
+        for (unsigned int i=0; i<nbPoints; ++i) { ptIndices.push_back(i); voronoi.push_back(i); }
     }
     else
     {
@@ -114,6 +118,7 @@ void ClusteringEngine<DataTypes>::update()
     }
     else
     {
+        // add mechanical points
         for (unsigned int j=0; j<nbPoints; ++j)
         {
             bool inserted =false;
@@ -124,7 +129,7 @@ void ClusteringEngine<DataTypes>::update()
                         clust[i].push_back(j);
                         inserted=true;
                     }
-            if(!inserted && inIndices(j)) // add point to closest cluster to avoid free points
+            if(!inserted) // add point to closest cluster to avoid free points
             {
                 Real d,dmin=std::numeric_limits<Real>::max(); int imin=-1;
                 for (unsigned int i=0; i<ptIndices.size(); ++i)
@@ -135,6 +140,14 @@ void ClusteringEngine<DataTypes>::update()
                     }
                 if(imin!=-1) clust[imin].push_back(j);
             }
+        }
+
+        // add non mechanical points
+        for (unsigned int j=0; j<nbFixed; ++j)
+        {
+            for (unsigned int i=0; i<ptIndices.size(); ++i)
+                if ( ((fixedPositions[j] - restPositions[ptIndices[i]]).norm() < this->fixedRadius.getValue()) )
+                    clust[i].push_back(j+nbPoints);
         }
     }
 
@@ -195,7 +208,7 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
         else Voronoi(ptIndices , distances, voronoi);
 
         Real dmax=0; ID imax;
-        for (unsigned int i=0; i<nbp; i++) if(inIndices(i)) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
+        for (unsigned int i=0; i<nbp; i++) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
         if(dmax==0) break;
         else ptIndices.push_back(imax);
         std::cout<<"ClusteringEngine :"<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
@@ -278,7 +291,10 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
+    input_filename.update();
     std::string fname(this->input_filename.getFullPath());
+    if(!fname.compare(loadedFilename)) return true;
+
     if (!fname.size()) return false;
     if (!sofa::helper::system::DataRepository.findFile(fname))  { serr << "ClusteringEngine: cannot find "<<fname<<sendl;  return false;	}
     fname=sofa::helper::system::DataRepository.getFile(fname);
@@ -287,12 +303,13 @@ bool ClusteringEngine<DataTypes>::load()
     if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
 
     sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
+    clust.clear();
 
     bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo);
     Real rad; fileStream >> rad;		this->radius.setValue(usetopo);
+    fileStream >> rad;		this->fixedRadius.setValue(usetopo);
     unsigned int nb; fileStream >> nb;			clust.resize(nb);
     int numb; fileStream >> numb;		this->number.setValue(usetopo);
-    indicesType& ind = *this->indices.beginEdit();       fileStream >> ind;      this->indices.endEdit();
 
     for (unsigned int i=0; i<nb; ++i)
     {
@@ -300,6 +317,7 @@ bool ClusteringEngine<DataTypes>::load()
         for (unsigned int j=0; j<nbj; ++j) {int k; fileStream >> k; clust[i].push_back(k);}
     }
 
+    loadedFilename = fname;
     sout << "ClusteringEngine: loaded clusters from "<<fname<<sendl;
     //if (this->f_printLog.getValue())
     std::cout << "ClusteringEngine: loaded clusters from "<<fname<<endl;
@@ -321,9 +339,9 @@ bool ClusteringEngine<DataTypes>::save()
 
     fileStream << this->useTopo.getValue() << " ";
     fileStream << this->radius.getValue() << " ";
+    fileStream << this->fixedRadius.getValue() << " ";
     fileStream << clust.size() << " ";
     fileStream << this->number.getValue() << " ";
-    fileStream << this->indices.getValue();
     fileStream << endl;
 
     for (unsigned int i=0; i<clust.size(); ++i)
@@ -346,7 +364,9 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord& currentPositions = *this->mstate->getX();
+        sofa::helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
         sofa::helper::ReadAccessor< Data< VVI > > clust = this->cluster;
+        const unsigned int nbp = currentPositions.size();
 
         glPushAttrib( GL_LIGHTING_BIT);
 
@@ -366,11 +386,12 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
             VI::const_iterator it, itEnd;
             for (it = clust[i].begin()+1, itEnd = clust[i].end(); it != itEnd ; ++it)
-            {
-                // helper::gl::glVertexT(Xcm[i]);
-                helper::gl::glVertexT(currentPositions[clust[i].front()]);
-                helper::gl::glVertexT(currentPositions[*it]);
-            }
+                if(*it<nbp) // discard visualization of fixed particles (as their current positions is unknown)
+                {
+                    // helper::gl::glVertexT(Xcm[i]);
+                    helper::gl::glVertexT(currentPositions[clust[i].front()]);
+                    helper::gl::glVertexT(currentPositions[*it]);
+                }
         }
         glEnd();
 

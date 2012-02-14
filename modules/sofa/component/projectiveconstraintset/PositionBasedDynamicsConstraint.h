@@ -81,8 +81,6 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
 
-    typedef defaulttype::Vec<2,unsigned int> indicesType;
-
 protected:
     PositionBasedDynamicsConstraintInternalData<DataTypes> data;
     friend class PositionBasedDynamicsConstraintInternalData<DataTypes>;
@@ -90,10 +88,6 @@ protected:
 public:
     Data< Real > stiffness;
     Data< VecCoord > position;
-    Data< indicesType > indices;
-
-    bool inIndices(const unsigned int i) {if(i>=indices.getValue()[0]) if(i<indices.getValue()[1] || !indices.getValue()[1]) return true; return false;}
-
 
     VecDeriv velocity;
     VecCoord old_position;

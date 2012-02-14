@@ -60,7 +60,7 @@ using namespace core::objectmodel;
  * It takes input positions (and optionally a meshtopology if geodesic distances are prefered)
  * ouput clusters can then be fed to
  *     - shape matching engine
- *     - blendSkiningMapping
+ *     - blendSkinningMapping
  *
  */
 
@@ -97,12 +97,11 @@ public:
     //Data<unsigned int> maxIter;
 
     Data<Real> radius;
+    Data<Real> fixedRadius;
     Data<int> number;
-    Data< VecCoord > position; ///< input (current mstate position)
+    Data< VecCoord > fixedPosition;  ///< input (non mechanical particle reference position)
+    Data< VecCoord > position; ///< input (reference mstate position)
     Data< VVI > cluster;       ///< result
-    Data< indicesType > indices;
-
-    bool inIndices(const unsigned int i) {if(i>=indices.getValue()[0]) if(i<indices.getValue()[1] || !indices.getValue()[1]) return true; return false;}
 
     sofa::core::objectmodel::DataFileName input_filename;
     sofa::core::objectmodel::DataFileName output_filename;
@@ -131,6 +130,7 @@ private:
 
     // IO
     bool load();
+    std::string loadedFilename;
     bool save();
 };
 

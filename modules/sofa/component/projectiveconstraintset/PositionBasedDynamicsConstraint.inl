@@ -54,7 +54,6 @@ PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , stiffness(initData(&stiffness,(Real)1.0,"stiffness","Blending between current pos and target pos."))
     , position(initData(&position,"position","Target positions."))
-    , indices( initData(&indices,indicesType(0,0),"indices","Interval of the constrained points (0->all constrained)") )
 {
     // stiffness.setWidget("0to1RatioWidget");
 }
@@ -118,7 +117,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::Mec
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
     if (velocity.size() != res.size()) 	{ serr << "Invalid target position vector size." << sendl;		return; }
-    for( unsigned i=0; i<res.size(); i++ )	if(inIndices(i)) res[i] = velocity[i];
+    for( unsigned i=0; i<res.size(); i++ )	res[i] = velocity[i];
 }
 
 template <class DataTypes>
@@ -136,12 +135,11 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
     if(old_position.size() != res.size()) old_position.assign(res.begin(),res.end());
 
     for( unsigned i=0; i<res.size(); i++ )
-        if(inIndices(i))
-        {
-            res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
-            velocity[i] = (res[i] - old_position[i])/dt;
-            old_position[i] = res[i];
-        }
+    {
+        res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
+        velocity[i] = (res[i] - old_position[i])/dt;
+        old_position[i] = res[i];
+    }
 }
 
 // Specialization for rigids

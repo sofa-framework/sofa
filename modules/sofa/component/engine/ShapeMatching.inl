@@ -86,10 +86,15 @@ template <class DataTypes>
 ShapeMatching<DataTypes>::ShapeMatching()
     : 	  iterations(initData(&iterations, (unsigned int)1, "iterations", "Number of iterations."))
     , affineRatio(initData(&affineRatio,(Real)0.0,"affineRatio","Blending between affine and rigid."))
+    , fixedweight(initData(&fixedweight,(Real)1.0,"fixedweight","weight of fixed particles."))
+    , fixedPosition0(initData(&fixedPosition0,"fixedPosition0","rest positions of non mechanical particles."))
+    , fixedPosition(initData(&fixedPosition,"fixedPosition","current (fixed) positions of non mechanical particles."))
     , position(initData(&position,"position","Input positions."))
     , cluster(initData(&cluster,"cluster","Input clusters."))
     , targetPosition(initData(&targetPosition,"targetPosition","Computed target positions."))
     , topo(NULL)
+    , oldRestPositionSize(0)
+    , oldfixedweight(0)
 {
     //affineRatio.setWidget("0to1RatioWidget");
 }
@@ -98,6 +103,8 @@ template <class DataTypes>
 void ShapeMatching<DataTypes>::init()
 {
     mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    addInput(&fixedPosition0);
+    addInput(&fixedPosition);
     addInput(&position);
     addInput(&cluster);
     addOutput(&targetPosition);
@@ -105,8 +112,6 @@ void ShapeMatching<DataTypes>::init()
 
     //- Topology Container
     this->getContext()->get(topo);
-
-    oldRestPositionSize = oldClusterSize = oldClusterSize0 = 0;
 
     update();
 }
@@ -120,9 +125,13 @@ void ShapeMatching<DataTypes>::reinit()
 template <class DataTypes>
 void ShapeMatching<DataTypes>::update()
 {
+    bool clusterdirty = this->cluster.isDirty();
+
     cleanDirty();
 
     const VecCoord& restPositions = *mstate->getX0();
+    helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
+    helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
     helper::WriteAccessor<Data< VecCoord > > targetPos = targetPosition;
     helper::ReadAccessor<Data< VVI > > clust = cluster;
@@ -130,7 +139,7 @@ void ShapeMatching<DataTypes>::update()
     //this->mstate->resize(restPositions.size());
 
     VI::const_iterator it, itEnd;
-    unsigned int nbp = restPositions.size() , nbc = clust.size();
+    unsigned int nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
 
     if (this->f_printLog.getValue())
     {
@@ -142,31 +151,37 @@ void ShapeMatching<DataTypes>::update()
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
-    if(oldRestPositionSize != nbp || oldClusterSize0 != clust[0].size() || oldClusterSize != nbc)
+    if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || clusterdirty)
     {
+        if (this->f_printLog.getValue())
+            std:: cout<<"shape matching: update Xcm0"<<std::endl;
+
         T.resize(nbc);
         Qxinv.resize(nbc);
         Xcm.resize(nbc);
         Xcm0.resize(nbc);
+        W.resize(nbc);
         nbClust.resize(nbp); nbClust.fill(0);
         for (unsigned int i=0 ; i<nbc ; ++i)
         {
+            W[i] = 0;
             Xcm0[i] = Coord();
             Qxinv[i].fill(0);
             for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
             {
-                Xcm0[i] += restPositions[*it];
-                Qxinv[i] += covNN(restPositions[*it],restPositions[*it]);
-                nbClust[*it]++;
+                Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
+                Real w = (*it<nbp)?1.0:this->fixedweight.getValue();
+                Xcm0[i] += p0*w;
+                Qxinv[i] += covNN(p0,p0)*w;
+                W[i] += w;
+                if(*it<nbp) nbClust[*it]++;
             }
-            Xcm0[i] /= clust[i].size();
-            Qxinv[i] -= covNN(Xcm0[i],Xcm0[i])*clust[i].size(); // sum(X0-Xcm0)(X0-Xcm0)^T = sum X0.X0^T - sum(X0).Xcm0^T
+            Xcm0[i] /= W[i];
+            Qxinv[i] -= covNN(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
             Mat3x3 inv; inv.invert(Qxinv[i]);  Qxinv[i]=inv;
         }
-
-        oldRestPositionSize = restPositions.size();
-        oldClusterSize0 = clust[0].size();
-        oldClusterSize = nbc;
+        oldRestPositionSize = nbp+nbf;
+        oldfixedweight = this->fixedweight.getValue();
     }
 
     targetPos.resize(nbp); 	for (unsigned int i=0 ; i<nbp ; ++i) targetPos[i]=currentPositions[i];
@@ -180,16 +195,19 @@ void ShapeMatching<DataTypes>::update()
             T[i].fill(0);
             for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
             {
-                Xcm[i] += targetPos[*it];
-                T[i] += covNN(targetPos[*it],restPositions[*it]);
+                Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
+                Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
+                Real w = (*it<nbp)?1.0:this->fixedweight.getValue();
+                Xcm[i] += p*w;
+                T[i] += covNN(p,p0)*w;
             }
         }
 
 
         for (unsigned int i=0 ; i<nbc ; ++i)
         {
-            T[i] -= covNN(Xcm[i],Xcm0[i]); // sum(X-Xcm)(X0-Xcm0)^T = sum X.X0^T - sum(X).Xcm0^T
-            Xcm[i] /= clust[i].size();
+            T[i] -= covNN(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
+            Xcm[i] /= W[i];
             Mat3x3 R,S;
             if(affineRatio.getValue()!=(Real)1.0)
             {
@@ -201,13 +219,12 @@ void ShapeMatching<DataTypes>::update()
             else T[i] = R;
         }
 
-        for (unsigned int i=0; i<nbp; ++i)
-            targetPos[i]=Coord();
+        for (unsigned int i=0; i<nbp; ++i) targetPos[i]=Coord();
 
         for (unsigned int i=0; i<nbc; ++i)
             for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
-                targetPos[*it] += Xcm[i] + T[i] *(restPositions[*it] - Xcm0[i]);
-
+                if(*it<nbp)
+                    targetPos[*it] += Xcm[i] + T[i] *(restPositions[*it] - Xcm0[i]);
         for (unsigned int i=0; i<nbp; ++i)
             if(nbClust[i])
                 targetPos[i] /= (Real)nbClust[i];
@@ -238,13 +255,13 @@ void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         /*  const VecCoord& currentPositions = *mstate->getX();
 
-          glPushAttrib( GL_LIGHTING_BIT);
+        glPushAttrib( GL_LIGHTING_BIT);
 
-          glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHTING);
 
-          glBegin(GL_LINES);
+        glBegin(GL_LINES);
 
-          glEnd();
+        glEnd();
 
         glPopAttrib(); */
     }

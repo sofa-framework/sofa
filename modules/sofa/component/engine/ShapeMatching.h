@@ -71,6 +71,7 @@ public:
     typedef core::topology::BaseMeshTopology::PointID ID;
     typedef helper::vector<ID> VI;
     typedef helper::vector<VI> VVI;
+    typedef helper::vector<Real> VD;
 
 public:
 
@@ -87,7 +88,10 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     Data<unsigned int> iterations;
-    Data<Real> affineRatio;
+    Data< Real > affineRatio;
+    Data< Real > fixedweight;
+    Data< VecCoord > fixedPosition0;
+    Data< VecCoord > fixedPosition;
     Data< VecCoord > position; ///< input (current mstate position)
     Data< VVI > cluster; ///< input2 (clusters)
     Data< VecCoord > targetPosition;       ///< result
@@ -101,11 +105,11 @@ private:
 
     //rest data
     unsigned int oldRestPositionSize;
-    unsigned int oldClusterSize;
-    unsigned int oldClusterSize0;
+    unsigned int oldfixedweight;
     VecCoord Xcm0;
     VecCoord Xcm;
     helper::vector<unsigned int> nbClust;
+    VD W;
 
     helper::vector<Mat3x3> Qxinv; // Qx = sum(X0-Xcm0)(X0-Xcm0)^T
     helper::vector<Mat3x3> T;
