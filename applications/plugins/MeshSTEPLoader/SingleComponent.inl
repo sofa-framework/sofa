@@ -107,6 +107,11 @@ void SingleComponent<DataTypes>::loadMesh()
     helper::vector<sofa::defaulttype::Vector3>& my_normals = *(_normalsO.beginEdit());
     helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uvO.beginEdit());
 
+    my_positions.clear();
+    my_triangles.clear();
+    my_normals.clear();
+    my_uv.clear();
+
     const helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = _indicesComponents.getValue();
 
     unsigned int my_numberShape = _numberShape.getValue();
