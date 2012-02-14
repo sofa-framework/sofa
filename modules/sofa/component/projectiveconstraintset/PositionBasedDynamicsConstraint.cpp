@@ -105,19 +105,18 @@ void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::
 
     Real s = stiffness.getValue();
     for( unsigned i=0; i<res.size(); i++ )
-        if(inIndices(i))
-        {
-            res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
+    {
+        res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 
-            if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
-            else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
+        if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
+        else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
 
-            getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
-            ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
-            getAngular(velocity[i]) = a * phi / dt;
+        getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
+        ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
+        getAngular(velocity[i]) = a * phi / dt;
 
-            old_position[i] = res[i];
-        }
+        old_position[i] = res[i];
+    }
 }
 
 #endif
@@ -141,21 +140,19 @@ void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::
 
     Real s = stiffness.getValue();
     for( unsigned i=0; i<res.size(); i++ )
-        if(inIndices(i))
-        {
-            res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
+    {
+        res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
 
-            if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
-            else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
+        if(s==(Real)1.) res[i].getOrientation() = tpos[i].getOrientation();
+        else 	res[i].getOrientation().slerp(res[i].getOrientation(),tpos[i].getOrientation(),(float)s,false);
 
-            getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
-            ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
-            getAngular(velocity[i]) = a * phi / dt;
+        getLinear(velocity[i]) = (res[i].getCenter() - old_position[i].getCenter())/dt;
+        ( res[i].getOrientation() * old_position[i].getOrientation().inverse() ).quatToAxis(a , phi) ;
+        getAngular(velocity[i]) = a * phi / dt;
 
-            old_position[i] = res[i];
-        }
+        old_position[i] = res[i];
+    }
 }
-
 
 #endif
 
