@@ -6,7 +6,7 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include "SingleComponent.h"
 #include "MeshSTEPLoader.h"
-
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 namespace sofa
 {
 namespace component
@@ -21,14 +21,23 @@ public:
 
 public:
 
+    typedef core::topology::Topology::Triangle Triangle;
     STEPShapeExtractor(loader::MeshSTEPLoader* loader=NULL,topology::MeshTopology* topology=NULL);
 
     void init();
     void update();
 
     Data<unsigned int> shapeNumber;
-
+    Data<unsigned int > indexBegin;
+    Data<unsigned int > indexEnd;
 public:
+
+    template< class T>
+    static std::string shortName( const T* /*ptr*/ = NULL, core::objectmodel::BaseObjectDescription* = NULL )
+    {
+        return std::string("stepShapeExtractor");
+    }
+
     /// Pre-construction check method called by ObjectFactory.
     ///
     /// This implementation read the input and output attributes and check
