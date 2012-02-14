@@ -71,7 +71,8 @@ typedef struct
 
 typedef struct
 {
-    ForceFeedback* forceFeedback;
+    vector<ForceFeedback*> forceFeedbacks;
+    int forceFeedbackIndice;
     simulation::Node *context;
 
     sofa::defaulttype::SolidTypes<double>::Transform endOmni_H_virtualTool;
@@ -103,6 +104,8 @@ public:
     Data<Quat> orientationTool;
     Data<bool> permanent;
     Data<bool> omniVisu;
+    Data<bool> toolSelector;
+    Data<int> toolCount;
 
     OmniData	data;
 
@@ -119,7 +122,7 @@ public:
     void cleanup();
     virtual void draw();
 
-    void setForceFeedback(ForceFeedback* ff);
+    void setForceFeedbacks(vector<ForceFeedback*> ffs);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
@@ -135,6 +138,9 @@ private:
     bool moveOmniBase;
     Vec3d positionBase_buf;
     core::behavior::MechanicalState<Rigid3dTypes> *mState; ///< Controlled MechanicalState.
+
+    int currentToolIndex;
+    bool isToolControlled;
 };
 
 } // namespace controller
