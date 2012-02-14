@@ -45,6 +45,10 @@
 //sensable namespace
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+
+
 namespace sofa
 {
 
@@ -168,8 +172,14 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
     SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
 
-    if (data->forceFeedback != NULL)
-        (data->forceFeedback)->computeWrench(world_H_virtualTool,Twist_tool_inWorld,Wrench_tool_inWorld );
+    // which forcefeedback ?
+    ForceFeedback* ff = 0;
+    for (int i=0; i<data->forceFeedbacks.size() && !ff; i++)
+        if (data->forceFeedbacks[i]->indice==data->forceFeedbackIndice)
+            ff = data->forceFeedbacks[i];
+
+    if (ff != NULL)
+        ff->computeWrench(world_H_virtualTool,Twist_tool_inWorld,Wrench_tool_inWorld );
 
     // we compute its value in the current Tool frame:
     SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
@@ -322,11 +332,15 @@ OmniDriver::OmniDriver()
     , orientationTool(initData(&orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the omni end effector frame"))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
     , omniVisu(initData(&omniVisu, false, "omniVisu", "Visualize the position of the interface in the virtual scene"))
+    , toolSelector(initData(&toolSelector, false, "toolSelector", "Switch tools with 2nd button"))
+    , toolCount(initData(&toolCount, 1, "toolCount", "Number of tools to switch between"))
     , visu_base(NULL)
     , visu_end(NULL)
+    , currentToolIndex(0)
+    , isToolControlled(true)
 {
     this->f_listening.setValue(true);
-    data.forceFeedback = new NullForceFeedback();
+    //data.forceFeedback = new NullForceFeedback();
     noDevice = false;
     moveOmniBase = false;
 }
@@ -340,12 +354,12 @@ void OmniDriver::cleanup()
     isInitialized = false;
 }
 
-void OmniDriver::setForceFeedback(ForceFeedback* ff)
+void OmniDriver::setForceFeedbacks(vector<ForceFeedback*> ffs)
 {
-    if(data.forceFeedback == ff) return;
-
-    if(data.forceFeedback) delete data.forceFeedback;
-    data.forceFeedback = ff;
+    data.forceFeedbacks.clear();
+    for (int i=0; i<ffs.size(); i++)
+        data.forceFeedbacks.push_back(ffs[i]);
+    data.forceFeedbackIndice = 0;
 }
 
 void OmniDriver::init()
@@ -354,6 +368,9 @@ void OmniDriver::init()
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
     else std::cout << "[Omni] init" << endl;
+
+    if(mState->getSize()<toolCount.getValue())
+        mState->resize(toolCount.getValue());
 }
 
 void OmniDriver::bwdInit()
@@ -361,20 +378,13 @@ void OmniDriver::bwdInit()
     std::cout<<"OmniDriver::bwdInit() is called"<<std::endl;
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
-    // WIP fix omnidriver
-#if 0
-    ForceFeedback *ff = context->getTreeObject<ForceFeedback>();
-#else
-    simulation::Node *root = dynamic_cast<simulation::Node *>(context->getRootContext()); // access to current node
-    ForceFeedback *ff = root->getTreeObject<ForceFeedback>();
-#endif
-    if(ff)
-    {
-        this->setForceFeedback(ff);
-        printf("[Omni] Found ForceFeedback %s\n",ff->getName().c_str());
-    }
-    else
-        printf("[Omni] No ForceFeedback found.\n");
+    // depending on toolCount, search either the first force feedback, or the feedback with indice "0"
+    simulation::Node *groot = dynamic_cast<simulation::Node *>(context->getRootContext()); // access to current node
+
+    vector<ForceFeedback*> ffs;
+    groot->getTreeObjects<ForceFeedback>(&ffs);
+    std::cout << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found"<<std::endl;
+    setForceFeedbacks(ffs);
 
     setDataValue();
 
@@ -387,6 +397,7 @@ void OmniDriver::bwdInit()
 
 void OmniDriver::setDataValue()
 {
+    data.forceFeedbackIndice=0;
     data.scale = scale.getValue();
     data.forceScale = forceScale.getValue();
     Quat q = orientationBase.getValue();
@@ -465,28 +476,51 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             data.deviceData.quat.normalize();
 
             /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-            SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-            SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
-            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::2");
 
-            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::3");
-            // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
-            data.forceFeedback->setReferencePosition(world_H_virtualTool);
+            if (isToolControlled) // ignore haptic device if tool is unselected
+            {
+                SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+                SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
+                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::2");
 
-            /// TODO : SHOULD INCLUDE VELOCITY !!
+                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::3");
+                // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
+                data.forceFeedbackIndice=currentToolIndex;
+                // which forcefeedback ?
+                for (int i=0; i<data.forceFeedbacks.size(); i++)
+                    if (data.forceFeedbacks[i]->indice==data.forceFeedbackIndice)
+                        data.forceFeedbacks[i]->setReferencePosition(world_H_virtualTool);
 
-            helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
-            helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
-            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::3");
+                /// TODO : SHOULD INCLUDE VELOCITY !!
 
-            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::4");
-            xfree[0].getCenter() = world_H_virtualTool.getOrigin();
-            x[0].getCenter() = world_H_virtualTool.getOrigin();
+                helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
+                helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
+                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::3");
 
-            //      std::cout << world_H_virtualTool << std::endl;
+                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::4");
+                xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
+                x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
 
-            xfree[0].getOrientation() = world_H_virtualTool.getOrientation();
-            x[0].getOrientation() = world_H_virtualTool.getOrientation();
+                //      std::cout << world_H_virtualTool << std::endl;
+
+                xfree[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
+                x[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
+
+                sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+                if (node)
+                {
+                    sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                    sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+                }
+
+            }
+            else
+            {
+                data.forceFeedbackIndice = -1;
+            }
+
+
+
             sofa::helper::AdvancedTimer::stepEnd("OmniDriver::4");
             sofa::helper::AdvancedTimer::stepBegin("OmniDriver::5");
 
@@ -497,14 +531,23 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             bool newBtn2 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_2);
             sofa::helper::AdvancedTimer::stepEnd("OmniDriver::5");
 
-            if (btn1!=newBtn1 || btn2!=newBtn2)
+            // special case: btn2 is mapped to tool selection if "toolSelector" is used
+            if (toolSelector.getValue() && btn2!=newBtn2)
+            {
+                btn2 = newBtn2;
+                isToolControlled = !btn2;
+                if (isToolControlled)
+                    currentToolIndex = (currentToolIndex+1)%toolCount.getValue();
+            }
+
+            if (btn1!=newBtn1 || (!toolSelector.getValue() && btn2!=newBtn2))
             {
                 sofa::helper::AdvancedTimer::stepBegin("OmniDriver::6");
                 btn1 = newBtn1;
                 btn2 = newBtn2;
                 unsigned char buttonState = 0;
                 if(btn1) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button1Mask;
-                if(btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2Mask;
+                if(!toolSelector.getValue() && btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2Mask;
                 Vector3 dummyVector;
                 Quat dummyQuat;
                 sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,buttonState);

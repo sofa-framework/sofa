@@ -53,11 +53,14 @@ class SOFA_HAPTICS_API ForceFeedback : public core::behavior::BaseController
 public:
     SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
     Data<bool> f_activate;
+    Data<int> indice;
+
 
     simulation::Node *context;
 protected:
     ForceFeedback():
         f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+        , indice(initData(&indice, 0, "indice", "Tool indice in the OmniDriver"))
     {
     }
 public:
