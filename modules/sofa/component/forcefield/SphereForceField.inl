@@ -86,7 +86,7 @@ void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpar
     {
         Coord dp = p1[i] - center;
         Real norm2 = dp.norm2();
-        if (norm2<r2)
+        if (norm2<r2 || bilateral.getValue() )
         {
             Real norm = helper::rsqrt(norm2);
             Real d = norm - r;
