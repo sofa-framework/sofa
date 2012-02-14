@@ -755,12 +755,12 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                 }
             }
         }
-
     }
 }
 
 void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!this->tracked.getValue()) return;
     const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
     const float markersSize = drawMarkersSize.getValue();
