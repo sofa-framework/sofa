@@ -366,25 +366,48 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
     if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
+    const VecIndex& indices = points.getValue();
+    const VecIndex& ext_indices=external_points.getValue();
+
+
+
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=external_points.getValue();
+
+
+
+
+    //  if(ext_indices.size() == indices.size())
+
 
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
         const unsigned int index = indices[i];
-        const unsigned int ext_index = ext_indices[i];
+
+        std::cout<<"step3"<<std::endl;
 
         glDisable(GL_LIGHTING);
         glBegin(GL_LINES);
         glColor3f(0,1,0);
 
         glVertex3f( (GLfloat)p[index][0], (GLfloat)p[index][1], (GLfloat)p[index][2] );
-        glVertex3f( (GLfloat)p0[ext_index][0], (GLfloat)p0[ext_index][1], (GLfloat)p0[ext_index][2] );
+        if(useRestMState)
+        {
+
+            const unsigned int ext_index = ext_indices[i];
+            glVertex3f( (GLfloat)p0[ext_index][0], (GLfloat)p0[ext_index][1], (GLfloat)p0[ext_index][2] );
+
+        }
+        else
+        {
+
+            glVertex3f( (GLfloat)p0[index][0], (GLfloat)p0[index][1], (GLfloat)p0[index][2] );
+
+        }
 
         glEnd();
     }

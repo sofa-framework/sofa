@@ -77,7 +77,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         stiffness.setValue(stiffs);
     }
 
-    const Real dampingDefaultValue = 0;
+    const Real dampingDefaultValue = 0.1;
 
     if (m_damping.getValue().empty())
     {
@@ -220,8 +220,13 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             for (unsigned int i=0; i < nbIndices; i++)
             {
+
                 const unsigned int index = m_indices[i];
-                const unsigned int ext_index = m_ext_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if( useRestMState )
+                    ext_index = m_ext_indices[i];
+
+
 
                 addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k0, kd0);
             }
@@ -231,7 +236,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             for (unsigned int i=0; i < nbIndices; i++)
             {
                 const unsigned int index = m_indices[i];
-                const unsigned int ext_index = m_ext_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if( useRestMState )
+                    ext_index = m_ext_indices[i];
 
                 addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k0, kd[i]);
             }
@@ -246,7 +253,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             for (unsigned int i=0; i < nbIndices; i++)
             {
                 const unsigned int index = m_indices[i];
-                const unsigned int ext_index = m_ext_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if( useRestMState )
+                    ext_index = m_ext_indices[i];
 
                 addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd0);
             }
@@ -256,7 +265,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             for (unsigned int i=0; i < nbIndices; i++)
             {
                 const unsigned int index = m_indices[i];
-                const unsigned int ext_index = m_ext_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if( useRestMState )
+                    ext_index = m_ext_indices[i];
 
                 addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd[i]);
             }
