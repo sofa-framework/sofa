@@ -16,6 +16,8 @@ HEADERS += initConstraint.h \
            collision/LMDNewProximityIntersection.inl \
            collision/FrictionContact.h \
            collision/FrictionContact.inl \
+           collision/StickContactConstraint.h \
+           collision/StickContactConstraint.inl \
            constraintset/UnilateralInteractionConstraint.h \
            constraintset/UnilateralInteractionConstraint.inl \
            constraintset/UncoupledConstraintCorrection.h \
@@ -42,6 +44,7 @@ SOURCES += initConstraint.cpp \
            collision/LocalMinDistance.cpp \
            collision/LMDNewProximityIntersection.cpp \
            collision/FrictionContact.cpp \
+           collision/StickContactConstraint.cpp \
            constraintset/UnilateralInteractionConstraint.cpp \
            constraintset/UncoupledConstraintCorrection.cpp \
            constraintset/PrecomputedConstraintCorrection.cpp \
