@@ -104,6 +104,8 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
+    /// option bilateral : if true, the force field is applied on both side of the plane
+    Data<bool> bilateral;
 protected:
     SphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
@@ -114,6 +116,7 @@ protected:
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+        , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
     {
     }
 public:
