@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<Node animate="1">
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="4" contactDistance="2" />
+
+  <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
+  <Node name="Head">
+    <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" isGlobalFrame="1" inMarkersMeshFile="./data/optitrack-markers-Head.obj" simMarkersMeshFile="./data/markers-Head.obj" drawMarkersColor="0 1 0 1" drawAxisSize="50 10 50" drawMarkersSize="2" />
+  </Node>
+  <Node name="Cut">
+    <OptiTrackNatNetDevice name="CutDevice" trackableName="Cut" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Cut.obj" simMarkersMeshFile="./data/markers-Cut.obj" drawMarkersColor="1 0 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
+  </Node>
+  <Node name="Grab">
+    <MechanicalObject name="ms1" template="Rigid" />
+    <OptiTrackNatNetDevice name="GrabDevice" trackableName="Grab" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Grab.obj" simMarkersMeshFile="./data/markers-Grab.obj"  controlNode="1" distanceMarkersID="5 6" closedDistance="46" openDistance="48" jointCenter="0 33.7158 17.7522" jointAxis="0 4 -2.8" jointOpenAngle="5" jointClosedAngle="-0.1" drawMarkersColor="1 1 0 1" drawAxisSize="10 10 10" drawMarkersSize="2" drawMarkersIDSize="2" />
+    <Node name="GrabPoint">
+      <MechanicalObject name="vertices" position="0 -2.7482 -40.7508 0 -1.5256 -40.7505" />
+      <SphereModel name="CM" radius="2" contactResponse="stick" group="1" simulated="0" moving="1" contactStiffness="1000" />
+      <RigidMapping index="0" />
+      <GraspingManager name="Grasping" active="@../GrabDevice.closed" printLog="1" />
+    </Node>
+    <Node name="GrabSurfaceL">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" />
+      <Mesh src="@loaderPince" />
+      <MechanicalObject name="vertices" src="@loaderPince" />
+      <TriangleModel group="1" simulated="0" moving="1" />
+      <LineModel group="1" simulated="0" moving="1" />
+      <PointModel group="1" simulated="0" moving="1" />
+      <RigidMapping index="1" />
+    </Node>
+    <Node name="GrabSurfaceR">
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" />
+      <Mesh src="@loaderPince" />
+      <MechanicalObject name="vertices" src="@loaderPince" />
+      <TriangleModel group="1" simulated="0" moving="1" />
+      <LineModel group="1" simulated="0" moving="1" />
+      <PointModel group="1" simulated="0" moving="1" />
+      <RigidMapping index="2" />
+    </Node>
+    <Node name="GrabVisualL">
+      <OglModel name="vm" filename="./data/pince_left.obj" />
+      <RigidMapping index="1" />
+    </Node>
+    <Node name="GrabVisualR">
+      <OglModel name="vm" filename="./data/pince_right.obj" />
+      <RigidMapping index="2" />
+    </Node>
+  </Node>
+  <Node name="Phaco">
+    <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Phaco.obj" simMarkersMeshFile="./data/markers-Phaco.obj" drawMarkersColor="0 1 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
+  </Node>
+    <Node name="SquareGravity">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" />
+        <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
+        <MechanicalObject rx2="90" dx2="-50" dy2="0" dz2="0" />
+        <DiagonalMass massDensity="0.15" />
+        <FixedConstraint indices="0 1 2 3" />
+        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
+        <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
+        <TriangleModel name="cmTriangles" contactStiffness="5000" />
+        <LineModel name="cmLines" contactStiffness="5000" />
+        <PointModel name="cmPoints" contactStiffness="5000" />
+        <Node name="VM">
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping />
+        </Node>
+<!--        <CuttingManager modelSurface="cmTriangles" modelTool="/Grab/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" /> -->
+        <BruteForceDetection name="N2" />
+        <DiscreteIntersection name="CutIntersection" />
+    </Node>
+  <Node name="Floor">
+    <OglModel name="FloorV" filename="mesh/floor.obj" scale="1" dy="-100" />
+  </Node>
+</Node>
