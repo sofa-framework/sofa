@@ -50,8 +50,6 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : points(initData(&points, "points", "points controlled by the rest shape springs"))
     , stiffness(initData(&stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
-    , m_damping(initData(&m_damping, "damping", "damping on stiffness values between the actual position and the rest shape position"))
-    , m_angularDamping(initData(&m_angularDamping, "angularDamping", "damping on angularStiffness" ))
     , pivotPoints(initData(&pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
     , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
@@ -75,22 +73,6 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         VecReal stiffs;
         stiffs.push_back(100.0);
         stiffness.setValue(stiffs);
-    }
-
-    const Real dampingDefaultValue = 0.1;
-
-    if (m_damping.getValue().empty())
-    {
-        VecReal &damping = *m_damping.beginEdit();
-        damping.push_back(dampingDefaultValue);
-        m_damping.endEdit();
-    }
-
-    if (m_angularDamping.getValue().empty())
-    {
-        VecReal &angDamping = *m_angularDamping.beginEdit();
-        angDamping.push_back(dampingDefaultValue);
-        m_angularDamping.endEdit();
     }
 
     const std::string path = external_rest_shape.getValue();
@@ -118,7 +100,10 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         // std::cout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << std::endl;
     }
 
+    this->k = stiffness.getValue();
+
     recomputeIndices();
+
 }
 
 
@@ -175,28 +160,11 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addSpringForce(Deriv &f, const Coord &x0, const Coord &x1, const Deriv &v0, const Deriv &v1, const Real &k, const Real &kd)
-{
-    const Deriv dx = x1 - x0;
-    const Deriv dv = v1 - v0;
-
-    Deriv u = dx;
-    u.normalize();
-
-    const Real forceIntensity = dx.norm() * k +  dot(u, dv) * kd;
-
-    f -= dx * forceIntensity;
-}
-
-
-template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v0 = *(useRestMState ? restMState->read(core::VecDerivId::velocity()) : this->mstate->read(core::VecDerivId::null()));
 
     f1.resize(p1.size());
 
@@ -205,72 +173,45 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
         recomputeIndices();
     }
 
-    const unsigned int nbIndices = m_indices.size();
-    const VecReal &k = stiffness.getValue();
-    const VecReal &kd = m_damping.getValue();
-
-    if (k.size() != nbIndices)
+    //Springs_dir.resize(m_indices.size() );
+    if ( k.size()!= m_indices.size() )
     {
         //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
         const Real k0 = k[0];
 
-        if (kd.size() != nbIndices)
+        for (unsigned int i=0; i<m_indices.size(); i++)
         {
-            const Real kd0 = kd[0];
+            const unsigned int index = m_indices[i];
+            const unsigned int ext_index = (useRestMState ? m_ext_indices[i] : m_indices[i]);
+            Deriv dx = p1[index] - p0[ext_index];
+            //Springs_dir[i] = p1[index] - p0[ext_index];
+            //Springs_dir[i].normalize();
+            f1[index] -=  dx * k0 ;
 
-            for (unsigned int i=0; i < nbIndices; i++)
-            {
+            //	if (dx.norm()>0.00000001)
+            //		std::cout<<"force on point "<<index<<std::endl;
 
-                const unsigned int index = m_indices[i];
-                unsigned int ext_index = m_indices[i];
-                if( useRestMState )
-                    ext_index = m_ext_indices[i];
-
-
-
-                addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k0, kd0);
-            }
-        }
-        else
-        {
-            for (unsigned int i=0; i < nbIndices; i++)
-            {
-                const unsigned int index = m_indices[i];
-                unsigned int ext_index = m_indices[i];
-                if( useRestMState )
-                    ext_index = m_ext_indices[i];
-
-                addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k0, kd[i]);
-            }
+            //	Deriv dx = p[i] - p_0[i];
+            //	f[ indices[i] ] -=  dx * k[0] ;
         }
     }
     else
     {
-        if (kd.size() != nbIndices)
+        for (unsigned int i=0; i<m_indices.size(); i++)
         {
-            const Real kd0 = kd[0];
+            const unsigned int index = m_indices[i];
+            const unsigned int ext_index = (useRestMState ? m_ext_indices[i] : m_indices[i]);
 
-            for (unsigned int i=0; i < nbIndices; i++)
-            {
-                const unsigned int index = m_indices[i];
-                unsigned int ext_index = m_indices[i];
-                if( useRestMState )
-                    ext_index = m_ext_indices[i];
+            Deriv dx = p1[index] - p0[ext_index];
+            //Springs_dir[i] = p1[index] - p0[ext_index];
+            //Springs_dir[i].normalize();
+            f1[index] -=  dx * k[i];
 
-                addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd0);
-            }
-        }
-        else
-        {
-            for (unsigned int i=0; i < nbIndices; i++)
-            {
-                const unsigned int index = m_indices[i];
-                unsigned int ext_index = m_indices[i];
-                if( useRestMState )
-                    ext_index = m_ext_indices[i];
+            //	if (dx.norm()>0.00000001)
+            //		std::cout<<"force on point "<<index<<std::endl;
 
-                addSpringForce(f1[index], p0[ext_index], p1[index], v0[ext_index], v1[index], k[i], kd[i]);
-            }
+            //	Deriv dx = p[i] - p_0[i];
+            //	f[ indices[i] ] -=  dx * k[i] ;
         }
     }
 }
@@ -282,8 +223,6 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
     //  remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
     // 	const VecReal& k = stiffness.getValue();
-
-    const VecReal& k = stiffness.getValue();
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
@@ -319,8 +258,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
-
-    const VecReal& k = stiffness.getValue();
+    // 	const VecReal& k = stiffness.getValue();
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
