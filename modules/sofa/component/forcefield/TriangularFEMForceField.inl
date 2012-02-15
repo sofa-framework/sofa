@@ -190,6 +190,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , showFracturableTriangles(initData(&showFracturableTriangles,false,"showFracturableTriangles","Flag activating rendering of triangles to fracture"))
+    , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
 #ifdef PLOT_CURVE
     , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
@@ -966,7 +967,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     double n = this->hosfordExponant.getValue();
     triangleInf[elementIndex].differenceToCriteria = (Real)
             pow(0.5 * (pow((double)fabs(D(1,1)), n) +  pow((double)fabs(D(2,2)), n) + pow((double)fabs(D(1,1) - D(2,2)),n)), 1.0/ n) - this->criteriaValue.getValue();
-
     //max stress is the highest eigenvalue
     triangleInf[elementIndex].maxStress = fabs((Real)D(biggestIndex,biggestIndex));
     //the principal stress direction is the eigenvector corresponding to the highest eigenvalue
@@ -1575,6 +1575,15 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
         }
     }
     f.endEdit();
+
+    if (f_computePrincipalStress.getValue())
+    {
+        unsigned int nbTriangles=_topology->getNbTriangles();
+        helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+        for(unsigned int i=0; i<nbTriangles; ++i)
+            computePrincipalStress(i, triangleInf[i].stress);
+        triangleInfo.endEdit();
+    }
 
     /*	if (f_fracturable.getValue())
     {
