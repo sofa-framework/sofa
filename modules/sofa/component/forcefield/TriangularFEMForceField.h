@@ -343,6 +343,8 @@ public:
     Data<bool> showStressVector;
     Data<bool> showFracturableTriangles;
 
+    Data<bool> f_computePrincipalStress;
+
     TRQSTriangleHandler* triangleHandler;
 
 #ifdef PLOT_CURVE
