@@ -136,11 +136,13 @@ struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
+//    cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << endl;
+
     if (!isActive())
         return;
     if (mstate)
     {
-//        cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << endl;
+//        cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << " has mstate " << endl;
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
@@ -170,6 +172,7 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 #endif /* SOFA_SMP */
             projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate.get(mparams)].write());
     }
+    else serr << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName() << sendl;
 }
 
 template<class DataTypes>

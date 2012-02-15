@@ -147,7 +147,7 @@ public:
         projectVelocity(*v.beginEdit(mparams));
         v.endEdit(mparams);
     }
-    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
+    /// @deprecated use instead projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
     virtual void projectVelocity(VecDeriv& /*v*/) {}
 #endif
 
@@ -163,7 +163,7 @@ public:
         projectPosition(*x.beginEdit(mparams));
         x.endEdit(mparams);
     }
-    /// @deprecated use instead  projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
+    /// @deprecated use instead  projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
     virtual void projectPosition(VecCoord& /*x*/) {}
 #endif
 

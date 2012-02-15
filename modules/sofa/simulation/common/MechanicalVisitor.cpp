@@ -1087,8 +1087,9 @@ void MechanicalPropagatePositionAndVelocityVisitor::bwdMechanicalState(simulatio
 
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
-    c->projectPosition(mparams /* PARAMS FIRST */, x);
-    c->projectVelocity(mparams /* PARAMS FIRST */, v);
+    c->projectPosition(mparams, x);
+    c->projectVelocity(mparams, v);
+//    cerr<<"MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveConstraintSet" << endl;
     return RESULT_CONTINUE;
 }
 
