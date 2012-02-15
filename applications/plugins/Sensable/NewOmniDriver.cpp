@@ -56,7 +56,7 @@ bool frameAvant = false;
 bool desktop = false;
 int compteur_debug = 0;
 
-sofa::helper::system::atomic<int> doUpdate;
+static sofa::helper::system::atomic<int> doUpdate;
 
 //retour en cas d'erreur
 //TODO: rajouter le numero de l'interface qui pose pb

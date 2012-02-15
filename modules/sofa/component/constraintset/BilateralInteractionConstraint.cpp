@@ -47,7 +47,7 @@ using namespace sofa::helper;
 template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
         // 	for(int i=0; i<6; i++)
@@ -66,7 +66,7 @@ template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
     for (unsigned pid=0; pid<minp; pid++)
     {
@@ -131,7 +131,8 @@ template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
-    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(minp);
     for (unsigned pid=0; pid<minp; pid++)
     {
@@ -140,6 +141,9 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const 
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
         getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+
+        if (pid < restVector.size())
+            dfree[pid] -= restVector[pid];
 
         for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
             v->set(cid[pid]+i, dfree[pid][i]);
@@ -153,6 +157,20 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getVelocityViolation(defaultt
 
 }
 
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/)
+{
+    helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
+    helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+    helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
+    wm1.push_back(m1);
+    wm2.push_back(m2);
+    Deriv diff;
+    getVCenter(diff) = Q.getCenter() - P.getCenter();
+    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ;
+    wrest.push_back(diff);
+}
+
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -160,7 +178,7 @@ template <>
 void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
     for (unsigned pid=0; pid<minp; pid++)
     {
@@ -225,7 +243,8 @@ template <>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
-    unsigned min = min(m1.getValue().size(),m2.getValue().size());
+    unsigned min = std::min(m1.getValue().size(),m2.getValue().size());
+    const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(min);
     for (unsigned pid=0; pid<min; pid++)
     {
@@ -234,6 +253,8 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const 
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
         getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation()));
+        if (pid < restVector.size())
+            dfree[pid] -= restVector[pid];
 
         for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
             v->set(cid[pid]+i, dfree[pid][i]);
@@ -249,7 +270,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(defaultt
 template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
         // 	for(int i=0; i<6; i++)
@@ -262,6 +283,21 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::
         resTab[offset] = temp;
         offset += 3;
     }
+}
+
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/)
+{
+    helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
+    helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+    helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
+    wm1.push_back(m1);
+    wm2.push_back(m2);
+    Deriv diff;
+    getVCenter(diff) = Q.getCenter() - P.getCenter();
+    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ;
+    wrest.push_back(diff);
 }
 
 #endif

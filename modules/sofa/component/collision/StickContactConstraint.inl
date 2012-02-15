@@ -55,12 +55,13 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     , intersectionMethod(intersectionMethod)
     , m_constraint(NULL)
     , parent(NULL)
+    , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
     if (!selfCollision) mapper2.setCollisionModel(model2);
-    contacts.clear();
-    mappedContacts.clear();
+    //contacts.clear();
+    //mappedContacts.clear();
 
 }
 
@@ -89,23 +90,39 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
             mapper2.cleanup();
     }
 
-    contacts.clear();
-    mappedContacts.clear();
+    //contacts.clear();
+    //mappedContacts.clear();
 }
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
+    if (!o) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
     const double minDist2 = 0.00000001f;
 
-    contacts.clear();
-
-    contacts.reserve(outputs.size());
+    if (!m_constraint)
+    {
+        serr << "Creating StickContactConstraint bilateral constraints"<<sendl;
+        MechanicalState1* mstate1 = mapper1.createMapping();
+        MechanicalState2* mstate2 = mapper2.createMapping();
+        m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<Vec3Types> >(mstate1, mstate2);
+        m_constraint->setName( getName() );
+    }
 
     int SIZE = outputs.size();
+    m_constraint->clear(SIZE);
+    mapper1.resize(SIZE);
+    mapper2.resize(SIZE);
+    /*
+        contacts.clear();
+
+    	contacts.reserve(outputs.size());
+    */
+    int OUTSIZE = 0;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
@@ -113,25 +130,44 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         DetectionOutput* o = &outputs[cpt];
 
         bool found = false;
-        for (unsigned int i=0; i<contacts.size() && !found; i++)
+        for (int i=0; i<cpt && !found; i++)
         {
-            DetectionOutput* p = contacts[i];
+            DetectionOutput* p = &outputs[i];
             if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
 
-        if (!found)
-            contacts.push_back(o);
+        if (found) continue;
+        CollisionElement1 elem1(o->elem.first);
+        CollisionElement2 elem2(o->elem.second);
+        int index1 = elem1.getIndex();
+        int index2 = elem2.getIndex();
+
+        typename DataTypes1::Real r1 = 0.0;
+        typename DataTypes2::Real r2 = 0.0;
+        // Create mapping for first point
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
+        // Create mapping for second point
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
+
+        double distance = d0 + r1 + r2;
+
+        m_constraint->addContact(o->normal, o->point[0], o->point[1], distance, index1, index2, o->point[0], o->point[1], OUTSIZE, 0);
+        ++OUTSIZE;
     }
 
-    if (contacts.size()<outputs.size())
+    if (OUTSIZE<SIZE)
     {
         // DUPLICATED CONTACTS FOUND
-        sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;
+        sout << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." << sendl;
     }
+    // Update mappings
+    mapper1.update();
+    mapper2.update();
+    sout << OUTSIZE << "StickContactConstraint created"<<sendl;
 }
 
-
+#if 0
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers()
 {
@@ -195,11 +231,28 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     //std::cerr<<" end activateMappers call"<<std::endl;
 
 }
+#endif
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
 
+    if (m_constraint!=NULL)
+    {
+        if (parent!=NULL)
+        {
+            parent->removeObject(this);
+            parent->removeObject(m_constraint);
+        }
+        parent = group;
+        if (parent!=NULL)
+        {
+            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
+            parent->addObject(this);
+            parent->addObject(m_constraint);
+        }
+    }
+#if 0
     activateMappers();
 
     int i=0;
@@ -233,6 +286,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
             parent->addObject(m_constraint);
         }
     }
+#endif
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -240,8 +294,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
     if (m_constraint)
     {
-        mapper1.resize(0);
-        mapper2.resize(0);
+        //mapper1.resize(0);
+        //mapper2.resize(0);
         if (parent!=NULL)
         {
             //sout << "Removing contact response from "<<parent->getName()<<sendl;

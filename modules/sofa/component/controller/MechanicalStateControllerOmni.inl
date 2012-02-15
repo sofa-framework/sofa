@@ -64,6 +64,9 @@ MechanicalStateControllerOmni<DataTypes>::MechanicalStateControllerOmni()
     :/* index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
 	, onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
     ,*/ buttonDeviceState(initData(&buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
+    , deviceId(initData(&deviceId, -1, "deviceId", "id of active device for this controller"))
+    , angle(initData(&angle, (Real)10, "angle", "max angle"))
+    , speed(initData(&speed, (Real)30, "speed", "closing/opening speed"))
     //   , mainDirection( initData(&mainDirection, sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
     //mainDirection.beginEdit()->normalize();
@@ -196,12 +199,13 @@ void MechanicalStateControllerOmni<DataTypes>::applyController(double /*dt*/)
 template <class DataTypes>
 void MechanicalStateControllerOmni<DataTypes>::onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *oev)
 {
+    if (deviceId.getValue() != -1 && (int)oev->getDeviceId() != deviceId.getValue()) return;
     //std::cout << "void MechanicalStateControllerOmni<DataTypes>::onHapticDeviceEvent()"<<std::endl;
     //if (oev->getButton())
     //  std::cout<<" Button1 pressed"<<std::endl;
 
     device = true;
-    buttonDevice = oev->getButton();
+    buttonDeviceState.setValue(oev->getButton());
     position = oev->getPosition();
     orientation = oev->getOrientation();
 }

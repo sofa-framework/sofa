@@ -164,6 +164,8 @@ class BilateralInteractionConstraint : public core::behavior::PairInteractionCon
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::PairInteractionConstraint,DataTypes));
 
+    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -172,7 +174,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
+    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
 
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
@@ -187,6 +189,7 @@ protected:
 
     Data<helper::vector<int> > m1;
     Data<helper::vector<int> > m2;
+    Data<VecDeriv> restVector;
     Data<int> activateAtIteration;
     Data<bool> merge;
     Data<bool> derivative;
@@ -206,6 +209,7 @@ protected:
         : Inherit(object1, object2)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
@@ -218,6 +222,7 @@ protected:
         : Inherit(object, object)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
@@ -229,6 +234,7 @@ protected:
     BilateralInteractionConstraint()
         : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
@@ -264,6 +270,47 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *event);
 
     void draw(const core::visual::VisualParams* vparams);
+
+    // Contact handling methods
+public:
+    void clear(int reserve = 0)
+    {
+        helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
+        helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+        helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
+        wm1.clear();
+        wm2.clear();
+        wrest.clear();
+        if (reserve)
+        {
+            wm1.reserve(reserve);
+            wm2.reserve(reserve);
+            wrest.reserve(reserve);
+        }
+    }
+
+    virtual void addContact(Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+
+    void addContact(Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
+    {
+        addContact(norm, P, Q, contactDistance, m1, m2,
+                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+                id, localid);
+    }
+
+    void addContact(Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
+    {
+        addContact(norm,
+                this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+                contactDistance, m1, m2,
+                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+                id, localid);
+    }
+
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
