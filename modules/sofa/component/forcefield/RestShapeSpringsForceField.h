@@ -80,8 +80,6 @@ public:
     Data< helper::vector< unsigned int > > points;
     Data< VecReal > stiffness;
     Data< VecReal > angularStiffness;
-    Data< VecReal > m_damping;
-    Data< VecReal > m_angularDamping;
     Data< helper::vector< CPos > > pivotPoints;
     Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
@@ -110,14 +108,9 @@ protected :
 
     void recomputeIndices();
 
-    void addSpringForce(Deriv &f, const Coord &x0, const Coord &x1, const Deriv &v0, const Deriv &v1, const Real &k, const Real &kd);
-
-    void addSpringForce(Deriv &/*f*/, const Coord &/*x0*/, const Coord &/*x1*/, const Deriv &/*v0*/, const Deriv &/*v1*/,
-            const Real &/*k*/, const Real &/*kd*/, const Real &/*k_a*/, const Real &/*kd_a*/, CPos * /*pivot*/=0) {};
-
     VecIndex m_indices;
+    VecReal k;
     VecIndex m_ext_indices;
-
     helper::vector<CPos> m_pivots;
 private :
 
