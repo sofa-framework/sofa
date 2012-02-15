@@ -94,7 +94,9 @@
         <MechanicalObject rx2="0" dx2="-50" dy2="-50" dz2="30" />
         <DiagonalMass massDensity="0.15" />
         <FixedConstraint indices="0 1 2 3" />
-        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
+        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="false" showStressVector="false"
+			showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true"/>
+<!--        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />-->
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <TriangleModel name="cmTriangles" contactStiffness="5000" />
         <LineModel name="cmLines" contactStiffness="5000" />
@@ -103,7 +105,8 @@
             <OglModel name="Visual" color="red" />
             <IdentityMapping />
         </Node>
-        <CuttingManager modelSurface="cmTriangles" modelTool="/Cystitome/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" />
+        <MICSCuttingManager modelSurface="cmTriangles" modelTool="/Cystitome/CutEdges/CM" pointedTip="1" minDistance="0.5" maxDistance="5" printLog="1" triangleInfo="@FEM.triangleInfo" fractureStress="-9000" radius="50"/>
+<!--        <CuttingManager modelSurface="cmTriangles" modelTool="/Cystitome/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" />-->
         <BruteForceDetection name="N2" />
         <DiscreteIntersection name="CutIntersection" />
     </Node>
