@@ -9,7 +9,7 @@
     <Euler />
     <MechanicalObject name="ms1" template="Rigid" />
     <UniformMass name="mass" />
-  <LinearMovementConstraint name="keyframes" keyTimes="0 1 5 6 8 9 13 14" movements="20 60 70 0 0 0    20 50 70 0 0 0    20 50 110 0 0 0     20 60 110 0 0 0    40 60 70 0 0 0    40 50 70 0 0 0    40 50 110 0 0 0     40 60 110 0 0 0" showMovement="1" />
+  <LinearMovementConstraint name="keyframes" keyTimes="0 1 5 6 7 11 12 13 17 18 19 23 24" movements="20 60 70 0 0 0    20 50 70 0 0 0    20 50 110 0 0 0     35 60 110 0 0 0    35 50 110 0 0 0   70 50 110 0 0 0     70 60 95 0 0 0    70 50 95 0 0 0    70 50 70 0 0 0   55 60 70 0 0 0   55 50 70 0 0 0   35 50 70 0 0 0   35 60 70 0 0 0" showMovement="1" />
     <Node name="CutEdges">
       <Mesh position="-0.2745 -2.7482 -40.7508    -0.2760 -1.5256 -40.7505    -0.2775 -0.3030 -40.4702    -0.2790 0.9196 -40.4699" edges="0 1 1 2 2 3" />
       <MechanicalObject name="vertices" />
@@ -52,7 +52,8 @@
         <MechanicalObject rx2="90" dy2="50" />
         <DiagonalMass massDensity="0.15" />
         <FixedConstraint indices="0 1 2 3" />
-        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />
+        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="false" showStressVector="false"
+			showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true"/>
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <TriangleModel name="cmTriangles" contactStiffness="5000" />
         <LineModel name="cmLines" contactStiffness="5000" />
@@ -61,7 +62,7 @@
             <OglModel name="Visual" color="red" />
             <IdentityMapping />
         </Node>
-        <CuttingManager modelSurface="cmTriangles" modelTool="/Grab/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" />
+        <MICSCuttingManager modelSurface="cmTriangles" modelTool="/Grab/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" triangleInfo="@FEM.triangleInfo" fractureStress="-9000" radius="50"/>
         <BruteForceDetection name="N2" />
         <DiscreteIntersection name="CutIntersection" />
     </Node>
