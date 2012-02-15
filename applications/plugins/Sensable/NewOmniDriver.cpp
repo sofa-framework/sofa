@@ -25,6 +25,11 @@
 
 #include "NewOmniDriver.h"
 
+#include <sofa/helper/system/thread/CTime.h>
+#ifdef SOFA_HAVE_BOOST
+#include <boost/thread.hpp>
+#endif
+
 //sensable namespace
 
 double prevTime;
@@ -51,6 +56,8 @@ bool frameAvant = false;
 bool desktop = false;
 int compteur_debug = 0;
 
+sofa::helper::system::atomic<int> doUpdate;
+
 //retour en cas d'erreur
 //TODO: rajouter le numero de l'interface qui pose pb
 void printError(const HDErrorInfo *error, const char *message)
@@ -63,9 +70,18 @@ void printError(const HDErrorInfo *error, const char *message)
 }
 
 
+HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * userData);
+
 //boucle qui recupere les info sur l'interface et les copie sur data->servoDeviceData
-HDCallbackCode HDCALLBACK stateCallback(void * /*userData*/)
+HDCallbackCode HDCALLBACK stateCallback(void * userData)
 {
+
+    if(doUpdate)
+    {
+        copyDeviceDataCallback(userData);
+        doUpdate.dec(); // set to 0
+    }
+
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(userData);
     //OmniData* data = static_cast<OmniData*>(userData);
     //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
@@ -318,6 +334,7 @@ int NewOmniDriver::initDevice()
         }
     }
 
+    doUpdate = 0;
     //Start the servo loop scheduler.
     hdStartScheduler();
     if (HD_DEVICE_ERROR(error = hdGetError()))
@@ -331,7 +348,7 @@ int NewOmniDriver::initDevice()
         autreOmniDriver[i]->data.servoDeviceData.stop = false;
     }
 
-    hStateHandle = hdScheduleAsynchronous( stateCallback, (void*) &autreOmniDriver, HD_MIN_SCHEDULER_PRIORITY);
+    hStateHandle = hdScheduleAsynchronous( stateCallback, (void*) &autreOmniDriver, HD_DEFAULT_SCHEDULER_PRIORITY);
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
@@ -886,7 +903,18 @@ void NewOmniDriver::onAnimateBeginEvent()
 {
     // copy data->servoDeviceData to gDeviceData
     if(firstDevice)
-        hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
+    {
+        //hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
+        doUpdate.inc(); // set to 1
+        while(doUpdate)
+        {
+#ifdef SOFA_HAVE_BOOST
+            boost::thread::yield();
+#else
+            usleep(0);
+#endif
+        }
+    }
     if (data.deviceData.ready)
     {
         data.deviceData.quat.normalize();
