@@ -27,6 +27,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include <limits.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -38,6 +39,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
+
+#ifdef SOFA_HAVE_ZLIB
+#include <zlib.h>
+#endif
 
 
 namespace sofa
@@ -51,6 +56,17 @@ namespace container
 
 using namespace defaulttype;
 
+
+/**
+* \brief This component is responsible for loading images
+*
+*  ImageContainer scene options:
+*
+*  <b>template</b>
+*
+*  <b>filename</> - the name of the image file to be loaded. Currently supported filtypes:
+*
+*/
 template<class _ImageTypes>
 class ImageContainer : public virtual core::objectmodel::BaseObject
 {
@@ -78,6 +94,17 @@ public:
 
     Data<bool> drawBB;
 
+    Data<bool> sequence;
+    Data<Real> frameDuration;
+    Data<Real> frameOffset;
+    Data<unsigned int> nFrames;
+
+#ifdef SOFA_HAVE_ZLIB
+    gzFile gzfile;
+#endif
+
+
+
     virtual std::string getTemplateName() const	{ return templateName(this); }
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
@@ -86,9 +113,16 @@ public:
         , transform(initData(&transform, TransformType(), "transform" , ""))
         , m_filename(initData(&m_filename,"filename","Image file"))
         , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
+        , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
+        , frameDuration (initData(&frameDuration, 1.0, "frameDuration", "Duration of each frame of a sequence in seconds. Default is 1 second."))
+        , frameOffset (initData(&frameOffset, 0.0, "frameOffset", "Starting time for a sequence in seconds. Default is 0 seconds."))
+        , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
     {
         this->addAlias(&image, "inputImage");
         this->addAlias(&transform, "inputTransform");
+        this->addAlias(&frameDuration, "duration");
+        this->addAlias(&frameOffset, "offset");
+        this->addAlias(&nFrames, "nFrames");
         transform.setGroup("Transform");
         f_listening.setValue(true);  // to update camera during animate
     }
@@ -116,6 +150,14 @@ public:
                 }
 
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
+
+        //Set the frame offset and frame duration
+        TransformType& my_transform = *(this->transform.beginEdit());
+        my_transform.getScaleT() = frameDuration.getValue();
+        my_transform.getOffsetT() = frameOffset.getValue();
+        transform.endEdit();
+
+
         wtransform->update(); // update of internal data
     }
 
@@ -136,8 +178,23 @@ protected:
         }
         fname=sofa::helper::system::DataRepository.getFile(fname);
 
+        if(sequence.getValue())
+            return loadSequence(fname);
+        else
+            return load(fname);
+    }
+
+    bool load(std::string fname)
+    {
+
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
+
+        if(fname.size() >= 3 && fname.substr(fname.size()-3)==".gz")
+        {
+            return loadZipped(fname);
+        }
+
 
         // read image
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
@@ -188,6 +245,57 @@ protected:
         return true;
     }
 
+    bool load(std::FILE* const file, std::string fname)
+    {
+        waImage wimage(this->image);
+        waTransform wtransform(this->transform);
+
+        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+            wimage->getCImgList().load_cimg(file);
+        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+        {
+            float voxsize[3];
+            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
+            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+        }
+        else if (fname.find(".inr")!=std::string::npos)
+        {
+            float voxsize[3];
+            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
+            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+        }
+        else
+        {
+            serr << "Error (ImageContainer): Compression is not supported for this filetype: " << fname << sendl;
+        }
+
+        if(wimage->getCImg()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
+        else return false;
+
+        return true;
+
+    }
+
+    bool loadZipped(std::string fname)
+    {
+#ifndef SOFA_HAVE_ZLIB
+        serr << "Error (ImageContainer): Requires SOFA_HAVE_ZLIB to open .gz files" << sendl;
+        return false;
+#endif
+
+        gzfile = gzopen(fname.c_str(), "rb");
+
+        if(!gzfile)
+        {
+            serr << "Error (ImageContainer): Could not open compressed file " << fname << sendl;
+            return false;
+        }
+
+        std::string newFname = fname.substr(0, fname.length()-3);
+
+        //return load(gzfile, newFname);
+        return false;
+    }
 
     bool loadCamera()
     {
@@ -206,7 +314,8 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if (dynamic_cast<simulation::AnimateEndEvent*>(event)) loadCamera();
+        if (dynamic_cast<simulation::AnimateEndEvent*>(event))
+            loadCamera();
     }
 
 
@@ -275,6 +384,93 @@ protected:
 
         glPopMatrix ();
         glPopAttrib();
+    }
+
+    /*
+    * Load a sequence of image files. The filename specified by the user should be the first in a sequence with the naming convention:
+    *  name_N.extension, where name is consistent among all the files, and N is an integer that increases by 1 with each image in the sequence,
+    *  and extension is the extension of a supported filetype.
+    *  N can be in the form 1, 2, 3... or can have prefixed zeros (01, 02, 03...). In the case of prefixed zeros, all the values of N in the sequence
+    *  must have the same number of digits. Examples: 01, 02, ... , 10, 11.   or   001, 002, ... , 010, 011, ... , 100, 101.
+    */
+    bool loadSequence(std::string fname)
+    {
+        std::string nextFname(fname);
+
+        if (!sofa::helper::system::DataRepository.findFile(nextFname))
+        {
+            serr << "ImageContainer: cannot find "<<fname<<sendl;
+            return false;
+        }
+
+        unsigned int nFramesLoaded = 0;
+        unsigned int maxFrames = UINT_MAX;
+        if(nFrames.isSet())
+        {
+            maxFrames = nFrames.getValue();
+        }
+
+        while(sofa::helper::system::DataRepository.findFile(nextFname) && nFramesLoaded < maxFrames)
+        {
+            load(nextFname);
+            nextFname = getNextFname(nextFname);
+            nFramesLoaded++;
+        }
+        return true;
+    }
+
+    std::string getNextFname(std::string currentFname)
+    {
+
+        std::string filenameError = "ImageContainer: Invalid Filename ";
+        std::string filenameDescription = "Filename of an image in a sequence must follow the convention \"name_N.extension\", where N is an integer and extension is a supported file type";
+        std::size_t lastUnderscorePosition = currentFname.rfind("_");
+
+        if(lastUnderscorePosition == std::string::npos)
+        {
+            serr << filenameError << currentFname << sendl;
+            serr << filenameDescription << sendl;
+            return "";
+        }
+
+        std::string fnameRoot = currentFname.substr(0, lastUnderscorePosition);
+
+        std::size_t nextDotPosition = currentFname.find(".", lastUnderscorePosition);
+
+        if(nextDotPosition == std::string::npos)
+        {
+            serr << filenameError << currentFname << sendl;
+            serr << filenameDescription << sendl;
+            return "";
+        }
+
+        std::string seqNStr = currentFname.substr(lastUnderscorePosition+1, nextDotPosition-(lastUnderscorePosition+1));
+
+        std::string extension = currentFname.substr(nextDotPosition);
+
+
+        int seqN = atoi(seqNStr.c_str());
+        int nextSeqN = seqN + 1;
+
+        std::ostringstream nextSeqNstream;
+        nextSeqNstream << nextSeqN;
+        std::string nextSeqNStr = nextSeqNstream.str();
+
+        std::string prefix("");
+
+        if(seqNStr.length() > nextSeqNStr.length())
+        {
+            int difference = seqNStr.length() - nextSeqNStr.length();
+            for(int i=0; i<difference; i++)
+            {
+                prefix.append("0");
+            }
+        }
+
+        std::ostringstream nextFname;
+        nextFname << fnameRoot << "_" << prefix << nextSeqNStr << extension;
+
+        return nextFname.str();
     }
 };
 
