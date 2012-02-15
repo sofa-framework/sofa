@@ -99,15 +99,17 @@ void MechanicalStateControllerOmni<Vec1dTypes>::applyController(const double dt)
         if(mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-            if(buttonDevice)
+            const Real maxAngle = this->angle.getValue() * (Real)(M_PI/180.0);
+            const Real speed = this->speed.getValue() * (Real)(M_PI/180.0);
+            if(buttonDeviceState.getValue())
             {
-                double angle = x0[0].x() - dt*0.3; if (angle<0) angle = 0;
+                double angle = x0[0].x() - dt*speed; if (angle<0) angle = 0;
                 x0[0].x() = angle;
                 x0[1].x() = angle;
             }
             else
             {
-                double angle = x0[0].x() + dt*0.3; if (angle>0.1) angle = 0.1;
+                double angle = x0[0].x() + dt*speed; if (angle>maxAngle) angle = maxAngle;
                 x0[0].x() = angle;
                 x0[1].x() = angle;
             }
@@ -130,7 +132,7 @@ void MechanicalStateControllerOmni<Vec1fTypes>::applyController(const double dt)
         if(mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-            if(buttonDevice)
+            if(buttonDeviceState.getValue())
             {
                 float angle = x0[0].x() - (float)dt; if (angle<0.05f) angle = 0.05f;
                 x0[0].x() = angle;

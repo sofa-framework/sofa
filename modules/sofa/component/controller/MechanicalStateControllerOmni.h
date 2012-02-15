@@ -165,6 +165,9 @@ protected:
     //Data< unsigned int > index; ///< Controlled DOF index.
     //Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
     Data< bool > buttonDeviceState;
+    Data< int > deviceId;
+    Data< Real > angle;
+    Data< Real > speed;
 
     core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
@@ -179,7 +182,6 @@ protected:
     //int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
     Vector3 position;
     Quat orientation;
-    bool buttonDevice;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_USER_INTERACTION)

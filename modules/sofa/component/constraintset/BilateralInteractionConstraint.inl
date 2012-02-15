@@ -32,8 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 
-#define min(a,b) (a<b?a:b)
-
+#include <algorithm> // for std::min
 namespace sofa
 {
 
@@ -66,8 +65,10 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     if (!activated) return;
-    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
+
+    const VecDeriv& restVector = this->restVector.getValue();
 
     if (!merge.getValue())
     {
@@ -123,6 +124,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
             const DataVecCoord &x2 = *this->mstate2->read(core::ConstVecCoordId::position());
 
             Deriv dfree_loc = x2.getValue()[tm2] - x1.getValue()[tm1];
+            if (pid < restVector.size())
+                dfree_loc -= restVector[pid];
 
             dfree_square_total[0]+= dfree_loc[0]*dfree_loc[0];
             dfree_square_total[1]+= dfree_loc[1]*dfree_loc[1];
@@ -156,6 +159,12 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
 
             Deriv d_loc = x2.getValue()[tm2] - x1.getValue()[tm1];
             Deriv dfree_loc = x2free.getValue()[tm2] - x1free.getValue()[tm1];
+
+            if (pid < restVector.size())
+            {
+                d_loc -= restVector[pid];
+                dfree_loc -= restVector[pid];
+            }
             dfree[pid] = dfree_loc;
 
             //std::cout<<" BilateralInteractionConstraint add Constraint between point "<<tm1<<" of object1 and "<< tm2<< " of object2"<<std::endl;
@@ -232,7 +241,8 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const cor
         , const DataVecDeriv & v1, const DataVecDeriv & v2)
 {
     if (!activated) return;
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
+    const VecDeriv& restVector = this->restVector.getValue();
 
     if(cParams->constOrder() == core::ConstraintParams::VEL)
     {
@@ -247,6 +257,9 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const cor
         {
             dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
 
+            if (pid < restVector.size())
+                dfree[pid] -= restVector[pid];
+
             v->set(cid[pid]  , dfree[pid][0]);
             v->set(cid[pid]+1, dfree[pid][1]);
             v->set(cid[pid]+2, dfree[pid][2]);
@@ -258,6 +271,8 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const cor
         {
             dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
 
+            if (pid < restVector.size())
+                dfree[pid] -= restVector[pid];
 
             for (unsigned int i=0; i<3; i++)
             {
@@ -280,7 +295,8 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
 {
     std::cout<<"getVelocityViolation called "<<std::endl;
 
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
+    const VecDeriv& restVector = this->restVector.getValue();
     std::vector<Deriv> dPrimefree;
     if (!merge.getValue())
     {
@@ -288,6 +304,8 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
         for (unsigned pid=0; pid<minp; pid++)
         {
             dPrimefree[pid] = v2.getValue()[m2.getValue()[pid]] - v1.getValue()[m1.getValue()[pid]];
+            if (pid < restVector.size())
+                dPrimefree[pid] -= restVector[pid];
 
             v->set(cid[pid]  , dPrimefree[pid][0]);
             v->set(cid[pid]+1, dPrimefree[pid][1]);
@@ -304,6 +322,11 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
 
             dPrimefree[pid] = v2.getValue()[m2.getValue()[pid]] - v1.getValue()[m1.getValue()[pid]];
             dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
+            if (pid < restVector.size())
+            {
+                dPrimefree[pid] -= restVector[pid];
+                dfree[pid] -= restVector[pid];
+            }
 
             std::cout<<" x2 : "<<x2.getValue()[m2.getValue()[pid]]<<" - x1 :"<<x1.getValue()[m1.getValue()[pid]]<<" = "<<dfree[pid]<<std::endl;
             std::cout<<" v2 : "<<v2.getValue()[m2.getValue()[pid]]<<" - v1 :"<<v1.getValue()[m1.getValue()[pid]]<<" = "<<dPrimefree[pid]<<std::endl;
@@ -333,7 +356,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
 
     if (!merge.getValue())
     {
@@ -379,6 +402,17 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmo
     }
 }
 
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/)
+{
+    helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
+    helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+    helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
+    wm1.push_back(m1);
+    wm2.push_back(m2);
+    wrest.push_back(Q-P);
+}
+
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
@@ -392,7 +426,9 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     else
         glColor4f(0,1,0,1);
     glBegin(GL_POINTS);
-    for (unsigned i=0; i<min(m1.getValue().size(),m2.getValue().size()); i++)
+
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    for (unsigned i=0; i<minp; i++)
     {
         helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()[i]]);
         helper::gl::glVertexT((*this->mstate2->getX())[m2.getValue()[i]]);
@@ -409,6 +445,10 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintM
 template<>
 void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
+
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -419,6 +459,9 @@ void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintM
 template<>
 void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
 #endif
 
 } // namespace constraintset

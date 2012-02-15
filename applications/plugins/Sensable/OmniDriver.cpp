@@ -72,7 +72,7 @@ static HHD hHD = HD_INVALID_HANDLE ;
 static bool isInitialized = false;
 static HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
 
-sofa::helper::system::atomic<int> doUpdate;
+static sofa::helper::system::atomic<int> doUpdate;
 
 void printError(FILE *stream, const HDErrorInfo *error,
         const char *message)
@@ -578,7 +578,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 if(!toolSelector.getValue() && btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2Mask;
                 Vector3 dummyVector;
                 Quat dummyQuat;
-                sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,buttonState);
+                sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,buttonState);
                 simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
                 groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
                 sofa::helper::AdvancedTimer::stepEnd("OmniDriver::6");
@@ -639,7 +639,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             std::cout << "emulated button 1 pressed" << std::endl;
             Vector3 dummyVector;
             Quat dummyQuat;
-            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,
+            sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button1Mask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
@@ -649,7 +649,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             std::cout << "emulated button 2 pressed" << std::endl;
             Vector3 dummyVector;
             Quat dummyQuat;
-            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,
+            sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button2Mask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
@@ -667,7 +667,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             std::cout << "emulated button released" << std::endl;
             Vector3 dummyVector;
             Quat dummyQuat;
-            sofa::core::objectmodel::HapticDeviceEvent event(0,dummyVector,dummyQuat,0);
+            sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }

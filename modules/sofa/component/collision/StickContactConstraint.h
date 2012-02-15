@@ -102,11 +102,11 @@ protected:
 
     constraintset::BilateralInteractionConstraint<Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
-
-    std::vector< sofa::core::collision::DetectionOutput* > contacts;
-    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
-
-    void activateMappers();
+    /*
+        std::vector< sofa::core::collision::DetectionOutput* > contacts;
+        std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+        void activateMappers();
+    */
 
 
 
@@ -116,6 +116,15 @@ protected:
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~StickContactConstraint();
 public:
+    Data<bool> f_keepAlive;
+
+    /// Return true if this contact should be kept alive, even if objects are no longer in collision
+    virtual bool keepAlive() { return f_keepAlive.getValue(); }
+
+    /// Control the keepAlive flag of the contact.
+    virtual void setKeepAlive(bool val) { f_keepAlive.setValue(val); }
+
+
     void cleanup();
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
