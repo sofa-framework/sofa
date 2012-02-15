@@ -47,7 +47,10 @@
 
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-
+#include <sofa/helper/system/thread/CTime.h>
+#ifdef SOFA_HAVE_BOOST
+#include <boost/thread.hpp>
+#endif
 
 namespace sofa
 {
@@ -68,6 +71,8 @@ using namespace sofa::defaulttype;
 static HHD hHD = HD_INVALID_HANDLE ;
 static bool isInitialized = false;
 static HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
+
+sofa::helper::system::atomic<int> doUpdate;
 
 void printError(FILE *stream, const HDErrorInfo *error,
         const char *message)
@@ -95,8 +100,19 @@ bool isSchedulerError(const HDErrorInfo *error)
     }
 }
 
+HDCallbackCode HDCALLBACK copyDeviceDataCallbackOmni(void *userData);
+
 HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
 {
+
+
+    if(doUpdate)
+    {
+        copyDeviceDataCallbackOmni(userData);
+        doUpdate.dec(); // set to 0
+    }
+
+
     //cout << "OmniDriver::stateCallback BEGIN" << endl;
     OmniData* data = static_cast<OmniData*>(userData);
     //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
@@ -300,6 +316,7 @@ int OmniDriver::initDevice(OmniData& data)
         hdEnable(HD_MAX_FORCE_CLAMPING);
 
         // Start the servo loop scheduler.
+        doUpdate = 0;
         hdStartScheduler();
         if (HD_DEVICE_ERROR(error = hdGetError()))
         {
@@ -468,7 +485,18 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
         sofa::helper::AdvancedTimer::stepBegin("OmniDriver::1");
-        hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MAX_SCHEDULER_PRIORITY);
+        //hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MAX_SCHEDULER_PRIORITY);
+
+        doUpdate.inc(); // set to 1
+        while(doUpdate)
+        {
+#ifdef SOFA_HAVE_BOOST
+            boost::thread::yield();
+#else
+            usleep(0);
+#endif
+        }
+
         sofa::helper::AdvancedTimer::stepEnd("OmniDriver::1");
         if (data.deviceData.ready)
         {
