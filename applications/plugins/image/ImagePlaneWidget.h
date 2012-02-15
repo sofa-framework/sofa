@@ -55,6 +55,7 @@
 #endif
 
 #include "ImageTypes.h"
+#include "ImageViewer.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/rmath.h>
@@ -289,6 +290,11 @@ public:
         draw();
     }
 
+    //ImagePlanetype* getImagePlane()
+    //{
+    //	return this->imageplane;
+    //}
+
     void writeToData(ImagePlanetype& d)
     {
         pCoord plane=d.getPlane();
@@ -336,14 +342,39 @@ public:
     {
         if(!this->imageplane) return;
 
-        CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index,this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
-        CImg<unsigned char> slicedModels; 	if(this->visumodels) slicedModels = this->imageplane->get_slicedModels(this->index,this->axis);
+        CImg<T> originalPlane = this->imageplane->get_slice(this->index, this->axis);
 
-        if(plane)
-            for( int y=0; y<this->image.height(); y++)
-                for( int x=0; x<this->image.width(); x++)
-                    if(plane.spectrum()<3) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,0),plane(x,y,0,0)));
-                    else this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,2)));
+        if(originalPlane)
+        {
+            if(!this->imageplane->getRgb())
+            {
+                for( int y=0; y<this->image.height(); y++)
+                {
+                    for(int x=0; x<this->image.width(); x++)
+                    {
+                        CImg<T> vector = originalPlane.get_vector_at(x,y,0);
+
+                        vector(0,0,0,0) = (T) vector.magnitude();
+                        vector(0,1,0,0) = (T) vector(0,0,0,0);
+                        vector(0,2,0,0) = (T) vector(0,0,0,0);
+
+                        originalPlane.set_vector_at(vector, x, y, 0);
+
+                    }
+                }
+            }
+
+
+            CImg<unsigned char> plane = convertToUC( originalPlane.cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
+
+            if(plane)
+                for( int y=0; y<this->image.height(); y++)
+                    for( int x=0; x<this->image.width(); x++)
+                        if(plane.spectrum()<3) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,0),plane(x,y,0,0)));
+                        else this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,2)));
+        }
+
+        CImg<unsigned char> slicedModels; 	if(this->visumodels) slicedModels = this->imageplane->get_slicedModels(this->index,this->axis);
 
         if(slicedModels)
             for( int y=0; y<this->image.height(); y++)
@@ -474,6 +505,9 @@ protected:
     QLabel *label3;
 };
 
+
+
+
 //-----------------------------------------------------------------------------------------------//
 //	Widget Container + show info (mouse position, etc.)
 //-----------------------------------------------------------------------------------------------//
@@ -512,6 +546,7 @@ public:
     ImagePlaneInfoWidget* info;
 
     QCheckBox* togglemodels;
+
 
     Timageplane_data_widget_container()
         : optionsXY(NULL), graphXY(NULL),
@@ -617,6 +652,7 @@ public:
 
         }
 
+
         return true;
     }
 
@@ -637,6 +673,7 @@ public:
 
         if(graphZY) layout->addWidget(graphZY,0,1);
         if(optionsZY) layout->addWidget(optionsZY,1,1);
+
 
         container_layout->addLayout(layout);
 
@@ -666,6 +703,7 @@ public:
             }
         }
     }
+
 };
 
 
@@ -674,6 +712,7 @@ class SOFA_IMAGE_API ImagePlaneDataWidget : public SimpleDataWidget<T, Timagepla
 {
     typedef SimpleDataWidget<T, Timageplane_data_widget_container< T > > Inherit;
     typedef sofa::core::objectmodel::Data<T> MyData;
+
 
 public:
     ImagePlaneDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
@@ -691,8 +730,11 @@ public:
         if(sXZ) QObject::connect(sXZ,SIGNAL(sliceModified()), this, SLOT(setWidgetDirty()));
         if(sZY) QObject::connect(sZY,SIGNAL(sliceModified()), this, SLOT(setWidgetDirty()));
 
+
         return b;
     }
+
+
 };
 
 

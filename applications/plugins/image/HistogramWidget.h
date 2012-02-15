@@ -155,6 +155,7 @@ public:
     void draw()
     {
         if(!this->histo) return;
+
         cimg.fill(255);
         cimg_forXY(this->histo->getImage(),x,y) if(this->histo->getImage()(x,y,0,this->channel)) this->cimg(0,x,y)=this->cimg(1,x,y)=this->cimg(2,x,y)=0;
 

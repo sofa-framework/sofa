@@ -41,7 +41,10 @@ HEADERS += \
         ImageExporter.h \
 	ImagePlaneWidget.h \
 	ImageTransformWidget.h \
-	HistogramWidget.h 
+	HistogramWidget.h \
+	QImageMouseButtonsWidget.h \
+	VectorVisualizationWidget.h \
+	VectorVis.h \
 
 SOURCES += \
 	initImage.cpp \
@@ -56,7 +59,9 @@ SOURCES += \
         ImageExporter.cpp \
 	ImagePlaneWidget.cpp \
 	ImageTransformWidget.cpp \
-	HistogramWidget.cpp  
+	HistogramWidget.cpp \
+	QImageMouseButtonsWidget.cpp \ 
+	VectorVisualizationWidget.cpp \
 
 README_FILE = image.txt
 	

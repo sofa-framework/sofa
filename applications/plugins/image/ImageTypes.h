@@ -41,6 +41,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>
+#include "VectorVis.h"
 
 
 namespace sofa
@@ -70,11 +71,16 @@ public:
 
     ///constructors/destructors
     Image() {}
+    Image(const Image<T>& _img, bool shared):img(_img.getCImgList(), shared) {}
 
     // shared instances
     Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
     Image( const CImg<T>& _img ):img(_img,true)		{}
-    Image<T>& operator=(const Image<T>& im) {  if(im.getCImgList().size()) img.assign(im.getCImgList(),true);	  return *this;		}
+    Image<T>& operator=(const Image<T>& im)
+    {
+        if(im.getCImgList().size()) img.assign(im.getCImgList(),true);
+        return *this;
+    }
 
     void clear() { img.assign(); }
     ~Image() { clear(); }
@@ -85,6 +91,7 @@ public:
 
     CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
     const CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
+
 
     imCoord getDimensions() const
     {
@@ -134,13 +141,48 @@ public:
         CImg<unsigned int> res(dimx,1,1,s,0);
         T vmin = value_min, vmax=value_max;
         if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
-
         cimglist_for(img,l)
         cimg_forXYZC(img(l),x,y,z,c)
         {
             const T val = img(l)(x,y,z,c);
             long double v = ((long double)val-(long double)vmin)/((long double)vmax-(long double)vmin)*((long double)dimx-(long double)1);
             ++res((int)(v),0,0,mergeChannels?0:c);
+        }
+        return res;
+    }
+
+    CImg<unsigned int> get_norm_histogram(const unsigned int dimx, const T value_min=(T)0, const T value_max=(T)0) const
+    {
+        if(!img.size()) return CImg<unsigned int>();
+        CImg<unsigned int> res(dimx,1,1,1,0);
+        T vmin = value_min, vmax=value_max;
+        if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
+
+
+        cimglist_for(img,l)
+        {
+            if(img(l).spectrum() >= 3)
+            {
+                cimg_forXYZ(img(l),x,y,z)
+                {
+
+                    const T valX = img(l)(x,y,z,0);
+                    const T valY = img(l)(x,y,z,1);
+                    const T valZ = img(l)(x,y,z,2);
+
+                    long double norm = std::sqrt(std::abs((long double) valX*valX + valY*valY + valZ*valZ));
+
+                    long double v = ((long double)norm-(long double)vmin)/((long double)vmax-(long double)vmin)*((long double)dimx-(long double)1);
+
+                    if( (unsigned int)(v) > dimx-1)
+                    {
+                        v = dimx-1;
+                    }
+
+                    ++res((unsigned int)(v),0,0,0);
+
+                }
+            }
         }
         return res;
     }
@@ -252,6 +294,7 @@ public:
         }
         return ret;
     }
+
 };
 
 
@@ -373,7 +416,10 @@ public:
     Real& getOffsetT() { return *reinterpret_cast<Real*>(&this->P[9]); }
     const Real& getOffsetT() const { return *reinterpret_cast<const Real*>(&this->P[9]); }
     Real& getScaleT() { return *reinterpret_cast<Real*>(&this->P[10]); }
-    const Real& getScaleT() const { return *reinterpret_cast<const Real*>(&this->P[10]); }
+    const Real& getScaleT() const
+    {
+        return *reinterpret_cast<const Real*>(&this->P[10]);
+    }
     Real& isPerspective() { return *reinterpret_cast<Real*>(&this->P[11]); }
     const Real& isPerspective() const { return *reinterpret_cast<const Real*>(&this->P[11]); }
 
@@ -441,10 +487,12 @@ struct Histogram
 
 protected:
     const ImageTypes* img;
+    const VectorVis* vectorvis;
 
     unsigned int dimx;		// input number of bins
     unsigned int dimy;		// input histogram image height
     bool mergeChannels;		// sum histogram of all channels ?
+    bool currentlyRgb;		// Used to determine if the histogram needs to change from regular to norm;
 
     double scaleVal;	double offsetVal;		// output histo abscisse to intensity transfer function :  intensity = x * scaleVal + offsetVal
 
@@ -457,16 +505,28 @@ public:
     static const char* Name() { return "Histogram"; }
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=true)
-        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
+        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels), currentlyRgb(true),
          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
-    void setInput(const ImageTypes& _img) {  img=&_img; update(); }
+    void setInput(const ImageTypes& _img)
+    {
+        img=&_img;
+        clamp[0] =img->getCImgList().min();
+        clamp[1] = img->getCImgList().max();
+        update();
+    }
+
+    void setVectorVis(const VectorVis* vis) { vectorvis = vis; }
 
     const CImg<bool>& getImage() const {return image;}
     const CImg<unsigned int>& getHistogram() const {return histogram;}
     const Vec<2,T>& getClamp() const {return clamp;}
-    void setClamp(const Vec<2,T> _clamp) { clamp=_clamp; }
+    void setClamp(const Vec<2,T> _clamp)
+    {
+        clamp[0] = _clamp[0];
+        clamp[1] = _clamp[1];
+    }
 
     void update()
     {
@@ -474,12 +534,29 @@ public:
         if(!img->getCImgList().size()) return;
         clamp[0] =img->getCImgList().min();
         clamp[1] = img->getCImgList().max();
-        histogram = img->get_histogram(dimx,mergeChannels,clamp[0],clamp[1]);
+
+        //If these values aren't the same, the histogram type has changed since the last call to update()
+        // and needs to be recalculated
+        if(vectorvis && (currentlyRgb != vectorvis->getRgb()))
+        {
+            currentlyRgb = vectorvis->getRgb();
+            if(currentlyRgb)
+            {
+                histogram = img->get_histogram(dimx,mergeChannels,clamp[0],clamp[1]);
+            }
+            else
+            {
+                histogram = img->get_norm_histogram(dimx,clamp[0],clamp[1]);
+            }
+
+        }
+
         offsetVal = (double)clamp[0];
         scaleVal = (double)(clamp[1]-clamp[0])/(double)(dimx-1);
         image = CImg<bool>(dimx,dimy,1,histogram.spectrum(),0);
         bool tru=true;
         cimg_forC(histogram,c) image.get_shared_channel(c).draw_graph(histogram.get_shared_channel(c),&tru,1,3,0);
+
     }
 
     T fromHistogram(const unsigned int i) const {return (T)(scaleVal*(double)i + offsetVal); }
@@ -498,6 +575,7 @@ public:
         out<<h.getClamp();
         return out;
     }
+
 };
 
 
@@ -520,6 +598,8 @@ struct ImagePlane
     typedef typename sofa::component::visualmodel::VisualModelImpl VisualModelTypes;
     typedef std::vector<VisualModelTypes*> VecVisualModel;
 
+    const VectorVis* vectorvis;
+
 protected:
     const ImageTypes* img;				// input image
     VecVisualModel visualModels;		// input models to draw on images
@@ -530,6 +610,7 @@ protected:
     Vec<2,T> clamp;				// input clamp values
 
     bool imagePlaneDirty;			// Dirty when output plane images should be updated
+    bool vectors;					//Visualize vectors as arrows
 
 public:
     static const char* Name() { return "ImagePlane"; }
@@ -547,11 +628,21 @@ public:
         this->imagePlaneDirty=true;
     }
 
+    bool drawVectors() {return vectors;}
     const pCoord& getPlane() const {return plane;}
     const unsigned int& getTime() const {return time;}
     const Vec<2,T>& getClamp() const {return clamp;}
     imCoord getDimensions() const { return img->getDimensions(); }
     const bool& isImagePlaneDirty() const {return imagePlaneDirty;}
+    void setVectorVis(const VectorVis* vis) { vectorvis = vis; }
+    bool getRgb() const { return vectorvis->getRgb(); }
+
+
+    void setDrawVectors(bool state)
+    {
+        vectors = state;
+        imagePlaneDirty = true;
+    }
 
     void setPlane(const pCoord& p)
     {
