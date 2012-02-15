@@ -125,7 +125,7 @@ void JointSpringForceField<DataTypes>::init()
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::bwdInit()
 {
-//   this->Inherit::bwdInit();
+    //   this->Inherit::bwdInit();
 
     const VecCoord& x1= *this->mstate1->getX();
 
@@ -155,7 +155,7 @@ void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 {
     Real pi2=(Real)2.*(Real)PI;
 
-//std::cout<<"torsion:=";
+    //std::cout<<"torsion:=";
 
     for (unsigned int i=0; i<3; i++)
     {
