@@ -24,17 +24,29 @@
 ******************************************************************************/
 #include <iostream>
 #include <fstream>
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/Simulation.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/BackTrace.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/component/misc/WriteState.h>
-
 #include <ctime>
 
-using std::cerr; using std::endl;
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/PluginManager.h>
+
+#include <sofa/component/init.h>
+#include <sofa/simulation/common/xml/initXml.h>
+
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
+
+
+
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/component/misc/WriteState.h>
+
+
+
+using std::cerr;
+using std::endl;
+using std::cout;
 
 // ---------------------------------------------------------------------
 // ---
@@ -43,58 +55,61 @@ using std::cerr; using std::endl;
 
 void apply(std::string &input, unsigned int nbsteps, std::string &output)
 {
-    cerr<<"\n****SIMULATION*  (.scn:"<< input<<", #steps:"<<nbsteps<<", .simu:"<<output<<")"<<endl;
+    cout<<"\n****SIMULATION*  (.scn:"<< input<<", #steps:"<<nbsteps<<", .simu:"<<output<<")"<<endl;
 
-    sofa::simulation::xml::numDefault = 0;
-
-    using namespace sofa::helper::system;
-    sofa::simulation::tree::GNode* groot = NULL;
-
-    groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::tree::getSimulation()->load(input.c_str()));
-    sofa::simulation::tree::getSimulation()->init(groot);
-    if (groot == NULL)
+    // --- Create simulation graph ---
+    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(input.c_str()));
+    if (groot==NULL)
     {
-        std::cerr << "CANNOT open " << input << " !\n";
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
+    }
+
+    if (!groot)
+    {
+        cerr << "Error, unable to access groot" << std::endl;
         return;
     }
 
+    sofa::simulation::getSimulation()->init(groot.get());
+    groot->setAnimate(true);
 
 
-    std::string outputdir = SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string("/applications/projects/sofaBatch/simulation/");
+    // --- Init output file ---
+    std::string outputdir =  sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string("/applications/projects/sofaBatch/simulation/");
+    std::string mstate = outputdir + sofa::helper::system::SetDirectory::GetFileName(output.c_str());
 
-
-    std::string mstate = outputdir + SetDirectory::GetFileName(output.c_str());
-
-
-    sofa::component::misc::WriteStateCreator visitor;
+    // --- Init Write state visitor ---
+    sofa::component::misc::WriteStateCreator visitor(sofa::core::ExecParams::defaultInstance());
     visitor.setSceneName(mstate);
-    visitor.execute(groot);
+    visitor.execute(groot.get());
+
+    sofa::component::misc::WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance(), true);
+    v_write.execute(groot.get());
 
 
-    sofa::component::misc::WriteStateActivator v_write(true);
-    v_write.execute(groot);
+    // --- Sofa GUI Batch animationLoop ---
+    sofa::simulation::getSimulation()->animate(groot.get());
 
+    std::cout << "Computing "<<nbsteps<<" iterations." << std::endl;
+    sofa::simulation::Node::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+    sofa::simulation::Node::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+    sofa::simulation::Node::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+    sofa::simulation::Node::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+    for (unsigned int i=0; i<nbsteps; i++)
+        sofa::simulation::getSimulation()->animate(groot.get());
 
-    clock_t curtime = clock();
-    std::cout << "Computing " <<  nbsteps << " for " << input <<  std::endl;
-    for (unsigned int j=0; j<nbsteps; j++)
-    {
-        sofa::simulation::tree::getSimulation()->animate(groot);
-    }
-    double t = (clock() - curtime)/((double)CLOCKS_PER_SEC);
+    t = sofa::helper::system::thread::CTime::getFastTime()-t;
+    rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-    std::cout << nbsteps << " steps done in " << t  << " seconds (average="<<t/nbsteps<<" s/step)" <<std::endl;
+    std::cout << nbsteps << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbsteps)/((double)t) << " FPS)." << std::endl;
+    std::cout << nbsteps << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbsteps)/((double)rt) << " FPS)." << std::endl;
 
-
-
-
+    // --- Exporting output simulation ---
     std::string simulationFileName = mstate + std::string(".simu") ;
-
-
     std::ofstream out(simulationFileName.c_str());
     if (!out.fail())
     {
-        out << input.c_str() << " Init: 0.000 s End: " << nbsteps*sofa::simulation::tree::getSimulation()->getContext()->getDt() << " s " << sofa::simulation::tree::getSimulation()->getContext()->getDt() << " baseName: "<<mstate;
+        out << input.c_str() << " Init: 0.000 s End: " << nbsteps*groot.get()->getDt() << " s " << groot.get()->getDt() << " baseName: "<<mstate;
         out.close();
 
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
@@ -105,24 +120,26 @@ void apply(std::string &input, unsigned int nbsteps, std::string &output)
     }
 
 
+    sofa::simulation::getSimulation()->unload(groot);
 
-    sofa::simulation::tree::getSimulation()->unload(groot);
-
-
+    return;
 }
+
 
 int main(int argc, char** argv)
 {
-//     sofa::helper::BackTrace::autodump();
-
+    // --- Parameter initialisation ---
     std::vector<std::string> files;
     std::string fileName ;
-
+    std::vector<std::string> plugins;
+    std::vector<unsigned int> nbstepsations;
 
     sofa::helper::parse(&files, "\nThis is a SOFA batch that permits to run and to save simulation states without GUI.\nGive a name file containing actions == list of (input .scn, #simulated time steps, output .simu). See file tasks for an example.\n\nHere are the command line arguments")
+    .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
 
 
+    // --- check input file
     if (!files.empty())
         fileName = files[0];
     else
@@ -131,11 +148,25 @@ int main(int argc, char** argv)
         return 0;
     }
 
+    fileName = sofa::helper::system::DataRepository.getFile(fileName);
+    //sofa::helper::system::DataRepository.findFile(fileName);
 
-    sofa::helper::system::DataRepository.findFile(fileName);
+
+    // --- Init component ---
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+
+    sofa::component::init();
+    sofa::simulation::xml::initXml();
 
 
-    //Get the list of scenes to test
+    // --- plugins ---
+    for (unsigned int i=0; i<plugins.size(); i++)
+        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+
+    sofa::helper::system::PluginManager::getInstance().init();
+
+
+    // --- Perform task list ---
     std::ifstream end(fileName.c_str());
     std::string input;
     int nbsteps;
@@ -147,10 +178,6 @@ int main(int argc, char** argv)
         apply(input, nbsteps, output);
     }
     end.close();
-
-
-
-
 
     return 0;
 }

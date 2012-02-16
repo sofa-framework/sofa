@@ -161,6 +161,7 @@ declare(SofaVRPNServer, applications/projects/SofaVRPNServer, vrpn_quat vrpn_atm
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofa_component_dev sofagpucuda)
 declare(sofaInfo, applications/projects/sofaInfo, sofaguimain sofa_component_dev)
+declare(sofaBatch, applications/projects/sofaBatch, sofa_component)
 #declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
 declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofa_component sofaobjectcreator sofaguimain)
@@ -328,6 +329,7 @@ enable(meshconv)
 enable(sofaInitTimer)
 enable(sofaVerification)
 enable(sofaInfo)
+enable(sofaBatch)
 
 contains(DEFINES, SOFA_HAVE_BOOST) {
 	enable(sofatests)
