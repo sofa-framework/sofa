@@ -455,7 +455,7 @@ protected:
             {
                 const T* voxel = rimage->getCImg(rplane->getTime()).data(xOffset, yOffset, sliceN);
 
-                Vec<3, double> base(xOffset * voxelSizeX, yOffset * voxelSizeY, sliceN * voxelSizeZ);
+                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(xOffset, yOffset, sliceN));
                 Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
                 relativeVec = relativeVec * size;
 
@@ -494,7 +494,7 @@ protected:
             {
                 const T* voxel = rimage->getCImg(rplane->getTime()).data(xOffset, sliceN, zOffset);
 
-                Vec<3, double> base(xOffset * voxelSizeX, sliceN * voxelSizeY, zOffset * voxelSizeZ);
+                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(xOffset, sliceN, zOffset));
                 Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
                 relativeVec = relativeVec * size;
 
@@ -533,7 +533,7 @@ protected:
             {
                 const T* voxel = rimage->getCImg(rplane->getTime()).data(sliceN, yOffset, zOffset);
 
-                Vec<3, double> base(sliceN * voxelSizeX, yOffset * voxelSizeY, zOffset * voxelSizeZ);
+                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(sliceN, yOffset, zOffset));
                 Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
                 relativeVec = relativeVec * size;
 
