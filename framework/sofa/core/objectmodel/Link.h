@@ -65,11 +65,11 @@ public:
     static TDestType* get(const T& p) { return p.get(); }
 };
 
-template<class TDestType, class TDestPtr, bool storePath>
+template<class TDestType, class TDestPtr, bool strongLink, bool storePath>
 class LinkTraitsValueType;
 
-template<class TDestType, class TDestPtr>
-class LinkTraitsValueType<TDestType,TDestPtr, false>
+template<class TDestType, class TDestPtr, bool strongLink>
+class LinkTraitsValueType<TDestType,TDestPtr,strongLink, false>
 {
 public:
     typedef TDestPtr T;
@@ -82,24 +82,26 @@ public:
     static void setPath(T& /*ptr*/, const std::string& /*name*/) {}
 };
 
-template<class TDestType, class TDestPtr>
-class LinkTraitsValueType<TDestType,TDestPtr, true>
+template<class TDestType, class TDestPtr, bool strongLink>
+class LinkTraitsValueType<TDestType,TDestPtr,strongLink, true>
 {
 public:
+    typedef LinkTraitsDestPtr<TDestType, strongLink> TraitsDestPtr;
+
     struct T
     {
         TDestPtr ptr;
         std::string path;
         T() : ptr(TDestPtr()) {}
         explicit T(const TDestPtr& p) : ptr(p) {}
-        operator TDestType*() const { return &(*ptr); }
+        operator TDestType*() const { return TraitsDestPtr::get(ptr); }
         void operator=(const TDestPtr& v) { if (v != ptr) { ptr = v; path.clear(); } }
         TDestType& operator*() const { return *ptr; }
-        TDestType* operator->() const { return &(*ptr); }
-        TDestType* get() const { return &(*ptr); }
+        TDestType* operator->() const { return TraitsDestPtr::get(ptr); }
+        TDestType* get() const { return TraitsDestPtr::get(ptr); }
         bool operator!() const { return !ptr; }
-        bool operator == (const TDestPtr& p) { return ptr == p; }
-        bool operator != (const TDestPtr& p) { return ptr != p; }
+        bool operator==(const TDestPtr& p) const { return ptr == p; }
+        bool operator!=(const TDestPtr& p) const { return ptr != p; }
     };
     static bool path(const T& v, std::string& str)
     {
@@ -304,7 +306,7 @@ public:
 #define ACTIVEFLAG(f) ((ActiveFlags & (f)) != 0)
     typedef LinkTraitsDestPtr<DestType, ACTIVEFLAG(FLAG_STRONGLINK)> TraitsDestPtr;
     typedef typename TraitsDestPtr::T DestPtr;
-    typedef LinkTraitsValueType<DestType, DestPtr, ACTIVEFLAG(FLAG_STOREPATH)> TraitsValueType;
+    typedef LinkTraitsValueType<DestType, DestPtr, ACTIVEFLAG(FLAG_STRONGLINK), ACTIVEFLAG(FLAG_STOREPATH)> TraitsValueType;
     typedef typename TraitsValueType::T ValueType;
     typedef LinkTraitsContainer<DestType, DestPtr, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
     typedef typename TraitsContainer::T Container;
@@ -364,7 +366,7 @@ public:
     {
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
+        unsigned int index = TraitsContainer::add(m_value[aspect],v);
         this->updateCounter(aspect);
         added(v, index);
         return true;
@@ -374,7 +376,7 @@ public:
     {
         if (!v && path.empty()) return false;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
+        unsigned int index = TraitsContainer::add(m_value[aspect],v);
         TraitsValueType::setPath(m_value[aspect][index],path);
         this->updateCounter(aspect);
         added(v, index);
