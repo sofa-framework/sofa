@@ -10,12 +10,14 @@ DEFINES += SOFA_BUILD_MESHSTEPLOADERPLUGIN
 
 SOURCES = \
 MeshSTEPLoader.cpp \
+ParametricTriangleTopologyContainer.cpp \
 SingleComponent.cpp \
 STEPShapeMapping.cpp \
 initMeshSTEPLoader.cpp
 
 HEADERS = \
 MeshSTEPLoader.h\
+ParametricTriangleTopologyContainer.h \
 SingleComponent.inl\
 SingleComponent.h \
 STEPShapeMapping.h \

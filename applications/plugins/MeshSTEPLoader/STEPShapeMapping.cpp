@@ -90,7 +90,7 @@ void STEPShapeExtractor::update()
         {
             if (my_indicesComponents[i][0] == my_numberShape)
             {
-                endIdx = beginIdx + my_indicesComponents[i][2] -1;
+                endIdx = beginIdx + my_indicesComponents[i][2];
                 if(positionsI.size()>0 )
                 {
                     for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
