@@ -69,9 +69,8 @@ void State<DataTypes>::computeBBox(const core::ExecParams* params)
         return;
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
     Real p[3] = {0,0,0};
-    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real maxBBox[3] = {-max_real,-max_real,-max_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
     for (unsigned int i = 0; i < xSize; i++)

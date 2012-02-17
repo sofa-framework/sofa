@@ -198,6 +198,13 @@ void BoundingBox::include(const BoundingBox& other)
     maxBBox().z() = std::max( maxBBox().z(), other.maxBBox().z());
 }
 
+void BoundingBox::inflate(const SReal amount)
+{
+    Vector3 size(amount,amount,amount);
+    minBBox() -= size;
+    maxBBox() += size;
+}
+
 } // namespace defaulttype
 
 } // namespace sofa

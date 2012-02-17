@@ -82,6 +82,8 @@ public:
     void include( const sofa::defaulttype::Vector3& point);
     void include( const BoundingBox& other);
 
+    void inflate( const SReal amount);
+
     friend std::ostream& operator << ( std::ostream& out, const BoundingBox& bbox)
     {
         out << bbox.minBBox() << " " <<  bbox.maxBBox();
