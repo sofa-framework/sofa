@@ -23,7 +23,7 @@ public:
 
     static const char* Name() { return "Vectors";}
 
-    VectorVis(int _subsampleXY=5, int _subsampleZ=5, int _shapeScale=10, bool _rgb=false, bool _shape=false)
+    VectorVis(int _subsampleXY=5, int _subsampleZ=5, int _shapeScale=10, bool _rgb=true, bool _shape=false)
         :subsampleXY(_subsampleXY), subsampleZ(_subsampleZ), shapeScale(_shapeScale), rgb(_rgb), shape(_shape)
     { }
 
