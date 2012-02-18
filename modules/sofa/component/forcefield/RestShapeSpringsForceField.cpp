@@ -78,7 +78,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         {
             Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
             //std::cout<<"dx = "<< dx <<std::endl;
-            getVCenter(f1[index]) -=  dx * k[i] ;
+            getVCenter(f1[index]) -=  dx * (i < k.size() ? k[i] : k[0]) ;
         }
         else
         {
@@ -88,7 +88,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
             CPos pivot2 = p1[index].getCenter() + rotatedPivot;
             CPos dx = pivot2 - m_pivots[i];
             //std::cout << "dx = " << dx << std::endl;
-            getVCenter(f1[index]) -= dx * k[i] ;
+            getVCenter(f1[index]) -= dx * (i < k.size() ? k[i] : k[0]) ;
+
             //getVOrientation(f1[index]) -= cross(rotatedPivot, dx * k[i]);
         }
 
@@ -111,8 +112,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         //Vec3d m1 = getVOrientation(f1[index]) ;
         //std::cout<<"m1 = "<<m1<<std::endl;
 
-        getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
 
+        getVOrientation(f1[index]) -= dir * angle * (i < k_a.size() ? k_a[i] : k_a[0]);
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
 
     }
@@ -136,8 +137,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalP
     for (unsigned int i=0; i<m_indices.size(); i++)
     {
         curIndex = m_indices[i];
-        getVCenter(df1[curIndex])	 -=  getVCenter(dx1[curIndex]) * k[i] * kFactor ;
-        getVOrientation(df1[curIndex]) -=  getVOrientation(dx1[curIndex]) * k_a[i] * kFactor ;
+        getVCenter(df1[curIndex])	 -=  getVCenter(dx1[curIndex]) * ( (i < k.size()) ? k[i] : k[0] ) * kFactor ;
+        getVOrientation(df1[curIndex]) -=  getVOrientation(dx1[curIndex]) * (i < k_a.size() ? k_a[i] : k_a[0]) * kFactor ;
     }
 }
 
@@ -162,16 +163,15 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
         // translation
         for(int i = 0; i < 3; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < k.size() ? k[index] : k[0]));
         }
 
         // rotation
         for(int i = 3; i < 6; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k_a[index]);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < k_a.size() ? k_a[index] : k_a[0]));
         }
     }
-
 
     /* debug
     std::cout<<"MAT obtained : size: ("<<mat->rowSize()<<" * "<<mat->colSize()<<")\n"<<std::endl;
@@ -218,7 +218,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
 
         // translation
         Vec3f dx = p1[index].getCenter() - p0[ext_index].getCenter();
-        getVCenter(f1[index]) -=  dx * k[i] ;
+        getVCenter(f1[index]) -=  dx * (i < k.size() ? k[i] : k[0]) ;
 
         // rotation
         Quatf dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
@@ -230,7 +230,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
         dq.quatToAxis(dir, angle);
 
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
-        getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
+        getVOrientation(f1[index]) -= dir * angle * (i < k_a.size() ? k_a[i] : k_a[0]) ;
     }
 }
 
@@ -251,8 +251,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalP
     {
 //		curIndex = m_indices[index];
         curIndex = m_indices[i];  // Fix by FF, just a guess
-        getVCenter(df1[curIndex])      -=  getVCenter(dx1[curIndex])      * k[i]   * kFactor ;
-        getVOrientation(df1[curIndex]) -=  getVOrientation(dx1[curIndex]) * k_a[i] * kFactor ;
+        getVCenter(df1[curIndex])      -=  getVCenter(dx1[curIndex])      * (i < k.size() ? k[i] : k[0])   * kFactor ;
+        getVOrientation(df1[curIndex]) -=  getVOrientation(dx1[curIndex]) * (i < k_a.size() ? k_a[i] : k_a[0]) * kFactor ;
     }
 }
 
@@ -279,13 +279,13 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::Mechanic
         // translation
         for(int i = 0; i < 3; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k[index]);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * (index < k.size() ? k[index] : k[0]));
         }
 
         // rotation
         for(int i = 3; i < 6; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k_a[index]);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * (index < k_a.size() ? k_a[index] : k_a[0]));
         }
     }
 }
@@ -350,8 +350,6 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
 
         glEnd();
     }
-
-
 }
 #endif
 
