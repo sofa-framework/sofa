@@ -253,6 +253,7 @@ public:
         return reinterpret_cast<T*>(this->getObject(classid(T), dir));
     }
 
+
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
     void get(T*& ptr, SearchDirection dir = SearchUp) const

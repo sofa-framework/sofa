@@ -228,7 +228,7 @@ public:
     /// Propagate positions and velocities to the output
     virtual void init();
 
-    ///<TO REMOVE>
+    ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?
     /// Get the source (upper) model.
     virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom();

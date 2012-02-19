@@ -368,6 +368,8 @@ double BaseObject::getTime() const
     return getContext()->getTime();
 }
 
+
+
 } // namespace objectmodel
 
 } // namespace core

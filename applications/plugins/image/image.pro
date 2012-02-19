@@ -42,7 +42,7 @@ HEADERS += \
 	ImagePlaneWidget.h \
 	ImageTransformWidget.h \
 	HistogramWidget.h \
-	QImageMouseButtonsWidget.h \
+#	QImageMouseButtonsWidget.h \
 	VectorVisualizationWidget.h \
 	VectorVis.h \
 
@@ -60,7 +60,7 @@ SOURCES += \
 	ImagePlaneWidget.cpp \
 	ImageTransformWidget.cpp \
 	HistogramWidget.cpp \
-	QImageMouseButtonsWidget.cpp \ 
+#	QImageMouseButtonsWidget.cpp \
 	VectorVisualizationWidget.cpp \
 
 README_FILE = image.txt
