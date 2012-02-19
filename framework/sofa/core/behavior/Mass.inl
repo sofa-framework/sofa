@@ -29,6 +29,8 @@
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/DataTypeInfo.h>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -133,6 +135,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST *
 #endif /* SOFA_SMP */
             accFromF(mparams /* PARAMS FIRST */, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
     }
+    else serr <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid) receives no mparam" << sendl;
 }
 
 template<class DataTypes>
@@ -144,6 +147,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST *
         accFromF( *a.beginEdit(mparams) , f.getValue(mparams));
         a.endEdit(mparams);
     }
+    else serr<< "Mass<DataTypes>::accFromF, " << getName() << "has no mechanical state" << sendl;
 }
 
 template<class DataTypes>
@@ -215,13 +219,13 @@ double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
 template<class DataTypes>
 void Mass<DataTypes>::addKToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-//    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+    //    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-//	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+    //	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
 }
 
 template<class DataTypes>

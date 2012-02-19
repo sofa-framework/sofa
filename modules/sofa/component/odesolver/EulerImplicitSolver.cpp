@@ -149,11 +149,14 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
             mop.addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
         }
         b.teq(h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
-#else
-        // new more powerful visitors
-        b.eq(f);
-        mop.addMBKv(b, -f_rayleighMass.getValue(), 0, h+f_rayleighStiffness.getValue()); // add Rayleigh damping force (rs K - rm M) v
-        b.teq(h);                           // b = h(f0 + (h+rs) K v - rm M v )
+#else  // new more powerful visitors
+
+        // force in the current configuration
+        b.eq(f);                                                                         // b = f0
+        // add the change of force due to stiffness + Rayleigh damping
+        mop.addMBKv(b, -f_rayleighMass.getValue(), 0, h+f_rayleighStiffness.getValue()); // b =  f0 + (h+rs) K v - rm M v
+        // integration over a time step
+        b.teq(h);                                                                        // b = h(f0 + (h+rs) K v - rm M v )
 #endif
     }
 
