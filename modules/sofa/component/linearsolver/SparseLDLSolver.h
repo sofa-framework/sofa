@@ -33,7 +33,7 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
-#include <sofa/component/linearsolver/SparseLDLSolverImpl.inl>
+#include <sofa/component/linearsolver/SparseLDLSolverImpl.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
@@ -58,8 +58,6 @@ public:
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
 
-    Data<bool> f_verbose;
-
     SparseLDLSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
@@ -76,8 +74,7 @@ protected :
     {
     public :
         sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
-        int n;
-        int nnz;
+        int n,nnz;
 
         helper::vector<Real> values,D;
         helper::vector<int> rowind,colptr;

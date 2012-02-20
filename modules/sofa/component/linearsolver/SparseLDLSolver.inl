@@ -30,7 +30,6 @@
 #include <sofa/component/linearsolver/SparseLDLSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -57,15 +56,14 @@ using std::cerr;
 using std::endl;
 
 template<class TMatrix, class TVector>
-SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-{
-}
+SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver() {}
 
 template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
     SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
+
+    B.resize(data->n);
 
     // permutation according to metis
     for (int i=0; i<data->n; i++) B[i] = r[data->perm[i]];
@@ -107,10 +105,9 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     int * Mcolptr = (int *) &data->Mfiltered.getRowBegin()[0];
     int * Mrowind = (int *) &data->Mfiltered.getColsIndex()[0];
     Real * Mvalues = (Real *) &data->Mfiltered.getColsValue()[0];
-
     data->perm.resize(data->n);
     data->invperm.resize(data->n);
-    B.resize(data->n);
+    data->colptr.resize(data->n);
     data->D.resize(data->n);
 
     LDL_ordering(data->n,Mcolptr,Mrowind,&data->perm[0],&data->invperm[0]);
