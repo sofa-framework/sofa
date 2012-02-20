@@ -33,7 +33,7 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/SparseLDLSolverImpl.inl>
 #include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
@@ -45,45 +45,24 @@ namespace component
 namespace linearsolver
 {
 
-
-
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector>
-class SparseLDLSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+class SparseLDLSolver : public sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::SparseLDLSolverImpl,TMatrix,TVector));
+    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector> Inherit;
 
 public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     Data<bool> f_verbose;
 
     SparseLDLSolver();
-    ~SparseLDLSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SparseLDLSolver<TMatrix,TVector>* = NULL)
-    {
-        return TMatrix::Name();
-    }
 
     MatrixInvertData * createInvertData()
     {
@@ -91,26 +70,15 @@ public:
     }
 
 protected :
-
-    void LDL_ordering(Matrix& M);
-    void LDL_symbolic(Matrix& M);
-    void LDL_numeric(Matrix& M);
-
-    helper::vector<int> xadj,adj;
-    helper::vector<Real> Y,B;
-    helper::vector<int> Parent,Lnz,Flag,Pattern;
-    helper::vector<int> perm, invperm; //premutation inverse
-
+    helper::vector<Real> B;
 
     class SparseLDLSolverInvertData : public MatrixInvertData
     {
     public :
         sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
         int n;
+        int nnz;
 
-        int * Mcolptr;
-        int * Mrowind;
-        Real * Mvalues;
         helper::vector<Real> values,D;
         helper::vector<int> rowind,colptr;
         helper::vector<int> perm, invperm; //premutation inverse
