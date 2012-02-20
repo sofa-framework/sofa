@@ -94,12 +94,27 @@ public:
 
     Data<bool> drawBB;
 
+    /**
+    * If true, the container will attempt to load a sequence of images starting from the file given by filename
+    */
     Data<bool> sequence;
+    /**
+    * The length of each frame in the sequence in seconds.
+    */
     Data<Real> frameDuration;
+    /**
+    * The starting time of the sequence in seconds.
+    */
     Data<Real> frameOffset;
+    /**
+    * The number of frames of the sequence to be loaded.
+    */
     Data<unsigned int> nFrames;
 
 #ifdef SOFA_HAVE_ZLIB
+    /**
+    * Holds the uncompressed version of a compressed file in memory.
+    */
     gzFile gzfile;
 #endif
 
@@ -276,6 +291,9 @@ protected:
 
     }
 
+    /**
+    * Load a .gz file. NOT YET FULLY IMPLEMENTED.
+    */
     bool loadZipped(std::string fname)
     {
 #ifndef SOFA_HAVE_ZLIB
@@ -419,6 +437,9 @@ protected:
         return true;
     }
 
+    /**
+    * When loading a sequence of images, determines the filename of the next image in the sequence based on the current image's filename.
+    */
     std::string getNextFname(std::string currentFname)
     {
 

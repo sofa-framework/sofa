@@ -608,6 +608,7 @@ protected:
             CImg<T> originalPlane = rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1);
 
 
+            //Calculates the norm of the vector and sets it as the value of the voxel
             if(!vectorVisualization.getValue().getRgb())
             {
                 if(originalPlane)

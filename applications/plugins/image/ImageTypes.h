@@ -151,6 +151,9 @@ public:
         return res;
     }
 
+    /**
+    * Returns a histogram of an image where the value at each pixel is the norm of multiple channels.
+    */
     CImg<unsigned int> get_norm_histogram(const unsigned int dimx, const T value_min=(T)0, const T value_max=(T)0) const
     {
         if(!img.size()) return CImg<unsigned int>();
@@ -487,7 +490,7 @@ struct Histogram
 
 protected:
     const ImageTypes* img;
-    const VectorVis* vectorvis;
+    const VectorVis* vectorvis;  //! A reference to the vectorvis data allows the correct type of histogram to be loaded as the user changes the options in the GUI.
 
     unsigned int dimx;		// input number of bins
     unsigned int dimy;		// input histogram image height
@@ -598,7 +601,7 @@ struct ImagePlane
     typedef typename sofa::component::visualmodel::VisualModelImpl VisualModelTypes;
     typedef std::vector<VisualModelTypes*> VecVisualModel;
 
-    const VectorVis* vectorvis;
+    const VectorVis* vectorvis; //! A reference to the VectorVis data allows the plane images to switch between RGB or greyscale norms, as the user changes the options in the GUI
 
 protected:
     const ImageTypes* img;				// input image
@@ -634,7 +637,14 @@ public:
     const Vec<2,T>& getClamp() const {return clamp;}
     imCoord getDimensions() const { return img->getDimensions(); }
     const bool& isImagePlaneDirty() const {return imagePlaneDirty;}
+
+    /**
+    * Sets the reference to the VectorVis data.
+    */
     void setVectorVis(const VectorVis* vis) { vectorvis = vis; }
+    /**
+    * Checks if the image is currently being displayed as RGB or a greyscale of the norm values, so the image plane can display the appropriate type.
+    */
     bool getRgb() const { return vectorvis->getRgb(); }
 
 

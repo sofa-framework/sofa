@@ -77,10 +77,29 @@ class TVectorVisSettings: public VectorVisSettings
 protected:
     const DataType* vectorData;
 
-    bool rgb;
+    /**
+    * One shape is drawn every subsampleXY values in both the X plane and the Y plane. So, as subsampleXY is increased, the density of the shapes decreases.
+    */
     int subsampleXY;
+
+    /**
+    * One shape is drawn every subsampleZ values in Z plane. So, as subsampleZ is increased, the density of the shapes decreases.
+    */
     int subsampleZ;
+
+    /**
+    * The size of the shape is multiplied by this value before it is drawn.
+    */
     int shapeScale;
+
+    /**
+    * When true, a 3 channel image is displayed as an RGB image. When false, the image is displayed in greyscale, with the value being the norm of the 3 channels.
+    */
+    bool rgb;
+
+    /**
+    * When true, a shape is drawn representing the data. In a 3 channel image, that shape is an arrow, and in a 6 channel image, the shape is an ellipsoid.
+    */
     bool shape;
 
 
