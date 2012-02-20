@@ -17,7 +17,7 @@
             <FixPickedParticleButtonSetting button="Left" stiffness="10000" />
         </Node>
     </Node>
-    <Node name="Liver" gravity="0 -9.81 0" depend="topo dofs">
+    <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />

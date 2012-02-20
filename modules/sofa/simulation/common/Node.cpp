@@ -1112,6 +1112,8 @@ typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::bidirec
 
 void Node::sortComponents()
 {
+    if (depend.getValue().empty())
+        return;
     typedef DependencyGraph::vertex_descriptor Vertex;
     DependencyGraph dependencyGraph;
     // map vertex->component
