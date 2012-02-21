@@ -16,6 +16,7 @@ if "%1" == "VC8" goto vc8
 if "%1" == "VC9" goto vc9
 if "%1" == "VC10" goto vc10
 if "%1" == "VC9_X64" goto vc9_x64
+if "%1" == "VC10_X64" goto vc10_x64
 if "%1" == "clean" goto clean
 
 :console
@@ -57,6 +58,17 @@ set QMAKESPEC=win32-msvc2008
 set TARGET_MACHINE=x64
 @echo on
 @echo Making Visual project 9 x64
+qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+@echo off
+call x64convert.bat
+@echo on
+goto common
+
+:vc10_x64
+set QMAKESPEC=win32-msvc2010
+set TARGET_MACHINE=x64
+@echo on
+@echo Making Visual project 10 x64
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
 @echo off
 call x64convert.bat
