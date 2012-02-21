@@ -216,6 +216,7 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARA
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
         addKToMatrix(r.matrix, mparams->kFactor(), r.offset);
+    else serr<<"ERROR("<<getClassName()<<"): addKToMatrix found no valid matrix accessor." << sendl;
 }
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)

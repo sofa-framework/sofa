@@ -57,18 +57,22 @@ public:
     Data<bool> f_verbose;
 
     CholeskySolver();
+
+    /// Compute x such as Mx=b. M is not used, it must have been factored before using method invert(Matrix& M)
     void solve (Matrix& M, Vector& x, Vector& b);
+
+    /// Factors the matrix. Must be done before solving
     void invert(Matrix& M);
 
 private :
-    FullMatrix<double> L;
-    //Vector s;
+    FullMatrix<typename Vector::Real> L;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_BASE_LINEAR_SOLVER)
 
 template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
 template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<float>, FullVector<float> >;
 
 #endif
 
