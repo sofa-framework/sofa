@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <utility> // for std::pair
 #include <cstddef> // for NULL
+#include <iostream>
 
 namespace sofa
 {
@@ -1150,6 +1151,25 @@ public:
     virtual void opAddMT(defaulttype::BaseMatrix* m,double fact) const;
 
     /// @}
+
+    friend std::ostream& operator << (std::ostream& out, const  sofa::defaulttype::BaseMatrix& v )
+    {
+        int nx = v.colSize();
+        int ny = v.rowSize();
+        out << "[";
+        for (int y=0; y<ny; ++y)
+        {
+            out << "\n[";
+            for (int x=0; x<nx; ++x)
+            {
+                out << " " << v.element(y,x);
+            }
+            out << " ]";
+        }
+        out << " ]";
+        return out;
+    }
+
 };
 
 

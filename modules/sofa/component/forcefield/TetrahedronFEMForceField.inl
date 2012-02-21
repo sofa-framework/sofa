@@ -167,6 +167,13 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
 
     S = RR*JKJt;
     SR = S*RRt;
+
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix, strain-displacement  = " << endl << J << endl;
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix, rotation  = " << endl << Rot << endl;
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix, material stiffness = " << endl << K << endl;
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix, stiffness = " << endl << S << endl;
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
+
 }
 
 template <class DataTypes>
@@ -813,6 +820,7 @@ void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Ind
     Transformation R_0_1;
     computeRotationLarge( R_0_1, initialPoints, a, b, c);
     _initialRotations[i].transpose(R_0_1);
+    parallelDataSimu->rotations[i] = _initialRotations[i];
 
     //save the element index as the node index
     _rotationIdx[a] = i;
@@ -849,7 +857,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     computeRotationLarge( R_0_2, p, index[0],index[1],index[2]);
 
     parallelDataSimu->rotations[elementIndex].transpose(R_0_2);
-    //serr<<"R_0_2 large : "<<R_0_2<<sendl;
+//        serr<<"R_0_2 large : "<<R_0_2<<sendl;
 
     // positions of the deformed and displaced Tetrahedron in its frame
     helper::fixed_array<Coord,4> deforme;
@@ -1031,6 +1039,7 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     polar_decomp(A, R_0_1, S);
 
     _initialRotations[i].transpose( R_0_1);
+    parallelDataSimu->rotations[i] = _initialRotations[i];
 
     //save the element index as the node index
     _rotationIdx[a] = i;
@@ -1687,6 +1696,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 
+
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
@@ -1710,8 +1721,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],parallelDataSimu->rotations[IT]);
 
             defaulttype::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
@@ -1753,8 +1764,10 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
+            if (method == SMALL)
+                computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],Rot);
+            else
+                computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],parallelDataSimu->rotations[IT]);
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -1775,6 +1788,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                             COLUMN = offset+3*noeud2+j;
                             column = 3*n2+j;
                             mat->add(ROW, COLUMN, - tmp[row][column]*k);
+//                                                        cerr<<"TetrahedronFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl << *mat << endl;
+//                                                        cerr<<"TetrahedronFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl ;
                         }
                     }
                 }
@@ -1782,6 +1797,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
         }
 
     }
+//        cerr<<"TetrahedronFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
 }
 
 template<class DataTypes>

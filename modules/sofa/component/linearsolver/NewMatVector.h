@@ -45,6 +45,7 @@ public:
 
     typedef NEWMAT::ColumnVector SubVector;
     typedef NewMatVector SubVectorType;
+    typedef SReal Real;
 
     NewMatVector()
     {
