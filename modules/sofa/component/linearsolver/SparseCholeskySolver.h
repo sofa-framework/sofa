@@ -63,10 +63,10 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
-private :
+public :
+    cs A;
     css *S;
     csn *N;
-    cs A;
     int * A_i;
     int * A_p;
     helper::vector<double> A_x,z_tmp,r_tmp,tmp;

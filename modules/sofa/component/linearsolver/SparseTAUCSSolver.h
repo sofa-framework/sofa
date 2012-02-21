@@ -84,8 +84,7 @@ public:
         return new SparseTAUCSSolverInvertData();
     }
 
-protected:
-
+public:
     class SparseTAUCSSolverInvertData : public MatrixInvertData
     {
     public :
