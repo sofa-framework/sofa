@@ -46,6 +46,7 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
+#include <sofa/simulation/common/UpdateLinksVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
@@ -164,6 +165,8 @@ void Simulation::init ( Node* root )
         root->addObject(vloop);
     }
 
+    // all the objects have now been created, update the links
+    root->execute<UpdateLinksVisitor>(params);
 
     // apply the init() and bwdInit() methods to all the components.
     // and put the VisualModels in a separate graph, rooted at getVisualRoot()

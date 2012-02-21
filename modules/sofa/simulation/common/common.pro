@@ -61,6 +61,7 @@ HEADERS += common.h \
            TransformationVisitor.h \
            UpdateBoundingBoxVisitor.h \
 		   UpdateContextVisitor.h \
+		   UpdateLinksVisitor.h \
            UpdateMappingEndEvent.h \
            UpdateMappingVisitor.h \
 		   VectorOperations.h \
@@ -121,6 +122,7 @@ SOURCES += Node.cpp \
            TransformationVisitor.cpp \
            UpdateBoundingBoxVisitor.cpp \
 		   UpdateContextVisitor.cpp \
+		   UpdateLinksVisitor.cpp \
            UpdateMappingEndEvent.cpp \
            UpdateMappingVisitor.cpp \
 		   VectorOperations.cpp \
