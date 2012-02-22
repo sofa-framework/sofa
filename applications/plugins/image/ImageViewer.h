@@ -53,28 +53,28 @@ namespace misc
 using namespace defaulttype;
 
 /**
-* \brief This component is responsible for displaying images in SOFA
-*
-*  ImageViewer scene options:
-*
-*  <b>image</b> - a link to the imge in the ImageContainer component
-*
-*  <b>transform</b> - a link to the transformation in the ImageContainer component
-*
-*  <b>subsample</b> - two integers representing the default subsample values for the XY plane and the Z plane respectively. Default values are (12 12).
-*
-*  <b>shape</b> - If true, an image that contains vector information will display the vectors using a shape (arrows or ellipsoids). Default value is false.
-*
-*  <b>scale</b> - A float value of the scale (size) of the shape. Default value is 11.75.
-*
-*  <b>histogramValues</b> - Alias include: <b>defaultHistogram</b>, <b>defaultHisto</b>, <b>histoValues</b>.
-*    Two floats representing the minimum and maximum windowing (or clamping) values. Default gives no windowing.
-*
-*  <b>defaultSlices</b> - Three integers describing the x, y and z slices to be displayed initially. Default displays the middle slice in each plane.
-*
-*  <b>defaultRgb</b> - If true, an image that contains vector information will be displayed as an RGB image. Default value is false.
-*
-*/
+   * \brief This component is responsible for displaying images in SOFA
+   *
+   *  ImageViewer scene options:
+   *
+   *  <b>image</b> - a link to the imge in the ImageContainer component
+   *
+   *  <b>transform</b> - a link to the transformation in the ImageContainer component
+   *
+   *  <b>subsample</b> - two integers representing the default subsample values for the XY plane and the Z plane respectively. Default values are (12 12).
+   *
+   *  <b>shape</b> - If true, an image that contains vector information will display the vectors using a shape (arrows or ellipsoids). Default value is false.
+   *
+   *  <b>scale</b> - A float value of the scale (size) of the shape. Default value is 11.75.
+   *
+   *  <b>histogramValues</b> - Alias include: <b>defaultHistogram</b>, <b>defaultHisto</b>, <b>histoValues</b>.
+   *    Two floats representing the minimum and maximum windowing (or clamping) values. Default gives no windowing.
+   *
+   *  <b>defaultSlices</b> - Three integers describing the x, y and z slices to be displayed initially. Default displays the middle slice in each plane.
+   *
+   *  <b>defaultRgb</b> - If true, an image that contains vector information will be displayed as an RGB image. Default value is false.
+   *
+   */
 template<class _ImageTypes>
 class SOFA_IMAGE_API ImageViewer : public sofa::core::objectmodel::BaseObject
 {
@@ -440,9 +440,6 @@ protected:
         raVis rVis(this->vectorVisualization);
 
         int sliceN = rplane->getPlane()[z];
-        double voxelSizeX = rtransform->getScale()[x];
-        double voxelSizeY = rtransform->getScale()[y];
-        double voxelSizeZ = rtransform->getScale()[z];
 
         double size = rVis->getShapeScale();
         int sampleXY = rVis->getSubsampleXY();
@@ -478,9 +475,6 @@ protected:
         raVis rVis(this->vectorVisualization);
 
         int sliceN = rplane->getPlane()[y];
-        double voxelSizeX = rtransform->getScale()[x];
-        double voxelSizeY = rtransform->getScale()[y];
-        double voxelSizeZ = rtransform->getScale()[z];
 
         double size = rVis->getShapeScale();
         int sampleXY = rVis->getSubsampleXY();
@@ -516,9 +510,6 @@ protected:
         raTransform rtransform(this->transform);
 
         int sliceN = rplane->getPlane()[x];
-        double voxelSizeX = rtransform->getScale()[x];
-        double voxelSizeY = rtransform->getScale()[y];
-        double voxelSizeZ = rtransform->getScale()[z];
         raVis rVis(this->vectorVisualization);
 
         double size = rVis->getShapeScale();
