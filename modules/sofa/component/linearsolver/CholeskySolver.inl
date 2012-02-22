@@ -100,6 +100,7 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     double ss,d;
 
     L.resize(n,n);
+    if( M.element(0,0) <= 0 ) serr<<"CholeskySolver<TMatrix,TVector>::invert, matrix is not positive definite " << sendl;
     d = 1.0 / sqrt(M.element(0,0));
     for (int i=0; i<n; i++)
     {
@@ -111,6 +112,7 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         ss=0;
         for (int k=0; k<j; k++) ss+=L.element(k,j)*L.element(k,j);
 
+        if( M.element(j,j)-ss <= 0 ) serr<<"CholeskySolver<TMatrix,TVector>::invert, matrix is not positive definite " << sendl;
         d = 1.0 / sqrt(M.element(j,j)-ss);
         L.set(j,j,(M.element(j,j)-ss) * d);
 
