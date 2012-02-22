@@ -28,38 +28,16 @@
 #include "CudaTypes.h"
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/gpu/cuda/CudaMatrixUtils.h>
 
 //#define DEBUG_BASE
 
-extern "C"
-{
-    extern void SOFA_GPU_CUDA_API matrix_vector_productf(int dim,const void * M,int mPitch,const void * r,void * z);
-    extern void SOFA_GPU_CUDA_API matrix_vector_productd(int dim,const void * M,int mPitch,const void * r,void * z);
-}
-
-template<typename real> class CudaBaseMatrixKernels;
-
-template<> class CudaBaseMatrixKernels<float>
-{
-public:
-    static void matrix_vector_product(int dim,const void * M,int mPitch,const void * r,void * z)
-    {   matrix_vector_productf(dim,M,mPitch,r,z); }
-};
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template<> class CudaBaseMatrixKernels<double>
-{
-public:
-    static void matrix_vector_product(int dim,const void * M,int mPitch,const void * r,void * z)
-    {   matrix_vector_productd(dim,M,mPitch,r,z); }
-};
-#endif
-
-
 namespace sofa
 {
+
 namespace gpu
 {
+
 namespace cuda
 {
 
@@ -284,7 +262,7 @@ public :
     {
         CudaBaseVector<Real> res;
         res.fastResize(rowSize());
-        CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
+        CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
                 m.deviceRead(),
                 m.getPitchDevice(),
                 v.getCudaVector().deviceRead(),
@@ -294,7 +272,7 @@ public :
 
     void mult(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r)
     {
-        CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
+        CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
                 m.deviceRead(),
                 m.getPitchDevice(),
                 r.getCudaVector().deviceRead(),
@@ -346,6 +324,249 @@ typedef CudaBaseMatrix<double> CudaBaseMatrixd;
 
 template<> inline const char* CudaBaseMatrixf::Name() { return "CudaBaseMatrixf"; }
 template<> inline const char* CudaBaseMatrixd::Name() { return "CudaBaseMatrixd"; }
+
+
+
+template<class Real>
+class CudaMatrixUtils
+{
+public :
+    CudaMatrixUtils()
+    {
+        szCol = 0;
+        szLin = 0;
+    }
+
+    template<class JMatrix>
+    void computeJ(JMatrix& J)
+    {
+// 			printf("CudaCudaMatrixUtils::computeJ szJ=(%d,%d)\n",J.colSize(),J.rowSize());
+
+        szCol = 0;
+        szLin = 0;
+// 			int align3 = 0;
+// 			int curDof = -1;
+// 			for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++) {
+// 				printf("JLine = %d\n",jit1->first);
+// 			}
+
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+        {
+// 				if (align3==3 || align3==0) {
+// 					curDof = jit1->first/3;
+// 					if (jit1->first % 3 != 0) {
+// 					  printf("CudaCudaMatrixUtils::computeJ Error First constraint is not on a dof %d\n",jit1->first);
+// 					  continue;
+// 					}
+// 				} else if (curDof != jit1->first/3) {
+// 				  printf("Warning not the same dof %d %d\n",curDof,jit1->first/3);
+// 				  for (;align3<3;align3++) {
+// 				    printf("add align %d\n",align3);
+// 				    szLin++;
+// 				  }
+//
+// 				  if (jit1->first % 3 != 0) {
+// 				    printf("CudaCudaMatrixUtils::computeJ Error new First constraint is not on a dof %d %d\n",jit1->first,szLin);
+// 				    continue;
+// 				  }
+// 				  align3 = 0;
+// 				  curDof = jit1->first/3;
+// 				}
+
+            int tmp = jit1->second.size();
+            if (tmp>0)
+            {
+                if (szCol<tmp) szCol=tmp;
+                szLin++;
+            }
+// 				align3++;
+        }
+        cudaJCol.clear();
+        cudaJLin.clear();
+        cudaJ.clear();
+
+
+        cudaJ.fastResize(szLin,szCol);
+        cudaJCol.fastResize(szLin,szCol);
+        cudaJLin.resize(szLin);
+        if ((szCol==0) || (szLin==0)) return;
+        int lin = 0;
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+        {
+            if (jit1->second.size()>0)
+            {
+                int col = 0;
+                Real * cudaJ_p = cudaJ[lin];
+                int * cudaJCol_p = cudaJCol[lin];
+
+                for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+                {
+                    cudaJCol_p[col] = i1->first;
+                    //Real val = i1->second;
+                    //printf("set (%d,%d,%f)\n",col,lin,val);
+                    cudaJ_p[col] = (Real)i1->second;
+                    //cudaJ.set(col,lin,1.0);
+                    col++;
+                }
+
+                for (; col < szCol; col++)
+                {
+                    //cudaJ_p[col] = 0.0;// pas de données
+                    cudaJCol_p[col] = -1;// pas de données
+                }
+                cudaJLin[lin] = jit1->first;
+                lin++;
+            }
+        }
+
+// 			printf("%d %d %d\n",cudaJCol.getSizeX(),cudaJCol.getSizeY(),cudaJCol.getPitchHost());
+// 			std::cout << "JCOL = " << std::endl;
+// 			std::cout << cudaJCol << std::endl;
+// 			std::cout << "JVal = " << std::endl;
+// 			std::cout << cudaJ << std::endl;
+    }
+
+    template<class CMatrix>
+    void computeJR(CMatrix & R)
+    {
+// 			printf("CudaCudaMatrixUtils::computeJR\n");
+//
+// 			printf("CudaCudaMatrixUtils R--------\n");
+// 			for (int j=0; j<szLin;j++) {
+// 			    std::cout << cudaJLin.element(j) << " : " ;
+// 			    for (int i=0; i<szCol;i++) {
+// 			      if (cudaJCol.element(i,j)!=-1) {
+// 				printf("(%d,%.2f)\t",cudaJCol[j][i],cudaJ[j][i]);
+// 			      }
+// 			    }
+// 			    std::cout<< std::endl;
+// 			}
+
+
+        CudaMatrixUtilsKernels<Real>::Cuda_Compute_JR( szCol,
+                szLin,
+                R.deviceRead(),
+                cudaJ.deviceWrite(),
+                cudaJ.getPitchDevice(),
+                cudaJLin.deviceRead(),
+                cudaJCol.deviceRead(),
+                cudaJCol.getPitchDevice());
+
+// 			printf("end CudaCudaMatrixUtils::computeJR\n");
+//
+// 			printf("CudaCudaMatrixUtils ComputeJR--------\n");
+// 			for (int j=0; j<szLin;j++) {
+// 			    std::cout << cudaJLin.element(j) << " : " ;
+// 			    for (int i=0; i<szCol;i++) {
+// 			      if (cudaJCol.element(i,j)!=-1) {
+// 				printf("(%d,%.2f)\t",cudaJCol[j][i],cudaJ[j][i]);
+// 			      }
+// 			    }
+// 			    std::cout<< std::endl;
+// 			}
+
+    }
+
+    template<class CMatrix>
+    void computeJMInvJt(CMatrix& cudaMinv,CMatrix &result, float fact, bool localW = false)
+    {
+//   			printf("CudaCudaMatrixUtils::computeJMInvJt %d CudaJ=(%d,%d) result=(%d,%d)\n",localW,cudaJ.colSize(),cudaJ.rowSize(),result.colSize(),result.rowSize());
+
+        CudaMatrixUtilsKernels<Real>::Cuda_Compute_JMInvJt(result.colSize(),
+                szCol,
+                szLin,
+                fact,
+                cudaJ.deviceRead(),
+                cudaJ.getPitchDevice(),
+                (localW) ? NULL : cudaJLin.deviceRead(),
+                cudaJCol.deviceRead(),
+                cudaJCol.getPitchDevice(),
+                cudaMinv.deviceRead(),
+                cudaMinv.getPitchDevice(),
+                result.deviceWrite(),
+                result.getPitchDevice());
+
+        /*			printf("computeJMInvJt----------------------\n");
+                    for (unsigned j=0;j<result.rowSize();j++) {
+                      for (unsigned i=0;i<result.colSize();i++) {
+                        printf("%f ",result.element(i,j));
+                      }
+                      printf("\n");
+                    }	*/
+    }
+
+    template<class CMatrix,class CVector>
+    void computeJMInvJt_twoStep(CMatrix& cudaMinv,CVector & idActiveDofs,CVector & invActiveDofs, CMatrix &result, float fact, bool localW = false)
+    {
+        cudaJMinv.clear();
+        //cudaJMinv.resize(szLin,cudaMinv.colSize());
+        cudaJMinv.fastResize(szLin,idActiveDofs.size());
+
+        CudaMatrixUtilsKernels<Real>::Cuda_Compute_twoStep_JMInvJt_1(cudaMinv.colSize(),
+                idActiveDofs.size(),
+                szCol,
+                szLin,
+                idActiveDofs.deviceRead(),
+                cudaJ.deviceRead(),
+                cudaJ.getPitchDevice(),
+                cudaJCol.deviceRead(),
+                cudaJCol.getPitchDevice(),
+                cudaMinv.deviceRead(),
+                cudaMinv.getPitchDevice(),
+                cudaJMinv.deviceWrite(),
+                cudaJMinv.getPitchDevice());
+
+        CudaMatrixUtilsKernels<Real>::Cuda_Compute_twoStep_JMInvJt_2(szCol,
+                szLin,
+                fact,
+                invActiveDofs.deviceRead(),
+                cudaJ.deviceRead(),
+                cudaJ.getPitchDevice(),
+                (localW) ? NULL : cudaJLin.deviceRead(),
+                cudaJCol.deviceRead(),
+                cudaJCol.getPitchDevice(),
+                cudaJMinv.deviceRead(),
+                cudaJMinv.getPitchDevice(),
+                result.deviceWrite(),
+                result.getPitchDevice());
+    }
+
+
+
+    void addLocalW(CudaBaseMatrix<Real> & localW, defaulttype::BaseMatrix &result)
+    {
+        const int* jl = cudaJLin.hostRead();
+        for (unsigned j=0; j<localW.rowSize(); j++)
+        {
+            const Real * wline = localW[j];
+            int Wj = jl[j];
+            for (unsigned i=0; i<localW.colSize(); i++)
+            {
+                int Wi = jl[i];
+                result.add(Wi,Wj, wline[i]);
+            }
+        }
+    }
+
+    int colSize()
+    {
+        return szCol;
+    }
+
+    int rowSize()
+    {
+        return szLin;
+    }
+
+protected :
+    CudaMatrix<Real> cudaJ;
+    CudaMatrix<int> cudaJCol;
+    CudaVector<int> cudaJLin;
+    CudaMatrix<Real> cudaJMinv;
+
+    int szCol;
+    int szLin;
+};
 
 } // namespace cuda
 } // namespace gpu

@@ -306,6 +306,10 @@ public:
         }
     }
 
+public:
+
+    MatrixInvertData * getMatrixInvertData(Matrix * m);
+
 protected:
 
     /// newPartially solve the system
@@ -333,7 +337,6 @@ protected:
     MatrixLinearSolverInternalData<Matrix,Vector>* data;
     MatrixInvertData * invertData;
 
-    MatrixInvertData * getMatrixInvertData(Matrix * m);
     virtual MatrixInvertData * createInvertData();
 
     class GroupData

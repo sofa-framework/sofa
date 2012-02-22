@@ -132,7 +132,6 @@ CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
            CudaUniformMass.cu \
            CudaDiagonalMass.cu \
-	   CudaTypesBase.cu \
            CudaFixedConstraint.cu \
            CudaLinearMovementConstraint.cu \
 	   CudaLinearForceField.cu \

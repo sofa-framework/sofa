@@ -31,6 +31,7 @@
 
 #include <sofa/helper/BackTrace.h>
 
+
 //#define NO_CUDA
 
 cudaDeviceProp mycudaDeviceProp;
@@ -142,6 +143,18 @@ void mycudaMemset(void *devPtr, int val, size_t size,int )
 void cuda_void_kernel()
 {
 }
+
+#ifdef SOFA_GPU_CUBLAS
+cusparseHandle_t getCusparseCtx()
+{
+    return NULL;
+}
+
+cublasHandle_t getCublasCtx()
+{
+    return NULL;
+}
+#endif //SOFA_GPU_CUBLAS
 
 #else
 
@@ -358,6 +371,23 @@ void cuda_void_kernel()
     dim3 grid(1,1);
     {cuda_debug_kernel<<< grid, threads >>>(); mycudaDebugError("cuda_debug_kernel");}
 }
+
+#ifdef SOFA_GPU_CUBLAS
+cusparseHandle_t getCusparseCtx()
+{
+    static cusparseHandle_t cusparsehandle = NULL;
+    if (cusparsehandle==NULL) cusparseCreate(&cusparsehandle);
+    return cusparsehandle;
+//    return NULL;
+}
+
+cublasHandle_t getCublasCtx()
+{
+    static cublasHandle_t cublashandle = NULL;
+    if (cublashandle==NULL) cublasCreate(&cublashandle);
+    return cublashandle;
+}
+#endif //SOFA_GPU_CUBLAS
 
 #endif
 
