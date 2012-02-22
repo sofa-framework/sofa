@@ -30,6 +30,8 @@
 
 #ifdef SOFA_GPU_CUBLAS
 #include <cublas.h>
+#include <cublas_v2.h>
+#include <cusparse_v2.h>
 #endif
 
 #if defined(__cplusplus)
@@ -70,6 +72,11 @@ extern "C" {
     extern void SOFA_GPU_CUDA_API mycudaThreadSynchronize();
 
     extern void SOFA_GPU_CUDA_API mycudaCheckError(const char* src);
+
+#ifdef SOFA_GPU_CUBLAS
+    extern cusparseHandle_t SOFA_GPU_CUDA_API getCusparseCtx();
+    extern cublasHandle_t SOFA_GPU_CUDA_API getCublasCtx();
+#endif
 
 #if defined(NDEBUG) && !defined(CUDA_DEBUG)
 #define mycudaDebugError(src) do {} while(0)

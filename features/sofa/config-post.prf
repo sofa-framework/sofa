@@ -97,6 +97,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		LIBS *= -lcudart
 		contains(DEFINES,SOFA_GPU_CUBLAS) {
 			LIBS *= -lcublas
+			LIBS *= -lcusparse
 		}	
 		contains(CUDA_FLAGS,--device-emulation) {
 			cuda.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cudaemu.obj
@@ -124,6 +125,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		LIBS *= -lcudart
 		contains(DEFINES,SOFA_GPU_CUBLAS) {
 			LIBS *= -lcublas
+			LIBS *= -lcusparse
 		}
 #		macx: QMAKE_LFLAGS += -Wl,-rpath,$${CUDA_DIR}/lib
 		contains(CUDA_FLAGS,--device-emulation) {
