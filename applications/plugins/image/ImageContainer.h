@@ -58,15 +58,15 @@ using namespace defaulttype;
 
 
 /**
-* \brief This component is responsible for loading images
-*
-*  ImageContainer scene options:
-*
-*  <b>template</b>
-*
-*  <b>filename</> - the name of the image file to be loaded. Currently supported filtypes:
-*
-*/
+   * \brief This component is responsible for loading images
+   *
+   *  ImageContainer scene options:
+   *
+   *  <b>template</b>
+   *
+   *  <b>filename</> - the name of the image file to be loaded. Currently supported filtypes:
+   *
+   */
 template<class _ImageTypes>
 class ImageContainer : public virtual core::objectmodel::BaseObject
 {
@@ -99,14 +99,6 @@ public:
     */
     Data<bool> sequence;
     /**
-    * The length of each frame in the sequence in seconds.
-    */
-    Data<Real> frameDuration;
-    /**
-    * The starting time of the sequence in seconds.
-    */
-    Data<Real> frameOffset;
-    /**
     * The number of frames of the sequence to be loaded.
     */
     Data<unsigned int> nFrames;
@@ -129,14 +121,10 @@ public:
         , m_filename(initData(&m_filename,"filename","Image file"))
         , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
         , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
-        , frameDuration (initData(&frameDuration, 1.0, "frameDuration", "Duration of each frame of a sequence in seconds. Default is 1 second."))
-        , frameOffset (initData(&frameOffset, 0.0, "frameOffset", "Starting time for a sequence in seconds. Default is 0 seconds."))
         , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
     {
         this->addAlias(&image, "inputImage");
         this->addAlias(&transform, "inputTransform");
-        this->addAlias(&frameDuration, "duration");
-        this->addAlias(&frameOffset, "offset");
         this->addAlias(&nFrames, "nFrames");
         transform.setGroup("Transform");
         f_listening.setValue(true);  // to update camera during animate
@@ -165,13 +153,6 @@ public:
                 }
 
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
-
-        //Set the frame offset and frame duration
-        TransformType& my_transform = *(this->transform.beginEdit());
-        my_transform.getScaleT() = frameDuration.getValue();
-        my_transform.getOffsetT() = frameOffset.getValue();
-        transform.endEdit();
-
 
         wtransform->update(); // update of internal data
     }

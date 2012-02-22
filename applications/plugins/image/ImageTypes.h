@@ -419,10 +419,7 @@ public:
     Real& getOffsetT() { return *reinterpret_cast<Real*>(&this->P[9]); }
     const Real& getOffsetT() const { return *reinterpret_cast<const Real*>(&this->P[9]); }
     Real& getScaleT() { return *reinterpret_cast<Real*>(&this->P[10]); }
-    const Real& getScaleT() const
-    {
-        return *reinterpret_cast<const Real*>(&this->P[10]);
-    }
+    const Real& getScaleT() const { return *reinterpret_cast<const Real*>(&this->P[10]);  }
     Real& isPerspective() { return *reinterpret_cast<Real*>(&this->P[11]); }
     const Real& isPerspective() const { return *reinterpret_cast<const Real*>(&this->P[11]); }
 

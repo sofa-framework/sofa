@@ -8,8 +8,8 @@ namespace defaulttype
 {
 
 /**
-* Holds data regarding visualization of vector data so that it can be accessed and manipulated by the VectorVisualizationDataWidget
-*/
+ * Holds data regarding visualization of vector data so that it can be accessed and manipulated by the VectorVisualizationDataWidget
+ */
 class VectorVis
 {
 protected:
