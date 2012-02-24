@@ -1182,6 +1182,9 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
+    // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
+    // This feature is activated when callin handleEvent with ParallelizeBuildEvent
+    // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
     parallelDataInit[0] = new ParallelData();
     parallelDataInit[1] = NULL; // no parallel until the first event
     parallelDataSimu = parallelDataInit[0];
@@ -1411,6 +1414,9 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& p = d_x.getValue();
 
+    // Now we check if parallelDataInit[1] has been created (which mean that another thread is building the matrix in addKtoMatrix function
+    // If true then we swap parallelDataSimu and parallelDataThrd
+    // that way the simulation will write the data in a different buffer
     if (parallelDataInit[1] && parallelDataSimu == parallelDataThrd)
     {
         parallelDataSimu = parallelDataSimu==parallelDataInit[0] ? parallelDataInit[1] : parallelDataInit[0];
@@ -1701,6 +1707,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
+    // WARNING !!!
+    // In this function we must use parallelDataThrd because parallelDataSimu is potientially modified asynchronusly
+
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 
@@ -1721,8 +1730,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],parallelDataSimu->rotations[IT]);
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
 
             defaulttype::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
@@ -1765,9 +1774,9 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
             if (method == SMALL)
-                computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],Rot);
+                computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
             else
-                computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[IT], parallelDataSimu->strainDisplacements[IT],parallelDataSimu->rotations[IT]);
+                computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -1803,6 +1812,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
+    // if we receive ParallelizeBuildMatrixEvent then we duplicate the data to be able to build the matrix asynchronusly
     if (dynamic_cast<sofa::component::misc::ParallelizeBuildMatrixEvent*>(event))   //this event shoul be launch before the addKToMatrix
     {
         if (parallelDataInit[1] == NULL) createParallelData();

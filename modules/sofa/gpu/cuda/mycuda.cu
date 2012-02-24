@@ -154,6 +154,12 @@ cublasHandle_t getCublasCtx()
 {
     return NULL;
 }
+
+cusparseMatDescr_t getCusparseMatDescr()
+{
+    return NULL;
+}
+
 #endif //SOFA_GPU_CUBLAS
 
 #else
@@ -373,20 +379,54 @@ void cuda_void_kernel()
 }
 
 #ifdef SOFA_GPU_CUBLAS
-cusparseHandle_t getCusparseCtx()
-{
-    static cusparseHandle_t cusparsehandle = NULL;
-    if (cusparsehandle==NULL) cusparseCreate(&cusparsehandle);
-    return cusparsehandle;
-//    return NULL;
-}
 
 cublasHandle_t getCublasCtx()
 {
     static cublasHandle_t cublashandle = NULL;
-    if (cublashandle==NULL) cublasCreate(&cublashandle);
+    if (cublashandle==NULL)
+    {
+        cublasStatus_t status = cublasCreate(&cublashandle);
+        if (status != CUBLAS_STATUS_SUCCESS)
+        {
+            myprintf("cublas Handle init failed\n");
+        }
+    }
     return cublashandle;
 }
+
+cusparseHandle_t getCusparseCtx()
+{
+    static cusparseHandle_t cusparsehandle = NULL;
+    if (cusparsehandle==NULL)
+    {
+        cusparseStatus_t status = cusparseCreate(&cusparsehandle);
+        if (status != CUSPARSE_STATUS_SUCCESS)
+        {
+            myprintf("cusparse Handle init failed\n");
+        }
+    }
+    return cusparsehandle;
+}
+
+cusparseMatDescr_t getCusparseMatDescr()
+{
+    static cusparseMatDescr_t descra=NULL;
+    if (descra==NULL)
+    {
+        static cusparseStatus_t status = cusparseCreateMatDescr(&descra);
+        if (status != CUSPARSE_STATUS_SUCCESS)
+        {
+            myprintf("Matrix descriptor init failed\n");
+        }
+        else
+        {
+            cusparseSetMatType(descra, CUSPARSE_MATRIX_TYPE_GENERAL);
+            cusparseSetMatIndexBase(descra, CUSPARSE_INDEX_BASE_ZERO);
+        }
+    }
+    return descra;
+}
+
 #endif //SOFA_GPU_CUBLAS
 
 #endif
