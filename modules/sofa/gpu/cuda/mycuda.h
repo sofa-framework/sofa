@@ -76,6 +76,7 @@ extern "C" {
 #ifdef SOFA_GPU_CUBLAS
     extern cusparseHandle_t SOFA_GPU_CUDA_API getCusparseCtx();
     extern cublasHandle_t SOFA_GPU_CUDA_API getCublasCtx();
+    extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatDescr();
 #endif
 
 #if defined(NDEBUG) && !defined(CUDA_DEBUG)
