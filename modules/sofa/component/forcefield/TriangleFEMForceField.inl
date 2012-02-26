@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TriangleFEMForceField.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -86,7 +87,7 @@ void TriangleFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
+    //    serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
     _mesh = this->getContext()->getMeshTopology();
 
     if( _mesh )
@@ -486,21 +487,24 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        // Rotation matrix (initial triangle/world)
+        // Rotation matrix (transpose of initial triangle/world)
         // first vector on first edge
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-        //serr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<sendl;
         computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
+        _rotations[i].transpose(R_0_1);
 
+        // coordinates of the triangle vertices in their local frames
         _rotatedInitialElements[i][0] = R_0_1 * _initialPoints.getValue()[a];
         _rotatedInitialElements[i][1] = R_0_1 * _initialPoints.getValue()[b];
         _rotatedInitialElements[i][2] = R_0_1 * _initialPoints.getValue()[c];
-
+        // set the origin of the local frame at vertex a
         _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][0] = Coord(0,0,0);
+
+        computeStrainDisplacement(_strainDisplacements[i], _initialPoints.getValue()[a], _initialPoints.getValue()[b], _initialPoints.getValue()[c] );
     }
 }
 
@@ -550,6 +554,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
     sout << "TriangleFEMForceField::accumulateForceLarge"<<sendl;
 #endif
 
+    // triangle vertex indices
     Index a = (*_indexedElements)[elementIndex][0];
     Index b = (*_indexedElements)[elementIndex][1];
     Index c = (*_indexedElements)[elementIndex][2];
@@ -557,21 +562,14 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
     // Rotation matrix (deformed and displaced Triangle/world)
     Transformation R_2_0, R_0_2;
     computeRotationLarge( R_0_2, p, a, b, c);
-    R_2_0.transpose(R_0_2);
 
 
-    // positions of the deformed and displaced Tetrahedre in its frame
+    // positions of the deformed points in the local frame
     Coord deforme_a, deforme_b, deforme_c;
-    //deforme_a = R_0_2 * p[a];
-    //deforme_b = R_0_2 * p[b];
-    //deforme_c = R_0_2 * p[c];
-    //deforme_b -= deforme_a;
-    //deforme_c -= deforme_a;
-    //deforme_a = Coord(0,0,0);
     deforme_b = R_0_2 * (p[b]-p[a]);
     deforme_c = R_0_2 * (p[c]-p[a]);
 
-    // displacements
+    // displacements in the local frame
     Displacement D;
     D[0] = 0;
     D[1] = 0;
@@ -580,23 +578,27 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
     D[4] = _rotatedInitialElements[elementIndex][2][0] - deforme_c[0];
     D[5] = _rotatedInitialElements[elementIndex][2][1] - deforme_c[1];
 
-    // shape functions matrix
-    StrainDisplacement J;
-    computeStrainDisplacement(J,deforme_a,deforme_b,deforme_c);
+    // Strain-displacement matrix
+    StrainDisplacement B;
+    computeStrainDisplacement(B,deforme_a,deforme_b,deforme_c);
 
-    if(implicit)
-    {
-        _strainDisplacements[elementIndex] = J;
-        _rotations[elementIndex] = R_2_0 ;
-    }
-
-    // compute force on element
+    // compute force on element, in local frame
     Displacement F;
-    computeForce( F, D, _materialsStiffnesses[elementIndex], J );
+    computeForce( F, D, _materialsStiffnesses[elementIndex], B ); // F = Bt.S.B.D
 
+    // project forces to world frame
+    R_2_0.transpose(R_0_2);
     f[a] += R_2_0 * Coord(F[0], F[1], 0);
     f[b] += R_2_0 * Coord(F[2], F[3], 0);
     f[c] += R_2_0 * Coord(F[4], F[5], 0);
+
+    // store for re-use in matrix-vector products
+    if(implicit)
+    {
+        _strainDisplacements[elementIndex] = B;
+        _rotations[elementIndex] = R_2_0 ;
+    }
+
 }
 
 
@@ -691,6 +693,164 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
+{
+    MatNoInit<3, 6, Real> Jt;
+    Jt.transpose( J );
+
+    MatNoInit<6, 6, Real> JKJt;
+    JKJt = J*K*Jt;  // in-plane stiffness matrix, 6x6
+
+    // stiffness JKJt expanded to 3 dimensions
+    Mat<9, 9, Real> Ke; // initialized to 0
+    // for each 2x2 block i,j
+    for(unsigned i=0; i<3; i++)
+    {
+        for(unsigned j=0; j<3; j++)
+        {
+            // copy the block in the expanded matrix
+            for(unsigned k=0; k<2; k++)
+                for(unsigned l=0; l<2; l++)
+                    Ke[3*i+k][3*j+l] = JKJt[2*i+k][2*j+l];
+        }
+    }
+//    // fill the remaining rows with 0
+//    for(unsigned i=0; i<3; i++){
+//        for(unsigned j=0; j<9; j++){
+//            Ke[3*i+2][j] = 0;
+//        }
+//    }
+//    // fill the remaining columns with 0
+//    for(unsigned i=0; i<3; i++){
+//        for(unsigned j=0; j<9; j++){
+//            Ke[j][3*i+2] = 0;
+//        }
+//    }
+
+    // rotation matrices. TODO: use block-diagonal matrices, more efficient.
+    Mat<9, 9, Real> RR,RRt; // initialized to 0
+    for(int i=0; i<3; ++i)
+        for(int j=0; j<3; ++j)
+        {
+            RR[i][j]=RR[i+3][j+3]=RR[i+6][j+6]=Rot[i][j];
+            RRt[i][j]=RRt[i+3][j+3]=RRt[i+6][j+6]=Rot[j][i];
+        }
+
+    S = RR*Ke;
+    SR = S*RRt;
+
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, strain-displacement  = " << endl << J << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotation  = " << endl << Rot << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, material stiffness = " << endl << K << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, in-plane stiffness = " << endl << JKJt << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, expanded stiffness = " << endl << Ke << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
+
+}
+
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+{
+    int i,j,n1, n2, row, column, ROW, COLUMN , IT;
+    const int numV=3;  // number of vertices per element
+
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+
+    typename VecElement::const_iterator it;
+
+    Index noeud1, noeud2;
+    int offd3 = offset/3;
+
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+
+    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
+
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    {
+        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
+        {
+            if (method == SMALL) computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+            else computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
+
+            defaulttype::Mat<3,3,double> tmpBlock[3][3];
+            // find index of node 1
+            for (n1=0; n1<numV; n1++)
+            {
+                for(i=0; i<3; i++)
+                {
+                    for (n2=0; n2<numV; n2++)
+                    {
+                        for (j=0; j<3; j++)
+                        {
+                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                        }
+                    }
+                }
+            }
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
+
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
+
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
+
+        }
+    }
+    else
+    {
+        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
+        {
+            if (method == SMALL)
+                computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+            else
+                computeElementStiffnessMatrix(JKJt,tmp, _materialsStiffnesses[IT], _strainDisplacements[IT], _rotations[IT]);
+
+//            cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, element  " << (*it)[0] << ", " <<  (*it)[1] << ", " << (*it)[2] << ", "<< endl;
+//            cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, stiffness matrix = " << endl << tmp << endl;
+            // find index of node 1
+            for (n1=0; n1<numV; n1++)
+            {
+                noeud1 = (*it)[n1];
+
+                for(i=0; i<3; i++)
+                {
+                    ROW = offset+3*noeud1+i;
+                    row = 3*n1+i;
+                    // find index of node 2
+                    for (n2=0; n2<numV; n2++)
+                    {
+                        noeud2 = (*it)[n2];
+
+                        for (j=0; j<3; j++)
+                        {
+                            COLUMN = offset+3*noeud2+j;
+                            column = 3*n2+j;
+                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                            // cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl << *mat << endl;
+                            // cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl ;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+//    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
+}
+
 
 } // namespace forcefield
 

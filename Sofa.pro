@@ -8,6 +8,7 @@ contains(DEFINES, SOFA_RELEASE): message("WARNING: SOFA_RELEASE defined, in-deve
 
 message( "PRE-CONFIG: " $${CONFIG})
 
+
 ########################################################################
 # Enable plugins in addition of the standard Sofa libraries
 ########################################################################

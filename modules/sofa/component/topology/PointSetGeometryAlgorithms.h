@@ -46,8 +46,8 @@ using core::behavior::MechanicalState;
 typedef BaseMeshTopology::PointID PointID;
 
 /**
-* A class that can perform some geometric computation on a set of points.
-*/
+ * A class that can perform some geometric computation on a set of points.
+ */
 template<class DataTypes>
 class PointSetGeometryAlgorithms : public core::topology::GeometryAlgorithms
 {
@@ -63,6 +63,7 @@ public:
     enum Angle {ACUTE, RIGHT, OBTUSE};
 
     Angle computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const;
+
 protected:
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()

@@ -91,11 +91,14 @@ protected:
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;						///< the material stiffness matrices vector
 
-    typedef Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix
+    typedef Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix (the transpose, actually)
     typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
 
     typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
+
+    /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
+    typedef Mat<9, 9, Real> StiffnessMatrix;
 
 
     sofa::core::topology::BaseMeshTopology* _mesh;
@@ -155,6 +158,10 @@ protected :
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
+
+    //// stiffness matrix assembly
+    void computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset); // compute and add all the element stiffnesses to the global stiffness matrix
 };
 
 using sofa::defaulttype::Vec3dTypes;

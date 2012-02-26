@@ -27,6 +27,7 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/MatEigen.h>
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 
@@ -41,10 +42,10 @@ namespace topology
 using namespace sofa::defaulttype;
 
 /*template<class DataTypes>
- void EdgeSetGeometryAlgorithms< DataTypes>::reinit()
- {
-    P
- }
+    void EdgeSetGeometryAlgorithms< DataTypes>::reinit()
+    {
+       P
+    }
 */
 
 template< class DataTypes>
@@ -55,6 +56,9 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
     const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     return length;
 }
+
+
+
 
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const EdgeID i) const
@@ -589,8 +593,141 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         }
     }
 
+
 }
 
+
+
+template< class DataTypes>
+void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& vertexEdges, vector<Vec3d>& weights ) const
+{
+    const VecCoord& pos = *(this->object->getX()); // point positions
+    vector<Vec3d> edgeVec;                  // 3D edges
+
+    numEdges.clear();
+    vertexEdges.clear();
+    weights.clear();
+
+    const SeqEdges& edges = this->m_topology->getEdges();
+
+    for(unsigned pointId=0; pointId<pos.size(); pointId++ )
+    {
+        //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, point " << pointId << endl;
+        EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
+        edgeVec.resize(ve.size());
+        numEdges.push_back(ve.size());            // number of edges attached to this point
+        Matrix3 EEt,L;
+
+        // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
+        // Each row of W corresponds to an edge, and encode the contribution of the edge to the basis vectors x,y,z
+        // To solve this underconstrained system, we assume that W = Et.U , where Et is the transpose of E and U is 3x3
+        // We solve (E.Et).U = I , then we compute W = Et.U
+        // todo: weight the edges according to their lengths
+
+        // compute E.Et
+        for(unsigned e=0; e<ve.size(); e++ )
+        {
+            Edge edge = edges[ve[e]];
+            vertexEdges.push_back(edge);              // concatenate
+            CPos p0 = DataTypes::getCPos(pos[edge[0]]);
+            CPos p1 = DataTypes::getCPos(pos[edge[1]]);
+            edgeVec[e] = p1 - p0;
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights debug: edge "<< edge << ", edgeVec = " << edgeVec[e] << endl;
+            // each edge vector adds e.et to the matrix
+            for(unsigned j=0; j<3; j++)
+                for(unsigned k=0; k<3; k++)
+                    EEt[j][k] += edgeVec[e][k]*edgeVec[e][j];
+        }
+
+        // decompose E.Et for system solution
+        if( cholDcmp(L,EEt) ) // Cholesky decomposition of the covariance matrix succeeds, we use it to solve the systems
+        {
+            unsigned n = weights.size();     // start index for this vertex
+            weights.resize( n + ve.size() ); // concatenate all the W of the nodes
+            Vec3d a,u;
+
+            // axis x
+            a=Vec3d(1,0,0);
+            cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][0] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
+            }
+
+            // axis y
+            a=Vec3d(0,1,0);
+            cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][1] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
+            }
+
+            // axis z
+            a=Vec3d(0,0,1);
+            cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][2] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
+            }
+        }
+        else
+        {
+#ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
+            unsigned n = weights.size();     // start index for this vertex
+            weights.resize( n + ve.size() ); // concatenate all the W of the nodes
+            Vec3d a,u;
+
+            typedef Eigen::Matrix<double,3,3> EigenM33;
+            EigenM33 emat = eigenMat(EEt);
+            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeThinU | Eigen::ComputeThinV);
+            Eigen::Matrix<double,3,1> solution;
+
+            // axis x
+            a=Vec3d(1,0,0);
+            solution = jacobi.solve( eigenVec(a) );
+            u = sofaVec( solution ); // least-squares solve EEt.u=x
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][0] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
+            }
+
+            // axis y
+            a=Vec3d(0,1,0);
+            solution = jacobi.solve( eigenVec(a) );
+            u = sofaVec( solution ); // least-squares solve EEt.u=y
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][1] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
+            }
+
+            // axis z
+            a=Vec3d(0,0,1);
+            solution = jacobi.solve( eigenVec(a) );
+            u = sofaVec( solution ); // least-squares solve EEt.u=z
+            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
+            for(unsigned i=0; i<ve.size(); i++ )
+            {
+                weights[n+i][2] = u * edgeVec[i];
+                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
+            }
+
+#else
+            cerr << "EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, cholDcmp failed, subsequent results are undefined " << endl;
+#endif
+        }
+
+    }
+}
 
 
 

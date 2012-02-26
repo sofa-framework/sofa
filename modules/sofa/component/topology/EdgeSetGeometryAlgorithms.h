@@ -37,8 +37,8 @@ namespace component
 namespace topology
 {
 /** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
-*
-*/
+ *
+ */
 template < class T>
 class BasicArrayInterface
 {
@@ -56,8 +56,8 @@ typedef BaseMeshTopology::SeqEdges SeqEdges;
 typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
-* A class that provides geometry information on an EdgeSet.
-*/
+ * A class that provides geometry information on an EdgeSet.
+ */
 template < class DataTypes >
 class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
 {
@@ -116,25 +116,41 @@ public:
     sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
-     * @param i edgeID on which point is projected.
-     * @param coord_x coordinate of point to project
-     * @param intersected bool default value true, changed as false if no intersection is done.
-     * @return barycentric coefficient of the projection in edgeID i.
-     */
+    * @param i edgeID on which point is projected.
+    * @param coord_x coordinate of point to project
+    * @param intersected bool default value true, changed as false if no intersection is done.
+    * @return barycentric coefficient of the projection in edgeID i.
+    */
     sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::defaulttype::Vec<3,double> coord_x, bool& intersected);
 
     /** \brief Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
-     * @param edge1 tab Coord[2] from the 2 vertices composing first edge
-     * @param edge2 same for second edge
-     * @param intersected bool default value true, changed as false if no intersection is done.
-     * @return Coord of intersection point, 0 if no intersection.
-     */
+    * @param edge1 tab Coord[2] from the 2 vertices composing first edge
+    * @param edge2 same for second edge
+    * @param intersected bool default value true, changed as false if no intersection is done.
+    * @return Coord of intersection point, 0 if no intersection.
+    */
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
     bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
     bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
 
     void writeMSHfile(const char *filename) const;
+
+    /** Computes weights allowing to compute the deformation gradient (deformed basis)  at each vertex during the simulation, for a volumetric object.
+      For each vertex, computes the weights associated with each edge around the vertex, so that the weighted sum of the edges corresponds to the identity.
+      The current configuration is taken as reference.
+      During the simulation, the weights and edge indices can be used to compute rotated and deformed bases for each vertex
+
+      The output vectors contain the concatenation of the values for each vertex.
+      The weights are computed using a pseudo-inverse of the edge matrix: w_i = Vt_i.(V.Vt)^{-1}.Id3
+      \param numEdges number of edges attached to a vertex
+      \param edges attached to the vertices
+      \param weights associated with the edges. Each Vec3d represents the contribution of the associated edge to x,y and z of the deformed basis.
+      */
+    void computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& edges, vector<Vec3d>& weights ) const;
+
+
+
 
 protected:
     Data<bool> showEdgeIndices;
