@@ -58,7 +58,7 @@ declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
 declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
 declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacomponentcollision)
 
-declare(sofa_base_topology, modules/sofa/component/sofa_base_topology.pro, sofatree)
+declare(sofa_base_topology, modules/sofa/component/sofa_base_topology.pro, sofatree eigen)
 declare(sofa_base_linear_solver, modules/sofa/component/sofa_base_linear_solver.pro, sofatree)
 declare(sofa_base_mechanics, modules/sofa/component/sofa_base_mechanics.pro, sofa_base_topology sofa_base_linear_solver)
 declare(sofa_rigid, modules/sofa/component/sofa_rigid.pro, sofa_base_mechanics)
