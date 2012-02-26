@@ -36,7 +36,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+//#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
 

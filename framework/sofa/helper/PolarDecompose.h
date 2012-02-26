@@ -33,6 +33,28 @@ namespace sofa
 
 namespace helper
 {
+using defaulttype::Mat;
+using defaulttype::Vec;
+
+// first a QR decomposition. The polar decomposition comes next.
+/** Compute an orthonormal right-handed 3x3 basis based on two vectors using Gram-Schmidt orthogonalization.
+  The basis vectors are the columns of the returned matrix. The matrix represents the rotation of the local frame with respect to the reference frame.
+  The first basis vector is aligned to the first given vector, the second basis vector is in the plane of the two first given vectors, and the third basis vector is orthogonal to the two others.
+  Undefined result if one of the vectors is null, or if the two vectors are parallel.
+  */
+template<class real>
+void getRotation(Mat<3,3,real>& r, Vec<3,real>& edgex, Vec<3,real>& edgey  )
+{
+    edgex.normalize();
+    Vec<3,real> edgez = cross( edgex, edgey );
+    edgez.normalize();
+    edgey = cross( edgez, edgex );
+
+    r[0][0] = edgex[0]; r[0][1]= edgey[0]; r[0][2]= edgez[0];
+    r[1][0] = edgex[1]; r[1][1]= edgey[1]; r[1][2]= edgez[1];
+    r[2][0] = edgex[2]; r[2][1]= edgey[2]; r[2][2]= edgez[2];
+}
+
 
 /**** FROM Decompose.c ****/
 /* Ken Shoemake, 1993     */

@@ -56,6 +56,7 @@ HEADERS += helper.h \
     LCPSolver.h \
     LCPSolver.inl \
     map.h \
+    MatEigen.h \
     list.h \
     MarchingCubeUtility.h \
     MemoryManager.h \

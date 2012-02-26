@@ -29,6 +29,7 @@
 #pragma once
 #endif
 
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/engine/ShapeMatching.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>

@@ -299,19 +299,19 @@ public:
     /// @{
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
-     */
+    */
     virtual sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
-     */
+    */
     virtual sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
-     */
+    */
     virtual sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
-     */
+    */
     virtual sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
     /** \brief Adds a TopologyEngine to the list.
@@ -319,11 +319,11 @@ public:
     virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
-     */
+    */
     virtual sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
-     */
+    */
     virtual sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
     /// @}
 
