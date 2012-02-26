@@ -40,7 +40,8 @@ namespace helper
 {
 using std::cerr;
 using std::endl;
-
+using defaulttype::Mat;
+using defaulttype::Vec;
 
 template <int NumRows, int NumCols, class Real>
 Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const Mat< NumRows, NumCols, Real>& mat )

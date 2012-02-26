@@ -27,7 +27,7 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/MatEigen.h>
+#include <sofa/helper/MatEigen.h>
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 
@@ -691,7 +691,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis x
             a=Vec3d(1,0,0);
             solution = jacobi.solve( eigenVec(a) );
-            u = sofaVec( solution ); // least-squares solve EEt.u=x
+            u = helper::sofaVec( solution ); // least-squares solve EEt.u=x
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
@@ -702,7 +702,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis y
             a=Vec3d(0,1,0);
             solution = jacobi.solve( eigenVec(a) );
-            u = sofaVec( solution ); // least-squares solve EEt.u=y
+            u = helper::sofaVec( solution ); // least-squares solve EEt.u=y
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
@@ -713,7 +713,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis z
             a=Vec3d(0,0,1);
             solution = jacobi.solve( eigenVec(a) );
-            u = sofaVec( solution ); // least-squares solve EEt.u=z
+            u = helper::sofaVec( solution ); // least-squares solve EEt.u=z
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
