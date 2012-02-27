@@ -105,7 +105,7 @@ protected:
 
 public:
 
-    TVectorVisSettings(QWidget* parent) :vectorData(NULL), rgb(false), subsampleXY(5), subsampleZ(5), shapeScale(10), shape(false)
+    TVectorVisSettings(QWidget* parent) :vectorData(NULL), subsampleXY(5), subsampleZ(5), shapeScale(10), rgb(false), shape(false)
     {
         //Widget stuff
         QHBoxLayout *layout = new QHBoxLayout(parent);
@@ -336,7 +336,7 @@ public:
         scaleLabel->setText("Vector Scale");
         layout->add(scaleLabel);
 
-        rgbCheckbox->checkbox->setEnabled(false);
+        //rgbCheckbox->checkbox->setEnabled(false);
 
         connect(rgbCheckbox->checkbox, SIGNAL(toggled(bool)), this, SLOT(changeRgb(bool)));
         connect(shapeCheckbox->checkbox, SIGNAL(toggled(bool)), this, SLOT(changeShape(bool)));

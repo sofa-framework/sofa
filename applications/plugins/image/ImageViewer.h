@@ -101,6 +101,7 @@ public:
     /**@{*/
     typedef SReal Real;
     typedef ImageLPTransform<Real> TransformType;
+    typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
     /**@}*/
@@ -122,16 +123,6 @@ public:
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
 
-    //@name Options
-    /**@{*/
-    Data<Vec<2,int> > subsample;
-    Data<bool> shapeDefault;
-    Data<int> scale;
-    Data<bool> defaultRgb;
-    Data< sofa::defaulttype::Vec<2,SReal>  > defaultHistogram;
-    Data< sofa::defaulttype::Vec<3,unsigned int>  > defaultSlices;
-    /**@}*/
-
     std::string getTemplateName() const  {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
 
@@ -141,18 +132,9 @@ public:
         , transform(initData(&transform, TransformType(), "transform" , ""))
         , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
         , vectorVisualization ( initData (&vectorVisualization, VectorVis(), "vectorvis", ""))
-        , subsample ( initData ( &subsample, "subsample", "Two integer values of the default subsampling value for the XY and Z directions for vector visualization." ))
-        , shapeDefault ( initData ( &shapeDefault, false, "shape", "True if vectors are to be visualized as a shape. Default value is false." ))
-        , scale ( initData ( &scale, 11, "scale", "The scale of the vectors being visualized. Default value is 11." ))
-        , defaultRgb ( initData (&defaultRgb, true, "rgb", "True if vectors are to be visualized as RGB values, false if vectors are to be visualized as norms. Default is true."))
-        , defaultHistogram ( initData (&defaultHistogram, "histogramValues", "The default min and max values for the histogram"))
-        , defaultSlices ( initData (&defaultSlices, "defaultSlices", "The default slices to be displayed"))
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
-        this->addAlias(&defaultHistogram, "defaultHistogram");
-        this->addAlias(&defaultHistogram, "histoValues");
-        this->addAlias(&defaultHistogram, "defaultHisto");
 
         image.setGroup("Image");
         image.setReadOnly(true);
@@ -166,7 +148,6 @@ public:
         plane.setGroup("Image");
         plane.setWidget("imageplane");
 
-        vectorVisualization.setGroup("Vectors");
         vectorVisualization.setWidget("vectorvis");
 
         for(unsigned int i=0; i<3; i++)	cutplane_tex[i]=NULL;
@@ -181,46 +162,27 @@ public:
     virtual void init()
     {
 
+        // getvisuals
         std::vector<VisuModelType*> visuals;
         sofa::core::objectmodel::BaseContext* context = this->getContext();
         context->get<VisuModelType>(&visuals,core::objectmodel::BaseContext::SearchRoot);
 
-        waHisto whisto(this->histo);
-        whisto->setInput(image.getValue());
+        // set histogram data
+        waHisto whisto(this->histo);        whisto->setInput(image.getValue());
 
-        waPlane wplane(this->plane);
-        wplane->setInput(image.getValue(),transform.getValue(),visuals);
+        // record user values of plane position
+        typename ImagePlaneType::pCoord pc; bool usedefaultplanecoord=true;
+        if(this->plane.isSet()) {  raPlane rplane(this->plane); pc=rplane->getPlane(); usedefaultplanecoord=false; }
 
-        waVis wVis(this->vectorVisualization);
-        wVis->setShape(shapeDefault.getValue());
+        // set plane data
+        waPlane wplane(this->plane);        wplane->setInput(image.getValue(),transform.getValue(),visuals);
 
-        if(subsample.isSet())
-        {
-            wVis->setSubsampleXY(subsample.getValue()[0]);
-            wVis->setSubsampleZ(subsample.getValue()[1]);
-        }
-        if(scale.isSet())
-            wVis->setShapeScale(scale.getValue());
+        // set recorded plane pos
+        if(!usedefaultplanecoord) wplane->setPlane(pc);
 
-        if(defaultHistogram.isSet())
-        {
-            whisto->setClamp(defaultHistogram.getValue());
-        }
-
-        if(defaultSlices.isSet())
-            wplane->setPlane(defaultSlices.getValue());
-        else
-            setToMiddleSlices();
-
-        if(defaultRgb.isSet())
-        {
-            wVis->setRgb(defaultRgb.getValue());
-        }
-
-        whisto->setVectorVis( &(vectorVisualization.getValue()));
-        whisto->update();
-
-        wplane->setVectorVis( &(vectorVisualization.getValue()));
+        // enable vecorvis ?
+        if(wplane->getDimensions()[3]<2) vectorVisualization.setDisplayed(false);
+        else         vectorVisualization.setGroup("Vectors");
 
         for(unsigned int i=0; i<3; i++)
         {
@@ -232,32 +194,20 @@ public:
 
         for(unsigned int i=0; i<3; i++)	cutplane_tex[i]->init();
 
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
     }
 
-    //Set the displayed slices the the middle slice of each plane
-    void setToMiddleSlices()
-    {
-        raImage rimage(this->image);
-        waPlane wplane(this->plane);
-        imCoord dimensions = rimage->getDimensions();
-        int midX = static_cast<int>(dimensions[0] / 2);
-        int midY = static_cast<int>(dimensions[1] / 2);
-        int midZ = static_cast<int>(dimensions[2] / 2);
-
-        Vec<3,unsigned int> newPlanes(midX, midY, midZ);
-        wplane->setPlane(newPlanes);
-
-    }
 
     virtual void reinit()
     {
-        raHisto rhisto(this->histo);
+        waHisto whisto(this->histo);
         waPlane wplane(this->plane);
-        wplane->setClamp(rhisto->getClamp());
+        raVis rvis(this->vectorVisualization);
+
+        whisto->setMergeChannels(!rvis->getRgb());
+        wplane->setMergeChannels(!rvis->getRgb());
+        wplane->setClamp(whisto->getClamp());
     }
 
     virtual void handleEvent( core::objectmodel::Event* )
@@ -289,15 +239,8 @@ public:
         }
 
         if(vectorVisualization.getValue().getShape())
-        {
-            raImage rimage(this->image);
-            if(rimage->getCImg().spectrum() == 3)
-            {
-                drawArrowsZ();
-                drawArrowsY();
-                drawArrowsX();
-            }
-        }
+            if(wplane->getDimensions()[3] == 3)
+                drawArrows(vparams);
 
         glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT || GL_CURRENT_BIT);
         drawCutplanes();
@@ -312,232 +255,42 @@ protected:
     static const unsigned cutplane_res=256;
     helper::gl::Texture* cutplane_tex[3];
 
-
-    /**
-    * Draws an arrow
-    * @param from the starting point of the arrow
-    * @param arrow the tip of the arrow relative to the origin
-    */
-    void drawArrow(Vec<3,double>& from, Vec<3,double>& arrow, double lineWidth = 2.0)
+    //Draw vectors as arrows
+    void drawArrows(const core::visual::VisualParams* vparams)
     {
-        const double epsilon = 1e-15;
-
-        if(fabs(arrow[0]) > epsilon|| arrow[1] > epsilon ||
-           arrow[2] > epsilon)
-        {
-            Vec<3,double> org(from);
-            Vec<3,double> head(from);
-            head += arrow;
-
-            double d = arrow.norm();
-
-            Vec<3,double> vz = arrow / d;
-            Vec<3,double> vx,vy;
-            if(fabs(vz[2]) >= epsilon)
-            {
-                vx[0] = 1.0;
-                vx[1] = 1.0;
-                vx[2] = (fabs(vz[0]) < epsilon && fabs(vz[1]) < epsilon)
-                        ? 1.0
-                        : -(vz[0] * vx[0] + vz[1] * vx[1]) / vz[2];
-            }
-            else
-            {
-                if(fabs(vz[0]) < epsilon)
-                    vx = Vec<3,double>(1.0, 0.0, 1.0);
-                else
-                {
-                    vx[1] = 1.0;
-                    vx[2] = 1.0;
-                    vx[0] = -(vz[1] * vx[1] - vz[2] * vx[2]) / vz[0];
-                }
-            }
-            vx /= vx.norm();
-            vy = cross<double>(vz, vx);
-
-
-            d *= 0.15;
-
-            Vec<3, double> temp;
-            temp[0] = arrow[0] * 0.67;
-            temp[1] = arrow[1] * 0.67;
-            temp[2] = arrow[2] * 0.67;
-
-            Vec<3, double> A;
-            A[0] = org[0] + arrow[0];
-            A[1] = org[1] + arrow[1];
-            A[2] = org[2] + arrow[2];
-
-            Vec<3,double> b1 = vx*d;
-            Vec<3,double> b2 = vy*d;
-
-            Vec<3,double> B(A);
-            B -= vz*d;
-            B += b1;
-
-            Vec<3,double> C(A);
-            C -= vz*d;
-            C += b2;
-
-            Vec<3,double> D(A);
-            D -= vz*d;
-            D -= b1;
-
-            Vec<3,double> E(A);
-            E -= vz*d;
-            E -= b2;
-
-            glLineWidth( (GLdouble)lineWidth);
-            glBegin(GL_LINES);
-
-            glVertex3d(org[0], org[1], org[2]);
-            glVertex3d(head[0], head[1], head[2]);
-            glVertex3d(B[0], B[1], B[2]);
-            glVertex3d(C[0], C[1], C[2]);
-            glVertex3d(C[0], C[1], C[2]);
-            glVertex3d(D[0], D[1], D[2]);
-            glVertex3d(D[0], D[1], D[2]);
-            glVertex3d(E[0], E[1], E[2]);
-            glVertex3d(E[0], E[1], E[2]);
-            glVertex3d(B[0], B[1], B[2]);
-            glVertex3d(B[0], B[1], B[2]);
-            glVertex3d(head[0], head[1], head[2]);
-            glVertex3d(C[0], C[1], C[2]);
-            glVertex3d(head[0], head[1], head[2]);
-            glVertex3d(D[0], D[1], D[2]);
-            glVertex3d(head[0], head[1], head[2]);
-            glVertex3d(E[0], E[1], E[2]);
-            glVertex3d(head[0], head[1], head[2]);
-
-            glEnd();
-
-        }
-
-
-    }
-
-    //Draw arrows in the Z plane
-    void drawArrowsZ()
-    {
-        int x=0;
-        int y=1;
-        int z=2;
-
-        waVis wVis(this->vectorVisualization);
-        if(!wVis->getRgb())
-        {
-            std::vector<VisuModelType*> visuals;
-            sofa::core::objectmodel::BaseContext* context = this->getContext();
-            context->get<VisuModelType>(&visuals,core::objectmodel::BaseContext::SearchRoot);
-
-            waPlane wplane(this->plane);
-            wplane->setInput(image.getValue(),transform.getValue(),visuals);
-        }
-
         raImage rimage(this->image);
         raPlane rplane(this->plane);
         raTransform rtransform(this->transform);
         raVis rVis(this->vectorVisualization);
 
-        int sliceN = rplane->getPlane()[z];
-
         double size = rVis->getShapeScale();
-        int sampleXY = rVis->getSubsampleXY();
-        int width = rimage->getCImg().width();
-        int height = rimage->getCImg().height();
+        imCoord dims=rplane->getDimensions();
+        Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        Vec4f colour(1.0,0.5,0.5,1.0);
 
-        for(int xOffset=0; xOffset < width; xOffset += sampleXY)
+        unsigned int x,y,z;
+        for (z=0; z<3; z++)
         {
-            for(int yOffset=0; yOffset < height; yOffset += sampleXY)
-            {
-                const T* voxel = rimage->getCImg(rplane->getTime()).data(xOffset, yOffset, sliceN);
-
-                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(xOffset, yOffset, sliceN));
-                Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
-                relativeVec = relativeVec * size;
-
-                drawArrow(base, relativeVec);
-            }
-        }
-
-    }
-
-    //Draw arrows in the Y plane
-    void drawArrowsY()
-    {
-        int x=0;
-        int y=1;
-        int z=2;
-
-        raImage rimage(this->image);
-        raPlane rplane(this->plane);
-        raTransform rtransform(this->transform);
-        raVis rVis(this->vectorVisualization);
-
-        int sliceN = rplane->getPlane()[y];
-
-        double size = rVis->getShapeScale();
-        int sampleXY = rVis->getSubsampleXY();
-        int sampleZ = rVis->getSubsampleZ();
-        int width = rimage->getCImg().width();
-        int depth = rimage->getCImg().depth();
-
-        for(int xOffset=0; xOffset < width; xOffset += sampleXY)
-        {
-            for(int zOffset=0; zOffset < depth; zOffset += sampleZ)
-            {
-                const T* voxel = rimage->getCImg(rplane->getTime()).data(xOffset, sliceN, zOffset);
-
-                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(xOffset, sliceN, zOffset));
-                Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
-                relativeVec = relativeVec * size;
-
-                drawArrow(base, relativeVec);
-            }
+            if(z==0) { x=2; y=1;}
+            else if(z==1) { x=0; y=2;}
+            else { x=0; y=1;}
+            Coord ip; ip[z]=rplane->getPlane()[z];
+            if(ip[z]<dims[z] && dims[x]>1 && dims[y]>1)
+                for(ip[x] = 0; ip[x] < dims[x]; ip[x] += sampling[x])
+                    for(ip[y] = 0; ip[y] < dims[y]; ip[y] += sampling[y])
+                    {
+                        Coord base = rtransform->fromImage(ip);
+                        CImg<T> vect = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0],ip[1],ip[2]);
+                        Coord relativeVec((double)vect[0], (double)vect[1], (double)vect[2]);
+                        vparams->drawTool()->drawArrow(base,base+relativeVec*size,size,colour);
+                    }
         }
     }
 
-
-    //Draw arrows in the X plane
-    void drawArrowsX()
-    {
-        int x=0;
-        int y=1;
-        int z=2;
-
-        raImage rimage(this->image);
-        raPlane rplane(this->plane);
-        raTransform rtransform(this->transform);
-
-        int sliceN = rplane->getPlane()[x];
-        raVis rVis(this->vectorVisualization);
-
-        double size = rVis->getShapeScale();
-        int sampleXY = rVis->getSubsampleXY();
-        int sampleZ = rVis->getSubsampleZ();
-        int depth = rimage->getCImg().depth();
-        int height = rimage->getCImg().height();
-
-        for(int zOffset=0; zOffset < depth; zOffset += sampleZ)
-        {
-            for(int yOffset=0; yOffset < height; yOffset += sampleXY)
-            {
-                const T* voxel = rimage->getCImg(rplane->getTime()).data(sliceN, yOffset, zOffset);
-
-                Vec<3,double> base = rtransform->fromImage(Vec<3,Real>(sliceN, yOffset, zOffset));
-                Vec<3, double> relativeVec((double)voxel[x], (double)voxel[y], (double)voxel[z]);
-                relativeVec = relativeVec * size;
-
-                drawArrow(base, relativeVec);
-            }
-        }
-
-    }
 
     //Draw the boxes around the slices
     void drawCutplanes()
     {
-
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -590,58 +343,24 @@ protected:
     //Update and draw the slices
     void updateTextures()
     {
+
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
-        raHisto rhisto(this->histo);
 
         for (unsigned int i=0; i<3; i++)
         {
-            CImg<T> originalPlane = rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1);
+            CImg<unsigned char> cplane = convertToUC( rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1).cut(rplane->getClamp()[0],rplane->getClamp()[1]) );
 
-
-            //Calculates the norm of the vector and sets it as the value of the voxel
-            if(!vectorVisualization.getValue().getRgb())
+            if(cplane)
             {
-                if(originalPlane)
-                {
-                    cimg_forXY(originalPlane,x,y)
-                    {
-                        CImg<T> vector = originalPlane.get_vector_at(x,y,0);
-
-                        vector(0,0,0,0) = (T) vector.magnitude();
-                        if(vector.height() > 1)
-                            vector(0,1,0,0) = (T) vector(0,0,0,0);
-                        if(vector.height() > 2)
-                            vector(0,2,0,0) = (T) vector(0,0,0,0);
-
-                        originalPlane.set_vector_at(vector, x, y, 0);
-                    }
-                }
-            }
-
-            CImg<unsigned char> plane;
-
-            plane = convertToUC( originalPlane.cut(rhisto->getClamp()[0],rhisto->getClamp()[1]) );
-
-            if(plane)
-            {
-                cimg_forXY(plane,x,y)
+                cimg_forXY(cplane,x,y)
                 {
                     unsigned char *b=cutplane_tex[i]->getImage()->getPixels()+4*(y*cutplane_res+x);
-
-
-                    for(unsigned int c=0; c<3 && c<(unsigned int)plane.spectrum() ; c++)
-                    {
-
-                        b[c]=plane(x,y,0,c);
-                    }
-                    for(unsigned int c=plane.spectrum(); c<3; c++)
-                        b[c]=b[0];
+                    for(unsigned int c=0; c<3 && c<(unsigned int)cplane.spectrum() ; c++) b[c]=cplane(x,y,0,c);
+                    for(unsigned int c=cplane.spectrum(); c<3; c++) b[c]=b[0];
                     b[3]=(unsigned char)(-1);
                 }
-
                 cutplane_tex[i]->update();
-
             }
         }
     }
