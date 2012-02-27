@@ -691,7 +691,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis x
             a=Vec3d(1,0,0);
             solution = jacobi.solve( eigenVec(a) );
-            u = helper::sofaVec( solution ); // least-squares solve EEt.u=x
+            // least-squares solve EEt.u=x
+            for(int i=0; i<3; i++)
+                u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
@@ -702,7 +704,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis y
             a=Vec3d(0,1,0);
             solution = jacobi.solve( eigenVec(a) );
-            u = helper::sofaVec( solution ); // least-squares solve EEt.u=y
+            // least-squares solve EEt.u=y
+            for(int i=0; i<3; i++)
+                u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
@@ -713,7 +717,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             // axis z
             a=Vec3d(0,0,1);
             solution = jacobi.solve( eigenVec(a) );
-            u = helper::sofaVec( solution ); // least-squares solve EEt.u=z
+            // least-squares solve EEt.u=z
+            for(int i=0; i<3; i++)
+                u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(unsigned i=0; i<ve.size(); i++ )
             {
