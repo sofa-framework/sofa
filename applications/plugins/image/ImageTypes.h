@@ -133,69 +133,67 @@ public:
 
     //basic functions to complement CImgList
 
-    // returns image of size [dimx,1,1,nbChannels]
-    CImg<unsigned int> get_histogram(const unsigned int dimx, const bool mergeChannels=true,const T value_min=(T)0, const T value_max=(T)0) const
+
+    /**
+    * Returns histograms of image channels (mergeChannels=false) or a single histogram of the norm (mergeChannels=true)
+    * the returned image size is [dimx,1,1,mergeChannels?1:nbChannels]
+    * Returns min / max values
+    */
+    CImg<unsigned int> get_histogram(T& value_min, T& value_max, const unsigned int dimx, const bool mergeChannels=false) const
     {
         if(!img.size()) return CImg<unsigned int>();
         const unsigned int s=mergeChannels?1:img(0).spectrum();
         CImg<unsigned int> res(dimx,1,1,s,0);
-        T vmin = value_min, vmax=value_max;
-        if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
-        cimglist_for(img,l)
-        cimg_forXYZC(img(l),x,y,z,c)
+
+        if(mergeChannels)
         {
-            const T val = img(l)(x,y,z,c);
-            long double v = ((long double)val-(long double)vmin)/((long double)vmax-(long double)vmin)*((long double)dimx-(long double)1);
-            ++res((int)(v),0,0,mergeChannels?0:c);
-        }
-        return res;
-    }
-
-    /**
-    * Returns a histogram of an image where the value at each pixel is the norm of multiple channels.
-    */
-    CImg<unsigned int> get_norm_histogram(const unsigned int dimx, const T value_min=(T)0, const T value_max=(T)0) const
-    {
-        if(!img.size()) return CImg<unsigned int>();
-        CImg<unsigned int> res(dimx,1,1,1,0);
-        T vmin = value_min, vmax=value_max;
-        if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
-
-
-        cimglist_for(img,l)
-        {
-            if(img(l).spectrum() >= 3)
+            value_min=cimg::type<T>::max();
+            value_max=cimg::type<T>::min();
+            cimglist_for(img,l)
+            cimg_forXYZ(img(l),x,y,z)
             {
-                cimg_forXYZ(img(l),x,y,z)
-                {
-
-                    const T valX = img(l)(x,y,z,0);
-                    const T valY = img(l)(x,y,z,1);
-                    const T valZ = img(l)(x,y,z,2);
-
-                    long double norm = std::sqrt(std::abs((long double) valX*valX + valY*valY + valZ*valZ));
-
-                    long double v = ((long double)norm-(long double)vmin)/((long double)vmax-(long double)vmin)*((long double)dimx-(long double)1);
-
-                    if( (unsigned int)(v) > dimx-1)
-                    {
-                        v = dimx-1;
-                    }
-
-                    ++res((unsigned int)(v),0,0,0);
-
-                }
+                CImg<long double> vect=img(l).get_vector_at(x,y,z);
+                long double val=vect.magnitude();
+                T tval=(T)val;
+                if(value_min>tval) value_min=tval;
+                if(value_max<tval) value_max=tval;
+            }
+            cimglist_for(img,l)
+            cimg_forXYZ(img(l),x,y,z)
+            {
+                CImg<long double> vect=img(l).get_vector_at(x,y,z);
+                long double val=vect.magnitude();
+                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+                if(v<0) v=0;
+                if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                ++res((int)(v),0,0,0);
+            }
+        }
+        else
+        {
+            value_min=img.min();
+            value_max=img.max();
+            cimglist_for(img,l)
+            cimg_forXYZC(img(l),x,y,z,c)
+            {
+                const T val = img(l)(x,y,z,c);
+                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+                ++res((int)(v),0,0,c);
             }
         }
         return res;
     }
 
     // returns an image corresponing to a plane indexed by "coord" along "axis" and inside a bounding box
-    CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0) const
+    CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
     {
-        if(axis==0)       return getCImg(t).get_crop(coord,ROI[0][1],ROI[0][2],0,coord,ROI[1][1],ROI[1][2],getCImg(t).spectrum()-1).permute_axes("zyxc");
-        else if(axis==1)  return getCImg(t).get_crop(ROI[0][0],coord,ROI[0][2],0,ROI[1][0],coord,ROI[1][2],getCImg(t).spectrum()-1).permute_axes("xzyc");
-        else              return getCImg(t).get_crop(ROI[0][0],ROI[0][1],coord,0,ROI[1][0],ROI[1][1],coord,getCImg(t).spectrum()-1);
+        if(mergeChannels)    return get_plane(coord,axis,ROI,t,false).norm();
+        else
+        {
+            if(axis==0)       return getCImg(t).get_crop(coord,ROI[0][1],ROI[0][2],0,coord,ROI[1][1],ROI[1][2],getCImg(t).spectrum()-1).permute_axes("zyxc");
+            else if(axis==1)  return getCImg(t).get_crop(ROI[0][0],coord,ROI[0][2],0,ROI[1][0],coord,ROI[1][2],getCImg(t).spectrum()-1).permute_axes("xzyc");
+            else              return getCImg(t).get_crop(ROI[0][0],ROI[0][1],coord,0,ROI[1][0],ROI[1][1],coord,getCImg(t).spectrum()-1);
+        }
     }
 
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
@@ -487,12 +485,10 @@ struct Histogram
 
 protected:
     const ImageTypes* img;
-    const VectorVis* vectorvis;  //! A reference to the vectorvis data allows the correct type of histogram to be loaded as the user changes the options in the GUI.
 
     unsigned int dimx;		// input number of bins
     unsigned int dimy;		// input histogram image height
-    bool mergeChannels;		// sum histogram of all channels ?
-    bool currentlyRgb;		// Used to determine if the histogram needs to change from regular to norm;
+    bool mergeChannels;		// histogram of norm ?
 
     double scaleVal;	double offsetVal;		// output histo abscisse to intensity transfer function :  intensity = x * scaleVal + offsetVal
 
@@ -504,55 +500,42 @@ protected:
 public:
     static const char* Name() { return "Histogram"; }
 
-    Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=true)
-        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels), currentlyRgb(true),
+    Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
+        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img)
     {
         img=&_img;
-        clamp[0] =img->getCImgList().min();
-        clamp[1] = img->getCImgList().max();
         update();
     }
-
-    void setVectorVis(const VectorVis* vis) { vectorvis = vis; }
 
     const CImg<bool>& getImage() const {return image;}
     const CImg<unsigned int>& getHistogram() const {return histogram;}
     const Vec<2,T>& getClamp() const {return clamp;}
-    void setClamp(const Vec<2,T> _clamp)
+    void setClamp(const Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
+    const bool& getMergeChannels() const {return this->mergeChannels;}
+    void setMergeChannels(const bool _mergeChannels)
     {
-        clamp[0] = _clamp[0];
-        clamp[1] = _clamp[1];
+        if(this->mergeChannels==_mergeChannels) return;
+        this->mergeChannels=_mergeChannels;
+        this->setClamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()));
+        this->update();
     }
 
     void update()
     {
         if(!img) return;
         if(!img->getCImgList().size()) return;
-        clamp[0] =img->getCImgList().min();
-        clamp[1] = img->getCImgList().max();
 
-        //If these values aren't the same, the histogram type has changed since the last call to update()
-        // and needs to be recalculated
-        if(vectorvis && (currentlyRgb != vectorvis->getRgb()))
-        {
-            currentlyRgb = vectorvis->getRgb();
-            if(currentlyRgb)
-            {
-                histogram = img->get_histogram(dimx,mergeChannels,clamp[0],clamp[1]);
-            }
-            else
-            {
-                histogram = img->get_norm_histogram(dimx,clamp[0],clamp[1]);
-            }
+        T vmin,vmax;
+        histogram = img->get_histogram(vmin,vmax,dimx,mergeChannels);
+        if(clamp[1]>vmax)  clamp[1]=vmax;
+        if(clamp[0]<vmin)  clamp[0]=vmin;
 
-        }
-
-        offsetVal = (double)clamp[0];
-        scaleVal = (double)(clamp[1]-clamp[0])/(double)(dimx-1);
+        offsetVal = (double)vmin;
+        scaleVal = (double)(vmax-vmin)/(double)(dimx-1);
         image = CImg<bool>(dimx,dimy,1,histogram.spectrum(),0);
         bool tru=true;
         cimg_forC(histogram,c) image.get_shared_channel(c).draw_graph(histogram.get_shared_channel(c),&tru,1,3,0);
@@ -598,7 +581,7 @@ struct ImagePlane
     typedef typename sofa::component::visualmodel::VisualModelImpl VisualModelTypes;
     typedef std::vector<VisualModelTypes*> VecVisualModel;
 
-    const VectorVis* vectorvis; //! A reference to the VectorVis data allows the plane images to switch between RGB or greyscale norms, as the user changes the options in the GUI
+    //    const VectorVis* vectorvis; //! A reference to the VectorVis data allows the plane images to switch between RGB or greyscale norms, as the user changes the options in the GUI
 
 protected:
     const ImageTypes* img;				// input image
@@ -610,13 +593,13 @@ protected:
     Vec<2,T> clamp;				// input clamp values
 
     bool imagePlaneDirty;			// Dirty when output plane images should be updated
-    bool vectors;					//Visualize vectors as arrows
+    bool mergeChannels;		// multichannel image or norm ?
 
 public:
     static const char* Name() { return "ImagePlane"; }
 
     ImagePlane()
-        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true) // set by user or other objects
+        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true), mergeChannels(false) // set by user or other objects
     {
     }
 
@@ -625,31 +608,18 @@ public:
         transform=&_transform;
         img=&_img;
         visualModels.assign(_visualModels.begin(),_visualModels.end());
+        this->setPlane(pCoord(this->img->getDimensions()[0]/2,this->img->getDimensions()[1]/2,this->img->getDimensions()[2]/2));
         this->imagePlaneDirty=true;
     }
 
-    bool drawVectors() {return vectors;}
     const pCoord& getPlane() const {return plane;}
     const unsigned int& getTime() const {return time;}
     const Vec<2,T>& getClamp() const {return clamp;}
-    imCoord getDimensions() const { return img->getDimensions(); }
-    const bool& isImagePlaneDirty() const {return imagePlaneDirty;}
+    imCoord getDimensions() const {  if(!this->img)  { imCoord c; c.fill(0); return c;} else return img->getDimensions(); }
+    const bool& isImagePlaneDirty() const {return this->imagePlaneDirty;}
 
-    /**
-    * Sets the reference to the VectorVis data.
-    */
-    void setVectorVis(const VectorVis* vis) { vectorvis = vis; }
-    /**
-    * Checks if the image is currently being displayed as RGB or a greyscale of the norm values, so the image plane can display the appropriate type.
-    */
-    bool getRgb() const { return vectorvis->getRgb(); }
-
-
-    void setDrawVectors(bool state)
-    {
-        vectors = state;
-        imagePlaneDirty = true;
-    }
+    const bool& getMergeChannels() const {return this->mergeChannels;}
+    void setMergeChannels(const bool _mergeChannels)  {   this->mergeChannels=_mergeChannels;    }
 
     void setPlane(const pCoord& p)
     {
@@ -703,7 +673,7 @@ public:
         if(!this->img->getCImgList().size()) return CImg<T>();
         if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return CImg<T>();			// discard out of volume planes
         if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return CImg<T>();  // discard unit width/height images
-        return this->img->get_plane(index,axis,roi,this->time);
+        return this->img->get_plane(index,axis,roi,this->time,this->mergeChannels);
     }
     CImg<T> get_slice(const unsigned int index,const unsigned int axis) const
     {
