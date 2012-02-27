@@ -232,7 +232,7 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
     if (model2 == this)
     {
 
-        if (index==index2)
+        if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
             return false;
 
         sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
