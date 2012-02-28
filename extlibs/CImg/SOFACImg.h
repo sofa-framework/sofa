@@ -111,34 +111,40 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     {
         fileStream >> str;
 
-        if(!str.compare("ObjectType"))
+        if(!str.compare("ObjectType") ||
+                !str.compare("objectType"))
         {
             fileStream >> str2; // '='
             fileStream >> str2;
             if(str2.compare("Image")) { std::cout << "MetaImageReader: not an image ObjectType "<<std::endl; return ret;}
         }
-        else if(!str.compare("ElementDataFile"))
+        else if(!str.compare("ElementDataFile") ||
+                !str.compare("elementDataFile"))
         {
             fileStream >> str2; // '='
             fileStream >> imageFilename;
         }
-        else if(!str.compare("NDims"))
+        else if(!str.compare("NDims") ||
+                !str.compare("nDims"))
         {
             fileStream >> str2;  // '='
             fileStream >> nbdims;
             if(nbdims>4) { std::cout << "MetaImageReader: dimensions > 4 not supported  "<<std::endl; return ret;}
         }
-        else if(!str.compare("ElementNumberOfChannels"))
+        else if(!str.compare("ElementNumberOfChannels") ||
+                !str.compare("elementNumberOfChannels"))
         {
             fileStream >> str2;  // '='
             fileStream >> nbchannels;
         }
-        else if(!str.compare("DimSize") || !str.compare("dimensions") || !str.compare("dim"))
+        else if(!str.compare("DimSize") || !str.compare("Dimensions") || !str.compare("Dim") ||
+                !str.compare("dimSize") || !str.compare("dimensions") || !str.compare("dim"))
         {
             fileStream >> str2;  // '='
             for(unsigned int i=0;i<nbdims;i++) fileStream >> dim[i];
         }
-        else if(!str.compare("ElementSpacing") || !str.compare("spacing") || !str.compare("scale3d") || !str.compare("voxelSize"))
+        else if(!str.compare("ElementSpacing") || !str.compare("Spacing") || !str.compare("Scale3d") || !str.compare("VoxelSize") ||
+                !str.compare("elementSpacing") || !str.compare("spacing") || !str.compare("scale3d") || !str.compare("voxelSize"))
         {
             fileStream >> str2; // '='
             double val[4];
@@ -146,7 +152,8 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(scale) for(unsigned int i=0;i<3;i++) if(i<nbdims) scale[i] = (F)val[i];
             if(scaleT) if(nbdims>3) *scaleT = (F)val[3];
         }
-        else if(!str.compare("Position") || !str.compare("Offset") || !str.compare("translation") || !str.compare("origin"))
+        else if(!str.compare("Position") || !str.compare("Offset") || !str.compare("Translation") || !str.compare("Origin") ||
+                !str.compare("position") || !str.compare("offset") || !str.compare("translation") || !str.compare("origin"))
         {
             fileStream >> str2; // '='
             double val[4];
@@ -154,7 +161,8 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(translation) for(unsigned int i=0;i<3;i++) if(i<nbdims) translation[i] = (F)val[i];
             if(offsetT) if(nbdims>3) *offsetT = (F)val[3];
         }
-        else if(!str.compare("Orientation"))
+        else if(!str.compare("Orientation") || !str.compare("TransformMatrix") || !str.compare("Rotation") ||
+                !str.compare("orientation") || !str.compare("transformMatrix") || !str.compare("rotation"))
         {
             fileStream >> str2; // '='
             double val[9];
@@ -163,7 +171,8 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             // to do: handle "CenterOfRotation" Tag
         }
         else if(!str.compare("isPerpective")) { fileStream >> str2; bool val; fileStream >> val; if(isPerspective) *isPerspective=val; }
-        else if(!str.compare("ElementType") || !str.compare("voxelType"))  // not used (should be known in advance for template)
+        else if(!str.compare("ElementType") || !str.compare("VoxelType") ||
+                !str.compare("elementType") || !str.compare("voxelType"))  // not used (should be known in advance for template)
         {
             fileStream >> str2; // '='
             fileStream >> str2;
