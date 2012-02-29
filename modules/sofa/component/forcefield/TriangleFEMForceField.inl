@@ -370,6 +370,15 @@ void TriangleFEMForceField<DataTypes>::initSmall()
     sout << "TriangleFEMForceField::initSmall"<<sendl;
 #endif
 
+    Transformation identity;
+    identity[0][0]=identity[1][1]=identity[2][2]=1;
+    identity[0][1]=identity[0][2]=0;
+    identity[1][0]=identity[1][2]=0;
+    identity[2][0]=identity[2][1]=0;
+    for(unsigned i=0; i< _indexedElements->size() ; ++i)
+    {
+        _rotations[i] = identity;
+    }
 }
 
 
@@ -717,18 +726,6 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
                     Ke[3*i+k][3*j+l] = JKJt[2*i+k][2*j+l];
         }
     }
-//    // fill the remaining rows with 0
-//    for(unsigned i=0; i<3; i++){
-//        for(unsigned j=0; j<9; j++){
-//            Ke[3*i+2][j] = 0;
-//        }
-//    }
-//    // fill the remaining columns with 0
-//    for(unsigned i=0; i<3; i++){
-//        for(unsigned j=0; j<9; j++){
-//            Ke[j][3*i+2] = 0;
-//        }
-//    }
 
     // rotation matrices. TODO: use block-diagonal matrices, more efficient.
     Mat<9, 9, Real> RR,RRt; // initialized to 0
@@ -742,12 +739,12 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
     S = RR*Ke;
     SR = S*RRt;
 
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, strain-displacement  = " << endl << J << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotation  = " << endl << Rot << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, material stiffness = " << endl << K << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, in-plane stiffness = " << endl << JKJt << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, expanded stiffness = " << endl << Ke << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, strain-displacement  = " << endl << J << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotation  = " << endl << Rot << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, material stiffness = " << endl << K << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, in-plane stiffness = " << endl << JKJt << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, expanded stiffness = " << endl << Ke << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
 
 }
 
@@ -755,100 +752,16 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-    int i,j,n1, n2, row, column, ROW, COLUMN , IT;
-    const int numV=3;  // number of vertices per element
+//    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
 
-    Transformation Rot;
-    StiffnessMatrix JKJt,tmp;
-
-    typename VecElement::const_iterator it;
-
-    Index noeud1, noeud2;
-    int offd3 = offset/3;
-
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
-
-    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
-
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    for(unsigned i=0; i< _indexedElements->size() ; i++)
     {
-        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
-        {
-            if (method == SMALL) computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
-            else computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
-
-            defaulttype::Mat<3,3,double> tmpBlock[3][3];
-            // find index of node 1
-            for (n1=0; n1<numV; n1++)
-            {
-                for(i=0; i<3; i++)
-                {
-                    for (n2=0; n2<numV; n2++)
-                    {
-                        for (j=0; j<3; j++)
-                        {
-                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                        }
-                    }
-                }
-            }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-
-        }
+        StiffnessMatrix JKJt,RJKJtRt;
+        computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
+        addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
-    else
-    {
-        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
-        {
-            if (method == SMALL)
-                computeElementStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
-            else
-                computeElementStiffnessMatrix(JKJt,tmp, _materialsStiffnesses[IT], _strainDisplacements[IT], _rotations[IT]);
 
-//            cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, element  " << (*it)[0] << ", " <<  (*it)[1] << ", " << (*it)[2] << ", "<< endl;
-//            cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, stiffness matrix = " << endl << tmp << endl;
-            // find index of node 1
-            for (n1=0; n1<numV; n1++)
-            {
-                noeud1 = (*it)[n1];
-
-                for(i=0; i<3; i++)
-                {
-                    ROW = offset+3*noeud1+i;
-                    row = 3*n1+i;
-                    // find index of node 2
-                    for (n2=0; n2<numV; n2++)
-                    {
-                        noeud2 = (*it)[n2];
-
-                        for (j=0; j<3; j++)
-                        {
-                            COLUMN = offset+3*noeud2+j;
-                            column = 3*n2+j;
-                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
-                            // cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl << *mat << endl;
-                            // cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, k= " << k << ", value = " << - tmp[row][column]*k <<", ROW = "<< ROW << ", COLUMN = "<< COLUMN << endl ;
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-//    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
 }
 
 

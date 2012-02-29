@@ -163,17 +163,50 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+    virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
     /// @deprecated
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset)               ;
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
 
 
-    virtual void addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// @deprecated
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset)              ;
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+
+
+    /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
+      \param bm the global assembly matrix
+      \param offset start index of the local DOFs within the global matrix
+      \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
+      \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
+      \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
+      */
+    template<class IndexArray, class ElementMat>
+    void addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
+    {
+        const unsigned  S = DataTypes::deriv_total_size; // size of node blocks
+        for (unsigned n1=0; n1<nodeIndex.size(); n1++)
+        {
+            for(unsigned i=0; i<S; i++)
+            {
+                unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
+                unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
+
+                for (unsigned n2=0; n2<nodeIndex.size(); n2++)
+                {
+                    for (unsigned j=0; j<S; j++)
+                    {
+                        unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
+                        unsigned column = 3*n2+j;                      // j-th column associated with node n2 in the element matrix
+                        bm->add( ROW,COLUMN, em[row][column]* scale );
+                    }
+                }
+            }
+        }
+    }
+
 
     /// @}
 
