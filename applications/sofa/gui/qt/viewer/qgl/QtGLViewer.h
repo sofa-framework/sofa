@@ -70,7 +70,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
+class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     typedef Vector3::value_type Real;
     Q_OBJECT
