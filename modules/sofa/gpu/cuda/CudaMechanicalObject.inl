@@ -1219,7 +1219,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         unsigned int elemDim = DataTypeInfo<Coord>::size();
         const VecCoord& va = m->read(ConstVecCoordId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
-
+        dest->getCudaVector().invalidateHost();
         Kernels::vAssign(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
@@ -1229,7 +1229,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         unsigned int elemDim = DataTypeInfo<Deriv>::size();
         const VecCoord& va = m->read(ConstVecDerivId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
-
+        dest->getCudaVector().invalidateHost();
         Kernels::vAssign(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
@@ -1239,6 +1239,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyFromBaseVector(Main* m, VecId dest, const defaulttype::BaseVector * src, unsigned int &offset)
 {
+
     if (dest.type == sofa::core::V_COORD)
     {
         Data<VecCoord>* d_vDest = m->write(VecCoordId(dest));
@@ -1284,8 +1285,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         VecCoord* vDest = d_vDest->beginEdit();
         unsigned int elemDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/elemDim;
-
-        Kernels::vAssign(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->getCudaVector().deviceRead() );
+        vDest->invalidateHost();
+        Kernels::vAssign(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->deviceRead() );
 
 // 		offset += vDest->size() * elemDim;
         d_vDest->endEdit();
@@ -1296,8 +1297,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         VecDeriv* vDest = d_vDest->beginEdit();
         unsigned int elemDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/elemDim;
-
-        Kernels::vAssign(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->getCudaVector().deviceRead());
+        vDest->invalidateHost();
+        Kernels::vAssign(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->deviceRead());
 
 // 		offset += vDest->size() * elemDim;
         d_vDest->endEdit();

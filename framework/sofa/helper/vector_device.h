@@ -355,6 +355,12 @@ public:
         deviceIsValid = 0;
     }
 
+    void invalidateHost()
+    {
+        hostIsValid = 0;
+        deviceIsValid = ALL_DEVICE_VALID;
+    }
+
     void memsetDevice(int v = 0)
     {
         DEBUG_OUT_V(SPACEP << "memsetDevice " << std::endl);
