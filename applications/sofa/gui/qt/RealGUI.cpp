@@ -293,6 +293,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
+    //--------
+    pluginManager_dialog = new SofaPluginManager();
+    pluginManager_dialog->hide();
+
+    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
+    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+
     informationOnPickCallBack = InformationOnPickCallBack(this);
 
 #ifdef SOFA_QT4
@@ -430,14 +437,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
     connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
 #endif
-    //--------
-    pluginManager_dialog = new SofaPluginManager();
-    pluginManager_dialog->hide();
-
-    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
-    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
-
-
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
