@@ -25,7 +25,7 @@ declare(system-taucs,  system-taucs.prf)
 
 declare(newmat,     extlibs/newmat)
 declare(tinyxml,    extlibs/tinyxml)
-declare(eigen,      extlibs/eigen-3.0.3/eigen.pro)
+declare(eigen,      extlibs/eigen-3.0.5/eigen.pro)
 declare(qwt,        extlibs/qwt-6.0.1/src, qtgui rt)
 declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer, qtgui)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)

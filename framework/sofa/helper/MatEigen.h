@@ -29,6 +29,7 @@
 /** Helpers to apply Eigen matrix methods to the Mat sofa type */
 
 #include <sofa/defaulttype/Mat.h>
+#undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
 #include <Eigen/Dense>
 #include <iostream>
 
