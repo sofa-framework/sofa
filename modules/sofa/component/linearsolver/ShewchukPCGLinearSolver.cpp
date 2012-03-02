@@ -257,6 +257,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         d = b;
     }
 
+    x.clear();
     r = b;
     double deltaNew = b.dot(d);
     double delta0 = deltaNew;
