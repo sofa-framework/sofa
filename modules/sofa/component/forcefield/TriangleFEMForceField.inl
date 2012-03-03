@@ -70,6 +70,7 @@ TriangleFEMForceField()
     , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
+    , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
 {}
 
 template <class DataTypes>
@@ -143,8 +144,8 @@ void TriangleFEMForceField<DataTypes>::reinit()
 
     computeMaterialStiffnesses();
 
-    initSmall();
-    initLarge();
+    //    initSmall();  // useful ? The rotations are recomputed later
+    initLarge();  // compute the per-element strain-displacement matrices
 }
 
 
@@ -246,16 +247,63 @@ void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplace
     sout << "TriangleFEMForceField::computeStrainDisplacement"<<sendl;
 #endif
 
-    //Coord ab_cross_ac = cross(b, c);
-    Real determinant = b[0] * c[1]; // Surface
+//    //Coord ab_cross_ac = cross(b, c);
+//    Real determinant = b[0] * c[1]; // Surface * 2
 
-    J[0][0] = J[1][2] = -c[1] / determinant;
-    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
-    J[2][0] = J[3][2] = c[1] / determinant;
-    J[2][2] = J[3][1] = -c[0] / determinant;
+//    J[0][0] = J[1][2] = -c[1] / determinant;
+//    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
+//    J[2][0] = J[3][2] = c[1] / determinant;
+//    J[2][2] = J[3][1] = -c[0] / determinant;
+//    J[4][0] = J[5][2] = 0;
+//    J[4][2] = J[5][1] = b[0] / determinant;
+//    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
+
+    /* The following formulation is actually equivalent:
+      Let
+      | alpha1 alpha2 alpha3 |                      | 1 xa ya |
+      | beta1  beta2  beta3  | = be the inverse of  | 1 xb yb |
+      | gamma1 gamma2 gamma3 |                      | 1 xc yc |
+
+      The strain-displacement matrix is:
+      | beta1  0       beta2  0        beta3  0      |
+      | 0      gamma1  0      gamma2   0      gamma3 | / (2*A)
+      | gamma1 beta1   gamma2 beta2    gamma3 beta3  |
+
+      where A is the area of the triangle and 2*A is the determinant of the matrix with the xa,ya,xb...
+
+
+      Since a0=a1=b1=0, the matrix is triangular and its inverse is:
+      |  1              0              0  |
+      | -1/xb           1/xb           0  |
+      | -(1-xc/xb)/yc  -xc/(xb*yc)   1/yc |
+
+      our strain-displacement matrix is:
+      | -1/xb           0             1/xb         0            0     0    |
+      | 0              -(1-xc/xb)/yc  0            -xc/(xb*yc)  0     1/yc |
+      | -(1-xc/xb)/yc  -1/xb          -xc/(xb*yc)  1/xb         1/yc  0    |
+      */
+
+    Real beta1  = -1/b[0];
+    Real beta2  =  1/b[0];
+    Real gamma1 = (c[0]/b[0]-1)/c[1];
+    Real gamma2 = -c[0]/(b[0]*c[1]);
+    Real gamma3 = 1/c[1];
+
+    // The transpose of the strain-displacement matrix is thus:
+    J[0][0] = J[1][2] = beta1;
+    J[0][1] = J[1][0] = 0;
+    J[0][2] = J[1][1] = gamma1;
+
+    J[2][0] = J[3][2] = beta2;
+    J[2][1] = J[3][0] = 0;
+    J[2][2] = J[3][1] = gamma2;
+
     J[4][0] = J[5][2] = 0;
-    J[4][2] = J[5][1] = b[0] / determinant;
-    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
+    J[4][1] = J[5][0] = 0;
+    J[4][2] = J[5][1] = gamma3;
+
+
+
 }
 
 
@@ -264,20 +312,36 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 {
     _materialsStiffnesses.resize(_indexedElements->size());
 
-    for(unsigned i = 0; i < _indexedElements->size(); ++i)
-    {
-        _materialsStiffnesses[i][0][0] = 1;
-        _materialsStiffnesses[i][0][1] = f_poisson.getValue();
-        _materialsStiffnesses[i][0][2] = 0;
-        _materialsStiffnesses[i][1][0] = f_poisson.getValue();
-        _materialsStiffnesses[i][1][1] = 1;
-        _materialsStiffnesses[i][1][2] = 0;
-        _materialsStiffnesses[i][2][0] = 0;
-        _materialsStiffnesses[i][2][1] = 0;
-        _materialsStiffnesses[i][2][2] = 0.5f * (1 - f_poisson.getValue());
+    if( f_planeStrain.getValue() == true )
+        for(unsigned i = 0; i < _indexedElements->size(); ++i)
+        {
+            _materialsStiffnesses[i][0][0] = 1-f_poisson.getValue();
+            _materialsStiffnesses[i][0][1] = f_poisson.getValue();
+            _materialsStiffnesses[i][0][2] = 0;
+            _materialsStiffnesses[i][1][0] = f_poisson.getValue();
+            _materialsStiffnesses[i][1][1] = 1-f_poisson.getValue();
+            _materialsStiffnesses[i][1][2] = 0;
+            _materialsStiffnesses[i][2][0] = 0;
+            _materialsStiffnesses[i][2][1] = 0;
+            _materialsStiffnesses[i][2][2] = 0.5f - f_poisson.getValue();
 
-        _materialsStiffnesses[i] *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
-    }
+            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 + f_poisson.getValue()) * (1-2*f_poisson.getValue()) );
+        }
+    else // plane stress
+        for(unsigned i = 0; i < _indexedElements->size(); ++i)
+        {
+            _materialsStiffnesses[i][0][0] = 1;
+            _materialsStiffnesses[i][0][1] = f_poisson.getValue();
+            _materialsStiffnesses[i][0][2] = 0;
+            _materialsStiffnesses[i][1][0] = f_poisson.getValue();
+            _materialsStiffnesses[i][1][1] = 1;
+            _materialsStiffnesses[i][1][2] = 0;
+            _materialsStiffnesses[i][2][0] = 0;
+            _materialsStiffnesses[i][2][1] = 0;
+            _materialsStiffnesses[i][2][2] = 0.5f * (1 - f_poisson.getValue());
+
+            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 - f_poisson.getValue() * f_poisson.getValue()));
+        }
 }
 
 
@@ -752,7 +816,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-//    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
+    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
 
     for(unsigned i=0; i< _indexedElements->size() ; i++)
     {

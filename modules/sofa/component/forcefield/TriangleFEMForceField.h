@@ -125,6 +125,7 @@ public:
     Data<Real> f_poisson;
     Data<Real> f_young;
     Data<Real> f_damping;
+    Data<bool> f_planeStrain; ///< compute material stiffness corresponding to the plane strain assumption, or to the plane stress otherwise.
 
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val) { f_poisson.setValue(val); }
