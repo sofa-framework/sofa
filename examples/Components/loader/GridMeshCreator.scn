@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.04" gravity="0 -1 0">
+    <VisualStyle displayFlags="showBehavior hideCollision hideVisual " />
+    <EdgeSetGeometryAlgorithms />
+    <EulerImplicitSolver />
+    <CGLinearSolver />
+    <Node name="Thin shell">
+                <GridMeshCreator name="loader" filename="nofile" resolution="2 2" trianglePattern="1" rotation="180 0 0 " scale="10 10 0" />
+                <MeshTopology src="@loader" />
+                <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+                <BoxConstraint box="-0.5 -0.5 -0.5  10.5 0.005 0.005  " />
+                <TriangleFEMForceField name="FEM1" youngModulus="20000" poissonRatio="0.3" method="large" />
+                <FastTriangularBendingSprings bendingStiffness="1000" />
+                <UniformMass totalMass="2500" printLog="0" />
+    </Node>
+</Node>
