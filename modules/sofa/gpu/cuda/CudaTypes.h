@@ -251,7 +251,7 @@ public:
                 if (hostIsValid)
                 {
                     DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
-                    std::copy ( prevHostPointer, prevHostPointer+(pitch_host*sizeY), hostPointer);
+                    std::copy ( prevHostPointer, ((T*) ((char*)prevHostPointer)+(pitch_host*sizeY)), hostPointer);
                 }
                 if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
 
@@ -279,6 +279,13 @@ public:
 
         DEBUG_OUT_M(SPACEM << "fastResize" << std::endl);
     }
+
+    void recreate(int nbRow,int nbCol)
+    {
+        clear();
+        fastResize(nbRow,nbCol);
+    }
+
 
     void resize (size_type y,size_type x,size_t WARP_SIZE=MemoryManager::BSIZE)
     {
@@ -353,7 +360,7 @@ public:
                 if (hostIsValid)
                 {
                     DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
-                    std::copy ( prevHostPointer, prevHostPointer+(pitch_host*sizeY), hostPointer);
+                    std::copy ( prevHostPointer, ((T*) ((char*)prevHostPointer)+(pitch_host*sizeY)), hostPointer);
                 }
                 if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
 
@@ -492,6 +499,42 @@ public:
     {
         checkIndex (y,x);
         return ((T*) (((char*) hostPointer)+(y*pitch_host))) + x;
+    }
+
+    void operator= ( const CudaMatrix<T,MemoryManager >& m )
+    {
+        if (&m == this) return;
+
+        sizeX = m.sizeX;
+        sizeY = m.sizeY;
+
+        if (sizeY*pitch_host<m.sizeY*m.pitch_host)   //simple case, we simply copy data with the same attribute
+        {
+            T* prevHostPointer = hostPointer;
+            MemoryManager::hostAlloc( (void **) &hostPointer, m.pitch_host * sizeY);
+            if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+
+            void* prevDevicePointer = devicePointer;
+            mycudaMallocPitch(&devicePointer, &pitch_device, m.pitch_device, sizeY);
+            if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+
+            allocSizeY = sizeY;
+        }
+        else
+        {
+            int allocline = (allocSizeY*pitch_host) / m.pitch_host;
+            allocSizeY = allocline * m.pitch_host;
+            // Here it's possible that the allocSizeY is < the the real memory allocated, but it's not a problem, it will we deleted at the next resize;
+        }
+
+        pitch_host = m.pitch_host;
+        pitch_device = m.pitch_device;
+
+        if (m.hostIsValid) std::copy ( m.hostPointer, ((T*) (((char*) m.hostPointer)+(m.pitch_host*m.sizeY))), hostPointer);
+        if (m.deviceIsValid) MemoryManager::memcpyDeviceToDevice (0, devicePointer, m.devicePointer, m.pitch_device*m.sizeY );
+
+        hostIsValid = m.hostIsValid;
+        deviceIsValid = m.deviceIsValid; /// finally we get the correct device valid
     }
 
     friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat )
@@ -636,13 +679,13 @@ public:
     typedef sofa::defaulttype::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
-    Vec3r1() : dummy(0.0f) {}
+    Vec3r1() : dummy((Real) 0.0) {}
     template<class real2>
-    Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy(0.0f) {}
-    Vec3r1(real x, real y, real z) : Inherit(x,y,z), dummy(0.0f) {}
+    Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy((Real) 0.0) {}
+    Vec3r1(real x, real y, real z) : Inherit(x,y,z), dummy((Real) 0.0) {}
 
     /// Fast constructor: no initialization
-    explicit Vec3r1(NoInit n) : Inherit(n), dummy(0.0f)
+    explicit Vec3r1(NoInit n) : Inherit(n), dummy((Real) 0.0)
     {
     }
 
