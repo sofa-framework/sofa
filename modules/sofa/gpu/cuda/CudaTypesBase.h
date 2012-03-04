@@ -196,6 +196,16 @@ public :
         m.fastResize(nbRow,nbCol,ws);
     }
 
+    void recreate(int nbRow,int nbCol)
+    {
+        m.recreate(nbRow,nbCol);
+    }
+
+    void eq(CudaBaseMatrix & mat)
+    {
+        m = mat.m;
+    }
+
     unsigned int rowSize() const
     {
         return m.getSizeY();
@@ -277,6 +287,11 @@ public :
                 m.getPitchDevice(),
                 r.getCudaVector().deviceRead(),
                 v.getCudaVector().deviceWrite());
+    }
+
+    void operator= ( const CudaBaseMatrix<T>& mat )
+    {
+        m = mat.m;
     }
 
     void invalidateDevices()
