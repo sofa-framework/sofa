@@ -79,6 +79,7 @@ void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
     {
         B [j] /= data->D[j] ;
     }
+
     for (int j = data->n-1 ; j >= 0 ; j--)
     {
         for (int p = data->colptr[j] ; p < data->colptr[j+1] ; p++)
@@ -94,7 +95,6 @@ template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
-
     //remplir A avec M
     data->n = M.colSize();// number of columns
     data->Mfiltered.clear();
@@ -107,7 +107,7 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     Real * Mvalues = (Real *) &data->Mfiltered.getColsValue()[0];
     data->perm.resize(data->n);
     data->invperm.resize(data->n);
-    data->colptr.resize(data->n);
+    data->colptr.resize(data->n+1);
     data->D.resize(data->n);
 
     LDL_ordering(data->n,Mcolptr,Mrowind,&data->perm[0],&data->invperm[0]);
