@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/component/visualmodel/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -572,12 +573,35 @@ OglShaderElement::OglShaderElement()
 
 void OglShaderElement::init()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
-    shader = context->core::objectmodel::BaseContext::get<OglShader>();
+    sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
 
-    if (!shader)
+    /*when no multipass is active */
+    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=NULL;
+    isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
+    if(isMultipass==NULL)
     {
-        serr << "OglShaderElement: shader not found "<< sendl;
+        shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());
+        return;
+    }
+
+    sofa::core::objectmodel::TagSet::const_iterator begin = this->getTags().begin();
+    sofa::core::objectmodel::TagSet::const_iterator end = this->getTags().end();
+    sofa::core::objectmodel::TagSet::const_iterator it;
+    helper::vector<OglShader*> gotShaders;
+
+    for (it = begin; it != end; ++it)
+    {
+        mycontext->core::objectmodel::BaseContext::get<OglShader, helper::vector<OglShader*> >(&gotShaders, (*it));
+        for(helper::vector<OglShader*>::iterator it2 = gotShaders.begin(); it2!= gotShaders.end(); ++it2) //merge into shaders vector
+        {
+            shaders.insert(*it2);
+            //shaders.push_back(*it2);
+        }
+    }
+
+    if (shaders.empty())
+    {
+        serr << this->getTypeName() <<" \"" << this->getName() << "\": no relevant shader found. please check tags validity"<< sendl;
         return;
     }
     if (id.getValue().empty())

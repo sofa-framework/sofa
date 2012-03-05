@@ -213,23 +213,27 @@ OglInt4Variable::OglInt4Variable()
 
 void OglIntVariable::initVisual()
 {
-    shader->setInt(indexShader.getValue(), id.getValue().c_str(), value.getValue());
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setInt(indexShader.getValue(), id.getValue().c_str(), value.getValue());
 }
 
 
 void OglInt2Variable::initVisual()
 {
-    shader->setInt2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setInt2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
 }
 
 void OglInt3Variable::initVisual()
 {
-    shader->setInt3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setInt3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
 }
 
 void OglInt4Variable::initVisual()
 {
-    shader->setInt4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setInt4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
 }
 
 
@@ -255,23 +259,27 @@ OglFloat4Variable::OglFloat4Variable()
 
 void OglFloatVariable::initVisual()
 {
-    shader->setFloat(indexShader.getValue(), id.getValue().c_str(), value.getValue());
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloat(indexShader.getValue(), id.getValue().c_str(), value.getValue());
 }
 
 
 void OglFloat2Variable::initVisual()
 {
-    shader->setFloat2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloat2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
 }
 
 void OglFloat3Variable::initVisual()
 {
-    shader->setFloat3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloat3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
 }
 
 void OglFloat4Variable::initVisual()
 {
-    shader->setFloat4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloat4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
 }
 
 
@@ -344,22 +352,26 @@ void OglIntVector4Variable::init()
 
 void OglIntVectorVariable::initVisual()
 {
-    shader->setIntVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setIntVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
 }
 
 void OglIntVector2Variable::initVisual()
 {
-    shader->setIntVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setIntVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
 }
 
 void OglIntVector3Variable::initVisual()
 {
-    shader->setIntVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setIntVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
 }
 
 void OglIntVector4Variable::initVisual()
 {
-    shader->setIntVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setIntVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
 }
 
 
@@ -431,22 +443,26 @@ void OglFloatVector4Variable::init()
 
 void OglFloatVectorVariable::initVisual()
 {
-    shader->setFloatVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloatVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
 }
 
 void OglFloatVector2Variable::initVisual()
 {
-    shader->setFloatVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloatVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
 }
 
 void OglFloatVector3Variable::initVisual()
 {
-    shader->setFloatVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloatVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
 }
 
 void OglFloatVector4Variable::initVisual()
 {
-    shader->setFloatVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setFloatVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
 }
 
 
@@ -473,7 +489,8 @@ void OglMatrix2Variable::init()
 
 void OglMatrix2Variable::initVisual()
 {
-    shader->setMatrix2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix3Variable::OglMatrix3Variable()
@@ -498,7 +515,8 @@ void OglMatrix3Variable::init()
 
 void OglMatrix3Variable::initVisual()
 {
-    shader->setMatrix3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/9, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/9, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix4Variable::OglMatrix4Variable()
@@ -523,7 +541,8 @@ void OglMatrix4Variable::init()
 
 void OglMatrix4Variable::initVisual()
 {
-    shader->setMatrix4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/16, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/16, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix2x3Variable::OglMatrix2x3Variable()
@@ -548,7 +567,8 @@ void OglMatrix2x3Variable::init()
 
 void OglMatrix2x3Variable::initVisual()
 {
-    shader->setMatrix2x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix2x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
 }
 
 
@@ -574,7 +594,8 @@ void OglMatrix3x2Variable::init()
 
 void OglMatrix3x2Variable::initVisual()
 {
-    shader->setMatrix3x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix3x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix2x4Variable::OglMatrix2x4Variable()
@@ -599,7 +620,8 @@ void OglMatrix2x4Variable::init()
 
 void OglMatrix2x4Variable::initVisual()
 {
-    shader->setMatrix2x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix2x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix4x2Variable::OglMatrix4x2Variable()
@@ -624,7 +646,8 @@ void OglMatrix4x2Variable::init()
 
 void OglMatrix4x2Variable::initVisual()
 {
-    shader->setMatrix4x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix4x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix3x4Variable::OglMatrix3x4Variable()
@@ -649,7 +672,8 @@ void OglMatrix3x4Variable::init()
 
 void OglMatrix3x4Variable::initVisual()
 {
-    shader->setMatrix3x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix3x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
 }
 
 OglMatrix4x3Variable::OglMatrix4x3Variable()
@@ -674,7 +698,8 @@ void OglMatrix4x3Variable::init()
 
 void OglMatrix4x3Variable::initVisual()
 {
-    shader->setMatrix4x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+        (*it)->setMatrix4x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
 }
 
 } // namespace visual

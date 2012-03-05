@@ -144,6 +144,73 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
     }
 }
 
+Visitor::Result VisualDrawVisitorMultiPass::processNodeTopDown(simulation::Node* node)
+{
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    glPushMatrix();
+    double glMatrix[16];
+    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
+    glMultMatrixd( glMatrix );
+#endif
+    hasShader = (node->getShader(subsetsToManage)!=NULL);
+
+    for_each(static_cast<VisualDrawVisitor*>(this), node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
+    this->VisualVisitor::processNodeTopDown(node);
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    glPopMatrix();
+#endif
+    return RESULT_CONTINUE;
+}
+void VisualDrawVisitorMultiPass::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
+{
+    //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
+    sofa::core::visual::Shader* shader = NULL;
+    if (hasShader)
+        shader = dynamic_cast<sofa::core::visual::Shader*>(node->getShader(subsetsToManage));
+    switch(vparams->pass())
+    {
+    case core::visual::VisualParams::Std:
+    {
+        if (shader && shader->isActive())
+            shader->start();
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
+        vm->drawVisual(vparams);
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
+        if (shader && shader->isActive())
+            shader->stop();
+        break;
+    }
+    case core::visual::VisualParams::Transparent:
+    {
+        if (shader && shader->isActive())
+            shader->start();
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
+#endif
+        vm->drawTransparent(vparams);
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
+#endif
+        if (shader && shader->isActive())
+            shader->stop();
+        break;
+    }
+    case core::visual::VisualParams::Shadow:
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
+#endif
+        vm->drawShadow(vparams);
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
+#endif
+        break;
+    }
+}
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {

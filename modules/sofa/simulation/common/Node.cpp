@@ -96,7 +96,7 @@ Node::Node(const std::string& name)
     , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
     , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
 
-    , shader(initLink("shader", "The shader attached to this node"))
+    , shaders(initLink("shaders", "The shaders attached to this node"))
     , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
 
@@ -570,7 +570,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
     inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     inserted+= topologyObject.add(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    inserted+= shader.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
+    inserted+= shaders.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
 
     bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
     inserted+= isInteractionForceField;
@@ -617,7 +617,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     topology.remove(dynamic_cast< core::topology::Topology* >(obj));
     meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     topologyObject.remove(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    shader.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
+    shaders.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
@@ -688,10 +688,23 @@ core::behavior::BaseMechanicalState* Node::getMechanicalState() const
 /// Shader
 core::visual::Shader* Node::getShader() const
 {
-    if (shader)
-        return shader;
+    if (!shaders.empty())
+        return *shaders.begin();
     else
         return get<core::visual::Shader>(SearchParents);
+}
+core::visual::Shader* Node::getShader(const sofa::core::objectmodel::TagSet& t) const
+{
+    if(!t.empty())//if getShader is Tag filtered
+    {
+        for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; it++)
+        {
+            if ( (*it)->getTags().includes(t) )
+                return (*it);
+        }
+    }
+
+    return get<core::visual::Shader>(SearchParents);
 }
 
 core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const
@@ -1067,7 +1080,7 @@ void Node::printComponents()
     for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Shader: ";
-    for ( Single<Shader>::iterator i=shader.begin(), iend=shader.end(); i!=iend; i++ )
+    for ( Sequence<Shader>::iterator i=shaders.begin(), iend=shaders.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ProjectiveConstraintSet: ";
     for ( Sequence<BaseProjectiveConstraintSet>::iterator i=projectiveConstraintSet.begin(), iend=projectiveConstraintSet.end(); i!=iend; i++ )
