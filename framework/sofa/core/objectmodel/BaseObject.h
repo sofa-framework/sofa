@@ -180,28 +180,29 @@ public:
 
     /// Local search of an object of the given type
     template<class T>
-    typename T::SPtr searchLocal() const { return typename T::SPtr(getContext()->get<T>(BaseContext::Local)); }
+    typename T::SPtr searchLocal() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::Local)); }
     /// Upward search of an object of the given type, starting from the local context
     template<class T>
-    typename T::SPtr searchUp() const { return typename T::SPtr(getContext()->get<T>(BaseContext::SearchUp)); }
+    typename T::SPtr searchUp() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchUp)); }
     /// Downward search of an object of the given type, starting from the local context
     template<class T>
-    typename T::SPtr searchDown() const { return typename T::SPtr(getContext()->get<T>(BaseContext::SearchDown)); }
+    typename T::SPtr searchDown() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchDown)); }
     /// Search of an object of the given type, starting from the root
     /// @todo or only in the root ?
     template<class T>
-    typename T::SPtr searchFromRoot() const { return typename T::SPtr(getContext()->get<T>(BaseContext::SearchRoot)); }
+    typename T::SPtr searchFromRoot() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchRoot)); }
     /// Search of an object of the given type, in the parents of the local context
     /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
     template<class T>
-    typename T::SPtr searchInParents() const { return typename T::SPtr(getContext()->get<T>(BaseContext::SearchParents)); }
+    typename T::SPtr searchInParents() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchParents)); }
 
     /// Local search of all objects of the given type
     template<class T>
     vector<typename T::SPtr> searchAllLocal() const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,BaseContext::Local);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,BaseContext::Local);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -214,7 +215,8 @@ public:
     vector<typename T::SPtr> searchAllUp() const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,BaseContext::SearchUp);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,BaseContext::SearchUp);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -227,7 +229,8 @@ public:
     vector<typename T::SPtr> searchAllDown() const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,BaseContext::SearchDown);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,BaseContext::SearchDown);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -240,7 +243,8 @@ public:
     vector<typename T::SPtr> searchAllFromRoot() const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,BaseContext::SearchRoot);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,BaseContext::SearchRoot);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -254,7 +258,8 @@ public:
     vector<typename T::SPtr> searchAllInParents() const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,BaseContext::SearchParents);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,BaseContext::SearchParents);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -270,7 +275,8 @@ public:
     vector<typename T::SPtr> searchAllLocal(const Tag& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::Local);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::Local);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -283,7 +289,8 @@ public:
     vector<typename T::SPtr> searchAllUp(const Tag& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchUp);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchUp);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -296,7 +303,8 @@ public:
     vector<typename T::SPtr> searchAllDown(const Tag& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchDown);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchDown);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -309,7 +317,8 @@ public:
     vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchRoot);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchRoot);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -323,7 +332,8 @@ public:
     vector<typename T::SPtr> searchAllInParents(const Tag& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchParents);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchParents);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -340,7 +350,8 @@ public:
     vector<typename T::SPtr> searchAllLocal(const TagSet& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::Local);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::Local);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -353,7 +364,8 @@ public:
     vector<typename T::SPtr> searchAllUp(const TagSet& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchUp);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchUp);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -366,7 +378,8 @@ public:
     vector<typename T::SPtr> searchAllDown(const TagSet& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchDown);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchDown);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -379,7 +392,8 @@ public:
     vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchRoot);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchRoot);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
@@ -393,7 +407,8 @@ public:
     vector<typename T::SPtr> searchAllInParents(const TagSet& t) const
     {
         vector<T*> v;
-        getContext()->get<T>(&v,t,BaseContext::SearchParents);
+        const BaseContext* context = getContext();
+        context->get<T>(&v,t,BaseContext::SearchParents);
         vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
