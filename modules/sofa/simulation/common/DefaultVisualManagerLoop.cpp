@@ -62,19 +62,6 @@ void DefaultVisualManagerLoop::init()
 {
     if (!gRoot)
         gRoot = dynamic_cast<simulation::Node*>(this->getContext());
-
-    /*
-    Okay, the next line looks weird and useless. Actually I put it here because
-    VisualDrawVisitorMultiPass does exist, but is not accessed in this project.
-    Therefore the compilator skip the class and raise some linking error in
-    sofa_opengl_visual (coz this other project needs that class).
-    That's why I've had to create an instance of VisualDrawVisitorMultiPass, just to tell
-    the compilator to link it correctly.
-    Now you know the full story. By the way, if you have any other solution (compilation option?)
-    feel free to correct it :) (I'm quite sure that any other solution would be much more elegant
-    than this but after all, that was a funny story huh?)
-    */
-    VisualDrawVisitorMultiPass whyTheHeckDoIExistIMNotEvenUsedThatDoesNTMakeSense();
 }
 
 

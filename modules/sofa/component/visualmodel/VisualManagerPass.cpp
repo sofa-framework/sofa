@@ -112,7 +112,7 @@ void VisualManagerPass::initVisual()
     fbo->init(passWidth, passHeight);
 }
 
-void VisualManagerPass::fwdDraw(core::visual::VisualParams* vp)
+void VisualManagerPass::fwdDraw(core::visual::VisualParams* )
 {
 }
 
@@ -140,12 +140,12 @@ void VisualManagerPass::preDrawScene(VisualParams* vp)
 
     //render opaque meshes
     vp->pass() = sofa::core::visual::VisualParams::Std;
-    VisualDrawVisitorMultiPass act ( vp );
+    VisualDrawVisitor act ( vp );
     act.setTags(this->getTags());
     act.execute ( getContext() );
     //render transparent meshes
     vp->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualDrawVisitorMultiPass act2 ( vp );
+    VisualDrawVisitor act2 ( vp );
     act2.setTags(this->getTags());
     act2.execute ( getContext() );
 
@@ -166,13 +166,13 @@ bool VisualManagerPass::drawScene(VisualParams* vp)
 
         //render opaque meshes
         vp->pass() = sofa::core::visual::VisualParams::Std;
-        VisualDrawVisitorMultiPass act ( vp );
+        VisualDrawVisitor act ( vp );
         act.setTags(this->getTags());
         act.execute ( getContext() );
 
         //render transparent meshes
         vp->pass() = sofa::core::visual::VisualParams::Transparent;
-        VisualDrawVisitorMultiPass act2 ( vp );
+        VisualDrawVisitor act2 ( vp );
         act2.setTags(this->getTags());
         act2.execute ( getContext() );
 

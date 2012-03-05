@@ -72,7 +72,7 @@ DEFINES += SOFA_DUMP_VISITOR_INFO
 }
 
 # Uncomment if you want to use csparse
-DEFINES += SOFA_HAVE_CSPARSE
+# DEFINES += SOFA_HAVE_CSPARSE
 
 # Uncomment if you want to disable vector access failure assertions (WIN32 Debug optimization)
 # DEFINES += SOFA_NO_VECTOR_ACCESS_FAILURE
@@ -138,12 +138,12 @@ contains(DEFINES,SOFA_XML_PARSER_LIBXML){
 
 # Uncomment if you want to use METIS
 # Note that it is not bundled with SOFA and must be installed first
-DEFINES += SOFA_HAVE_METIS
+# DEFINES += SOFA_HAVE_METIS
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to use the METIS version provided in extlibs
-DEFINES += SOFA_EXTLIBS_METIS
+# DEFINES += SOFA_EXTLIBS_METIS
 } # END SOFA_DEV
 
 # Uncomment if you want to use TAUCS (C library of sparse linear solvers)
