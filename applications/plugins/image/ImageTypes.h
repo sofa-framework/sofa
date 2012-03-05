@@ -43,6 +43,10 @@
 #include <sofa/helper/fixed_array.h>
 #include "VectorVis.h"
 
+#if defined(WIN32)
+#define finite(x) (_finite(x))
+#endif
+
 
 namespace sofa
 {
@@ -158,6 +162,7 @@ public:
                 if(value_min>tval) value_min=tval;
                 if(value_max<tval) value_max=tval;
             }
+            if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
             cimg_forXYZ(img(l),x,y,z)
             {
@@ -165,7 +170,8 @@ public:
                 long double val=vect.magnitude();
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
                 if(v<0) v=0;
-                if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                else if(!finite(v)) v=0;
+                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
                 ++res((int)(v),0,0,0);
             }
         }
@@ -173,11 +179,15 @@ public:
         {
             value_min=img.min();
             value_max=img.max();
+            if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
             cimg_forXYZC(img(l),x,y,z,c)
             {
                 const T val = img(l)(x,y,z,c);
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+                if(v<0) v=0;
+                else if(!finite(v)) v=0;
+                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
                 ++res((int)(v),0,0,c);
             }
         }
