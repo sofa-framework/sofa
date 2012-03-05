@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showVisual showBehavior" />
+
+  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+<!--
+  <ImageViewer template="ImageB" name="viewer" src="@image"  />
+-->
+  <ImageSampler template="ImageB" name="sampler" src="@image" method="1" param="50" showSamples="true" printLog="true"/>
+
+  <Node name="simu"  >
+	  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+	  <CGLinearSolver />
+	  
+	  <MechanicalObject  template="Rigid" name="DOFs" src="@../sampler" />
+	  <UniformMass template="Rigid" name="mass"  mass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor='1'/>
+<!--
+	  <UniformMass totalmass="100.0" />
+	  <HexahedronFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
+-->
+
+	  <Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+<!--
+	     <BarycentricMapping input="@.." output="@." />
+-->
+	  </Node>
+  </Node>
+</Node>
+

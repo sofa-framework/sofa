@@ -30,7 +30,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/PolarDecompose.h>
 
-#if defined(OSTYPE_win32)
+#if defined(WIN32)
 #define finite(x) (_finite(x))
 #endif
 

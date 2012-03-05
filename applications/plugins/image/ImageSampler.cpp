@@ -41,33 +41,33 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(ImageSampler)
 
 int ImageSamplerClass = core::RegisterObject("Samples an object represented by an image")
-        .add<ImageSampler<ImageUC> >(true)
+        .add<ImageSampler<ImageB> >(true)
+        .add<ImageSampler<ImageUC> >()
         .add<ImageSampler<ImageD> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
-        .add<ImageSampler<ImageC> >()
-        .add<ImageSampler<ImageI> >()
-        .add<ImageSampler<ImageUI> >()
-        .add<ImageSampler<ImageS> >()
-        .add<ImageSampler<ImageUS> >()
-        .add<ImageSampler<ImageL> >()
-        .add<ImageSampler<ImageUL> >()
-        .add<ImageSampler<ImageF> >()
-        .add<ImageSampler<ImageB> >()
+//.add<ImageSampler<ImageC> >()
+//.add<ImageSampler<ImageI> >()
+//.add<ImageSampler<ImageUI> >()
+//.add<ImageSampler<ImageS> >()
+//.add<ImageSampler<ImageUS> >()
+//.add<ImageSampler<ImageL> >()
+//.add<ImageSampler<ImageUL> >()
+//.add<ImageSampler<ImageF> >()
 #endif
         ;
 
+template class SOFA_IMAGE_API ImageSampler<ImageB>;
 template class SOFA_IMAGE_API ImageSampler<ImageUC>;
 template class SOFA_IMAGE_API ImageSampler<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ImageSampler<ImageC>;
-template class SOFA_IMAGE_API ImageSampler<ImageI>;
-template class SOFA_IMAGE_API ImageSampler<ImageUI>;
-template class SOFA_IMAGE_API ImageSampler<ImageS>;
-template class SOFA_IMAGE_API ImageSampler<ImageUS>;
-template class SOFA_IMAGE_API ImageSampler<ImageL>;
-template class SOFA_IMAGE_API ImageSampler<ImageUL>;
-template class SOFA_IMAGE_API ImageSampler<ImageF>;
-template class SOFA_IMAGE_API ImageSampler<ImageB>;
+//template class SOFA_IMAGE_API ImageSampler<ImageC>;
+//template class SOFA_IMAGE_API ImageSampler<ImageI>;
+//template class SOFA_IMAGE_API ImageSampler<ImageUI>;
+//template class SOFA_IMAGE_API ImageSampler<ImageS>;
+//template class SOFA_IMAGE_API ImageSampler<ImageUS>;
+//template class SOFA_IMAGE_API ImageSampler<ImageL>;
+//template class SOFA_IMAGE_API ImageSampler<ImageUL>;
+//template class SOFA_IMAGE_API ImageSampler<ImageF>;
 #endif
 
 } //
