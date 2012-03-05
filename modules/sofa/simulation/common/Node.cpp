@@ -695,16 +695,17 @@ core::visual::Shader* Node::getShader() const
 }
 core::visual::Shader* Node::getShader(const sofa::core::objectmodel::TagSet& t) const
 {
-    if(!t.empty())//if getShader is Tag filtered
+    if(t.empty())
+        return getShader();
+    else // if getShader is Tag filtered
     {
         for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; it++)
         {
             if ( (*it)->getTags().includes(t) )
                 return (*it);
         }
+        return get<core::visual::Shader>(t,SearchParents);
     }
-
-    return get<core::visual::Shader>(SearchParents);
 }
 
 core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const

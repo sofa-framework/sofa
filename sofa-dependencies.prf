@@ -86,7 +86,6 @@ declare(sofa_haptics, modules/sofa/component/sofa_haptics.pro, sofa_constraint)
 declare(sofa_dense_solver, modules/sofa/component/sofa_dense_solver.pro, sofa_base_linear_solver)
 declare(sofa_sparse_solver, modules/sofa/component/sofa_sparse_solver.pro, sofa_base_linear_solver sofa_implicit_ode_solver csparse metis)
 declare(sofa_preconditioner, modules/sofa/component/sofa_preconditioner.pro, sofa_dense_solver sofa_sparse_solver sofa_implicit_ode_solver sofa_simple_fem)
-# manimoule je m'en irai, j'entends le loup et le renard chanter
 declare(sofa_opengl_visual, modules/sofa/component/sofa_opengl_visual.pro, sofa_base_visual sofasimulation)
 declare(sofa_eulerian_fluid, modules/sofa/component/sofa_eulerian_fluid.pro, sofatree)
 declare(sofa_volumetric_data, modules/sofa/component/sofa_volumetric_data.pro, sofa_base_collision sofa_mesh_collision  sofa_user_interaction miniFlowVR)
