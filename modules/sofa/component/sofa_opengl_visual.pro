@@ -12,7 +12,8 @@ HEADERS += initOpenGLVisual.h \
            visualmodel/LightManager.h \
            visualmodel/PointSplatModel.h \
            visualmodel/OglRenderingSRGB.h \
-           visualmodel/ClipPlane.h
+           visualmodel/ClipPlane.h \
+		   visualmodel/CompositingVisualLoop.h
 
 SOURCES += initOpenGLVisual.cpp \
            visualmodel/OglModel.cpp \
@@ -22,7 +23,8 @@ SOURCES += initOpenGLVisual.cpp \
            visualmodel/PointSplatModel.cpp \
            visualmodel/OglRenderingSRGB.cpp \
            visualmodel/ClipPlane.cpp \
-           visualmodel/OglAttribute.cpp
+           visualmodel/OglAttribute.cpp \
+		   visualmodel/CompositingVisualLoop.cpp
 
 contains(DEFINES,SOFA_HAVE_GLEW) {
 HEADERS += visualmodel/OglAttribute.h \
@@ -37,7 +39,9 @@ HEADERS += visualmodel/OglAttribute.h \
            visualmodel/OglVariable.h \
            visualmodel/OglVariable.inl \
            visualmodel/PostProcessManager.h \
-           visualmodel/SlicedVolumetricModel.h
+           visualmodel/SlicedVolumetricModel.h \
+   		   visualmodel/VisualManagerPass.h \
+		   visualmodel/VisualManagerSecondaryPass.h
 
 SOURCES += visualmodel/OglShader.cpp \
            visualmodel/OglShaderMacro.cpp \
@@ -47,7 +51,9 @@ SOURCES += visualmodel/OglShader.cpp \
            visualmodel/OglTexture.cpp \
            visualmodel/OglVariable.cpp \
            visualmodel/PostProcessManager.cpp \
-           visualmodel/SlicedVolumetricModel.cpp
+           visualmodel/SlicedVolumetricModel.cpp \
+		   visualmodel/VisualManagerPass.cpp  \
+		   visualmodel/VisualManagerSecondaryPass.cpp
 }
 
 # Make sure there are no cross-dependencies

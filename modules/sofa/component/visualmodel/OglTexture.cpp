@@ -206,7 +206,11 @@ void OglTexture::initVisual()
     texture->init();
 
     setActiveTexture(textureUnit.getValue());
-    shader->setTexture(indexShader.getValue(), id.getValue().c_str(), textureUnit.getValue());
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
+    {
+        (*it)->setTexture(indexShader.getValue(), id.getValue().c_str(), textureUnit.getValue());
+        //serr << "OGLTextureDEBUG: shader textured:" << (*it)->getName() << sendl;
+    }
     setActiveTexture(0);
 }
 
@@ -270,8 +274,7 @@ void OglTexture2D::init()
     OglTexture::init();
 }
 
-}
 
+}//end of namespaces
 }
-
 }

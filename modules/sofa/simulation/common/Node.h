@@ -278,7 +278,7 @@ public:
     Sequence<core::objectmodel::ContextObject> contextObject;
     Sequence<core::objectmodel::ConfigurationSetting> configurationSetting;
 
-    Single<core::visual::Shader> shader;
+    Sequence<core::visual::Shader> shaders;
     Sequence<core::visual::VisualModel> visualModel;
     Sequence<core::visual::VisualManager> visualManager;
 
@@ -402,6 +402,7 @@ public:
 
     /// Shader
     virtual core::visual::Shader* getShader() const;
+    virtual core::visual::Shader* getShader(const sofa::core::objectmodel::TagSet& t) const;
 
     /// @name Solvers and main algorithms
     /// @{

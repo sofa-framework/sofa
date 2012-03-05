@@ -86,7 +86,8 @@ declare(sofa_haptics, modules/sofa/component/sofa_haptics.pro, sofa_constraint)
 declare(sofa_dense_solver, modules/sofa/component/sofa_dense_solver.pro, sofa_base_linear_solver)
 declare(sofa_sparse_solver, modules/sofa/component/sofa_sparse_solver.pro, sofa_base_linear_solver sofa_implicit_ode_solver csparse metis)
 declare(sofa_preconditioner, modules/sofa/component/sofa_preconditioner.pro, sofa_dense_solver sofa_sparse_solver sofa_implicit_ode_solver sofa_simple_fem)
-declare(sofa_opengl_visual, modules/sofa/component/sofa_opengl_visual.pro, sofa_base_visual)
+# manimoule je m'en irai, j'entends le loup et le renard chanter
+declare(sofa_opengl_visual, modules/sofa/component/sofa_opengl_visual.pro, sofa_base_visual sofasimulation)
 declare(sofa_eulerian_fluid, modules/sofa/component/sofa_eulerian_fluid.pro, sofatree)
 declare(sofa_volumetric_data, modules/sofa/component/sofa_volumetric_data.pro, sofa_base_collision sofa_mesh_collision  sofa_user_interaction miniFlowVR)
 declare(sofa_non_uniform_fem, modules/sofa/component/sofa_non_uniform_fem.pro, sofa_simple_fem sofa_opengl_visual sofa_dense_solver sofa_volumetric_data)
@@ -111,6 +112,7 @@ declare(sofa_misc_collision_dev, modules/sofa/component/sofa_misc_collision_dev.
 declare(sofa_misc_solver, modules/sofa/component/sofa_misc_solver.pro, sofatree)
 declare(sofa_misc_solver_dev, modules/sofa/component/sofa_misc_solver_dev.pro, sofatree)
 declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping)
+
 declare(sofa_misc_dev, modules/sofa/component/sofa_misc_dev.pro, sofa_base_collision sofa_misc_topology sofa_boundary_condition sofa_deformable sofa_advanced_fem  sofa_constraint)
 
 declare(sofa_component_base, modules/sofa/component/sofa_component_base.pro, sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)

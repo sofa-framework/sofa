@@ -85,7 +85,7 @@ public:
         return obj;
     }
 
-private:
+protected:
 
     simulation::Node* gRoot;
 };

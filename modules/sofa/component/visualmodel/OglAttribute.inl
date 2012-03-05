@@ -83,7 +83,8 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
             totalSize,
             data.getData() );
     _needUpdate = false;
-    _index = shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
+    /*todo jeremy: add multi shaders management...temp solution for tonight...*/
+    _index =  (*shaders.begin())->getAttribute ( indexShader.getValue(), id.getValue().c_str() ); //shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
 
     enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);

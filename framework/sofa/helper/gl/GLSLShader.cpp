@@ -279,7 +279,11 @@ void GLSLShader::SetInt3(GLint variable, int i1, int i2, int i3)                
 void GLSLShader::SetInt4(GLint variable, int i1, int i2, int i3, int i4)           { if (variable!=-1) glUniform4iARB(variable, i1, i2, i3, i4); }
 void GLSLShader::SetFloat(GLint variable, float newValue)                          { if (variable!=-1) glUniform1fARB(variable, newValue);       }
 void GLSLShader::SetFloat2(GLint variable, float v0, float v1)                     { if (variable!=-1) glUniform2fARB(variable, v0, v1);         }
-void GLSLShader::SetFloat3(GLint variable, float v0, float v1, float v2)           { if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);     }
+void GLSLShader::SetFloat3(GLint variable, float v0, float v1, float v2)
+{
+    if (variable!=-1)
+        glUniform3fARB(variable, v0, v1, v2);
+}
 void GLSLShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3) { if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3); }
 
 void GLSLShader::SetIntVector(GLint variable, GLsizei count, const GLint *value)     { if (variable!=-1) glUniform1ivARB(variable, count, value);   }

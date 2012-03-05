@@ -18,12 +18,33 @@
 *******************************************************************************
 *                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OglShaderMacro.h"
-#include <sofa/core/ObjectFactory.h>
+/*
+ * CompositingVisualLoop.h
+ *
+ *  Created on: 16 janv. 2012
+ *      Author: Jeremy Ringard
+ */
+
+#ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
+#define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
+
+#include <sofa/simulation/common/DefaultVisualManagerLoop.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/component/visualmodel/VisualManagerPass.h>
+
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/Event.h>
+
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::behavior;
+using namespace sofa::simulation;
+
 namespace sofa
 {
 
@@ -33,46 +54,40 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglShaderDefineMacro)
+/**
+ *  \Compositing visual loop: render multiple passes and composite them into one single rendered frame
+ */
 
-//Register OglIntVariable in the Object Factory
-int OglShaderDefineMacroClass = core::RegisterObject("OglShaderDefineMacro")
-        .add< OglShaderDefineMacro >();
-
-OglShaderMacro::OglShaderMacro()
+class SOFA_OPENGL_VISUAL_API CompositingVisualLoop : public simulation::DefaultVisualManagerLoop
 {
+public:
+    SOFA_CLASS(CompositingVisualLoop,simulation::DefaultVisualManagerLoop);
 
-}
+    ///Files where vertex shader is defined
+    sofa::core::objectmodel::DataFileName vertFilename;
+    ///Files where fragment shader is defined
+    sofa::core::objectmodel::DataFileName fragFilename;
 
-OglShaderMacro::~OglShaderMacro()
-{
-}
+private:
 
-void OglShaderMacro::init()
-{
-    OglShaderElement::init();
-}
+    void traceFullScreenQuad();
+    void defaultRendering(sofa::core::visual::VisualParams* vparams);
 
-OglShaderDefineMacro::OglShaderDefineMacro()
-    : value(initData(&value, (std::string) "", "value", "Set a value for define macro"))
-{
+protected:
+    CompositingVisualLoop(simulation::Node* gnode = NULL);
 
-}
+    virtual ~CompositingVisualLoop();
 
-OglShaderDefineMacro::~OglShaderDefineMacro()
-{
-}
+public:
 
-void OglShaderDefineMacro::init()
-{
-    OglShaderMacro::init();
+    virtual void init();
+    virtual void initVisual();
+    virtual void drawStep(sofa::core::visual::VisualParams* vparams);
+};
 
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
-        (*it)->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
-}
+} // namespace visualmodel
 
-}
+} // namespace component
 
-}
-
-}
+} //sofa
+#endif  /* SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H */
