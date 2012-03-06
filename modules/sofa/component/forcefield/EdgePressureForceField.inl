@@ -62,11 +62,13 @@ void EdgePressureForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
-    _completeTopology = NULL;
-    this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
+    if(_topology == NULL)
+    {
+        serr << "ERROR(EdgePressureForceField): No base topology available." << sendl;
+        return;
+    }
 
     this->getContext()->get(edgeGeo);
-
     assert(edgeGeo!=0);
 
     if (edgeGeo==NULL)
@@ -75,9 +77,13 @@ void EdgePressureForceField<DataTypes>::init()
         return;
     }
 
-    if(_completeTopology == NULL)
+
+    _completeTopology = NULL;
+    this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
+
+    if(_completeTopology == NULL && edgeList.getValue().empty())
     {
-        serr << "ERROR(EdgePressureForceField): assume that pressure vector is provdided otherwise TriangleSetTopology is required" << sendl;
+        serr << "ERROR(EdgePressureForceField): Either a pressure vector or a TriangleSetTopology is required." << sendl;
     }
 
     // init edgesubsetData engine
@@ -121,11 +127,17 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
     const VecCoord& x = *this->mstate->getX();
+
+    if (x.empty())
+    {
+        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
+        return;
+    }
+
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
     const sofa::helper::vector <unsigned int>& my_map = edgePressureMap.getMap2Elements();
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
-
 
     if(pressure.getValue().norm() > 0 )
     {
@@ -189,7 +201,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 }
 
                 TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
-                std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
+                //std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
 
                 if(t_a_E.size() == 1) // 2D cases
                 {
@@ -225,7 +237,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     }
 
     edgePressureMap.endEdit();
-
     return;
 }
 
@@ -234,6 +245,12 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
     const VecCoord& x = *this->mstate->getX();
+
+    if (x.empty())
+    {
+        serr << "ERROR(EdgePressureForceField): No mechanical Object linked."<<sendl;
+        return;
+    }
 
     const sofa::helper::vector <unsigned int>& my_map = edgePressureMap.getMap2Elements();
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
@@ -309,10 +326,15 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
+    unsigned int sizeTest = _topology->getNbEdges();
+
     for (unsigned int i = 0; i < inputString.size(); ++i)
     {
         EdgePressureInformation t;
         my_subset.push_back(t);
+
+        if (inputString[i] >= sizeTest)
+            serr << "ERROR(EdgePressureForceField): Edge indice: " << inputString[i] << " is out of edge indices bounds. This could lead to non desired behavior." <<sendl;
     }
     edgePressureMap.endEdit();
 
