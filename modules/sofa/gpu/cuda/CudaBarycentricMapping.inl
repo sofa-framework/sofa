@@ -500,7 +500,7 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT
     /*
     	for ( unsigned int i=0;i<map.size();i++ ) {
     		Out::Deriv v = in[i];
-    		const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[i].in_index );
+            const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( map[i].in_index );
     		const OutReal fx = ( OutReal ) map[i].baryCoords[0];
     		const OutReal fy = ( OutReal ) map[i].baryCoords[1];
     		const OutReal fz = ( OutReal ) map[i].baryCoords[2];
@@ -527,9 +527,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT
 template<>
 void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    helper::ReadAccessor<gpu::cuda::CudaVector<CubeData> > map = this->map;
 
-    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(), rowItEnd = in.end(); rowIt != rowItEnd; ++rowIt)
     {
         Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
         Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
@@ -544,9 +544,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
 #else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
 #endif
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -631,10 +631,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply
 template<>
 void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in)
 {
+    helper::ReadAccessor<gpu::cuda::CudaVector<CubeData> > map = this->map;
 
-    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-
-    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(), rowItEnd = in.end(); rowIt != rowItEnd; ++rowIt)
     {
         Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
         Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
@@ -649,9 +648,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
 #else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
 #endif
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -736,9 +735,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
 template<>
 void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    helper::ReadAccessor<gpu::cuda::CudaVector<CubeData> > map = this->map;
 
-    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(), rowItEnd = in.end(); rowIt != rowItEnd; ++rowIt)
     {
         Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
         Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
@@ -753,9 +752,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
 #else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
 #endif
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -840,9 +839,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
 template<>
 void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    helper::ReadAccessor<gpu::cuda::CudaVector<CubeData> > map = this->map;
 
-    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(), rowItEnd = in.end(); rowIt != rowItEnd; ++rowIt)
     {
         Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
         Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
@@ -857,9 +856,9 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
 #else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
 #endif
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
