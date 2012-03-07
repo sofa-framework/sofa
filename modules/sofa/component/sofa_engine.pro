@@ -71,8 +71,9 @@ HEADERS += initEngine.h \
            engine/ClusteringEngine.h \
            engine/ClusteringEngine.inl \
            engine/ShapeMatching.h \
-           engine/ShapeMatching.inl 
-
+           engine/ShapeMatching.inl \ 
+           engine/ProximityROI.h \
+           engine/ProximityROI.inl
 
 
 SOURCES += initEngine.cpp \
@@ -108,7 +109,8 @@ SOURCES += initEngine.cpp \
            engine/ValuesFromPositions.cpp \
            engine/NormalsFromPoints.cpp \
            engine/ClusteringEngine.cpp \
-           engine/ShapeMatching.cpp 
+           engine/ShapeMatching.cpp \
+           engine/ProximityROI.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

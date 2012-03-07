@@ -22,9 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initEngine.h>
-
+#define SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP
+#include <sofa/component/engine/ProximityROI.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -32,50 +34,33 @@ namespace sofa
 namespace component
 {
 
-
-void initEngine()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(AverageCoord)
-SOFA_LINK_CLASS(BoxROI)
-SOFA_LINK_CLASS(PlaneROI)
-SOFA_LINK_CLASS(SphereROI)
-SOFA_LINK_CLASS(DilateEngine)
-SOFA_LINK_CLASS(ExtrudeSurface)
-SOFA_LINK_CLASS(ExtrudeQuadsAndGenerateHexas)
-SOFA_LINK_CLASS(GenerateRigidMass)
-SOFA_LINK_CLASS(GroupFilterYoungModulus)
-SOFA_LINK_CLASS(MergeMeshes)
-SOFA_LINK_CLASS(MergePoints)
-SOFA_LINK_CLASS(MergeSets)
-SOFA_LINK_CLASS(MeshBarycentricMapperEngine)
-SOFA_LINK_CLASS(TransformPosition)
-SOFA_LINK_CLASS(TransformEngine)
-SOFA_LINK_CLASS(PointsFromIndices)
-SOFA_LINK_CLASS(ValuesFromIndices)
-SOFA_LINK_CLASS(IndicesFromValues)
-SOFA_LINK_CLASS(IndexValueMapper)
-SOFA_LINK_CLASS(JoinPoints)
-SOFA_LINK_CLASS(MapIndices)
-SOFA_LINK_CLASS(RandomPointDistributionInSurface)
-SOFA_LINK_CLASS(Spiral)
-SOFA_LINK_CLASS(Vertex2Frame)
-SOFA_LINK_CLASS(TextureInterpolation)
-SOFA_LINK_CLASS(SubsetTopology)
-SOFA_LINK_CLASS(RigidToQuatEngine)
-SOFA_LINK_CLASS(QuatToRigidEngine)
-SOFA_LINK_CLASS(ValuesFromPositions)
-SOFA_LINK_CLASS(NormalsFromPoints)
-SOFA_LINK_CLASS(ClusteringEngine)
-SOFA_LINK_CLASS(ShapeMatching)
-SOFA_LINK_CLASS(ProximityROI)
+SOFA_DECL_CLASS(ProximityROI)
+
+int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")
+#ifndef SOFA_FLOAT
+        .add< ProximityROI<Vec3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< ProximityROI<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API ProximityROI<Vec3dTypes>;
+//template class SOFA_ENGINE_API SphereROI<Rigid3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API ProximityROI<Vec3fTypes>;
+//template class SOFA_ENGINE_API SphereROI<Rigid3fTypes>;
+#endif //SOFA_DOUBLE
+
+
+} // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
+
