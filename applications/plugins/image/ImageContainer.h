@@ -215,6 +215,20 @@ protected:
             wtransform->getScaleT()=(Real)scaleT;
             wtransform->isPerspective()=isPerspective;
         }
+        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
+        {
+            // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
+            std::ifstream fileStream (fname.c_str(), std::ifstream::in);
+            if (!fileStream.is_open()) { serr << "Can not open " << fname << sendl; return false; }
+            std::string str;
+            fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
+            Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)scale[i];
+            fileStream.close();
+            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
+            wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
+        }
         else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
             wimage->getCImgList().load_cimg(fname.c_str());
         else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)

@@ -46,6 +46,7 @@ HEADERS += \
 #	QImageMouseButtonsWidget.h \
 	VectorVisualizationWidget.h \
         VectorVis.h \
+        ImageAlgorithms.h
 
 SOURCES += \
 	initImage.cpp \

@@ -27,6 +27,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "ImageAlgorithms.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -37,9 +38,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/rmath.h>
 
-#include <omp.h>
+
 
 #define REGULAR 0
 #define LLOYD 1
@@ -342,7 +342,7 @@ protected:
 
         // data access
         raPositions fpos(this->fixedPosition);
-        waPositions pos(this->position);       pos.clear();
+        std::vector<Vec<3,Real> >& pos = *this->position.beginEdit();    pos.clear();
         waEdges e(this->edges);                e.clear();
         waEdges g(this->graph);                g.clear();
         waHexa h(this->hexahedra);             h.clear();
@@ -360,7 +360,8 @@ protected:
             if(dmax)
             {
                 pos.push_back(inT->fromImage(pmax));
-                dijkstra (distances, voronoi,  bias);
+                std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
+                dijkstra<Real,T>(distances, voronoi, P, this->transform.getValue(), NULL);
             }
             else break;
         }
@@ -368,203 +369,28 @@ protected:
 
         unsigned int it=0;
         bool converged =false;
+
         while(!converged)
         {
-            if(Lloyd(distances,voronoi,bias))
+            if(Lloyd<Real,T>(pos,distances,voronoi,this->transform.getValue(),NULL))
             {
                 cimg_foroff(distances,off) if(distances[off]!=-1) distances[off]=cimg::type<Real>::max();
-                dijkstra (distances, voronoi,  bias);
+                std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
+                dijkstra<Real,T>(distances, voronoi,  P, this->transform.getValue(), NULL);
                 it++; if(it==lloydIt) converged=true;
             }
             else converged=true;
         }
         if(this->f_printLog.getValue()) std::cout<<"ImageSampler: Completed "<< it <<" Lloyd iterations"<<std::endl;
 
+        this->position.endEdit();
     }
 
 
 
-    /**
-    *  Move points in position data to the centroid of their voronoi region
-    *  centroid are computed given a (biased) distance measure d as $p + (b)/N \sum_i d(p,p_i)*2/((b)+(b_i))*(p_i-p)/|p_i-p|$
-    *  with no bias, we obtain the classical mean $1/N \sum_i p_i$
-    * returns true if points have moved
-    */
-
-    bool Lloyd (CImg<Real>& distances, CImg<unsigned int>& voronoi,  bool bias=false )
-    {
-        waPositions pos(this->position);
-        raTransform inT(this->transform);
-
-        unsigned int nbp=pos.size();
-        bool moved=false;
-
-        // get rounded point coordinates in image (to check that points do not share the same voxels)
-        std::vector<Coord> P;
-        P.resize(nbp);
-        for (unsigned int i=0; i<nbp; i++) { Coord p = inT->toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
-
-        #pragma omp parallel for
-        for (unsigned int i=0; i<nbp; i++)
-        {
-            // compute centroid
-            Coord c,p,u;
-            unsigned int count=0;
-            bool valid=true;
-            cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==i+1)
-            {
-                p=inT->fromImage(Coord(x,y,z));
-                u=p-pos[i]; u.normalize();
-                c+=u*distances(x,y,z);
-                count++;
-            }
-            if(!count) goto stop;
-
-            c/=(Real)count;
-
-            if (bias)
-            {
-                //                Real stiff=getStiffness(grid.data()[indices[i]]);
-                //                if(biasFactor!=(Real)1.) stiff=(Real)pow(stiff,biasFactor);
-                //                c*=stiff;
-            }
-
-            c+=pos[i];
-
-            // check validity
-            p = inT->toImage(c); for (unsigned int j=0; j<3; j++) p[j]=round(p[j]);
-            if (distances(p[0],p[1],p[2])==-1) valid=false; // out of object
-            else { for (unsigned int j=0; j<nbp; j++) if(i!=j) if(P[j][0]==p[0]) if(P[j][1]==p[1]) if(P[j][2]==p[2]) valid=false; } // check occupancy
-
-            while(!valid)  // get closest unoccupied point in voronoi
-            {
-                Real dmin=cimg::type<Real>::max();
-                cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==i+1)
-                {
-                    Coord pi=inT->fromImage(Coord(x,y,z));
-                    Real d2=(c-pi).norm2();
-                    if(dmin>d2) { dmin=d2; p=Coord(x,y,z); }
-                }
-                if(dmin==cimg::type<Real>::max()) goto stop;// no point found
-                bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(P[j][0]==p[0]) if(P[j][1]==p[1]) if(P[j][2]==p[2]) val2=false; // check occupancy
-                if(val2) valid=true;
-                else voronoi(p[0],p[1],p[2])=0;
-            }
-
-            if(P[i][0]!=p[0] || P[i][1]!=p[1] || P[i][2]!=p[2]) // set new position if different
-            {
-                pos[i] = inT->fromImage(p);
-                for (unsigned int j=0; j<3; j++) P[i][j]=p[j];
-                moved=true;
-            }
-stop: ;
-        }
-
-        return moved;
-    }
 
 
-    /**
-    * Computes geodesic distances in the image from position+fixedPosition up to @param distMax, given a bias distance function F.
-    * This is equivalent to solve for the eikonal equation || grad d_ijk || = F_ijk with d_ijk=0 at positions
-    * using fast marching method presented in http://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-658.html
-    * distances should be intialized (-1 outside the object, and >0 inside)
-    * returns @param voronoi and @param distances
-    */
 
-    void fastMarching (CImg<Real>& /*distances*/, CImg<unsigned int>& /*voronoi*/,  bool /*bias=false*/, const Real /*distMax=cimg::type<Real>::max()*/)
-    {
-    }
-
-
-    /**
-    * Computes geodesic distances in the image from position and fixedPosition data up to @param distMax, given a bias distance function F.
-    * This is equivalent to solve for the eikonal equation || grad d_ijk || = F_ijk with d_ijk=0 at positions
-    * using dijkstra minimum path algorithm
-    * distances should be intialized (-1 outside the object, and >0 inside)
-    * returns @param voronoi and @param distances
-    */
-
-    void dijkstra (CImg<Real>& distances, CImg<unsigned int>& voronoi,  bool bias=false, const Real distMax=cimg::type<Real>::max())
-    {
-        raPositions fpos(this->fixedPosition);
-        raPositions pos(this->position);
-        raTransform inT(this->transform);
-
-        unsigned int nbp=pos.size(),nbfp=fpos.size();
-
-        // get rounded point coordinates in image
-        std::vector<Vec<3,int> > P;
-        P.resize(nbp+nbfp);
-        for (unsigned int i=0; i<nbp; i++)  { Coord p = inT->toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
-        for (unsigned int i=0; i<nbfp; i++) { Coord p = inT->toImage(fpos[i]); for (unsigned int j=0; j<3; j++)  P[i+nbp][j]=round(p[j]); }
-
-        // init
-        CImg_3x3x3(D,Real); // cimg neighborhood for distances
-        CImg_3x3x3(V,unsigned int); // cimg neighborhood for voronoi
-        Vec<27, Vec<3,int> > offset; // image coord offsets related to neighbors
-        int count=0; for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++) offset[count++]=Vec<3,int>(i,j,k);
-
-        CImg<Real> lD(3,3,3);  // local distances
-        if(!bias) // precompute local distances (supposing that the transformation is not projective)
-        {
-            lD(1,1,1)=0;
-            lD(2,1,1) = lD(0,1,1) = inT->getScale()[0];
-            lD(1,2,1) = lD(1,0,1) = inT->getScale()[1];
-            lD(1,1,2) = lD(1,1,0) = inT->getScale()[2];
-            lD(2,2,1) = lD(0,2,1) = lD(2,0,1) = lD(0,0,1) = sqrt(inT->getScale()[0]*inT->getScale()[0] + inT->getScale()[1]*inT->getScale()[1]);
-            lD(2,1,2) = lD(0,1,2) = lD(2,1,0) = lD(0,1,0) = sqrt(inT->getScale()[0]*inT->getScale()[0] + inT->getScale()[2]*inT->getScale()[2]);
-            lD(1,2,2) = lD(1,0,2) = lD(1,2,0) = lD(1,0,0) = sqrt(inT->getScale()[2]*inT->getScale()[2] + inT->getScale()[1]*inT->getScale()[1]);
-            lD(2,2,2) = lD(2,0,2) = lD(2,2,0) = lD(2,0,0) = lD(0,2,2) = lD(0,0,2) = lD(0,2,0) = lD(0,0,0) = sqrt(inT->getScale()[0]*inT->getScale()[0] + inT->getScale()[1]*inT->getScale()[1] + inT->getScale()[2]*inT->getScale()[2]);
-        }
-
-        // add samples t the queue
-        typedef std::pair<Real,Vec<3,int> > DistanceToPoint;
-        typedef std::set<DistanceToPoint>::iterator ITER;
-        std::set<DistanceToPoint> q; // priority queue
-        for (unsigned int i=0; i<nbp; i++)
-        {
-            if(distances.containsXYZC(P[i][0],P[i][1],P[i][2]))
-                if(distances(P[i][0],P[i][1],P[i][2])!=-1)
-                {
-                    q.insert( DistanceToPoint(0.,P[i]) );
-                    distances(P[i][0],P[i][1],P[i][2])=0;
-                    voronoi(P[i][0],P[i][1],P[i][2])=i+1;
-                }
-        }
-
-        // dijkstra
-        while( !q.empty() )
-        {
-            DistanceToPoint top = *q.begin();
-            q.erase(q.begin());
-            Vec<3,int> v = top.second;
-
-            int x = v[0] ,y = v[1] ,z = v[2];
-            const int _p1x = x?x-1:x, _p1y = y?y-1:y, _p1z = z?z-1:z, _n1x = x<distances.width()-1?x+1:x, _n1y = y<distances.height()-1?y+1:y, _n1z = z<distances.depth()-1?z+1:z;    // boundary conditions for cimg neighborood manipulation macros
-
-            cimg_get3x3x3(distances,x,y,z,0,D,Real); // get distances in neighborhood
-            cimg_get3x3x3(voronoi,x,y,z,0,V,unsigned int); // get voronoi in neighborhood
-
-            if(bias) { }  // TO DO!!!   define lD for biased distances
-
-            for (unsigned int i=0; i<27; i++)
-            {
-                Real d = Dccc + lD[i];
-                if(D[i] > d )
-                {
-                    Vec<3,int> v2 = v + offset[i];
-                    if(distances.containsXYZC(v2[0],v2[1],v2[2]))
-                    {
-                        if(D[i] < distMax) { ITER it=q.find(DistanceToPoint(D[i],v2)); if(it!=q.end()) q.erase(it); }
-                        voronoi(v2[0],v2[1],v2[2]) = Vccc;
-                        distances(v2[0],v2[1],v2[2]) = d;
-                        q.insert( DistanceToPoint(d,v2) );
-                    }
-                }
-            }
-        }
-    }
 
 
 };
