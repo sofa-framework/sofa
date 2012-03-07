@@ -32,6 +32,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <limits>
 
 #include <sofa/component/engine/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -201,7 +202,7 @@ void ProximityROI<DataTypes>::update()
 
     for( unsigned i=0; i<x0->size(); ++i )
     {
-        Real mindist=+INFINITY;
+        Real mindist=std::numeric_limits<Real>::max();
         for (unsigned int j=0; j<cen.size(); ++j)
         {
             Real dist=(cen[j]-(*x0)[i]).norm();
@@ -209,7 +210,7 @@ void ProximityROI<DataTypes>::update()
                 mindist = dist;
         }
 
-        if(mindist==+INFINITY)
+        if(mindist==std::numeric_limits<Real>::max())
         {
             indicesOut.push_back(i);
             continue;
