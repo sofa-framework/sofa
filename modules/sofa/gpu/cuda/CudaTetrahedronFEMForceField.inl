@@ -583,17 +583,19 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m,defaulttype::BaseMatrix * rotations,int offset)
 {
     Data& data = m->data;
+    rotations->resize(data.nbVertex*3,data.nbVertex*3);
+
 #ifdef SOFA_DEV
     if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
     {
         data.getRotations(m,diagd->getCudaVector());
     }
     else
-#endif // SOFA_DEV    
+#endif // SOFA_DEV
     {
         data.vecTmpRotation.resize(data.nbVertex*9);
         data.getRotations(m,data.vecTmpRotation);
-        rotations->resize(data.nbVertex*3,data.nbVertex*3);
+
 
 #ifdef SOFA_DEV
         if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
