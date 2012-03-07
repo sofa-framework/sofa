@@ -1673,10 +1673,19 @@ void RealGUI::resetScene()
     Node* root = getScene();
     startDumpVisitor();
     emit ( newScene() );
-    //Reset the scene
-    if ( root )
+
+    // Reset the scene
+    if (root)
     {
-        root->setTime(0.);
+        const core::behavior::BaseAnimationLoop *animLoop = root->getAnimationLoop();
+
+        if (animLoop != 0)
+        {
+            root->setTime(animLoop->getResetTime());
+        }
+        else
+            root->setTime(0.);
+
         eventNewTime();
         simulation::getSimulation()->reset ( root );
 
@@ -1687,7 +1696,6 @@ void RealGUI::resetScene()
 
     viewer->getPickHandler()->reset();
     stopDumpVisitor();
-
 }
 
 //*****************************************************************************************

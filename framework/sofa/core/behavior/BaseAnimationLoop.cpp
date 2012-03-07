@@ -37,11 +37,24 @@ namespace behavior
 {
 
 BaseAnimationLoop::BaseAnimationLoop()
+    : m_resetTime(0.)
 {}
 
 BaseAnimationLoop::~BaseAnimationLoop()
 {}
 
+void BaseAnimationLoop::storeResetState()
+{
+    const objectmodel::BaseContext * c = this->getContext();
+
+    if (c != 0)
+        m_resetTime = c->getTime();
+}
+
+double BaseAnimationLoop::getResetTime() const
+{
+    return m_resetTime;
+}
 
 } // namespace behavior
 
