@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showWireframe showVisual showBehavior" />
+  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.4" padSize="2" rotateImage="false" printLog="true"/>
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+<!--  <ImageViewer template="ImageB" name="viewer" src="@image" /> -->
+  <ImageExporter template="ImageB" name="writer" src="@image" filename="armadillo.nfo" exportAtBegin="true" />
+
+  <Node name="frame" >
+		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+		<CGLinearSolver template="GraphScattered" iterations="50"  threshold="1e-008" />
+
+		<GridMaterial name="gridmaterial" template="Material3" 
+				imageFile="armadillo.raw" 
+				labelToStiffnessPairs="	1 3000"  
+				labelToDensityPairs="1 1000"  
+				labelToPoissonRatioPairs="1 0.3"
+				labelToBulkModulusPairs="1 50"
+				distanceType="Geodesic"
+				biasDistances="true"
+				showVoxelData="None" 
+				/>
+
+		<MechanicalObject name="DOFs" template="Affine" useMask="1"  />
+		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="1"/>
+
+		<Node name="Physics" showBehaviorModels="0">
+			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  showObject="0" showObjectScale="0.5"/>
+ 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
+				input="@../DOFs"  output="@PointSet"  
+				targetFrameNumber="7"
+				targetSampleNumber="1"
+				/>
+			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>  
+		</Node>
+
+		<Node name="Visual" >
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Armadillo_simplified.obj"/>
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
+		</Node>
+
+		<Node name="Collision">
+			<MeshObjLoader name="MeshLoader" filename="mesh/Armadillo_simplified.obj"/>
+      			<Mesh src="@MeshLoader"  /> 
+      			<MechanicalObject  name="PointSet"/>
+      			<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" showStrain="false"/>
+		</Node>
+  </Node>
+
+</Node>
+

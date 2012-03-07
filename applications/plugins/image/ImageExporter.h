@@ -136,6 +136,20 @@ protected:
             bool isPerspective=rtransform->isPerspective();
             save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective);
         }
+        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
+        {
+            // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
+            std::ofstream fileStream (fname.c_str(), std::ofstream::out);
+            if (!fileStream.is_open()) { serr << "GridMaterial, Can not open " << fname << sendl; return false; }
+            fileStream << "voxelType: " << CImg<T>::pixel_type() << std::endl;
+            fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
+            fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;
+            fileStream << "voxelSize: " << rtransform->getScale()[0] << " " << rtransform->getScale()[1]<< " " << rtransform->getScale()[2]<< std::endl;
+            fileStream.close();
+            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
+            CImg<unsigned char> ucimg = rimage->getCImg(this->time);
+            ucimg.save_raw(imgName.c_str());
+        }
         else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
             rimage->getCImgList().save_cimg(fname.c_str());
         else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
