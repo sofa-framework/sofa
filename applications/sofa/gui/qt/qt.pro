@@ -9,6 +9,10 @@ DEPENDPATH += $$ROOT_SRC_DIR/applications
 INCLUDEPATH += $$SRC_DIR
 DEPENDPATH += $$SRC_DIR
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 contains(DEFINES, SOFA_QT4) {	
 	CONFIG += qt uic uic3
 	QT += opengl qt3support xml
