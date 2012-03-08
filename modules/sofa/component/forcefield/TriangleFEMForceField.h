@@ -61,6 +61,11 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
+/** Triangle FEM force field using the QR decomposition of the deformation gradient, inspired from http://www-evasion.imag.fr/Publications/2005/NPF05 , to handle large displacements.
+  The material properties are uniform across the domain.
+  Two methods are proposed, one for small displacements and one for large displacements.
+  The method for small displacements has not been validated and we suspect that it is broke. Use it very carefully, and compare with the method for large displacements.
+  */
 template<class DataTypes>
 class TriangleFEMForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -121,18 +126,19 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     int method;
-    Data<std::string> f_method;
-    Data<Real> f_poisson;
-    Data<Real> f_young;
-    Data<Real> f_damping;
+    Data<std::string> f_method; ///< Choice of method: 0 for small, 1 for large displacements
+    Data<Real> f_poisson;       ///< Poisson ratio of the material
+    Data<Real> f_young;         ///< Young modulus of the material
+    Data<Real> f_thickness;     ///< Thickness of the elements
+//    Data<Real> f_damping;       ///< Damping coefficient of the material, currently unused
     Data<bool> f_planeStrain; ///< compute material stiffness corresponding to the plane strain assumption, or to the plane stress otherwise.
 
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val) { f_poisson.setValue(val); }
     Real getYoung() { return f_young.getValue(); }
     void setYoung(Real val) { f_young.setValue(val); }
-    Real getDamping() { return f_damping.getValue(); }
-    void setDamping(Real val) { f_damping.setValue(val); }
+//    Real getDamping() { return f_damping.getValue(); }
+//    void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
 
@@ -147,7 +153,7 @@ protected :
     ////////////// small displacements method
     void initSmall();
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit = false );
-    void accumulateDampingSmall( VecCoord& f, Index elementIndex );
+//    void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 
     ////////////// large displacements method
@@ -156,7 +162,7 @@ protected :
     void initLarge();
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
-    void accumulateDampingLarge( VecCoord& f, Index elementIndex );
+//    void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 
     //// stiffness matrix assembly

@@ -69,7 +69,8 @@ TriangleFEMForceField()
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
+    , f_thickness(initData(&f_thickness,(Real)1.,"thickness","Thickness of the elements"))
+//    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
 {}
 
@@ -126,10 +127,10 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
-    computeMaterialStiffnesses();
 
     initSmall();
     initLarge();
+    computeMaterialStiffnesses();
 }
 
 
@@ -142,10 +143,10 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    computeMaterialStiffnesses();
 
     //    initSmall();  // useful ? The rotations are recomputed later
     initLarge();  // compute the per-element strain-displacement matrices
+    computeMaterialStiffnesses();
 }
 
 
@@ -157,46 +158,24 @@ void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 
     f1.resize(x1.size());
 
-    if(f_damping.getValue() != 0)
+    if(method==SMALL)
     {
-        if(method == SMALL)
+        typename VecElement::const_iterator it;
+        unsigned int i(0);
+
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
-            for( unsigned int i=0; i<_indexedElements->size(); i+=3 )
-            {
-                accumulateForceSmall( f1, x1, i/3, true );
-                accumulateDampingSmall( f1, i/3 );
-            }
-        }
-        else
-        {
-            for( unsigned int i=0; i<_indexedElements->size(); i+=3 )
-            {
-                accumulateForceLarge( f1, x1, i/3, true );
-                accumulateDampingLarge( f1, i/3 );
-            }
+            accumulateForceSmall( f1, x1, i, true );
         }
     }
     else
     {
-        if(method==SMALL)
-        {
-            typename VecElement::const_iterator it;
-            unsigned int i(0);
+        typename VecElement::const_iterator it;
+        unsigned int i(0);
 
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                accumulateForceSmall( f1, x1, i, true );
-            }
-        }
-        else
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
-            typename VecElement::const_iterator it;
-            unsigned int i(0);
-
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                accumulateForceLarge( f1, x1, i, true );
-            }
+            accumulateForceLarge( f1, x1, i, true );
         }
     }
 
@@ -247,16 +226,16 @@ void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplace
     sout << "TriangleFEMForceField::computeStrainDisplacement"<<sendl;
 #endif
 
-//    //Coord ab_cross_ac = cross(b, c);
-//    Real determinant = b[0] * c[1]; // Surface * 2
+    //    //Coord ab_cross_ac = cross(b, c);
+    Real determinant = b[0] * c[1]; // Surface * 2
 
-//    J[0][0] = J[1][2] = -c[1] / determinant;
-//    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
-//    J[2][0] = J[3][2] = c[1] / determinant;
-//    J[2][2] = J[3][1] = -c[0] / determinant;
-//    J[4][0] = J[5][2] = 0;
-//    J[4][2] = J[5][1] = b[0] / determinant;
-//    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
+    J[0][0] = J[1][2] = -c[1] / determinant;
+    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
+    J[2][0] = J[3][2] = c[1] / determinant;
+    J[2][2] = J[3][1] = -c[0] / determinant;
+    J[4][0] = J[5][2] = 0;
+    J[4][2] = J[5][1] = b[0] / determinant;
+    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
 
     /* The following formulation is actually equivalent:
       Let
@@ -283,24 +262,24 @@ void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplace
       | -(1-xc/xb)/yc  -1/xb          -xc/(xb*yc)  1/xb         1/yc  0    |
       */
 
-    Real beta1  = -1/b[0];
-    Real beta2  =  1/b[0];
-    Real gamma1 = (c[0]/b[0]-1)/c[1];
-    Real gamma2 = -c[0]/(b[0]*c[1]);
-    Real gamma3 = 1/c[1];
+    //    Real beta1  = -1/b[0];
+    //    Real beta2  =  1/b[0];
+    //    Real gamma1 = (c[0]/b[0]-1)/c[1];
+    //    Real gamma2 = -c[0]/(b[0]*c[1]);
+    //    Real gamma3 = 1/c[1];
 
-    // The transpose of the strain-displacement matrix is thus:
-    J[0][0] = J[1][2] = beta1;
-    J[0][1] = J[1][0] = 0;
-    J[0][2] = J[1][1] = gamma1;
+    //    // The transpose of the strain-displacement matrix is thus:
+    //    J[0][0] = J[1][2] = beta1;
+    //    J[0][1] = J[1][0] = 0;
+    //    J[0][2] = J[1][1] = gamma1;
 
-    J[2][0] = J[3][2] = beta2;
-    J[2][1] = J[3][0] = 0;
-    J[2][2] = J[3][1] = gamma2;
+    //    J[2][0] = J[3][2] = beta2;
+    //    J[2][1] = J[3][0] = 0;
+    //    J[2][2] = J[3][1] = gamma2;
 
-    J[4][0] = J[5][2] = 0;
-    J[4][1] = J[5][0] = 0;
-    J[4][2] = J[5][1] = gamma3;
+    //    J[4][0] = J[5][2] = 0;
+    //    J[4][1] = J[5][0] = 0;
+    //    J[4][2] = J[5][1] = gamma3;
 
 
 
@@ -311,9 +290,17 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 {
     _materialsStiffnesses.resize(_indexedElements->size());
+    const VecCoord& p= _initialPoints.getValue();
 
-    if( f_planeStrain.getValue() == true )
-        for(unsigned i = 0; i < _indexedElements->size(); ++i)
+
+    for(unsigned i = 0; i < _indexedElements->size(); ++i)
+    {
+        Index a = (*_indexedElements)[i][0];
+        Index b = (*_indexedElements)[i][1];
+        Index c = (*_indexedElements)[i][2];
+        Real triangleVolume = 0.5 * f_thickness.getValue() * cross( p[b]-p[a], p[c]-p[a] ).norm();
+
+        if( f_planeStrain.getValue() == true )
         {
             _materialsStiffnesses[i][0][0] = 1-f_poisson.getValue();
             _materialsStiffnesses[i][0][1] = f_poisson.getValue();
@@ -325,10 +312,9 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
             _materialsStiffnesses[i][2][1] = 0;
             _materialsStiffnesses[i][2][2] = 0.5f - f_poisson.getValue();
 
-            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 + f_poisson.getValue()) * (1-2*f_poisson.getValue()) );
+            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 + f_poisson.getValue()) * (1-2*f_poisson.getValue()) ) * triangleVolume;
         }
-    else // plane stress
-        for(unsigned i = 0; i < _indexedElements->size(); ++i)
+        else // plane stress
         {
             _materialsStiffnesses[i][0][0] = 1;
             _materialsStiffnesses[i][0][1] = f_poisson.getValue();
@@ -340,8 +326,9 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
             _materialsStiffnesses[i][2][1] = 0;
             _materialsStiffnesses[i][2][2] = 0.5f * (1 - f_poisson.getValue());
 
-            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 - f_poisson.getValue() * f_poisson.getValue()));
+            _materialsStiffnesses[i] *= f_young.getValue() / ( (1 - f_poisson.getValue() * f_poisson.getValue())) * triangleVolume;
         }
+    }
 }
 
 
@@ -418,6 +405,12 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * KJtD[2];
 
     F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * KJtD[1] /* + J[5][2] * KJtD[2] */ ;
+
+
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, displacement = " << Depl << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, strain = " << JtD << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, stress = " << KJtD << endl;
+//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, Force = " << F << endl;
 }
 
 
@@ -488,15 +481,15 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
 }
 
 
-template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-{
+//template <class DataTypes>
+//void TriangleFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
+//{
 
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateDampingSmall"<<sendl;
-#endif
+//#ifdef DEBUG_TRIANGLEFEM
+//    sout << "TriangleFEMForceField::accumulateDampingSmall"<<sendl;
+//#endif
 
-}
+//}
 
 
 template <class DataTypes>
@@ -675,15 +668,15 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 }
 
 
-template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-{
+//template <class DataTypes>
+//void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
+//{
 
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateDampingLarge"<<sendl;
-#endif
+//#ifdef DEBUG_TRIANGLEFEM
+//    sout << "TriangleFEMForceField::accumulateDampingLarge"<<sendl;
+//#endif
 
-}
+//}
 
 
 template <class DataTypes>

@@ -164,10 +164,11 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 EdgePressureInformation ei;
                 Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
-                //std::cout << intensities.size() << " " << intensities[i] << " " << intensity << std::endl;
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
                 edgePressureMap[i] = ei;
+//                                std::cout << intensities.size() << " " << intensities[i] << " " << intensity << std::endl;
+//                                std::cout <<  "tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
             }
         }
         else
