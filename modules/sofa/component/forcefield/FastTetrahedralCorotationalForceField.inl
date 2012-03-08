@@ -76,7 +76,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 
         ///describe the indices of the 4 tetrahedron vertices
         const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-        BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
+//    BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
 
 
         // store the point position
