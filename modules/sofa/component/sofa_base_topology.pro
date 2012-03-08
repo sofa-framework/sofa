@@ -5,6 +5,10 @@ TARGET = sofa_base_topology
 
 DEFINES += SOFA_BUILD_BASE_TOPOLOGY
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += initBaseTopology.h \
            topology/CommonAlgorithms.h \
            topology/CubeTopology.h \
