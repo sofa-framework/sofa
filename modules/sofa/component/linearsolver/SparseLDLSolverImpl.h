@@ -47,8 +47,11 @@ class SparseLDLSolverImpl : public sofa::component::linearsolver::ParallelMatrix
 public :
     SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolverImpl,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
     typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
+
+#ifdef SOFA_HAVE_BOOST
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef typename Inherit::ResMatrixType ResMatrixType;
+#endif
 
 public:
     typedef TMatrix Matrix;
