@@ -104,7 +104,7 @@ void NodeToggleController::toggle()
 }
 
 
-void NodeToggleController::onBeginAnimationStep(const double dt)
+void NodeToggleController::onBeginAnimationStep(const double/*dt*/)
 {
     // deactivate all but first sub-nodes
     if (m_FirstFrame)

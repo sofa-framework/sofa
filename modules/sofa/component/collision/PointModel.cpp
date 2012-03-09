@@ -254,7 +254,7 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
 
                 if (debug)
                     std::cout<<"v1 = "<<v1 <<"  verticesAroundVertex2[i2]"<<verticesAroundVertex2[i2]<<std::endl;
-                if (v1==verticesAroundVertex2[i2] || v1==index2 || index == verticesAroundVertex2[i2])
+                if (v1==verticesAroundVertex2[i2] || v1==(unsigned int)index2 || index == (int)verticesAroundVertex2[i2])
                 {
                     if(debug)
                         std::cout<<" return false"<<std::endl;
