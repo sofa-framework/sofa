@@ -89,7 +89,7 @@ public:
     virtual void fwdDraw(core::visual::VisualParams*);
     virtual void bwdDraw(core::visual::VisualParams*);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/);
 
     virtual helper::gl::FrameBufferObject* getFBO() {return fbo;};
     bool hasFilledFbo();

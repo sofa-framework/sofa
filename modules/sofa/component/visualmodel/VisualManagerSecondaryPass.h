@@ -72,7 +72,7 @@ public:
     void preDrawScene(core::visual::VisualParams* vp);
     bool drawScene(core::visual::VisualParams* vp);
 
-    void bindInput(core::visual::VisualParams* vp);
+    void bindInput(core::visual::VisualParams* /*vp*/);
     void unbindInput();
 
     helper::gl::FrameBufferObject* getFBO() {return fbo;};

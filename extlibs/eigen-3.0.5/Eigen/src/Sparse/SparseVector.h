@@ -132,14 +132,23 @@ class SparseVector
     /** \returns the number of non zero coefficients */
     inline Index nonZeros() const  { return static_cast<Index>(m_data.size()); }
 
+#ifdef NDEBUG
+    inline void startVec(Index /*outer*/) {}
+#else
     inline void startVec(Index outer)
     {
       eigen_assert(outer==0);
     }
+#endif
 
+#ifdef NDEBUG
+    inline Scalar& insertBackByOuterInner(Index /*outer*/, Index inner)
+    {
+#else
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
     {
       eigen_assert(outer==0);
+#endif
       return insertBack(inner);
     }
     inline Scalar& insertBack(Index i)
@@ -220,7 +229,8 @@ class SparseVector
     }
 
     inline SparseVector(const SparseVector& other)
-      : m_size(0)
+      : SparseMatrixBase<SparseVector<_Scalar, _Options, _Index> >()
+      , m_size(0)
     {
       *this = other.derived();
     }
@@ -396,11 +406,18 @@ template<typename Scalar, int _Options, typename _Index>
 class SparseVector<Scalar,_Options,_Index>::InnerIterator
 {
   public:
+#ifdef NDEBUG
+    InnerIterator(const SparseVector& vec, Index /*outer*/=0)
+      : m_data(vec.m_data), m_id(0), m_end(static_cast<Index>(m_data.size()))
+    {
+    }
+#else
     InnerIterator(const SparseVector& vec, Index outer=0)
       : m_data(vec.m_data), m_id(0), m_end(static_cast<Index>(m_data.size()))
     {
       eigen_assert(outer==0);
     }
+#endif
 
     InnerIterator(const CompressedStorage<Scalar,Index>& data)
       : m_data(data), m_id(0), m_end(static_cast<Index>(m_data.size()))

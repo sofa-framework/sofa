@@ -110,7 +110,7 @@ public:
     /**
      * @brief Begin Animation event callback.
      */
-    void onBeginAnimationStep(const double dt);
+    void onBeginAnimationStep(const double /*dt*/);
 
     //@}
 

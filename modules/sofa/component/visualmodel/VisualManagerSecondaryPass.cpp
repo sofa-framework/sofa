@@ -210,7 +210,7 @@ void VisualManagerSecondaryPass::traceFullScreenQuad()
     glEnd();
 }
 
-void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* vp)
+void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
 {
     nbFbo=0;
     VisualManagerPass *currentPass=NULL;

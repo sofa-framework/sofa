@@ -130,7 +130,7 @@ void VisualManagerPass::preDrawScene(VisualParams* vp)
     if(renderToScreen.getValue() || (!multiPassEnabled))
         return;
 
-    const VisualParams::Viewport& viewport = vp->viewport();
+    //const VisualParams::Viewport& viewport = vp->viewport();
     fbo->setSize(passWidth, passHeight);
     fbo->start();
 
@@ -189,7 +189,7 @@ void VisualManagerPass::postDrawScene(VisualParams* /*vp*/)
 
 
 //keyboard event management. Not sure what I'm gonna do with that for the moment, but I'm quite sure it should be usefull in the future
-void VisualManagerPass::handleEvent(sofa::core::objectmodel::Event* event)
+void VisualManagerPass::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
 //   if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
 //   {
