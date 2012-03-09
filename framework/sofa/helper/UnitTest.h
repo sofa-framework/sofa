@@ -48,6 +48,7 @@ struct UnitTest
 
     /// The test name can be a long string explaining what the test checks.
     UnitTest( std::string testName );
+    virtual ~UnitTest() {}
 
     /// Runs the test and return true in case of failure. Optionally print begin and end messages, depending on the verbose variable
     bool fails();
