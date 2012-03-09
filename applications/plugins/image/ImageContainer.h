@@ -103,14 +103,6 @@ public:
     */
     Data<unsigned int> nFrames;
 
-#ifdef SOFA_HAVE_ZLIB
-    /**
-    * Holds the uncompressed version of a compressed file in memory.
-    */
-    gzFile gzfile;
-#endif
-
-
 
     virtual std::string getTemplateName() const	{ return templateName(this); }
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
@@ -161,6 +153,52 @@ public:
 
 
 protected:
+    Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
+    {
+        Mat<3,3,Real> rotMatrix;
+        float c, s, k1, k2;
+        float TH_TINY = 0.00001;
+
+        float theta2 = sqrt( rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2] );
+        float theta = sqrt( theta2 );
+        if (theta > TH_TINY)
+        {
+            c = cos(theta);
+            s = sin(theta);
+            k1 = s / theta;
+            k2 = (1 - c) / theta2;
+        }
+        else    // Taylor expension around theta = 0
+        {
+            k2 = 1.0/2.0 - theta2/24.0;
+            c = 1.0 - theta2*k2;
+            k1 = 1.0 - theta2/6;
+        }
+
+        /* I + M*Mt */
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                rotMatrix(i,j) = k2 * rotVec[i] * rotVec[j] ;
+                if (i != j)
+                    rotMatrix(j,i) = rotMatrix(i,j);
+                else
+                    rotMatrix(i,i) = rotMatrix(i,i) + c ;
+            }
+        }
+        double aux = k1 * rotVec[2];
+        rotMatrix(0,1) = rotMatrix(0,1) - aux;
+        rotMatrix(1,0) = rotMatrix(1,0) + aux;
+        aux = k1 * rotVec[1];
+        rotMatrix(0,2) = rotMatrix(0,2) + aux;
+        rotMatrix(2,0) = rotMatrix(2,0) - aux;
+        aux = k1 * rotVec[0];
+        rotMatrix(1,2) = rotMatrix(1,2) - aux;
+        rotMatrix(2,1) = rotMatrix(2,1) + aux;
+
+        return rotMatrix;
+    }
 
     bool load()
     {
@@ -186,15 +224,30 @@ protected:
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
 
-        if(fname.size() >= 3 && fname.substr(fname.size()-3)==".gz")
-        {
-            return loadZipped(fname);
-        }
-
-
         // read image
-        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-           || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+        //Load .inr.gz or .inr using ZLib
+        if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
+        {
+            float voxsize[3];
+            float translation[3]= {0.,0.,0.}, rotation[3]= {0.,0.,0.};
+            CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
+            wimage->getCImgList().push_back(img);
+
+            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]= (Real)translation[i];
+
+            Mat<3,3,Real> R;
+            R = RotVec3DToRotMat3D(rotation);
+            helper::Quater< float > q; q.fromMatrix(R);
+            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+            wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+            wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+
+        }
+        else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+                || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
         {
             if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
@@ -284,30 +337,6 @@ protected:
 
         return true;
 
-    }
-
-    /**
-    * Load a .gz file. NOT YET FULLY IMPLEMENTED.
-    */
-    bool loadZipped(std::string fname)
-    {
-#ifndef SOFA_HAVE_ZLIB
-        serr << "Error (ImageContainer): Requires SOFA_HAVE_ZLIB to open .gz files" << sendl;
-        return false;
-#endif
-
-        gzfile = gzopen(fname.c_str(), "rb");
-
-        if(!gzfile)
-        {
-            serr << "Error (ImageContainer): Could not open compressed file " << fname << sendl;
-            return false;
-        }
-
-        std::string newFname = fname.substr(0, fname.length()-3);
-
-        //return load(gzfile, newFname);
-        return false;
     }
 
     bool loadCamera()
