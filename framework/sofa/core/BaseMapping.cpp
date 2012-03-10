@@ -44,10 +44,10 @@ BaseMapping::BaseMapping()
 BaseMapping::~BaseMapping()
 {}
 
-void BaseMapping::computeLocalCoordinates()
-{
-    serr<<"Mapping "<< getName() <<", BaseMapping::computeLocalCoordinates() is not implemented for this class. It may be still implemented in the init() method." << sendl;
-}
+//void BaseMapping::computeLocalCoordinates()
+//{
+//    serr<<"Mapping "<< getName() <<", BaseMapping::computeLocalCoordinates() is not implemented for this class. It may be still implemented in the init() method." << sendl;
+//}
 
 bool BaseMapping::setTo( BaseState*  )
 {
