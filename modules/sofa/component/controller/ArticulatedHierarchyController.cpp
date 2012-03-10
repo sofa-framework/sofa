@@ -386,7 +386,7 @@ void ArticulatedHierarchyController::applyController(void)
                                 // and Current articulation value at the coresponding artculation
 
                                 std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
-                                std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
+//								std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
 
                                 //	while (articulatedObjIt != articulatedObjItEnd)
                                 {

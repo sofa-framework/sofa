@@ -685,7 +685,8 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 
             typedef Eigen::Matrix<double,3,3> EigenM33;
             EigenM33 emat = eigenMat(EEt);
-            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeThinU | Eigen::ComputeThinV);
+//            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeThinU | Eigen::ComputeThinV);
+            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeFullU | Eigen::ComputeFullV);
             Eigen::Matrix<double,3,1> solution;
 
             // axis x

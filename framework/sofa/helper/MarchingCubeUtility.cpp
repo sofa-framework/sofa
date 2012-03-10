@@ -377,38 +377,38 @@ MarchingCubeUtility::MarchingCubeUtility()
       dataResolution ( 0,0,0 ), dataVoxelSize ( 1.0f,1.0f,1.0f ),
       verticesIndexOffset( 0), verticesTranslation( 0,0,0)
 {
-// // Computes non trivial faces.
-// int nonTrivialFaces[256];
-//    for( int i = 0; i < 256; i++)
-// {
-// nonTrivialFaces[i] = 0;
-// }
-//
-// for( int i = 0; i < 256; i++)
-// {
-//    if ( MarchingCubeEdgeTable[i] &    1 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 4);}
-//    if ( MarchingCubeEdgeTable[i] &    2 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 2);}
-//    if ( MarchingCubeEdgeTable[i] &    4 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 5);}
-//    if ( MarchingCubeEdgeTable[i] &    8 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 3);}
-//    if ( MarchingCubeEdgeTable[i] &   16 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 4);}
-//    if ( MarchingCubeEdgeTable[i] &   32 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 2);}
-//    if ( MarchingCubeEdgeTable[i] &   64 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 5);}
-//    if ( MarchingCubeEdgeTable[i] &  128 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 3);}
-//    if ( MarchingCubeEdgeTable[i] &  256 ) {nonTrivialFaces[i] |= (1 << 3); nonTrivialFaces[i] |= (1 << 4);}
-//    if ( MarchingCubeEdgeTable[i] &  512 ) {nonTrivialFaces[i] |= (1 << 4); nonTrivialFaces[i] |= (1 << 2);}
-//    if ( MarchingCubeEdgeTable[i] & 1024 ) {nonTrivialFaces[i] |= (1 << 2); nonTrivialFaces[i] |= (1 << 5);}
-//    if ( MarchingCubeEdgeTable[i] & 2048 ) {nonTrivialFaces[i] |= (1 << 5); nonTrivialFaces[i] |= (1 << 3);}
-// }
-//
-//    for( int i = 0; i < 256; i++)
-//      std::printf( "0x%2x, ", nonTrivialFaces[i]);
+    // // Computes non trivial faces.
+    // int nonTrivialFaces[256];
+    //    for( int i = 0; i < 256; i++)
+    // {
+    // nonTrivialFaces[i] = 0;
+    // }
+    //
+    // for( int i = 0; i < 256; i++)
+    // {
+    //    if ( MarchingCubeEdgeTable[i] &    1 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 4);}
+    //    if ( MarchingCubeEdgeTable[i] &    2 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 2);}
+    //    if ( MarchingCubeEdgeTable[i] &    4 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 5);}
+    //    if ( MarchingCubeEdgeTable[i] &    8 ) {nonTrivialFaces[i] |= (1 << 0); nonTrivialFaces[i] |= (1 << 3);}
+    //    if ( MarchingCubeEdgeTable[i] &   16 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 4);}
+    //    if ( MarchingCubeEdgeTable[i] &   32 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 2);}
+    //    if ( MarchingCubeEdgeTable[i] &   64 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 5);}
+    //    if ( MarchingCubeEdgeTable[i] &  128 ) {nonTrivialFaces[i] |= (1 << 1); nonTrivialFaces[i] |= (1 << 3);}
+    //    if ( MarchingCubeEdgeTable[i] &  256 ) {nonTrivialFaces[i] |= (1 << 3); nonTrivialFaces[i] |= (1 << 4);}
+    //    if ( MarchingCubeEdgeTable[i] &  512 ) {nonTrivialFaces[i] |= (1 << 4); nonTrivialFaces[i] |= (1 << 2);}
+    //    if ( MarchingCubeEdgeTable[i] & 1024 ) {nonTrivialFaces[i] |= (1 << 2); nonTrivialFaces[i] |= (1 << 5);}
+    //    if ( MarchingCubeEdgeTable[i] & 2048 ) {nonTrivialFaces[i] |= (1 << 5); nonTrivialFaces[i] |= (1 << 3);}
+    // }
+    //
+    //    for( int i = 0; i < 256; i++)
+    //      std::printf( "0x%2x, ", nonTrivialFaces[i]);
 }
 
 
 /*
-Linearly interpolate the position where an isosurface cuts
-an edge between two vertices, each with their own scalar value
-*/
+    Linearly interpolate the position where an isosurface cuts
+    an edge between two vertices, each with their own scalar value
+    */
 void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
         const Vector3 &p1, const Vector3 &p2,
         const float valp1, const float valp2 ) const
@@ -469,13 +469,13 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
 }
 
 /*
-Given a grid cell and an isolevel, calculate the triangular
-facets required to represent the isosurface through the cell.
-Return the number of triangular facets, the array "triangles"
-will be loaded up with the vertices at most 5 triangular facets.
-0 will be returned if the grid cell is either totally above
-of totally below the isolevel.
-*/
+    Given a grid cell and an isolevel, calculate the triangular
+    facets required to represent the isosurface through the cell.
+    Return the number of triangular facets, the array "triangles"
+    will be loaded up with the vertices at most 5 triangular facets.
+    0 will be returned if the grid cell is either totally above
+    of totally below the isolevel.
+    */
 int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float isolevel, sofa::helper::vector< PointID > &triangles,
         std::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
 {
@@ -484,9 +484,9 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
     Vector3 vertindex[12];
 
     /*
-    Determine the index into the edge table which
-    tells us which vertices are inside of the surface
-    */
+      Determine the index into the edge table which
+      tells us which vertices are inside of the surface
+      */
     cubeConf = 0;
     if ( testGrid ( grid.val[0], isolevel ) ) cubeConf |= 1;
     if ( testGrid ( grid.val[1], isolevel ) ) cubeConf |= 2;
@@ -632,7 +632,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
-    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
+//    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
     sofa::helper::set<Vec3i> generatedCubes;
 
     unsigned int datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];

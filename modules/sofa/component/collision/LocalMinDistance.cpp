@@ -912,7 +912,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     Vector3 P = e1.center();
     Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
     Vector3 QP = P-Q;
-    Vector3 PQ = Q-P;
+//	Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -998,7 +998,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
     Vector3 P = e1.center();
     Vector3 Q = e2.p1() - x32 * alpha;
     Vector3 QP = P-Q;
-    Vector3 PQ = Q-P;
+//	Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
