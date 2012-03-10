@@ -57,7 +57,7 @@ void PenalityContactForceField<DataTypes>::clear(int reserve)
 
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
+void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int oldIndex)
 {
     int i = contacts.getValue().size();
     contacts.beginEdit()->resize(i+1);
@@ -69,8 +69,8 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
     c.norm = norm;
     c.dist = dist;
     c.ks = ks;
-    c.mu_s = mu_s;
-    c.mu_v = mu_v;
+//	c.mu_s = mu_s;
+//	c.mu_v = mu_v;
     c.pen = 0;
     if (oldIndex > 0 && oldIndex <= (int)prevContacts.size())
     {

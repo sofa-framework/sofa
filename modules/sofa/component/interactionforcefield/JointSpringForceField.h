@@ -174,7 +174,7 @@ public:
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
         bool initTransFound=false;
-        bool initRotFound=false;
+//		bool initRotFound=false;
 
         std::string str;
         in>>str;
@@ -208,7 +208,7 @@ public:
                 else if(str == "REST_R")
                 {
                     in>>s.initRot;
-                    initRotFound=true;
+//					  initRotFound=true;
                 }
                 else
                 {

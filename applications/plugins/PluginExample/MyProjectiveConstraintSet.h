@@ -45,6 +45,7 @@ class  MyProjectiveConstraintSet : public core::behavior::ProjectiveConstraintSe
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MyProjectiveConstraintSet,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
+    typedef core::behavior::ProjectiveConstraintSet<DataTypes> Inherit;
     typedef typename  DataTypes::VecDeriv VecDeriv;
     typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;

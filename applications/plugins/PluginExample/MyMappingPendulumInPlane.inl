@@ -25,6 +25,9 @@
 
 #include "MyMappingPendulumInPlane.h"
 #include <sofa/simulation/common/Simulation.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 
 namespace sofa
@@ -108,7 +111,8 @@ void MyMappingPendulumInPlane<In,Out>::apply( VecOutCoord& childPos, const VecIn
     for(unsigned i=0; i<childPos.size(); i++)
     {
         gap[i] = Vec2(distances[i]*cos(parentPos[i][0]) ,distances[i]*sin(parentPos[i][0])  );
-        Out::set( childPos[i], gap[i][0], gap[i][1], (OutReal) 0 );
+        childPos[i][0] = gap[i][0];
+        childPos[i][1] = gap[i][1];
     }
 }
 

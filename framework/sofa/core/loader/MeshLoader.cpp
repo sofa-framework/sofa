@@ -97,23 +97,27 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
     updateMesh();
 
-    if (translation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
-    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    // Transformation of the local frame: translation, then rotation around the translated origin, then scale along the translated and rotated axes
+    // is applied to the points in the opposite order: scale S then rotation R then translation T, to implement the matrix product TRSx
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
+        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    if (translation.getValue() != Vector3(0.0,0.0,0.0))
+        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
 }
 
 
 void MeshLoader::reinit()
 {
-    if (translation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
-    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    // Transformation of the local frame: translation, then rotation around the translated origin, then scale along the translated and rotated axes
+    // is applied to the points in the opposite order: scale S then rotation R then translation T, to implement the matrix product TRSx
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
+        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    if (translation.getValue() != Vector3(0.0,0.0,0.0))
+        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
 }
 
 

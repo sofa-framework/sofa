@@ -439,14 +439,14 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
-    bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
+//	bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
     {
         std::string textureFilename(textureName);
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
             std::cout << "loading file " << textureName << std::endl;
-            tex = loadTexture(textureName);
+            loadTexture(textureName);
         }
         else
             serr << "Texture \"" << textureName << "\" not found" << sendl;

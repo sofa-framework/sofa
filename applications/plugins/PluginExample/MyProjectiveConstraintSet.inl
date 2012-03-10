@@ -52,6 +52,7 @@ MyProjectiveConstraintSet<DataTypes>::~MyProjectiveConstraintSet()
 template <class DataTypes>
 void MyProjectiveConstraintSet<DataTypes>::init()
 {
+    Inherit::init();
 }
 
 template <class DataTypes>
