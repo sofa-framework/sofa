@@ -7,6 +7,7 @@ DEFINES += SOFA_BUILD_EIGEN2_SOLVER
 
 HEADERS += initEigen2Solver.h \
            linearsolver/EigenMatrixManipulator.h \
+           linearsolver/EigenSparseMatrix.h \
            linearsolver/SVDLinearSolver.h
 
 
@@ -19,6 +20,8 @@ INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
 #exists(component-local.cfg): include(component-local.cfg)
+
+
 
 load(sofa/post)
  

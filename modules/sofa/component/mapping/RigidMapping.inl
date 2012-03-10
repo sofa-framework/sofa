@@ -179,46 +179,69 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::computeLocalCoordinates()
+void RigidMapping<TIn, TOut>::reinit()
 {
-    const VecCoord& xTo = *this->toModel->getX();
-    points.beginEdit()->resize(xTo.size());
-    unsigned int i = 0, cpt = 0;
-    const InVecCoord& xFrom = *this->fromModel->getX();
-    switch (pointsPerFrame.getValue().size())
+    if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
-    case 0:
-        for (i = 0; i < xTo.size(); i++)
+        //        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+        const VecCoord& xTo = *this->toModel->getX();
+        points.beginEdit()->resize(xTo.size());
+        unsigned int i = 0;
+        if (globalToLocalCoords.getValue() == true)
         {
-            (*points.beginEdit())[i] = xFrom[0].inverseRotate(xTo[i]- xFrom[0].getCenter());
-        }
-        break;
-    case 1:
-        for (i = 0; i < xFrom.size(); i++)
-        {
-            for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
+            //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
+            const VecCoord& xTo = *this->toModel->getX();
+            points.beginEdit()->resize(xTo.size());
+            unsigned int i = 0, cpt = 0;
+            const InVecCoord& xFrom = *this->fromModel->getX();
+            switch (pointsPerFrame.getValue().size())
             {
-                (*points.beginEdit())[cpt]
-                    = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
-            }
-        }
-        break;
-    default:
-        for (i = 0; i < xFrom.size(); i++)
-        {
-            for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
-            {
-                (*points.beginEdit())[cpt]
-                    = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
-            }
-        }
-        break;
+            case 0:
+                for (i = 0; i < xTo.size(); i++)
+                {
+                    (*points.beginEdit())[i] = xFrom[0].inverseRotate(xTo[i]- xFrom[0].getCenter());
+                }
+                break;
+            case 1:
+                for (i = 0; i < xFrom.size(); i++)
+                {
+                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
+                    {
+                        (*points.beginEdit())[cpt]
+                            = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+                    }
+                }
+                break;
+            default:
+                for (i = 0; i < xFrom.size(); i++)
+                {
+                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
+                    {
+                        (*points.beginEdit())[cpt]
+                            = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+                    }
+                }
+                break;
 
+            }
+        }
+        else
+        {
+            for (i = 0; i < xTo.size(); i++)
+            {
+                (*points.beginEdit())[i] = xTo[i];
+            }
+            //            cerr<<"globalToLocal is false, points in local coordinates : " << points << endl;
+        }
     }
-//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xfrom " << xFrom << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xto " << xTo << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), local coordinates: " << points.getValue() << endl;
+    else
+    {
+        //        cerr << "RigidMapping<TIn, TOut>::init(), points not empty or toModel is null or useX0" << endl;
+    }
+    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xfrom " << xFrom << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xto " << xTo << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), local coordinates: " << points.getValue() << endl;
 }
 
 template <class TIn, class TOut>
@@ -237,30 +260,7 @@ void RigidMapping<TIn, TOut>::init()
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
 
-    if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
-    {
-//        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
-        const VecCoord& xTo = *this->toModel->getX();
-        points.beginEdit()->resize(xTo.size());
-        unsigned int i = 0;
-        if (globalToLocalCoords.getValue() == true)
-        {
-//            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
-            computeLocalCoordinates();
-        }
-        else
-        {
-            for (i = 0; i < xTo.size(); i++)
-            {
-                (*points.beginEdit())[i] = xTo[i];
-            }
-//            cerr<<"globalToLocal is false, points in local coordinates : " << points << endl;
-        }
-    }
-    else
-    {
-//        cerr << "RigidMapping<TIn, TOut>::init(), points not empty or toModel is null or useX0" << endl;
-    }
+    this->reinit();
 
     this->Inherit::init();
 }
@@ -402,10 +402,10 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
         }
     }
 
-//    cerr<<"RigidMapping<TIn, TOut>::apply, " << this->getName() << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::apply, in = " << dIn << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::apply, points = " << pts << endl;
-//    cerr<<"RigidMapping<TIn, TOut>::apply, out = " << dOut << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::apply, " << this->getName() << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::apply, in = " << dIn << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::apply, points = " << pts << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::apply, out = " << dOut << endl;
 }
 
 template <class TIn, class TOut>

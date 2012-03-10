@@ -101,11 +101,11 @@ public:
     Data<bool> useX0;
     Data<bool> indexFromEnd;
     /**
-    * pointsPerRigid:
-    *  - no value specified : simple rigid mapping, all points attached to the same frame (index=0)
-    *  - one value specified : same number of points for each frame
-    *  - n values are specified : heterogeneous distribution of points per frame
-    */
+     * pointsPerRigid:
+     *  - no value specified : simple rigid mapping, all points attached to the same frame (index=0)
+     *  - one value specified : same number of points for each frame
+     *  - n values are specified : heterogeneous distribution of points per frame
+     */
     Data<sofa::helper::vector<unsigned int> > pointsPerFrame;
     Data<bool> globalToLocalCoords;
 
@@ -121,7 +121,7 @@ public:
     virtual void init();
 
     /// Compute the local coordinates based on the current output coordinates.
-    virtual void computeLocalCoordinates();
+    virtual void reinit();
 
 
     virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecCoord>& out, const Data<InVecCoord>& in);

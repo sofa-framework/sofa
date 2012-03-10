@@ -15,6 +15,8 @@ message( "PRE-CONFIG: " $${CONFIG})
 
 usePlugin(PluginExample) 
 
+contains(DEFINES, SOFA_HAVE_Compliant) { usePlugin(Compliant) }
+
 contains(DEFINES, SOFA_HAVE_SENSABLE) {
 	usePlugin(Sensable)
 }
