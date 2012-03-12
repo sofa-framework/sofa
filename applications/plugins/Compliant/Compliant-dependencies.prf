@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+        declare(Compliant, applications/plugins/Compliant, sofaguiqt sofa_eigen2_solver )
+	
+	enable(Compliant)
+}

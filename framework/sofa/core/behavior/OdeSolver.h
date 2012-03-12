@@ -99,12 +99,15 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const = 0;
+    ///
+    /// FF: What is the meaning of the parameters ?
+    virtual double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const { serr<<"getIntegrationFactor not implemented !"<<sendl; return 0; };
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    virtual double getSolutionIntegrationFactor(int outputDerivative) const = 0;
+    /// FF: What is the meaning of the parameters ?
+    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const { serr<<"getSolutionIntegrationFactor not implemented !"<<sendl; return 0; };
 
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity

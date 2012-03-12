@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"   >
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<Node 	name="complianceSolverScene" >
+    <ComplianceSolver />
+    <MechanicalObject template="Vec3d" position="0 0 0   0 -1 0" name="particleDOFs"/>
+    <UniformMass />
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <ExtensionMapping links="0 1" />
+        <UniformCompliance compliance="[[1.0]]" />
+    </Node>
+</Node>
+</Node>

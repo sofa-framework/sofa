@@ -227,7 +227,7 @@ public:
     virtual void applyJT( const ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dataMatOutConst, const helper::vector< const OutDataMatrixDeriv* >& dataMatInConst )
 #ifdef SOFA_DEPRECATE_OLD_API
     {
-        serr << "This mapping does not support constraints" << sendl;
+        serr << "This mapping does not support constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded" << sendl;
     }
 #else
     {
@@ -250,7 +250,7 @@ public:
     /// @deprecated
     virtual void applyJT( const helper::vector< InMatrixDeriv* >& /*outConst*/ , const helper::vector< const OutMatrixDeriv* >& /*inConst*/ )
     {
-        serr << "This mapping does not support constraints" << sendl;
+        serr << "This mapping does not support constraints since MultiMapping::applyJT( const helper::vector< InMatrixDeriv* >& , const helper::vector< const OutMatrixDeriv* >& ) is not overloaded." << sendl;
     }
 #endif //SOFA_DEPRECATE_OLD_API
 
