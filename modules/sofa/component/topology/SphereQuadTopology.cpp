@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initBaseTopology.h>
-
+#include <sofa/component/topology/SphereQuadTopology.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa
 {
@@ -32,48 +33,43 @@ namespace sofa
 namespace component
 {
 
-
-void initBaseTopology()
+namespace topology
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+
+using namespace sofa::defaulttype;
+
+
+
+SOFA_DECL_CLASS(SphereQuadTopology)
+
+int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
+        .addAlias("SphereQuad")
+        .add< SphereQuadTopology >()
+        ;
+
+SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
+    : CubeTopology(nx, ny, nz),
+      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+{
 }
 
-SOFA_LINK_CLASS(CubeTopology)
-SOFA_LINK_CLASS(SphereQuadTopology)
-SOFA_LINK_CLASS(CylinderGridTopology)
-SOFA_LINK_CLASS(EdgeSetGeometryAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyContainer)
-SOFA_LINK_CLASS(EdgeSetTopologyModifier)
-SOFA_LINK_CLASS(GridTopology)
-SOFA_LINK_CLASS(HexahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(HexahedronSetTopologyModifier)
-SOFA_LINK_CLASS(MeshTopology)
-SOFA_LINK_CLASS(PointSetGeometryAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyContainer)
-SOFA_LINK_CLASS(PointSetTopologyModifier)
-SOFA_LINK_CLASS(QuadSetGeometryAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyContainer)
-SOFA_LINK_CLASS(QuadSetTopologyModifier)
-SOFA_LINK_CLASS(RegularGridTopology)
-SOFA_LINK_CLASS(SparseGridTopology)
-SOFA_LINK_CLASS(TetrahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyContainer)
-SOFA_LINK_CLASS(TetrahedronSetTopologyModifier)
-SOFA_LINK_CLASS(TriangleSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyContainer)
-SOFA_LINK_CLASS(TriangleSetTopologyModifier)
+SphereQuadTopology::SphereQuadTopology()
+    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+{
+}
+
+Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
+{
+    Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
+    p.normalize();
+    return center.getValue()+p*radius.getValue();
+}
+
+} // namespace topology
 
 } // namespace component
 
 } // namespace sofa
+

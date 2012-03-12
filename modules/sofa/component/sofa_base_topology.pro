@@ -13,6 +13,7 @@ HEADERS += initBaseTopology.h \
            topology/CommonAlgorithms.h \
            topology/CubeTopology.h \
            topology/CylinderGridTopology.h \
+           topology/SphereQuadTopology.h \
            topology/EdgeSetGeometryAlgorithms.h \
            topology/EdgeSetGeometryAlgorithms.inl \
            topology/EdgeSetTopologyAlgorithms.h \
@@ -71,6 +72,7 @@ HEADERS += initBaseTopology.h \
 SOURCES += initBaseTopology.cpp \
            topology/CubeTopology.cpp \
            topology/CylinderGridTopology.cpp \
+           topology/SphereQuadTopology.cpp \
            topology/EdgeSetGeometryAlgorithms.cpp \
            topology/EdgeSetTopologyAlgorithms.cpp \
            topology/EdgeSetTopologyContainer.cpp \

@@ -58,23 +58,28 @@ SphereROI<DataTypes>::SphereROI()
     , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
+    , f_quads(initData (&f_quads, "quads", "Quads Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
     , f_computeEdges( initData(&f_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI.") )
     , f_computeTriangles( initData(&f_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI.") )
+    , f_computeQuads( initData(&f_computeQuads, true,"computeQuads","If true, will compute quad list and index list inside the ROI.") )
     , f_computeTetrahedra( initData(&f_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI.") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
+    , f_quadIndices( initData(&f_quadIndices,"quadIndices","Indices of the quads contained in the ROI") )
     , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
+    , f_quadsInROI( initData(&f_quadsInROI,"quadsInROI","Quads contained in the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
     , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
+    , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
 {
@@ -119,7 +124,7 @@ void SphereROI<DataTypes>::init()
             }
         }
     }
-    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
+    if (!f_edges.isSet() || !f_triangles.isSet() || !f_quads.isSet() || !f_tetrahedra.isSet())
     {
         BaseMeshTopology* topology;
         this->getContext()->get(topology);
@@ -143,6 +148,15 @@ void SphereROI<DataTypes>::init()
                     f_triangles.setReadOnly(true);
                 }
             }
+            if (!f_quads.isSet() && f_computeQuads.getValue())
+            {
+                BaseData* tparent = topology->findField("quads");
+                if (tparent)
+                {
+                    f_quads.setParent(tparent);
+                    f_quads.setReadOnly(true);
+                }
+            }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
                 BaseData* tparent = topology->findField("tetrahedra");
@@ -158,6 +172,7 @@ void SphereROI<DataTypes>::init()
     addInput(&f_X0);
     addInput(&f_edges);
     addInput(&f_triangles);
+    addInput(&f_quads);
     addInput(&f_tetrahedra);
 
     addInput(&centers);
@@ -170,10 +185,12 @@ void SphereROI<DataTypes>::init()
     addOutput(&f_indices);
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
+    addOutput(&f_quadIndices);
     addOutput(&f_tetrahedronIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
+    addOutput(&f_quadsInROI);
     addOutput(&f_tetrahedraInROI);
     addOutput(&f_indicesOut);
 
@@ -233,6 +250,21 @@ bool SphereROI<DataTypes>::isTriangleInSphere(const Vec3& c, const Real& r, cons
 }
 
 template <class DataTypes>
+bool SphereROI<DataTypes>::isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    for (unsigned int i=0; i<4; ++i)
+    {
+        Coord p = (*x0)[quad[i]];
+
+        if((p-c).norm() > r)
+            return false;
+    }
+    return true;
+}
+
+
+template <class DataTypes>
 bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron)
 {
     const VecCoord* x0 = &f_X0.getValue();
@@ -278,12 +310,14 @@ void SphereROI<DataTypes>::update()
     // Read accessor for input topology
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element indices in SPHERE
     SetIndex& indices = *(f_indices.beginEdit());
     SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
     SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
+    SetIndex& quadIndices = *(f_quadIndices.beginEdit());
     SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
     SetIndex& indicesOut = *(f_indicesOut.beginEdit());
 
@@ -291,18 +325,21 @@ void SphereROI<DataTypes>::update()
     helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
     helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
     helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
     helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
 
     // Clear lists
     indices.clear();
     edgeIndices.clear();
     triangleIndices.clear();
+    quadIndices.clear();
     tetrahedronIndices.clear();
     indicesOut.clear();
 
     pointsInROI.clear();
     edgesInROI.clear();
     trianglesInROI.clear();
+    quadsInROI.clear();
     tetrahedraInROI.clear();
 
     const VecCoord* x0 = &f_X0.getValue();
@@ -373,6 +410,24 @@ void SphereROI<DataTypes>::update()
         }
     }
 
+    //Quads
+    if (f_computeQuads.getValue())
+    {
+        for(unsigned int i=0 ; i<quads.size() ; i++)
+        {
+            Quad qua = quads[i];
+            for (unsigned int j=0; j<cen.size(); ++j)
+            {
+                if (isQuadInSphere(cen[j], rad[j], qua))
+                {
+                    quadIndices.push_back(i);
+                    quadsInROI.push_back(qua);
+                    break;
+                }
+            }
+        }
+    }
+
     //Tetrahedra
     if (f_computeTetrahedra.getValue())
     {
@@ -395,6 +450,7 @@ void SphereROI<DataTypes>::update()
     f_indices.endEdit();
     f_edgeIndices.endEdit();
     f_triangleIndices.endEdit();
+    f_quadIndices.endEdit();
     f_tetrahedronIndices.endEdit();
 }
 
@@ -481,6 +537,26 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
+
+    ///draw quads in ROI
+    if( p_drawTriangles.getValue())
+    {
+        glDisable(GL_LIGHTING);
+        glLineWidth((GLfloat)_drawSize.getValue());
+        glBegin(GL_QUADS);
+        helper::ReadAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
+        for (unsigned int i=0; i<quadsInROI.size() ; ++i)
+        {
+            Quad t = quadsInROI[i];
+            for (unsigned int j=0 ; j<4 ; j++)
+            {
+                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                helper::gl::glVertexT(p);
+            }
+        }
+        glEnd();
+    }
+
 
     ///draw tetrahedra in ROI
     if( p_drawTetrahedra.getValue())

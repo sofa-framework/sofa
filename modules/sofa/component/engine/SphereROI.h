@@ -66,6 +66,7 @@ public:
     typedef defaulttype::Vec<6,Real> Vec6;
     typedef helper::vector<BaseMeshTopology::EdgeID> SetEdge;
     typedef helper::vector<BaseMeshTopology::TriangleID> SetTriangle;
+    typedef helper::vector<BaseMeshTopology::QuadID> SetQuad;
     typedef BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
@@ -74,6 +75,7 @@ public:
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
 
 protected:
 
@@ -128,6 +130,7 @@ protected:
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
     bool isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
     bool isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
+    bool isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
     bool isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
 
 
@@ -144,9 +147,11 @@ public:
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
+    Data<helper::vector<Quad> > f_quads;
     Data<helper::vector<Tetra> > f_tetrahedra;
     Data<bool> f_computeEdges;
     Data<bool> f_computeTriangles;
+    Data<bool> f_computeQuads;
     Data<bool> f_computeTetrahedra;
 
     //Output
@@ -154,9 +159,12 @@ public:
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
     Data<SetIndex> f_tetrahedronIndices;
+    Data<SetIndex> f_quadIndices;
+
     Data<VecCoord > f_pointsInROI;
     Data<helper::vector<Edge> > f_edgesInROI;
     Data<helper::vector<Triangle> > f_trianglesInROI;
+    Data<helper::vector<Quad> > f_quadsInROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
     Data<SetIndex> f_indicesOut;
 
@@ -165,6 +173,7 @@ public:
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;
     Data<bool> p_drawTriangles;
+    Data<bool> p_drawQuads;
     Data<bool> p_drawTetrahedra;
     Data<double> _drawSize;
 
