@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,43 +16,26 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Plugins                               *
 *                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Mapping.inl"
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-namespace sofa
-{
-
-namespace core
-{
-
-using namespace sofa::defaulttype;
-using namespace core;
-
-template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_CORE_API Mapping< Vec3dTypes, ExtVec3fTypes >;
-
-template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_CORE_API Mapping< Vec3fTypes, ExtVec3fTypes >;
-
-template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3dTypes > ;
-template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3dTypes >;
-
-template class SOFA_CORE_API Mapping< Vec3dTypes, Vec1dTypes >;
-template class SOFA_CORE_API Mapping< Vec3fTypes, Vec1fTypes >;
+#ifndef INITCompliant_H
+#define INITCompliant_H
 
 
-} // namespace core
+#include <sofa/helper/system/config.h>
 
-} // namespace sofa
+#ifdef SOFA_BUILD_PLUGINEXAMPLE
+#define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_Compliant_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
+/** \mainpage
+  Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix.
+  */
+
+#endif // INITCompliant_H
