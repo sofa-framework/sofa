@@ -36,6 +36,10 @@
 #include <windows.h>
 #endif
 
+using std::cout;
+using std::cerr;
+using std::endl;
+
 // #define DEBUG_TRIANGLEFEM
 
 namespace sofa
@@ -117,6 +121,7 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
         force=my_subset[i].force/2;
         f[_topology->getEdge(my_map[i])[0]]+=force;
         f[_topology->getEdge(my_map[i])[1]]+=force;
+        cout<<"EdgePressureForceField<DataTypes>::addForce, edge "<< _topology->getEdge(my_map[i]) << ", force = " << my_subset[i].force << endl;
     }
 
     dataF.endEdit();
@@ -156,7 +161,8 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             binormal.normalize();
             for(int i = 0; i < _topology->getNbEdges() ; i++)
             {
-                Edge e = _topology->getEdge(i);
+//                Edge e = _topology->getEdge(i);
+                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
@@ -167,8 +173,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
                 edgePressureMap[i] = ei;
-//                                std::cout << intensities.size() << " " << intensities[i] << " " << intensity << std::endl;
-//                                std::cout <<  "tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
+                std::cout << "Edge " << e << ", intensity: " << intensities[i] << " " << intensity << ", tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
             }
         }
         else
