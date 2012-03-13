@@ -204,7 +204,8 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
                 // edge not in edgeMap so create a new one
                 const int edgeIndex = edgeMap.size();
                 edgeMap[e] = edgeIndex;
-                m_edge.push_back(e);
+//	      m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
+                m_edge.push_back(Edge(v1,v2));
             }
         }
     }
@@ -258,7 +259,9 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                     const int edgeIndex = edgeMap.size();
                     /// add new edge
                     edgeMap[e] = edgeIndex;
-                    m_edge.push_back(e);
+//			  m_edge.push_back(e);
+                    m_edge.push_back(Edge(v1,v2));
+
                 }
                 m_edgesInTriangle[i][j] = edgeMap[e];
             }
@@ -393,22 +396,6 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
                 m_pointsOnBorder.push_back (firstVertex);
             }
 
-            newPoint = true;
-            firstVertex = m_edge[i][1];
-            for (unsigned int j = 0; j < m_pointsOnBorder.size(); j++) // Loop to avoid duplicated indices
-            {
-                if (m_pointsOnBorder[j] == firstVertex)
-                {
-                    newPoint = false;
-                    break;
-                }
-            }
-
-            if(newPoint) // If index doesn't already exist, add it to the list of points On border.
-            {
-                m_pointsOnBorder.push_back (firstVertex);
-            }
-            //------------------------
 
             newTriangle = true; //reinitialize tests variables
             newEdge = true;
