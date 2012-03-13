@@ -118,12 +118,21 @@ public:
         SpatialVector cross( const SpatialVector& v ) const;
         /// product with a dense matrix
         SpatialVector operator * (const Mat66&) const;
+
         /// write to an output stream
         inline friend std::ostream& operator << (std::ostream& out, const SpatialVector& t )
         {
-            out<<t.lineVec<<" "<<t.freeVec;
+            out << t.lineVec << " " << t.freeVec;
             return out;
         }
+
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, SpatialVector& t )
+        {
+            in >> t.lineVec >> t.freeVec;
+            return in;
+        }
+
         /// If the SpatialVector models a spatial velocity, then the linear velocity is the freeVec.
         /// Otherwise, the SpatialVector models a spatial force, and this method returns a torque.
         Vec& getLinearVelocity()
@@ -296,10 +305,27 @@ public:
         /// Print the origin of the child in the parent coordinate system and the quaternion defining the orientation of the child wrt the parent
         inline friend std::ostream& operator << (std::ostream& out, const Transform& t )
         {
-            out<<"("<<t.getOrigin()<<")";
-            out<<"("<<t.getOrientation()<<")";
+            // out<<"("<<t.getOrigin()<<")";
+            // out<<"("<<t.getOrientation()<<")";
+
+            out << t.getOrigin() << " " << t.getOrientation();
+
             return out;
         }
+
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Transform& t )
+        {
+            Vec origin;
+            Rot orientation;
+
+            in >> origin >> orientation;
+
+            t.set(origin, orientation);
+
+            return in;
+        }
+
         /// Print the internal values (i.e. using Featherstone's conventions, see class documentation)
         void printInternal( std::ostream&) const;
 
