@@ -158,8 +158,9 @@ public:
     Data<SetIndex> f_indices;
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
-    Data<SetIndex> f_tetrahedronIndices;
     Data<SetIndex> f_quadIndices;
+    Data<SetIndex> f_tetrahedronIndices;
+
 
     Data<VecCoord > f_pointsInROI;
     Data<helper::vector<Edge> > f_edgesInROI;
