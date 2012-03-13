@@ -190,6 +190,12 @@ public:
             cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
         }
 
+        raVis rvis(this->vectorVisualization);
+
+        whisto->setMergeChannels(!rvis->getRgb());
+        wplane->setMergeChannels(!rvis->getRgb());
+        wplane->setClamp(whisto->getClamp());
+
         updateTextures();
 
         for(unsigned int i=0; i<3; i++)	cutplane_tex[i]->init();
