@@ -20,6 +20,8 @@ HEADERS += initEngine.h \
            engine/ExtrudeSurface.inl \
            engine/ExtrudeQuadsAndGenerateHexas.h \
            engine/ExtrudeQuadsAndGenerateHexas.inl \
+           engine/ExtrudeEdgesAndGenerateQuads.h \
+           engine/ExtrudeEdgesAndGenerateQuads.inl \
            engine/GenerateRigidMass.h \
            engine/GenerateRigidMass.inl \
            engine/GroupFilterYoungModulus.h \
@@ -84,6 +86,7 @@ SOURCES += initEngine.cpp \
            engine/DilateEngine.cpp \
            engine/ExtrudeSurface.cpp \
            engine/ExtrudeQuadsAndGenerateHexas.cpp \
+           engine/ExtrudeEdgesAndGenerateQuads.cpp \
            engine/GenerateRigidMass.cpp \
            engine/GroupFilterYoungModulus.cpp \
            engine/MergeMeshes.cpp \
