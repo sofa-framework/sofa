@@ -83,6 +83,8 @@ const char* getModuleComponentList()
 
 }
 
+SOFA_LINK_CLASS(ShepardShapeFunction)
+SOFA_LINK_CLASS(LinearMapping)
 
 //SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 //SOFA_LINK_CLASS(MyBehaviorModel)
