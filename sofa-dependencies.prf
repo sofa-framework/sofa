@@ -360,10 +360,10 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(oneTetrahedron)
 }
 
-contains (DEFINES, SOFA_HAVE_PYTHON) {
-	# TODO: python depends on boost.python
-	enable(sofaPython)
-}
+#contains (DEFINES, SOFA_HAVE_PYTHON) {
+#	# TODO: python depends on boost.python
+#	enable(sofaPython)
+#}
 
 contains(DEFINES, SOFA_GPU_CUDA) {
 	enable(sofagpucuda)
