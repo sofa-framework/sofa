@@ -43,7 +43,7 @@ namespace core
 namespace visual
 {
 
-/// The enumeration used to describe each step of the rendering.
+/// The enumeration used to describe potentially supported graphics API.
 enum
 {
     API_OpenGL = 0,
@@ -53,7 +53,7 @@ enum
 };
 
 /// Class gathering parameters used by visual components and by the draw method of each component. Transmitted by visitors
-class VisualParams : public ExecParams
+class SOFA_CORE_API VisualParams : public ExecParams
 {
 public:
 
@@ -113,28 +113,10 @@ public:
     VisualParams& setV(const StateSet& g, ConstVecDerivId v) { m_v.setId(g, v); return *this; }
     /// @}
 
-    VisualParams()
-        :m_viewport(sofa::helper::make_array(0,0,0,0))
-        ,m_zNear(0)
-        ,m_zFar(0)
-        ,m_cameraType(PERSPECTIVE_TYPE)
-        ,m_pass(Std)
-        ,m_drawTool(NULL)
-        ,m_boundFrameBuffer(NULL)
-        ,m_x (ConstVecCoordId::position())
-        ,m_v (ConstVecDerivId::velocity())
-        ,m_supportedAPIs(0)
-    {
-        m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default
-    }
+    VisualParams();
 
-    static VisualParams* defaultInstance()
-    {
-        static VisualParams m_defaultInstance;
-        m_defaultInstance.update();
-        return &m_defaultInstance;
-    }
-
+    /// Get the default VisualParams, to be used to provide a default values for method parameters
+    static VisualParams* defaultInstance();
 
     const Viewport& viewport() const { return m_viewport; }
     Viewport& viewport() { return m_viewport; }
@@ -215,10 +197,8 @@ protected:
 
 };
 
-
-
-}//visual
-}//core
-}//sofa
+} // namespace visual
+} // namespace core
+} // namespace sofa
 
 #endif // SOFA_CORE_VISUAL_VISUALPARAMS_H

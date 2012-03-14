@@ -742,8 +742,10 @@ void LCPConstraintSolver::build_problem_info()
 
     // Accumulate Constraints
 
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
-    simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), _numConstraints ).execute(context);
+    simulation::MechanicalResetConstraintVisitor resetCtr(&cparams);
+    resetCtr.execute(context);
+    simulation::MechanicalAccumulateConstraint accCtr(&cparams, core::MatrixDerivId::holonomicC(), _numConstraints );
+    accCtr.execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);

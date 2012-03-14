@@ -990,6 +990,11 @@ void Node::executeVisitor(Visitor* action)
 {
     if (!this->isActive()) return;
 
+    if (!action->execParams()->checkValidStorage())
+    {
+        std::cerr << "IN " << getClassName() << " at " << this->getPathName() << std::endl;
+    }
+
 #ifdef DEBUG_VISITOR
     static int level = 0;
     for (int i=0; i<level; ++i) std::cerr << ' ';

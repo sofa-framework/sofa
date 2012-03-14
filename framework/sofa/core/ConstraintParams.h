@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CONSTRAINT_PARAMS_H
-#define SOFA_CORE_CONSTRAINT_PARAMS_H
+#ifndef SOFA_CORE_CONSTRAINTPARAMS_H
+#define SOFA_CORE_CONSTRAINTPARAMS_H
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
@@ -36,7 +36,7 @@ namespace core
 {
 
 /// Class gathering parameters use by constraint components methods, and transmitted by visitors
-class ConstraintParams : public sofa::core::ExecParams
+class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
 
@@ -146,12 +146,7 @@ public:
     }
 
     /// Get the default MechanicalParams, to be used to provide a default values for method parameters
-    static ConstraintParams* defaultInstance()
-    {
-        static ConstraintParams m_defaultInstance;
-
-        return &m_defaultInstance;
-    }
+    static const ConstraintParams* defaultInstance();
 
     ConstraintParams& setExecParams(const core::ExecParams* params)
     {

@@ -73,9 +73,9 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
     sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
 
     MultiVecDerivId   ffId      = VecDerivId::externalForce();
-    MechanicalParams* m_mparams = MechanicalParams::defaultInstance();
-    m_mparams->setDt(this->dt);
-    obj->addForce(m_mparams /* PARAMS FIRST */, ffId);
+    MechanicalParams mparams; // = MechanicalParams::defaultInstance();
+    mparams.setDt(this->dt);
+    obj->addForce(&mparams, ffId);
 
     sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }

@@ -84,6 +84,8 @@ public:
 
     sofa::core::objectmodel::Data<std::string> trackableName;
     sofa::core::objectmodel::Data<int> trackableID;
+    sofa::core::objectmodel::Data<bool> setRestShape;
+    sofa::core::objectmodel::Data<bool> applyMappings;
     sofa::core::objectmodel::Data<bool> controlNode;
     sofa::core::objectmodel::Data<bool> isGlobalFrame;
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,OptiTrackNatNetClient,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> natNetClient;

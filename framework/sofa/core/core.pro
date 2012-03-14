@@ -175,6 +175,8 @@ SOURCES += \
 	objectmodel/Tag.cpp \
 	ObjectFactory.cpp \
 	ExecParams.cpp \
+	MechanicalParams.cpp \
+	ConstraintParams.cpp \
 	SofaLibrary.cpp \
 	CategoryLibrary.cpp \
 	ComponentLibrary.cpp \
@@ -218,6 +220,7 @@ SOURCES += \
   loader/VoxelLoader.cpp \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp \
+	visual/VisualParams.cpp \
     objectmodel/HapticDeviceEvent.cpp
 
 contains(DEFINES,SOFA_HAVE_BOOST) {
