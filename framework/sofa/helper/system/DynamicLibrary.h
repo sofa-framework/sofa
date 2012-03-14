@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
-
+#include <sofa/helper/helper.h>
 #include <iostream>
 
 namespace sofa
@@ -35,7 +35,7 @@ namespace helper
 namespace system
 {
 
-class DynamicLibrary
+class SOFA_HELPER_API DynamicLibrary
 {
 public:
 
