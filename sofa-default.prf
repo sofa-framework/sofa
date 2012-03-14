@@ -114,6 +114,10 @@ DEFINES += SOFA_HAVE_GLEW
 # BOOST_ROOT = "C:\Code\boost\boost_1_46_1"
 # BOOST_SUFFIX = -vc90-mt-1_46_1
 
+# Uncomment if you want Python scripting support in sofa
+# (REQUIRED: boost.python)
+# DEFINES += SOFA_HAVE_PYTHON
+
 # Uncomment if you want to use EIGEN2 for Matrix Solvers
  DEFINES += SOFA_HAVE_EIGEN2
 

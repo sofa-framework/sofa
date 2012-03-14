@@ -157,6 +157,9 @@ declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler so
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda sofagpucuda_dev sofa_component_dev)
 declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofa_component_dev sofa_base_linear_solver sofagpucuda sofagpucuda_dev)
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
+
+#declare(sofaPython,      applications/projects/sofaPython,       sofaguimain sofa_component_dev)
+
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(SofaVRPNServer, applications/projects/SofaVRPNServer, vrpn_quat vrpn_atmellib vrpn_server)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
@@ -171,6 +174,7 @@ declare(centerOfMassMultiMappingChain,  applications/projects/BoostKernel/applic
 declare(subsetMultimapping,             applications/projects/BoostKernel/applications/subsetMultimapping,              sofa_component sofaobjectcreator sofaguimain)
 
 declare(sofatests,        tests,                                  sofacore)
+
 
 # SofaDevices
 #--- Tutorials ---#
@@ -354,6 +358,11 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(mixedPendulum)
 	enable(oneParticule)
 	enable(oneTetrahedron)
+}
+
+contains (DEFINES, SOFA_HAVE_PYTHON) {
+	# TODO: python depends on boost.python
+	enable(sofaPython)
 }
 
 contains(DEFINES, SOFA_GPU_CUDA) {

@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>EmptyPlugin</title></head><body>
+<h1 style="text-align: center;">EmptyPlugin</h1>
+
+<table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr align="center">
+      <td style="vertical-align: top;">Representative image of the
+EmptyPlugin plugin<br>
+      </td>
+    </tr>
+    <tr align="center">
+      <td style="vertical-align: top;"><img style="width: 281px; height: 181px;" alt="representative image of the plugin" src="EmptyPlugin.png"></td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<a href="#Introduction">Introduction</a><br>
+
+<a href="#Project_structure">Project structure</a><br>
+
+<a href="#Intellectual_property_and_rights">Intellectual property and
+rights</a><br>
+
+<br>
+
+<h2><a name="Introduction"></a>Introduction</h2>
+
+This is a starting point for writing a plugin. To customize it, you can:<br>
+
+<ol>
+
+  <li>Copy the EmptyPlugin directory and rename it, for example,
+MyPlugin</li>
+  <li>Open a command line tool in the MyPlugin directory and use the
+script <span style="text-decoration: underline;">utils/changeClassName.sh</span>&nbsp;
+to replace <span style="text-decoration: underline;">EmptyPlugin</span>
+with <span style="text-decoration: underline;">MyPlugin</span> in all
+the file
+names and their content:<br>
+    <code>utils/changeClassName.sh EmptyPlugin MyPlugin<br>
+cd examples<br>
+../utils/changeClassName.sh EmptyPlugin MyPlugin<br>
+cd ../doc/<br>
+../utils/changeClassName.sh EmptyPlugin MyPlugin<br>
+doxygen Doxyfile </code><br>
+    <br>
+  </li>
+  <ol>
+  </ol>
+  <li>To insert it in the SOFA development project, you can:</li>
+  <ol>
+    <li>add the following line to your sofa-local.prf<br>
+      <code>DEFINES += SOFA_HAVE_EmptyPlugin</code> </li>
+    <li>add the following line to Sofa.pro<br>
+      <code>contains(DEFINES, SOFA_HAVE_EmptyPlugin) {
+usePlugin(EmptyPlugin) } </code><br>
+    </li>
+    <li>if your plugin depends on other plugins, edit file <a href="../EmptyPlugin-dependencies.prf">EmptyPlugin-dependencies.prf</a> .
+See <a href="../../../../sofa-dependencies.prf">sofa-dependencies.prf</a>
+for examples of how dependencies are defined.<br>
+    </li>
+  </ol>
+</ol>
+
+<br>
+
+<h2><a name="Project_structure"></a>Project structure</h2>
+
+<ul>
+
+  <li>the C++ code is in the root directory</li>
+  <li>the documentation starts in <span style="text-decoration: underline;">doc/index.html</span> and it is
+linked to the <a href="code/html/index.html">code documentation</a>. The main page of this documentation is defined in file <a href="../initEmptyPlugin.h">initEmptyPlugin.h</a>.<br>
+  </li>
+  <li>the examples are in <span style="text-decoration: underline;">examples/</span>
+. The first one is<span style="text-decoration: underline;"></span> <a href="../examples/EmptyPlugin.scn">EmptyPlugin.scn</a>, and when runSOFA
+opens it, an <a href="../examples/MyPlugin.html">html page</a> pops
+up, with a link to the plugin documentation.<br>
+  </li>
+</ul>
+
+<br>
+
+<h2><a name="Intellectual_property_and_rights"></a>Intellectual
+property and rights</h2>
+
+<table style="text-align: left; width: 824px; height: 392px;" border="1" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Authors<br>
+      </td>
+      <td style="vertical-align: top;">You</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Contact<br>
+      </td>
+      <td style="vertical-align: top;">You@your.institute<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">License<br>
+      </td>
+      <td style="vertical-align: top;">Your can distribute this plugin
+under
+the same license as the core of SOFA, or any other license of your
+choice.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Patents<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">APP registration<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Sponsors<br>
+      </td>
+      <td style="vertical-align: top;">Do not forget to thank your
+sponsors, they love it !<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+</body></html>
