@@ -98,8 +98,8 @@ protected:
     BaseMeshTopology* sourceMesh;
     BaseMeshTopology* targetMesh;
 
-    vector<Vec<4,ID> > m_index; // indices of primitives influencing each point.
-    vector<Vec<4,InReal> > m_weight;
+    helper::vector<defaulttype::Vec<4,ID> > m_index; // indices of primitives influencing each point.
+    helper::vector<defaulttype::Vec<4,InReal> > m_weight;
 
 public:
     void init();

@@ -33,7 +33,7 @@ namespace core
 namespace objectmodel
 {
 
-HapticDeviceEvent::HapticDeviceEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button)
+HapticDeviceEvent::HapticDeviceEvent(const unsigned int id, const sofa::defaulttype::Vector3& position, const sofa::defaulttype::Quat& orientation, const unsigned char button)
     : sofa::core::objectmodel::Event()
     , m_deviceId(id)
     , m_position(position)

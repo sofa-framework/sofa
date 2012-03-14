@@ -38,8 +38,6 @@ namespace core
 namespace objectmodel
 {
 
-using namespace sofa::defaulttype;
-
 /**
  * @brief This event notifies about haptic device interaction.
  */
@@ -65,7 +63,7 @@ public:
     /**
      * @brief Constructor.
      */
-    HapticDeviceEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button);
+    HapticDeviceEvent(const unsigned int id, const sofa::defaulttype::Vector3& position, const sofa::defaulttype::Quat& orientation, const unsigned char button);
 
     /**
      * @brief Destructor.
@@ -90,12 +88,12 @@ public:
     /**
      * @brief Get the device coordinates.
      */
-    Vector3 getPosition(void) const {return m_position;}
+    sofa::defaulttype::Vector3 getPosition(void) const {return m_position;}
 
     /**
      * @brief Get the device orientation.
      */
-    Quat getOrientation(void) const {return m_orientation;}
+    sofa::defaulttype::Quat getOrientation(void) const {return m_orientation;}
 
     /**
      * @brief Get the device button state.
@@ -113,8 +111,8 @@ public:
 private:
 
     unsigned int	m_deviceId;
-    Vector3 m_position; ///< Haptic device coordinates in a Vec3d type.
-    Quat m_orientation; ///< Haptic device orientation.
+    sofa::defaulttype::Vector3 m_position; ///< Haptic device coordinates in a Vector3 type.
+    sofa::defaulttype::Quat m_orientation; ///< Haptic device orientation.
     unsigned char m_buttonState;
 };
 

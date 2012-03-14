@@ -459,8 +459,8 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
     }
 
 
-    cerr << "SparseGridTopology::buildFromData, _regularGrid  has " << _regularGrid->getNbHexahedra() << " hexahedra " << endl;
-    cerr << "SparseGridTopology::buildFromData, hexahedra = " << this->seqHexahedra.getValue() << endl;
+    std::cerr << "SparseGridTopology::buildFromData, _regularGrid  has " << _regularGrid->getNbHexahedra() << " hexahedra " << std::endl;
+    std::cerr << "SparseGridTopology::buildFromData, hexahedra = " << this->seqHexahedra.getValue() << std::endl;
 //    for( unsigned i=0; i<)
 }
 
@@ -526,7 +526,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 
 void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 {
-    cerr<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
+    std::cerr<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
 
     unsigned char *textureData;
     int width,height,depth;

@@ -1107,7 +1107,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     if (j) std::cout << " + ";
                     std::cout << ops[i].second[j].first << "*" << ops[i].second[j].second;
                 }
-            std::cout << endl;
+            std::cout << std::endl;
         }
         {
             using namespace sofa::core::behavior;

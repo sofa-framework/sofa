@@ -642,7 +642,8 @@ struct VectorTypeInfo
 
     static void setSize(DataType& type, unsigned int size)
     {
-        type.resize(size/BaseTypeInfo::size());
+        if (BaseTypeInfo::FixedSize)
+            type.resize(size/BaseTypeInfo::size());
     }
 
     template <typename T>

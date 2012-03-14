@@ -45,6 +45,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using sofa::helper::DistanceSegTri;
 
 SOFA_DECL_CLASS(RayNewProximityIntersection)
 

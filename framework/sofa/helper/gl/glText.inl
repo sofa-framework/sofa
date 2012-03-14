@@ -41,9 +41,6 @@ namespace helper
 
 namespace gl
 {
-using std::cout;
-using std::cerr;
-using std::endl;
 
 template <typename T>
 void GlText::setText ( const T& text )
@@ -58,12 +55,12 @@ void GlText::setText ( const T& text )
 template <typename T>
 void GlText::draw ( const T& text )
 {
-    Mat<4,4, GLfloat> modelviewM;
+    defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
     oss << text;
-    string tmp = oss.str();
+    std::string tmp = oss.str();
     const char* s = tmp.c_str();
     glPushMatrix();
 
@@ -72,7 +69,7 @@ void GlText::draw ( const T& text )
     glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
     modelviewM.transpose();
 
-    Vec3d temp = modelviewM.transform ( Vec3d() );
+    defaulttype::Vec3d temp = modelviewM.transform ( defaulttype::Vec3d() );
 
     glLoadIdentity();
     glTranslatef ( temp[0], temp[1], temp[2] );
@@ -88,14 +85,14 @@ void GlText::draw ( const T& text )
 
 
 template <typename T>
-void GlText::draw ( const T& text, const Vector3& position )
+void GlText::draw ( const T& text, const defaulttype::Vector3& position )
 {
-    Mat<4,4, GLfloat> modelviewM;
+    defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
     oss << text;
-    string tmp = oss.str();
+    std::string tmp = oss.str();
     const char* s = tmp.c_str();
     glPushMatrix();
 
@@ -106,7 +103,7 @@ void GlText::draw ( const T& text, const Vector3& position )
     glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
     modelviewM.transpose();
 
-    Vec3d temp ( position[0],  position[1],  position[2]);
+    defaulttype::Vec3d temp ( position[0],  position[1],  position[2]);
     temp = modelviewM.transform ( temp );
 
     glLoadIdentity();
@@ -124,14 +121,14 @@ void GlText::draw ( const T& text, const Vector3& position )
 
 
 template <typename T>
-void GlText::draw ( const T& text, const Vector3& position, const double& scale )
+void GlText::draw ( const T& text, const defaulttype::Vector3& position, const double& scale )
 {
-    Mat<4,4, GLfloat> modelviewM;
+    defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
     oss << text;
-    string tmp = oss.str();
+    std::string tmp = oss.str();
     const char* s = tmp.c_str();
     glPushMatrix();
 
@@ -140,7 +137,7 @@ void GlText::draw ( const T& text, const Vector3& position, const double& scale 
     glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
     modelviewM.transpose();
 
-    Vec3d temp ( position[0],  position[1],  position[2]);
+    defaulttype::Vec3d temp ( position[0],  position[1],  position[2]);
     temp = modelviewM.transform ( temp );
 
     glLoadIdentity();

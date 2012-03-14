@@ -115,9 +115,9 @@ private:
     helper::vector<Mat3x3> T;
 
     template<class Real, int Dim>
-    inline Mat<Dim, Dim, Real> covNN(const Vec<Dim,Real>& v1, const Vec<Dim,Real>& v2)
+    inline defaulttype::Mat<Dim, Dim, Real> covNN(const defaulttype::Vec<Dim,Real>& v1, const defaulttype::Vec<Dim,Real>& v2)
     {
-        Mat<Dim, Dim, Real> res;
+        defaulttype::Mat<Dim, Dim, Real> res;
         for ( unsigned int i = 0; i < Dim; ++i)
             for ( unsigned int j = 0; j < Dim; ++j)
             {

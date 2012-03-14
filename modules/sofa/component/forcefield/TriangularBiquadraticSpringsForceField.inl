@@ -330,7 +330,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                             tinfo->lastValidNormal=tinfo->currentNormal;
                         else
                         {
-                            cerr << "triangle "<<i<<" has flipped"<<endl;
+                            serr << "triangle "<<i<<" has flipped"<<sendl;
                             tinfo->currentNormal*= -1.0;
                         }
                     }

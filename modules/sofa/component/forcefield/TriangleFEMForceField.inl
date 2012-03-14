@@ -93,7 +93,7 @@ void TriangleFEMForceField<DataTypes>::init()
     _mesh = this->getContext()->getMeshTopology();
 
     if( _mesh )
-        serr<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << endl;
+        serr<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {

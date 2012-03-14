@@ -45,8 +45,6 @@ namespace sofa
 
 namespace defaulttype
 {
-using std::cerr;
-using std::endl;
 
 template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector()
@@ -116,7 +114,7 @@ typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator - (
 template<class R>
 typename SolidTypes<R>::Real SolidTypes<R>::SpatialVector::operator * ( const SpatialVector& v ) const
 {
-    //cerr<<" SolidTypes<R>::SpatialVector: "<<*this<<" * "<<v<<" = "<< lineVec * v.freeVec + freeVec * v.lineVec<<endl;
+    //std::cerr<<" SolidTypes<R>::SpatialVector: "<<*this<<" * "<<v<<" = "<< lineVec * v.freeVec + freeVec * v.lineVec<<std::endl;
     return lineVec * v.freeVec + freeVec * v.lineVec;
 }
 
@@ -195,7 +193,7 @@ SolidTypes<R>::Transform::Transform( const SpatialVector& v )
     //origin_ = v.freeVec;
     orientation_ = Rot::createFromRotationVector( v.lineVec );
     origin_ = - orientation_.inverseRotate( v.freeVec );
-    //cerr<<"SolidTypes<R>::Transform::Transform( const SpatialVector& v ), v = "<<v<<", this = "<<*this<<endl;
+    //std::cerr<<"SolidTypes<R>::Transform::Transform( const SpatialVector& v ), v = "<<v<<", this = "<<*this<<std::endl;
 }
 
 template<class R>
@@ -316,7 +314,7 @@ void SolidTypes<R>::Transform::clear()
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator * (const Transform& f2) const
 {
-    //cerr<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<endl;
+    //std::cerr<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<std::endl;
     return Transform(  orientation_ * f2.getOrientation(), f2.getOriginOfParentInChild() + f2.getOrientation().inverseRotate(origin_)) ;
 }
 
@@ -371,11 +369,11 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 template<class R>
 void SolidTypes<R>::Transform::writeOpenGlMatrix( double *m ) const
 {
-    /*    cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, this = "<<*this<<endl;
-        cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, origin_ = "<<origin_<<endl;*/
+    /*    std::cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, this = "<<*this<<std::endl;
+        std::cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, origin_ = "<<origin_<<std::endl;*/
     orientation_.writeOpenGlMatrix(m);
     Vec t = getOrigin();
-    /*	cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, t = "<<t<<endl;*/
+    /*	std::cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, t = "<<t<<std::endl;*/
     m[12] = t[0];
     m[13] = t[1];
     m[14] = t[2];
@@ -416,21 +414,21 @@ typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator += (const 
 // template<class R>
 // typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator += (const SpatialVector& v)
 // {
-//         cerr << "SolidTypes<R>::Transform::operator += SpatialVector "<<v<<endl;
+//         std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector "<<v<<std::endl;
 //     SpatialVector vlocal = (*this)/v;
 //     Transform tv(vlocal);
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, vlocal = "<<vlocal<<", transform = "<<tv<<endl;
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrigin() = "<<tv.getOrigin()<<endl;
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, getOriginOfParentInChild() = "<<getOriginOfParentInChild()<<endl;
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOriginOfParentInChild()) = "<<tv.getOrientation().inverseRotate( getOriginOfParentInChild())<<endl;
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOrientation().rotate(tv.getOrigin())) = "<<tv.getOrientation().inverseRotate(getOrientation().rotate(tv.getOrigin()) )<<endl;
-//     cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOriginOfParentInChild()-getOrientation().rotate(tv.getOrigin()) = "<<tv.getOrientation().inverseRotate( getOriginOfParentInChild()-getOrientation().rotate(tv.getOrigin()))<<endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, vlocal = "<<vlocal<<", transform = "<<tv<<std::endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrigin() = "<<tv.getOrigin()<<std::endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, getOriginOfParentInChild() = "<<getOriginOfParentInChild()<<std::endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOriginOfParentInChild()) = "<<tv.getOrientation().inverseRotate( getOriginOfParentInChild())<<std::endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOrientation().rotate(tv.getOrigin())) = "<<tv.getOrientation().inverseRotate(getOrientation().rotate(tv.getOrigin()) )<<std::endl;
+//     std::cerr << "SolidTypes<R>::Transform::operator += SpatialVector, tv.getOrientation().inverseRotate( getOriginOfParentInChild()-getOrientation().rotate(tv.getOrigin()) = "<<tv.getOrientation().inverseRotate( getOriginOfParentInChild()-getOrientation().rotate(tv.getOrigin()))<<std::endl;
 //     *this = Transform(
 //                  tv.getOrientation()*getOrientation(),
 //     tv.getOrientation().inverseRotate( getOriginOfParentInChild()-getOrientation().rotate(tv.getOrigin())
 //                                  )
 //              );
-//     cerr<<"SolidTypes<R>::Transform::operator += SpatialVector, new value = "<<*this<<endl;
+//     std::cerr<<"SolidTypes<R>::Transform::operator += SpatialVector, new value = "<<*this<<std::endl;
 //     return *this;
 // }
 

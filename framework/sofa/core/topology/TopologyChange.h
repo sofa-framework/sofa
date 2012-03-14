@@ -36,8 +36,6 @@ namespace core
 namespace topology
 {
 
-using namespace sofa::helper;
-
 
 /// The enumeration used to give unique identifiers to TopologyChange objects.
 enum TopologyChangeType

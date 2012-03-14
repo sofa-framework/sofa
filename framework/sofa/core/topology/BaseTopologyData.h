@@ -136,25 +136,25 @@ public:
     /// Temporary Hack: find a way to have a generic description of topological element:
     /// add Edge
     virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,2> >& ,
+            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,2> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
             const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// add Triangle
     virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,3> >& ,
+            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,3> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
             const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// add Quad & Tetrahedron
     virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,4> >& ,
+            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,4> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
             const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// add Hexahedron
     virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,8> >& ,
+            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,8> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
             const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 

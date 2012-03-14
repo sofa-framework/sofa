@@ -22,7 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/glText.inl>
+#ifndef SOFA_HELPER_VECTOR_ALGEBRA_H
+#define SOFA_HELPER_VECTOR_ALGEBRA_H
+
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -30,88 +33,46 @@ namespace sofa
 namespace helper
 {
 
-namespace gl
-{
-using namespace sofa::defaulttype;
-using std::string;
+// -----------------------------------------------------------
+//
+/*! @name linear algebra on standard vectors
 
-GlText::GlText()
+*/
+//
+// -----------------------------------------------------------
+//@{
+
+/// Dot product of two vectors
+template<class V1, class V2>
+SReal dot( const V1& vector1, const V2& vector2 )
 {
+    assert(vector1.size()==vector2.size());
+    SReal result=0;
+    for(std::size_t i=0; i<vector1.size(); i++)
+        result += vector1[i] * vector2[i];
+    return result;
 }
 
-GlText::GlText ( const string& text )
+/// Norm of a vector
+template<class V>
+SReal norm( const V& v )
 {
-    this->text = text;
+    return sqrt(dot(v,v));
 }
 
-GlText::GlText ( const string& text, const Vector3& position )
+/// Vector operation: result = ax + y
+template<class V1, class Scalar, class V2, class V3>
+void axpy( V1& result, Scalar a, const V2& x, const V3& y )
 {
-    this->text = text;
-    this->position = position;
+    std::size_t n = x.size();
+    assert(n==y.size());
+    result.resize(n);
+    for(std::size_t i=0; i<n; i++)
+        result[i] = x[i]*a + y[i];
 }
-
-GlText::GlText ( const string& text, const Vector3& position, const double& scale )
-{
-    this->text = text;
-    this->position = position;
-    this->scale = scale;
-}
-
-GlText::~GlText()
-{
-}
-
-
-void GlText::setText ( const string& text )
-{
-    this->text = text;
-}
-
-void GlText::update ( const Vector3& position )
-{
-    this->position = position;
-}
-
-void GlText::update ( const double& scale )
-{
-    this->scale = scale;
-}
-
-
-void GlText::draw()
-{
-    Mat<4,4, GLfloat> modelviewM;
-    glDisable ( GL_LIGHTING );
-
-    const char* s = text.c_str();
-    glPushMatrix();
-
-    glTranslatef ( position[0],  position[1],  position[2]);
-    glScalef ( scale,scale,scale );
-
-    // Makes text always face the viewer by removing the scene rotation
-    // get the current modelview matrix
-    glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-    modelviewM.transpose();
-
-    Vec3d temp ( position[0],  position[1],  position[2]);
-    temp = modelviewM.transform ( temp );
-
-    glLoadIdentity();
-    glTranslatef ( temp[0], temp[1], temp[2] );
-    glScalef ( scale,scale,scale );
-
-    while ( *s )
-    {
-        glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
-        s++;
-    }
-
-    glPopMatrix();
-}
-
-} // namespace gl
 
 } // namespace helper
 
 } // namespace sofa
+
+#endif //SOFA_HELPER_VECTOR_H

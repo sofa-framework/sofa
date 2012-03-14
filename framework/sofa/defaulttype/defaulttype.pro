@@ -23,6 +23,9 @@ HEADERS += \
           LaparoscopicRigidTypes.h \
           MapMapSparseMatrix.h \
           Mat.h \
+          Mat_solve_LU.h \
+          Mat_solve_SVD.h \
+          Mat_solve_Cholesky.h \
           Quat.h \
           Quat.inl \
           #RigidInertia.h \

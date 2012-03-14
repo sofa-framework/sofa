@@ -188,14 +188,12 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)
 
-using namespace sofa::defaulttype;
-
-extern template class SOFA_CORE_API ConstraintCorrection< Vec3dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< Vec1dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< Rigid3dTypes >;
-extern template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rigid3fTypes >;
 
 #endif
 

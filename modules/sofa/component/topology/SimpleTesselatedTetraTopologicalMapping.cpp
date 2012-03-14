@@ -47,6 +47,7 @@ namespace topology
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
+using sofa::helper::fixed_array;
 
 SOFA_DECL_CLASS ( SimpleTesselatedTetraTopologicalMapping )
 
@@ -78,7 +79,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromPointData = d_pointMappedFromPoint;
             helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-            sofa::helper::vector<fixed_array<int, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+            sofa::helper::vector<helper::fixed_array<int, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
             helper::vector<int>& tetraSourceData = *(tetraSource.beginEdit());
 
             TetrahedronSetTopologyContainer *to_tstc;
