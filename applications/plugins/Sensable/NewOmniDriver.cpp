@@ -601,7 +601,7 @@ void NewOmniDriver::init()
 
         nodePrincipal->updateContext();
 
-        for(int i=0; i<11; i++)
+        for(int i=0; i<10; i++)
         {
             visualNode[i].node->updateContext();
         }
@@ -747,7 +747,7 @@ void NewOmniDriver::draw()
         if(changeScale)
         {
             float rapport=((float)data.scale)/oldScale;
-            for(int j = 0; j<11 ; j++)
+            for(int j = 0; j<10 ; j++)
             {
                 sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
