@@ -18,7 +18,11 @@ usePlugin(PluginExample)
 contains(DEFINES, SOFA_HAVE_Compliant) { usePlugin(Compliant) }
 
 contains(DEFINES, SOFA_HAVE_SENSABLE) {
-	usePlugin(Sensable)
+        usePlugin(Sensable)
+}
+
+contains(DEFINES, SOFA_HAVE_PYTHON) {
+        usePlugin(Python)
 }
 
 contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS) {
@@ -229,6 +233,13 @@ contains(DEFINES,SOFA_HAVE_BOOST) {
 }
 else {
   message( "|  BOOST libraries: DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_PYTHON) {
+  message( "|  PYTHON script support: ENABLED")
+}
+else {
+  message( "|  PYTHON script support: DISABLED")
 }
 
 contains(DEFINES,SOFA_XML_PARSER_TINYXML) {
