@@ -16,7 +16,10 @@ SOURCES = \
     BaseCompliance.cpp \
     Compliance.cpp \
     UniformCompliance.cpp \
-    ComplianceSolver.cpp
+    ComplianceSolver.cpp \
+    BaseShapeFunction.cpp \
+    ShepardShapeFunction.cpp \
+    LinearMapping.cpp
 
 HEADERS = \
     ExtensionMapping.h \
@@ -27,7 +30,14 @@ HEADERS = \
     Compliance.inl \
     UniformCompliance.h \
     UniformCompliance.inl \
-    ComplianceSolver.h
+    ComplianceSolver.h \
+    BaseShapeFunction.h \
+    ShepardShapeFunction.h \
+    LinearMapping.h \
+    LinearMapping.inl \
+    BaseJacobian.h \
+    LinearJacobianBlock.h \
+    LinearJacobianBlock.inl
 
 README_FILE = Compliant.txt
 
@@ -38,7 +48,7 @@ win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$
 
 
 contains(DEFINES,SOFA_HAVE_EIGEN_UNSUPPORTED_AND_SPARSESUITE)
-# ubuntu: apt-get install libsuitesparse-dev libeigen3-dev
+# ubuntu: apt-get install libsuitesparse-dev libeigen3-dev libsuperlu3 libsuperlu3-dev
 {
 INCLUDEPATH += $${SOFA_EIGEN_DIRECTORY}/unsupported  #   define this constant in your sofa-local.prf file, e.g. SOFA_EIGEN_DIRECTORY=/home/ffaure/local/sofa-dev/trunk/Sofa/extlibs/eigen-3.0.5
 INCLUDEPATH += /usr/include/suitesparse  # for cholmod

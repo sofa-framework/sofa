@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Node 	name="Root"   >
+<!--    <MechanicalObject  template="Rigid" position="0 -1 0 0 0 0 1    0 0 0 0 0 0 1    0 1 0 0 0 0 1"  name="parent"  /> -->
+    <MechanicalObject  template="Vec3d" position="0 -1 0   0 0 0    0 1 0"  name="parent"  />
+    <ShepardShapeFunction position="@parent.rest_position" power="2"/>
+
+    <Node 	name="Child"   >
+        <MechanicalObject template="Vec3d" position="0 -0.25 0   0 0 0   0 0.5 0    0 0.75 0" name="child"/>
+    	<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"/>
+    </Node>
+</Node>
