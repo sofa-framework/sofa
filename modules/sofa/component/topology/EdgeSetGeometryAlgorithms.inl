@@ -28,6 +28,7 @@
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
+#include <sofa/defaulttype/Mat_solve_Cholesky.h>
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 

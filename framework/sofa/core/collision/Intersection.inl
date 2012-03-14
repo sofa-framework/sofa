@@ -37,9 +37,6 @@ namespace core
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 template<class Elem1, class Elem2, class T>
 class MemberElementIntersector : public ElementIntersector
 {
@@ -78,7 +75,7 @@ public:
 
     std::string name() const
     {
-        return gettypename(typeid(Elem1))+std::string("-")+gettypename(typeid(Elem2));
+        return sofa::helper::gettypename(typeid(Elem1))+std::string("-")+sofa::helper::gettypename(typeid(Elem2));
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.

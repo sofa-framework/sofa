@@ -36,8 +36,6 @@ namespace core
 namespace topology
 {
 
-using namespace sofa::helper;
-
 typedef Topology::Point            Point;
 typedef Topology::Edge             Edge;
 typedef Topology::Triangle         Triangle;

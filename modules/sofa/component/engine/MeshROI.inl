@@ -164,7 +164,7 @@ void MeshROI<DataTypes>::init()
     // ROI Mesh init
     if (!f_X0_i.isSet())
     {
-        cerr<<"MeshROI<DataTypes>::init() f_X0_i is not set "<<endl;
+        serr<<"f_X0_i is not set"<<sendl;
         BaseMechanicalState* mstate;
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)

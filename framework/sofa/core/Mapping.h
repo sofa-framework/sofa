@@ -384,20 +384,18 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)
 
-using namespace sofa::defaulttype;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 
-extern template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_CORE_API Mapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 
-extern template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< Vec3fTypes, ExtVec3fTypes >;
-
-extern template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3dTypes > ;
-extern template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes > ;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
 #endif
 
 } // namespace core

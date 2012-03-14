@@ -52,78 +52,6 @@ namespace component
 namespace container
 {
 
-static defaulttype::Vec3f ColorMap[64] =
-{
-    defaulttype::Vec3f( 0.0,        0.0,       0.5625 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.625  ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.6875 ),
-    defaulttype::Vec3f( 0.0,        0.0,         0.75 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.8125 ),
-    defaulttype::Vec3f( 0.0,        0.0,        0.875 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.9375 ),
-    defaulttype::Vec3f( 0.0,        0.0,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.0625,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.125,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.1875,          1.0 ),
-    defaulttype::Vec3f( 0.0,       0.25,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.3125,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.375,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.4375,          1.0 ),
-    defaulttype::Vec3f( 0.0,        0.5,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.5625,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.625,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.6875,          1.0 ),
-    defaulttype::Vec3f( 0.0,       0.75,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.8125,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.875,           1.0 ),
-    defaulttype::Vec3f( 0.0,     0.9375,          1.0 ),
-    defaulttype::Vec3f( 0.0,        1.0,          1.0 ),
-    defaulttype::Vec3f( 0.0625,     1.0,          1.0 ),
-    defaulttype::Vec3f( 0.125,      1.0,       0.9375 ),
-    defaulttype::Vec3f( 0.1875,     1.0,        0.875 ),
-    defaulttype::Vec3f( 0.25,       1.0,       0.8125 ),
-    defaulttype::Vec3f( 0.3125,     1.0,         0.75 ),
-    defaulttype::Vec3f( 0.375,      1.0,       0.6875 ),
-    defaulttype::Vec3f( 0.4375,     1.0,        0.625 ),
-    defaulttype::Vec3f( 0.5,        1.0,       0.5625 ),
-    defaulttype::Vec3f( 0.5625,     1.0,          0.5 ),
-    defaulttype::Vec3f( 0.625,      1.0,       0.4375 ),
-    defaulttype::Vec3f( 0.6875,     1.0,        0.375 ),
-    defaulttype::Vec3f( 0.75,       1.0,       0.3125 ),
-    defaulttype::Vec3f( 0.8125,     1.0,         0.25 ),
-    defaulttype::Vec3f( 0.875,      1.0,       0.1875 ),
-    defaulttype::Vec3f( 0.9375,     1.0,        0.125 ),
-    defaulttype::Vec3f( 1.0,        1.0,       0.0625 ),
-    defaulttype::Vec3f( 1.0,        1.0,          0.0 ),
-    defaulttype::Vec3f( 1.0,       0.9375,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.875,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.8125,        0.0 ),
-    defaulttype::Vec3f( 1.0,         0.75,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.6875,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.625,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.5625,        0.0 ),
-    defaulttype::Vec3f( 1.0,          0.5,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.4375,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.375,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.3125,        0.0 ),
-    defaulttype::Vec3f( 1.0,         0.25,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.1875,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.125,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.0625,        0.0 ),
-    defaulttype::Vec3f( 1.0,          0.0,        0.0 ),
-    defaulttype::Vec3f( 0.9375,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.875,        0.0,        0.0 ),
-    defaulttype::Vec3f( 0.8125,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.75,         0.0,        0.0 ),
-    defaulttype::Vec3f( 0.6875,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.625,        0.0,        0.0 ),
-    defaulttype::Vec3f( 0.5625,       0.0,        0.0 )
-};
-
-using core::objectmodel::Data;
-using sofa::component::topology::PointData;
-using sofa::defaulttype::Vector3;
-
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -159,6 +87,8 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColIterator		MatrixDerivColIterator;
 
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
+
+    typedef sofa::defaulttype::Vector3 Vector3;
 
     using Inherited::getX;
     using Inherited::getV;

@@ -27,8 +27,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
 
 namespace sofa
 {
@@ -136,13 +135,13 @@ struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
-//    cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << endl;
+//    std::cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << std::endl;
 
     if (!isActive())
         return;
     if (mstate)
     {
-//        cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << " has mstate " << endl;
+//        std::cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << " has mstate " << std::endl;
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)

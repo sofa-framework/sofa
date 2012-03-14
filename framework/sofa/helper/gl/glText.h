@@ -46,9 +46,6 @@ namespace helper
 namespace gl
 {
 
-using namespace sofa::defaulttype;
-using std::string;
-
 
 /**
  * This class, called GlText, allow to render text at a 3D position, facing the camera
@@ -60,21 +57,21 @@ public:
     /// Constructor
     GlText ();
     /// Constructor with specified text
-    GlText ( const string& text );
+    GlText ( const std::string& text );
     /// Constructor with specified text and position
-    GlText ( const string& text, const Vector3& position );
+    GlText ( const std::string& text, const defaulttype::Vector3& position );
     /// Constructor with specified text, position and scale
-    GlText ( const string& text, const Vector3& position, const double& scale );
+    GlText ( const std::string& text, const defaulttype::Vector3& position, const double& scale );
     /// Destructor
     ~GlText();
 
     /// Update the text to render
-    void setText ( const string& text );
+    void setText ( const std::string& text );
     /// Update the text to render
     template <typename T>
     void setText ( const T& text );
     /// Update the position used to render the text
-    void update ( const Vector3& position );
+    void update ( const defaulttype::Vector3& position );
     /// Update the scale used to render the text
     void update ( const double& scale );
 
@@ -86,15 +83,15 @@ public:
     static void draw ( const T& text );
     /// Render the text at the defined position with no scale
     template <typename T>
-    static void draw ( const T& text, const Vector3& position );
+    static void draw ( const T& text, const defaulttype::Vector3& position );
     /// Render the text at the defined position and scale
     template <typename T>
-    static void draw ( const T& text, const Vector3& position, const double& scale );
+    static void draw ( const T& text, const defaulttype::Vector3& position, const double& scale );
 
 private:
     double scale;
-    string text;
-    Vector3 position;
+    std::string text;
+    defaulttype::Vector3 position;
 };
 
 } // namespace gl

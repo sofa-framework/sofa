@@ -225,9 +225,9 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
 }
 
 template<>
-void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams);
+void FixedTranslationConstraint<defaulttype::Vec6dTypes>::draw(const core::visual::VisualParams* vparams);
 template<>
-void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams);
+void FixedTranslationConstraint<defaulttype::Vec6fTypes>::draw(const core::visual::VisualParams* vparams);
 
 } // namespace constraint
 

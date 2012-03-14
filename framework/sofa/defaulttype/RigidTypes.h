@@ -39,9 +39,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using sofa::helper::vector;
-
 template<int N, typename real>
 class RigidDeriv;
 
@@ -707,9 +704,9 @@ public:
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
+    typedef helper::vector<Deriv> VecDeriv;
+    typedef helper::vector<Real> VecReal;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
@@ -1435,9 +1432,9 @@ public:
 
     static const char* Name();
 
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
+    typedef helper::vector<Deriv> VecDeriv;
+    typedef helper::vector<Real> VecReal;
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 

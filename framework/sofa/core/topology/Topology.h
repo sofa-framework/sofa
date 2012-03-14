@@ -45,8 +45,6 @@ namespace core
 namespace topology
 {
 
-using namespace sofa::helper;
-
 /// The enumeration used to give unique identifiers to Topological objects.
 enum TopologyObjectType
 {
@@ -77,41 +75,41 @@ public:
     typedef index_type	                    HexahedronID;
 
 
-    typedef vector<index_type>                  SetIndex;
-    typedef vector<index_type>                  SetIndices;
+    typedef sofa::helper::vector<index_type>                  SetIndex;
+    typedef sofa::helper::vector<index_type>                  SetIndices;
 
     typedef PointID                             Point;
     // in the following types, we use wrapper classes to have different types for each element, otherwise Quad and Tetrahedron would be the same
-    class Edge : public fixed_array<PointID,2>
+    class Edge : public sofa::helper::fixed_array<PointID,2>
     {
     public:
         Edge() {}
-        Edge(PointID a, PointID b) : fixed_array<PointID,2>(a,b) {}
+        Edge(PointID a, PointID b) : sofa::helper::fixed_array<PointID,2>(a,b) {}
     };
-    class Triangle : public fixed_array<PointID,3>
+    class Triangle : public sofa::helper::fixed_array<PointID,3>
     {
     public:
         Triangle() {}
-        Triangle(PointID a, PointID b, PointID c) : fixed_array<PointID,3>(a,b,c) {}
+        Triangle(PointID a, PointID b, PointID c) : sofa::helper::fixed_array<PointID,3>(a,b,c) {}
     };
-    class Quad : public fixed_array<PointID,4>
+    class Quad : public sofa::helper::fixed_array<PointID,4>
     {
     public:
         Quad() {}
-        Quad(PointID a, PointID b, PointID c, PointID d) : fixed_array<PointID,4>(a,b,c,d) {}
+        Quad(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
     };
-    class Tetrahedron : public fixed_array<PointID,4>
+    class Tetrahedron : public sofa::helper::fixed_array<PointID,4>
     {
     public:
         Tetrahedron() {}
-        Tetrahedron(PointID a, PointID b, PointID c, PointID d) : fixed_array<PointID,4>(a,b,c,d) {}
+        Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
     };
     typedef Tetrahedron                         Tetra;
-    class Hexahedron : public fixed_array<PointID,8>
+    class Hexahedron : public sofa::helper::fixed_array<PointID,8>
     {
     public:
         Hexahedron() {}
-        Hexahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f, PointID g, PointID h) : fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
+        Hexahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f, PointID g, PointID h) : sofa::helper::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
     };
     typedef Hexahedron                          Hexa;
 

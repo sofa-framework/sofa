@@ -220,8 +220,8 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     const SetIndexArray & indices = f_indices.getValue();
 
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< defaulttype::Vector3 > points;
+    defaulttype::Vector3 point;
     //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
@@ -232,22 +232,22 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
     else
     {
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void FixedLMConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+void FixedLMConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void FixedLMConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+void FixedLMConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

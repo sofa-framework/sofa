@@ -46,38 +46,29 @@ namespace component
 namespace engine
 {
 template<class Real>
-inline const Vec<3,Real>& center(const Vec<3,Real>& c)
+inline const defaulttype::Vec<3,Real>& center(const defaulttype::Vec<3,Real>& c)
 {
     return c;
 }
 
 template<class _Real>
-inline Vec<3,_Real>& center(Vec<3,_Real>& c)
+inline defaulttype::Vec<3,_Real>& center(defaulttype::Vec<3,_Real>& c)
 {
     return c;
 }
 
 
-inline const Vec<3,double>& center(const StdRigidTypes<3,double>::Coord& c)
+template<class Real>
+inline const defaulttype::Vec<3,Real>& center(const defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }
 
-inline Vec<3,double>& center(StdRigidTypes<3,double>::Coord& c)
+template<class Real>
+inline defaulttype::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }
-
-inline const Vec<3,float>& center(const StdRigidTypes<3,float>::Coord& c)
-{
-    return c.getCenter();
-}
-
-inline Vec<3,float>& center(StdRigidTypes<3,float>::Coord& c)
-{
-    return c.getCenter();
-}
-
 
 using namespace sofa::helper;
 using namespace sofa::defaulttype;

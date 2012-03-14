@@ -101,7 +101,7 @@ public:
         if(!invInertiaMatrix.invert ( inertiaMatrix ))
         {
             clear();
-            cerr<<"Warning (FrameMass) : set Mass to identity "<<endl;
+            std::cerr<<"Warning (FrameMass) : set Mass to identity "<<std::endl;
             return;
         }
         /*

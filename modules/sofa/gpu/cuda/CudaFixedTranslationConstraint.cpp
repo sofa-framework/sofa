@@ -61,14 +61,14 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+            gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+            gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
         }
     }
     glEnd();

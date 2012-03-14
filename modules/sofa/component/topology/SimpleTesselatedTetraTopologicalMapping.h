@@ -102,7 +102,7 @@ public:
     const helper::vector<int>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
-    TetrahedronData< sofa::helper::vector<fixed_array<int, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
+    TetrahedronData< sofa::helper::vector<sofa::helper::fixed_array<int, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
     TetrahedronData< sofa::helper::vector<int> > tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
 
     Data< helper::vector<int> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.

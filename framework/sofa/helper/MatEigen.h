@@ -29,7 +29,9 @@
 /** Helpers to apply Eigen matrix methods to the Mat sofa type */
 
 #include <sofa/defaulttype/Mat.h>
+#ifdef Success
 #undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
+#endif
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -39,13 +41,9 @@ namespace sofa
 
 namespace helper
 {
-using std::cerr;
-using std::endl;
-using defaulttype::Mat;
-using defaulttype::Vec;
 
 template <int NumRows, int NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const Mat< NumRows, NumCols, Real>& mat )
+Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows, NumCols, Real>& mat )
 {
     Eigen::Matrix<Real, NumRows, NumCols> emat;
     for(int i=0; i<NumRows; i++)
@@ -55,9 +53,9 @@ Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const Mat< NumRows, NumCols, Rea
 }
 
 template <int NumRows, int NumCols, class Real>
-Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
+defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
-    Mat<NumRows, NumCols, Real> mat;
+    defaulttype::Mat<NumRows, NumCols, Real> mat;
     for(int i=0; i<NumRows; i++)
         for(int j=0; j<NumCols; j++)
             mat[i][j] = emat(i,j);
@@ -65,16 +63,16 @@ Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols
 }
 
 template <int NumRows, class Real>
-Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
+defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
 {
-    Vec<NumRows, Real> vec;
+    defaulttype::Vec<NumRows, Real> vec;
     for(int i=0; i<NumRows; i++)
         vec[i] = evec(i);
     return vec;
 }
 
 template <int NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const Vec<NumRows, Real>& vec )
+Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
 {
     Eigen::Matrix<Real, NumRows, 1> evec;
     for(int i=0; i<NumRows; i++)
