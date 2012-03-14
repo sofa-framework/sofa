@@ -171,6 +171,16 @@ int main(int argc, char** argv)
 #ifdef SOFA_DEV
     sofa::component::initDev();
 #endif
+#ifdef SOFA_GPU_CUDA
+#ifdef WIN32
+#ifdef NDEBUG
+    std::string name("sofagpucuda_1_0.dll");
+#else
+    std::string name("sofagpucuda_1_0d.dll");
+#endif
+    sofa::helper::system::DynamicLibrary::load(name);
+#endif
+#endif
     sofa::simulation::xml::initXml();
 
     if (!files.empty())
