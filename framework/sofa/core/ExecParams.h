@@ -40,6 +40,10 @@ enum { SOFA_DATA_MAX_ASPECTS = 2*SOFA_MAX_THREADS };
 enum { SOFA_DATA_MAX_ASPECTS = 1 };
 #endif
 
+#if !defined(NDEBUG) && !defined(SOFA_DEBUG_THREAD)
+#define SOFA_DEBUG_THREAD
+#endif
+
 /// Class gathering parameters use by most components methods, and transmitted by all visitors
 class SOFA_CORE_API ExecParams
 {
@@ -84,19 +88,39 @@ private:
     {
     }
 
+
 public:
+    bool checkValidStorage() const;
 
     /// Mode of execution requested
-    ExecMode execMode() const { return storage->execMode; }
+    ExecMode execMode() const
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        return storage->execMode;
+    }
 
     /// Index of current thread (0 corresponding to the only thread in sequential mode, or first thread in parallel mode)
-    int threadID() const { return storage->threadID; }
+    int threadID() const
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        return storage->threadID;
+    }
 
     /// Number of threads currently known to Sofa
     int nbThreads() const { return g_nbThreads; }
 
     /// Aspect index for the current thread
-    int aspectID() const { return storage->aspectID; }
+    int aspectID() const
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        return storage->aspectID;
+    }
 
     ExecParams()
         : storage(threadStorage())
@@ -110,13 +134,34 @@ public:
     void update();
 
     /// Request a specific mode of execution
-    ExecParams& setExecMode(ExecMode v) { storage->execMode = v; return *this; }
+    ExecParams& setExecMode(ExecMode v)
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        storage->execMode = v;
+        return *this;
+    }
 
     /// Specify the index of the current thread
-    ExecParams& setThreadID(int v) { storage->threadID = v; return *this; }
+    ExecParams& setThreadID(int v)
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        storage->threadID = v;
+        return *this;
+    }
 
     /// Specify the aspect index of the current thread
-    ExecParams& setAspectID(int v) { storage->aspectID = v; return *this; }
+    ExecParams& setAspectID(int v)
+    {
+#ifdef SOFA_DEBUG_THREAD
+        checkValidStorage();
+#endif
+        storage->aspectID = v;
+        return *this;
+    }
 
     static int currentAspect()
     {

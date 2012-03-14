@@ -9,10 +9,12 @@
   <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
   <Node name="Head">
     <OptiTrackNatNetDevice name="HeadDevice" trackableName="Head" isGlobalFrame="1" inMarkersMeshFile="./data/optitrack-markers-Head.obj" simMarkersMeshFile="./data/markers-Head.obj" drawMarkersColor="0 1 0 1" drawAxisSize="50 10 50" drawMarkersSize="2" />
+<!--
     <Node name="HeadVisual">
       <OglModel name="vm" filename="./data/head_low.obj" />
       <RigidMapping />
     </Node>
+-->
   </Node>
   <Node name="Cystitome">
     <MechanicalObject name="ms1" template="Rigid" />

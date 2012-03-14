@@ -516,6 +516,11 @@ public:
 #endif
     }
 
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false;
+    }
+
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
@@ -1774,7 +1779,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMec
 {
 public:
     MechanicalAccumulateConstraint(const sofa::core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, MultiMatrixDerivId _res, unsigned int &_contactId)
-        : BaseMechanicalVisitor(cparams)
+        : BaseMechanicalVisitor(_cparams)
         , res(_res)
         , contactId(_contactId)
         , cparams(_cparams)
@@ -1783,6 +1788,8 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    const core::ConstraintParams* constraintParams() const { return cparams; }
 
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
 

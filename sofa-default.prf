@@ -132,6 +132,9 @@ DEFINES += SOFA_HAVE_GLEW
 # Activate multithreading support (requires SOFA_HAVE_BOOST)
 # DEFINES += SOFA_MAX_THREADS=3
 
+# Uncomment if you want to debug multithreading support
+# DEFINES += SOFA_DEBUG_THREAD
+
 # Uncomment if you want to use LibXML instead of built-in TinyXML
 # DEFINES += SOFA_XML_PARSER_LIBXML
 

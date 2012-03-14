@@ -34,6 +34,19 @@ namespace sofa
 namespace simulation
 {
 
+Visitor::Visitor(const core::ExecParams* p)
+    : params(p)
+{
+    //params = core::MechanicalParams::defaultInstance();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    enteringBase=NULL; infoPrinted=false;
+#endif
+}
+
+Visitor::~Visitor()
+{
+}
+
 void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
 {
     c->executeVisitor(this);

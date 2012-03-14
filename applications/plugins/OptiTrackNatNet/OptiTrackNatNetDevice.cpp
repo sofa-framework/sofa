@@ -41,6 +41,8 @@ namespace SofaOptiTrackNatNet
 OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     : trackableName(initData(&trackableName, std::string(""), "trackableName", "NatNet trackable name"))
     , trackableID(initData(&trackableID, -1, "trackableID", "NatNet trackable number (ignored if trackableName is set)"))
+    , setRestShape(initData(&setRestShape, false, "setRestShape", "True to control the rest position instead of the current position directly"))
+    , applyMappings(initData(&applyMappings, true, "applyMappings", "True to enable applying the mappings after setting the position"))
     , controlNode(initData(&controlNode, false, "controlNode", "True to enable activating and disabling the node when this device appears and disappears"))
     , isGlobalFrame(initData(&isGlobalFrame, false, "isGlobalFrame", "True if this trackable should be considered as the global frame (i.e. all other trackables are computed relative to its position). This requires linking other trackables' \"inGlobalFrame\" to this \"frame\")"))
     , natNetClient(initLink("natNetClient","Main OptiTrackNatNetClient instance"))
@@ -849,8 +851,8 @@ void OptiTrackNatNetDevice::update()
     if (!natNetClient.get()) return;
     if (mstate.get() && this->tracked.getValue())
     {
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *this->mstate->write(sofa::core::VecCoordId::position());
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *this->mstate->write(sofa::core::VecCoordId::freePosition());
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *this->mstate->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::position());
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *this->mstate->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
         Coord pos = frame.getValue();
         if (!isGlobalFrame.getValue())
             pos = frame.getValue();
@@ -876,12 +878,14 @@ void OptiTrackNatNetDevice::update()
             xfree[2] = posRight;
         }
 
-
-        sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
-        if (node)
+        if (applyMappings.getValue())
         {
-            sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
-            sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+            sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+            if (node)
+            {
+                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+            }
         }
     }
 }

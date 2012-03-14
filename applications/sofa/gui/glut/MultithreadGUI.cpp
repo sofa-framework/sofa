@@ -61,6 +61,8 @@
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
+//#define NOVISUAL
+//#define NOMSG
 
 namespace sofa
 {
@@ -88,7 +90,9 @@ void MultithreadGUI::initAspects()
     aspectPool.setReleaseCallback(boost::bind(&MultithreadGUI::releaseAspect, this, _1));
     simuAspect = aspectPool.allocate();
     core::ExecParams::defaultInstance()->setAspectID(simuAspect->aspectID());
+#ifndef NOMSG
     renderMsgBuffer = new AspectBuffer(aspectPool);
+#endif
 }
 
 void MultithreadGUI::initThreads()
@@ -109,6 +113,7 @@ void MultithreadGUI::simulationLoop()
     ep->setAspectID(simuAspect->aspectID());
     groot->getContext()->setAnimate(true);
 
+#ifndef NOMSG
     AspectRef renderAspect = aspectPool.allocate();
     fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
 
@@ -116,12 +121,14 @@ void MultithreadGUI::simulationLoop()
     groot->execute(copyAspect);
 
     renderMsgBuffer->push(renderAspect);
+#endif
 
     while(!closeSimu)
     {
         CTime::sleep(0.001);
         step();
         //boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
+#ifndef NOMSG
         AspectRef renderAspect = renderMsgBuffer->allocate();  // aspectPool.allocate();
         fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
         simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
@@ -132,7 +139,7 @@ void MultithreadGUI::simulationLoop()
         for (int i=0,n=aspectPool.nbAspects(); i<n; ++i)
             std::cout << ' ' << aspectPool.getAspectCounter(i);
         std::cout << "]" << std::endl;
-
+#endif
     }
 }
 
@@ -140,6 +147,7 @@ bool MultithreadGUI::processMessages()
 {
     //fprintf(stderr, "Process Messages\n");
     bool needUpdate = false;
+#ifndef NOMSG
     do
     {
         if (renderMsgBuffer->pop(glAspect))
@@ -159,12 +167,15 @@ bool MultithreadGUI::processMessages()
 
     if (needUpdate)
     {
+#ifndef NOVISUAL
         // TODO: we need to copy the camera data to the new aspect otherwise we would lose camera motions
         currentCamera->copyAspect(glAspect->aspectID(), core::ExecParams::defaultInstance()->aspectID());
-        core::ExecParams::defaultInstance()->setAspectID(glAspect->aspectID());
 //core::ExecParams::defaultInstance()->setAspectID(0);
+#endif
+        core::ExecParams::defaultInstance()->setAspectID(glAspect->aspectID());
         fprintf(stderr, "Using aspect %d for display\n", core::ExecParams::defaultInstance()->aspectID());
     }
+#endif
     return needUpdate;
 }
 
@@ -419,11 +430,13 @@ MultithreadGUI::MultithreadGUI()
 MultithreadGUI::~MultithreadGUI()
 {
     closeThreads();
+#ifndef NOMSG
     if (renderMsgBuffer)
     {
         renderMsgBuffer->clear();
         delete renderMsgBuffer;
     }
+#endif
     if (instance == this) instance = NULL;
 }
 
@@ -433,7 +446,9 @@ void MultithreadGUI::initTextures()
     {
         std::cout << "-----------------------------------> initTextures\n";
         //---------------------------------------------------
+#ifndef NOVISUAL
         simulation::getSimulation()->initTextures(groot.get());
+#endif
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -1157,8 +1172,10 @@ void MultithreadGUI::paintGL()
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
+#ifndef NOVISUAL
     // draw the scene
     DrawScene();
+#endif
 
     eventNewFrame();
 
@@ -1242,9 +1259,11 @@ void MultithreadGUI::animate(void)
     }
     if (processMessages())
     {
+#ifndef NOVISUAL
         fprintf(stderr, "Update Visual\n");
         getSimulation()->updateVisual(groot.get());
         needRedraw = true;
+#endif
     }
 
     // update the entire scene

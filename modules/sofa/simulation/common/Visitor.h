@@ -50,8 +50,6 @@ class LocalStorage;
 /// Base class for visitors propagated recursively through the scenegraph
 class SOFA_SIMULATION_COMMON_API Visitor
 {
-protected:
-    const core::ExecParams* params;
 public:
 
     class VisitorContext
@@ -65,15 +63,10 @@ public:
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
 
-    Visitor(const core::ExecParams* params)
-        : params(params)
-    {
-        //params = core::MechanicalParams::defaultInstance();
-#ifdef SOFA_DUMP_VISITOR_INFO
-        enteringBase=NULL; infoPrinted=false;
-#endif
-    }
-    virtual ~Visitor() {}
+    Visitor(const core::ExecParams* params);
+    virtual ~Visitor();
+
+    const core::ExecParams* execParams() const { return params; }
 
     typedef simulation::Node::ctime_t ctime_t;
 
@@ -258,22 +251,13 @@ public:
     Visitor& addTag(Tag t) { subsetsToManage.insert(t); return *this; }
     Visitor& removeTag(Tag t) { subsetsToManage.erase(t); return *this; }
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    static double getTimeSpent(ctime_t initTime, ctime_t endTime);
 protected:
+    const core::ExecParams* params;
 
-    static std::ostream *outputVisitor;  //Ouput stream to dump the info
-    static bool printActivated;          //bool to know if the stream is opened or not
-    static bool outputStateVector;       //bool to know if we trace the evolution of the state vectors
-    static unsigned int firstIndexStateVector; //numero of the first index of the particules to trace
-    static int rangeStateVector;         //number of particules to trace
-    static ctime_t initDumpTime;
-    static std::vector< ctime_t > initNodeTime;
 
-    core::objectmodel::Base* enteringBase;
-    bool infoPrinted;
-
+#ifdef SOFA_DUMP_VISITOR_INFO
 public:
+    static double getTimeSpent(ctime_t initTime, ctime_t endTime);
     static void startDumpVisitor(std::ostream *s, double time);
     static void stopDumpVisitor();
 
@@ -292,6 +276,18 @@ public:
     static bool IsExportStateVectorEnabled() {return outputStateVector;}
     static unsigned int GetFirstIndexStateVector() { return firstIndexStateVector;}
     static int GetRangeStateVector() {return rangeStateVector;}
+protected:
+
+    static std::ostream *outputVisitor;  //Ouput stream to dump the info
+    static bool printActivated;          //bool to know if the stream is opened or not
+    static bool outputStateVector;       //bool to know if we trace the evolution of the state vectors
+    static unsigned int firstIndexStateVector; //numero of the first index of the particules to trace
+    static int rangeStateVector;         //number of particules to trace
+    static ctime_t initDumpTime;
+    static std::vector< ctime_t > initNodeTime;
+
+    core::objectmodel::Base* enteringBase;
+    bool infoPrinted;
 
 private:
     static void dumpInfo( const std::string &info);
