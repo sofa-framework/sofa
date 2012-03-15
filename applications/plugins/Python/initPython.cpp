@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initPython.h"
+#include "PythonScriptController.h"
 
 namespace sofa
 {
@@ -88,4 +89,5 @@ const char* getModuleComponentList()
 //SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 //SOFA_LINK_CLASS(MyBehaviorModel)
 //SOFA_LINK_CLASS(MyProjectiveConstraintSet)
+SOFA_LINK_CLASS(PythonController)
 
