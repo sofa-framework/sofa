@@ -153,13 +153,14 @@ public:
 
 
 protected:
+
     Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
     {
         Mat<3,3,Real> rotMatrix;
         float c, s, k1, k2;
         float TH_TINY = 0.00001;
 
-        float theta2 = sqrt( rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2] );
+        float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
         float theta = sqrt( theta2 );
         if (theta > TH_TINY)
         {
@@ -225,7 +226,7 @@ protected:
         waTransform wtransform(this->transform);
 
         // read image
-        //Load .inr.gz or .inr using ZLib
+        //Load .inr.gz using ZLib
         if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
         {
             float voxsize[3];
@@ -244,6 +245,9 @@ protected:
             wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
             wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
             wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            Real t0 = wtransform->getRotation()[0];
+            Real t1 = wtransform->getRotation()[1];
+            Real t2 = wtransform->getRotation()[2];
 
         }
         else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos

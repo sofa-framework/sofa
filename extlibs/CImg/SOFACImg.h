@@ -342,12 +342,12 @@ static void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, f
 	            throw CImgIOException("CImg<T>::load_gz_inr() : Invalid pixel type '%s' defined in header.",
                                 tmp2);
 		}
-		if(translation) std::sscanf(item," TX%*[^0-9]%f", translation);
-		if(translation) std::sscanf(item," TY%*[^0-9]%f", translation+1);
-		if(translation) std::sscanf(item," TZ%*[^0-9]%f", translation+2);
-		if(rotation) std::sscanf(item," RX%*[^0-9]%f", rotation);
-		if(rotation) std::sscanf(item," RY%*[^0-9]%f", rotation+1);
-		if(rotation) std::sscanf(item," RZ%*[^0-9]%f", rotation+2);
+		if(translation) std::sscanf(item," TX%*[^0-9.+-]%f", translation);
+		if(translation) std::sscanf(item," TY%*[^0-9.+-]%f", translation+1);
+		if(translation) std::sscanf(item," TZ%*[^0-9.+-]%f", translation+2);
+		if(rotation) std::sscanf(item," RX%*[^0-9.+-]%f", rotation);
+		if(rotation) std::sscanf(item," RY%*[^0-9.+-]%f", rotation+1);
+		if(rotation) std::sscanf(item," RZ%*[^0-9.+-]%f", rotation+2);
 		gzgets(file, item, 63);
 	}
       if(out[0]<0 || out[1]<0 || out[2]<0 || out[3]<0)
@@ -423,6 +423,8 @@ CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxs
 	if (!file) gzclose(nfile);
 	return *newImage;
 }
+
+
 
 
 
