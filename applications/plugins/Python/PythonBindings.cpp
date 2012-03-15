@@ -11,7 +11,7 @@ using namespace boost::python;
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/component.h>
-#include <sofa/component/OdeSolver/EulerSolver.h>
+#include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/typedef/MechanicalState_double.h>
 #include <sofa/component/typedef/Mass_double.h>
