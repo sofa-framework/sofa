@@ -332,4 +332,10 @@ void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::ve
     }
 }
 
+template<typename real>
+int round(real r)
+{
+    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+}
+
 #endif // IMAGEALGORITHMS_H
