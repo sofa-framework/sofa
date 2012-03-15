@@ -5,13 +5,22 @@ TARGET = Python
 
 DEFINES += SOFA_BUILD_PYTHON
 
-#python
-mac: LIBS += -F/opt/local/Library/Frameworks/ -framework Python
-INCLUDEPATH += /opt/local/Library/Frameworks/Python.framework/Headers
+unix:macx {
+    QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
+    #python
+    LIBS += -F/opt/local/Library/Frameworks/ -framework Python
+    INCLUDEPATH += /opt/local/Library/Frameworks/Python.framework/Headers
 
-#boost.python
-LIBS += -L/opt/local/lib/ -lboost_python
-INCLUDEPATH += /opt/local/include
+    #boost.python
+    INCLUDEPATH += /opt/local/include
+    LIBS += -L/opt/local/lib/ -lboost_python
+}
+
+unix:!macx {
+    INCLUDEPATH *= $$system(python-config --includes | sed -e s/\\ -I/\\ /g -e s/^-I//g)
+    LIBS *= $$system(python-config --libs)
+    LIBS *= -lboost_python
+}
 
 SOURCES = initPython.cpp \
     ScriptController.cpp \
