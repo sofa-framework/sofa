@@ -43,13 +43,13 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::Real Real;
 
     typedef TOut Out;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Real Real;
 
     // Called in Apply
     virtual void addapply( OutCoord& result, const InCoord& data )=0;
