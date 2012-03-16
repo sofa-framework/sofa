@@ -2546,7 +2546,7 @@ void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
         const float& scale = showObjectScale.getValue();
-        vector<Vector3> positions;
+        vector<Vector3> positions(vsize);
         for (int i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
         vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
