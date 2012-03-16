@@ -27,14 +27,14 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/helper/vector.h>
+#include <Eigen/Sparse>
 #ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_SUPERLU
 #define EIGEN_SUPERLU_SUPPORT
-#include <Eigen/SuperLUSupport>
+#include <unsupported/Eigen/SuperLUSupport>
 #endif
 #ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 #include <unsupported/Eigen/CholmodSupport>
 #endif
-#include <Eigen/Sparse>
 
 namespace sofa
 {

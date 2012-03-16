@@ -4,9 +4,9 @@
 #include "BaseCompliance.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include "../ModelHierarchies/EigenSparseSquareMatrix.h"
-#include "../ModelHierarchies/EigenSparseRectangularMatrix.h"
-#include <plugins/ModelHierarchies/EigenVector.h>
+#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#include <sofa/component/linearsolver/EigenVector.h>
 
 namespace sofa
 {
