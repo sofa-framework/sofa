@@ -156,7 +156,7 @@ protected:
             Real ha = (AC - edgeDir * (AC*edgeDir)).norm(); // distance from A to CD
             Real hb = (BC - edgeDir * (BC*edgeDir)).norm(); // distance from B to CD
             Real l = (p[vid[C]]-p[vid[D]]).norm();          // distance from C to D
-            lambda = (2./3) * (ha+hb)/(ha*ha*hb*hb) * l * materialBendingStiffness;
+            lambda = (Real)(2./3) * (ha+hb)/(ha*ha*hb*hb) * l * materialBendingStiffness;
 
             //            cerr<<"EdgeInformation::setEdgeSpring, vertices = " << vid << endl;
         }
@@ -170,7 +170,7 @@ protected:
             f[vid[B]] -= R * lambda * alpha[B];
             f[vid[C]] -= R * lambda * alpha[C];
             f[vid[D]] -= R * lambda * alpha[D];
-            return R * R * lambda * 0.5;
+            return R * R * lambda * (Real)0.5;
         }
 
         void addDForce( VecDeriv& df, const VecDeriv& dp, Real kfactor) const

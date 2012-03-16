@@ -298,7 +298,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
         Index a = (*_indexedElements)[i][0];
         Index b = (*_indexedElements)[i][1];
         Index c = (*_indexedElements)[i][2];
-        Real triangleVolume = 0.5 * f_thickness.getValue() * cross( p[b]-p[a], p[c]-p[a] ).norm();
+        Real triangleVolume = (Real)0.5 * f_thickness.getValue() * cross( p[b]-p[a], p[c]-p[a] ).norm();
 
         if( f_planeStrain.getValue() == true )
         {
