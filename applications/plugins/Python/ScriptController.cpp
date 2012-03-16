@@ -42,6 +42,27 @@ void ScriptController::init()
     script_initGraph( dynamic_cast<simulation::tree::GNode*>(getContext()) );
 }
 
+void ScriptController::storeResetState()
+{
+    Controller::storeResetState();
+    // init the script
+    script_storeResetState();
+}
+
+void ScriptController::reset()
+{
+    Controller::reset();
+    // init the script
+    script_reset();
+}
+
+void ScriptController::cleanup()
+{
+    Controller::cleanup();
+    // init the script
+    script_cleanup();
+}
+
 void ScriptController::onBeginAnimationStep(const double dt)
 {
     script_onBeginAnimationStep(dt);
