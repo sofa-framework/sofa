@@ -188,14 +188,18 @@ declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofa_compo
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
     declare(ModelHierarchies, applications/plugins/ModelHierarchies, sofa_component sofa_component_dev )
-    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_component_dev sofa_base_animation_loop )
+    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_component_dev sofa_base_animation_loop sofa_eigen2_solver )
     enable(ModelHierarchies)
     enable(ModelHierarchies_test)
 }
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
-    declare(Compliant, applications/plugins/Compliant, sofaguiqt sofa_eigen2_solver ModelHierarchies  )
+    declare(Compliant, applications/plugins/Compliant, sofaguiqt sofa_eigen2_solver   )
     enable(Compliant)
+}
+contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
+    declare(Flexible, applications/plugins/Flexible, sofaguiqt sofa_eigen2_solver   )
+    enable(Flexible)
 }
 
 
