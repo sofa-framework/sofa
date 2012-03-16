@@ -161,8 +161,8 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             binormal.normalize();
             for(int i = 0; i < _topology->getNbEdges() ; i++)
             {
-//                Edge e = _topology->getEdge(i);
-                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
+                Edge e = _topology->getEdge(i);
+//                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);

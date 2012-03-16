@@ -41,7 +41,7 @@ SingleMatrixAccessor::~SingleMatrixAccessor()
 }
 
 
-void SingleMatrixAccessor::setMatrix( Matrix* m )
+void SingleMatrixAccessor::setMatrix( BaseMatrix* m )
 {
     matrix = m;
     matRef.matrix = m;

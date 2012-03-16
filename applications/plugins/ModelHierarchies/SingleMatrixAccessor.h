@@ -26,7 +26,6 @@
 #define SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
 
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-//#include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
@@ -38,53 +37,31 @@ namespace component
 namespace linearsolver
 {
 
-/** Special case to access a single matrix.
+/** Special case to access a single square matrix.
 */
 class SOFA_CORE_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
 {
 public:
-    typedef defaulttype::BaseMatrix Matrix;
+    typedef defaulttype::BaseMatrix BaseMatrix;
 
+    SingleMatrixAccessor( BaseMatrix* m=0 ) { setMatrix(m); }
     virtual ~SingleMatrixAccessor();
 
-    void setMatrix( Matrix* m );
+    void setMatrix( BaseMatrix* m );
+    BaseMatrix* getMatrix() { return matrix; }
+    const BaseMatrix* getMatrix() const { return matrix; }
 
-//    /// Simple structure holding a reference to the submatrix related to one MechanicalState
-//    class MatrixRef
-//    {
-//    public:
-//        defaulttype::BaseMatrix* matrix;
-//        unsigned int offset;
-//        MatrixRef() : matrix(NULL), offset(0) {}
-//        defaulttype::BaseMatrix* operator->() const { return matrix; }
-//        bool operator!() const { return matrix == NULL; }
-//        operator bool() const { return matrix != NULL; }
-//        void operator =(const MatrixRef& b){offset = b.offset;matrix = b.matrix;}
-//    };
-
-//    /// Simple structure holding a reference to the submatrix related to the interactions between two MechanicalStates
-//    class InteractionMatrixRef
-//    {
-//    public:
-//        defaulttype::BaseMatrix* matrix;
-//        unsigned int offRow, offCol;
-//        InteractionMatrixRef() : matrix(NULL), offRow(0), offCol(0) {}
-//        defaulttype::BaseMatrix* operator->() const { return matrix; }
-//        bool operator!() const { return matrix == NULL; }
-//        operator bool() const { return matrix != NULL; }
-//        void operator =(const InteractionMatrixRef& b){offRow = b.offRow;offCol = b.offCol;matrix = b.matrix;}
-//    };
 
     virtual int getGlobalDimension() const { return matrix->rowSize(); }
     virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
     virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const;
 
-    /// Should not be used. Returns a non-initialized MatrixRef
+
     virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const;
 
 protected:
-    Matrix* matrix;  ///< The single matrix
-    MatrixRef matRef;    ///< The accessor to the single matrix
+    BaseMatrix* matrix;   ///< The single matrix
+    MatrixRef matRef; ///< The accessor to the single matrix
 
 };
 

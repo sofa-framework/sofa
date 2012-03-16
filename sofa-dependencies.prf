@@ -193,6 +193,11 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
     enable(ModelHierarchies_test)
 }
 
+contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
+    declare(Compliant, applications/plugins/Compliant, sofaguiqt sofa_eigen2_solver ModelHierarchies  )
+    enable(Compliant)
+}
+
 
 
 ######################################################################

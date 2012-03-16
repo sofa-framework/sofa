@@ -73,6 +73,7 @@ public:
             for (int j=0; j<N; ++j)
             {
                 mat->add(pos+i, pos+j, mass[i][j]*fact);
+//            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
             }
     }
 };

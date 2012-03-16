@@ -3,12 +3,12 @@
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <ComplianceSolver />
-    <MechanicalObject template="Vec3d" position="0 0 0   0 -1 0" name="particleDOFs"/>
+    <MechanicalObject template="Vec3d" position="0 0 0   0 -1 0" name="particleDOFs" />
     <UniformMass />
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <ExtensionMapping links="0 1" />
-        <UniformCompliance compliance="[[1.0]]" />
+        <UniformCompliance template="Vec1d" compliance="[[1.0]]" />
     </Node>
 </Node>
 </Node>
