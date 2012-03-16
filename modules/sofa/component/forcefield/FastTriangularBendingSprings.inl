@@ -137,7 +137,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                         int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
                         Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
 
-                        ei.setEdgeSpring( restPosition.ref(), t1[i1], t2[i2], edge[0], edge[1], ff->f_bendingStiffness.getValue() );
+                        ei.setEdgeSpring( restPosition.ref(), t1[i1], t2[i2], edge[0], edge[1], (Real)ff->f_bendingStiffness.getValue() );
 
 //                        ei.m1 = t1[i1];
 //                        ei.m2 = t2[i2];
@@ -250,7 +250,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                         int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                         Edge edge = ff->_topology->getEdge(edgeIndex);
-                        ei.setEdgeSpring(restPositions.ref(), t1[i1], t2[i2], edge[0], edge[1], ff->f_bendingStiffness.getValue());
+                        ei.setEdgeSpring(restPositions.ref(), t1[i1], t2[i2], edge[0], edge[1], (Real)ff->f_bendingStiffness.getValue());
 
                         //                        ei.m1 = t1[i1];
                         //                        ei.m2 = t2[i2];
@@ -486,7 +486,7 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
     df.resize(dx.size());
     for(unsigned i=0; i<edgeInf.size(); i++ )
     {
-        edgeInf[i].addDForce(df.wref(),dx,mparams->kFactor());
+        edgeInf[i].addDForce(df.wref(),dx,(Real)mparams->kFactor());
     }
 }
 
