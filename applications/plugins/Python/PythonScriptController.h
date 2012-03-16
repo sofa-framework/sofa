@@ -34,6 +34,11 @@ protected:
     virtual void script_createGraph(sofa::simulation::tree::GNode* node);       // called when the script must create its graph
     virtual void script_initGraph(sofa::simulation::tree::GNode* node);         // called when the script must init its graph, once all the graph has been create
 
+    virtual void script_storeResetState();
+    virtual void script_reset();
+
+    virtual void script_cleanup();
+
     virtual void script_onBeginAnimationStep(const double dt);
     /// @}
 
@@ -51,6 +56,9 @@ protected:
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;
     PyObject *m_Func_initGraph;
+    PyObject *m_Func_storeResetState;
+    PyObject *m_Func_reset;
+    PyObject *m_Func_cleanup;
 public:
 
 };

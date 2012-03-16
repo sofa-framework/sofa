@@ -42,15 +42,15 @@ public:
 //    virtual void reinit();
 
     /// Save the initial state for later uses in reset()
-//    virtual void storeResetState();
+    virtual void storeResetState();
 
     /// Reset to initial state
-//    virtual void reset();
+    virtual void reset();
 
     /// Called just before deleting this object
     /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
-//    virtual void cleanup();
+    virtual void cleanup();
 
     /// @}
 
@@ -78,10 +78,10 @@ protected:
     virtual void script_createGraph(sofa::simulation::tree::GNode* node) = 0;       // called when the script must create its graph
     virtual void script_initGraph(sofa::simulation::tree::GNode* node) = 0;         // called when the script must init its graph, once all the graph has been create
 
-//    virtual void script_storeResetState() = 0;
-//    virtual void script_reset() = 0;
+    virtual void script_storeResetState() = 0;
+    virtual void script_reset() = 0;
 
-//    virtual void script_cleanup() = 0;
+    virtual void script_cleanup() = 0;
 
     /// called once per frame
     virtual void script_onBeginAnimationStep(const double dt) = 0;
