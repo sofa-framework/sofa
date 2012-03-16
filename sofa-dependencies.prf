@@ -18,6 +18,7 @@ declare(thrust,   thrust.prf, cuda)
 declare(rt,   rt.prf)
 declare(system-metis,  system-metis.prf)
 declare(system-taucs,  system-taucs.prf)
+declare(eigen-unsupported,  eigen-unsupported.prf)
 
 ######################################################################
 # Extlibs
@@ -72,7 +73,7 @@ declare(sofa_simple_fem, modules/sofa/component/sofa_simple_fem.pro, sofa_base_t
 declare(sofa_object_interaction, modules/sofa/component/sofa_object_interaction.pro, sofa_deformable)
 declare(sofa_explicit_ode_solver, modules/sofa/component/sofa_explicit_ode_solver.pro, sofatree)
 declare(sofa_implicit_ode_solver, modules/sofa/component/sofa_implicit_ode_solver.pro, sofatree)
-declare(sofa_eigen2_solver, modules/sofa/component/sofa_eigen2_solver.pro, sofa_dense_solver eigen)
+declare(sofa_eigen2_solver, modules/sofa/component/sofa_eigen2_solver.pro, sofa_dense_solver eigen eigen-unsupported )
 declare(sofa_mesh_collision, modules/sofa/component/sofa_mesh_collision.pro, sofa_object_interaction sofa_base_collision)
 declare(sofa_validation, modules/sofa/component/sofa_validation.pro, sofa_base_collision sofa_loader sofa_mesh_collision)
 declare(sofa_exporter, modules/sofa/component/sofa_exporter.pro, sofatree zlib)

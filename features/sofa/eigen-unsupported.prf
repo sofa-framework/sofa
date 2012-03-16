@@ -1,15 +1,11 @@
-
-contains(DEFINES,SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD)
+contains(DEFINES, SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD){
 # ubuntu: apt-get install libsuitesparse-dev libeigen3-dev libsuperlu3 libsuperlu3-dev
-{
 DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 INCLUDEPATH *= /usr/include/suitesparse  # for cholmod
 LIBS += -lcholmod
 }
-
-contains(DEFINES,SOFA_HAVE_EIGEN_UNSUPPORTED_AND_SUPERLU)
+contains(DEFINES, SOFA_HAVE_EIGEN_UNSUPPORTED_AND_SUPERLU){
 # ubuntu: apt-get install libsuitesparse-dev libeigen3-dev libsuperlu3 libsuperlu3-dev
-{
 DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 INCLUDEPATH += /usr/include/superlu
 LIBS += -lsuperlu
