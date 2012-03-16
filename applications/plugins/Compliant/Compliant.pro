@@ -4,23 +4,17 @@ defineAsPlugin(Compliant)
 TARGET = Compliant
 
 DEFINES += SOFA_BUILD_Compliant
-DEFINES += EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
 
 SOURCES = \
-    ExtensionMapping.cpp \
     initCompliant.cpp \
     BaseCompliance.cpp \
     Compliance.cpp \
     UniformCompliance.cpp \
     ComplianceSolver.cpp \
-    BaseShapeFunction.cpp \
-    ShepardShapeFunction.cpp \
-    LinearMapping.cpp
 
 HEADERS = \
-    ExtensionMapping.h \
-    ExtensionMapping.inl \
     initCompliant.h \
     BaseCompliance.h \
     Compliance.h \
@@ -28,13 +22,7 @@ HEADERS = \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \
-    BaseShapeFunction.h \
-    ShepardShapeFunction.h \
-    LinearMapping.h \
-    LinearMapping.inl \
-    BaseJacobian.h \
-    LinearJacobianBlock.h \
-    LinearJacobianBlock.inl
+
 
 README_FILE = Compliant.txt
 
