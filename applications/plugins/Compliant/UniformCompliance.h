@@ -2,6 +2,7 @@
 #define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
 #include "Compliance.h"
 #include <sofa/defaulttype/Mat.h>
+#include <plugins/ModelHierarchies/EigenSparseSquareMatrix.h>
 
 namespace sofa
 {
@@ -10,6 +11,9 @@ namespace component
 namespace compliance
 {
 
+/** Compliance uniformly applied to all the DOF.
+  Each dof represents a constraint violation, and undergoes force \f$ \lambda = -\frac{1}{c} ( x - d v ) \f$, where c is the compliance and d the damping ratio.
+  */
 template<class DataTypes>
 class SOFA_Compliant_API UniformCompliance : public core::behavior::Compliance<DataTypes>
 {
@@ -27,13 +31,23 @@ public:
     enum { N=DataTypes::deriv_total_size };
     typedef defaulttype::Mat<N,N,Real> Block;
 
-    /// Compute the displacement in response to the given force
-    virtual void computeDisplacement(const core::MechanicalParams* mparams, DataVecDeriv& displacement, const DataVecDeriv& force );
+    Data< Block > compliance;   ///< Same compliance applied to all the DOFs
 
-    Data< Block > compliance;  ///< Same compliance applied to all the DOF
+    virtual void init();
+
+    /// Compute the compliance matrix
+    virtual void reinit();
+
+    /// Set the constraint value
+    virtual void setConstraint(const core::ComplianceParams* mparams, core::MultiVecDerivId fId );
+
+    /// return a pointer to the compliance matrix
+    virtual const sofa::defaulttype::BaseMatrix* getMatrix(const core::MechanicalParams*);
 
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
+
+    linearsolver::EigenSparseSquareMatrix<typename DataTypes::Real> matC; ///< compliance matrix
 };
 
 }
