@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
 #include "Compliance.h"
 #include <sofa/defaulttype/Mat.h>
-#include <plugins/ModelHierarchies/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 
 namespace sofa
 {

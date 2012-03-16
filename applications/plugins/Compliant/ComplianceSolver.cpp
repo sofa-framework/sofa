@@ -3,8 +3,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <plugins/ModelHierarchies/EigenSparseSquareMatrix.h>
-#include <plugins/ModelHierarchies/SingleMatrixAccessor.h>
+#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

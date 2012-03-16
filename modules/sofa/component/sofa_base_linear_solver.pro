@@ -11,14 +11,15 @@ win32 {
 
 HEADERS += initBaseLinearSolver.h \
            linearsolver/CGLinearSolver.h \
-		   linearsolver/CGLinearSolver.inl \
+           linearsolver/CGLinearSolver.inl \
            linearsolver/CholeskySolver.h \
-		   linearsolver/CholeskySolver.inl \
+           linearsolver/CholeskySolver.inl \
            linearsolver/BTDLinearSolver.h \
            linearsolver/BTDLinearSolver.inl \
            linearsolver/FullVector.h \
            linearsolver/FullMatrix.h \
            linearsolver/DiagonalMatrix.h \
+           linearsolver/SingleMatrixAccessor.h \
            linearsolver/SparseMatrix.h \
            linearsolver/CompressedRowSparseMatrix.h \
            linearsolver/CompressedRowSparseMatrix.inl \
@@ -37,7 +38,8 @@ SOURCES += initBaseLinearSolver.cpp \
            linearsolver/FullVector.cpp \
            linearsolver/GraphScatteredTypes.cpp \
            linearsolver/DefaultMultiMatrixAccessor.cpp \
-           linearsolver/MatrixLinearSolver.cpp 
+           linearsolver/MatrixLinearSolver.cpp \
+           linearsolver/SingleMatrixAccessor.cpp
 
 
 # Make sure there are no cross-dependencies
