@@ -1,0 +1,80 @@
+\documentclass{article}
+
+\newenvironment{componentoption}[1]%
+{\textbf{#1}\newline}
+{\newline}
+
+\newcommand{\aliases}[1] {\newline \textit{Aliases - } #1}
+\newcommand{\defaultvalue}[1] {\newline \textit{Default Value - } #1}
+\newcommand{\valuetype}[1] {\newline \textit{Value Type - } \textbf{#1}}
+
+\begin{document}
+\raggedright
+
+\title{Flexible}
+\author{SOFA}
+
+\maketitle
+
+\begin{abstract}
+Replace this with your plugin documentation. You may want to use the following structure.
+\end{abstract}
+
+\section{Requirements}
+
+SOFA Packages:
+The following must be enabled in sofa-local.prf
+\begin{itemize}
+\item Any special things that need to be enabled
+\end{itemize}
+
+SOFA Plugins:
+The following must be loaded in your SOFA instance
+\begin{itemize}
+\item Any plugins that must be loaded
+\end{itemize}
+
+\section{Scene Settings}
+
+\subsection{Required Settings}
+
+\begin{componentoption}{RequiredExampleSetting}
+A description of what this setting controls, and any special information the user should know about it. Required settings are those that need to be specified by the user in order for the component to function. If your component doesn't have any required settings, leave this section blank. The below "value type" is the type that is expected by the component. "Aliases" are other strings that can be specified in the scene file for this setting. These are defined in the code using "addAlias()".
+\valuetype{string}
+\aliases{requiredexamplesetting}
+\end{componentoption}
+
+
+\subsection{Optional Settings}
+
+\begin{componentoption}{OptionalExampleSetting}
+A description of what this setting controls, and any special information the user should know about it. Optional settings can be specified by the user in order to change the default behaviour of the component. The below "Default Value" is the value given to the setting if the user doesn't specify anything.
+\valuetype{bool}
+\defaultvalue{false}
+\aliases{optionalexample, optionalsetting}
+\end{componentoption}
+
+\section{Scene Data}
+
+\subsection{Required Data}
+
+\begin{componentoption}{RequiredExampleData}
+Data is usually a link to something in another component. Required data must be specified in order for the component to function.
+\valuetype{ExampleType}
+\end{componentoption}
+
+\subsection{Optional Data}
+
+\begin{componentoption}{OptionalExampleData}
+Data is usually a link to something in another component.
+\valuetype{ExampleType}
+\aliases{OptData}
+\end{componentoption}
+
+\subsection{Output data}
+Output data is generally not defined in the component, but is linked to by other components.
+
+\subsection{Example File}
+path/to/an/example/file.scn
+
+\end{document}
