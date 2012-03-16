@@ -24,6 +24,6 @@ DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 #exists(component-local.cfg): include(component-local.cfg)
 
 
-load(sofa/eigen-unsupported)
+#load(sofa/eigen-unsupported)
 load(sofa/post)
  
