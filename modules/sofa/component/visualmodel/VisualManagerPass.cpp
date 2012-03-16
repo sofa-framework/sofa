@@ -106,8 +106,8 @@ void VisualManagerPass::initVisual()
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    passWidth = viewport[2]*factor.getValue();
-    passHeight = viewport[3]*factor.getValue();
+    passWidth = viewport[2]*(GLint)factor.getValue();
+    passHeight = viewport[3]*(GLint)factor.getValue();
 
     fbo->init(passWidth, passHeight);
 }

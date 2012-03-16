@@ -6,7 +6,7 @@ TARGET = Python
 DEFINES += SOFA_BUILD_PYTHON
 
 unix:macx {
-    QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
+    #QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
     #python
     LIBS += -F/opt/local/Library/Frameworks/ -framework Python
     INCLUDEPATH += /opt/local/Library/Frameworks/Python.framework/Headers
