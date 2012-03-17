@@ -54,17 +54,19 @@ public:
 protected:
     ComplianceSolver();
 
-    typedef Eigen::DynamicSparseMatrix<SReal, Eigen::RowMajor> Matrix;
-    typedef linearsolver::EigenVector<SReal>  Vector;
+    typedef Eigen::DynamicSparseMatrix<SReal, Eigen::RowMajor> DMatrix;
+    typedef Eigen::SparseMatrix<SReal>        SMatrix;
+    typedef linearsolver::EigenVector<SReal>  VectorSofa;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
     typedef core::behavior::BaseMechanicalState MechanicalState;
     typedef core::behavior::BaseCompliance Compliance;
     typedef core::BaseMapping Mapping;
 
-    Matrix matM;      ///< mass matrix
-    Matrix matJ;      ///< concatenation of the constraint Jacobians
-    Matrix matC;      ///< compliance matrix used to regularize the system
-    Vector vecF;      ///< top of the right-hand term: forces
-    Vector vecPhi;    ///< bottom of the right-hand term: constraint corrections
+    DMatrix matM;      ///< mass matrix
+    DMatrix matJ;      ///< concatenation of the constraint Jacobians
+    DMatrix matC;      ///< compliance matrix used to regularize the system
+    VectorSofa vecF;      ///< top of the right-hand term: forces
+    VectorSofa vecPhi;    ///< bottom of the right-hand term: constraint corrections
 
     Data<SReal>  implicitVelocity; ///< the \f$ \alpha \f$ parameter of the integration scheme
     Data<SReal>  implicitPosition; ///< the \f$ \beta  \f$ parameter of the integration scheme
@@ -105,16 +107,23 @@ protected:
 
         std::map<MechanicalState*, unsigned> m_offset;  ///< Start index of independent DOFs in the mass matrix
         std::map<Compliance*, unsigned>      c_offset;  ///< Start index of compliances in the compliance matrix
-        std::stack<Matrix> jStack;                      ///< Stack of jacobian matrices to push/pop during the traversal
+        std::stack<DMatrix> jStack;                      ///< Stack of jacobian matrices to push/pop during the traversal
 
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
         /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-        Matrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
+        DMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
         /// Converts a BaseMatrix to the matrix type used here.
-        Matrix toMatrix( const defaulttype::BaseMatrix* );
+        DMatrix toMatrix( const defaulttype::BaseMatrix* );
     };
 
+
+    // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
+    typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
+//    SparseLDLT sparseLDLT; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
+
+    /// Compute the inverse of the matrix and return it pruned, by canceling all the entries which are smaller than the threshold
+    SMatrix inverseMatrix( const DMatrix& m, SReal threshold);
 
 
 };

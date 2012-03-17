@@ -32,9 +32,6 @@ unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR
 win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
 
 
-
-load(sofa/eigen-unsupported) # sparse solvers
-
 load(sofa/post)
 
 

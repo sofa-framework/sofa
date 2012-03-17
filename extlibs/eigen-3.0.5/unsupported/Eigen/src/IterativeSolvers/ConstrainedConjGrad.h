@@ -65,7 +65,7 @@ void pseudo_inverse(const CMatrix &C, CINVMatrix &CINV)
   typedef typename CMatrix::Scalar Scalar;
   typedef typename CMatrix::Index Index;
   // FIXME use sparse vectors ?
-  typedef Matrix<Scalar,Dynamic,1> TmpVec;
+  typedef DMatrix<Scalar,Dynamic,1> TmpVec;
 
   Index rows = C.rows(), cols = C.cols();
 
@@ -120,7 +120,7 @@ void constrained_cg(const TMatrix& A, const CMatrix& C, VectorX& x,
 {
   typedef typename TMatrix::Scalar Scalar;
   typedef typename TMatrix::Index Index;
-  typedef Matrix<Scalar,Dynamic,1>  TmpVec;
+  typedef DMatrix<Scalar,Dynamic,1>  TmpVec;
 
   Scalar rho = 1.0, rho_1, lambda, gamma;
   Index xSize = x.size();

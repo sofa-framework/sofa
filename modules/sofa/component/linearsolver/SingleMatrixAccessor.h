@@ -39,7 +39,7 @@ namespace linearsolver
 
 /** Special case to access a single square matrix.
 */
-class SOFA_CORE_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
+class SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
 {
 public:
     typedef defaulttype::BaseMatrix BaseMatrix;

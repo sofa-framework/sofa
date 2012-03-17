@@ -88,12 +88,12 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
 
     // Solve equation system
 
-//    Matrix schur( matJ * matM * matJ.transpose() + matC );
-//    Vector x,b = vecPhi - matJ * matM.inverse() * vecF;
-//    linearsolver::EigenSparseSquareMatrix ssm(schur);
-//    ssm.ldltDecompose();
-//    ssm.ldltSolve(x,b);
-//    cerr<<"ComplianceSolver::solve, solution vector = " << x << endl;
+    SMatrix Minv = inverseMatrix( matM, 1.0e-6 ); cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+    SMatrix schur( matJ * Minv * matJ.transpose() + matC );
+    SparseLDLT schurDcmp(schur);
+    VectorEigen x = vecPhi.getVectorEigen() - matJ * ( Minv * vecF.getVectorEigen() );
+    schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
+    cerr<<"ComplianceSolver::solve, solution vector = " << x << endl;
 
 
 //    // Apply integration scheme
@@ -156,8 +156,8 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         // ==== mechanical mapping
         if ( node->mechanicalMapping != NULL )
         {
-            Matrix J = toMatrix( node->mechanicalMapping->getJ() );
-            Matrix newJtop;
+            DMatrix J = toMatrix( node->mechanicalMapping->getJ() );
+            DMatrix newJtop;
             newJtop = J * jStack.top();
             jStack.push( newJtop );
             //                    cerr<<"pass "<< pass << ", node " << node->getName() << ", mechanical mapping: " << node->mechanicalMapping->getName() << ", matrix J = " << J << endl;
@@ -173,7 +173,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             linearsolver::SingleMatrixAccessor accessor( &sqmat );
             node->mass->addMToMatrix( mparams, &accessor );
             //                    cerr<<"eigen matrix of the mass: " << sqmat  << endl;
-            Matrix JtMJtop;
+            DMatrix JtMJtop;
             JtMJtop = jStack.top().transpose() * sqmat.eigenMatrix * jStack.top();
             //                    cerr<<"contribution to the mass matrix: " << endl << JtMJtop << endl;
             solver->matM += JtMJtop;  // add J^T M J to the assembled mass matrix
@@ -184,12 +184,12 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         node->getNodeObjects<BaseCompliance>(&compliances);
         if( compliances.size()>0 )
         {
-            Matrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[compliances[0]] );
+            DMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[compliances[0]] );
 
-            Matrix J = Matrix( compOffset.transpose() * jStack.top() ); // shift J
+            DMatrix J = DMatrix( compOffset.transpose() * jStack.top() ); // shift J
             solver->matJ += J;                                          // assemble
 
-            Matrix C = Matrix( compOffset.transpose() * toMatrix(compliances[0]->getMatrix(mparams)) * compOffset ); // shift C
+            DMatrix C = DMatrix( compOffset.transpose() * toMatrix(compliances[0]->getMatrix(mparams)) * compOffset ); // shift C
             SReal alpha = cparams.implicitVelocity(); // implicit velocity factor in the integration scheme
             SReal beta  = cparams.implicitPosition(); // implicit position factor in the integration scheme
             SReal l = alpha * (beta * mparams->dt() + compliances[0]->dampingRatio.getValue() );
@@ -252,7 +252,7 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
             jStack.pop();
         }
     }
-    else
+    else if (pass!=VECTOR_ASSEMBLY)
     {
         cerr<<"ComplianceSolver::ComputeMatrixSizesVisitor::processNodeBottomUp, unknown pass " << pass << endl;
     }
@@ -261,18 +261,18 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
 
 /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
 /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-ComplianceSolver::Matrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMatrix( unsigned rows, unsigned cols, unsigned offset )
+ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMatrix( unsigned rows, unsigned cols, unsigned offset )
 {
-    Matrix m(rows,cols);
+    DMatrix m(rows,cols);
     for(unsigned i=0; i<rows; i++ )
         m.coeffRef(i,offset+i)=1;
     return m;
 }
 
 /// Converts a BaseMatrix to the matrix type used here.
-ComplianceSolver::Matrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( const defaulttype::BaseMatrix* m)
+ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( const defaulttype::BaseMatrix* m)
 {
-    ComplianceSolver::Matrix result(m->rowSize(), m->colSize());
+    ComplianceSolver::DMatrix result(m->rowSize(), m->colSize());
 
     int R = m->getBlockRows();
     int C = m->getBlockCols();
@@ -292,6 +292,31 @@ ComplianceSolver::Matrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( cons
             }
         }
     }
+    return result;
+}
+
+
+/// Converts a BaseMatrix to the matrix type used here.
+ComplianceSolver::SMatrix ComplianceSolver::inverseMatrix( const DMatrix& M, SReal threshold)
+{
+    assert(M.rows()==M.cols());
+    SparseLDLT Mdcmp(M);
+    SMatrix result(M.rows(),M.rows());
+    for( int i=0; i<M.rows(); i++ )
+    {
+        VectorEigen v(M.rows());
+        v.cwiseEqual(0);
+        v(i)=1;
+        Mdcmp.solveInPlace(v);
+        cerr << "ComplianceSolver::inverseMatrix, v = " << v << endl;
+        result.startVec(i);
+        for(unsigned j=0; j<threshold; j++)
+        {
+            if( fabs(v(i))>=threshold )
+                result.insertBack(j,i) = v(i);
+        }
+    }
+    result.finalize();
     return result;
 }
 
