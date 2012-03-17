@@ -220,7 +220,7 @@ public:
         resize(nbRow);
     }
 
-    /// Resize the matrix without preserving the data (the matrix is set to zero)
+    /// Resize the matrix without preserving the data
     void resize(int nbRow)
     {
         eigenVector.resize(nbRow);
@@ -293,8 +293,9 @@ public:
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear()
     {
+        int currentSize = size();
         resize(0);
-        resize(size());
+        resize( currentSize );
     }
 
 
