@@ -43,6 +43,9 @@ namespace linearsolver
 //#define SPARSEMATRIX_CHECK
 //#define SPARSEMATRIX_VERBOSE
 
+/** This is basically a map of map of T, wrapped in a defaulttype::BaseMatrix interface.
+ The const access methods avoid creating the entries when they do not exist.
+*/
 template<typename T>
 class SparseMatrix : public defaulttype::BaseMatrix
 {

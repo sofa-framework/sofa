@@ -63,6 +63,7 @@ protected:
     typedef core::BaseMapping Mapping;
 
     DMatrix matM;      ///< mass matrix
+    DMatrix matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
     DMatrix matJ;      ///< concatenation of the constraint Jacobians
     DMatrix matC;      ///< compliance matrix used to regularize the system
     VectorSofa vecF;      ///< top of the right-hand term: forces
@@ -112,6 +113,9 @@ protected:
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
         /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
         DMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
+
+        /// Return an identity matrix of the given size
+        DMatrix createIdentityMatrix( unsigned size );
 
         /// Converts a BaseMatrix to the matrix type used here.
         DMatrix toMatrix( const defaulttype::BaseMatrix* );

@@ -2,13 +2,14 @@
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"   >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
-    <ComplianceSolver />
+<!--    <ComplianceSolver />-->
     <MechanicalObject template="Vec3d" position="0 0 0   0 -1 0" name="particleDOFs" />
+    <FixedConstraint template="Vec3d" indices="0" />
     <UniformMass />
-    <Node name="extensionsNode" >
+<!--    <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <ExtensionMapping links="0 1" />
-        <UniformCompliance template="Vec1d" compliance="[[1.0]]" />
-    </Node>
+        <UniformCompliance template="Vec1d" compliance="[[0.0]]" />
+    </Node>-->
 </Node>
 </Node>
