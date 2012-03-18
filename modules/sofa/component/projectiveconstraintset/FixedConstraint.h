@@ -35,6 +35,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 #include <set>
 
 namespace sofa
@@ -103,6 +105,8 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
+
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
@@ -137,6 +141,12 @@ protected :
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;
+
+    typedef defaulttype::Mat<DataTypes::deriv_total_size,DataTypes::deriv_total_size,SReal> Block;
+    /// Matrix used in getJ
+//        linearsolver::CompressedRowSparseMatrix<Block> jacobian;
+    linearsolver::CompressedRowSparseMatrix<SReal> jacobian;
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)

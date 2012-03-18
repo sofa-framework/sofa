@@ -28,11 +28,14 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+using std::cerr;
+using std::endl;
 #include <sofa/component/topology/TopologySubsetData.inl>
 
 
@@ -154,7 +157,60 @@ void FixedConstraint<DataTypes>::init()
         }
     }
 
+//  cerr<<"FixedConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
+
 }
+
+/// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
+template <class DataTypes>
+const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const core::MechanicalParams* )
+{
+    unsigned numBlocks = this->mstate->getSize();
+    unsigned blockSize = DataTypes::deriv_total_size;
+    jacobian.resizeBloc( numBlocks*blockSize,numBlocks*blockSize );
+//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
+
+    for(unsigned i=0; i<numBlocks*blockSize; i++ )
+    {
+        jacobian.set(i,i,1);
+    }
+    for(unsigned i=0; i<f_indices.getValue().size(); i++ )
+    {
+//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
+        for(unsigned j=0; j<blockSize; j++)
+            jacobian.set( f_indices.getValue()[i]*blockSize+j, f_indices.getValue()[i]*blockSize+j, 0);
+//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << endl;
+    }
+
+    return &jacobian;
+}
+
+///// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
+//template <class DataTypes>
+//const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const core::MechanicalParams* )
+//{
+//    unsigned numBlocks = this->mstate->getSize();
+//    unsigned blockSize = DataTypes::deriv_total_size;
+//    jacobian.resizeBloc( numBlocks,numBlocks );
+//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
+
+//    Block ident, zero;
+//    for( unsigned i=0; i<blockSize; i++ )
+//        ident(i,i)= (SReal)1;
+
+//    for(unsigned i=0; i<numBlocks; i++ )
+//    {
+//        *jacobian.wbloc(i,i,true) = ident;
+//    }
+//    for(unsigned i=0; i<f_indices.getValue().size(); i++ )
+//    {
+//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
+//        *jacobian.wbloc( f_indices.getValue()[i],f_indices.getValue()[i], true) = zero;
+//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << endl;
+//    }
+
+//    return &jacobian;
+//}
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
@@ -286,6 +342,8 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
             vect->clear(offset + N * (*it) + c);
     }
 }
+
+
 
 
 template <class DataTypes>

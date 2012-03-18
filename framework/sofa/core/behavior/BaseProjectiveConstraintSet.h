@@ -103,6 +103,8 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
 
+    /// Get the (sparse) jacobian matrix, as used in projectResponse.
+    virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* ) {return 0;}
     /// @}
 
 

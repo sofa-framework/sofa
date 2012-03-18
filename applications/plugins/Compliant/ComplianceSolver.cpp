@@ -43,6 +43,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     // tune parameters
     core::ComplianceParams cparams(*params);
     cparams.setMFactor(1.0);
+    cparams.setDt(dt);
     cparams.setImplicitVelocity( implicitVelocity.getValue() );
     cparams.setImplicitPosition( implicitPosition.getValue() );
 
@@ -66,6 +67,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
 
     matM.resize(assembly.sizeM,assembly.sizeM);
+    matP.resize(assembly.sizeM,assembly.sizeM);
     matC.resize(assembly.sizeC,assembly.sizeC);
     matJ.resize(assembly.sizeC,assembly.sizeM);
     vecF.resize(assembly.sizeM);
@@ -75,6 +77,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     this->getContext()->executeVisitor(&assembly(MATRIX_ASSEMBLY));
 
     cerr<<"ComplianceSolver::solve, final M = " << endl << matM << endl;
+    cerr<<"ComplianceSolver::solve, final P = " << endl << matP << endl;
     cerr<<"ComplianceSolver::solve, final C = " << endl << matC << endl;
     cerr<<"ComplianceSolver::solve, final J = " << endl << matJ << endl;
 
@@ -88,12 +91,24 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
 
     // Solve equation system
 
-    SMatrix Minv = inverseMatrix( matM, 1.0e-6 ); cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+    SMatrix Minv = inverseMatrix( matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+    Minv = matP * Minv * matP;
     SMatrix schur( matJ * Minv * matJ.transpose() + matC );
     SparseLDLT schurDcmp(schur);
     VectorEigen x = vecPhi.getVectorEigen() - matJ * ( Minv * vecF.getVectorEigen() );
+    {
+//        cerr<<"ComplianceSolver::solve, Minv = " << endl << Eigen::MatrixXd(Minv) << endl;
+        cerr<<"ComplianceSolver::solve, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
+        cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (Minv * vecF.getVectorEigen()).transpose() << endl;
+        cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( matJ * ( Minv * vecF.getVectorEigen())).transpose() << endl;
+        cerr<<"ComplianceSolver::solve,  vecPhi.getVectorEigen()  = " <<  vecPhi.getVectorEigen().transpose() << endl;
+        cerr<<"ComplianceSolver::solve, right-hand term = " << x << endl;
+    }
     schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
-    cerr<<"ComplianceSolver::solve, solution vector = " << x << endl;
+    cerr<<"ComplianceSolver::solve, constraint forces = " << x << endl;
+    vecF.getVectorEigen() = Minv * ( vecF.getVectorEigen() + matJ.transpose() * x );
+    cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
+
 
 
 //    // Apply integration scheme
@@ -150,7 +165,27 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
         {
             cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-            jStack.push( createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeM, m_offset[node->mechanicalState] ) );
+            ComplianceSolver::DMatrix shiftMatrix = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeM, m_offset[node->mechanicalState] );
+            jStack.push( shiftMatrix );
+
+            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
+            DMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
+            vector<BaseProjectiveConstraintSet*> projections;
+            node->getNodeObjects<BaseProjectiveConstraintSet>(&projections);
+            for(unsigned i=0; i<projections.size(); i++)
+            {
+                if( const defaulttype::BaseMatrix* mat = projections[i]->getJ(mparams) )
+                {
+//                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
+                    projMat = projMat * toMatrix(mat);  // multiply with the projection matrix
+//                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
+//                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
+//                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
+                }
+            }
+            solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
+
+
         }
 
         // ==== mechanical mapping
@@ -269,6 +304,14 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMa
     return m;
 }
 
+ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::createIdentityMatrix( unsigned size )
+{
+    DMatrix m(size,size);
+    for(unsigned i=0; i<size; i++ )
+        m.coeffRef(i,i)=1;
+    return m;
+}
+
 /// Converts a BaseMatrix to the matrix type used here.
 ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( const defaulttype::BaseMatrix* m)
 {
@@ -279,15 +322,15 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( con
     //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::toMatrix, R = " << R << ", C = " << C << endl;
     for(defaulttype::BaseMatrix::RowBlockConstIterator ri= m->bRowsBegin(), end_rows=m->bRowsEnd(); ri!=end_rows; ri++ ) // for each row of blocks
     {
-        for(int i=0; i<R; i++ )   // for each scalar row of the blocks
+        for( defaulttype::BaseMatrix::ColBlockConstIterator ci = ri.begin(), end_cols=ri.end(); ci!=end_cols; ci++  )
         {
-            for( defaulttype::BaseMatrix::ColBlockConstIterator ci = ri.begin(), end_cols=ri.end(); ci!=end_cols; ci++  )
+            const defaulttype::BaseMatrix::BlockConstAccessor& b= ci.bloc();
+            for(int i=0; i<R; i++ )   // for each scalar row of the blocks
             {
-                const defaulttype::BaseMatrix::BlockConstAccessor& b= ci.bloc();
                 for(int j=0; j<C; j++)
                 {
                     //                    cerr<<"ComplianceSolver::toMatrix insert value "<<  b.element(i,j) << " in row " << b.getRow()+i << ", col " << b.getCol()+j << endl;
-                    result.insertBack( b.getRow()+i, b.getCol()+j ) = b.element(i,j);
+                    result.coeffRef( R*b.getRow()+i, C*b.getCol()+j ) = b.element(i,j);
                 }
             }
         }
@@ -305,15 +348,14 @@ ComplianceSolver::SMatrix ComplianceSolver::inverseMatrix( const DMatrix& M, SRe
     for( int i=0; i<M.rows(); i++ )
     {
         VectorEigen v(M.rows());
-        v.cwiseEqual(0);
+        v.fill(0);
         v(i)=1;
         Mdcmp.solveInPlace(v);
-        cerr << "ComplianceSolver::inverseMatrix, v = " << v << endl;
         result.startVec(i);
-        for(unsigned j=0; j<threshold; j++)
+        for(int j=0; j<M.rows(); j++)
         {
-            if( fabs(v(i))>=threshold )
-                result.insertBack(j,i) = v(i);
+            if( fabs(v(j))>=threshold )
+                result.insertBack(j,i) = v(j);
         }
     }
     result.finalize();

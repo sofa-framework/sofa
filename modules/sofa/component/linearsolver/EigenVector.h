@@ -290,12 +290,10 @@ public:
     }
 
 
-    /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
+    /// Set all values to 0
     void clear()
     {
-        int currentSize = size();
-        resize(0);
-        resize( currentSize );
+        eigenVector.setZero();
     }
 
 
