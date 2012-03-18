@@ -74,7 +74,7 @@ protected:
 
 
 
-    typedef enum { COMPUTE_SIZE, MATRIX_ASSEMBLY, VECTOR_ASSEMBLY } Pass;  ///< Symbols of operations to execute by the visitor
+    typedef enum { COMPUTE_SIZE, MATRIX_ASSEMBLY, VECTOR_ASSEMBLY, VECTOR_DISTRIBUTE } Pass;  ///< Symbols of operations to execute by the visitor
 
     /** Visitor used to perform the assembly of M, C, J.
       Proceeds in several passes:<ol>

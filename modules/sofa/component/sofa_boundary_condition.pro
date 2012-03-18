@@ -54,6 +54,8 @@ HEADERS += initBoundaryCondition.h \
            projectiveconstraintset/PartialFixedConstraint.inl \
            projectiveconstraintset/PartialLinearMovementConstraint.h \
            projectiveconstraintset/PartialLinearMovementConstraint.inl \
+           projectiveconstraintset/PointConstraint.h \
+           projectiveconstraintset/PointConstraint.inl \
            projectiveconstraintset/PositionBasedDynamicsConstraint.h \
            projectiveconstraintset/PositionBasedDynamicsConstraint.inl
 
@@ -83,6 +85,7 @@ SOURCES += initBoundaryCondition.cpp \
            projectiveconstraintset/ParabolicConstraint.cpp \
            projectiveconstraintset/PartialFixedConstraint.cpp \
            projectiveconstraintset/PartialLinearMovementConstraint.cpp \
+           projectiveconstraintset/PointConstraint.cpp \
            projectiveconstraintset/PositionBasedDynamicsConstraint.cpp
 
 # Make sure there are no cross-dependencies
