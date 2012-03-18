@@ -167,7 +167,7 @@ const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const cor
 {
     unsigned numBlocks = this->mstate->getSize();
     unsigned blockSize = DataTypes::deriv_total_size;
-    jacobian.resizeBloc( numBlocks*blockSize,numBlocks*blockSize );
+    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 //    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     for(unsigned i=0; i<numBlocks*blockSize; i++ )

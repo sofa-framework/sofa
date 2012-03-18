@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -53,19 +53,14 @@ using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::component::topology;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template <class DataTypes>
-class FixedConstraintInternalData
-{
-};
 
-/** Attach given particles to their initial positions.
+/** Attach given particles to their initial positions. This is a temporary class, somehow redundant with FixedConstraint, simplified to avoid the memory leak issue. @todo Remove one of the two classes
 */
 template <class DataTypes>
-class FixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class PointConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PointConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -81,30 +76,21 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
-protected:
-    FixedConstraintInternalData<DataTypes> data;
-    friend class FixedConstraintInternalData<DataTypes>;
-
-public:
     SetIndex f_indices;
-    Data<bool> f_fixAll;
     Data<double> _drawSize;
 protected:
-    FixedConstraint();
+    PointConstraint();
 
-    virtual ~FixedConstraint();
+    virtual ~PointConstraint();
 public:
-    void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
 
     // -- Constraint interface
     void init();
 
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
     virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
 
@@ -113,56 +99,31 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
-
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        FixedConstraint<DataTypes> *fc;
-    };
 
 protected :
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
-    /// Handler for subset Data
-    FCPointHandler* pointHandler;
 
     /// Matrix used in getJ
+//        linearsolver::CompressedRowSparseMatrix<SReal> jacobian;
     linearsolver::SparseMatrix<SReal> jacobian;
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec1dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec6dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec1fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec6fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

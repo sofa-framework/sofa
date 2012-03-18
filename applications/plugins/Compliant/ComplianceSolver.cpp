@@ -106,23 +106,26 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     }
     schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
     cerr<<"ComplianceSolver::solve, constraint forces = " << x << endl;
-    vecF.getVectorEigen() = Minv * ( vecF.getVectorEigen() + matJ.transpose() * x );
-    cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
+    vecF.getVectorEigen() = Minv * ( vecF.getVectorEigen() + matJ.transpose() * x ); // dv = M^{-1}.( f_ext + J^T.lambda )   stored in vector f
+    cerr<<"ComplianceSolver::solve, velocity change = " << vecF << endl;
+
+    this->getContext()->executeVisitor(&assembly(VECTOR_DISTRIBUTE));  // set dv in each MechanicalState
 
 
+    // Apply integration scheme
 
-//    // Apply integration scheme
-//    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-//    VMultiOp ops;
-//    ops.resize(2);
-//    ops[0].first = vel2;
-//    ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-//    ops[0].second.push_back(std::make_pair(acc.id(),dt));
-//    ops[1].first = pos2;
-//    ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-//    ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp ops;
+    ops.resize(2);
+    ops[0].first = pos2; // p = p + v*h + dv*h*beta
+    ops[0].second.push_back(std::make_pair(pos.id(),1.0));
+    ops[0].second.push_back(std::make_pair(vel.id(),dt));
+    ops[0].second.push_back(std::make_pair(  f.id(),dt*implicitPosition.getValue()));
+    ops[1].first = vel2; // v = v + dv
+    ops[1].second.push_back(std::make_pair(vel.id(),1.0));
+    ops[1].second.push_back(std::make_pair(  f.id(),1.0));
 
-//    vop.v_multiop(ops);
+    vop.v_multiop(ops);
 
 
 }
@@ -258,9 +261,33 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         }
 
     }
+    else if (pass==VECTOR_DISTRIBUTE)
+    {
+        typedef defaulttype::BaseVector  SofaVector;
+
+        // ==== independent DOFs
+        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+        {
+            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
+
+            node->mechanicalState->copyFromBaseVector(core::VecDerivId::force(), &solver->vecF, m_offset[node->mechanicalState]);
+        }
+
+//        // ==== compliance
+//        vector<BaseCompliance*> compliances;
+//        node->getNodeObjects<BaseCompliance>(&compliances);
+//        if( compliances.size()>0 )
+//        {
+//            cerr<<"pass "<< pass << ", node " << node->getName() << ", compliance: " << compliances[0]->getName() << endl;
+
+//            compliances[0]->setConstraint( &cparams, core::VecDerivId::force() );
+//            node->mechanicalState->copyFromBaseVector(core::VecDerivId::force(), &solver->vecPhi, c_offset[compliances[0]]);
+//        }
+
+    }
     else
     {
-        cerr<<"ComplianceSolver::ComputeMatrixSizesVisitor::processNodeTopDown, unknown pass " << pass << endl;
+        cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown, unknown pass " << pass << endl;
     }
 
     return RESULT_CONTINUE;
@@ -287,9 +314,15 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
             jStack.pop();
         }
     }
-    else if (pass!=VECTOR_ASSEMBLY)
+    else if (pass==VECTOR_ASSEMBLY )
     {
-        cerr<<"ComplianceSolver::ComputeMatrixSizesVisitor::processNodeBottomUp, unknown pass " << pass << endl;
+    }
+    else if (pass==VECTOR_DISTRIBUTE )
+    {
+    }
+    else
+    {
+        cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp, unknown pass " << pass << endl;
     }
 
 }
