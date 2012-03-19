@@ -71,6 +71,7 @@ protected:
 
     Data<SReal>  implicitVelocity; ///< the \f$ \alpha \f$ parameter of the integration scheme
     Data<SReal>  implicitPosition; ///< the \f$ \beta  \f$ parameter of the integration scheme
+    Data<bool>   verbose;        ///< print a lot of debug info
 
 
 

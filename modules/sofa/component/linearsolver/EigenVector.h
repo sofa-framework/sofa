@@ -297,15 +297,15 @@ public:
     }
 
 
-    friend std::ostream& operator << (std::ostream& out, const EigenVector<double>& v )
-    {
-        int ny = v.size();
-        for (int y=0; y<ny; ++y)
-        {
-            out << " " << v.element(y);
-        }
-        return out;
-    }
+//    friend std::ostream& operator << (std::ostream& out, const EigenVector<double>& v )
+//    {
+//        int ny = v.size();
+//        for (int y=0;y<ny;++y)
+//        {
+//                out << " " << v.element(y);
+//        }
+//        return out;
+//    }
 
     static const char* Name();
 

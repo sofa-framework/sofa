@@ -31,6 +31,7 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matC.resize(state->getMatrixSize(),state->getMatrixSize());
+//    cerr<<"UniformCompliance<DataTypes>::reinit, compliance.getValue()[0][0] = " << compliance.getValue()[0][0] << endl;
     for(unsigned i=0; i<state->getMatrixSize(); i++)
     {
         matC.set(i,i,compliance.getValue()[0][0]);
@@ -50,7 +51,7 @@ void UniformCompliance<DataTypes>::reinit()
 template<class DataTypes>
 void UniformCompliance<DataTypes>::setConstraint(const core::ComplianceParams* params, core::MultiVecDerivId fId )
 {
-    const DataVecCoord *xd = params->readX(this->mstate);
+//    const DataVecCoord *xd = params->readX(this->mstate);
     helper::ReadAccessor< DataVecCoord > x = params->readX(this->mstate);
     helper::ReadAccessor< DataVecDeriv > v = params->readV(this->mstate);
     helper::WriteAccessor< DataVecDeriv > f = *fId[this->mstate.get(params)].write();
