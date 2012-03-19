@@ -368,6 +368,9 @@ defineTest(include-declarations) {
 	else : !isEmpty(directory) : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
 		load($$ROOT_SRC_DIR/$$directory/$$name)
 	}
+	else : !isEmpty(directory) : exists($$directory/$${name}.prf) {
+		load($$directory/$$name)
+	}
 	else : error(include-declarations: cannot find $$name (dir=$$directory, FEATURES_DIR=$$FEATURES_DIR, ROOT_SRC_DIR=$$ROOT_SRC_DIR))
 }
 
@@ -541,6 +544,34 @@ defineTest(usePlugin) {
 }
 
 ##
+# This function imports all the declarations necessary to use or build the specified application.
+#
+defineTest(useApp) {
+    project = $$1
+    path = $$2
+    include-declarations($${project}-dependencies, $$path)
+    queue *= $$pluginDependencies
+    clear(pluginDependencies)
+    analysed *= project
+
+	for(depth, 1..100) {
+		isEmpty(queue): break()
+
+		for(plugin, queue) {
+			!contains(analysed, $$plugin) {
+				include-declarations($${plugin}-dependencies, $$PLUGINS_PATH/$$plugin)
+				newqueue *= $$pluginDependencies
+				clear(pluginDependencies)
+				analysed *= plugin
+			}
+		}
+		queue = $$newqueue
+		clear(newqueue)
+	}
+	export(pluginDependencies)
+}
+
+##
 # This function configures the current project file to build an artifact belonging
 # to the specified plugin.
 #
@@ -550,4 +581,16 @@ defineTest(defineAsPlugin) {
 	usePlugin($$PLUGIN_NAME)
 	export(TEMPLATE)
 	export(PLUGIN_NAME)
+}
+
+##
+# This function configures the current project file to build an artifact belonging
+# to the specified application.
+#
+defineTest(defineAsApp) {
+	APP_NAME = $$1
+	TEMPLATE = app
+	useApp($$APP_NAME, $$_PRO_FILE_PWD_)
+	export(TEMPLATE)
+	export(APP_NAME)
 }
