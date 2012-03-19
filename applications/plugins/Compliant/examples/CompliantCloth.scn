@@ -3,15 +3,15 @@
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
-    <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="1" rotation="90 0 0 " scale="1 1 0" />
-    <MeshTopology name="mesh" src="@loader" />2
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 1.005 0.005  " />
     <UniformMass />
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <ExtensionMapping edges="@../mesh.edges" />
-        <UniformCompliance template="Vec1d" compliance="[[0.00001]]" dampingRatio="0.1"  />
+        <UniformCompliance template="Vec1d" compliance="[[0.0000001]]" dampingRatio="0.1"  />
     </Node>
 </Node>
 </Node>

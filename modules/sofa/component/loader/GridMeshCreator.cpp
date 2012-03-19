@@ -54,12 +54,41 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
 }
 
 
+void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
+{
+    if( uniqueEdges.find(Edge(b,a))==uniqueEdges.end() ) // symmetric not found
+        uniqueEdges.insert(Edge(a,b));                   // redundant elements are automatically pruned
+}
+
+void GridMeshCreator::insertTriangle(unsigned a, unsigned b, unsigned c)
+{
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+
+    my_triangles.push_back(Triangle( a,b,c ) );
+    insertUniqueEdge(a,b);
+    insertUniqueEdge(b,c);
+    insertUniqueEdge(c,a);
+
+    triangles.endEdit();
+}
+
+void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
+{
+    helper::vector<Quad >& my_quads = *(quads.beginEdit());
+
+    my_quads.push_back( Quad( a,b,c,d ) );
+    insertUniqueEdge(a,b);
+    insertUniqueEdge(b,c);
+    insertUniqueEdge(c,d);
+    insertUniqueEdge(d,a);
+
+    quads.endEdit();
+}
 
 
 bool GridMeshCreator::load()
 {
     helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (positions);
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
     unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -72,20 +101,30 @@ bool GridMeshCreator::load()
         }
     }
 
-    if( trianglePattern.getValue()==1 ) // alternate
+    uniqueEdges.clear();
+
+    if( trianglePattern.getValue()==0 ) // quads
+        for(unsigned y=0; y<numY-1; y++ )
+        {
+            for(unsigned x=0; x<numX-1; x++ )
+            {
+                insertQuad( vert(x,y), vert(x+1,y), vert(x+1,y+1), vert(x,y+1) );
+            }
+        }
+    else if( trianglePattern.getValue()==1 ) // alternate
         for(unsigned y=0; y<numY-1; y++ )
         {
             for(unsigned x=0; x<numX-1; x++ )
             {
                 if( (x+y)%2 == 0 )
                 {
-                    my_triangles.push_back( Triangle( vert(x,y), vert(x+1,y), vert(x+1,y+1) ) );
-                    my_triangles.push_back( Triangle( vert(x,y), vert(x+1,y+1), vert(x,y+1)   ) );
+                    insertTriangle( vert(x,y), vert(x+1,y), vert(x+1,y+1) );
+                    insertTriangle( vert(x,y), vert(x+1,y+1), vert(x,y+1)   ) ;
                 }
                 else
                 {
-                    my_triangles.push_back( Triangle( vert(x  ,y), vert(x+1,y)  , vert(x,y+1) ) );
-                    my_triangles.push_back( Triangle( vert(x+1,y), vert(x+1,y+1), vert(x,y+1)    ) );
+                    insertTriangle( vert(x  ,y), vert(x+1,y)  , vert(x,y+1) ) ;
+                    insertTriangle( vert(x+1,y), vert(x+1,y+1), vert(x,y+1)    ) ;
                 }
             }
         }
@@ -94,8 +133,8 @@ bool GridMeshCreator::load()
         {
             for(unsigned x=0; x<numX-1; x++ )
             {
-                my_triangles.push_back( Triangle( vert(x,y), vert(x+1,y), vert(x+1,y+1) ) );
-                my_triangles.push_back( Triangle( vert(x,y), vert(x+1,y+1), vert(x,y+1)   ) );
+                insertTriangle( vert(x,y), vert(x+1,y), vert(x+1,y+1) ) ;
+                insertTriangle( vert(x,y), vert(x+1,y+1), vert(x,y+1)   ) ;
             }
         }
     else if( trianglePattern.getValue()==3 ) // downward
@@ -103,10 +142,15 @@ bool GridMeshCreator::load()
         {
             for(unsigned x=0; x<numX-1; x++ )
             {
-                my_triangles.push_back( Triangle( vert(x  ,y), vert(x+1,y)  , vert(x,y+1) ) );
-                my_triangles.push_back( Triangle( vert(x+1,y), vert(x+1,y+1), vert(x,y+1)    ) );
+                insertTriangle( vert(x  ,y), vert(x+1,y)  , vert(x,y+1) ) ;
+                insertTriangle( vert(x+1,y), vert(x+1,y+1), vert(x,y+1)    ) ;
             }
         }
+
+    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    for( std::set<Edge>::const_iterator i=uniqueEdges.begin(),iend=uniqueEdges.end(); i!=iend; i++ )
+        my_edges.push_back( *i );
+    edges.endEdit();
 
     return true;
 
