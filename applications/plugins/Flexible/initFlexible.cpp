@@ -84,6 +84,11 @@ const char* getModuleComponentList()
 
 }
 
+SOFA_LINK_CLASS(ShepardShapeFunction)
+SOFA_LINK_CLASS(LinearMapping)
+SOFA_LINK_CLASS(DefGradientMechanicalObject)
+SOFA_LINK_CLASS(StrainMechanicalObject)
+
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 //SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 //SOFA_LINK_CLASS(MyBehaviorModel)

@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef COMPLIANT_BaseJacobian_H
-#define COMPLIANT_BaseJacobian_H
+#ifndef FLEXIBLE_BaseJacobian_H
+#define FLEXIBLE_BaseJacobian_H
+
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {
@@ -51,90 +53,18 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
 
+    typedef Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
+
     // Called in Apply
     virtual void addapply( OutCoord& result, const InCoord& data )=0;
     // Called in ApplyJ
     virtual void addmult( OutDeriv& result,const InDeriv& data )=0;
     // Called in ApplyJT
     virtual void addMultTranspose( InDeriv& result, const OutDeriv& data )=0;
+    // Called in getJ
+    virtual MatBlock getJ()=0;
 };
 
-
-/** Template class used to implement a sparse jacobian matrix
-currently: fixed number of columns
-TO DO: change this to sparseEigenMatrix?
-TO DO: implement masks
-*/
-
-template<class BaseJacobianBlock,int nbCol_>
-class BaseJacobianMatrix
-{
-public:
-    typedef typename BaseJacobianBlock::InCoord InCoord;
-    typedef typename BaseJacobianBlock::InDeriv InDeriv;
-    typedef typename BaseJacobianBlock::InVecCoord InVecCoord;
-    typedef typename BaseJacobianBlock::InVecDeriv InVecDeriv;
-
-    typedef typename BaseJacobianBlock::OutCoord OutCoord;
-    typedef typename BaseJacobianBlock::OutDeriv OutDeriv;
-    typedef typename BaseJacobianBlock::OutVecCoord OutVecCoord;
-    typedef typename BaseJacobianBlock::OutVecDeriv OutVecDeriv;
-    typedef typename BaseJacobianBlock::Real Real;
-
-    enum { nbCol = nbCol_ };
-    unsigned int nbRow;
-
-    typedef vector<Vec<nbCol,BaseJacobianBlock> > Matrix;
-    typedef vector<Vec<nbCol,unsigned int> > Ref;
-
-    Matrix matrix;
-    const Ref* ref;
-
-    void resize(int nbRow_=0) { nbRow=nbRow_; matrix.resize(nbRow); }
-
-    void init(const Ref* ref_)
-    {
-        ref=ref_;
-        resize(ref->size());
-    }
-
-    void apply( OutVecCoord& result, const InVecCoord& data )
-    {
-        for(unsigned int i=0; i<nbRow; i++)
-        {
-            result[i]=OutCoord();
-            for(unsigned int j=0; j<nbCol; j++)
-            {
-                unsigned int index=(*ref)[i][j];
-                matrix[i][j].addapply(result[i],data[index]);
-            }
-        }
-    }
-
-    void mult( OutVecDeriv& result,const InVecDeriv& data )
-    {
-        for(unsigned int i=0; i<nbRow; i++)
-        {
-            result[i]=OutDeriv();
-            for(unsigned int j=0; j<nbCol; j++)
-            {
-                unsigned int index=(*ref)[i][j];
-                matrix[i][j].addmult(result[i],data[index]);
-            }
-        }
-    }
-
-    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data )
-    {
-        for(unsigned int i=0; i<nbRow; i++)
-            for(unsigned int j=0; j<nbCol; j++)
-            {
-                unsigned int index=(*ref)[i][j];
-                matrix[i][j].addMultTranspose(result[index],data[i]);
-            }
-    }
-
-};
 
 
 
