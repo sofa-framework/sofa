@@ -26,6 +26,8 @@
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
 #include <sofa/helper/system/config.h>
+#include <iostream>
+
 namespace sofa
 {
 
@@ -171,6 +173,17 @@ public:
     */
     /// Reset the value of element i to 0
     virtual void clear(int i) { set(i,0.0); }
+
+    friend std::ostream& operator << (std::ostream& out, const BaseVector& v )
+    {
+        int ny = v.size();
+        for (int y=0; y<ny; ++y)
+        {
+            out << " " << v.element(y);
+        }
+        return out;
+    }
+
 };
 
 } // nampespace defaulttype

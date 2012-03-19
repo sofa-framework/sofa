@@ -48,6 +48,8 @@
 
 #include <assert.h>
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 #include <sofa/component/topology/TopologyData.inl>
 
