@@ -105,6 +105,12 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 
     contacts.clear();
 
+    if (model1->getContactStiffness(0) == 0 || model2->getContactStiffness(0) == 0)
+    {
+        serr << "Disabled FrictionContact with " << (outputs.size()) << " collision points." << sendl;
+        return;
+    }
+
     contacts.reserve(outputs.size());
 
     int SIZE = outputs.size();
