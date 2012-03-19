@@ -36,6 +36,9 @@
 
 /** \mainpage
   Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix.
+
+  See sofa::component::odesolver::ComplianceSolver and sofa::core::behavior::BaseCompliance for more detail.
+
   */
 
 #endif // INITCompliant_H
