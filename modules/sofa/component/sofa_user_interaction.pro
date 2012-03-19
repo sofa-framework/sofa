@@ -8,6 +8,7 @@ DEFINES += SOFA_BUILD_USER_INTERACTION
 HEADERS += initUserInteraction.h \
            collision/RayTraceDetection.h \
            collision/RayContact.h \
+           collision/DisabledContact.h \
            collision/ComponentMouseInteraction.h \
            collision/ComponentMouseInteraction.inl \
            collision/MouseInteractor.h \
@@ -43,6 +44,7 @@ HEADERS += initUserInteraction.h \
 SOURCES += initUserInteraction.cpp \
            collision/RayTraceDetection.cpp \
            collision/RayContact.cpp \
+           collision/DisabledContact.cpp \
            collision/ComponentMouseInteraction.cpp \
            collision/MouseInteractor.cpp \
            collision/AttachBodyPerformer.cpp \
