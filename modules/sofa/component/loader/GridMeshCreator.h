@@ -61,6 +61,13 @@ protected:
 
     ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.
     unsigned vert( unsigned x, unsigned y) { return x + y*resolution.getValue()[0]; }
+
+    // To avoid edge redundancy, we insert the edges to a set, an then dump the set. Edge (a,b) is considered equal to (b,a), so only one of them is inserted
+    std::set<Edge> uniqueEdges;                                ///< edges without redundancy
+    void insertUniqueEdge(unsigned a, unsigned b);             ///< insert an edge if it is not redundant
+    void insertTriangle(unsigned a, unsigned b, unsigned c);   ///< insert a triangle (no reduncy checking !) and unique edges
+    void insertQuad(unsigned a, unsigned b, unsigned c, unsigned d);   ///< insert a quad (no reduncy checking !) and unique edges
+
 };
 
 

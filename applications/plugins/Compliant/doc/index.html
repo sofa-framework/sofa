@@ -1,9 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
-  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Compliant plugin</title>
 
   
   
@@ -12,7 +11,8 @@
     </script>
   
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script></head><body>
+    </script>
+</head><body>
 <h1 style="text-align: center;">Compliant</h1>
 
 <table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
@@ -47,7 +47,58 @@ This plugin introduces a constraint-based approach. Hard constraints
 are solved using a classical Delassus operator \( J M^{-1} J^T \),
 while soft constraints
 are handled by adding compliance to the same operator: \( J M^{-1} J^T
-+ C \). More info is given in the <a href="code/html/index.html">code documentation</a>, which <a href="#Code_documentation_">you can generate</a> using doxygen.<br>
++ C \). More info is given in the <a href="code/html/index.html">code
+documentation</a>, which <a href="#Code_documentation_">you can
+generate</a> using doxygen.<br>
+
+<br>
+
+This is inspired from <span style="font-style: italic;">Servin,
+Lacoursière, Melin, <a href="http://www.ep.liu.se/ecp/019/005/ecp01905.pdf">Interactive
+Simulation of Elastic Deformable Materials</a></span>&nbsp; and
+generalized in a tunable implicit integration scheme: \[ \begin{array}{ccc} <br>
+\Delta v &amp;=&amp; h.M^{-1}.(\alpha
+f_{n+1} + (1-\alpha) f_n) \\ <br>
+\Delta x &amp;=&amp; h.(\beta v_{n+1} +
+(1-\beta) v_n) <br>
+\end{array} \] <br>
+
+where  \( M \) is the mass matrix, \( h \) is the time step, \( \alpha \) is the implicit velocity
+factor, and \( \beta \) is the implicit position factor.&nbsp;
+The corresponding dynamic equation is:
+  \[ \left( \begin{array}{cc} <br>
+M &amp; -J^T \\<br>
+&nbsp;J &amp; \frac{1}{l} C \end{array}\right)
+      <br>
+\left( \begin{array}{c} <br>
+\delta v \\ \bar\lambda <br>
+\end{array}\right)
+    = \left( \begin{array}{c} <br>
+f \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
+\end{array}\right) \]
+    <br>
+where \( \phi \) is the constraint violation, \( J \) the constraint
+Jacobian matrix, \( C \) is the constraint compliance matrix (i.e.
+inverse of constraint stiffness), \( l=\alpha(h \beta + d) \) is a term
+related to implicit integration and constraint damping, and \(
+\bar\lambda \) is the average constraint forces, consistently with the
+implicit velocity integration. <br>
+A Shur complement is used to compute the constraint forces, then these
+are added to the external forces to obtain the final velocity
+increment, and the positions are updated according to the implicit
+scheme: \[ \begin{array}{ccc} <br>
+\left( JPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &amp;=&amp;
+-\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - J M^{-1} f \\ <br>
+\Delta v  &amp;=&amp;  P M^{-1}( f + J^T \bar\lambda ) \\
+                                 <br>
+\Delta x  &amp;=&amp;  h( v + \beta \Delta v )
+  <br>
+\end{array} \]
+where \( P \) is the projection matrix corresponding to the projective constraints applied to the independent DOFs.
+
+<br>
+
+<br>
 
 <br>
 
@@ -70,11 +121,7 @@ are handled by adding compliance to the same operator: \( J M^{-1} J^T
   <li>the documentation starts in <span style="text-decoration: underline;">doc/index.html</span> and it is
 linked to the <a href="code/html/index.html">code documentation</a><br>
   </li>
-  <li>the examples are in <span style="text-decoration: underline;">examples/</span>
-. The first one is<span style="text-decoration: underline;"></span> <a href="../examples/MyPlugin.scn">MyPlugin.scn</a>, and when runSOFA
-opens it, an <a href="../examples/MyPlugin.html">html page</a> pops
-up, with a link to the plugin documentation.<br>
-  </li>
+  
 </ul>
 
 <br>
@@ -133,15 +180,17 @@ choice.<br>
 
 <h4><a name="Code_documentation_"></a>Code documentation </h4>
 
-can be generated using <a href="http://www.stack.nl/%7Edimitri/doxygen/">doxygen</a>. In Unix systems, simply type <span style="font-family: monospace;">doxygen Doxyfile</span> in the doc directory.<br>
+can be generated using <a href="http://www.stack.nl/%7Edimitri/doxygen/">doxygen</a>. In Unix
+systems, simply type <span style="font-family: monospace;">doxygen
+Doxyfile</span> in the doc directory.<br>
 
 <br>
 
 <h4><a name="LaTeX_formulas"></a>LaTeX formulas</h4>
 
 can be inserted in this html document thanks to the <a href="http://www.mathjax.org/">mathjax</a> config and
-script included in the header. Basically, a \( \LaTeX \) formula starts
-with <span style="font-weight: bold;">\(</span> and ends with <span style="font-weight: bold;">\)</span><br>
+script included in the header. Basically, an inline \( \LaTeX \) formula starts
+with <span style="font-weight: bold;">\(</span> and ends with <span style="font-weight: bold;">\)</span>, while a centered formula on a separate line is bracketed using <span style="font-weight: bold;">\[</span> and <span style="font-weight: bold;">\]</span>&nbsp; .<br>
 
 <br>
 
