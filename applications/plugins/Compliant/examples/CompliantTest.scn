@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.001" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
@@ -8,8 +8,8 @@
     <UniformMass />
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-        <ExtensionMapping links="0 1  " />
-        <UniformCompliance template="Vec1d" compliance="[[1.0]]" dampingRatio="0.1"  />
+        <ExtensionMapping edges="0 1  " />
+        <UniformCompliance template="Vec1d" compliance="[[0.0]]" dampingRatio="0.1"  />
     </Node>
 </Node>
 </Node>
