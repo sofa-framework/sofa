@@ -91,6 +91,8 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/);
 
+    virtual bool isPrerendered() {return prerendered;};
+
     virtual helper::gl::FrameBufferObject* getFBO() {return fbo;};
     bool hasFilledFbo();
     std::string getOutputName();
