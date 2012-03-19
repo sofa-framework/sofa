@@ -10,7 +10,10 @@ SOURCES = initFlexible.cpp\
     BaseShapeFunction.cpp \
     ExtensionMapping.cpp \
     ShepardShapeFunction.cpp \
-    LinearMapping.cpp
+    LinearMapping.cpp \
+    DeformationGradientTypes.cpp \
+    StrainTypes.cpp \
+    GreenStrainMapping.cpp \
 
 HEADERS = initFlexible.h \
     BaseJacobian.h \
@@ -22,7 +25,12 @@ HEADERS = initFlexible.h \
     LinearMapping.inl \
     BaseJacobian.h \
     LinearJacobianBlock.h \
-    LinearJacobianBlock.inl
+    LinearJacobianBlock.inl \
+    DeformationGradientTypes.h \
+    StrainTypes.h \
+    GreenStrainMapping.h \
+    GreenStrainMapping.inl \
+
 
 README_FILE = Flexible.txt
 
