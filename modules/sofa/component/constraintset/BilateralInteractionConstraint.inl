@@ -360,15 +360,17 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vec
 
     if (!merge.getValue())
     {
+        prevForces.resize(minp);
         for (unsigned pid=0; pid<minp; pid++)
         {
-            resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
+            resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
             offset += 3;
         }
     }
     else
     {
-        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
+        prevForces.resize(1);
+        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[0]);
         offset +=3;
     }
 }
