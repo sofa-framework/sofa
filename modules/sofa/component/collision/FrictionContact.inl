@@ -56,6 +56,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionMod
     , m_constraint(NULL)
     , parent(NULL)
     , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
+    , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
@@ -144,6 +145,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
         MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping();
         m_constraint = sofa::core::objectmodel::New<constraintset::UnilateralInteractionConstraint<Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
+        m_constraint->setCustomTolerance( tol.getValue() );
     }
 
     int size = contacts.size();

@@ -93,8 +93,18 @@ void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpara
         for (unsigned i=0; i<x.size(); i++ )
             points.push_back(x[i].getCenter());
     else
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            points.push_back(x[*it].getCenter());
+    {
+        if( x.size() < indices.size() )
+        {
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[indices[i]].getCenter());
+        }
+        else
+        {
+            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                points.push_back(x[*it].getCenter());
+        }
+    }
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));

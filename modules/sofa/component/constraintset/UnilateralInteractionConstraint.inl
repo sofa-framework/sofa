@@ -324,7 +324,9 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
         if(c.mu > 0.0)
         {
 //			bool& temp = contactsStatus.at(i);
-            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            ucrwf->tolerance = customTolerance;
+            resTab[offset] = ucrwf;
 
             // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
 //			resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces, &contactsStatus[i]);
@@ -348,6 +350,7 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive()
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+//	return; // TEMP
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);

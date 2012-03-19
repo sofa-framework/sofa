@@ -68,7 +68,7 @@ inline float sign(float &toto)
 class BilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
-    BilateralConstraintResolution(std::deque<double>* vec=NULL) : _vec(vec) {}
+    BilateralConstraintResolution(double* initF=NULL) : _f(initF) {}
     virtual void resolution(int line, double** w, double* d, double* force)
     {
         force[line] -= d[line] / w[line][line];
@@ -76,28 +76,28 @@ public:
 
     virtual void init(int line, double** /*w*/, double* force)
     {
-        if(_vec && _vec->size()) { force[line] = _vec->front(); _vec->pop_front(); }
+        if(_f) { force[line] = *_f; }
     }
 
     virtual void initForce(int line, double* force)
     {
-        if(_vec && _vec->size()) { force[line] = _vec->front(); _vec->pop_front(); }
+        if(_f) { force[line] = *_f; }
     }
 
     void store(int line, double* force, bool /*convergence*/)
     {
-        if(_vec) _vec->push_back(force[line]);
+        if(_f) *_f = force[line];
     }
 
 protected:
-    std::deque<double>* _vec;
+    double* _f;
 };
 
 class BilateralConstraintResolution3Dof : public core::behavior::ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(std::vector<double>* vec=NULL) : _vec(vec) { nbLines=3; }
+    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec=NULL) : _f(vec) { nbLines=3; }
     virtual void init(int line, double** w, double *force)
     {
         sofa::defaulttype::Mat<3,3,double> temp;
@@ -113,21 +113,19 @@ public:
 
         invertMatrix(invW, temp);
 
-        if(_vec && _vec->size()>=3)
+        if(_f)
         {
-            force[line  ] = (*_vec)[0];
-            force[line+1] = (*_vec)[1];
-            force[line+2] = (*_vec)[2];
+            for(int i=0; i<3; i++)
+                force[line+i] = (*_f)[i];
         }
     }
 
     virtual void initForce(int line, double* force)
     {
-        if(_vec && _vec->size()>=3)
+        if(_f)
         {
-            force[line  ] =  (*_vec)[0];
-            force[line+1] =  (*_vec)[1];
-            force[line+2] =  (*_vec)[2];
+            for(int i=0; i<3; i++)
+                force[line+i] = (*_f)[i];
         }
     }
 
@@ -135,7 +133,6 @@ public:
     {
         for(int i=0; i<3; i++)
         {
-            //	force[line+i] = 0;
             for(int j=0; j<3; j++)
                 force[line+i] -= d[line+j] * invW[i][j];
         }
@@ -143,19 +140,16 @@ public:
 
     void store(int line, double* force, bool /*convergence*/)
     {
-        if(_vec)
+        if(_f)
         {
-            _vec->clear();
-            _vec->resize(3);
-            (*_vec)[0] = force[line];
-            (*_vec)[1] = force[line+1];
-            (*_vec)[2] = force[line+2];
+            for(int i=0; i<3; i++)
+                (*_f)[i] = force[line+i];
         }
     }
 
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
-    std::vector<double>* _vec;
+    sofa::defaulttype::Vec3d* _f;
 };
 
 template<class DataTypes>
@@ -193,7 +187,7 @@ protected:
     Data<int> activateAtIteration;
     Data<bool> merge;
     Data<bool> derivative;
-    std::vector<double> prevForces;
+    std::vector<defaulttype::Vec3d> prevForces;
 
 
     // grouped square constraints

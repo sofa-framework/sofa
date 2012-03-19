@@ -168,6 +168,7 @@ protected:
     sofa::helper::vector<Contact> contacts;
     Real epsilon;
     bool yetIntegrated;
+    double customTolerance;
 
     PreviousForcesContainer prevForces;
     bool* contactsStatus;
@@ -192,6 +193,7 @@ protected:
         , epsilon(Real(0.001))
         , yetIntegrated(false)
         , contactsStatus(NULL)
+        , customTolerance(0.0)
     {
     }
 
@@ -200,6 +202,7 @@ protected:
         , epsilon(Real(0.001))
         , yetIntegrated(false)
         , contactsStatus(NULL)
+        , customTolerance(0.0)
     {
     }
 
@@ -207,6 +210,7 @@ protected:
         : epsilon(Real(0.001))
         , yetIntegrated(false)
         , contactsStatus(NULL)
+        , customTolerance(0.0)
     {
     }
 
@@ -216,6 +220,8 @@ protected:
             delete[] contactsStatus;
     }
 public:
+    void setCustomTolerance(double tol) { customTolerance = tol; }
+
     void clear(int reserve = 0)
     {
         contacts.clear();
