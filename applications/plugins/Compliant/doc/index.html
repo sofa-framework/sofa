@@ -1,26 +1,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-  
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>Plugin example</title>
 
   
-    
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
+  
+
+  
+  
   <script type="text/x-mathjax-config">
       MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
     </script>
-    
+  
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
-</head><body>
+    </script></head><body>
 <h1 style="text-align: center;">Compliant</h1>
 
 <table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
 
   <tbody>
     <tr align="center">
-      <td style="vertical-align: top;">Representative image of the
-Compliant plugin<br>
+      <td style="vertical-align: top;">Snapshot of CompliantCloth.scn<br>
       </td>
     </tr>
     <tr align="center">
@@ -45,8 +44,10 @@ rights</a><br>
 <h2><a name="Introduction"></a>Introduction</h2>
 
 This plugin introduces a constraint-based approach. Hard constraints
-are solved using a classical Delassus operator \( J M^{-1} J^T \), while soft constraints
-are handled by adding compliance to the same operator:  \( J M^{-1} J^T + C \).<br>
+are solved using a classical Delassus operator \( J M^{-1} J^T \),
+while soft constraints
+are handled by adding compliance to the same operator: \( J M^{-1} J^T
++ C \). More info is given in the <a href="code/html/index.html">code documentation</a>, which <a href="#Code_documentation_">you can generate</a> using doxygen.<br>
 
 <br>
 
@@ -54,8 +55,8 @@ are handled by adding compliance to the same operator:  \( J M^{-1} J^T + C \).<
 
 <ul>
 
-  <li>ComplianceTest.scn : a simple pendulum with one particle.</li>
-  <li>ComplianceCloth.scn&nbsp; : a cloth-like triangle structure<br>
+  <li>CompliantTest.scn : a simple pendulum with one particle.</li>
+  <li>CompliantCloth.scn&nbsp; : a cloth-like triangle structure<br>
   </li>
 </ul>
 
@@ -87,7 +88,7 @@ property and rights</h2>
     <tr>
       <td style="vertical-align: top;">Authors<br>
       </td>
-      <td style="vertical-align: top;">François Faure,&#8230;<br>
+      <td style="vertical-align: top;">François Faure and...<br>
       </td>
     </tr>
     <tr>
@@ -127,6 +128,20 @@ choice.<br>
 </table>
 
 <br>
+
+<h2>HowTo</h2>
+
+<h4><a name="Code_documentation_"></a>Code documentation </h4>
+
+can be generated using <a href="http://www.stack.nl/%7Edimitri/doxygen/">doxygen</a>. In Unix systems, simply type <span style="font-family: monospace;">doxygen Doxyfile</span> in the doc directory.<br>
+
+<br>
+
+<h4><a name="LaTeX_formulas"></a>LaTeX formulas</h4>
+
+can be inserted in this html document thanks to the <a href="http://www.mathjax.org/">mathjax</a> config and
+script included in the header. Basically, a \( \LaTeX \) formula starts
+with <span style="font-weight: bold;">\(</span> and ends with <span style="font-weight: bold;">\)</span><br>
 
 <br>
 
