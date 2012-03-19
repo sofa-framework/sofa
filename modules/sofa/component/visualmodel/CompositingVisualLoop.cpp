@@ -28,6 +28,9 @@
  *  Created on: 16 janv. 2012
  *      Author: Jeremy Ringard
  */
+
+//#define DEBUG_DRAW
+
 #include <sofa/component/visualmodel/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -99,9 +102,22 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     else
     {
         Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        VisualManagerPass* currentVMP;
+        bool stopLoop=false;
         //preDraw sequence
+        it=begin;
         for (it = begin; it != end; ++it)
+        {
             (*it)->preDrawScene(vparams);
+            currentVMP=dynamic_cast<VisualManagerPass*>(*it);
+            if( currentVMP!=NULL && !currentVMP->isPrerendered())
+            {
+#ifdef DEBUG_DRAW
+                std::cout<<"final pass is "<<currentVMP->getName()<< "end of predraw loop" <<std::endl;
+#endif
+                break;
+            }
+        }
         //Draw sequence
         bool rendered = false; // true if a manager did the rendering
         for (it = begin; it != end; ++it)
