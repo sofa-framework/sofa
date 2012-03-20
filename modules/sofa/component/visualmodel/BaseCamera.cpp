@@ -557,7 +557,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
         //	return true;
         //}
         //oldqtviewer-type view parameters
-        sout << "Deprecated View File..." << sendl;
         std::ifstream in(viewFilename.c_str());
         Vec3 translation;
         Quat& orientation = *p_orientation.beginEdit();
@@ -565,6 +564,7 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 
         if(in.good())
         {
+            serr << "Deprecated View File " << viewFilename << sendl;
             in >> translation[0];
             in >> translation[1];
             in >> translation[2];
