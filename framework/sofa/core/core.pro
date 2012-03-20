@@ -149,7 +149,8 @@ HEADERS += \
 	ObjectFactory.h \
 	SofaLibrary.h \
 	CategoryLibrary.h \
-	ComponentLibrary.h
+	ComponentLibrary.h \
+    objectmodel/GUIEvent.h
 
 SOURCES += \
 	objectmodel/Base.cpp \
@@ -221,7 +222,8 @@ SOURCES += \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp \
 	visual/VisualParams.cpp \
-    objectmodel/HapticDeviceEvent.cpp
+    objectmodel/HapticDeviceEvent.cpp \
+    objectmodel/GUIEvent.cpp
 
 contains(DEFINES,SOFA_HAVE_BOOST) {
 
