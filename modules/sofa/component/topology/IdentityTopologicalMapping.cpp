@@ -108,6 +108,20 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
     //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
 
+    TriangleSetTopologyContainer *fromTriangleCon = NULL;
+    fromModel->getContext()->get(fromTriangleCon);
+
+    std::cout << "Begin Nb of points of fromModel : " << fromTriangleCon->getNbPoints() << std::endl;
+    std::cout << "Begin Nb of edges of fromModel : " << fromTriangleCon->getNbEdges() << std::endl;
+    std::cout << "Begin Nb of triangles of fromModel : " << fromTriangleCon->getNbTriangles() << std::endl;
+
+
+    TriangleSetTopologyContainer *toTriangleCon = NULL;
+    toModel->getContext()->get(toTriangleCon);
+    std::cout << "Begin Nb of points of toModel : " << toTriangleCon->getNbPoints() << std::endl;
+    std::cout << "Begin Nb of edges of toModel : " << toTriangleCon->getNbEdges() << std::endl;
+    std::cout << "Begin Nb of triangles of toModel : " << toTriangleCon->getNbTriangles() << std::endl;
+
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
     {
@@ -125,6 +139,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::ENDING_EVENT:
         {
+            std::cout << "ENDING_EVENT" << std::endl;
             toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
             toPointMod->propagateTopologicalChanges();
@@ -134,8 +149,9 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSADDED:
         {
             const PointsAdded * pAdd = static_cast< const PointsAdded * >( topoChange );
+            std::cout << "POINTSADDED : " << pAdd->getNbAddedVertices() << std::endl;
             toPointMod->addPointsProcess(pAdd->getNbAddedVertices());
-            toPointMod->addPointsWarning(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, false);
+            toPointMod->addPointsWarning(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, true);
             toPointMod->propagateTopologicalChanges();
             break;
         }
@@ -143,9 +159,10 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
             sofa::helper::vector<unsigned int> tab = pRem->getArray();
-            toPointMod->removePointsWarning(tab, false);
+            std::cout << "POINTSREMOVED : " << tab.size() << std::endl;
+            toPointMod->removePointsWarning(tab, true);
             toPointMod->propagateTopologicalChanges();
-            toPointMod->removePointsProcess(tab, false);
+            toPointMod->removePointsProcess(tab, true);
             break;
         }
         case core::topology::POINTSRENUMBERING:
@@ -153,9 +170,10 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const PointsRenumbering *pRenumber = static_cast< const PointsRenumbering * >( topoChange );
             const sofa::helper::vector<unsigned int> &tab = pRenumber->getIndexArray();
             const sofa::helper::vector<unsigned int> &inv_tab = pRenumber->getinv_IndexArray();
-            toPointMod->renumberPointsWarning(tab, inv_tab, false);
+            std::cout << "POINTSRENUMBERING : " << tab.size() <<std::endl;
+            toPointMod->renumberPointsWarning(tab, inv_tab, true);
             toPointMod->propagateTopologicalChanges();
-            toPointMod->renumberPointsProcess(tab, inv_tab, false);
+            toPointMod->renumberPointsProcess(tab, inv_tab, true);
             break;
         }
 
@@ -164,6 +182,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( topoChange );
+            std::cout << "EDGESADDED : " << eAdd->getNbAddedEdges() << std::endl;
             toEdgeMod->addEdgesProcess(eAdd->edgeArray);
             toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
             toEdgeMod->propagateTopologicalChanges();
@@ -176,6 +195,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
             sofa::helper::vector<unsigned int> tab = eRem->getArray();
+            std::cout << "EDGESREMOVED : " << std::endl;
             toEdgeMod->removeEdgesWarning(tab);
             toEdgeMod->propagateTopologicalChanges();
             toEdgeMod->removeEdgesProcess(tab, false);
@@ -187,6 +207,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( topoChange );
+            std::cout << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() << std::endl;
             toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
             toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
             toTriangleMod->propagateTopologicalChanges();
@@ -199,6 +220,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
             sofa::helper::vector<unsigned int> tab = tRem->getArray();
+            std::cout << "TRIANGLESREMOVED : " << tab.size() << std::endl;
             toTriangleMod->removeTrianglesWarning(tab);
             toTriangleMod->propagateTopologicalChanges();
             toTriangleMod->removeTrianglesProcess(tab, false);
@@ -212,6 +234,17 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         ++itBegin;
     }
     toPointMod->propagateTopologicalChanges();
+
+    std::cout << "End Nb of points of fromModel : " << fromTriangleCon->getNbPoints() << std::endl;
+    std::cout << "End Nb of points of fromState : " << fromTriangleCon->getContext()->getState()->getSize() << std::endl;
+    std::cout << "End Nb of edges of fromModel : " << fromTriangleCon->getNbEdges() << std::endl;
+    std::cout << "End Nb of triangles of fromModel : " << fromTriangleCon->getNbTriangles() << std::endl;
+
+    std::cout << "End Nb of points of toModel : " << toTriangleCon->getNbPoints() << std::endl;
+    std::cout << "End Nb of points of toState : " << toTriangleCon->getContext()->getState()->getSize() << std::endl;
+    std::cout << "End Nb of edges of toModel : " << toTriangleCon->getNbEdges() << std::endl;
+    std::cout << "End Nb of triangles of toModel : " << toTriangleCon->getNbTriangles() << std::endl;
+
 }
 
 } // namespace topology
