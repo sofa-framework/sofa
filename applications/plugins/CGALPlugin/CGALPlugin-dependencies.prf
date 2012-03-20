@@ -1,5 +1,5 @@
 includeOnce($$_FILE_) {
-	declare(CGALPlugin, applications/plugins/CGALPlugin, sofaguiqt)
+	declare(CGALPlugin, applications/plugins/CGALPlugin, sofaguiqt cgal boost)
 	
 	enable(CGALPlugin)
 }
