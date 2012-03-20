@@ -84,6 +84,7 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::WFl
     itemShowFlag[MECHANICALMAPPINGS]   = new Q3CheckListItem(itemShowMapping, itemShowFlag[MAPPINGS],  "Mechanical Mappings", Q3CheckListItem::CheckBox);
     Q3ListViewItem*  itemShowOptions   = new Q3ListViewItem(this, itemShowAll, "Options");
     itemShowOptions->setOpen(true);
+    itemShowFlag[RENDERING]   = new Q3CheckListItem(itemShowOptions, "Advanced Rendering", Q3CheckListItem::CheckBox);
     itemShowFlag[WIREFRAME]   = new Q3CheckListItem(itemShowOptions, "Wire Frame", Q3CheckListItem::CheckBox);
     itemShowFlag[NORMALS]   = new Q3CheckListItem(itemShowOptions, itemShowFlag[WIREFRAME], "Normals", Q3CheckListItem::CheckBox);
 
@@ -105,6 +106,7 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::WFl
     itemShowMapping->insertItem(itemShowFlag[MECHANICALMAPPINGS]);
 
     insertItem(itemShowOptions); itemShowOptions->setOpen(true);
+    itemShowOptions->insertItem(itemShowFlag[RENDERING]);
     itemShowOptions->insertItem(itemShowFlag[WIREFRAME]);
     itemShowOptions->insertItem(itemShowFlag[NORMALS]);
 #ifdef SOFA_SMP
@@ -173,6 +175,7 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS, displayFlags.getShowMechanicalMappings());
     flags->setFlag(DisplayFlagWidget::FORCEFIELDS, displayFlags.getShowForceFields());
     flags->setFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS, displayFlags.getShowInteractionForceFields());
+    flags->setFlag(DisplayFlagWidget::RENDERING, displayFlags.getShowRendering());
     flags->setFlag(DisplayFlagWidget::WIREFRAME, displayFlags.getShowWireFrame());
     flags->setFlag(DisplayFlagWidget::NORMALS, displayFlags.getShowNormals());
 #ifdef SOFA_SMP
@@ -192,6 +195,7 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowMechanicalMappings(flags->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
     displayFlags.setShowForceFields(flags->getFlag(DisplayFlagWidget::FORCEFIELDS));
     displayFlags.setShowInteractionForceFields(flags->getFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS));
+    displayFlags.setShowRendering(flags->getFlag(DisplayFlagWidget::RENDERING));
     displayFlags.setShowWireFrame(flags->getFlag(DisplayFlagWidget::WIREFRAME));
     displayFlags.setShowNormals(flags->getFlag(DisplayFlagWidget::NORMALS));
 #ifdef SOFA_SMP
