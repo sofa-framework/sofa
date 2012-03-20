@@ -55,7 +55,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionMod
     , intersectionMethod(intersectionMethod)
     , m_constraint(NULL)
     , parent(NULL)
-    , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
+    , mu (initData(&mu, 0.1, "mu", "friction coefficient (0 for frictionless contacts)"))
     , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
