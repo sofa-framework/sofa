@@ -54,6 +54,7 @@ showAll, hideAll,\n\
         showCollisionModels, hideCollisionModels\n\
         showBoundingCollisionModels, hideBoundingCollisionModels\n\
     showOptions hideOptions\n\
+        showRendering hideRendering\n\
         showNormals hideNormals\n\
         showWireframe hideWireframe").add<VisualStyle>();
 
