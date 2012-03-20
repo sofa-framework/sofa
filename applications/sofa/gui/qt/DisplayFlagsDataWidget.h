@@ -68,6 +68,7 @@ public:
         MAPPINGS,MECHANICALMAPPINGS,
         FORCEFIELDS,
         INTERACTIONFORCEFIELDS,
+        RENDERING,
         WIREFRAME,
         NORMALS,
 #ifdef SOFA_SMP
