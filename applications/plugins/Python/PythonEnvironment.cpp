@@ -89,7 +89,7 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     std::cout << "<PYTHON> Loading python script \""<<filename<<"\""<<std::endl;
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-    //  std::cout << "<PYTHON> script directory \""<<dir<<"\""<<std::endl;
+//    std::cout << "<PYTHON> script directory \""<<dir<<"\""<<std::endl;
 
     // temp: directory always added to environment;
     // TODO: check if the path is already set to this directory...
@@ -97,16 +97,16 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     // append current path to Python module search path...
     std::string commandString = "sys.path.append(\""+dir+"\")";
 
-    //  printf("<PYTHON> %s\n",commandString.c_str());
+//    printf("<PYTHON> %s\n",commandString.c_str());
 
     PyObject *pModule = 0;
 
     //  Py_BEGIN_ALLOW_THREADS
 
     PyRun_SimpleString("import sys");
-    //  printf("<PYTHON> 1\n");
+//    printf("<PYTHON> 1\n");
     PyRun_SimpleString(commandString.c_str());
-    //  printf("<PYTHON> 2\n");
+//    printf("<PYTHON> 2\n");
 
     // Load the module object
     pModule = PyImport_Import(PyString_FromString(bareFilename.c_str()));
@@ -120,7 +120,7 @@ PyObject* PythonEnvironment::importScript( const char *filename )
         PyErr_Print();
         return 0;
     }
-    //  printf("<PYTHON> 5\n");
+//    printf("<PYTHON> 5\n");
 
     return pModule;
 }
