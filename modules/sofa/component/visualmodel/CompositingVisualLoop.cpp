@@ -101,12 +101,15 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
     renderingState = vparams->displayFlags().getShowRendering();
     if (vparams->displayFlags().getShowRendering())
+    {
         //std::cout << "Advanced Rendering is ON" << std::endl;
-        else
-        {
-            //std::cout << "Advanced Rendering is OFF" << std::endl;
-            defaultRendering(vparams);
-        }
+    }
+    else
+    {
+        //std::cout << "Advanced Rendering is OFF" << std::endl;
+        defaultRendering(vparams);
+        return;
+    }
 
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
