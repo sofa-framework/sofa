@@ -33,7 +33,8 @@
 
 #include <sofa/component/visualmodel/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/component/visualmodel/VisualStyle.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
@@ -91,6 +92,22 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 {
     if ( !gRoot ) return;
 
+    sofa::core::visual::tristate renderingState;
+    //vparams->displayFlags().setShowRendering(false);
+    component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
+    gRoot->get(visualStyle);
+    const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
+    const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
+    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
+    renderingState = vparams->displayFlags().getShowRendering();
+    if (vparams->displayFlags().getShowRendering())
+        std::cout << "Advanced Rendering is ON" << std::endl;
+    else
+    {
+        std::cout << "Advanced Rendering is OFF" << std::endl;
+        defaultRendering(vparams);
+    }
+
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
     {
@@ -101,6 +118,8 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     //rendering sequence: call each VisualManagerPass elements, then composite the frames
     else
     {
+        if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
+
         Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
         VisualManagerPass* currentVMP;
         bool stopLoop=false;
@@ -121,7 +140,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         //Draw sequence
         bool rendered = false; // true if a manager did the rendering
         for (it = begin; it != end; ++it)
-            if ((*it)->drawScene(vparams))	{ rendered = true;	break;	}
+            if ((*it)->drawScene(vparams))	{ rendered = true; 	break;	}
 
         if (!rendered) // do the rendering
         {
@@ -134,27 +153,6 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     }
 }
 
-//render a fullscreen quad
-void CompositingVisualLoop::traceFullScreenQuad()
-{
-    float vxmax, vymax, vzmax ;
-    float vxmin, vymin, vzmin ;
-    float txmax,tymax,tzmax;
-    float txmin,tymin,tzmin;
-
-    txmin = tymin = tzmin = 0.0;
-    vxmin = vymin = vzmin = -1.0;
-    vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
-
-    glBegin(GL_QUADS);
-    {
-        glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
-        glTexCoord3f(txmax,tymax,0.0); glVertex3f(vxmax,vymax,0.0);
-        glTexCoord3f(txmax,tymin,0.0); glVertex3f(vxmax,vymin,0.0);
-        glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
-    }
-    glEnd();
-}
 
 } // namespace visualmodel
 } // namespace component
