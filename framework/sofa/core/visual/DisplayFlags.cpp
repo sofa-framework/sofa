@@ -184,6 +184,7 @@ DisplayFlags::DisplayFlags():
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","",&m_showMapping)),
     m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
+    m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
 #ifdef SOFA_SMP
@@ -198,6 +199,7 @@ DisplayFlags::DisplayFlags():
     m_showBoundingCollisionModels.setValue(tristate::neutral_value);
     m_showVisualMappings.setValue(tristate::neutral_value);
     m_showMechanicalMappings.setValue(tristate::neutral_value);
+    m_showRendering.setValue(tristate::neutral_value);
     m_showWireframe.setValue(tristate::neutral_value);
     m_showNormals.setValue(tristate::neutral_value);
 #ifdef SOFA_SMP
@@ -221,6 +223,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","",&m_showMapping)),
     m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
+    m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
 #ifdef SOFA_SMP
@@ -235,6 +238,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
     m_showVisualMappings.setValue(other.m_showVisualMappings.state());
     m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
+    m_showRendering.setValue(other.m_showRendering.state());
     m_showWireframe.setValue(other.m_showWireframe.state());
     m_showNormals.setValue(other.m_showNormals.state());
 #ifdef SOFA_SMP
@@ -254,6 +258,7 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
         m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
         m_showVisualMappings.setValue(other.m_showVisualMappings.state());
         m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
+        m_showRendering.setValue(other.m_showRendering.state());
         m_showWireframe.setValue(other.m_showWireframe.state());
         m_showNormals.setValue(other.m_showNormals.state());
 #ifdef SOFA_SMP
@@ -273,6 +278,7 @@ bool DisplayFlags::isNeutral() const
             && m_showCollisionModels.state().state == tristate::neutral_value
             && m_showVisualMappings.state().state == tristate::neutral_value
             && m_showMechanicalMappings.state().state == tristate::neutral_value
+            && m_showRendering.state().state == tristate::neutral_value
             && m_showWireframe.state().state == tristate::neutral_value
             && m_showNormals.state().state == tristate::neutral_value
 #ifdef SOFA_SMP
@@ -292,6 +298,7 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     merge.m_showBoundingCollisionModels.setValue( merge_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
     merge.m_showVisualMappings.setValue( merge_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     merge.m_showMechanicalMappings.setValue( merge_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
+    merge.m_showRendering.setValue( merge_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
     merge.m_showWireframe.setValue( merge_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     merge.m_showNormals.setValue( merge_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
 #ifdef SOFA_SMP
@@ -311,6 +318,7 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showBoundingCollisionModels.setValue( difference_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
     difference.m_showVisualMappings.setValue( difference_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     difference.m_showMechanicalMappings.setValue( difference_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
+    difference.m_showRendering.setValue( difference_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
     difference.m_showWireframe.setValue( difference_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     difference.m_showNormals.setValue( difference_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
 #ifdef SOFA_SMP
