@@ -13,13 +13,16 @@ unix:macx {
 
     #boost.python
     INCLUDEPATH += /opt/local/include
-    LIBS += -L/opt/local/lib/ -lboost_python
+    LIBS += -L/opt/local/lib/ -lboost_python$$BOOST_SUFFIX
 }
 
 unix:!macx {
+    #python
     INCLUDEPATH *= $$system(python-config --includes | sed -e s/\\ -I/\\ /g -e s/^-I//g)
     LIBS *= $$system(python-config --libs)
-    LIBS *= -lboost_python
+
+    #boost.python
+    LIBS *= -lboost_python$$BOOST_SUFFIX
 }
 
 SOURCES = initPython.cpp \
