@@ -30,25 +30,6 @@ using namespace sofa::component::controller;
 using namespace sofa::core::behavior;
 using namespace sofa::core::visual;
 
-// the function to be wrapped to python...
-void HelloCWorld(char *s)
-{
-    printf("Hello, C World! \"%s\"\n",s);
-}
-
-
-
-
-
-class testClass
-{
-protected:
-    std::string mName;
-public:
-    const std::string getName() {return mName;}
-    void setName(const std::string n) {mName=n;}
-};
-
 //sofa::simulation::xml::BaseElement::NodeFactory* getNodeFactory() {return sofa::simulation::xml::BaseElement::NodeFactory::getInstance();}
 
 // ce qui suit est la SEULE manière de binder avec boost.python des fonctions surchargées
@@ -57,22 +38,19 @@ void (Base::*setName1)(const std::string&) = &Base::setName;
 
 // factory!
 BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-//BaseObject* createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    printf("<PYTHON>createObject '%s' of type '%s' in node '%s'\n",
-            arg->getName().c_str(),
-            arg->getAttribute("type",""),
-            context->getName().c_str());
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,arg);//.get();
-    if (obj==0) printf("<PYTHON>createObject ERROR\n");
+    if (obj==0)
+        printf("<PYTHON> ERROR createObject '%s' of type '%s' in node '%s'\n",
+                arg->getName().c_str(),
+                arg->getAttribute("type",""),
+                context->getName().c_str());
     return obj;
 }
 
 
 BOOST_PYTHON_MODULE( Sofa )
 {
-    def ("HelloBoost" , HelloCWorld ) ; // une simple fonction HelloWorld
-
 //    def ("createObject", createObject);
     def ("createObject", createObject);//, return_value_policy<reference_existing_object>());
 
@@ -256,18 +234,6 @@ BOOST_PYTHON_MODULE( Sofa )
 
     ;
 }
-
-/*
-BOOST_PYTHON_MODULE( SofaBaseNode )
-{
-
-    class_ <sofa::core::objectmodel::BaseNode, boost::noncopyable>("BaseNode", no_init) // private constructor...
-            .def("getRoot",&sofa::core::objectmodel::BaseNode::getRoot)
-      //      .def("setName",&Base::setName)
-            ;
-
-}
-*/
 
 
 void registerSofaPythonModule()

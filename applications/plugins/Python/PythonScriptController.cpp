@@ -38,12 +38,13 @@ void PythonScriptController::loadScript()
 {
     if (m_Script)
     {
-        std::cout << getName() << "load ignored: script already loaded." << std::endl;
+        std::cout << getName() << " load ignored: script already loaded." << std::endl;
     }
     m_Script = sofa::simulation::PythonEnvironment::importScript(m_filename.getFullPath().c_str());
     if (!m_Script)
     {
         // LOAD ERROR
+        std::cout << "<PYTHON> ERROR : "<<getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." << std::endl;
         return;
     }
 
@@ -53,9 +54,21 @@ void PythonScriptController::loadScript()
     m_ScriptDict = PyModule_GetDict(m_Script);
 
     // functions are also borrowed references
+    if (!m_ScriptDict)
+    {
+        // LOAD ERROR
+        std::cout << getName() << " load error (dictionnary not found)." << std::endl;
+        return;
+    }
 
-#define BIND_SCRIPT_FUNC(funcName) { m_Func_##funcName = PyDict_GetItemString(m_ScriptDict,#funcName); if (!PyCallable_Check(m_Func_##funcName)) m_Func_##funcName=0; }
+#define BIND_SCRIPT_FUNC(funcName) \
+    { \
+        m_Func_##funcName = PyDict_GetItemString(m_ScriptDict,#funcName); \
+        if (!PyCallable_Check(m_Func_##funcName)) m_Func_##funcName=0; \
+    }
 
+//    std::cout << "Binding functions of script \"" << m_filename.getFullPath().c_str() << "\"" << std::endl;
+//    std::cout << "Number of dictionnay entries: "<< PyDict_Size(m_ScriptDict) << std::endl;
     BIND_SCRIPT_FUNC(onLoaded)
     BIND_SCRIPT_FUNC(createGraph)
     BIND_SCRIPT_FUNC(initGraph)
