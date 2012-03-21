@@ -54,6 +54,7 @@ class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
 class XitactEvent;
+class GUIEvent;
 }
 }
 }
@@ -130,6 +131,10 @@ public:
     */
     virtual void onEndAnimationStep(const double /*dt*/) {};
 
+    /**
+    * @brief GUI event callback.
+    */
+    virtual void onGUIEvent(core::objectmodel::GUIEvent *) {};
 
 protected:
 

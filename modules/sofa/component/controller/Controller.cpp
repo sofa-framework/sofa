@@ -43,6 +43,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
@@ -102,6 +103,11 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     {
         sofa::core::objectmodel::HapticDeviceEvent *oev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
         onHapticDeviceEvent(oev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::GUIEvent *>(event))
+    {
+        sofa::core::objectmodel::GUIEvent *gev = dynamic_cast<sofa::core::objectmodel::GUIEvent *>(event);
+        onGUIEvent(gev);
     }
 }
 
