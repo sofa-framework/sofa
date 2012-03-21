@@ -35,6 +35,7 @@ using namespace sofa::core::visual;
 // ce qui suit est la SEULE manière de binder avec boost.python des fonctions surchargées
 // on passe par un pointeur en spécifiant les paramètres
 void (Base::*setName1)(const std::string&) = &Base::setName;
+//BaseObject* (BaseContext::*getBaseObject)(const std::string& path) const = &BaseContext::get<BaseObject>;
 
 // factory!
 BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
@@ -47,12 +48,19 @@ BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::Ba
                 context->getName().c_str());
     return obj;
 }
-
+// fonction templatisée, on passe par une autre qui ne l'est pas sinon c'est juste illisible...
+BaseObject::SPtr getObject(objectmodel::BaseContext* context,const std::string& path)
+{
+    BaseObject::SPtr sptr;
+    context->get<BaseObject>(sptr,path);
+    return sptr;
+}
 
 BOOST_PYTHON_MODULE( Sofa )
 {
 //    def ("createObject", createObject);
     def ("createObject", createObject);//, return_value_policy<reference_existing_object>());
+    def ("getObject", getObject);//, return_value_policy<reference_existing_object>());
 
     class_ <Base, Base::SPtr, boost::noncopyable>("Base", no_init)
     //      .def("setName",setName1)
@@ -79,6 +87,7 @@ BOOST_PYTHON_MODULE( Sofa )
     .def("setGravity",&BaseContext::setGravity)
     .def("getRootContext",&BaseContext::getRootContext,return_value_policy<reference_existing_object>())
     .def("setAnimate",&BaseContext::setAnimate)
+    //    .def("getObject",&getBaseObject)
     ;
 
     class_ <Context, Context::SPtr, bases<BaseContext>, boost::noncopyable>("Context", no_init)
