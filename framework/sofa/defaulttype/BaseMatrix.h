@@ -74,6 +74,10 @@ public:
     virtual void clearCol(int j) { for (int i=0,n=rowSize(); i<n; ++i) clear(i,j); }
     /// Reset the value of both row and column i to 0
     virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
+    /** Make the final data setup, such as compression. This must be called once after all the data is entered, and makes the matrix read-only.
+      For most concrete types, this method does nothing and the matrix remains editable, however.
+      */
+    virtual void endEdit() {}
 
     /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
     /// @{

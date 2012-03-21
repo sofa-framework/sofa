@@ -36,6 +36,7 @@ void UniformCompliance<DataTypes>::reinit()
     {
         matC.set(i,i,compliance.getValue()[0][0]);
     }
+    matC.endEdit();
 }
 
 //// Compute the displacement in response to the given force

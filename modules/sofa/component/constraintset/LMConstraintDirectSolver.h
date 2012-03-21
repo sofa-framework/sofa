@@ -42,7 +42,8 @@ using core::behavior::ConstraintGroup;
 
 class SOFA_CONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
-    typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
+//	typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
+    typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
 
     typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
 
