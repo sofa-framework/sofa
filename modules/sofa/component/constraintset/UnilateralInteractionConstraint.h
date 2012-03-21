@@ -188,29 +188,12 @@ public:
 
     unsigned int constraintId;
 protected:
-    UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
+    UnilateralInteractionConstraint(MechanicalState* object1=NULL, MechanicalState* object2=NULL)
         : Inherit(object1, object2)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
-        , contactsStatus(NULL)
         , customTolerance(0.0)
-    {
-    }
-
-    UnilateralInteractionConstraint(MechanicalState* object)
-        : Inherit(object, object)
-        , epsilon(Real(0.001))
-        , yetIntegrated(false)
         , contactsStatus(NULL)
-        , customTolerance(0.0)
-    {
-    }
-
-    UnilateralInteractionConstraint()
-        : epsilon(Real(0.001))
-        , yetIntegrated(false)
-        , contactsStatus(NULL)
-        , customTolerance(0.0)
     {
     }
 
