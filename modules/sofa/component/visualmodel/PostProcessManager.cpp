@@ -136,7 +136,7 @@ void PostProcessManager::preDrawScene(VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
 
         gluPerspective(60.0,1.0, vp->zNear(), vp->zFar());
-        glViewport(0,0,viewport[2],viewport[3]);
+        glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
         fbo.stop();
     }

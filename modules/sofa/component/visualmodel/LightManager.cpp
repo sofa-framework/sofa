@@ -389,7 +389,7 @@ void LightManager::preDrawScene(VisualParams* vp)
     }
     const core::visual::VisualParams::Viewport& viewport = vp->viewport();
     //restore viewport
-    glViewport(0, 0, viewport[2] , viewport[3]);
+    glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
 #endif
 }
 
