@@ -63,6 +63,10 @@ public:
 
     /// @}
 
+    /**
+    * @brief GUI event callback.
+    */
+    virtual void onGUIEvent(core::objectmodel::GUIEvent *);
 
 
 protected:
@@ -85,6 +89,9 @@ protected:
 
     /// called once per frame
     virtual void script_onBeginAnimationStep(const double dt) = 0;
+
+    /// GUI interaction
+    virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) = 0;
 
     /// @}
 

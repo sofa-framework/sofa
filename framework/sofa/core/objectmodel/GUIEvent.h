@@ -49,7 +49,7 @@ public:
     /**
      * @brief Constructor.
      */
-    GUIEvent(const std::string controlID, const std::string valueName, const std::string value);
+    GUIEvent(const char* controlID, const char* valueName, const char* value);
 
     /**
      * @brief Destructor.

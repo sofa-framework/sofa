@@ -1,6 +1,6 @@
 #include "ScriptController.h"
 //#include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/GUIEvent.h>
 
 namespace sofa
 {
@@ -66,6 +66,13 @@ void ScriptController::cleanup()
 void ScriptController::onBeginAnimationStep(const double dt)
 {
     script_onBeginAnimationStep(dt);
+}
+
+void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
+{
+    script_onGUIEvent(event->getControlID().c_str(),
+            event->getValueName().c_str(),
+            event->getValue().c_str());
 }
 
 } // namespace controller

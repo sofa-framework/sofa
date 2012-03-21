@@ -40,6 +40,8 @@ protected:
     virtual void script_cleanup();
 
     virtual void script_onBeginAnimationStep(const double dt);
+
+    virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value);
     /// @}
 
 
@@ -52,6 +54,7 @@ protected:
     PyObject *m_ScriptDict;     // functions dictionnary
 
     // optionnal script entry points:
+    PyObject *m_Func_onGUIEvent;
     PyObject *m_Func_onBeginAnimationStep;
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;

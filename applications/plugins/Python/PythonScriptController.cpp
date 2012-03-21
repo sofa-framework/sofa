@@ -76,11 +76,14 @@ void PythonScriptController::loadScript()
     BIND_SCRIPT_FUNC(storeResetState)
     BIND_SCRIPT_FUNC(reset)
     BIND_SCRIPT_FUNC(cleanup)
+    BIND_SCRIPT_FUNC(onGUIEvent)
 
 }
 
 #define CALL_SCRIPT_FUNC0(funcName) {if(m_Func_##funcName) try{boost::python::call<int>(m_Func_##funcName); } catch (const error_already_set e) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
 #define CALL_SCRIPT_FUNC1(funcName,param) {if(m_Func_##funcName) try{boost::python::call<int>(m_Func_##funcName,param); } catch (const error_already_set e) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
+#define CALL_SCRIPT_FUNC2(funcName,param1,param2) {if(m_Func_##funcName) try{boost::python::call<int>(m_Func_##funcName,param1,param2); } catch (const error_already_set e) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
+#define CALL_SCRIPT_FUNC3(funcName,param1,param2,param3) {if(m_Func_##funcName) try{boost::python::call<int>(m_Func_##funcName,param1,param2,param3); } catch (const error_already_set e) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
 
 void PythonScriptController::script_onLoaded(simulation::tree::GNode *node)
 {
@@ -118,6 +121,12 @@ void PythonScriptController::script_cleanup()
 {
     printf("PythonScriptController::script_cleanup\n");
     CALL_SCRIPT_FUNC0(cleanup)
+}
+
+void PythonScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
+{
+    printf("PythonScriptController::script_cleanup\n");
+    CALL_SCRIPT_FUNC3(onGUIEvent,controlID,valueName,value)
 }
 
 
