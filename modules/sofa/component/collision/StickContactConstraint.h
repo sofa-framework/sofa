@@ -31,6 +31,7 @@
 #include <sofa/component/constraintset/BilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BaseContactMapper.h>
+#include <sofa/component/collision/FrictionContact.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
@@ -46,33 +47,6 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-
-class SOFA_CONSTRAINT_API Identifier
-{
-public:
-    Identifier()
-    {
-        if (!availableId.empty())
-        {
-            id = availableId.front();
-            availableId.pop_front();
-        }
-        else
-            id = cpt++;
-
-        //	sout << id << sendl;
-    }
-
-    virtual ~Identifier()
-    {
-        availableId.push_back(id);
-    }
-
-protected:
-    static sofa::core::collision::DetectionOutput::ContactId cpt;
-    sofa::core::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
-};
 
 
 template <class TCollisionModel1, class TCollisionModel2>
@@ -96,22 +70,17 @@ protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
     Intersection* intersectionMethod;
-    bool selfCollision; ///< true if model1==model2 (in this case, only mapper1 is used)
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
     constraintset::BilateralInteractionConstraint<Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
-    /*
-        std::vector< sofa::core::collision::DetectionOutput* > contacts;
-        std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
-        void activateMappers();
-    */
 
+    std::vector< sofa::core::collision::DetectionOutput* > contacts;
+    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+    void activateMappers();
 
-
-
-    StickContactConstraint() {}
+    StickContactConstraint() : model1(NULL), model2(NULL), intersectionMethod(NULL), parent(NULL) {}
 
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~StickContactConstraint();
@@ -135,12 +104,6 @@ public:
 
     void removeResponse();
 };
-
-inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
-{
-    // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-    return (long)(((x+y)*(x+y)+3*x+y)/2);
-}
 
 
 } // collision

@@ -180,10 +180,11 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
-            const typename TSphere<DataTypes>::Real r = p.r();
+            const typename TSphere<DataTypes>::Real r = p.r() + distance;
             const Coord minElem = p.center() - Coord(r,r,r);
             const Coord maxElem = p.center() + Coord(r,r,r);
 
@@ -215,6 +216,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDe
     cubeModel->resize(size);
     if (!empty())
     {
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
@@ -229,7 +231,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDe
                 else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
             }
 
-            typename TSphere<DataTypes>::Real r = p.r();
+            typename TSphere<DataTypes>::Real r = p.r() + distance;
             cubeModel->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
         }
         cubeModel->computeBoundingTree(maxDepth);
