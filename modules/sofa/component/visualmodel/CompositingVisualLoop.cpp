@@ -100,16 +100,19 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
     renderingState = vparams->displayFlags().getShowRendering();
-    if (vparams->displayFlags().getShowRendering())
+
+    if (!(vparams->displayFlags().getShowRendering()))
     {
-        //std::cout << "Advanced Rendering is ON" << std::endl;
-    }
-    else
-    {
-        //std::cout << "Advanced Rendering is OFF" << std::endl;
+#ifdef DEBUG_DRAW
+        std::cout << "Advanced Rendering is OFF" << std::endl;
+#endif
         defaultRendering(vparams);
         return;
     }
+#ifdef DEBUG_DRAW
+    else
+        std::cout << "Advanced Rendering is ON" << std::endl;
+#endif
 
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
@@ -125,7 +128,6 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
         Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
         VisualManagerPass* currentVMP;
-        bool stopLoop=false;
         //preDraw sequence
         it=begin;
         for (it = begin; it != end; ++it)
