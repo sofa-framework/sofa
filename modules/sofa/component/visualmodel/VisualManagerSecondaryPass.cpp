@@ -311,7 +311,7 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
 
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
-        glViewport(0,0,vp->viewport()[2],vp->viewport()[3]);
+        glViewport(vp->viewport()[0],vp->viewport()[1],vp->viewport()[2],vp->viewport()[3]);
 
         bindInput(vp);//bind input textures from FBOs
         shader_postproc->start();
