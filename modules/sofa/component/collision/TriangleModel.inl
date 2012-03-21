@@ -730,6 +730,13 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
                 if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
                 else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
             }
+            const SReal distance = (SReal)this->proximity.getValue();
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] -= distance;
+                maxElem[c] += distance;
+            }
+            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
             if (calcNormals)
                 for (int i=0; i<size; i++)
                 {
@@ -760,8 +767,6 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
                     t.n() = cross(pt2-pt1,pt3-pt1);
                     t.n().normalize();
                 }
-
-            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
         }
     }
     else
@@ -770,6 +775,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
         cubeModel->resize(size);  // size = number of triangles
         if (!empty())
         {
+            const SReal distance = (SReal)this->proximity.getValue();
             for (int i=0; i<size; i++)
             {
                 Element t(this,i);
@@ -785,6 +791,8 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
                     else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
                     if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
                     else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                    minElem[c] -= distance;
+                    maxElem[c] += distance;
                 }
                 if (calcNormals)
                 {
@@ -818,6 +826,7 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
     cubeModel->resize(size);
     if (!empty())
     {
+        const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             Element t(this,i);
@@ -843,6 +852,9 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
                 else if (pt2v[c] < minElem[c]) minElem[c] = pt2v[c];
                 if (pt3v[c] > maxElem[c]) maxElem[c] = pt3v[c];
                 else if (pt3v[c] < minElem[c]) minElem[c] = pt3v[c];
+
+                minElem[c] -= distance;
+                maxElem[c] += distance;
             }
 
             // Also recompute normal vector

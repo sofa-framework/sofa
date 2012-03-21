@@ -593,6 +593,7 @@ void LineModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
+        const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             Vector3 minElem, maxElem;
@@ -606,6 +607,8 @@ void LineModel::computeBoundingTree(int maxDepth)
                 maxElem[c] = pt1[c];
                 if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
                 else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                minElem[c] -= distance;
+                maxElem[c] += distance;
             }
 
             cubeModel->setParentOf(i, minElem, maxElem);
@@ -632,6 +635,7 @@ void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
+        const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             Line t(this,i);
@@ -651,6 +655,8 @@ void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
                 else if (pt1v[c] < minElem[c]) minElem[c] = pt1v[c];
                 if (pt2v[c] > maxElem[c]) maxElem[c] = pt2v[c];
                 else if (pt2v[c] < minElem[c]) minElem[c] = pt2v[c];
+                minElem[c] -= distance;
+                maxElem[c] += distance;
             }
             cubeModel->setParentOf(i, minElem, maxElem);
         }

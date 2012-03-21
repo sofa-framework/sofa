@@ -70,7 +70,7 @@ void GraspingManager::init()
     this->getContext()->get<ToolModel>(&models, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<models.size(); i++)
     {
-        if (models[i]->getContactResponse() == std::string("stick") || models[i]->getContactResponse() == std::string("StickContactConstraint"))
+        if (models[i]->getContactResponse() == std::string("stick") || models[i]->getContactResponse() == std::string("StickContactConstraint") || models[i]->getName() == std::string("GraspingToolModel"))
         {
             modelTools.insert(models[i]);
         }

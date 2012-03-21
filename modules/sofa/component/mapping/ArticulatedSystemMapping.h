@@ -205,6 +205,8 @@ public:
             dataMatOutRootConst[0]->endEdit();
     }
 
+    const sofa::defaulttype::BaseMatrix* getJ() { return NULL; }
+
     void draw(const core::visual::VisualParams* vparams);
 
     /**

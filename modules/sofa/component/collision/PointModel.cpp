@@ -289,11 +289,12 @@ void PointModel::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         //VecCoord& x = *mstate->getX();
+        const SReal distance = this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             Point p(this,i);
             const Vector3& pt = p.p();
-            cubeModel->setParentOf(i, pt, pt);
+            cubeModel->setParentOf(i, pt - Vector3(distance,distance,distance), pt + Vector3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -325,6 +326,7 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
     {
         //VecCoord& x = *mstate->getX();
         //VecDeriv& v = *mstate->getV();
+        const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
             Point p(this,i);
@@ -337,6 +339,8 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
                 maxElem[c] = pt[c];
                 if (ptv[c] > maxElem[c]) maxElem[c] = ptv[c];
                 else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
+                minElem[c] -= distance;
+                maxElem[c] += distance;
             }
             cubeModel->setParentOf(i, minElem, maxElem);
         }
