@@ -107,25 +107,21 @@ void PythonScriptController::script_onBeginAnimationStep(const double dt)
 
 void PythonScriptController::script_storeResetState()
 {
-    printf("PythonScriptController::script_storeResetState\n");
     CALL_SCRIPT_FUNC0(storeResetState)
 }
 
 void PythonScriptController::script_reset()
 {
-    printf("PythonScriptController::script_reset\n");
     CALL_SCRIPT_FUNC0(reset)
 }
 
 void PythonScriptController::script_cleanup()
 {
-    printf("PythonScriptController::script_cleanup\n");
     CALL_SCRIPT_FUNC0(cleanup)
 }
 
 void PythonScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
 {
-    printf("PythonScriptController::script_cleanup\n");
     CALL_SCRIPT_FUNC3(onGUIEvent,controlID,valueName,value)
 }
 
