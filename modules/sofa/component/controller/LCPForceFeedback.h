@@ -77,7 +77,9 @@ public:
     {
         // draw the haptic_freq in the openGL window
 
-        //std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
+        //std::cout << "num_constraints = " << std::fixed << num_constraints << " " << '\xd';
+
+        if (this->f_printLog.getValue()) std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
     Data< double > forceCoef;
@@ -135,8 +137,10 @@ protected:
     sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
     // timer: verifies the time rates of the haptic loop
     CTime *_timer;
-    double time_buf;
+    ctime_t time_buf;
+    int timer_iterations;
     double haptic_freq;
+    unsigned int num_constraints;
 };
 
 } // namespace controller

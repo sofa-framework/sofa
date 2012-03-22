@@ -94,12 +94,15 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     if (dt == 0)
         dt = this->gnode->getDt();
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
     sofa::helper::AdvancedTimer::begin("Animate");
+
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
     {
+        sofa::helper::AdvancedTimer::stepBegin("AnimateBeginEvent");
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         this->gnode->execute ( act );
+        sofa::helper::AdvancedTimer::stepEnd("AnimateBeginEvent");
     }
 
     double startTime = this->gnode->getTime();
@@ -114,8 +117,10 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
+    sofa::helper::AdvancedTimer::stepBegin("MechanicalVInitVisitor");
     simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
     simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
+    sofa::helper::AdvancedTimer::stepEnd("MechanicalVInitVisitor");
 
     BehaviorUpdatePositionVisitor beh(params , dt);
 
@@ -197,6 +202,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
             constraintSolver->solveConstraint(&cparams, vel);
 
             MultiVecDeriv dv(&vop, constraintSolver->getDx());
+            mop.projectResponse(dv);
             mop.propagateDx(dv);
 
             // xfree += dv * dt
@@ -208,7 +214,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
 
+            mop.projectResponse(vel);
             mop.propagateV(vel);
+            mop.projectResponse(dx);
             mop.propagateDx(dx);
 
             // "mapped" x = xfree + dx
@@ -221,15 +229,18 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
             cparams.setV(freeVel);
 
             constraintSolver->solveConstraint(&cparams, pos, vel);
-
+            mop.projectResponse(vel);
             mop.propagateV(vel);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
+            mop.projectResponse(dx);
             mop.propagateDx(dx);
 
             // "mapped" x = xfree + dx
             simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
         }
+        AdvancedTimer::stepEnd("ConstraintSolver");
+
     }
 
     if ( displayTime.getValue() )
@@ -254,7 +265,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+//	sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
@@ -271,8 +282,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
 
-    sofa::helper::AdvancedTimer::end("Animate");
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
+    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 

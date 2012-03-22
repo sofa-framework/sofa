@@ -54,6 +54,7 @@ SOFA_LINK_CLASS(SimpleTesselatedHexaTopologicalMapping)
 SOFA_LINK_CLASS(SimpleTesselatedTetraTopologicalMapping)
 SOFA_LINK_CLASS(Tetra2TriangleTopologicalMapping)
 SOFA_LINK_CLASS(Triangle2EdgeTopologicalMapping)
+SOFA_LINK_CLASS(IdentityTopologicalMapping)
 
 
 } // namespace component

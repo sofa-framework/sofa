@@ -182,7 +182,11 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
             const unsigned int index = m_indices[i];
-            const unsigned int ext_index = (useRestMState ? m_ext_indices[i] : m_indices[i]);
+
+            unsigned int ext_index = m_indices[i];
+            if(useRestMState)
+                ext_index= m_ext_indices[i];
+
             Deriv dx = p1[index] - p0[ext_index];
             //Springs_dir[i] = p1[index] - p0[ext_index];
             //Springs_dir[i].normalize();
@@ -200,7 +204,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
             const unsigned int index = m_indices[i];
-            const unsigned int ext_index = (useRestMState ? m_ext_indices[i] : m_indices[i]);
+            unsigned int ext_index = m_indices[i];
+            if(useRestMState)
+                ext_index= m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
             //Springs_dir[i] = p1[index] - p0[ext_index];
