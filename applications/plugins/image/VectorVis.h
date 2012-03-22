@@ -38,12 +38,18 @@ protected:
     */
     bool shape;
 
+    /**
+    * Specifies the order that tensor information is encoded.
+    */
+    std::string tensorOrder;
+
+
 public:
 
     static const char* Name() { return "Vectors";}
 
-    VectorVis(int _subsampleXY=5, int _subsampleZ=5, int _shapeScale=10, bool _rgb=true, bool _shape=false)
-        :subsampleXY(_subsampleXY), subsampleZ(_subsampleZ), shapeScale(_shapeScale), rgb(_rgb), shape(_shape)
+    VectorVis(int _subsampleXY=5, int _subsampleZ=5, int _shapeScale=10, bool _rgb=true, bool _shape=false, std::string _tensorOrder="LowerTriRowMajor")
+        :subsampleXY(_subsampleXY), subsampleZ(_subsampleZ), shapeScale(_shapeScale), rgb(_rgb), shape(_shape), tensorOrder(_tensorOrder)
     { }
 
 
@@ -56,6 +62,7 @@ public:
     int getShapeScale() const {return shapeScale; }
     bool getRgb() const {return rgb; }
     bool getShape() const {return shape;}
+    std::string getTensorOrder() const {return tensorOrder;}
     /**@}*/
 
     /**
@@ -67,6 +74,7 @@ public:
     void setShapeScale(int scale) { shapeScale = scale; }
     void setRgb(bool _rgb) {rgb = _rgb;}
     void setShape(bool vis) { shape = vis; }
+    void setTensorOrder(std::string _tensorOrder) { tensorOrder = _tensorOrder;}
     /**@}*/
 
     /**
@@ -79,13 +87,15 @@ public:
         int shapeScale;
         bool rgb;
         bool shape;
-        in >> subsampleXY >> subsampleZ >> shapeScale >> rgb >> shape;
+        std::string tensorOrder;
+        in >> subsampleXY >> subsampleZ >> shapeScale >> rgb >> shape >> tensorOrder;
 
         v.setSubsampleXY(subsampleXY);
         v.setSubsampleZ(subsampleZ);
         v.setShapeScale(shapeScale);
         v.setRgb(rgb);
         v.setShape(shape);
+        v.setTensorOrder(tensorOrder);
 
         return in;
     }
@@ -95,7 +105,7 @@ public:
     */
     friend std::ostream& operator << (std::ostream& out, const VectorVis& v)
     {
-        out << v.getSubsampleXY() << v.getSubsampleZ() << v.getShapeScale() << v.getRgb() << v.getShape() ;
+        out << v.getSubsampleXY() << v.getSubsampleZ() << v.getShapeScale() << v.getRgb() << v.getShape() << v.getTensorOrder() ;
         return out;
     }
 
