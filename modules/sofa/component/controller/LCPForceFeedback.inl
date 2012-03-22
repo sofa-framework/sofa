@@ -135,6 +135,8 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     mNextBufferId = 0;
     mIsCuBufferInUse = false;
     _timer = new CTime();
+    time_buf = _timer->getTime();
+    timer_iterations = 0;
 
 }
 
@@ -178,6 +180,14 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     // Resize du vecteur force. Initialization � 0 ?
     forces.resize(stateSize);
 
+    ctime_t actualTime = _timer->getTime();
+    ++timer_iterations;
+    if (actualTime - time_buf >= CTime::getTicksPerSec())
+    {
+        haptic_freq = (double)(timer_iterations*CTime::getTicksPerSec())/ (double)( actualTime - time_buf) ;
+        time_buf = actualTime;
+        timer_iterations = 0;
+    }
 
     if(!constraintSolver||!mState)
         return;
@@ -216,6 +226,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
 
         // Modify Dfree
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
+        num_constraints = constraints.size();
 
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {

@@ -81,6 +81,7 @@ IdentityTopologicalMapping::~IdentityTopologicalMapping()
 void IdentityTopologicalMapping::init()
 {
     sofa::core::topology::TopologicalMapping::init();
+    this->updateLinks();
     if (fromModel && toModel)
     {
 
