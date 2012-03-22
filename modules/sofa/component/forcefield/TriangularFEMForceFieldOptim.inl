@@ -158,9 +158,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int /*i*
     Coord a  = x0[t[0]];
     Coord ab = x0[t[1]]-a;
     Coord ac = x0[t[2]]-a;
-    if (this->restScale.isSet())
+    if (this->f_restScale.isSet())
     {
-        Real restScale = this->restScale.getValue();
+        const Real restScale = this->f_restScale.getValue();
         ab *= restScale;
         ac *= restScale;
     }
