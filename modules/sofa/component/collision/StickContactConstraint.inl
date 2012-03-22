@@ -231,7 +231,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-    std::cout << "createResponse" << std::endl;
+    //std::cout << "createResponse" << std::endl;
     if (!contacts.empty() || !keepAlive())
         activateMappers();
 
