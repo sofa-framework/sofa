@@ -114,5 +114,4 @@ public:
 
 }
 }
-
 #endif //IMAGE_VECTORVIS_H

@@ -374,7 +374,6 @@ protected:
                         transformMatrix[12] = transformMatrix[13] = transformMatrix[14] = 0;
                         transformMatrix[15] = 1;
 
-
                         glMultMatrixd(transformMatrix);
                         glScaled((double)val(0)*size/10, (double)val(1)*size/10, (double)val(2)*size/10);
                         gluSphere(ellipsoid, 1.0, 10, 10);
