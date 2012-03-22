@@ -245,9 +245,12 @@ public:
         }
 
         if(vectorVisualization.getValue().getShape())
+        {
             if(wplane->getDimensions()[3] == 3)
                 drawArrows(vparams);
-
+            if(wplane->getDimensions()[3] == 6)
+                drawEllipsoid();
+        }
         glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT || GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
@@ -293,6 +296,134 @@ protected:
         }
     }
 
+    //Draw tensors as ellipsoids
+    void drawEllipsoid()
+    {
+        raImage rimage(this->image);
+        raPlane rplane(this->plane);
+        raTransform rtransform(this->transform);
+        raVis rVis(this->vectorVisualization);
+
+        double size = rVis->getShapeScale();
+        imCoord dims=rplane->getDimensions();
+        Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+
+        int counter=0;
+
+        unsigned int x,y,z;
+        for (z=0; z<3; z++)
+        {
+            if(z==0) { x=2; y=1;}
+            else if(z==1) { x=0; y=2;}
+            else { x=0; y=1;}
+            Coord ip; ip[z]=rplane->getPlane()[z];
+            if(ip[z]<dims[z] && dims[x]>1 && dims[y]>1)
+                for(ip[x] = 0; ip[x] < dims[x]; ip[x] += sampling[x])
+                    for(ip[y] = 0; ip[y] < dims[y]; ip[y] += sampling[y])
+                    {
+
+                        counter++ ;
+
+                        Coord base = rtransform->fromImage(ip);
+
+                        CImg<T> vector = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0], ip[1], ip[2]);
+
+                        //CImg::get_tensor_at() assumes a different tensor input than we expect.
+                        // That is why we are generating the tensor manually from the vector instead.
+                        CImg<T> tensor;
+
+                        if(rVis->getTensorOrder().compare("LowerTriRowMajor") == 0)
+                        {
+                            tensor = computeTensorFromLowerTriRowMajorVector(vector);
+                        }
+                        else if(rVis->getTensorOrder().compare("UpperTriRowMajor") == 0)
+                        {
+                            tensor = computeTensorFromUpperTriRowMajorVector(vector);
+                        }
+                        else if(rVis->getTensorOrder().compare("DiagonalFirst") == 0)
+                        {
+                            tensor = computeTensorFromDiagonalFirstVector(vector);
+                        }
+                        else
+                        {
+                            serr << "ImageViewer: Tensor input order \"" << rVis->getTensorOrder() << "\" is not valid." << sout;
+                            return;
+                        }
+
+                        CImgList<T> eig = tensor.get_symmetric_eigen();
+                        const CImg<T> &val = eig[0];
+                        const CImg<T> &vec = eig[1];
+
+                        glPushMatrix();
+
+                        GLUquadricObj* ellipsoid = gluNewQuadric();
+                        glTranslated(base[0], base[1], base[2]);
+                        GLdouble transformMatrix[16];
+
+                        int index=0;
+                        for(int i=0; i<vec.width(); i++)
+                        {
+                            for(int j=0; j<vec.height(); j++)
+                            {
+                                transformMatrix[index] = (double)vec(i,j);
+                                index++;
+                            }
+                            transformMatrix[index] = 0;
+                            index++;
+                        }
+                        transformMatrix[12] = transformMatrix[13] = transformMatrix[14] = 0;
+                        transformMatrix[15] = 1;
+
+
+                        glMultMatrixd(transformMatrix);
+                        glScaled((double)val(0)*size/10, (double)val(1)*size/10, (double)val(2)*size/10);
+                        gluSphere(ellipsoid, 1.0, 10, 10);
+                        gluDeleteQuadric(ellipsoid);
+
+                        glPopMatrix();
+
+                    }
+        }
+
+    }
+
+    CImg<T> computeTensorFromLowerTriRowMajorVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(1,0) = tensor(0,1) = vector(1);
+        tensor(1,1) = vector(2);
+        tensor(2,0) = tensor(0,2) = vector(3);
+        tensor(2,1) = tensor(1,2) = vector(4);
+        tensor(2,2) = vector(5);
+
+        return tensor;
+    }
+
+    CImg<T> computeTensorFromUpperTriRowMajorVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(0,1) = tensor(1,0) = vector(1);
+        tensor(0,2) = tensor(2,0) = vector(2);
+        tensor(1,1) = vector(3);
+        tensor(1,2) = tensor(2,1) = vector(4);
+        tensor(2,2) = vector(5);
+
+        return tensor;
+    }
+
+    CImg<T> computeTensorFromDiagonalFirstVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(1,1) = vector(1);
+        tensor(2,2) = vector(2);
+        tensor(1,0) = tensor(0,1) = vector(3);
+        tensor(2,0) = tensor(0,2) = vector(4);
+        tensor(2,1) = tensor(1,2) = vector(5);
+        return tensor;
+    }
 
     //Draw the boxes around the slices
     void drawCutplanes()
