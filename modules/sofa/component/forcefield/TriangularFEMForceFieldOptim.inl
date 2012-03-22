@@ -89,6 +89,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , f_poisson(initData(&f_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
+    , f_restScale(initData(&f_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
 {
@@ -157,6 +158,12 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int /*i*
     Coord a  = x0[t[0]];
     Coord ab = x0[t[1]]-a;
     Coord ac = x0[t[2]]-a;
+    if (this->restScale.isSet())
+    {
+        Real restScale = this->restScale.getValue();
+        ab *= restScale;
+        ac *= restScale;
+    }
     computeTriangleRotation(ti.init_frame, ab, ac);
     ti.bx = ti.init_frame[0] * ab;
     ti.cx = ti.init_frame[0] * ac;

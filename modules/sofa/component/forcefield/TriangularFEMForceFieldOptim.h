@@ -362,6 +362,7 @@ public:
     Data<Real> f_poisson;
     Data<Real> f_young;
     Data<Real> f_damping;
+    Data<Real> f_restScale;
 
     /// Display parameters
     Data<bool> showStressValue;

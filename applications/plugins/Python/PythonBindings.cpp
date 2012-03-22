@@ -55,12 +55,25 @@ BaseObject::SPtr getObject(objectmodel::BaseContext* context,const std::string& 
     context->get<BaseObject>(sptr,path);
     return sptr;
 }
+BaseNode::SPtr getChildNode(objectmodel::BaseNode* node,const std::string& path)
+{
+    const objectmodel::BaseNode::Children& children = node->getChildren();
+    BaseNode::SPtr sptr;
+    for (unsigned int i=0; i<children.size(); ++i)
+        if (children[i]->getName() == path)
+        {
+            sptr = children[i];
+            break;
+        }
+    return sptr;
+}
 
 BOOST_PYTHON_MODULE( Sofa )
 {
 //    def ("createObject", createObject);
     def ("createObject", createObject);//, return_value_policy<reference_existing_object>());
     def ("getObject", getObject);//, return_value_policy<reference_existing_object>());
+    def ("getChildNode", getChildNode);//, return_value_policy<reference_existing_object>());
 
     class_ <Base, Base::SPtr, boost::noncopyable>("Base", no_init)
     //      .def("setName",setName1)
