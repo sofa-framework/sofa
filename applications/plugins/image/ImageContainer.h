@@ -221,7 +221,6 @@ protected:
 
     bool load(std::string fname)
     {
-
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
 
