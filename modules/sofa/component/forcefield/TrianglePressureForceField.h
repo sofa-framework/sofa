@@ -119,6 +119,13 @@ public:
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
+    /// Constant pressure has null variation
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) {}
+
+    /// Constant pressure has null variation
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
+
+
     void draw(const core::visual::VisualParams* vparams);
 
     void setDminAndDmax(const double _dmin, const double _dmax)

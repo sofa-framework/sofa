@@ -59,6 +59,11 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
+    if(!_topology)
+        serr << "Missing component: Unable to get MeshTopology from the current context. " << sendl;
+
+    if(!_topology)
+        return;
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -73,10 +78,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();
-
-    serr << "TrianglePressureForceField::addDForce not yet implemented" << sendl;
 }
-
 
 template <class DataTypes>
 void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* d_x */, const DataVecDeriv& /* d_v */)
@@ -119,6 +121,13 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
     sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
     this->getContext()->get(triangleGeo);
+
+    if(!triangleGeo)
+        serr << "Missing component: Unable to get TriangleSetGeometryAlgorithms from the current context." << sendl;
+
+    // FIXME: a dirty way to avoid a crash
+    if(!triangleGeo)
+        return;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
