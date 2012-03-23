@@ -97,7 +97,7 @@ void FixedPlaneConstraint<DataTypes>::addConstraint(int index)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
 {
-    removeValue(*indices.beginEdit(),index);
+    removeValue(*indices.beginEdit(),(unsigned int)index);
     indices.endEdit();
 }
 
