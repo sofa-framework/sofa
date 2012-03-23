@@ -93,7 +93,7 @@ public:
     template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
     template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params);
 
-OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
+//OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3dTypes);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
