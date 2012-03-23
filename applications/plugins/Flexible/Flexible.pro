@@ -16,20 +16,21 @@ SOURCES = initFlexible.cpp\
     GreenStrainMapping.cpp \
 
 HEADERS = initFlexible.h \
-    BaseJacobian.h \
     BaseShapeFunction.h \
+    ShepardShapeFunction.h \
+    BaseJacobian.h \
     ExtensionMapping.h \
     ExtensionMapping.inl \
-    ShepardShapeFunction.h \
+    DeformationGradientTypes.h \
     LinearMapping.h \
     LinearMapping.inl \
-    BaseJacobian.h \
     LinearJacobianBlock.h \
     LinearJacobianBlock.inl \
-    DeformationGradientTypes.h \
     StrainTypes.h \
     GreenStrainMapping.h \
     GreenStrainMapping.inl \
+    GreenStrainJacobianBlock.h \
+    GreenStrainJacobianBlock.inl
 
 
 README_FILE = Flexible.txt
