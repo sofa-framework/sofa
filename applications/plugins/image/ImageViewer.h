@@ -61,19 +61,24 @@ using namespace defaulttype;
    *
    *  <b>transform</b> - a link to the transformation in the ImageContainer component
    *
-   *  <b>subsample</b> - two integers representing the default subsample values for the XY plane and the Z plane respectively. Default values are (12 12).
+   *  <b>histo</b> -
    *
-   *  <b>shape</b> - If true, an image that contains vector information will display the vectors using a shape (arrows or ellipsoids). Default value is false.
+   *  <b>plane</b> -
    *
-   *  <b>scale</b> - A float value of the scale (size) of the shape. Default value is 11.75.
+   *  <b>vectorvis</b> - Describes the settings for vizualizing vectors and tensors. Input string should be in the form:
+   *	"subsampleXY subsampleZ scale rgb shape tensorOrder", where:
+   *	subsampleXY is an integer <i>n</i> where in the X and Y planes, a shape is drawn every <i>n</i> voxels.
+   *    subsampleZ is an integer <i>n</i> where in the Z plane, a shape is drawn every <i>n</i> voxels.
+   *	scale is an integer <i>n</i> such that each shape is drawn <i>n</i> times its normal size.
+   *    rgb is a bool. When true, an image with 3 channels is displayed as an rgb image, and when false, it is
+   *		displayed as a greyscale image where the value is the L2 norm of all the channels.
+   *	shape is a bool. When true, an image with 3 channels has vectors displayed, and an image with 6 channels has tensors displayed.
+   *    tensorOrder is a string describing the order in which the 6 tensors values are provided in the image. The three supported types are:
+   *		LowerTriRowMajor
+   *		UpperTriRowMajor
+   *		DiagonalFirst
    *
-   *  <b>histogramValues</b> - Alias include: <b>defaultHistogram</b>, <b>defaultHisto</b>, <b>histoValues</b>.
-   *    Two floats representing the minimum and maximum windowing (or clamping) values. Default gives no windowing.
-   *
-   *  <b>defaultSlices</b> - Three integers describing the x, y and z slices to be displayed initially. Default displays the middle slice in each plane.
-   *
-   *  <b>defaultRgb</b> - If true, an image that contains vector information will be displayed as an RGB image. Default value is false.
-   *
+   *	The default vectorvis configuration is "5 5 10 true false LowerTriRowMajor"
    */
 template<class _ImageTypes>
 class SOFA_IMAGE_API ImageViewer : public sofa::core::objectmodel::BaseObject
@@ -374,10 +379,24 @@ protected:
                         transformMatrix[12] = transformMatrix[13] = transformMatrix[14] = 0;
                         transformMatrix[15] = 1;
 
+                        //Same method for getting colours as MedInria
+                        double colourR = fabs((double)vec(0,0));
+                        double colourG = fabs((double)vec(0,1));
+                        double colourB = fabs((double)vec(0,2));
+
+                        colourR = (colourR > 1.0) ? 1.0 : colourR;
+                        colourG = (colourG > 1.0) ? 1.0 : colourG;
+                        colourB = (colourB > 1.0) ? 1.0 : colourB;
+
+                        glColor3d(colourR, colourG, colourB);
+                        glEnable(GL_COLOR_MATERIAL);
+
                         glMultMatrixd(transformMatrix);
                         glScaled((double)val(0)*size/10, (double)val(1)*size/10, (double)val(2)*size/10);
                         gluSphere(ellipsoid, 1.0, 10, 10);
                         gluDeleteQuadric(ellipsoid);
+
+                        glDisable(GL_COLOR_MATERIAL);
 
                         glPopMatrix();
 

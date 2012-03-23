@@ -1,0 +1,187 @@
+\documentclass{article}
+
+\usepackage{mathtools}
+
+\newenvironment{componentoption}[1]%
+{\textbf{#1}\newline}
+{\newline}
+
+\newcommand{\aliases}[1] {\newline \textit{Aliases - } #1}
+\newcommand{\defaultvalue}[1] {\newline \textit{Default Value - } #1}
+\newcommand{\valuetype}[1] {\newline \textit{Value Type - } \textbf{#1}}
+
+\begin{document}
+\raggedright
+
+\title{ImageViewer}
+\author{SOFA}
+
+\maketitle
+
+\begin{abstract}
+Responsible for displaying images in SOFA.
+\end{abstract}
+
+\section{Requirements}
+
+SOFA Packages:
+The following must be enabled in sofa-local.prf
+\begin{itemize}
+\item Image Plugin
+\end{itemize}
+
+SOFA Plugins:
+The following must be loaded in your SOFA instance
+\begin{itemize}
+\item Image Plugin
+\end{itemize}
+
+\section{Scene Settings}
+
+\subsection{Required Settings}
+
+\begin{componentoption}{template}
+The defined template type must match the image pixel type. Image types are: 
+\begin{itemize}
+	\item \textbf{ImageC} (char)
+	\item \textbf{ImageUC} (unsigned char)
+	\item \textbf{ImageI} (int)
+	\item \textbf{ImageUI} (unsigned int)
+	\item \textbf{ImageS} (short)
+	\item \textbf{ImageUS} (unsigned short)
+	\item \textbf{ImageL} (long)
+	\item \textbf{ImageUL} (unsigned long)
+	\item \textbf{ImageF} (float)
+	\item \textbf{ImageD} (double)
+	\item \textbf{ImageB} (bool)
+\end{itemize}
+.
+\valuetype{Image type}
+\defaultvalue{ImageUC}
+\end{componentoption}
+
+
+\subsection{Optional Settings}
+
+\begin{componentoption}{vectorvis}
+Defines the options for visualizing vector and tensor information in images. The values are "subsampleXY subsampleZ scale rgb shape tensorOrder", where:
+\begin{itemize}
+	\item \textbf{subsampleXY} - an integer \textit{n} such that a shape is displayed every \textit{n} voxels in the X and Y planes.
+	\item \textbf{subsampleZ} - an integer \textit{n} such that a shape is displayed every \textit{n} voxels in the Z plane.
+	\item \textbf{scale} - an integer \textit{n} such that each shape is displayed \textit{n} times its original size.
+	\item \textbf{rgb} - When true, a multichannel image is displayed as an RGB image. When false, a multichannel image is displayed in greyscale, where the value is the L2 norm of all the channels.
+	\item \textbf{shape} - When true, vectors are displayed as arrows in 3 channel images, and tensors are displayed as ellipsoids in 6 channel images.
+	\item \textbf{tensorOrder} - A string describing the order in which the 6 tensor values are given in the image. Currently supported:
+	\begin{itemize}
+		\item \textbf{LowerTriRowMajor} - The lower part of the symmetric matrix is given in Row Major order.
+\[	 
+		\begin{matrix}
+			a & b & c \\
+			b & d & e \\
+			c & e & f 
+		\end{matrix}
+\]
+		given as
+\[
+		\begin{array} {cccccc}
+		a & b & d & c & e & f 
+		\end{array}
+\]
+		\item \textbf{UpperTriRowMajor} - The upper part of the symmetric matrix is given in Row Major order.
+\[	 
+		\begin{matrix}
+			a & b & c \\
+			b & d & e \\
+			c & e & f 
+		\end{matrix}
+\]
+		given as
+\[
+		\begin{array} {cccccc}
+		a & b & c & d & e & f
+		\end{array}
+\]
+
+		\item \textbf{DiagonalFirst} - The values along the diagonal of the symmetric matrix are given first.
+\[	 
+		\begin{matrix}
+			a & b & c \\
+			b & d & e \\
+			c & e & f 
+		\end{matrix}
+\]
+		given as
+\[
+		\begin{array} {cccccc}
+		a & d & f & b & c & e 
+		\end{array}
+\]
+
+	\end{itemize}
+
+\end{itemize}
+.
+\valuetype{[int,int,int,bool,bool,string]}
+\defaultvalue{[5,5,10,true,false,LowerTriRowMajor]}
+\end{componentoption}
+
+\begin{componentoption}{arrows}
+If true, an image that contains vector information will display the vectors using arrows.
+\valuetype{bool}
+\defaultvalue{false}
+\end{componentoption}
+
+\begin{componentoption}{scale}
+The relative scale (size) of the arrows.
+\valuetype{real}
+\defaultvalue{11.75}
+\end{componentoption}
+
+\begin{componentoption}{histogramValues}
+Two values representing the minimum and maximum windowing (AKA clamping) values.
+\valuetype{[real,real]}
+\defaultvalue{No windowing}
+\aliases{defaultHistogram, defaultHisto, histoValues}
+\end{componentoption}
+
+\begin{componentoption}{defaultSlices}
+Three values describing the x, y and z slices to be displayed initially
+\valuetype{[int,int,int]}
+\defaultvalue{The middle slice in each plane}
+\end{componentoption}
+
+\begin{componentoption}{defaultRgb}
+If true, an image that contains vector information will be displayed as an RGB image.
+\valuetype{bool}
+\defaultvalue{false}
+\end{componentoption}
+
+\begin{componentoption}{plane}
+Actually used as Data, the default slices to be displayed initially can also be specified here.
+\valuetype{[int,int,int]}
+\defaultvalue{The middle slice in each plane}
+\end{componentoption}
+
+\section{Scene Data}
+
+\subsection{Required Data}
+
+\begin{componentoption}{image}
+A link to the image in the ImageContainer component.
+\valuetype{ImageTypes}
+\aliases{outputImage}
+\end{componentoption}
+
+\subsection{Optional Data}
+
+\begin{componentoption}{transform}
+A link to the transformation in the ImageContainer component.
+\valuetype{TransformType}
+\aliases{outputTransform}
+\end{componentoption}
+
+\subsection{Examples}
+image/examples/loadimage.scn
+image/examples/loadHDR.scn
+
+\end{document}
