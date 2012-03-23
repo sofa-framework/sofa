@@ -125,6 +125,9 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
+    /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
+
     typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
 
 
