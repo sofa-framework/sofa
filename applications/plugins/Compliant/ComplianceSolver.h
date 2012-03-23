@@ -124,7 +124,7 @@ protected:
 
         std::map<MechanicalState*, unsigned> m_offset;  ///< Start index of independent DOFs in the mass matrix
         std::map<Compliance*, unsigned>      c_offset;  ///< Start index of compliances in the compliance matrix
-        std::stack<DMatrix> jStack;                      ///< Stack of jacobian matrices to push/pop during the traversal
+        std::map<MechanicalState*,DMatrix> jMap;    ///< jacobian matrices of each mechanical state, with respect to the vector of all independent DOFs.
 
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
         /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
@@ -140,7 +140,6 @@ protected:
 
     // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
-//    SparseLDLT sparseLDLT; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
 
     /// Compute the inverse of the matrix and return it pruned, by canceling all the entries which are smaller than the threshold
     SMatrix inverseMatrix( const DMatrix& m, SReal threshold);

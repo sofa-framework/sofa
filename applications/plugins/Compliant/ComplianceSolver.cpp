@@ -193,7 +193,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         {
             //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
             ComplianceSolver::DMatrix shiftMatrix = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeM, m_offset[node->mechanicalState] );
-            jStack.push( shiftMatrix );
+            jMap[node->mechanicalState]= shiftMatrix ;
 
             // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
             DMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
@@ -218,10 +218,21 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         // ==== mechanical mapping
         if ( node->mechanicalMapping != NULL )
         {
-            DMatrix J = toMatrix( node->mechanicalMapping->getJ() );
-            DMatrix newJtop;
-            newJtop = J * jStack.top();
-            jStack.push( newJtop );
+            const vector<sofa::defaulttype::BaseMatrix*>* pJs = node->mechanicalMapping->getJs();
+            vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
+            assert( pJs->size() == pStates.size());
+            MechanicalState* mtarget = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Only N-to-1 mappings are handled yet
+            for( unsigned i=0; i<pStates.size(); i++ )
+            {
+                MechanicalState* mstate = dynamic_cast<MechanicalState*>(pStates[i]);
+                assert(mstate);
+                DMatrix J = toMatrix( (*pJs)[i] );
+                DMatrix contribution;
+                contribution = J * jMap[ mstate ];
+                if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
+                    jMap[mtarget].resize(contribution.rows(),contribution.cols());
+                jMap[mtarget] += contribution;
+            }
             //                    cerr<<"pass "<< pass << ", node " << node->getName() << ", mechanical mapping: " << node->mechanicalMapping->getName() << ", matrix J = " << J << endl;
             //                    cerr<<"pass "<< pass << ", node " << node->getName() << ", mechanical mapping: " << node->mechanicalMapping->getName() << ", new Jtop = " << jStack.top() << endl;
         }
@@ -236,7 +247,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             node->mass->addMToMatrix( mparams, &accessor );
             //                    cerr<<"eigen matrix of the mass: " << sqmat  << endl;
             DMatrix JtMJtop;
-            JtMJtop = jStack.top().transpose() * sqmat.eigenMatrix * jStack.top();
+            JtMJtop = jMap[node->mechanicalState].transpose() * sqmat.eigenMatrix * jMap[node->mechanicalState];
             //                    cerr<<"contribution to the mass matrix: " << endl << JtMJtop << endl;
             solver->matM += JtMJtop;  // add J^T M J to the assembled mass matrix
         }
@@ -248,7 +259,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         {
             DMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[compliances[0]] );
 
-            DMatrix J = DMatrix( compOffset.transpose() * jStack.top() ); // shift J
+            DMatrix J = DMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
             solver->matJ += J;                                          // assemble
 
             DMatrix C = DMatrix( compOffset.transpose() * toMatrix(compliances[0]->getMatrix(mparams)) * compOffset ); // shift C
@@ -309,7 +320,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
 
 }
 
-void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::Node* node)
+void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
     if( pass==COMPUTE_SIZE )
     {
@@ -318,16 +329,16 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
     else if (pass==MATRIX_ASSEMBLY)
     {
         // ==== independent DOFs
-        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
-        {
-            jStack.pop();
-        }
+//        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+//        {
+//            jStack.pop();
+//        }
 
         // ==== mechanical mapping
-        if ( node->mechanicalMapping != NULL )
-        {
-            jStack.pop();
-        }
+//        if ( node->mechanicalMapping != NULL )
+//        {
+//            jStack.pop();
+//        }
     }
     else if (pass==VECTOR_ASSEMBLY )
     {

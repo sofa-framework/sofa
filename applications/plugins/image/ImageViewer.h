@@ -351,7 +351,8 @@ protected:
                         }
                         else
                         {
-                            serr << "ImageViewer: Tensor input order \"" << rVis->getTensorOrder() << "\" is not valid." << sout;
+//                                                    FF commented this out due to ambiguous overload for operator<< on gcc4.4
+//                                                        serr << "ImageViewer: Tensor input order \"" << rVis->getTensorOrder() << "\" is not valid." << sout;
                             return;
                         }
 
