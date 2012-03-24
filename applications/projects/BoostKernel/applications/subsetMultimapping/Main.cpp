@@ -42,6 +42,7 @@
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
 #include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/component/visualmodel/OglModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
@@ -63,7 +64,7 @@ Node::SPtr  createRegularGrid(Node::SPtr  parent, double x, double y, double z)
 {
     static unsigned int i = 1;
     std::ostringstream oss;
-    oss << "regularGrid_" << i;
+    oss << "regularGrid_" << i++;
 
     Node::SPtr  node =parent->createChild(oss.str()) ;
 
@@ -110,6 +111,9 @@ int main(int argc, char** argv)
     // The graph root node
     Node::SPtr  root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
+    sofa::component::visualmodel::VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
+    root->addObject(visualStyle);
+    visualStyle->displayFlags.setValue( sofa::core::visual::DisplayFlags().setShowForceFields().setShowBehaviorModels());
 
     Node::SPtr  solverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"Solver");
 
