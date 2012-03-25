@@ -20,7 +20,7 @@ template <class Model>
 struct check
 {
     virtual void failed(Model* x)
-    { (void)x;
+    {
         x->~Model();
     }
 };

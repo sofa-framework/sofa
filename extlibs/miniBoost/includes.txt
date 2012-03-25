@@ -2,6 +2,7 @@
 # When updating miniboost to a new version, only these headers add their dependencies should be included
 # framework
 boost/static_assert.hpp
+boost/container/stable_vector.hpp
 # modules
 # modules/sofa/simulation/common/Node
 boost/graph/adjacency_list.hpp
