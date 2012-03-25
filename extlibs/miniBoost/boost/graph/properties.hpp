@@ -115,6 +115,7 @@ namespace boost {
   BOOST_DEF_PROPERTY(vertex, lowpoint);
   BOOST_DEF_PROPERTY(vertex, potential);
   BOOST_DEF_PROPERTY(vertex, update);
+  BOOST_DEF_PROPERTY(vertex, underlying);
   BOOST_DEF_PROPERTY(edge, reverse);
   BOOST_DEF_PROPERTY(edge, capacity);
   BOOST_DEF_PROPERTY(edge, flow);
@@ -123,6 +124,7 @@ namespace boost {
   BOOST_DEF_PROPERTY(edge, discover_time);
   BOOST_DEF_PROPERTY(edge, update);
   BOOST_DEF_PROPERTY(edge, finished);
+  BOOST_DEF_PROPERTY(edge, underlying);
   BOOST_DEF_PROPERTY(graph, visitor);
 
   // These tags are used for property bundles
