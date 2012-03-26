@@ -66,17 +66,12 @@ DefaultPipeline::DefaultPipeline()
 {
 }
 
-typedef simulation::Node::ctime_t ctime_t;
+typedef simulation::Visitor::ctime_t ctime_t;
 
 void DefaultPipeline::doCollisionReset()
 {
-    core::objectmodel::BaseContext* scene = getContext();
-    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
-    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    ctime_t t0 = 0;
-    const std::string category = "collision";
-
     VERBOSE(sout << "DefaultPipeline::doCollisionReset, Reset collisions"<<sendl);
+    core::objectmodel::BaseContext* scene = getContext();
     // clear all contacts
     if (contactManager!=NULL)
     {
@@ -89,21 +84,12 @@ void DefaultPipeline::doCollisionReset()
     // clear all collision groups
     if (groupManager!=NULL)
     {
-        if (node) t0 = node->startTime();
         groupManager->clearGroups(scene);
-        if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
 }
 
 void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels)
 {
-    //serr<<"DefaultPipeline::doCollisionDetection"<<sendl;
-
-    core::objectmodel::BaseContext* scene = getContext();
-    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
-    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    ctime_t t0 = 0;
-    const std::string category = "collision";
 
     VERBOSE(sout << "DefaultPipeline::doCollisionDetection, Compute Bounding Trees"<<sendl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
@@ -112,7 +98,6 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     sofa::helper::vector<CollisionModel*> vectBoundingVolume;
     {
         sofa::helper::AdvancedTimer::stepBegin("BBox");
-        if (node) t0 = node->startTime();
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printNode("ComputeBoundingTree");
 #endif
@@ -136,7 +121,6 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
             ++nActive;
         }
         sofa::helper::AdvancedTimer::stepEnd("BBox");
-        if (node) t0 = node->endTime(t0, "collision/bbox", this);
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printCloseNode("ComputeBoundingTree");
 #endif
@@ -145,7 +129,6 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     // then we start the broad phase
     if (broadPhaseDetection==NULL) return; // can't go further
     VERBOSE(sout << "DefaultPipeline::doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName()<<sendl);
-    if (node) t0 = node->startTime();
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("BroadPhase");
 #endif
@@ -160,12 +143,10 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("BroadPhase");
 #endif
-    if (node) t0 = node->endTime(t0, category, broadPhaseDetection, this);
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
     VERBOSE(sout << "DefaultPipeline::doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<sendl);
-    if (node) t0 = node->startTime();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("NarrowPhase");
@@ -183,24 +164,15 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("NarrowPhase");
 #endif
-    if (node) t0 = node->endTime(t0, category, narrowPhaseDetection, this);
 }
 
 void DefaultPipeline::doCollisionResponse()
 {
-
     core::objectmodel::BaseContext* scene = getContext();
-    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
-    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    ctime_t t0 = 0;
-    const std::string category = "collision";
-
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
     VERBOSE(sout << "Create Contacts "<<contactManager->getName()<<sendl);
-    if (node) t0 = node->startTime();
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
-    if (node) t0 = node->endTime(t0, category, contactManager, this);
 
     // finally we start the creation of collisionGroup
 
@@ -237,9 +209,7 @@ void DefaultPipeline::doCollisionResponse()
     else
     {
         VERBOSE(sout << "Create Groups "<<groupManager->getName()<<sendl);
-        if (node) t0 = node->startTime();
         groupManager->createGroups(scene, notStaticContacts);
-        if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
 
 }

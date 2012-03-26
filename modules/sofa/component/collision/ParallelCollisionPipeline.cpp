@@ -64,7 +64,7 @@ ParallelCollisionPipeline::ParallelCollisionPipeline()
 {
 }
 
-typedef simulation::tree::GNode::ctime_t ctime_t;
+typedef simulation::tree::GVisitor::ctime_t ctime_t;
 
 
 void ParallelCollisionPipeline::parallelComputeCollisions()

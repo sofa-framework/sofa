@@ -36,9 +36,6 @@ namespace simulation
 namespace tree
 {
 
-
-using helper::system::thread::CTime;
-
 GNode::GNode(const std::string& name, GNode* parent)
     : simulation::Node(name)
     , l_parent(initLink("parent", "Parent node in the graph"))
@@ -346,63 +343,18 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
     action->setNode(this);
     action->printInfo(getContext(), true);
 #endif
-    if (getLogTime())
+    if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
     {
-        const ctime_t t0 = CTime::getTime();
-        ctime_t tChild = 0;
-        actionStack.push(action);
-
-        if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
+        for(unsigned int i = 0; i<child.size(); ++i)
         {
-            ctime_t ct0 = CTime::getTime();
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
-            {
-                (*it)->executeVisitor(action);
-            }
-            tChild = CTime::getTime() - ct0;
-        }
-        action->processNodeBottomUp(this);
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-        action->printInfo(getContext(), false);
-#endif
-        actionStack.pop();
-        ctime_t tTree = CTime::getTime() - t0;
-        ctime_t tNode = tTree - tChild;
-        if (actionStack.empty())
-        {
-            totalTime.tNode += tNode;
-            totalTime.tTree += tTree;
-            ++totalTime.nVisit;
-        }
-        NodeTimer& t = actionTime[action->getCategoryName()];
-        t.tNode += tNode;
-        t.tTree += tTree;
-        ++t.nVisit;
-        if (!actionStack.empty())
-        {
-            // remove time from calling action log
-            simulation::Visitor* prev = actionStack.top();
-            NodeTimer& t = actionTime[prev->getCategoryName()];
-            t.tNode -= tTree;
-            t.tTree -= tTree;
+            child[i]->executeVisitor(action);
         }
     }
-    else
-    {
-        if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
-        {
-            for(unsigned int i = 0; i<child.size(); ++i)
-            {
-                child[i]->executeVisitor(action);
-            }
-        }
 
-        action->processNodeBottomUp(this);
+    action->processNodeBottomUp(this);
 #ifdef SOFA_DUMP_VISITOR_INFO
-        action->printInfo(getContext(), false);
+    action->printInfo(getContext(), false);
 #endif
-    }
 }
 
 
@@ -455,25 +407,6 @@ void GNode::updateSimulationContext()
         copySimulationContext(*parent());
     }
     simulation::Node::updateSimulationContext();
-}
-
-/// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
-{
-    ObjectTimer& timer = objectTime[s][obj];
-    timer.tObject += t;
-    ++ timer.nVisit;
-    objectTime[s][parent].tObject -= t;
-}
-
-/// Log time spent given a start time, an action category, and the concerned object
-Node::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
-{
-    if (!getLogTime()) return 0;
-    const ctime_t t1 = CTime::getTime();
-    const ctime_t t = t1 - t0;
-    addTime(t, s, obj, parent);
-    return t1;
 }
 
 SOFA_DECL_CLASS(GNode)

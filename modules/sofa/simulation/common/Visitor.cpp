@@ -209,7 +209,7 @@ void Visitor::printCloseNode(const std::string &type)
 #endif
 /// Optional helper method to call before handling an object if not using the for_each method.
 /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmodel::BaseObject*
+simulation::Visitor::ctime_t Visitor::begin(simulation::Node* node, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
         obj
 #endif
@@ -217,7 +217,7 @@ simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmod
 #ifdef SOFA_DUMP_VISITOR_INFO
         info
 #endif
-                                        )
+                                           )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     if (printActivated)
@@ -230,14 +230,13 @@ simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmod
         printNode("Component", obj->getName(), arg);
     }
 #endif
-    return node->startTime();
+    return ctime_t();
 }
 
 /// Optional helper method to call after handling an object if not using the for_each method.
 /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
+void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t)
 {
-    node->endTime(t0, getCategoryName(), obj);
 #ifdef SOFA_DUMP_VISITOR_INFO
     if (printActivated)
     {
@@ -248,7 +247,7 @@ void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ct
 
 /// Optional helper method to call before handling an object if not using the for_each method.
 /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-simulation::Node::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, const std::string &info)
+simulation::Visitor::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, const std::string &info)
 {
     return begin(vc->node, obj, info);
 }

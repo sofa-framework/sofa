@@ -31,7 +31,7 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/ExecParams.h>
-#include <sofa/helper/vector.h>
+#include <boost/container/stable_vector.hpp>
 #include <string>
 #include <sstream>
 
@@ -150,6 +150,22 @@ public:
     {
         return end();
     }
+    const_iterator cbegin() const
+    {
+        return begin();
+    }
+    const_iterator cend() const
+    {
+        return end();
+    }
+    const_reverse_iterator crbegin() const
+    {
+        return rbegin();
+    }
+    const_reverse_iterator crend() const
+    {
+        return rend();
+    }
     unsigned int size() const
     {
         return (!elems[0])?0:1;
@@ -227,7 +243,11 @@ template<class TDestType, class TDestPtr, class TValueType>
 class LinkTraitsContainer<TDestType, TDestPtr, TValueType, true>
 {
 public:
-    typedef helper::vector<TValueType> T;
+    /// Container type.
+    /// We use stable_vector to allow insertion/removal of elements
+    /// while iterators are used (required to add/remove objects
+    /// while visitors are in progress).
+    typedef ::boost::container::stable_vector<TValueType> T;
     static void clear(T& c)
     {
         c.clear();
@@ -344,22 +364,22 @@ public:
 
     const_iterator begin(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect(params)].begin();
+        return m_value[core::ExecParams::currentAspect(params)].cbegin();
     }
 
     const_iterator end(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect(params)].end();
+        return m_value[core::ExecParams::currentAspect(params)].cend();
     }
 
     const_reverse_iterator rbegin(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect(params)].rbegin();
+        return m_value[core::ExecParams::currentAspect(params)].crbegin();
     }
 
     const_reverse_iterator rend(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect(params)].rend();
+        return m_value[core::ExecParams::currentAspect(params)].crend();
     }
 
     bool add(DestPtr v)

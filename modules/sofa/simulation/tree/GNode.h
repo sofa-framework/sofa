@@ -139,10 +139,6 @@ public:
     virtual void updateSimulationContext();
 
 
-    /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-    void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
-    Node::ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
-
     /// Return the full path name of this node
     std::string getPathName() const;
 

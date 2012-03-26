@@ -179,9 +179,15 @@ public:
     typedef Id<Val> IdVal;
     typedef Id<Obj> IdObj;
 
+    static bool isEnabled(IdTimer id);
+    static void setEnabled(IdTimer id, bool val);
+    static int  getInterval(IdTimer id);
+    static void setInterval(IdTimer id, int val);
+
     static void clear();
     static void begin(IdTimer id);
     static void end  (IdTimer id);
+    static bool isActive();
 
     class TimerVar
     {

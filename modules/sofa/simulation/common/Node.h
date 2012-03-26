@@ -414,59 +414,8 @@ public:
 
     /// @}
 
-
-
-
     /// Remove odesolvers and mastercontroler
     virtual void removeControllers();
-
-    /// @}
-
-    /// @name Time management
-    /// @{
-
-    void setLogTime(bool);
-    bool getLogTime() const { return logTime_; }
-
-    typedef helper::system::thread::ctime_t ctime_t;
-
-    struct NodeTimer
-    {
-        ctime_t tNode; ///< total time elapsed in the node
-        ctime_t tTree; ///< total time elapsed in the branch (node and children)
-        int nVisit;    ///< number of visit
-    };
-
-    struct ObjectTimer
-    {
-        ctime_t tObject; ///< total time elapsed in the object
-        int nVisit;    ///< number of visit
-    };
-
-    /// Reset time logs
-    void resetTime();
-
-    /// Get total time log
-    const NodeTimer& getTotalTime() const { return totalTime; }
-
-    /// Get time log of all categories
-    const std::map<std::string, NodeTimer>& getVisitorTime() const { return actionTime; }
-
-    /// Get time log of a given category
-    const NodeTimer& getVisitorTime(const std::string& s) { return actionTime[s]; }
-
-    /// Get time log of a given category
-    const NodeTimer& getVisitorTime(const char* s) { return actionTime[s]; }
-
-    /// Get time log of all objects
-    const std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
-
-    /// Get time log of all objects of a given category
-    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
-
-    /// Get time log of all objects of a given category
-    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
-
 
     /// Find a child node given its name
     Node* getChild(const std::string& name) const;
@@ -481,25 +430,6 @@ public:
     {
         return getRoot()->getContext();
     }
-
-    /// Get timer frequency
-    ctime_t getTimeFreq() const;
-
-    /// Measure start time
-    ctime_t startTime() const;
-
-    /// Log time spent on an action category and the concerned object
-    virtual void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj);
-
-    /// Log time spent given a start time, an action category, and the concerned object
-    virtual ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj);
-
-    /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-    virtual void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
-
-    /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
-    virtual ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
-    /// @}
 
     Node* setDebug(bool);
     bool getDebug() const;
@@ -541,16 +471,6 @@ public:
     static Node::SPtr create( RealObject* obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
 protected:
     bool debug_;
-    bool logTime_;
-
-    /// @name Performance Timing Log
-    /// @{
-
-    NodeTimer totalTime;
-    std::map<std::string, NodeTimer> actionTime;
-    std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
-
-    /// @}
 
     virtual void doAddObject(core::objectmodel::BaseObject::SPtr obj);
     virtual void doRemoveObject(core::objectmodel::BaseObject::SPtr obj);

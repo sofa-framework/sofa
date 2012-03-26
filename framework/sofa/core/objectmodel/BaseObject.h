@@ -159,7 +159,9 @@ public:
 
     BaseObject* getMaster();
 
-    typedef helper::vector<BaseObject::SPtr> VecSlaves;
+
+    typedef MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
+    typedef LinkSlaves::Container VecSlaves;
 
     const VecSlaves& getSlaves() const;
 
@@ -470,7 +472,7 @@ public:
 protected:
 
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> l_slaves;
+    LinkSlaves l_slaves;
     SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
 
     // This method insures that context is never NULL (using BaseContext::getDefault() instead)

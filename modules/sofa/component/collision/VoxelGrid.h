@@ -75,7 +75,7 @@ private:
     Vector3 minVect, maxVect, step;
     void posToIdx (const Vector3& pos, Vector3 &indices);
     simulation::Node* timeLogger;
-    simulation::Node::ctime_t timeInter;
+    simulation::Visitor::ctime_t timeInter;
     friend class GridCell;
 public:
     VoxelGrid (Vector3 minVect = Vector3(-20.0, -20.0, -20.0), Vector3 maxVect = Vector3(-20.0, -20.0, -20.0), Vector3 nbSubdivision = Vector3(5.0, 5.0, 5.0), bool draw=false)

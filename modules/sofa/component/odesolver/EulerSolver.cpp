@@ -65,7 +65,7 @@ EulerSolver::EulerSolver()
 {
 }
 
-typedef simulation::Node::ctime_t ctime_t;
+typedef simulation::Visitor::ctime_t ctime_t;
 
 void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
