@@ -53,6 +53,27 @@ struct SOFA_CORE_API tristate
     {
         return state == true_value ? true : false;
     }
+
+    bool operator==(const tristate& t) const
+    {
+        return state == t.state;
+    }
+
+    bool operator!=(const tristate& t) const
+    {
+        return state != t.state;
+    }
+
+    bool operator==(const state_t& s) const
+    {
+        return state == s;
+    }
+
+    bool operator!=(const state_t& s) const
+    {
+        return state != s;
+    }
+
     friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
     friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
     friend inline tristate difference_tristate(const tristate& previous, const tristate& current);

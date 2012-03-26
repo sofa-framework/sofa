@@ -26,6 +26,11 @@
 #ifndef EIGEN_TRIDIAGONALIZATION_H
 #define EIGEN_TRIDIAGONALIZATION_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable : 4181) // qualifier applied to reference type; ignored
+#endif
+
 namespace internal {
   
 template<typename MatrixType> struct TridiagonalizationMatrixTReturnType;
@@ -564,5 +569,9 @@ template<typename MatrixType> struct TridiagonalizationMatrixTReturnType
 };
 
 } // end namespace internal
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif // EIGEN_TRIDIAGONALIZATION_H

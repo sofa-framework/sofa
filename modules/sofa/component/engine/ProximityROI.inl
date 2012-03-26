@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_INL
-#define SOFA_COMPONENT_ENGINE_SPHEREROI_INL
+#ifndef SOFA_COMPONENT_ENGINE_PROXIMITYROI_INL
+#define SOFA_COMPONENT_ENGINE_PROXIMITYROI_INL
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -255,7 +255,7 @@ void ProximityROI<DataTypes>::update()
     for(std::vector<SortingPair>::iterator it=sortingheap.begin(); it!=sortingheap.end(); it++)
     {
         indices.push_back(it->i);
-        distanceInROI.push_back(it->distance);
+        distanceInROI.push_back((Real)it->distance);
         pointsInROI.push_back((*x0)[it->i]);
     }
 
