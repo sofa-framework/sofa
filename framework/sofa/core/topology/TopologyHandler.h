@@ -51,7 +51,7 @@ typedef Topology::Hexahedron       Hexahedron;
 class SOFA_CORE_API TopologyHandler
 {
 public:
-    TopologyHandler() {}
+    TopologyHandler() : lastElementIndex(0) {}
 
     virtual ~TopologyHandler() {}
 

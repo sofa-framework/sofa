@@ -31,7 +31,7 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/ExecParams.h>
-#include <boost/container/stable_vector.hpp>
+#include <sofa/helper/stable_vector.h>
 #include <string>
 #include <sstream>
 
@@ -247,7 +247,8 @@ public:
     /// We use stable_vector to allow insertion/removal of elements
     /// while iterators are used (required to add/remove objects
     /// while visitors are in progress).
-    typedef ::boost::container::stable_vector<TValueType> T;
+    typedef sofa::helper::stable_vector<TValueType> T;
+    //typedef ::boost::container::stable_vector<TValueType> T;
     static void clear(T& c)
     {
         c.clear();

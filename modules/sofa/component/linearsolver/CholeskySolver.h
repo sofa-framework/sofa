@@ -52,6 +52,7 @@ public:
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef typename Vector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     Data<bool> f_verbose;

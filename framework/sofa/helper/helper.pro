@@ -89,6 +89,7 @@ HEADERS += helper.h \
     vector.h \
     vector_device.h \
     vector_algebra.h \
+    stable_vector.h \
     StringUtils.h \
     polygon_cube_intersection/vec.h \
     polygon_cube_intersection/polygon_cube_intersection.h \

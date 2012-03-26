@@ -286,8 +286,6 @@ public:
         TriangularFEMForceFieldOptim<DataTypes>* ff;
     };
 
-    void initTriangleState(unsigned int triangleIndex, TriangleState& ti, const Triangle t);
-
     sofa::core::topology::BaseMeshTopology* _topology;
 
     template<class MatrixWriter>

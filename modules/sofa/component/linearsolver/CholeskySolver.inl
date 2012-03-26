@@ -77,7 +77,7 @@ void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r
         {
             temp += z[i] * L.element(i,j);
         }
-        z[j] = (r[j] - temp) * d ;
+        z[j] = (Real)((r[j] - temp) * d);
     }
 
     //Solve L^t x = u
@@ -89,7 +89,7 @@ void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r
         {
             temp += z[i] * L.element(j,i);
         }
-        z[j] = (z[j] - temp) * d;
+        z[j] = (Real)((z[j] - temp) * d);
     }
 }
 

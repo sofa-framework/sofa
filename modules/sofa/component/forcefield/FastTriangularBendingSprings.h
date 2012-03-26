@@ -223,9 +223,6 @@ protected:
         }
     };
 
-    /// Store in ei the vertex indices and  all the precomputations
-    void setEdgeSpring( EdgeSpring& ei, unsigned i0, unsigned i1, unsigned i2, unsigned i3);
-
     /// The list of edge springs, one for each edge between two triangles
     EdgeData<helper::vector<EdgeSpring> > edgeSprings;
 
