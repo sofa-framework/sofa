@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <ImageContainer name="image" template="ImageF" filename="data/vectors.inr.gz" />  
+  <ImageViewer name="viewer" template="ImageF" src="@image"  vectorvis="4 4 1 0 1 LowerTriRowMajor"/>
+</Node>
