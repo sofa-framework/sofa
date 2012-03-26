@@ -22,19 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: GNodeVisitor
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2008
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef sofa_simulation_tree_GNodeVisitor_h
-#define sofa_simulation_tree_GNodeVisitor_h
+#ifndef SOFA_SIMULATION_TREE_GNODEVISITOR_H
+#define SOFA_SIMULATION_TREE_GNODEVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -105,48 +94,38 @@ public:
 
     virtual const char* getClassName() const { return "GNodeVisitor"; }
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Act, class Container, class Object >
-    void for_each(Act* action, GNode* node, const Container& list, void (Act::*fn)(GNode*, Object*))
+    template < class Visit, class Container, class Object >
+    void for_each(Visit* visitor, GNode* ctx, const Container& list, void (Visit::*fn)(GNode*, Object*))
     {
-        if (node->getLogTime())
+        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
-            const std::string category = getCategoryName();
-            ctime_t t0 = node->startTime();
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
+            typename Container::pointed_type* ptr = &*(*it);
+            if(testTags(ptr))
             {
-                (action->*fn)(node, *it);
-                t0 = node->endTime(t0, category, *it);
-            }
-        }
-        else
-        {
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-            {
-                (action->*fn)(node, *it);
+                debug_write_state_before(ptr);
+                ctime_t t=begin(ctx, ptr);
+                (visitor->*fn)(ctx, ptr);
+                end(ctx, ptr, t);
+                debug_write_state_after(ptr);
             }
         }
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Act, class Container, class Object >
-    Visitor::Result for_each_r(Act* action, GNode* node, const Container& list, Visitor::Result (Act::*fn)(GNode*, Object*))
+    template < class Visit, class Container, class Object >
+    Visitor::Result for_each_r(Visit* visitor, GNode* ctx, const Container& list, Visitor::Result (Visit::*fn)(GNode*, Object*))
     {
         Visitor::Result res = Visitor::RESULT_CONTINUE;
-        if (node->getLogTime())
+        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
-            const std::string category = getCategoryName();
-            ctime_t t0 = node->startTime();
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
+            typename Container::pointed_type* ptr = &*(*it);
+            if(testTags(ptr))
             {
-                res = (action->*fn)(node, *it);
-                t0 = node->endTime(t0, category, *it);
-            }
-        }
-        else
-        {
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-            {
-                res = (action->*fn)(node, *it);
+                debug_write_state_before(ptr);
+                ctime_t t=begin(ctx, ptr);
+                res = (visitor->*fn)(ctx, ptr);
+                end(ctx, ptr, t);
+                debug_write_state_after(ptr);
             }
         }
         return res;

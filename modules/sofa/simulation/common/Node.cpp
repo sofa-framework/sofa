@@ -65,7 +65,6 @@ using std::cerr;
 using std::endl;
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
-using helper::system::thread::CTime;
 
 Node::Node(const std::string& name)
     : core::objectmodel::BaseNode()
@@ -106,13 +105,10 @@ Node::Node(const std::string& name)
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
     , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
-    , debug_(false), logTime_(false)
+    , debug_(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
-    totalTime.nVisit = 0;
-    totalTime.tNode = 0;
-    totalTime.tTree = 0;
     setName(name);
 }
 
@@ -635,14 +631,6 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
 
     unsorted.remove(obj);
-    // Remove references to this object in time log tables
-    if (!objectTime.empty())
-    {
-        for (std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
-        {
-            it->second.erase(obj);
-        }
-    }
 }
 
 
@@ -773,73 +761,6 @@ sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
     return list_children;
 }
 
-
-
-void Node::setLogTime(bool b)
-{
-    logTime_=b;
-}
-
-Node::ctime_t Node::getTimeFreq() const
-{
-    return CTime::getTicksPerSec();
-}
-
-void Node::resetTime()
-{
-    totalTime.nVisit = 0;
-    totalTime.tNode = 0;
-    totalTime.tTree = 0;
-    actionTime.clear();
-    objectTime.clear();
-}
-
-/// Measure start time
-Node::ctime_t Node::startTime() const
-{
-    if (!getLogTime()) return 0;
-    return CTime::getTime();
-}
-
-/// Log time spent on an action category and the concerned object
-void Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj)
-{
-    ObjectTimer& timer = objectTime[s][obj];
-    timer.tObject += t;
-    ++ timer.nVisit;
-}
-
-/// Log time spent given a start time, an action category, and the concerned object
-Node::ctime_t Node::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj)
-{
-    if (!getLogTime()) return 0;
-    const ctime_t t1 = CTime::getTime();
-    const ctime_t t = t1 - t0;
-    addTime(t, s, obj);
-    return t1;
-}
-
-/// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-void Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* /*parent*/)
-{
-    ObjectTimer& timer = objectTime[s][obj];
-    timer.tObject += t;
-    ++ timer.nVisit;
-    //objectTime[s][parent].tObject -= t;
-    cerr<<"Warning: Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not remove the computed time from the parent caller object (parent is ndefined)"<<endl;
-}
-
-/// Log time spent given a start time, an action category, and the concerned object
-Node::ctime_t Node::endTime(ctime_t /*t0*/, const std::string& /*s*/, core::objectmodel::BaseObject* /*obj*/, core::objectmodel::BaseObject* /*parent*/)
-{
-    if (!getLogTime()) return 0;
-    const ctime_t t1 = CTime::getTime();
-    //const ctime_t t = t1 - t0;
-    //addTime(t, s, obj, parent);
-    cerr<<"Warning: Node::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not add parent time (parent is ndefined)"<<endl;
-    return t1;
-}
-
 Node* Node::setDebug(bool b)
 {
     debug_=b;
@@ -966,22 +887,12 @@ void Node::updateSimulationContext()
 void Node::updateVisualContext()
 {
     // Apply local modifications to the context
-    if (getLogTime())
+    for ( unsigned i=0; i<contextObject.size(); ++i )
     {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
+        contextObject[i]->init();
+        contextObject[i]->apply();
     }
-    else
-    {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
+
     if ( debug_ ) std::cerr<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 

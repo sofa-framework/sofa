@@ -44,7 +44,7 @@ void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, cor
     /*
         if (!obj->isMechanical())
         {
-          simulation::Node::ctime_t t0=begin(n, obj);
+          simulation::Visitor::ctime_t t0=begin(n, obj);
 
     #ifdef SOFA_DUMP_VISITOR_INFO
       if (printActivated)      printNode("propagateX");

@@ -325,7 +325,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, sofa
     minBBox1 = collisionElem.getBBoxMin();
     maxBBox1 = collisionElem.getBBoxMax();
 
-    simulation::Node::ctime_t t0 = 0;
+    simulation::Visitor::ctime_t t0 = 0;
 
     {
         sofa::helper::vector < CollisionElementIterator >	::iterator it	 = collisElems.begin();

@@ -30,7 +30,6 @@
 #include <sofa/component/collision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/Node.h>
 #include <map>
 #include <queue>
 #include <stack>
@@ -269,10 +268,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         finalcm2 = NULL;
         finalintersector = NULL;
     }
-    simulation::Node* node = dynamic_cast<simulation::Node*>(getContext());
-    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    simulation::Node::ctime_t t0=0, t=0;
-    simulation::Node::ctime_t ft=0;
 
     std::queue< TestPair > externalCells;
 
@@ -315,7 +310,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             intersector = intersectionMethod->findIntersector(cm1, cm2, swapModels);
             if (intersector == NULL)
             {
-                sout << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<gettypename(typeid(*cm1))<<" - "<<gettypename(typeid(*cm2))<<sendl;
+                sout << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;
             }
             //else sout << "BruteForceDetection: intersector " << intersector->name() << " for " << intersectionMethod->getName() << " for "<<gettypename(typeid(*cm1))<<" - "<<gettypename(typeid(*cm2))<<sendl;
             if (swapModels)
@@ -328,9 +323,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         std::stack< TestPair > internalCells;
         internalCells.push(root);
 
-        simulation::Node::ctime_t it=0,it0=0;
-
-        if (node) it0 = node->startTime();
         while (!internalCells.empty())
         {
             TestPair current = internalCells.top();
@@ -344,7 +336,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             if (begin1.getCollisionModel() == finalcm1 && begin2.getCollisionModel() == finalcm2)
             {
                 // Final collision pairs
-                if (node) t0 = node->startTime();
                 for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
                 {
                     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
@@ -408,7 +399,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                                 core::CollisionElementIterator end1 = newExternalTests.first.second;
                                                 core::CollisionElementIterator begin2 = newExternalTests.second.first;
                                                 core::CollisionElementIterator end2 = newExternalTests.second.second;
-                                                if (node) t0 = node->startTime();
                                                 for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
                                                 {
                                                     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
@@ -419,7 +409,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                                             finalintersector->intersect(it1,it2,outputs);
                                                     }
                                                 }
-                                                if (node) ft += node->startTime() - t0;
                                             }
                                             else
                                                 externalCells.push(newExternalTests);
@@ -456,22 +445,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                 }
             }
         }
-        if (node)
-        {
-            it += node->startTime() - it0 - ft;
-            std::string name = "collision/";
-            name += intersector->name();
-            node->addTime(it, name, intersectionMethod);
-            t += it;
-        }
-    }
-    if (node && finalintersector!=NULL)
-    {
-        std::string name = "collision/";
-        name += finalintersector->name();
-        node->addTime(ft, name, intersectionMethod);
-        t += ft;
-        node->addTime(t, "collision", intersectionMethod, this);
     }
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }

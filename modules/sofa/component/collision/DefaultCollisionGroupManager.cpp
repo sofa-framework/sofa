@@ -52,17 +52,6 @@ DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts)
 {
     int groupIndex = 1;
-    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
-    if (node==NULL)
-    {
-        serr << "DefaultCollisionGroupManager only support graph-based scenes."<<sendl;
-        return;
-    }
-
-    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    simulation::Node::ctime_t t0 = 0;
-
-    if (node) t0 = node->startTime();
 
     // Map storing group merging history
     std::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
@@ -189,8 +178,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         contactGroup.push_back(group);
     }
 
-    if (node) t0 = node->endTime(t0, "collision/groups", this);
-
     // now that the groups are final, attach contacts' response
     for(unsigned int i=0; i<contacts.size(); i++)
     {
@@ -203,8 +190,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         else
             contact->createResponse(scene);
     }
-
-    if (node) t0 = node->endTime(t0, "collision/contacts", this);
 
     // delete removed groups
     for (sofa::helper::vector<simulation::Node::SPtr>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)

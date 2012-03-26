@@ -152,7 +152,7 @@ public:
     helper::vector<Record> records;
     int nbIter;
     int interval;
-
+    int defaultInterval;
 
     class StepData
     {
@@ -189,7 +189,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0)
+        : nbIter(-1), interval(0), defaultInterval(100)
     {
     }
 
@@ -204,6 +204,7 @@ public:
             interval = atoi(val);
         else
             interval = 0;
+        defaultInterval = (interval != 0) ? interval : 100;
     }
     void clear();
     void process();
@@ -263,6 +264,50 @@ void AdvancedTimer::clear()
             ptr->pop();
     if (activeTimers == 0)
         timers.clear();
+}
+
+bool AdvancedTimer::isEnabled(IdTimer id)
+{
+    TimerData& data = timers[id];
+    if (!data.id)
+    {
+        data.init(id);
+    }
+    return (data.interval != 0);
+}
+
+void AdvancedTimer::setEnabled(IdTimer id, bool val)
+{
+    TimerData& data = timers[id];
+    if (!data.id)
+    {
+        data.init(id);
+    }
+    if (val && data.interval == 0)
+        data.interval = data.defaultInterval;
+    else if (!val && data.interval != 0)
+        data.interval = 0;
+}
+
+int  AdvancedTimer::getInterval(IdTimer id)
+{
+    TimerData& data = timers[id];
+    if (!data.id)
+    {
+        data.init(id);
+    }
+    return (data.interval ? data.interval : data.defaultInterval);
+}
+
+void AdvancedTimer::setInterval(IdTimer id, int val)
+{
+    TimerData& data = timers[id];
+    if (!data.id)
+    {
+        data.init(id);
+    }
+    data.defaultInterval = val;
+    if (data.interval) data.interval = val;
 }
 
 void AdvancedTimer::begin(IdTimer id)
@@ -332,6 +377,13 @@ void AdvancedTimer::end(IdTimer id)
         TimerData& data = timers[curTimer.top()];
         setCurRecords((data.interval == 0) ? NULL : &(data.records));
     }
+}
+
+bool AdvancedTimer::isActive()
+{
+    helper::vector<Record>* curRecords = getCurRecords();
+    if (!curRecords) return false;
+    return true;
 }
 
 void AdvancedTimer::stepBegin(IdStep id)

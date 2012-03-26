@@ -447,7 +447,7 @@ void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::obje
 }
 
 
-simulation::Node::ctime_t BaseMechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info)
+Visitor::ctime_t BaseMechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info)
 {
     ctime_t t=Visitor::begin(node, obj, info);
     printReadVectors(node, obj);

@@ -59,6 +59,7 @@ public:
         simulation::Node* node; ///< current node
         double* nodeData;       ///< double value associated with this subtree. Set to NULL if node-specific data is not in use
     };
+    typedef helper::system::thread::ctime_t ctime_t;
 #ifdef SOFA_DUMP_VISITOR_INFO
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
@@ -67,8 +68,6 @@ public:
     virtual ~Visitor();
 
     const core::ExecParams* execParams() const { return params; }
-
-    typedef simulation::Node::ctime_t ctime_t;
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
@@ -98,42 +97,20 @@ public:
     inline void debug_write_state_after( core::objectmodel::BaseObject*  ) {}
 #endif
 
-
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Visit, class VContext, class Container, class Object >
     void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, Object*))
     {
-#if 0
-        if (node->getLogTime())
+        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
-            const std::string category = getCategoryName();
-            ctime_t t0 = node->startTime();
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
+            typename Container::pointed_type* ptr = &*(*it);
+            if(testTags(ptr))
             {
-                typename Container::pointed_type* ptr = &*(*it);
-                if(testTags(ptr))
-                {
-                    debug_write_state_before(ptr);
-                    (visitor->*fn)(node, ptr);
-                    debug_write_state_after(ptr);
-                    t0 = node->endTime(t0, category, ptr);
-                }
-            }
-        }
-        else
-#endif
-        {
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-            {
-                typename Container::pointed_type* ptr = &*(*it);
-                if(testTags(ptr))
-                {
-                    debug_write_state_before(ptr);
-                    ctime_t t=begin(ctx, ptr);
-                    (visitor->*fn)(ctx, ptr);
-                    end(ctx, ptr, t);
-                    debug_write_state_after(ptr);
-                }
+                debug_write_state_before(ptr);
+                ctime_t t=begin(ctx, ptr);
+                (visitor->*fn)(ctx, ptr);
+                end(ctx, ptr, t);
+                debug_write_state_after(ptr);
             }
         }
     }
@@ -143,38 +120,16 @@ public:
     Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, Object*))
     {
         Visitor::Result res = Visitor::RESULT_CONTINUE;
-#if 0
-        if (node->getLogTime())
+        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
-            const std::string category = getCategoryName();
-            ctime_t t0 = node->startTime();
-
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
+            typename Container::pointed_type* ptr = &*(*it);
+            if(testTags(ptr))
             {
-                typename Container::pointed_type* ptr = &*(*it);
-                if(testTags(ptr))
-                {
-                    debug_write_state_before(ptr);
-                    res = (visitor->*fn)(node, ptr);
-                    debug_write_state_after(ptr);
-                    t0 = node->endTime(t0, category, ptr);
-                }
-            }
-        }
-        else
-#endif
-        {
-            for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-            {
-                typename Container::pointed_type* ptr = &*(*it);
-                if(testTags(ptr))
-                {
-                    debug_write_state_before(ptr);
-                    ctime_t t=begin(ctx, ptr);
-                    res = (visitor->*fn)(ctx, ptr);
-                    end(ctx, ptr, t);
-                    debug_write_state_after(ptr);
-                }
+                debug_write_state_before(ptr);
+                ctime_t t=begin(ctx, ptr);
+                res = (visitor->*fn)(ctx, ptr);
+                end(ctx, ptr, t);
+                debug_write_state_after(ptr);
             }
         }
         return res;
@@ -189,14 +144,8 @@ public:
     {
         if(subsetsToManage.empty())
             return true;
-        else
-        {
-            //for ( sofa::helper::set<unsigned int>::iterator it=subsetsToManage.begin() ; it!=subsetsToManage.end() ; it++)
-            //	if(obj->hasTag(*it))
-            //		return true;
-            if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
-                return true;
-        }
+        if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
+            return true;
         return false;
     }
 
@@ -213,17 +162,12 @@ public:
 
     /// Alias for context->executeVisitor(this)
     virtual void execute(core::objectmodel::BaseContext* node);
-    virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
-#ifdef SOFA_DUMP_VISITOR_INFO
-            obj
-#endif
+
+    virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                          );
     virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
-    ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject*
-#ifdef SOFA_DUMP_VISITOR_INFO
-            obj
-#endif
+    ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                  );
     void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
