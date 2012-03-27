@@ -333,3 +333,8 @@ share/screenshots/
 sofa-local.cfg
 sofa-local.prf
 Sofa.pro.user
+
+# let's try using wildcards shall we ?
+Makefile*
+*.o
+moc_*.cpp
