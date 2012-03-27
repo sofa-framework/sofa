@@ -117,13 +117,13 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
             cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (Minv * vecF.getVectorEigen()).transpose() << endl;
             cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( matJ * ( Minv * vecF.getVectorEigen())).transpose() << endl;
             cerr<<"ComplianceSolver::solve,  vecPhi.getVectorEigen()  = " <<  vecPhi.getVectorEigen().transpose() << endl;
-            cerr<<"ComplianceSolver::solve, right-hand term = " << x << endl;
+            cerr<<"ComplianceSolver::solve, right-hand term = " << x.transpose() << endl;
         }
         schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
         vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * x ; // f = f_ext + J^T.lambda
         if( verbose.getValue() )
         {
-            cerr<<"ComplianceSolver::solve, constraint forces = " << x << endl;
+            cerr<<"ComplianceSolver::solve, constraint forces = " << x.transpose() << endl;
             cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
             cerr<<"ComplianceSolver::solve, net forces = " << f << endl;
         }
@@ -222,19 +222,20 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
             MechanicalState* mtarget = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Only N-to-1 mappings are handled yet
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             for( unsigned i=0; i<pStates.size(); i++ )
             {
                 MechanicalState* mstate = dynamic_cast<MechanicalState*>(pStates[i]);
                 assert(mstate);
                 DMatrix J = toMatrix( (*pJs)[i] );
                 DMatrix contribution;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
                 jMap[mtarget] += contribution;
             }
-            //                    cerr<<"pass "<< pass << ", node " << node->getName() << ", mechanical mapping: " << node->mechanicalMapping->getName() << ", matrix J = " << J << endl;
-            //                    cerr<<"pass "<< pass << ", node " << node->getName() << ", mechanical mapping: " << node->mechanicalMapping->getName() << ", new Jtop = " << jStack.top() << endl;
         }
 
         // ==== mass
@@ -279,10 +280,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         // ==== independent DOFs
         if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
         {
-            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-
             unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<",  force before = " << solver->vecF << endl;
             node->mechanicalState->addToBaseVector(&solver->vecF,core::VecDerivId::force(),offset);
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<", cumulated force = " << solver->vecF << endl;
         }
 
         // ==== compliance
@@ -290,8 +291,6 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         node->getNodeObjects<BaseCompliance>(&compliances);
         if( compliances.size()>0 )
         {
-            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", compliance: " << compliances[0]->getName() << endl;
-
             compliances[0]->setConstraint( &cparams, core::VecDerivId::force() );
             unsigned offset = c_offset[compliances[0]]; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->addToBaseVector(&solver->vecPhi, core::VecDerivId::force(), offset );

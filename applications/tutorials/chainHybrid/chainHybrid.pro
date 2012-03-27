@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = chainHybrid
 
-SOURCES = Main.cpp
+SOURCES = chainHybrid.cpp
 HEADERS =
 
 load(sofa/post)

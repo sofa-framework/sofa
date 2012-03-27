@@ -62,7 +62,7 @@ public:
     typedef Node::DisplayFlags DisplayFlags;
 
     SOFA_CLASS(BglNode, simulation::Node);
-    typedef MultiLink<BglNode,BglNode,BaseLink::FLAG_DOUBLELINK> LinkParents;
+    typedef MultiLink<BglNode,BglNode,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
     typedef LinkParents::const_iterator ParentIterator;
 
 protected:

@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = subsetMultimapping
 
-SOURCES = Main.cpp
+SOURCES = subsetMultimapping.cpp
 HEADERS =
 
 load(sofa/post)

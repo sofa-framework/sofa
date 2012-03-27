@@ -42,14 +42,18 @@ MultiMapping<In,Out>::MultiMapping()
 }
 
 template < class In, class Out >
-void MultiMapping<In,Out>::addInputModel(State<In>* from, const std::string& path)
+void MultiMapping<In,Out>::addInputModel(BaseState* fromModel, const std::string& path)
 {
+    State<In>* from = dynamic_cast<State<In>*>(fromModel);
+    assert(from);
     this->fromModels.add(from, path);
 }
 
 template< class In, class Out >
-void MultiMapping<In,Out>::addOutputModel(State<Out>* to, const std::string& path)
+void MultiMapping<In,Out>::addOutputModel(BaseState* toModel, const std::string& path)
 {
+    State<Out>* to = dynamic_cast<State<Out>*>(toModel);
+    assert(to);
     this->toModels.add(to, path);
     if (isMechanical())
     {

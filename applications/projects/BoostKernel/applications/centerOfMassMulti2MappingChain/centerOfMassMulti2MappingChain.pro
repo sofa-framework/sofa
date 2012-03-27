@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = centerOfMassMulti2MappingChain
 
-SOURCES = Main.cpp
+SOURCES = centerOfMassMulti2MappingChain.cpp
 HEADERS =
 
 load(sofa/post)

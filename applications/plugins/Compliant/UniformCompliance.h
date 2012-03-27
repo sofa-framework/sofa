@@ -44,6 +44,9 @@ public:
     /// return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getMatrix(const core::MechanicalParams*);
 
+    /// set a uniform, diagonal compliance
+    void setCompliance( Real c );
+
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 

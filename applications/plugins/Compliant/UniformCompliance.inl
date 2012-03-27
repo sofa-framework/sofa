@@ -50,6 +50,16 @@ void UniformCompliance<DataTypes>::reinit()
 //}
 
 template<class DataTypes>
+void UniformCompliance<DataTypes>::setCompliance( Real c )
+{
+    Block C;
+    for(unsigned i=0; i<C.size(); i++ )
+        C[i][i] = c;
+    compliance.setValue(C);
+}
+
+
+template<class DataTypes>
 void UniformCompliance<DataTypes>::setConstraint(const core::ComplianceParams* params, core::MultiVecDerivId fId )
 {
 //    const DataVecCoord *xd = params->readX(this->mstate);

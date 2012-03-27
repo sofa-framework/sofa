@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = centerOfMassMapping
 
-SOURCES = Main.cpp
+SOURCES = centerOfMassMapping.cpp
 HEADERS =
 
 load(sofa/post)

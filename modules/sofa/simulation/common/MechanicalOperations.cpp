@@ -356,17 +356,17 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
 {
     cparams.setOrder(order);
 
-    ctx->serr<<"MechanicalOperations::solveConstraint"<<std::endl;
+//	ctx->serr<<"MechanicalOperations::solveConstraint"<<std::endl;
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
     if (constraintSolverList.empty())
     {
-        ctx->sout << "No ConstraintSolver found."<<ctx->sendl;
+//                ctx->sout << "No ConstraintSolver found."<<ctx->sendl;
         return;
     }
 
-    ctx->serr<<"MechanicalOperations::solveConstraint found solvers"<<std::endl;
+//	ctx->serr<<"MechanicalOperations::solveConstraint found solvers"<<std::endl;
     for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
         (*it)->solveConstraint(&cparams, id);

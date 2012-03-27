@@ -4,7 +4,6 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = sofaobjectcreator
 
-
 SOURCES += ObjectCreator.cpp
 
 HEADERS += ObjectCreator.h

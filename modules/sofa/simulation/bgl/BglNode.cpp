@@ -52,6 +52,9 @@
 #endif
 #include <sofa/simulation/bgl/dfv_adapter.h>
 #include <sofa/helper/Factory.inl>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #define BREADTH_FIRST_VISIT
 
@@ -99,14 +102,23 @@ bool BglNode::addObject(core::objectmodel::BaseObject::SPtr sobj)
     sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj);
     if (mm && mm->isMechanical() )
     {
-        sofa::core::behavior::BaseMechanicalState
-        *msFrom=mm->getMechFrom()[0],
-         *msTo  =mm->getMechTo()[0];
+        if( mm->getMechFrom().size()==0) cerr<<"BglNode::addObject, mapping with empty getFrom() !!" << endl;
+        if( mm->getMechTo().size()==0)   cerr<<"BglNode::addObject, mapping with empty getTo() !!" << endl;
+//        sofa::core::behavior::BaseMechanicalState
+//                *msFrom=mm->getMechFrom()[0],
+//                *msTo  =mm->getMechTo()[0];
 
-        if (msFrom && msTo)
+//        if (msFrom && msTo)
+//        {
+//            Node *from=(Node*)msFrom->getContext();
+//            Node *to=(Node*)  msTo  ->getContext();
+//            BglGraphManager::getInstance()->addInteraction( from, to, mm);
+//        }
+
+        Node *to=(Node*) mm->getMechTo()[0]->getContext(); // we currently assume that no mapping has more than one output
+        for( unsigned i=0; i<mm->getMechFrom().size(); i++)
         {
-            Node *from=(Node*)msFrom->getContext();
-            Node *to=(Node*)  msTo  ->getContext();
+            Node *from=(Node*) mm->getMechFrom()[i]->getContext();
             BglGraphManager::getInstance()->addInteraction( from, to, mm);
         }
     }
@@ -267,9 +279,15 @@ core::objectmodel::BaseNode::Parents BglNode::getParents() const
 bool BglNode::hasParent(const BaseContext* context) const
 {
     if (context == NULL) return l_parents.empty();
-    for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end(); it!=it_end; ++it)
+    //	for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end();it!=it_end;++it)
+    //        for (LinkParents::iterator it=l_parents.begin(), it_end=l_parents.end();it!=it_end;++it)
+    //        {
+    //		BglNode* p = *it;
+    //		if (p==context) return true;
+    //	}
+    for( unsigned i=0; i<l_parents.size(); i++)
     {
-        BglNode* p = *it;
+        BglNode* p = l_parents[i];
         if (p==context) return true;
     }
     return false;
@@ -279,9 +297,15 @@ bool BglNode::hasParent(const BaseContext* context) const
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
 bool BglNode::hasAncestor(const BaseContext* context) const
 {
-    for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end(); it!=it_end; ++it)
+    //	for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end();it!=it_end;++it)
+    //	{
+    //		BglNode* p = *it;
+    //		if (p==context) return true;
+    //		if (p->hasAncestor(context)) return true;
+    //	}
+    for( unsigned i=0; i<l_parents.size(); i++)
     {
-        BglNode* p = *it;
+        BglNode* p = l_parents[i];
         if (p==context) return true;
         if (p->hasAncestor(context)) return true;
     }

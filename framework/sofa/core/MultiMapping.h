@@ -85,8 +85,8 @@ protected:
     virtual ~MultiMapping() {};
 public:
 
-    void addInputModel(State< In >* model, const std::string& path = "" );
-    void addOutputModel(State< Out >* model, const std::string& path = "" );
+    void addInputModel(BaseState* model, const std::string& path = "" );
+    void addOutputModel(BaseState* model, const std::string& path = "" );
 
     /// Return the reference to fromModels.
     const VecFromModels& getFromModels();

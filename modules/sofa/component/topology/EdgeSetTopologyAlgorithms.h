@@ -44,7 +44,7 @@ class EdgeSetGeometryAlgorithms;
 
 using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
+//	typedef BaseMeshTopology::Edge Edge;
 typedef BaseMeshTopology::SeqEdges SeqEdges;
 typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
