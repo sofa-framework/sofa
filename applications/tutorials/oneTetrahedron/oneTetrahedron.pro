@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = oneTetrahedron
 
-SOURCES = Main.cpp
+SOURCES = oneTetrahedron.cpp
 HEADERS =
 
 load(sofa/post)

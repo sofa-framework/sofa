@@ -110,6 +110,7 @@ Node::Node(const std::string& name)
 {
     _context = this;
     setName(name);
+    f_printLog.setValue(true); // so that the warning message sent to the context using ctx->serr are displayed
 }
 
 

@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = mixedPendulum
 
-SOURCES = Main.cpp
+SOURCES = mixedPendulum.cpp
 HEADERS =
 
 load(sofa/post)

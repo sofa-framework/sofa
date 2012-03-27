@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
 
 #include <sofa/core/MultiMapping.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -67,25 +67,32 @@ public:
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     /// Correspondance array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
-    inline unsigned int computeTotalInputPoints() const
-    {
-        typename std::map< const core::State<In>* , IndexArray >::const_iterator iter;
-        unsigned int total = 0;
-        for ( iter = m_indices.begin(); iter != m_indices.end(); iter++)
-        {
-            total += (*iter).second.size();
-        }
-        return total;
-    };
+//	inline unsigned int computeTotalInputPoints() const
+//	{
+//                typename std::map< const core::State<In>* , IndexArray >::const_iterator iter;
+//		unsigned int total = 0;
+//		for ( iter = m_indices.begin(); iter != m_indices.end(); iter++)
+//		{
+//                        total += (*iter).second.size();
+//		}
+//		return total;
+//	};
 
     virtual void init();
 
-    void addPoint(const core::State<In>* fromModel, int index);
+    void addPoint(const core::BaseState* fromModel, int index);
 
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+
+    /// @todo implement this
+    virtual void applyJT( const helper::vector< typename In::MatrixDeriv* >& , const helper::vector< const typename Out::MatrixDeriv* >& ) {}
+
+    /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
 
 protected :
 
@@ -96,10 +103,17 @@ protected :
 
     virtual ~SubsetMultiMapping() {};
 
-    std::map<const core::State<In>*,IndexArray>  m_indices;
+//        std::map<const core::State<In>*,IndexArray>  m_indices;
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
+
+//        vector<SparseMatrixEigen*> jacobians;               ///< Jacobian of the mapping, in a vector
+    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+
+    typedef std::pair<unsigned, unsigned> IndexPair;  ///< first is the parent, second is the index in the parent
+    vector<IndexPair> indexPairs;                     ///< for each child, its parent and index in parent
+//        std::map<const core::BaseState*,unsigned> jacobianSize;                    ///< number of children for each parent
 };
 
 

@@ -3,6 +3,9 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = sofa_misc_mapping
 
+DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+
+
 DEFINES += SOFA_BUILD_MISC_MAPPING
 
 win32 {
