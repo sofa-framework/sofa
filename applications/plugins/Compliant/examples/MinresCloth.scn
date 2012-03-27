@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<Node 	name="complianceSolverScene" >
+    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 1.005 0.005  " />
+    <UniformMass />
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <ExtensionMapping edges="@../mesh.edges" />
+        <UniformCompliance template="Vec1d" compliance="[[0.0000001]]" dampingRatio="0.1"  />
+    </Node>
+</Node>
+</Node>

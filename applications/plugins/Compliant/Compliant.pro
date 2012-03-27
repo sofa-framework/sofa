@@ -13,6 +13,7 @@ SOURCES = \
     Compliance.cpp \
     UniformCompliance.cpp \
     ComplianceSolver.cpp \
+    MinresSolver.cpp \
 
 HEADERS = \
     initCompliant.h \
@@ -22,6 +23,7 @@ HEADERS = \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \
+    MinresSolver.h \
 
 
 README_FILE = Compliant.txt

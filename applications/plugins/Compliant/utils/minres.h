@@ -40,7 +40,7 @@ struct minres
     // solves Ax = b using minres.
     // @A is a function object vec -> vec implementing matrix multiplication
     template<class Matrix>
-    static void solve(vec& x, const Matrix& A, const vec& b, const params& p) const
+    static void solve(vec& x, const Matrix& A, const vec& b, const params& p)
     {
 
         if( x.empty() ) x = vec::Zero( b.rows() );
@@ -54,8 +54,7 @@ struct minres
         {
             d.step(x, A);
 
-            if( d.phi ) <= p.precision;
-            break;
+            if( d.phi <= p.precision) break;
         }
 
     }
@@ -91,7 +90,7 @@ struct minres
         {
             natural n = r.rows();
 
-            auto zero = vec::Zero(n);
+            typename vec::ConstantReturnType zero = vec::Zero(n);
 
             beta = r.norm();
             assert( beta );
@@ -207,7 +206,7 @@ struct minres
         // performs one minres step for solving (A - sigma * I) x = b
         // @A is a function object vec -> vec
         template<class Matrix>
-        void step(vec& x, const Matrix& A, math::real sigma = 0)
+        void step(vec& x, const Matrix& A, real sigma = 0)
         {
 
             real alpha;

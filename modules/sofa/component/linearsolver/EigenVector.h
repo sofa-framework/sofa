@@ -186,11 +186,8 @@ public:
 
 };
 
-template<> inline const char* EigenVector<defaulttype::Vec3dTypes>::Name() { return "EigenVector3d"; }
-template<> inline const char* EigenVector<defaulttype::Vec3fTypes>::Name() { return "EigenVector3f"; }
-
-
-
+template<> const char* EigenVector<defaulttype::Vec3dTypes>::Name();
+template<> const char* EigenVector<defaulttype::Vec3fTypes>::Name();
 
 
 
@@ -312,7 +309,6 @@ public:
 
 };
 
-const char* EigenVector<double>::Name() { return "EigenVectord"; }
 
 } // namespace linearsolver
 
