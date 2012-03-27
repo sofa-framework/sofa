@@ -338,3 +338,5 @@ Sofa.pro.user
 Makefile*
 *.o
 moc_*.cpp
+*~
+/share/config/sofaplugins_release.ini
