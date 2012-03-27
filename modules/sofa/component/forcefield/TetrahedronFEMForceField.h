@@ -253,7 +253,7 @@ protected:
         maxYoung = 0.0;
     }
 
-    ~TetrahedronFEMForceField()
+    virtual ~TetrahedronFEMForceField()
     {
         if (parallelDataInit[0]) delete parallelDataInit[0];
         if (parallelDataInit[1]) delete parallelDataInit[1];

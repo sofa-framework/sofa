@@ -31,6 +31,27 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace projectiveconstraintset
+{
+
+template class FixedConstraint<gpu::cuda::CudaVec3fTypes>;
+template class FixedConstraint<gpu::cuda::CudaVec3f1Types>;
+template class FixedConstraint<gpu::cuda::CudaVec6fTypes>;
+template class FixedConstraint<gpu::cuda::CudaRigid3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class FixedConstraint<gpu::cuda::CudaVec3dTypes>;
+template class FixedConstraint<gpu::cuda::CudaVec3d1Types>;
+template class FixedConstraint<gpu::cuda::CudaVec6dTypes>;
+template class FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace projectiveconstraintset
+
+} // namespace component
+
 namespace gpu
 {
 

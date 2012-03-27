@@ -78,7 +78,8 @@ void Base::release()
     {
         //serr << "DELETE" << sendl;
         // Deletion of objects can be temporarily disabled by commenting the next line, until smart-pointers usage is corrected
-        delete this;
+        // This delete can cause a crash on Windows
+        //delete this;
     }
 }
 

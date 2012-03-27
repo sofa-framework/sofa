@@ -54,7 +54,10 @@ public:
     int minIndex;
     int maxIndex;
     // vector of indices for general case
-    gpu::cuda::CudaVector<int> cudaIndices;
+    gpu::cuda::CudaVector<int>* cudaIndices;
+
+    FixedConstraintInternalData();
+    ~FixedConstraintInternalData();
 
     static void init(Main* m);
 
@@ -82,7 +85,10 @@ public:
     int minIndex;
     int maxIndex;
     // vector of indices for general case
-    gpu::cuda::CudaVector<int> cudaIndices;
+    gpu::cuda::CudaVector<int>* cudaIndices;
+
+    FixedConstraintInternalData();
+    ~FixedConstraintInternalData();
 
     static void init(Main* m);
 
