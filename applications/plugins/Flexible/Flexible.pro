@@ -8,8 +8,9 @@ DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
 SOURCES = initFlexible.cpp\
     BaseShapeFunction.cpp \
-    ExtensionMapping.cpp \
     ShepardShapeFunction.cpp \
+    BarycentricShapeFunction.cpp \
+    ExtensionMapping.cpp \
     LinearMapping.cpp \
     DeformationGradientTypes.cpp \
     StrainTypes.cpp \
@@ -18,6 +19,7 @@ SOURCES = initFlexible.cpp\
 HEADERS = initFlexible.h \
     BaseShapeFunction.h \
     ShepardShapeFunction.h \
+    BarycentricShapeFunction.h \
     BaseJacobian.h \
     ExtensionMapping.h \
     ExtensionMapping.inl \

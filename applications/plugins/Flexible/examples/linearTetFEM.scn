@@ -1,29 +1,31 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
-    <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
+    
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
     <EulerImplicitSolver />
     <CGLinearSolver  />
-
-    <MechanicalObject  template="Vec3d" position="0 0 1   0 1 0   1 0 0   -0.7 -0.7 0 "  name="parent"  />
+    <Mesh src="@loader" />
+    <MechanicalObject src="@loader" name="parent" />
     <UniformMass mass="1" />
-    <ShepardShapeFunction position="@parent.rest_position" nbRef="4" power="2"/>
 
-    <Node 	name="Child"   >
-	<MeshObjLoader name="MeshLoader" filename="mesh/ball.obj"/>
+    <BarycentricShapeFunction position="@parent.rest_position" />
+
+    <Node 	name="behavior"   >
+	<MeshObjLoader name="MeshLoader" filename="mesh/torus_for_collision.obj"/>
 	<Mesh src="@MeshLoader" /> 
 	<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
     	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;" assembleJ="false"/>
 
-	    <Node 	name="Child"   >
-		<MechanicalObject  template="Strain331" name="E"  showObject="1" showObjectScale="0.05" />
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="Strain331" name="E"  />
 	    	<GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false"/>
 	    </Node>
 
     </Node>
 
     <Node 	name="visual"   >
-	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj"/>
+	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
     	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
     </Node>
 </Node>
