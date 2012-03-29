@@ -73,7 +73,7 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
@@ -105,7 +105,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
@@ -152,7 +152,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
     if (data.cudaIndices.empty())
@@ -201,7 +201,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 template<int N, class real>
 void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
@@ -233,7 +233,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
 template<int N, class real>
 void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
@@ -280,7 +280,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
 template<int N, class real>
 void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
     if (data.cudaIndices.empty())
@@ -331,7 +331,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -343,7 +343,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Mai
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCuda3f1_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -355,7 +355,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCudaRigid3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -419,15 +419,15 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaFixedConstraint_ImplMethods(T) \
     template<> void FixedConstraint< T >::init() \
-    { data.init(this); } \
+    { data->init(this); } \
     template<> void FixedConstraint< T >::addConstraint(unsigned int index) \
-    { data.addConstraint(this, index); } \
+    { data->addConstraint(this, index); } \
     template<> void FixedConstraint< T >::removeConstraint(unsigned int index) \
-    { data.removeConstraint(this, index); } \
+    { data->removeConstraint(this, index); } \
     template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_resData) \
     {  \
 		VecDeriv &resData = *d_resData.beginEdit(); \
-		data.projectResponse(this, resData);  \
+		data->projectResponse(this, resData);  \
 		d_resData.endEdit(); \
 	}
 
