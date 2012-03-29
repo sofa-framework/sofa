@@ -57,6 +57,10 @@ using namespace sofa::component::topology;
 template <class DataTypes>
 class FixedConstraintInternalData
 {
+#if defined(_MSC_VER)
+    // reserve 132 bytes because this is the bigger size of a templated FixedConstraintInternalData, "solve" a heap corruption
+    char a[132];
+#endif
 };
 
 /** Attach given particles to their initial positions.

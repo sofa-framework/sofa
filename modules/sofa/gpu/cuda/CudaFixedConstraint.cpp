@@ -37,6 +37,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
+
 template class FixedConstraint<gpu::cuda::CudaVec3fTypes>;
 template class FixedConstraint<gpu::cuda::CudaVec3f1Types>;
 template class FixedConstraint<gpu::cuda::CudaVec6fTypes>;

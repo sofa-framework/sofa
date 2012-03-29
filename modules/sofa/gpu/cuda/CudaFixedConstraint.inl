@@ -71,27 +71,12 @@ namespace projectiveconstraintset
 using namespace gpu::cuda;
 
 template<class TCoord, class TDeriv, class TReal>
-FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::FixedConstraintInternalData() :
-    minIndex(0),
-    maxIndex(0),
-    cudaIndices(new gpu::cuda::CudaVector<int>())
-{
-
-}
-
-template<class TCoord, class TDeriv, class TReal>
-FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::~FixedConstraintInternalData()
-{
-    delete cudaIndices;
-}
-
-template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
     Data& data = m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
-    data.cudaIndices->clear();
+    data.cudaIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
@@ -110,9 +95,9 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         else
         {
             //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
-            data.cudaIndices->reserve(sortedIndices.size());
+            data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
-                data.cudaIndices->push_back(*it);
+                data.cudaIndices.push_back(*it);
         }
     }
 }
@@ -124,7 +109,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
-    if (data.cudaIndices->empty())
+    if (data.cudaIndices.empty())
     {
         if (data.minIndex == -1)
         {
@@ -148,19 +133,19 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         }
         else
         {
-            data.cudaIndices->reserve(data.maxIndex-data.minIndex+2);
+            data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
             for (int i=data.minIndex; i<data.maxIndex; i++)
-                data.cudaIndices->push_back(i);
-            data.cudaIndices->push_back(index);
+                data.cudaIndices.push_back(i);
+            data.cudaIndices.push_back(index);
             data.minIndex = -1;
             data.maxIndex = -1;
-            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices->size()<<"\n";
+            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else
     {
-        data.cudaIndices->push_back(index);
-        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices->size()<<"\n";
+        data.cudaIndices.push_back(index);
+        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
     }
 }
 
@@ -170,7 +155,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     Data& data = m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
-    if (data.cudaIndices->empty())
+    if (data.cudaIndices.empty())
     {
         if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
         {
@@ -189,10 +174,10 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
                 --data.maxIndex;
             else
             {
-                data.cudaIndices->reserve(data.maxIndex-data.minIndex);
+                data.cudaIndices.reserve(data.maxIndex-data.minIndex);
                 for (int i=data.minIndex; i<data.maxIndex; i++)
                     if (i != (int)index)
-                        data.cudaIndices->push_back(i);
+                        data.cudaIndices.push_back(i);
                 data.minIndex = -1;
                 data.maxIndex = -1;
             }
@@ -201,31 +186,16 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     else
     {
         bool found = false;
-        for (unsigned int i=0; i<data.cudaIndices->size(); i++)
+        for (unsigned int i=0; i<data.cudaIndices.size(); i++)
         {
             if (found)
-                (*data.cudaIndices)[i-1] = (*data.cudaIndices)[i];
-            else if ((*data.cudaIndices)[i] == (int)index)
+                data.cudaIndices[i-1] = data.cudaIndices[i];
+            else if (data.cudaIndices[i] == (int)index)
                 found = true;
         }
         if (found)
-            data.cudaIndices->resize(data.cudaIndices->size()-1);
+            data.cudaIndices.resize(data.cudaIndices.size()-1);
     }
-}
-
-template<int N, class real>
-FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::FixedConstraintInternalData() :
-    minIndex(0),
-    maxIndex(0),
-    cudaIndices(new gpu::cuda::CudaVector<int>())
-{
-
-}
-
-template<int N, class real>
-FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::~FixedConstraintInternalData()
-{
-    delete cudaIndices;
 }
 
 template<int N, class real>
@@ -234,7 +204,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
     Data& data = m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
-    data.cudaIndices->clear();
+    data.cudaIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
@@ -253,9 +223,9 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
         else
         {
             //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
-            data.cudaIndices->reserve(sortedIndices.size());
+            data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
-                data.cudaIndices->push_back(*it);
+                data.cudaIndices.push_back(*it);
         }
     }
 }
@@ -267,7 +237,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
-    if (data.cudaIndices->empty())
+    if (data.cudaIndices.empty())
     {
         if (data.minIndex == -1)
         {
@@ -291,19 +261,19 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
         }
         else
         {
-            data.cudaIndices->reserve(data.maxIndex-data.minIndex+2);
+            data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
             for (int i=data.minIndex; i<data.maxIndex; i++)
-                data.cudaIndices->push_back(i);
-            data.cudaIndices->push_back(index);
+                data.cudaIndices.push_back(i);
+            data.cudaIndices.push_back(index);
             data.minIndex = -1;
             data.maxIndex = -1;
-            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices->size()<<"\n";
+            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else
     {
-        data.cudaIndices->push_back(index);
-        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices->size()<<"\n";
+        data.cudaIndices.push_back(index);
+        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
     }
 }
 
@@ -313,7 +283,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
     Data& data = m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
-    if (data.cudaIndices->empty())
+    if (data.cudaIndices.empty())
     {
         if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
         {
@@ -332,10 +302,10 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
                 --data.maxIndex;
             else
             {
-                data.cudaIndices->reserve(data.maxIndex-data.minIndex);
+                data.cudaIndices.reserve(data.maxIndex-data.minIndex);
                 for (int i=data.minIndex; i<data.maxIndex; i++)
                     if (i != (int)index)
-                        data.cudaIndices->push_back(i);
+                        data.cudaIndices.push_back(i);
                 data.minIndex = -1;
                 data.maxIndex = -1;
             }
@@ -344,15 +314,15 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
     else
     {
         bool found = false;
-        for (unsigned int i=0; i<data.cudaIndices->size(); i++)
+        for (unsigned int i=0; i<data.cudaIndices.size(); i++)
         {
             if (found)
-                (*data.cudaIndices)[i-1] = (*data.cudaIndices)[i];
-            else if ((*data.cudaIndices)[i] == (int)index)
+                data.cudaIndices[i-1] = data.cudaIndices[i];
+            else if (data.cudaIndices[i] == (int)index)
                 found = true;
         }
         if (found)
-            data.cudaIndices->resize(data.cudaIndices->size()-1);
+            data.cudaIndices.resize(data.cudaIndices.size()-1);
     }
 }
 
@@ -367,7 +337,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Mai
     else if (data.minIndex >= 0)
         FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+3*data.minIndex);
     else
-        FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());
+        FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
@@ -379,7 +349,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
     else if (data.minIndex >= 0)
         FixedConstraintCuda3f1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+4*data.minIndex);
     else
-        FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());
+        FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
@@ -391,7 +361,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
     else if (data.minIndex >= 0)
         FixedConstraintCudaRigid3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+6*data.minIndex);
     else
-        FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());
+        FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 
@@ -411,37 +381,37 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    /*Data& data = m->data;
+    Data& data = m->data;
     if (m->f_fixAll.getValue())
-    FixedConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-    FixedConstraintCuda3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+3*data.minIndex);
+        FixedConstraintCuda3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+3*data.minIndex);
     else
-    FixedConstraintCuda3d_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());*/
+        FixedConstraintCuda3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    /*Data& data = m->data;
+    Data& data = m->data;
     if (m->f_fixAll.getValue())
-    FixedConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-    FixedConstraintCuda3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+4*data.minIndex);
+        FixedConstraintCuda3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+4*data.minIndex);
     else
-    FixedConstraintCuda3d1_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());*/
+        FixedConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    /*Data& data = m->data;
+    Data& data = m->data;
     if (m->f_fixAll.getValue())
-    FixedConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+        FixedConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
-    FixedConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
+        FixedConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
     else
-    FixedConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices->size(), data.cudaIndices->deviceRead(), dx.deviceWrite());*/
+        FixedConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
