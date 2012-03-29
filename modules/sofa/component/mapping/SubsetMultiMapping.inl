@@ -27,7 +27,9 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
+#ifdef SOFA_HAVE_EIGEN2
 #include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#endif
 #include <sofa/core/MultiMapping.inl>
 #include <iostream>
 using std::cerr;
@@ -81,6 +83,8 @@ void SubsetMultiMapping<TIn, TOut>::init()
     // create the jacobians
 //    jacobians.resize( this->getFrom().size() );
 //    cerr<<"SubsetMultiMapping<TIn, TOut>::init(), getFrom().size() = "<< this->getFrom().size() <<", fromModels.size() = "<<this->fromModels.size()<<endl;
+
+#ifdef SOFA_HAVE_EIGEN2
     baseMatrices.resize( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
@@ -100,15 +104,16 @@ void SubsetMultiMapping<TIn, TOut>::init()
     {
         baseMatrices[i]->endEdit();
     }
-
-
+#endif
 }
 
+#ifdef SOFA_HAVE_EIGEN2
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
+#endif
 
 
 template <class TIn, class TOut>
