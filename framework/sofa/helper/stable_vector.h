@@ -1,6 +1,6 @@
 /* Stable vector, using either the version from boost 1.48+, or the original code below.
  *
- * Copyright 2008 Joaquín M López Muñoz.
+ * Copyright 2008 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -83,7 +83,7 @@ class node_access
 {
 public:
     template<typename T,typename Value>
-    static typename iterator<T,Value>::node_type* get(
+    static typename iterator<T,Value>::node_type_t* get(
         const iterator<T,Value>& it)
     {
         return it.pn;
@@ -95,15 +95,15 @@ class iterator:
     public boost::iterator_facade<
     iterator<T,Value>,Value,std::random_access_iterator_tag>
 {
-    typedef node_type<T> node_type;
+    typedef node_type<T> node_type_t;
 
 public:
     iterator() {}
-    explicit iterator(node_type* pn):pn(pn) {}
+    explicit iterator(node_type_t* pn):pn(pn) {}
     iterator(const iterator<T,T>& x):pn(node_access::get(x)) {}
 
 private:
-    static node_type* node_ptr(void* p) {return static_cast<node_type*>(p);}
+    static node_type_t* node_ptr(void* p) {return static_cast<node_type_t*>(p);}
 
     friend class boost::iterator_core_access;
 
@@ -116,7 +116,7 @@ private:
 
     friend class node_access;
 
-    node_type* pn;
+    node_type_t* pn;
 };
 
 } //namespace stable_vector_detail
@@ -132,7 +132,7 @@ BOOST_JOIN(check_invariant_,__LINE__).touch();
 template<typename T,typename Allocator=std::allocator<T> >
 class stable_vector
 {
-    typedef stable_vector_detail::node_type<T>        node_type;
+    typedef stable_vector_detail::node_type<T>        node_type_t;
     typedef std::vector<
     void*,
     typename Allocator::
@@ -388,9 +388,9 @@ public:
     void clear() {erase(begin(),end());}
 
 private:
-    static node_type* node_ptr(void* p)
+    static node_type_t* node_ptr(void* p)
     {
-        return static_cast<node_type*>(p);
+        return static_cast<node_type_t*>(p);
     }
 
     static value_type& value(void* p)
@@ -400,7 +400,7 @@ private:
 
     void create_end_node()
     {
-        node_type* p=al.allocate(1);
+        node_type_t* p=al.allocate(1);
         impl.back()=p;
         p->up=&impl.back();
     }
@@ -412,7 +412,7 @@ private:
 
     void* new_node(void** up,const T& t)
     {
-        node_type* p=al.allocate(1);
+        node_type_t* p=al.allocate(1);
         try
         {
             p->up=up;
@@ -721,7 +721,7 @@ private:
 #endif
 
     typename allocator_type::
-    template rebind<node_type>::other al;
+    template rebind<node_type_t>::other al;
     impl_type                           impl;
 };
 
