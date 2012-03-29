@@ -66,7 +66,9 @@ DefaultPipeline::DefaultPipeline()
 {
 }
 
+#ifdef SOFA_DUMP_VISITOR_INFO
 typedef simulation::Visitor::ctime_t ctime_t;
+#endif
 
 void DefaultPipeline::doCollisionReset()
 {

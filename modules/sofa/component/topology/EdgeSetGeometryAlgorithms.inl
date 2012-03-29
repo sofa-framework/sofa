@@ -730,7 +730,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
 #else
-            cerr << "EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, cholDcmp failed, subsequent results are undefined " << endl;
+            std::cerr << "EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, cholDcmp failed, subsequent results are undefined " << std::endl;
 #endif
         }
 

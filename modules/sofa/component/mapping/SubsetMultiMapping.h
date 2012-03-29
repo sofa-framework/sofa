@@ -90,8 +90,10 @@ public:
     /// @todo implement this
     virtual void applyJT( const helper::vector< typename In::MatrixDeriv* >& , const helper::vector< const typename Out::MatrixDeriv* >& ) {}
 
+#ifdef SOFA_HAVE_EIGEN2
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+#endif
 
 
 protected :
