@@ -90,6 +90,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -104,6 +105,8 @@ FixedConstraint<DataTypes>::~FixedConstraint()
 {
     if (pointHandler)
         delete pointHandler;
+
+    delete data;
 }
 
 template <class DataTypes>
