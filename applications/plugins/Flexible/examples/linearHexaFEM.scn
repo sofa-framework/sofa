@@ -15,6 +15,17 @@
 
   <BarycentricShapeFunction position="@dofs.rest_position" />
 
+    <Node 	name="behavior"   >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" showSamples="true"/>
+	<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
+    	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;" assembleJ="false"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="Strain331" name="E"  />
+	    	<GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false"/>
+	    </Node>
+    </Node>
+
   <Node name="Visual"  >
         <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
         <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>

@@ -7,32 +7,38 @@ DEFINES += SOFA_BUILD_Flexible
 DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
 SOURCES = initFlexible.cpp\
-    BaseShapeFunction.cpp \
-    ShepardShapeFunction.cpp \
-    BarycentricShapeFunction.cpp \
-    ExtensionMapping.cpp \
-    LinearMapping.cpp \
     DeformationGradientTypes.cpp \
     StrainTypes.cpp \
-    GreenStrainMapping.cpp \
+    quadrature/BaseGaussPointSampler.cpp \
+    quadrature/TopologyGaussPointSampler.cpp \
+    shapeFunction/BaseShapeFunction.cpp \
+    shapeFunction/ShepardShapeFunction.cpp \
+    shapeFunction/BarycentricShapeFunction.cpp \
+    deformationMapping/ExtensionMapping.cpp \
+    deformationMapping/LinearMapping.cpp \
+    strainMapping/GreenStrainMapping.cpp \
+    material/baseMaterialForceField.cpp \
 
 HEADERS = initFlexible.h \
-    BaseShapeFunction.h \
-    ShepardShapeFunction.h \
-    BarycentricShapeFunction.h \
     BaseJacobian.h \
-    ExtensionMapping.h \
-    ExtensionMapping.inl \
     DeformationGradientTypes.h \
-    LinearMapping.h \
-    LinearMapping.inl \
-    LinearJacobianBlock.h \
-    LinearJacobianBlock.inl \
     StrainTypes.h \
-    GreenStrainMapping.h \
-    GreenStrainMapping.inl \
-    GreenStrainJacobianBlock.h \
-    GreenStrainJacobianBlock.inl
+    quadrature/BaseGaussPointSampler.h \
+    quadrature/TopologyGaussPointSampler.h \
+    shapeFunction/BaseShapeFunction.h \
+    shapeFunction/ShepardShapeFunction.h \
+    shapeFunction/BarycentricShapeFunction.h \
+    deformationMapping/ExtensionMapping.h \
+    deformationMapping/ExtensionMapping.inl \
+    deformationMapping/LinearMapping.h \
+    deformationMapping/LinearMapping.inl \
+    deformationMapping/LinearJacobianBlock.h \
+    deformationMapping/LinearJacobianBlock.inl \
+    strainMapping/GreenStrainMapping.h \
+    strainMapping/GreenStrainMapping.inl \
+    strainMapping/GreenStrainJacobianBlock.h \
+    strainMapping/GreenStrainJacobianBlock.inl \
+    material/baseMaterialForceField.h \
 
 
 README_FILE = Flexible.txt
