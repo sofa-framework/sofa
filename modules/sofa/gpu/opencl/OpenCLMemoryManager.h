@@ -145,7 +145,7 @@ public:
         return 0;
     }
 
-    static bool bufferAlloc(gl_buffer*/* bId*/, int/* n*/)
+    static bool bufferAlloc(gl_buffer* /*bId*/, int/* n*/)
     {
         DEBUG_TEXT("OpenCLMemoryManager::bufferAlloc");
         return false;

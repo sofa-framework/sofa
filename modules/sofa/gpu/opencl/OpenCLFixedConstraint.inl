@@ -79,7 +79,7 @@ using namespace gpu::opencl;
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
@@ -111,7 +111,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     //std::cout << "OpenCLFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
@@ -158,7 +158,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
 template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
     if (data.OpenCLIndices.empty())
@@ -208,7 +208,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
 template<int N, class real>
 void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init(Main* m)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
@@ -240,7 +240,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init
 template<int N, class real>
 void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::addConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     //std::cout << "OpenCLFixedConstraint::addConstraint("<<index<<")\n";
     m->f_indices.beginEdit()->push_back(index);
     m->f_indices.endEdit();
@@ -287,7 +287,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::addC
 template<int N, class real>
 void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::removeConstraint(Main* m, unsigned int index)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     removeValue(*m->f_indices.beginEdit(),index);
     m->f_indices.endEdit();
     if (data.OpenCLIndices.empty())
@@ -339,7 +339,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::remo
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCL3f_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
@@ -351,7 +351,7 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLVec3fTypes>::projectResponse
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCL3f1_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
@@ -364,7 +364,7 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLVec3f1Types>::projectRespons
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCLRigid3f_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
@@ -377,7 +377,7 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3fTypes>::projectRespon
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCL3d_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
@@ -389,7 +389,7 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLVec3dTypes>::projectResponse
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCL3d1_projectResponseContiguous(dx.size(), dx.deviceWrite());
     else if (data.minIndex >= 0)
@@ -402,7 +402,7 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLVec3d1Types>::projectRespons
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintOpenCLRigid3d_projectResponseContiguous(dx.size(), (dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -417,15 +417,15 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3dTypes>::projectRespon
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLFixedConstraint_ImplMethods(T) \
 	template<> void FixedConstraint< T >::init() \
-	{ data.init(this); } \
+	{ data->init(this); } \
 	template<> void FixedConstraint< T >::addConstraint(unsigned int index) \
-	{ data.addConstraint(this, index); } \
+	{ data->addConstraint(this, index); } \
 	template<> void FixedConstraint< T >::removeConstraint(unsigned int index) \
-	{ data.removeConstraint(this, index); } \
+	{ data->removeConstraint(this, index); } \
     template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_resData) \
     {  \
         VecDeriv &resData = *d_resData.beginEdit(mparams); \
-        data.projectResponse(this, resData);               \
+        data->projectResponse(this, resData);               \
         d_resData.endEdit(mparams);                        \
     }
 
