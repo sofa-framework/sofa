@@ -22,72 +22,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_CPP
+
+#include "GreenStrainMapping.inl"
+#include <sofa/core/ObjectFactory.h>
+#include "DeformationGradientTypes.h"
+#include "StrainTypes.h"
 
 namespace sofa
 {
-
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace mapping
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+SOFA_DECL_CLASS(GreenStrainMapping);
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+using namespace defaulttype;
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+// Register in the Factory
+int GreenStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Green Lagrangian Strain (large deformations).")
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+#ifndef SOFA_FLOAT
+        .add< GreenStrainMapping< DefGradient331dTypes, Strain331dTypes > >(true)
+//.add< GreenStrainMapping< DefGradient332dTypes, Strain332dTypes > >()
+//.add< GreenStrainMapping< DefGradient332dTypes, Strain333dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< GreenStrainMapping< DefGradient331fTypes, Strain331fTypes > >()
+//.add< GreenStrainMapping< DefGradient332fTypes, Strain332fTypes > >()
+//.add< GreenStrainMapping< DefGradient332fTypes, Strain333fTypes > >()
+#endif
+        ;
 
+#ifndef SOFA_FLOAT
+template class SOFA_Flexible_API GreenStrainMapping< DefGradient331dTypes, Strain331dTypes >;
+//template class SOFA_Flexible_API GreenStrainMapping< DefGradient332dTypes, Strain332dTypes >;
+//template class SOFA_Flexible_API GreenStrainMapping< DefGradient332dTypes, Strain333dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API GreenStrainMapping< DefGradient331fTypes, Strain331fTypes >;
+//template class SOFA_Flexible_API GreenStrainMapping< DefGradient332fTypes, Strain332fTypes >;
+//template class SOFA_Flexible_API GreenStrainMapping< DefGradient332fTypes, Strain333fTypes >;
+#endif
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
+} // namespace mapping
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping";
-}
-}
+} // namespace component
 
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-
+} // namespace sofa
 

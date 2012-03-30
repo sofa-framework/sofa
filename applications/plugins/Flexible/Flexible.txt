@@ -6,9 +6,10 @@
 
 
 AUTHOR :
- - Michael Adam
-
-
+ - Francois Faure
+ - Benjamin Gilles
+ - Matthieu Nesme
+ - Maxime Tournier
 
 
 LICENCE :

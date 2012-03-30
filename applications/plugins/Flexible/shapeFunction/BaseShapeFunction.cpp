@@ -22,72 +22,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#define FLEXIBLE_BaseShapeFunction_CPP
+
+#include "BaseShapeFunction.h"
+
 
 namespace sofa
 {
-
-namespace component
+namespace core
+{
+namespace behavior
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
 
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "Flexible";
-}
-
-const char* getModuleVersion()
-{
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping";
-}
-}
+template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3f>;
+template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3d>;
 
 }
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-
-
+}
+}

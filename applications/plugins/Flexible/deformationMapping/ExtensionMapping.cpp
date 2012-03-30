@@ -16,12 +16,15 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_ExtensionMapping_CPP
+#include "ExtensionMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 #include "initFlexible.h"
 
 namespace sofa
@@ -30,64 +33,37 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace mapping
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+SOFA_DECL_CLASS(ExtensionMapping)
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+using namespace defaulttype;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+// Register in the Factory
+int ExtensionMappingClass = core::RegisterObject("Compute edge extensions")
+#ifndef SOFA_FLOAT
+        .add< ExtensionMapping< Vec3dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ExtensionMapping< Vec3fTypes, Vec1fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_Flexible_API ExtensionMapping< Vec3dTypes, Vec1dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API ExtensionMapping< Vec3fTypes, Vec1fTypes >;
+#endif
 
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping";
-}
-}
 
-}
+} // namespace mapping
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+} // namespace component
 
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-
+} // namespace sofa
 
