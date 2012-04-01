@@ -252,6 +252,51 @@ int main(int argc, char** argv)
         sofa::helper::printFactoryLog();
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
+    printf("                               ,D   .\n");
+    printf("                             .M .,N.      \n");
+    printf("                           .?+ ...  7Z         \n");
+    printf("                           M. .Z:... ,7~            \n");
+    printf("                         .D.  . .D, .  .8..  ...,    .   \n");
+    printf("                     .. .M.... .   ?:  ..MMMN+  +MMMMM,.,  .  .\n");
+    printf("                        D. .M .      N M=. .. . ..7D   Z+7M,.,..    \n");
+    printf("                       N     .M .  . M$          ~+     .NM?7M~     \n");
+    printf("                     .M~=    ., M .N~..         .N       .M.  :=\n");
+    printf("                    .~?  :M  ..,.ZM  ..         $..      . MM..D ..\n");
+    printf("                   ..M . . .88..O:. ..O.        N IM..    .+,+  M..\n");
+    printf("                  .,NI  .  . ..M.. ..8 .        M..D.,      N M.D .\n");
+    printf("                    Z..??.  ..M...., = .        7..        .M. M?,.     \n");
+    printf("                   M.  .  ~M.N.  .?.M. .         $.         M   M .          \n");
+    printf("                   M..     ?7   .:.              =....     .8.   O:             \n");
+    printf("                  ,?.:I.  :$.   .M,8            ..M.       =..    8, .          \n");
+    printf("                  .    .MN? .    D.M.              8: . .,~.,.   . ,M   .,. .   \n");
+    printf("                   M ...,:  .    + N               . .MMMM...    .I, . .?Z  ,.  \n");
+    printf("                   M.,Z.8       .. $.                  ...      .       ZM      \n");
+    printf("         .        , M .M .   ...    .        .. .  . .              . ,M M      \n");
+    printf("         .           ,M ..   .D..+..O         ..=MM .              . .M.M..     \n");
+    printf("    . MD+8M8,. .   ..M..      D. N. ~...        O :..               .I. ~$      \n");
+    printf("    ?7    . .M?,    8           .:   Z.           .+ .             7??I...O     \n");
+    printf("    M.  . +$ ..MI .,.        . 8.,~  .             .=M.        ..=M .. .+ Z     \n");
+    printf("   ,+   .  .. 7M.,M..         .7...   7 ...            N8::.=8M~    . . =M      \n");
+    printf( "  I.    .. .  .,OM          ...M. M  .$              .    .        MMM. .      \n");
+    printf( "  N.     .. =IMZ7, .              .D  .M,..                      .I            \n");
+    printf( " .+.      .   ..? .             .   M.. .~                      ,=.            \n");
+    printf( " .?    ,MM7,, . O   ..  . DI     ~ ..D .  M.. ,              .. I              \n");
+    printf( "  .N   ..  .. 7MM?.  .M . ..    ...+..+,    M=.              .:,..             \n");
+    printf( " . M.       .  . M,+$   +M.   ...  .M...~+.,. ~M..        . .M.                \n");
+    printf( " . =:..  .  .=MO,=M....M  .O .,. .  .Z, ..$D            ..  M.                 \n");
+    printf( "   .8 .  .    .. N. .M...    M.N ,. .,..M..              ..8.                  \n");
+    printf( "    .M..    .. MM .~:  .M...M..? ,.                   ..,M=.                   \n");
+    printf( "     .O..   .N .M      Z . =  +... .                 ..+8.M..                  \n");
+    printf( "       8.      .$     ,.. ....Z  M..           .. .  M=. =:..                  \n");
+    printf( "     .  M    . .N   .7... ,  ~..: ..             8M?  M  D, .                  \n");
+    printf( "       .  MN  ..MM  .,       . $~ D ~OMMMMMMZM, . ...  .M.                     \n");
+    printf( "            ..., .D7   . .  ..M, .M. D  : .   .  M  ,8.M.,                     \n");
+    printf("                ....MM:....DN~,...:$  ..M  .M   =.. .M+.                     \n");
+    printf("                    .    ..        .M+..  .~ .., $M:  .                        \n");
+    printf("                        .. .        ... .8MMNI.   .. ..                        \n");
+    printf("                                          ..                                   \n");
+
+
 
 
     //=======================================
