@@ -81,19 +81,22 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
-
 protected:
-    FixedConstraintInternalData<DataTypes>* data;
-    friend class FixedConstraintInternalData<DataTypes>;
+    FixedConstraint();
+
+    virtual ~FixedConstraint();
 
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
     Data<double> _drawSize;
-protected:
-    FixedConstraint();
 
-    virtual ~FixedConstraint();
+
+protected:
+    FixedConstraintInternalData<DataTypes>* data;
+    friend class FixedConstraintInternalData<DataTypes>;
+
+
 public:
     void clearConstraints();
     void addConstraint(unsigned int index);
