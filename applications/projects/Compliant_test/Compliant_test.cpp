@@ -50,7 +50,7 @@
 
 #include <plugins/Compliant/ComplianceSolver.h>
 #include <plugins/Compliant/UniformCompliance.h>
-#include <plugins/Flexible/ExtensionMapping.h>
+#include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 
 using namespace sofa;
 using namespace sofa::helper;

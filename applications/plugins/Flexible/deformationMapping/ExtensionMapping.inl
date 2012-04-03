@@ -112,11 +112,43 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
         out[i] = gapNorm - restLengths[i];  // output
 
         gap *= 1/gapNorm;
-        jacobian.setBlock( i, links[i][1], block );
-        jacobian.setBlock( i, links[i][0], -block );
+//        jacobian.setBlock( i, links[i][1], block );
+//        jacobian.setBlock( i, links[i][0], -block );
+
+        // insert in increasing row and column order
+        jacobian.beginRow(i);
+        if( links[i][1]<links[i][0])
+        {
+            for(unsigned j=0; j<Nout; j++)
+            {
+                for(unsigned k=0; k<Nin; k++ )
+                {
+                    jacobian.set( i*Nout+j, links[i][1]*Nin+k, gap[k] );
+                }
+                for(unsigned k=0; k<Nin; k++ )
+                {
+                    jacobian.set( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
+                }
+            }
+        }
+        else
+        {
+            for(unsigned j=0; j<Nout; j++)
+            {
+                for(unsigned k=0; k<Nin; k++ )
+                {
+                    jacobian.set( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
+                }
+                for(unsigned k=0; k<Nin; k++ )
+                {
+                    jacobian.set( i*Nout+j, links[i][1]*Nin+k, gap[k] );
+                }
+            }
+        }
     }
 
-    //  jacobian.endEdit();
+    jacobian.endEdit();
+//      cerr<<"ExtensionMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
 
 }
 
@@ -139,7 +171,7 @@ void ExtensionMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpara
 template <class TIn, class TOut>
 void ExtensionMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-//    cerr<<"ExtensionMapping<TIn, TOut>::applyJT does nothing " << endl;
+    //    cerr<<"ExtensionMapping<TIn, TOut>::applyJT does nothing " << endl;
 }
 
 

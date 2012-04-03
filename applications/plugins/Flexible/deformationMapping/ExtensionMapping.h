@@ -26,11 +26,12 @@
 #define SOFA_COMPONENT_MAPPING_ExtensionMapping_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+//#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include "initFlexible.h"
+#include "../initFlexible.h"
 
 
 namespace sofa
@@ -74,7 +75,9 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseRectangularMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+//    typedef linearsolver::EigenSparseRectangularMatrix<TIn,TOut>    SparseMatrixEigen;
+    enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
 
