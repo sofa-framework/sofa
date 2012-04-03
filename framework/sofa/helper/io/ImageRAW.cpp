@@ -101,7 +101,9 @@ bool ImageRAW::load(std::string filename)
 bool ImageRAW::save(std::string filename, int)
 {
     FILE *file;
+#ifndef NDEBUG
     std::cout << "Writing RAW file " << filename << std::endl;
+#endif
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "wb")) == NULL)
     {

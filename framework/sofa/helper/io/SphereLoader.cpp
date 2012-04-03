@@ -57,10 +57,13 @@ bool SphereLoader::load(const char *filename)
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        std::cerr << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
-// 	std::cout << "Loading model'" << filename << "'" << std::endl;
+
+#ifndef NDEBUG
+    std::cout << "Loading model'" << filename << "'" << std::endl;
+#endif
 
     int totalNumSpheres=0;
 
