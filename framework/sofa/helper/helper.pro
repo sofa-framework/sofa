@@ -100,7 +100,8 @@ HEADERS += helper.h \
 	OptionsGroup.h \ 
     Polynomial_LD.h \
     Polynomial_LD.inl \
-    UnitTest.h
+    UnitTest.h \
+    SortedPermutation.h
 
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \

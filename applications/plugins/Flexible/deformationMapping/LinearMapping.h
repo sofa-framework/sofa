@@ -35,6 +35,7 @@
 #include "LinearJacobianBlock.h"
 
 #include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
 namespace sofa
