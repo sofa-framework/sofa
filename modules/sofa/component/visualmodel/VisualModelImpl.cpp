@@ -445,7 +445,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         std::string textureFilename(textureName);
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
-            std::cout << "loading file " << textureName << std::endl;
+            sout << "loading file " << textureName << sendl;
             loadTexture(textureName);
         }
         else
@@ -1000,11 +1000,11 @@ void VisualModelImpl::updateVisual()
 #ifdef SOFA_SMP
     modified = true;
 #endif
-    //std::cout << "VMI::updateVisual()" << std::endl;
+    //sout << "VMI::updateVisual()" << sendl;
     //if ((m_positions.getValue()).size()>10)
-    //    std::cout << "positions[10] = " << m_positions.getValue()[10] << std::endl;
+    //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
     //if ((m_vertices.getValue()).size()>10)
-    //    std::cout << "vertices[10] = " << m_vertices.getValue()[10] << std::endl;
+    //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
     if (modified && (!(m_vertices.getValue()).empty() || useTopology))
     {
         if (useTopology)

@@ -58,10 +58,12 @@ bool MassSpringLoader::load(const char *filename)
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        std::cerr << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
-// 	std::cout << "Loading model '" << filename << "'" << std::endl;
+#ifndef NDEBUG
+    std::cout << "Loading model '" << filename << "'" << std::endl;
+#endif
     int totalNumMasses=0;
     int totalNumSprings=0;
     // Check first line
@@ -167,7 +169,9 @@ bool MassSpringLoader::load(const char *filename)
                     initpos = (masses[m1]-masses[m2]).norm();
                     ks/=initpos;
                     kd/=initpos;
-                    //std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
+#ifndef NDEBUG
+                    std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
+#endif
                 }
 
                 //paul-----------------------------------------

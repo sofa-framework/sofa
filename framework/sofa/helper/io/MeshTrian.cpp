@@ -98,10 +98,12 @@ void MeshTrian::readTrian (FILE* file)
     }
 
     // announce the model statistics
+#ifndef NDEBUG
     std::cout << " Vertices: " << vertices.size() << std::endl;
     std::cout << " Normals: " << normals.size() << std::endl;
     std::cout << " Texcoords: " << texCoords.size() << std::endl;
     std::cout << " Triangles: " << facets.size() << std::endl;
+#endif
     if (vertices.size()>0)
     {
         // compute bbox
@@ -118,8 +120,9 @@ void MeshTrian::readTrian (FILE* file)
                     maxBB[c] = p[c];
             }
         }
-
+#ifndef NDEBUG
         std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
+#endif
     }
 
 }
