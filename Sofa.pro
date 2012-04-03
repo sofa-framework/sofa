@@ -22,6 +22,10 @@ contains(DEFINES, SOFA_HAVE_SENSABLE) {
         usePlugin(Sensable)
 }
 
+contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION) {
+        usePlugin(SensableEmulation)
+}
+
 contains(DEFINES, SOFA_HAVE_PYTHON) {
         usePlugin(Python)
 }

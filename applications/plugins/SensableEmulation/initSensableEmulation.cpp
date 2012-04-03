@@ -80,6 +80,11 @@ const char* getModuleVersion()
     return "beta 1.0";
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
 const char* getModuleDescription()
 {
     return "Force feedback with sensable devices into SOFA Framework";
@@ -97,4 +102,4 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(NewOmniDriverEmu)
+SOFA_LINK_CLASS(OmniDriverEmu)
