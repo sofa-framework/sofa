@@ -381,7 +381,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -393,7 +393,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Mai
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
@@ -405,7 +405,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Ma
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
-    Data& data = m->data;
+    Data& data = *m->data;
     if (m->f_fixAll.getValue())
         FixedConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
     else if (data.minIndex >= 0)
