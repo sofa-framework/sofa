@@ -285,6 +285,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use Sensable Phantom
 # DEFINES += SOFA_HAVE_SENSABLE
 
+# Uncomment if you want to use Sensable Emulator
+# DEFINES += SOFA_HAVE_SENSABLEEMULATION
+
 # Uncomment if you want to use Haption Phantom
 #DEFINES += SOFA_HAVE_HAPTION
 
