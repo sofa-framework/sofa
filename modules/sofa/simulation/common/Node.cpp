@@ -904,7 +904,7 @@ void Node::executeVisitor(Visitor* action)
 
     if (!action->execParams()->checkValidStorage())
     {
-        std::cerr << "IN " << getClassName() << " at " << this->getPathName() << std::endl;
+        std::cerr << "IN " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " at " << this->getPathName() << std::endl;
     }
 
 #ifdef DEBUG_VISITOR
