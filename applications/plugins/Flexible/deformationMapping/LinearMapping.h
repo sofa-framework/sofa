@@ -34,7 +34,6 @@
 #include "shapeFunction/BaseShapeFunction.h"
 #include "LinearJacobianBlock.h"
 
-#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
@@ -108,7 +107,7 @@ public:
     typedef vector<vector<Block> >  SparseMatrix;
 
     typedef typename Block::MatBlock  MatBlock;  ///< Jacobian block matrix
-    typedef linearsolver::EigenSparseRectangularMatrix<In,Out>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
     //@}
 
     /** @name Mapping functions */

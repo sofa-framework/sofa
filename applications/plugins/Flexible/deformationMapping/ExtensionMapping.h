@@ -27,7 +27,6 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-//#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
