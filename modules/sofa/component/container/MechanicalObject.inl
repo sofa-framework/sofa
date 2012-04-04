@@ -1567,10 +1567,9 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 #endif
     if (v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
-        helper::WriteAccessor< Data<VecCoord> > vec( params, *this->write(v) );
-
-        vec.resize(vsize);
-
+        Data<VecCoord>* vec_d = this->write(v);
+        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->endEdit(params);
 #ifdef SOFA_SMP
         if (params->execMode() == core::ExecParams::EXEC_KAAPI)
         {
@@ -1592,9 +1591,9 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 
     if (v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
-        helper::WriteAccessor< Data<VecDeriv> > vec( params, *this->write(v) );
-
-        vec.resize(vsize);
+        Data<VecDeriv>* vec_d = this->write(v);
+        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->endEdit(params);
 #ifdef SOFA_SMP
         if (params->execMode() == core::ExecParams::EXEC_KAAPI)
         {
