@@ -33,7 +33,7 @@
 
 #include "GreenStrainJacobianBlock.h"
 
-#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
 namespace sofa
@@ -100,7 +100,7 @@ public:
     typedef vector<Block>  SparseMatrix;
 
     typedef typename Block::MatBlock  MatBlock;  ///< Jacobian block matrix
-    typedef linearsolver::EigenSparseRectangularMatrix<In,Out>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
     //@}
 
 

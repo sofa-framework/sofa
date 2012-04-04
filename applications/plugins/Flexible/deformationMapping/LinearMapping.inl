@@ -35,6 +35,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <sofa/helper/gl/Color.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -49,6 +50,7 @@ using namespace sofa::defaulttype;
 
 using helper::WriteAccessor;
 using helper::ReadAccessor;
+using helper::vector;
 
 template <class TIn, class TOut>
 LinearMapping<TIn, TOut>::LinearMapping (core::State<In>* from, core::State<Out>* to )
@@ -140,18 +142,31 @@ void LinearMapping<TIn, TOut>::updateJ()
     eigenJacobian.resizeBlocks(out.size(),in.size());
     for(unsigned int i=0; i<jacobian.size(); i++)
     {
+//        for(unsigned int j=0;j<jacobian[i].size();j++)
+//        {
+//            unsigned int index=this->f_index.getValue()[i][j];
+//            eigenJacobian.setBlock( i, index, jacobian[i][j].getJ());
+//        }
+
+        // Put all the blocks of the row in an array, then send the array to the matrix
+        // Not very efficient: MatBlock creations could be avoided.
+        vector<MatBlock> blocks;
+        vector<unsigned> columns;
         for(unsigned int j=0; j<jacobian[i].size(); j++)
         {
-            unsigned int index=this->f_index.getValue()[i][j];
-            eigenJacobian.setBlock( i, index, jacobian[i][j].getJ());
+            columns.push_back( this->f_index.getValue()[i][j] );
+            blocks.push_back( jacobian[i][j].getJ() );
         }
+        eigenJacobian.appendBlockRow( i, columns, blocks );
     }
+    eigenJacobian.endEdit();
 }
 
 
 template <class TIn, class TOut>
 void LinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
+
     if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
     else
     {
