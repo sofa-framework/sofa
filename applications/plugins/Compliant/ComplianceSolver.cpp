@@ -398,7 +398,7 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( con
 
 
 /// Converts a BaseMatrix to the matrix type used here.
-ComplianceSolver::SMatrix ComplianceSolver::inverseMatrix( const DMatrix& M, SReal threshold)
+ComplianceSolver::SMatrix ComplianceSolver::inverseMatrix( const DMatrix& M, SReal threshold) const
 {
     assert(M.rows()==M.cols());
     SparseLDLT Mdcmp(M);
