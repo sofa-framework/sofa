@@ -1,6 +1,9 @@
 #ifndef COMPLIANT_UTILS_MINRES_H
 #define COMPLIANT_UTILS_MINRES_H
 
+#include <cassert>
+#include <Eigen/Core>
+
 // License: LGPL 2.1
 // Author: Maxime Tournier
 
@@ -57,12 +60,11 @@ struct minres
 
         // easy peasy
         data d;
-        d.init( residual );
+        d.residual( residual );
 
         for(natural i = 0; i < p.iterations; ++i)
         {
             d.step(x, A);
-
             if( d.phi <= p.precision) break;
         }
 
@@ -72,6 +74,8 @@ struct minres
     // contains all the data needed for minres iterations
     struct data
     {
+
+        natural n;
 
         real beta;
 
@@ -95,14 +99,20 @@ struct minres
         natural k;			// iteration
 
         // initializes minres given initial residual @r
-        void init(const vec& r)
+        void residual(const vec& r)
         {
-            natural n = r.rows();
+            n = r.rows();
 
-            typename vec::ConstantReturnType zero = vec::Zero(n);
+            const typename vec::ConstantReturnType zero = vec::Zero(n);
 
             beta = r.norm();
-            assert( beta );
+
+            // no residual, early exit
+            if( !beta )
+            {
+                phi = 0;
+                return;
+            }
 
             v_prev = zero;
             v = r / beta;
@@ -137,9 +147,7 @@ struct minres
             real& beta;
             vec& v;
 
-            lanczos(real& alpha,
-                    real& beta,
-                    vec& v)
+            lanczos(real& alpha, real& beta, vec& v)
                 : alpha(alpha),
                   beta(beta),
                   v(v)
@@ -157,6 +165,7 @@ struct minres
                     real beta,
                     real sigma)
             {
+
                 // use res.v as work vector
                 vec& p = res.v;
 
@@ -227,6 +236,9 @@ struct minres
         template<class Matrix>
         void step(vec& x, const Matrix& A, real sigma = 0)
         {
+
+            // solution already found lol !
+            if( !phi ) return;
 
             real alpha;
             real beta_prev = beta;
