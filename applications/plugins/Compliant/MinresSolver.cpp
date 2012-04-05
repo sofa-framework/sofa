@@ -31,25 +31,28 @@ using namespace core::behavior;
 SOFA_DECL_CLASS(MinresSolver);
 int MinresSolverClass = core::RegisterObject("A simple explicit time integrator").add< MinresSolver >();
 
-
-typedef Eigen::VectorXd vec;
-typedef Eigen::DynamicSparseMatrix<double, Eigen::RowMajor> mat;
-
-struct kkt
+// kkt system functor
+struct MinresSolver::kkt
 {
 
-    const mat& M, J, C;
+    const mat& M;
+    const mat& J;
+    const mat& P;
+    const mat& C;
+
     const double dt;
     const int m, n;
 
-    mutable vec storage;
+    mutable vec storage, Mx, Px, JPx, JTlambda, PTJTlambda, Clambda;
 
     kkt(const mat& M,
         const mat& J,
+        const mat& P,
         const mat& C,
         double dt)
         : M(M),
           J(J),
+          P(P),
           C(C),
           dt(dt),
           m( M.rows() ),
@@ -62,13 +65,266 @@ struct kkt
     const vec& operator()(const vec& x) const
     {
 
-        storage.head(m) = M * x.head(m) + J.transpose() * x.tail(n);
-        storage.tail(n) = J * x.head(m) - ( C * x.tail(n) ) / (dt * dt);
+        // let's avoid allocs and use omp
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            Mx.noalias() = M * x.head(m);
+
+            #pragma omp section
+            {
+                Px.noalias() = P * x.head(m);
+                JPx.noalias() = J * Px;
+            }
+
+            #pragma omp section
+            {
+                JTlambda.noalias() = J.transpose() * x.tail(n);
+                PTJTlambda.noalias() = P * JTlambda; // should be P.transpose()
+            }
+            #pragma omp section
+            Clambda.noalias() = C * x.tail(n);
+        }
+
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            storage.head(m).noalias() = Mx - PTJTlambda;
+
+            #pragma omp section
+            storage.tail(n).noalias() = -JPx - Clambda; // should be / (dt * dt)
+        }
 
         return storage;
     }
 
 };
+
+
+
+// schur system functor
+struct MinresSolver::schur
+{
+
+    const SMatrix& Minv;
+    const mat& J;
+    const mat& C;
+
+    const double dt;
+
+    mutable vec storage, Jx, MinvJx, Cx, JMinvJx;
+
+    schur(const SMatrix& Minv,
+            const mat& J,
+            const mat& C,
+            double dt)
+        : Minv(Minv),
+          J(J),
+          C(C),
+          dt(dt),
+          storage( vec::Zero( J.rows() ) )
+    {
+
+    }
+
+    const vec& operator()(const vec& x) const
+    {
+
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            {
+                Jx.noalias() = J.transpose() * x;
+                MinvJx.noalias() = Minv * Jx;
+                JMinvJx.noalias() = J * MinvJx;
+            }
+            #pragma omp section
+            Cx.noalias() = C * x;
+        }
+
+        storage.noalias() = JMinvJx + Cx; // should be: Cx / (dt * dt);
+        return storage;
+    }
+
+};
+
+
+void MinresSolver::bwdInit()
+{
+    core::ExecParams params;
+}
+
+
+const MinresSolver::mat& MinresSolver::M() const
+{
+    return matM;
+}
+
+MinresSolver::mat& MinresSolver::M()
+{
+    return matM;
+}
+
+
+const MinresSolver::mat& MinresSolver::J() const
+{
+    return matJ;
+}
+
+MinresSolver::mat& MinresSolver::J()
+{
+    return matJ;
+}
+
+const MinresSolver::mat& MinresSolver::C() const
+{
+    return matC;
+}
+
+MinresSolver::mat& MinresSolver::C()
+{
+    return matC;
+}
+
+
+const MinresSolver::mat& MinresSolver::P() const
+{
+    return matP;
+}
+
+MinresSolver::mat& MinresSolver::P()
+{
+    return matP;
+}
+
+
+MinresSolver::vec& MinresSolver::f()
+{
+    return vecF.getVectorEigen();
+}
+
+const MinresSolver::vec& MinresSolver::f() const
+{
+    return vecF.getVectorEigen();
+}
+
+
+const MinresSolver::vec& MinresSolver::phi() const
+{
+    return vecPhi.getVectorEigen();
+}
+
+MinresSolver::vec& MinresSolver::phi()
+{
+    return vecPhi.getVectorEigen();
+}
+
+MinresSolver::visitor::visitor(core::ComplianceParams* cparams, MinresSolver* s)
+    : assembly(cparams, s),
+      solver(s)
+{
+
+}
+
+
+MinresSolver::visitor MinresSolver::make_visitor(core::ComplianceParams* cparams)
+{
+    return visitor(cparams, this);
+}
+
+bool MinresSolver::visitor::fetch()
+{
+
+    solver->getContext()->executeVisitor(&assembly(COMPUTE_SIZE));
+    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
+
+    if( assembly.sizeC > 0 )
+    {
+
+        solver->M().resize(assembly.sizeM,assembly.sizeM);
+        solver->P().resize(assembly.sizeM,assembly.sizeM);
+        solver->C().resize(assembly.sizeC,assembly.sizeC);
+        solver->J().resize(assembly.sizeC,assembly.sizeM);
+        solver->f().resize(assembly.sizeM);
+        solver->phi().resize(assembly.sizeC);
+
+        // Matrix assembly
+        solver->getContext()->executeVisitor(&assembly(MATRIX_ASSEMBLY));
+
+        // Vector assembly  (do we need a separate pass ?)
+        solver->vecF.clear();
+        solver->vecPhi.clear();
+
+        solver->getContext()->executeVisitor(&assembly(VECTOR_ASSEMBLY));
+
+        // solver->matC.setZero();
+
+        // if( solver->verbose.getValue() )
+        //   {
+        //     cerr<<"ComplianceSolver::solve, final M = " << endl << matM << endl;
+        //     cerr<<"ComplianceSolver::solve, final P = " << endl << matP << endl;
+        //     cerr<<"ComplianceSolver::solve, final C = " << endl << matC << endl;
+        //     cerr<<"ComplianceSolver::solve, final J = " << endl << matJ << endl;
+        //     cerr<<"ComplianceSolver::solve, final f = " << vecF << endl;
+        //     cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
+        //   }
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+
+void MinresSolver::visitor::distribute()
+{
+    solver->getContext()->executeVisitor(&assembly(VECTOR_DISTRIBUTE));  // set dv in each MechanicalState
+}
+
+
+MinresSolver::vec MinresSolver::solve_schur(real dt, const minres::params& p )  const
+{
+    SMatrix Minv = inverseMatrix( M(), 1.0e-6 );
+    Minv = matP * Minv * matP;
+
+    const vec rhs = phi() - J() * ( Minv * this->f() );
+
+    vec lambda = vec::Zero( rhs.size() );
+    warm(lambda);
+
+    minres::solve(lambda, schur(Minv, J(), C(), dt), rhs, p);
+    last = lambda;
+
+    return lambda;
+}
+
+void MinresSolver::warm(vec& x) const
+{
+    if( use_warm.getValue() && (x.size() == last.size()) )
+    {
+        x = last;
+    }
+}
+
+MinresSolver::vec MinresSolver::solve_kkt( real dt, const minres::params& p ) const
+{
+
+    vec rhs; rhs.resize(f().size() + phi().size());
+
+    // TODO f projection is probably not needed
+    rhs << P() * f(), -phi();
+
+    vec x = vec::Zero( rhs.size() );
+    warm(x);
+
+    minres::solve(x, kkt(M(), J(), P(), C(), dt), rhs, p);
+    last = x;
+
+    return x.tail( phi().size() );
+}
 
 
 void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -100,67 +356,33 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
         cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
     }
 
-    // Matrix size
-    MatrixAssemblyVisitor assembly(&cparams,this);
-    this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE));
-    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
+    // create assembly visitor
+    visitor vis = make_visitor( &cparams );
 
-    if( assembly.sizeC > 0 )
+    // if there is something to solve
+    if( vis.fetch() )
     {
 
-        matM.resize(assembly.sizeM,assembly.sizeM);
-        matP.resize(assembly.sizeM,assembly.sizeM);
-        matC.resize(assembly.sizeC,assembly.sizeC);
-        matJ.resize(assembly.sizeC,assembly.sizeM);
-        vecF.resize(assembly.sizeM);
-        vecPhi.resize(assembly.sizeC);
+        // setup minres
+        minres::params p;
+        p.iterations = iterations.getValue();
+        p.precision = precision.getValue();
 
-        // Matrix assembly
-        this->getContext()->executeVisitor(&assembly(MATRIX_ASSEMBLY));
+        // solve for lambdas
+        vec lambda = use_kkt.getValue() ? solve_kkt(dt, p) : solve_schur(dt,  p);
 
-        // Vector assembly  (do we need a separate pass ?)
-        vecF.clear();
-        vecPhi.clear();
-        this->getContext()->executeVisitor(&assembly(VECTOR_ASSEMBLY));
+        // add constraint force
+        this->f() += J().transpose() * lambda;
 
-        if( verbose.getValue() )
-        {
-            cerr<<"ComplianceSolver::solve, final M = " << endl << matM << endl;
-            cerr<<"ComplianceSolver::solve, final P = " << endl << matP << endl;
-            cerr<<"ComplianceSolver::solve, final C = " << endl << matC << endl;
-            cerr<<"ComplianceSolver::solve, final J = " << endl << matJ << endl;
-            cerr<<"ComplianceSolver::solve, final f = " << vecF << endl;
-            cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
-        }
-
-        const int m = assembly.sizeM;
-        const int n = assembly.sizeC;
-
-        vec rhs = vec::Zero( m + n );
-
-        rhs.head(m) = vecF.getVectorEigen();
-        rhs.tail(m) = vecPhi.getVectorEigen();
-
-        typedef minres<double> solver;
-        solver::params p;
-
-        p.iterations = 100;
-        p.precision = 1e-7;
-
-        vec x = vec::Zero(m + n);
-
-        solver::solve(x, kkt(matM, matJ, matC, dt), rhs, p);
-        vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * x.tail(n);
-
-        this->getContext()->executeVisitor(&assembly(VECTOR_DISTRIBUTE));  // set dv in each MechanicalState
+        // dispatch constraint forces
+        vis.distribute();
     }
+
 
     mop.accFromF(dv, f);
     mop.projectResponse(dv);
 
-
     // Apply integration scheme
-
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(2);
@@ -184,7 +406,21 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
 }
 
 
+MinresSolver::MinresSolver()
+    : use_kkt( initData(&use_kkt, true, "use_kkt",
+            "Work on KKT system or Schur complement") ),
 
+    iterations( initData(&iterations, (unsigned int)(100), "iterations",
+            "Iterations bound for the MINRES solver")),
+
+    precision( initData(&precision, 1e-7, "precision",
+            "Residual threshold for the MINRES solver")),
+
+    use_warm( initData(&use_warm, false, "use_warm",
+            "Warm start MINRES"))
+{
+
+}
 }
 }
 }
