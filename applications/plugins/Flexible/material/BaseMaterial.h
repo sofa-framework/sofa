@@ -22,71 +22,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#ifndef FLEXIBLE_BaseMaterial_H
+#define FLEXIBLE_BaseMaterial_H
+
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {
-
-namespace component
+namespace defaulttype
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+/** Template class used to implement one Material block
+*/
+template<class _T>
+class BaseMaterialBlock
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+public:
+    typedef _T T;
+    typedef typename T::Coord Coord;
+    typedef typename T::Deriv Deriv;
+    typedef typename T::Real Real;
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+    typedef Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stifness or compliance matrix block
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+    // compute U(x)
+    virtual Real getPotentialEnergy(const Coord& x) const  =0;
+    // compute $ f=-dU/dx + f(v) $
+    virtual void addForce( Deriv& f , const Coord& x , const Deriv& v)=0;
+    // compute $ df += kFactor K dx + bFactor B dx $
+    virtual void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )=0;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    virtual MatBlock getK()=0;
+    virtual MatBlock getC()=0;
+};
 
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, HookeForceField";
-}
-}
-}
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+} // namespace defaulttype
+} // namespace sofa
 
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-SOFA_LINK_CLASS(HookeForceField)
 
+
+#endif

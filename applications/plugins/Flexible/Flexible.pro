@@ -17,7 +17,7 @@ SOURCES = initFlexible.cpp\
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
-    material/baseMaterialForceField.cpp \
+    material/HookeForceField.cpp \
 
 HEADERS = initFlexible.h \
     BaseJacobian.h \
@@ -38,7 +38,10 @@ HEADERS = initFlexible.h \
     strainMapping/GreenStrainMapping.inl \
     strainMapping/GreenStrainJacobianBlock.h \
     strainMapping/GreenStrainJacobianBlock.inl \
-    material/baseMaterialForceField.h \
+    material/BaseMaterial.h \
+    material/HookeForceField.h \
+    material/HookeMaterialBlock.h \
+    material/HookeMaterialBlock.inl \
 
 
 README_FILE = Flexible.txt

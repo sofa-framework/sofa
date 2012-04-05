@@ -131,7 +131,7 @@ void LinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ 
     }
     dOut.endEdit();
 
-//    if(this->assembleJ.getValue()) updateJ();
+    if(this->assembleJ.getValue()) if(!Block::constantJ) updateJ();
 }
 
 template <class TIn, class TOut>

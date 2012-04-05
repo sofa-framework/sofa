@@ -39,10 +39,8 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace mapping
 {
 
@@ -146,9 +144,7 @@ protected:
 
 
 } // namespace mapping
-
 } // namespace component
-
 } // namespace sofa
 
 #endif
