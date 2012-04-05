@@ -8,6 +8,7 @@ contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
 } else {
 	#!isEmpty(TARGET): message("TARGET: $$TARGET")
 	DEFINES *= SOFA_TARGET=$$TARGET_BASE
+	DEFINES *= SOFA_MAKEFILEDIR=$$MAKEFILE_DIR 
 }
 
 ########################################################################

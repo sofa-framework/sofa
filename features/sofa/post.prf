@@ -106,6 +106,7 @@ equals(IS_APPLICATION, true) {
 	SUFFIX = $$APPSUFFIX
 }
 TARGET_BASE = $$TARGET
+MAKEFILE_DIR = $$dirname(_PRO_FILE_)
 !isEmpty(SUFFIX) {
 	TARGET = $$TARGET$$SUFFIX
 }

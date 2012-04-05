@@ -111,6 +111,10 @@ public:
 
         /// The name of the library or executable containing the binary code for this component
         virtual const char* getTarget() = 0;
+
+        virtual const char* getHeaderFileLocation() = 0;
+
+        virtual const char* getMakefileDir() = 0;
     };
 
     /// Record storing information about a class
@@ -254,6 +258,21 @@ public:
 #else
         return "";
 #endif
+    }
+
+    /// The name of the library or executable containing the binary code for this component
+    virtual const char* getMakefileDir()
+    {
+#ifdef SOFA_MAKEFILEDIR
+        return sofa_tostring(SOFA_MAKEFILEDIR);
+#else
+        return "";
+#endif
+    }
+
+    virtual const char* getHeaderFileLocation()
+    {
+        return RealObject::HeaderFileLocation();
     }
 
     virtual std::string shortName(objectmodel::BaseObjectDescription* arg)
