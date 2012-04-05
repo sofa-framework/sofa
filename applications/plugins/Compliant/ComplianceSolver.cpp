@@ -1,9 +1,10 @@
 #include "ComplianceSolver.h"
-#include "BaseCompliance.h"
+//#include "BaseCompliance.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 #include <iostream>
 using std::cerr;
@@ -42,7 +43,7 @@ void ComplianceSolver::bwdInit()
 void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
-    core::ComplianceParams cparams(*params);
+    core::MechanicalParams cparams(*params);
     cparams.setMFactor(1.0);
     cparams.setDt(dt);
     cparams.setImplicitVelocity( implicitVelocity.getValue() );
@@ -175,9 +176,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
 
 
         // ==== process compliances
-        vector<BaseCompliance*> compliances;
-        node->getNodeObjects<BaseCompliance>(&compliances);
-        if( compliances.size()>0 )
+        vector<BaseForceField*> compliances;
+        node->getNodeObjects<BaseForceField>(&compliances);
+        if( compliances.size()>0  && compliances[0]->getComplianceMatrix(mparams) )
         {
             assert(node->mechanicalState);
             c_offset[compliances[0]] = sizeC;
@@ -254,19 +255,19 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         }
 
         // ==== compliance
-        vector<BaseCompliance*> compliances;
-        node->getNodeObjects<BaseCompliance>(&compliances);
-        if( compliances.size()>0 )
+        vector<BaseForceField*> compliances;
+        node->getNodeObjects<BaseForceField>(&compliances);
+        if( compliances.size()>0 && compliances[0]->getComplianceMatrix(mparams) )
         {
             DMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[compliances[0]] );
 
             DMatrix J = DMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
             solver->matJ += J;                                          // assemble
 
-            DMatrix C = DMatrix( compOffset.transpose() * toMatrix(compliances[0]->getMatrix(mparams)) * compOffset ); // shift C
+            DMatrix C = DMatrix( compOffset.transpose() * toMatrix(compliances[0]->getComplianceMatrix(mparams)) * compOffset ); // shift C
             SReal alpha = cparams.implicitVelocity(); // implicit velocity factor in the integration scheme
             SReal beta  = cparams.implicitPosition(); // implicit position factor in the integration scheme
-            SReal l = alpha * (beta * mparams->dt() + compliances[0]->dampingRatio.getValue() );
+            SReal l = alpha * (beta * mparams->dt() + compliances[0]->getDampingRatio() );
             if( fabs(l)<1.0e-10 ) solver->serr << compliances[0]->getName() << ", l is not invertible in ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown" << solver->sendl;
             SReal invl = 1.0/l;
             solver->matC += C * invl;                                                                                // assemble
@@ -287,11 +288,11 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         }
 
         // ==== compliance
-        vector<BaseCompliance*> compliances;
-        node->getNodeObjects<BaseCompliance>(&compliances);
-        if( compliances.size()>0 )
+        vector<BaseForceField*> compliances;
+        node->getNodeObjects<BaseForceField>(&compliances);
+        if( compliances.size()>0  && compliances[0]->getComplianceMatrix(mparams) )
         {
-            compliances[0]->setConstraint( &cparams, core::VecDerivId::force() );
+            compliances[0]->writeConstraintValue( &cparams, core::VecDerivId::force() );
             unsigned offset = c_offset[compliances[0]]; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->addToBaseVector(&solver->vecPhi, core::VecDerivId::force(), offset );
         }
@@ -395,6 +396,13 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( con
     }
     return result;
 }
+
+//const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::toSMatrix( const defaulttype::BaseMatrix* m)
+//{
+//    linearsolver::EigenSparseMatrix<SReal>* sm = dynamic_cast<linearsolver::EigenSparseMatrix<SReal>*>(m);
+//    assert(sm);
+//    return *sm->eigenMatrix;
+//}
 
 
 /// Converts a BaseMatrix to the matrix type used here.

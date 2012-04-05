@@ -237,7 +237,7 @@ MinresSolver::vec& MinresSolver::phi()
     return vecPhi.getVectorEigen();
 }
 
-MinresSolver::visitor::visitor(core::ComplianceParams* cparams, MinresSolver* s)
+MinresSolver::visitor::visitor(core::MechanicalParams* cparams, MinresSolver* s)
     : assembly(cparams, s),
       solver(s)
 {
@@ -245,7 +245,7 @@ MinresSolver::visitor::visitor(core::ComplianceParams* cparams, MinresSolver* s)
 }
 
 
-MinresSolver::visitor MinresSolver::make_visitor(core::ComplianceParams* cparams)
+MinresSolver::visitor MinresSolver::make_visitor(core::MechanicalParams* cparams)
 {
     return visitor(cparams, this);
 }
@@ -349,7 +349,7 @@ MinresSolver::vec MinresSolver::solve_kkt( real dt, const minres::params& p ) co
 void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
-    core::ComplianceParams cparams(*params);
+    core::MechanicalParams cparams(*params);
     cparams.setMFactor(1.0);
     cparams.setDt(dt);
     cparams.setImplicitVelocity( implicitVelocity.getValue() );

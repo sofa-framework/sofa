@@ -164,6 +164,21 @@ public:
     /// Deactivated by default. The forcefields using only a subset of particles should activate the mask,
     /// and during addForce(), insert the indices of the particles modified
     virtual bool useMask() const { return false; }
+
+
+    /// @name Experimental compliance API
+    /// @{
+
+    /// Set the constraint value to a weighted sum of violation and violation rate, based on damping ratio and parameters defined in cparams.
+    virtual void writeConstraintValue(const MechanicalParams*, MultiVecDerivId ) { serr<<"BaseForceField::writeConstraintValue not implemented"<<sendl;}
+
+    /// return a pointer to the compliance matrix
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return 0; }
+
+    /// Uniform damping ratio applied to all the constrained values
+    virtual SReal getDampingRatio() { serr<<"BaseForceField::getDampingRatio not implemented"<<sendl; return 0; }
+
+    /// @}
 };
 
 } // namespace behavior

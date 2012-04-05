@@ -14,6 +14,7 @@ template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , compliance( initData(&compliance, Block(), "compliance", "Compliance value uniformly applied to all the DOF."))
+    , dampingRatio( initData(&dampingRatio, 0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
 {
 }
 
@@ -60,7 +61,7 @@ void UniformCompliance<DataTypes>::setCompliance( Real c )
 
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::setConstraint(const core::ComplianceParams* params, core::MultiVecDerivId fId )
+void UniformCompliance<DataTypes>::writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId fId )
 {
 //    const DataVecCoord *xd = params->readX(this->mstate);
     helper::ReadAccessor< DataVecCoord > x = params->readX(this->mstate);
@@ -77,7 +78,7 @@ void UniformCompliance<DataTypes>::setConstraint(const core::ComplianceParams* p
 
 /// return a pointer to the compliance matrix
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getMatrix(const core::MechanicalParams*)
+const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
     return &matC;
 }

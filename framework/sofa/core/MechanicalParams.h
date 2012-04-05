@@ -203,9 +203,24 @@ public:
 
     /// @}
 
+    /// @name Experimental compliance API
+    /// @{
+protected:
+    double m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
+    double m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
+public:
+    void setImplicitVelocity( double i ) { m_implicitVelocity = i; }
+    const double& implicitVelocity() const { return m_implicitVelocity; }
+    void setImplicitPosition( double i ) { m_implicitPosition = i; }
+    const double& implicitPosition() const { return m_implicitPosition; }
+    /// @}
+
+
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
     MechanicalParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
         : sofa::core::ExecParams(p)
+        , m_implicitVelocity(0.5)
+        , m_implicitPosition(0.5)
         , m_dt(0.0)
         , m_implicit(false)
         , m_energy(false)

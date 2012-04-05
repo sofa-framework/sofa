@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_ComplianceSolver_H
 #define SOFA_COMPONENT_ODESOLVER_ComplianceSolver_H
 #include "initCompliant.h"
-#include "BaseCompliance.h"
+//#include "BaseCompliance.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
@@ -72,7 +72,7 @@ protected:
     typedef linearsolver::EigenVector<SReal>  VectorSofa;
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
     typedef core::behavior::BaseMechanicalState MechanicalState;
-    typedef core::behavior::BaseCompliance Compliance;
+//    typedef core::behavior::BaseForceField Compliance;
     typedef core::BaseMapping Mapping;
 
     DMatrix matM;      ///< mass matrix
@@ -101,11 +101,11 @@ protected:
     struct MatrixAssemblyVisitor: public simulation::MechanicalVisitor
     {
         ComplianceSolver* solver;
-        core::ComplianceParams cparams;
+        core::MechanicalParams cparams;
         unsigned sizeM; ///< size of the mass matrix
         unsigned sizeC; ///< size of the compliance matrix, number of scalar constraints
 
-        MatrixAssemblyVisitor(const core::ComplianceParams* params, ComplianceSolver* s)
+        MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s)
             : simulation::MechanicalVisitor(params)
             , solver(s)
             , cparams(*params)
@@ -123,7 +123,7 @@ protected:
         virtual void processNodeBottomUp(simulation::Node* node);
 
         std::map<MechanicalState*, unsigned> m_offset;  ///< Start index of independent DOFs in the mass matrix
-        std::map<Compliance*, unsigned>      c_offset;  ///< Start index of compliances in the compliance matrix
+        std::map<core::behavior::BaseForceField*, unsigned>      c_offset;  ///< Start index of compliances in the compliance matrix
         std::map<MechanicalState*,DMatrix> jMap;    ///< jacobian matrices of each mechanical state, with respect to the vector of all independent DOFs.
 
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
@@ -135,6 +135,9 @@ protected:
 
         /// Converts a BaseMatrix to the matrix type used here.
         DMatrix toMatrix( const defaulttype::BaseMatrix* );
+
+        /// casts the matrix using a dynamic_cast. Crash if the BaseMatrix* is not a SMatrix*
+//        const SMatrix& toSMatrix( const defaulttype::BaseMatrix* );
     };
 
 
