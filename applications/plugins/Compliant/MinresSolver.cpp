@@ -407,8 +407,8 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
 
 
 MinresSolver::MinresSolver()
-    : use_kkt( initData(&use_kkt, true, "use_kkt",
-            "Work on KKT system or Schur complement") ),
+    : use_kkt( initData(&use_kkt, false, "kkt",
+            "Work on KKT system instead of Schur complement") ),
 
     iterations( initData(&iterations, (unsigned int)(100), "iterations",
             "Iterations bound for the MINRES solver")),
@@ -416,7 +416,7 @@ MinresSolver::MinresSolver()
     precision( initData(&precision, 1e-7, "precision",
             "Residual threshold for the MINRES solver")),
 
-    use_warm( initData(&use_warm, false, "use_warm",
+    use_warm( initData(&use_warm, false, "warm",
             "Warm start MINRES"))
 {
 

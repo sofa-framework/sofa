@@ -2,7 +2,8 @@
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.001" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
-    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
+    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="false" warm="true" 
+		  iterations="20" precision="1e-3" />
     <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
