@@ -349,6 +349,7 @@ enable(sofaInitTimer)
 enable(sofaVerification)
 enable(sofaInfo)
 enable(sofaBatch)
+enable(sofaobjectcreator)  # used in verification programs
 
 contains(DEFINES, SOFA_HAVE_BOOST) {
 	enable(sofatests)
@@ -365,8 +366,8 @@ contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
 }
 
+
 contains (DEFINES, SOFA_HAVE_TUTORIALS) {
-	enable(sofaobjectcreator)
 	enable(chainHybrid)
 	enable(houseOfCards)
 	enable(mixedPendulum)

@@ -82,7 +82,7 @@ protected:
 
     // sends visitor to fetch all data needed. returns true iff data
     // actually fetched (i.e. there is something to solve)
-    bool fetch_data(core::ComplianceParams*);
+    bool fetch_data(core::MechanicalParams*);
 
     // useful one-liners
     const mat& M() const;
@@ -110,7 +110,7 @@ protected:
         MatrixAssemblyVisitor assembly;
         MinresSolver* solver;
 
-        visitor(core::ComplianceParams* cparams, MinresSolver* );
+        visitor(core::MechanicalParams* cparams, MinresSolver* );
 
         // sends assembly visitor, returns true when solving needs to be
         // done
@@ -122,7 +122,7 @@ protected:
     };
 
     // convenience constructor
-    visitor make_visitor(core::ComplianceParams* );
+    visitor make_visitor(core::MechanicalParams* );
 
     // solver type
     typedef ::minres<SReal> minres;
