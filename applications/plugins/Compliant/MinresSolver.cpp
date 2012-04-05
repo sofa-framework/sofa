@@ -31,6 +31,24 @@ using namespace core::behavior;
 SOFA_DECL_CLASS(MinresSolver);
 int MinresSolverClass = core::RegisterObject("A simple explicit time integrator").add< MinresSolver >();
 
+
+struct raii_log
+{
+    const std::string name;
+
+    raii_log(const std::string& name) : name(name)
+    {
+        simulation::Visitor::printNode(name);
+    }
+
+    ~raii_log()
+    {
+        simulation::Visitor::printCloseNode(name);
+    }
+
+};
+
+
 // kkt system functor
 struct MinresSolver::kkt
 {
@@ -234,6 +252,7 @@ MinresSolver::visitor MinresSolver::make_visitor(core::ComplianceParams* cparams
 
 bool MinresSolver::visitor::fetch()
 {
+    raii_log log("assembly_visitor");
 
     solver->getContext()->executeVisitor(&assembly(COMPUTE_SIZE));
     //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
@@ -268,7 +287,6 @@ bool MinresSolver::visitor::fetch()
         //     cerr<<"ComplianceSolver::solve, final f = " << vecF << endl;
         //     cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
         //   }
-
         return true;
     }
     else
@@ -287,6 +305,7 @@ void MinresSolver::visitor::distribute()
 
 MinresSolver::vec MinresSolver::solve_schur(real dt, const minres::params& p )  const
 {
+    raii_log log("minres_schur");
     SMatrix Minv = inverseMatrix( M(), 1.0e-6 );
     Minv = matP * Minv * matP;
 
@@ -311,7 +330,7 @@ void MinresSolver::warm(vec& x) const
 
 MinresSolver::vec MinresSolver::solve_kkt( real dt, const minres::params& p ) const
 {
-
+    raii_log log("minres_kkt");
     vec rhs; rhs.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
@@ -377,7 +396,6 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
         // dispatch constraint forces
         vis.distribute();
     }
-
 
     mop.accFromF(dv, f);
     mop.projectResponse(dv);
