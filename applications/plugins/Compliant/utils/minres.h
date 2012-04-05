@@ -43,12 +43,21 @@ struct minres
     static void solve(vec& x, const Matrix& A, const vec& b, const params& p)
     {
 
-        if( x.empty() ) x = vec::Zero( b.rows() );
-        assert(x.rows() == b.rows() );
+        vec residual = b;
+
+        if( !x.rows() )
+        {
+            x = vec::Zero( b.rows() );
+        }
+        else
+        {
+            assert(x.rows() == b.rows() );
+            residual -= A(x);
+        }
 
         // easy peasy
         data d;
-        d.init( b - A(x) );
+        d.init( residual );
 
         for(natural i = 0; i < p.iterations; ++i)
         {
@@ -127,6 +136,16 @@ struct minres
             real& alpha;
             real& beta;
             vec& v;
+
+            lanczos(real& alpha,
+                    real& beta,
+                    vec& v)
+                : alpha(alpha),
+                  beta(beta),
+                  v(v)
+            {
+
+            }
 
             // performs one lanczos step for (A - sigma I)x = b
             // @A is a function object vec -> vec

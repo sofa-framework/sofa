@@ -32,6 +32,45 @@ SOFA_DECL_CLASS(MinresSolver);
 int MinresSolverClass = core::RegisterObject("A simple explicit time integrator").add< MinresSolver >();
 
 
+typedef Eigen::VectorXd vec;
+typedef Eigen::DynamicSparseMatrix<double, Eigen::RowMajor> mat;
+
+struct kkt
+{
+
+    const mat& M, J, C;
+    const double dt;
+    const int m, n;
+
+    mutable vec storage;
+
+    kkt(const mat& M,
+        const mat& J,
+        const mat& C,
+        double dt)
+        : M(M),
+          J(J),
+          C(C),
+          dt(dt),
+          m( M.rows() ),
+          n( J.rows() ),
+          storage( vec::Zero(m + n ) )
+    {
+
+    }
+
+    const vec& operator()(const vec& x) const
+    {
+
+        storage.head(m) = M * x.head(m) + J.transpose() * x.tail(n);
+        storage.tail(n) = J * x.head(m) - ( C * x.tail(n) ) / (dt * dt);
+
+        return storage;
+    }
+
+};
+
+
 void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
@@ -94,30 +133,24 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
             cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
         }
 
-        // Solve equation system
+        const int m = assembly.sizeM;
+        const int n = assembly.sizeC;
 
-        SMatrix Minv = inverseMatrix( matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
-        Minv = matP * Minv * matP;
-        SMatrix schur( matJ * Minv * matJ.transpose() + matC );
-        SparseLDLT schurDcmp(schur);
-        VectorEigen x = vecPhi.getVectorEigen() - matJ * ( Minv * vecF.getVectorEigen() );
-        if( verbose.getValue() )
-        {
-            //        cerr<<"ComplianceSolver::solve, Minv = " << endl << Eigen::MatrixXd(Minv) << endl;
-            cerr<<"ComplianceSolver::solve, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
-            cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (Minv * vecF.getVectorEigen()).transpose() << endl;
-            cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( matJ * ( Minv * vecF.getVectorEigen())).transpose() << endl;
-            cerr<<"ComplianceSolver::solve,  vecPhi.getVectorEigen()  = " <<  vecPhi.getVectorEigen().transpose() << endl;
-            cerr<<"ComplianceSolver::solve, right-hand term = " << x << endl;
-        }
-        schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
-        vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * x ; // f = f_ext + J^T.lambda
-        if( verbose.getValue() )
-        {
-            cerr<<"ComplianceSolver::solve, constraint forces = " << x << endl;
-            cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
-            cerr<<"ComplianceSolver::solve, net forces = " << f << endl;
-        }
+        vec rhs = vec::Zero( m + n );
+
+        rhs.head(m) = vecF.getVectorEigen();
+        rhs.tail(m) = vecPhi.getVectorEigen();
+
+        typedef minres<double> solver;
+        solver::params p;
+
+        p.iterations = 100;
+        p.precision = 1e-7;
+
+        vec x = vec::Zero(m + n);
+
+        solver::solve(x, kkt(matM, matJ, matC, dt), rhs, p);
+        vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * x.tail(n);
 
         this->getContext()->executeVisitor(&assembly(VECTOR_DISTRIBUTE));  // set dv in each MechanicalState
     }
