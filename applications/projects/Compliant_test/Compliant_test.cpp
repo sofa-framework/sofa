@@ -47,6 +47,7 @@
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include "../../../applications/tutorials/objectCreator/ObjectCreator.h"
+#include "../../../applications/tutorials/objectCreator/ObjectCreator.cpp"
 
 #include <plugins/Compliant/ComplianceSolver.h>
 #include <plugins/Compliant/UniformCompliance.h>
