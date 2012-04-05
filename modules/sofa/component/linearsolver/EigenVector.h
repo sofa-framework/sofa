@@ -50,7 +50,9 @@ class EigenVector : public defaulttype::BaseVector
 
 protected:
     typedef typename InDataTypes::Real Real;
+public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
+protected:
     VectorEigen eigenVector;    ///< the data
 
 
@@ -200,7 +202,11 @@ class EigenVector<double> : public defaulttype::BaseVector
 
 protected:
     typedef double Real;
+
+public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
+
+protected:
     VectorEigen eigenVector;    ///< the data
 
 
