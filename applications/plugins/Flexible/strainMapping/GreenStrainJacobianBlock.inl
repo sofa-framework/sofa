@@ -115,6 +115,8 @@ public:
     Jacobian:    \f$  dE = [ F^T.dF + dF^T.F ]/2 \f$
       */
 
+    static const bool constantJ=false;
+
     InCoord F;   ///< =  store deformation gradient to compute J
 
     void addapply( OutCoord& result, const InCoord& data )

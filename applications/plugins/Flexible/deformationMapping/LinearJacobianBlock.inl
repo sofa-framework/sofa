@@ -118,8 +118,11 @@ public:
     Jacobian:    \f$ dp = w.dt \f$
       */
 
+    static const bool constantJ=true;
+
     OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
+
 
     void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
@@ -184,8 +187,11 @@ public:
     Jacobian:    \f$ dp = w.dt \f$
       */
 
+    static const bool constantJ=true;
+
     OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
+
 
     void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
@@ -253,6 +259,8 @@ public:
         - \f$ dp = w.dt \f$
         - \f$ d grad p = dt.grad w \f$
       */
+
+    static const bool constantJ=true;
 
     OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I   =  constant term
     Real Pt;           ///< =   w     =  dp/dt

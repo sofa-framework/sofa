@@ -28,7 +28,6 @@
 
 #include "initFlexible.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
