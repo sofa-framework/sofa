@@ -142,7 +142,7 @@ protected:
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
     /// Compute the inverse of the matrix and return it pruned, by canceling all the entries which are smaller than the threshold
-    SMatrix inverseMatrix( const DMatrix& m, SReal threshold);
+    SMatrix inverseMatrix( const DMatrix& m, SReal threshold) const;
 
 
 };
