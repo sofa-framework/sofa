@@ -146,8 +146,9 @@ protected:
     // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
-    /// Compute the inverse of the matrix and return it pruned, by canceling all the entries which are smaller than the threshold
-    SMatrix inverseMatrix( const SMatrix& m, SReal threshold) const;
+    /// Compute the inverse of the matrix. The input matrix MUST be diagonal. The threshold parameter is currently unused.
+    void inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m, SReal threshold);
+    SMatrix invM;      ///< inverse mass matrix used in the Schur complement
 
 
 };

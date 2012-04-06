@@ -43,7 +43,7 @@ struct minres
     // solves Ax = b using minres.
     // @A is a function object vec -> vec implementing matrix multiplication
     template<class Matrix>
-    static void solve(vec& x, const Matrix& A, const vec& b, const params& p)
+    static void solve(vec& x, const Matrix& A, const vec& b, params& p)
     {
 
         vec residual = b;
@@ -62,11 +62,13 @@ struct minres
         data d;
         d.residual( residual );
 
-        for(natural i = 0; i < p.iterations; ++i)
+        natural i;
+        for( i = 0; i < p.iterations; ++i)
         {
             d.step(x, A);
             if( d.phi <= p.precision) break;
         }
+        p.iterations = i;
 
     }
 
