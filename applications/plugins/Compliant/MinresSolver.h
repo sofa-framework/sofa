@@ -65,7 +65,7 @@ public:
 
 protected:
 
-    typedef DMatrix mat;
+    typedef SMatrix mat;
     typedef VectorSofa::VectorEigen vec;
     typedef SReal real;
 
