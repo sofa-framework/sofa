@@ -1,11 +1,9 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_ComplianceSolver_H
 #define SOFA_COMPONENT_ODESOLVER_ComplianceSolver_H
 #include "initCompliant.h"
-//#include "BaseCompliance.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
-#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
 
 namespace sofa
@@ -67,11 +65,12 @@ public:
 protected:
     ComplianceSolver();
 
-    typedef Eigen::DynamicSparseMatrix<SReal, Eigen::RowMajor> DMatrix;
-    typedef Eigen::SparseMatrix<SReal>        SMatrix;
-    typedef linearsolver::EigenVector<SReal>  VectorSofa;
-    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
-    typedef core::behavior::BaseMechanicalState MechanicalState;
+//    typedef Eigen::DynamicSparseMatrix<SReal, Eigen::RowMajor> DMatrix;
+    typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> DMatrix;
+    typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
+    typedef linearsolver::EigenVector<SReal>            VectorSofa;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>     VectorEigen;
+    typedef core::behavior::BaseMechanicalState         MechanicalState;
 //    typedef core::behavior::BaseForceField Compliance;
     typedef core::BaseMapping Mapping;
 
@@ -133,11 +132,11 @@ protected:
         /// Return an identity matrix of the given size
         DMatrix createIdentityMatrix( unsigned size );
 
-        /// Converts a BaseMatrix to the matrix type used here.
-        DMatrix toMatrix( const defaulttype::BaseMatrix* );
+//        /// Converts a BaseMatrix to the matrix type used here.
+//        DMatrix toMatrix( const defaulttype::BaseMatrix* );
 
         /// casts the matrix using a dynamic_cast. Crash if the BaseMatrix* is not a SMatrix*
-//        const SMatrix& toSMatrix( const defaulttype::BaseMatrix* );
+        const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
     };
 
 
