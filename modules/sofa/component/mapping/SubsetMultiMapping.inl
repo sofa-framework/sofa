@@ -28,7 +28,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #ifdef SOFA_HAVE_EIGEN2
-#include <sofa/component/linearsolver/EigenSparseRectangularMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #endif
 #include <sofa/core/MultiMapping.inl>
 #include <iostream>
@@ -85,18 +85,27 @@ void SubsetMultiMapping<TIn, TOut>::init()
 //    cerr<<"SubsetMultiMapping<TIn, TOut>::init(), getFrom().size() = "<< this->getFrom().size() <<", fromModels.size() = "<<this->fromModels.size()<<endl;
 
 #ifdef SOFA_HAVE_EIGEN2
+    for( unsigned i=0; i<baseMatrices.size(); i++ )
+        delete baseMatrices[i];
+
+
     baseMatrices.resize( this->getFrom().size() );
+    vector<linearsolver::EigenSparseMatrix<TIn,TOut>*> jacobians( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
-        baseMatrices[i] = new linearsolver::EigenSparseRectangularMatrix<TIn,TOut>;
-        baseMatrices[i]->resize(Nout*indexPairs.size(),Nin*this->fromModels[i]->readPositions().size() );
+        baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
+        jacobians[i]->resize(Nout*indexPairs.size(),Nin*this->fromModels[i]->readPositions().size() );
     }
 
     // fill the jacobians
     for(unsigned i=0; i<indexPairs.size(); i++)
     {
         for(unsigned k=0; k<Nin; k++ )
-            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
+        {
+//            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
+            jacobians[ indexPairs[i].first ]->beginRow(Nout*i+k);
+            jacobians[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second +k, (SReal)1. );
+        }
     }
 
     // finalize the jacobians

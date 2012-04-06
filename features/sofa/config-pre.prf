@@ -35,6 +35,8 @@ contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 !contains(CONFIGDEBUG, debug) {
 	DEFINES += NDEBUG
 }
+DEFINES += EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+
 
 ########################################################################
 # System-specific configuration

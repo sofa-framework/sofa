@@ -35,6 +35,7 @@ void UniformCompliance<DataTypes>::reinit()
 //    cerr<<"UniformCompliance<DataTypes>::reinit, compliance.getValue()[0][0] = " << compliance.getValue()[0][0] << endl;
     for(unsigned i=0; i<state->getMatrixSize(); i++)
     {
+        matC.beginRow(i);
         matC.set(i,i,compliance.getValue()[0][0]);
     }
     matC.endEdit();

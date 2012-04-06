@@ -36,7 +36,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
 #include <set>
 
 namespace sofa
@@ -103,7 +103,8 @@ public:
     void removeConstraint(unsigned int index);
 
     // -- Constraint interface
-    void init();
+    virtual void init();
+    virtual void reinit();
 
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
@@ -147,7 +148,7 @@ protected :
     FCPointHandler* pointHandler;
 
     /// Matrix used in getJ
-    linearsolver::SparseMatrix<SReal> jacobian;
+    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
 
 };
 

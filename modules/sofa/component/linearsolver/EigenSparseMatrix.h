@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
@@ -57,15 +57,13 @@ Then set(i,j,value) must be used in for increasing j. There is no need to explic
 When all the entries are written, method endEdit() must be applied to finalize the matrix.
   */
 template<class InDataTypes, class OutDataTypes>
-class EigenSparseMatrix : public defaulttype::BaseMatrix
+class EigenSparseMatrix : public EigenBaseSparseMatrix<typename InDataTypes::Real>
 {
 public:
-
+    typedef EigenBaseSparseMatrix<typename InDataTypes::Real> Inherit;
     typedef typename InDataTypes::Real Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Matrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
-
-    Matrix eigenMatrix;    ///< the data
 
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::VecDeriv InVecDeriv;
@@ -75,27 +73,14 @@ public:
     typedef defaulttype::Mat<Nout,Nin,Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
 
-    EigenSparseMatrix(int nbRow=0, int nbCol=0)
-    {
-        resize(nbRow,nbCol);
-    }
-
-    /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(int nbRow, int nbCol)
-    {
-        eigenMatrix.resize(nbRow,nbCol);
-    }
+    EigenSparseMatrix(int nbRow=0, int nbCol=0):Inherit(nbRow,nbCol) {}
 
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {
-        eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
+        this->eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
-    void endEdit()
-    {
-        eigenMatrix.finalize();
-    }
 
     bool canCast( const InVecDeriv& v ) const
     {
@@ -132,7 +117,7 @@ public:
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
                 }
             }
         }
@@ -148,20 +133,20 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r = eigenMatrix * d;
+            r = this->eigenMatrix * d;
         }
         else
         {
 
             // convert the data to Eigen type
-            VectorEigen aux1(colSize(),1), aux2(rowSize(),1);
+            VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
             for(unsigned i=0; i<data.size(); i++)
             {
                 for(unsigned j=0; j<Nin; j++)
                     aux1[Nin* i+j] = data[i][j];
             }
             // compute the product
-            aux2 = eigenMatrix * aux1;
+            aux2 = this->eigenMatrix * aux1;
             // convert the result back to the Sofa type
             for(unsigned i=0; i<result.size(); i++)
             {
@@ -182,7 +167,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r = eigenMatrix * d;
+            r = this->eigenMatrix * d;
             //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
@@ -191,14 +176,14 @@ public:
         }
 
         // convert the data to Eigen type
-        VectorEigen aux1(colSize(),1), aux2(rowSize(),1);
+        VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nin; j++)
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix * aux1;
+        aux2 = this->eigenMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -215,19 +200,19 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r += eigenMatrix * d;
+            r += this->eigenMatrix * d;
             return;
         }
 
         // convert the data to Eigen type
-        VectorEigen aux1(colSize()),aux2(rowSize());
+        VectorEigen aux1(this->colSize()),aux2(this->rowSize());
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nin; j++)
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix * aux1;
+        aux2 = this->eigenMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -244,19 +229,19 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
-            r += eigenMatrix.transpose() * d;
+            r += this->eigenMatrix.transpose() * d;
             return;
         }
 
         // convert the data to Eigen type
-        VectorEigen aux1(rowSize()),aux2(colSize());
+        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nout; j++)
                 aux1[Nout* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix.transpose() * aux1;
+        aux2 = this->eigenMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -276,20 +261,20 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nout);
             Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nin);
-            r += eigenMatrix.transpose() * d;
+            r += this->eigenMatrix.transpose() * d;
             return;
         }
 
 
         // convert the data to Eigen type
-        VectorEigen aux1(rowSize()),aux2(colSize());
+        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
         for(unsigned i=0; i<dat.size(); i++)
         {
             for(unsigned j=0; j<Nout; j++)
                 aux1[Nout* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix.transpose() * aux1;
+        aux2 = this->eigenMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -298,135 +283,14 @@ public:
         }
     }
 
-    /// number of rows
-    unsigned int rowSize(void) const
-    {
-        return eigenMatrix.rows();
-    }
-
-    /// number of columns
-    unsigned int colSize(void) const
-    {
-        return eigenMatrix.cols();
-    }
-
-    SReal element(int i, int j) const
-    {
-#ifdef EigenSparseMatrix_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
-        {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-            return 0.0;
-        }
-#endif
-        return eigenMatrix.coeff(i,j);
-    }
-
-    /// must be called before inserting any element in the given row
-    void beginRow( int i )
-    {
-        eigenMatrix.startVec(i);
-    }
-
-    /// This is efficient only if done in storing order: line, row
-    void set(int i, int j, double v)
-    {
-#ifdef EigenSparseMatrix_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
-#ifdef EigenSparseMatrix_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
-        {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-            return;
-        }
-#endif
-        if( v!=0.0 )
-            eigenMatrix.insertBack(i,j) = (Real)v;
-        //        cerr<<"EigenSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
-    }
-
-
-
-
-
-    void add(int /*i*/, int /*j*/, double /*v*/)
-    {
-        cerr<<"EigenSparseMatrix::add(int i, int j, double v) is not implemented !"<<endl;
-    }
-
-    void clear(int i, int j)
-    {
-#ifdef EigenSparseMatrix_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
-#ifdef EigenSparseMatrix_CHECK
-        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
-        {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-            return;
-        }
-#endif
-        eigenMatrix.coeffRef(i,j) = (Real)0;
-    }
-
-    ///< Set all the entries of a row to 0. Not efficient !
-    void clearRow(int /*i*/)
-    {
-        cerr<<"EigenSparseMatrix::clearRow(int i) is not implemented !"<<endl;
-    }
-
-    ///< Set all the entries of a column to 0. Not efficient !
-    void clearCol(int /*j*/)
-    {
-        cerr<<"EigenSparseMatrix::clearCol(int i) is not implemented !"<<endl;
-    }
-
-    ///< Set all the entries of a column and a row to 0. Not efficient !
-    void clearRowCol(int /*i*/)
-    {
-        cerr<<"EigenSparseMatrix::clearRowCol(int i) is not implemented !"<<endl;
-    }
-
-    /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
-    {
-        resize(0,0);
-        resize(rowSize(),colSize());
-    }
-
-    /// Matrix-vector product
-    void mult( VectorEigen& result, const VectorEigen& data )
-    {
-        result = eigenMatrix * data;
-    }
-
-
-    friend std::ostream& operator << (std::ostream& out, const EigenSparseMatrix<InDataTypes,OutDataTypes>& v )
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
 
     static const char* Name();
 
 
 };
 
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >::Name() { return "EigenSparseMatrix3_1d"; }
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3_1f"; }
+template<> inline const char* EigenSparseMatrix<defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >::Name() { return "EigenSparseMatrix3d1d"; }
+template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3f1f"; }
 
 
 
@@ -437,9 +301,10 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
 /** Specialization for the case where In and Out have different Real types. Just a quick fix, to be improved.
   */
 template<class InDataTypes>
-class EigenSparseMatrix<InDataTypes,defaulttype::ExtVec3fTypes> : public defaulttype::BaseMatrix
+class EigenSparseMatrix<InDataTypes,defaulttype::ExtVec3fTypes> : public EigenBaseSparseMatrix<typename InDataTypes::Real>
 {
 public:
+    typedef EigenBaseSparseMatrix<typename InDataTypes::Real> Inherit;
     typedef typename InDataTypes::Real InReal;
     typedef defaulttype::ExtVec3fTypes OutDataTypes;
     typedef typename OutDataTypes::Real OutReal;
@@ -448,7 +313,6 @@ public:
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  InVectorEigen;
     typedef Eigen::Matrix<OutReal,Eigen::Dynamic,1>  OutVectorEigen;
 
-    Matrix eigenMatrix;    ///< the data
 
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::VecDeriv InVecDeriv;
@@ -458,26 +322,13 @@ public:
     typedef defaulttype::Mat<Nout,Nin,InReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
 
-    EigenSparseMatrix(int nbRow=0, int nbCol=0)
-    {
-        resize(nbRow,nbCol);
-    }
+    EigenSparseMatrix(int nRow=0, int nCol=0):Inherit(nRow,nCol) {}
 
-    /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(int nbRow, int nbCol)
-    {
-        eigenMatrix.resize(nbRow,nbCol);
-    }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {
-        eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
-    }
-
-    void endEdit()
-    {
-        eigenMatrix.finalize();
+        this->eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
     bool canCast( const InVecDeriv& v ) const
@@ -492,13 +343,6 @@ public:
         else return false;
 
     }
-
-//    bool canCast( const OutVecDeriv& v ) const
-//    {
-//        if(  (v.size()-1)*sizeof(OutDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
-//            return true;
-//        else return false;
-//    }
 
     /** Insert a new row of blocks in the matrix. The rows must be inserted in increasing order. bRow is the row number. brow and bcolumns are block indices.
       Insert one row of scalars after another
@@ -515,7 +359,7 @@ public:
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
                 }
             }
         }
@@ -535,14 +379,14 @@ public:
 //        else {
 
         // convert the data to Eigen type
-        VectorEigen aux1(colSize(),1), aux2(rowSize(),1);
+        VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nin; j++)
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix * aux1;
+        aux2 = this->eigenMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -571,14 +415,14 @@ public:
 //        }
 
         // convert the data to Eigen type
-        VectorEigen aux1(colSize(),1), aux2(rowSize(),1);
+        VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nin; j++)
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix * aux1;
+        aux2 = this->eigenMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -599,14 +443,14 @@ public:
 //        }
 
         // convert the data to Eigen type
-        VectorEigen aux1(colSize()),aux2(rowSize());
+        VectorEigen aux1(this->colSize()),aux2(this->rowSize());
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nin; j++)
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix * aux1;
+        aux2 = this->eigenMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -627,14 +471,14 @@ public:
 //        }
 
         // convert the data to Eigen type
-        VectorEigen aux1(rowSize()),aux2(colSize());
+        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
         for(unsigned i=0; i<data.size(); i++)
         {
             for(unsigned j=0; j<Nout; j++)
                 aux1[Nout* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix.transpose() * aux1;
+        aux2 = this->eigenMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -659,14 +503,14 @@ public:
 
 
         // convert the data to Eigen type
-        VectorEigen aux1(rowSize()),aux2(colSize());
+        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
         for(unsigned i=0; i<dat.size(); i++)
         {
             for(unsigned j=0; j<Nout; j++)
                 aux1[Nout* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = eigenMatrix.transpose() * aux1;
+        aux2 = this->eigenMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -675,102 +519,8 @@ public:
         }
     }
 
-    /// number of rows
-    unsigned int rowSize(void) const
-    {
-        return eigenMatrix.rows();
-    }
 
-    /// number of columns
-    unsigned int colSize(void) const
-    {
-        return eigenMatrix.cols();
-    }
-
-    SReal element(int i, int j) const
-    {
-        return eigenMatrix.coeff(i,j);
-    }
-
-    /// must be called before inserting any element in the given row
-    void beginRow( int i )
-    {
-        eigenMatrix.startVec(i);
-    }
-
-    /// This is efficient only if done in storing order: line, row
-    void set(int i, int j, double v)
-    {
-        if( v != 0. )
-            eigenMatrix.insertBack(i,j) = (InReal)v;
-        //        cerr<<"EigenSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
-    }
-
-
-
-
-
-    void add(int /*i*/, int /*j*/, double /*v*/)
-    {
-        cerr<<"EigenSparseMatrix::add(int i, int j, double v) is not implemented !"<<endl;
-    }
-
-    void clear(int i, int j)
-    {
-        eigenMatrix.coeffRef(i,j) = (InReal)0;
-    }
-
-    ///< Set all the entries of a row to 0. Not efficient !
-    void clearRow(int /*i*/)
-    {
-        cerr<<"EigenSparseMatrix::clearRow(int i) is not implemented !"<<endl;
-    }
-
-    ///< Set all the entries of a column to 0. Not efficient !
-    void clearCol(int /*j*/)
-    {
-        cerr<<"EigenSparseMatrix::clearCol(int i) is not implemented !"<<endl;
-    }
-
-    ///< Set all the entries of a column and a row to 0. Not efficient !
-    void clearRowCol(int /*i*/)
-    {
-        cerr<<"EigenSparseMatrix::clearRowCol(int i) is not implemented !"<<endl;
-    }
-
-    /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
-    {
-        resize(0,0);
-        resize(rowSize(),colSize());
-    }
-
-    /// Matrix-vector product
-    void mult( VectorEigen& result, const VectorEigen& data )
-    {
-        result = eigenMatrix * data;
-    }
-
-
-    friend std::ostream& operator << (std::ostream& out, const EigenSparseMatrix<InDataTypes,OutDataTypes>& v )
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
-
-    static const char* Name();
+//    static const char* Name();
 
 
 };

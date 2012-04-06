@@ -3,7 +3,7 @@
 #include "Compliance.h"
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -59,7 +59,7 @@ public:
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-    linearsolver::EigenSparseSquareMatrix<typename DataTypes::Real> matC; ///< compliance matrix
+    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matC; ///< compliance matrix
 };
 
 }

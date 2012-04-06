@@ -7,6 +7,7 @@ DEFINES += SOFA_BUILD_EIGEN2_SOLVER
 
 HEADERS += initEigen2Solver.h \
            linearsolver/EigenMatrixManipulator.h \
+           linearsolver/EigenBaseSparseMatrix.h \
            linearsolver/EigenSparseMatrix.h \
            linearsolver/EigenSparseRectangularMatrix.h \
            linearsolver/EigenSparseSquareMatrix.h \

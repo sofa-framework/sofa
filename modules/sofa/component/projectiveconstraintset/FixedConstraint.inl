@@ -160,31 +160,63 @@ void FixedConstraint<DataTypes>::init()
         }
     }
 
+    reinit();
+
 //  cerr<<"FixedConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
 
 }
+
+template <class DataTypes>
+void  FixedConstraint<DataTypes>::reinit()
+{
+//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
+
+    // get the indices sorted
+    SetIndexArray tmp = f_indices.getValue();
+    std::sort(tmp.begin(),tmp.end());
+
+    // resize the jacobian
+    unsigned numBlocks = this->mstate->getSize();
+    unsigned blockSize = DataTypes::deriv_total_size;
+    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
+
+    // fill the jacobian is ascending order
+    SetIndexArray::const_iterator it= tmp.begin();
+    unsigned i=0;
+    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
+    {
+        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
+        {
+            it++;
+            // jacobian(i,i)==0 per default, nothing to do actually
+        }
+        else
+            for( unsigned j=0; j<blockSize; j++ )
+            {
+//                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
+                jacobian.beginRow(blockSize*i+j );
+                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
+            }
+    }
+    // Set the matrix to identity beyond the last constrained particle
+    for(; i<numBlocks && it!=tmp.end(); i++ )
+    {
+        for( unsigned j=0; j<blockSize; j++ )
+        {
+//            cerr<<"FixedConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
+            jacobian.beginRow( blockSize*i+j );
+            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
+        }
+    }
+    jacobian.endEdit();
+
+}
+
 
 /// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
 template <class DataTypes>
 const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const core::MechanicalParams* )
 {
-    unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
-    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
-
-    for(unsigned i=0; i<numBlocks*blockSize; i++ )
-    {
-        jacobian.set(i,i,1);
-    }
-    for(unsigned i=0; i<f_indices.getValue().size(); i++ )
-    {
-//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
-        for(unsigned j=0; j<blockSize; j++)
-            jacobian.set( f_indices.getValue()[i]*blockSize+j, f_indices.getValue()[i]*blockSize+j, 0);
-//        cerr<<"FixedConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << endl;
-    }
-
     return &jacobian;
 }
 

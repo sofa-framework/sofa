@@ -72,7 +72,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     // Matrix size
     MatrixAssemblyVisitor assembly(&cparams,this);
     this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE));
-//    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
+    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
 
     if( assembly.sizeC > 0 )
     {
@@ -197,21 +197,24 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             jMap[node->mechanicalState]= shiftMatrix ;
 
             // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
-            DMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
             vector<BaseProjectiveConstraintSet*> projections;
             node->getNodeObjects<BaseProjectiveConstraintSet>(&projections);
-            for(unsigned i=0; i<projections.size(); i++)
+            if(projections.size()>0 )
             {
-                if( const defaulttype::BaseMatrix* mat = projections[i]->getJ(mparams) )
+                DMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
+                for(unsigned i=0; i<projections.size(); i++)
                 {
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
-                    projMat = projMat * toMatrix(mat);  // multiply with the projection matrix
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
+                    if( const defaulttype::BaseMatrix* mat = projections[i]->getJ(mparams) )
+                    {
+                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
+                        projMat = projMat * getSMatrix(mat);  // multiply with the projection matrix
+                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
+                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
+                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
+                    }
                 }
+                solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
             }
-            solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
 
 
         }
@@ -223,15 +226,15 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
             MechanicalState* mtarget = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Only N-to-1 mappings are handled yet
-//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
+            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             for( unsigned i=0; i<pStates.size(); i++ )
             {
                 MechanicalState* mstate = dynamic_cast<MechanicalState*>(pStates[i]);
                 assert(mstate);
-                DMatrix J = toMatrix( (*pJs)[i] );
+                DMatrix J = getSMatrix( (*pJs)[i] );
                 DMatrix contribution;
-//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
-//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
+                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
+                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
@@ -264,13 +267,12 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             DMatrix J = DMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
             solver->matJ += J;                                          // assemble
 
-            DMatrix C = DMatrix( compOffset.transpose() * toMatrix(compliances[0]->getComplianceMatrix(mparams)) * compOffset ); // shift C
             SReal alpha = cparams.implicitVelocity(); // implicit velocity factor in the integration scheme
             SReal beta  = cparams.implicitPosition(); // implicit position factor in the integration scheme
             SReal l = alpha * (beta * mparams->dt() + compliances[0]->getDampingRatio() );
             if( fabs(l)<1.0e-10 ) solver->serr << compliances[0]->getName() << ", l is not invertible in ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown" << solver->sendl;
             SReal invl = 1.0/l;
-            solver->matC += C * invl;                                                                                // assemble
+            solver->matC += DMatrix( compOffset.transpose() * getSMatrix(compliances[0]->getComplianceMatrix(mparams)) * compOffset ) * invl;                                                                                // assemble
         }
 
     }
@@ -282,9 +284,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
         {
             unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
-//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<",  force before = " << solver->vecF << endl;
+            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<",  force before = " << solver->vecF << endl;
             node->mechanicalState->addToBaseVector(&solver->vecF,core::VecDerivId::force(),offset);
-//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<", cumulated force = " << solver->vecF << endl;
+            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<", cumulated force = " << solver->vecF << endl;
         }
 
         // ==== compliance
@@ -329,16 +331,16 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
     else if (pass==MATRIX_ASSEMBLY)
     {
         // ==== independent DOFs
-//        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
-//        {
-//            jStack.pop();
-//        }
+        //        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+        //        {
+        //            jStack.pop();
+        //        }
 
         // ==== mechanical mapping
-//        if ( node->mechanicalMapping != NULL )
-//        {
-//            jStack.pop();
-//        }
+        //        if ( node->mechanicalMapping != NULL )
+        //        {
+        //            jStack.pop();
+        //        }
     }
     else if (pass==VECTOR_ASSEMBLY )
     {
@@ -359,7 +361,12 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMa
 {
     DMatrix m(rows,cols);
     for(unsigned i=0; i<rows; i++ )
-        m.coeffRef(i,offset+i)=1;
+    {
+        m.startVec(i);
+        m.insertBack( i, offset+i) =1;
+        //        m.coeffRef(i,offset+i)=1;
+    }
+    m.finalize();
     return m;
 }
 
@@ -367,42 +374,45 @@ ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::createIdentit
 {
     DMatrix m(size,size);
     for(unsigned i=0; i<size; i++ )
-        m.coeffRef(i,i)=1;
+    {
+        m.startVec(i);
+        m.insertBack(i,i) =1;
+        //        m.coeffRef(i,i)=1;
+    }
+    m.finalize();
     return m;
 }
 
-/// Converts a BaseMatrix to the matrix type used here.
-ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( const defaulttype::BaseMatrix* m)
-{
-    ComplianceSolver::DMatrix result(m->rowSize(), m->colSize());
-
-    int R = m->getBlockRows();
-    int C = m->getBlockCols();
-    //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::toMatrix, R = " << R << ", C = " << C << endl;
-    for(defaulttype::BaseMatrix::RowBlockConstIterator ri= m->bRowsBegin(), end_rows=m->bRowsEnd(); ri!=end_rows; ri++ ) // for each row of blocks
-    {
-        for( defaulttype::BaseMatrix::ColBlockConstIterator ci = ri.begin(), end_cols=ri.end(); ci!=end_cols; ci++  )
-        {
-            const defaulttype::BaseMatrix::BlockConstAccessor& b= ci.bloc();
-            for(int i=0; i<R; i++ )   // for each scalar row of the blocks
-            {
-                for(int j=0; j<C; j++)
-                {
-                    //                    cerr<<"ComplianceSolver::toMatrix insert value "<<  b.element(i,j) << " in row " << b.getRow()+i << ", col " << b.getCol()+j << endl;
-                    result.coeffRef( R*b.getRow()+i, C*b.getCol()+j ) = b.element(i,j);
-                }
-            }
-        }
-    }
-    return result;
-}
-
-//const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::toSMatrix( const defaulttype::BaseMatrix* m)
+///// Converts a BaseMatrix to the matrix type used here.
+//ComplianceSolver::DMatrix ComplianceSolver::MatrixAssemblyVisitor::toMatrix( const defaulttype::BaseMatrix* m)
 //{
-//    linearsolver::EigenSparseMatrix<SReal>* sm = dynamic_cast<linearsolver::EigenSparseMatrix<SReal>*>(m);
-//    assert(sm);
-//    return *sm->eigenMatrix;
+//    ComplianceSolver::DMatrix result(m->rowSize(), m->colSize());
+
+//    int R = m->getBlockRows();
+//    int C = m->getBlockCols();
+//    //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::toMatrix, R = " << R << ", C = " << C << endl;
+//    for(defaulttype::BaseMatrix::RowBlockConstIterator ri= m->bRowsBegin(), end_rows=m->bRowsEnd(); ri!=end_rows; ri++ ) // for each row of blocks
+//    {
+//        for( defaulttype::BaseMatrix::ColBlockConstIterator ci = ri.begin(), end_cols=ri.end(); ci!=end_cols; ci++  )
+//        {
+//            const defaulttype::BaseMatrix::BlockConstAccessor& b= ci.bloc();
+//            for(int i=0; i<R; i++ ){  // for each scalar row of the blocks
+//                for(int j=0; j<C; j++){
+//                    //                    cerr<<"ComplianceSolver::toMatrix insert value "<<  b.element(i,j) << " in row " << b.getRow()+i << ", col " << b.getCol()+j << endl;
+//                    result.coeffRef( R*b.getRow()+i, C*b.getCol()+j ) = b.element(i,j);
+//                }
+//            }
+//        }
+//    }
+//    return result;
 //}
+
+const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMatrix( const defaulttype::BaseMatrix* m)
+{
+    const linearsolver::EigenBaseSparseMatrix<SReal>* sm = dynamic_cast<const linearsolver::EigenBaseSparseMatrix<SReal>*>(m);
+    assert(sm);
+    return sm->eigenMatrix;
+}
 
 
 /// Converts a BaseMatrix to the matrix type used here.
