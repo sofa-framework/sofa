@@ -298,11 +298,11 @@ void MinresSolver::visitor::distribute()
 }
 
 
-MinresSolver::vec MinresSolver::solve_schur(real dt, const minres::params& p )  const
+MinresSolver::vec MinresSolver::solve_schur(real dt, minres::params& p )
 {
     raii_log log("minres_schur");
-    SMatrix Minv = inverseMatrix( M(), 1.0e-6 );
-    Minv = matP * Minv * matP;
+    inverseDiagonalMatrix( invM, M(), 1.0e-6 );
+    SMatrix Minv = matP * invM * matP;
 
     const vec rhs = phi() - J() * ( Minv * this->f() );
 
@@ -323,7 +323,7 @@ void MinresSolver::warm(vec& x) const
     }
 }
 
-MinresSolver::vec MinresSolver::solve_kkt( real dt, const minres::params& p ) const
+MinresSolver::vec MinresSolver::solve_kkt( real dt, minres::params& p )
 {
     raii_log log("minres_kkt");
     vec rhs; rhs.resize(f().size() + phi().size());
@@ -379,11 +379,12 @@ void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::
 
         // setup minres
         minres::params p;
-        p.iterations = iterations.getValue();
+        p.iterations = max_iterations.getValue();
         p.precision = precision.getValue();
 
         // solve for lambdas
         vec lambda = use_kkt.getValue() ? solve_kkt(dt, p) : solve_schur(dt,  p);
+        iterations_performed.setValue(p.iterations);
 
         // add constraint force
         this->f() += J().transpose() * lambda;
@@ -423,8 +424,11 @@ MinresSolver::MinresSolver()
     : use_kkt( initData(&use_kkt, false, "kkt",
             "Work on KKT system instead of Schur complement") ),
 
-    iterations( initData(&iterations, (unsigned int)(100), "iterations",
+    max_iterations( initData(&max_iterations, (unsigned int)(100), "maxIterations",
             "Iterations bound for the MINRES solver")),
+
+    iterations_performed( initData(&iterations_performed, (unsigned int)(0), "iterationsPerformed",
+            "Iterations actually performed by the MINRES solver for the last time step")),
 
     precision( initData(&precision, 1e-7, "precision",
             "Residual threshold for the MINRES solver")),

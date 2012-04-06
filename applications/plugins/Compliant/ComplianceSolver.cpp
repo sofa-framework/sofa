@@ -41,8 +41,8 @@ ComplianceSolver::ComplianceSolver()
 
 void ComplianceSolver::solveEquation()
 {
-    SMatrix Minv = inverseMatrix( matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
-    Minv = matP * Minv * matP;
+    inverseDiagonalMatrix( invM, matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+    SMatrix Minv = matP * invM * matP;
     SMatrix schur( matJ * Minv * matJ.transpose() + matC );
     SparseLDLT schurDcmp(schur);
     VectorEigen x = vecPhi.getVectorEigen() - matJ * ( Minv * vecF.getVectorEigen() );
@@ -61,7 +61,7 @@ void ComplianceSolver::solveEquation()
     {
         cerr<<"ComplianceSolver::solve, constraint forces = " << x.transpose() << endl;
         cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
-//        cerr<<"ComplianceSolver::solve, net forces = " << f << endl;
+        //        cerr<<"ComplianceSolver::solve, net forces = " << f << endl;
     }
 }
 
@@ -371,26 +371,36 @@ const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMa
 
 
 /// Converts a BaseMatrix to the matrix type used here.
-ComplianceSolver::SMatrix ComplianceSolver::inverseMatrix( const SMatrix& M, SReal threshold) const
+void ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M, SReal /*threshold*/)
 {
     assert(M.rows()==M.cols());
-    SparseLDLT Mdcmp(M);
-    SMatrix result(M.rows(),M.rows());
-    for( int i=0; i<M.rows(); i++ )
-    {
-        VectorEigen v(M.rows());
-        v.fill(0);
-        v(i)=1;
-        Mdcmp.solveInPlace(v);
-        result.startVec(i);
-        for(int j=0; j<M.rows(); j++)
+    Minv.resize(M.rows(),M.rows());
+    for (int i=0; i<M.outerSize(); ++i)
+        for (SMatrix::InnerIterator it(M,i); it; ++it)
         {
-            if( fabs(v(j))>=threshold )
-                result.insertBack(j,i) = v(j);
+            Minv.startVec(i);
+            Minv.insertBack(i,i) = 1.0/it.value();
+            assert(it.row()==it.col()); // only diagonal matrices
         }
-    }
-    result.finalize();
-    return result;
+    Minv.finalize();
+
+
+    //    assert(M.rows()==M.cols());
+    //    SparseLDLT Mdcmp(M);
+    //    Minv.resize(M.rows(),M.rows());
+    //    for( int i=0; i<M.rows(); i++ ){
+    //        VectorEigen v(M.rows());
+    //        v.fill(0);
+    //        v(i)=1;
+    //        Mdcmp.solveInPlace(v);
+    //        Minv.startVec(i);
+    //        for(int j=0; j<M.rows(); j++){
+    //            if( fabs(v(j))>=threshold )
+    //                Minv.insertBack(j,i) = v(j);
+    //        }
+    //    }
+    //    Minv.finalize();
+
 }
 
 
