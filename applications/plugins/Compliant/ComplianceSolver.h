@@ -58,38 +58,44 @@ class SOFA_Compliant_API ComplianceSolver  : public sofa::core::behavior::OdeSol
 public:
     SOFA_CLASS(ComplianceSolver, sofa::core::behavior::OdeSolver);
 
-    virtual void bwdInit();
+
+    /** Set up the matrices and vectors of the equation system, call solveEquation() to solve the system, then applies the results
+      You probably need not overload this method.
+      */
     virtual void solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
 
 protected:
     ComplianceSolver();
+    virtual ~ComplianceSolver() {}
 
-//    typedef Eigen::DynamicSparseMatrix<SReal, Eigen::RowMajor> DMatrix;
-    typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> DMatrix;
     typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
     typedef linearsolver::EigenVector<SReal>            VectorSofa;
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>     VectorEigen;
     typedef core::behavior::BaseMechanicalState         MechanicalState;
-//    typedef core::behavior::BaseForceField Compliance;
-    typedef core::BaseMapping Mapping;
+    typedef core::BaseMapping                           Mapping;
 
-    DMatrix matM;      ///< mass matrix
-    DMatrix matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
-    DMatrix matJ;      ///< concatenation of the constraint Jacobians
-    DMatrix matC;      ///< compliance matrix used to regularize the system
-    VectorSofa vecF;      ///< top of the right-hand term: forces
-    VectorSofa vecPhi;    ///< bottom of the right-hand term: constraint corrections
+    // Equation system
+    SMatrix matM;      ///< mass matrix
+    SMatrix matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
+    SMatrix matJ;      ///< concatenation of the constraint Jacobians
+    SMatrix matC;      ///< compliance matrix used to regularize the system
+    VectorSofa vecF;   ///< top of the right-hand term: forces
+    VectorSofa vecPhi; ///< bottom of the right-hand term: constraint corrections
+
+    /** Solve the equation system on matrices M,P,J,C and vectors f,phi, using a Cholesky direct solver on the Schur complement \f$  J.P.M^{-1}.P.J^T + C  \f$
+     This can be overloaded to apply other equation solvers.
+     */
+    virtual void solveEquation();
 
 public:
     Data<SReal>  implicitVelocity; ///< the \f$ \alpha \f$ parameter of the integration scheme
     Data<SReal>  implicitPosition; ///< the \f$ \beta  \f$ parameter of the integration scheme
-    Data<bool>   verbose;        ///< print a lot of debug info
+    Data<bool>   verbose;          ///< print a lot of debug info
+
 protected:
 
-
-
-    typedef enum { COMPUTE_SIZE, MATRIX_ASSEMBLY, VECTOR_ASSEMBLY, VECTOR_DISTRIBUTE } Pass;  ///< Symbols of operations to execute by the visitor
+    typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
 
     /** Visitor used to perform the assembly of M, C, J.
       Proceeds in several passes:<ol>
@@ -121,21 +127,18 @@ protected:
         virtual Visitor::Result processNodeTopDown(simulation::Node* node);
         virtual void processNodeBottomUp(simulation::Node* node);
 
-        std::map<MechanicalState*, unsigned> m_offset;  ///< Start index of independent DOFs in the mass matrix
-        std::map<core::behavior::BaseForceField*, unsigned>      c_offset;  ///< Start index of compliances in the compliance matrix
-        std::map<MechanicalState*,DMatrix> jMap;    ///< jacobian matrices of each mechanical state, with respect to the vector of all independent DOFs.
+        std::map<MechanicalState*, unsigned> m_offset;                 ///< Start index of independent DOFs in the mass matrix
+        std::map<core::behavior::BaseForceField*, unsigned> c_offset;  ///< Start index of compliances in the compliance matrix
+        std::map<MechanicalState*,SMatrix> jMap;                       ///< jacobian matrices of each mechanical state, with respect to the vector of all independent DOFs.
 
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
         /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-        DMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
+        SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
         /// Return an identity matrix of the given size
-        DMatrix createIdentityMatrix( unsigned size );
+        SMatrix createIdentityMatrix( unsigned size );
 
-//        /// Converts a BaseMatrix to the matrix type used here.
-//        DMatrix toMatrix( const defaulttype::BaseMatrix* );
-
-        /// casts the matrix using a dynamic_cast. Crash if the BaseMatrix* is not a SMatrix*
+        /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
         const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
     };
 
@@ -144,7 +147,7 @@ protected:
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
     /// Compute the inverse of the matrix and return it pruned, by canceling all the entries which are smaller than the threshold
-    SMatrix inverseMatrix( const DMatrix& m, SReal threshold) const;
+    SMatrix inverseMatrix( const SMatrix& m, SReal threshold) const;
 
 
 };

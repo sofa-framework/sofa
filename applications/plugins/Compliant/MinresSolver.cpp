@@ -1,5 +1,4 @@
 #include "MinresSolver.h"
-#include "BaseCompliance.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
@@ -266,15 +265,11 @@ bool MinresSolver::visitor::fetch()
         solver->J().resize(assembly.sizeC,assembly.sizeM);
         solver->f().resize(assembly.sizeM);
         solver->phi().resize(assembly.sizeC);
-
-        // Matrix assembly
-        solver->getContext()->executeVisitor(&assembly(MATRIX_ASSEMBLY));
-
-        // Vector assembly  (do we need a separate pass ?)
         solver->vecF.clear();
         solver->vecPhi.clear();
 
-        solver->getContext()->executeVisitor(&assembly(VECTOR_ASSEMBLY));
+        // Matrix assembly
+        solver->getContext()->executeVisitor(&assembly(DO_SYSTEM_ASSEMBLY));
 
         // solver->matC.setZero();
 
@@ -299,7 +294,7 @@ bool MinresSolver::visitor::fetch()
 
 void MinresSolver::visitor::distribute()
 {
-    solver->getContext()->executeVisitor(&assembly(VECTOR_DISTRIBUTE));  // set dv in each MechanicalState
+    solver->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
 }
 
 

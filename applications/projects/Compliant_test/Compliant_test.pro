@@ -3,13 +3,13 @@ load(sofa/pre)
 
 TEMPLATE = app
 TARGET = Compliant_test
-DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 CONFIG += console
 
 macx {
-	CONFIG += app_bundle
+        CONFIG += app_bundle
 	RC_FILE = runSOFA.icns
 	QMAKE_INFO_PLIST = Info.plist
     QMAKE_BUNDLE_DATA += $$APP_BUNDLE_DATA

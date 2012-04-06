@@ -4,23 +4,17 @@ defineAsPlugin(Compliant)
 TARGET = Compliant
 
 DEFINES += SOFA_BUILD_Compliant
-DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 
 SOURCES = \
     initCompliant.cpp \
-    BaseCompliance.cpp \
-    Compliance.cpp \
     UniformCompliance.cpp \
     ComplianceSolver.cpp \
     MinresSolver.cpp \
 
 HEADERS = \
     initCompliant.h \
-    BaseCompliance.h \
-    Compliance.h \
-    Compliance.inl \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \
