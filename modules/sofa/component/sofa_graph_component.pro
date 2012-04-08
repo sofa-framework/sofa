@@ -7,6 +7,7 @@ DEFINES += SOFA_BUILD_GRAPH_COMPONENT
 
 HEADERS += initGraphComponent.h \
            configurationsetting/AddFrameButtonSetting.h \
+           configurationsetting/CompliantAttachButtonSetting.h \
            configurationsetting/AttachBodyButtonSetting.h \
            configurationsetting/BackgroundSetting.h \
            configurationsetting/FixPickedParticleButtonSetting.h \
@@ -21,6 +22,7 @@ HEADERS += initGraphComponent.h \
 
 SOURCES += initGraphComponent.cpp \
            configurationsetting/AddFrameButtonSetting.cpp \
+           configurationsetting/CompliantAttachButtonSetting.cpp \
            configurationsetting/AttachBodyButtonSetting.cpp \
            configurationsetting/BackgroundSetting.cpp \
            configurationsetting/FixPickedParticleButtonSetting.cpp \
