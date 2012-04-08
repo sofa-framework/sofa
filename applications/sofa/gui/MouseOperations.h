@@ -117,6 +117,7 @@ protected:
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
 
+
 class SOFA_SOFAGUI_API FixOperation : public Operation
 {
 public:
@@ -143,6 +144,15 @@ public:
     virtual void execution() {};
     virtual void end() {};
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
+};
+
+class SOFA_SOFAGUI_API CompliantAttachOperation : public Operation
+{
+public:
+    virtual void start() ;
+    virtual void execution() {};
+    virtual void end() {};
+    static std::string getDescription() {return "CompliantAttach";}
 };
 
 

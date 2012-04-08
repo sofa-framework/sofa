@@ -33,6 +33,7 @@
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
+#include <sofa/component/collision/CompliantAttachPerformer.h>
 #endif
 #include <sofa/component/collision/SuturePointPerformer.h>
 
@@ -47,6 +48,7 @@ using namespace component::collision;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3fTypes> >  AddFramePerformerVec3fClass("AddFrame",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3fTypes> >  CompliantAttachPerformerVec3fClass("CompliantAttach",true);
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
@@ -56,6 +58,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPe
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3dTypes> >  CompliantAttachPerformerVec3dClass("CompliantAttach",true);
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
@@ -100,6 +103,8 @@ void AttachOperation::endOperation()
 {
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
+
+
 
 
 //*******************************************************************************************
@@ -295,6 +300,15 @@ void AddFrameOperation::start()
 {
     //Creation
     performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AddFrame", pickHandle->getInteraction()->mouseInteractor.get());
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+    //Start
+    performer->start();
+}
+
+void CompliantAttachOperation::start()
+{
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
     pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
     //Start
     performer->start();

@@ -55,6 +55,7 @@ SofaMouseManager::SofaMouseManager()
 
     RegisterOperation("Attach").add< QAttachOperation >();
     RegisterOperation("AddFrame").add< AddFrameOperation >();
+    RegisterOperation("CompliantAttach").add< CompliantAttachOperation >();
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< QInciseOperation  >();
     RegisterOperation("Remove").add< QTopologyOperation  >();
