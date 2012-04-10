@@ -32,9 +32,9 @@
 #define EIGEN_SUPERLU_SUPPORT
 #include <unsupported/Eigen/SuperLUSupport>
 #endif
-#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+//#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 #include <unsupported/Eigen/CholmodSupport>
-#endif
+//#endif
 
 namespace sofa
 {

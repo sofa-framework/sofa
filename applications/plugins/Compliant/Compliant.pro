@@ -9,15 +9,15 @@ DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 SOURCES = \
     initCompliant.cpp \
-    CompliantAttachBuilder.cpp \
+    CompliantAttachPerformer.cpp \
     UniformCompliance.cpp \
     ComplianceSolver.cpp \
     MinresSolver.cpp \
 
 HEADERS = \
     initCompliant.h \
-    CompliantAttachBuilder.h \
-    CompliantAttachBuilder.inl \
+    CompliantAttachPerformer.h \
+    CompliantAttachPerformer.inl \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \

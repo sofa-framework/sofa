@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "CompliantAttachBuilder.h"
+#include "CompliantAttachPerformer.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/component/collision/MouseInteractor.h>
@@ -54,24 +54,24 @@ namespace collision
 
 
 template <class DataTypes>
-CompliantAttachBuilder<DataTypes>::CompliantAttachBuilder(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)
+CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)
     , mapper(0)
     , mouseState(0)
 {
-//    cerr<<"CompliantAttachBuilder<DataTypes>::CompliantAttachBuilder()" << endl;
+//    cerr<<"CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer()" << endl;
     this->interactor->setMouseAttached(false);
 }
 
 
 template <class DataTypes>
-CompliantAttachBuilder<DataTypes>::~CompliantAttachBuilder()
+CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()
 {
-//    cerr<<"CompliantAttachBuilder<DataTypes>::~CompliantAttachBuilder()" << endl;
+//    cerr<<"CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()" << endl;
     clear();
 }
 
 template <class DataTypes>
-void CompliantAttachBuilder<DataTypes>::clear()
+void CompliantAttachPerformer<DataTypes>::clear()
 {
     pickedNode->removeChild(interactionNode);
     interactionNode = 0;
@@ -88,18 +88,18 @@ void CompliantAttachBuilder<DataTypes>::clear()
 
 
 template <class DataTypes>
-void CompliantAttachBuilder<DataTypes>::start()
+void CompliantAttachPerformer<DataTypes>::start()
 {
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
 
 
     if (interactionNode)  // previous interaction still holding
     {
-        cerr<<"CompliantAttachBuilder<DataTypes>::start(), releasing previous interaction" << endl;
+        cerr<<"CompliantAttachPerformer<DataTypes>::start(), releasing previous interaction" << endl;
         clear();            // release it
         return;
     }
-//    cerr<<"CompliantAttachBuilder<DataTypes>::start()" << endl;
+//    cerr<<"CompliantAttachPerformer<DataTypes>::start()" << endl;
 
 
     //--------- Picked object
@@ -153,7 +153,7 @@ void CompliantAttachBuilder<DataTypes>::start()
     {
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
         pickedParticleIndex = picked.indexCollisionElement;
-//        cerr<<"CompliantAttachBuilder<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
+//        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
         if (!mstateCollision)
         {
             this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
@@ -179,14 +179,14 @@ void CompliantAttachBuilder<DataTypes>::start()
     //---------- Set up the interaction
 
     // look for existing interactions
-    std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachBuilder";
+    std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachPerformer";
 //    vector<typename DistanceMapping31::SPtr> dmaps = picked.mstate->BaseObject::searchAllDown<DistanceMapping31>();
 //    unsigned i=0;
 //    while( i<dmaps.size() &&  dmaps[i]->getName()!=distanceMappingName ){ i++; }
 
 //    if( i<dmaps.size() ) // existing interaction found
 //    {
-//        cerr<<"CompliantAttachBuilder<DataTypes>::start(), found an existing interaction "<<endl;
+//        cerr<<"CompliantAttachPerformer<DataTypes>::start(), found an existing interaction "<<endl;
 //        dmaps[i]->clear();
 //        dmaps[i]->createTarget(picked.indexCollisionElement,picked.point,0.);
 //        dmaps[i]->init();
@@ -221,7 +221,7 @@ void CompliantAttachBuilder<DataTypes>::start()
 }
 
 template <class DataTypes>
-void CompliantAttachBuilder<DataTypes>::execute()
+void CompliantAttachPerformer<DataTypes>::execute()
 {
     // update target position
     mouseMapping->apply(core::MechanicalParams::defaultInstance());
@@ -232,7 +232,7 @@ void CompliantAttachBuilder<DataTypes>::execute()
     // update the distance mapping using the target position
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
 
-//    cerr<<"CompliantAttachBuilder<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
+//    cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
 }
 
 

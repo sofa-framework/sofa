@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_CPP
-#define SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_CPP
+#ifndef SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP
+#define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP
 
-#include "CompliantAttachBuilder.inl"
+#include "CompliantAttachPerformer.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/Factory.inl>
 
@@ -39,18 +39,18 @@ namespace collision
 {
 
 #ifndef SOFA_DOUBLE
-template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3fTypes>;
+template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3dTypes>;
+template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
 #endif
 
 
 #ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachBuilder<defaulttype::Vec3fTypes> >  CompliantAttachBuilderVec3fClass("CompliantAttach",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3fTypes> >  CompliantAttachPerformerVec3fClass("CompliantAttach",true);
 #endif
 #ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachBuilder<defaulttype::Vec3dTypes> >  CompliantAttachBuilderVec3dClass("CompliantAttach",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachPerformer<defaulttype::Vec3dTypes> >  CompliantAttachPerformerVec3dClass("CompliantAttach",true);
 #endif
 }
 }

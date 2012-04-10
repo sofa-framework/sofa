@@ -33,7 +33,6 @@
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
-#include <sofa/component/collision/CompliantAttachPerformer.h>
 #endif
 #include <sofa/component/collision/SuturePointPerformer.h>
 
