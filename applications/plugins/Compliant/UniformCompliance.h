@@ -9,7 +9,7 @@ namespace sofa
 {
 namespace component
 {
-namespace compliance
+namespace forcefield
 {
 
 /** Compliance uniformly applied to all the DOF.

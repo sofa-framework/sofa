@@ -5,6 +5,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
+#include <set>
 
 namespace sofa
 {
@@ -109,6 +110,7 @@ protected:
         core::MechanicalParams cparams;
         unsigned sizeM; ///< size of the mass matrix
         unsigned sizeC; ///< size of the compliance matrix, number of scalar constraints
+        std::set<core::behavior::BaseMechanicalState*> localDOFs;  ///< Mechanical DOFs in the range of the solver. This is used to discard others, such interaction mouse DOFs
 
         MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s)
             : simulation::MechanicalVisitor(params)

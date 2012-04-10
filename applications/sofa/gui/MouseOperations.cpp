@@ -105,6 +105,31 @@ void AttachOperation::endOperation()
 }
 
 
+//*******************************************************************************************
+void CompliantAttachOperation::start()
+{
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+    //Start
+    performer->start();
+}
+
+void CompliantAttachOperation::execution()
+{
+    //do nothing
+}
+
+void CompliantAttachOperation::end()
+{
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    delete performer; performer=0;
+}
+
+void CompliantAttachOperation::endOperation()
+{
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+}
 
 
 //*******************************************************************************************
@@ -170,7 +195,7 @@ void TopologyOperation::start()
 
 void TopologyOperation::execution()
 {
-//       performer->execute();
+    //       performer->execute();
 }
 
 void TopologyOperation::end()
@@ -305,14 +330,6 @@ void AddFrameOperation::start()
     performer->start();
 }
 
-void CompliantAttachOperation::start()
-{
-    //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("CompliantAttach", pickHandle->getInteraction()->mouseInteractor.get());
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-    //Start
-    performer->start();
-}
 
 
 

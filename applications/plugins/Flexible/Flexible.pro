@@ -14,6 +14,7 @@ SOURCES = initFlexible.cpp\
     shapeFunction/BaseShapeFunction.cpp \
     shapeFunction/ShepardShapeFunction.cpp \
     shapeFunction/BarycentricShapeFunction.cpp \
+    deformationMapping/DistanceMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
@@ -28,6 +29,8 @@ HEADERS = initFlexible.h \
     shapeFunction/BaseShapeFunction.h \
     shapeFunction/ShepardShapeFunction.h \
     shapeFunction/BarycentricShapeFunction.h \
+    deformationMapping/DistanceMapping.h \
+    deformationMapping/DistanceMapping.inl \
     deformationMapping/ExtensionMapping.h \
     deformationMapping/ExtensionMapping.inl \
     deformationMapping/LinearMapping.h \

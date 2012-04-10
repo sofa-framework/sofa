@@ -53,8 +53,6 @@ ExtensionMapping<TIn, TOut>::ExtensionMapping()
 template <class TIn, class TOut>
 ExtensionMapping<TIn, TOut>::~ExtensionMapping()
 {
-    for(unsigned i=0; i<jacobians.size(); i++ )
-        delete jacobians[i];
 }
 
 
@@ -80,10 +78,8 @@ void ExtensionMapping<TIn, TOut>::init()
         }
     }
 
-    jacobians.resize( this->getFrom().size() );
-    baseMatrices.resize( this->getFrom().size() );
-    for(unsigned i=0; i<jacobians.size(); i++ )
-        baseMatrices[i] = jacobians[i] = new SparseMatrixEigen;
+    baseMatrices.resize( 1 );
+    baseMatrices[0] = &jacobian;
 
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
@@ -98,8 +94,7 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
     helper::WriteAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
-    SparseMatrixEigen& jacobian = *jacobians[0];
-    jacobian.clear();
+//    jacobian.clear();
     jacobian.resizeBlocks(out.size(),in.size());
 
     for(unsigned i=0; i<links.size(); i++ )
@@ -111,9 +106,16 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
         Real gapNorm = gap.norm();
         out[i] = gapNorm - restLengths[i];  // output
 
-        gap *= 1/gapNorm;
-//        jacobian.setBlock( i, links[i][1], block );
-//        jacobian.setBlock( i, links[i][0], -block );
+        // normalize
+        if( gapNorm>1.e-10 )
+        {
+            gap *= 1/gapNorm;
+        }
+        else
+        {
+            gap = InDeriv();
+            gap[0]=1.0;  // arbitrary unit vector
+        }
 
         // insert in increasing row and column order
         jacobian.beginRow(i);
@@ -148,14 +150,13 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
     }
 
     jacobian.endEdit();
-//      cerr<<"ExtensionMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+    //      cerr<<"ExtensionMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
 
 }
 
 template <class TIn, class TOut>
 void ExtensionMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    SparseMatrixEigen& jacobian = *jacobians[0];
     if( jacobian.rowSize() > 0 )
         jacobian.mult(dOut,dIn);
 }
@@ -163,7 +164,6 @@ void ExtensionMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparam
 template <class TIn, class TOut>
 void ExtensionMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    SparseMatrixEigen& jacobian = *jacobians[0];
     if( jacobian.rowSize() > 0 )
         jacobian.addMultTranspose(dIn,dOut);
 }
@@ -178,7 +178,6 @@ void ExtensionMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<In
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* ExtensionMapping<TIn, TOut>::getJ()
 {
-    SparseMatrixEigen& jacobian = *jacobians[0];
     return &jacobian;
 }
 

@@ -16,83 +16,43 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
+#ifndef SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_CPP
+#define SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_CPP
+
+#include "CompliantAttachBuilder.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
 
-
-simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode )
-{
-
-}
-
-
-
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Compliant_API void initExternalModule();
-    SOFA_Compliant_API const char* getModuleName();
-    SOFA_Compliant_API const char* getModuleVersion();
-    SOFA_Compliant_API const char* getModuleLicense();
-    SOFA_Compliant_API const char* getModuleDescription();
-    SOFA_Compliant_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace collision
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+
+#ifndef SOFA_DOUBLE
+template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3dTypes>;
+#endif
+
+
+#ifndef SOFA_DOUBLE
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachBuilder<defaulttype::Vec3fTypes> >  CompliantAttachBuilderVec3fClass("CompliantAttach",true);
+#endif
+#ifndef SOFA_FLOAT
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, CompliantAttachBuilder<defaulttype::Vec3dTypes> >  CompliantAttachBuilderVec3dClass("CompliantAttach",true);
+#endif
 }
-
-const char* getModuleName()
-{
-    return "Compliant";
 }
-
-const char* getModuleVersion()
-{
-    return "0.2";
 }
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix";
-}
-
-const char* getModuleComponentList()
-{
-//    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-    return "";
-}
-
-
-
-}
-
-}
-
-
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-
+#endif

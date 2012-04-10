@@ -16,83 +16,54 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
+#define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
+#include "DistanceMapping.inl"
+#include <sofa/core/ObjectFactory.h>
+#include "initFlexible.h"
 
 namespace sofa
 {
 
-
-simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode )
-{
-
-}
-
-
-
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Compliant_API void initExternalModule();
-    SOFA_Compliant_API const char* getModuleName();
-    SOFA_Compliant_API const char* getModuleVersion();
-    SOFA_Compliant_API const char* getModuleLicense();
-    SOFA_Compliant_API const char* getModuleDescription();
-    SOFA_Compliant_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace mapping
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Compliant";
-}
+SOFA_DECL_CLASS(DistanceMapping)
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+using namespace defaulttype;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+// Register in the Factory
+int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
+#ifndef SOFA_FLOAT
+        .add< DistanceMapping< Vec3dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< DistanceMapping< Vec3fTypes, Vec1fTypes > >()
+#endif
+        ;
 
+#ifndef SOFA_FLOAT
+template class SOFA_Flexible_API DistanceMapping< Vec3dTypes, Vec1dTypes >;
+#endif
 
-const char* getModuleDescription()
-{
-    return "Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix";
-}
-
-const char* getModuleComponentList()
-{
-//    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-    return "";
-}
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API DistanceMapping< Vec3fTypes, Vec1fTypes >;
+#endif
 
 
 
-}
 
-}
+} // namespace mapping
 
+} // namespace component
 
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
+} // namespace sofa
 

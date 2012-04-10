@@ -3138,21 +3138,31 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         const VecCoord& x = *this->getX();
         Vec<3,Real> origin(rayOx, rayOy, rayOz);
         Vec<3,Real> direction(rayDx, rayDy, rayDz);
+//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
+//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
+//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
+//                    cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
         for (int i=0; i< vsize; ++i)
         {
             Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
+//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
             if (pos == origin) continue;
             double dist = (pos-origin)*direction;
-            if (dist < 0) continue;
+            if (dist < 0) continue; // discard particles behind the camera, such as mouse position
 
             Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             double distToRay = vecPoint.norm2();
             double maxr = radius0 + dRadius*dist;
+//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
             double r2 = (pos-origin-direction*dist).norm2();
             if (r2 <= maxr*maxr)
+            {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
+//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;
+            }
+//                        cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " not inserted " << endl;
         }
         return true;
     }

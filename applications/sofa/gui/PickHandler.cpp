@@ -39,6 +39,8 @@
 
 
 #include <iostream>
+using std::cerr;
+using std::endl;
 #include <limits>
 
 
@@ -461,6 +463,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 {
     BodyPicked result;
     // Look for particles hit by this ray
+//  cerr<<"PickHandler::findCollisionUsingBruteForce" << endl;
     simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, origin, direction, maxLength, 0 );
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
 

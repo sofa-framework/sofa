@@ -94,7 +94,7 @@ declare(sofa_non_uniform_fem, modules/sofa/component/sofa_non_uniform_fem.pro, s
 declare(sofa_non_uniform_fem_dev, modules/sofa/component/sofa_non_uniform_fem_dev.pro, sofa_non_uniform_fem eigen)
 declare(sofa_advanced_fem, modules/sofa/component/sofa_advanced_fem.pro, sofa_base_topology eigen)
 declare(sofa_mjed_fem, modules/sofa/component/sofa_mjed_fem.pro, sofa_base_topology eigen)
-declare(sofa_advanced_interaction, modules/sofa/component/sofa_advanced_interaction.pro, sofa_implicit_ode_solver sofa_simple_fem sofa_constraint sofa_topology_mapping sofa_user_interaction sofa_misc_collision sofa_misc_collision_dev csparse)
+declare(sofa_advanced_interaction, modules/sofa/component/sofa_advanced_interaction.pro, sofa_implicit_ode_solver sofa_simple_fem sofa_constraint sofa_topology_mapping sofa_user_interaction sofa_misc_collision sofa_misc_collision_dev csparse sofa_misc_mapping)
 declare(sofa_advanced_constraint, modules/sofa/component/sofa_advanced_constraint.pro, sofa_boundary_condition sofa_haptics sofa_constraint)
 declare(sofa_taucs_solver, modules/sofa/component/sofa_taucs_solver.pro, sofatree sofa_base_linear_solver taucs taucs_mt system-taucs system-metis cilk)
 declare(sofa_pardiso_solver, modules/sofa/component/sofa_pardiso_solver.pro, sofatree)

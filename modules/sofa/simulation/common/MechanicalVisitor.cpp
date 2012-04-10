@@ -1458,7 +1458,7 @@ Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* /
 
 Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    //std::cout << "Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
+//    std::cerr << "MechanicalPickParticlesVisitor::fwdMechanicalState, Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
 
     //We deactivate the Picking with static objects (not simulated)
     core::CollisionModel *c;
