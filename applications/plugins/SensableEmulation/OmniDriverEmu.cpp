@@ -293,8 +293,9 @@ void *hapticSimuExecute( void *ptr )
             // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
             for (unsigned int i=0; i<omniDrv->data.forceFeedbacks.size(); i++)
                 if (omniDrv->data.forceFeedbacks[i]->indice==omniDrv->data.forceFeedbackIndice)
+                {
                     omniDrv->data.forceFeedbacks[i]->computeWrench(world_H_virtualTool,temp1,temp2);
-
+                }
             realTimeAct = double(omniDrv->thTimer->getTime());
             if (asynchroStep > 0)
             {
@@ -353,6 +354,8 @@ void OmniDriverEmu::bwdInit()
 
     setDataValue();
 
+    copyDeviceDataCallback(&data);
+
     if (omniSimThreadCreated)
     {
 
@@ -381,7 +384,7 @@ void OmniDriverEmu::bwdInit()
 
     if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
     {
-        sout << "Thread created for Omni simulation" << sendl;
+        cout << "OmniDriver : Thread created for Omni simulation" << endl;
         omniSimThreadCreated=true;
     }
 
@@ -482,8 +485,10 @@ void OmniDriverEmu::copyDeviceDataCallback(OmniData *pUserData)
 {
     OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
     memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
-    data->servoDeviceData.nupdates = 0;
     data->servoDeviceData.ready = true;
+    data->servoDeviceData.nupdates = 0;
+
+
 }
 
 void OmniDriverEmu::stopCallback(OmniData *pUserData)
@@ -515,12 +520,17 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
+
+        cout << "test handle event "<< endl;
         //getData(); // copy data->servoDeviceData to gDeviceData
         //if (!simulateTranslation.getValue()) {
         copyDeviceDataCallback(&data);
+
+        cout << data.deviceData.ready<< endl;
+
         if (data.deviceData.ready)
         {
-            //cout << "Data ready, event" << endl;
+            cout << "Data ready, event" << endl;
             data.deviceData.quat.normalize();
 
             //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << endl;
