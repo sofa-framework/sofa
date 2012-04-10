@@ -159,9 +159,10 @@ public:
     Data<helper::vector<double> > trajTim;
 
     int getCurrentToolIndex() { return currentToolIndex;};
+    void handleEvent(core::objectmodel::Event *);
 
 private:
-    void handleEvent(core::objectmodel::Event *);
+
     void copyDeviceDataCallback(OmniData *pUserData);
     void stopCallback(OmniData *pUserData);
     sofa::component::visualmodel::OglModel::SPtr visu_base, visu_end;
