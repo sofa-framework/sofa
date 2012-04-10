@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_H
-#define SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_H
+#ifndef SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
+#define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 
-#include <sofa/component/collision/CompliantAttachPerformer.h>
+#include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <../applications/plugins/Flexible/deformationMapping/DistanceMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -49,7 +49,7 @@ struct BodyPicked;
   @author Francois Faure, 2012
   */
 template <class DataTypes>
-class CompliantAttachBuilder: public TInteractionPerformer<DataTypes>
+class CompliantAttachPerformer: public TInteractionPerformer<DataTypes>
 {
     typedef typename DataTypes::Real                                  Real;
     typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
@@ -67,8 +67,8 @@ class CompliantAttachBuilder: public TInteractionPerformer<DataTypes>
     void clear();                             ///< release the current interaction
 
 public:
-    CompliantAttachBuilder(BaseMouseInteractor *i);
-    ~CompliantAttachBuilder();
+    CompliantAttachPerformer(BaseMouseInteractor *i);
+    ~CompliantAttachPerformer();
 
     void start();
     void execute();
@@ -77,12 +77,12 @@ public:
 
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_CompliantAttachBuilder_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_CPP)
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3fTypes>;
+extern template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachBuilder<defaulttype::Vec3dTypes>;
+extern template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
 #endif
 #endif
 
