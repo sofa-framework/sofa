@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>Compliant plugin</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
+  
 
   
   
@@ -11,8 +12,7 @@
     </script>
   
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
-</head><body>
+    </script></head><body>
 <h1 style="text-align: center;">Compliant</h1>
 
 <table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
@@ -71,7 +71,7 @@ M &amp; -J^T \\<br>
 &nbsp;J &amp; \frac{1}{l} C \end{array}\right)
       <br>
 \left( \begin{array}{c} <br>
-\delta v \\ \bar\lambda <br>
+\Delta v \\ \bar\lambda <br>
 \end{array}\right)
     = \left( \begin{array}{c} <br>
 f \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
@@ -89,7 +89,7 @@ increment, and the positions are updated according to the implicit
 scheme: \[ \begin{array}{ccc} <br>
 \left( JPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &amp;=&amp;
 -\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - J M^{-1} f \\ <br>
-\Delta v  &amp;=&amp;  P M^{-1}( f + J^T \bar\lambda ) \\
+\Delta v  &amp;=&amp; h  P M^{-1}( f + J^T \bar\lambda ) \\
                                  <br>
 \Delta x  &amp;=&amp;  h( v + \beta \Delta v )
   <br>

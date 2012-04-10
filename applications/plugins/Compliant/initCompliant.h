@@ -27,6 +27,7 @@
 
 
 #include <sofa/helper/system/config.h>
+#include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_BUILD_PLUGINEXAMPLE
 #define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
@@ -40,5 +41,12 @@
   See sofa::component::odesolver::ComplianceSolver and sofa::core::behavior::BaseCompliance for more detail.
 
   */
+
+namespace sofa
+{
+
+simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode );
+
+}
 
 #endif // INITCompliant_H

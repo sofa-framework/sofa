@@ -79,7 +79,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv dv(&vop, core::VecDerivId::dx() );
+    MultiVecDeriv acc(&vop, core::VecDerivId::dx() );
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
     MultiVecCoord nextPos(&vop, xResult );
     MultiVecDeriv nextVel(&vop, vResult );
@@ -131,8 +131,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
         this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
     }
 
-    mop.accFromF(dv, f);
-    mop.projectResponse(dv);
+    mop.accFromF(acc, f);
+    mop.projectResponse(acc);
 
 
     // Apply integration scheme
@@ -143,10 +143,10 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     ops[0].first = nextPos; // p = p + v*h + dv*h*beta
     ops[0].second.push_back(std::make_pair(pos.id(),1.0));
     ops[0].second.push_back(std::make_pair(vel.id(),dt));
-    ops[0].second.push_back(std::make_pair(  dv.id(),dt*implicitPosition.getValue()));
-    ops[1].first = nextVel; // v = v + dv
+    ops[0].second.push_back(std::make_pair(  acc.id(),dt*implicitPosition.getValue()));
+    ops[1].first = nextVel; // v = v + ha
     ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-    ops[1].second.push_back(std::make_pair(  dv.id(),1.0));
+    ops[1].second.push_back(std::make_pair(  acc.id(),dt));
     vop.v_multiop(ops);
 
     if( verbose.getValue() )
@@ -163,6 +163,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
 
 simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown(simulation::Node* node)
 {
+//    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown visit Node "<<node->getName()<<endl;
     if( pass== COMPUTE_SIZE )
     {
         // ==== independent DOFs
@@ -173,7 +174,6 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             sizeM += node->mechanicalState->getMatrixSize();
         }
 
-
         // ==== process compliances
         if( node->forceField.size()>0  && node->forceField[0]->getComplianceMatrix(mparams) )
         {
@@ -182,6 +182,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             sizeC += node->mechanicalState->getMatrixSize();
         }
         assert(node->forceField.size()<2);
+
+        // ==== register all the DOFs
+        if (node->mechanicalState != NULL)
+            localDOFs.insert(node->mechanicalState);
 
     }
     else if (pass== DO_SYSTEM_ASSEMBLY)
@@ -194,22 +198,19 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             jMap[node->mechanicalState]= shiftMatrix ;
 
             // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
-            if(node->projectiveConstraintSet.size()>0 )
+            SMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
+            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++)
             {
-                SMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
-                for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++)
+                if( const defaulttype::BaseMatrix* mat = node->projectiveConstraintSet[i]->getJ(mparams) )
                 {
-                    if( const defaulttype::BaseMatrix* mat = node->projectiveConstraintSet[i]->getJ(mparams) )
-                    {
-                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
-                        projMat = projMat * getSMatrix(mat);  // multiply with the projection matrix
-                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
-                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
-                        //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
-                    }
+                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
+                    projMat = projMat * getSMatrix(mat);  // multiply with the projection matrix
+                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
+                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
+                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
                 }
-                solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
             }
+            solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
 
             // Right-hand term
             unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
@@ -224,19 +225,22 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         // ==== mechanical mapping
         if ( node->mechanicalMapping != NULL )
         {
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             const vector<sofa::defaulttype::BaseMatrix*>* pJs = node->mechanicalMapping->getJs();
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
             MechanicalState* mtarget = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Only N-to-1 mappings are handled yet
-            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             for( unsigned i=0; i<pStates.size(); i++ )
             {
                 MechanicalState* mstate = dynamic_cast<MechanicalState*>(pStates[i]);
                 assert(mstate);
+                if( localDOFs.find(mstate)==localDOFs.end() ) // skip states which are not in the scope of the solver, such as mouse DOFs
+                    continue;
                 SMatrix J = getSMatrix( (*pJs)[i] );
                 SMatrix contribution;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
@@ -272,6 +276,8 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             SReal l = alpha * (beta * mparams->dt() + node->forceField[0]->getDampingRatio() );
             if( fabs(l)<1.0e-10 ) solver->serr << node->forceField[0]->getName() << ", l is not invertible in ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown" << solver->sendl;
             SReal invl = 1.0/l;
+            //            SMatrix complianceMatrix = getSMatrix(node->forceField[0]->getComplianceMatrix(mparams));
+            //            cerr<<"assembly, compliance " << node->forceField[0]->getName() <<", compliance matrix = " << endl << complianceMatrix << endl;
             solver->matC += SMatrix( compOffset.transpose() * getSMatrix(node->forceField[0]->getComplianceMatrix(mparams)) * compOffset ) * invl;  // assemble
 
             // Right-hand term

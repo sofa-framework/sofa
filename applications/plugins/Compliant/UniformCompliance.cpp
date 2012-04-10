@@ -6,7 +6,7 @@ namespace sofa
 {
 namespace component
 {
-namespace compliance
+namespace forcefield
 {
 
 using namespace sofa::defaulttype;

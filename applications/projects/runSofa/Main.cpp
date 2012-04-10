@@ -80,39 +80,81 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
     v_read.execute(node);
 }
 
+
+///////////////////////////////////////////////////////////
+// begin parameters
+std::string fileName ;
+bool        startAnim = false;
+bool        printFactory = false;
+bool        loadRecent = false;
+bool        temporaryFile = false;
+int			nbIterations = 0;
+std::string gui = "";
+std::string verif = "";
+#ifdef SOFA_SMP
+std::string simulationType = "smp";
+#else
+std::string simulationType = "tree";
+#endif
+std::vector<std::string> plugins;
+std::vector<std::string> files;
+#ifdef SOFA_SMP
+std::string nProcs="";
+bool        disableStealing = false;
+bool        affinity = false;
+#endif
+// end parameters
+///////////////////////////////////////////////////////////
+
+
+
+sofa::simulation::Node::SPtr createScene()
+{
+    if (fileName.empty())
+    {
+        if (loadRecent) // try to reload the latest scene
+        {
+            std::string scenes = "config/Sofa.ini";
+            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::ifstream mrulist(scenes.c_str());
+            std::getline(mrulist,fileName);
+            mrulist.close();
+        }
+        else
+            fileName = "Demos/caduceus.scn";
+
+        fileName = sofa::helper::system::DataRepository.getFile(fileName);
+    }
+
+
+
+    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)
+    {
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
+    }
+
+    if (!verif.empty())
+    {
+        loadVerificationData(verif, fileName, groot.get());
+    }
+
+    return groot;
+
+}
+
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
-
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
-    std::string fileName ;
-    bool        startAnim = false;
-    bool        printFactory = false;
-    bool        loadRecent = false;
-    bool        temporaryFile = false;
-    int			nbIterations = 0;
 
-    std::string gui = "";
-    std::string verif = "";
-#ifdef SOFA_SMP
-    std::string simulationType = "smp";
-#else
-    std::string simulationType = "tree";
-#endif
-    std::vector<std::string> plugins;
-    std::vector<std::string> files;
-#ifdef SOFA_SMP
-    std::string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
-
+    // parse command line
     std::string gui_help = "choose the UI (";
     gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
     gui_help += ")";
@@ -134,6 +176,8 @@ int main(int argc, char** argv)
 #endif
     (argc,argv);
 
+
+    // should we keed this ?
 #ifdef SOFA_SMP
     int ac = 0;
     char **av = NULL;
@@ -152,6 +196,11 @@ int main(int argc, char** argv)
 
     a1::Community com = a1::System::join_community( ac, av);
 #endif /* SOFA_SMP */
+
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // begin initialize gui and simulation
 
     if(gui!="batch") glutInit(&argc,argv);
 
@@ -191,6 +240,8 @@ int main(int argc, char** argv)
 
     sofa::helper::system::PluginManager::getInstance().init();
 
+
+
     if(gui.compare("batch") == 0 && nbIterations > 0)
     {
         std::ostringstream oss ;
@@ -202,46 +253,27 @@ int main(int argc, char** argv)
     if (int err = sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
-    if (fileName.empty())
-    {
-        if (loadRecent) // try to reload the latest scene
-        {
-            std::string scenes = "config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
-            std::ifstream mrulist(scenes.c_str());
-            std::getline(mrulist,fileName);
-            mrulist.close();
-        }
-        else
-            fileName = "Demos/caduceus.scn";
-
-        fileName = sofa::helper::system::DataRepository.getFile(fileName);
-    }
-
-
     if (int err=sofa::gui::GUIManager::createGUI(NULL))
         return err;
 
-    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-    if (groot==NULL)
-    {
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
-    }
+    // end initialize gui and simulation
+    //////////////////////////////////////////////////////////////////////////////
 
-    if (!verif.empty())
-    {
-        loadVerificationData(verif, fileName, groot.get());
-    }
+
+    //=================================================
+    // create the scene graph
+    sofa::simulation::Node::SPtr groot = createScene();
+    //=================================================
+
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // begin run the simulation
 
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
-
-
-    //=======================================
-    //Apply Options
 
     if (startAnim)
         groot->setAnimate(true);
@@ -252,63 +284,17 @@ int main(int argc, char** argv)
         sofa::helper::printFactoryLog();
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
-    printf("                               ,D   .\n");
-    printf("                             .M .,N.      \n");
-    printf("                           .?+ ...  7Z         \n");
-    printf("                           M. .Z:... ,7~            \n");
-    printf("                         .D.  . .D, .  .8..  ...,    .   \n");
-    printf("                     .. .M.... .   ?:  ..MMMN+  +MMMMM,.,  .  .\n");
-    printf("                        D. .M .      N M=. .. . ..7D   Z+7M,.,..    \n");
-    printf("                       N     .M .  . M$          ~+     .NM?7M~     \n");
-    printf("                     .M~=    ., M .N~..         .N       .M.  :=\n");
-    printf("                    .~?  :M  ..,.ZM  ..         $..      . MM..D ..\n");
-    printf("                   ..M . . .88..O:. ..O.        N IM..    .+,+  M..\n");
-    printf("                  .,NI  .  . ..M.. ..8 .        M..D.,      N M.D .\n");
-    printf("                    Z..??.  ..M...., = .        7..        .M. M?,.     \n");
-    printf("                   M.  .  ~M.N.  .?.M. .         $.         M   M .          \n");
-    printf("                   M..     ?7   .:.              =....     .8.   O:             \n");
-    printf("                  ,?.:I.  :$.   .M,8            ..M.       =..    8, .          \n");
-    printf("                  .    .MN? .    D.M.              8: . .,~.,.   . ,M   .,. .   \n");
-    printf("                   M ...,:  .    + N               . .MMMM...    .I, . .?Z  ,.  \n");
-    printf("                   M.,Z.8       .. $.                  ...      .       ZM      \n");
-    printf("         .        , M .M .   ...    .        .. .  . .              . ,M M      \n");
-    printf("         .           ,M ..   .D..+..O         ..=MM .              . .M.M..     \n");
-    printf("    . MD+8M8,. .   ..M..      D. N. ~...        O :..               .I. ~$      \n");
-    printf("    ?7    . .M?,    8           .:   Z.           .+ .             7??I...O     \n");
-    printf("    M.  . +$ ..MI .,.        . 8.,~  .             .=M.        ..=M .. .+ Z     \n");
-    printf("   ,+   .  .. 7M.,M..         .7...   7 ...            N8::.=8M~    . . =M      \n");
-    printf( "  I.    .. .  .,OM          ...M. M  .$              .    .        MMM. .      \n");
-    printf( "  N.     .. =IMZ7, .              .D  .M,..                      .I            \n");
-    printf( " .+.      .   ..? .             .   M.. .~                      ,=.            \n");
-    printf( " .?    ,MM7,, . O   ..  . DI     ~ ..D .  M.. ,              .. I              \n");
-    printf( "  .N   ..  .. 7MM?.  .M . ..    ...+..+,    M=.              .:,..             \n");
-    printf( " . M.       .  . M,+$   +M.   ...  .M...~+.,. ~M..        . .M.                \n");
-    printf( " . =:..  .  .=MO,=M....M  .O .,. .  .Z, ..$D            ..  M.                 \n");
-    printf( "   .8 .  .    .. N. .M...    M.N ,. .,..M..              ..8.                  \n");
-    printf( "    .M..    .. MM .~:  .M...M..? ,.                   ..,M=.                   \n");
-    printf( "     .O..   .N .M      Z . =  +... .                 ..+8.M..                  \n");
-    printf( "       8.      .$     ,.. ....Z  M..           .. .  M=. =:..                  \n");
-    printf( "     .  M    . .N   .7... ,  ~..: ..             8M?  M  D, .                  \n");
-    printf( "       .  MN  ..MM  .,       . $~ D ~OMMMMMMZM, . ...  .M.                     \n");
-    printf( "            ..., .D7   . .  ..M, .M. D  : .   .  M  ,8.M.,                     \n");
-    printf("                ....MM:....DN~,...:$  ..M  .M   =.. .M+.                     \n");
-    printf("                    .    ..        .M+..  .~ .., $M:  .                        \n");
-    printf("                        .. .        ... .8MMNI.   .. ..                        \n");
-    printf("                                          ..                                   \n");
 
-
-
-
-    //=======================================
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
 
+    // do we need this ?
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
+    // terminate the program
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);
-
 
     sofa::gui::GUIManager::closeGUI();
 

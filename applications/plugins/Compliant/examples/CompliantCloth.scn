@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.001" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<CompliantAttachButtonSetting button="Left" />
 <Node 	name="complianceSolverScene" >
     <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
 <!--    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="false" warm="true" maxIterations="20" precision="1e-3" />-->
@@ -13,7 +14,7 @@
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
         <ExtensionMapping  />
-        <UniformCompliance template="Vec1d" compliance="[[0.0000001]]" dampingRatio="0"  />
+        <UniformCompliance template="Vec1d" compliance="[[0.000000000001]]" dampingRatio="0.0"  />
     </Node>
 </Node>
 </Node>

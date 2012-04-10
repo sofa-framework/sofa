@@ -150,8 +150,9 @@ class SOFA_SOFAGUI_API CompliantAttachOperation : public Operation
 {
 public:
     virtual void start() ;
-    virtual void execution() {};
-    virtual void end() {};
+    virtual void execution() ;
+    virtual void end() ;
+    virtual void endOperation() ;
     static std::string getDescription() {return "CompliantAttach";}
 };
 

@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_ExtensionMapping_H
-#define SOFA_COMPONENT_MAPPING_ExtensionMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_DistanceMapping_H
+#define SOFA_COMPONENT_MAPPING_DistanceMapping_H
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include "../initFlexible.h"
@@ -45,22 +45,28 @@ namespace mapping
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class ExtensionMappingInternalData
+class DistanceMappingInternalData
 {
 public:
 };
 
 
-/** Maps point positions to spring extensions.
-  Type TOut corresponds to a scalar value.
+/** Maps point positions to distances from target points.
+    Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
-@author Francois Faure
+    In: parent point positions
+
+    Out: distance from each point to a target position, minus a rest distance.
+
+
+
+  @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  ExtensionMapping : public core::Mapping<TIn, TOut>
+class SOFA_Flexible_API  DistanceMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ExtensionMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(DistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -78,11 +84,21 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
+
+    Data< vector<unsigned> > f_indices;        ///< indices of the parent points
+    Data< InVecCoord >       f_positions;      ///< fixed positions
+    Data< vector< Real > >   f_restDistances;  ///< rest distance from each position
+
+    /// Add a target with a desired distance
+    void createTarget( unsigned index, InCoord position, Real distance);
+
+    /// Update the position of a target
+    void updateTarget( unsigned index, InCoord position);
+
+    /// Remove all targets
+    void clear();
 
 
-    Data< vector< Real > > f_restLengths;  ///< rest length of each link
 
     virtual void init();
 
@@ -102,23 +118,22 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    ExtensionMapping();
-    virtual ~ExtensionMapping();
+    DistanceMapping();
+    virtual ~DistanceMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
-    SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
+    vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
 
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_ExtensionMapping_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API ExtensionMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_RIGID_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API ExtensionMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_RIGID_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #endif
