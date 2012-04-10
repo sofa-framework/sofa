@@ -92,7 +92,8 @@ protected:
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure;
-    Data<helper::vector<unsigned int> > edgeList;
+    Data<helper::vector<unsigned int> > edgeIndices;
+    Data<helper::vector<Edge> > edges;
     Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
@@ -106,7 +107,8 @@ protected:
     EdgePressureForceField()
         : edgePressureMap(initData(&edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
         ,pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , edgeList(initData(&edgeList,"edgeList", "Indices of edges separated with commas where a pressure is applied"))
+        , edgeIndices(initData(&edgeIndices,"edgeIndices", "Indices of edges separated with commas where a pressure is applied"))
+        , edges(initData(&edges, "edges", "List of edges where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
@@ -141,7 +143,9 @@ public:
 
 protected :
     void selectEdgesAlongPlane();
+    void selectEdgesFromIndices(const helper::vector<unsigned int>& inputIndices);
     void selectEdgesFromString();
+    void selectEdgesFromEdgeList();
     void updateEdgeInformation();
     void initEdgeInformation();
     bool isPointInPlane(Coord p)

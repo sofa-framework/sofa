@@ -85,7 +85,7 @@ void EdgePressureForceField<DataTypes>::init()
     _completeTopology = NULL;
     this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
 
-    if(_completeTopology == NULL && edgeList.getValue().empty())
+    if(_completeTopology == NULL && edgeIndices.getValue().empty() && edges.getValue().empty())
     {
         serr << "ERROR(EdgePressureForceField): Either a pressure vector or a TriangleSetTopology is required." << sendl;
     }
@@ -98,9 +98,13 @@ void EdgePressureForceField<DataTypes>::init()
     {
         selectEdgesAlongPlane();
     }
-    if (edgeList.getValue().size()>0)
+    if (edgeIndices.getValue().size()>0)
     {
         selectEdgesFromString();
+    }
+    if (edges.getValue().size()>0)
+    {
+        selectEdgesFromEdgeList();
     }
 
     initEdgeInformation();
@@ -121,7 +125,7 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
         force=my_subset[i].force/2;
         f[_topology->getEdge(my_map[i])[0]]+=force;
         f[_topology->getEdge(my_map[i])[1]]+=force;
-        cout<<"EdgePressureForceField<DataTypes>::addForce, edge "<< _topology->getEdge(my_map[i]) << ", force = " << my_subset[i].force << endl;
+        //cout<<"EdgePressureForceField<DataTypes>::addForce, edge "<< _topology->getEdge(my_map[i]) << ", force = " << my_subset[i].force << endl;
     }
 
     dataF.endEdit();
@@ -166,6 +170,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
+//                Coord normal = tang.cross(binormal);
                 normal.normalize();
 
                 EdgePressureInformation ei;
@@ -173,7 +178,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
                 edgePressureMap[i] = ei;
-                std::cout << "Edge " << e << ", intensity: " << intensities[i] << " " << intensity << ", tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
+                //std::cout << "Edge " << e << ", intensity: " << intensities[i] << " " << intensity << ", tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
             }
         }
         else
@@ -325,26 +330,57 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::selectEdgesFromString()
+void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vector<unsigned int>& inputIndices)
 {
-    const helper::vector<unsigned int>& inputString = edgeList.getValue();
-    edgePressureMap.setMap2Elements(inputString);
+    edgePressureMap.setMap2Elements(inputIndices);
 
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     unsigned int sizeTest = _topology->getNbEdges();
 
-    for (unsigned int i = 0; i < inputString.size(); ++i)
+    for (unsigned int i = 0; i < inputIndices.size(); ++i)
     {
         EdgePressureInformation t;
         my_subset.push_back(t);
 
-        if (inputString[i] >= sizeTest)
-            serr << "ERROR(EdgePressureForceField): Edge indice: " << inputString[i] << " is out of edge indices bounds. This could lead to non desired behavior." <<sendl;
+        if (inputIndices[i] >= sizeTest)
+            serr << "ERROR(EdgePressureForceField): Edge indice: " << inputIndices[i] << " is out of edge indices bounds. This could lead to non desired behavior." <<sendl;
     }
     edgePressureMap.endEdit();
 
     return;
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::selectEdgesFromString()
+{
+    const helper::vector<unsigned int>& inputString = edgeIndices.getValue();
+    selectEdgesFromIndices(inputString);
+}
+
+template<class DataTypes>
+void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
+{
+    const helper::vector<Edge>& inputEdges = edges.getValue();
+    const helper::vector<Edge>& topologyEdges = _topology->getEdges();
+
+    helper::vector<unsigned int> indices(inputEdges.size());
+
+    for(unsigned int i=0; i<inputEdges.size(); i++)
+    {
+        Edge inputEdge = inputEdges[i];
+        for(unsigned int j=0; j<topologyEdges.size(); j++)
+        {
+            Edge topologyEdge = topologyEdges[j];
+            //If they are the same edge
+            if(inputEdge[0] == topologyEdge[0] && inputEdge[1] == topologyEdge[1])
+            {
+                indices[i] = j;
+            }
+        }
+    }
+
+    selectEdgesFromIndices(indices);
 }
 
 template<class DataTypes>
