@@ -50,8 +50,6 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/topology/CubeTopology.h>
 #include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/configurationsetting/CompliantAttachButtonSetting.h>
-using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -59,6 +57,8 @@ using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 
 #include <plugins/Compliant/ComplianceSolver.h>
 #include <plugins/Compliant/UniformCompliance.h>
+#include <plugins/Compliant/CompliantAttachButtonSetting.h>
+using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 #include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 

@@ -9,6 +9,7 @@ DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 SOURCES = \
     initCompliant.cpp \
+    CompliantAttachButtonSetting.cpp \
     CompliantAttachPerformer.cpp \
     UniformCompliance.cpp \
     ComplianceSolver.cpp \
@@ -16,6 +17,7 @@ SOURCES = \
 
 HEADERS = \
     initCompliant.h \
+    CompliantAttachButtonSetting.h \
     CompliantAttachPerformer.h \
     CompliantAttachPerformer.inl \
     UniformCompliance.h \

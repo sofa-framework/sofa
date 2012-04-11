@@ -28,6 +28,7 @@
 
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/OperationFactory.h>
+#include <plugins/Compliant/CompliantAttachPerformer.h>
 
 #include <iostream>
 #ifndef SOFA_QT4

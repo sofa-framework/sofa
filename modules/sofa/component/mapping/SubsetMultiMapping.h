@@ -88,7 +88,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     /// @todo implement this
-    virtual void applyJT( const helper::vector< typename In::MatrixDeriv* >& , const helper::vector< const typename Out::MatrixDeriv* >& ) {}
+    virtual void applyJT( const helper::vector< typename In::MatrixDeriv* >& , const helper::vector< const typename Out::MatrixDeriv* >& );
 
 #ifdef SOFA_HAVE_EIGEN2
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().

@@ -156,7 +156,6 @@ public:
     static std::string getDescription() {return "CompliantAttach";}
 };
 
-
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
