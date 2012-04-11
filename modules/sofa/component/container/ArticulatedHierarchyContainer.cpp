@@ -46,14 +46,14 @@ SOFA_DECL_CLASS(ArticulationCenter)
 
 // Register in the Factory
 int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
-        .add< ArticulatedHierarchyContainer::ArticulationCenter >()
+        .add< ArticulationCenter >()
         ;
 
 SOFA_DECL_CLASS(Articulation)
 
 // Register in the Factory
 int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
-        .add< ArticulatedHierarchyContainer::ArticulationCenter::Articulation >()
+        .add< Articulation >()
         ;
 
 } // namespace container

@@ -212,7 +212,7 @@ public:
     /**
     *	Stores al the articulation centers
     */
-    std::vector< container::ArticulatedHierarchyContainer::ArticulationCenter* > articulationCenters;
+    std::vector< container::ArticulationCenter* > articulationCenters;
 
     container::ArticulatedHierarchyContainer* ahc;
 private:

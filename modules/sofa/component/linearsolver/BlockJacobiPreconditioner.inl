@@ -38,7 +38,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
-#include <sofa/component/linearsolver/DiagonalMatrix.h>
 
 namespace sofa
 {

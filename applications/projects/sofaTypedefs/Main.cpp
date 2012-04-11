@@ -178,10 +178,36 @@ const std::string defaultIncludes(
 {
     ObjectFactory::Creator* creator = it_creatorlist->second;
     std::string templateName = creator->getClass()->templateName;
+
+    {
+        std::string::iterator itEnd;
+
+        itEnd = std::remove(templateName.begin(),templateName.end(),'[');
+        templateName.erase(itEnd, templateName.end());
+
+        itEnd = std::remove(templateName.begin(),templateName.end(),']');
+        templateName.erase(itEnd, templateName.end());
+    }
+
     std::replace(templateName.begin(),templateName.end(),',','_');
     std::replace(templateName.begin(),templateName.end(),' ','_');
     std::replace(templateName.begin(),templateName.end(),'<','_');
     std::replace(templateName.begin(),templateName.end(),'>','_');
+
+    // trim right underscores
+    {
+        for(int size = templateName.size(); size != 0; --size)
+        {
+            if('_' != templateName[size - 1])
+            {
+                if(templateName.size() != size)
+                    templateName.resize(size);
+
+                break;
+            }
+        }
+    }
+
     const std::type_info& type = creator->type();
 
     size_t curPos = 0;
@@ -208,6 +234,8 @@ const std::string defaultIncludes(
     {
         target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
         << " " << creator->getClass()->className << "_" << templateName << ";";
+
+        std::cout << templateName << std::endl;
     }
     else
     {
