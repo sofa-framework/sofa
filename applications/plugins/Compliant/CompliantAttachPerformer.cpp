@@ -32,6 +32,12 @@
 namespace sofa
 {
 
+//namespace gui {
+
+
+//}// gui
+
+
 namespace component
 {
 

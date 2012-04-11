@@ -31,11 +31,15 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/Node.h>
+//#include <sofa/gui/MouseOperations.h>
 
 
 namespace sofa
 {
 using defaulttype::Vec;
+
+//namespace gui {
+//}
 
 namespace component
 {
