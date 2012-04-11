@@ -52,7 +52,7 @@ void ArticulatedHierarchyBVHController::init()
     sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     if (curNode)
     {
-        curNode->getTreeObjects<ArticulatedHierarchyContainer::ArticulationCenter, ArtCenterVec >(&m_artCenterVec);
+        curNode->getTreeObjects<ArticulationCenter, ArtCenterVec >(&m_artCenterVec);
         curNode->getTreeObject(ahc);
         frame = 0;
         n=0;

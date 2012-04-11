@@ -84,7 +84,7 @@ void ArticulatedHierarchyController::init()
 
     sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     if (curNode)
-        curNode->getTreeObjects<ArticulatedHierarchyContainer::ArticulationCenter, ArtCenterVec >(&m_artCenterVec);
+        curNode->getTreeObjects<ArticulationCenter, ArtCenterVec >(&m_artCenterVec);
 
     resetControler();
 }
@@ -99,8 +99,8 @@ void ArticulatedHierarchyController::buildPropagationArticulationsChain(void)
     ArtVecIt artIt;
     ArtVecIt artItEnd;
 
-    ArticulatedHierarchyContainer::ArticulationCenter *activeArticulationCenter = NULL;
-    ArticulatedHierarchyContainer::ArticulationCenter::Articulation *activeArticulation = NULL;
+    ArticulationCenter *activeArticulationCenter = NULL;
+    Articulation *activeArticulation = NULL;
 
     for (unsigned int i=0; i<articulationsIndices.getValue().size(); i++)
     {
@@ -142,7 +142,7 @@ void ArticulatedHierarchyController::buildPropagationArticulationsChain(void)
 
 
 
-void ArticulatedHierarchyController::buildArray(std::vector< int > &artIndices, ArticulatedHierarchyContainer::ArticulationCenter::Articulation *artRef, ArticulatedHierarchyContainer::ArticulationCenter *artCenterParent)
+void ArticulatedHierarchyController::buildArray(std::vector< int > &artIndices, Articulation *artRef, ArticulationCenter *artCenterParent)
 {
     ArtCenterVecIt artCenterIt = m_artCenterVec.begin();
     ArtCenterVecIt artCenterItEnd = m_artCenterVec.end();

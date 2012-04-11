@@ -48,6 +48,10 @@ namespace mapping
 
 using sofa::simulation::Node;
 
+using container::ArticulatedHierarchyContainer;
+using container::ArticulationCenter;
+using container::Articulation;
+
 template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
     : ahc(NULL)
@@ -100,10 +104,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
         CoordinateBuf[c].x() = 0.0;
     }
 
-    using container::ArticulatedHierarchyContainer;
-
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    vector< ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    vector< ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -146,16 +148,14 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     const Data< OutVecCoord > &xtoData = *m_toModel->read(core::VecCoordId::position());
     out.resize(xtoData.getValue().size());
 
-    using container::ArticulatedHierarchyContainer;
-
     // Copy the root position if a rigid root model is present
     if (m_fromRootModel && inroot)
     {
         out[0] = (*inroot)[m_fromRootModel->getSize()-1];
     }
 
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    vector< ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    vector< ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -172,16 +172,16 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         (*ac)->globalPosition.setValue(out[parent].getCenter() +
                 out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()));
 
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aEnd = articulations.end();
+        vector< Articulation* > articulations = (*ac)->getArticulations();
+        vector< Articulation* >::const_iterator a = articulations.begin();
+        vector< Articulation* >::const_iterator aEnd = articulations.end();
 
         int process = (*ac)->articulationProcess.getValue();
 
         switch(process)
         {
         case 0: // 0-(default) articulation are treated one by one, the axis of the second articulation is updated by the potential rotation of the first articulation
-            //			   potential problems could arise when rotation exceed 90� (known problem of euler angles)
+            //			   potential problems could arise when rotation exceed 90? (known problem of euler angles)
         {
             // the position of the child is reset to its rest position (based on the postion of the articulation center)
             out[child].getOrientation() = out[parent].getOrientation();
@@ -253,7 +253,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
             // step 1: compute the new position of the articulation center and the articulation pos
             //         rq: the articulation center folows the translations
             (*ac)->globalPosition.setValue(out[parent].getCenter() + out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()) + (*ac)->DisplacementArticulationCenter);
-            vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
+            vector< Articulation* >::const_iterator a = articulations.begin();
 
             for (; a != aEnd; a++)
             {
@@ -349,8 +349,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
-    using container::ArticulatedHierarchyContainer;
-
     Data<OutVecCoord>* xtoData = m_toModel->write(core::VecCoordId::position());
     //const Data<InVecCoord>* xfromData = m_fromModel->read(core::ConstVecCoordId::position());
 
@@ -379,8 +377,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     else
         out[0] = OutDeriv();
 
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    vector< ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    vector< ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     int i = 0;
 
@@ -395,9 +393,9 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         getVCenter(out[child]) = getVCenter(out[parent]) + cross(P-C, getVOrientation(out[parent]));
         //sout<<"P:"<< P  <<"- C: "<< C;
 
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aEnd = articulations.end();
+        vector< Articulation* > articulations = (*ac)->getArticulations();
+        vector< Articulation* >::const_iterator a = articulations.begin();
+        vector< Articulation* >::const_iterator aEnd = articulations.end();
 
         for (; a != aEnd; a++)
         {
@@ -446,8 +444,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
-    using container::ArticulatedHierarchyContainer;
-
     //sout<<"\n ApplyJt";
     const OutVecCoord& xto = m_toModel->read(core::VecCoordId::position())->getValue();
 //	InVecCoord &xfrom= *m_fromModel->read(core::ConstVecCoordId::position());
@@ -461,8 +457,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     OutVecDeriv fObjects6DBuf = in;
     InVecDeriv OutBuf = out;
 
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
+    vector< ArticulationCenter* >::const_iterator ac = articulationCenters.end();
+    vector< ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
 
     int i=ArticulationAxis.size();
     while (ac != acBegin)
@@ -476,10 +472,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         Vec<3,OutReal> C = xto[child].getCenter();
         getVOrientation(fObjects6DBuf[parent]) += getVOrientation(fObjects6DBuf[child]) + cross(C-P,  getVCenter(fObjects6DBuf[child]));
 
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
+        vector< Articulation* > articulations = (*ac)->getArticulations();
 
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.end();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aBegin = articulations.begin();
+        vector< Articulation* >::const_iterator a = articulations.end();
+        vector< Articulation* >::const_iterator aBegin = articulations.begin();
 
         while (a != aBegin)
         {
@@ -531,8 +527,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
-    using container::ArticulatedHierarchyContainer;
-
     const OutVecCoord& xto = *m_toModel->getX();
 
     //std::cout << "applyJT (constraints) : \n";
@@ -569,17 +563,17 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                 const OutDeriv valueConst = colIt.val();
 
                 Vec<3,OutReal> C = xto[childIndex].getCenter();
-                vector< ArticulatedHierarchyContainer::ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
+                vector< ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
 
-                vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = ACList.begin();
-                vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = ACList.end();
+                vector< ArticulationCenter* >::const_iterator ac = ACList.begin();
+                vector< ArticulationCenter* >::const_iterator acEnd = ACList.end();
 
                 for (; ac != acEnd; ac++)
                 {
-                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
+                    vector< Articulation* > articulations = (*ac)->getArticulations();
 
-                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
-                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aEnd = articulations.end();
+                    vector< Articulation* >::const_iterator a = articulations.begin();
+                    vector< Articulation* >::const_iterator aEnd = articulations.end();
 
                     for (; a != aEnd; a++)
                     {
@@ -631,22 +625,20 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    using container::ArticulatedHierarchyContainer;
-
     if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     std::vector< Vector3 > pointsLine;
 
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    vector< ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    vector< ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
 //		int parent = (*ac)->parentIndex.getValue();
 //		int child = (*ac)->childIndex.getValue();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
-        vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aEnd = articulations.end();
+        vector< Articulation* > articulations = (*ac)->getArticulations();
+        vector< Articulation* >::const_iterator a = articulations.begin();
+        vector< Articulation* >::const_iterator aEnd = articulations.end();
         for (; a != aEnd; a++)
         {
 

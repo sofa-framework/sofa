@@ -55,6 +55,8 @@ namespace controller
 {
 
 using sofa::component::container::ArticulatedHierarchyContainer;
+using sofa::component::container::ArticulationCenter;
+using sofa::component::container::Articulation;
 
 /**
  * @brief ArticulatedHierarchyController Class.
@@ -68,9 +70,9 @@ class SOFA_USER_INTERACTION_API ArticulatedHierarchyController : public Controll
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyController,Controller);
-    typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter * > ArtCenterVec;
+    typedef std::vector< ArticulationCenter * > ArtCenterVec;
     typedef ArtCenterVec::iterator ArtCenterVecIt;
-    typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation * > ArtVec;
+    typedef std::vector< Articulation * > ArtVec;
     typedef ArtVec::iterator ArtVecIt;
 protected:
     /**
@@ -131,7 +133,7 @@ protected:
     /**
      * @brief Build the articulations indices list according to an Articulation and its ArticulationCenter.
      */
-    void buildArray(std::vector< int > &, ArticulatedHierarchyContainer::ArticulationCenter::Articulation* , ArticulatedHierarchyContainer::ArticulationCenter* );
+    void buildArray(std::vector< int > &, Articulation* , ArticulationCenter* );
 
     /**
      * @brief Set the active articulation from a Key Input.

@@ -40,7 +40,7 @@ namespace component
 namespace container
 {
 
-ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
+Articulation::Articulation():
     axis(initData(&axis, (Vector3) Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
     rotation(initData(&rotation, (bool) false, "rotation", "Rotation")),
     translation(initData(&translation, (bool) false, "translation", "Translation")),
@@ -49,7 +49,7 @@ ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
     this->addAlias(&axis, "rotationAxis");
 }
 
-ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
+ArticulationCenter::ArticulationCenter():
     parentIndex(initData(&parentIndex, "parentIndex", "Parent of the center articulation")),
     childIndex(initData(&childIndex, "childIndex", "Child of the center articulation")),
     globalPosition(initData(&globalPosition, "globalPosition", "Global position of the articulation center")),
@@ -59,7 +59,7 @@ ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
 {
 }
 
-ArticulatedHierarchyContainer::ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
+ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
 {
     vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
     vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
@@ -71,7 +71,7 @@ ArticulatedHierarchyContainer::ArticulationCenter* ArticulatedHierarchyContainer
     return (*ac);
 }
 
-vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
+vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
 {
     unsigned int i=0;
     acendantList.clear();
@@ -123,7 +123,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
     serr<<"num Frames found in BVH ="<<motion->frameCount<<sendl;
 
-    ArticulationCenter::Articulation::SPtr a;
+    Articulation::SPtr a;
 
     for (unsigned int j=0; j<channels->channels.size(); j++)
     {
@@ -132,7 +132,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
         case sofa::helper::io::bvh::BVHChannels::NOP:
             break;
         case sofa::helper::io::bvh::BVHChannels::Xposition:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(1,0,0));
@@ -143,7 +143,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Yposition:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,1,0));
@@ -154,7 +154,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Zposition:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,0,1));
@@ -165,7 +165,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Xrotation:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(1,0,0));
@@ -176,7 +176,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Yrotation:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,1,0));
@@ -187,7 +187,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Zrotation:
-            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
+            a = sofa::core::objectmodel::New<Articulation>();
             nodeOfArticulations->addObject(a);
             ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,0,1));
@@ -237,15 +237,15 @@ void ArticulatedHierarchyContainer::init ()
     else
     {
         context->getTreeObjects<ArticulationCenter>(&articulationCenters);
-        vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-        vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+        vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+        vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
         for (; ac != acEnd; ac++)
         {
             context = dynamic_cast<simulation::Node *>((*ac)->getContext());
             for (simulation::Node::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
             {
                 simulation::Node* n =  it->get();
-                n->getTreeObjects<ArticulationCenter::Articulation>(&(*ac)->articulations);
+                n->getTreeObjects<Articulation>(&(*ac)->articulations);
             }
 
             // for Arboris Mapping, init the transformation for each articulation center
