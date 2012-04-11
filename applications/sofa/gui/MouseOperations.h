@@ -146,15 +146,6 @@ public:
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
 };
 
-class SOFA_SOFAGUI_API CompliantAttachOperation : public Operation
-{
-public:
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
-    virtual void endOperation() ;
-    static std::string getDescription() {return "CompliantAttach";}
-};
 
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {

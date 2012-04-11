@@ -67,16 +67,6 @@ public:
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     /// Correspondance array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
-//	inline unsigned int computeTotalInputPoints() const
-//	{
-//                typename std::map< const core::State<In>* , IndexArray >::const_iterator iter;
-//		unsigned int total = 0;
-//		for ( iter = m_indices.begin(); iter != m_indices.end(); iter++)
-//		{
-//                        total += (*iter).second.size();
-//		}
-//		return total;
-//	};
 
     virtual void init();
 
@@ -105,17 +95,14 @@ protected :
 
     virtual ~SubsetMultiMapping() {};
 
-//        std::map<const core::State<In>*,IndexArray>  m_indices;
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
-//        vector<SparseMatrixEigen*> jacobians;               ///< Jacobian of the mapping, in a vector
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     typedef std::pair<unsigned, unsigned> IndexPair;  ///< first is the parent, second is the index in the parent
     vector<IndexPair> indexPairs;                     ///< for each child, its parent and index in parent
-//        std::map<const core::BaseState*,unsigned> jacobianSize;                    ///< number of children for each parent
 };
 
 

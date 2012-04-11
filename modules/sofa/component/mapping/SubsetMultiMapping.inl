@@ -50,39 +50,10 @@ using namespace sofa::core;
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
 {
-//    Inherit::init();
-//    unsigned int total = computeTotalInputPoints();
-//    this->toModels[0]->resize(total);
-
-//    // create the jacobians
-//    jacobians.resize( this->getFrom().size() );
-//    baseMatrices.resize( this->getFrom().size() );
-//    for(unsigned i=0; i<jacobians.size(); i++ ){
-//        baseMatrices[i] = jacobians[i] = new SparseMatrixEigen;
-//    }
-
-//    // fill the jacobians
-//    unsigned Nin = TIn::deriv_total_size, Nout = Nin, blockRow=0; // TIn = TOut necessarily for subset mappings
-//    for(typename std::map<const core::State<In>*, IndexArray>::iterator i=m_indices.begin(), iend=m_indices.end(); i!=iend; i++ )
-//    {
-//        jacobians[i].resize(total,(*i).first->getSize() * Nin );
-//        const IndexArray& indices = (*i).second;
-//        for(unsigned j=0; j<indices.size(); j++){
-//            for(unsigned k=0; k<Nin; k++ ){
-//                jacobians[i].addTriplet(Nout*blockRow+k, Nin*indices[j]+k, (SReal)1.0);
-//            }
-//            blockRow++;
-//        }
-//    }
 
     Inherit::init();
     this->toModels[0]->resize(indexPairs.size());
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
-//    typedef linearsolver::EigenSparseRectangularMatrix<TIn,TOut>    SparseMatrixEigen;
-
-    // create the jacobians
-//    jacobians.resize( this->getFrom().size() );
-//    cerr<<"SubsetMultiMapping<TIn, TOut>::init(), getFrom().size() = "<< this->getFrom().size() <<", fromModels.size() = "<<this->fromModels.size()<<endl;
 
 #ifdef SOFA_HAVE_EIGEN2
     for( unsigned i=0; i<baseMatrices.size(); i++ )
@@ -128,20 +99,6 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TO
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int index)
 {
-//    const core::State<In>* fromModel = dynamic_cast<const core::State<In>*>(from);
-//    if( !fromModel ) serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, fromModel=0 ! " << sendl;
-//    typename std::map<const core::State<In>*, IndexArray>::iterator cur  = m_indices.find(fromModel);
-
-//    if ( cur != m_indices.end() )
-//    {
-//        (*cur).second.push_back(index);
-//    }
-//    else
-//    {
-//        IndexArray ptSubset;
-//        ptSubset.push_back(index);
-//        m_indices[fromModel] = ptSubset;
-//    }
 
     // find the index of the parent state
     unsigned i;
@@ -154,7 +111,6 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
         assert(0);
     }
     indexPairs.push_back(IndexPair(i,index));
-//    jacobianSize[i]++;
 
 }
 
@@ -171,29 +127,6 @@ void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const ve
         out[i] = (*inPos[indexPairs[i].first])[indexPairs[i].second];
     }
 
-//    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
-//    core::State<Out>* output = this->toModels[0];
-//    unsigned int total = computeTotalInputPoints();
-//    output->resize(total);
-
-//    OutVecCoord* outVecCoord = outPos[0];
-//    unsigned int size = 0;
-//    for( unsigned int i = 0; i < inPos.size() ; i++)
-//    {
-//        core::State<In>* current = this->fromModels[i];
-//        const InVecCoord* currentVecCoord = inPos[i];
-//        iterMap = m_indices.find( current );
-//        if ( iterMap != m_indices.end() )
-//        {
-//            IndexArray indices = (*iterMap).second;
-//            for( unsigned int j = 0; j < indices.size() ; j++)
-//            {
-//                (*outVecCoord)[size+j] = (*currentVecCoord)[ indices[j] ];
-//            }
-//            size += indices.size();
-
-//        }
-//    }
 }
 
 
@@ -206,30 +139,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< OutVecDeriv*>& 
     {
         out[i] = (*inDeriv[indexPairs[i].first])[indexPairs[i].second];
     }
-//    core::State<Out>* output = this->toModels[0];
-//    unsigned int total = computeTotalInputPoints();
-//    output->resize(total);
-
-//    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
-//    OutVecDeriv* outVecDeriv = outDeriv[0];
-//    unsigned int size = 0;
-
-//    for( unsigned int i = 0; i < inDeriv.size() ; i++)
-//    {
-//        core::State<In>* current = this->fromModels[i];
-//        const InVecDeriv* currentVecDeriv = inDeriv[i];
-//        iterMap = m_indices.find( current );
-//        if ( iterMap != m_indices.end() )
-//        {
-//            IndexArray indices = (*iterMap).second;
-//            for( unsigned int j = 0; j < indices.size() ; j++)
-//            {
-//                (*outVecDeriv)[size+j] = (*currentVecDeriv)[ indices[j] ];
-//            }
-//            size += indices.size();
-
-//        }
-//    }
 }
 
 template <class TIn, class TOut>
@@ -244,25 +153,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<InVecDeriv*>& p
     {
         (*parentDeriv[indexPairs[i].first])[indexPairs[i].second] += cder[i];
     }
-//    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
-//    const OutVecDeriv* mappedVecDeriv = inDeriv[0];
-
-//    unsigned int size = 0;
-//    for( unsigned int i = 0; i < outDeriv.size() ; i++)
-//    {
-//        core::State<In>* current = this->fromModels[i];
-//        InVecDeriv* currentVecDeriv = outDeriv[i];
-//        iterMap = m_indices.find( current );
-//        if ( iterMap != m_indices.end() )
-//        {
-//            IndexArray indices = (*iterMap).second;
-//            for( unsigned int j = 0; j < indices.size() ; j++)
-//            {
-//                (*currentVecDeriv)[ indices[j] ] += (*mappedVecDeriv)[size + j] ;
-//            }
-//            size += indices.size();
-//        }
-//    }
 }
 
 } // namespace mapping

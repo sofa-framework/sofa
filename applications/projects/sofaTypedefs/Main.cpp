@@ -196,7 +196,7 @@ const std::string defaultIncludes(
 
     // trim right underscores
     {
-        for(int size = templateName.size(); size != 0; --size)
+        for(unsigned size = templateName.size(); size != 0; --size)
         {
             if('_' != templateName[size - 1])
             {

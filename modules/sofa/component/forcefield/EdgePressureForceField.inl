@@ -181,7 +181,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         else
             // if no pressure is provided, assume that boundary edges received pressure along their normal
         {
-            for(int i = 0; i < my_map.size() ; i++)
+            for(unsigned i = 0; i < my_map.size() ; i++)
             {
                 Edge e = _topology->getEdge(my_map[i]), f;
 

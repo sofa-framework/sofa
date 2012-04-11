@@ -28,7 +28,6 @@
 
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/OperationFactory.h>
-#include <plugins/Compliant/CompliantAttachPerformer.h>
 
 #include <iostream>
 #ifndef SOFA_QT4
@@ -56,7 +55,6 @@ SofaMouseManager::SofaMouseManager()
 
     RegisterOperation("Attach").add< QAttachOperation >();
     RegisterOperation("AddFrame").add< AddFrameOperation >();
-    RegisterOperation("CompliantAttach").add< CompliantAttachOperation >();
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< QInciseOperation  >();
     RegisterOperation("Remove").add< QTopologyOperation  >();

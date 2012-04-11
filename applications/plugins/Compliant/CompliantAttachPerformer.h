@@ -25,21 +25,32 @@
 #ifndef SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 #define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 
+#include "initCompliant.h"
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <../applications/plugins/Flexible/deformationMapping/DistanceMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/Node.h>
-//#include <sofa/gui/MouseOperations.h>
+#include <sofa/gui/MouseOperations.h>
 
 
 namespace sofa
 {
 using defaulttype::Vec;
 
-//namespace gui {
-//}
+namespace gui
+{
+class SOFA_Compliant_API CompliantAttachOperation : public Operation
+{
+public:
+    virtual void start() ;
+    virtual void execution() ;
+    virtual void end() ;
+    virtual void endOperation() ;
+    static std::string getDescription() {return "CompliantAttach";}
+};
+}
 
 namespace component
 {
@@ -53,7 +64,7 @@ struct BodyPicked;
   @author Francois Faure, 2012
   */
 template <class DataTypes>
-class CompliantAttachPerformer: public TInteractionPerformer<DataTypes>
+class SOFA_Compliant_API CompliantAttachPerformer: public TInteractionPerformer<DataTypes>
 {
     typedef typename DataTypes::Real                                  Real;
     typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
