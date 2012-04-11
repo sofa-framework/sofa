@@ -45,7 +45,7 @@
 namespace sofa
 {
 
-simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode );
+//simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode );
 
 }
 

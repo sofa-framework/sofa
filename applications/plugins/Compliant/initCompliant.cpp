@@ -23,15 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initCompliant.h"
+#include <plugins/Compliant/CompliantAttachPerformer.h>
+#include <sofa/gui/OperationFactory.h>
+#include <sofa/gui/MouseOperations.h>
 
 namespace sofa
 {
 
 
-simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode )
-{
+//simulation::Node::SPtr compliantAttachNode( simulation::Node* pickedNode, simulation::Node* mouseNode ){
 
-}
+//}
 
 
 
@@ -56,6 +58,7 @@ void initExternalModule()
     {
         first = false;
     }
+    gui::RegisterOperation("CompliantAttach").add< gui::CompliantAttachOperation >();
 }
 
 const char* getModuleName()
