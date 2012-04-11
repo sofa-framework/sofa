@@ -58,10 +58,12 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
@@ -78,7 +80,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     /// @todo implement this
-    virtual void applyJT( const helper::vector< typename In::MatrixDeriv* >& , const helper::vector< const typename Out::MatrixDeriv* >& );
+    virtual void applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& );
 
 #ifdef SOFA_HAVE_EIGEN2
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().

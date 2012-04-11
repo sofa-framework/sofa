@@ -60,6 +60,8 @@
 #include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/component/misc/ParticleSink.h>
 #include <sofa/component/misc/ParticleSource.h>
+#include <sofa/component/projectiveconstraintset/PointConstraint.h>
+#include <sofa/component/projectiveconstraintset/PositionBasedDynamicsConstraint.h>
 
 
 
@@ -182,6 +184,22 @@ typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<
 
 
 
+//---------------------------------------------------------------------------------------------
+//Typedef for PointConstraint
+typedef sofa::component::projectiveconstraintset::PointConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PointConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for PositionBasedDynamicsConstraint
+typedef sofa::component::projectiveconstraintset::PositionBasedDynamicsConstraint<sofa::defaulttype::StdRigidTypes<3, double> > PositionBasedDynamicsConstraintRigid3d;
+typedef sofa::component::projectiveconstraintset::PositionBasedDynamicsConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > PositionBasedDynamicsConstraint1d;
+typedef sofa::component::projectiveconstraintset::PositionBasedDynamicsConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > PositionBasedDynamicsConstraint2d;
+typedef sofa::component::projectiveconstraintset::PositionBasedDynamicsConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PositionBasedDynamicsConstraint3d;
+typedef sofa::component::projectiveconstraintset::PositionBasedDynamicsConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > PositionBasedDynamicsConstraint6d;
+
+
+
 
 
 #ifndef SOFA_FLOAT
@@ -234,6 +252,12 @@ typedef ParticleSink2d ParticleSink2;
 typedef ParticleSink3d ParticleSink3;
 typedef ParticleSource2d ParticleSource2;
 typedef ParticleSource3d ParticleSource3;
+typedef PointConstraint3d PointConstraint3;
+typedef PositionBasedDynamicsConstraintRigid3d PositionBasedDynamicsConstraintRigid3;
+typedef PositionBasedDynamicsConstraint1d PositionBasedDynamicsConstraint1;
+typedef PositionBasedDynamicsConstraint2d PositionBasedDynamicsConstraint2;
+typedef PositionBasedDynamicsConstraint3d PositionBasedDynamicsConstraint3;
+typedef PositionBasedDynamicsConstraint6d PositionBasedDynamicsConstraint6;
 #endif
 
 #endif

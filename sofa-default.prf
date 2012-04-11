@@ -328,72 +328,36 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Plugins
 ########################################################################
 
+# Uncomment the following to include more plugins
+
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-# Uncomment if you want to use the plugin VulcainInSofa. 
-# Note that it is not bundled with SOFA and must be installed in
-# Sofa/applications/plugins.
-# DEFINES += SOFA_HAVE_VULCAIN
-
-# Uncomment if you want to use the plugin TriangularMeshRefiner. 
+# DEFINES += SOFA_HAVE_VULCAIN                         # This is not bundled with SOFA and must be installed in Sofa/applications/plugins
 # DEFINES += SOFA_HAVE_TRIANGULARMESHREFINER
-
-# Uncomment if you want to use the plugin BeamAdapter. 
 # DEFINES += SOFA_HAVE_BEAMADAPTER
-
-# Uncomment if you want to use the plugin Shell. 
 # DEFINES += SOFA_HAVE_SHELL
-
-# Uncomment if you want to use the plugin TriangularMeshBasedHexasCutter.
-# Note that you must define SOFA_GPU_CUDA to use this plugin.
-# DEFINES += SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER
-
-# Uncomment if you want to use the plugin VoxelLoaderByRasterization.
-# Note that you must define SOFA_GPU_CUDA to use this plugin.
-# DEFINES += SOFA_HAVE_VOXELIZER
-
-# Uncomment if you want to use the plugin Physical Field Modeling 
-# (reaction-diffusion propagation). 
-# DEFINES += SOFA_HAVE_PHYSICALFIELDMODELING
-
-# Uncomment if you want to use the plugin Frame
-# DEFINES += SOFA_HAVE_FRAME
-
-# Uncomment if you want to use the plugin Image
+# DEFINES += SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER  # Note that you must define SOFA_GPU_CUDA to use this plugin.
+# DEFINES += SOFA_HAVE_VOXELIZER                       # Note that you must define SOFA_GPU_CUDA to use this plugin.
+# DEFINES += SOFA_HAVE_PHYSICALFIELDMODELING           # (reaction-diffusion propagation).
+# DEFINES += SOFA_HAVE_FRAME                           # Frame-based meshless simulation of deformable solids
 # DEFINES += SOFA_HAVE_IMAGE
-# Uncomment if you want to use kinect in Image plugin
 # DEFINES += SOFA_HAVE_LIBFREENECT
-# SOFA_LIBFREENECT_PATH = /usr/include
-
-# Uncomment if you want to use the plugin Registration
+   # SOFA_LIBFREENECT_PATH = /usr/include
 # DEFINES += SOFA_HAVE_REGISTRATION
-
-# Uncomment if you want to use the plugin MeshSTEPLoader
-# Note that you must define SOFA_HAVE_OPENCASCADE to use this plugin.
-# DEFINES += SOFA_HAVE_STEPLOADER
-
-# Uncomment if you want to use the plugin PersistentContact
+# DEFINES += SOFA_HAVE_STEPLOADER                      # Note that you must define SOFA_HAVE_OPENCASCADE to use this plugin.
 # DEFINES += SOFA_HAVE_PERSISTENTCONTACT
-
-# Uncomment if you want to use the plugin SoHuSim
 # DEFINES += SOFA_HAVE_SOHUSIM
-
-# Uncomment if you want to use the plugin Sofa-Asclepios
 # DEFINES += SOFA_HAVE_ASCLEPIOS
-
-# Uncomment if you want to use Manifold topologies in Sofa
 # DEFINES += SOFA_HAVE_MANIFOLDTOPOLOGIES
-
 } # END SOFA_DEV
-
-# Uncomment if you want to use the QtOgreViewer
-win32{ 
-# OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk 
-}
 # DEFINES += SOFA_HAVE_QTOGREVIEWER
-
-# Uncomment if you want to use the plugin FEM
+win32{
+  # OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk
+}
 # DEFINES += SOFA_HAVE_PLUGIN_FEM
+# DEFINES += SOFA_HAVE_PLUGIN_Flexible   # Experimental unification of FEM and meshless deformable solids
+# DEFINES += SOFA_HAVE_PLUGIN_Compliant  # Alternative formulation of the dynamics. Requires the Flexible plugin.
+
 
 ########################################################################
 # Compiler options

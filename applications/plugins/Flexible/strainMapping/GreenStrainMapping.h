@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_H
 
-#include "initFlexible.h"
+#include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Mat.h>

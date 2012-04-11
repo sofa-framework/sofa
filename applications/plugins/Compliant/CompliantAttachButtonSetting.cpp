@@ -43,6 +43,7 @@ int CompliantAttachButtonSettingClass = core::RegisterObject("CompliantAttach (C
         ;
 
 CompliantAttachButtonSetting::CompliantAttachButtonSetting()
+    : compliance(initData(&compliance, (SReal)0., "compliance", "Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense."))
 {
 }
 

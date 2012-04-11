@@ -25,13 +25,13 @@
 #ifndef SOFA_HookeFORCEFIELD_H
 #define SOFA_HookeFORCEFIELD_H
 
-#include "initFlexible.h"
+#include "../initFlexible.h"
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include "HookeMaterialBlock.inl"
-#include "quadrature/BaseGaussPointSampler.h"
+#include "../quadrature/BaseGaussPointSampler.h"
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 

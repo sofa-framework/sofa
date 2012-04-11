@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
 
-#include "initFlexible.h"
+#include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include "shapeFunction/BaseShapeFunction.h"
+#include "../shapeFunction/BaseShapeFunction.h"
 #include "LinearJacobianBlock.h"
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>

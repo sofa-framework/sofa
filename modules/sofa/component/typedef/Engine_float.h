@@ -48,7 +48,9 @@
 
 #include <sofa/component/engine/AverageCoord.h>
 #include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/ClusteringEngine.h>
 #include <sofa/component/engine/Distances.h>
+#include <sofa/component/engine/ExtrudeEdgesAndGenerateQuads.h>
 #include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
 #include <sofa/component/engine/GenerateRigidMass.h>
@@ -58,12 +60,15 @@
 #include <sofa/component/engine/MergeMeshes.h>
 #include <sofa/component/engine/MergePoints.h>
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
+#include <sofa/component/engine/MeshROI.h>
 #include <sofa/component/engine/NormalsFromPoints.h>
 #include <sofa/component/engine/PlaneROI.h>
 #include <sofa/component/engine/PointsFromIndices.h>
+#include <sofa/component/engine/ProximityROI.h>
 #include <sofa/component/engine/QuatToRigidEngine.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
 #include <sofa/component/engine/RigidToQuatEngine.h>
+#include <sofa/component/engine/ShapeMatching.h>
 #include <sofa/component/engine/SphereROI.h>
 #include <sofa/component/engine/Spiral.h>
 #include <sofa/component/engine/SubsetTopology.h>
@@ -89,12 +94,25 @@ typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, float> > BoxROIRigid3f;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxROI3f;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > BoxROI6f;
+typedef sofa::component::engine::BoxROI<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxROICuda3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ClusteringEngine
+typedef sofa::component::engine::ClusteringEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ClusteringEngine3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Distances
 typedef sofa::component::engine::Distances<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Distances3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ExtrudeEdgesAndGenerateQuads
+typedef sofa::component::engine::ExtrudeEdgesAndGenerateQuads<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExtrudeEdgesAndGenerateQuads3f;
 
 
 
@@ -125,6 +143,7 @@ typedef sofa::component::engine::GroupFilterYoungModulus<sofa::defaulttype::StdV
 //---------------------------------------------------------------------------------------------
 //Typedef for IndexValueMapper
 typedef sofa::component::engine::IndexValueMapper<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IndexValueMapper3f;
+typedef sofa::component::engine::IndexValueMapper<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IndexValueMapperCuda3f;
 
 
 
@@ -161,6 +180,14 @@ typedef sofa::component::engine::MeshBarycentricMapperEngine<sofa::defaulttype::
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for MeshROI
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdRigidTypes<3, float> > MeshROIRigid3f;
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MeshROI3f;
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MeshROI6f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for NormalsFromPoints
 typedef sofa::component::engine::NormalsFromPoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > NormalsFromPoints3f;
 
@@ -176,6 +203,12 @@ typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa
 //---------------------------------------------------------------------------------------------
 //Typedef for PointsFromIndices
 typedef sofa::component::engine::PointsFromIndices<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointsFromIndices3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ProximityROI
+typedef sofa::component::engine::ProximityROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ProximityROI3f;
 
 
 
@@ -198,8 +231,16 @@ typedef sofa::component::engine::RigidToQuatEngine<sofa::defaulttype::StdVectorT
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ShapeMatching
+typedef sofa::component::engine::ShapeMatching<sofa::defaulttype::StdRigidTypes<3, float> > ShapeMatchingRigid3f;
+typedef sofa::component::engine::ShapeMatching<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ShapeMatching3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for SphereROI
 typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SphereROI3f;
+typedef sofa::component::engine::SphereROI<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SphereROICuda3f;
 
 
 
@@ -264,12 +305,16 @@ typedef AverageCoord3f AverageCoord3;
 typedef BoxROIRigid3f BoxROIRigid3;
 typedef BoxROI3f BoxROI3;
 typedef BoxROI6f BoxROI6;
+typedef BoxROICuda3f BoxROICuda3;
+typedef ClusteringEngine3f ClusteringEngine3;
 typedef Distances3f Distances3;
+typedef ExtrudeEdgesAndGenerateQuads3f ExtrudeEdgesAndGenerateQuads3;
 typedef ExtrudeQuadsAndGenerateHexas3f ExtrudeQuadsAndGenerateHexas3;
 typedef ExtrudeSurface3f ExtrudeSurface3;
 typedef GenerateRigidMassRigid3f GenerateRigidMassRigid3;
 typedef GroupFilterYoungModulus3f GroupFilterYoungModulus3;
 typedef IndexValueMapper3f IndexValueMapper3;
+typedef IndexValueMapperCuda3f IndexValueMapperCuda3;
 typedef JoinPoints3f JoinPoints3;
 typedef MergeMeshesRigid2f MergeMeshesRigid2;
 typedef MergeMeshesRigid3f MergeMeshesRigid3;
@@ -282,14 +327,21 @@ typedef MergePoints1f MergePoints1;
 typedef MergePoints2f MergePoints2;
 typedef MergePoints3f MergePoints3;
 typedef MeshBarycentricMapperEngine3f MeshBarycentricMapperEngine3;
+typedef MeshROIRigid3f MeshROIRigid3;
+typedef MeshROI3f MeshROI3;
+typedef MeshROI6f MeshROI6;
 typedef NormalsFromPoints3f NormalsFromPoints3;
 typedef PlaneROIRigid3f PlaneROIRigid3;
 typedef PlaneROI3f PlaneROI3;
 typedef PointsFromIndices3f PointsFromIndices3;
+typedef ProximityROI3f ProximityROI3;
 typedef QuatToRigidEngine3f QuatToRigidEngine3;
 typedef RandomPointDistributionInSurface3f RandomPointDistributionInSurface3;
 typedef RigidToQuatEngine3f RigidToQuatEngine3;
+typedef ShapeMatchingRigid3f ShapeMatchingRigid3;
+typedef ShapeMatching3f ShapeMatching3;
 typedef SphereROI3f SphereROI3;
+typedef SphereROICuda3f SphereROICuda3;
 typedef Spiral3f Spiral3;
 typedef SubsetTopologyRigid3f SubsetTopologyRigid3;
 typedef SubsetTopology3f SubsetTopology3;
