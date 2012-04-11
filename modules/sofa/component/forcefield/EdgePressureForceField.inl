@@ -125,7 +125,6 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
         force=my_subset[i].force/2;
         f[_topology->getEdge(my_map[i])[0]]+=force;
         f[_topology->getEdge(my_map[i])[1]]+=force;
-        //cout<<"EdgePressureForceField<DataTypes>::addForce, edge "<< _topology->getEdge(my_map[i]) << ", force = " << my_subset[i].force << endl;
     }
 
     dataF.endEdit();
@@ -146,6 +145,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
     const sofa::helper::vector <unsigned int>& my_map = edgePressureMap.getMap2Elements();
+
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     if(pressure.getValue().norm() > 0 )
@@ -163,14 +163,12 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         {
             Coord binormal = p_binormal.getValue();
             binormal.normalize();
-            for(int i = 0; i < _topology->getNbEdges() ; i++)
+            for(unsigned int i = 0; i < my_map.size() ; i++)
             {
-                Edge e = _topology->getEdge(i);
-//                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
+                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
-//                Coord normal = tang.cross(binormal);
                 normal.normalize();
 
                 EdgePressureInformation ei;
@@ -178,15 +176,14 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
                 edgePressureMap[i] = ei;
-                //std::cout << "Edge " << e << ", intensity: " << intensities[i] << " " << intensity << ", tang= " << tang << ", binormal=" << binormal << ", normal = " << normal <<", edge force = " << ei.force << std::endl;
             }
         }
         else
             // if no pressure is provided, assume that boundary edges received pressure along their normal
         {
-            for(int i = 0; i < _topology->getNbEdges() ; i++)
+            for(int i = 0; i < my_map.size() ; i++)
             {
-                Edge e = _topology->getEdge(i), f;
+                Edge e = _topology->getEdge(my_map[i]), f;
 
                 Vec3d tang, n1, n2;
                 n2 = Vec3d(0,0,1);
@@ -212,7 +209,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 }
 
                 TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
-                //std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
 
                 if(t_a_E.size() == 1) // 2D cases
                 {
