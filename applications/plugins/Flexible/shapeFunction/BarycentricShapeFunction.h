@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_BarycentricShapeFunction_H
 #define FLEXIBLE_BarycentricShapeFunction_H
 
-#include "initFlexible.h"
+#include "../initFlexible.h"
 #include "BaseShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 

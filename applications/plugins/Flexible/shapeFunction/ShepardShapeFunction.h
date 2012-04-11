@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_ShepardShapeFunction_H
 #define FLEXIBLE_ShepardShapeFunction_H
 
-#include "initFlexible.h"
+#include "../initFlexible.h"
 #include "BaseShapeFunction.h"
 #include <limits>
 

@@ -87,6 +87,8 @@ typedef sofa::component::misc::EvalSurfaceDistance<sofa::defaulttype::StdVectorT
 typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdRigidTypes<3, float> > ExtraMonitorRigid3f;
 typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExtraMonitor3f;
 typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > ExtraMonitor6f;
+typedef sofa::component::misc::ExtraMonitor<sofa::gpu::cuda::CudaRigidTypes<3, float> > ExtraMonitorCudaRigid3f;
+typedef sofa::component::misc::ExtraMonitor<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > ExtraMonitorCuda6f;
 
 
 
@@ -98,6 +100,10 @@ typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTyp
 typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MappedObject2f;
 typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MappedObject3f;
 typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MappedObject6f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaRigidTypes<3, float> > MappedObjectCudaRigid3f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MappedObjectCuda2f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MappedObjectCuda3f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MappedObjectCuda6f;
 
 
 
@@ -126,12 +132,18 @@ typedef EvalSurfaceDistance3f EvalSurfaceDistance3;
 typedef ExtraMonitorRigid3f ExtraMonitorRigid3;
 typedef ExtraMonitor3f ExtraMonitor3;
 typedef ExtraMonitor6f ExtraMonitor6;
+typedef ExtraMonitorCudaRigid3f ExtraMonitorCudaRigid3;
+typedef ExtraMonitorCuda6f ExtraMonitorCuda6;
 typedef MappedObjectRigid2f MappedObjectRigid2;
 typedef MappedObjectRigid3f MappedObjectRigid3;
 typedef MappedObject1f MappedObject1;
 typedef MappedObject2f MappedObject2;
 typedef MappedObject3f MappedObject3;
 typedef MappedObject6f MappedObject6;
+typedef MappedObjectCudaRigid3f MappedObjectCudaRigid3;
+typedef MappedObjectCuda2f MappedObjectCuda2;
+typedef MappedObjectCuda3f MappedObjectCuda3;
+typedef MappedObjectCuda6f MappedObjectCuda6;
 typedef MonitorRigid3f MonitorRigid3;
 typedef Monitor3f Monitor3;
 typedef Monitor6f Monitor6;

@@ -85,6 +85,10 @@ typedef sofa::component::mapping::ArticulatedSystemMapping<sofa::defaulttype::St
 typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMapping3f_to_Ext3f;
 typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMapping3f_to_3f;
 typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdRigidTypes<3, float> > BarycentricMapping3f_to_Rigid3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMappingCuda3f_to_Cuda3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMappingCuda3f_to_Ext3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMappingCuda3f_to_3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMapping3f_to_Cuda3f;
 
 
 
@@ -92,6 +96,7 @@ typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVecto
 //Typedef for BeamLinearMapping
 typedef sofa::component::mapping::BeamLinearMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamLinearMappingRigid3f_to_Ext3f;
 typedef sofa::component::mapping::BeamLinearMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamLinearMappingRigid3f_to_3f;
+typedef sofa::component::mapping::BeamLinearMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamLinearMappingRigid3f_to_Cuda3f;
 
 
 
@@ -157,6 +162,10 @@ typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTy
 typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMapping3f_to_Ext3f;
 typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMapping3f_to_3f;
 typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > IdentityMapping6f_to_6f;
+typedef sofa::component::mapping::IdentityMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMappingCuda3f_to_Cuda3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMappingCuda3f_to_Ext3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMappingCuda3f_to_3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMapping3f_to_Cuda3f;
 
 
 
@@ -185,6 +194,8 @@ typedef sofa::component::mapping::Mesh2PointMechanicalMapping<sofa::defaulttype:
 typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > RigidMappingRigid2f_to_2f;
 typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingRigid3f_to_Ext3f;
 typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingRigid3f_to_3f;
+typedef sofa::component::mapping::RigidMapping<sofa::gpu::cuda::CudaRigidTypes<3, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingCudaRigid3f_to_Cuda3f;
+typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingRigid3f_to_Cuda3f;
 
 
 
@@ -221,6 +232,9 @@ typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdRigidTypes
 typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > SubsetMapping1f_to_1f;
 typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMapping3f_to_Ext3f;
 typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMapping3f_to_3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMappingCuda3f_to_Cuda3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMappingCuda3f_to_Ext3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMappingCuda3f_to_3f;
 
 
 
@@ -244,8 +258,13 @@ typedef ArticulatedSystemMapping1f_Rigid3f_to_Rigid3f ArticulatedSystemMapping1_
 typedef BarycentricMapping3f_to_Ext3f BarycentricMapping3_to_Ext3;
 typedef BarycentricMapping3f_to_3f BarycentricMapping3_to_3;
 typedef BarycentricMapping3f_to_Rigid3f BarycentricMapping3_to_Rigid3;
+typedef BarycentricMappingCuda3f_to_Cuda3f BarycentricMappingCuda3_to_Cuda3;
+typedef BarycentricMappingCuda3f_to_Ext3f BarycentricMappingCuda3_to_Ext3;
+typedef BarycentricMappingCuda3f_to_3f BarycentricMappingCuda3_to_3;
+typedef BarycentricMapping3f_to_Cuda3f BarycentricMapping3_to_Cuda3;
 typedef BeamLinearMappingRigid3f_to_Ext3f BeamLinearMappingRigid3_to_Ext3;
 typedef BeamLinearMappingRigid3f_to_3f BeamLinearMappingRigid3_to_3;
+typedef BeamLinearMappingRigid3f_to_Cuda3f BeamLinearMappingRigid3_to_Cuda3;
 typedef CenterOfMassMappingRigid2f_to_2f CenterOfMassMappingRigid2_to_2;
 typedef CenterOfMassMappingRigid3f_to_Ext3f CenterOfMassMappingRigid3_to_Ext3;
 typedef CenterOfMassMappingRigid3f_to_3f CenterOfMassMappingRigid3_to_3;
@@ -271,6 +290,10 @@ typedef IdentityMapping2f_to_2f IdentityMapping2_to_2;
 typedef IdentityMapping3f_to_Ext3f IdentityMapping3_to_Ext3;
 typedef IdentityMapping3f_to_3f IdentityMapping3_to_3;
 typedef IdentityMapping6f_to_6f IdentityMapping6_to_6;
+typedef IdentityMappingCuda3f_to_Cuda3f IdentityMappingCuda3_to_Cuda3;
+typedef IdentityMappingCuda3f_to_Ext3f IdentityMappingCuda3_to_Ext3;
+typedef IdentityMappingCuda3f_to_3f IdentityMappingCuda3_to_3;
+typedef IdentityMapping3f_to_Cuda3f IdentityMapping3_to_Cuda3;
 typedef ImplicitSurfaceMapping3f_to_Ext3f ImplicitSurfaceMapping3_to_Ext3;
 typedef ImplicitSurfaceMapping3f_to_3f ImplicitSurfaceMapping3_to_3;
 typedef LineSetSkinningMappingRigid3f_to_3f LineSetSkinningMappingRigid3_to_3;
@@ -279,6 +302,8 @@ typedef Mesh2PointMechanicalMapping3f_to_3f Mesh2PointMechanicalMapping3_to_3;
 typedef RigidMappingRigid2f_to_2f RigidMappingRigid2_to_2;
 typedef RigidMappingRigid3f_to_Ext3f RigidMappingRigid3_to_Ext3;
 typedef RigidMappingRigid3f_to_3f RigidMappingRigid3_to_3;
+typedef RigidMappingCudaRigid3f_to_Cuda3f RigidMappingCudaRigid3_to_Cuda3;
+typedef RigidMappingRigid3f_to_Cuda3f RigidMappingRigid3_to_Cuda3;
 typedef RigidRigidMappingRigid3f_to_Rigid3f RigidRigidMappingRigid3_to_Rigid3;
 typedef SPHFluidSurfaceMapping3f_to_Ext3f SPHFluidSurfaceMapping3_to_Ext3;
 typedef SPHFluidSurfaceMapping3f_to_3f SPHFluidSurfaceMapping3_to_3;
@@ -290,6 +315,9 @@ typedef SubsetMappingRigid3f_to_Rigid3f SubsetMappingRigid3_to_Rigid3;
 typedef SubsetMapping1f_to_1f SubsetMapping1_to_1;
 typedef SubsetMapping3f_to_Ext3f SubsetMapping3_to_Ext3;
 typedef SubsetMapping3f_to_3f SubsetMapping3_to_3;
+typedef SubsetMappingCuda3f_to_Cuda3f SubsetMappingCuda3_to_Cuda3;
+typedef SubsetMappingCuda3f_to_Ext3f SubsetMappingCuda3_to_Ext3;
+typedef SubsetMappingCuda3f_to_3f SubsetMappingCuda3_to_3;
 typedef SubsetMultiMapping3f_to_3f SubsetMultiMapping3_to_3;
 typedef TubularMappingRigid3f_to_Ext3f TubularMappingRigid3_to_Ext3;
 typedef TubularMappingRigid3f_to_3f TubularMappingRigid3_to_3;

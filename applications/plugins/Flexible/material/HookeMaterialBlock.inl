@@ -28,7 +28,7 @@
 #include "HookeMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include "StrainTypes.h"
+#include "../StrainTypes.h"
 
 namespace sofa
 {

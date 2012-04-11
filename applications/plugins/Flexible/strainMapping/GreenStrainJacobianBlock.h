@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_GreenStrainJacobianBlock_H
 #define FLEXIBLE_GreenStrainJacobianBlock_H
 
-#include "BaseJacobian.h"
+#include "../BaseJacobian.h"
 
 namespace sofa
 {

@@ -46,11 +46,21 @@
 #endif
 
 
+#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
 #include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMContactConstraint.h>
 #include <sofa/component/constraintset/FixedLMConstraint.h>
+#include <sofa/component/constraintset/SlidingConstraint.h>
+#include <sofa/component/constraintset/StopperConstraint.h>
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for BilateralInteractionConstraint
+typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdRigidTypes<3, double> > BilateralInteractionConstraintRigid3d;
+typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BilateralInteractionConstraint3d;
 
 
 
@@ -82,6 +92,18 @@ typedef sofa::component::constraintset::FixedLMConstraint<sofa::defaulttype::Std
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for SlidingConstraint
+typedef sofa::component::constraintset::SlidingConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SlidingConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for StopperConstraint
+typedef sofa::component::constraintset::StopperConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > StopperConstraint1d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for UnilateralInteractionConstraint
 typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > UnilateralInteractionConstraint3d;
 
@@ -90,6 +112,8 @@ typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::de
 
 
 #ifndef SOFA_FLOAT
+typedef BilateralInteractionConstraintRigid3d BilateralInteractionConstraintRigid3;
+typedef BilateralInteractionConstraint3d BilateralInteractionConstraint3;
 typedef DOFBlockerLMConstraintRigid3d DOFBlockerLMConstraintRigid3;
 typedef DOFBlockerLMConstraint3d DOFBlockerLMConstraint3;
 typedef DistanceLMConstraintRigid3d DistanceLMConstraintRigid3;
@@ -97,6 +121,8 @@ typedef DistanceLMConstraint3d DistanceLMConstraint3;
 typedef DistanceLMContactConstraint3d DistanceLMContactConstraint3;
 typedef FixedLMConstraintRigid3d FixedLMConstraintRigid3;
 typedef FixedLMConstraint3d FixedLMConstraint3;
+typedef SlidingConstraint3d SlidingConstraint3;
+typedef StopperConstraint1d StopperConstraint1;
 typedef UnilateralInteractionConstraint3d UnilateralInteractionConstraint3;
 #endif
 

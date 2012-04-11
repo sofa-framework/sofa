@@ -142,7 +142,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< OutVecDeriv*>& 
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector< typename TIn::MatrixDeriv* >& , const helper::vector< const typename TOut::MatrixDeriv* >& ) {}
+void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& ) {}
 
 
 template <class TIn, class TOut>

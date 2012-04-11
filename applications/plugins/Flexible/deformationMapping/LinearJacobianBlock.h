@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_LinearJacobianBlock_H
 #define FLEXIBLE_LinearJacobianBlock_H
 
-#include "BaseJacobian.h"
+#include "../BaseJacobian.h"
 
 namespace sofa
 {

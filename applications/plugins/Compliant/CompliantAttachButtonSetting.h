@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 
+#include "initCompliant.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/configurationsetting/MouseButtonSetting.h>
 #include <sofa/component/component.h>
@@ -38,7 +39,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_GRAPH_COMPONENT_API CompliantAttachButtonSetting: public MouseButtonSetting
+class SOFA_Compliant_API CompliantAttachButtonSetting: public MouseButtonSetting
 {
 public:
     SOFA_CLASS(CompliantAttachButtonSetting,MouseButtonSetting);
@@ -46,6 +47,7 @@ protected:
     CompliantAttachButtonSetting();
 public:
     std::string getOperationType() {return  "CompliantAttach";}
+    Data<SReal> compliance;
 };
 
 }

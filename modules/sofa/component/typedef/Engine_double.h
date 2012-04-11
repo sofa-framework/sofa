@@ -48,8 +48,10 @@
 
 #include <sofa/component/engine/AverageCoord.h>
 #include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/ClusteringEngine.h>
 #include <sofa/component/engine/DilateEngine.h>
 #include <sofa/component/engine/Distances.h>
+#include <sofa/component/engine/ExtrudeEdgesAndGenerateQuads.h>
 #include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
 #include <sofa/component/engine/GenerateRigidMass.h>
@@ -59,12 +61,15 @@
 #include <sofa/component/engine/MergeMeshes.h>
 #include <sofa/component/engine/MergePoints.h>
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
+#include <sofa/component/engine/MeshROI.h>
 #include <sofa/component/engine/NormalsFromPoints.h>
 #include <sofa/component/engine/PlaneROI.h>
 #include <sofa/component/engine/PointsFromIndices.h>
+#include <sofa/component/engine/ProximityROI.h>
 #include <sofa/component/engine/QuatToRigidEngine.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
 #include <sofa/component/engine/RigidToQuatEngine.h>
+#include <sofa/component/engine/ShapeMatching.h>
 #include <sofa/component/engine/SphereROI.h>
 #include <sofa/component/engine/Spiral.h>
 #include <sofa/component/engine/SubsetTopology.h>
@@ -94,6 +99,12 @@ typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ClusteringEngine
+typedef sofa::component::engine::ClusteringEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ClusteringEngine3d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for DilateEngine
 typedef sofa::component::engine::DilateEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DilateEngine3d;
 
@@ -102,6 +113,12 @@ typedef sofa::component::engine::DilateEngine<sofa::defaulttype::StdVectorTypes<
 //---------------------------------------------------------------------------------------------
 //Typedef for Distances
 typedef sofa::component::engine::Distances<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > Distances3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ExtrudeEdgesAndGenerateQuads
+typedef sofa::component::engine::ExtrudeEdgesAndGenerateQuads<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ExtrudeEdgesAndGenerateQuads3d;
 
 
 
@@ -168,6 +185,14 @@ typedef sofa::component::engine::MeshBarycentricMapperEngine<sofa::defaulttype::
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for MeshROI
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdRigidTypes<3, double> > MeshROIRigid3d;
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MeshROI3d;
+typedef sofa::component::engine::MeshROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > MeshROI6d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for NormalsFromPoints
 typedef sofa::component::engine::NormalsFromPoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > NormalsFromPoints3d;
 
@@ -187,6 +212,12 @@ typedef sofa::component::engine::PointsFromIndices<sofa::defaulttype::StdVectorT
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ProximityROI
+typedef sofa::component::engine::ProximityROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ProximityROI3d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for QuatToRigidEngine
 typedef sofa::component::engine::QuatToRigidEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > QuatToRigidEngine3d;
 
@@ -201,6 +232,13 @@ typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaultt
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidToQuatEngine
 typedef sofa::component::engine::RigidToQuatEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RigidToQuatEngine3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ShapeMatching
+typedef sofa::component::engine::ShapeMatching<sofa::defaulttype::StdRigidTypes<3, double> > ShapeMatchingRigid3d;
+typedef sofa::component::engine::ShapeMatching<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ShapeMatching3d;
 
 
 
@@ -270,8 +308,10 @@ typedef AverageCoord3d AverageCoord3;
 typedef BoxROIRigid3d BoxROIRigid3;
 typedef BoxROI3d BoxROI3;
 typedef BoxROI6d BoxROI6;
+typedef ClusteringEngine3d ClusteringEngine3;
 typedef DilateEngine3d DilateEngine3;
 typedef Distances3d Distances3;
+typedef ExtrudeEdgesAndGenerateQuads3d ExtrudeEdgesAndGenerateQuads3;
 typedef ExtrudeQuadsAndGenerateHexas3d ExtrudeQuadsAndGenerateHexas3;
 typedef ExtrudeSurface3d ExtrudeSurface3;
 typedef GenerateRigidMassRigid3d GenerateRigidMassRigid3;
@@ -289,13 +329,19 @@ typedef MergePoints1d MergePoints1;
 typedef MergePoints2d MergePoints2;
 typedef MergePoints3d MergePoints3;
 typedef MeshBarycentricMapperEngine3d MeshBarycentricMapperEngine3;
+typedef MeshROIRigid3d MeshROIRigid3;
+typedef MeshROI3d MeshROI3;
+typedef MeshROI6d MeshROI6;
 typedef NormalsFromPoints3d NormalsFromPoints3;
 typedef PlaneROIRigid3d PlaneROIRigid3;
 typedef PlaneROI3d PlaneROI3;
 typedef PointsFromIndices3d PointsFromIndices3;
+typedef ProximityROI3d ProximityROI3;
 typedef QuatToRigidEngine3d QuatToRigidEngine3;
 typedef RandomPointDistributionInSurface3d RandomPointDistributionInSurface3;
 typedef RigidToQuatEngine3d RigidToQuatEngine3;
+typedef ShapeMatchingRigid3d ShapeMatchingRigid3;
+typedef ShapeMatching3d ShapeMatching3;
 typedef SphereROI3d SphereROI3;
 typedef Spiral3d Spiral3;
 typedef SubsetTopologyRigid3d SubsetTopologyRigid3;
