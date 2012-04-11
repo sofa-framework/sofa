@@ -393,7 +393,7 @@ void VTKExporter::writeVTKSimple()
         for (int i=0 ; i<nbp ; i++)
         {
             *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
-//		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+            //		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
         }
     }
 
@@ -557,7 +557,14 @@ void VTKExporter::writeVTKXML()
     //write points
     *outfile << "      <Points>" << std::endl;
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
-    if (mstate && mstate->getSize() == nbp)
+    if (!pointsPos.empty())
+    {
+        for (int i = 0 ; i < nbp; i++)
+        {
+            *outfile << "\t" << pointsPos[i] << std::endl;
+        }
+    }
+    else if (mstate && mstate->getSize() == nbp)
     {
         for (int i = 0; i < mstate->getSize(); i++)
             *outfile << "          " << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
@@ -569,6 +576,7 @@ void VTKExporter::writeVTKXML()
     }
     *outfile << "        </DataArray>" << std::endl;
     *outfile << "      </Points>" << std::endl;
+
     //write cells
     *outfile << "      <Cells>" << std::endl;
     //write connectivity
