@@ -104,8 +104,8 @@ protected:
     typedef ::minres<SReal> minres;
 
     // requires visitor.fetch() == true
-    vec solve_schur(const minres::params& ) const;
-    vec solve_kkt(const minres::params& ) const;
+    vec solve_schur(minres::params& ) ;
+    vec solve_kkt(minres::params& ) ;
 
     // internal types
     struct schur;
