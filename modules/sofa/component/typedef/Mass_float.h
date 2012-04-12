@@ -65,7 +65,6 @@ typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<3, 
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> DiagonalMass1f;
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> DiagonalMass2f;
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> DiagonalMass3f;
-typedef sofa::component::mass::DiagonalMass<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> DiagonalMassCuda3f;
 
 
 
@@ -100,7 +99,6 @@ typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa
 typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> MeshMatrixMass1f;
 typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> MeshMatrixMass2f;
 typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> MeshMatrixMass3f;
-typedef sofa::component::mass::MeshMatrixMass<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> MeshMatrixMassCuda2f;
 
 
 
@@ -124,8 +122,6 @@ typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sof
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> UniformMass2f;
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> UniformMass3f;
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float>, float> UniformMass6f;
-typedef sofa::component::mass::UniformMass<sofa::gpu::cuda::CudaRigidTypes<3, float>, sofa::defaulttype::RigidMass<3, float> > UniformMassCudaRigid3f;
-typedef sofa::component::mass::UniformMass<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> UniformMassCuda3f;
 
 
 
@@ -137,7 +133,6 @@ typedef DiagonalMassRigid3f DiagonalMassRigid3;
 typedef DiagonalMass1f DiagonalMass1;
 typedef DiagonalMass2f DiagonalMass2;
 typedef DiagonalMass3f DiagonalMass3;
-typedef DiagonalMassCuda3f DiagonalMassCuda3;
 typedef HexahedralFEMForceFieldAndMass3f HexahedralFEMForceFieldAndMass3;
 typedef HexahedronCompositeFEMForceFieldAndMass3f HexahedronCompositeFEMForceFieldAndMass3;
 typedef HexahedronFEMForceFieldAndMass3f HexahedronFEMForceFieldAndMass3;
@@ -147,7 +142,6 @@ typedef MatrixMass3f MatrixMass3;
 typedef MeshMatrixMass1f MeshMatrixMass1;
 typedef MeshMatrixMass2f MeshMatrixMass2;
 typedef MeshMatrixMass3f MeshMatrixMass3;
-typedef MeshMatrixMassCuda2f MeshMatrixMassCuda2;
 typedef NonUniformHexahedralFEMForceFieldAndMass3f NonUniformHexahedralFEMForceFieldAndMass3;
 typedef NonUniformHexahedronFEMForceFieldAndMass3f NonUniformHexahedronFEMForceFieldAndMass3;
 typedef UniformMassRigid2f UniformMassRigid2;
@@ -156,8 +150,6 @@ typedef UniformMass1f UniformMass1;
 typedef UniformMass2f UniformMass2;
 typedef UniformMass3f UniformMass3;
 typedef UniformMass6f UniformMass6;
-typedef UniformMassCudaRigid3f UniformMassCudaRigid3;
-typedef UniformMassCuda3f UniformMassCuda3;
 #endif
 
 #endif
