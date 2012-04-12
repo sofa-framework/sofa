@@ -65,12 +65,12 @@ void ComplianceSolver::solveEquation()
     }
 }
 
-void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
     core::MechanicalParams cparams(*params);
     cparams.setMFactor(1.0);
-    cparams.setDt(dt);
+    cparams.setDt(h);
     cparams.setImplicitVelocity( implicitVelocity.getValue() );
     cparams.setImplicitPosition( implicitPosition.getValue() );
 
@@ -79,7 +79,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx() );
+    MultiVecDeriv dv(&vop, core::VecDerivId::dx() );
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
     MultiVecCoord nextPos(&vop, xResult );
     MultiVecDeriv nextVel(&vop, vResult );
@@ -93,6 +93,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
     {
         cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
     }
+    f.teq(h);
 
     // Matrix size
     MatrixAssemblyVisitor assembly(&cparams,this);
@@ -131,23 +132,23 @@ void ComplianceSolver::solve(const core::ExecParams* params, double dt, sofa::co
         this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
     }
 
-    mop.accFromF(acc, f);
-    mop.projectResponse(acc);
+    mop.accFromF(dv, f);  // f is actually f*h
+    mop.projectResponse(dv);
 
 
     // Apply integration scheme
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp ops;
-    ops.resize(2);
-    ops[0].first = nextPos; // p = p + v*h + dv*h*beta
-    ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-    ops[0].second.push_back(std::make_pair(vel.id(),dt));
-    ops[0].second.push_back(std::make_pair(  acc.id(),dt*implicitPosition.getValue()));
-    ops[1].first = nextVel; // v = v + ha
-    ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-    ops[1].second.push_back(std::make_pair(  acc.id(),dt));
-    vop.v_multiop(ops);
+    VMultiOp vmOp;
+    vmOp.resize(2);
+    vmOp[0].first = nextPos; // p = p + v*h + dv*h*beta
+    vmOp[0].second.push_back(std::make_pair(pos.id(),1.0));
+    vmOp[0].second.push_back(std::make_pair(vel.id(),h));
+    vmOp[0].second.push_back(std::make_pair(  dv.id(),h*implicitPosition.getValue()));
+    vmOp[1].first = nextVel; // v = v + ha
+    vmOp[1].second.push_back(std::make_pair(vel.id(),1.0));
+    vmOp[1].second.push_back(std::make_pair(  dv.id(),1.));
+    vop.v_multiop(vmOp);
 
     if( verbose.getValue() )
     {
