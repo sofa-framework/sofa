@@ -46,20 +46,11 @@
 #endif
 
 
-#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
 #include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMContactConstraint.h>
 #include <sofa/component/constraintset/FixedLMConstraint.h>
-#include <sofa/component/constraintset/StopperConstraint.h>
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for BilateralInteractionConstraint
-typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdRigidTypes<3, float> > BilateralInteractionConstraintRigid3f;
-typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BilateralInteractionConstraint3f;
 
 
 
@@ -91,12 +82,6 @@ typedef sofa::component::constraintset::FixedLMConstraint<sofa::defaulttype::Std
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for StopperConstraint
-typedef sofa::component::constraintset::StopperConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > StopperConstraint1f;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for UnilateralInteractionConstraint
 typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > UnilateralInteractionConstraint3f;
 
@@ -105,8 +90,6 @@ typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::de
 
 
 #ifdef SOFA_FLOAT
-typedef BilateralInteractionConstraintRigid3f BilateralInteractionConstraintRigid3;
-typedef BilateralInteractionConstraint3f BilateralInteractionConstraint3;
 typedef DOFBlockerLMConstraintRigid3f DOFBlockerLMConstraintRigid3;
 typedef DOFBlockerLMConstraint3f DOFBlockerLMConstraint3;
 typedef DistanceLMConstraintRigid3f DistanceLMConstraintRigid3;
@@ -114,7 +97,6 @@ typedef DistanceLMConstraint3f DistanceLMConstraint3;
 typedef DistanceLMContactConstraint3f DistanceLMContactConstraint3;
 typedef FixedLMConstraintRigid3f FixedLMConstraintRigid3;
 typedef FixedLMConstraint3f FixedLMConstraint3;
-typedef StopperConstraint1f StopperConstraint1;
 typedef UnilateralInteractionConstraint3f UnilateralInteractionConstraint3;
 #endif
 
