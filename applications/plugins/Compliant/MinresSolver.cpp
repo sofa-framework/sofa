@@ -30,7 +30,7 @@ using namespace core::behavior;
 SOFA_DECL_CLASS(MinresSolver);
 int MinresSolverClass = core::RegisterObject("A simple explicit time integrator").add< MinresSolver >();
 
-
+// scoped logging
 struct raii_log
 {
     const std::string name;
@@ -57,7 +57,6 @@ struct MinresSolver::kkt
     const mat& P;
     const mat& C;
 
-    const double dt;
     const int m, n;
 
     mutable vec storage, Mx, Px, JPx, JTlambda, PTJTlambda, Clambda;
@@ -65,13 +64,11 @@ struct MinresSolver::kkt
     kkt(const mat& M,
         const mat& J,
         const mat& P,
-        const mat& C,
-        double dt)
+        const mat& C)
         : M(M),
           J(J),
           P(P),
           C(C),
-          dt(dt),
           m( M.rows() ),
           n( J.rows() ),
           storage( vec::Zero(m + n ) )
@@ -109,7 +106,7 @@ struct MinresSolver::kkt
             storage.head(m).noalias() = Mx - PTJTlambda;
 
             #pragma omp section
-            storage.tail(n).noalias() = -JPx - Clambda; // should be / (dt * dt)
+            storage.tail(n).noalias() = -JPx - Clambda;
         }
 
         return storage;
@@ -127,18 +124,14 @@ struct MinresSolver::schur
     const mat& J;
     const mat& C;
 
-    const double dt;
-
     mutable vec storage, Jx, MinvJx, Cx, JMinvJx;
 
     schur(const SMatrix& Minv,
             const mat& J,
-            const mat& C,
-            double dt)
+            const mat& C)
         : Minv(Minv),
           J(J),
           C(C),
-          dt(dt),
           storage( vec::Zero( J.rows() ) )
     {
 
@@ -159,17 +152,11 @@ struct MinresSolver::schur
             Cx.noalias() = C * x;
         }
 
-        storage.noalias() = JMinvJx + Cx; // should be: Cx / (dt * dt);
+        storage.noalias() = JMinvJx + Cx;
         return storage;
     }
 
 };
-
-
-void MinresSolver::bwdInit()
-{
-    core::ExecParams params;
-}
 
 
 const MinresSolver::mat& MinresSolver::M() const
@@ -236,80 +223,19 @@ MinresSolver::vec& MinresSolver::phi()
     return vecPhi.getVectorEigen();
 }
 
-MinresSolver::visitor::visitor(core::MechanicalParams* cparams, MinresSolver* s)
-    : assembly(cparams, s),
-      solver(s)
+
+MinresSolver::vec MinresSolver::solve_schur(const minres::params& p )  const
 {
-
-}
-
-
-MinresSolver::visitor MinresSolver::make_visitor(core::MechanicalParams* cparams)
-{
-    return visitor(cparams, this);
-}
-
-bool MinresSolver::visitor::fetch()
-{
-    raii_log log("assembly_visitor");
-
-    solver->getContext()->executeVisitor(&assembly(COMPUTE_SIZE));
-    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
-
-    if( assembly.sizeC > 0 )
-    {
-
-        solver->M().resize(assembly.sizeM,assembly.sizeM);
-        solver->P().resize(assembly.sizeM,assembly.sizeM);
-        solver->C().resize(assembly.sizeC,assembly.sizeC);
-        solver->J().resize(assembly.sizeC,assembly.sizeM);
-        solver->f().resize(assembly.sizeM);
-        solver->phi().resize(assembly.sizeC);
-        solver->vecF.clear();
-        solver->vecPhi.clear();
-
-        // Matrix assembly
-        solver->getContext()->executeVisitor(&assembly(DO_SYSTEM_ASSEMBLY));
-
-        // solver->matC.setZero();
-
-        // if( solver->verbose.getValue() )
-        //   {
-        //     cerr<<"ComplianceSolver::solve, final M = " << endl << matM << endl;
-        //     cerr<<"ComplianceSolver::solve, final P = " << endl << matP << endl;
-        //     cerr<<"ComplianceSolver::solve, final C = " << endl << matC << endl;
-        //     cerr<<"ComplianceSolver::solve, final J = " << endl << matJ << endl;
-        //     cerr<<"ComplianceSolver::solve, final f = " << vecF << endl;
-        //     cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
-        //   }
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-
-}
-
-
-void MinresSolver::visitor::distribute()
-{
-    solver->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
-}
-
-
-MinresSolver::vec MinresSolver::solve_schur(real dt, minres::params& p )
-{
-    raii_log log("minres_schur");
-    inverseDiagonalMatrix( invM, M(), 1.0e-6 );
-    SMatrix Minv = matP * invM * matP;
+    raii_log log("MinresSolver::solve_schur");
+    SMatrix Minv = inverseMatrix( M(), 1.0e-6 );
+    Minv = matP * Minv * matP;
 
     const vec rhs = phi() - J() * ( Minv * this->f() );
 
     vec lambda = vec::Zero( rhs.size() );
     warm(lambda);
 
-    minres::solve(lambda, schur(Minv, J(), C(), dt), rhs, p);
+    minres::solve(lambda, schur(Minv, J(), C()), rhs, p);
     last = lambda;
 
     return lambda;
@@ -323,9 +249,9 @@ void MinresSolver::warm(vec& x) const
     }
 }
 
-MinresSolver::vec MinresSolver::solve_kkt( real dt, minres::params& p )
+MinresSolver::vec MinresSolver::solve_kkt(const minres::params& p ) const
 {
-    raii_log log("minres_kkt");
+    raii_log log("MinresSolver::solve_kkt");
     vec rhs; rhs.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
@@ -334,89 +260,25 @@ MinresSolver::vec MinresSolver::solve_kkt( real dt, minres::params& p )
     vec x = vec::Zero( rhs.size() );
     warm(x);
 
-    minres::solve(x, kkt(M(), J(), P(), C(), dt), rhs, p);
+    minres::solve(x, kkt(M(), J(), P(), C() ), rhs, p);
     last = x;
 
     return x.tail( phi().size() );
 }
 
 
-void MinresSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void MinresSolver::solveEquation()
 {
-    // tune parameters
-    core::MechanicalParams cparams(*params);
-    cparams.setMFactor(1.0);
-    cparams.setDt(dt);
-    cparams.setImplicitVelocity( implicitVelocity.getValue() );
-    cparams.setImplicitPosition( implicitPosition.getValue() );
+    // setup minres
+    minres::params p;
+    p.iterations = iterations.getValue();
+    p.precision = precision.getValue();
 
-    //  State vectors and operations
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    // solve for lambdas
+    vec lambda = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
 
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv dv(&vop, core::VecDerivId::dx() );
-    MultiVecDeriv f  (&vop, core::VecDerivId::force() );
-    MultiVecCoord nextPos(&vop, xResult );
-    MultiVecDeriv nextVel(&vop, vResult );
-
-
-    // Compute right-hand term
-    mop.computeForce(f);
-    mop.projectResponse(f);
-    if( verbose.getValue() )
-    {
-        cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
-    }
-
-    // create assembly visitor
-    visitor vis = make_visitor( &cparams );
-
-    // if there is something to solve
-    if( vis.fetch() )
-    {
-
-        // setup minres
-        minres::params p;
-        p.iterations = max_iterations.getValue();
-        p.precision = precision.getValue();
-
-        // solve for lambdas
-        vec lambda = use_kkt.getValue() ? solve_kkt(dt, p) : solve_schur(dt,  p);
-        iterations_performed.setValue(p.iterations);
-
-        // add constraint force
-        this->f() += J().transpose() * lambda;
-
-        // dispatch constraint forces
-        vis.distribute();
-    }
-
-    mop.accFromF(dv, f);
-    mop.projectResponse(dv);
-
-    // Apply integration scheme
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp ops;
-    ops.resize(2);
-    ops[0].first = nextPos; // p = p + v*h + dv*h*beta
-    ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-    ops[0].second.push_back(std::make_pair(vel.id(),dt));
-    ops[0].second.push_back(std::make_pair(  dv.id(),dt*implicitPosition.getValue()));
-    ops[1].first = nextVel; // v = v + dv
-    ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-    ops[1].second.push_back(std::make_pair(  dv.id(),1.0));
-    vop.v_multiop(ops);
-
-    if( verbose.getValue() )
-    {
-        mop.propagateX(nextPos);
-        mop.propagateDx(nextVel);
-        serr<<"EulerImplicitSolver, final x = "<< nextPos <<sendl;
-        serr<<"EulerImplicitSolver, final v = "<< nextVel <<sendl;
-    }
-
+    // add constraint force
+    this->f() += J().transpose() * lambda;
 }
 
 
