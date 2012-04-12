@@ -10,7 +10,6 @@
 
 #include "utils/minres.h"
 
-
 using std::cerr;
 using std::endl;
 
@@ -224,10 +223,13 @@ MinresSolver::vec& MinresSolver::phi()
 }
 
 
-MinresSolver::vec MinresSolver::solve_schur(const minres::params& p )  const
+MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
 {
     raii_log log("MinresSolver::solve_schur");
-    SMatrix Minv = inverseMatrix( M(), 1.0e-6 );
+    SMatrix Minv;
+    inverseDiagonalMatrix( Minv, M(), 1.0e-6 );
+
+    // projection matrix
     Minv = matP * Minv * matP;
 
     const vec rhs = phi() - J() * ( Minv * this->f() );
@@ -235,7 +237,8 @@ MinresSolver::vec MinresSolver::solve_schur(const minres::params& p )  const
     vec lambda = vec::Zero( rhs.size() );
     warm(lambda);
 
-    minres::solve(lambda, schur(Minv, J(), C()), rhs, p);
+    ::minres<double>::solve<schur>(lambda, schur(Minv, J(), C()), rhs, p);
+
     last = lambda;
 
     return lambda;
@@ -249,7 +252,7 @@ void MinresSolver::warm(vec& x) const
     }
 }
 
-MinresSolver::vec MinresSolver::solve_kkt(const minres::params& p ) const
+MinresSolver::vec MinresSolver::solve_kkt(minres::params& p )
 {
     raii_log log("MinresSolver::solve_kkt");
     vec rhs; rhs.resize(f().size() + phi().size());
@@ -271,11 +274,13 @@ void MinresSolver::solveEquation()
 {
     // setup minres
     minres::params p;
-    p.iterations = iterations.getValue();
+    p.iterations = max_iterations.getValue();
     p.precision = precision.getValue();
 
     // solve for lambdas
     vec lambda = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
+
+    iterations_performed.setValue( p.iterations );
 
     // add constraint force
     this->f() += J().transpose() * lambda;
