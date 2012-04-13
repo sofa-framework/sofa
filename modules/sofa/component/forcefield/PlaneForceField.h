@@ -72,6 +72,7 @@ public:
     Data<Real> planeD;
     Data<Real> stiffness;
     Data<Real> damping;
+    Data<Real> maxForce;
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
     Data<Real> drawSize;
@@ -88,6 +89,7 @@ protected:
         , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        , maxForce(initData(&maxForce, (Real)0, "maxForce", "if non-null, the max force that can be applied to the object"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled"))
