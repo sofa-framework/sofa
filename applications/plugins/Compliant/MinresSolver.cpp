@@ -226,18 +226,20 @@ MinresSolver::vec& MinresSolver::phi()
 MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
 {
     raii_log log("MinresSolver::solve_schur");
-    SMatrix Minv;
-    inverseDiagonalMatrix( Minv, M(), 1.0e-6 );
 
-    // projection matrix
-    Minv = matP * Minv * matP;
+    // this is now computed in the parent class (FF)
+//	SMatrix Minv;
+//	inverseDiagonalMatrix( Minv, M(), 1.0e-6 );
 
-    const vec rhs = phi() - J() * ( Minv * this->f() );
+//	// projection matrix
+//	Minv = matP * Minv * matP;
+
+    const vec rhs = phi() - J() * ( PMinvP * this->f() );
 
     vec lambda = vec::Zero( rhs.size() );
     warm(lambda);
 
-    ::minres<double>::solve<schur>(lambda, schur(Minv, J(), C()), rhs, p);
+    ::minres<double>::solve<schur>(lambda, schur(PMinvP, J(), C()), rhs, p);
 
     last = lambda;
 
@@ -278,12 +280,14 @@ void MinresSolver::solveEquation()
     p.precision = precision.getValue();
 
     // solve for lambdas
-    vec lambda = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
+    vec& lambda = vecLambda.getVectorEigen();
+    lambda = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
 
     iterations_performed.setValue( p.iterations );
 
     // add constraint force
     this->f() += J().transpose() * lambda;
+    vecDv.getVectorEigen() = PMinvP * vecF.getVectorEigen();  // (FF)
 }
 
 

@@ -37,28 +37,30 @@ ComplianceSolver::ComplianceSolver()
 
 void ComplianceSolver::solveEquation()
 {
-    inverseDiagonalMatrix( invM, matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
-    SMatrix Minv = matP * invM * matP;
-    SMatrix schur( matJ * Minv * matJ.transpose() + matC );
+    SMatrix schur( matJ * PMinvP * matJ.transpose() + matC );
     SparseLDLT schurDcmp(schur);
-    VectorEigen x = vecPhi.getVectorEigen() - matJ * ( Minv * vecF.getVectorEigen() );
+    VectorEigen& lambda = vecLambda.getVectorEigen();
+    lambda = vecPhi.getVectorEigen() - matJ * ( PMinvP * vecF.getVectorEigen() );
     if( verbose.getValue() )
     {
         //        cerr<<"ComplianceSolver::solve, Minv = " << endl << Eigen::MatrixXd(Minv) << endl;
         cerr<<"ComplianceSolver::solve, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
-        cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (Minv * vecF.getVectorEigen()).transpose() << endl;
-        cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( matJ * ( Minv * vecF.getVectorEigen())).transpose() << endl;
+        cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (PMinvP * vecF.getVectorEigen()).transpose() << endl;
+        cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( matJ * ( PMinvP * vecF.getVectorEigen())).transpose() << endl;
         cerr<<"ComplianceSolver::solve,  vecPhi.getVectorEigen()  = " <<  vecPhi.getVectorEigen().transpose() << endl;
-        cerr<<"ComplianceSolver::solve, right-hand term = " << x.transpose() << endl;
+        cerr<<"ComplianceSolver::solve, right-hand term = " << lambda.transpose() << endl;
     }
-    schurDcmp.solveInPlace( x ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
-    vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * x ; // f = f_ext + J^T.lambda
+    schurDcmp.solveInPlace( lambda ); // solve (J.M^{-1}.J^T + C).x = c - J.M^{-1}.f
+    vecF.getVectorEigen() = vecF.getVectorEigen() + matJ.transpose() * lambda ; // f = f_ext + J^T.lambda
+    vecDv.getVectorEigen() = PMinvP * vecF.getVectorEigen();
     if( verbose.getValue() )
     {
-        cerr<<"ComplianceSolver::solve, constraint forces = " << x.transpose() << endl;
+        cerr<<"ComplianceSolver::solve, constraint forces = " << lambda.transpose() << endl;
         cerr<<"ComplianceSolver::solve, net forces = " << vecF << endl;
-        //        cerr<<"ComplianceSolver::solve, net forces = " << f << endl;
+        cerr<<"ComplianceSolver::solve, vecDv = " << vecDv << endl;
     }
+
+
 }
 
 void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -104,9 +106,13 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         matC.resize(assembly.sizeC,assembly.sizeC);
         matJ.resize(assembly.sizeC,assembly.sizeM);
         vecF.resize(assembly.sizeM);
-        vecPhi.resize(assembly.sizeC);
         vecF.clear();
+        vecDv.resize(assembly.sizeM);
+        vecDv.clear();
+        vecPhi.resize(assembly.sizeC);
         vecPhi.clear();
+        vecLambda.resize(assembly.sizeC);
+        vecLambda.clear();
 
         // Matrix assembly
         this->getContext()->executeVisitor(&assembly(DO_SYSTEM_ASSEMBLY));
@@ -122,6 +128,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         }
 
         matM *= 1.0/h;
+        inverseDiagonalMatrix( invM, matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+        PMinvP = matP * invM * matP;
 
         // Solve equation system
         solveEquation();
@@ -129,9 +137,10 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
     }
 
-    f.teq(h);
-    mop.accFromF(dv, f);
-    mop.projectResponse(dv);
+//    f.teq(h);
+//    mop.accFromF(dv, f);
+//    mop.projectResponse(dv);
+//    cerr<<"ComplianceSolver::solve, dv = " << dv << endl;
 
 
     // Apply integration scheme
@@ -152,8 +161,9 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     {
         mop.propagateX(nextPos);
         mop.propagateDx(nextVel);
-        serr<<"EulerImplicitSolver, final x = "<< nextPos <<sendl;
-        serr<<"EulerImplicitSolver, final v = "<< nextVel <<sendl;
+        serr<<"ComplianceSolver, final x = "<< nextPos <<sendl;
+        serr<<"ComplianceSolver, final v = "<< nextVel <<sendl;
+        serr<<"-----------------------------"<<sendl;
     }
 
 }
@@ -297,6 +307,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
             unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->copyFromBaseVector(core::VecDerivId::force(), &solver->vecF, offset );
+
+            offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            node->mechanicalState->copyFromBaseVector(core::VecDerivId::dx(), &solver->vecDv, offset );
         }
 
     }
