@@ -68,6 +68,9 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
+    Real limit = maxForce.getValue();
+    limit *= limit; // squared
+
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
@@ -79,6 +82,11 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
             Real dampingIntensity = -this->damping.getValue()*d;
             //serr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<sendl;
             Deriv force = planeNormal.getValue()*forceIntensity - v1[i]*dampingIntensity;
+
+            Real amplitude = force.norm2();
+            if(limit && amplitude > limit)
+                force *= sqrt(limit / amplitude);
+
             //serr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<sendl;
             f1[i]+=force;
             //this->dfdd[i] = -this->stiffness;
