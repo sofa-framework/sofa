@@ -31,15 +31,17 @@ namespace odesolver
     where \f$ h \f$ is the time step, \f$ \alpha \f$ is the implicit velocity factor, and \f$ \beta \f$ is the implicit position factor.
 
     The corresponding dynamic equation is:
-  \f[ \left( \begin{array}{cc} \frac{1}{h} M & -J^T \\
+  \f[ \left( \begin{array}{cc} \frac{1}{h} PM & -PJ^T \\
                                J & \frac{1}{l} C \end{array}\right)
       \left( \begin{array}{c} \Delta v \\ \bar\lambda \end{array}\right)
-    = \left( \begin{array}{c} f \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  \end{array}\right) \f]
-    where \f$ M \f$ is the mass matrix, \f$ \phi \f$ is the constraint violation, \f$ J \f$ the constraint Jacobian matrix,
-    \f$ C \f$ is the compliance matrix (i.e. inverse of constraint stiffness), \f$ l=\alpha(h \beta + d) \f$ is a term related to implicit integration and constraint damping, and
+    = \left( \begin{array}{c} Pf \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  \end{array}\right) \f]
+    where \f$ M \f$ is the mass matrix, \f$ P \f$ is a projection matrix to impose boundary conditions on displacements (typically maintain fixed points), \f$ \phi \f$ is the constraint violation, \f$ J \f$ the constraint Jacobian matrix,
+    \f$ C \f$ is the compliance matrix (i.e. inverse of constraint stiffness) used to soften the constraints, \f$ l=\alpha(h \beta + d) \f$ is a term related to implicit integration and constraint damping, and
       \f$ \bar\lambda \f$ is the average constraint forces, consistently with the implicit velocity integration.
 
-  A Shur complement is used to compute the constraint forces, then these are added to the external forces to obtain the final velocity increment,
+      The system is singular due to matrix \f$ P \f$, however we can use \f$ P M^{-1}P \f$ as inverse mass matrix to compute Schur complements.
+
+ In the default implementation, a Schur complement is used to compute the constraint forces, then these are added to the external forces to obtain the final velocity increment,
   and the positions are updated according to the implicit scheme:
 
   \f[ \begin{array}{ccc}
@@ -83,20 +85,21 @@ protected:
     SMatrix matC;      ///< compliance matrix used to regularize the system
     VectorSofa vecF;   ///< top of the right-hand term: forces
     VectorSofa vecPhi; ///< bottom of the right-hand term: constraint corrections
+    VectorSofa vecDv;  ///< top of the solution: velocity change
+    VectorSofa vecLambda; ///< bottom of the solution: Lagrange multipliers
 
-    /** Solve the following equation system on matrices M,P,J,C and vectors f,phi.
-     The method computes \f$f\f$ by solving the equations:
+    /** Solve the equation system:
+
     \f$
-    \begin{array}{ccc}
-    (J.P.M^{-1}.P.J^T + C) \lambda &=&  \phi - J M^{-1} f_e \\
-    f &=& f_e + J^T \lambda
-    \end{array}
+    \left( \begin{array}{cc} PM & -PJ^T \\
+                               J &  C \end{array}\right)
+      \left( \begin{array}{c} \Delta v \\ \lambda \end{array}\right)
+    = \left( \begin{array}{c} Pf \\  \phi  \end{array}\right)
     \f$
 
-    where matrices \f$M,P,J,C\f$ are members matM, matP, matJ, matC respectively, and vectors \f$\phi\f$ and \f$f\f$ are members vecPhi and vecF, respectively.
-    The values of these terms depend on the integration scheme, and they are given in the detailed documentation of this class.
-    Vector \f$ \lambda \f$ is a temporary vector declared in the method.
-    Vector vecF initially contains the value of \f$ f_e \f$ , and it is replaced with \f$ f_e + J^T \lambda \f$.
+    where the values of matrices \f$M,P,J,C\f$ and vectors \f$f, \phi\f$ depend on the integration scheme (see the class documentation), and are stored in members  matM, matP, matJ, matC, vecF and vecPhi, respectively.
+    Additionally, matrix \f$  PM^{-1}P \f$ is available as member PMinvP.
+    The solution \f$ \Delta v, \lambda \f$ computed by the method is stored in members vecDv and vecLambda, respectively.
 
      The base implementation uses a direct Cholesky solver. It can be overloaded to apply other linear equation solvers.
      */
@@ -163,7 +166,7 @@ protected:
 
     /// Compute the inverse of the matrix. The input matrix MUST be diagonal. The threshold parameter is currently unused.
     void inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m, SReal threshold);
-    SMatrix invM;      ///< inverse mass matrix used in the Schur complement
+    SMatrix invM, PMinvP;      ///< inverse mass matrix used in the Schur complement
 
 
 };

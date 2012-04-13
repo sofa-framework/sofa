@@ -3,6 +3,7 @@
 
 
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -68,23 +69,29 @@ f_{n+1} + (1-\alpha) f_n) \\ <br>
 where  \( M \) is the mass matrix, \( h \) is the time step, \( \alpha \) is the implicit velocity
 factor, and \( \beta \) is the implicit position factor.&nbsp;
 The corresponding dynamic equation is:
-  \[ \left( \begin{array}{cc} <br>\frac{1}{h}M &amp; -J^T \\<br>
+  \[ \left( \begin{array}{cc} <br>\frac{1}{h}PM &amp; -PJ^T \\<br>
 &nbsp;J &amp; \frac{1}{l} C \end{array}\right)
       <br>
 \left( \begin{array}{c} <br>
 \Delta v \\ \bar\lambda <br>
 \end{array}\right)
-    = \left( \begin{array}{c} <br>f_e \\ <br>
+    = \left( \begin{array}{c} <br>Pf_e \\ <br>
 - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
 \end{array}\right) \]
     <br>where
 \( f_e \) is the net external force considered constant across the time
-step, \( \phi \) is the constraint violation, \( J \) the constraint
+step, \( \phi \) is the constraint violation, \( P \) is a projection
+matrix to impose boundary conditions on displacements (typically
+maintain fixed points),&nbsp; \( J \) the constraint
 Jacobian matrix, \( C \) is the constraint compliance matrix (i.e.
 inverse of constraint stiffness), \( l=\alpha(h \beta + d) \) is a term
 related to implicit integration and constraint damping, and \(
 \bar\lambda \) is the average constraint forces, consistently with the
 implicit velocity integration. <br>
+<br>
+The system is singular due to matrix \( P \), however we can use \( P
+M^{-1}P \) as inverse mass matrix to compute Schur complements.<br>
+<br>
 A Shur complement is used to compute the constraint forces, then these
 are added to the external forces to obtain the final velocity
 increment, and the positions are updated according to the implicit
