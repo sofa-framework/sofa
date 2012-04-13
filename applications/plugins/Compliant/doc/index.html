@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -66,18 +68,18 @@ f_{n+1} + (1-\alpha) f_n) \\ <br>
 where  \( M \) is the mass matrix, \( h \) is the time step, \( \alpha \) is the implicit velocity
 factor, and \( \beta \) is the implicit position factor.&nbsp;
 The corresponding dynamic equation is:
-  \[ \left( \begin{array}{cc} <br>
-M &amp; -J^T \\<br>
+  \[ \left( \begin{array}{cc} <br>\frac{1}{h}M &amp; -J^T \\<br>
 &nbsp;J &amp; \frac{1}{l} C \end{array}\right)
       <br>
 \left( \begin{array}{c} <br>
 \Delta v \\ \bar\lambda <br>
 \end{array}\right)
-    = \left( \begin{array}{c} <br>
-f \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
+    = \left( \begin{array}{c} <br>f_e \\ <br>
+- \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
 \end{array}\right) \]
-    <br>
-where \( \phi \) is the constraint violation, \( J \) the constraint
+    <br>where
+\( f_e \) is the net external force considered constant across the time
+step, \( \phi \) is the constraint violation, \( J \) the constraint
 Jacobian matrix, \( C \) is the constraint compliance matrix (i.e.
 inverse of constraint stiffness), \( l=\alpha(h \beta + d) \) is a term
 related to implicit integration and constraint damping, and \(
@@ -87,15 +89,17 @@ A Shur complement is used to compute the constraint forces, then these
 are added to the external forces to obtain the final velocity
 increment, and the positions are updated according to the implicit
 scheme: \[ \begin{array}{ccc} <br>
-\left( JPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &amp;=&amp;
--\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - J M^{-1} f \\ <br>
-\Delta v  &amp;=&amp; h  P M^{-1}( f + J^T \bar\lambda ) \\
+\left( hJPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &amp;=&amp;
+-\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - hJ M^{-1} f_e \\ <br>
+\Delta v  &amp;=&amp; hP M^{-1}( f_e + J^T \bar\lambda ) \\
                                  <br>
 \Delta x  &amp;=&amp;  h( v + \beta \Delta v )
   <br>
 \end{array} \]
 where \( P \) is the projection matrix corresponding to the projective constraints applied to the independent DOFs.
 
+<br>
+More detail on the derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
 <br>
 
 <br>

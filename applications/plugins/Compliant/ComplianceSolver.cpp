@@ -34,10 +34,6 @@ ComplianceSolver::ComplianceSolver()
 {
 }
 
-//void ComplianceSolver::bwdInit()
-//{
-//    core::ExecParams params;
-//}
 
 void ComplianceSolver::solveEquation()
 {
@@ -93,7 +89,6 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     {
         cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
     }
-    f.teq(h);
 
     // Matrix size
     MatrixAssemblyVisitor assembly(&cparams,this);
@@ -126,13 +121,16 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
             cerr<<"ComplianceSolver::solve, final phi = " << vecPhi << endl;
         }
 
+        matM *= 1.0/h;
+
         // Solve equation system
         solveEquation();
 
         this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
     }
 
-    mop.accFromF(dv, f);  // f is actually f*h
+    f.teq(h);
+    mop.accFromF(dv, f);
     mop.projectResponse(dv);
 
 
@@ -142,9 +140,9 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     VMultiOp vmOp;
     vmOp.resize(2);
     vmOp[0].first = nextPos; // p = p + v*h + dv*h*beta
-    vmOp[0].second.push_back(std::make_pair(pos.id(),1.0));
-    vmOp[0].second.push_back(std::make_pair(vel.id(),h));
-    vmOp[0].second.push_back(std::make_pair(  dv.id(),h*implicitPosition.getValue()));
+    vmOp[0].second.push_back(std::make_pair( pos.id(), 1.0));
+    vmOp[0].second.push_back(std::make_pair( vel.id(), h  ));
+    vmOp[0].second.push_back(std::make_pair(  dv.id(), h*implicitPosition.getValue()));
     vmOp[1].first = nextVel; // v = v + ha
     vmOp[1].second.push_back(std::make_pair(vel.id(),1.0));
     vmOp[1].second.push_back(std::make_pair(  dv.id(),1.));

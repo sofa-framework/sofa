@@ -31,9 +31,9 @@ namespace odesolver
     where \f$ h \f$ is the time step, \f$ \alpha \f$ is the implicit velocity factor, and \f$ \beta \f$ is the implicit position factor.
 
     The corresponding dynamic equation is:
-  \f[ \left( \begin{array}{cc} M & -J^T \\
+  \f[ \left( \begin{array}{cc} \frac{1}{h} M & -J^T \\
                                J & \frac{1}{l} C \end{array}\right)
-      \left( \begin{array}{c} \delta v \\ \bar\lambda \end{array}\right)
+      \left( \begin{array}{c} \Delta v \\ \bar\lambda \end{array}\right)
     = \left( \begin{array}{c} f \\ - \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  \end{array}\right) \f]
     where \f$ M \f$ is the mass matrix, \f$ \phi \f$ is the constraint violation, \f$ J \f$ the constraint Jacobian matrix,
     \f$ C \f$ is the compliance matrix (i.e. inverse of constraint stiffness), \f$ l=\alpha(h \beta + d) \f$ is a term related to implicit integration and constraint damping, and
@@ -43,8 +43,8 @@ namespace odesolver
   and the positions are updated according to the implicit scheme:
 
   \f[ \begin{array}{ccc}
-   ( JPM^{-1}PJ^T + \frac{1}{l}C ) \bar\lambda &=& \frac{-1}{l} (\phi + (d+h\alpha)\dot\phi ) - J M^{-1} f \\
-                                 \Delta v  &=&  P M^{-1}( f + J^T \bar\lambda ) \\
+   ( hJPM^{-1}PJ^T + \frac{1}{l}C ) \bar\lambda &=& -\frac{1}{l} (\phi + (d+h\alpha)\dot\phi ) - h J M^{-1} f \\
+                                 \Delta v  &=&  h P M^{-1}( f + J^T \bar\lambda ) \\
                                  \Delta x  &=&  h( v + \beta \Delta v )
   \end{array} \f]
 where \f$ P \f$ is the projection matrix corresponding to the projective constraints applied to the independent DOFs.
@@ -84,8 +84,21 @@ protected:
     VectorSofa vecF;   ///< top of the right-hand term: forces
     VectorSofa vecPhi; ///< bottom of the right-hand term: constraint corrections
 
-    /** Solve the equation system on matrices M,P,J,C and vectors f,phi, using a Cholesky direct solver on the Schur complement \f$  J.P.M^{-1}.P.J^T + C  \f$
-     This can be overloaded to apply other equation solvers.
+    /** Solve the following equation system on matrices M,P,J,C and vectors f,phi.
+     The method computes \f$f\f$ by solving the equations:
+    \f$
+    \begin{array}{ccc}
+    (J.P.M^{-1}.P.J^T + C) \lambda &=&  \phi - J M^{-1} f_e \\
+    f &=& f_e + J^T \lambda
+    \end{array}
+    \f$
+
+    where matrices \f$M,P,J,C\f$ are members matM, matP, matJ, matC respectively, and vectors \f$\phi\f$ and \f$f\f$ are members vecPhi and vecF, respectively.
+    The values of these terms depend on the integration scheme, and they are given in the detailed documentation of this class.
+    Vector \f$ \lambda \f$ is a temporary vector declared in the method.
+    Vector vecF initially contains the value of \f$ f_e \f$ , and it is replaced with \f$ f_e + J^T \lambda \f$.
+
+     The base implementation uses a direct Cholesky solver. It can be overloaded to apply other linear equation solvers.
      */
     virtual void solveEquation();
 
