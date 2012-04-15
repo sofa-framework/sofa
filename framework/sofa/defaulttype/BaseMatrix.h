@@ -68,12 +68,18 @@ public:
         virtual void add(int i, int j, float v) { add(i,j,(double)v); }
         /// Reset the value of element i,j to 0
     */    virtual void clear(int i, int j) { set(i,j,0.0); }
-    /// Reset the value of row i to 0
+    /// Reset all the values in row i to 0
     virtual void clearRow(int i) { for (int j=0,n=colSize(); j<n; ++j) clear(i,j); }
-    /// Reset the value of column j to 0
+    /// Clears the value of rows imin to imax-1
+    virtual void clearRows(int imin, int imax) { for (int i=imin; i<imax; i++) clearRow(i); }
+    /// Reset the all values in column j to 0
     virtual void clearCol(int j) { for (int i=0,n=rowSize(); i<n; ++i) clear(i,j); }
+    /// Clears all the values in columns imin to imax-1
+    virtual void clearCols(int imin, int imax) { for (int i=imin; i<imax; i++) clearCol(i); }
     /// Reset the value of both row and column i to 0
     virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
+    /// Clears all the values in rows imin to imax-1 and columns imin to imax-1
+    virtual void clearRowsCols(int imin, int imax) { clearRows(imin,imax); clearCols(imin,imax); }
     /** Make the final data setup, such as compression. This must be called once after all the data is entered, and makes the matrix read-only.
       For most concrete types, this method does nothing and the matrix remains editable, however.
       */

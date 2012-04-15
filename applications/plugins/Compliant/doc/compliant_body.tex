@@ -1,0 +1,88 @@
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+
+\newcommand{\pos}{\vect{x}}
+\newcommand{\xcur}{\vect{x}_{n}}
+\newcommand{\xnext}{\vect{x}_{n+1}}
+\newcommand{\vel}{\vect{v}}
+\newcommand{\vcur}{\vect{v}_{n}}
+\newcommand{\vnext}{\vect v_{n+1}}
+\newcommand{\force}{\vect{f}}
+\newcommand{\forcext}{\vect{f}_{ext}}
+\newcommand{\lam}{\vect{\lambda}}
+\newcommand{\lcur}{\lam_{n}}
+\newcommand{\lnext}{\lam_{n+1}}
+\newcommand{\avlam}{\bar{\lam}}
+\newcommand{\fcur}{\vect{f}_{n}}
+\newcommand{\fnext}{\vect f_{n+1}}
+\newcommand{\M}{\mat M}
+\newcommand{\Minv}{\mat M^{-1}}
+\renewcommand{\P}{\mat P}
+\newcommand{\J}{\mat J}
+\newcommand{\Jt}{\mat J^T}
+\newcommand{\C}{\mat C}
+\newcommand{\violation}{ \phi}
+\newcommand{\dviolation}{\dot \violation}
+\newcommand{\violcur}{\violation_{n}}
+\newcommand{\violnext}{\violation_{n+1}}
+\newcommand{\dviolnext}{\dot \violation_{n+1}}
+
+
+\section{Time integration}
+Implicit scheme :
+\begin{eqnarray}
+ \vnext &=& \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
+  \xnext &=& \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)
+\end{eqnarray}
+where index $n$ denotes current values while index $n+1$ denotes next values.
+
+\begin{eqnarray}
+ \Delta \vel = \vnext -    \vcur  &=& h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
+\Delta \pos = \xnext -  \xcur    &=& h (v + \beta  \Delta v)
+\end{eqnarray}
+
+Constraint violation $\violation$ and its Jacobian $\J$:
+\begin{eqnarray}
+ \J &=& \frac{\partial \vect \violation}{\partial \pos} \\
+ \violnext &\simeq& \violcur + \J \Delta x = \violcur + h   \dviolation + \J h \beta \Delta \vel  \label{eq violnext}\\
+\dviolnext &\simeq& \violnext + \J \Delta v \label{eq dviolnext}
+\end{eqnarray}
+
+
+Forces:
+\begin{eqnarray}
+ \force &=& \forcext + \Jt \lam \\
+ \lam_i &=& -\frac{1}{c_i} (  \violation_i + d \dviolation_i ) \label{eq lambda}
+\end{eqnarray}
+where subscript $i$ denotes a scalar constraint.
+
+Average Lagrange multipliers using equations \ref{eq lambda}, \ref{eq violnext} and \ref{eq dviolnext}:
+\begin{eqnarray*}
+ \avlam_i &=& \alpha \lnext + (1-\alpha) \lcur \\
+&=& -\frac{1}{c_i} ( \alpha \violation + \alpha h \dviolation  + \alpha h \beta \J \Delta \vel + \alpha d \dviolation + \alpha d \J \Delta v + (1-\alpha)\violation + (1-\alpha) d \dviolation  ) \\
+&=& -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \Delta v )
+\end{eqnarray*}
+We can rewrite the previous equation as:
+\begin{equation}
+ \J \Delta v + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)
+\end{equation}
+where values without indices denote current values.
+The complete equation system is:
+\begin{equation}
+ \left( \begin{array}{cc}
+\frac{1}{h}\P\M & -\P\Jt \\
+\ J & \frac{1}{l} \C \end{array}\right)
+\left( \begin{array}{c}
+\Delta v \\ \avlam
+\end{array}\right) = \left( \begin{array}{c}
+\P\forcext  \\
+- \frac{1}{l} (\violation +(d+\alpha h) \dviolation)
+\end{array}\right) 
+\end{equation}
+where $ l=\alpha(h \beta + d) $
+The system is singular due to matrix $\P $, however we can use $ \P \Minv\P $ as inverse mass matrix to compute a Schur complement:
+\[ \begin{array}{ccc}
+\left( hJPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &=& -\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - hJ M^{-1} f_e \\
+\Delta v &=& hP M^{-1}( f_e + J^T \bar\lambda ) \\
+\Delta x &=& h( v + \beta \Delta v )
+\end{array} \]

@@ -54,8 +54,8 @@ protected:
     const mat& C() const;
     mat& C();
 
-    const mat& P() const;
-    mat& P();
+    const mat& projMatrix() const;
+    mat& projMatrix();
 
     // same
     vec& f();

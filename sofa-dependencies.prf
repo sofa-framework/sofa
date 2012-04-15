@@ -373,7 +373,7 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(houseOfCards)
 	enable(mixedPendulum)
 	enable(oneParticule)
-	enable(oneParticuleWithSofaTypedefs)
+#	enable(oneParticuleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
 }
 
@@ -381,6 +381,8 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 #	# TODO: python depends on boost.python
 #	enable(sofaPython)
 #}
+
+
 
 contains(DEFINES, SOFA_GPU_CUDA) {
 	enable(sofagpucuda)

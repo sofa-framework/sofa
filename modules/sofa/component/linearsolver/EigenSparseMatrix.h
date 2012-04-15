@@ -124,7 +124,6 @@ public:
     }
 
 
-
     /// compute result = A * data
     void mult( OutVecDeriv& result, const InVecDeriv& data ) const
     {

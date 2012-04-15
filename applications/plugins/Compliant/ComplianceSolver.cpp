@@ -28,9 +28,11 @@ int ComplianceSolverClass = core::RegisterObject("A simple explicit time integra
 
 
 ComplianceSolver::ComplianceSolver()
-    : implicitVelocity( initData(&implicitVelocity,(SReal)0.5,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
+    : matP( projMatrix.eigenMatrix )
+    , implicitVelocity( initData(&implicitVelocity,(SReal)0.5,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
     , implicitPosition( initData(&implicitPosition,(SReal)0.5,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
     , verbose( initData(&verbose,false,"verbose","Print a lot of info for debug"))
+    , PMinvP( invprojMatrix.eigenMatrix )
 {
 }
 
@@ -102,7 +104,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
 
         matM.resize(assembly.sizeM,assembly.sizeM);
-        matP.resize(assembly.sizeM,assembly.sizeM);
+        matP = createIdentityMatrix(assembly.sizeM);
+//        matP.resize(assembly.sizeM,assembly.sizeM);
         matC.resize(assembly.sizeC,assembly.sizeC);
         matJ.resize(assembly.sizeC,assembly.sizeM);
         vecF.resize(assembly.sizeM);
@@ -128,8 +131,11 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         }
 
         matM *= 1.0/h;
-        inverseDiagonalMatrix( invM, matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
-        PMinvP = matP * invM * matP;
+//        inverseDiagonalMatrix( invM, matM, 1.0e-6 ); //cerr<<"ComplianceSolver::solve, Minv has " << Minv.nonZeros() << "non-null entries " << endl;
+//        PMinvP = matP * invM * matP;  /// @todo replace this with a specialized method in ProjectiveConstraint
+
+        inverseDiagonalMatrix( PMinvP, matM, 1.0e-6 );
+        this->getContext()->executeVisitor(&assembly(PROJECT_MATRICES));
 
         // Solve equation system
         solveEquation();
@@ -137,10 +143,10 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
     }
 
-//    f.teq(h);
-//    mop.accFromF(dv, f);
-//    mop.projectResponse(dv);
-//    cerr<<"ComplianceSolver::solve, dv = " << dv << endl;
+    //    f.teq(h);
+    //    mop.accFromF(dv, f);
+    //    mop.projectResponse(dv);
+    //    cerr<<"ComplianceSolver::solve, dv = " << dv << endl;
 
 
     // Apply integration scheme
@@ -172,7 +178,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
 simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown(simulation::Node* node)
 {
-//    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown visit Node "<<node->getName()<<endl;
+    //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown visit Node "<<node->getName()<<endl;
     if( pass== COMPUTE_SIZE )
     {
         // ==== independent DOFs
@@ -207,19 +213,23 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             jMap[node->mechanicalState]= shiftMatrix ;
 
             // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
-            SMatrix projMat = createIdentityMatrix(node->mechanicalState->getMatrixSize());
-            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++)
-            {
-                if( const defaulttype::BaseMatrix* mat = node->projectiveConstraintSet[i]->getJ(mparams) )
-                {
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
-                    projMat = projMat * getSMatrix(mat);  // multiply with the projection matrix
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
-                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
-                }
-            }
-            solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
+//            SMatrix projMat = ComplianceSolver::createIdentityMatrix(node->mechanicalState->getMatrixSize());
+//            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
+//                if( const defaulttype::BaseMatrix* mat = node->projectiveConstraintSet[i]->getJ(mparams) )
+//                {
+//                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, current projMat = " << projMat << endl;
+//                    projMat = projMat * getSMatrix(mat);  // multiply with the projection matrix
+//                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << *mat << endl;
+//                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, constraint matrix = " << toMatrix(mat) << endl;
+//                    //                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, new projMat = " << projMat << endl;
+//                }
+//            }
+//            solver->matP += shiftMatrix.transpose() * projMat * shiftMatrix;
+
+//            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
+//            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
+//                node->projectiveConstraintSet[i]->projectMatrix(&solver->projMatrix,m_offset[node->mechanicalState]);
+//            }
 
             // Right-hand term
             unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
@@ -234,7 +244,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         // ==== mechanical mapping
         if ( node->mechanicalMapping != NULL )
         {
-//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
+            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             const vector<sofa::defaulttype::BaseMatrix*>* pJs = node->mechanicalMapping->getJs();
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
@@ -247,9 +257,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                     continue;
                 SMatrix J = getSMatrix( (*pJs)[i] );
                 SMatrix contribution;
-//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
-//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
-//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
+                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
+                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
+                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
@@ -297,6 +307,21 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         }
 
     }
+    else if (pass== PROJECT_MATRICES)
+    {
+        // ==== independent DOFs
+        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+        {
+            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
+            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
+            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++)
+            {
+                node->projectiveConstraintSet[i]->projectMatrix(&solver->projMatrix,m_offset[node->mechanicalState]);
+                node->projectiveConstraintSet[i]->projectMatrix(&solver->invprojMatrix,m_offset[node->mechanicalState]);
+            }
+        }
+
+    }
     else if (pass== DISTRIBUTE_SOLUTION)
     {
         typedef defaulttype::BaseVector  SofaVector;
@@ -319,7 +344,6 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
     }
 
     return RESULT_CONTINUE;
-
 }
 
 void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::Node* /*node*/)
@@ -330,17 +354,9 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
     }
     else if (pass==DO_SYSTEM_ASSEMBLY)
     {
-        // ==== independent DOFs
-        //        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
-        //        {
-        //            jStack.pop();
-        //        }
-
-        // ==== mechanical mapping
-        //        if ( node->mechanicalMapping != NULL )
-        //        {
-        //            jStack.pop();
-        //        }
+    }
+    else if (pass==PROJECT_MATRICES)
+    {
     }
     else if (pass==DISTRIBUTE_SOLUTION )
     {
@@ -351,6 +367,17 @@ void ComplianceSolver::MatrixAssemblyVisitor::processNodeBottomUp(simulation::No
     }
 
 }
+
+///// Replace square matrix M with PMP, where P is the matrix of the projective constraints
+//void ComplianceSolver::projectMatrix( SMatrix& M ){
+
+//}
+
+///// Replace vector v with Pv, where P is the matrix of the projective constraints
+//void ComplianceSolver::projectVector( VectorEigen& v ){
+
+//}
+
 
 /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
 /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
@@ -367,7 +394,7 @@ ComplianceSolver::SMatrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMa
     return m;
 }
 
-ComplianceSolver::SMatrix ComplianceSolver::MatrixAssemblyVisitor::createIdentityMatrix( unsigned size )
+ComplianceSolver::SMatrix ComplianceSolver::createIdentityMatrix( unsigned size )
 {
     SMatrix m(size,size);
     for(unsigned i=0; i<size; i++ )

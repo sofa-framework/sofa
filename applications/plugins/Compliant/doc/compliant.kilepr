@@ -36,14 +36,14 @@ order=-1
 
 [item:compliant.tex]
 archive=true
-column=130
+column=8
 encoding=UTF-8
 highlight=LaTeX
-line=98
+line=18
 mode=LaTeX
 open=true
 order=0
 
 [view-settings,view=0,item:compliant.tex]
-CursorColumn=130
-CursorLine=98
+CursorColumn=8
+CursorLine=18

@@ -4,6 +4,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
 #include <set>
 
@@ -80,7 +81,7 @@ protected:
 
     // Equation system
     SMatrix matM;      ///< mass matrix
-    SMatrix matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
+    SMatrix& matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
     SMatrix matJ;      ///< concatenation of the constraint Jacobians
     SMatrix matC;      ///< compliance matrix used to regularize the system
     VectorSofa vecF;   ///< top of the right-hand term: forces
@@ -112,7 +113,13 @@ public:
 
 protected:
 
-    typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
+//    /// Replace square matrix M with PMP, where P is the matrix of the projective constraints
+//    void projectMatrix( SMatrix& M );
+
+//    /// Replace vector v with Pv, where P is the matrix of the projective constraints
+//    void projectVector( VectorEigen& v );
+
+    typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, PROJECT_MATRICES, DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
 
     /** Visitor used to perform the assembly of M, C, J.
       Proceeds in several passes:<ol>
@@ -151,13 +158,10 @@ protected:
 
         /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
         /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-        SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
-
-        /// Return an identity matrix of the given size
-        SMatrix createIdentityMatrix( unsigned size );
+        static SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
         /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
-        const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
+        static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
     };
 
 
@@ -165,8 +169,16 @@ protected:
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
     /// Compute the inverse of the matrix. The input matrix MUST be diagonal. The threshold parameter is currently unused.
-    void inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m, SReal threshold);
-    SMatrix invM, PMinvP;      ///< inverse mass matrix used in the Schur complement
+    static void inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m, SReal threshold);
+
+    /// Return an identity matrix of the given size
+    static SMatrix createIdentityMatrix( unsigned size );
+
+//    SMatrix invM;      ///< inverse mass matrix used in the Schur complement
+    SMatrix& PMinvP;      ///< inverse mass matrix used in the Schur complement, projected
+
+    linearsolver::EigenBaseSparseMatrix<SReal> projMatrix;
+    linearsolver::EigenBaseSparseMatrix<SReal> invprojMatrix;
 
 
 };
