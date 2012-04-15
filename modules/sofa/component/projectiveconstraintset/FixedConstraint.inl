@@ -212,6 +212,19 @@ void  FixedConstraint<DataTypes>::reinit()
 
 }
 
+template <class DataTypes>
+void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    unsigned blockSize = DataTypes::deriv_total_size;
+
+    // clears the rows and columns associated with fixed particles
+    for(SetIndexArray::const_iterator it= f_indices.getValue().begin(), iend=f_indices.getValue().end(); it!=iend; it++ )
+    {
+        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+    }
+}
+
+
 
 /// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
 template <class DataTypes>

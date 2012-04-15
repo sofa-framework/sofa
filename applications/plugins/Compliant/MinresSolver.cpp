@@ -27,7 +27,9 @@ using namespace sofa::helper;
 using namespace core::behavior;
 
 SOFA_DECL_CLASS(MinresSolver);
-int MinresSolverClass = core::RegisterObject("A simple explicit time integrator").add< MinresSolver >();
+int MinresSolverClass =
+    core::RegisterObject("Variant of ComplianceSolver where a minres iterative solver is used in place of the direct solver")
+    .add< MinresSolver >();
 
 // scoped logging
 struct raii_log
@@ -190,12 +192,12 @@ MinresSolver::mat& MinresSolver::C()
 }
 
 
-const MinresSolver::mat& MinresSolver::P() const
+const MinresSolver::mat& MinresSolver::projMatrix() const
 {
     return matP;
 }
 
-MinresSolver::mat& MinresSolver::P()
+MinresSolver::mat& MinresSolver::projMatrix()
 {
     return matP;
 }
@@ -260,12 +262,12 @@ MinresSolver::vec MinresSolver::solve_kkt(minres::params& p )
     vec rhs; rhs.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
-    rhs << P() * f(), -phi();
+    rhs << projMatrix() * f(), -phi();
 
     vec x = vec::Zero( rhs.size() );
     warm(x);
 
-    minres::solve(x, kkt(M(), J(), P(), C() ), rhs, p);
+    minres::solve(x, kkt(M(), J(), projMatrix(), C() ), rhs, p);
     last = x;
 
     return x.tail( phi().size() );

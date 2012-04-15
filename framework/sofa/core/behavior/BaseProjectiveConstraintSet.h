@@ -103,8 +103,15 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
 
-    /// Get the (sparse) jacobian matrix, as used in projectResponse.
-    virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* ) {return 0;}
+//        /// Get the (sparse) jacobian matrix, as used in projectResponse. (Experimental API)
+//        virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* ){return 0;}
+
+    /** Project the the given matrix (Experimental API).
+      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
+      */
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) { serr<<"projectMatrix not implemented, projection will not be handled appropriately"<<sendl; }
+
+
     /// @}
 
 

@@ -61,7 +61,6 @@ namespace linearsolver
   Then, method <something>Solve(VecDeriv& x, const VecDeriv& b) can be used an arbitrary number of times.
 
   There is no checking that the matrix is actually square, but the solvers make no sense for non-square matrices.
-  If you need a rectangular matrix, use EigenSparseRectangularMatrix
   */
 template<typename DataTypes>
 class EigenSparseSquareMatrix : public defaulttype::BaseMatrix

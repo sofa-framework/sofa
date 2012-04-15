@@ -127,23 +127,61 @@ public:
         eigenMatrix.coeffRef(i,j) = (Real)0;
     }
 
-    ///< Set all the entries of a row to 0. Not efficient !
-    void clearRow(int /*i*/)
+    /// Set all the entries of a row to 0.
+    void clearRow(int i)
     {
-        cerr<<"EigenBaseSparseMatrix::clearRow(int i) is not implemented !"<<endl;
+        for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+        {
+            it.valueRef() = 0;
+        }
+    }
+
+    /// Set all the entries of rows imin to imax-1 to 0.
+    void clearRows(int imin, int imax)
+    {
+        for(int i=imin; i<imax; i++)
+            for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+            {
+                it.valueRef() = 0;
+            }
     }
 
     ///< Set all the entries of a column to 0. Not efficient !
-    void clearCol(int /*j*/)
+    void clearCol(int col)
     {
-        cerr<<"EigenBaseSparseMatrix::clearCol(int i) is not implemented !"<<endl;
+        for(int i=0; i<eigenMatrix.rows(); i++ )
+            for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+            {
+                if( it.col()==col)
+                    it.valueRef() = 0;
+            }
     }
 
-    ///< Set all the entries of a column and a row to 0. Not efficient !
-    void clearRowCol(int /*i*/)
+    ///< Clears the all the entries of column imin to column imax-1. Not efficient !
+    void clearCols(int imin, int imax)
     {
-        cerr<<"EigenBaseSparseMatrix::clearRowCol(int i) is not implemented !"<<endl;
+        for(int i=0; i<eigenMatrix.rows(); i++ )
+            for (typename Matrix::InnerIterator it(eigenMatrix,i); it && it.col()<imax; ++it)
+            {
+                if( imin<=it.col() )
+                    it.valueRef() = 0;
+            }
     }
+
+    ///< Set all the entries of column i and of row i to 0. Not efficient !
+    void clearRowCol(int i)
+    {
+        clearRow(i);
+        clearCol(i);
+    }
+
+    ///< Clears all the entries of rows imin to imax-1 and columns imin to imax-1
+    void clearRowsCols(int imin, int imax)
+    {
+        clearRows(imin,imax);
+        clearCols(imin,imax);
+    }
+
 
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear()
