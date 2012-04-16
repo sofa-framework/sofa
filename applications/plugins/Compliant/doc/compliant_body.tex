@@ -2,11 +2,14 @@
 \newcommand{\mat}[1]{\mathbf{#1}}
 
 \newcommand{\pos}{\vect{x}}
+\newcommand{\dx}{\vect{\Delta x}}
 \newcommand{\xcur}{\vect{x}_{n}}
 \newcommand{\xnext}{\vect{x}_{n+1}}
 \newcommand{\vel}{\vect{v}}
+\newcommand{\dv}{\vect{\Delta v}}
 \newcommand{\vcur}{\vect{v}_{n}}
 \newcommand{\vnext}{\vect v_{n+1}}
+\newcommand{\acc}{\vect{a}}
 \newcommand{\force}{\vect{f}}
 \newcommand{\forcext}{\vect{f}_{ext}}
 \newcommand{\lam}{\vect{\lambda}}
@@ -26,54 +29,98 @@
 \newcommand{\violcur}{\violation_{n}}
 \newcommand{\violnext}{\violation_{n+1}}
 \newcommand{\dviolnext}{\dot \violation_{n+1}}
+\newcommand{\cmp}{c}
+\newcommand{\dampingratio}{d}
+
+\section{Constraint forces}
+This approach unifies soft and hard constraints. Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
+\begin{equation} \label{eq acc hard}
+\left( \begin{array}{cc}
+\M & -\Jt \\
+ \J &  \end{array}\right)
+\left( \begin{array}{c}
+\acc \\ \lam
+\end{array}\right) = \left( \begin{array}{c}
+\forcext  \\
+-\violation
+\end{array}\right) 
+\end{equation}
+where $\M$ is the mass matrix, $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force and $\violation$ is the constraint violation.
+$\lam$ and $\violation$ are vectors with as many entries as scalar constraints. The equation system is typically solved using a Schur complement to compute the constraint forces:
+\begin{equation}\label{eq schur rigid}
+\J \Minv \Jt \lam = -\violation - \J \Minv \forcext
+\end{equation}
+and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.
+
+
+In the generalized approach, the constraint forces are considered proportional to the constraint violations:
+\begin{equation}\label{eq generalized constraint}
+\lam = \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
+\end{equation}
+where $\cmp$ is the compliance of the constraints and $\dampingratio$ its damping ratio.
+Combined with a time discretization scheme, this leads to an equation system similar to \eqref{eq schur rigid} as shown is the next section.
+% This leads to equation system:
+% \begin{equation} \label{eq acc compliant}
+% \left( \begin{array}{cc}
+% \M & -\Jt \\
+%  \J &  \C \end{array}\right)
+% \left( \begin{array}{c}
+% \acc \\ \lam
+% \end{array}\right) = \left( \begin{array}{c}
+% \forcext  \\
+% -\violation - \dampingratio \dviolation
+% \end{array}\right) 
+% \end{equation}
+% where $\C$ is the compliance matrix, typically diagonal, which is null for hard constraints. The corresponding Schur complement is well-conditioned for hard constraints:
+% \begin{equation}\label{eq schur compliant}
+% \left( \J \Minv \Jt  +   \C \right) \lam = -\violation - \dampingratio\dviolation - \J \Minv \forcext
+% \end{equation}
+% contrary to the standard implicit integration approach, where the indefinite stiffness matrix grows to infinity for hard constraints.
 
 
 \section{Time integration}
-Implicit scheme :
+Our implicit scheme is:
 \begin{eqnarray}
  \vnext &=& \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
   \xnext &=& \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)
 \end{eqnarray}
-where index $n$ denotes current values while index $n+1$ denotes next values.
-
+where index $n$ denotes current values while index $n+1$ denotes next values, $\alpha$ is the implicit velocity factor, and $\beta$ is the implicit position factor. Let
 \begin{eqnarray}
- \Delta \vel = \vnext -    \vcur  &=& h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
-\Delta \pos = \xnext -  \xcur    &=& h (v + \beta  \Delta v)
+ \dv = \vnext -    \vcur  &=& h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
+\dx = \xnext -  \xcur    &=& h (v + \beta  \dv)
 \end{eqnarray}
-
-Constraint violation $\violation$ and its Jacobian $\J$:
+be the velocity and position changes across the time step.
+The constraint violation $\violation$ and its Jacobian $\J$ are:
 \begin{eqnarray}
  \J &=& \frac{\partial \vect \violation}{\partial \pos} \\
- \violnext &\simeq& \violcur + \J \Delta x = \violcur + h   \dviolation + \J h \beta \Delta \vel  \label{eq violnext}\\
-\dviolnext &\simeq& \violnext + \J \Delta v \label{eq dviolnext}
+ \violnext &\simeq& \violcur + \J \dx = \violcur + h   \dviolation + \J h \beta \Delta \vel  \label{eq violnext}\\
+\dviolnext &\simeq& \violnext + \J \dv \label{eq dviolnext}
 \end{eqnarray}
-
-
-Forces:
+The corresponding forces are:
 \begin{eqnarray}
  \force &=& \forcext + \Jt \lam \\
  \lam_i &=& -\frac{1}{c_i} (  \violation_i + d \dviolation_i ) \label{eq lambda}
 \end{eqnarray}
-where subscript $i$ denotes a scalar constraint.
+where the subscript $i$ denotes a scalar constraint.
 
-Average Lagrange multipliers using equations \ref{eq lambda}, \ref{eq violnext} and \ref{eq dviolnext}:
+The average constraint forces are computed  using equations \ref{eq lambda}, \ref{eq violnext} and \ref{eq dviolnext}:
 \begin{eqnarray*}
  \avlam_i &=& \alpha \lnext + (1-\alpha) \lcur \\
-&=& -\frac{1}{c_i} ( \alpha \violation + \alpha h \dviolation  + \alpha h \beta \J \Delta \vel + \alpha d \dviolation + \alpha d \J \Delta v + (1-\alpha)\violation + (1-\alpha) d \dviolation  ) \\
-&=& -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \Delta v )
+&=& -\frac{1}{c_i} ( \alpha \violation + \alpha h \dviolation  + \alpha h \beta \J \Delta \vel + \alpha d \dviolation + \alpha d \J \dv + (1-\alpha)\violation + (1-\alpha) d \dviolation  ) \\
+&=& -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \dv )
 \end{eqnarray*}
 We can rewrite the previous equation as:
 \begin{equation}
- \J \Delta v + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)
+ \J \dv + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)
 \end{equation}
 where values without indices denote current values.
 The complete equation system is:
 \begin{equation}
  \left( \begin{array}{cc}
 \frac{1}{h}\P\M & -\P\Jt \\
-\ J & \frac{1}{l} \C \end{array}\right)
+\J & \frac{1}{l} \C \end{array}\right)
 \left( \begin{array}{c}
-\Delta v \\ \avlam
+\dv \\ \avlam
 \end{array}\right) = \left( \begin{array}{c}
 \P\forcext  \\
 - \frac{1}{l} (\violation +(d+\alpha h) \dviolation)
@@ -82,7 +129,7 @@ The complete equation system is:
 where $ l=\alpha(h \beta + d) $
 The system is singular due to matrix $\P $, however we can use $ \P \Minv\P $ as inverse mass matrix to compute a Schur complement:
 \[ \begin{array}{ccc}
-\left( hJPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &=& -\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - hJ M^{-1} f_e \\
-\Delta v &=& hP M^{-1}( f_e + J^T \bar\lambda ) \\
-\Delta x &=& h( v + \beta \Delta v )
+\left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &=& -\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation \right) - h\J \Minv \forcext \\
+\dv &=& h\P\Minv(\forcext +\Jt \avlam ) \\
+\dx &=& h( \vel + \beta \dv )
 \end{array} \]

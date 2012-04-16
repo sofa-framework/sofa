@@ -200,7 +200,7 @@ void ExtensionMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams
         points.push_back(pos[links[i][0]]);
         points.push_back(pos[links[i][1]]);
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
 }
 
 

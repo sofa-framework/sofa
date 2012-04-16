@@ -358,7 +358,20 @@ class SparseLDLT<_MatrixType,Cholmod> : public SparseLDLT<_MatrixType>
       cholmod_finish(&m_cholmod);
     }
 
-    inline const typename Base::CholMatrixType& matrixL(void) const;
+    inline const typename Base::CholMatrixType& matrixL(void) const
+{
+  if (this->m_status & Base::MatrixLIsDirty)
+  {
+    eigen_assert(!(this->m_status & Base::SupernodalFactorIsDirty));
+
+    cholmod_sparse* cmRes = cholmod_factor_to_sparse(m_cholmodFactor, &m_cholmod);
+    const_cast<typename Base::CholMatrixType&>(this->m_matrix) = MappedSparseMatrix<Scalar>(*cmRes);
+    free(cmRes);
+
+    this->m_status = (this->m_status & ~Base::MatrixLIsDirty);
+  }
+  return this->m_matrix;
+}
 
     template<typename Derived>
     void solveInPlace(MatrixBase<Derived> &b) const;
@@ -467,23 +480,22 @@ template<typename _MatrixType>
 bool SparseLDLT<_MatrixType,Cholmod>::succeeded() const
 { return true; }
 
+//template<typename _MatrixType>
+//inline const typename SparseLDLT<_MatrixType,Cholmod>::CholMatrixType&
+//SparseLDLT<_MatrixType,Cholmod>::matrixL(void) const
+//{
+//  if (this->m_status & Base::MatrixLIsDirty)
+//  {
+//    eigen_assert(!(this->m_status & Base::SupernodalFactorIsDirty));
 
-template<typename _MatrixType>
-inline const typename SparseLDLT<_MatrixType,Cholmod>::CholMatrixType&
-SparseLDLT<_MatrixType,Cholmod>::matrixL() const
-{
-  if (this->m_status & Base::MatrixLIsDirty)
-  {
-    eigen_assert(!(this->m_status & Base::SupernodalFactorIsDirty));
+//    cholmod_sparse* cmRes = cholmod_factor_to_sparse(m_cholmodFactor, &m_cholmod);
+//    const_cast<typename Base::CholMatrixType&>(this->m_matrix) = MappedSparseMatrix<Scalar>(*cmRes);
+//    free(cmRes);
 
-    cholmod_sparse* cmRes = cholmod_factor_to_sparse(m_cholmodFactor, &m_cholmod);
-    const_cast<typename Base::CholMatrixType&>(this->m_matrix) = MappedSparseMatrix<Scalar>(*cmRes);
-    free(cmRes);
-
-    this->m_status = (this->m_status & ~Base::MatrixLIsDirty);
-  }
-  return this->m_matrix;
-}
+//    this->m_status = (this->m_status & ~Base::MatrixLIsDirty);
+//  }
+//  return this->m_matrix;
+//}
 
 
 

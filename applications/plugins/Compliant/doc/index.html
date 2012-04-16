@@ -1,9 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
-
-
-
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -13,6 +10,11 @@
   <script type="text/x-mathjax-config">
       MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
     </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+  </script>
   
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script></head><body>
@@ -58,55 +60,201 @@ generate</a> using doxygen.<br>
 
 This is inspired from <span style="font-style: italic;">Servin,
 Lacoursière, Melin, <a href="http://www.ep.liu.se/ecp/019/005/ecp01905.pdf">Interactive
-Simulation of Elastic Deformable Materials</a></span>&nbsp; and
-generalized in a tunable implicit integration scheme: \[ \begin{array}{ccc} <br>
-\Delta v &amp;=&amp; h.M^{-1}.(\alpha
-f_{n+1} + (1-\alpha) f_n) \\ <br>
-\Delta x &amp;=&amp; h.(\beta v_{n+1} +
-(1-\beta) v_n) <br>
-\end{array} \] <br>
+Simulation of Elastic Deformable Materials</a></span>&nbsp; , where
+elastic forces are a generalization of rigid constraints.<br>
 
-where  \( M \) is the mass matrix, \( h \) is the time step, \( \alpha \) is the implicit velocity
-factor, and \( \beta \) is the implicit position factor.&nbsp;
-The corresponding dynamic equation is:
-  \[ \left( \begin{array}{cc} <br>\frac{1}{h}PM &amp; -PJ^T \\<br>
-&nbsp;J &amp; \frac{1}{l} C \end{array}\right)
-      <br>
-\left( \begin{array}{c} <br>
-\Delta v \\ \bar\lambda <br>
-\end{array}\right)
-    = \left( \begin{array}{c} <br>Pf_e \\ <br>
-- \frac{1}{l} (\phi +(d+\alpha h) \dot \phi)  <br>
-\end{array}\right) \]
-    <br>where
-\( f_e \) is the net external force considered constant across the time
-step, \( \phi \) is the constraint violation, \( P \) is a projection
-matrix to impose boundary conditions on displacements (typically
-maintain fixed points),&nbsp; \( J \) the constraint
-Jacobian matrix, \( C \) is the constraint compliance matrix (i.e.
-inverse of constraint stiffness), \( l=\alpha(h \beta + d) \) is a term
-related to implicit integration and constraint damping, and \(
-\bar\lambda \) is the average constraint forces, consistently with the
-implicit velocity integration. <br>
-<br>
-The system is singular due to matrix \( P \), however we can use \( P
-M^{-1}P \) as inverse mass matrix to compute Schur complements.<br>
-<br>
-A Shur complement is used to compute the constraint forces, then these
-are added to the external forces to obtain the final velocity
-increment, and the positions are updated according to the implicit
-scheme: \[ \begin{array}{ccc} <br>
-\left( hJPM^{-1}PJ^T + \frac{1}{l}C \right) \bar\lambda &amp;=&amp;
--\frac{1}{l} \left(\phi + (d+h\alpha)\dot\phi \right) - hJ M^{-1} f_e \\ <br>
-\Delta v  &amp;=&amp; hP M^{-1}( f_e + J^T \bar\lambda ) \\
-                                 <br>
-\Delta x  &amp;=&amp;  h( v + \beta \Delta v )
-  <br>
-\end{array} \]
-where \( P \) is the projection matrix corresponding to the projective constraints applied to the independent DOFs.
+The following is a derivation of our variant of the method. More detail on the derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
+$<br>
+
+\newcommand{\vect}[1]{\mathbf{#1}}<br>
+
+\newcommand{\mat}[1]{\mathbf{#1}}<br>
 
 <br>
-More detail on the derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
+
+\newcommand{\pos}{\vect{x}}<br>
+
+\newcommand{\dx}{\vect{\Delta x}}<br>
+
+\newcommand{\xcur}{\vect{x}_{n}}<br>
+
+\newcommand{\xnext}{\vect{x}_{n+1}}<br>
+
+\newcommand{\vel}{\vect{v}}<br>
+
+\newcommand{\dv}{\vect{\Delta v}}<br>
+
+\newcommand{\vcur}{\vect{v}_{n}}<br>
+
+\newcommand{\vnext}{\vect v_{n+1}}<br>
+
+\newcommand{\acc}{\vect{a}}<br>
+
+\newcommand{\force}{\vect{f}}<br>
+
+\newcommand{\forcext}{\vect{f}_{ext}}<br>
+
+\newcommand{\lam}{\vect{\lambda}}<br>
+
+\newcommand{\lcur}{\lam_{n}}<br>
+
+\newcommand{\lnext}{\lam_{n+1}}<br>
+
+\newcommand{\avlam}{\bar{\lam}}<br>
+
+\newcommand{\fcur}{\vect{f}_{n}}<br>
+
+\newcommand{\fnext}{\vect f_{n+1}}<br>
+
+\newcommand{\M}{\mat M}<br>
+
+\newcommand{\Minv}{\mat M^{-1}}<br>
+
+\renewcommand{\P}{\mat P}<br>
+
+\newcommand{\J}{\mat J}<br>
+
+\newcommand{\Jt}{\mat J^T}<br>
+
+\newcommand{\C}{\mat C}<br>
+
+\newcommand{\violation}{ \phi}<br>
+
+\newcommand{\dviolation}{\dot \violation}<br>
+
+\newcommand{\violcur}{\violation_{n}}<br>
+
+\newcommand{\violnext}{\violation_{n+1}}<br>
+
+\newcommand{\dviolnext}{\dot \violation_{n+1}}<br>
+
+\newcommand{\cmp}{c}<br>
+
+\newcommand{\dampingratio}{d}<br>
+
+$<br>
+<h3>Constraint forces</h3>
+This approach unifies soft and hard constraints. Hard constraints are
+usually implemented using Lagrange multipliers $\lambda$ in the
+following equation:<br>
+\begin{equation} \label{eq acc hard}<br>
+\left( \begin{array}{cc}<br>
+\M &amp; -\Jt \\<br>
+&nbsp;\J &amp;&nbsp; \end{array}\right)<br>
+\left( \begin{array}{c}<br>
+\acc \\ \lam<br>
+\end{array}\right) = \left( \begin{array}{c}<br>
+\forcext&nbsp; \\<br>
+-\violation<br>
+\end{array}\right) <br>
+\end{equation}<br>
+where $\M$ is the mass matrix, $\J$ is the Jacobian matrix of the
+constraint(s), $\acc$ is the acceleration, $\forcext$ is the net
+external force applied to the system, $\lam$ is the constraint force
+and $\violation$ is the constraint violation.<br>
+$\lam$ and $\violation$ are vectors with as many entries as scalar
+constraints. The equation system is typically solved using a Schur
+complement to compute the constraint forces:<br>
+\begin{equation}\label{eq schur rigid}<br>
+\J \Minv \Jt \lam = -\violation - \J \Minv \forcext<br>
+\end{equation}<br>
+and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.<br>
+<br>
+<br>
+In the generalized approach, the constraint forces are considered proportional to the constraint violations:<br>
+\begin{equation}\label{eq generalized constraint}<br>
+\lam = \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)<br>
+\end{equation}<br>
+where $\cmp$ is the compliance of the constraints and $\dampingratio$ its damping ratio.<br>
+Combined with a time discretization scheme, this leads to an equation
+system similar to \eqref{eq schur rigid} as shown is the next section.<br>
+<h3>Time integration</h3>
+Our implicit scheme is:<br>
+\begin{eqnarray}<br>
+&nbsp;\vnext &amp;=&amp; \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\<br>
+&nbsp; \xnext &amp;=&amp; \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)<br>
+\end{eqnarray}<br>
+where index $n$ denotes current values while index $n+1$ denotes next
+values, $\alpha$ is the implicit velocity factor, and $\beta$ is the
+implicit position factor. Let<br>
+\begin{eqnarray}<br>
+&nbsp;\dv = \vnext -&nbsp;&nbsp;&nbsp; \vcur&nbsp; &amp;=&amp; h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\<br>
+\dx = \xnext -&nbsp; \xcur&nbsp;&nbsp;&nbsp; &amp;=&amp; h (v + \beta&nbsp; \dv)<br>
+\end{eqnarray}<br>
+be the velocity and position changes across the time step.<br>
+<br>
+The constraint violation $\violation$ and its Jacobian $\J$ are:<br>
+\begin{equation}<br>
+
+&nbsp;\J = \frac{\partial \vect \violation}{\partial \pos} \\<br>
+
+\end{equation}<br>
+
+
+\begin{equation}<br>
+&nbsp;
+\violnext \simeq \violcur + \J \Delta x = \violcur + h&nbsp;&nbsp;
+\dviolation + \J h \beta \Delta \vel&nbsp; \label{eq violnext}\\<br>
+
+\end{equation}<br>
+
+
+\begin{equation}<br>
+
+
+\dviolnext \simeq \violnext + \J \Delta v \label{eq dviolnext}<br>
+
+\end{equation}<br>
+
+<br>
+The corresponding forces are:<br>
+\begin{equation}<br>
+&nbsp;\force = \forcext + \Jt \lam <br>
+&nbsp;\end{equation}<br>
+
+\begin{equation}<br>
+
+\lam_i = -\frac{1}{c_i} (&nbsp; \violation_i + d \dviolation_i ) \label{eq lambda}<br>
+\end{equation}<br>
+where the subscript $i$ denotes a scalar constraint.<br>
+<br>
+The average constraint forces are computed&nbsp; using equations \ref{eq lambda}, \ref{eq violnext} and \ref{eq dviolnext}:<br>
+\begin{eqnarray*}<br>
+&nbsp;\avlam_i &amp;=&amp; \alpha \lnext + (1-\alpha) \lcur \\<br>
+&amp;=&amp; -\frac{1}{c_i} ( \alpha \violation + \alpha h
+\dviolation&nbsp; + \alpha h \beta \J \dv + \alpha d \dviolation +
+\alpha d \J \dv + (1-\alpha)\violation + (1-\alpha) d \dviolation&nbsp;
+) \\<br>
+&amp;=&amp; -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \dv )<br>
+\end{eqnarray*}<br>
+We can rewrite the previous equation as:<br>
+\begin{equation}<br>
+&nbsp;\J \dv + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)<br>
+\end{equation}<br>
+where values without indices denote current values.<br>
+The complete equation system is:<br>
+\begin{equation}<br>
+&nbsp;\left( \begin{array}{cc}<br>
+\frac{1}{h}\P\M &amp; -\P\Jt \\<br>
+\J &amp; \frac{1}{l} \C \end{array}\right)<br>
+\left( \begin{array}{c}<br>
+\dv \\ \avlam<br>
+\end{array}\right) = \left( \begin{array}{c}<br>
+\P\forcext&nbsp; \\<br>
+- \frac{1}{l} (\violation +(d+\alpha h) \dviolation)<br>
+\end{array}\right) <br>
+\end{equation}<br>
+where $ l=\alpha(h \beta + d) $<br>
+The system is singular due to matrix $\P $, however we can use $ \P
+\Minv\P $ as inverse mass matrix to compute a Schur complement:<br>
+\[ \begin{array}{ccc}<br>
+\left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &amp;=&amp;
+-\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation
+\right) - h\J \Minv \forcext \\<br>
+\dv &amp;=&amp; h\P\Minv(\forcext +\Jt \avlam ) \\<br>
+\dx &amp;=&amp; h( \vel + \beta \dv )<br>
+\end{array} \]<br><br><br>
+
 <br>
 
 <br>
@@ -132,7 +280,6 @@ More detail on the derivation of this equation in <a href="compliant.pdf">compli
   <li>the documentation starts in <span style="text-decoration: underline;">doc/index.html</span> and it is
 linked to the <a href="code/html/index.html">code documentation</a><br>
   </li>
-  
 </ul>
 
 <br>
@@ -200,8 +347,11 @@ Doxyfile</span> in the doc directory.<br>
 <h4><a name="LaTeX_formulas"></a>LaTeX formulas</h4>
 
 can be inserted in this html document thanks to the <a href="http://www.mathjax.org/">mathjax</a> config and
-script included in the header. Basically, an inline \( \LaTeX \) formula starts
-with <span style="font-weight: bold;">\(</span> and ends with <span style="font-weight: bold;">\)</span>, while a centered formula on a separate line is bracketed using <span style="font-weight: bold;">\[</span> and <span style="font-weight: bold;">\]</span>&nbsp; .<br>
+script included in the header. Basically, an inline \( \LaTeX \)
+formula starts
+with <span style="font-weight: bold;">\(</span> and ends with <span style="font-weight: bold;">\)</span>, while a centered formula on a
+separate line is bracketed using <span style="font-weight: bold;">\[</span>
+and <span style="font-weight: bold;">\]</span>&nbsp; .<br>
 
 <br>
 
