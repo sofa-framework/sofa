@@ -30,7 +30,7 @@
 #include <sofa/core/Mapping.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>

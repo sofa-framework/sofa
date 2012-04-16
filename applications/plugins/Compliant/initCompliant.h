@@ -29,7 +29,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/common/Node.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
+#ifdef SOFA_BUILD_Compliant
 #define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_Compliant_API  SOFA_IMPORT_DYNAMIC_LIBRARY

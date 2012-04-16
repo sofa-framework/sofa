@@ -31,13 +31,43 @@
 #include <sofa/gui/GUIManager.h>
 
 using namespace sofa::simulation::tree;
-using sofa::component::odesolver::EulerSolver;
+using namespace sofa::component::odesolver;
+using namespace sofa::component::container;
+using namespace sofa::component::mass;
+using namespace sofa::component::visualmodel;
+using namespace sofa::component::collision;
+using namespace sofa::component::mapping;
+using namespace sofa::component::constraintset;
+using namespace sofa::component::projectiveconstraintset;
+using namespace sofa::component::controller;
+using namespace sofa::component::forcefield;
+using namespace sofa::component::fem::material;
+using namespace sofa::component::fem::forcefield;
+using namespace sofa::component::animationloop;
+using namespace sofa::component::linearsolver;
+using namespace sofa::component::topology;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::engine;
+using namespace sofa::component::behaviormodel::eulerianfluid;
+using namespace sofa::component::misc;
+using namespace sofa::component::configurationsetting;
+using namespace sofa::component::loader;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::visual;
+using namespace sofa::helper;
+
+/*using sofa::component::odesolver::EulerSolver;
 using sofa::component::container::MechanicalObject_Vec3f;
 using sofa::component::mass::UniformMass_Vec3f;
-using sofa::component::visualmodel::VisualStyle;
 using sofa::core::objectmodel::New;
 using sofa::core::visual::DisplayFlags;
-using sofa::helper::WriteAccessor;
+using sofa::helper::WriteAccessor;*/
 
 // ---------------------------------------------------------------------
 // ---

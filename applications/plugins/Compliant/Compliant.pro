@@ -33,6 +33,19 @@ README_FILE = Compliant.txt
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
 
+win32 {
+SOFA_CHOLMOD_PATH = ../../../extlibs/SuiteSparse/cholmod
+INCLUDEPATH += $$SOFA_CHOLMOD_PATH/Include
+LIBPATH += $$SOFA_CHOLMOD_PATH/Lib
+LIBS += -lamd
+LIBS += -llapack
+LIBS += -lblas
+LIBS += -lcamd
+LIBS += -lcolamd
+LIBS += -lcholmod
+
+win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libblas.dll)\" \"../../../bin/libblas.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/liblapack.dll)\" \"../../../bin/liblapack.dll\"
+}
 
 load(sofa/post)
 
