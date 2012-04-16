@@ -469,7 +469,7 @@ bool SparseLDLT<_MatrixType,Cholmod>::succeeded() const
 
 
 template<typename _MatrixType>
-inline const typename SparseLDLT<_MatrixType>::CholMatrixType&
+inline const typename SparseLDLT<_MatrixType,Cholmod>::CholMatrixType&
 SparseLDLT<_MatrixType,Cholmod>::matrixL() const
 {
   if (this->m_status & Base::MatrixLIsDirty)

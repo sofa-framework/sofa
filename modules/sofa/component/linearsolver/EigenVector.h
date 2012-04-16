@@ -168,7 +168,7 @@ public:
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear()
     {
-        resize(0,0);
+        resize(0);
         resize(size());
     }
 

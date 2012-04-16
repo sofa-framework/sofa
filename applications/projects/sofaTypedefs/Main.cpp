@@ -234,8 +234,6 @@ const std::string defaultIncludes(
     {
         target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
         << " " << creator->getClass()->className << "_" << templateName << ";";
-
-        std::cout << templateName << std::endl;
     }
     else
     {

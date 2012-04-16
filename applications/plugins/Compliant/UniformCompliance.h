@@ -16,7 +16,7 @@ namespace forcefield
   Each dof represents a constraint violation, and undergoes force \f$ \lambda = -\frac{1}{c} ( x - d v ) \f$, where c is the compliance and d the damping ratio.
   */
 template<class TDataTypes>
-class SOFA_Compliant_API UniformCompliance : public core::behavior::ForceField<TDataTypes>
+class UniformCompliance : public core::behavior::ForceField<TDataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(UniformCompliance, TDataTypes), SOFA_TEMPLATE(core::behavior::ForceField, TDataTypes));
