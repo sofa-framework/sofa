@@ -216,7 +216,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         points.push_back(positions[i]);
         points.push_back(pos[indices[i]]);
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) );
 }
 
 

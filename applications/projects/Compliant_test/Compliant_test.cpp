@@ -86,7 +86,7 @@ typedef component::odesolver::ComplianceSolver ComplianceSolver;
 
 
 SReal complianceValue = 0;
-SReal dampingRatio = 0;
+SReal dampingRatio = 0.1;
 
 /// Create a string
 simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
@@ -181,7 +181,7 @@ simulation::Node::SPtr createScene()
 {
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(-1,0,0) );
+    root->setGravity( Coord3(0,-1,0) );
     root->setAnimate(false);
     root->setDt(0.001);
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -200,11 +200,11 @@ simulation::Node::SPtr createScene()
     simulatedScene->addObject( complianceSolver );
     complianceSolver->implicitVelocity.setValue(1.0);
     complianceSolver->implicitPosition.setValue(1.0);
-//    complianceSolver->verbose.setValue(true);
+    complianceSolver->verbose.setValue(true);
 
 
     // first string
-    unsigned n1 = 10;
+    unsigned n1 = 2;
     Node::SPtr  string1 = createString( simulatedScene, Vec3(0,0,0), Vec3(1,0,0), n1, 1.0*n1, complianceValue, dampingRatio );
 
 
