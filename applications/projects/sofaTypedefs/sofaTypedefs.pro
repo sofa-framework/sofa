@@ -8,7 +8,7 @@ CONFIG += console
 SOURCES = Main.cpp 
 
 contains (CONFIGDEBUG, debug) {
-	unix:macx: QMAKE_POST_LINK = ../../../bin/sofaTypedefsd
+	unix: QMAKE_POST_LINK = ../../../bin/sofaTypedefsd
 	win32: QMAKE_POST_LINK = call ..\..\..\bin\sofaTypedefsd.exe
 }
 	
