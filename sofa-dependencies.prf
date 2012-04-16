@@ -185,7 +185,7 @@ declare(chainHybrid,         			applications/tutorials/chainHybrid,      				sof
 declare(houseOfCards,        			applications/tutorials/houseOfCards,     				sofa_component sofaguimain sofaobjectcreator)
 declare(mixedPendulum,       			applications/tutorials/mixedPendulum,    				sofa_component sofaguimain)
 declare(oneParticule,        			applications/tutorials/oneParticule,     				sofa_component sofaguimain)
-declare(oneParticuleWithSofaTypedefs,   applications/tutorials/oneParticuleWithSofaTypedefs,    sofa_component sofaguimain)
+declare(oneParticuleWithSofaTypedefs,   applications/tutorials/oneParticuleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,   				sofa_component sofaguimain)
 
 
