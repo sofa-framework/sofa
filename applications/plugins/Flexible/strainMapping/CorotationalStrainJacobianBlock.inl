@@ -22,14 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_GreenStrainJacobianBlock_INL
-#define FLEXIBLE_GreenStrainJacobianBlock_INL
+#ifndef FLEXIBLE_CorotationalStrainJacobianBlock_INL
+#define FLEXIBLE_CorotationalStrainJacobianBlock_INL
 
-#include "../strainMapping/GreenStrainJacobianBlock.h"
+#include "../strainMapping/CorotationalStrainJacobianBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
+
+#include <sofa/helper/PolarDecompose.h>
 
 namespace sofa
 {
@@ -44,7 +46,6 @@ namespace defaulttype
 #define F332(type)  DefGradientTypes<3,3,2,type>
 #define E331(type)  StrainTypes<3,3,1,type>
 #define E332(type)  StrainTypes<3,3,2,type>
-#define E333(type)  StrainTypes<3,3,3,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -87,12 +88,37 @@ static Mat<3,4,Real> assembleJ(const  Mat<2,2,Real>& f) // 2D
     return J;
 }
 
+
+template<typename Real>
+void  computeQR( Mat<3,3,Real> &r, const  Mat<3,3,Real>& f)
+{
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+
+    typedef Vec<3,Real> Coord;
+    Coord edgex(f[0][0],f[1][0],f[2][0]);
+    edgex.normalize();
+
+    Coord edgey(f[0][1],f[1][1],f[2][1]);
+
+    Coord edgez = cross( edgex, edgey );
+    edgez.normalize();
+
+    edgey = cross( edgez, edgex );
+    edgey.normalize();
+
+    r[0][0] = edgex[0]; r[0][1] = edgey[0]; r[0][2] = edgez[0];
+    r[1][0] = edgex[1]; r[1][1] = edgey[1]; r[1][2] = edgez[1];
+    r[2][0] = edgex[2]; r[2][1] = edgey[2]; r[2][2] = edgez[2];
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> E331
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class GreenStrainJacobianBlock< F331(InReal) , E331(OutReal) > :
+class CorotationalStrainJacobianBlock< F331(InReal) , E331(OutReal) > :
     public  BaseJacobianBlock< F331(InReal) , E331(OutReal) >
 {
 public:
@@ -114,199 +140,67 @@ public:
     enum { strain_size = Out::strain_size };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Frame;  ///< Matrix representing a linear spatial transformation
+
     /**
-    Mapping:   \f$ E = [F^T.F - I ]/2  \f$
-    Jacobian:    \f$  dE = [ F^T.dF + dF^T.F ]/2 \f$
-      */
+    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+    where:  R/D are the rotational/skew symmetric parts of F=RD
+    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
+    */
 
     static const bool constantJ=false;
 
-    InCoord F;   ///< =  store deformation gradient to compute J
+    Frame R;   ///< =  store rotational part of deformation gradient to compute J
+    unsigned int decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        F=data;
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( F.getMaterialFrame() );
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
-        strainmat*=(Real)0.5;
+        StrainMat strainmat;
+        if(decompositionMethod==0)      // polar
+            helper::polar_decomp(data.getMaterialFrame(), R, strainmat);
+        else if(decompositionMethod==1)   // large (by QR)
+        {
+            computeQR(R,data.getMaterialFrame());
+            StrainMat T=R.transposed()*data.getMaterialFrame();
+            strainmat=(T+T.transposed())*(Real)0.5;
+        }
+        else if(decompositionMethod==2)   // small
+        {
+            strainmat=(data.getMaterialFrame()+data.getMaterialFrame().transposed())*(Real)0.5;
+            R.fill(0); for(unsigned int j=0; j<material_dimensions; j++) R[j][j]=(Real)1.;
+        }
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += MatToVoigt( strainmat );
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( data.getMaterialFrame() );
+        StrainMat strainmat=R.multTranspose( data.getMaterialFrame() );
         result.getStrain() += MatToVoigt( strainmat );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getMaterialFrame() += F.getMaterialFrame()*VoigtToMat( data.getStrain() );
+        result.getMaterialFrame() += R*VoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
     {
         MatBlock B;
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getMaterialFrame());
+        Mat<strain_size,frame_size,Real> J = assembleJ(R);
         for(unsigned int j=0; j<strain_size; j++) memcpy(&B[j][spatial_dimensions],&J[j][0],frame_size*sizeof(Real)); // offset to account for spatialCoord of F
         return B;
     }
 };
 
 
-//////////////////////////////////////////////////////////////////////////////////
-////  F332 -> E333
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class InReal,class OutReal>
-class GreenStrainJacobianBlock< F332(InReal) , E333(OutReal) > :
-    public  BaseJacobianBlock< F332(InReal) , E333(OutReal) >
-{
-public:
-    typedef F332(InReal) In;
-    typedef E333(OutReal) Out;
-
-    typedef BaseJacobianBlock<In,Out> Inherit;
-    typedef typename Inherit::InCoord InCoord;
-    typedef typename Inherit::InDeriv InDeriv;
-    typedef typename Inherit::OutCoord OutCoord;
-    typedef typename Inherit::OutDeriv OutDeriv;
-    typedef typename Inherit::MatBlock MatBlock;
-    typedef typename Inherit::Real Real;
-
-    typedef typename In::MaterialFrame MaterialFrame;  ///< Matrix representing a deformation gradient
-    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
-    enum { material_dimensions = In::material_dimensions };
-    enum { spatial_dimensions = In::spatial_dimensions };
-    enum { strain_size = Out::strain_size };
-    enum { frame_size = spatial_dimensions*material_dimensions };
-
-    /**
-    Mapping:
-        - \f$ E = [F^T.F - I ]/2  \f$
-        - \f$ E_k = [(F_k^T.F + F^T.F_k ]/2  \f$
-        - \f$ E_jk = E_kj = [(F_k^T.F_j + F_j^T.F_k ]/2  \f$
-        - \f$ E_kk = [(F_k^T.F_k ]/2  \f$
-    where:
-        - _k denotes derivative with respect to spatial dimension k
-    Jacobian:
-        - \f$  dE = [ F^T.dF + dF^T.F ]/2 \f$
-        - \f$  dE_k = [ F_k^T.dF + dF^T.F_k + dF_k^T.F + F^T.dF_k]/2 \f$
-        - \f$  dE_jk = [ F_k^T.dF_j + dF_j^T.F_k + dF_k^T.F_j + F_j^T.dF_k]/2 \f$
-        - \f$  dE_kk = [ F_k^T.dF_k + dF_k^T.F_k ]/2 \f$
-      */
-
-    static const bool constantJ=false;
-
-    InCoord F;   ///< =  store deformation gradient to compute J
-
-    void addapply( OutCoord& result, const InCoord& data )
-    {
-        F=data;
-        // order 0
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( F.getMaterialFrame() );
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
-        strainmat*=(Real)0.5;
-        result.getStrain() += MatToVoigt( strainmat );
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            strainmat = F.getMaterialFrame().multTranspose( F.getMaterialFrameGradient()[k] );
-            result.getStrainGradient()[k] += MatToVoigt( strainmat );
-        }
-        // order 2
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-            for(unsigned int j=k+1; j<spatial_dimensions; j++)
-            {
-                strainmat =F.getMaterialFrameGradient()[j].multTranspose( F.getMaterialFrameGradient()[k] );
-                result.getStrainHessian()[j][k] += MatToVoigt( strainmat );
-                result.getStrainHessian()[k][j] += MatToVoigt( strainmat );
-            }
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            strainmat =F.getMaterialFrameGradient()[k].multTranspose( F.getMaterialFrameGradient()[k] );
-            strainmat*=(Real)0.5;
-            result.getStrainHessian()[k][k] += MatToVoigt( strainmat );
-        }
-    }
-
-    void addmult( OutDeriv& result,const InDeriv& data )
-    {
-        // order 0
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( data.getMaterialFrame() );
-        result.getStrain() += MatToVoigt( strainmat );
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            strainmat = F.getMaterialFrame().multTranspose( data.getMaterialFrameGradient()[k] ) + F.getMaterialFrameGradient()[k].multTranspose( data.getMaterialFrame() );
-            result.getStrainGradient()[k] += MatToVoigt( strainmat );
-        }
-        // order 2
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-            for(unsigned int j=0; j<spatial_dimensions; j++)
-            {
-                strainmat = F.getMaterialFrameGradient()[k].multTranspose( data.getMaterialFrameGradient()[j] );
-                result.getStrainHessian()[j][k] += MatToVoigt( strainmat );
-            }
-    }
-
-    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-    {
-        // order 0
-        StrainMat strainmat=VoigtToMat( data.getStrain() );
-        result.getMaterialFrame() += F.getMaterialFrame()*VoigtToMat( data.getStrain() );
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            strainmat=VoigtToMat( data.getStrainGradient()[k] );
-            result.getMaterialFrame() += F.getMaterialFrameGradient()[k]*strainmat;
-            result.getMaterialFrameGradient()[k] += F.getMaterialFrame()*strainmat;
-        }
-        // order 2
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-            for(unsigned int j=k; j<spatial_dimensions; j++)
-            {
-                strainmat=VoigtToMat( data.getStrainHessian()[k][j] );
-                result.getMaterialFrameGradient()[k] += F.getMaterialFrameGradient()[j]*strainmat;
-                if(j!=k) result.getMaterialFrameGradient()[j] += F.getMaterialFrameGradient()[k]*strainmat;
-            }
-    }
-
-    MatBlock getJ()
-    {
-        MatBlock B;
-        // order 0
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getMaterialFrame());
-        for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i][spatial_dimensions],&J[i][0],frame_size*sizeof(Real));
-        // order 1
-        Vec<spatial_dimensions, Mat<strain_size,frame_size,Real> > Jgrad;
-        for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getMaterialFrameGradient()[k]);
-
-        unsigned int offsetE=strain_size;
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions],&Jgrad[k][i][0],frame_size*sizeof(Real));
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(k+1)*frame_size],&J[i][0],frame_size*sizeof(Real));
-            offsetE+=strain_size;
-        }
-        // order 2
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-            for(unsigned int j=0; j<spatial_dimensions; j++)
-            {
-                for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(j+1)*frame_size],&Jgrad[k][i][0],frame_size*sizeof(Real));
-                if(j!=k) for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(k+1)*frame_size],&Jgrad[j][i][0],frame_size*sizeof(Real));
-                offsetE+=strain_size;
-            }
-        return B;
-    }
-};
-
 
 //////////////////////////////////////////////////////////////////////////////////
-////  F332 -> E332     =    clamped version of F332 -> E333
+////  F332 -> E332
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class GreenStrainJacobianBlock< F332(InReal) , E332(OutReal) > :
+class CorotationalStrainJacobianBlock< F332(InReal) , E332(OutReal) > :
     public  BaseJacobianBlock< F332(InReal) , E332(OutReal) >
 {
 public:
@@ -342,6 +236,7 @@ public:
     static const bool constantJ=false;
 
     InCoord F;   ///< =  store deformation gradient to compute J
+    unsigned int decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {

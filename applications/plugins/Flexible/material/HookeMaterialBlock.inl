@@ -25,10 +25,10 @@
 #ifndef FLEXIBLE_HookeMaterialBlock_INL
 #define FLEXIBLE_HookeMaterialBlock_INL
 
-#include "HookeMaterialBlock.h"
+#include "../material/HookeMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include "../StrainTypes.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
@@ -103,7 +103,7 @@ public:
     {
         StrainVec stress=x.getStrain()*mu2Vol;
         Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
-        for(unsigned int i=0; i<strain_size; i++) stress[i]+=tce;
+        for(unsigned int i=0; i<material_dimensions; i++) stress[i]+=tce;
         Real U=dot(stress,x.getStrain())/(Real)2.;
         return U;
     }
@@ -111,15 +111,19 @@ public:
     void addForce( Deriv& f , const Coord& x , const Deriv& v)
     {
         f.getStrain()-=x.getStrain()*mu2Vol + v.getStrain()*viscosityVol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) f.getStrain()[i]-=x.getStrain()[i]*mu2Vol; // hack to match FEM results !! to do: fix this
+
         Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
-        for(unsigned int i=0; i<strain_size; i++) f.getStrain()[i]-=tce;
+        for(unsigned int i=0; i<material_dimensions; i++) f.getStrain()[i]-=tce;
     }
 
     void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
     {
         df.getStrain()-=dx.getStrain()*mu2Vol*kfactor + dx.getStrain()*viscosityVol*bfactor;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor; // hack to match FEM results !! to do: fix this
+
         Real tce=(dx.getStrain()[0]+dx.getStrain()[1]+dx.getStrain()[2])*lambdaVol*kfactor;
-        for(unsigned int i=0; i<strain_size; i++) df.getStrain()[i]-=tce;
+        for(unsigned int i=0; i<material_dimensions; i++) df.getStrain()[i]-=tce;
     }
 
 

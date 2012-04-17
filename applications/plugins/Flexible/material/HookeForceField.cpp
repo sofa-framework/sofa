@@ -24,8 +24,9 @@
 ******************************************************************************/
 #define SOFA_HookeFORCEFIELD_CPP
 
-#include "HookeForceField.h"
-#include "StrainTypes.h"
+#include "../initFlexible.h"
+#include "../material/HookeForceField.h"
+#include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

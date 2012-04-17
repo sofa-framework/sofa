@@ -23,9 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
-#include "DistanceMapping.inl"
+
+#include "../initFlexible.h"
+#include "../deformationMapping/DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
-#include "initFlexible.h"
 
 namespace sofa
 {

@@ -30,7 +30,8 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include "HookeMaterialBlock.inl"
+
+#include "../material/HookeMaterialBlock.inl"
 #include "../quadrature/BaseGaussPointSampler.h"
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
@@ -119,7 +120,7 @@ public:
         // retrieve volume integrals
         engine::BaseGaussPointSampler* sampler=NULL;
         this->getContext()->get(sampler,core::objectmodel::BaseContext::SearchUp);
-        if( !sampler ) serr<<"Gauss sampler not found -> use unit volumes"<< sendl;
+        if( !sampler ) serr<<"Gauss point sampler not found -> use unit volumes"<< sendl;
 
         // reinit material
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();
@@ -127,7 +128,7 @@ public:
 
         for(unsigned int i=0; i<material.size(); i++)
         {
-            Real vol=0;
+            Real vol=1;
             if(sampler) vol=sampler->f_volume.getValue()[i][0];
             material[i].init(this->_youngModulus.getValue(),this->_poissonRatio.getValue(),this->_viscosity.getValue(),vol);
         }

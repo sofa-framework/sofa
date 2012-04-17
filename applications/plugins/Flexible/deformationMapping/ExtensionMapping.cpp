@@ -23,9 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_ExtensionMapping_CPP
-#include "ExtensionMapping.inl"
+
+#include "../initFlexible.h"
+#include "../deformationMapping/ExtensionMapping.inl"
 #include <sofa/core/ObjectFactory.h>
-#include "initFlexible.h"
 
 namespace sofa
 {

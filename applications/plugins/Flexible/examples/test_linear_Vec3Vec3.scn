@@ -1,16 +1,50 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" dt="1"  >
+<Node 	name="Root" gravity="0 0 0" dt="0.01"  >
     <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
 
-    <EulerImplicitSolver />
-    <CGLinearSolver  />
+    <EulerSolver />
+    <Node 	name="Flexible"   >
+    	<Mesh name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
+    	<MechanicalObject  name="parent" src="@mesh"  />
+    	<UniformMass mass="1" />
+<!--    <ShepardShapeFunction position="@parent.rest_position" power="2"/> -->
+    	<BarycentricShapeFunction />
+	   <ConstantForceField points="0" force="0 0 1000 " />
+	   <FixedConstraint indices="1 2 3 4" />
 
-    <MechanicalObject  template="Vec3d" position="0 0 1   0 1 0   1 0 0   -1 -1 0 "  name="parent"  />
-    <UniformMass mass="1" />
-    <ShepardShapeFunction position="@parent.rest_position" power="2"/>
 
+	    <Node 	name="behavior"   >
+		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="true"/>
+		<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;" assembleJ="false"/>
+
+		<Node 	name="Strain"   >
+		    <MechanicalObject  template="Strain331" name="E"  />
+		    <GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false" method="polar"/>
+		    <HookeForceField  template="Strain331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0"/>
+		</Node>
+	    </Node>
+    </Node>
+<!-- 
     <Node 	name="Child"   >
         <MechanicalObject template="Vec3d" position="0 0.1 0.8   0 0 0.5" name="child"/>
     	<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"/>
     </Node>
+ -->
+
+    <Node 	name="FEM"   >
+    	<Mesh name="mesh" position="0 0 1   0 1 0   1 0 0   -1 -1 0  2 2 2 " tetrahedra="0 1 2 3 0 1 2 4" />
+    	<MechanicalObject  name="parent" src="@mesh"  />
+    	<UniformMass mass="1" />
+	   <ConstantForceField points="0" force="0 0 1000" />
+	   <FixedConstraint indices="1 2 3 4" />
+
+
+<!--	    <TetrahedralCorotationalFEMForceField name="ff" youngModulus="1000" poissonRatio="0" method="polar"/> -->
+	    <StandardTetrahedralFEMForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="500 0" />
+<!--	    <TetrahedronFEMForceField name="ff" youngModulus="200" poissonRatio="0" method="small"/>  -->
+
+
+    </Node>
+
 </Node>

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_ExtensionMapping_INL
 #define SOFA_COMPONENT_MAPPING_ExtensionMapping_INL
 
-#include "ExtensionMapping.h"
+#include "../deformationMapping/ExtensionMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 using std::cerr;

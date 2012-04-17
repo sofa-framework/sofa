@@ -26,7 +26,7 @@
 #define FLEXIBLE_BarycentricShapeFunction_H
 
 #include "../initFlexible.h"
-#include "BaseShapeFunction.h"
+#include "../shapeFunction/BaseShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <algorithm>
@@ -241,6 +241,8 @@ public:
     /// adapted from BarycentricMapperMeshTopology::init()
     virtual void init()
     {
+        Inherit::init();
+
         this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
         if(!this->parentTopology) { serr<<"MeshTopology not found"<<sendl; return; }
 

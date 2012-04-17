@@ -31,6 +31,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 
 namespace sofa
 {
@@ -79,6 +81,28 @@ public:
 
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const BaseShapeFunction<ShapeFunctionTypes>* = NULL) { return ShapeFunctionTypes::Name(); }
+
+
+    virtual void init()
+    {
+        if(!f_position.isSet())
+        {
+            BaseMechanicalState* state = NULL;
+            this->getContext()->get(state,core::objectmodel::BaseContext::Local);
+            if(!state) { serr<<"state not found"<< sendl; return; }
+            else
+            {
+                helper::WriteAccessor<Data<vector<Coord> > > pos(this->f_position);
+                pos.resize(state->getSize());
+                for(unsigned int i=0; i<pos.size(); ++i)
+                {
+                    pos[i]=Coord(state->getPX(i),state->getPY(i),state->getPZ(i));
+//                std::cout<<"pts: "<<state->getPX(0)<<", "<<state->getPY(0)<<", "<<state->getPZ(0);
+                }
+            }
+        }
+
+    }
 
     /// compute shape function values (and their first and second derivatives) at a given child position
     /// this is the main function to be reimplemented
@@ -146,7 +170,8 @@ protected:
     BaseShapeFunction()
         : f_nbRef(initData(&f_nbRef,(unsigned int)4,"nbRef", "maximum number of parents per child"))
         , f_position(initData(&f_position,"position", "position of parent nodes"))
-    {}
+    {
+    }
 
     virtual ~BaseShapeFunction() {}
 };
