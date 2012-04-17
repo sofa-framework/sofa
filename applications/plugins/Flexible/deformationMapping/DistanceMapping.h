@@ -85,9 +85,9 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-    Data< vector<unsigned> > f_indices;        ///< indices of the parent points
-    Data< InVecCoord >       f_positions;      ///< fixed positions
-    Data< vector< Real > >   f_restDistances;  ///< rest distance from each position
+    Data< vector<unsigned> > f_indices;         ///< indices of the parent points
+    Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
+    Data< vector< Real > >   f_restDistances;   ///< rest distance from each position
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, InCoord position, Real distance);

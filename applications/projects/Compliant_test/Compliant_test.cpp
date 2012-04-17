@@ -83,10 +83,20 @@ typedef component::odesolver::ComplianceSolver ComplianceSolver;
 
 
 
+bool        startAnim = false;
+bool        printFactory = false;
+bool        loadRecent = false;
+bool        temporaryFile = false;
+int	nbIterations = 0;
+bool verbose=false;
+
+//std::string gui = "";
+std::string simulationType = "tree";
+std::vector<std::string> plugins;
 
 
 SReal complianceValue = 0;
-SReal dampingRatio = 0.1;
+SReal dampingRatio = 0;
 
 /// Create a string
 simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
@@ -150,25 +160,25 @@ simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoi
     }
     extensionMapping->f_restLengths.setValue( restLengths );
 
-    {
-        //-------- fix a particle
-        Node::SPtr fixNode = string_node->createChild("fixNode");
-        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-        fixNode->addObject(extensions);
+//    {
+//        //-------- fix a particle
+//        Node::SPtr fixNode = string_node->createChild("fixNode");
+//        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+//        fixNode->addObject(extensions);
 
-        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
-        distanceMapping->setModels(DOF.get(),extensions.get());
-        fixNode->addObject( distanceMapping );
-        distanceMapping->setName("fix_distanceMapping");
-        distanceMapping->setModels( DOF.get(), extensions.get() );
-        distanceMapping->createTarget( numParticles-1, endPoint, 0.0 );
+//        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
+//        distanceMapping->setModels(DOF.get(),extensions.get());
+//        fixNode->addObject( distanceMapping );
+//        distanceMapping->setName("fix_distanceMapping");
+//        distanceMapping->setModels( DOF.get(), extensions.get() );
+//        distanceMapping->createTarget( numParticles-1, endPoint, 0.0 );
 
-        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-        fixNode->addObject(compliance);
-        compliance->setName("fix_compliance");
-        compliance->setCompliance(complianceValue);
-        compliance->dampingRatio.setValue(dampingRatio);
-    }
+//        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+//        fixNode->addObject(compliance);
+//        compliance->setName("fix_compliance");
+//        compliance->setCompliance(complianceValue);
+//        compliance->dampingRatio.setValue(dampingRatio);
+//    }
 
     return string_node;
 
@@ -181,7 +191,7 @@ simulation::Node::SPtr createScene()
 {
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-1,0) );
+    root->setGravity( Coord3(0,0,0) );
     root->setAnimate(false);
     root->setDt(0.001);
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -200,7 +210,7 @@ simulation::Node::SPtr createScene()
     simulatedScene->addObject( complianceSolver );
     complianceSolver->implicitVelocity.setValue(1.0);
     complianceSolver->implicitPosition.setValue(1.0);
-    complianceSolver->verbose.setValue(true);
+    complianceSolver->verbose.setValue(verbose);
 
 
     // first string
@@ -264,34 +274,20 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
-    bool        startAnim = false;
-    bool        printFactory = false;
-    bool        loadRecent = false;
-    bool        temporaryFile = false;
-    int			nbIterations = 0;
 
-    std::string gui = "";
-    std::string verif = "";
-    std::string simulationType = "tree";
-    std::vector<std::string> plugins;
-
-    std::string gui_help = "choose the UI (";
-    gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
-    gui_help += ")";
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&startAnim,'a',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
-    .option(&gui,'g',"gui",gui_help.c_str())
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-    .option(&verif,'v',"verification","load verification data for the scene")
+    .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
-    if(gui!="batch") glutInit(&argc,argv);
+    glutInit(&argc,argv);
 
 #ifdef SOFA_DEV
     if (simulationType == "bgl")
@@ -322,15 +318,8 @@ int main(int argc, char** argv)
 
     sofa::helper::system::PluginManager::getInstance().init();
 
-    if(gui.compare("batch") == 0 && nbIterations > 0)
-    {
-        std::ostringstream oss ;
-        oss << "nbIterations=";
-        oss << nbIterations;
-        sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
-    }
 
-    if (int err = sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
+    if (int err = sofa::gui::GUIManager::Init(argv[0],""))
         return err;
 
     if (int err=sofa::gui::GUIManager::createGUI(NULL))

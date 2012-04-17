@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_DistanceMapping_INL
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_INL
 
-#include "../deformationMapping/DistanceMapping.h"
+#include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 using std::cerr;
@@ -47,7 +47,7 @@ template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
     : Inherit()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
-    , f_positions(initData(&f_positions, "positions", "Positions to compute the distances from"))
+    , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
 {
 }
@@ -62,33 +62,33 @@ void DistanceMapping<TIn, TOut>::createTarget( unsigned index, InCoord position,
 {
     helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
     helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
-    helper::WriteAccessor< Data<InVecCoord > > positions(f_positions);
+    helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     indices.push_back(index);
-    positions.push_back(position);
+    targetPositions.push_back(position);
     distances.push_back(distance);
 
-//    cerr<<"DistanceMapping<TIn, TOut>::createTarget index " << index << " at position " << position << endl;
+//    cerr<<"DistanceMapping<TIn, TOut>::createTarget index " << index << " at position " << position << ", distance = " << distances << endl;
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::updateTarget( unsigned index, InCoord position)
 {
-    helper::WriteAccessor< Data<InVecCoord > > positions(f_positions);
+    helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
 //    cerr<<"DistanceMapping<TIn, TOut>::updateTarget index " << index << " at position " << position << endl;
 
     // find the target with given index
     unsigned i=0; while(i<indices.size() && indices[i]!=index) i++;
 
-    positions[i] = position;
+    targetPositions[i] = position;
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::clear()
 {
     helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
-    helper::WriteAccessor< Data<InVecCoord > > positions(f_positions);
+    helper::WriteAccessor< Data<InVecCoord > > positions(f_targetPositions);
     helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
 
     distances.clear();
@@ -103,7 +103,7 @@ void DistanceMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_positions.getValue().size()) ;
+    assert( f_indices.getValue().size()==f_targetPositions.getValue().size()) ;
 
     // unset distances are set to 0
     if(f_restDistances.getValue().size() != f_indices.getValue().size())
@@ -133,14 +133,15 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
     helper::WriteAccessor<Data<vector<Real> > > restDistances(f_restDistances);
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
-    helper::ReadAccessor< Data<InVecCoord > > positions(f_positions);
+    helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     jacobian.resizeBlocks(out.size(),in.size());
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        InDeriv gap = in[indices[i]] - positions[i];
+        InDeriv gap = in[indices[i]] - targetPositions[i];
         Real gapNorm = gap.norm();
+//        cerr<<"DistanceMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
         if( gapNorm>1.e-10 )
@@ -163,6 +164,9 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         }
 
     }
+//    cerr<<"DistanceMapping<TIn, TOut>::apply, in = " << in << endl;
+//    cerr<<"DistanceMapping<TIn, TOut>::apply, target positions = " << positions << endl;
+//    cerr<<"DistanceMapping<TIn, TOut>::apply, out = " << out << endl;
 
     jacobian.endEdit();
     //      cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
@@ -206,14 +210,14 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-    helper::ReadAccessor< Data<InVecCoord > > positions(f_positions);
+    helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
 
     vector< Vec3d > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back(positions[i]);
+        points.push_back(targetPositions[i]);
         points.push_back(pos[indices[i]]);
     }
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) );
