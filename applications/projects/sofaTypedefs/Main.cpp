@@ -92,8 +92,11 @@ const std::string defaultIncludes(
         helper::vector<ObjectFactory::ClassEntry*> registry;
         helper::vector<ObjectFactory::ClassEntry*>::iterator it;
 
+        //std::string outputPath = SetDirectory::GetRelativeFromProcess("../modules/sofa/");
+        std::string outputPath = "/modules/sofa/";
 
-        std::string outputPath = SetDirectory::GetRelativeFromProcess("../modules/sofa/");
+        std::string fullPath = SetDirectory::GetParentDir(SetDirectory::GetParentDir(SetDirectory::GetProcessFullPath("").c_str()).c_str());
+        int absoluteBasePathSize = fullPath.length();
 
         // retrieve creators
 
@@ -133,7 +136,7 @@ const std::string defaultIncludes(
         for( TargetCreatorMap::iterator it_target = targetCreatorMap.begin(); it_target != targetCreatorMap.end(); ++it_target)
     {
         std::ostringstream target_h_location,target_h_guarding_block;
-        target_h_location << outputPath << it_target->first << ".h";
+        target_h_location << fullPath << outputPath << it_target->first << ".h";
         std::ofstream target_h(target_h_location.str().c_str());
     {
         std::string target_name(it_target->first);
@@ -161,23 +164,18 @@ const std::string defaultIncludes(
         if( entry->creatorList.begin() != entry->creatorList.end() )
     {
         ObjectFactory::Creator* creator = entry->creatorList.begin()->second;
-        target_h << "#include \"" <<
-        SetDirectory::GetRelativeFromDir(creator->getHeaderFileLocation(),creator->getMakefileDir())
-        << "\"" <<std::endl;
-
+        std::string includePath = std::string(creator->getHeaderFileLocation()).substr(absoluteBasePathSize + outputPath.length());
+        target_h << "#include <" << includePath << ">" << std::endl;
+    }
+    }
     }
 
-}
+        target_h << std::endl;
 
-
-}
-
-    target_h << std::endl;
-
-    for(it_creatorlist = targetCreatorList.begin(); it_creatorlist != targetCreatorList.end(); ++it_creatorlist)
-{
-    ObjectFactory::Creator* creator = it_creatorlist->second;
-    std::string templateName = creator->getClass()->templateName;
+        for(it_creatorlist = targetCreatorList.begin(); it_creatorlist != targetCreatorList.end(); ++it_creatorlist)
+    {
+        ObjectFactory::Creator* creator = it_creatorlist->second;
+        std::string templateName = creator->getClass()->templateName;
 
     {
         std::string::iterator itEnd;
@@ -189,64 +187,64 @@ const std::string defaultIncludes(
         templateName.erase(itEnd, templateName.end());
     }
 
-    std::replace(templateName.begin(),templateName.end(),',','_');
-    std::replace(templateName.begin(),templateName.end(),' ','_');
-    std::replace(templateName.begin(),templateName.end(),'<','_');
-    std::replace(templateName.begin(),templateName.end(),'>','_');
+        std::replace(templateName.begin(),templateName.end(),',','_');
+        std::replace(templateName.begin(),templateName.end(),' ','_');
+        std::replace(templateName.begin(),templateName.end(),'<','_');
+        std::replace(templateName.begin(),templateName.end(),'>','_');
 
-    // trim right underscores
+        // trim right underscores
     {
         for(unsigned size = templateName.size(); size != 0; --size)
-        {
-            if('_' != templateName[size - 1])
-            {
-                if(templateName.size() != size)
-                    templateName.resize(size);
+    {
+        if('_' != templateName[size - 1])
+    {
+        if(templateName.size() != size)
+        templateName.resize(size);
 
-                break;
-            }
-        }
+        break;
+    }
+    }
     }
 
-    const std::type_info& type = creator->type();
+        const std::type_info& type = creator->type();
 
-    size_t curPos = 0;
-    size_t oldPos = 0;
-    std::string namespaceName = creator->getClass()->namespaceName;
-    size_t bracketCount = 0;
-    helper::vector<std::string> namespaces;
-    while( ( curPos = namespaceName.find(std::string("::"),oldPos) ) != std::string::npos)
+        size_t curPos = 0;
+        size_t oldPos = 0;
+        std::string namespaceName = creator->getClass()->namespaceName;
+        size_t bracketCount = 0;
+        helper::vector<std::string> namespaces;
+        while( ( curPos = namespaceName.find(std::string("::"),oldPos) ) != std::string::npos)
     {
         std::string currentNamespace = namespaceName.substr(oldPos,curPos-oldPos);
         namespaces.push_back(currentNamespace);
         oldPos = curPos+2;
         ++bracketCount;
     }
-    namespaces.push_back(namespaceName.substr(oldPos));
-    helper::vector<std::string>::iterator it_namespace;
-    for(it_namespace = namespaces.begin(); it_namespace != namespaces.end(); ++it_namespace)
+        namespaces.push_back(namespaceName.substr(oldPos));
+        helper::vector<std::string>::iterator it_namespace;
+        for(it_namespace = namespaces.begin(); it_namespace != namespaces.end(); ++it_namespace)
     {
         target_h << "namespace " << *it_namespace << std::endl;
-        target_h << "{" << std::endl;
-    }
+    target_h << "{" << std::endl;
+}
 
     if(!templateName.empty())
-    {
-        target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
-        << " " << creator->getClass()->className << "_" << templateName << ";";
-    }
+{
+    target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+    << " " << creator->getClass()->className << "_" << templateName << ";";
+}
     else
-    {
-        target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
-        << " " << creator->getClass()->className << ";";
-    }
+{
+    target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+    << " " << creator->getClass()->className << ";";
+}
     target_h << std::endl;
     for( size_t i=0; i<namespaces.size(); ++i)
-    {
-        target_h << "}" << std::endl;
-    }
+{
+    target_h << "}" << std::endl;
+}
 
-    target_h << std::endl;
+target_h << std::endl;
 }
 target_h << "#endif " << std::endl;
 target_h.close();
@@ -256,12 +254,12 @@ target_h.close();
 
 std::string sofa_name("sofa");
 std::ostringstream sofa_h_location,sofa_h_guarding_block;
-sofa_h_location << outputPath << sofa_name << ".h";
+sofa_h_location << fullPath << outputPath << sofa_name << ".h";
 std::ofstream sofa_h(sofa_h_location.str().c_str());
 {
-    std::transform(sofa_name.begin(),sofa_name.end(),sofa_name.begin(),::toupper);
-    sofa_h_guarding_block << "#ifndef " << sofa_name << "_H" << std::endl;
-    sofa_h_guarding_block << "#define " << sofa_name << "_H" << std::endl;
+std::transform(sofa_name.begin(),sofa_name.end(),sofa_name.begin(),::toupper);
+sofa_h_guarding_block << "#ifndef " << sofa_name << "_H" << std::endl;
+sofa_h_guarding_block << "#define " << sofa_name << "_H" << std::endl;
 }
 
 sofa_h << sofa_h_guarding_block.str();
@@ -270,10 +268,10 @@ sofa_h << authors << std::endl;
 
 for( TargetCreatorMap::iterator it_target = targetCreatorMap.begin(); it_target != targetCreatorMap.end(); ++it_target)
 {
-    std::ostringstream target_h_location;
-    target_h_location << outputPath << it_target->first << ".h";
+std::ostringstream target_h_location;
+target_h_location << it_target->first << ".h";
 
-    sofa_h << "#include \"" << target_h_location.str().c_str() << "\"" << std::endl;
+sofa_h << "#include <" << target_h_location.str().c_str() << ">" << std::endl;
 }
 
 sofa_h << std::endl << "#endif " << std::endl;
