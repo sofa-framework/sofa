@@ -36,8 +36,8 @@ using std::endl;
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 using sofa::component::topology::EdgeSetTopologyContainer;
-#include <../applications/plugins/Compliant/UniformCompliance.h>
-#include <../applications/plugins/Compliant/ComplianceSolver.h>
+#include <plugins/Compliant/UniformCompliance.h>
+#include <plugins/Compliant/ComplianceSolver.h>
 using sofa::component::odesolver::ComplianceSolver;
 #include <sofa/simulation/common/InitVisitor.h>
 
@@ -58,7 +58,7 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
     , mapper(0)
     , mouseState(0)
 {
-//    cerr<<"CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer()" << endl;
+    //    cerr<<"CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer()" << endl;
     this->interactor->setMouseAttached(false);
 }
 
@@ -66,7 +66,7 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
 template <class DataTypes>
 CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()
 {
-//    cerr<<"CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()" << endl;
+    //    cerr<<"CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()" << endl;
     clear();
 }
 
@@ -74,7 +74,7 @@ template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::clear()
 {
     pickedNode->removeChild(interactionNode);
-    interactionNode = 0;
+    interactionNode.reset();  // delete the subgraph if no other reference to it
 
     if (mapper)
     {
@@ -99,7 +99,7 @@ void CompliantAttachPerformer<DataTypes>::start()
         clear();            // release it
         return;
     }
-//    cerr<<"CompliantAttachPerformer<DataTypes>::start()" << endl;
+    //    cerr<<"CompliantAttachPerformer<DataTypes>::start()" << endl;
 
 
     //--------- Picked object
@@ -153,7 +153,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     {
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
         pickedParticleIndex = picked.indexCollisionElement;
-//        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
+        //        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
         if (!mstateCollision)
         {
             this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
@@ -171,7 +171,8 @@ void CompliantAttachPerformer<DataTypes>::start()
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
+    helper::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
+    ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
 
 
@@ -180,19 +181,6 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     // look for existing interactions
     std::string distanceMappingName="InteractionDistanceMapping_createdByCompliantAttachPerformer";
-//    vector<typename DistanceMapping31::SPtr> dmaps = picked.mstate->BaseObject::searchAllDown<DistanceMapping31>();
-//    unsigned i=0;
-//    while( i<dmaps.size() &&  dmaps[i]->getName()!=distanceMappingName ){ i++; }
-
-//    if( i<dmaps.size() ) // existing interaction found
-//    {
-//        cerr<<"CompliantAttachPerformer<DataTypes>::start(), found an existing interaction "<<endl;
-//        dmaps[i]->clear();
-//        dmaps[i]->createTarget(picked.indexCollisionElement,picked.point,0.);
-//        dmaps[i]->init();
-//        distanceMapping = dmaps[i];
-//    }
-//    else {               // create Node to handle the extension of the interaction link
 
     interactionNode = pickedNode->createChild("InteractionDistanceNode");
 
@@ -202,10 +190,12 @@ void CompliantAttachPerformer<DataTypes>::start()
     extensions->setName("extensionValues");
 
     distanceMapping = New<DistanceMapping31>();
-    distanceMapping->setModels(pickedState,extensions.get());
+    distanceMapping->setModels(mstateCollision,extensions.get());
     interactionNode->addObject( distanceMapping );
     distanceMapping->setName(distanceMappingName.c_str());
-    distanceMapping->createTarget(picked.indexCollisionElement,picked.point,0.);
+    distanceMapping->createTarget(picked.indexCollisionElement, pointOnRay, (picked.point-pointOnRay).norm() );
+
+    //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*mstateCollision->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
@@ -215,7 +205,6 @@ void CompliantAttachPerformer<DataTypes>::start()
     compliance->setName("pickCompliance");
 
     interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
-//    }
 
 
 }
@@ -232,7 +221,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
     // update the distance mapping using the target position
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
 
-//    cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
+    //    cerr<<"CompliantAttachPerformer<DataTypes>::execute(), mouse position = " << xmouse[0] << endl;
 }
 
 

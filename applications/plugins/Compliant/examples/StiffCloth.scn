@@ -4,7 +4,7 @@
 <Node 	name="complianceSolverScene" >
     <EulerImplicitSolver verbose="0" />
     <CGSolver verbose="0" />
-    <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <GridMeshCreator name="loader" filename="nofile" resolution="30 30" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 1.005 0.005  " />

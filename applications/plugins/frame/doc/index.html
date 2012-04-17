@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Frame-based Elastic Materials</title></head><body>
 <h1 style="text-align: center;">Frame-based Elastic Materials</h1>
@@ -110,21 +111,20 @@ illustrated in the <a href="index.html#Snapshot_D332">next figure</a>.
 In this
 simple example (file&nbsp; <a href="basic_Affine-D332.scn" target="_blank">basic_Affine-D332.scn</a>), the moving frames (shown
 as red, green, blue frames) are in the <span style="font-style: italic;">Beam</span> parent node, while the <span style="font-style: italic;">Physics</span> child node contains
-deformation gradients (or elastons). A skinning mapping (also called
-frame blending), <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp;
-creates the connections. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.
-Here it maps only one sample, shown as a yellow cross. It is an elaston
+deformation gradients (or elastons). A skinning (also called
+frame blending) mapping , <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp; updates the child based on the parent. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.
+Here it maps only to one sample, shown as a yellow cross. It is an elaston
 ( <span style="font-style: italic;">DeformationGradient332</span>
 template specialization), therefore a single one is sufficient to
 capture all the deformation modes between the two affine frames.<br>
 
-The material constitutive law is implemented in ForceFields applied to
+The material constitutive law is implemented in <span style="font-style: italic;">ForceField</span> components applied to
 the sampling points, here a GreenLagrangeForceField and a
 FrameVolumePreservationForceField. The material parameters are actually
 defined in the top level, in the HookeMaterial3 component. <br>
 
 Other children can be mapped, such as a collision model and a
-volumetric model. In thi case the children are points, not deformation
+visual model. In this case the children are points, not deformation
 gradients (<span style="font-style: italic;">Vec3d</span> and <span style="font-style: italic;">ExtVec3f</span> template specializations).<br>
 
 <br>
