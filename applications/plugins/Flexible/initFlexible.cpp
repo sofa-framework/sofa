@@ -74,7 +74,7 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, HookeForceField";
+    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
 }
 }
 }
@@ -88,5 +88,8 @@ SOFA_LINK_CLASS(DefGradientMechanicalObject)
 SOFA_LINK_CLASS(LinearMapping)
 SOFA_LINK_CLASS(StrainMechanicalObject)
 SOFA_LINK_CLASS(GreenStrainMapping)
+SOFA_LINK_CLASS(CorotationalStrainMapping)
 SOFA_LINK_CLASS(HookeForceField)
+SOFA_LINK_CLASS(AffineMechanicalObject)
+SOFA_LINK_CLASS(QuadraticMechanicalObject)
 

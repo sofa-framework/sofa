@@ -24,7 +24,8 @@
 ******************************************************************************/
 #define FLEXIBLE_BarycentricShapeFunction_CPP
 
-#include "BarycentricShapeFunction.h"
+#include "../initFlexible.h"
+#include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

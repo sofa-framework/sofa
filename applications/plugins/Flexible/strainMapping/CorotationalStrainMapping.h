@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_H
-#define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_H
+#define SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_H
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
@@ -32,12 +32,11 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>
 
-#include "../strainMapping/GreenStrainJacobianBlock.inl"
+#include "../strainMapping/CorotationalStrainJacobianBlock.inl"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/Mapping.inl>
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-
 
 namespace sofa
 {
@@ -53,20 +52,20 @@ using helper::vector;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class GreenStrainMappingInternalData
+class CorotationalStrainMappingInternalData
 {
 public:
 };
 
 
-/** Deformation Gradient to Green Lagrangian Strain mapping
+/** Deformation Gradient to Corotational Lagrangian Strain mapping
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API GreenStrainMapping : public core::Mapping<TIn, TOut>
+class SOFA_Flexible_API CorotationalStrainMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(GreenStrainMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(CorotationalStrainMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
 
@@ -92,10 +91,17 @@ public:
     enum { spatial_dimensions = Out::spatial_dimensions };
     //@}
 
+    //@name quadrature method
+    /**@{*/
+    typedef enum { POLAR, QR, SMALL } RotationDecompositionMethod;
+    Data<std::string> f_method;
+    RotationDecompositionMethod decompositionMethod;
+    /**@}*/
+
 
     /** @name  Jacobian types    */
     //@{
-    typedef defaulttype::GreenStrainJacobianBlock<In,Out>  Block;  ///< Jacobian block object
+    typedef defaulttype::CorotationalStrainJacobianBlock<In,Out>  Block;  ///< Jacobian block object
     typedef vector<Block>  SparseMatrix;
 
     typedef typename Block::MatBlock  MatBlock;  ///< Jacobian block matrix
@@ -119,11 +125,19 @@ public:
 
         // init jacobians
         jacobian.resize(in.size());
+
+        reinit();
+
         Inherit::init();
     }
 
     virtual void reinit()
     {
+        if (f_method.getValue() == "small") decompositionMethod= SMALL;
+        else if (f_method.getValue() == "large") decompositionMethod= QR;
+        else decompositionMethod= POLAR;
+
+        for(unsigned int i=0; i<jacobian.size(); i++) jacobian[i].decompositionMethod=decompositionMethod;
         if(this->assembleJ.getValue()) updateJ();
     }
 
@@ -198,16 +212,16 @@ public:
 
 
 protected:
-    GreenStrainMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
+    CorotationalStrainMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
+        , f_method(initData(&f_method,std::string("polar"),"method","\"large\" (by QR), \"polar\" or \"small\" displacements"))
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Construct the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
         , maskFrom(NULL)
         , maskTo(NULL)
     {
-
     }
 
-    virtual ~GreenStrainMapping()     { }
+    virtual ~CorotationalStrainMapping()     { }
 
     Data<bool> assembleJ;
     void updateJ()
@@ -235,6 +249,7 @@ protected:
 
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
+
 };
 
 

@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_HookeMaterialBlock_H
 #define FLEXIBLE_HookeMaterialBlock_H
 
-#include "BaseMaterial.h"
+#include "../material/BaseMaterial.h"
 
 namespace sofa
 {

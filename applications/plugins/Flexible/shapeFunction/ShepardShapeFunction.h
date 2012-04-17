@@ -26,7 +26,7 @@
 #define FLEXIBLE_ShepardShapeFunction_H
 
 #include "../initFlexible.h"
-#include "BaseShapeFunction.h"
+#include "../shapeFunction/BaseShapeFunction.h"
 #include <limits>
 
 namespace sofa
@@ -58,6 +58,11 @@ public:
     typedef typename Inherit::VRef VRef;
 
     Data<Real> power;
+
+    virtual void init()
+    {
+        Inherit::init();
+    }
 
     void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {

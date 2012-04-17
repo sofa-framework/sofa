@@ -22,55 +22,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_CPP
+#ifndef FLEXIBLE_CorotationalStrainJacobianBlock_H
+#define FLEXIBLE_CorotationalStrainJacobianBlock_H
 
-#include "../initFlexible.h"
-#include "../strainMapping/GreenStrainMapping.h"
-#include <sofa/core/ObjectFactory.h>
-
-#include "../types/DeformationGradientTypes.h"
-#include "../types/StrainTypes.h"
+#include "../BaseJacobian.h"
 
 namespace sofa
 {
-namespace component
+
+namespace defaulttype
 {
 
-namespace mapping
-{
-SOFA_DECL_CLASS(GreenStrainMapping);
+/** Template class used to implement one jacobian block for CorotationalStrainMapping */
+template<class TIn, class TOut>
+class CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
 
-using namespace defaulttype;
-
-// Register in the Factory
-int GreenStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Green Lagrangian Strain (large deformations).")
-
-#ifndef SOFA_FLOAT
-        .add< GreenStrainMapping< DefGradient331dTypes, Strain331dTypes > >(true)
-        .add< GreenStrainMapping< DefGradient332dTypes, Strain332dTypes > >()
-        .add< GreenStrainMapping< DefGradient332dTypes, Strain333dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GreenStrainMapping< DefGradient331fTypes, Strain331fTypes > >()
-        .add< GreenStrainMapping< DefGradient332fTypes, Strain332fTypes > >()
-        .add< GreenStrainMapping< DefGradient332fTypes, Strain333fTypes > >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient331dTypes, Strain331dTypes >;
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient332dTypes, Strain332dTypes >;
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient332dTypes, Strain333dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient331fTypes, Strain331fTypes >;
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient332fTypes, Strain332fTypes >;
-template class SOFA_Flexible_API GreenStrainMapping< DefGradient332fTypes, Strain333fTypes >;
-#endif
-
-} // namespace mapping
-
-} // namespace component
-
+} // namespace defaulttype
 } // namespace sofa
 
+
+
+#endif

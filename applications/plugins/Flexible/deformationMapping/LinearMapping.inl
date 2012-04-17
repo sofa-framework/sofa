@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINEARMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_INL
 
-#include "LinearMapping.h"
-#include "LinearJacobianBlock.inl"
+#include "../deformationMapping/LinearMapping.h"
+#include "../deformationMapping/LinearJacobianBlock.inl"
 #include <sofa/core/Mapping.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/topology/TopologyData.inl>

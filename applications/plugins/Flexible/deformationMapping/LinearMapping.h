@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include "LinearJacobianBlock.h"
+#include "../deformationMapping/LinearJacobianBlock.h"
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 

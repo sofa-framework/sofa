@@ -24,7 +24,8 @@
 ******************************************************************************/
 #define FLEXIBLE_BaseShapeFunction_CPP
 
-#include "BaseShapeFunction.h"
+#include "../initFlexible.h"
+#include "../shapeFunction/BaseShapeFunction.h"
 
 
 namespace sofa

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_DistanceMapping_INL
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_INL
 
-#include "DistanceMapping.h"
+#include "../deformationMapping/DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 using std::cerr;

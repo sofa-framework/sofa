@@ -26,7 +26,7 @@
 #define SOFA_TopologyGaussPointSAMPLER_H
 
 #include "../initFlexible.h"
-#include "BaseGaussPointSampler.h"
+#include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
