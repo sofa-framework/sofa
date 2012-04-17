@@ -165,7 +165,7 @@ const std::string defaultIncludes(
     {
         ObjectFactory::Creator* creator = entry->creatorList.begin()->second;
         std::string includePath = std::string(creator->getHeaderFileLocation()).substr(absoluteBasePathSize + outputPath.length());
-        target_h << "#include <" << includePath << ">" << std::endl;
+        target_h << "#include <sofa/" << includePath << ">" << std::endl;
     }
     }
     }
@@ -271,7 +271,7 @@ for( TargetCreatorMap::iterator it_target = targetCreatorMap.begin(); it_target 
 std::ostringstream target_h_location;
 target_h_location << it_target->first << ".h";
 
-sofa_h << "#include <" << target_h_location.str().c_str() << ">" << std::endl;
+sofa_h << "#include <sofa/" << target_h_location.str().c_str() << ">" << std::endl;
 }
 
 sofa_h << std::endl << "#endif " << std::endl;
