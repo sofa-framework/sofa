@@ -153,9 +153,7 @@ public:
         if (realSolver) realSolver->freezeSystemMatrix();
     }
 
-    /// Ask the solver to no update the system matrix at the next iteration
     virtual void updateSystemMatrix();
-
 
     //template<class JMatrix>
     //void ComputeCudaResult(CudaBaseMatrix<float>& result,JMatrix& J, float fact, bool localW);

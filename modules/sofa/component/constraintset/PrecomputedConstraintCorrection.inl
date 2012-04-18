@@ -362,7 +362,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // Do not recompute the matrix for the rest of the precomputation
         if (linearSolver)
-            linearSolver->updateSystemMatrix();
+            linearSolver->freezeSystemMatrix();
 
         saveCompliance(invName);
 

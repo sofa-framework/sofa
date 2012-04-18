@@ -83,8 +83,6 @@ void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::Mechani
 
     realSolver->setSystemMBKMatrix(mparams);
 
-    this->updateSystemMatrix();
-
     tmpVector1.resize(mstate->getSize()*Coord::size());
     tmpVector2.resize(mstate->getSize()*Coord::size());
 }

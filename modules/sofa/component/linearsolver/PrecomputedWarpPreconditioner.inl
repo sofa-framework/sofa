@@ -51,7 +51,6 @@
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/PCGLinearSolver.h>
 
 #ifdef SOFA_HAVE_CSPARSE
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
@@ -306,29 +305,24 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     const Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
-    PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* PCGlinearSolver;
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
     core::behavior::LinearSolver* linearSolver;
 
     if (solverName.getValue().empty())
     {
         this->getContext()->get(CGlinearSolver);
-        this->getContext()->get(PCGlinearSolver);
         this->getContext()->get(linearSolver);
     }
     else
     {
         core::objectmodel::BaseObject* ptr = NULL;
         this->getContext()->get(ptr, solverName.getValue());
-        PCGlinearSolver = dynamic_cast<PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
         CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
         linearSolver = dynamic_cast<core::behavior::LinearSolver*>(ptr);
     }
 
     if(EulerSolver && CGlinearSolver)
         sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-    else if(EulerSolver && PCGlinearSolver)
-        sout << "use EulerImplicitSolver &  PCGLinearSolver" << sendl;
     else if(EulerSolver && linearSolver)
         sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
     else if(EulerSolver)
@@ -380,15 +374,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         CGlinearSolver->f_tolerance.setValue(1e-35);
         CGlinearSolver->f_maxIter.setValue(5000);
         CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
-    }
-    else if(PCGlinearSolver)
-    {
-        buf_tolerance = (double) PCGlinearSolver->f_tolerance.getValue();
-        buf_maxIter   = (int) PCGlinearSolver->f_maxIter.getValue();
-        buf_threshold = (double) PCGlinearSolver->f_smallDenominatorThreshold.getValue();
-        PCGlinearSolver->f_tolerance.setValue(1e-35);
-        PCGlinearSolver->f_maxIter.setValue(5000);
-        PCGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -469,7 +454,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    if (linearSolver) linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+    if (linearSolver) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
     ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
     // gravity is reset at its previous value
@@ -480,12 +465,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         CGlinearSolver->f_tolerance.setValue(buf_tolerance);
         CGlinearSolver->f_maxIter.setValue(buf_maxIter);
         CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-    }
-    else if(PCGlinearSolver)
-    {
-        PCGlinearSolver->f_tolerance.setValue(buf_tolerance);
-        PCGlinearSolver->f_maxIter.setValue(buf_maxIter);
-        PCGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
     }
 
     //Reset the velocity

@@ -7,7 +7,6 @@ DEFINES += SOFA_BUILD_PRECONDITIONER
 
 HEADERS += initPreconditioner.h \
            linearsolver/ShewchukPCGLinearSolver.h \
-           linearsolver/PCGLinearSolver.h \
            linearsolver/JacobiPreconditioner.h \
            linearsolver/JacobiPreconditioner.inl \
            linearsolver/BlockJacobiPreconditioner.h \
@@ -20,7 +19,6 @@ HEADERS += initPreconditioner.h \
 
 SOURCES += initPreconditioner.cpp \
            linearsolver/ShewchukPCGLinearSolver.cpp \
-           linearsolver/PCGLinearSolver.cpp \
            linearsolver/JacobiPreconditioner.cpp \
            linearsolver/BlockJacobiPreconditioner.cpp \
            linearsolver/SSORPreconditioner.cpp \

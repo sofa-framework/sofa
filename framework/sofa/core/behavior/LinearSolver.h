@@ -62,6 +62,9 @@ public:
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
     virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
 
+    /// This function is use for the preconditioner it must be called at each time step event if setSystemMBKMatrix is not called
+    virtual void updateSystemMatrix() {}
+
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     virtual void setSystemRHVector(core::MultiVecDerivId v) = 0;
 
@@ -122,9 +125,6 @@ public:
 
     /// Ask the solver to no longer update the system matrix
     virtual void freezeSystemMatrix() { frozen = true; }
-
-    /// Ask the solver to no update the system matrix at the next iteration
-    virtual void updateSystemMatrix() { frozen = false; }
 
     /// Check if this solver handle multiple multiple independent integration groups, placed as child nodes in the scene graph.
     ///

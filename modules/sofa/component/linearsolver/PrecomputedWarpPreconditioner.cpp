@@ -25,7 +25,8 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "PrecomputedWarpPreconditioner.inl"
+
+#include <sofa/component/linearsolver/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa
 {
