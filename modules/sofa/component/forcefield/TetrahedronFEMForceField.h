@@ -136,25 +136,10 @@ protected:
     typedef vector<MaterialStiffness> VecMaterialStiffness;
     typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
 
-    typedef struct
-    {
-        /// Vector of material stiffness matrices of each tetrahedron
-        VecMaterialStiffness materialsStiffnesses;
-        VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
-        vector<Transformation> rotations;
-    } ParallelData;
-
-    ParallelData * parallelDataSimu;
-    ParallelData * parallelDataThrd;
-    ParallelData * parallelDataInit[2]; //use to remember initial values because parallelData will be erase
-
-    void createParallelData()
-    {
-        parallelDataInit[1] = new ParallelData();
-        parallelDataInit[1]->materialsStiffnesses = parallelDataInit[0]->materialsStiffnesses;
-        parallelDataInit[1]->strainDisplacements = parallelDataInit[0]->strainDisplacements;
-        parallelDataInit[1]->rotations = parallelDataInit[0]->rotations;
-    }
+    /// Vector of material stiffness matrices of each tetrahedron
+    VecMaterialStiffness materialsStiffnesses;
+    VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
+    vector<Transformation> rotations;
 
     /// @name Full system matrix assembly support
     /// @{
@@ -228,9 +213,7 @@ public:
     Real maxYoung;
 protected:
     TetrahedronFEMForceField()
-        : parallelDataSimu(NULL)
-        ,parallelDataThrd(NULL)
-        ,_mesh(NULL)
+        : _mesh(NULL)
         , _indexedElements(NULL)
         , needUpdateTopology(false)
         , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
@@ -246,8 +229,6 @@ protected:
         , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
     {
         data.initPtrData(this);
-        parallelDataInit[0]=0;
-        parallelDataInit[1]=0;
         this->addAlias(&_assembling, "assembling");
         minYoung = 0.0;
         maxYoung = 0.0;
@@ -255,14 +236,6 @@ protected:
 
     virtual ~TetrahedronFEMForceField()
     {
-        if (parallelDataInit[0]) delete parallelDataInit[0];
-        if (parallelDataInit[1]) delete parallelDataInit[1];
-
-        parallelDataInit[0] = NULL;
-        parallelDataInit[1] = NULL;
-        parallelDataThrd = NULL;
-        parallelDataInit[2] = NULL;
-
 // 	    if (_gatherPt) delete _gatherPt;
 // 	    if (_gatherBsize)  delete _gatherBsize;
 // 	    _gatherPt = NULL;
@@ -284,14 +257,14 @@ public:
     //for tetra mapping, should be removed in future
     Transformation getActualTetraRotation(unsigned int index)
     {
-        if (index < parallelDataSimu->rotations.size() )
-            return parallelDataSimu->rotations[index];
+        if (index < rotations.size() )
+            return rotations[index];
         else { Transformation t; t.identity(); return t; }
     }
 
     Transformation getInitialTetraRotation(unsigned int index)
     {
-        if (index < parallelDataSimu->rotations.size() )
+        if (index < rotations.size() )
             return _initialRotations[index];
         else { Transformation t; t.identity(); return t; }
     }
@@ -336,8 +309,6 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
-
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
 protected:
 

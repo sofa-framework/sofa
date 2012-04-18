@@ -118,7 +118,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     Inherit::setSystemMBKMatrix(mparams);
 
-    sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix(Precond)");
+    sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix");
 
     if (preconditioners.size()==0) return;
 
@@ -131,7 +131,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         first = false;
         next_refresh_step = 1;
     }
-    else if (f_build_precond.getValue())     // We use only the first precond in the list
+    else if (f_build_precond.getValue())
     {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
         sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");
@@ -148,10 +148,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
             }
             else
             {
-                for (unsigned int i=0; i<preconditioners.size(); ++i)
-                {
-                    preconditioners[i]->updateSystemMatrix();
-                }
                 next_refresh_step++;
             }
         }
@@ -167,10 +163,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
             }
             else
             {
-                for (unsigned int i=0; i<preconditioners.size(); ++i)
-                {
-                    preconditioners[i]->updateSystemMatrix();
-                }
                 next_refresh_step++;
             }
         }
@@ -184,23 +176,16 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
                 }
                 next_refresh_iteration=1;
             }
-            else
-            {
-                for (unsigned int i=0; i<preconditioners.size(); ++i)
-                {
-                    preconditioners[i]->updateSystemMatrix();
-                }
-            }
         }
-        else
+
+        for (unsigned int i=0; i<preconditioners.size(); ++i)
         {
-            for (unsigned int i=0; i<preconditioners.size(); ++i)
-            {
-                preconditioners[i]->updateSystemMatrix();
-            }
+            preconditioners[i]->updateSystemMatrix();
         }
+
         sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
     }
+
     next_refresh_iteration = 1;
 }
 
@@ -220,6 +205,7 @@ template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
     sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
+
     const core::ExecParams* params = core::ExecParams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
     Vector& r = *vtmp.createTempVector();
@@ -332,6 +318,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     vtmp.deleteTempVector(&q);
     vtmp.deleteTempVector(&d);
     vtmp.deleteTempVector(&s);
+
     sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
 }
 
@@ -339,7 +326,8 @@ SOFA_DECL_CLASS(ShewchukPCGLinearSolver)
 
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
-        ;
+        .addAlias("PCGLinearSolver");
+;
 
 } // namespace linearsolver
 

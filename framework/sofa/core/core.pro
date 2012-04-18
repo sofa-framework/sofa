@@ -48,7 +48,6 @@ HEADERS += \
 	behavior/BaseVectorOperations.h \
 	behavior/BaseRotationFinder.h \
         behavior/RotationMatrix.h \
-        behavior/ParallelizeBuildMatrixEvent.h \
 	behavior/Constraint.h \
 	behavior/Constraint.inl \
 	behavior/ConstraintCorrection.h \

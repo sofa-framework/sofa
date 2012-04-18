@@ -43,7 +43,6 @@ void initPreconditioner()
 }
 
 SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
-SOFA_LINK_CLASS(PCGLinearSolver)
 SOFA_LINK_CLASS(JacobiPreconditioner)
 SOFA_LINK_CLASS(BlockJacobiPreconditioner)
 SOFA_LINK_CLASS(SSORPreconditioner)

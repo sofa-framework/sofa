@@ -47,7 +47,6 @@
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/PCGLinearSolver.h>
 
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
