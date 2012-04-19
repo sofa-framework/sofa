@@ -66,38 +66,38 @@ public:
 
     typedef SReal Real;
 
-    //@name quadrature method
-    /**@{*/
+    /** @name quadrature method */
+    //@{
     Data<helper::OptionsGroup> f_method;
-    /**@}*/
+    //@}
 
-    //@name position data
-    /**@{*/
+    /** @name position data */
+    //@{
     typedef Vec<3,Real> Coord;
     typedef vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position;
-    /**@}*/
+    //@}
 
-    //@name volume integral data
-    /**@{*/
+    /** @name volume integral data */
+    //@{
     Data< unsigned int > f_order;
     typedef vector<Real> volumeIntegralType;
     Data< vector<volumeIntegralType> > f_volume;
     typedef helper::WriteAccessor< Data< vector<volumeIntegralType> > > waVolume;
-    /**@}*/
+    //@}
 
-    //@name weight data
-    /**@{*/
+    /** @name weight data */
+    //@{
     Data< vector<Real> > f_weight;
     typedef helper::WriteAccessor<Data< vector<Real> > > waWeight;
-    /**@}*/
+    //@}
 
-    //@name visu data
-    /**@{*/
+    /** @name visu data */
+    //@{
     Data< bool > showSamples;
-    /**@}*/
+    //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const BaseGaussPointSampler* = NULL) { return std::string();    }

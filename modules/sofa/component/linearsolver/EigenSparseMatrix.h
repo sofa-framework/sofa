@@ -222,6 +222,70 @@ public:
     }
 
     /// compute result += A * data
+    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const
+    {
+        helper::WriteAccessor<Data<OutVecDeriv> > res (result);
+        helper::ReadAccessor<Data<InVecDeriv> > dat (data);
+
+        // use optimized product if possible
+        if(canCast(dat.ref()))
+        {
+            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
+            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
+            r += this->eigenMatrix * d;
+            return;
+        }
+
+        // convert the data to Eigen type
+        VectorEigen aux1(this->colSize()),aux2(this->rowSize());
+        for(unsigned i=0; i<dat.size(); i++)
+        {
+            for(unsigned j=0; j<Nin; j++)
+                aux1[Nin* i+j] = dat[i][j];
+        }
+        // compute the product
+        aux2 = this->eigenMatrix * aux1;
+        // convert the result back to the Sofa type
+        for(unsigned i=0; i<res.size(); i++)
+        {
+            for(unsigned j=0; j<Nout; j++)
+                res[i][j] += aux2[Nout* i+j];
+        }
+    }
+
+    /// compute result += A * data * fact
+    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data, const Real fact) const
+    {
+        helper::WriteAccessor<Data<OutVecDeriv> > res (result);
+        helper::ReadAccessor<Data<InVecDeriv> > dat (data);
+
+        // use optimized product if possible
+        if(canCast(dat.ref()))
+        {
+            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
+            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
+            r += this->eigenMatrix * d * fact;
+            return;
+        }
+
+        // convert the data to Eigen type
+        VectorEigen aux1(this->colSize()),aux2(this->rowSize());
+        for(unsigned i=0; i<dat.size(); i++)
+        {
+            for(unsigned j=0; j<Nin; j++)
+                aux1[Nin* i+j] = dat[i][j];
+        }
+        // compute the product
+        aux2 = this->eigenMatrix * aux1;
+        // convert the result back to the Sofa type
+        for(unsigned i=0; i<res.size(); i++)
+        {
+            for(unsigned j=0; j<Nout; j++)
+                res[i][j] += aux2[Nout* i+j]*fact;
+        }
+    }
+
+    /// compute result += A^T * data
     void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const
     {
         // use optimized product if possible
@@ -249,7 +313,7 @@ public:
                 result[i][j] += aux2[Nin* i+j];
         }
     }
-    /// compute result += A * data
+    /// compute result += A^T * data
     void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const
     {
         helper::WriteAccessor<Data<InVecDeriv> > res (result);

@@ -21,7 +21,10 @@ SOURCES = initFlexible.cpp\
     deformationMapping/LinearMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \
+    strainMapping/InvariantMapping.cpp \
     material/HookeForceField.cpp \
+    material/MooneyRivlinForceField.cpp \
+    material/VolumePreservationForceField.cpp \
 
 HEADERS = initFlexible.h \
     BaseJacobian.h \
@@ -34,25 +37,35 @@ HEADERS = initFlexible.h \
     shapeFunction/BaseShapeFunction.h \
     shapeFunction/ShepardShapeFunction.h \
     shapeFunction/BarycentricShapeFunction.h \
+    deformationMapping/BaseDeformationMapping.h \
     deformationMapping/DistanceMapping.h \
     deformationMapping/DistanceMapping.inl \
     deformationMapping/ExtensionMapping.h \
     deformationMapping/ExtensionMapping.inl \
     deformationMapping/LinearMapping.h \
-    deformationMapping/LinearMapping.inl \
     deformationMapping/LinearJacobianBlock.h \
     deformationMapping/LinearJacobianBlock.inl \
+    strainMapping/BaseStrainMapping.h \
     strainMapping/GreenStrainMapping.h \
     strainMapping/GreenStrainJacobianBlock.h \
     strainMapping/GreenStrainJacobianBlock.inl \
     strainMapping/CorotationalStrainMapping.h \
     strainMapping/CorotationalStrainJacobianBlock.h \
     strainMapping/CorotationalStrainJacobianBlock.inl \
+    strainMapping/InvariantMapping.h \
+    strainMapping/InvariantJacobianBlock.h \
+    strainMapping/InvariantJacobianBlock.inl \
     material/BaseMaterial.h \
+    material/BaseMaterialForceField.h \
     material/HookeForceField.h \
     material/HookeMaterialBlock.h \
     material/HookeMaterialBlock.inl \
-
+    material/MooneyRivlinForceField.h \
+    material/MooneyRivlinMaterialBlock.h \
+    material/MooneyRivlinMaterialBlock.inl \
+    material/VolumePreservationForceField.h \
+    material/VolumePreservationMaterialBlock.h \
+    material/VolumePreservationMaterialBlock.inl \
 
 README_FILE = Flexible.txt
 

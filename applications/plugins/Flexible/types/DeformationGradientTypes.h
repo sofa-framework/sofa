@@ -45,14 +45,11 @@ namespace defaulttype
 using std::endl;
 using helper::vector;
 
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-class DefGradient;
-
 /** Local deformation state of a material object.
 Template parameters are used to define the spatial dimensions, the material dimensions, and the order.
 Order 1 corresponds to a traditional deformation gradient, while order 2 corresponds to an elaston.
 In the names of the instanciated classes, the suffix corresponds to the parameters.
-For instance, DefGradient332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
+For instance, F332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
 */
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 struct DefGradientTypes
@@ -324,145 +321,51 @@ struct DefGradientTypes
 
 
 // ==========================================================================
-// Mass
 
 
-/** Mass associated with a sampling point
-      */
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-struct DefGradientMass
-{
-    typedef _Real Real;
-    Real mass;  ///< Currently only a scalar mass, but a matrix should be used for more precision
-    // operator to cast to const Real
-    operator const Real() const    {        return mass;    }
-    template<int S, int M, int O, typename R>
-    inline friend std::ostream& operator << ( std::ostream& out, const DefGradientMass<S,M,O,R>& m )    {        out << m.mass;        return out;    }
-    template<int S, int M, int O, typename R>
-    inline friend std::istream& operator >> ( std::istream& in, DefGradientMass<S,M,O,R>& m )    {        in >> m.mass;   return in;    }
-    void operator *= ( Real fact )    {        mass *= fact;    }
-    void operator /= ( Real fact )    {        mass /= fact;    }
-};
-
-//template<int S, int M, int O, typename R>
-//inline DefGradientTypes<S,M,O,R>::Deriv operator* ( const DefGradientTypes<S,M,O,R>::Deriv& d, const DefGradientMass<S,M,O,R>& m )
-//{
-//    DefGradientTypes<S,M,O,R>::Deriv res;
-//    DefGradientTypes<S,M,O,R>::center(res) = DefGradientTypes<S,M,O,R>::center(d) * m.mass;
-//    return res;
-//}
-
-//template<int S, int M, int O, typename R>
-//inline DefGradientTypes<S,M,O,R>::Deriv operator/ ( const DefGradientTypes<S,M,O,R>::Deriv& d, const DefGradientMass<S,M,O,R>& m )
-//{
-//    DefGradientTypes<S,M,O,R>::Deriv res;
-//    DefGradientTypes<S,M,O,R>::center(res) = DefGradientTypes<S,M,O,R>::center(d) / m.mass;
-//    return res;
-//}
+typedef DefGradientTypes<3, 3, 1, double> F331dTypes;
+typedef DefGradientTypes<3, 3, 1, float>  F331fTypes;
+typedef DefGradientTypes<3, 3, 2, double> F332dTypes;
+typedef DefGradientTypes<3, 3, 2, float>  F332fTypes;
 
 
-// ==========================================================================
-// order 1
-
-typedef DefGradientTypes<3, 3, 1, double> DefGradient331dTypes;
-typedef DefGradientTypes<3, 3, 1, float>  DefGradient331fTypes;
-
-typedef DefGradientMass<3, 3, 1, double> DefGradient331dMass;
-typedef DefGradientMass<3, 3, 1, float>  DefGradient331fMass;
-
-/// Note: Many scenes use DefGradient as template for 3D double-precision rigid type. Changing it to DefGradient3d would break backward compatibility.
 #ifdef SOFA_FLOAT
-template<> inline const char* DefGradient331dTypes::Name() { return "DefGradient331d"; }
-template<> inline const char* DefGradient331fTypes::Name() { return "DefGradient331"; }
+template<> inline const char* F331dTypes::Name() { return "F331d"; }
+template<> inline const char* F331fTypes::Name() { return "F331"; }
+template<> inline const char* F332dTypes::Name() { return "F332d"; }
+template<> inline const char* F332fTypes::Name() { return "F332"; }
 #else
-template<> inline const char* DefGradient331dTypes::Name() { return "DefGradient331"; }
-template<> inline const char* DefGradient331fTypes::Name() { return "DefGradient331f"; }
+template<> inline const char* F331dTypes::Name() { return "F331"; }
+template<> inline const char* F331fTypes::Name() { return "F331f"; }
+template<> inline const char* F332dTypes::Name() { return "F332"; }
+template<> inline const char* F332fTypes::Name() { return "F332f"; }
 #endif
 
 #ifdef SOFA_FLOAT
-typedef DefGradient331fTypes DefGradient331Types;
-typedef DefGradient331fMass DefGradient331Mass;
+typedef F331fTypes F331Types;
+typedef F332fTypes F332Types;
 #else
-typedef DefGradient331dTypes DefGradient331Types;
-typedef DefGradient331dMass DefGradient331Mass;
+typedef F331dTypes F331Types;
+typedef F332dTypes F332Types;
 #endif
 
-template<>
-struct DataTypeInfo< DefGradient331fTypes::Deriv > : public FixedArrayTypeInfo< DefGradient331fTypes::Deriv, DefGradient331fTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "DefGradient331<" << DataTypeName<float>::name() << ">"; return o.str(); }
-};
-template<>
-struct DataTypeInfo< DefGradient331dTypes::Deriv > : public FixedArrayTypeInfo< DefGradient331dTypes::Deriv, DefGradient331dTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "DefGradient331<" << DataTypeName<double>::name() << ">"; return o.str(); }
-};
+template<> struct DataTypeInfo< F331fTypes::Deriv > : public FixedArrayTypeInfo< F331fTypes::Deriv, F331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< F331dTypes::Deriv > : public FixedArrayTypeInfo< F331dTypes::Deriv, F331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< F332fTypes::Deriv > : public FixedArrayTypeInfo< F332fTypes::Deriv, F332fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F332<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< F332dTypes::Deriv > : public FixedArrayTypeInfo< F332dTypes::Deriv, F332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName< defaulttype::DefGradient331fTypes::Coord > { static const char* name() { return "DefGradient331fTypes::CoordOrDeriv"; } };
-template<> struct DataTypeName< defaulttype::DefGradient331dTypes::Coord > { static const char* name() { return "DefGradient331dTypes::CoordOrDeriv"; } };
-template<> struct DataTypeName< defaulttype::DefGradient331fMass > { static const char* name() { return "DefGradient331fMass"; } };
-template<> struct DataTypeName< defaulttype::DefGradient331dMass > { static const char* name() { return "DefGradient331dMass"; } };
-
-/// \endcond
-
-
-
-
-// ==========================================================================
-// order 2
-
-
-typedef DefGradientTypes<3, 3, 2, double> DefGradient332dTypes;
-typedef DefGradientTypes<3, 3, 2, float>  DefGradient332fTypes;
-
-typedef DefGradientMass<3, 3, 2, double> DefGradient332dMass;
-typedef DefGradientMass<3, 3, 2, float>  DefGradient332fMass;
-
-/// Note: Many scenes use DefGradient as template for 3D double-precision rigid type. Changing it to DefGradient3d would break backward compatibility.
-#ifdef SOFA_FLOAT
-template<> inline const char* DefGradient332dTypes::Name() { return "DefGradient332d"; }
-template<> inline const char* DefGradient332fTypes::Name() { return "DefGradient332"; }
-#else
-template<> inline const char* DefGradient332dTypes::Name() { return "DefGradient332"; }
-template<> inline const char* DefGradient332fTypes::Name() { return "DefGradient332f"; }
-#endif
-
-#ifdef SOFA_FLOAT
-typedef DefGradient332fTypes DefGradient332Types;
-typedef DefGradient332fMass DefGradient332Mass;
-#else
-typedef DefGradient332dTypes DefGradient332Types;
-typedef DefGradient332dMass DefGradient332Mass;
-#endif
-
-template<>
-struct DataTypeInfo< DefGradient332fTypes::Deriv > : public FixedArrayTypeInfo< DefGradient332fTypes::Deriv, DefGradient332fTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "DefGradient332<" << DataTypeName<float>::name() << ">"; return o.str(); }
-};
-template<>
-struct DataTypeInfo< DefGradient332dTypes::Deriv > : public FixedArrayTypeInfo< DefGradient332dTypes::Deriv, DefGradient332dTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "DefGradient332<" << DataTypeName<double>::name() << ">"; return o.str(); }
-};
-
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-template<> struct DataTypeName< defaulttype::DefGradient332fTypes::Coord > { static const char* name() { return "DefGradient332fTypes::CoordOrDeriv"; } };
-template<> struct DataTypeName< defaulttype::DefGradient332dTypes::Coord > { static const char* name() { return "DefGradient332dTypes::CoordOrDeriv"; } };
-template<> struct DataTypeName< defaulttype::DefGradient332fMass > { static const char* name() { return "DefGradient332fMass"; } };
-template<> struct DataTypeName< defaulttype::DefGradient332dMass > { static const char* name() { return "DefGradient332dMass"; } };
+template<> struct DataTypeName< defaulttype::F331fTypes::Coord > { static const char* name() { return "F331fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::F331dTypes::Coord > { static const char* name() { return "F331dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::F332fTypes::Coord > { static const char* name() { return "F332fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::F332dTypes::Coord > { static const char* name() { return "F332dTypes::CoordOrDeriv"; } };
 
 /// \endcond
 
 
 } // namespace defaulttype
-
 
 
 
@@ -478,16 +381,16 @@ namespace container
 
 #if defined(WIN32) && !defined(FLEXIBLE_DeformationGradientTYPES_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::DefGradient331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::DefGradient331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::DefGradient332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::DefGradient332dTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331dTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::DefGradient331fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::DefGradient331fTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::DefGradient332fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::DefGradient332fTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331fTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332fTypes>;
 #endif
 #endif
 

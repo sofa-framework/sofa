@@ -32,20 +32,17 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace container
 {
-
 
 // ==========================================================================
 // Draw Specializations
 
 
 template <>
-void MechanicalObject<Affine3dTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -98,7 +95,7 @@ void MechanicalObject<Affine3dTypes>::draw(const core::visual::VisualParams* vpa
     {
         glPushAttrib ( GL_LIGHTING_BIT );
         glDisable ( GL_LIGHTING );
-        const Affine3dTypes::VecCoord& x = ( *getX() );
+        const Affine3Types::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
@@ -125,26 +122,13 @@ SOFA_DECL_CLASS ( AffineMechanicalObject )
 using namespace sofa::defaulttype;
 
 int AffineMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<Affine3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<Affine3fTypes> >()
-#endif
+
+        .add< MechanicalObject<Affine3Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<Affine3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<Affine3fTypes>;
-#endif
-
-
+template class SOFA_Flexible_API MechanicalObject<Affine3Types>;
 
 
 } // namespace container
-
 } // namespace component
-
 } // namespace sofa

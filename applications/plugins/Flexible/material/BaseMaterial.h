@@ -26,6 +26,7 @@
 #define FLEXIBLE_BaseMaterial_H
 
 #include <sofa/defaulttype/Mat.h>
+#include "../quadrature/BaseGaussPointSampler.h"
 
 namespace sofa
 {
@@ -43,7 +44,12 @@ public:
     typedef typename T::Deriv Deriv;
     typedef typename T::Real Real;
 
+    typedef component::engine::BaseGaussPointSampler::volumeIntegralType volumeIntegralType;
     typedef Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stifness or compliance matrix block
+    static const bool constantK=false; ///< tells if the stiffness is constant (to avoid recomputations)
+
+    // quadrature data (from a GaussPointSampler)
+    const volumeIntegralType* volume;
 
     // compute U(x)
     virtual Real getPotentialEnergy(const Coord& x) const  =0;
@@ -53,6 +59,7 @@ public:
     virtual void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )=0;
 
     virtual MatBlock getK()=0;
+    virtual MatBlock getB()=0;
     virtual MatBlock getC()=0;
 };
 

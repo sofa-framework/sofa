@@ -22,77 +22,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#define SOFA_COMPONENT_MAPPING_InvariantMAPPING_CPP
+
+#include "../initFlexible.h"
+#include "../strainMapping/InvariantMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
+#include "../types/DeformationGradientTypes.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
-
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace mapping
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+SOFA_DECL_CLASS(InvariantMapping);
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+using namespace defaulttype;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+// Register in the Factory
+int InvariantMappingClass = core::RegisterObject("Map deformation gradients to (incompressible) invariants of the right Cauchy Green deformation tensor: I1,I2 and J ")
 
+        .add< InvariantMapping< F331Types, I331Types > >(true)
+//.add< InvariantMapping< F332Types, I332Types > >()
+//.add< InvariantMapping< F332Types, I333Types > >()
+        ;
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
+template class SOFA_Flexible_API InvariantMapping< F331Types, I331Types >;
+//template class SOFA_Flexible_API InvariantMapping< F332Types, I332Types >;
+//template class SOFA_Flexible_API InvariantMapping< F332Types, I333Types >;
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
-}
-}
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-SOFA_LINK_CLASS(CorotationalStrainMapping)
-SOFA_LINK_CLASS(InvariantMapping)
-SOFA_LINK_CLASS(HookeForceField)
-SOFA_LINK_CLASS(MooneyRivlinForceField)
-SOFA_LINK_CLASS(VolumePreservationForceField)
-SOFA_LINK_CLASS(AffineMechanicalObject)
-SOFA_LINK_CLASS(QuadraticMechanicalObject)
+} // namespace mapping
+} // namespace component
+} // namespace sofa
 

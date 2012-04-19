@@ -32,20 +32,17 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace container
 {
-
 
 // ==========================================================================
 // Draw Specializations
 
 
 template <>
-void MechanicalObject<Quadratic3dTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -98,7 +95,7 @@ void MechanicalObject<Quadratic3dTypes>::draw(const core::visual::VisualParams* 
     {
         glPushAttrib ( GL_LIGHTING_BIT );
         glDisable ( GL_LIGHTING );
-        const Quadratic3dTypes::VecCoord& x = ( *getX() );
+        const Quadratic3Types::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
@@ -125,26 +122,13 @@ SOFA_DECL_CLASS ( QuadraticMechanicalObject )
 using namespace sofa::defaulttype;
 
 int QuadraticMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<Quadratic3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<Quadratic3fTypes> >()
-#endif
+
+        .add< MechanicalObject<Quadratic3Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<Quadratic3fTypes>;
-#endif
-
-
+template class SOFA_Flexible_API MechanicalObject<Quadratic3Types>;
 
 
 } // namespace container
-
 } // namespace component
-
 } // namespace sofa

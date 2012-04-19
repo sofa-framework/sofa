@@ -22,22 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
-#define SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
+#define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/helper/gl/Color.h>
+#include <sofa/helper/vector.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-
-#include "../deformationMapping/LinearJacobianBlock.inl"
-#include <sofa/core/Mapping.inl>
-#include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -45,6 +42,10 @@
 #include <iostream>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/Mapping.inl>
+
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+
 
 namespace sofa
 {
@@ -53,34 +54,29 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-using helper::WriteAccessor;
-using helper::ReadAccessor;
 using helper::vector;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class LinearMappingInternalData
+class BaseDeformationMappingInternalData
 {
 public:
 };
 
 
-/** Generic linear mapping, from a variety of input types to a variety of output types.
+/** Abstract mapping (one parent->several children with different influence) using JacobianBlocks or sparse eigen matrix
 */
 
-template <class TIn, class TOut>
-class SOFA_Flexible_API LinearMapping : public core::Mapping<TIn, TOut>
+template <class JacobianBlockType>
+class SOFA_Flexible_API BaseDeformationMapping : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(LinearMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
-
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(BaseDeformationMapping,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out));
 
     /** @name  Input types    */
     //@{
-    typedef TIn In;
+    typedef typename JacobianBlockType::In In;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord InVecCoord;
@@ -91,7 +87,7 @@ public:
 
     /** @name  Output types    */
     //@{
-    typedef TOut Out;
+    typedef typename JacobianBlockType::Out Out;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
@@ -111,13 +107,12 @@ public:
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
-
     /** @name  Jacobian types    */
     //@{
-    typedef defaulttype::LinearJacobianBlock<In,Out>  Block;    ///< Jacobian block object
-    typedef vector<vector<Block> >  SparseMatrix;
+    typedef JacobianBlockType BlockType;
+    typedef vector<vector<BlockType> >  SparseMatrix;
 
-    typedef typename Block::MatBlock  MatBlock;  ///< Jacobian block matrix
+    typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
     //@}
 
@@ -130,8 +125,8 @@ public:
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
             maskTo = &stateTo->forceMask;
 
-        ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
         // init shape function
         this->getContext()->get(ShapeFunction,core::objectmodel::BaseContext::SearchUp);
@@ -144,7 +139,7 @@ public:
         }
 
         // init jacobians
-        jacobian.resize(out.size());
+        jacobian.resize(in.size());
         for(unsigned int i=0; i<out.size(); i++ )
         {
             unsigned int nbref=this->f_index.getValue()[i].size();
@@ -155,13 +150,18 @@ public:
                 jacobian[i][j].init( in[index],out[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
+
+        //    reinit();
+
         Inherit::init();
     }
+
     virtual void reinit()
     {
         if(this->assembleJ.getValue()) updateJ();
-    }
 
+        //   Inherit::reinit();
+    }
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
@@ -179,12 +179,11 @@ public:
         }
         dOut.endEdit();
 
-        if(this->assembleJ.getValue()) if(!Block::constantJ) updateJ();
+        if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
     }
 
     virtual void applyJ(const core::MechanicalParams */*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
-
         if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
         else
         {
@@ -233,7 +232,8 @@ public:
     }
 
     //    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
-    virtual const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
+
+    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
     {
         if(!this->assembleJ.getValue()) updateJ();
         return &eigenJacobian;
@@ -243,12 +243,12 @@ public:
     {
         if (!vparams->displayFlags().getShowMechanicalMappings()) return;
 
-        ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
-        ReadAccessor<Data<vector<VReal> > > w (this->f_w);
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
+        helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
 
-        vector< Vec3d > edge;     edge.resize(2);
+        vector< defaulttype::Vec3d > edge;     edge.resize(2);
         Vec<4,float> col;
 
         for(unsigned i=0; i<ref.size(); i++ )
@@ -264,10 +264,11 @@ public:
 
     //@}
 
+
+
 protected:
-    LinearMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
+    BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
-        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Construct the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
         , ShapeFunction(NULL)
         , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
         , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
@@ -275,16 +276,30 @@ protected:
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
         , maskFrom(NULL)
         , maskTo(NULL)
+        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Construct the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
     {
+
     }
 
-    virtual ~LinearMapping() {}
+    virtual ~BaseDeformationMapping()     { }
+
+    BaseShapeFunction* ShapeFunction;        ///< where the weights are computed
+    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    Data<vector<VReal> >       f_w;
+    Data<vector<VGradient> >   f_dw;
+    Data<vector<VHessian> >    f_ddw;
+
+    SparseMatrix jacobian;   ///< Jacobian of the mapping
+
+    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
     Data<bool> assembleJ;
+    SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     void updateJ()
     {
-        ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
         eigenJacobian.resizeBlocks(out.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
@@ -308,67 +323,14 @@ protected:
         eigenJacobian.endEdit();
     }
 
-    BaseShapeFunction* ShapeFunction;        ///< where the weights are computed
-    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    Data<vector<VReal> >       f_w;
-    Data<vector<VGradient> >   f_dw;
-    Data<vector<VHessian> >    f_ddw;
-
-    SparseMatrix jacobian;   ///< Jacobian of the mapping
-    SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
-
-    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 };
 
 
 } // namespace mapping
+
 } // namespace component
+
 } // namespace sofa
 
 #endif
-
-
-/*
-#include "../initFlexible.h"
-#include "../deformationMapping/BaseDeformationMapping.h"
-#include "../deformationMapping/LinearJacobianBlock.inl"
-
-namespace sofa {
-namespace component {
-namespace mapping {
-
-using helper::vector;
-
-*/
-/** Generic linear mapping, from a variety of input types to a variety of output types.
-*/
-/*
-
-template <class TIn, class TOut>
-class SOFA_Flexible_API LinearMapping : public BaseDeformationMapping<defaulttype::LinearJacobianBlock<TIn,TOut> >
-{
-public:
-    typedef defaulttype::LinearJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseDeformationMapping<BlockType > Inherit;
-
-    SOFA_CLASS(SOFA_TEMPLATE2(LinearMapping,TIn,TOut), SOFA_TEMPLATE(BaseDeformationMapping,BlockType ));
-
-protected:
-    LinearMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
-        : Inherit ( from, to )
-    {
-    }
-
-    virtual ~LinearMapping()     { }
-
-};
-
-
-} // namespace mapping
-} // namespace component
-} // namespace sofa
-
-#endif
-*/
