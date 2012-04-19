@@ -37,6 +37,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
+#include <omp.h>
 
 namespace sofa
 {
@@ -52,7 +53,7 @@ using namespace helper;
 using namespace core::topology;
 
 /**
- * This class rasterizes a mesh into a boolean image (1: inside mesh, 0: outside)
+ * This class rasterizes a mesh into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
  */
 
 
@@ -94,6 +95,8 @@ public:
     typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
 
+    Data< double > value;
+
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
@@ -106,6 +109,7 @@ public:
         , transform(initData(&transform,TransformType(),"transform",""))
         , position(initData(&position,SeqPositions(),"position","input positions"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","input triangles"))
+        , value(initData(&value,1.,"value","pixel value inside mesh"))
     {
         position.setReadOnly(true);
         triangles.setReadOnly(true);
@@ -203,11 +207,13 @@ protected:
         for(unsigned int j=0; j<3; j++) dim[j]=1+ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
         CImg<T>& im=iml->getCImg();
-        T color0=(T)0,color1=(T)1;
+        T color0=(T)0,color1=(T)this->value.getValue();
         im.fill(color1);
 
         // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing triangles.."<<std::endl;
+
+        #pragma omp parallel for
         for(unsigned int i=0; i<nbtri; i++)
         {
             Coord pts[3];
