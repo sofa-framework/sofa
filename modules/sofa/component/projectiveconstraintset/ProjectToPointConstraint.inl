@@ -32,7 +32,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/RigidTypes.h>
+//#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -428,19 +428,19 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
     }
 }
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void ProjectToPointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void ProjectToPointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void ProjectToPointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void ProjectToPointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
+//// Specialization for rigids
+//#ifndef SOFA_FLOAT
+//template <>
+//void ProjectToPointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+//template <>
+//void ProjectToPointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+//#endif
+//#ifndef SOFA_DOUBLE
+//template <>
+//void ProjectToPointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+//template <>
+//void ProjectToPointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+//#endif
 
 
 
