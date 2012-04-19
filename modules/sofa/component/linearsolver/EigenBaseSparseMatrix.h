@@ -73,6 +73,24 @@ public:
         resize(nbRow,nbCol);
     }
 
+    /** Clear and resize this to (m.rows,nbCol) and initialize it with the given matrix, columns shifted of the given value: this(i,j+shift) = m(i,j).
+      @precond nbCol >= m.cols + shift
+      */
+    void copy(const EigenBaseSparseMatrix& m, unsigned nbCol, unsigned shift)
+    {
+        resize(m.rowSize(),nbCol);
+
+        const Matrix& im = m.eigenMatrix;
+        for(int i=0; i<im.rows(); i++)
+        {
+            eigenMatrix.startVec(i);
+            for(typename Matrix::InnerIterator j(im,i); j; ++j)
+                eigenMatrix.insertBack(i,shift+j.col())= j.value();
+        }
+        eigenMatrix.finalize();
+    }
+
+
     /// Resize the matrix without preserving the data (the matrix is set to zero)
     void resize(int nbRow, int nbCol)
     {

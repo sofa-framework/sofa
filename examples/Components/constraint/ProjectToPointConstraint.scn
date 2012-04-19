@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="0.05"  >
+        <VisualStyle displayFlags="hideVisualModels showBehavior" />
+        <Node 	name="Square"  >
+                <EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0"  verbose="0" />
+		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
+                <GridMeshCreator name="loader" resolution="5 5" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
+                <MechanicalObject template="Vec3d" name="mObject1" position="@loader.position"    showIndices="false" showIndicesScale="0.001" />
+		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
+                <TriangleSetTopologyModifier name="Modifier" />
+		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+                <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+                <UniformMass template="Vec3d"  />
+                <TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="20" />
+                <BoxConstraint box="-0.05 -0.05 -0.05    0.05 0.05 0.05" drawBoxes="1"  />
+                <BoxROI box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1" name="ProjectToPlane"/>
+                <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" drawSize="0.03" />
+                <Node 	name="Boundary Edges"  >
+			<EdgeSetTopologyContainer name="Container" />
+                        <EdgeSetTopologyModifier name="Modifier" />
+			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+                        <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
+			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
+                        <BoxROI box="0.95 -0.05 -0.05    1.05 1.05 0.05" drawBoxes="1" position="@../mObject1.rest_position" drawEdges="1" edges="@Container.edges" name="pressureBox" />
+                        <EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edgeIndices="@pressureBox.edgeIndices" binormal="0 0 1"  p_intensity="-10" showForces="1" arrowSizeCoef="1"/>
+                </Node>
+	</Node>
+</Node>

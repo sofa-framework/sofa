@@ -108,7 +108,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 			cuda.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
 			cuda.clean = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
 		}
-		cuda.commands = '"'$$(CUDA_BIN_PATH)/nvcc.exe'"' -c $$CUDA_FLAGS -Xcompiler -nologo $${join(INCLUDEPATH,'" -I "','-I "','"')} $${join(DEFINES," -D","-D",)} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+                cuda.commands = '"'$$(CUDA_BIN_PATH)/nvcc.exe'"' -c $$CUDA_FLAGS -Xcompiler -nologo $${join(INCLUDEPATH,'" -I "','-I "','"')} $${join(DEFINES," -D","-D",)} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 		INCLUDEPATH += '"'$$quote($$system(echo %CUDA_INC_PATH%))'"'
 	}
@@ -153,7 +153,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		QMAKE_NVCCFLAGS = $$QMAKE_CXXFLAGS_RELEASE
 		QMAKE_NVCCFLAGS -= -fno-partial-inlining
 
-		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_NVCCFLAGS,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+                cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler  -fPIC,$${join(QMAKE_NVCCFLAGS,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 #		macx: cuda.commands += --host-compilation 'C'
 	}
