@@ -188,9 +188,14 @@ void  FixedConstraint<DataTypes>::reinit()
         if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
         {
             it++;
-            // jacobian(i,i)==0 per default, nothing to do actually
+            for( unsigned j=0; j<blockSize; j++ )
+            {
+//                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
+                jacobian.beginRow(blockSize*i+j );
+                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // unconstrained particle: set the diagonal to identity
+            }
         }
-        else
+        else      // unconstrained particle: set diagonal to 1
             for( unsigned j=0; j<blockSize; j++ )
             {
 //                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
