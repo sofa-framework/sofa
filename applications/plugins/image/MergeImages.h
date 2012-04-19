@@ -33,12 +33,16 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/component/component.h>
+#include <omp.h>
 
 #define AVERAGE 0
 #define ORDER 1
 #define ALPHABLEND 2
 #define SEPARATE 3
 
+#define INTERPOLATION_NEAREST 0
+#define INTERPOLATION_LINEAR 1
+#define INTERPOLATION_CUBIC 2
 
 namespace sofa
 {
@@ -77,6 +81,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     Data<OptionsGroup> overlap;
+    Data<OptionsGroup> Interpolation;
     Data<unsigned int> nbImages;
 
     helper::vector<Data<ImageTypes>*> inputImages;
@@ -90,6 +95,7 @@ public:
 
     MergeImages()    :   Inherited()
         , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
+        , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
         , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
         , image(initData(&image,ImageTypes(),"image","Image"))
         , transform(initData(&transform,TransformType(),"transform","Transform"))
@@ -107,6 +113,10 @@ public:
                                            );
         overlapOptions.setSelectedItem(ALPHABLEND);
         overlap.setValue(overlapOptions);
+
+        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
+        Interpolation.setValue(InterpolationOptions);
     }
 
     virtual ~MergeImages()
@@ -252,9 +262,12 @@ protected:
 
         CImgList<T>& img = out->getCImgList();
 
-        // to do: parallelization
+
+        #pragma omp parallel for
         cimg_forXYZ(img(0),x,y,z) //space
         {
+            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
+
             Coord p=outT->fromImage(Coord(x,y,z));
             vector<struct pttype> pts;
             for(unsigned int j=0; j<nb; j++) // store values at p from input images
@@ -268,12 +281,27 @@ protected:
                 if(inp[0]>=0 && inp[1]>=0 && inp[2]>=0 && inp[0]<=indim[0]-1 && inp[1]<=indim[1]-1 && inp[2]<=indim[2]-1)
                 {
                     struct pttype pt;
-                    for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
-                    {
-                        pt.vals.push_back(vector<double>());
-                        for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                            pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
-                    }
+                    if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
+                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
+                        {
+                            pt.vals.push_back(vector<double>());
+                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
+                                pt.vals[t].push_back((double)inImg(t).atXYZ(round((double)inp[0]),round((double)inp[1]),round((double)inp[2]),k));
+                        }
+                    else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
+                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
+                        {
+                            pt.vals.push_back(vector<double>());
+                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
+                                pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
+                        }
+                    else
+                        for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
+                        {
+                            pt.vals.push_back(vector<double>());
+                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
+                                pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
+                        }
                     pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
                             ( inp[1]< indim[1]-inp[1]-1)? inp[1]: indim[1]-inp[1]-1 ,
                             ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
@@ -282,7 +310,7 @@ protected:
             }
             unsigned int nbp=pts.size();
             if(nbp==0) continue;
-            else if(nbp==1) for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
+            else if(nbp==1) { for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) if((T)pts[0].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][k]; }
             else if(nbp>1)
             {
                 unsigned int nbt=pts[0].vals.size();
@@ -294,7 +322,7 @@ protected:
                 }
                 else if(overlp==ORDER)
                 {
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
+                    for(int j=nbp-1; j>=0; j--) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if((T)pts[j].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[j].vals[t][k];
                 }
                 else if(overlp==ALPHABLEND)
                 {

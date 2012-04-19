@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showVisual showBehavior" />
+  <MeshObjLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
+  <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+  <MeshObjLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
+  <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+  <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
+  <MeshToImageEngine template="ImageUC" value="3" name="rasterizer3" src="@mesh3" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+
+<MergeImages  template="ImageUC" name="merge" nbImages="3" overlap="1" interpolation="0"
+image1="@rasterizer1.image" transform1="@rasterizer1.transform" 	
+image2="@rasterizer2.image" transform2="@rasterizer2.transform" 	
+image3="@rasterizer3.image" transform3="@rasterizer3.transform" 	
+		/>
+
+  <ImageContainer template="ImageUC" name="image" src="@merge" />
+  <ImageViewer template="ImageUC" name="viewer" src="@image" /> 
+  <ImageExporter template="ImageUC" name="writer" src="@image" filename="bulbille.nfo" exportAtBegin="true" />
+
+  <Node name="frame" >
+		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+		<CGLinearSolver template="GraphScattered" iterations="50"  threshold="1e-008" />
+
+		<GridMaterial name="gridmaterial" template="Material3" 
+				imageFile="bulbille.raw" 
+				labelToStiffnessPairs="1 200000000
+2 100
+3 20"  
+				labelToDensityPairs="1 10"  
+				labelToPoissonRatioPairs="1 0"
+				labelToBulkModulusPairs="1 50"
+				distanceType="Geodesic"
+				maxLloydIterations="50"
+				biasDistances="true"
+				showVoxelData="None" 
+				/>
+
+		<MechanicalObject name="DOFs" template="Affine" useMask="1"  />
+		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="1"/>
+
+		<Node name="Physics" showBehaviorModels="0">
+			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  showObject="0" showObjectScale="0.5"/>
+ 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
+				input="@../DOFs"  output="@PointSet"  
+				targetFrameNumber="20"
+				targetSampleNumber="1"
+				initializeFramesInRigidParts="1"
+				/>
+			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>  
+		</Node>
+
+		<Node name="Gelatin-Visu">
+			<OglModel name="Gelatin" fileMesh="mesh/bubille_8x8x16.obj" normals="0"   color="0.1 .8 .3 .6" />
+			<FrameBlendingMapping template="Mapping&lt;Affine,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Gelatin"/>
+		</Node>
+
+		<Node name="Ball1-Visu">
+			<OglModel name="Ball1" fileMesh="mesh/bubille_in1.obj" normals="0"   color="1 0 0 1" />
+			<FrameBlendingMapping template="Mapping&lt;Affine,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Ball1" restrictInterpolationToLabel="1"/>
+		</Node>
+
+		<Node name="Ball2-Visu">
+			<OglModel name="Ball2" fileMesh="mesh/bubille_in2.obj" normals="0"   color="0 0 1 1" />
+			<FrameBlendingMapping template="Mapping&lt;Affine,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Ball2" restrictInterpolationToLabel="2"/>
+		</Node>
+		<Node name="Collision">
+			<MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
+      			<Mesh src="@MeshLoader"  /> 
+      			<MechanicalObject  name="PointSet"/>
+      			<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" showStrain="false"/>
+		</Node>
+  </Node>
+
+</Node>
+

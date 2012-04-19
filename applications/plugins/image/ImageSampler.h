@@ -99,7 +99,7 @@ public:
     Data< ParamTypes > param;
     /**@}*/
 
-    //@name sample data
+    //@name sample data (points+connectivity)
     /**@{*/
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
@@ -121,6 +121,15 @@ public:
     Data< SeqHexahedra > hexahedra;
     /**@}*/
 
+    //@name distances (may be used for shape function computation)
+    /**@{*/
+    typedef Image<Real> DistTypes;
+    typedef helper::ReadAccessor<Data< DistTypes > > raDist;
+    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    Data< ImageD > distances;
+    /**@}*/
+
+
     //@name visu data
     /**@{*/
     Data< bool > showSamples;
@@ -141,6 +150,7 @@ public:
         , edges(initData(&edges,SeqEdges(),"edges","edges connecting neighboring nodes"))
         , graph(initData(&graph,SeqEdges(),"graph","graph where each node is connected to its neighbors when created"))
         , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
+        , distances(initData(&distances,DistTypes(),"distances",""))
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
@@ -151,7 +161,7 @@ public:
         f_listening.setValue(true);
 
         helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                ,"1 - Uniform sampling using Lloyd relaxation (nbSamples | bias distances? | nbiterations=100)"
+                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=0)"
                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
@@ -166,6 +176,7 @@ public:
         addOutput(&edges);
         addOutput(&graph);
         addOutput(&hexahedra);
+        addOutput(&distances);
         setDirtyValue();
     }
 
@@ -195,9 +206,10 @@ protected:
             unsigned int nb=0;        if(params.size())       nb=(unsigned int)params[0];
             bool bias=false;          if(params.size()>1)     bias=(bool)params[1];
             unsigned int lloydIt=100; if(params.size()>2)     lloydIt=(unsigned int)params[2];
+            bool Dij=true; if(params.size()>3)     Dij=(bool)params[3];
 
             // sampling
-            uniformSampling(nb,bias,lloydIt);
+            uniformSampling(nb,bias,lloydIt,Dij);
         }
 
         if(this->f_printLog.getValue()) if(this->position.getValue().size())    std::cout<<"ImageSampler: "<< this->position.getValue().size() <<" generated samples"<<std::endl;
@@ -333,12 +345,15 @@ protected:
     * @param lloydIt : maximum number of Lloyd iterations.
     */
 
-    void uniformSampling ( unsigned int nb=0,  bool bias=false, unsigned int lloydIt=100)
+    void uniformSampling ( unsigned int nb=0,  bool bias=false, unsigned int lloydIt=100,bool useDijkstra=false)
     {
+        clock_t timer = clock();
+
         // get tranform and image at time t
         raImage in(this->image);
         raTransform inT(this->transform);
         const CImg<T>& inimg = in->getCImg(this->time);
+        const CImg<T>* biasFactor=bias?&inimg:NULL;
 
         // data access
         raPositions fpos(this->fixedPosition);
@@ -349,39 +364,47 @@ protected:
 
         // init voronoi and distances
         CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
-        CImg<Real>          distances(inimg.width(),inimg.height(),inimg.depth(),1,-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) distances(x,y,z)=cimg::type<Real>::max();
+        waDist distData(this->distances);
+        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
 
         // farthest point sampling using geodesic distances
         while(pos.size()<nb)
         {
             Real dmax=0;  Coord pmax;
-            cimg_forXYZ(distances,x,y,z) if(distances(x,y,z)>dmax) { dmax=distances(x,y,z); pmax =Coord(x,y,z); }
+            cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
             if(dmax)
             {
                 pos.push_back(inT->fromImage(pmax));
                 std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
-                dijkstra<Real,T>(distances, voronoi, P, this->transform.getValue(), NULL);
+                if(useDijkstra) dijkstra<Real,T>(dist, voronoi, P, this->transform.getValue(), biasFactor);
+                else fastMarching<Real,T>(dist, voronoi, P, this->transform.getValue(),biasFactor );
             }
             else break;
         }
         //voronoi.display();
 
         unsigned int it=0;
-        bool converged =false;
+        bool converged =(it>=lloydIt)?true:false;
 
         while(!converged)
         {
-            if(Lloyd<Real,T>(pos,distances,voronoi,this->transform.getValue(),NULL))
+            if(Lloyd<Real,T>(pos,dist,voronoi,this->transform.getValue(),NULL))
             {
-                cimg_foroff(distances,off) if(distances[off]!=-1) distances[off]=cimg::type<Real>::max();
+                cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
                 std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
-                dijkstra<Real,T>(distances, voronoi,  P, this->transform.getValue(), NULL);
-                it++; if(it==lloydIt) converged=true;
+                if(useDijkstra) dijkstra<Real,T>(dist, voronoi,  P, this->transform.getValue(), biasFactor);
+                else fastMarching<Real,T>(dist, voronoi,  P, this->transform.getValue(), biasFactor);
+                it++; if(it>=lloydIt) converged=true;
             }
             else converged=true;
         }
-        if(this->f_printLog.getValue()) std::cout<<"ImageSampler: Completed "<< it <<" Lloyd iterations"<<std::endl;
+
+        if(this->f_printLog.getValue())
+        {
+            std::cout<<"ImageSampler: Completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
+        }
 
         this->position.endEdit();
     }

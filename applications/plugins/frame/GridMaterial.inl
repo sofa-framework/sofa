@@ -1104,7 +1104,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
     {
         for (i=0; i<nbp; i++)
         {
-            HeatDiffusion(points,i);
+            HeatDiffusion(points,i,false,this->maxLloydIterations.getValue());
             offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
