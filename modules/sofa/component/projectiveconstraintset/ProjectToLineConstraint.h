@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -34,9 +34,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <set>
 
 namespace sofa
@@ -55,18 +56,20 @@ using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class FixedConstraintInternalData
+class ProjectToLineConstraintInternalData
 {
 
 };
 
-/** Attach given particles to their initial positions.
+/** Project particles to an affine straight line.
+  @author Francois Faure, 2012
+  @todo Optimized versions for lines parallel to the main directions
 */
 template <class DataTypes>
-class FixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class ProjectToLineConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ProjectToLineConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -78,23 +81,28 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef helper::vector<unsigned int> Indices;
+    typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
+    typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
+    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
+    enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
+
 
 protected:
-    FixedConstraint();
+    ProjectToLineConstraint();
 
-    virtual ~FixedConstraint();
+    virtual ~ProjectToLineConstraint();
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<double> _drawSize;
+    IndexSubsetData f_indices;     ///< the particles to project
+    Data<double> f_drawSize;
+    Data<Coord> f_origin;  ///< A point in the plane
+    Data<Deriv> f_direction;  ///< The direction of the line. Normalized at init()
 
 
 protected:
-    FixedConstraintInternalData<DataTypes>* data;
-    friend class FixedConstraintInternalData<DataTypes>;
+    ProjectToLineConstraintInternalData<DataTypes>* data;
+    friend class ProjectToLineConstraintInternalData<DataTypes>;
 
 
 public:
@@ -110,29 +118,25 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
-//    virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    /** Project the the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
-      */
+    /// Project the the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public TopologySubsetDataHandler<Point, Indices >
     {
     public:
-        typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
+        typedef typename ProjectToLineConstraint<DataTypes>::Indices Indices;
 
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(ProjectToLineConstraint<DataTypes>* _fc, PointSubsetData<Indices>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
 
 
 
@@ -143,7 +147,7 @@ public:
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
-        FixedConstraint<DataTypes> *fc;
+        ProjectToLineConstraint<DataTypes> *fc;
     };
 
 protected :
@@ -153,27 +157,26 @@ protected :
     /// Handler for subset Data
     FCPointHandler* pointHandler;
 
-    /// Matrix used in getJ
-    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
-
+    SparseMatrix jacobian; ///< projection matrix in local state
+    SparseMatrix J;        ///< auxiliary variable
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec6dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec6fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

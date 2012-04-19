@@ -75,6 +75,7 @@ public:
 
     EigenSparseMatrix(int nbRow=0, int nbCol=0):Inherit(nbRow,nbCol) {}
 
+
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {

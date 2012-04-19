@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_INL
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -62,7 +62,7 @@ using namespace sofa::core::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -76,7 +76,7 @@ bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigne
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
     if (fc)
     {
@@ -85,12 +85,13 @@ void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned i
 }
 
 template <class DataTypes>
-FixedConstraint<DataTypes>::FixedConstraint()
+ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
+    , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
+    , f_point( initData(&f_point,"point","Target of the projection") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , data(new FixedConstraintInternalData<DataTypes>())
+    , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , data(new ProjectToPointConstraintInternalData<DataTypes>())
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -101,7 +102,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
 
 
 template <class DataTypes>
-FixedConstraint<DataTypes>::~FixedConstraint()
+ProjectToPointConstraint<DataTypes>::~ProjectToPointConstraint()
 {
     if (pointHandler)
         delete pointHandler;
@@ -110,21 +111,21 @@ FixedConstraint<DataTypes>::~FixedConstraint()
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::clearConstraints()
+void ProjectToPointConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::addConstraint(unsigned int index)
+void ProjectToPointConstraint<DataTypes>::addConstraint(unsigned int index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
+void ProjectToPointConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -134,7 +135,7 @@ void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::init()
+void ProjectToPointConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -162,14 +163,14 @@ void FixedConstraint<DataTypes>::init()
 
     reinit();
 
-//  cerr<<"FixedConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
+    //  cerr<<"ProjectToPointConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
 
 }
 
 template <class DataTypes>
-void  FixedConstraint<DataTypes>::reinit()
+void  ProjectToPointConstraint<DataTypes>::reinit()
 {
-//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
+    //    cerr<<"ProjectToPointConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     // get the indices sorted
     SetIndexArray tmp = f_indices.getValue();
@@ -188,12 +189,15 @@ void  FixedConstraint<DataTypes>::reinit()
         if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
         {
             it++;
-            // jacobian(i,i)==0 per default, nothing to do actually
+            for( unsigned j=0; j<blockSize; j++ )
+            {
+                jacobian.beginRow(blockSize*i+j );
+                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // constrained particle: set the diagonal to
+            }
         }
         else
             for( unsigned j=0; j<blockSize; j++ )
             {
-//                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
                 jacobian.beginRow(blockSize*i+j );
                 jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
             }
@@ -203,7 +207,7 @@ void  FixedConstraint<DataTypes>::reinit()
     {
         for( unsigned j=0; j<blockSize; j++ )
         {
-//            cerr<<"FixedConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
+            //            cerr<<"ProjectToPointConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
             jacobian.beginRow( blockSize*i+j );
             jacobian.set( blockSize*i+j, blockSize*i+j, 1);
         }
@@ -213,7 +217,7 @@ void  FixedConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
     unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -228,20 +232,20 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 
 ///// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
 //template <class DataTypes>
-//const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const core::MechanicalParams* )
+//const sofa::defaulttype::BaseMatrix*  ProjectToPointConstraint<DataTypes>::getJ(const core::MechanicalParams* )
 //{
 //    return &jacobian;
 //}
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
-//    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
-//    assert(false);
+    //    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse is called "<<endl;
+    //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-    //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
+    //serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
@@ -260,11 +264,11 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
             res[*it] = Deriv();
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
+    //cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
@@ -294,23 +298,29 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
             ++rowIt;
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
+    //cerr<<"ProjectToPointConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
-// projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
-// Each fixed point received a null velocity vector.
-// When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
+void ProjectToPointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams , DataVecDeriv& vData)
 {
-#if 0 /// @TODO ADD A FLAG FOR THIS
-    const SetIndexArray & indices = f_indices.getValue();
-    //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    projectResponse(mparams, vData);
+}
+
+template <class DataTypes>
+void ProjectToPointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
+{
+    helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
+    const SetIndexArray & indices = f_indices.getValue(mparams);
+    //serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
+    if( f_fixAll.getValue(mparams) )
     {
-        for( unsigned i=0; i<res.size(); i++ )
-            res[i] = Deriv();
+        // fix everything
+        typename VecDeriv::iterator it;
+        for( it = res.begin(); it != res.end(); ++it )
+        {
+            *it = f_point.getValue();
+        }
     }
     else
     {
@@ -318,24 +328,17 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
                 it != indices.end();
                 ++it)
         {
-            res[*it] = Deriv();
+            res[*it] = f_point.getValue();
         }
     }
-#endif
-}
-
-template <class DataTypes>
-void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
-{
-
 }
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+    //cerr<<"ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -351,9 +354,9 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
+    //cerr<<"ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
@@ -369,23 +372,23 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = *this->mstate->getX();
-    //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
+    //serr<<"ProjectToPointConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 
 
 
     const SetIndexArray & indices = f_indices.getValue();
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
         Vector3 point;
-        //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
+        //serr<<"ProjectToPointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if( f_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -421,22 +424,22 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void FixedConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+void ProjectToPointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void FixedConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+void ProjectToPointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void FixedConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+void ProjectToPointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void FixedConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+void ProjectToPointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

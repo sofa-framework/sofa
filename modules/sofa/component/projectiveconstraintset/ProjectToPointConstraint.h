@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -55,7 +55,7 @@ using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class FixedConstraintInternalData
+class ProjectToPointConstraintInternalData
 {
 
 };
@@ -63,10 +63,10 @@ class FixedConstraintInternalData
 /** Attach given particles to their initial positions.
 */
 template <class DataTypes>
-class FixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class ProjectToPointConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ProjectToPointConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -82,19 +82,20 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
-    FixedConstraint();
+    ProjectToPointConstraint();
 
-    virtual ~FixedConstraint();
+    virtual ~ProjectToPointConstraint();
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<double> _drawSize;
+    SetIndex f_indices;    ///< the indices of the points to project to the target
+    Data<Coord> f_point;    ///< the target of the projection
+    Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
+    Data<double> f_drawSize;
 
 
 protected:
-    FixedConstraintInternalData<DataTypes>* data;
-    friend class FixedConstraintInternalData<DataTypes>;
+    ProjectToPointConstraintInternalData<DataTypes>* data;
+    friend class ProjectToPointConstraintInternalData<DataTypes>;
 
 
 public:
@@ -110,7 +111,6 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
-//    virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
@@ -129,9 +129,9 @@ public:
     class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
     {
     public:
-        typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
+        typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
 
@@ -143,7 +143,7 @@ public:
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
-        FixedConstraint<DataTypes> *fc;
+        ProjectToPointConstraint<DataTypes> *fc;
     };
 
 protected :
@@ -158,22 +158,22 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 
