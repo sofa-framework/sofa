@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.01"  >
+    
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    
+    <EulerImplicitSolver />
+    <CGLinearSolver  />
+
+    <Node 	name="Flexible"   >
+	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader" name="parent" />
+	    <UniformMass mass="1" />
+	    <BoxConstraint box="0 -2 0 5 2 5" />
+	   <ConstantForceField points="50" force="0 0 0" />
+
+	    <BarycentricShapeFunction position="@parent.rest_position" />
+
+	    <Node 	name="behavior"   >
+		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false"/>
+		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+		<Node 	name="I"   >
+		    <MechanicalObject  template="I331" name="I"  />
+		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" deviatoric="true"/>
+		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100" power="1"/> 
+		    <VolumePreservationForceField  template="I331" k="1000"/> 
+		</Node>
+	    </Node>
+
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    </Node>
+    </Node>
+
+    <Node 	name="FEM"   >
+	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader" name="parent" />
+	    <UniformMass mass="1" />
+	    <BoxConstraint box="0 -2 0 5 2 5" />
+	   <ConstantForceField points="50" force="0 0 0" />
+
+	    <!-- <StandardTetrahedralFEMForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 1000 100" />  -->
+	  <MJEDTetrahedralForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 100 1000" /> 
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1"/>
+	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    </Node>
+    </Node> 
+	  
+</Node>

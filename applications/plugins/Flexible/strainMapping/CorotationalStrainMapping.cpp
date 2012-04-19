@@ -35,9 +35,9 @@ namespace sofa
 {
 namespace component
 {
-
 namespace mapping
 {
+
 SOFA_DECL_CLASS(CorotationalStrainMapping);
 
 using namespace defaulttype;
@@ -45,28 +45,13 @@ using namespace defaulttype;
 // Register in the Factory
 int CorotationalStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Corotational Strain (small local deformations).")
 
-#ifndef SOFA_FLOAT
-        .add< CorotationalStrainMapping< DefGradient331dTypes, Strain331dTypes > >(true)
-        .add< CorotationalStrainMapping< DefGradient332dTypes, Strain332dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< CorotationalStrainMapping< DefGradient331fTypes, Strain331fTypes > >()
-        .add< CorotationalStrainMapping< DefGradient332fTypes, Strain332fTypes > >()
-#endif
-        ;
+        .add< CorotationalStrainMapping< F331Types, E331Types > >(true)
+        .add< CorotationalStrainMapping< F332Types, E332Types > >();
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API CorotationalStrainMapping< DefGradient331dTypes, Strain331dTypes >;
-template class SOFA_Flexible_API CorotationalStrainMapping< DefGradient332dTypes, Strain332dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API CorotationalStrainMapping< DefGradient331fTypes, Strain331fTypes >;
-template class SOFA_Flexible_API CorotationalStrainMapping< DefGradient332fTypes, Strain332fTypes >;
-#endif
+template class SOFA_Flexible_API CorotationalStrainMapping< F331Types, E331Types >;
+template class SOFA_Flexible_API CorotationalStrainMapping< F332Types, E332Types >;
 
 } // namespace mapping
-
 } // namespace component
-
 } // namespace sofa
 

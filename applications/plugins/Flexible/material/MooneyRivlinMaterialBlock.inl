@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_HookeMaterialBlock_INL
-#define FLEXIBLE_HookeMaterialBlock_INL
+#ifndef FLEXIBLE_MooneyRivlinMaterialBlock_INL
+#define FLEXIBLE_MooneyRivlinMaterialBlock_INL
 
-#include "../material/HookeMaterialBlock.h"
+#include "../material/MooneyRivlinMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
+#include "../types/StrainTypes.h"
+
 #include "../types/StrainTypes.h"
 
 namespace sofa
@@ -39,21 +41,13 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
-#define E331(type)  StrainTypes<3,3,1,type>
-#define E332(type)  StrainTypes<3,3,2,type>
-#define E333(type)  StrainTypes<3,3,3,type>
+#define I331(type)  BaseStrainTypes<3,3,1,type>
+#define I332(type)  BaseStrainTypes<3,3,2,type>
+#define I333(type)  BaseStrainTypes<3,3,3,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
-
-
-template<class Real>
-void getLame(const Real &youngModulus,const Real &poissonRatio,Real &lambda,Real &mu)
-{
-    lambda= youngModulus*poissonRatio/((1-2*poissonRatio)*(1+poissonRatio));
-    mu = youngModulus/(2*(1+poissonRatio));
-}
 
 
 
@@ -62,11 +56,11 @@ void getLame(const Real &youngModulus,const Real &poissonRatio,Real &lambda,Real
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class _Real>
-class HookeMaterialBlock< E331(_Real) > :
-    public  BaseMaterialBlock< E331(_Real) >
+class MooneyRivlinMaterialBlock< I331(_Real) > :
+    public  BaseMaterialBlock< I331(_Real) >
 {
 public:
-    typedef E331(_Real) T;
+    typedef I331(_Real) T;
 
     typedef BaseMaterialBlock<T> Inherit;
     typedef typename Inherit::Coord Coord;
@@ -74,69 +68,75 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::Real Real;
 
-    enum { material_dimensions = T::material_dimensions };
-    enum { strain_size = T::strain_size };
-    enum { spatial_dimensions = T::spatial_dimensions };
-    typedef typename T::StrainVec StrainVec;
-
-    static const bool constantK=true;
-
     /**
-      * stress = lambda.trace(strain) I  + 2.mu.strain
-      *        = H.strain
-      * W = vol*stress.strain/2
-      * f = - H.vol.strain - viscosity.vol.strainRate
-      * df = (- H.vol.kfactor - viscosity.vol.bfactor) dstrain
+      * power =1 : classic Mooney rivlin (unstable..)
+      *     - W = vol* [ C1 ( I1 - 3)  + C2 ( I2 - 3) ]
+      *     - f = - [ vol*C1 , vol*C2 , 0 ]
+      *     - df =  [ 0      , 0      , 0 ]
+      * power !=1 : ewtended Mooney rivlin
+      *     - W = vol* [ C1 ( I1 - 3)^p  + C2 ( I2 - 3)^p ]
+      *     - f = - [ vol*C1* p*(I1-3)^(p-1) , vol*C2* p*(I2-3)^(p-1) , 0 ]
+      *     - df = - [ vol*C1* p*(p-1)*(I1-3)^(p-2) , vol*C2* p*(p-1)*(I2-3)^(p-2) , 0 ]
       */
 
-    Real lambdaVol;  ///< Lamé first coef * volume
-    Real mu2Vol;  ///< Lamé second coef * 2 * volume
-    Real viscosityVol;  ///< stress/strain rate  * volume
+    Real C1Vol;  ///<  first coef * volume
+    Real C2Vol;  ///<  second coef * volume
+    Real Power;
+    Real i1;
+    Real i2;
 
-    void init(const Real &youngModulus,const Real &poissonRatio,const Real &visc)
+    void init(const Real &C1,const Real &C2,const Real &power)
     {
         Real vol=1.;
         if(this->volume) vol=(*this->volume)[0];
-        getLame(youngModulus,poissonRatio,lambdaVol,mu2Vol);
-        lambdaVol*=vol;
-        mu2Vol*=(Real)2.*vol;
-        viscosityVol=visc*vol;
+        C1Vol=C1*vol;
+        C2Vol=C2*vol;
+        Power=power;
     }
 
     Real getPotentialEnergy(const Coord& x) const
     {
-        StrainVec stress=x.getStrain()*mu2Vol;
-        Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
-        for(unsigned int i=0; i<material_dimensions; i++) stress[i]+=tce;
-        Real W=dot(stress,x.getStrain())/(Real)2.;
-        return W;
+        if(Power==1) return C1Vol*(x.getStrain()[0]-(Real)3.) + C2Vol*(x.getStrain()[1]-(Real)3.);
+        else return C1Vol*pow(x.getStrain()[0]-(Real)3.,Power) + C2Vol*pow(x.getStrain()[1]-(Real)3.,Power);
     }
 
-    void addForce( Deriv& f , const Coord& x , const Deriv& v)
+    void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/)
     {
-        f.getStrain()-=x.getStrain()*mu2Vol + v.getStrain()*viscosityVol;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) f.getStrain()[i]-=x.getStrain()[i]*mu2Vol; // hack to match FEM results !! to do: fix this
+        if(Power==1)
+        {
+            f.getStrain()[0]-=C1Vol;
+            f.getStrain()[1]-=C2Vol;
+        }
+        else
+        {
+            i1=x.getStrain()[0]-(Real)3.;
+            i2=x.getStrain()[1]-(Real)3.;
 
-        Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
-        for(unsigned int i=0; i<material_dimensions; i++) f.getStrain()[i]-=tce;
+            f.getStrain()[0]-=C1Vol*Power*pow(i1,Power-(Real)1.);
+            f.getStrain()[1]-=C2Vol*Power*pow(i2,Power-(Real)1.);
+        }
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
+    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
     {
-        df.getStrain()-=dx.getStrain()*mu2Vol*kfactor + dx.getStrain()*viscosityVol*bfactor;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor; // hack to match FEM results !! to do: fix this
+        if(Power==1) return;
+        if(Power==2)
+        {
+            df.getStrain()[0]-=C1Vol*Power*dx.getStrain()[0]*kfactor;
+            df.getStrain()[1]-=C2Vol*Power*dx.getStrain()[1]*kfactor;
+        }
+        else
+        {
+            df.getStrain()[0]-=C1Vol*Power*(Power-(Real)1.)*pow(i1,Power-(Real)2.)*dx.getStrain()[0]*kfactor;
+            df.getStrain()[1]-=C2Vol*Power*(Power-(Real)1.)*pow(i2,Power-(Real)2.)*dx.getStrain()[1]*kfactor;
+        }
 
-        Real tce=(dx.getStrain()[0]+dx.getStrain()[1]+dx.getStrain()[2])*lambdaVol*kfactor;
-        for(unsigned int i=0; i<material_dimensions; i++) df.getStrain()[i]-=tce;
     }
 
 
     MatBlock getK()
     {
         MatBlock K;
-        for(unsigned int i=0; i<strain_size; i++)  K[i][i]-=mu2Vol;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) K[i][i]-=mu2Vol; // hack to match FEM results !! to do: fix this
-        for(unsigned int i=0; i<material_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) K[i][j]-=lambdaVol;
         return K;
     }
 
@@ -149,7 +149,6 @@ public:
     MatBlock getB()
     {
         MatBlock B;
-        for(unsigned int i=0; i<strain_size; i++)  B[i][i]-=viscosityVol;
         return B;
     }
 };

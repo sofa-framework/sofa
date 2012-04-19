@@ -26,15 +26,8 @@
 #define SOFA_HookeFORCEFIELD_H
 
 #include "../initFlexible.h"
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/MechanicalState.h>
-
+#include "../material/BaseMaterialForceField.h"
 #include "../material/HookeMaterialBlock.inl"
-#include "../quadrature/BaseGaussPointSampler.h"
-
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -50,164 +43,40 @@ using helper::vector;
 */
 
 template <class _DataTypes>
-class HookeForceField : public core::behavior::ForceField<_DataTypes>
+class SOFA_Flexible_API HookeForceField : public BaseMaterialForceField<defaulttype::HookeMaterialBlock<_DataTypes> >
 {
 public:
-    typedef core::behavior::ForceField<_DataTypes> Inherit;
-    SOFA_CLASS(SOFA_TEMPLATE(HookeForceField,_DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, _DataTypes));
+    typedef defaulttype::HookeMaterialBlock<_DataTypes> BlockType;
+    typedef BaseMaterialForceField<BlockType> Inherit;
 
-    /** @name  Input types    */
+    SOFA_CLASS(SOFA_TEMPLATE(HookeForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+
+    typedef typename Inherit::Real Real;
+
+    /** @name  Material parameters */
     //@{
-    typedef _DataTypes DataTypes;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef Data<typename DataTypes::VecCoord> DataVecCoord;
-    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
-    typedef core::behavior::MechanicalState<DataTypes> mstateType;
-    //@}
-
-    /** @name  material types    */
-    //@{
-    typedef defaulttype::HookeMaterialBlock<DataTypes> Block;  ///< Material block object
-    typedef vector<Block >  SparseMatrix;
-
-    typedef typename Block::MatBlock  MatBlock;  ///< Material block matrix
-    typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes>    SparseMatrixEigen;
-    //@}
-
-
-protected:
     Data<Real> _youngModulus;
     Data<Real> _poissonRatio;
     Data<Real> _viscosity;
-    Data<bool> assembleC;
-    Data<bool> assembleK;
+    //@}
 
-    SparseMatrix material;
-    SparseMatrixEigen C;
-    SparseMatrixEigen K;
+    virtual void reinit()
+    {
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->_youngModulus.getValue(),this->_poissonRatio.getValue(),this->_viscosity.getValue());
+        Inherit::reinit();
+    }
 
-    HookeForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL)
+protected:
+    HookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-        , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","Poisson Ratio"))
-        , _viscosity(core::objectmodel::BaseObject::initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
-        , assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
-        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stifness matrix" ) )
+        , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
+        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","Poisson Ratio"))
+        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         _poissonRatio.setWidget("poissonRatio");
     }
 
-    virtual ~HookeForceField()
-    {
-
-    }
-
-public:
-    virtual void init()
-    {
-        if(!(this->mstate)) this->mstate = dynamic_cast<mstateType*>(this->getContext()->getMechanicalState());
-        if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-        reinit();
-        Inherit::init();
-    }
-
-    virtual void reinit()
-    {
-        // retrieve volume integrals
-        engine::BaseGaussPointSampler* sampler=NULL;
-        this->getContext()->get(sampler,core::objectmodel::BaseContext::SearchUp);
-        if( !sampler ) serr<<"Gauss point sampler not found -> use unit volumes"<< sendl;
-
-        // reinit material
-        typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-        material.resize(X.size());
-
-        for(unsigned int i=0; i<material.size(); i++)
-        {
-            Real vol=1;
-            if(sampler) vol=sampler->f_volume.getValue()[i][0];
-            material[i].init(this->_youngModulus.getValue(),this->_poissonRatio.getValue(),this->_viscosity.getValue(),vol);
-        }
-
-        // reinit matrices
-        if(this->assembleC.getValue()) updateC();
-        if(this->assembleK.getValue()) updateK();
-
-        Inherit::reinit();
-    }
-
-    virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
-    {
-        VecDeriv&  f = *_f.beginEdit();
-        const VecCoord&  x = _x.getValue();
-        const VecDeriv&  v = _v.getValue();
-
-        for(unsigned int i=0; i<material.size(); i++)
-        {
-            material[i].addForce(f[i],x[i],v[i]);
-        }
-        _f.endEdit();
-
-        if(this->assembleC.getValue()) updateC();
-        if(this->assembleK.getValue()) updateK();
-    }
-
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   _df , const DataVecDeriv&   _dx )
-    {
-        if(this->assembleK.getValue())  K.mult(_df,_dx);
-        else
-        {
-            VecDeriv&  df = *_df.beginEdit();
-            const VecDeriv&  dx = _dx.getValue();
-
-            for(unsigned int i=0; i<material.size(); i++)
-            {
-                material[i].addDForce(df[i],dx[i],mparams->kFactor(),mparams->bFactor());
-            }
-            _df.endEdit();
-        }
-    }
-
-    const defaulttype::BaseMatrix* getC(const core::MechanicalParams */*mparams*/)
-    {
-        if(!this->assembleC.getValue()) updateC();
-        return &C;
-    }
-
-    const defaulttype::BaseMatrix* getK(const core::MechanicalParams */*mparams*/)
-    {
-        if(!this->assembleK.getValue()) updateK();
-        return &K;
-    }
-
-    void updateC()
-    {
-        //        ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        //        ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        //        eigenJacobian.resizeBlocks(out.size(),in.size());
-        //        for(unsigned int i=0;i<jacobian.size();i++)
-        //        {
-        //            //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-        //            // Put all the blocks of the row in an array, then send the array to the matrix
-        //            // Not very efficient: MatBlock creations could be avoided.
-        //            vector<MatBlock> blocks;
-        //            vector<unsigned> columns;
-        //            columns.push_back( i );
-        //            blocks.push_back( jacobian[i].getJ() );
-        //            eigenJacobian.appendBlockRow( i, columns, blocks );
-        //        }
-        //        eigenJacobian.endEdit();
-    }
-
-    void updateK()
-    {
-
-    }
+    virtual ~HookeForceField()     {    }
 
 };
 

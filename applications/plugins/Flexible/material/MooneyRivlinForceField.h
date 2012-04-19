@@ -22,77 +22,67 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#ifndef SOFA_MooneyRivlinFORCEFIELD_H
+#define SOFA_MooneyRivlinFORCEFIELD_H
+
+#include "../initFlexible.h"
+#include "../material/BaseMaterialForceField.h"
+#include "../material/MooneyRivlinMaterialBlock.inl"
 
 namespace sofa
 {
-
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace forcefield
 {
-    static bool first = true;
-    if (first)
+
+using helper::vector;
+
+/** Apply MooneyRivlin's Law for isotropic homogeneous incompressible materials.
+  * The energy is : C1 ( I1/ I3^1/3  - 3)  + C2 ( I2/ I3^2/3  - 3)
+*/
+
+template <class _DataTypes>
+class SOFA_Flexible_API MooneyRivlinForceField : public BaseMaterialForceField<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
+{
+public:
+    typedef defaulttype::MooneyRivlinMaterialBlock<_DataTypes> BlockType;
+    typedef BaseMaterialForceField<BlockType> Inherit;
+
+    SOFA_CLASS(SOFA_TEMPLATE(MooneyRivlinForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+
+    typedef typename Inherit::Real Real;
+
+    /** @name  Material parameters */
+    //@{
+    Data<Real> f_C1;
+    Data<Real> f_C2;
+    Data<Real> f_power;
+    //@}
+
+    virtual void reinit()
     {
-        first = false;
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_C1.getValue(),this->f_C2.getValue(),this->f_power.getValue());
+        Inherit::reinit();
     }
-}
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+protected:
+    MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
+        : Inherit(mm)
+        , f_C1(initData(&f_C1,(Real)1000,"C1","weight of (~I1-3)^p term in energy"))
+        , f_C2(initData(&f_C2,(Real)1000,"C2","weight of (~I2-3)^p term in energy"))
+        , f_power(initData(&f_power,(Real)1,"power","power p"))
+//        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
+    {
+    }
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+    virtual ~MooneyRivlinForceField()     {    }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+};
 
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
 }
 }
 }
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-SOFA_LINK_CLASS(CorotationalStrainMapping)
-SOFA_LINK_CLASS(InvariantMapping)
-SOFA_LINK_CLASS(HookeForceField)
-SOFA_LINK_CLASS(MooneyRivlinForceField)
-SOFA_LINK_CLASS(VolumePreservationForceField)
-SOFA_LINK_CLASS(AffineMechanicalObject)
-SOFA_LINK_CLASS(QuadraticMechanicalObject)
-
+#endif

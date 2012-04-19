@@ -15,13 +15,13 @@
 
 	    <Node 	name="behavior"   >
 		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="true"/>
-		<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;" assembleJ="false"/>
+		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
 		<Node 	name="Strain"   >
-		    <MechanicalObject  template="Strain331" name="E"  />
-		    <GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false" method="polar"/>
-		    <HookeForceField  template="Strain331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0"/>
+		    <MechanicalObject  template="E331" name="E"  />
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar"/>
+		    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0"/>
 		</Node>
 	    </Node>
     </Node>

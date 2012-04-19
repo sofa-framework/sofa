@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,44 +16,43 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_CPP
+#define SOFA_MooneyRivlinFORCEFIELD_CPP
 
 #include "../initFlexible.h"
-#include "../strainMapping/GreenStrainMapping.h"
-#include <sofa/core/ObjectFactory.h>
-
-#include "../types/DeformationGradientTypes.h"
+#include "../material/MooneyRivlinForceField.h"
 #include "../types/StrainTypes.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 namespace component
 {
-namespace mapping
+namespace forcefield
 {
 
-SOFA_DECL_CLASS(GreenStrainMapping);
+SOFA_DECL_CLASS(MooneyRivlinForceField);
 
 using namespace defaulttype;
 
 // Register in the Factory
-int GreenStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Green Lagrangian Strain (large deformations).")
+int MooneyRivlinForceFieldClass = core::RegisterObject("MooneyRivlin's Law for isotropic homogeneous materials")
 
-        .add< GreenStrainMapping< F331Types, E331Types > >(true)
-        .add< GreenStrainMapping< F332Types, E332Types > >()
-        .add< GreenStrainMapping< F332Types, E333Types > >();
+        .add< MooneyRivlinForceField< I331Types > >(true)
+//.add< MooneyRivlinForceField< I332Types > >()
+//.add< MooneyRivlinForceField< I333Types > >()
+        ;
 
-template class SOFA_Flexible_API GreenStrainMapping< F331Types, E331Types >;
-template class SOFA_Flexible_API GreenStrainMapping< F332Types, E332Types >;
-template class SOFA_Flexible_API GreenStrainMapping< F332Types, E333Types >;
+template class SOFA_Flexible_API MooneyRivlinForceField< I331Types >;
+//template class SOFA_Flexible_API MooneyRivlinForceField< I332Types >;
+//template class SOFA_Flexible_API MooneyRivlinForceField< I333Types >;
 
-} // namespace mapping
-} // namespace component
-} // namespace sofa
+}
+}
+}
 

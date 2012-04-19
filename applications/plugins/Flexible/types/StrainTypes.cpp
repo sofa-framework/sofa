@@ -32,230 +32,10 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace container
 {
-
-// ==========================================================================
-// Draw Specializations
-
-template <>
-void MechanicalObject<Strain331dTypes>::draw(const core::visual::VisualParams* /*vparams*/)
-{
-    /*
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
-    if ( showIndices.getValue() )
-    {
-        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
-        glColor3f ( 1.0,1.0,1.0 );
-        glDisable ( GL_LIGHTING );
-        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
-        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
-
-        for ( int i=0 ; i< vsize ; i++ )
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
-
-            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            glScalef ( scale,scale,scale );
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            temp = modelviewM.transform ( temp );
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef ( temp[0], temp[1], temp[2] );
-            glScalef ( scale,scale,scale );
-
-            while ( *s )
-            {
-                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
-                s++;
-            }
-
-            glPopMatrix();
-        }
-    }
-
-    if ( showObject.getValue() )
-    {
-        glPushAttrib ( GL_LIGHTING_BIT );
-        glDisable ( GL_LIGHTING );
-        const float& scale = showObjectScale.getValue();
-        for ( int i=0; i<this->getSize(); i++ )
-        {
-            vparams->drawTool()->pushMatrix();
-            float glTransform[16];
-            (*getX())[i].writeOpenGlMatrix ( glTransform );
-            vparams->drawTool()->multMatrix( glTransform );
-            vparams->drawTool()->scale ( scale);
-            vparams->drawTool()->drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            vparams->drawTool()->popMatrix();
-        }
-        glPopAttrib();
-    }
-    */
-}
-
-
-template <>
-void MechanicalObject<Strain332dTypes>::draw(const core::visual::VisualParams* /*vparams*/)
-{
-    /*
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
-    if ( showIndices.getValue() )
-    {
-        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
-        glColor3f ( 1.0,1.0,1.0 );
-        glDisable ( GL_LIGHTING );
-        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
-        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
-
-        for ( int i=0 ; i< vsize ; i++ )
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
-
-            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            glScalef ( scale,scale,scale );
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            temp = modelviewM.transform ( temp );
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef ( temp[0], temp[1], temp[2] );
-            glScalef ( scale,scale,scale );
-
-            while ( *s )
-            {
-                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
-                s++;
-            }
-
-            glPopMatrix();
-        }
-    }
-
-    if ( showObject.getValue() )
-    {
-        glPushAttrib ( GL_LIGHTING_BIT );
-        glDisable ( GL_LIGHTING );
-        const float& scale = showObjectScale.getValue();
-        for ( int i=0; i<this->getSize(); i++ )
-        {
-            vparams->drawTool()->pushMatrix();
-            float glTransform[16];
-            (*getX())[i].writeOpenGlMatrix ( glTransform );
-            vparams->drawTool()->multMatrix( glTransform );
-            vparams->drawTool()->scale ( scale);
-            vparams->drawTool()->drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            vparams->drawTool()->popMatrix();
-        }
-        glPopAttrib();
-    }
-    */
-}
-
-
-template <>
-void MechanicalObject<Strain333dTypes>::draw(const core::visual::VisualParams* /*vparams*/)
-{
-    /*
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
-    if ( showIndices.getValue() )
-    {
-        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
-        glColor3f ( 1.0,1.0,1.0 );
-        glDisable ( GL_LIGHTING );
-        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
-        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
-
-        for ( int i=0 ; i< vsize ; i++ )
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
-
-            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            glScalef ( scale,scale,scale );
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
-            temp = modelviewM.transform ( temp );
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef ( temp[0], temp[1], temp[2] );
-            glScalef ( scale,scale,scale );
-
-            while ( *s )
-            {
-                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
-                s++;
-            }
-
-            glPopMatrix();
-        }
-    }
-
-    if ( showObject.getValue() )
-    {
-        glPushAttrib ( GL_LIGHTING_BIT );
-        glDisable ( GL_LIGHTING );
-        const float& scale = showObjectScale.getValue();
-        for ( int i=0; i<this->getSize(); i++ )
-        {
-            vparams->drawTool()->pushMatrix();
-            float glTransform[16];
-            (*getX())[i].writeOpenGlMatrix ( glTransform );
-            vparams->drawTool()->multMatrix( glTransform );
-            vparams->drawTool()->scale ( scale);
-            vparams->drawTool()->drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            vparams->drawTool()->popMatrix();
-        }
-        glPopAttrib();
-    }
-    */
-}
 
 // ==========================================================================
 // Instanciation
@@ -265,32 +45,24 @@ SOFA_DECL_CLASS ( StrainMechanicalObject )
 using namespace sofa::defaulttype;
 
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<Strain331dTypes> >()
-        .add< MechanicalObject<Strain332dTypes> >()
-        .add< MechanicalObject<Strain333dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<Strain331fTypes> >()
-        .add< MechanicalObject<Strain332fTypes> >()
-        .add< MechanicalObject<Strain333fTypes> >()
-#endif
+
+        .add< MechanicalObject<E331Types> >()
+        .add< MechanicalObject<E332Types> >()
+        .add< MechanicalObject<E333Types> >()
+
+        .add< MechanicalObject<I331Types> >()
+        .add< MechanicalObject<I332Types> >()
+        .add< MechanicalObject<I333Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<Strain331dTypes>;
-template class SOFA_Flexible_API MechanicalObject<Strain332dTypes>;
-template class SOFA_Flexible_API MechanicalObject<Strain333dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<Strain331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<Strain332fTypes>;
-template class SOFA_Flexible_API MechanicalObject<Strain333fTypes>;
-#endif
+template class SOFA_Flexible_API MechanicalObject<E331Types>;
+template class SOFA_Flexible_API MechanicalObject<E332Types>;
+template class SOFA_Flexible_API MechanicalObject<E333Types>;
 
+template class SOFA_Flexible_API MechanicalObject<I331Types>;
+template class SOFA_Flexible_API MechanicalObject<I332Types>;
+template class SOFA_Flexible_API MechanicalObject<I333Types>;
 
 } // namespace container
-
 } // namespace component
-
 } // namespace sofa

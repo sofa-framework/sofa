@@ -25,22 +25,22 @@
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/LinearMapping.inl"
+#include "../deformationMapping/LinearMapping.h"
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 namespace component
 {
-
 namespace mapping
 {
+
 SOFA_DECL_CLASS(LinearMapping);
 
 using namespace defaulttype;
@@ -48,61 +48,29 @@ using namespace defaulttype;
 // Register in the Factory
 int LinearMappingClass = core::RegisterObject("Map child positions as a linear combination of parents.")
 
-#ifndef SOFA_FLOAT
-        .add< LinearMapping< Vec3dTypes, Vec3dTypes > >(true)
-        .add< LinearMapping< Vec3dTypes, ExtVec3fTypes > >()
-        .add< LinearMapping< Vec3dTypes, DefGradient331dTypes > >()
-        .add< LinearMapping< Vec3dTypes, DefGradient332dTypes > >()
+        .add< LinearMapping< Vec3Types, Vec3Types > >(true)
+        .add< LinearMapping< Vec3Types, ExtVec3fTypes > >()
+        .add< LinearMapping< Vec3Types, F331Types > >()
+        .add< LinearMapping< Vec3Types, F332Types > >()
 
-        .add< LinearMapping< Affine3dTypes, Vec3dTypes > >()
-        .add< LinearMapping< Affine3dTypes, ExtVec3fTypes > >()
-        .add< LinearMapping< Affine3dTypes, DefGradient331dTypes > >()
-        .add< LinearMapping< Affine3dTypes, DefGradient332dTypes > >()
-
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LinearMapping< Vec3fTypes, Vec3fTypes > >()
-        .add< LinearMapping< Vec3fTypes, ExtVec3fTypes > >()
-        .add< LinearMapping< Vec3fTypes, DefGradient331fTypes > >()
-        .add< LinearMapping< Vec3fTypes, DefGradient332fTypes > >()
-
-        .add< LinearMapping< Affine3fTypes, Vec3fTypes > >()
-        .add< LinearMapping< Affine3fTypes, ExtVec3fTypes > >()
-        .add< LinearMapping< Affine3fTypes, DefGradient331fTypes > >()
-        .add< LinearMapping< Affine3fTypes, DefGradient332fTypes > >()
-
-#endif
-
+        .add< LinearMapping< Affine3Types, Vec3Types > >()
+        .add< LinearMapping< Affine3Types, ExtVec3fTypes > >()
+        .add< LinearMapping< Affine3Types, F331Types > >()
+        .add< LinearMapping< Affine3Types, F332Types > >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API LinearMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3dTypes, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3dTypes, DefGradient331dTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3dTypes, DefGradient332dTypes >;
+template class SOFA_Flexible_API LinearMapping< Vec3Types, Vec3Types >;
+template class SOFA_Flexible_API LinearMapping< Vec3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API LinearMapping< Vec3Types, F331Types >;
+template class SOFA_Flexible_API LinearMapping< Vec3Types, F332Types >;
 
-template class SOFA_Flexible_API LinearMapping< Affine3dTypes, Vec3dTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3dTypes, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3dTypes, DefGradient331dTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3dTypes, DefGradient332dTypes >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, Vec3Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F331Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F332Types >;
 
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API LinearMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3fTypes, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3fTypes, DefGradient331fTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3fTypes, DefGradient332fTypes >;
-
-template class SOFA_Flexible_API LinearMapping< Affine3fTypes, Vec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3fTypes, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3fTypes, DefGradient331fTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3fTypes, DefGradient332fTypes >;
-
-#endif
 
 } // namespace mapping
-
 } // namespace component
-
 } // namespace sofa
 

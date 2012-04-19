@@ -22,77 +22,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
+#ifndef SOFA_VolumePreservationFORCEFIELD_H
+#define SOFA_VolumePreservationFORCEFIELD_H
+
+#include "../initFlexible.h"
+#include "../material/BaseMaterialForceField.h"
+#include "../material/VolumePreservationMaterialBlock.inl"
+
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_Flexible_API void initExternalModule();
-    SOFA_Flexible_API const char* getModuleName();
-    SOFA_Flexible_API const char* getModuleVersion();
-    SOFA_Flexible_API const char* getModuleLicense();
-    SOFA_Flexible_API const char* getModuleDescription();
-    SOFA_Flexible_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace forcefield
 {
-    static bool first = true;
-    if (first)
+
+using helper::vector;
+using helper::OptionsGroup;
+
+/** Apply VolumePreservation's Law for isotropic homogeneous incompressible materials.
+  * The energy is : k/2 ln( I3^1/2 )^2
+*/
+
+template <class _DataTypes>
+class SOFA_Flexible_API VolumePreservationForceField : public BaseMaterialForceField<defaulttype::VolumePreservationMaterialBlock<_DataTypes> >
+{
+public:
+    typedef defaulttype::VolumePreservationMaterialBlock<_DataTypes> BlockType;
+    typedef BaseMaterialForceField<BlockType> Inherit;
+
+    SOFA_CLASS(SOFA_TEMPLATE(VolumePreservationForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+
+    typedef typename Inherit::Real Real;
+
+    /** @name  Material parameters */
+    //@{
+    Data<OptionsGroup> f_method;
+    Data<Real> f_k;
+    //@}
+
+    virtual void reinit()
     {
-        first = false;
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_k.getValue(),this->f_method.getValue().getSelectedId());
+        Inherit::reinit();
     }
-}
 
-const char* getModuleName()
-{
-    return "Flexible";
-}
+protected:
+    VolumePreservationForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
+        : Inherit(mm)
+        , f_method ( initData ( &f_method,"method","energy form" ) )
+        , f_k(initData(&f_k,(Real)0,"k","bulk modulus: weight ln(J)^2/2 term in energy "))
+    {
+        helper::OptionsGroup Options(2	,"0 - k.ln(J)^2/2"
+                ,"1 - k.(J-1)^2/2" );
+        Options.setSelectedItem(1);
+        f_method.setValue(Options);
+    }
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+    virtual ~VolumePreservationForceField()     {    }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+};
 
 
-const char* getModuleDescription()
-{
-    return "TODO: replace this with the description of your plugin";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
 }
 }
 }
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
-SOFA_LINK_CLASS(ShepardShapeFunction)
-SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(DefGradientMechanicalObject)
-SOFA_LINK_CLASS(LinearMapping)
-SOFA_LINK_CLASS(StrainMechanicalObject)
-SOFA_LINK_CLASS(GreenStrainMapping)
-SOFA_LINK_CLASS(CorotationalStrainMapping)
-SOFA_LINK_CLASS(InvariantMapping)
-SOFA_LINK_CLASS(HookeForceField)
-SOFA_LINK_CLASS(MooneyRivlinForceField)
-SOFA_LINK_CLASS(VolumePreservationForceField)
-SOFA_LINK_CLASS(AffineMechanicalObject)
-SOFA_LINK_CLASS(QuadraticMechanicalObject)
-
+#endif

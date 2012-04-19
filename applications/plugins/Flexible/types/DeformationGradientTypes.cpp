@@ -33,10 +33,8 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace container
 {
 
@@ -44,7 +42,7 @@ namespace container
 // Init Specializations (initialization from GaussPointSampler)
 
 template <>
-void MechanicalObject<DefGradient331dTypes>::init()
+void MechanicalObject<F331Types>::init()
 {
     engine::BaseGaussPointSampler* sampler=NULL;
     this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
@@ -68,7 +66,7 @@ void MechanicalObject<DefGradient331dTypes>::init()
 }
 
 template <>
-void MechanicalObject<DefGradient332dTypes>::init()
+void MechanicalObject<F332Types>::init()
 {
     engine::BaseGaussPointSampler* sampler=NULL;
     this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
@@ -95,7 +93,7 @@ void MechanicalObject<DefGradient332dTypes>::init()
 // Draw Specializations
 
 template <>
-void MechanicalObject<DefGradient331dTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<F331Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -148,7 +146,7 @@ void MechanicalObject<DefGradient331dTypes>::draw(const core::visual::VisualPara
     {
         glPushAttrib ( GL_LIGHTING_BIT );
         glDisable ( GL_LIGHTING );
-        const DefGradient331dTypes::VecCoord& x = ( *getX() );
+        const F331Types::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
@@ -167,7 +165,7 @@ void MechanicalObject<DefGradient331dTypes>::draw(const core::visual::VisualPara
 
 
 template <>
-void MechanicalObject<DefGradient332dTypes >::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<F332Types >::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -222,7 +220,7 @@ void MechanicalObject<DefGradient332dTypes >::draw(const core::visual::VisualPar
     {
         glPushAttrib ( GL_LIGHTING_BIT );
         glEnable ( GL_LIGHTING );
-        const DefGradient332dTypes::VecCoord& x = ( *getX() );
+        const F332Types::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
@@ -247,30 +245,13 @@ SOFA_DECL_CLASS ( DefGradientMechanicalObject )
 using namespace sofa::defaulttype;
 
 int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-#ifndef SOFA_FLOAT
-        .add< MechanicalObject<DefGradient331dTypes> >()
-        .add< MechanicalObject<DefGradient332dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< MechanicalObject<DefGradient331fTypes> >()
-        .add< MechanicalObject<DefGradient332fTypes> >()
-#endif
-        ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API MechanicalObject<DefGradient331dTypes>;
-template class SOFA_Flexible_API MechanicalObject<DefGradient332dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API MechanicalObject<DefGradient331fTypes>;
-template class SOFA_Flexible_API MechanicalObject<DefGradient332fTypes>;
-#endif
+        .add< MechanicalObject<F331Types> >()
+        .add< MechanicalObject<F332Types> >();
 
-
-
+template class SOFA_Flexible_API MechanicalObject<F331Types>;
+template class SOFA_Flexible_API MechanicalObject<F332Types>;
 
 } // namespace container
-
 } // namespace component
-
 } // namespace sofa

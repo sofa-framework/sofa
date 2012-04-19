@@ -43,28 +43,14 @@ using namespace defaulttype;
 // Register in the Factory
 int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homogeneous materials")
 
-#ifndef SOFA_FLOAT
-        .add< HookeForceField< Strain331dTypes > >(true)
-//.add< HookeForceField< Strain332dTypes > >()
-//.add< HookeForceField< Strain333dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HookeForceField< Strain331fTypes > >()
-//.add< HookeForceField< Strain332fTypes > >()
-//.add< HookeForceField< Strain333fTypes > >()
-#endif
+        .add< HookeForceField< E331Types > >(true)
+//.add< HookeForceField< E332Types > >()
+//.add< HookeForceField< E333Types > >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API HookeForceField< Strain331dTypes >;
-//template class SOFA_Flexible_API HookeForceField< Strain332dTypes >;
-//template class SOFA_Flexible_API HookeForceField< Strain333dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API HookeForceField< Strain331fTypes >;
-//template class SOFA_Flexible_API HookeForceField< Strain332fTypes >;
-//template class SOFA_Flexible_API HookeForceField< Strain333fTypes >;
-#endif
+template class SOFA_Flexible_API HookeForceField< E331Types >;
+//template class SOFA_Flexible_API HookeForceField< E332Types >;
+//template class SOFA_Flexible_API HookeForceField< E333Types >;
 
 }
 }
