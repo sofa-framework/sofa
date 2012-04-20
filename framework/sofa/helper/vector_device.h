@@ -527,7 +527,8 @@ public:
     {
         DEBUG_OUT_V(if (hostIsValid) {SPACEN << "deviceWrite" << std::endl;});
         copyToDevice(gpu);
-        hostIsValid = false;
+        if(vectorSize>0)
+            hostIsValid = false;
         deviceIsValid = 1<<gpu;
         return MemoryManager::deviceOffset(devicePointer[gpu],i);
     }
@@ -558,7 +559,8 @@ public:
     {
         DEBUG_OUT_V(if (deviceIsValid) {SPACEN << "hostWrite" << std::endl;});
         copyToHost();
-        deviceIsValid = 0;
+        if(vectorSize>0)
+            deviceIsValid = false;
         return hostPointer+i;
     }
 
