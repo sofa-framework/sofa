@@ -89,7 +89,7 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
-    Data<double> _drawSize;
+    Data<double> f_drawSize;
 
 
 protected:
@@ -110,14 +110,13 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
-//    virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
     /** Project the the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
+      See doc in base parent class
       */
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
@@ -152,9 +151,6 @@ protected :
 
     /// Handler for subset Data
     FCPointHandler* pointHandler;
-
-    /// Matrix used in getJ
-    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
 
 };
 

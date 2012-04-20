@@ -123,6 +123,15 @@ void BoxROI<DataTypes>::init()
                     f_X0.setReadOnly(true);
                 }
             }
+            else   // no local state, no loader => find upward
+            {
+                this->getContext()->get(mstate,BaseContext::SearchUp);
+                assert(mstate && "BoxROI needs a mstate");
+                BaseData* parent = mstate->findField("rest_position");
+                assert(parent && "BoxROI needs a state with a rest_position Data");
+                f_X0.setParent(parent);
+                f_X0.setReadOnly(true);
+            }
         }
     }
     if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
@@ -299,7 +308,7 @@ void BoxROI<DataTypes>::update()
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
-//                sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
+                //                sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
                 break;
             }
         }
@@ -424,11 +433,12 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
-        if (_drawSize.getValue())
+        if (_drawSize.isSet())
             glPointSize((GLfloat)_drawSize.getValue());
+        else
+            glPointSize(5.0);
         glDisable(GL_LIGHTING);
         glBegin(GL_POINTS);
-        glPointSize(5.0);
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
