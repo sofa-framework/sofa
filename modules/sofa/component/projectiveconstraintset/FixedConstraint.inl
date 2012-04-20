@@ -89,7 +89,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
@@ -169,52 +169,6 @@ void FixedConstraint<DataTypes>::init()
 template <class DataTypes>
 void  FixedConstraint<DataTypes>::reinit()
 {
-//    cerr<<"FixedConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
-
-    // get the indices sorted
-    SetIndexArray tmp = f_indices.getValue();
-    std::sort(tmp.begin(),tmp.end());
-
-    // resize the jacobian
-    unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
-    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-
-    // fill the jacobian is ascending order
-    SetIndexArray::const_iterator it= tmp.begin();
-    unsigned i=0;
-    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
-    {
-        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
-        {
-            it++;
-            for( unsigned j=0; j<blockSize; j++ )
-            {
-//                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
-                jacobian.beginRow(blockSize*i+j );
-                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // unconstrained particle: set the diagonal to identity
-            }
-        }
-        else      // unconstrained particle: set diagonal to 1
-            for( unsigned j=0; j<blockSize; j++ )
-            {
-//                cerr<<"FixedConstraint<DataTypes>::reinit , insert at " << blockSize*i+j << endl;
-                jacobian.beginRow(blockSize*i+j );
-                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
-            }
-    }
-    // Set the matrix to identity beyond the last constrained particle
-    for(; i<numBlocks && it!=tmp.end(); i++ )
-    {
-        for( unsigned j=0; j<blockSize; j++ )
-        {
-//            cerr<<"FixedConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
-            jacobian.beginRow( blockSize*i+j );
-            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
-        }
-    }
-    jacobian.endEdit();
-
 }
 
 template <class DataTypes>
@@ -228,15 +182,6 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
         M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
     }
 }
-
-
-
-///// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
-//template <class DataTypes>
-//const sofa::defaulttype::BaseMatrix*  FixedConstraint<DataTypes>::getJ(const core::MechanicalParams* )
-//{
-//    return &jacobian;
-//}
 
 
 template <class DataTypes>
@@ -386,7 +331,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     const SetIndexArray & indices = f_indices.getValue();
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
         Vector3 point;
@@ -426,7 +371,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 
