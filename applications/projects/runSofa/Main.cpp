@@ -80,81 +80,39 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
     v_read.execute(node);
 }
 
-
-///////////////////////////////////////////////////////////
-// begin parameters
-std::string fileName ;
-bool        startAnim = false;
-bool        printFactory = false;
-bool        loadRecent = false;
-bool        temporaryFile = false;
-int			nbIterations = 0;
-std::string gui = "";
-std::string verif = "";
-#ifdef SOFA_SMP
-std::string simulationType = "smp";
-#else
-std::string simulationType = "tree";
-#endif
-std::vector<std::string> plugins;
-std::vector<std::string> files;
-#ifdef SOFA_SMP
-std::string nProcs="";
-bool        disableStealing = false;
-bool        affinity = false;
-#endif
-// end parameters
-///////////////////////////////////////////////////////////
-
-
-
-sofa::simulation::Node::SPtr createScene()
-{
-    if (fileName.empty())
-    {
-        if (loadRecent) // try to reload the latest scene
-        {
-            std::string scenes = "config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
-            std::ifstream mrulist(scenes.c_str());
-            std::getline(mrulist,fileName);
-            mrulist.close();
-        }
-        else
-            fileName = "Demos/caduceus.scn";
-
-        fileName = sofa::helper::system::DataRepository.getFile(fileName);
-    }
-
-
-
-    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-    if (groot==NULL)
-    {
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
-    }
-
-    if (!verif.empty())
-    {
-        loadVerificationData(verif, fileName, groot.get());
-    }
-
-    return groot;
-
-}
-
-
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
+
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
+    std::string fileName ;
+    bool        startAnim = false;
+    bool        printFactory = false;
+    bool        loadRecent = false;
+    bool        temporaryFile = false;
+    int			nbIterations = 0;
 
-    // parse command line
+    std::string gui = "";
+    std::string verif = "";
+#ifdef SOFA_SMP
+    std::string simulationType = "smp";
+#else
+    std::string simulationType = "tree";
+#endif
+    std::vector<std::string> plugins;
+    std::vector<std::string> files;
+#ifdef SOFA_SMP
+    std::string nProcs="";
+    bool        disableStealing = false;
+    bool        affinity = false;
+#endif
+
     std::string gui_help = "choose the UI (";
     gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
     gui_help += ")";
@@ -176,8 +134,6 @@ int main(int argc, char** argv)
 #endif
     (argc,argv);
 
-
-    // should we keed this ?
 #ifdef SOFA_SMP
     int ac = 0;
     char **av = NULL;
@@ -196,11 +152,6 @@ int main(int argc, char** argv)
 
     a1::Community com = a1::System::join_community( ac, av);
 #endif /* SOFA_SMP */
-
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // begin initialize gui and simulation
 
     if(gui!="batch") glutInit(&argc,argv);
 
@@ -240,8 +191,6 @@ int main(int argc, char** argv)
 
     sofa::helper::system::PluginManager::getInstance().init();
 
-
-
     if(gui.compare("batch") == 0 && nbIterations > 0)
     {
         std::ostringstream oss ;
@@ -253,27 +202,46 @@ int main(int argc, char** argv)
     if (int err = sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
+    if (fileName.empty())
+    {
+        if (loadRecent) // try to reload the latest scene
+        {
+            std::string scenes = "config/Sofa.ini";
+            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::ifstream mrulist(scenes.c_str());
+            std::getline(mrulist,fileName);
+            mrulist.close();
+        }
+        else
+            fileName = "Demos/caduceus.scn";
+
+        fileName = sofa::helper::system::DataRepository.getFile(fileName);
+    }
+
+
     if (int err=sofa::gui::GUIManager::createGUI(NULL))
         return err;
 
+    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    // end initialize gui and simulation
-    //////////////////////////////////////////////////////////////////////////////
+    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)
+    {
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
+    }
 
-
-    //=================================================
-    // create the scene graph
-    sofa::simulation::Node::SPtr groot = createScene();
-    //=================================================
-
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // begin run the simulation
+    if (!verif.empty())
+    {
+        loadVerificationData(verif, fileName, groot.get());
+    }
 
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
+
+
+    //=======================================
+    //Apply Options
 
     if (startAnim)
         groot->setAnimate(true);
@@ -285,16 +253,16 @@ int main(int argc, char** argv)
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
 
+    //=======================================
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
 
-    // do we need this ?
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
-    // terminate the program
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);
+
 
     sofa::gui::GUIManager::closeGUI();
 
