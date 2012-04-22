@@ -18,7 +18,7 @@ usePlugin(PluginExample)
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) { usePlugin(Compliant) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) { usePlugin(Flexible) }
 
-contains(DEFINES, SOFA_HAVE_SENSABLE) {
+contains(DEFINES, SOFA_HAVE_SENSABLE)  {
         usePlugin(Sensable)
 }
 
