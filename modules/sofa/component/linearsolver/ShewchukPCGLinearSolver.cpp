@@ -85,6 +85,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
     if (precondNames.empty())
     {
         c->get<sofa::core::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
+        this->f_use_precond.setValue(false); //if the preconditioner is not specified we don't use it as preconditioner
     }
     else
     {
