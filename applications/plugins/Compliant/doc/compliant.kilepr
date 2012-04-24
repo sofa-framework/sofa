@@ -44,28 +44,28 @@ order=-1
 
 [item:compliant.tex]
 archive=true
-column=9
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=18
+line=24
 mode=LaTeX
 open=true
 order=0
 
 [item:compliant_body.tex]
 archive=true
-column=31
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=17
+line=136
 mode=LaTeX
 open=true
 order=1
 
 [view-settings,view=0,item:compliant.tex]
-CursorColumn=9
-CursorLine=18
+CursorColumn=0
+CursorLine=24
 
 [view-settings,view=0,item:compliant_body.tex]
-CursorColumn=31
-CursorLine=17
+CursorColumn=0
+CursorLine=136

@@ -149,27 +149,46 @@ The equation system, in its most general form, can be written as:
 \violation
 \end{array}\right) 
 \end{equation}
-We assemble the $7$ terms of equation~\ref{eq abstract system} separately. Figure~\ref{fig example system} shows an example of mechanical system and matrix.
-The independent DOFs are $X_{a}$ and $X_d$. 
-\begin{figure}
- \includegraphics[width=0.29\linewidth]{system-graph.png}
- \includegraphics[width=0.7\linewidth]{system-bigmatrix.png}
-\label{fig example system}
-\caption{A mechanical system and its matrix equation. Left: scene graph. Right: block view of the corresponding equation system, with non-null blocks highlighted in yellow.}
-\end{figure}
+We assemble the $7$ terms of equation~\ref{eq abstract system} separately. 
+
+Figure~\ref{fig system graph} shows an example of mechanical system.
+The independent DOFs are $X_{a}$ and $X_d$.
 State $X_b$ is attached to $X_a$ using a simple mapping, and a mass matrix $M_{bb}$ is defined at this level.
 State $X_c$ is attached to $X_b$ using a simple mapping, and a compliance matrix $C_{\alpha \alpha}$ (possibly a deformation force) is applied to these DOFs.
 State $X_e$ is attached to $X_a$ and  $X_d$ at the same time, using a MultiMapping. A compliance matrix $C_{\beta \beta}$, possibly an interaction force, is applied to these DOFs, 
 while a mass $M_{dd}$ is applied to $X_d$.
-The corresponding equation system has the block structure shown in the right of Figure~\ref{fig example system}.
-
-The $8$ parts of the equation system are shown in Figure~\ref{fig system matrices}. The $J$ matrices are the mapping matrices. The bottom row has two mappings, since the state $X_e$ impacted by compliance $\beta$ depends on two parent states.
 \begin{figure}
- \includegraphics[width=0.7\linewidth]{system-8parts.png}
-\label{fig system matrices}
-\caption{Top: the $8$ parts of the equation system. Bottom: the offset matrices used in the assembly.}
+\centering
+ \includegraphics[width=0.39\linewidth]{system-graph.png}
+\caption{A mechanical system. The $X$ represent mechanical states, while the arrows represent the kinematic hierarchy, and the plain lines represent components acting on the states.}
+\label{fig system graph}
 \end{figure}
-Offset matrices $J_{*0}$ are shown in the bottom of the figure. They are composed of identity matrices (represented with a diagonal in a block) and null blocks. These matrices are used to shift the indices of local vector and matrices to global numbering.
 
 
+The corresponding equation system has the block structure shown in the right of Figure~\ref{fig system matrix}.
+The main blocks of the equation system are highlighted in grey rectangles. The $J$ matrices are the mapping matrices. The bottom row has two mappings, since the state $X_e$ impacted by compliance $\beta$ depends on two parent states.
+\begin{figure}
+\centering
+ \includegraphics[width=0.7\linewidth]{system-bigmatrix.png}
+\caption{Block view of the equation~\ref{eq abstract system} applied to the system of Figure~\ref{fig system graph}, with non-null blocks highlighted in yellow.}
+\label{fig system matrix}
+\end{figure}
+
+
+The assembly of local matrices and vectors to the global matrices and vectors which compose the system is performed using shift matrices, as illustrated in Figure~\ref{fig shifting}.
+Shift matrices $J_{*0}$, shown in the top of the figure, are composed of identity matrices (represented with a diagonal in a block) and null blocks. They can be used to implement the shifting of vector entry indices from local to global. 
+\begin{figure}
+\centering
+ \includegraphics[width=0.69\linewidth]{system-shift.png}
+\label{fig shifting}
+\caption{Shift matrices $J_{*0}$ are used to place blocks within global vectors and matrices. }
+\end{figure}
+The assembly is thus easily expressed as a sum of product of matrices, as illustrated in Figure~\ref{fig assembly}. 
+While shifting values in dense arrays using matrix products is not efficient (vector assembly is actually implemented using shifted copies), the sum of matrix products is a reasonable implementation of sparse matrix assembly.
+\begin{figure}
+\centering
+ \includegraphics[width=0.6\linewidth]{system-assembly.png}
+\caption{The assembly is performed by summing the global vectors and matrices obtained by shifting local vectors and matrices.}
+\label{fig assembly}
+\end{figure}
 
