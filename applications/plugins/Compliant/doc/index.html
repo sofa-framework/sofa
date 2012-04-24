@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -48,22 +49,21 @@ rights</a><br>
 
 <h2><a name="Introduction"></a>Introduction</h2>
 
-This plugin introduces a constraint-based approach. Hard constraints
+This plugin introduces a constraint-based approach and a matrix assembly method. Details are given in  in <a href="compliant.pdf">compliant.pdf</a>. The remainder of this section briefly explains the constraint-based approach and the integration scheme. See also the <a href="code/html/index.html">code
+documentation</a>, which <a href="index.html#Code_documentation_">you can
+generate</a> using doxygen.<br>
+<br>
+Hard constraints
 are solved using a classical Delassus operator \( J M^{-1} J^T \),
 while soft constraints
 are handled by adding compliance to the same operator: \( J M^{-1} J^T
-+ C \). More info is given in the <a href="code/html/index.html">code
-documentation</a>, which <a href="#Code_documentation_">you can
-generate</a> using doxygen.<br>
-
-<br>
-
-This is inspired from <span style="font-style: italic;">Servin,
++ C \).&nbsp; The integration scheme is inspired from <span style="font-style: italic;">Servin,
 Lacoursière, Melin, <a href="http://www.ep.liu.se/ecp/019/005/ecp01905.pdf">Interactive
-Simulation of Elastic Deformable Materials</a></span>&nbsp; , where
-elastic forces are a generalization of rigid constraints.<br>
-
-The following is a derivation of our variant of the method. More detail on the derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
+Simulation of Elastic Deformable Materials</a></span>&nbsp;
+, where
+elastic forces are a generalization of rigid constraints. The following
+is a derivation of our variant of the method. More detail on the
+derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
 $<br>
 
 \newcommand{\vect}[1]{\mathbf{#1}}<br>
