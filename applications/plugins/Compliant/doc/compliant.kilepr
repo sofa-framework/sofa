@@ -54,10 +54,10 @@ order=0
 
 [item:compliant_body.tex]
 archive=true
-column=0
+column=56
 encoding=UTF-8
 highlight=LaTeX
-line=136
+line=161
 mode=LaTeX
 open=true
 order=1
@@ -67,5 +67,5 @@ CursorColumn=0
 CursorLine=24
 
 [view-settings,view=0,item:compliant_body.tex]
-CursorColumn=0
-CursorLine=136
+CursorColumn=56
+CursorLine=161

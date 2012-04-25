@@ -15,6 +15,7 @@ UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState
     : Inherit(mm)
     , compliance( initData(&compliance, Block(), "compliance", "Compliance value uniformly applied to all the DOF."))
     , dampingRatio( initData(&dampingRatio, 0.1, "dampingRatio", "weight of the velocity in the constraint violation"))
+    , isCompliance( initData(&isCompliance, true, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
 {
 }
 
@@ -41,22 +42,19 @@ void UniformCompliance<DataTypes>::reinit()
     matC.endEdit();
 }
 
-//// Compute the displacement in response to the given force
-//template<class DataTypes>
-//void UniformCompliance<DataTypes>::computeDisplacement(const core::MechanicalParams* /*mparams*/, DataVecDeriv& displacement, const DataVecDeriv& force )
-//{
-//    helper::WriteAccessor< DataVecDeriv > d(displacement);
-//    helper::ReadAccessor< DataVecDeriv > f(force);
-//    for(unsigned i=0; i<d.size(); i++)
-//        d[i] = compliance.getValue() * f[i];
-//}
-
 template<class DataTypes>
 void UniformCompliance<DataTypes>::setCompliance( Real c )
 {
     Block C;
-    for(unsigned i=0; i<C.size(); i++ )
-        C[i][i] = c;
+    if(isCompliance.getValue() )
+        for(unsigned i=0; i<C.size(); i++ )
+            C[i][i] = c;
+    else
+    {
+        assert( c!= (Real)0 );
+        for(unsigned i=0; i<C.size(); i++ )
+            C[i][i] = 1/c;
+    }
     compliance.setValue(C);
 }
 
@@ -64,7 +62,6 @@ void UniformCompliance<DataTypes>::setCompliance( Real c )
 template<class DataTypes>
 void UniformCompliance<DataTypes>::writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId fId )
 {
-//    const DataVecCoord *xd = params->readX(this->mstate);
     helper::ReadAccessor< DataVecCoord > x = params->readX(this->mstate);
     helper::ReadAccessor< DataVecDeriv > v = params->readV(this->mstate);
     helper::WriteAccessor< DataVecDeriv > f = *fId[this->mstate.get(params)].write();
@@ -77,11 +74,22 @@ void UniformCompliance<DataTypes>::writeConstraintValue(const core::MechanicalPa
         f[i] = -( x[i] + v[i] * (d + alpha*h) ) / (alpha * (h*beta +d));
 }
 
-/// return a pointer to the compliance matrix
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
-    return &matC;
+    if( isCompliance.getValue() )
+    {
+        return &matC;
+    }
+    else return NULL;
+}
+
+template<class DataTypes>
+const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
+{
+    if( isCompliance.getValue())
+        return NULL;
+    else return &matC;
 }
 
 }
