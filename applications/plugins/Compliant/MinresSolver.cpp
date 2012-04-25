@@ -160,69 +160,58 @@ struct MinresSolver::schur
 };
 
 
-const MinresSolver::mat& MinresSolver::M() const
-{
-    return matM;
-}
+//      const MinresSolver::mat& MinresSolver::M() const {
+//	return _matM;
+//      }
 
-MinresSolver::mat& MinresSolver::M()
-{
-    return matM;
-}
+//      MinresSolver::mat& MinresSolver::M() {
+//	return _matM;
+//      }
 
 
-const MinresSolver::mat& MinresSolver::J() const
-{
-    return matJ;
-}
+//      const MinresSolver::mat& MinresSolver::J() const {
+//	return _matJ;
+//      }
 
-MinresSolver::mat& MinresSolver::J()
-{
-    return matJ;
-}
+//      MinresSolver::mat& MinresSolver::J() {
+//	return _matJ;
+//      }
 
-const MinresSolver::mat& MinresSolver::C() const
-{
-    return matC;
-}
+//      const MinresSolver::mat& MinresSolver::C() const {
+//	return _matC;
+//      }
 
-MinresSolver::mat& MinresSolver::C()
-{
-    return matC;
-}
+//      MinresSolver::mat& MinresSolver::C() {
+//	return _matC;
+//      }
 
 
 const MinresSolver::mat& MinresSolver::projMatrix() const
 {
-    return matP;
+    return P();
 }
 
-MinresSolver::mat& MinresSolver::projMatrix()
-{
-    return matP;
-}
+//      MinresSolver::mat& MinresSolver::projMatrix() {
+//	return _matP;
+//      }
 
 
-MinresSolver::vec& MinresSolver::f()
-{
-    return vecF.getVectorEigen();
-}
+//      MinresSolver::vec& MinresSolver::f() {
+//	return _vecF.getVectorEigen();
+//      }
 
-const MinresSolver::vec& MinresSolver::f() const
-{
-    return vecF.getVectorEigen();
-}
+//      const MinresSolver::vec& MinresSolver::f() const {
+//        return vecF().getVectorEigen();
+//      }
 
 
-const MinresSolver::vec& MinresSolver::phi() const
-{
-    return vecPhi.getVectorEigen();
-}
+//      const MinresSolver::vec& MinresSolver::phi() const {
+//	return _vecPhi.getVectorEigen();
+//      }
 
-MinresSolver::vec& MinresSolver::phi()
-{
-    return vecPhi.getVectorEigen();
-}
+//      MinresSolver::vec& MinresSolver::phi() {
+//        return vecPhi().getVectorEigen();
+//      }
 
 
 MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
@@ -236,16 +225,16 @@ MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
 //	// projection matrix
 //	Minv = matP * Minv * matP;
 
-    const vec rhs = phi() - J() * ( PMinvP * this->f() );
+    const vec rhs = phi() - J() * ( PMinvP() * this->f() );
 
-    vec lambda = vec::Zero( rhs.size() );
-    warm(lambda);
+    vec mylambda = vec::Zero( rhs.size() );
+    warm(mylambda);
 
-    ::minres<double>::solve<schur>(lambda, schur(PMinvP, J(), C()), rhs, p);
+    ::minres<double>::solve<schur>(mylambda, schur(PMinvP(), J(), C()), rhs, p);
 
-    last = lambda;
+    last = mylambda;
 
-    return lambda;
+    return mylambda;
 }
 
 void MinresSolver::warm(vec& x) const
@@ -282,14 +271,14 @@ void MinresSolver::solveEquation()
     p.precision = precision.getValue();
 
     // solve for lambdas
-    vec& lambda = vecLambda.getVectorEigen();
-    lambda = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
+//        vec& lambda = _vecLambda.getVectorEigen();
+    lambda() = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
 
     iterations_performed.setValue( p.iterations );
 
     // add constraint force
-    this->f() += J().transpose() * lambda;
-    vecDv.getVectorEigen() = PMinvP * vecF.getVectorEigen();  // (FF)
+    this->f() += J().transpose() * lambda();
+    dv() = PMinvP() * f();  // (FF)
 }
 
 

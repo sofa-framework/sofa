@@ -79,15 +79,34 @@ protected:
     typedef core::behavior::BaseMechanicalState         MechanicalState;
     typedef core::BaseMapping                           Mapping;
 
+private:
     // Equation system
-    SMatrix matM;      ///< mass matrix
-    SMatrix& matP;      ///< projection matrix used to apply simple boundary conditions like fixed points
-    SMatrix matJ;      ///< concatenation of the constraint Jacobians
-    SMatrix matC;      ///< compliance matrix used to regularize the system
-    VectorSofa vecF;   ///< top of the right-hand term: forces
-    VectorSofa vecPhi; ///< bottom of the right-hand term: constraint corrections
-    VectorSofa vecDv;  ///< top of the solution: velocity change
-    VectorSofa vecLambda; ///< bottom of the solution: Lagrange multipliers
+    SMatrix _matM;         ///< mass matrix
+    SMatrix& _matP;        ///< projection matrix used to apply simple boundary conditions like fixed points
+    SMatrix _matJ;         ///< concatenation of the constraint Jacobians
+    SMatrix _matC;         ///< compliance matrix used to regularize the system
+    VectorSofa _vecF;      ///< top of the right-hand term: forces
+    VectorSofa _vecPhi;    ///< bottom of the right-hand term: constraint corrections
+    VectorSofa _vecDv;     ///< top of the solution: velocity change
+    VectorSofa _vecLambda; ///< bottom of the solution: Lagrange multipliers
+    linearsolver::EigenBaseSparseMatrix<SReal> projMatrix;
+    linearsolver::EigenBaseSparseMatrix<SReal> invprojMatrix;
+
+protected:
+    const SMatrix& M() const { return _matM; }
+    const SMatrix& P() const { return _matP; }
+    const SMatrix& J() const { return _matJ; }
+    const SMatrix& C() const { return _matC; }
+    const VectorSofa& vecF() const { return _vecF; }
+    VectorEigen& f()               { return _vecF.getVectorEigen(); }
+    const VectorEigen& f() const { return _vecF.getVectorEigen(); }
+    const VectorSofa& vecPhi() const { return _vecPhi; }
+    const VectorEigen& phi() const { return _vecPhi.getVectorEigen(); }
+    VectorSofa& vecDv() { return _vecDv; }
+    VectorEigen& dv() { return _vecDv.getVectorEigen(); }
+    VectorSofa& vecLambda() { return _vecLambda; }
+    VectorEigen& lambda() { return _vecLambda.getVectorEigen(); }
+    const SMatrix& PMinvP() const { return invprojMatrix.eigenMatrix; }
 
     /** Solve the equation system:
 
@@ -113,11 +132,6 @@ public:
 
 protected:
 
-//    /// Replace square matrix M with PMP, where P is the matrix of the projective constraints
-//    void projectMatrix( SMatrix& M );
-
-//    /// Replace vector v with Pv, where P is the matrix of the projective constraints
-//    void projectVector( VectorEigen& v );
 
     typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, PROJECT_MATRICES, DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
 
@@ -174,11 +188,6 @@ protected:
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
 
-//    SMatrix invM;      ///< inverse mass matrix used in the Schur complement
-    SMatrix& PMinvP;      ///< inverse mass matrix used in the Schur complement, projected
-
-    linearsolver::EigenBaseSparseMatrix<SReal> projMatrix;
-    linearsolver::EigenBaseSparseMatrix<SReal> invprojMatrix;
 
 
 };
