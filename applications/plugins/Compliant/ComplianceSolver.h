@@ -82,19 +82,21 @@ protected:
 private:
     // Equation system
     SMatrix _matM;         ///< mass matrix
-    SMatrix& _matP;        ///< projection matrix used to apply simple boundary conditions like fixed points
     SMatrix _matJ;         ///< concatenation of the constraint Jacobians
     SMatrix _matC;         ///< compliance matrix used to regularize the system
     VectorSofa _vecF;      ///< top of the right-hand term: forces
     VectorSofa _vecPhi;    ///< bottom of the right-hand term: constraint corrections
     VectorSofa _vecDv;     ///< top of the solution: velocity change
     VectorSofa _vecLambda; ///< bottom of the solution: Lagrange multipliers
-    linearsolver::EigenBaseSparseMatrix<SReal> projMatrix;
-    linearsolver::EigenBaseSparseMatrix<SReal> invprojMatrix;
+    linearsolver::EigenBaseSparseMatrix<SReal> _projMatrix;
+    linearsolver::EigenBaseSparseMatrix<SReal> _PMinvP_Matrix;  ///< PMinvP
+    bool _PMinvP_isDirty;  ///< true if _PMinvP_Matrix is not up to date
+
 
 protected:
+    // Equation system
     const SMatrix& M() const { return _matM; }
-    const SMatrix& P() const { return _matP; }
+    const SMatrix& P() const { return _projMatrix.eigenMatrix; }
     const SMatrix& J() const { return _matJ; }
     const SMatrix& C() const { return _matC; }
     const VectorSofa& vecF() const { return _vecF; }
@@ -106,7 +108,7 @@ protected:
     VectorEigen& dv() { return _vecDv.getVectorEigen(); }
     VectorSofa& vecLambda() { return _vecLambda; }
     VectorEigen& lambda() { return _vecLambda.getVectorEigen(); }
-    const SMatrix& PMinvP() const { return invprojMatrix.eigenMatrix; }
+    const SMatrix& PMinvP();
 
     /** Solve the equation system:
 
@@ -133,7 +135,7 @@ public:
 protected:
 
 
-    typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, PROJECT_MATRICES, DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
+    typedef enum { COMPUTE_SIZE, DO_SYSTEM_ASSEMBLY, /*PROJECT_MATRICES,*/ DISTRIBUTE_SOLUTION } Pass;  ///< Symbols of operations to execute by the visitor
 
     /** Visitor used to perform the assembly of M, C, J.
       Proceeds in several passes:<ol>
@@ -158,13 +160,12 @@ protected:
             , pass(COMPUTE_SIZE)
         {}
 
-
         Pass pass;  ///< symbol to represent the current operation
         /// Set the operation to execute during the next traversal
         MatrixAssemblyVisitor& operator() ( Pass p ) { pass =p; return *this; }
 
         virtual Visitor::Result processNodeTopDown(simulation::Node* node);
-        virtual void processNodeBottomUp(simulation::Node* node);
+//        virtual void processNodeBottomUp(simulation::Node* node);
 
         std::map<MechanicalState*, unsigned> m_offset;                 ///< Start index of independent DOFs in the mass matrix
         std::map<core::behavior::BaseForceField*, unsigned> c_offset;  ///< Start index of compliances in the compliance matrix
@@ -178,7 +179,6 @@ protected:
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
     };
 
-
     // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
@@ -187,8 +187,6 @@ protected:
 
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
-
-
 
 };
 

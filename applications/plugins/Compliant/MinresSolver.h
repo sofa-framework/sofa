@@ -54,7 +54,7 @@ protected:
 //    const mat& C() const;
 //    mat& C();
 
-    const mat& projMatrix() const;
+//    const mat& projMatrix() const;
 //    mat& projMatrix();
 
 //    // same
@@ -69,8 +69,8 @@ protected:
     typedef ::minres<SReal> minres;
 
     // requires visitor.fetch() == true
-    vec solve_schur(minres::params& ) ;
-    vec solve_kkt(minres::params& ) ;
+    void solve_schur(minres::params& ) ;
+    void solve_kkt(minres::params& ) ;
 
     // internal types
     struct schur;
