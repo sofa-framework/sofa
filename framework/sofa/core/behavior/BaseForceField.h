@@ -172,10 +172,13 @@ public:
     /// Set the constraint value to a weighted sum of violation and violation rate, based on damping ratio and parameters defined in cparams.
     virtual void writeConstraintValue(const MechanicalParams*, MultiVecDerivId ) { serr<<"BaseForceField::writeConstraintValue not implemented"<<sendl;}
 
-    /// return a pointer to the compliance matrix
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return 0; }
+    /// Return a pointer to the compliance matrix, or NULL if this should be seen as a stiffness
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
 
-    /// Uniform damping ratio applied to all the constrained values
+    /// Return a pointer to the stiffness matrix, or NULL if this should be seen as a compliance.
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const MechanicalParams*) { return NULL; }
+
+    /// Uniform damping ratio applied to all the constrained values. The damping coefficient is the product of the stiffness with this ratio.
     virtual SReal getDampingRatio() { serr<<"BaseForceField::getDampingRatio not implemented"<<sendl; return 0; }
 
     /// @}

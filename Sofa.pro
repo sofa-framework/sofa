@@ -104,7 +104,7 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
         }
 
         contains(DEFINES, SOFA_HAVE_IMAGE) {
-		usePlugin(image)
+                usePlugin(image)
 	}	
 
 	contains (DEFINES, SOFA_HAVE_REGISTRATION) {

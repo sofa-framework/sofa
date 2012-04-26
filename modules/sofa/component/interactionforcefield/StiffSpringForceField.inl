@@ -59,8 +59,11 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     const  VecDeriv& v2,
     int i,
     const Spring& spring)
-//addSpringForce( double& potentialEnergy, RDataRefVecDeriv& f1, RDataRefVecCoord& p1, RDataRefVecDeriv& v1, RDataRefVecDeriv& f2, RDataRefVecCoord& p2, RDataRefVecDeriv& v2, int i, const Spring& spring)
 {
+    // F =   k_s.(l-l_0 ).u + k_d((v_b - v_a).u).u = f.u   where f is the intensity and u the direction
+    // the force change dF comes from length change dl and unit vector change du:
+    // dF = k_s.dl.u + f.du
+    // du = 1/l.(I-u^Tu).dx
     int a = spring.m1;
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
