@@ -228,8 +228,12 @@ void MinresSolver::solve_schur(minres::params& p )
     last = mylambda;
 
     lambda() = mylambda;
-    dv() = PMinvP() * ( f() + J().transpose() * lambda());
-//        return mylambda;
+
+
+    const vec ftmp = f() + J().transpose() * lambda();
+    dv() = PMinvP() * ftmp;
+    // the following is MUCH slower:
+//        dv() = PMinvP() * (f() + J().transpose() * lambda());
 }
 
 void MinresSolver::warm(vec& x) const
@@ -257,7 +261,6 @@ void MinresSolver::solve_kkt(minres::params& p )
     dv() = P() * x.head( f().size() );
     lambda() = x.tail( phi().size() );
 
-//	return x.tail( phi().size() );
 }
 
 
