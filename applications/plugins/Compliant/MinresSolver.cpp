@@ -186,10 +186,9 @@ struct MinresSolver::schur
 //      }
 
 
-const MinresSolver::mat& MinresSolver::projMatrix() const
-{
-    return P();
-}
+//      const MinresSolver::mat& MinresSolver::projMatrix() const {
+//          return P();
+//      }
 
 //      MinresSolver::mat& MinresSolver::projMatrix() {
 //	return _matP;
@@ -214,18 +213,12 @@ const MinresSolver::mat& MinresSolver::projMatrix() const
 //      }
 
 
-MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
+void MinresSolver::solve_schur(minres::params& p )
 {
     raii_log log("MinresSolver::solve_schur");
 
-    // this is now computed in the parent class (FF)
-//	SMatrix Minv;
-//	inverseDiagonalMatrix( Minv, M(), 1.0e-6 );
 
-//	// projection matrix
-//	Minv = matP * Minv * matP;
-
-    const vec rhs = phi() - J() * ( PMinvP() * this->f() );
+    const vec rhs = phi() - J() * ( PMinvP() * f() );
 
     vec mylambda = vec::Zero( rhs.size() );
     warm(mylambda);
@@ -234,7 +227,9 @@ MinresSolver::vec MinresSolver::solve_schur(minres::params& p )
 
     last = mylambda;
 
-    return mylambda;
+    lambda() = mylambda;
+    dv() = PMinvP() * ( f() + J().transpose() * lambda());
+//        return mylambda;
 }
 
 void MinresSolver::warm(vec& x) const
@@ -245,21 +240,24 @@ void MinresSolver::warm(vec& x) const
     }
 }
 
-MinresSolver::vec MinresSolver::solve_kkt(minres::params& p )
+void MinresSolver::solve_kkt(minres::params& p )
 {
     raii_log log("MinresSolver::solve_kkt");
     vec rhs; rhs.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
-    rhs << projMatrix() * f(), -phi();
+    rhs << P() * f(), -phi();
 
     vec x = vec::Zero( rhs.size() );
     warm(x);
 
-    minres::solve(x, kkt(M(), J(), projMatrix(), C() ), rhs, p);
+    minres::solve(x, kkt(M(), J(), P(), C() ), rhs, p);
     last = x;
 
-    return x.tail( phi().size() );
+    dv() = P() * x.head( f().size() );
+    lambda() = x.tail( phi().size() );
+
+//	return x.tail( phi().size() );
 }
 
 
@@ -271,14 +269,17 @@ void MinresSolver::solveEquation()
     p.precision = precision.getValue();
 
     // solve for lambdas
-//        vec& lambda = _vecLambda.getVectorEigen();
-    lambda() = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
+//        lambda() = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
+    if(use_kkt.getValue())
+        solve_kkt(p);
+    else
+        solve_schur(p);
 
     iterations_performed.setValue( p.iterations );
 
-    // add constraint force
-    this->f() += J().transpose() * lambda();
-    dv() = PMinvP() * f();  // (FF)
+//	// now done within the equation solver
+//        this->f() += J().transpose() * lambda();
+//        dv() = PMinvP() * f();  // (FF)
 }
 
 
