@@ -81,11 +81,12 @@ protected:
 
 private:
     // Equation system
-    SMatrix _matM;         ///< mass matrix
-    SMatrix _matJ;         ///< concatenation of the constraint Jacobians
-    SMatrix _matC;         ///< compliance matrix used to regularize the system
+    SMatrix _matM;         ///< Mass matrix, also used to store the implicit matrix M/h - Kh
+    SMatrix _matK;         ///< Stiffness matrix
+    SMatrix _matJ;         ///< concatenation of the constraint Jacobians, in the KKT system
+    SMatrix _matC;         ///< compliance matrix used to regularize the system, in the bottom-right of the KKT system
     VectorSofa _vecF;      ///< top of the right-hand term: forces
-    VectorSofa _vecPhi;    ///< bottom of the right-hand term: constraint corrections
+    VectorSofa _vecPhi;    ///< bottom of the right-hand term: desired constraint corrections
     VectorSofa _vecDv;     ///< top of the solution: velocity change
     VectorSofa _vecLambda; ///< bottom of the solution: Lagrange multipliers
     linearsolver::EigenBaseSparseMatrix<SReal> _projMatrix;
@@ -94,21 +95,22 @@ private:
 
 
 protected:
-    // Equation system
+    // Equation system: input data
     const SMatrix& M() const { return _matM; }
     const SMatrix& P() const { return _projMatrix.eigenMatrix; }
     const SMatrix& J() const { return _matJ; }
     const SMatrix& C() const { return _matC; }
     const VectorSofa& vecF() const { return _vecF; }
-    VectorEigen& f()               { return _vecF.getVectorEigen(); }
+    const VectorEigen& f()               { return _vecF.getVectorEigen(); }
     const VectorEigen& f() const { return _vecF.getVectorEigen(); }
     const VectorSofa& vecPhi() const { return _vecPhi; }
     const VectorEigen& phi() const { return _vecPhi.getVectorEigen(); }
+    const SMatrix& PMinvP();
+    // Equation system: output data
     VectorSofa& vecDv() { return _vecDv; }
     VectorEigen& dv() { return _vecDv.getVectorEigen(); }
     VectorSofa& vecLambda() { return _vecLambda; }
     VectorEigen& lambda() { return _vecLambda.getVectorEigen(); }
-    const SMatrix& PMinvP();
 
     /** Solve the equation system:
 

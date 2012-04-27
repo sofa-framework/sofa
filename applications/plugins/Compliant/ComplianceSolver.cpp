@@ -31,7 +31,7 @@ ComplianceSolver::ComplianceSolver()
     :implicitVelocity( initData(&implicitVelocity,(SReal)0.5,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
     , implicitPosition( initData(&implicitPosition,(SReal)0.5,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
     , verbose( initData(&verbose,false,"verbose","Print a lot of info for debug"))
-//    , _PMinvP( invprojMatrix.eigenMatrix )
+    //    , _PMinvP( invprojMatrix.eigenMatrix )
 {
 }
 
@@ -99,10 +99,11 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE)); // first the size
     //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
 
-//    if( assembly.sizeC > 0 ){
+    //    if( assembly.sizeC > 0 ){
 
 
     _matM.resize(assembly.sizeM,assembly.sizeM);
+    _matK.resize(assembly.sizeM,assembly.sizeM);
     _projMatrix.eigenMatrix = createIdentityMatrix(assembly.sizeM);
     _matC.resize(assembly.sizeC,assembly.sizeC);
     _matJ.resize(assembly.sizeC,assembly.sizeM);
@@ -121,6 +122,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     if( verbose.getValue() )
     {
         cerr<<"ComplianceSolver::solve, final M = " << endl << _matM << endl;
+        cerr<<"ComplianceSolver::solve, final K = " << endl << _matK << endl;
         cerr<<"ComplianceSolver::solve, final P = " << endl << P() << endl;
         cerr<<"ComplianceSolver::solve, final C = " << endl << _matC << endl;
         cerr<<"ComplianceSolver::solve, final J = " << endl << _matJ << endl;
@@ -128,13 +130,15 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         cerr<<"ComplianceSolver::solve, final phi = " << _vecPhi << endl;
     }
 
+    // The implicit matrix is scaled by 1/h before solving the equation
+    _matM -= _matK * (h*h);
     _matM *= 1.0/h;
 
     // Solve equation system
     solveEquation();
 
     this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
-//    }
+    //    }
 
 
 
@@ -188,7 +192,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                 {
                     c_offset[node->forceField[i]] = sizeC;
                     sizeC += node->mechanicalState->getMatrixSize();
-//                    numCompliances++;
+                    //                    numCompliances++;
                 }
                 else      // stiffness does not contribute to matrix size, since the stiffness matrix is added to the mass matrix of the state.
                 {
@@ -196,7 +200,6 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             }
             //            assert(numCompliances<2); // more than 1 compliance in a node makes no sense (or do they, if they are not all null ??? It would probably be better to replace them with their harmonic sum, however)
         }
-        assert(node->forceField.size()<2);
 
         // ==== register all the DOFs
         if (node->mechanicalState != NULL)
@@ -244,9 +247,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                     continue;
                 SMatrix J = getSMatrix( (*pJs)[i] );
                 SMatrix contribution;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, J = "<< endl << J << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = "<< endl << J << endl;
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
@@ -273,8 +276,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         for(unsigned i=0; i<node->forceField.size(); i++ )
         {
             BaseForceField* ffield = node->forceField[i];
+            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << endl;
             if( ffield->getComplianceMatrix(mparams)!=NULL )
             {
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has compliance" << endl;
                 SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[ffield] );
 
                 SMatrix J = SMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
@@ -297,25 +302,29 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             }
             else if (ffield->getStiffnessMatrix(mparams)) // accumulate the stiffness if the matrix is not null. TODO: Rayleigh damping
             {
-                solver->_matM += SMatrix( jMap[node->mechanicalState].transpose() * getSMatrix(ffield->getStiffnessMatrix(mparams)) * jMap[node->mechanicalState] ) * mparams->dt();  // assemble
-//                solver->_vecF += jMap[node->mechanicalState].transpose() * getSMatrix(ffield->getStiffnessMatrix(mparams)) *
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has stiffness" << endl;
+                const SMatrix& K = getSMatrix(ffield->getStiffnessMatrix(mparams));
+                const SMatrix& J = jMap[node->mechanicalState];
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, stiffness = " << endl << K << endl;
+                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = " << endl << J << endl;
+                solver->_matK += SMatrix( J.transpose() * K * J );  // assemble
             }
         }
 
     }
-//    else if (pass== PROJECT_MATRICES)
-//    {
-//        // ==== independent DOFs
-//        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
-//        {
-//            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-//            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
-//            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
-//                  node->projectiveConstraintSet[i]->projectMatrix(&solver->_projMatrix,m_offset[node->mechanicalState]);
-//            }
-//        }
+    //    else if (pass== PROJECT_MATRICES)
+    //    {
+    //        // ==== independent DOFs
+    //        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+    //        {
+    //            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
+    //            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
+    //            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
+    //                  node->projectiveConstraintSet[i]->projectMatrix(&solver->_projMatrix,m_offset[node->mechanicalState]);
+    //            }
+    //        }
 
-//    }
+    //    }
     else if (pass== DISTRIBUTE_SOLUTION)
     {
         typedef defaulttype::BaseVector  SofaVector;

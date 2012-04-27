@@ -31,11 +31,14 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
-    typedef defaulttype::Mat<N,N,Real> Block;
+//    typedef defaulttype::Mat<N,N,Real> Block;
 
-    Data< Block > compliance;   ///< Same compliance applied to all the DOFs
-    Data< SReal > dampingRatio; ///< Same damping ratio applied to all the DOFs
+    Data< Real > compliance;    ///< Same compliance applied to all the DOFs
+    Data< Real > dampingRatio;  ///< Same damping ratio applied to all the DOFs
     Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
+
+//    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
+//    void setCompliance( Real c );
 
     virtual SReal getDampingRatio() { return dampingRatio.getValue(); }
 
@@ -54,11 +57,8 @@ public:
     /// Return a pointer to the stiffness matrix, or NULL if isCompliance it true
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
 
-    /// Set a uniform, diagonal compliance. c must be a positive real. If this is a stiffness (flag isCompliance set to false) then c must be non-zero.
-    void setCompliance( Real c );
-
-    /// addForce does nothing because this component is processed like a compliance.
-    virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &) {}
+    /// addForce does nothing when this component is processed like a compliance.
+    virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
 
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
