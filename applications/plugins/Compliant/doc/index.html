@@ -2,6 +2,7 @@
 <html><head>
 
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -163,7 +164,7 @@ and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.<b
 <br>
 In the generalized approach, the constraint forces are considered proportional to the constraint violations:<br>
 \begin{equation}\label{eq generalized constraint}<br>
-\lam = \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)<br>
+\lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)<br>
 \end{equation}<br>
 where $\cmp$ is the compliance of the constraints and $\dampingratio$ its damping ratio.<br>
 Combined with a time discretization scheme, this leads to an equation

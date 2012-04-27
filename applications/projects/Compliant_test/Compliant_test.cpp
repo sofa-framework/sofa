@@ -139,7 +139,7 @@ simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoi
     UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
     extension_node->addObject(compliance);
     compliance->setName(oss.str()+"_compliance");
-    compliance->setCompliance(complianceValue);
+    compliance->compliance.setValue(complianceValue);
     compliance->dampingRatio.setValue(dampingRatio);
 
 
@@ -176,7 +176,7 @@ simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoi
 //        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
 //        fixNode->addObject(compliance);
 //        compliance->setName("fix_compliance");
-//        compliance->setCompliance(complianceValue);
+//        compliance->compliance.setValue(complianceValue);
 //        compliance->dampingRatio.setValue(dampingRatio);
 //    }
 
@@ -261,7 +261,7 @@ simulation::Node::SPtr createScene()
 
     //    UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
     //    extension_node->addObject(compliance);
-    //    compliance->setCompliance(complianceValue);
+    //    compliance->compliance.setValue(complianceValue);
     //    compliance->dampingRatio.setValue(dampingRatio);
 
     return root;

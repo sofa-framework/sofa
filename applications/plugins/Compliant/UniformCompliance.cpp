@@ -12,7 +12,7 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int UniformComplianceClass = core::RegisterObject("Compute edge extensions")
+int UniformComplianceClass = core::RegisterObject("Uniform compliance")
 #ifndef SOFA_FLOAT
         .add< UniformCompliance< Vec1dTypes > >(true)
 #endif

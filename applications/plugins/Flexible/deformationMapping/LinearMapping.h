@@ -155,6 +155,10 @@ public:
                 jacobian[i][j].init( in[index],out[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
+
+        baseMatrices.resize( 1 ); // just a wrapping for getJs()
+        baseMatrices[0] = &eigenJacobian;
+
         Inherit::init();
     }
     virtual void reinit()
@@ -239,6 +243,10 @@ public:
         return &eigenJacobian;
     }
 
+    // Compliant plugin experimental API
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+
+
     void draw(const core::visual::VisualParams* vparams)
     {
         if (!vparams->displayFlags().getShowMechanicalMappings()) return;
@@ -288,12 +296,6 @@ protected:
         eigenJacobian.resizeBlocks(out.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-            //        for(unsigned int j=0;j<jacobian[i].size();j++)
-            //        {
-            //            unsigned int index=this->f_index.getValue()[i][j];
-            //            eigenJacobian.setBlock( i, index, jacobian[i][j].getJ());
-            //        }
-
             // Put all the blocks of the row in an array, then send the array to the matrix
             // Not very efficient: MatBlock creations could be avoided.
             vector<MatBlock> blocks;
@@ -316,6 +318,7 @@ protected:
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements

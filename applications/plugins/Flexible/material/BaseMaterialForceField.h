@@ -150,14 +150,15 @@ public:
         }
     }
 
-    const defaulttype::BaseMatrix* getC(const core::MechanicalParams */*mparams*/)
+    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams */*mparams*/)
     {
         if(!this->assembleC.getValue()) updateC();
         return &C;
     }
 
-    const defaulttype::BaseMatrix* getK(const core::MechanicalParams */*mparams*/)
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*)
     {
+        cerr<<"BaseMaterialForceField::getStiffnessMatrix"<<endl;
         if(!this->assembleK.getValue()) updateK();
         return &K;
     }

@@ -83,6 +83,7 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> Indices;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
+    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block

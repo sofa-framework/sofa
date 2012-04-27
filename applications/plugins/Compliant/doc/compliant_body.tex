@@ -55,9 +55,9 @@ and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.
 
 In the generalized approach, the constraint forces are considered proportional to the constraint violations:
 \begin{equation}\label{eq generalized constraint}
-\lam = \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
+\lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
 \end{equation}
-where $\cmp$ is the compliance of the constraints and $\dampingratio$ its damping ratio.
+where the positive real number $\cmp$ is the compliance of the constraint and $\dampingratio$ is its damping ratio.
 Combined with a time discretization scheme, this leads to an equation system similar to \eqref{eq schur rigid} as shown is the next section.
 % This leads to equation system:
 % \begin{equation} \label{eq acc compliant}
@@ -159,7 +159,7 @@ State $X_e$ is attached to $X_a$ and  $X_d$ at the same time, using a MultiMappi
 while a mass $M_{dd}$ is applied to $X_d$.
 \begin{figure}
 \centering
- \includegraphics[width=0.39\linewidth]{system-graph.png}
+ \includegraphics[width=0.49\linewidth]{system-graph.png}
 \caption{A mechanical system. The $X$ represent mechanical states, while the arrows represent the kinematic hierarchy, and the plain lines represent components acting on the states.}
 \label{fig system graph}
 \end{figure}

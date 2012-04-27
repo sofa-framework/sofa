@@ -200,7 +200,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
     interactionNode->addObject(compliance);
-    compliance->setCompliance(0.0);
+    compliance->compliance.setValue(0.0);
     compliance->dampingRatio.setValue(0.0);
     compliance->setName("pickCompliance");
 
