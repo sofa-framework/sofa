@@ -25,6 +25,7 @@
 #ifndef FLEXIBLE_StrainTYPES_H
 #define FLEXIBLE_StrainTYPES_H
 
+#include "../types/PolynomialBasis.h"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -46,37 +47,42 @@ using std::endl;
 using helper::vector;
 
 /**
-    Generic class to implement an abstract mechanical state
-    Coords are vector values (order 1) + their spatial gradients (order 2) + Hessian (order 1)
-    It is used here to implement different measures of strain, based on a deformation gradient: Corotational, Green-Lagrange, Invariants of right Cauchy Green deformation tensor, etc.
+    Generic class to implement a mechanical state representing strain
+    strain is decomposed in a basis of an certain order.
+    It is used here to implement different measures: Corotational, Green-Lagrange, Invariants of right Cauchy Green deformation tensor, etc.
     Can also represent the corresponding stress. Used by the materials to compute stress based on strain.
   */
-template< int _spatial_dimensions, int _strain_size, int _order, typename _Real>
+
+template< int _spatial_dimensions, int _strain_size, int _order, typename _Real >
 class BaseStrainTypes
 {
 public:
+    typedef PolynomialBasis<_strain_size,_Real, _spatial_dimensions, _order> Basis;
+
     static const unsigned int spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int order = _order;  ///<  1: strain, 2: strain + gradient, 3: strain + gradient + Hessian
     static const unsigned int strain_size = _strain_size;
-    static const unsigned int NumStrainVec = order==0? 0 : (order==1? 1 : ( order==2? 1 + spatial_dimensions : ( order==3? 1 + spatial_dimensions + spatial_dimensions*spatial_dimensions: 0 ))) ;
-    static const unsigned int VSize = NumStrainVec * strain_size ;  // number of entries
+    typedef _Real Real;
+
+    typedef typename Basis::T StrainVec;
+    typedef typename Basis::Gradient StrainGradient;
+    typedef typename Basis::Hessian StrainHessian;
+    typedef typename Basis::TotalVec TotalVec;
+
+    enum { VSize = Basis::total_size };  ///< number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
 
-    typedef _Real Real;
     typedef vector<Real> VecReal;
-    typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    typedef Vec<spatial_dimensions, StrainVec> StrainGradient;          ///< Strain Gradient (for order > 1)
-    typedef Mat<spatial_dimensions,spatial_dimensions, StrainVec> StrainHessian;     ///< Strain Hessian (for order > 2). @todo Could be optimized since hessian is symmetric
 
     class Deriv
     {
     protected:
-        Vec<VSize,Real> v;
+        Basis v;
 
     public:
         Deriv() { v.clear(); }
-        Deriv( const Vec<VSize,Real>& d):v(d) {}
+        Deriv( const Basis& d):v(d) {}
+        Deriv( const TotalVec& d):v(d) {}
         void clear() { v.clear(); }
 
         static const unsigned int total_size = VSize;
@@ -85,56 +91,58 @@ public:
         static unsigned int size() { return VSize; }
 
         /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
         Real* ptr() { return v.ptr(); }
         const Real* ptr() const { return v.ptr(); }
 
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
+        TotalVec& getVec() { return v.getVec(); }
+        const TotalVec& getVec() const { return v.getVec(); }
 
-        /// strain, order 1
-        StrainVec& getStrain() { return *reinterpret_cast<StrainVec*>(&v[0]); }
-        const StrainVec& getStrain() const { return *reinterpret_cast<const StrainVec*>(&v[0]); }
+        Real& operator[](int i) { return getVec()[i]; }
+        const Real& operator[](int i) const    { return getVec()[i]; }
 
-        /// gradient, order 2
-        StrainGradient& getStrainGradient() { return *reinterpret_cast<StrainGradient*>(&v[strain_size]); }
-        const StrainGradient& getStrainGradient() const { return *reinterpret_cast<const StrainGradient*>(&v[strain_size]); }
+        /// basis
+        Basis& getBasis() { return v; }
+        const Basis& getBasis() const { return v; }
 
-        /// Hessian, order 3
-        StrainHessian& getStrainHessian() { return *reinterpret_cast<StrainHessian*>(&v[strain_size+spatial_dimensions * strain_size]); }
-        const StrainHessian& getStrainHessian() const { return *reinterpret_cast<const StrainHessian*>(&v[strain_size+spatial_dimensions * strain_size]); }
+        StrainVec& getStrain() { return v.getVal(); }
+        const StrainVec& getStrain() const { return v.getVal(); }
 
-        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v); }
-        void operator +=(const Deriv& a) { v+=a.v; }
+        StrainVec& getStrainGradient(int i) { return v.getGradient()[i]; }
+        const StrainVec& getStrainGradient(int i) const { return v.getGradient()[i]; }
 
-        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v); }
-        void operator -=(const Deriv& a) { v-=a.v; }
+        StrainVec& getStrainHessian(int i,int j) { return v.getHessian()(i,j); }
+        const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
+
+
+        Deriv operator +(const Deriv& a) const { return Deriv(getVec()+a.getVec()); }
+        void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
+
+        Deriv operator -(const Deriv& a) const { return Deriv(getVec()-a.getVec()); }
+        void operator -=(const Deriv& a) { getVec()-=a.getVec(); }
 
         template<typename real2>
-        Deriv operator *(real2 a) const { return Deriv(v*a); }
+        Deriv operator *(real2 a) const { return Deriv(getVec()*a); }
         template<typename real2>
-        void operator *=(real2 a) { v *= a; }
+        void operator *=(real2 a) { getVec() *= a; }
 
         template<typename real2>
-        void operator /=(real2 a) { v /= a; }
+        void operator /=(real2 a) { getVec() /= a; }
 
-        Deriv operator - () const { return Deriv(-v); }
+        Deriv operator - () const { return Deriv(-getVec()); }
 
         /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Deriv& a) const    { return v*a.v;    }
+        Real operator*(const Deriv& a) const    { return getVec()*a.getVec();    }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
         {
-            out<<c.v;
+            out<<c.getVec();
             return out;
         }
         /// read from an input stream
         inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
         {
-            in>>c.v;
+            in>>c.getVec();
             return in;
         }
     };
@@ -153,11 +161,12 @@ public:
     class Coord
     {
     protected:
-        Vec<VSize,Real> v;
+        Basis v;
 
     public:
         Coord() { v.clear(); }
-        Coord( const Vec<VSize,Real>& d):v(d) {}
+        Coord( const Basis& d):v(d) {}
+        Coord( const TotalVec& d):v(d) {}
         void clear() { v.clear(); }
 
         static const unsigned int total_size = VSize;
@@ -166,66 +175,66 @@ public:
         static unsigned int size() { return VSize; }
 
         /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
         Real* ptr() { return v.ptr(); }
         const Real* ptr() const { return v.ptr(); }
 
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
+        TotalVec& getVec() { return v.getVec(); }
+        const TotalVec& getVec() const { return v.getVec(); }
 
-        /// strain, order 1
-        StrainVec& getStrain() { return *reinterpret_cast<StrainVec*>(&v[0]); }
-        const StrainVec& getStrain() const { return *reinterpret_cast<const StrainVec*>(&v[0]); }
+        Real& operator[](int i) { return getVec()[i]; }
+        const Real& operator[](int i) const    { return getVec()[i]; }
 
-        /// gradient, order 2
-        StrainGradient& getStrainGradient() { return *reinterpret_cast<StrainGradient*>(&v[strain_size]); }
-        const StrainGradient& getStrainGradient() const { return *reinterpret_cast<const StrainGradient*>(&v[strain_size]); }
+        /// basis
+        Basis& getBasis() { return v; }
+        const Basis& getBasis() const { return v; }
 
-        /// Hessian, order 3
-        StrainHessian& getStrainHessian() { return *reinterpret_cast<StrainHessian*>(&v[strain_size+spatial_dimensions * strain_size]); }
-        const StrainHessian& getStrainHessian() const { return *reinterpret_cast<const StrainHessian*>(&v[strain_size+spatial_dimensions * strain_size]); }
+        StrainVec& getStrain() { return v.getVal(); }
+        const StrainVec& getStrain() const { return v.getVal(); }
 
-        Coord operator +(const Coord& a) const { return Coord(v+a.v); }
-        void operator +=(const Coord& a) { v+=a.v; }
+        StrainVec& getStrainGradient(int i) { return v.getGradient()[i]; }
+        const StrainVec& getStrainGradient(int i) const { return v.getGradient()[i]; }
 
-        Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.getVec(); }
+        StrainVec& getStrainHessian(int i,int j) { return v.getHessian()(i,j); }
+        const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
 
-        Coord operator -(const Coord& a) const { return Coord(v-a.v); }
-        void operator -=(const Coord& a) { v-=a.v; }
+        Coord operator +(const Coord& a) const { return Coord(getVec()+a.getVec()); }
+        void operator +=(const Coord& a) { getVec()+=a.getVec(); }
+
+        Coord operator +(const Deriv& a) const { return Coord(getVec()+a.getVec()); }
+        void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
+
+        Coord operator -(const Coord& a) const { return Coord(getVec()-a.getVec()); }
+        void operator -=(const Coord& a) { getVec()-=a.getVec(); }
 
         template<typename real2>
-        Coord operator *(real2 a) const { return Coord(v*a); }
+        Coord operator *(real2 a) const { return Coord(getVec()*a); }
         template<typename real2>
-        void operator *=(real2 a) { v *= a; }
+        void operator *=(real2 a) { getVec() *= a; }
 
         template<typename real2>
-        void operator /=(real2 a) { v /= a; }
+        void operator /=(real2 a) { getVec() /= a; }
 
-        Coord operator - () const { return Coord(-v); }
+        Coord operator - () const { return Coord(-getVec()); }
 
         /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return v*a.v;    }
+        Real operator*(const Coord& a) const    { return getVec()*a.getVec();    }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
         {
-            out<<c.v;
+            out<<c.getVec();
             return out;
         }
         /// read from an input stream
         inline friend std::istream& operator >> ( std::istream& in, Coord& c )
         {
-            in>>c.v;
+            in>>c.getVec();
             return in;
         }
 
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {
-            BOOST_STATIC_ASSERT(spatial_dimensions == 3);
             for(unsigned int i=0; i<15; i++) m[i]=0.; m[15]=1.;
         }
     };
@@ -269,16 +278,15 @@ public:
 // Specialization for strain defined using Voigt notation
 
 
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real >
 class StrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real>
 {
 public:
     typedef BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real> Inherit;
 
+    typedef typename Inherit::Basis Basis;
     enum { spatial_dimensions = Inherit::spatial_dimensions };
-    enum { order = Inherit::order };
     enum { strain_size = Inherit::strain_size };
-    enum { NumStrainVec = Inherit::NumStrainVec } ;
     enum { VSize = Inherit::VSize } ;
     enum { coord_total_size = Inherit::coord_total_size };
     enum { deriv_total_size = Inherit::deriv_total_size };
@@ -298,12 +306,12 @@ public:
     typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
 };
 
-typedef StrainTypes<3, 3, 1, double> E331dTypes;
-typedef StrainTypes<3, 3, 1, float>  E331fTypes;
-typedef StrainTypes<3, 3, 2, double> E332dTypes;
-typedef StrainTypes<3, 3, 2, float>  E332fTypes;
-typedef StrainTypes<3, 3, 3, double> E333dTypes;
-typedef StrainTypes<3, 3, 3, float>  E333fTypes;
+typedef StrainTypes<3, 3, 0, double> E331dTypes;
+typedef StrainTypes<3, 3, 0, float>  E331fTypes;
+typedef StrainTypes<3, 3, 1, double> E332dTypes;
+typedef StrainTypes<3, 3, 1, float>  E332fTypes;
+typedef StrainTypes<3, 3, 2, double> E333dTypes;
+typedef StrainTypes<3, 3, 2, float>  E333fTypes;
 
 #ifdef SOFA_FLOAT
 template<> inline const char* E331dTypes::Name() { return "E331d"; }
@@ -384,12 +392,12 @@ public:
 };
 */
 
-typedef BaseStrainTypes<3, 3, 1, double> I331dTypes;
-typedef BaseStrainTypes<3, 3, 1, float>  I331fTypes;
-typedef BaseStrainTypes<3, 3, 2, double> I332dTypes;
-typedef BaseStrainTypes<3, 3, 2, float>  I332fTypes;
-typedef BaseStrainTypes<3, 3, 3, double> I333dTypes;
-typedef BaseStrainTypes<3, 3, 3, float>  I333fTypes;
+typedef BaseStrainTypes<3, 3, 0, double> I331dTypes;
+typedef BaseStrainTypes<3, 3, 0, float>  I331fTypes;
+typedef BaseStrainTypes<3, 3, 1, double> I332dTypes;
+typedef BaseStrainTypes<3, 3, 1, float>  I332fTypes;
+typedef BaseStrainTypes<3, 3, 2, double> I333dTypes;
+typedef BaseStrainTypes<3, 3, 2, float>  I333fTypes;
 
 #ifdef SOFA_FLOAT
 template<> inline const char* I331dTypes::Name() { return "I331d"; }

@@ -35,9 +35,7 @@ namespace core
 namespace behavior
 {
 
-
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3f>;
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3d>;
+template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3>;
 
 }
 }

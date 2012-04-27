@@ -39,7 +39,7 @@ namespace mapping
 
 using helper::vector;
 
-/** Map deformation gradients to (incompressible) invariants of the right Cauchy Green deformation tensor: I1,I2 and J
+/** Map deformation gradients to the square root of (deviatoric) invariants of the right Cauchy Green deformation tensor: sqrt(I1),sqrt(I2) and J
 */
 
 template <class TIn, class TOut>

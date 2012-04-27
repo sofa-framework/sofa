@@ -57,12 +57,11 @@ public:
     //@{
     Data<Real> f_C1;
     Data<Real> f_C2;
-    Data<Real> f_power;
     //@}
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_C1.getValue(),this->f_C2.getValue(),this->f_power.getValue());
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_C1.getValue(),this->f_C2.getValue());
         Inherit::reinit();
     }
 
@@ -71,7 +70,6 @@ protected:
         : Inherit(mm)
         , f_C1(initData(&f_C1,(Real)1000,"C1","weight of (~I1-3)^p term in energy"))
         , f_C2(initData(&f_C2,(Real)1000,"C2","weight of (~I2-3)^p term in energy"))
-        , f_power(initData(&f_power,(Real)1,"power","power p"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
     }

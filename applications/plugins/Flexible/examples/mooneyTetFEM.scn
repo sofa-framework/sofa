@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="0.01"  >
-    
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.03"  >
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     
     <EulerImplicitSolver />
@@ -12,9 +11,9 @@
 	    <MechanicalObject src="@loader" name="parent" />
 	    <UniformMass mass="1" />
 	    <BoxConstraint box="0 -2 0 5 2 5" />
-	   <ConstantForceField points="50" force="0 0 0" />
+	    <ConstantForceField points="50" force="0 0 0" />
 
-	    <BarycentricShapeFunction position="@parent.rest_position" />
+	    <BarycentricShapeFunction  />
 
 	    <Node 	name="behavior"   >
 		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false"/>
@@ -24,7 +23,7 @@
 		<Node 	name="I"   >
 		    <MechanicalObject  template="I331" name="I"  />
 		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" deviatoric="true"/>
-		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100" power="1"/> 
+		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100" /> 
 		    <VolumePreservationForceField  template="I331" k="1000"/> 
 		</Node>
 	    </Node>

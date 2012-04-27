@@ -84,7 +84,7 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    enum { spatial_dimensions = Out::spatial_dimensions };
+//    enum { spatial_dimensions = Out::spatial_dimensions };
     //@}
 
     /** @name  Jacobian types    */

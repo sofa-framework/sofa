@@ -45,8 +45,8 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
 #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
-#define F331(type)  DefGradientTypes<3,3,1,type>
-#define F332(type)  DefGradientTypes<3,3,2,type>
+#define F331(type)  DefGradientTypes<3,3,0,type>
+#define F332(type)  DefGradientTypes<3,3,1,type>
 #define Rigid3(type)  StdRigidTypes<3,type>
 #define Affine3(type)  StdAffineTypes<3,type>
 #define Quadratic3(type)  StdQuadraticTypes<3,type>
@@ -273,26 +273,26 @@ public:
         Pt=w;
         C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
         Ft=dw;
-        C.getMaterialFrame()=covMN(OutPos.getCenter()-InPos,Ft);
-        for(unsigned int i=0; i<mdim; i++) C.getMaterialFrame()[i][i]+=w; // to do: anisotropy
+        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         result.getCenter() +=  data * Pt + C.getCenter();
-        result.getMaterialFrame() +=  covMN(data,Ft) + C.getMaterialFrame();
+        result.getF() +=  covMN(data,Ft) + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         result.getCenter() += data * Pt ;
-        result.getMaterialFrame() += covMN(data,Ft) ;
+        result.getF() += covMN(data,Ft) ;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         result += data.getCenter() * Pt ;
-        result += data.getMaterialFrame() * Ft ;
+        result += data.getF() * Ft ;
     }
 
     MatBlock getJ()
@@ -360,36 +360,36 @@ public:
         Pt=w;
         C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
         Ft=dw;
-        C.getMaterialFrame()=covMN(OutPos.getCenter()-InPos,Ft);
-        for(unsigned int i=0; i<mdim; i++) C.getMaterialFrame()[i][i]+=w; // to do: anisotropy
+        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
         dFt=ddw.transposed();
         for (unsigned int k = 0; k < dim; ++k)
         {
-            C.getMaterialFrameGradient()[k]=covMN(OutPos.getCenter()-InPos,dFt[k]);
-            //            for(unsigned int i=0;i<mdim;i++) C.getMaterialFrameGradient()[k][i][i]+=Ft[k]; // to do: anisotropy
-            //            for(unsigned int i=0;i<mdim;i++) C.getMaterialFrameGradient()[k][k][i]+=Ft[i]; // to do: anisotropy
+            C.getGradientF(k)=covMN(OutPos.getCenter()-InPos,dFt[k]);
+            //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[i][i]+=Ft[k]; // to do: anisotropy
+            //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[k][i]+=Ft[i]; // to do: anisotropy
         }
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         result.getCenter() +=  data * Pt + C.getCenter();
-        result.getMaterialFrame() +=  covMN(data,Ft) + C.getMaterialFrame();
-        for (unsigned int k = 0; k < dim; ++k) result.getMaterialFrameGradient()[k] += covMN( data, dFt[k]) + C.getMaterialFrameGradient()[k];
+        result.getF() +=  covMN(data,Ft) + C.getF();
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data, dFt[k]) + C.getGradientF(k);
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         result.getCenter() += data * Pt ;
-        result.getMaterialFrame() += covMN(data,Ft) ;
-        for (unsigned int k = 0; k < dim; ++k) result.getMaterialFrameGradient()[k] += covMN(data,dFt[k]) ;
+        result.getF() += covMN(data,Ft) ;
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data,dFt[k]) ;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         result += data.getCenter() * Pt ;
-        result += data.getMaterialFrame() * Ft ;
-        for (unsigned int k = 0; k < dim; ++k) result += data.getMaterialFrameGradient()[k] * dFt[k] ;
+        result += data.getF() * Ft ;
+        for (unsigned int k = 0; k < dim; ++k) result += data.getGradientF(k) * dFt[k] ;
     }
 
     MatBlock getJ()
@@ -618,30 +618,30 @@ public:
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos.getCenter());  // q0
         PFa.getCenter()=vectorInLocalCoordinates*Pt;
-        PFa.getMaterialFrame()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         result.getCenter() +=  data.getCenter() * Pt + data.getAffine()*PFa.getCenter();
-        result.getMaterialFrame() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getMaterialFrame();
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         result.getCenter() += data.getVCenter() * Pt + data.getVAffine()*PFa.getCenter();
-        result.getMaterialFrame() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getMaterialFrame();
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getF();
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         result.getVCenter() += data.getCenter() * Pt ;
-        result.getVCenter() += data.getMaterialFrame() * Ft ;
+        result.getVCenter() += data.getF() * Ft ;
 
         for (unsigned int j = 0; j < dim; ++j)
         {
             result.getVAffine()[j] += PFa.getCenter() * (data.getCenter()[j]);
-            result.getVAffine()[j] += PFa.getMaterialFrame() * (data.getMaterialFrame()[j]);
+            result.getVAffine()[j] += PFa.getF() * (data.getF()[j]);
         }
     }
 
@@ -652,7 +652,7 @@ public:
         unsigned int offset=dim;
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J[j][i+offset+j*dim]=PFa.getCenter()[i];
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+offset+l*dim]=PFa.getMaterialFrame()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+offset+l*dim]=PFa.getF()[i][j];
         return J;
     }
 };
@@ -719,38 +719,38 @@ public:
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos.getCenter());  // q0
         PFdFa.getCenter()=vectorInLocalCoordinates*Pt;
-        PFdFa.getMaterialFrame()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
+        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
 
         Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
         Mat<dim,dim> AOinvT = AOinv.transposed();
-        for (unsigned int k = 0; k < dim; ++k) PFdFa.getMaterialFrameGradient()[k] = covMN( vectorInLocalCoordinates, dFt[k]) + AOinv * dw[k] + covMN(AOinvT[k],dw);
+        for (unsigned int k = 0; k < dim; ++k) PFdFa.getGradientF(k) = covMN( vectorInLocalCoordinates, dFt[k]) + AOinv * dw[k] + covMN(AOinvT[k],dw);
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         result.getCenter() +=  data.getCenter() * Pt + data.getAffine()*PFdFa.getCenter();
-        result.getMaterialFrame() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFdFa.getMaterialFrame();
-        for (unsigned int k = 0; k < dim; ++k) result.getMaterialFrameGradient()[k] += covMN( data.getCenter(), dFt[k]) + data.getAffine() * PFdFa.getMaterialFrameGradient()[k];
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFdFa.getF();
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data.getCenter(), dFt[k]) + data.getAffine() * PFdFa.getGradientF(k);
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         result.getCenter() += data.getVCenter() * Pt + data.getVAffine()*PFdFa.getCenter();
-        result.getMaterialFrame() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFdFa.getMaterialFrame();
-        for (unsigned int k = 0; k < dim; ++k) result.getMaterialFrameGradient()[k] += covMN(data.getVCenter(),dFt[k]) + data.getVAffine() * PFdFa.getMaterialFrameGradient()[k];
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFdFa.getF();
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data.getVCenter(),dFt[k]) + data.getVAffine() * PFdFa.getGradientF(k);
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         result.getVCenter() += data.getCenter() * Pt ;
-        result.getVCenter() += data.getMaterialFrame() * Ft ;
-        for (unsigned int k = 0; k < dim; ++k) result.getVCenter() += data.getMaterialFrameGradient()[k] * dFt[k] ;
+        result.getVCenter() += data.getF() * Ft ;
+        for (unsigned int k = 0; k < dim; ++k) result.getVCenter() += data.getGradientF(k) * dFt[k] ;
 
         for (unsigned int j = 0; j < dim; ++j)
         {
             result.getVAffine()[j] += PFdFa.getCenter() * (data.getCenter()[j]);
-            result.getVAffine()[j] += PFdFa.getMaterialFrame() * (data.getMaterialFrame()[j]);
-            for (unsigned int k = 0; k < dim; ++k) result.getVAffine()[j] += PFdFa.getMaterialFrameGradient()[k] * (data.getMaterialFrameGradient()[k][j]);
+            result.getVAffine()[j] += PFdFa.getF() * (data.getF()[j]);
+            for (unsigned int k = 0; k < dim; ++k) result.getVAffine()[j] += PFdFa.getGradientF(k) * (data.getGradientF(k)[j]);
         }
     }
 
@@ -761,12 +761,12 @@ public:
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J[j][i+dim+j*dim]=PFdFa.getCenter()[i];
         unsigned int offset=dim;
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getMaterialFrame()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getF()[i][j];
         for(unsigned int k=0; k<dim; ++k)
         {
             offset+=dim*mdim;
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=dFt[k][j];
-            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getMaterialFrameGradient()[k][i][j];
+            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getGradientF(k)[i][j];
         }
         return J;
     }

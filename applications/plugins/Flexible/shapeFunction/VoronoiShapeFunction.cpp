@@ -22,30 +22,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_TopologyGaussPointSAMPLER_CPP
+#define FLEXIBLE_VoronoiShapeFunction_CPP
 
 #include "../initFlexible.h"
-#include "../quadrature/TopologyGaussPointSampler.h"
+#include "../shapeFunction/VoronoiShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 namespace component
 {
-namespace engine
+namespace shapefunction
 {
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(TopologyGaussPointSampler)
+SOFA_DECL_CLASS(VoronoiShapeFunction)
 
-int TopologyGaussPointSamplerClass = core::RegisterObject("Samples an object represented by a mesh")
-        .add<TopologyGaussPointSampler>(true)
+// Register in the Factory
+int VoronoiShapeFunctionClass = core::RegisterObject("Computes natural neighbor shape functions in images")
+
+        .add< VoronoiShapeFunction<ShapeFunction3,ImageUC> >(true)
         ;
 
-class SOFA_Flexible_API TopologyGaussPointSampler;
+template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageUC>;
 
-} // namespace engine
-} // namespace component
-} // namespace sofa
-
+}
+}
+}

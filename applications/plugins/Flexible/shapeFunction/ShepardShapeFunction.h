@@ -99,7 +99,7 @@ public:
             for (unsigned int j=0; j<nbRef; j++ )
             {
                 (*dw)[j].fill(0);
-                if(ddw) (*ddw)[j].fill(0);
+                if(ddw) (*ddw)[j].clear();
                 if (w[j])
                 {
                     Coord u=childPosition-parent[ref[j]];
@@ -111,8 +111,8 @@ public:
                         // ddw = - pw.I/d(x,x_i)^(power+2) + pw.(pw+2).(x-x_i).(x-x_i)^T/d(x,x_i)^(power+4)
                         Real u4=u2*u2;
                         Real w4= (u4) ? (pw * (pw+2.) * w[j] / u4) : 0.;
-                        for(unsigned int k=0; k<this->material_dimensions; k++) (*ddw)[j][k][k]= - w2;
-                        for(unsigned int k=0; k<this->material_dimensions; k++) for(unsigned int m=0; m<this->material_dimensions; m++) (*ddw)[j][k][m]+=u[k]*u[m]*w4;
+                        for(unsigned int k=0; k<this->material_dimensions; k++) (*ddw)[j](k,k)= - w2;
+                        for(unsigned int k=0; k<this->material_dimensions; k++) for(unsigned int m=0; m<this->material_dimensions; m++) (*ddw)[j](k,m)+=u[k]*u[m]*w4;
                     }
                 }
             }

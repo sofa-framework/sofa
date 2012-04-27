@@ -90,8 +90,8 @@ public:
 
     /** @name weight data */
     //@{
-    Data< vector<Real> > f_weight;
-    typedef helper::WriteAccessor<Data< vector<Real> > > waWeight;
+//    Data< vector<Real> > f_weight;
+//    typedef helper::WriteAccessor<Data< vector<Real> > > waWeight;
     //@}
 
     /** @name visu data */
@@ -105,9 +105,9 @@ public:
     BaseGaussPointSampler()    :   Inherited()
         , f_method ( initData ( &f_method,"method","quadrature method" ) )
         , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
-        , f_order(initData(&f_order,(unsigned int)0,"order","polynomial order of volume integrals"))
+        , f_order(initData(&f_order,(unsigned int)4,"order","polynomial order of volume integrals"))
         , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output volume integrals"))
-        , f_weight(initData(&f_weight,vector<Real>(),"weight","output quadrature weights"))
+        //    , f_weight(initData(&f_weight,vector<Real>(),"weight","output quadrature weights"))
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
     {
         helper::OptionsGroup methodOptions(3,"0 - midpoint"
@@ -122,10 +122,11 @@ public:
     {
         addOutput(&f_position);
         addOutput(&f_volume);
-        addOutput(&f_weight);
+//        addOutput(&f_weight);
         setDirtyValue();
     }
 
+    /** functions to initialize mechanical objects (e.g. deformation gradients) */
     unsigned int getNbSamples() {return this->f_position.getValue().size(); }
     const Coord& getSample(unsigned int index) {return this->f_position.getValue()[index]; }
 

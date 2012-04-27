@@ -74,7 +74,7 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    return  "TopologyGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
+    return  "TopologyGaussPointSampler, ImageGaussPointSampler, ShepardShapeFunction, BarycentricShapeFunction, VoronoiShapeFunction, DefGradientMechanicalObject, LinearMapping, StrainMechanicalObject, GreenStrainMapping, CorotationalStrainMapping, HookeForceField, AffineMechanicalObject, QuadraticMechanicalObject";
 }
 }
 }
@@ -82,8 +82,10 @@ const char* getModuleComponentList()
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 
 SOFA_LINK_CLASS(TopologyGaussPointSampler)
+SOFA_LINK_CLASS(ImageGaussPointSampler)
 SOFA_LINK_CLASS(ShepardShapeFunction)
 SOFA_LINK_CLASS(BarycentricShapeFunction)
+SOFA_LINK_CLASS(VoronoiShapeFunction)
 SOFA_LINK_CLASS(DefGradientMechanicalObject)
 SOFA_LINK_CLASS(LinearMapping)
 SOFA_LINK_CLASS(StrainMechanicalObject)

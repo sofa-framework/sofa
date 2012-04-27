@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_TopologyGaussPointSAMPLER_CPP
+#define SOFA_ImageGaussPointSAMPLER_CPP
 
 #include "../initFlexible.h"
-#include "../quadrature/TopologyGaussPointSampler.h"
+#include "../quadrature/ImageGaussPointSampler.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -37,13 +37,15 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(TopologyGaussPointSampler)
+SOFA_DECL_CLASS(ImageGaussPointSampler)
 
-int TopologyGaussPointSamplerClass = core::RegisterObject("Samples an object represented by a mesh")
-        .add<TopologyGaussPointSampler>(true)
+// Register in the Factory
+int ImageGaussPointSamplerClass = core::RegisterObject("Samples an object represented by an image")
+
+        .add<ImageGaussPointSampler<ImageD> >(true)
         ;
 
-class SOFA_Flexible_API TopologyGaussPointSampler;
+template class SOFA_Flexible_API ImageGaussPointSampler<ImageD>;
 
 } // namespace engine
 } // namespace component

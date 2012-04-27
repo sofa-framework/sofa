@@ -1,39 +1,46 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
-    
+    <VisualStyle displayFlags="showWireframe  " />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+  <MeshObjLoader name="mesh" filename="mesh/beam.obj" triangulate="1"/>
+  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.04" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+  <!-- <ImageSampler template="ImageUC" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/> -->
+
+
     <EulerImplicitSolver />
     <CGLinearSolver  />
 
 
     <Node 	name="Flexible"   >
-	    <MechanicalObject template="NewAffine" name="parent" useMask="0" 
-rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"
-position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"/>
+	    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true"
+rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] 0 0 0 [1 0 0, 0 1 0, 0 0 1]"
+position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] 0 0 0 [1 0 0, 0 1 0, 0 0 1]"/>
 <!--
 	    <UniformMass mass="1" />
 	    <FixedConstraint indices="0" />
 -->
 
-	    <ShepardShapeFunction  power="2"/>
-
+	    <VoronoiShapeFunction name="SF" src="@../image" useDijkstra="true" method="1"/>
 <!--
-		<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
-		<Mesh src="@MeshLoader" name="mesh"/> 
+   	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/> 
 -->
 	    <Node 	name="behavior"   >
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="0" showSamples="true" printLog="true"/>
+   	    <ImageViewer template="ImageD" name="viewer" image="@sampler.outputImage" transform="@sampler.transform" plane="6 6 30"/> 
+
+		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;NewAffine,F331&gt;" assembleJ="false"/>
+
 <!--
-		<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false"/>
--->
-
-		<MechanicalObject template="DefGradient331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;NewAffine,DefGradient331&gt;" assembleJ="false"/>
-
-		<Node 	name="Strain"   >
-		    <MechanicalObject  template="Strain331" name="E"  />
-		    <GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false"/>
-		    <HookeForceField  template="Strain331" name="ff" youngModulus="1" poissonRatio="0" viscosity="100"/>
+		<Node 	name="E"   >
+		    <MechanicalObject  template="E331" name="E"  />
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
+		    <HookeForceField  template="E331" name="ff" youngModulus="1" poissonRatio="0" viscosity="100"/>
 		</Node>
-
+-->
 	    </Node>
 
 	    <Node 	name="collision"   >
@@ -44,7 +51,7 @@ position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj"/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
 	    </Node>
     </Node>

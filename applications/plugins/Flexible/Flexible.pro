@@ -32,6 +32,7 @@ HEADERS = initFlexible.h \
     types/StrainTypes.h \
     types/AffineTypes.h \
     types/QuadraticTypes.h \
+    types/PolynomialBasis.h \
     quadrature/BaseGaussPointSampler.h \
     quadrature/TopologyGaussPointSampler.h \
     shapeFunction/BaseShapeFunction.h \
@@ -66,6 +67,23 @@ HEADERS = initFlexible.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
+
+contains(DEFINES, SOFA_HAVE_IMAGE) {
+
+    contains(DEFINES, SOFA_IMAGE_HAVE_OPENCV) { # should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
+            INCLUDEPATH += $$SOFA_OPENCV_PATH
+            LIBS += -lml  -lcvaux -lhighgui -lcv -lcxcore
+            }
+
+    INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/CImg \
+                   $$SOFA_INSTALL_INC_DIR/applications/plugins/image
+
+    HEADERS +=  quadrature/ImageGaussPointSampler.h \
+                shapeFunction/VoronoiShapeFunction.h \
+
+    SOURCES += quadrature/ImageGaussPointSampler.cpp \
+               shapeFunction/VoronoiShapeFunction.cpp \
+    }
 
 README_FILE = Flexible.txt
 

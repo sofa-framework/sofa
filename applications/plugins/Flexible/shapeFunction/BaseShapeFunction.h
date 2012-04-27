@@ -29,6 +29,7 @@
 #include "../initFlexible.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/MatSym.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -43,6 +44,7 @@ namespace behavior
 
 using defaulttype::Vec;
 using defaulttype::Mat;
+using defaulttype::MatSym;
 using helper::vector;
 
 /** A shape function $w_i(x)$ encodes the influence of a parent node $x_i$ over a child node $x$.
@@ -154,7 +156,7 @@ public:
                 if(dw)
                 {
                     Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(unsigned int o=0; o<material_dimensions; o++) for(unsigned int p=0; p<material_dimensions; p++) (*ddw)[j][o][p]=((*ddw)[j][o][p] - wn*sum_ddw[o][p] - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    if(ddw) for(unsigned int o=0; o<material_dimensions; o++) for(unsigned int p=0; p<material_dimensions; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
                     (*dw)[j]=dwn;
                 }
                 w[j]=wn;
@@ -187,6 +189,13 @@ struct ShapeFunctionTypes
 
 typedef ShapeFunctionTypes<3,float> ShapeFunction3f;
 typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
+
+#ifdef SOFA_FLOAT
+typedef ShapeFunction3f ShapeFunction3;
+#else
+typedef ShapeFunction3d ShapeFunction3;
+#endif
+
 template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
 template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
 
