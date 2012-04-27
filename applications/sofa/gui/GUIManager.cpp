@@ -128,6 +128,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 const char* GUIManager::GetValidGUIName()
 {
     const char* name;
+    std::string lastGuiFilename = "config/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
@@ -135,6 +136,30 @@ const char* GUIManager::GetValidGUIName()
     }
     else
     {
+        //Check the config file for the last used GUI type
+        if(sofa::helper::system::DataRepository.findFile(lastGuiFilename))
+        {
+            std::string configPath = sofa::helper::system::DataRepository.getFile(lastGuiFilename);
+            std::string lastGuiName;
+            std::ifstream lastGuiStream(configPath.c_str());
+            std::getline(lastGuiStream,lastGuiName);
+            lastGuiStream.close();
+
+            const char* lastGuiNameChar = lastGuiName.c_str();
+
+            // const char* lastGuiNameChar = "qt";
+            std::list<GUICreator>::iterator it1 = guiCreators.begin();
+            std::list<GUICreator>::iterator itend1 = guiCreators.end();
+            while(++it1 != itend1)
+            {
+                if( strcmp(lastGuiNameChar, it1->name) == 0 )
+                {
+                    return it1->name;
+                }
+            }
+            std::cerr << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI." << std::endl;
+        }
+
         std::list<GUICreator>::iterator it =guiCreators.begin();
         std::list<GUICreator>::iterator itend =guiCreators.end();
         name = it->name;
@@ -217,6 +242,14 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             std::cerr << "ERROR(GUIManager): GUI "<<valid_guiname<<" creation failed."<<std::endl;
             return 1;
         }
+        //Save this GUI type as the last used GUI
+        std::string lastGUIfileName;
+        std::string path = sofa::helper::system::DataRepository.getFirstPath();
+        lastGUIfileName = path.append("/config/lastUsedGUI.ini");
+
+        std::ofstream out(lastGUIfileName.c_str(),std::ios::out);
+        out << valid_guiname << std::endl;
+        out.close();
     }
     return 0;
 }
