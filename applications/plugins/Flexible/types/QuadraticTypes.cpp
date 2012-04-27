@@ -30,6 +30,71 @@
 
 #include <sofa/component/container/MechanicalObject.inl>
 
+#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/simulation/common/Node.h>
+
+namespace sofa
+{
+namespace component
+{
+namespace projectiveconstraintset
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+template <>
+void FixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
+{
+    const SetIndexArray & indices = f_indices.getValue();
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    std::vector< Vector3 > points;
+
+    const VecCoord& x = *mstate->getX();
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+            points.push_back(x[i].getCenter());
+    else
+    {
+        if( x.size() < indices.size() )
+        {
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[indices[i]].getCenter());
+        }
+        else
+        {
+            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                points.push_back(x[*it].getCenter());
+        }
+    }
+
+    if( f_drawSize.getValue() == 0) // old classical drawing by points
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    else
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+}
+
+// ==========================================================================
+// Instantiation
+
+SOFA_DECL_CLASS ( QuadraticFixedConstraint )
+
+using namespace sofa::defaulttype;
+
+int QuadraticFixedConstraintClass = core::RegisterObject ( "Attach given particles to their initial positions" )
+
+        .add< FixedConstraint<Quadratic3Types> >()
+        ;
+
+template class SOFA_Flexible_API FixedConstraint<Quadratic3Types>;
+
+} // namespace projectiveconstraintset
+} // namespace component
+} // namespace sofa
+
+
+
 namespace sofa
 {
 namespace component

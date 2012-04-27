@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
+#include "../types/PolynomialBasis.h"
 
 #include <sofa/helper/PolarDecompose.h>
 
@@ -42,11 +43,11 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
-#define F331(type)  DefGradientTypes<3,3,1,type>
-#define F332(type)  DefGradientTypes<3,3,2,type>
-#define I331(type)  BaseStrainTypes<3,3,1,type>
-#define I332(type)  BaseStrainTypes<3,3,2,type>
-#define I333(type)  BaseStrainTypes<3,3,3,type>
+#define F331(type)  DefGradientTypes<3,3,0,type>
+#define F332(type)  DefGradientTypes<3,3,1,type>
+#define I331(type)  BaseStrainTypes<3,3,0,type>
+#define I332(type)  BaseStrainTypes<3,3,1,type>
+#define I333(type)  BaseStrainTypes<3,3,2,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -92,7 +93,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::Real Real;
 
-    typedef typename In::MaterialFrame MaterialFrame;  ///< Matrix representing a deformation gradient
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
@@ -102,67 +103,70 @@ public:
 
     /**
     Mapping:
-        - \f$ I1 = trace(C) \f$
-        - \f$ I2 = ( trace(C^2)+trace(C)^2 )/2 \f$
+        - \f$ I1^{1/2} = trace(C)^{1/2} \f$
+        - \f$ I2^{1/2} = [ ( trace(C^2)+trace(C)^2 )/2 ] ^{1/2} \f$
         - \f$ J = det(F) \f$
     where:
         - \f$  C=F^TF \f$ is the right Cauchy deformation tensor
     Jacobian:
-        - \f$  dI1 = trace(dF^T F + F^T dF ) = 2 * sum F_i.dF_i \f$
-        - \f$  dI2 = 2 * sum ( F(I1*Id - C) )_i dF_i \f$
-        - \f$  dJ = J sum (F^-T)_i dF_i \f$
+        - \f$ dI1^{1/2} = I1^{-1/2}/2 dI1 = I1^{-1/2}/2 trace(dF^T F + F^T dF ) = I1^{-1/2} * sum F_i.dF_i \f$
+        - \f$ dI2^{1/2} = I2^{-1/2}/2 dI2 = I2^{-1/2} * sum ( F(I1*Id - C) )_i dF_i \f$
+        - \f$ dJ = J sum (F^-T)_i dF_i \f$
     */
 
     static const Real MIN_DETERMINANT=0.2;
 
     static const bool constantJ=false;
     bool deviatoric;
-    Real Jm23; Real Jm43; Real Jm53; Real Jm73; ///< stored variables to handle deviatoric invariants
+    Real Jm13; Real Jm23; Real Jm43; Real Jm53; ///< stored variables to handle deviatoric invariants
 
-    InCoord F;   ///< =  store deformation gradient to compute J
-    MaterialFrame dI2;   ///<
-    MaterialFrame dJ;   ///<
+    /// mapping parameters
+    Frame dsrI1;
+    Frame dsrI2;
+    Frame dJ;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        F=data;
-        Real detF=getDerivDeterminant(dJ, F.getMaterialFrame());
-        if ( detF<=MIN_DETERMINANT)
-        {
-            //      dJ*=detF/MIN_DETERMINANT; if(detF<0) dJ*=-1;
-            detF = MIN_DETERMINANT;   // clamp
-        }
+        Frame F=data.getF();
+        Real detF=getDerivDeterminant(dJ, F);
 
-        StrainMat C=F.getMaterialFrame().multTranspose( F.getMaterialFrame() );
+        if ( detF<=MIN_DETERMINANT) detF = MIN_DETERMINANT;   // CLAMP J
 
-        Real I1 = C[0][0] + C[1][1] + C[2][2];
-        Real I2 = C[0][0]*(C[1][1] + C[2][2]) + C[1][1]*C[2][2] - C[0][1]*C[0][1] - C[0][2]*C[0][2] - C[1][2]*C[1][2];
+        StrainMat C=F.multTranspose( F );
 
-        for(unsigned int j=0; j<material_dimensions; j++) C[j][j]-=I1;
-        dI2=-F.getMaterialFrame()*C*(Real)2.;
+        Real srI1 = C[0][0] + C[1][1] + C[2][2];
+        Real srI2 = C[0][0]*(C[1][1] + C[2][2]) + C[1][1]*C[2][2] - C[0][1]*C[0][1] - C[0][2]*C[0][2] - C[1][2]*C[1][2];
+        for(unsigned int j=0; j<material_dimensions; j++) C[j][j]-=srI1;
+
+        srI1=sqrt(srI1);
+        srI2=sqrt(srI2);
+
+        dsrI1=F/srI1;
+        dsrI2=-F*C/srI2;
 
         if(deviatoric)
         {
-            Jm23=pow(detF,-(Real)2./(Real)3.); Jm43=Jm23*Jm23;
-            I1*=Jm23; I2*=Jm43;
-            Jm53=(Real)2.*I1/(detF*(Real)3.); Jm73=(Real)4.*I2/(detF*(Real)3.);
+            Jm13=pow(detF,-(Real)1./(Real)3.); Jm23=Jm13*Jm13;
+            srI1*=Jm13; srI2*=Jm23;
+            Jm43=srI1/(detF*(Real)3.); Jm53=(Real)2.*srI2/(detF*(Real)3.);
         }
 
-        result.getStrain()[0]+= I1;
-        result.getStrain()[1]+= I2;
+
+        result.getStrain()[0]+= srI1;
+        result.getStrain()[1]+= srI2;
         result.getStrain()[2]+= detF;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        Real di1 =  scalarProduct(F.getMaterialFrame(),data.getMaterialFrame())*(Real)2.;
-        Real di2 =  scalarProduct(dI2,data.getMaterialFrame());
-        Real dj =   scalarProduct(dJ,data.getMaterialFrame());
+        Real di1 =  scalarProduct(dsrI1,data.getF());
+        Real di2 =  scalarProduct(dsrI2,data.getF());
+        Real dj =   scalarProduct(dJ,data.getF());
 
         if(deviatoric)
         {
-            di1 = di1*Jm23 - dj*Jm53;
-            di2 = di2*Jm43 - dj*Jm73;
+            di1 = di1*Jm13 - dj*Jm43;
+            di2 = di2*Jm23 - dj*Jm53;
         }
 
         result.getStrain()[0] +=  di1;
@@ -174,15 +178,15 @@ public:
     {
         if(deviatoric)
         {
-            result.getMaterialFrame() += (F.getMaterialFrame()*(Real)2.*Jm23 - dJ*Jm53)*data.getStrain()[0];
-            result.getMaterialFrame() += (dI2*Jm43 - dJ*Jm73)*data.getStrain()[1];
+            result.getF() += (dsrI1*Jm13 - dJ*Jm43)*data.getStrain()[0];
+            result.getF() += (dsrI2*Jm23 - dJ*Jm53)*data.getStrain()[1];
         }
         else
         {
-            result.getMaterialFrame() += F.getMaterialFrame()*data.getStrain()[0]*(Real)2.;
-            result.getMaterialFrame() += dI2*data.getStrain()[1];
+            result.getF() += dsrI1*data.getStrain()[0];
+            result.getF() += dsrI2*data.getStrain()[1];
         }
-        result.getMaterialFrame() += dJ*data.getStrain()[2];
+        result.getF() += dJ*data.getStrain()[2];
     }
 
     MatBlock getJ()
@@ -190,13 +194,13 @@ public:
         MatBlock B;
         if(deviatoric)
         {
-            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&F.getMaterialFrame()[0][0]+j)*(Real)2.*Jm23 - *(&dJ[0][0]+j)*Jm53;
-            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dI2[0][0]+j)*Jm43 - *(&dJ[0][0]+j)*Jm73;
+            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
+            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
         }
         else
         {
-            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&F.getMaterialFrame()[0][0]+j)*(Real)2.;
-            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dI2[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&dsrI1[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dsrI2[0][0]+j);
         }
         for(unsigned int j=0; j<frame_size; j++)      B[2][j+spatial_dimensions] +=  *(&dJ[0][0]+j);
         return B;

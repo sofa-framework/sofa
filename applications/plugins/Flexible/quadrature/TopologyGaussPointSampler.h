@@ -50,23 +50,24 @@ public:
     typedef BaseGaussPointSampler Inherited;
     SOFA_CLASS(TopologyGaussPointSampler,Inherited);
 
+    /** @name  GaussPointSampler types */
+    //@{
     typedef Inherited::Real Real;
     typedef Inherited::Coord Coord;
     typedef Inherited::SeqPositions SeqPositions;
     typedef Inherited::raPositions raPositions;
     typedef Inherited::waPositions waPositions;
+    //@}
 
+    /** @name  topology */
+    //@{
     Data< SeqPositions > f_inPosition;
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
+    //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
-
-    TopologyGaussPointSampler()    :   Inherited()
-        , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
-    {
-    }
 
     virtual void init()
     {
@@ -82,6 +83,15 @@ public:
     virtual void reinit() { update(); }
 
 protected:
+    TopologyGaussPointSampler()    :   Inherited()
+        , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
+    {
+    }
+
+    virtual ~TopologyGaussPointSampler()
+    {
+
+    }
 
     virtual void update()
     {
@@ -100,9 +110,7 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        waWeight w(this->f_weight);
-
-        if(this->f_order.getValue()!=0) serr<<"High order volume integrals ot yet implemented"<<sendl;
+        //   waWeight w(this->f_weight);
 
         if(this->f_method.getValue().getSelectedId() == MIDPOINT)
         {
@@ -157,11 +165,12 @@ protected:
                 {
                     const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
                     pos[i+c0] = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
-                    vol[i+c0].resize(1); vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
+                    getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
+                    //vol[i+c0].resize(1); vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
                 }
             }
 
-            w.resize(pos.size()); for (unsigned int i=0; i<pos.size(); i++) w[i]=(Real)1.;
+            //  w.resize(pos.size()); for (unsigned int i=0;i<pos.size();i++) w[i]=(Real)1.;
         }
         else if(this->f_method.getValue().getSelectedId() == SIMPSON)
         {
@@ -175,6 +184,49 @@ protected:
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
     }
 
+
+    // returns integrated volumes and moments across an element
+    inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
+    {
+        Coord u=p2-p1,v=p3-p1,w=p4-p1;
+        Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=std::max(std::max(fabs(u[i]),fabs(v[i])),fabs(v[i]));
+        Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
+        Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
+        Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
+
+
+        unsigned int dim=(order+1)*(order+2)*(order+3)/6;          V.resize(dim);
+        if(order>4) {serr<<"integration order higher than 4 not supported"<<sendl;}
+        unsigned int count=0;
+
+        // order 0
+        V[count]=l[0]*l[1]*l[2]; count++;
+        if(order==0) return;
+        // order 1
+        V[count]=0; count++;
+        V[count]=0; count++;
+        V[count]=0; count++;
+        if(order==1) return;
+        // order 2
+        V[count]=l3[0]*l[1]*l[2]/(Real)12.; count++; //x^2
+        V[count]=0; count++;
+        V[count]=0; count++;
+        V[count]=l[0]*l3[1]*l[2]/(Real)12.; count++; //y^2
+        V[count]=0; count++;
+        V[count]=l[0]*l[1]*l3[2]/(Real)12.; count++; //z^2
+        if(order==2) return;
+        // order 3
+        for(unsigned int i=0; i<10; i++) {V[count]=0; count++;}
+        if(order==3) return;
+        // order 4
+        V[count]=l5[0]*l[1]*l[2]/(Real)80.; count++;       // x^4
+        V[count]=l3[0]*l3[1]*l[2]/(Real)144.; count++;     // x^2*y^2
+        V[count]=l3[0]*l[1]*l3[2]/(Real)144.; count++;     // x^2*z^2
+        V[count]=l[0]*l5[1]*l[2]/(Real)80.; count++;       // y^4
+        V[count]=l[0]*l3[1]*l3[2]/(Real)144.; count++;     // y^2*z^2
+        V[count]=l[0]*l[1]*l5[2]/(Real)80.; count++;       // z^4
+        for(unsigned int i=0; i<9; i++) {V[count]=0; count++;}
+    }
 
     virtual void draw(const core::visual::VisualParams* vparams)
     {

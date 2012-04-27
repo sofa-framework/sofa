@@ -40,22 +40,10 @@ SOFA_DECL_CLASS(BarycentricShapeFunction)
 // Register in the Factory
 int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric shape functions")
 
-#ifndef SOFA_FLOAT
-        .add< BarycentricShapeFunction<ShapeFunction3d> >(true)
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BarycentricShapeFunction<ShapeFunction3f> >()
-#endif
+        .add< BarycentricShapeFunction<ShapeFunction3> >(true)
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3d>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3f>;
-#endif
-
-
+template class SOFA_Flexible_API BarycentricShapeFunction<ShapeFunction3>;
 
 }
 }

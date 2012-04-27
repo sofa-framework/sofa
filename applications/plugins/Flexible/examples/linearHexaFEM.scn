@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
-
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.8" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>
@@ -13,17 +16,17 @@
   <MechanicalObject  name="dofs" />
   <UniformMass totalmass="100.0" />
 
-  <BarycentricShapeFunction position="@dofs.rest_position" />
+  <BarycentricShapeFunction  />
 
     <Node 	name="behavior"   >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" showSamples="true"/>
-	<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;" assembleJ="false"/>
+	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
 	    <Node 	name="Strain"   >
-		<MechanicalObject  template="Strain331" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;" assembleJ="false"/>
-	    </Node>
+		<MechanicalObject  template="E331" name="E"  />
+	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    </Node>
     </Node>
 
   <Node name="Visual"  >

@@ -64,7 +64,8 @@ public:
 
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
-    sofa::helper::vector<Hessian> bases;
+    typedef Mat<material_dimensions,material_dimensions,Real> BasesType;
+    sofa::helper::vector<BasesType> bases;
 
     void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
@@ -73,7 +74,7 @@ public:
         ref.resize(nbRef); ref.fill(0);
         w.resize(nbRef); w.fill(0);
         if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
-        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
+        if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].clear(); }
 
         // get parent topology and nodes
         if(!this->parentTopology) return;
@@ -231,10 +232,7 @@ public:
         Hessian res;
         for ( unsigned int i = 0; i < material_dimensions; ++i)
             for ( unsigned int j = i; j < material_dimensions; ++j)
-            {
-                res[i][j] = v1[i] * v2[j] + v2[i] * v1[j];
-                if(i!=j) res[j][i] = res[i][j];
-            }
+                res(i,j) = res(j,i) = v1[i] * v2[j] + v2[i] * v1[j];
         return res;
     }
 
@@ -278,7 +276,7 @@ public:
                 bases.resize ( triangles.size() +quads.size() );
                 for ( unsigned int t = 0; t < triangles.size(); t++ )
                 {
-                    Hessian m,mt;
+                    BasesType m,mt;
                     m[0] = parent[triangles[t][1]]-parent[triangles[t][0]];
                     m[1] = parent[triangles[t][2]]-parent[triangles[t][0]];
                     m[2] = cross ( m[0],m[1] );
@@ -288,7 +286,7 @@ public:
                 int c0 = triangles.size();
                 for ( unsigned int c = 0; c < quads.size(); c++ )
                 {
-                    Hessian m,mt;
+                    BasesType m,mt;
                     m[0] = parent[quads[c][1]]-parent[quads[c][0]];
                     m[1] = parent[quads[c][3]]-parent[quads[c][0]];
                     m[2] = cross ( m[0],m[1] );
@@ -305,7 +303,7 @@ public:
             bases.resize ( tetrahedra.size() +cubes.size() );
             for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
             {
-                Hessian m,mt;
+                BasesType m,mt;
                 m[0] = parent[tetrahedra[t][1]]-parent[tetrahedra[t][0]];
                 m[1] = parent[tetrahedra[t][2]]-parent[tetrahedra[t][0]];
                 m[2] = parent[tetrahedra[t][3]]-parent[tetrahedra[t][0]];
@@ -315,7 +313,7 @@ public:
             int c0 = tetrahedra.size();
             for ( unsigned int c = 0; c < cubes.size(); c++ )
             {
-                Hessian m,mt;
+                BasesType m,mt;
                 m[0] = parent[cubes[c][1]]-parent[cubes[c][0]];
                 m[1] = parent[cubes[c][3]]-parent[cubes[c][0]];
                 m[2] = parent[cubes[c][4]]-parent[cubes[c][0]];

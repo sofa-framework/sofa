@@ -1,33 +1,39 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
-    
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
     
     <EulerImplicitSolver />
     <CGLinearSolver  />
 
     <Node 	name="Flexible"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 0 5 2 5" />
-	   <ConstantForceField points="50" force="0 0 0" />
+	    <Mesh name="mesh" src="@loader" />
+	    <MechanicalObject template="Vec3d" name="parent" showObject="true"/>
 
-	    <BarycentricShapeFunction position="@parent.rest_position" />
+           <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+           <FixedConstraint indices="@FixedROI.indices" />
+
+	   <BarycentricShapeFunction />
 
 	    <Node 	name="behavior"   >
-		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false"/>
+		<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false"/>
 		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
 		<Node 	name="Strain"   >
 		    <MechanicalObject  template="E331" name="E"  />
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="small"/>
+		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar"/>
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>
 		</Node>
 	    </Node>
 
+	    <Node 	name="mass"   >
+		<MechanicalObject position="@../behavior/sampler.position" />
+	    	<UniformMass totalMass="250" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+	   </Node>
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
 	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
@@ -35,15 +41,20 @@
     </Node>
      <Node 	name="FEM"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 0 5 2 5" />
-	   <ConstantForceField points="50" force="0 0 0" />
+	    <Mesh name="mesh" src="@loader" />
+	    <MechanicalObject template="Vec3d" name="parent" />
 
-	     <TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="small"/> 
+           <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+           <FixedConstraint indices="@FixedROI.indices" />
+
+	     <TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/> 
 	 <!--  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/>  -->
 
+	    <Node 	name="mass"   >
+		<MechanicalObject position="@../../Flexible/behavior/sampler.position" />
+	    	<UniformMass totalMass="250" />
+	    	<BarycentricMapping template="Mapping&lt;Vec3d,Vec3d&gt;" />
+	   </Node>
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
@@ -53,13 +64,13 @@
 
     <Node 	name="Flexible_stVenant"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 5 5 2 10" />
-	   <ConstantForceField points="50" force="0 0 0" />
+	    <Mesh name="mesh" src="@loader" />
+	    <MechanicalObject template="Vec3d" name="parent" />
 
-	    <BarycentricShapeFunction position="@parent.rest_position" />
+           <BoxROI template="Vec3d" box="0 -2 5 5 2 10" position="@mesh.position" name="FixedROI"/>
+           <FixedConstraint indices="@FixedROI.indices" />
+
+	    <BarycentricShapeFunction />
 
 	    <Node 	name="behavior"   >
 		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false"/>
@@ -73,6 +84,11 @@
 		</Node>
 	    </Node>
 
+	    <Node 	name="mass"   >
+		<MechanicalObject position="@../behavior/sampler.position" />
+	    	<UniformMass totalMass="250" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+	   </Node>
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" translation="0 0 5" />
 	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
@@ -80,15 +96,20 @@
     </Node>
    <Node 	name="FEM_stVenant"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 5 5 2 10" />
-	   <ConstantForceField points="50" force="0 0 0" />
+	    <Mesh name="mesh" src="@loader" />
+	    <MechanicalObject template="Vec3d" name="parent" />
+
+           <BoxROI template="Vec3d" box="0 -2 5 5 2 10" position="@mesh.position" name="FixedROI"/>
+           <FixedConstraint indices="@FixedROI.indices" />
 
 	 <!--    <StandardTetrahedralFEMForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> -->
 	    <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
+	    <Node 	name="mass"   >
+		<MechanicalObject position="@../../Flexible_stVenant/behavior/sampler.position" />
+	    	<UniformMass totalMass="250" />
+	    	<BarycentricMapping template="Mapping&lt;Vec3d,Vec3d&gt;" />
+	   </Node>
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1" translation="0 0 5"/>
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>

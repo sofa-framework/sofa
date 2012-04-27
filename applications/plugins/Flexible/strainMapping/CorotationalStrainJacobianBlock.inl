@@ -42,10 +42,10 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
-#define F331(type)  DefGradientTypes<3,3,1,type>
-#define F332(type)  DefGradientTypes<3,3,2,type>
-#define E331(type)  StrainTypes<3,3,1,type>
-#define E332(type)  StrainTypes<3,3,2,type>
+#define F331(type)  DefGradientTypes<3,3,0,type>
+#define F332(type)  DefGradientTypes<3,3,1,type>
+#define E331(type)  StrainTypes<3,3,0,type>
+#define E332(type)  StrainTypes<3,3,1,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -133,14 +133,14 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::Real Real;
 
-    typedef typename In::MaterialFrame MaterialFrame;  ///< Matrix representing a deformation gradient
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
     typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Frame;  ///< Matrix representing a linear spatial transformation
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
 
     /**
     Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
@@ -150,23 +150,23 @@ public:
 
     static const bool constantJ=false;
 
-    Frame R;   ///< =  store rotational part of deformation gradient to compute J
+    Affine R;   ///< =  store rotational part of deformation gradient to compute J
     unsigned int decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
         if(decompositionMethod==0)      // polar
-            helper::polar_decomp(data.getMaterialFrame(), R, strainmat);
+            helper::polar_decomp(data.getF(), R, strainmat);
         else if(decompositionMethod==1)   // large (by QR)
         {
-            computeQR(R,data.getMaterialFrame());
-            StrainMat T=R.transposed()*data.getMaterialFrame();
+            computeQR(R,data.getF());
+            StrainMat T=R.transposed()*data.getF();
             strainmat=(T+T.transposed())*(Real)0.5;
         }
         else if(decompositionMethod==2)   // small
         {
-            strainmat=(data.getMaterialFrame()+data.getMaterialFrame().transposed())*(Real)0.5;
+            strainmat=(data.getF()+data.getF().transposed())*(Real)0.5;
             R.fill(0); for(unsigned int j=0; j<material_dimensions; j++) R[j][j]=(Real)1.;
         }
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
@@ -175,13 +175,13 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        StrainMat strainmat=R.multTranspose( data.getMaterialFrame() );
+        StrainMat strainmat=R.multTranspose( data.getF() );
         result.getStrain() += MatToVoigt( strainmat );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getMaterialFrame() += R*VoigtToMat( data.getStrain() );
+        result.getF() += R*VoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
@@ -215,7 +215,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::Real Real;
 
-    typedef typename In::MaterialFrame MaterialFrame;  ///< Matrix representing a deformation gradient
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
     typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
@@ -242,28 +242,28 @@ public:
     {
         F=data;
         // order 0
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( F.getMaterialFrame() );
+        StrainMat strainmat=F.getF().multTranspose( F.getF() );
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
         strainmat*=(Real)0.5;
         result.getStrain() += MatToVoigt( strainmat );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat = F.getMaterialFrame().multTranspose( F.getMaterialFrameGradient()[k] );
-            result.getStrainGradient()[k] += MatToVoigt( strainmat );
+            strainmat = F.getF().multTranspose( F.getGradientF(k) );
+            result.getStrainGradient(k) += MatToVoigt( strainmat );
         }
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
-        StrainMat strainmat=F.getMaterialFrame().multTranspose( data.getMaterialFrame() );
+        StrainMat strainmat=F.getF().multTranspose( data.getF() );
         result.getStrain() += MatToVoigt( strainmat );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat = F.getMaterialFrame().multTranspose( data.getMaterialFrameGradient()[k] ) + F.getMaterialFrameGradient()[k].multTranspose( data.getMaterialFrame() );
-            result.getStrainGradient()[k] += MatToVoigt( strainmat );
+            strainmat = F.getF().multTranspose( data.getGradientF(k) ) + F.getGradientF(k).multTranspose( data.getF() );
+            result.getStrainGradient(k) += MatToVoigt( strainmat );
         }
     }
 
@@ -271,13 +271,13 @@ public:
     {
         // order 0
         StrainMat strainmat=VoigtToMat( data.getStrain() );
-        result.getMaterialFrame() += F.getMaterialFrame()*VoigtToMat( data.getStrain() );
+        result.getF() += F.getF()*VoigtToMat( data.getStrain() );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat=VoigtToMat( data.getStrainGradient()[k] );
-            result.getMaterialFrame() += F.getMaterialFrameGradient()[k]*strainmat;
-            result.getMaterialFrameGradient()[k] += F.getMaterialFrame()*strainmat;
+            strainmat=VoigtToMat( data.getStrainGradient(k) );
+            result.getF() += F.getGradientF(k)*strainmat;
+            result.getGradientF(k) += F.getF()*strainmat;
         }
     }
 
@@ -285,11 +285,11 @@ public:
     {
         MatBlock B;
         // order 0
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getMaterialFrame());
+        Mat<strain_size,frame_size,Real> J = assembleJ(F.getF());
         for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i][spatial_dimensions],&J[i][0],frame_size*sizeof(Real));
         // order 1
         Vec<spatial_dimensions, Mat<strain_size,frame_size,Real> > Jgrad;
-        for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getMaterialFrameGradient()[k]);
+        for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
 
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)

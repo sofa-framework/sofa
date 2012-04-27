@@ -25,6 +25,7 @@
 #ifndef FLEXIBLE_DeformationGradientTYPES_H
 #define FLEXIBLE_DeformationGradientTYPES_H
 
+#include "../types/PolynomialBasis.h"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -56,32 +57,31 @@ struct DefGradientTypes
 {
     static const unsigned int spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
     static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
-    static const unsigned int order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient (=elaston)
-    static const unsigned int NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + spatial_dimensions : -1 ));
-    static const unsigned int VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * material_dimensions;  // number of entries
+    typedef _Real Real;
+
+    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
+    typedef Mat<spatial_dimensions,material_dimensions, Real> Frame;      ///< Matrix representing a deformation gradient
+    typedef PolynomialBasis<spatial_dimensions*material_dimensions, Real, spatial_dimensions, _order> Basis;    ///< deformation gradient, expressed on a certain basis
+    typedef typename Basis::TotalVec BasisVec;                            ///< decomposed deformation gradient in a single vector
+
+    enum { VSize = spatial_dimensions + Basis::total_size };  ///< number of entries: point + decomposed deformation gradient
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
-    typedef _Real Real;
-    typedef vector<Real> VecReal;
 
-    // ------------    Types and methods defined for easier data access
-    typedef Vec<material_dimensions, Real> MaterialCoord;
-    typedef vector<MaterialCoord> VecMaterialCoord;
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Mat<spatial_dimensions,material_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-    typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient (for order 2)
+    typedef vector<Real> VecReal;
 
     /** Time derivative of a (generalized) deformation gradient, or other vector-like associated quantities, such as generalized forces.
     */
     class Deriv
     {
     protected:
-        Vec<VSize,Real> v;
+        SpatialCoord v;
+        Basis b;
 
     public:
-        Deriv() { v.clear(); }
-        Deriv( const Vec<VSize,Real>& d):v(d) {}
-        void clear() { v.clear(); }
+        Deriv() { v.clear(); b.clear(); }
+        Deriv( const SpatialCoord& q, const Basis& d):v(q),b(d) {}
+        void clear() {  v.clear(); b.clear();}
 
         static const unsigned int total_size = VSize;
         typedef Real value_type;
@@ -89,56 +89,61 @@ struct DefGradientTypes
         static unsigned int size() { return VSize; }
 
         /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
+        Real* ptr() { return b.ptr(); }
+        const Real* ptr() const { return b.ptr(); }
 
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
+        BasisVec& getVec() { return b.getVec(); }
+        const BasisVec& getVec() const { return b.getVec(); }
 
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
+        Real& operator[](int i) { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
+        const Real& operator[](int i) const    { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
 
         /// point
-        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getCenter() { return v; }
+        const SpatialCoord& getCenter() const { return v; }
 
-        /// local frame (if order>=1)
-        MaterialFrame& getMaterialFrame() { return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-        const MaterialFrame& getMaterialFrame() const { return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+        /// basis
+        Basis& getBasis() { return b; }
+        const Basis& getBasis() const { return b; }
 
-        /// gradient of the local frame (if order>=2)
-        MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions+spatial_dimensions * material_dimensions]); }
-        const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions+spatial_dimensions * material_dimensions]); }
+        Frame& getF() { return *reinterpret_cast<Frame*>(&b.getVal()); }
+        const Frame& getF() const { return *reinterpret_cast<const Frame*>(&b.getVal()); }
 
-        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v); }
-        void operator +=(const Deriv& a) { v+=a.v; }
+        Frame& getGradientF(int i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
+        const Frame& getGradientF(int i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
 
-        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v); }
-        void operator -=(const Deriv& a) { v-=a.v; }
+        Frame& getHessianF(int i,int j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
+        const Frame& getHessianF(int i,int j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
+
+        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v,getVec()+a.getVec()); }
+        void operator +=(const Deriv& a) { v+=a.v; getVec()+=a.getVec(); }
+
+        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v,getVec()-a.getVec()); }
+        void operator -=(const Deriv& a) { v-=a.v; getVec()-=a.getVec(); }
 
         template<typename real2>
-        Deriv operator *(real2 a) const { return Deriv(v*a); }
+        Deriv operator *(real2 a) const { return Deriv(v*a,getVec()*a); }
         template<typename real2>
-        void operator *=(real2 a) { v *= a; }
+        void operator *=(real2 a) { v *= a; getVec() *= a; }
 
         template<typename real2>
-        void operator /=(real2 a) { v /= a; }
+        void operator /=(real2 a) { v /= a; getVec() /= a; }
 
-        Deriv operator - () const { return Deriv(-v); }
+        Deriv operator - () const { return Deriv(-v, -getVec()); }
 
         /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Deriv& a) const    { return v*a.v; }
+        Real operator*(const Deriv& a) const    { return getVec()*a.getVec(); }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
         {
-            out<<c.v;
+            out<<c.v<<" "<<c.getVec();
             return out;
         }
         /// read from an input stream
         inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
         {
-            in>>c.v;
+            in>>c.v>>c.getVec();
             return in;
         }
     };
@@ -159,70 +164,76 @@ struct DefGradientTypes
     class Coord
     {
     protected:
-        Vec<VSize,Real> v;
+        SpatialCoord v;
+        Basis b;
 
     public:
-        Coord() { v.clear(); }
-        Coord( const Vec<VSize,Real>& d):v(d) {}
-        void clear() { v.clear(); for( unsigned int i = 0; i < spatial_dimensions; ++i) getMaterialFrame()[i][i] = (Real)1.0;}
+        Coord() { v.clear(); b.clear(); }
+        Coord( const SpatialCoord& q, const Basis& d):v(q),b(d) {}
+        void clear() { v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
 
         static const unsigned int total_size = VSize;
         typedef Real value_type;
 
         /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
+        Real* ptr() { return b.ptr(); }
+        const Real* ptr() const { return b.ptr(); }
 
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
+        BasisVec& getVec() { return b.getVec(); }
+        const BasisVec& getVec() const { return b.getVec(); }
 
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
+        Real& operator[](int i) { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
+        const Real& operator[](int i) const    { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
 
         /// point
-        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getCenter() { return v; }
+        const SpatialCoord& getCenter() const { return v; }
 
-        /// local frame (if order>=1)
-        MaterialFrame& getMaterialFrame() { return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-        const MaterialFrame& getMaterialFrame() const { return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+        /// basis
+        Basis& getBasis() { return b; }
+        const Basis& getBasis() const { return b; }
 
-        /// gradient of the local frame (if order>=2)
-        MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions+spatial_dimensions * material_dimensions]); }
-        const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions+spatial_dimensions * material_dimensions]); }
+        Frame& getF() { return *reinterpret_cast<Frame*>(&b.getVal()); }
+        const Frame& getF() const { return *reinterpret_cast<const Frame*>(&b.getVal()); }
 
-        Coord operator +(const Coord& a) const { return Coord(v+a.v); }
-        void operator +=(const Coord& a) { v+=a.v; }
+        Frame& getGradientF(int i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
+        const Frame& getGradientF(int i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
 
-        Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.getVec(); }
+        Frame& getHessianF(int i,int j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
+        const Frame& getHessianF(int i,int j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
 
-        Coord operator -(const Coord& a) const { return Coord(v-a.v); }
-        void operator -=(const Coord& a) { v-=a.v; }
+        Coord operator +(const Coord& a) const { return Coord(v+a.v,getVec()+a.getVec()); }
+        void operator +=(const Coord& a) { v+=a.v; getVec()+=a.getVec(); }
+
+        Coord operator +(const Deriv& a) const { return Coord(v+a.v,getVec()+a.getVec()); }
+        void operator +=(const Deriv& a) { v+=a.getCenter(); getVec()+=a.getVec(); }
+
+        Coord operator -(const Coord& a) const { return Coord(v-a.v,getVec()-a.getVec()); }
+        void operator -=(const Coord& a) { v-=a.v; getVec()-=a.getVec(); }
 
         template<typename real2>
-        Coord operator *(real2 a) const { return Coord(v*a); }
+        Coord operator *(real2 a) const { return Coord(v*a,getVec()*a); }
         template<typename real2>
-        void operator *=(real2 a) { v *= a; }
+        void operator *=(real2 a) { v *= a; getVec() *= a; }
 
         template<typename real2>
-        void operator /=(real2 a) { v /= a; }
+        void operator /=(real2 a) { v /= a; getVec() /= a; }
 
-        Coord operator - () const { return Coord(-v); }
+        Coord operator - () const { return Coord(-v, -getVec()); }
 
         /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return v*a.v;    }
+        Real operator*(const Coord& a) const    { return getVec()*a.getVec(); }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
         {
-            out<<c.v;
+            out<<c.v<<" "<<c.getVec();
             return out;
         }
         /// read from an input stream
         inline friend std::istream& operator >> ( std::istream& in, Coord& c )
         {
-            in>>c.v;
+            in>>c.v>>c.getVec();
             return in;
         }
 
@@ -230,15 +241,15 @@ struct DefGradientTypes
         void writeOpenGlMatrix ( float m[16] ) const
         {
             BOOST_STATIC_ASSERT(spatial_dimensions == 3);
-            m[0] = (float)getMaterialFrame()(0,0);
-            m[4] = (float)getMaterialFrame()(0,1);
-            m[8] = (float)getMaterialFrame()(0,2);
-            m[1] = (float)getMaterialFrame()(1,0);
-            m[5] = (float)getMaterialFrame()(1,1);
-            m[9] = (float)getMaterialFrame()(1,2);
-            m[2] = (float)getMaterialFrame()(2,0);
-            m[6] = (float)getMaterialFrame()(2,1);
-            m[10] = (float)getMaterialFrame()(2,2);
+            m[0] = (float)getF()(0,0);
+            m[4] = (float)getF()(0,1);
+            m[8] = (float)getF()(0,2);
+            m[1] = (float)getF()(1,0);
+            m[5] = (float)getF()(1,1);
+            m[9] = (float)getF()(1,2);
+            m[2] = (float)getF()(2,0);
+            m[6] = (float)getF()(2,1);
+            m[10] = (float)getF()(2,2);
             m[3] = 0;
             m[7] = 0;
             m[11] = 0;
@@ -323,10 +334,10 @@ struct DefGradientTypes
 // ==========================================================================
 
 
-typedef DefGradientTypes<3, 3, 1, double> F331dTypes;
-typedef DefGradientTypes<3, 3, 1, float>  F331fTypes;
-typedef DefGradientTypes<3, 3, 2, double> F332dTypes;
-typedef DefGradientTypes<3, 3, 2, float>  F332fTypes;
+typedef DefGradientTypes<3, 3, 0, double> F331dTypes;
+typedef DefGradientTypes<3, 3, 0, float>  F331fTypes;
+typedef DefGradientTypes<3, 3, 1, double> F332dTypes;
+typedef DefGradientTypes<3, 3, 1, float>  F332fTypes;
 
 
 #ifdef SOFA_FLOAT

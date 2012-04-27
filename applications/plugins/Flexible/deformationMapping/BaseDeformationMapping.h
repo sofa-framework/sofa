@@ -139,7 +139,7 @@ public:
         }
 
         // init jacobians
-        jacobian.resize(in.size());
+        jacobian.resize(out.size());
         for(unsigned int i=0; i<out.size(); i++ )
         {
             unsigned int nbref=this->f_index.getValue()[i].size();
@@ -151,7 +151,10 @@ public:
             }
         }
 
-        //    reinit();
+        baseMatrices.resize( 1 ); // just a wrapping for getJs()
+        baseMatrices[0] = &eigenJacobian;
+
+        reinit();
 
         Inherit::init();
     }
@@ -160,7 +163,7 @@ public:
     {
         if(this->assembleJ.getValue()) updateJ();
 
-        //   Inherit::reinit();
+        Inherit::reinit();
     }
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -239,6 +242,9 @@ public:
         return &eigenJacobian;
     }
 
+    // Compliant plugin experimental API
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+
     void draw(const core::visual::VisualParams* vparams)
     {
         if (!vparams->displayFlags().getShowMechanicalMappings()) return;
@@ -296,6 +302,7 @@ protected:
 
     Data<bool> assembleJ;
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ()
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -303,12 +310,6 @@ protected:
         eigenJacobian.resizeBlocks(out.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-            //        for(unsigned int j=0;j<jacobian[i].size();j++)
-            //        {
-            //            unsigned int index=this->f_index.getValue()[i][j];
-            //            eigenJacobian.setBlock( i, index, jacobian[i][j].getJ());
-            //        }
-
             // Put all the blocks of the row in an array, then send the array to the matrix
             // Not very efficient: MatBlock creations could be avoided.
             vector<MatBlock> blocks;
