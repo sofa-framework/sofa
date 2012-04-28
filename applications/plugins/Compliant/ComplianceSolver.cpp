@@ -30,8 +30,9 @@ int ComplianceSolverClass = core::RegisterObject("A simple explicit time integra
 ComplianceSolver::ComplianceSolver()
     :implicitVelocity( initData(&implicitVelocity,(SReal)0.5,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
     , implicitPosition( initData(&implicitPosition,(SReal)0.5,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+    , f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , verbose( initData(&verbose,false,"verbose","Print a lot of info for debug"))
-    //    , _PMinvP( invprojMatrix.eigenMatrix )
 {
 }
 
@@ -44,7 +45,6 @@ void ComplianceSolver::solveEquation()
     lambda = _vecPhi.getVectorEigen() - _matJ * ( PMinvP() * _vecF.getVectorEigen() );
     if( verbose.getValue() )
     {
-        //        cerr<<"ComplianceSolver::solve, Minv = " << endl << Eigen::MatrixXd(Minv) << endl;
         cerr<<"ComplianceSolver::solve, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
         cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (PMinvP() * _vecF.getVectorEigen()).transpose() << endl;
         cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( _matJ * ( PMinvP() * _vecF.getVectorEigen())).transpose() << endl;
@@ -109,6 +109,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     _matJ.resize(assembly.sizeC,assembly.sizeM);
     _vecF.resize(assembly.sizeM);
     _vecF.clear();
+    _vecV.resize(assembly.sizeM);
+    _vecV.clear();
     _vecDv.resize(assembly.sizeM);
     _vecDv.clear();
     _vecPhi.resize(assembly.sizeC);
@@ -128,11 +130,15 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         cerr<<"ComplianceSolver::solve, final J = " << endl << _matJ << endl;
         cerr<<"ComplianceSolver::solve, final f = " << _vecF << endl;
         cerr<<"ComplianceSolver::solve, final phi = " << _vecPhi << endl;
+        cerr<<"ComplianceSolver::solve, final v = " << _vecV << endl;
     }
 
     // The implicit matrix is scaled by 1/h before solving the equation
-    _matM -= _matK * (h*h);
-    _matM *= 1.0/h;
+    _matM *= (1.0+f_rayleighMass.getValue())/h;
+    _matM -= _matK * (h+f_rayleighStiffness.getValue());
+
+    // complete the right-hand term
+    _vecF.getVectorEigen() += _matK * _vecV.getVectorEigen() * (h * implicitVelocity.getValue());
 
     // Solve equation system
     solveEquation();
@@ -226,6 +232,8 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<",  force before = " << solver->vecF << endl;
             node->mechanicalState->addToBaseVector(&solver->_vecF,core::VecDerivId::force(),offset);
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<", cumulated force = " << solver->vecF << endl;
+            offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            node->mechanicalState->addToBaseVector(&solver->_vecV, core::VecDerivId::velocity(), offset );
 
 
 
@@ -247,9 +255,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                     continue;
                 SMatrix J = getSMatrix( (*pJs)[i] );
                 SMatrix contribution;
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = "<< endl << J << endl;
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = "<< endl << J << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
                 contribution = J * jMap[ mstate ];
                 if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
                     jMap[mtarget].resize(contribution.rows(),contribution.cols());
@@ -276,10 +284,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         for(unsigned i=0; i<node->forceField.size(); i++ )
         {
             BaseForceField* ffield = node->forceField[i];
-            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << endl;
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << endl;
             if( ffield->getComplianceMatrix(mparams)!=NULL )
             {
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has compliance" << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has compliance" << endl;
                 SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[ffield] );
 
                 SMatrix J = SMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
@@ -302,11 +310,11 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             }
             else if (ffield->getStiffnessMatrix(mparams)) // accumulate the stiffness if the matrix is not null. TODO: Rayleigh damping
             {
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has stiffness" << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has stiffness" << endl;
                 const SMatrix& K = getSMatrix(ffield->getStiffnessMatrix(mparams));
                 const SMatrix& J = jMap[node->mechanicalState];
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, stiffness = " << endl << K << endl;
-                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = " << endl << J << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, stiffness = " << endl << K << endl;
+//                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = " << endl << J << endl;
                 solver->_matK += SMatrix( J.transpose() * K * J );  // assemble
             }
         }

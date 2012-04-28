@@ -1,0 +1,38 @@
+<Node name="" gravity="0 0 0" dt="0.01">
+    <VisualStyle displayFlags="showBehavior hideVisual" />
+    <Node name="Cube grid" >
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" />
+
+        <!--Subdivided cube-->
+        <RegularGridTopology name="grid" n="10 10 10" min="0 0 0" max="1 1 1"  />
+        <MechanicalObject name="DOF" template="Vec3d" />
+        <UniformMass name="themass" totalMass="1" />
+
+        <!--maintain points of plane x=0 fixed -->
+        <BoxROI template="Vec3d" name="O_box_roi" box="0.99 -0.01 -0.01   1.01 1.01 1.01  "  drawPoints="1" drawSize="30" />
+        <FixedConstraint indices="@[-1].indices" />
+
+
+        <!--Decomposition of the cubes in tetrahedra, with tetrahedral FEM -->
+        <Node name="Tetra" >
+            <TetrahedronSetTopologyContainer name="TetraContainer" />
+            <TetrahedronSetTopologyModifier />
+            <TetrahedronSetTopologyAlgorithms template="Vec3d" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" />
+            <Hexa2TetraTopologicalMapping name="default28" object1="../grid" object2="TetraContainer" />
+            <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0" youngModulus="1000" />
+
+            <!--Extraction of the external triangles of the tetrahedra -->
+            <Node name="Triangles" >
+                <TriangleSetTopologyContainer name="TriangleContainer" />
+                <TriangleSetTopologyModifier />
+                <TriangleSetTopologyAlgorithms template="Vec3d" />
+                <TriangleSetGeometryAlgorithms template="Vec3d" />
+                <Tetra2TriangleTopologicalMapping object1="../TetraContainer" object2="TriangleContainer" />
+
+                <!--Apply a pressure to the triangles in the x=1 plane -->
+                <TrianglePressureForceField normal="1 0 0" dmin="-0.01" dmax="0.01" pressure="100 0 0"  showForces="1"/>
+            </Node>
+        </Node>
+    </Node>
+</Node>

@@ -152,13 +152,14 @@ public:
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams */*mparams*/)
     {
+        if( !isCompliance.getValue() ) return NULL; // if seen as a stiffness, then return no compliance matrix
         if(!this->assembleC.getValue()) updateC();
         return &C;
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*)
     {
-        cerr<<"BaseMaterialForceField::getStiffnessMatrix"<<endl;
+        if( isCompliance.getValue() ) return NULL; // if seen as a compliance, then return no stiffness matrix
         if(!this->assembleK.getValue()) updateK();
         return &K;
     }
@@ -183,6 +184,7 @@ protected:
         , assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
         , assembleB ( initData ( &assembleB,false, "assembleB","Assemble the Damping matrix" ) )
+        , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
     {
 
     }
@@ -263,6 +265,9 @@ protected:
         }
         B.endEdit();
     }
+
+    Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
+
 };
 
 

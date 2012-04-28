@@ -1,13 +1,14 @@
 [General]
+def_graphic_ext=
 img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
 kileprversion=2
-kileversion=2.0
+kileversion=2.1.0
 lastDocument=sofadocumentation.tex
 masterDocument=sofadocumentation.tex
 name=Sofa  documentation
 pkg_extIsRegExp=false
-pkg_extensions=.cls .sty
+pkg_extensions=.cls .sty .bbx .cbx .lbx
 src_extIsRegExp=false
 src_extensions=.tex .ltx .latex .dtx .ins .bib .mp
 
@@ -15,20 +16,34 @@ src_extensions=.tex .ltx .latex .dtx .ins .bib .mp
 MakeIndex=
 QuickBuild=
 
+[document-settings,item:sofadocumentation.tex]
+Bookmarks=
+Encoding=ISO-8859-1
+Highlighting=LaTeX
+Indentation Mode=
+Mode=LaTeX
+ReadWrite=true
+
 [item:sofadocumentation.kilepr]
 archive=true
 column=0
 encoding=
 highlight=
 line=0
+mode=
 open=false
 order=-1
 
 [item:sofadocumentation.tex]
 archive=true
-column=0
-encoding=ISO 8859-1
+column=25
+encoding=ISO-8859-1
 highlight=LaTeX
-line=51
+line=33
+mode=LaTeX
 open=true
 order=0
+
+[view-settings,view=0,item:sofadocumentation.tex]
+CursorColumn=25
+CursorLine=33

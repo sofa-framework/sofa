@@ -113,6 +113,9 @@ public:
         // init jacobians
         jacobian.resize(in.size());
 
+        baseMatrices.resize( 1 ); // just a wrapping for getJs()
+        baseMatrices[0] = &eigenJacobian;
+
         reinit();
 
         Inherit::init();
@@ -188,6 +191,10 @@ public:
         return &eigenJacobian;
     }
 
+    // Compliant plugin experimental API
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+
+
     void draw(const core::visual::VisualParams* /*vparams*/)
     {
     }
@@ -215,6 +222,7 @@ protected:
 
     Data<bool> assembleJ;
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ()
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
