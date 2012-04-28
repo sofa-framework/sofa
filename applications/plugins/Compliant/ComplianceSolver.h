@@ -91,8 +91,9 @@ private:
     VectorSofa _vecLambda; ///< bottom of the solution: Lagrange multipliers
     linearsolver::EigenBaseSparseMatrix<SReal> _projMatrix;
     linearsolver::EigenBaseSparseMatrix<SReal> _PMinvP_Matrix;  ///< PMinvP
-    bool _PMinvP_isDirty;  ///< true if _PMinvP_Matrix is not up to date
 
+    bool _PMinvP_isDirty;  ///< true if _PMinvP_Matrix is not up to date
+    VectorSofa _vecV;      ///< velocties, used in the computation of the right-hand term of the implicit equation
 
 protected:
     // Equation system: input data
@@ -130,9 +131,11 @@ protected:
     virtual void solveEquation();
 
 public:
-    Data<SReal>  implicitVelocity; ///< the \f$ \alpha \f$ parameter of the integration scheme
-    Data<SReal>  implicitPosition; ///< the \f$ \beta  \f$ parameter of the integration scheme
-    Data<bool>   verbose;          ///< print a lot of debug info
+    Data<SReal> implicitVelocity;     ///< the \f$ \alpha \f$ parameter of the integration scheme
+    Data<SReal> implicitPosition;     ///< the \f$ \beta  \f$ parameter of the integration scheme
+    Data<SReal> f_rayleighStiffness;  ///< uniform Rayleigh damping ratio applied to the stiffness matrix
+    Data<SReal> f_rayleighMass;       ///< uniform Rayleigh damping ratio applied to the mass matrix
+    Data<bool>  verbose;              ///< print a lot of debug info
 
 protected:
 

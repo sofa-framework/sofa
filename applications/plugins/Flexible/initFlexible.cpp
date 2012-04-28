@@ -81,11 +81,13 @@ const char* getModuleComponentList()
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 
-SOFA_LINK_CLASS(TopologyGaussPointSampler)
+#ifdef SOFA_HAVE_IMAGE
 SOFA_LINK_CLASS(ImageGaussPointSampler)
+SOFA_LINK_CLASS(VoronoiShapeFunction)
+#endif
+SOFA_LINK_CLASS(TopologyGaussPointSampler)
 SOFA_LINK_CLASS(ShepardShapeFunction)
 SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(VoronoiShapeFunction)
 SOFA_LINK_CLASS(DefGradientMechanicalObject)
 SOFA_LINK_CLASS(LinearMapping)
 SOFA_LINK_CLASS(StrainMechanicalObject)
