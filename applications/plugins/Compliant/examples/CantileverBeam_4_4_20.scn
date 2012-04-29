@@ -1,16 +1,17 @@
-<Node name="" gravity="0 0 0" dt="0.01">
+<Node name="" gravity="0 -10 0" dt="0.02">
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />
+<!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 <!--        <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="25" precision="1e-6" />-->
+        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />
 
         <!--Subdivided cube-->
-        <RegularGridTopology name="grid" n="10 10 10" min="0 0 0" max="1 1 1"  />
+        <RegularGridTopology name="grid" n="4 4 20" min="0 0 0" max="3 3 19"  />
         <MechanicalObject name="DOF" template="Vec3d" />
-        <UniformMass name="themass" totalMass="1" />
+        <UniformMass name="themass" mass="1" />
 
         <!--maintain points of plane x=0 fixed -->
-        <BoxROI template="Vec3d" name="O_box_roi" box="0.99 -0.01 -0.01   1.01 1.01 1.01  "  drawPoints="1" drawSize="30" />
+        <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   3.01 3.01 0.01  "  drawPoints="1" drawSize="30" />
         <FixedConstraint indices="@[-1].indices" />
 
 
@@ -31,22 +32,11 @@
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
-                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="true" method="small" name="corotstrainmap"/>
-                    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0" assembleK="true" assembleB="false"/>
+                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="true" method="large" name="corotstrainmap"/>
+                    <HookeForceField  template="E331" name="ff" youngModulus="4000" poissonRatio="0.3" viscosity="0" assembleK="true" assembleB="false"/>
                 </Node>
             </Node>
 
-            <!--Extraction of the external triangles of the tetrahedra -->
-            <Node name="Triangles" >
-                <TriangleSetTopologyContainer name="TriangleContainer" />
-                <TriangleSetTopologyModifier />
-                <TriangleSetTopologyAlgorithms template="Vec3d" />
-                <TriangleSetGeometryAlgorithms template="Vec3d" />
-                <Tetra2TriangleTopologicalMapping object1="../TetraContainer" object2="TriangleContainer" />
-
-                <!--Apply a pressure to the triangles in the x=1 plane -->
-                <TrianglePressureForceField normal="1 0 0" dmin="-0.01" dmax="0.01" pressure="100 0 0"  showForces="1"/>
-            </Node>
         </Node>
     </Node>
 </Node>

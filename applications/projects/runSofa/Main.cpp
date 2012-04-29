@@ -96,7 +96,8 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    int			nbIterations = 0;
+    int	        nbIterations = 0;
+    unsigned    computationTimeSampling=100; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     std::string gui = "";
     std::string verif = "";
@@ -118,13 +119,15 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
+    // alphabetical order on short name
     .option(&startAnim,'a',"start","start the animation loop")
-    .option(&printFactory,'p',"factory","print factory logs")
+    .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
     .option(&gui,'g',"gui",gui_help.c_str())
-    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
-    .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&plugins,'l',"load","load given plugins")
+    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
+    .option(&printFactory,'p',"factory","print factory logs")
     .option(&loadRecent,'r',"recent","load most recently opened file")
+    .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&verif,'v',"verification","load verification data for the scene")
 #ifdef SOFA_SMP
@@ -251,6 +254,12 @@ int main(int argc, char** argv)
         std::cout << "////////// FACTORY //////////" << std::endl;
         sofa::helper::printFactoryLog();
         std::cout << "//////// END FACTORY ////////" << std::endl;
+    }
+
+    if( computationTimeSampling>0 )
+    {
+        sofa::helper::AdvancedTimer::setEnabled("Animate", true);
+        sofa::helper::AdvancedTimer::setInterval("Animate", computationTimeSampling);
     }
 
     //=======================================
