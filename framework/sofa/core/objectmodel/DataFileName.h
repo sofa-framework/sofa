@@ -76,16 +76,17 @@ public:
     explicit DataFileName(const Inherit::InitData& init)
         : Inherit(init)
     {
+        updatePath();
     }
 
     virtual ~DataFileName()
     {
     }
 
-    void endEdit()
+    void endEdit(const core::ExecParams* params = 0)
     {
         updatePath();
-        Inherit::endEdit();
+        Inherit::endEdit(params);
     }
 
     void setValue(const std::string& v)
@@ -93,6 +94,7 @@ public:
         *beginEdit()=v;
         endEdit();
     }
+    virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read( std::string& s )
     {
@@ -161,16 +163,17 @@ public:
     explicit DataFileNameVector(const Inherit::InitData& init)
         : Inherit(init)
     {
+        updatePath();
     }
 
     virtual ~DataFileNameVector()
     {
     }
 
-    void endEdit()
+    void endEdit(const core::ExecParams* params = 0)
     {
         updatePath();
-        Inherit::endEdit();
+        Inherit::endEdit(params);
     }
 
     void setValue(const std::string& v)
@@ -178,11 +181,12 @@ public:
         beginEdit()->push_back(v);
         endEdit();
     }
+    virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read( std::string& s )
     {
         bool ret = Inherit::read(s);
-        if (ret) updatePath();
+        if (ret || fullpath.empty()) updatePath();
         return ret;
     }
 
