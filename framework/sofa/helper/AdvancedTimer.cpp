@@ -189,7 +189,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0), defaultInterval(100)
+        : nbIter(-1), interval(0), defaultInterval(10)
     {
     }
 
@@ -906,7 +906,10 @@ void TimerData::print()
             if (s == 0)
                 out << "TOTAL";
             else
+            {
+                for(unsigned ii=0; ii<data.level; ii++) out<<".";  // indentation to show the hierarchy level
                 out << steps[s];
+            }
             out << '\n';
         }
     }

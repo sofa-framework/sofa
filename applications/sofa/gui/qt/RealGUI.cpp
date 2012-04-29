@@ -876,7 +876,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     configureGUI(root.get());
 
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
-    displayComputationTime(m_displayComputationTime);
+//  displayComputationTime(m_displayComputationTime);  // (FF) This can be set outside of the GUI and should not be changed implicitly by the GUI
     stopDumpVisitor();
 }
 

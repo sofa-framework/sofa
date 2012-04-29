@@ -31,6 +31,9 @@
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
+#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+#include <unsupported/Eigen/CholmodSupport>
+#endif
 using std::cerr;
 using std::endl;
 
@@ -145,12 +148,14 @@ public:
         eigenMatrix.coeffRef(i,j) = (Real)0;
     }
 
-    /// Set all the entries of a row to 0.
+    /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
     void clearRow(int i)
     {
         for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
         {
-            it.valueRef() = 0;
+            if(it.index()==i) // diagonal entry
+                it.valueRef()=1.0e-100;
+            else it.valueRef() = 0;
         }
     }
 
@@ -164,14 +169,19 @@ public:
             }
     }
 
-    ///< Set all the entries of a column to 0. Not efficient !
+    ///< Set all the entries of a column to 0, except the diagonal set to an extremely small number.. Not efficient !
     void clearCol(int col)
     {
         for(int i=0; i<eigenMatrix.rows(); i++ )
             for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
             {
                 if( it.col()==col)
-                    it.valueRef() = 0;
+                {
+                    if(it.index()==i) // diagonal entry
+                        it.valueRef()=1.0e-100;
+                    else it.valueRef() = 0;
+
+                }
             }
     }
 
@@ -234,6 +244,34 @@ public:
     }
 
     static const char* Name();
+
+#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+protected:
+    // sparse LDLT support
+    typedef Eigen::SparseLDLT<Eigen::SparseMatrix<Real>,Eigen::Cholmod>  SparseLDLT;
+    SparseLDLT sparseLDLT; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
+public:
+    /// Try to compute the LDLT decomposition, and return true if success. The matrix is unchanged.
+    bool ldltDecompose()
+    {
+        sparseLDLT.compute(eigenMatrix);
+        if( !sparseLDLT.succeeded() )
+        {
+            std::cerr<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    /// Solve Ax=b, where A is this matrix. WARNING: ldltDecompose() must be called first. x and b can be the same vector.
+    void ldltSolve( VectorEigen& x, const VectorEigen& b ) const
+    {
+        x=b;
+        // solve the equation
+        sparseLDLT.solveInPlace(x);
+    }
+#endif
+
 
 
 };

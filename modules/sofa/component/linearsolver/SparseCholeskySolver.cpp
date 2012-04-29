@@ -129,7 +129,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     //sout << "diag =";
     //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
     //sout << sendl;
-    //sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
+//        std::cerr << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << std::endl;
     //tmp = (double *) cs_malloc (A.n, sizeof (double)) ;
     tmp.resize(A.n);
     S = cs_schol (&A, order) ;		/* ordering and symbolic analysis */

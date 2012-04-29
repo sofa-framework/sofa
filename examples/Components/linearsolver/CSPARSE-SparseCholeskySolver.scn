@@ -9,7 +9,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <!-- 		<SparseLUSolver printLog="1" verbose="0" /> -->
         <!-- 		<SparseLDLSolver printLog="1" verbose="0" /> -->
-        <SparseCholeskySolver printLog="1" verbose="0" />
+        <SparseCholeskySolver printLog="0" verbose="0" />
 <!--                        <CGLinearSolver iterations="10" threshold="1.0e-9" printLog="1" verbose="0" />-->
         <!--<CGLinearSolver iterations="1000" threshold="1.0e-9" printLog="1" verbose="0" template="CompressedRowSparseMatrix3d" tags="M" />-->
         <!--<PCGLinearSolver iterations="1000" threshold="1.0e-9" printLog="0" refresh="0" verbose="0" />-->

@@ -187,8 +187,11 @@ protected:
     // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
 
-    /// Compute the inverse of the matrix. The input matrix MUST be diagonal. The threshold parameter is currently unused.
-    static void inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m, SReal threshold);
+    /// Compute the inverse of the matrix. The input matrix MUST be diagonal. Return false if the matrix is not diagonal. The threshold parameter is currently unused.
+    static bool inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m );
+
+    /// Compute the inverse of the matrix.
+    static void inverseMatrix( SMatrix& minv, const SMatrix& m );
 
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
