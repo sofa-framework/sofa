@@ -55,7 +55,7 @@ namespace defaulttype
 {
 
 using namespace cimg_library;
-using namespace helper;
+using helper::vector;
 
 //-----------------------------------------------------------------------------------------------//
 // 5d-image structure on top of a shared memory CImgList

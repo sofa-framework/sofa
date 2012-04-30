@@ -52,7 +52,9 @@ namespace component
 namespace misc
 {
 
-using namespace defaulttype;
+using namespace cimg_library;
+using defaulttype::Vec;
+using defaulttype::Mat;
 
 template <class _ImageTypes>
 class ImageExporter : public virtual core::objectmodel::BaseObject
@@ -70,7 +72,7 @@ public:
 
     // transform data
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;;

@@ -65,8 +65,8 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
+using helper::vector;
+using namespace cimg_library;
 
 /**
  * This class computes a filtered image
@@ -93,7 +93,7 @@ public:
     typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
 
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
@@ -101,7 +101,7 @@ public:
     typedef vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<OptionsGroup> filter;
+    Data<helper::OptionsGroup> filter;
     Data< ParamTypes > param;
 
     Data< InImageTypes > inputImage;

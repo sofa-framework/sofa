@@ -60,7 +60,9 @@ namespace component
 namespace container
 {
 
-using namespace defaulttype;
+using namespace cimg_library;
+using defaulttype::Vec;
+using defaulttype::Vector3;
 
 void* globalKinectClassPointer;
 
@@ -78,7 +80,7 @@ public:
     SOFA_CLASS( Kinect , Inherited);
 
     // image data
-    typedef ImageUC ImageTypes;
+    typedef defaulttype::ImageUC ImageTypes;
     typedef ImageTypes::T T;
     typedef ImageTypes::imCoord imCoord;
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
@@ -87,13 +89,13 @@ public:
 
     // transform data
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
     // depth data
-    typedef ImageUS DepthTypes;
+    typedef defaulttype::ImageUS DepthTypes;
     typedef DepthTypes::T dT;
     typedef DepthTypes::imCoord dCoord;
     typedef helper::WriteAccessor<Data< DepthTypes > > waDepth;
@@ -102,12 +104,12 @@ public:
     Data< TransformType > depthTransform;
 
     Data<unsigned int> deviceID;
-    Data<OptionsGroup> resolution;
-    Data<OptionsGroup> videoMode;
-    Data<OptionsGroup> depthMode;
-    Data<OptionsGroup> ledMode;
+    Data<helper::OptionsGroup> resolution;
+    Data<helper::OptionsGroup> videoMode;
+    Data<helper::OptionsGroup> depthMode;
+    Data<helper::OptionsGroup> ledMode;
     Data<int> tiltAngle;
-    Data<Vector3> accelerometer;
+    Data<defaulttype::Vector3> accelerometer;
     Data<bool> drawBB;
     Data<bool> drawGravity;
     Data<float> showArrowSize;

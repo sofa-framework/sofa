@@ -29,12 +29,23 @@
 #include "ImageTypes.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/defaulttype/Mat.h>
 #include <set>
 #include <vector>
 
 #include <omp.h>
 
 using namespace cimg_library;
+
+
+
+
+template<typename real>
+int round(real r)
+{
+    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+}
+
 
 /**
 *  Move points in position data to the centroid of their voronoi region
@@ -163,50 +174,27 @@ real Eikonal(const sofa::defaulttype::Vec<6,real>& d,const sofa::defaulttype::Ve
 }
 
 /**
-* Update geodesic distances in the image from @param pos, given a bias distance function b(x).
+* Update geodesic distances in the image, given a bias distance function b(x).
 * This is equivalent to solve for the eikonal equation || grad d(x) || = 1/b(x) with d(p)=0 at @param pos
 * using fast marching method presented from sethian http://math.berkeley.edu/~sethian/2006/Publications/Book/2006/
-* distances should be intialized (<0 outside the object, and >=0 inside)
+* distances should be intialized (<0 outside the object, >=0 inside, and = 0 for seeds)
 * returns @param voronoi and @param distances
 */
 
+
 template<typename real,typename T>
-void fastMarching (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::vector<sofa::defaulttype::Vec<3,real> >& pos,  const sofa::defaulttype::ImageLPTransform<real>& transform, const CImg<T>* biasFactor=NULL)
+void fastMarching (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const CImg<T>* biasFactor=NULL)
 {
-    typedef sofa::defaulttype::Vec<3,real> Coord;
     typedef sofa::defaulttype::Vec<3,int> iCoord;
     typedef sofa::defaulttype::Vec<6,real> Dist;
-
-    unsigned int nbp=pos.size();
-    const Coord &voxelsize=transform.getScale();
+    typedef std::pair<real,iCoord > DistanceToPoint;
     const iCoord dim(distances.width(),distances.height(),distances.depth());
-
-    // get rounded point coordinates in image
-    std::vector<iCoord> P;
-    P.resize(nbp);
-    for (unsigned int i=0; i<nbp; i++)  { Coord p = transform.toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
 
     // init
     sofa::defaulttype::Vec<6,  iCoord > offset; // image coord offsets related to 6 neighbors
     for (unsigned int i=0; i<3; i++) { offset[2*i][i]=-1; offset[2*i+1][i]=1;}
     unsigned int nbOffset=offset.size();
     CImg<bool> alive(dim[0],dim[1],dim[2]); alive.fill(false);
-
-    // add samples t the queue
-    typedef std::pair<real,iCoord > DistanceToPoint;
-    typedef typename std::set<DistanceToPoint>::iterator IT;
-    std::set<DistanceToPoint> trial; // priority queue
-    for (unsigned int i=0; i<nbp; i++)
-    {
-        iCoord v = P[i];
-        if(distances.containsXYZC(v[0],v[1],v[2]))
-            if(distances(v[0],v[1],v[2])>=0)
-            {
-                trial.insert( DistanceToPoint(0.,v) );
-                distances(v[0],v[1],v[2])=0;
-                voronoi(v[0],v[1],v[2])=i+1;
-            }
-    }
 
     // FMM
     while( !trial.empty() )
@@ -224,7 +212,6 @@ void fastMarching (CImg<real>& distances, CImg<unsigned int>& voronoi, const std
         {
             // update distance on neighbors using their own neighbors
             iCoord v2 = v + offset[i];
-            //            if(distances.containsXYZC(v2[0],v2[1],v2[2]))
             if(v2[0]>=0) if(v2[1]>=0) if(v2[2]>=0) if(v2[0]<dim[0]) if(v2[1]<dim[1]) if(v2[2]<dim[2])
                                     if(!alive(v2[0],v2[1],v2[2]))
                                     {
@@ -244,7 +231,7 @@ void fastMarching (CImg<real>& distances, CImg<unsigned int>& voronoi, const std
                                         real oldDist = distances(v2[0],v2[1],v2[2]);
                                         if(oldDist>newDist)
                                         {
-                                            IT it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
+                                            typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
                                             voronoi(v2[0],v2[1],v2[2])=vor;
                                             distances(v2[0],v2[1],v2[2])=newDist;
                                             trial.insert( DistanceToPoint(newDist,v2) );
@@ -256,29 +243,24 @@ void fastMarching (CImg<real>& distances, CImg<unsigned int>& voronoi, const std
 
 
 
-
 /**
-* Update geodesic distances in the image from @param pos, given a bias distance function b(x).
+* Update geodesic distances in the image given a bias distance function b(x).
 * This is equivalent to solve for the eikonal equation || grad d(x) || = 1/b(x) with d(p)=0 at @param pos
 * using dijkstra minimum path algorithm
-* distances should be intialized (<0 outside the object, and >=0 inside)
+* distances should be intialized (<0 outside the object, >=0 inside, and = 0 for seeds)
 * returns @param voronoi and @param distances
 */
 
-template<typename real,typename T>
-void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::vector<sofa::defaulttype::Vec<3,real> >& pos,  const sofa::defaulttype::ImageLPTransform<real>& transform, const CImg<T>* biasFactor=NULL)
-{
-    typedef sofa::defaulttype::Vec<3,real> Coord;
-    typedef sofa::defaulttype::Vec<3,int> iCoord;
 
-    unsigned int nbp=pos.size();
-    const Coord &voxelsize=transform.getScale();
+
+template<typename real,typename T>
+void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const CImg<T>* biasFactor=NULL)
+{
+    typedef sofa::defaulttype::Vec<3,int> iCoord;
+    typedef std::pair<real,iCoord > DistanceToPoint;
     const iCoord dim(distances.width(),distances.height(),distances.depth());
 
-    // get rounded point coordinates in image
-    std::vector<iCoord> P;
-    P.resize(nbp);
-    for (unsigned int i=0; i<nbp; i++)  { Coord p = transform.toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
+    //CImg<bool> alive(dim[0],dim[1],dim[2]); alive.fill(false);
 
     // init
     sofa::defaulttype::Vec<27,  iCoord > offset; // image coord offsets related to neighbors
@@ -289,30 +271,7 @@ void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::ve
                 lD[count]= (voxelsize.linearProduct(offset[count])).norm();
                 count++;
             }
-    //    sofa::defaulttype::Vec<6,  iCoord > offset; // image coord offsets related to 6 neighbors
-    //     sofa::defaulttype::Vec<6,  real > lD;
-    //     for (unsigned int i=0;i<6;i++) offset[i]=iCoord(0,0,0);
-    //    for (unsigned int i=0;i<3;i++) { offset[2*i][i]=-1; offset[2*i+1][i]=1;}
-    //    for (unsigned int i=0;i<6;i++)  lD[i]= (voxelsize.linearProduct(offset[i])).norm();
     unsigned int nbOffset=offset.size();
-
-    //CImg<bool> alive(dim[0],dim[1],dim[2]); alive.fill(false);
-
-    // add samples t the queue
-    typedef std::pair<real,iCoord > DistanceToPoint;
-    typedef typename std::set<DistanceToPoint>::iterator IT;
-    std::set<DistanceToPoint> trial; // priority queue
-    for (unsigned int i=0; i<nbp; i++)
-    {
-        iCoord v = P[i];
-        if(distances.containsXYZC(v[0],v[1],v[2]))
-            if(distances(v[0],v[1],v[2])>=0)
-            {
-                trial.insert( DistanceToPoint(0.,v) );
-                distances(v[0],v[1],v[2])=0;
-                voronoi(v[0],v[1],v[2])=i+1;
-            }
-    }
 
     // dijkstra
     while( !trial.empty() )
@@ -328,7 +287,6 @@ void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::ve
         for (unsigned int i=0; i<nbOffset; i++)
         {
             iCoord v2 = v + offset[i];
-            //            if(distances.containsXYZC(v2[0],v2[1],v2[2]))
             if(v2[0]>=0) if(v2[1]>=0) if(v2[2]>=0) if(v2[0]<dim[0]) if(v2[1]<dim[1]) if(v2[2]<dim[2])
                                     //if(!alive(v2[0],v2[1],v2[2]))
                                 {
@@ -337,7 +295,7 @@ void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::ve
                                     real oldDist = distances(v2[0],v2[1],v2[2]);
                                     if(oldDist>newDist)
                                     {
-                                        IT it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
+                                        typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
                                         voronoi(v2[0],v2[1],v2[2]) = vor;
                                         distances(v2[0],v2[1],v2[2]) = newDist;
                                         trial.insert( DistanceToPoint(newDist,v2) );
@@ -347,10 +305,32 @@ void dijkstra (CImg<real>& distances, CImg<unsigned int>& voronoi, const std::ve
     }
 }
 
+
+
+/**
+* Initialize null distances and voronoi value (=point index) from a point @param pos
+* and returns list of seed (or trial) points to be used in dijkstra or fast marching algorithms
+*/
+
 template<typename real>
-int round(real r)
+void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& trial, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::ImageLPTransform<real>& transform, const sofa::defaulttype::Vec<3,real>& pos,  const unsigned int index)
 {
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+    typedef sofa::defaulttype::Vec<3,real> Coord;
+    typedef sofa::defaulttype::Vec<3,int> iCoord;
+    typedef std::pair<real,iCoord > DistanceToPoint;
+
+    Coord p = transform.toImage(pos);
+    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=round(p[j]);
+    if(distances.containsXYZC(P[0],P[1],P[2]))
+        if(distances(P[0],P[1],P[2])>=0)
+        {
+            distances(P[0],P[1],P[2])=0;
+            voronoi(P[0],P[1],P[2])=index;
+            trial.insert( DistanceToPoint(0.,iCoord(P[0],P[1],P[2])) );
+        }
 }
+
+
+
 
 #endif // IMAGEALGORITHMS_H
