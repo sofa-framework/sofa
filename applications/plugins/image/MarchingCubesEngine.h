@@ -47,9 +47,10 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
-using namespace core::topology;
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Mat;
+using namespace cimg_library;
 
 /**
  * This class computes an isosurface from an image using marching cubes algorithm
@@ -75,7 +76,7 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
     Data< ImageTypes > image;
 
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
@@ -85,8 +86,8 @@ public:
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
-    typedef typename BaseMeshTopology::Triangle Triangle;
-    typedef typename BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;

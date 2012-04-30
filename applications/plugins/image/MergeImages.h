@@ -53,8 +53,11 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Vector3;
+using defaulttype::Mat;
+using namespace cimg_library;
 
 /**
  * This class merges images into one
@@ -75,13 +78,13 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    Data<OptionsGroup> overlap;
-    Data<OptionsGroup> Interpolation;
+    Data<helper::OptionsGroup> overlap;
+    Data<helper::OptionsGroup> Interpolation;
     Data<unsigned int> nbImages;
 
     helper::vector<Data<ImageTypes>*> inputImages;

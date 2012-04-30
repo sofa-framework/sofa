@@ -50,7 +50,9 @@ namespace component
 namespace misc
 {
 
-using namespace defaulttype;
+using namespace cimg_library;
+using defaulttype::Vec;
+using defaulttype::Vector3;
 
 /**
    * \brief This component is responsible for displaying images in SOFA
@@ -96,7 +98,7 @@ public:
 
     // @name Histogram
     /**@{*/
-    typedef Histogram<T> HistogramType;
+    typedef defaulttype::Histogram<T> HistogramType;
     typedef helper::WriteAccessor<Data< HistogramType > > waHisto;
     typedef helper::ReadAccessor<Data< HistogramType > > raHisto;
     Data< HistogramType > histo;
@@ -105,7 +107,7 @@ public:
     //@name Transform data
     /**@{*/
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
@@ -113,7 +115,7 @@ public:
 
     // @name Plane selection
     /**@{*/
-    typedef ImagePlane<T> ImagePlaneType;
+    typedef defaulttype::ImagePlane<T> ImagePlaneType;
     typedef helper::ReadAccessor<Data< ImagePlaneType > > raPlane;
     typedef helper::WriteAccessor<Data< ImagePlaneType > > waPlane;
     Data< ImagePlaneType > plane;
@@ -121,9 +123,9 @@ public:
 
     // @name Vector visualization
     /**@{*/
-    typedef helper::ReadAccessor<Data< VectorVis > > raVis;
-    typedef helper::WriteAccessor<Data< VectorVis > > waVis;
-    Data<VectorVis> vectorVisualization;
+    typedef helper::ReadAccessor<Data< defaulttype::VectorVis > > raVis;
+    typedef helper::WriteAccessor<Data< defaulttype::VectorVis > > waVis;
+    Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
@@ -136,7 +138,7 @@ public:
         , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
         , transform(initData(&transform, TransformType(), "transform" , ""))
         , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
-        , vectorVisualization ( initData (&vectorVisualization, VectorVis(), "vectorvis", ""))
+        , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
@@ -280,7 +282,7 @@ protected:
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
         Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
-        Vec4f colour(1.0,0.5,0.5,1.0);
+        defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
         for (z=0; z<3; z++)

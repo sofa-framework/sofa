@@ -54,9 +54,10 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
-using namespace core::topology;
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Mat;
+using namespace cimg_library;
 
 /**
  * This class samples an object represented by an image
@@ -83,7 +84,7 @@ public:
 
     //@name Transform data
     /**@{*/
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
@@ -94,7 +95,7 @@ public:
     typedef vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<OptionsGroup> method;
+    Data<helper::OptionsGroup> method;
     Data< bool > computeRecursive;
     Data< ParamTypes > param;
     /**@}*/
@@ -107,15 +108,15 @@ public:
     Data< SeqPositions > position;
     Data< SeqPositions > fixedPosition;
 
-    typedef typename BaseMeshTopology::Edge Edge;
-    typedef typename BaseMeshTopology::SeqEdges SeqEdges;
+    typedef typename core::topology::BaseMeshTopology::Edge Edge;
+    typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
     Data< SeqEdges > edges;
     Data< SeqEdges > graph;
 
-    typedef typename BaseMeshTopology::Hexa Hexa;
-    typedef typename BaseMeshTopology::SeqHexahedra SeqHexahedra;
+    typedef typename core::topology::BaseMeshTopology::Hexa Hexa;
+    typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef helper::ReadAccessor<Data< SeqHexahedra > > raHexa;
     typedef helper::WriteAccessor<Data< SeqHexahedra > > waHexa;
     Data< SeqHexahedra > hexahedra;
@@ -123,10 +124,10 @@ public:
 
     //@name distances (may be used for shape function computation)
     /**@{*/
-    typedef Image<Real> DistTypes;
+    typedef defaulttype::Image<Real> DistTypes;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteAccessor<Data< DistTypes > > waDist;
-    Data< ImageD > distances;
+    Data< DistTypes > distances;
     /**@}*/
 
 
@@ -244,29 +245,29 @@ protected:
         raEdges e(this->edges);
         raEdges g(this->graph);
 
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->position.getValue(),5.0,Vec4f(0.2,1,0.2,1));
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),7.0,Vec4f(1,0.2,0.2,1));
+        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->position.getValue(),5.0,defaulttype::Vec4f(0.2,1,0.2,1));
+        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),7.0,defaulttype::Vec4f(1,0.2,0.2,1));
         if (this->showEdges.getValue())
         {
-            std::vector<Vector3> points;
+            std::vector<defaulttype::Vector3> points;
             points.resize(2*e.size());
             for (unsigned int i=0; i<e.size(); ++i)
             {
                 points[2*i][0]=pos[e[i][0]][0];            points[2*i][1]=pos[e[i][0]][1];            points[2*i][2]=pos[e[i][0]][2];
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,Vec4f(0.7,1,0.7,1));
+            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,1,0.7,1));
         }
         if (this->showGraph.getValue())
         {
-            std::vector<Vector3> points;
+            std::vector<defaulttype::Vector3> points;
             points.resize(2*g.size());
             for (unsigned int i=0; i<g.size(); ++i)
             {
                 points[2*i][0]=pos[g[i][0]][0];            points[2*i][1]=pos[g[i][0]][1];            points[2*i][2]=pos[g[i][0]][2];
                 points[2*i+1][0]=pos[g[i][1]][0];          points[2*i+1][1]=pos[g[i][1]][1];          points[2*i+1][2]=pos[g[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,Vec4f(1,1,0.5,1));
+            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
     }
 
@@ -303,7 +304,7 @@ protected:
         cimg_foroff(img,off) if(img[off]) nb++;
         pos.resize(nb);
         // record indices of previous y line and z plane for connectivity
-        CImg<unsigned int> pLine(inimg.height()),nLine(inimg.height());
+        CImg<unsigned int> pLine(inimg.width()),nLine(inimg.width());
         CImg<unsigned int> pPlane(inimg.width(),inimg.height()),nPlane(inimg.width(),inimg.height());
         // fill pos and edges
         nb=0;
@@ -369,7 +370,11 @@ protected:
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
 
+        // list of seed points
+        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+
         // farthest point sampling using geodesic distances
+        for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],i+1);
         while(pos.size()<nb)
         {
             Real dmax=0;  Coord pmax;
@@ -377,9 +382,9 @@ protected:
             if(dmax)
             {
                 pos.push_back(inT->fromImage(pmax));
-                std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
-                if(useDijkstra) dijkstra<Real,T>(dist, voronoi, P, this->transform.getValue(), biasFactor);
-                else fastMarching<Real,T>(dist, voronoi, P, this->transform.getValue(),biasFactor );
+                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos.back(),fpos.size()+pos.size());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(),biasFactor );
             }
             else break;
         }
@@ -393,9 +398,10 @@ protected:
             if(Lloyd<Real,T>(pos,dist,voronoi,this->transform.getValue(),NULL))
             {
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                std::vector<Coord> P; P.insert(P.end(),fpos.begin(),fpos.end()); P.insert(P.end(),pos.begin(),pos.end());    // concatenate pos and fixedpos
-                if(useDijkstra) dijkstra<Real,T>(dist, voronoi,  P, this->transform.getValue(), biasFactor);
-                else fastMarching<Real,T>(dist, voronoi,  P, this->transform.getValue(), biasFactor);
+                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], i+1);
+                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], i+1+fpos.size());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;
             }
             else converged=true;

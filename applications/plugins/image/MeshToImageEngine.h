@@ -48,9 +48,10 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
-using namespace core::topology;
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Mat;
+using namespace cimg_library;
 
 /**
  * This class rasterizes a mesh into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
@@ -60,6 +61,8 @@ using namespace core::topology;
 template <class _ImageTypes>
 class MeshToImageEngine : public core::DataEngine
 {
+
+
 public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(MeshToImageEngine,_ImageTypes),Inherited);
@@ -78,7 +81,7 @@ public:
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     Data< ImageTypes > image;
 
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
@@ -89,8 +92,8 @@ public:
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
-    typedef typename BaseMeshTopology::Triangle Triangle;
-    typedef typename BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
@@ -219,6 +222,7 @@ protected:
             Coord pts[3];
             for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
             this->draw_triangle(im,pts[0],pts[1],pts[2],color0,this->subdiv.getValue());
+            this->draw_triangle(im,pts[1],pts[2],pts[0],color0,this->subdiv.getValue());
         }
 
         // flood fill from the exterior point (0,0,0)
@@ -248,8 +252,8 @@ protected:
         {
             if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
             if (P1[j]<0 || P0[j]>=dim[j]) return;
-            if (P0[j]<0) { const double D = 1.0f + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)((float)P0[j]*(1.0f + P1[k] - P0[k])/D);  P0[j] = 0; }
-            if (P1[j]>=dim[j]) { const double d = (float)P1[j] - dim[j], D = 1.0f + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*(1.0f + P0[k] - P1[k])/D);  P1[j] = dim[j] - 1; }
+            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
+            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
         }
 
         Coord delta = P1 - P0;
@@ -274,8 +278,8 @@ protected:
         {
             if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
             if (P1[j]<0 || P0[j]>=dim[j]) return;
-            if (P0[j]<0) { const double D = 1.0f + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)((float)P0[j]*(1.0f + P1[k] - P0[k])/D);  P0[j] = 0; }
-            if (P1[j]>=dim[j]) { const double d = (float)P1[j] - dim[j], D = 1.0f + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*(1.0f + P0[k] - P1[k])/D);  P1[j] = dim[j] - 1; }
+            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
+            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
         }
 
         Coord delta = P1 - P0;

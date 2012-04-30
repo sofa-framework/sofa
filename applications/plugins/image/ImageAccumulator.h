@@ -46,8 +46,8 @@ namespace component
 namespace engine
 {
 
-using namespace defaulttype;
-using namespace helper;
+using helper::vector;
+using namespace cimg_library;
 
 /**
  * This class wraps images from a video stream into a single image
@@ -68,7 +68,7 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;

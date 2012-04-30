@@ -54,8 +54,11 @@ namespace component
 namespace container
 {
 
-using namespace defaulttype;
-
+using helper::vector;
+using defaulttype::Vec;
+using defaulttype::Vector3;
+using defaulttype::Mat;
+using namespace cimg_library;
 
 /**
    * \brief This component is responsible for loading images
@@ -84,7 +87,7 @@ public:
 
     // transform data
     typedef SReal Real;
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
