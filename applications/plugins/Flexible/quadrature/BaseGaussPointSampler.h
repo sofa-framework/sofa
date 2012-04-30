@@ -34,9 +34,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#define MIDPOINT 0
-#define SIMPSON 1
-#define GAUSSLEGENDRE 2
+#define GAUSSLEGENDRE 0
+#define NEWTONCOTES 1
+#define ELASTON 2
 
 
 namespace sofa
@@ -52,9 +52,8 @@ using defaulttype::Vec;
 /**
  * Abstract class for sampling integration points according to a specific quadrature method
  * Samplers provide:
- * - sample positions
- * - volume integrals associated to each sample up to order @param order (=moments for integration with elastons)
- * - quadrature weights
+ * - Sample positions according to integration method of order @param order
+ * - Weighted volume associated to each sample (for elastons, this is a vector of volume moments)
  */
 
 
@@ -88,12 +87,6 @@ public:
     typedef helper::WriteAccessor< Data< vector<volumeIntegralType> > > waVolume;
     //@}
 
-    /** @name weight data */
-    //@{
-//    Data< vector<Real> > f_weight;
-//    typedef helper::WriteAccessor<Data< vector<Real> > > waWeight;
-    //@}
-
     /** @name visu data */
     //@{
     Data< bool > showSamples;
@@ -105,16 +98,15 @@ public:
     BaseGaussPointSampler()    :   Inherited()
         , f_method ( initData ( &f_method,"method","quadrature method" ) )
         , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
-        , f_order(initData(&f_order,(unsigned int)4,"order","polynomial order of volume integrals"))
-        , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output volume integrals"))
-        //    , f_weight(initData(&f_weight,vector<Real>(),"weight","output quadrature weights"))
+        , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
+        , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
     {
-        helper::OptionsGroup methodOptions(3,"0 - midpoint"
-                ,"1 - Simpson"
-                ,"2 - GaussLegendre"
+        helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
+                ,"1 - Newton–Cotes"
+                ,"2 - Elastons"
                                           );
-        methodOptions.setSelectedItem(MIDPOINT);
+        methodOptions.setSelectedItem(GAUSSLEGENDRE);
         f_method.setValue(methodOptions);
     }
 
@@ -122,7 +114,6 @@ public:
     {
         addOutput(&f_position);
         addOutput(&f_volume);
-//        addOutput(&f_weight);
         setDirtyValue();
     }
 

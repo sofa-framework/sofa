@@ -34,6 +34,7 @@
 #include "ImageAlgorithms.h"
 
 #include <set>
+#include <map>
 
 namespace sofa
 {
@@ -126,12 +127,14 @@ protected:
 
     typedef std::set<unsigned int> indList;
     typedef std::map<indList, unsigned int> indMap;
+
     struct regionData
     {
         unsigned int nb;
         Coord c;
         Real err;
         indList indices;
+        vector<vector<Real> > coeff;
         regionData(indList ind):nb(1),c(Coord()),err(0),indices(ind) {}
     };
 
@@ -159,13 +162,12 @@ protected:
         outimg.fill((DistT)(-1));
 
         // identify regions with similar repartitions
-
         indMap List;
-
         vector<regionData> regions;
 
         // add initial points from user
         const unsigned int initialPosSize=pos.size();
+        std::cout<<"initialPosSize="<<initialPosSize<<std::endl;
         for(unsigned int i=0; i<initialPosSize; i++)
         {
             Coord p = transform->toImage(pos[i]);
@@ -185,19 +187,26 @@ protected:
         if(indices(x,y,z))
         {
             indList l;
-            cimg_forC(indices,v) l.insert(indices(x,y,z,v));
+            cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v));
             indMap::iterator it=List.find(l);
             unsigned int sampleindex;
             if(it==List.end()) { sampleindex=List.size(); List[l]=sampleindex;  regions.push_back(regionData(l));}
             else { sampleindex=it->second; regions[sampleindex].nb++;}
             outimg(x,y,z)=(DistT)sampleindex;
         }
-//        unsigned int maxsampleNumber=0;
-//        for(unsigned int i=0;i<regions.size();i++) if(maxsampleNumber<regions[i].nb) maxsampleNumber=regions[i].nb;
 
-        if(this->f_method.getValue().getSelectedId() == MIDPOINT)
+
+        if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
         {
-            // add point in the center of each region
+            serr<<"GAUSSLEGENDRE quadrature not yet implemented"<<sendl;
+        }
+        else if(this->f_method.getValue().getSelectedId() == NEWTONCOTES)
+        {
+            serr<<"NEWTONCOTES quadrature not yet implemented"<<sendl;
+        }
+        else if(this->f_method.getValue().getSelectedId() == ELASTON)
+        {
+            // add point in the center of each region, and compute region data (volumes and weights)
             pos.resize ( (List.size()>targetNumber.getValue())?List.size():targetNumber.getValue() );
             vol.resize ( pos.size() );
 
@@ -205,33 +214,57 @@ protected:
             {
                 pos[i]=Coord(0,0,0);
                 vector<Coord> pi((int)regions[i].nb);
-                vector<vector<DistT> > wi((int)nbref,vector<DistT>((int)regions[i].nb));
+                typedef std::map<unsigned int, vector<Real> > wiMap;
+                wiMap wi;
+                for(indList::iterator it=regions[i].indices.begin(); it!=regions[i].indices.end(); it++)
+                {
+                    vector<Real> w; w.reserve(regions[i].nb);  wi[*it]=w;
+                }
+
                 unsigned int count=0;
                 cimg_forXYZ(outimg,x,y,z)
                 if(outimg(x,y,z)==i)
                 {
-                    for(int j=0; j<nbref; j++) wi[j][count]=weights(x,y,z,j);
+                    // store weights relative to each index of the region
+                    for(int k=0; k<nbref; k++)
+                    {
+                        typename wiMap::iterator wIt;
+                        wIt=wi.find(indices(x,y,z,k));
+                        if(wIt!=wi.end()) wIt->second.push_back((Real)weights(x,y,z,k));
+                        else wIt->second.push_back((Real)0);
+                    }
+                    // store voxel positions
                     pi[count]=transform->fromImage(Coord(x,y,z));
                     pos[i]+=pi[count];
                     count++;
                 }
+                // compute region center
                 pos[i]/=(Real)regions[i].nb;
 
-                for(unsigned int j=0; j<regions[i].nb; j++)
+                // compute relative positions
+                for(unsigned int j=0; j<regions[i].nb; j++)  { pi[j]-=pos[i]; pi[j]*=(Real)(-1); }
+
+                // fit weights
+                for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
                 {
-                    pi[j]-=pos[i]; pi[j]*=(Real)(-1);
+                    vector<Real> coeff;
+                    defaulttype::PolynomialFit(coeff,wIt->second,pi,2);
+                    std::cout<<"weight fitting error on sample "<<i<<" ("<<wIt->first<<") = "<<defaulttype::getPolynomialFit_Error(coeff,wIt->second,pi)<< std::endl;
+                    regions[i].coeff.push_back(coeff);
+
+                }
+
+                cimg_forXYZ(outimg,x,y,z)
+                if(outimg(x,y,z)==i)
+                {
+                    outimg(x,y,z)=0;
+
                 }
             }
 
         }
-        else if(this->f_method.getValue().getSelectedId() == SIMPSON)
-        {
-            serr<<"SIMPSON quadrature not yet implemented"<<sendl;
-        }
-        else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
-        {
-            serr<<"GAUSSLEGENDRE quadrature not yet implemented"<<sendl;
-        }
+
+
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"ImageGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
     }

@@ -110,16 +110,16 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        //   waWeight w(this->f_weight);
 
-        if(this->f_method.getValue().getSelectedId() == MIDPOINT)
+        if ( tetrahedra.empty() && cubes.empty() )
         {
-            if ( tetrahedra.empty() && cubes.empty() )
+            if ( triangles.empty() && quads.empty() )
             {
-                if ( triangles.empty() && quads.empty() )
+                if ( edges.empty() ) return;
+                //no 3D elements, nor 2D elements -> map on 1D elements
+
+                if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
                 {
-                    if ( edges.empty() ) return;
-                    //no 3D elements, nor 2D elements -> map on 1D elements
                     pos.resize ( edges.size() );
                     vol.resize ( pos.size() );
                     for (unsigned int i=0; i<edges.size(); i++ )
@@ -127,11 +127,16 @@ protected:
                         const Coord& p1=parent[edges[i][0]],p2=parent[edges[i][1]];
                         pos[i] = (p1+p2)*0.5;
                         vol[i].resize(1); vol[i][0]=(p1-p2).norm();
+                        // to do : volume integrals for elastons
                     }
                 }
-                else
+                else serr<<"Requested quadrature method not yet implemented"<<sendl;
+            }
+            else
+            {
+                // no 3D elements -> map on 2D elements
+                if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
                 {
-                    // no 3D elements -> map on 2D elements
                     pos.resize ( triangles.size() +quads.size() );
                     vol.resize ( pos.size() );
                     for ( unsigned int i = 0; i < triangles.size(); i++ )
@@ -139,6 +144,7 @@ protected:
                         const Coord& p1=parent[triangles[i][0]],p2=parent[triangles[i][1]],p3=parent[triangles[i][2]];
                         pos[i] = (p1+p2+p3)/(Real)3.;
                         vol[i].resize(1); vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
+                        // to do : volume integrals for elastons
                     }
                     int c0 = triangles.size();
                     for ( unsigned int i = 0; i < quads.size(); i++ )
@@ -146,12 +152,17 @@ protected:
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
                         pos[i+c0] = (p1+p2+p3+p4)*0.25;
                         vol[i+c0].resize(1); vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
+                        // to do : volume integrals for elastons
                     }
                 }
+                else serr<<"Requested quadrature method not yet implemented"<<sendl;
             }
-            else
+        }
+        else
+        {
+            // map on 3D elements
+            if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
             {
-                // map on 3D elements
                 pos.resize ( tetrahedra.size() +cubes.size() );
                 vol.resize ( pos.size() );
                 for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
@@ -159,6 +170,7 @@ protected:
                     const Coord& p1=parent[tetrahedra[i][0]],p2=parent[tetrahedra[i][1]],p3=parent[tetrahedra[i][2]],p4=parent[tetrahedra[i][3]];
                     pos[i] = (p1+p2+p3+p4)*0.25;
                     vol[i].resize(1); vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
+                    // to do : volume integrals for elastons
                 }
                 int c0 = tetrahedra.size();
                 for ( unsigned int i = 0; i < cubes.size(); i++ )
@@ -169,23 +181,43 @@ protected:
                     //vol[i+c0].resize(1); vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
                 }
             }
+            else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
+            {
+                pos.resize ( 8*cubes.size() );
+                vol.resize ( pos.size() );
 
-            //  w.resize(pos.size()); for (unsigned int i=0;i<pos.size();i++) w[i]=(Real)1.;
-        }
-        else if(this->f_method.getValue().getSelectedId() == SIMPSON)
-        {
-            serr<<"SIMPSON quadrature not yet implemented"<<sendl;
-        }
-        else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
-        {
-            serr<<"GAUSSLEGENDRE quadrature not yet implemented"<<sendl;
+
+                // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
+                const Real offset = 0.5/sqrt(3.0);
+                unsigned int count=0;
+                for ( unsigned int i = 0; i < cubes.size(); i++ )
+                {
+                    const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
+                    Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
+                    const Real V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                    u*=offset; v*=offset; w*=offset;
+                    const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
+                    for (int gx1=-1; gx1<=1; gx1+=2)
+                        for (int gx2=-1; gx2<=1; gx2+=2)
+                            for (int gx3=-1; gx3<=1; gx3+=2)
+                            {
+                                pos[count] = c + u*gx3 + v*gx2 + w*gx1;
+                                vol[count].resize(1); vol[count][0] = V;
+                                //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
+                                //
+                                count++;
+                            }
+                }
+            }
+            else serr<<"Requested quadrature method not yet implemented"<<sendl;
+
         }
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
     }
 
 
-    // returns integrated volumes and moments across an element
+// returns integrated volumes and moments across an element
     inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;

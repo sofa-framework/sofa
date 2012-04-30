@@ -380,24 +380,25 @@ void PolynomialFit(vector<real>& coeff, const vector<real>& val, const vector<Ve
 }
 
 
-
 template<typename real>
 real getPolynomialFit_Error(const vector<real>& coeff, const vector<real>& val, const vector<Vec<3,real> >& pos)
+{
+    real error=0;
+    for(unsigned int i=0; i<pos.size(); i++) error+=getPolynomialFit_Error(coeff, val[i], pos[i]);
+    return error;
+}
+
+template<typename real>
+real getPolynomialFit_Error(const vector<real>& coeff, const real& val, const Vec<3,real>& pos)
 {
     typedef  Vec<3,real> Coord;
     int dim=coeff.size(),order;
     if(dim==1) order=0; else if(dim==4) order=1; else if(dim==10) order=2; else if(dim==20) order=3; else order=4;
     dim=(order+1)*(order+2)*(order+3)/6;
-
-    // get covariance and right term
-    real error=0;
     vector<real> basis;
-    for (unsigned int  k=0; k<pos.size(); k++)
-    {
-        getCompleteBasis(basis,pos[k],order);
-        real v=0; for (int i=0; i<dim; i++) v+=coeff[i]*basis[i];
-        error+=(v-(real)val[k])*(v-(real)val[k]);
-    }
+    getCompleteBasis(basis,pos,order);
+    real v=0; for (int i=0; i<dim; i++) v+=coeff[i]*basis[i];
+    real error=(v-(real)val)*(v-(real)val);
     return error;
 }
 
