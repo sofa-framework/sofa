@@ -60,167 +60,107 @@ int OglShaderClass = core::RegisterObject("OglShader")
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
     passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
-    vertFilename(initData(&vertFilename, (std::string) "shaders/toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, (std::string) "shaders/toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
-    geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
+    vertFilename(initData(&vertFilename, helper::vector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShader", "Set the vertex shader filename to load")),
+    fragFilename(initData(&fragFilename, helper::vector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShader", "Set the fragment shader filename to load")),
+#ifdef GL_GEOMETRY_SHADER_EXT
+    geoFilename(initData(&geoFilename, "fileGeometryShader", "Set the geometry shader filename to load")),
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    tessellationControlFilename(initData(&tessellationControlFilename, "fileTessellationControlShader", "Set the tessellation control filename to load")),
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    tessellationEvaluationFilename(initData(&tessellationEvaluationFilename, "fileTessellationEvaluationShader", "Set the tessellation evaluation filename to load")),
+#endif
+#ifdef GL_GEOMETRY_SHADER_EXT
     geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
     geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
     geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    tessellationOuterLevel(initData(&tessellationOuterLevel,(GLfloat)1, "tessellationOuterLevel", "For tessellation without control shader: default outer level (edge subdivisions)")),
+    tessellationInnerLevel(initData(&tessellationInnerLevel,(GLfloat)1, "tessellationInnerLevel", "For tessellation without control shader: default inner level (face subdivisions)")),
+#endif
+
     indexActiveShader(initData(&indexActiveShader, (unsigned int) 0, "indexActiveShader", "Set current active shader")),
     backfaceWriting( initData(&backfaceWriting, (bool) false, "backfaceWriting", "it enables writing to gl_BackColor inside a GLSL vertex shader" ) ),
-    clampVertexColor( initData(&clampVertexColor, (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) ),
-    hasGeometryShader(false)
+    clampVertexColor( initData(&clampVertexColor, (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) )
 {
-
-
+    addAlias(&vertFilename,"vertFilename");
+    addAlias(&fragFilename,"fragFilename");
+#ifdef GL_GEOMETRY_SHADER_EXT
+    addAlias(&geoFilename,"geoFilename");
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    addAlias(&tessellationOuterLevel,"tessellationLevel");
+    addAlias(&tessellationInnerLevel,"tessellationLevel");
+#endif
 }
 
 OglShader::~OglShader()
 {
-    if (shaderVector.size() == 0) return;
-    shaderVector[indexActiveShader.getValue()]->TurnOff();
-    for (unsigned int i=0 ; i<shaderVector.size() ; i++)
+    if (!shaderVector.empty())
     {
-        if (shaderVector[i])
+        shaderVector[indexActiveShader.getValue()]->TurnOff();
+        for (unsigned int i=0 ; i<shaderVector.size() ; i++)
         {
-            shaderVector[i]->Release();
-            delete shaderVector[i];
+            if (shaderVector[i])
+            {
+                shaderVector[i]->Release();
+                delete shaderVector[i];
+            }
         }
     }
 }
 
 void OglShader::init()
 {
-    ///Vertex filenames parsing
-    std::string tempStr = vertFilename.getFullPath();
-    std::string file;
-    const std::string SEPARATOR = ";";
-    size_t pos = 0;
-    size_t oldPos = 0;
+    unsigned int nshaders = 0;
+    nshaders = std::max(nshaders, (unsigned int)vertFilename.getValue().size());
+    nshaders = std::max(nshaders, (unsigned int)fragFilename.getValue().size());
+#ifdef GL_GEOMETRY_SHADER_EXT
+    nshaders = std::max(nshaders, (unsigned int)geoFilename.getValue().size());
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    nshaders = std::max(nshaders, (unsigned int)tessellationControlFilename.getValue().size());
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    nshaders = std::max(nshaders, (unsigned int)tessellationEvaluationFilename.getValue().size());
+#endif
 
-    pos = tempStr.find(SEPARATOR, oldPos);
+    sout << nshaders << " shader version(s)" << sendl;
 
-    while (pos != std::string::npos)
+    shaderVector.resize(nshaders);
+
+    for (unsigned int i=0 ; i<nshaders ; i++)
     {
-        file = tempStr.substr( oldPos, pos - oldPos);
-
-        if (!helper::system::DataRepository.findFile(file))
+        shaderVector[i] = new sofa::helper::gl::GLSLShader();
+        if (!vertFilename.getValue().empty())
         {
-            serr << "OglShader : vertex shader file " << file <<" was not found." << sendl;
-            return;
+            shaderVector[i]->SetVertexShaderFileName(vertFilename.getFullPath(std::min(i,(unsigned int)vertFilename.getValue().size()-1)));
         }
-        vertexFilenames.push_back( file );
-
-        oldPos = pos + SEPARATOR.size();
-        pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
+        if (!fragFilename.getValue().empty())
+        {
+            shaderVector[i]->SetFragmentShaderFileName(fragFilename.getFullPath(std::min(i,(unsigned int)fragFilename.getValue().size()-1)));
+        }
+#ifdef GL_GEOMETRY_SHADER_EXT
+        if (!geoFilename.getValue().empty())
+        {
+            shaderVector[i]->SetGeometryShaderFileName(geoFilename.getFullPath(std::min(i,(unsigned int)geoFilename.getValue().size()-1)));
+        }
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+        if (!tessellationControlFilename.getValue().empty())
+        {
+            shaderVector[i]->SetTessellationControlShaderFileName(tessellationControlFilename.getFullPath(std::min(i,(unsigned int)tessellationControlFilename.getValue().size()-1)));
+        }
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+        if (!tessellationEvaluationFilename.getValue().empty())
+        {
+            shaderVector[i]->SetTessellationEvaluationShaderFileName(tessellationEvaluationFilename.getFullPath(std::min(i,(unsigned int)tessellationEvaluationFilename.getValue().size()-1)));
+        }
+#endif
     }
-
-    file = tempStr.substr( oldPos );
-
-    if (!helper::system::DataRepository.findFile(file))
-    {
-        serr << "OglShader : vertex shader file " << file <<" was not found." << sendl;
-        return;
-    }
-    vertexFilenames.push_back( file );
-
-    ///Fragment filenames parsing
-    pos = oldPos = 0;
-    tempStr = fragFilename.getFullPath();
-
-    pos = tempStr.find(SEPARATOR, oldPos);
-
-    while (pos != std::string::npos)
-    {
-        file = tempStr.substr( oldPos, pos - oldPos );
-
-        if (!helper::system::DataRepository.findFile(file))
-        {
-            serr << "OglShader : fragment shader file " << file <<" was not found." << sendl;
-            return;
-        }
-        fragmentFilenames.push_back( file );
-
-        oldPos = pos + SEPARATOR.size();
-        pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
-    }
-
-    file = tempStr.substr( oldPos );
-    if (!helper::system::DataRepository.findFile(file))
-    {
-        serr << "OglShader : fragment shader file " << file <<" was not found." << sendl;
-        return;
-    }
-    fragmentFilenames.push_back( file );
-
-
-    ///Geometry filenames parsing
-    pos = oldPos = 0;
-    tempStr = geoFilename.getFullPath();
-
-    if (geoFilename.getValue() == "" )
-    {
-        //shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
-        //		             helper::system::DataRepository.getFile(fragFilename.getValue()));
-
-        if (fragmentFilenames.size() != vertexFilenames.size())
-        {
-            serr << "OglShader : The number of Vertex shaders is different from the number of Fragment Shaders." << sendl;
-            return;
-        }
-
-        shaderVector.resize(vertexFilenames.size());
-
-        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
-        {
-            shaderVector[i] = new sofa::helper::gl::GLSLShader();
-        }
-
-    }
-    else
-    {
-        pos = tempStr.find(SEPARATOR, oldPos);
-
-        while (pos != std::string::npos)
-        {
-            pos = tempStr.find(SEPARATOR, oldPos);
-            if (pos != std::string::npos)
-            {
-                file = tempStr.substr( oldPos, pos - oldPos );
-
-                if (!helper::system::DataRepository.findFile(file))
-                {
-                    serr << "OglShader : geometry shader file " << file <<" was not found." << sendl;
-                    return;
-                }
-                geometryFilenames.push_back( file );
-            }
-            oldPos = pos + SEPARATOR.size();
-            pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
-        }
-
-        file = tempStr.substr( oldPos );
-        if (!helper::system::DataRepository.findFile(file))
-        {
-            serr << "OglShader : geometry shader file " << file <<" was not found." << sendl;
-            return;
-        }
-        geometryFilenames.push_back( file );
-
-
-        if (fragmentFilenames.size() != vertexFilenames.size() && geometryFilenames.size() !=  vertexFilenames.size())
-        {
-            serr << "OglShader : The number of indicated shaders is not coherent (not the same number for each triplet." << sendl;
-            return;
-        }
-
-        shaderVector.resize(vertexFilenames.size());
-        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
-            shaderVector[i] = new sofa::helper::gl::GLSLShader();
-
-        hasGeometryShader = true;
-    }
-
 }
 
 void OglShader::reinit()
@@ -236,52 +176,37 @@ void OglShader::initVisual()
         serr << "OglShader : InitGLSL failed" << sendl;
         return;
     }
-
-    if (!hasGeometryShader)
-    {
-        for (unsigned int i=0 ; i<shaderVector.size() ; i++)
-        {
-            shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertexFilenames[i]),
-                    helper::system::DataRepository.getFile(fragmentFilenames[i]));
-        }
-    }
-    else
+    unsigned int nshaders = shaderVector.size();
+#ifdef GL_GEOMETRY_SHADER_EXT
+    if (!geoFilename.getValue().empty())
     {
         if (geometryInputType.getValue() != -1)
         {
-            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+            for (unsigned int i=0 ; i<nshaders ; i++)
                 setGeometryInputType(i, geometryInputType.getValue());
         }
         if (geometryOutputType.getValue() != -1)
         {
-            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+            for (unsigned int i=0 ; i<nshaders ; i++)
                 setGeometryOutputType(i, geometryOutputType.getValue());
         }
-#ifdef GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT
         GLint maxV;
         glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
         if (geometryVerticesOut.getValue() < 0 || geometryVerticesOut.getValue() > maxV)
         {
-            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
-                geometryVerticesOut.setValue(3);
+            geometryVerticesOut.setValue(maxV);
         }
-#endif
         if (geometryVerticesOut.getValue() >= 0)
         {
-            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+            for (unsigned int i=0 ; i<nshaders ; i++)
                 setGeometryVerticesOut(i, geometryVerticesOut.getValue());
         }
-
-
-
-        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
-        {
-            shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertexFilenames[i]),
-                    helper::system::DataRepository.getFile(geometryFilenames[i]),
-                    helper::system::DataRepository.getFile(fragmentFilenames[i]));
-        }
     }
-
+#endif
+    for (unsigned int i=0 ; i<nshaders ; i++)
+    {
+        shaderVector[i]->InitShaders();
+    }
 }
 
 void OglShader::drawVisual(const core::visual::VisualParams* )
@@ -291,26 +216,36 @@ void OglShader::drawVisual(const core::visual::VisualParams* )
 
 void OglShader::stop()
 {
-    if ( backfaceWriting.getValue() )
-        glDisable(GL_VERTEX_PROGRAM_TWO_SIDE);
-
-    if ( !clampVertexColor.getValue() )
-        glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_TRUE);
-
     if(turnOn.getValue())
+    {
+        if ( backfaceWriting.getValue() )
+            glDisable(GL_VERTEX_PROGRAM_TWO_SIDE);
+        if ( !clampVertexColor.getValue() )
+            glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_TRUE);
         shaderVector[indexActiveShader.getValue()]->TurnOff();
+    }
 }
 
 void OglShader::start()
 {
     if(turnOn.getValue())
+    {
         shaderVector[indexActiveShader.getValue()]->TurnOn();
-
-    if ( !clampVertexColor.getValue() )
-        glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
-
-    if ( backfaceWriting.getValue() )
-        glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
+        if ( !clampVertexColor.getValue() )
+            glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
+        if ( backfaceWriting.getValue() )
+            glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
+#ifdef GL_TESS_CONTROL_SHADER
+        if (shaderVector[indexActiveShader.getValue()]->GetTessellationEvaluationShaderID() && !shaderVector[indexActiveShader.getValue()]->GetTessellationControlShaderID() && GLEW_ARB_tessellation_shader)
+        {
+            helper::fixed_array<GLfloat,4> levels;
+            levels.assign(tessellationOuterLevel.getValue());
+            glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, levels.data());
+            levels.assign(tessellationInnerLevel.getValue());
+            glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, levels.data());
+        }
+#endif
+    }
 }
 
 bool OglShader::isActive()
@@ -322,6 +257,7 @@ void OglShader::updateVisual()
 {
 
 }
+
 unsigned int OglShader::getNumberOfShaders()
 {
     return shaderVector.size();
@@ -539,6 +475,7 @@ GLint OglShader::getGeometryInputType(const unsigned int index)
 {
     return shaderVector[index]->GetGeometryInputType();
 }
+
 void  OglShader::setGeometryInputType(const unsigned int index, GLint v)
 {
     shaderVector[index]->SetGeometryInputType(v);
@@ -575,6 +512,9 @@ void OglShaderElement::init()
 {
     sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
 
+    if (id.getValue().empty())
+        id.setValue(this->getName());
+
     /*when no multipass is active */
     sofa::component::visualmodel::CompositingVisualLoop* isMultipass=NULL;
     isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
@@ -604,8 +544,6 @@ void OglShaderElement::init()
         serr << this->getTypeName() <<" \"" << this->getName() << "\": no relevant shader found. please check tags validity"<< sendl;
         return;
     }
-    if (id.getValue().empty())
-        id.setValue(this->getName());
 }
 
 

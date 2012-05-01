@@ -76,18 +76,36 @@ public:
     Data<bool> passive;
 
     ///Files where vertex shader is defined
-    sofa::core::objectmodel::DataFileName vertFilename;
+    sofa::core::objectmodel::DataFileNameVector vertFilename;
     ///Files where fragment shader is defined
-    sofa::core::objectmodel::DataFileName fragFilename;
+    sofa::core::objectmodel::DataFileNameVector fragFilename;
+#ifdef GL_GEOMETRY_SHADER_EXT
     ///Files where geometry shader is defined
-    sofa::core::objectmodel::DataFileName geoFilename;
+    sofa::core::objectmodel::DataFileNameVector geoFilename;
+#endif
 
+#ifdef GL_TESS_CONTROL_SHADER
+    ///Files where tessellation control shader is defined
+    sofa::core::objectmodel::DataFileNameVector tessellationControlFilename;
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    ///Files where tessellation evaluation shader is defined
+    sofa::core::objectmodel::DataFileNameVector tessellationEvaluationFilename;
+#endif
+
+#ifdef GL_GEOMETRY_SHADER_EXT
     ///Describes the input type of primitive if geometry shader is used
     Data<int> geometryInputType;
     ///Describes the output type of primitive if geometry shader is used
     Data<int> geometryOutputType;
     ///Describes the number of vertices in output if geometry shader is used
     Data<int> geometryVerticesOut;
+#endif
+
+#ifdef GL_TESS_CONTROL_SHADER
+    Data<GLfloat> tessellationOuterLevel;
+    Data<GLfloat> tessellationInnerLevel;
+#endif
 
     Data<unsigned int> indexActiveShader;
 
@@ -99,13 +117,6 @@ public:
 protected:
     ///OpenGL shader
     std::vector<sofa::helper::gl::GLSLShader*> shaderVector;
-
-    bool hasGeometryShader;
-
-    std::vector<std::string> vertexFilenames;
-    std::vector<std::string> fragmentFilenames;
-    std::vector<std::string> geometryFilenames;
-
 
     OglShader();
     virtual ~OglShader();

@@ -33,6 +33,7 @@
 
 #include <sofa/helper/helper.h>
 #include <vector>
+#include <map>
 #include <iostream>
 
 namespace sofa
@@ -60,19 +61,48 @@ public:
 
     void AddDefineMacro(const std::string &name, const std::string &value);
 
+    void SetShaderFileName(GLint target, const std::string& fileName);
+    void SetVertexShaderFileName(const std::string& fileName)   { SetShaderFileName(GL_VERTEX_SHADER_ARB, fileName); }
+    void SetFragmentShaderFileName(const std::string& fileName) { SetShaderFileName(GL_FRAGMENT_SHADER_ARB, fileName); }
+#ifdef GL_GEOMETRY_SHADER_EXT
+    void SetGeometryShaderFileName(const std::string& fileName) { SetShaderFileName(GL_GEOMETRY_SHADER_EXT, fileName); }
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    void SetTessellationControlShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_CONTROL_SHADER, fileName); }
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    void SetTessellationEvaluationShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_EVALUATION_SHADER, fileName); }
+#endif
+
+    std::string GetShaderStageName(GLint target);
+
+
     /// This loads our text file for each shader and returns it in a string
     std::string LoadTextFile(const std::string& strFile);
 
     /// This is used to load all of the extensions and checks compatibility.
     static bool InitGLSL();
 
+    // This loads all shaders previously set with Set*ShaderFileName() methods
+    void InitShaders();
+
+#ifdef GL_GEOMETRY_SHADER_EXT
     /// This loads a vertex, geometry and fragment shader
-    void InitShaders(const std::string& strVertex, const std::string& stdGeometry, const std::string& strFragment);
+    void InitShaders(const std::string& strVertex, const std::string& strGeometry, const std::string& strFragment)
+    {
+        SetVertexShaderFileName(strVertex);
+        SetGeometryShaderFileName(strGeometry);
+        SetFragmentShaderFileName(strFragment);
+        InitShaders();
+    }
+#endif
 
     /// This loads a vertex and fragment shader
     void InitShaders(const std::string& strVertex, const std::string& strFragment)
     {
-        InitShaders(strVertex, std::string(""), strFragment);
+        SetVertexShaderFileName(strVertex);
+        SetFragmentShaderFileName(strFragment);
+        InitShaders();
     }
 
     /// This returns an ID for a variable in our shader
@@ -83,10 +113,26 @@ public:
 
     /// These are our basic get functions for our private data
     /// @{
-    GLhandleARB GetProgram()	{	return m_hProgramObject; }
-    GLhandleARB GetVertexS()	{	return m_hVertexShader; }
-    GLhandleARB GetGeometryS()	{	return m_hGeometryShader; }
-    GLhandleARB GetFragmentS()	{	return m_hFragmentShader; }
+    GLhandleARB GetProgram() const	{	return m_hProgramObject; }
+    std::string GetShaderFileName(GLint type) const;
+    GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
+    std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
+    GLhandleARB GetVertexShaderID        () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
+    std::string GetFragmentShaderFileName() const { return GetShaderFileName(GL_FRAGMENT_SHADER_ARB); }
+    GLhandleARB GetFragmentShaderID      () const { return GetShaderID      (GL_FRAGMENT_SHADER_ARB); }
+#ifdef GL_GEOMETRY_SHADER_EXT
+    std::string GetGeometryShaderFileName() const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
+    GLhandleARB GetGeometryShaderID      () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    std::string GetTessellationControlShaderFileName() { return GetShaderFileName(GL_TESS_CONTROL_SHADER); }
+    GLhandleARB GetTessellationControlShaderID      () { return GetShaderID      (GL_TESS_CONTROL_SHADER); }
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    std::string GetTessellationEvaluationShaderFileName() { return GetShaderFileName(GL_TESS_EVALUATION_SHADER); }
+    GLhandleARB GetTessellationEvaluationShaderID      () { return GetShaderID      (GL_TESS_EVALUATION_SHADER); }
+#endif
+    /// @}
 
     /// Below are functions to set an integer or a float
     /// @{
@@ -150,6 +196,7 @@ public:
     /// This releases our memory for our shader
     void Release();
 
+#ifdef GL_GEOMETRY_SHADER_EXT
     GLint GetGeometryInputType() { return geometry_input_type; }
     void  SetGeometryInputType(GLint v) { geometry_input_type = v; }
 
@@ -158,28 +205,26 @@ public:
 
     GLint GetGeometryVerticesOut() { return geometry_vertices_out; }
     void  SetGeometryVerticesOut(GLint v) { geometry_vertices_out = v; }
+#endif
 
 protected:
 
-    bool CompileShader(GLint target, const std::string& fileName, const std::string& header, GLhandleARB& shader);
+    bool CompileShader(GLint target, const std::string& fileName, const std::string& header);
 
     std::string header;
 
-    /// This handle stores our vertex shader information
-    GLhandleARB m_hVertexShader;
-
-    /// This handle stores our geometry shader information
-    GLhandleARB m_hGeometryShader;
-
-    /// This handle stores our fragment shader information
-    GLhandleARB m_hFragmentShader;
+    std::map<GLint, std::string> m_hFileNames;
+    std::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader
     GLhandleARB m_hProgramObject;
 
+#ifdef GL_GEOMETRY_SHADER_EXT
     GLint geometry_input_type;
     GLint geometry_output_type;
     GLint geometry_vertices_out;
+#endif
+
 };
 
 } // namespace gl

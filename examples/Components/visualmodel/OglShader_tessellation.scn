@@ -1,0 +1,36 @@
+<Node name="root" dt="0.02">
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <CollisionGroup />-
+    <Node name="Liver">
+        <EulerImplicit name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
+<!--        <CGLinearSolver template="CompressedRowSparseMatrix3d" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />-->
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshObjLoader name="loader" filename="mesh/sphere_02b.obj" scale="0.25 0.25 0.25" rotation="-90 0 0" triangulate="1" />
+        <TriangleSetTopologyContainer src="@loader" />
+        <MechanicalObject src="@loader" template="Vec3d" name="DOFs" />
+        <TriangleSetTopologyModifier />
+        <TriangleSetTopologyAlgorithms />
+        <TriangleSetGeometryAlgorithms />
+        <BoxConstraint box="-10 -10 -10  10 -5 10" />
+        <TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" restScale="0.97" method="large" />
+        <FastTriangularBendingSprings name="Bending" bendingStiffness="100" />
+        <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="100" printLog="1" />
+        <DiagonalMass name="mass" massDensity="1" printLog="0" />
+        <TriangleModel name="CM" />
+
+        <Node name="Visu">
+
+            <OglShader fileVertexShader="shaders/tessellationPNTriangle.glsl"
+                       fileTessellationControlShader="shaders/tessellationPNTriangle.glsl"
+                       fileTessellationEvaluationShader="shaders/tessellationPNTriangle.glsl"
+                       fileGeometryShader="shaders/tessellationPNTriangle.glsl"
+                       fileFragmentShader="shaders/tessellationPNTriangle.glsl"
+                       printLog="1" />
+            <OglFloatVariable name="TessellationLevel" value="6" />
+            <OglModel name="VisualModel" src="@../loader" color="white" primitiveType="PATCHES" />
+            <IdentityMapping />
+        </Node>
+    </Node>
+</Node>
