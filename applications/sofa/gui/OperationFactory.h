@@ -107,10 +107,11 @@ public:
     }
 
     template <class TOperation>
-    void add()
+    int add()
     {
         creator = new TOperationCreator< TOperation >();
         OperationFactory::getInstance()->registry.insert(std::make_pair(name, creator));
+        return 0; // we return an int so that this method can be called from static variable initializers
     }
 };
 
