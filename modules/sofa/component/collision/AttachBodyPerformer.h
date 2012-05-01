@@ -34,19 +34,8 @@
 
 namespace sofa
 {
-namespace core
-{
-namespace objectmodel
-{
-class TagSet;
-}
-}
 namespace component
 {
-namespace container
-{
-template< class T > class MechanicalObject;
-} // namespace container
 
 namespace collision
 {
@@ -72,11 +61,11 @@ class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public Attac
 {
 public:
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
-    typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
     AttachBodyPerformer(BaseMouseInteractor *i);
-    ~AttachBodyPerformer();
+    virtual ~AttachBodyPerformer();
 
     void start();
     void execute();
@@ -86,7 +75,7 @@ public:
 
 
 protected:
-    bool start_partial(const BodyPicked& picked);
+    virtual bool start_partial(const BodyPicked& picked);
     /*
     initialise MouseForceField according to template.
     StiffSpringForceField for Vec3

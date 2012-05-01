@@ -33,6 +33,8 @@
 #include <sofa/component/forcefield/TriangularFEMForceFieldOptim.h>
 #include <sofa/core/behavior/ForceField.inl>
 
+#include <sofa/component/linearsolver/BlocMatrixWriter.h>
+
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/topology/TopologyData.inl>
@@ -356,48 +358,19 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
 // --------------------------------------------------------------------------------------
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset)
+void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if ((offset % DerivSize) == 0 && m->getBlockRows() == DerivSize && m->getBlockCols() == DerivSize)
-    {
-        unsigned int boffset = offset / DerivSize;
-        if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,double> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,double> > * >(m))
-        {
-            addKToMatrixT(BlocCRSMatrixWriter<double>(mat, boffset), (Real)kFactor);
-        }
-        else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,float> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,float> > * >(m))
-        {
-            addKToMatrixT(BlocCRSMatrixWriter<float>(mat, boffset), (Real)kFactor);
-        }
-        else
-        {
-            addKToMatrixT(BlocBaseMatrixWriter(m, boffset), (Real)kFactor);
-        }
-    }
-    else
-    {
-        if (sofa::component::linearsolver::CompressedRowSparseMatrix<double> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<double> * >(m))
-        {
-            addKToMatrixT(CRSMatrixWriter<double>(mat, offset), (Real)kFactor);
-        }
-        else if (sofa::component::linearsolver::CompressedRowSparseMatrix<float> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<float> * >(m))
-        {
-            addKToMatrixT(CRSMatrixWriter<float>(mat, offset), (Real)kFactor);
-        }
-        else
-        {
-            addKToMatrixT(BaseMatrixWriter(m, offset), (Real)kFactor);
-        }
-    }
+    linearsolver::BlocMatrixWriter<MatBloc> writer;
+    writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
 }
 
 template<class DataTypes>
 template<class MatrixWriter>
-void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(MatrixWriter mwriter, Real kFactor)
+void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
-
+    const Real kFactor = (Real)mparams->kFactor();
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
     const Real gamma = this->gamma;

@@ -61,7 +61,8 @@ void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false)
     Vec3f center; Vec3f radius;
     if (onSphere)
     {
-        center = (bb.b+bb.a)/2;
+        // HACK: keep center at (0,0,0), so that we can use translation to concentrate vertices on one side of the sphere
+        //center = (bb.b+bb.a)/2;
         radius = (bb.b-bb.a)/2;
     }
 

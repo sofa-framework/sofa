@@ -155,7 +155,7 @@ declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
 declare(sofaTypedefs,	  applications/projects/sofaTypedefs,	  sofacore sofa_component sofa_component_dev)
 declare(meshconv,         applications/projects/meshconv,         sofa_component)
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain sofa_component_dev)
-declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component_dev)
+declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component_dev sofagpucuda sofagpucuda_dev)
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda sofagpucuda_dev sofa_component_dev)
 declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofa_component_dev sofa_base_linear_solver sofagpucuda sofagpucuda_dev)
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl

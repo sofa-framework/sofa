@@ -28,6 +28,8 @@ HEADERS += initBoundaryCondition.h \
            forcefield/SphereForceField.inl \
            forcefield/SurfacePressureForceField.h \
            forcefield/SurfacePressureForceField.inl \
+           forcefield/TaitSurfacePressureForceField.h \
+           forcefield/TaitSurfacePressureForceField.inl \
            forcefield/TrianglePressureForceField.h \
            forcefield/TrianglePressureForceField.inl \
            forcefield/VaccumSphereForceField.h \
@@ -78,6 +80,7 @@ SOURCES += initBoundaryCondition.cpp \
            forcefield/PlaneForceField.cpp \
            forcefield/SphereForceField.cpp \
            forcefield/SurfacePressureForceField.cpp \
+           forcefield/TaitSurfacePressureForceField.cpp \
            forcefield/TrianglePressureForceField.cpp \
            forcefield/VaccumSphereForceField.cpp \
            projectiveconstraintset/FixedConstraint.cpp \
