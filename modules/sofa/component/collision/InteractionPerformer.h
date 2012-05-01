@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
 
 #include <sofa/component/component.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -51,6 +52,8 @@ public:
 
     InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
+
+    virtual void configure(configurationsetting::MouseButtonSetting* /*setting*/) {}
 
     virtual void start()=0;
     virtual void execute()=0;

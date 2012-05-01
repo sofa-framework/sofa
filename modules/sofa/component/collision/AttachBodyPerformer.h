@@ -30,6 +30,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
@@ -42,22 +43,8 @@ namespace collision
 
 struct BodyPicked;
 
-class AttachBodyPerformerConfiguration
-{
-public:
-    AttachBodyPerformerConfiguration():stiffness(1000),size(0),showFactorSize(1.0)
-    {};
-    void setStiffness(double s) {stiffness=s;}
-    void setArrowSize(float s) {size=s;}
-    void setShowFactorSize(float s) {showFactorSize = s;}
-protected:
-    SReal stiffness;
-    SReal size;
-    SReal showFactorSize;
-};
-
 template <class DataTypes>
-class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public AttachBodyPerformerConfiguration
+class AttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
@@ -72,9 +59,26 @@ public:
     void draw(const core::visual::VisualParams* vparams);
     void clear();
 
+    void setStiffness(double s) {stiffness=s;}
+    void setArrowSize(float s) {size=s;}
+    void setShowFactorSize(float s) {showFactorSize = s;}
 
+    virtual void configure(configurationsetting::MouseButtonSetting* setting)
+    {
+        configurationsetting::AttachBodyButtonSetting* s = dynamic_cast<configurationsetting::AttachBodyButtonSetting*>(setting);
+        if (s)
+        {
+            setStiffness((double)s->stiffness.getValue());
+            setArrowSize((float)s->arrowSize.getValue());
+            setShowFactorSize((float)s->showFactorSize.getValue());
+        }
+    }
 
 protected:
+    SReal stiffness;
+    SReal size;
+    SReal showFactorSize;
+
     virtual bool start_partial(const BodyPicked& picked);
     /*
     initialise MouseForceField according to template.
