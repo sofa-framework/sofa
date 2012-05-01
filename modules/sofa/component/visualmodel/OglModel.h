@@ -68,6 +68,9 @@ protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
     Data<int> cullFace;
 
+    // primitive types
+    Data<sofa::helper::OptionsGroup> primitiveType;
+
     //alpha blend function
     Data<sofa::helper::OptionsGroup> blendEquation;
     Data<sofa::helper::OptionsGroup> sourceFactor;
@@ -76,7 +79,7 @@ protected:
 
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboTriangles, iboQuads;
-    bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
+    bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
 

@@ -66,12 +66,13 @@ OglModel::OglModel()
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
     , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
     , tex(NULL)
     , vbo(0), iboTriangles(0), iboQuads(0)
-    , canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
+    , canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
     textures.clear();
@@ -94,6 +95,11 @@ OglModel::OglModel()
     destFactorOptions->setSelectedItem(3);
     //this->f_printLog.setValue(true);
     destFactor.endEdit();
+
+    sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
+    primitiveTypeOptions->setNames(3, "DEFAULT", "LINES_ADJACENCY", "PATCHES");
+    primitiveTypeOptions->setSelectedItem(0);
+    primitiveType.endEdit();
 }
 
 OglModel::~OglModel()
@@ -150,6 +156,9 @@ void OglModel::drawGroup(int ig, bool transparent)
         m = this->material.getValue();
     else
         m = this->materials.getValue()[g.materialId];
+
+    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0);
+    if (transparent ^ isTransparent) return;
 
     if (!tex && m.useTexture && m.activated)
     {
@@ -213,10 +222,6 @@ void OglModel::drawGroup(int ig, bool transparent)
 //        }
     }
 
-
-    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0);
-    if (transparent ^ isTransparent) return;
-
     Vec4f ambient = m.useAmbient?m.ambient:Vec4f();
     Vec4f diffuse = m.useDiffuse?m.diffuse:Vec4f();
     Vec4f specular = m.useSpecular?m.specular:Vec4f();
@@ -242,29 +247,86 @@ void OglModel::drawGroup(int ig, bool transparent)
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    if(VBOGenDone && useVBO.getValue())
+    const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
+
+    if (g.nbt > 0)
     {
+        const Triangle* indices = NULL;
 #ifdef SOFA_HAVE_GLEW
-        if (g.nbt > 0)
-        {
+        if (useBufferObjects)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.tri0 * 3));
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-        }
-        if (g.nbq > 0)
+        else
+#endif
+            indices = triangles.getData();
+
+        GLenum prim = GL_TRIANGLES;
+        switch (primitiveType.getValue().getSelectedId())
         {
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.quad0 * 4));
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+        case 1:
+            serr << "LINES_ADJACENCY primitive type invalid for triangular topologies" << sendl;
+            break;
+        case 2:
+#ifdef GL_PATCHES
+            if (canUsePatches)
+            {
+                prim = GL_PATCHES;
+                glPatchParameteri(GL_PATCH_VERTICES,3);
+            }
+#endif
+            break;
+        default:
+            break;
         }
+
+        glDrawElements(prim, g.nbt * 3, GL_UNSIGNED_INT, indices + g.tri0);
+
+#ifdef SOFA_HAVE_GLEW
+        if (useBufferObjects)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 #endif
     }
-    else
+    if (g.nbq > 0)
     {
-        if (g.nbt > 0)
-            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, triangles.getData() + g.tri0);
-        if (g.nbq > 0)
-            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, quads.getData() + g.quad0);
+        const Quad* indices = NULL;
+#ifdef SOFA_HAVE_GLEW
+        if (useBufferObjects)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+        else
+#endif
+            indices = quads.getData();
+
+
+        GLenum prim = GL_QUADS;
+        switch (primitiveType.getValue().getSelectedId())
+        {
+        case 1:
+#ifndef GL_LINES_ADJACENCY_EXT
+            serr << "GL_LINES_ADJACENCY_EXT not defined, please activage GLEW" << sendl;
+#else
+            {
+                prim = GL_LINES_ADJACENCY_EXT;
+            }
+#endif
+            break;
+        case 2:
+#ifdef GL_PATCHES
+            if (canUsePatches)
+            {
+                prim = GL_PATCHES;
+                glPatchParameteri(GL_PATCH_VERTICES,4);
+            }
+#endif
+            break;
+        default:
+            break;
+        }
+
+        glDrawElements(prim, g.nbq * 4, GL_UNSIGNED_INT, indices + g.quad0);
+
+#ifdef SOFA_HAVE_GLEW
+        if (useBufferObjects)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+#endif
     }
 
     if (!tex && m.useTexture && m.activated)
@@ -649,6 +711,31 @@ void OglModel::initVisual()
     if (useVBO.getValue() && !canUseVBO)
     {
         serr << "OglModel : VBO is not supported by your GPU" << sendl;
+    }
+
+
+#endif
+
+#ifdef SOFA_HAVE_GLEW
+    if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
+    {
+        serr << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." << sendl;
+    }
+
+//#ifdef GL_ARB_tessellation_shader
+    canUsePatches = glewIsSupported("GL_ARB_tessellation_shader");
+//#endif
+
+    if (primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)
+    {
+#ifdef GL_ARB_tessellation_shader
+        serr << "GL_ARB_tessellation_shader not supported by your graphics card and/or OpenGL driver." << sendl;
+#else
+        serr << "GL_ARB_tessellation_shader not defined, please update GLEW to 1.5.4+" << sendl;
+#endif
+        serr << "GL Version: " << glGetString(GL_VERSION) << sendl;
+        serr << "GL Vendor : " << glGetString(GL_VENDOR) << sendl;
+        serr << "GL Extensions: " << glGetString(GL_EXTENSIONS) << sendl;
     }
 #endif
 

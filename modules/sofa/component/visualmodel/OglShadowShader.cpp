@@ -64,49 +64,49 @@ const std::string OglShadowShader::PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS = "shade
 
 OglShadowShader::OglShadowShader()
 {
-
-
+    passive.setValue(false);
+    turnOn.setValue(true);
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(2);
+    vertF[0] = PATH_TO_SHADOW_VERTEX_SHADERS;
+    vertF[1] = PATH_TO_SHADOW_VERTEX_SHADERS;
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(2);
+    fragF[0] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
+    fragF[1] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
+    fragFilename.endEdit();
 }
 
 OglShadowShader::~OglShadowShader()
 {
-
 }
 
 void OglShadowShader::init()
 {
-    passive.setValue(false);
-    turnOn.setValue(true);
-}
-
-void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softShadow)
-{
-    if(!softShadow)
-    {
-        vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
-        vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
-        fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
-        fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
-    }
-    else
-    {
-        vertexFilenames.push_back( PATH_TO_SOFT_SHADOW_VERTEX_SHADERS );
-        vertexFilenames.push_back( PATH_TO_SOFT_SHADOW_VERTEX_SHADERS );
-        fragmentFilenames.push_back( PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS );
-        fragmentFilenames.push_back( PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS );
-    }
-
-    shaderVector.push_back(new sofa::helper::gl::GLSLShader());
-    shaderVector.push_back(new sofa::helper::gl::GLSLShader());
+    OglShader::init();
 
     std::ostringstream oss;
     oss << LightManager::MAX_NUMBER_OF_LIGHTS;
 
-    this->addDefineMacro(0,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
-    this->addDefineMacro(0,std::string("ENABLE_SHADOW"), "0");
-    this->addDefineMacro(1,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
-    this->addDefineMacro(1,std::string("ENABLE_SHADOW"), "1");
+    addDefineMacro(0,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
+    addDefineMacro(0,std::string("ENABLE_SHADOW"), "0");
+    addDefineMacro(1,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
+    addDefineMacro(1,std::string("ENABLE_SHADOW"), "1");
+}
 
+void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softShadow)
+{
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(2);
+    vertF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
+    vertF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(2);
+    fragF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);
+    fragF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);
+    fragFilename.endEdit();
 }
 
 }//namespace visualmodel
