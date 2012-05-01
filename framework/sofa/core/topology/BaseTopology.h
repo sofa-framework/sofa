@@ -208,6 +208,13 @@ public:
     virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
     virtual const SeqTetrahedra& getTetrahedra()       { static SeqTetrahedra    empty; return empty; }
     virtual const SeqHexahedra& getHexahedra()         { static SeqHexahedra     empty; return empty; }
+
+    /** \brief Get the current revision of this mesh.
+    *
+    * This can be used to detect changes, however topological changes event should be used whenever possible.
+    */
+    virtual int getRevision() const { return m_changeList.getCounter(); }
+
     /// @}
 
     /// TopologyChange interactions
@@ -225,14 +232,14 @@ public:
     * Needed by topologies linked to this one to know what happened and what to do to take it into account.
     *
     */
-    void addTopologyChange(const TopologyChange *topologyChange);
+    virtual void addTopologyChange(const TopologyChange *topologyChange);
 
     /** \brief Adds a StateChange to the list.
     *
     * Needed by topologies linked to this one to know what happened and what to do to take it into account.
     *
     */
-    void addStateChange(const TopologyChange *topologyChange);
+    virtual void addStateChange(const TopologyChange *topologyChange);
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
@@ -254,12 +261,12 @@ public:
     /** \brief Free each Topology changes in the list and remove them from the list
     *
     */
-    void resetTopologyChangeList();
+    virtual void resetTopologyChangeList();
 
     /** \brief Free each State changes in the list and remove them from the list
     *
     */
-    void resetStateChangeList();
+    virtual void resetStateChangeList();
 
     ///@}
 

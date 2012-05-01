@@ -284,8 +284,8 @@ public:
     virtual const sofa::helper::vector<index_type> getConnectedElement(index_type elem);
     /// @}
 
-    /// get the current revision of this mesh (use to detect changes)
-    /// @deprecated
+    /// Get the current revision of this mesh.
+    /// This can be used to detect changes, however topological changes event should be used whenever possible.
     virtual int getRevision() const { return 0; }
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
