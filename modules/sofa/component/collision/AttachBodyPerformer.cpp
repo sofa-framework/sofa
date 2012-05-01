@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 
 #include <sofa/component/collision/AttachBodyPerformer.inl>
@@ -125,4 +124,3 @@ bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPic
 }
 }
 }
-#endif

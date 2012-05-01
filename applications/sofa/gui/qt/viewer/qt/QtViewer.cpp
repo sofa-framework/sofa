@@ -106,6 +106,13 @@ QGLFormat QtViewer::setupGLFormat()
     std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
+#if defined(QT_VERSION) && QT_VERSION >= 0x040700
+    int vmajor = 3, vminor = 2;
+    //int vmajor = 4, vminor = 2;
+    std::cout << "QtViewer: Trying to open an OpenGL " << vmajor << "." << vminor << " compatibility profile context" << std::endl;
+    f.setVersion(vmajor,vminor);
+    f.setProfile(QGLFormat::CompatibilityProfile);
+#endif
     //f.setOption(QGL::SampleBuffers);
     return f;
 }
@@ -116,6 +123,9 @@ QGLFormat QtViewer::setupGLFormat()
 QtViewer::QtViewer(QWidget* parent, const char* name)
     : QGLWidget(setupGLFormat(), parent, name)
 {
+#if defined(QT_VERSION) && QT_VERSION >= 0x040700
+    std::cout << "QtViewer: OpenGL " << format().majorVersion() << "." << format().minorVersion() << " context created." << std::endl;
+#endif
 
     groot = NULL;
     initTexturesDone = false;

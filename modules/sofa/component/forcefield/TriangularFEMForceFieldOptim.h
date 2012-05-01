@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -52,10 +51,6 @@ namespace forcefield
 
 //#define PLOT_CURVE //lose some FPS
 
-
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-using namespace sofa::component::topology;
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -89,6 +84,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
     typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
@@ -104,9 +100,9 @@ protected:
 //    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
 //    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
 //    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
-    typedef Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
+    typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
-    typedef Mat<DerivSize, DerivSize, Real> MatBloc;
+    typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
 
 protected:
     /// ForceField API
@@ -119,7 +115,7 @@ public:
     virtual void reinit();
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
@@ -240,16 +236,16 @@ public:
     };
 
     /// Topology Data
-    TriangleData<sofa::helper::vector<TriangleInfo> > triangleInfo;
-    TriangleData<sofa::helper::vector<TriangleState> > triangleState;
-    PointData<sofa::helper::vector<VertexInfo> > vertexInfo;
-    EdgeData<sofa::helper::vector<EdgeInfo> > edgeInfo;
+    topology::TriangleData<sofa::helper::vector<TriangleInfo> > triangleInfo;
+    topology::TriangleData<sofa::helper::vector<TriangleState> > triangleState;
+    topology::PointData<sofa::helper::vector<VertexInfo> > vertexInfo;
+    topology::EdgeData<sofa::helper::vector<EdgeInfo> > edgeInfo;
 
 
-    class TFEMFFOTriangleInfoHandler : public TopologyDataHandler<Triangle,vector<TriangleInfo> >
+    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,vector<TriangleInfo> >
     {
     public:
-        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleInfo> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInfo> >(_data), ff(_ff) {}
+        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInfo> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInfo& ,
                 const Triangle & t,
@@ -272,10 +268,10 @@ public:
         computeTriangleRotation(result,x0[t[0]], x0[t[1]], x0[t[2]]);
     }
 
-    class TFEMFFOTriangleStateHandler : public TopologyDataHandler<Triangle,vector<TriangleState> >
+    class TFEMFFOTriangleStateHandler : public topology::TopologyDataHandler<Triangle,vector<TriangleState> >
     {
     public:
-        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleState> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleState> >(_data), ff(_ff) {}
+        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleState> >* _data) : topology::TopologyDataHandler<Triangle, sofa::helper::vector<TriangleState> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleState& ,
                 const Triangle & t,
@@ -289,70 +285,7 @@ public:
     sofa::core::topology::BaseMeshTopology* _topology;
 
     template<class MatrixWriter>
-    void addKToMatrixT(MatrixWriter m, Real kFactor);
-
-    class BaseMatrixWriter
-    {
-        BaseMatrix* m;
-        unsigned int offset;
-    public:
-        BaseMatrixWriter(BaseMatrix* m, unsigned int offset) : m(m), offset(offset) {}
-        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
-        {
-            unsigned int i0 = offset + bi*DerivSize;
-            unsigned int j0 = offset + bj*DerivSize;
-            for (unsigned int i=0; i<DerivSize; ++i)
-                for (unsigned int j=0; j<DerivSize; ++j)
-                    m->add(i0+i,j0+j,b[i][j]);
-        }
-    };
-
-    class BlocBaseMatrixWriter
-    {
-        BaseMatrix* m;
-        unsigned int boffset;
-    public:
-        BlocBaseMatrixWriter(BaseMatrix* m, unsigned int boffset) : m(m), boffset(boffset) {}
-        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
-        {
-            unsigned int i0 = boffset + bi;
-            unsigned int j0 = boffset + bj;
-            m->blocAdd(i0,j0,b.ptr());
-        }
-    };
-
-    template<class MReal>
-    class BlocCRSMatrixWriter
-    {
-        sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,MReal> >* m;
-        unsigned int boffset;
-    public:
-        BlocCRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<DerivSize,DerivSize,MReal> >* m, unsigned int boffset) : m(m), boffset(boffset) {}
-        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
-        {
-            unsigned int i0 = boffset + bi;
-            unsigned int j0 = boffset + bj;
-            //defaulttype::Mat<DerivSize,DerivSize,MReal> bconv = b;
-            *m->wbloc(i0,j0,true) += b;
-        }
-    };
-
-    template<class MReal>
-    class CRSMatrixWriter
-    {
-        sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m;
-        unsigned int offset;
-    public:
-        CRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m, unsigned int offset) : m(m), offset(offset) {}
-        void add(unsigned int bi, unsigned int bj, const MatBloc& b)
-        {
-            unsigned int i0 = offset + bi*DerivSize;
-            unsigned int j0 = offset + bj*DerivSize;
-            for (unsigned int i=0; i<DerivSize; ++i)
-                for (unsigned int j=0; j<DerivSize; ++j)
-                    *m->wbloc(i0+i,j0+j,true) += (MReal)b[i][j];
-        }
-    };
+    void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
 public:
 

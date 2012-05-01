@@ -29,7 +29,8 @@ HEADERS += initBaseLinearSolver.h \
            linearsolver/ParallelMatrixLinearSolver.h \
            linearsolver/ParallelMatrixLinearSolver.inl \
            linearsolver/MatrixExpr.h \
-           linearsolver/matrix_bloc_traits.h
+           linearsolver/matrix_bloc_traits.h \
+           linearsolver/BlocMatrixWriter.h
 
 SOURCES += initBaseLinearSolver.cpp \
            linearsolver/CGLinearSolver.cpp \

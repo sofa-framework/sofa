@@ -9,7 +9,7 @@
                 <MeshTopology src="@loader" />
                 <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
                 <BoxConstraint box="-0.5 -0.5 -0.5  100.5 0.005 0.005  " />
-                <TriangleFEMForceField name="FEM1" youngModulus="20000" poissonRatio="0.3" method="large" />
+                <TriangularFEMForceFieldOptim name="FEM1" youngModulus="20000" poissonRatio="0.3" method="large" />
                 <FastTriangularBendingSprings bendingStiffness="10000" />
                 <UniformMass totalMass="2500" printLog="0" />
     </Node>

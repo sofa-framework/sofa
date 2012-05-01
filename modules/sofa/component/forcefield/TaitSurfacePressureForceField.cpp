@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initBoundaryCondition.h>
+#define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_CPP
+#include <sofa/component/forcefield/TaitSurfacePressureForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 
 namespace sofa
@@ -32,48 +34,37 @@ namespace sofa
 namespace component
 {
 
-
-void initBoundaryCondition()
+namespace forcefield
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(AspirationForceField)
-SOFA_LINK_CLASS(BuoyantForceField)
-SOFA_LINK_CLASS(ConicalForceField)
-SOFA_LINK_CLASS(ConstantForceField)
-#ifdef TODOTOPO
-SOFA_LINK_CLASS(EdgePressureForceField)
+using namespace sofa::defaulttype;
+
+SOFA_DECL_CLASS(TaitSurfacePressureForceField)
+
+int TaitSurfacePressureForceFieldClass = core::RegisterObject("\
+This component computes the volume enclosed by a surface mesh \
+and apply a pressure force following Tait's equation: $P = P_0 - B((V/V_0)^\\gamma - 1)$.\n\
+This ForceField can be used to apply :\n\
+ * a constant pressure (set $B=0$ and use $P_0$)\n\
+ * an ideal gas pressure (set $\\gamma=1$ and use $B$)\n\
+ * a pressure from water (set $\\gamma=7$ and use $B$)")
+#ifndef SOFA_FLOAT
+        .add< TaitSurfacePressureForceField<Vec3dTypes> >()
 #endif
-SOFA_LINK_CLASS(EllipsoidForceField)
-SOFA_LINK_CLASS(LinearForceField)
-#ifdef TODOTOPO
-SOFA_LINK_CLASS(OscillatingTorsionPressureForceField)
+#ifndef SOFA_DOUBLE
+        .add< TaitSurfacePressureForceField<Vec3fTypes> >()
 #endif
-SOFA_LINK_CLASS(PlaneForceField)
-SOFA_LINK_CLASS(SphereForceField)
-SOFA_LINK_CLASS(SurfacePressureForceField)
-SOFA_LINK_CLASS(TaitSurfacePressureForceField)
-#ifdef TODOTOPO
-SOFA_LINK_CLASS(TrianglePressureForceField)
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3dTypes>;
 #endif
-SOFA_LINK_CLASS(VaccumSphereForceField)
-SOFA_LINK_CLASS(FixedConstraint)
-SOFA_LINK_CLASS(FixedPlaneConstraint)
-SOFA_LINK_CLASS(FixedRotationConstraint)
-SOFA_LINK_CLASS(FixedTranslationConstraint)
-SOFA_LINK_CLASS(HermiteSplineConstraint)
-SOFA_LINK_CLASS(LinearMovementConstraint)
-SOFA_LINK_CLASS(LinearVelocityConstraint)
-SOFA_LINK_CLASS(OscillatorConstraint)
-SOFA_LINK_CLASS(ParabolicConstraint)
-SOFA_LINK_CLASS(PartialFixedConstraint)
-SOFA_LINK_CLASS(PartialLinearMovementConstraint)
-SOFA_LINK_CLASS(PositionBasedDynamicsConstraint)
+#ifndef SOFA_DOUBLE
+template class SOFA_BOUNDARY_CONDITION_API TaitSurfacePressureForceField<Vec3fTypes>;
+#endif
+
+
+} // namespace forcefield
 
 } // namespace component
 
