@@ -61,16 +61,16 @@ class Operation
 {
     friend class OperationFactory;
 public:
-    Operation(): pickHandle(NULL), performer(NULL),button(NONE) {};
-    virtual ~Operation() {};
-    virtual void configure(PickHandler*picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
+    Operation(): pickHandle(NULL), performer(NULL),button(NONE) {}
+    virtual ~Operation() {}
+    virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
     virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* setting)
-    { configure(picker,GetMouseId(setting->button.getValue().getSelectedId()));  }
-    virtual void start() =0;                   /// This function is called each time the mouse is clicked.
-    virtual void execution() =0;
-    virtual void end() =0;                     /// This function is called after each mouse click.
-    virtual void endOperation() {this->end();}; /// This function is called when shift key is released.
-    virtual void wait() {};
+    { configure(picker,GetMouseId(setting->button.getValue().getSelectedId())); }
+    virtual void start();                      /// This function is called each time the mouse is clicked.
+    virtual void execution() {}
+    virtual void end();                        /// This function is called after each mouse click.
+    virtual void endOperation() { this->end(); }  /// This function is called when shift key is released.
+    virtual void wait() {}
     static MOUSE_BUTTON GetMouseId(unsigned int i)
     {
         switch (i)
@@ -85,9 +85,11 @@ protected:
     PickHandler *pickHandle;
 public:
     sofa::component::collision::InteractionPerformer *performer;
-
-    MOUSE_BUTTON getMouseButton() const {return button;};
-    std::string getId() {return id;};
+    virtual std::string defaultPerformerType() { return ""; }
+    virtual sofa::component::collision::InteractionPerformer *createPerformer();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* /*p*/) {}
+    MOUSE_BUTTON getMouseButton() const { return button; }
+    std::string getId() { return id; }
 protected:
     MOUSE_BUTTON button;
 private:
@@ -100,10 +102,6 @@ public:
     AttachOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>())
     {}
     virtual ~AttachOperation() {}
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
-    virtual void endOperation() ;
 
     void setStiffness(double s) {setting->stiffness.setValue(s);}
     double getStiffness() const { return setting->stiffness.getValue();}
@@ -113,7 +111,11 @@ public:
     double getShowFactorSize() const { return setting->showFactorSize.getValue(); }
 
     static std::string getDescription() {return "Attach an object to the Mouse";}
+
 protected:
+    virtual std::string defaultPerformerType();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
 
@@ -125,25 +127,25 @@ public:
     {}
 
     virtual ~FixOperation() {};
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
 
     void setStiffness(double s) {setting->stiffness.setValue(s); }
     virtual double getStiffness() const { return setting->stiffness.getValue();}
 
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
+    virtual std::string defaultPerformerType();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+
     sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
 };
 
 class SOFA_SOFAGUI_API AddFrameOperation : public Operation
 {
 public:
-    virtual void start() ;
-    virtual void execution() {};
-    virtual void end() {};
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
+protected:
+    virtual std::string defaultPerformerType();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
 };
 
 
@@ -213,12 +215,8 @@ protected:
 class SOFA_SOFAGUI_API AddSutureOperation : public Operation
 {
 public:
-    AddSutureOperation():stiffness(10.0), damping(1.0) {};
-    virtual ~AddSutureOperation() {};
-    virtual void start();
-    virtual void execution() {};
-    virtual void end() {};
-    virtual void endOperation();
+    AddSutureOperation():stiffness(10.0), damping(1.0) {}
+    virtual ~AddSutureOperation() {}
 
     void setStiffness(double f) { stiffness = f;}
     virtual double getStiffness() const {return stiffness;}
@@ -227,6 +225,9 @@ public:
 
     static std::string getDescription() {return "Add a spring to suture two points.";}
 protected:
+    virtual std::string defaultPerformerType();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
+
     double stiffness;
     double damping;
 };

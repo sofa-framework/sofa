@@ -165,7 +165,7 @@ in G2F gdata;
 //uniform vec3 LightPosition;
 //uniform vec3 DiffuseMaterial;
 //uniform vec3 AmbientMaterial;
-const vec3 LIGHTPOS = vec3( 5., 10., 10. );
+const vec3 LIGHTPOS = vec3( 50., 100., 100. );
 
 float amplify(float d, float scale, float offset)
 {
@@ -181,11 +181,14 @@ void main()
     vec3 L = normalize(LIGHTPOS - gdata.position);
     float df = max(0,dot(N, L));
     vec3 color = gl_FrontLightProduct[0].diffuse.rgb * (0.2+0.8*df);
-
-    float d1 = min(min(gdata.triDistance.x, gdata.triDistance.y), gdata.triDistance.z);
-    float d2 = min(min(gdata.patchDistance.x, gdata.patchDistance.y), gdata.patchDistance.z);
-    color.rgb += 1-amplify(d1, 40, -0.5);
-    color.r += 1-amplify(d2, 60, -0.5);
+    //vec3 e1 = smoothstep(0.1,0.0,gdata.triDistance);
+    vec3 e1 = smoothstep(0.9,1.0,gdata.triDistance);
+    float d1 = max(max(e1.x,e1.y),e1.z);
+    //float d1 = dot(e1.xyz,e1.yzx);
+    vec3 e2 = smoothstep(0.02,0.0,gdata.patchDistance);
+    float d2 = e2.x+e2.y+e2.z;
+    color.rgb += d1;
+    color.r += d2;
 
     gl_FragColor = vec4(color, 1.0);
 }
