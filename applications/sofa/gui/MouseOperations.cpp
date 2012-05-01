@@ -97,6 +97,11 @@ sofa::component::collision::InteractionPerformer *Operation::createPerformer()
     return component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, pickHandle->getInteraction()->mouseInteractor.get());
 }
 
+void Operation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
+{
+    if (mbsetting) p->configure(mbsetting.get());
+}
+
 void Operation::end()
 {
     if (performer)
@@ -111,14 +116,17 @@ std::string AttachOperation::defaultPerformerType() { return "AttachBody"; }
 
 void AttachOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
 {
-    //Configuration
-    component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(p);
-    if (performerConfiguration)
-    {
-        performerConfiguration->setStiffness(getStiffness());
-        performerConfiguration->setArrowSize(getArrowSize());
-        performerConfiguration->setShowFactorSize(getShowFactorSize());
-    }
+    Operation::configurePerformer(p);
+    /*
+        //Configuration
+        component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(p);
+        if (performerConfiguration)
+        {
+            performerConfiguration->setStiffness(getStiffness());
+            performerConfiguration->setArrowSize(getArrowSize());
+            performerConfiguration->setShowFactorSize(getShowFactorSize());
+        }
+    */
 }
 
 //*******************************************************************************************
@@ -126,6 +134,7 @@ std::string FixOperation::defaultPerformerType() { return "FixParticle"; }
 
 void FixOperation::configurePerformer(sofa::component::collision::InteractionPerformer* performer)
 {
+    Operation::configurePerformer(performer);
     //Configuration
     component::collision::FixParticlePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::FixParticlePerformerConfiguration*>(performer);
     performerConfiguration->setStiffness(getStiffness());
@@ -297,8 +306,9 @@ InciseOperation::~InciseOperation()
 //*******************************************************************************************
 std::string AddFrameOperation::defaultPerformerType() { return "AddFrame"; }
 
-void AddFrameOperation::configurePerformer(sofa::component::collision::InteractionPerformer* /*performer*/)
+void AddFrameOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
 {
+    Operation::configurePerformer(p);
 }
 
 
@@ -307,6 +317,7 @@ std::string AddSutureOperation::defaultPerformerType() { return "SuturePoints"; 
 
 void AddSutureOperation::configurePerformer(sofa::component::collision::InteractionPerformer* performer)
 {
+    Operation::configurePerformer(performer);
     //configuration
     component::collision::SuturePointPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SuturePointPerformerConfiguration*>(performer);
     if (performerConfiguration)

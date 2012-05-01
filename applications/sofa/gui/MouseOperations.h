@@ -61,11 +61,11 @@ class Operation
 {
     friend class OperationFactory;
 public:
-    Operation(): pickHandle(NULL), performer(NULL),button(NONE) {}
+    Operation(sofa::component::configurationsetting::MouseButtonSetting::SPtr s = NULL): pickHandle(NULL),mbsetting(s),performer(NULL),button(NONE) {}
     virtual ~Operation() {}
     virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
-    virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* setting)
-    { configure(picker,GetMouseId(setting->button.getValue().getSelectedId())); }
+    virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* s)
+    { setSetting(s); configure(picker,GetMouseId(s->button.getValue().getSelectedId())); }
     virtual void start();                      /// This function is called each time the mouse is clicked.
     virtual void execution() {}
     virtual void end();                        /// This function is called after each mouse click.
@@ -83,11 +83,13 @@ public:
     }
 protected:
     PickHandler *pickHandle;
+    sofa::component::configurationsetting::MouseButtonSetting::SPtr mbsetting;
 public:
+    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { mbsetting = s; }
     sofa::component::collision::InteractionPerformer *performer;
     virtual std::string defaultPerformerType() { return ""; }
     virtual sofa::component::collision::InteractionPerformer *createPerformer();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* /*p*/) {}
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
     MOUSE_BUTTON getMouseButton() const { return button; }
     std::string getId() { return id; }
 protected:
@@ -99,7 +101,7 @@ private:
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    AttachOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>())
+    AttachOperation(sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>()) : Operation(s), setting(s)
     {}
     virtual ~AttachOperation() {}
 
@@ -113,6 +115,7 @@ public:
     static std::string getDescription() {return "Attach an object to the Mouse";}
 
 protected:
+    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(s); }
     virtual std::string defaultPerformerType();
     virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
 
