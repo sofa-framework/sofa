@@ -172,7 +172,9 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
     const unsigned int nbTriangles=points.size()/3;
     bool computeNormals= (normal.size() != nbTriangles);
     if (nbTriangles == 0) return;
-//            setMaterial(colour);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    setMaterial(colour[0]);
     glBegin(GL_TRIANGLES);
     {
         for (unsigned int i=0; i<nbTriangles; ++i)
@@ -197,7 +199,8 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
             }
         }
     } glEnd();
-//            resetMaterial(colour);
+    glDisable(GL_COLOR_MATERIAL);
+    resetMaterial(colour[0]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

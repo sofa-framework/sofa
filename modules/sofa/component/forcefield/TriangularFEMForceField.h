@@ -123,7 +123,6 @@ public:
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
-    Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
     //}
 
     /// Class to store FEM information on each triangle, for topology modification handling

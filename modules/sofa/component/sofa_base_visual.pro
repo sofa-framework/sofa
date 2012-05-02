@@ -10,14 +10,16 @@ HEADERS += initBaseVisual.h \
            visualmodel/InteractiveCamera.h \
            visualmodel/RecordedCamera.h \
            visualmodel/VisualModelImpl.h \
-		   visualmodel/VisualStyle.h
+		   visualmodel/VisualStyle.h \
+		   visualmodel/ColorMap.h
 
 SOURCES += initBaseVisual.cpp \
            visualmodel/BaseCamera.cpp \
            visualmodel/InteractiveCamera.cpp \
            visualmodel/RecordedCamera.cpp \
            visualmodel/VisualModelImpl.cpp \
-		   visualmodel/VisualStyle.cpp
+		   visualmodel/VisualStyle.cpp \
+		   visualmodel/ColorMap.cpp
 
 
 # Make sure there are no cross-dependencies

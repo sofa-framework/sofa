@@ -49,9 +49,6 @@ namespace forcefield
 {
 
 
-//#define PLOT_CURVE //lose some FPS
-
-
 /** corotational triangle from
 * @InProceedings{NPF05,
 *   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
@@ -171,13 +168,14 @@ public:
     {
     public:
         Transformation frame; // Mat<2,3,Real>
+        Deriv stress;
 
         TriangleState() { }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleState& ti )
         {
-            return os << "frame= " << ti.frame << " END";
+            return os << "frame= " << ti.frame << " stress= " << ti.stress << " END";
         }
 
         /// Input stream
@@ -188,6 +186,7 @@ public:
             {
                 if (str == "END") break;
                 else if (str == "frame=") in >> ti.frame;
+                else if (str == "stress=") in >> ti.stress;
                 else if (!str.empty() && str[str.length()-1]=='=') in >> str; // unknown value
             }
             return in;
@@ -287,6 +286,10 @@ public:
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
+    void getTriangleVonMisesStress(unsigned int i, Real& stressValue);
+    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
+    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
+
 public:
 
     /// Forcefield intern paramaters
@@ -301,6 +304,9 @@ public:
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
     TFEMFFOTriangleStateHandler* triangleStateHandler;
+
+protected:
+    Real drawPrevMaxStress;
 
 };
 
