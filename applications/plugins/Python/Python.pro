@@ -14,6 +14,9 @@ unix:macx {
     #boost.python
     INCLUDEPATH += /opt/local/include
     LIBS += -L/opt/local/lib/ -lboost_python$$BOOST_SUFFIX
+
+    #SofaGUI
+    LIBS += -lsofaguimain
 }
 
 unix:!macx {
