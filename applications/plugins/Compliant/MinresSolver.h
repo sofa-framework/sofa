@@ -4,6 +4,7 @@
 #include "ComplianceSolver.h"
 
 #include "utils/minres.h"
+#include "utils/cg.h"
 
 namespace sofa
 {
@@ -37,6 +38,7 @@ protected:
     Data<unsigned int> iterations_performed;
     Data<real> precision;
     Data<bool> use_warm;
+    Data<bool> use_cg;
 
     mutable vec last;
 
@@ -65,12 +67,14 @@ protected:
 //    vec& phi();
 
 
-    // solver type
+    // solver types
+    typedef ::krylov<SReal> krylov;
     typedef ::minres<SReal> minres;
+    typedef ::cg<SReal> cg;
 
     // requires visitor.fetch() == true
-    void solve_schur(minres::params& ) ;
-    void solve_kkt(minres::params& ) ;
+    void solve_schur(krylov::params& ) ;
+    void solve_kkt(krylov::params& ) ;
 
     // internal types
     struct schur;

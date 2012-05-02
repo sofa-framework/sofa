@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "utils/minres.h"
+#include "utils/cg.h"
 
 using std::cerr;
 using std::endl;
@@ -121,13 +122,13 @@ struct MinresSolver::kkt
 struct MinresSolver::schur
 {
 
-    const SMatrix& Minv;
+    const mat& Minv;
     const mat& J;
     const mat& C;
 
     mutable vec storage, Jx, MinvJx, Cx, JMinvJx;
 
-    schur(const SMatrix& Minv,
+    schur(const mat& Minv,
             const mat& J,
             const mat& C)
         : Minv(Minv),
@@ -161,23 +162,30 @@ struct MinresSolver::schur
 
 
 
-void MinresSolver::solve_schur(minres::params& p )
+void MinresSolver::solve_schur(krylov::params& p )
 {
     raii_log log("MinresSolver::solve_schur");
 
-    const vec rhs = phi() - J() * ( PMinvP() * f() );
+    const vec b = phi() - J() * ( PMinvP() * f() );
 
-    vec mylambda = vec::Zero( rhs.size() );
+    vec x = vec::Zero( b.size() );
+    warm( x );
 
-    // fills solution with previous if needed
-    warm( mylambda );
+    // schur matrix
+    schur A(PMinvP(), J(), C());
 
-    ::minres<double>::solve<schur>(mylambda, schur(PMinvP(), J(), C()), rhs, p);
+    if(use_cg.getValue())
+    {
+        cg::solve(x, A, b, p);
+    }
+    else
+    {
+        minres::solve(x, A, b, p);
+    }
 
-    last = mylambda;
+    last = x;
 
-    lambda() = mylambda;
-
+    lambda() = x;
 
     const vec ftmp = f() + J().transpose() * lambda();
     dv() = PMinvP() * ftmp;
@@ -193,18 +201,29 @@ void MinresSolver::warm(vec& x) const
     }
 }
 
-void MinresSolver::solve_kkt(minres::params& p )
+void MinresSolver::solve_kkt(krylov::params& p )
 {
     raii_log log("MinresSolver::solve_kkt");
-    vec rhs; rhs.resize(f().size() + phi().size());
+    vec b; b.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
-    rhs << P() * f(), -phi();
+    b << P() * f(), -phi();
 
-    vec x = vec::Zero( rhs.size() );
+    vec x = vec::Zero( b.size() );
     warm(x);
 
-    minres::solve(x, kkt(M(), J(), P(), C() ), rhs, p);
+    // kkt matrix
+    kkt A(M(), J(), P(), C());
+
+    if(use_cg.getValue())
+    {
+        // cg::solve(x, A, b, p);
+    }
+    else
+    {
+        minres::solve(x, A, b, p);
+    }
+
     last = x;
 
     dv() = P() * x.head( f().size() );
@@ -216,16 +235,20 @@ void MinresSolver::solve_kkt(minres::params& p )
 void MinresSolver::solveEquation()
 {
     // setup minres
-    minres::params p;
+    krylov::params p;
     p.iterations = max_iterations.getValue();
     p.precision = precision.getValue();
 
     // solve for lambdas
 //        lambda() = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
     if(use_kkt.getValue())
+    {
         solve_kkt(p);
+    }
     else
+    {
         solve_schur(p);
+    }
 
     iterations_performed.setValue( p.iterations );
 
@@ -237,19 +260,22 @@ void MinresSolver::solveEquation()
 
 MinresSolver::MinresSolver()
     : use_kkt( initData(&use_kkt, false, "kkt",
-            "Work on KKT system instead of Schur complement") ),
+            "Work on KKT system instead of Schur complement ?") ),
 
     max_iterations( initData(&max_iterations, (unsigned int)(100), "maxIterations",
-            "Iterations bound for the MINRES solver")),
+            "Solver iterations bound")),
 
     iterations_performed( initData(&iterations_performed, (unsigned int)(0), "iterationsPerformed",
-            "Iterations actually performed by the MINRES solver for the last time step")),
+            "Iterations performed during the last time step (read-only)")),
 
     precision( initData(&precision, 1e-7, "precision",
-            "Residual threshold for the MINRES solver")),
+            "Residual threshold")),
 
     use_warm( initData(&use_warm, false, "warm",
-            "Warm start MINRES"))
+            "Warm start solver ?")),
+
+    use_cg( initData(&use_cg, false, "cg",
+            "Use CG instead of MINRES ?"))
 {
 
 }
