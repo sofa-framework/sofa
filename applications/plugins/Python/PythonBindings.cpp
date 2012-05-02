@@ -16,6 +16,8 @@ using namespace boost::python;
 #include <sofa/component/typedef/MechanicalState_double.h>
 #include <sofa/component/typedef/Mass_double.h>
 #include <sofa/component/typedef/Particles_double.h>
+#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/SofaGUI.h>
 
 #include "PythonScriptController.h"
 
@@ -29,6 +31,7 @@ using namespace sofa::component::container;
 using namespace sofa::component::controller;
 using namespace sofa::core::behavior;
 using namespace sofa::core::visual;
+using namespace sofa::gui;
 
 //sofa::simulation::xml::BaseElement::NodeFactory* getNodeFactory() {return sofa::simulation::xml::BaseElement::NodeFactory::getInstance();}
 
@@ -67,13 +70,27 @@ BaseNode::SPtr getChildNode(objectmodel::BaseNode* node,const std::string& path)
         }
     return sptr;
 }
+// send a message to the GUI
+void sendGUIMessage(const std::string& msgType, const std::string& msgValue)
+{
+    SofaGUI *gui = GUIManager::getGUI();
+    if (!gui)
+    {
+        printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType.c_str(),msgValue.c_str());
+        return;
+    }
+    gui->sendMessage(msgType,msgValue);
+}
 
 BOOST_PYTHON_MODULE( Sofa )
 {
-//    def ("createObject", createObject);
     def ("createObject", createObject);//, return_value_policy<reference_existing_object>());
     def ("getObject", getObject);//, return_value_policy<reference_existing_object>());
     def ("getChildNode", getChildNode);//, return_value_policy<reference_existing_object>());
+
+    // send message to the GUI...
+    def ("sendGUIMessage", sendGUIMessage);
+
 
     class_ <Base, Base::SPtr, boost::noncopyable>("Base", no_init)
     //      .def("setName",setName1)

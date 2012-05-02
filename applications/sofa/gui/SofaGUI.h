@@ -65,6 +65,7 @@ public:
     virtual void configureGUI(sofa::simulation::Node::SPtr groot);
 
     /// @name methods to configure the GUI
+    /// @{
     virtual void setViewerResolution(int /* width */, int /* height */) {};
     virtual void setFullScreen() {};
     virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
@@ -80,6 +81,11 @@ public:
 
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {};
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
+    /// @}
+
+    /// @name methods to communicate with the GUI
+    /// @{
+    virtual void sendMessage(const std::string & /*msgType*/,const std::string & /*msgValue*/) {}
     /// @}
 
     void exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory="");
