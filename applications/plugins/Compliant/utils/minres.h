@@ -20,11 +20,9 @@
 // solver::vec x, b;
 // solver::solve(x, A, b);
 
-
 template<class U>
 struct minres
 {
-
 
     // some useful types
     typedef U real;
@@ -48,13 +46,14 @@ struct minres
 
         vec residual = b;
 
-        if( !x.rows() )
+        // deal with warm start
+        if( !x.size() )
         {
-            x = vec::Zero( b.rows() );
+            x = vec::Zero( b.size() );
         }
         else
         {
-            assert(x.rows() == b.rows() );
+            assert(x.size() == b.size() );
             residual -= A(x);
         }
 
@@ -77,7 +76,7 @@ struct minres
     struct data
     {
 
-        natural n;
+        natural n;			// dimension
 
         real beta;
 
@@ -103,7 +102,7 @@ struct minres
         // initializes minres given initial residual @r
         void residual(const vec& r)
         {
-            n = r.rows();
+            n = r.size();
 
             const typename vec::ConstantReturnType zero = vec::Zero(n);
 
@@ -175,9 +174,7 @@ struct minres
 
                 res.alpha = v.dot( p );
 
-                p -= res.alpha * v;
-
-                res.v = p - beta * v_prev;
+                p -= res.alpha * v + beta * v_prev;
 
                 res.beta = res.v.norm();
 
@@ -260,26 +257,27 @@ struct minres
             tau = c * phi;
             phi = s * phi;
 
-            norm = (k == 1) ? std::sqrt( alpha * alpha + beta * beta )
-                    : std::max(norm, std::sqrt( alpha * alpha + beta * beta + beta_prev * beta_prev));
+            norm = (k == 1) ? std::sqrt( alpha * alpha  +  beta * beta )
+                    : std::max(norm, std::sqrt( alpha * alpha  +  beta * beta  +  beta_prev * beta_prev));
 
             if( gamma_2 )
             {
-                vec& tmp = v_prev;	// we use vprev as temporary
-                tmp = d;
+                vec& d_next = v_prev;	// we use vprev as a temporary
 
-                d.noalias() = (v  -  delta_2 * d  -  eps * d_prev ) / gamma_2;
-                x += tau * d;
+                d_next = (v  -  delta_2 * d  -  eps * d_prev ) / gamma_2;
+                x += tau * d_next;
 
                 gamma_min = (k == 1)? gamma_2 : std::min(gamma_min, gamma_2);
                 assert( gamma_min );
 
                 cond = norm / gamma_min;
 
-                d_prev = tmp;
+                // pointer swaps instead of copies
+                d_prev.swap( d );
+                d.swap( d_next );
 
-                v_prev = v;
-                v = v_next;
+                v_prev.swap( v );
+                v.swap( v_next );
 
                 eps = eps_next;
                 delta_1 = delta_1_next;
