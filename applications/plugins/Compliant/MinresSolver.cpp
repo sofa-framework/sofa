@@ -95,7 +95,7 @@ struct MinresSolver::kkt
             #pragma omp section
             {
                 JTlambda.noalias() = J.transpose() * x.tail(n);
-                PTJTlambda.noalias() = P * JTlambda; // should be P.transpose()
+                PTJTlambda.noalias() = P.transpose() * JTlambda; // TODO is this optimized ? is P symmetric ?
             }
             #pragma omp section
             Clambda.noalias() = C * x.tail(n);
@@ -160,68 +160,17 @@ struct MinresSolver::schur
 };
 
 
-//      const MinresSolver::mat& MinresSolver::M() const {
-//	return _matM;
-//      }
-
-//      MinresSolver::mat& MinresSolver::M() {
-//	return _matM;
-//      }
-
-
-//      const MinresSolver::mat& MinresSolver::J() const {
-//	return _matJ;
-//      }
-
-//      MinresSolver::mat& MinresSolver::J() {
-//	return _matJ;
-//      }
-
-//      const MinresSolver::mat& MinresSolver::C() const {
-//	return _matC;
-//      }
-
-//      MinresSolver::mat& MinresSolver::C() {
-//	return _matC;
-//      }
-
-
-//      const MinresSolver::mat& MinresSolver::projMatrix() const {
-//          return P();
-//      }
-
-//      MinresSolver::mat& MinresSolver::projMatrix() {
-//	return _matP;
-//      }
-
-
-//      MinresSolver::vec& MinresSolver::f() {
-//	return _vecF.getVectorEigen();
-//      }
-
-//      const MinresSolver::vec& MinresSolver::f() const {
-//        return vecF().getVectorEigen();
-//      }
-
-
-//      const MinresSolver::vec& MinresSolver::phi() const {
-//	return _vecPhi.getVectorEigen();
-//      }
-
-//      MinresSolver::vec& MinresSolver::phi() {
-//        return vecPhi().getVectorEigen();
-//      }
-
 
 void MinresSolver::solve_schur(minres::params& p )
 {
     raii_log log("MinresSolver::solve_schur");
 
-
     const vec rhs = phi() - J() * ( PMinvP() * f() );
 
     vec mylambda = vec::Zero( rhs.size() );
-    warm(mylambda);
+
+    // fills solution with previous if needed
+    warm( mylambda );
 
     ::minres<double>::solve<schur>(mylambda, schur(PMinvP(), J(), C()), rhs, p);
 
