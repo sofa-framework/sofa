@@ -2,7 +2,7 @@
 #define COMPLIANT_UTILS_MINRES_H
 
 #include <cassert>
-#include <Eigen/Core>
+#include "krylov.h"
 
 // License: LGPL 2.1
 // Author: Maxime Tournier
@@ -24,19 +24,12 @@ template<class U>
 struct minres
 {
 
-    // some useful types
-    typedef U real;
-    typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
-    typedef unsigned int natural;
+    typedef ::krylov<U> krylov;
 
-
-    // iterations control
-    struct params
-    {
-        params() : iterations(0), precision(0) { }
-        natural iterations;
-        real precision;
-    };
+    typedef typename krylov::vec vec;
+    typedef typename krylov::real real;
+    typedef typename krylov::natural natural;
+    typedef typename krylov::params params;
 
     // solves Ax = b using minres.
     // @A is a function object vec -> vec implementing matrix multiplication
