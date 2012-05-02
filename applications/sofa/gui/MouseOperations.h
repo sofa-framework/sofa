@@ -31,6 +31,7 @@
 
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
 #include <sofa/component/configurationsetting/FixPickedParticleButtonSetting.h>
+#include <sofa/gui/SofaGUI.h>
 
 namespace sofa
 {
@@ -57,7 +58,7 @@ struct MousePosition
 
 class PickHandler;
 
-class Operation
+class SOFA_SOFAGUI_API Operation
 {
     friend class OperationFactory;
 public:
