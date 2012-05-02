@@ -34,6 +34,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/component/linearsolver/BlocMatrixWriter.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -92,8 +93,9 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , f_young(initData(&f_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_restScale(initData(&f_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
-    , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
+    , showStressValue(initData(&showStressValue,true,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , drawPrevMaxStress((Real)-1.0)
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &triangleInfo);
     triangleStateHandler = new TFEMFFOTriangleStateHandler(this, &triangleState);
@@ -181,6 +183,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(unsigned int /*i
     Coord ab = x[t[1]]-a;
     Coord ac = x[t[2]]-a;
     computeTriangleRotation(ti.frame, ab, ac);
+    ti.stress.clear();
 }
 
 // --------------------------------------------------------------------------------------
@@ -282,6 +285,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
             mu*strain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * strain
             mu*strain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * strain
             (Real)(0.5)*mu*strain[2]); // (       0,        0, mu/2) * strain
+
+        ts.stress = stress;
 
         stress *= ti.ss_factor;
         //sout << "Elem" << i << ": F= " << -(ti.cy * stress[0] - ti.cx * stress[2] + ti.bx * stress[2]) << " " << -(ti.cy * stress[2] - ti.cx * stress[1] + ti.bx * stress[1]) << "  " << (ti.cy * stress[0] - ti.cx * stress[2]) << " " << (ti.cy * stress[2] - ti.cx * stress[1]) << "  " << (ti.bx * stress[2]) << " " << (ti.bx * stress[1]) << sendl;
@@ -443,6 +448,70 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
     }
 }
 
+template<class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(unsigned int i, Real& stressValue)
+{
+    Deriv s = triangleState[i].stress;
+    Real vonMisesStress = sofa::helper::rsqrt(s[0]*s[0] - s[0]*s[1] + s[1]*s[1] + 3*s[2]);
+    stressValue = vonMisesStress;
+}
+
+template<class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection)
+{
+    Real stressValue2;
+    Deriv stressDirection2;
+    getTrianglePrincipalStress(i, stressValue, stressDirection, stressValue2, stressDirection2);
+}
+
+template<class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2)
+{
+    const TriangleState& ts = triangleState[i];
+    Deriv s = ts.stress;
+
+    // If A = [ a b ] is a real symmetric 2x2 matrix
+    //        [ b d ]
+    // the eigen values are :
+    //   L1,L2 = (T +- sqrt(T^2 - 4*D))/2
+    // with T = trace(A) = a+d
+    // and D = det(A) = ad-b^2
+    // and the eigen vectors are [ b   L-a ]
+    //         ( or equivalently [ L-d   b ] )
+
+    Real tr = (s[0]+s[1]);
+    Real det = s[0]*s[1]-s[2]*s[2];
+    Real deltaV = helper::rsqrt(tr*tr-4*det);
+    Real eval1, eval2;
+    defaulttype::Vec<2,Real> evec1, evec2;
+    eval1 = (tr + deltaV)/2;
+    eval2 = (tr - deltaV)/2;
+    if (s[2] == 0)
+    {
+        evec1[0] = 1; evec1[1] = 0;
+        evec2[0] = 0; evec2[1] = 1;
+    }
+    else
+    {
+        evec1[0] = s[2]; evec1[1] = eval1-s[0];
+        evec2[0] = s[2]; evec2[1] = eval2-s[0];
+    }
+    Deriv edir1 = ts.frame.multTranspose(evec1);
+    Deriv edir2 = ts.frame.multTranspose(evec2);
+    edir1.normalize();
+    edir2.normalize();
+
+    if (helper::rabs(eval1) > helper::rabs(eval2))
+    {
+        stressValue  = eval1;  stressDirection  = edir1;
+        stressValue2 = eval2;  stressDirection2 = edir2;
+    }
+    else
+    {
+        stressValue  = eval2;  stressDirection  = edir2;
+        stressValue2 = eval1;  stressDirection2 = edir1;
+    }
+}
 
 // --------------------------------------------------------------------------------------
 // --- Display methods
@@ -456,12 +525,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    std::vector< Vector3 > points[4];
-
-    const Vec<4,float> c0(1,0,0,1);
-    const Vec<4,float> c1(0,1,0,1);
-    const Vec<4,float> c2(1,0.5,0,1);
-    const Vec<4,float> c3(0,0,1,1);
+    using defaulttype::Vector3;
+    using defaulttype::Vec3i;
+    using defaulttype::Vec4f;
 
     const VecCoord& x = *this->mstate->getX();
     unsigned int nbTriangles=_topology->getNbTriangles();
@@ -469,47 +535,148 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
-    points[0].reserve(nbTriangles*2);
-    points[1].reserve(nbTriangles*2);
-    points[2].reserve(nbTriangles*6);
-    points[3].reserve(nbTriangles*6);
-    for (unsigned int i=0; i<nbTriangles; ++i)
+    const bool showStressValue = this->showStressValue.getValue();
+    const bool showStressVector = this->showStressVector.getValue();
+    if (showStressValue || showStressVector)
     {
-        Triangle t = triangles[i];
-        const TriangleInfo& ti = triInfo[i];
-        const TriangleState& ts = triState[i];
-        Coord a = x[t[0]];
-        Coord b = x[t[1]];
-        Coord c = x[t[2]];
-        Coord fx = ts.frame[0];
-        Coord fy = ts.frame[1];
-        Vector3 center = (a+b+c)*(1.0f/3.0f);
-        Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
-        points[0].push_back(center);
-        points[0].push_back(center + ts.frame[0] * scale);
-        points[1].push_back(center);
-        points[1].push_back(center + ts.frame[1] * scale);
-        Coord a0 = center - fx * (ti.bx/3 + ti.cx/3) - fy * (ti.cy/3);
-        Coord b0 = a0 + fx * ti.bx;
-        Coord c0 = a0 + fx * ti.cx + fy * ti.cy;
-        points[2].push_back(a0);
-        points[2].push_back(b0);
-        points[2].push_back(b0);
-        points[2].push_back(c0);
-        points[2].push_back(c0);
-        points[2].push_back(a0);
-        points[3].push_back(a0);
-        points[3].push_back(a );
-        points[3].push_back(b0);
-        points[3].push_back(b );
-        points[3].push_back(c0);
-        points[3].push_back(c );
+        Real minStress = 0;
+        Real maxStress = 0;
+        std::vector<Real> stresses;
+        std::vector<Deriv> stressVectors;
+        std::vector<Real> stresses2;
+        std::vector<Deriv> stressVectors2;
+        stresses.resize(nbTriangles);
+        if (showStressVector)
+        {
+            stressVectors.resize(nbTriangles);
+            stresses2.resize(nbTriangles);
+            stressVectors2.resize(nbTriangles);
+        }
+        for (unsigned int i=0; i<nbTriangles; i++)
+        {
+            if (showStressVector)
+            {
+                getTrianglePrincipalStress(i,stresses[i],stressVectors[i],stresses2[i],stressVectors2[i]);
+            }
+            else
+            {
+                getTriangleVonMisesStress(i,stresses[i]);
+            }
+            if ( stresses[i] < minStress ) minStress = stresses[i];
+            if ( stresses[i] > maxStress ) maxStress = stresses[i];
+        }
+        maxStress = std::max(-minStress, maxStress);
+        minStress = 0;
+        if (drawPrevMaxStress > maxStress)
+            maxStress = drawPrevMaxStress; //(Real)(maxStress * 0.01 + drawPrevMaxStress * 0.99);
+        drawPrevMaxStress = maxStress;
+        visualmodel::ColorMap::evaluator<Real> evalColor = visualmodel::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
+        if (showStressValue)
+        {
+            std::vector< Vector3 > points;
+            std::vector< Vector3 > normals;
+            std::vector< Vec4f > colors;
+            for (unsigned int i=0; i<nbTriangles; i++)
+            {
+                Triangle t = triangles[i];
+                Vector3 a = x[t[0]];
+                Vector3 b = x[t[1]];
+                Vector3 c = x[t[2]];
+                Vec4f color = evalColor(helper::rabs(stresses[i]));
+                Vector3 n = cross(b-a,c-a);
+                n.normalize();
+                normals.push_back(n);
+                points.push_back(a);
+                points.push_back(b);
+                points.push_back(c);
+                colors.push_back(color);
+                colors.push_back(color);
+                colors.push_back(color);
+            }
+            vparams->drawTool()->setLightingEnabled(true);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
+            vparams->drawTool()->setLightingEnabled(false);
+        }
+        if (showStressVector && maxStress > 0)
+        {
+            std::vector< Vector3 > points[2];
+            for (unsigned int i=0; i<nbTriangles; i++)
+            {
+                Triangle t = triangles[i];
+                Vector3 a = x[t[0]];
+                Vector3 b = x[t[1]];
+                Vector3 c = x[t[2]];
+                Vector3 d1 = stressVectors[i];
+                Real s1 = stresses[i];
+                Vector3 d2 = stressVectors2[i];
+                Real s2 = stresses2[i];
+                Vector3 center = (a+b+c)/3;
+                Vector3 n = cross(b-a,c-a);
+                Real fact = helper::rsqrt(n.norm())*(Real)0.5;
+                int g1 = (s1 < 0) ? 1 : 0;
+                int g2 = (s2 < 0) ? 1 : 0;
+                d1 *= fact*helper::rsqrt(helper::rabs(s1)/maxStress);
+                d2 *= fact*helper::rsqrt(helper::rabs(s2)/maxStress);
+                points[g1].push_back(center - d1);
+                points[g1].push_back(center + d1);
+                points[g2].push_back(center - d2);
+                points[g2].push_back(center + d2);
+            }
+            vparams->drawTool()->drawLines(points[0], 2, Vec4f(1,1,0,1));
+            vparams->drawTool()->drawLines(points[1], 2, Vec4f(1,0,1,1));
+        }
     }
+    else
+    {
+        std::vector< Vector3 > points[4];
 
-    vparams->drawTool()->drawLines(points[0], 1, c0);
-    vparams->drawTool()->drawLines(points[1], 1, c1);
-    vparams->drawTool()->drawLines(points[2], 1, c2);
-    vparams->drawTool()->drawLines(points[3], 1, c3);
+        const Vec4f c0(1,0,0,1);
+        const Vec4f c1(0,1,0,1);
+        const Vec4f c2(1,0.5,0,1);
+        const Vec4f c3(0,0,1,1);
+
+        points[0].reserve(nbTriangles*2);
+        points[1].reserve(nbTriangles*2);
+        points[2].reserve(nbTriangles*6);
+        points[3].reserve(nbTriangles*6);
+        for (unsigned int i=0; i<nbTriangles; ++i)
+        {
+            Triangle t = triangles[i];
+            const TriangleInfo& ti = triInfo[i];
+            const TriangleState& ts = triState[i];
+            Coord a = x[t[0]];
+            Coord b = x[t[1]];
+            Coord c = x[t[2]];
+            Coord fx = ts.frame[0];
+            Coord fy = ts.frame[1];
+            Vector3 center = (a+b+c)*(1.0f/3.0f);
+            Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
+            points[0].push_back(center);
+            points[0].push_back(center + ts.frame[0] * scale);
+            points[1].push_back(center);
+            points[1].push_back(center + ts.frame[1] * scale);
+            Coord a0 = center - fx * (ti.bx/3 + ti.cx/3) - fy * (ti.cy/3);
+            Coord b0 = a0 + fx * ti.bx;
+            Coord c0 = a0 + fx * ti.cx + fy * ti.cy;
+            points[2].push_back(a0);
+            points[2].push_back(b0);
+            points[2].push_back(b0);
+            points[2].push_back(c0);
+            points[2].push_back(c0);
+            points[2].push_back(a0);
+            points[3].push_back(a0);
+            points[3].push_back(a );
+            points[3].push_back(b0);
+            points[3].push_back(b );
+            points[3].push_back(c0);
+            points[3].push_back(c );
+        }
+
+        vparams->drawTool()->drawLines(points[0], 1, c0);
+        vparams->drawTool()->drawLines(points[1], 1, c1);
+        vparams->drawTool()->drawLines(points[2], 1, c2);
+        vparams->drawTool()->drawLines(points[3], 1, c3);
+    }
 
 }
 

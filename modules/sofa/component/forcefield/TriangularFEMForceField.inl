@@ -34,6 +34,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
@@ -66,75 +67,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
-
-static Vec3d ColorMap[64] =
-{
-    Vec3d( 0.0,        0.0,       0.5625 ),
-    Vec3d( 0.0,        0.0,       0.625  ),
-    Vec3d( 0.0,        0.0,       0.6875 ),
-    Vec3d( 0.0,        0.0,         0.75 ),
-    Vec3d( 0.0,        0.0,       0.8125 ),
-    Vec3d( 0.0,        0.0,        0.875 ),
-    Vec3d( 0.0,        0.0,       0.9375 ),
-    Vec3d( 0.0,        0.0,          1.0 ),
-    Vec3d( 0.0,     0.0625,          1.0 ),
-    Vec3d( 0.0,      0.125,          1.0 ),
-    Vec3d( 0.0,     0.1875,          1.0 ),
-    Vec3d( 0.0,       0.25,          1.0 ),
-    Vec3d( 0.0,     0.3125,          1.0 ),
-    Vec3d( 0.0,      0.375,          1.0 ),
-    Vec3d( 0.0,     0.4375,          1.0 ),
-    Vec3d( 0.0,        0.5,          1.0 ),
-    Vec3d( 0.0,     0.5625,          1.0 ),
-    Vec3d( 0.0,      0.625,          1.0 ),
-    Vec3d( 0.0,     0.6875,          1.0 ),
-    Vec3d( 0.0,       0.75,          1.0 ),
-    Vec3d( 0.0,     0.8125,          1.0 ),
-    Vec3d( 0.0,     0.875,           1.0 ),
-    Vec3d( 0.0,     0.9375,          1.0 ),
-    Vec3d( 0.0,        1.0,          1.0 ),
-    Vec3d( 0.0625,     1.0,          1.0 ),
-    Vec3d( 0.125,      1.0,       0.9375 ),
-    Vec3d( 0.1875,     1.0,        0.875 ),
-    Vec3d( 0.25,       1.0,       0.8125 ),
-    Vec3d( 0.3125,     1.0,         0.75 ),
-    Vec3d( 0.375,      1.0,       0.6875 ),
-    Vec3d( 0.4375,     1.0,        0.625 ),
-    Vec3d( 0.5,        1.0,       0.5625 ),
-    Vec3d( 0.5625,     1.0,          0.5 ),
-    Vec3d( 0.625,      1.0,       0.4375 ),
-    Vec3d( 0.6875,     1.0,        0.375 ),
-    Vec3d( 0.75,       1.0,       0.3125 ),
-    Vec3d( 0.8125,     1.0,         0.25 ),
-    Vec3d( 0.875,      1.0,       0.1875 ),
-    Vec3d( 0.9375,     1.0,        0.125 ),
-    Vec3d( 1.0,        1.0,       0.0625 ),
-    Vec3d( 1.0,        1.0,          0.0 ),
-    Vec3d( 1.0,       0.9375,        0.0 ),
-    Vec3d( 1.0,        0.875,        0.0 ),
-    Vec3d( 1.0,       0.8125,        0.0 ),
-    Vec3d( 1.0,         0.75,        0.0 ),
-    Vec3d( 1.0,       0.6875,        0.0 ),
-    Vec3d( 1.0,        0.625,        0.0 ),
-    Vec3d( 1.0,       0.5625,        0.0 ),
-    Vec3d( 1.0,          0.5,        0.0 ),
-    Vec3d( 1.0,       0.4375,        0.0 ),
-    Vec3d( 1.0,        0.375,        0.0 ),
-    Vec3d( 1.0,       0.3125,        0.0 ),
-    Vec3d( 1.0,         0.25,        0.0 ),
-    Vec3d( 1.0,       0.1875,        0.0 ),
-    Vec3d( 1.0,        0.125,        0.0 ),
-    Vec3d( 1.0,       0.0625,        0.0 ),
-    Vec3d( 1.0,          0.0,        0.0 ),
-    Vec3d( 0.9375,       0.0,        0.0 ),
-    Vec3d( 0.875,        0.0,        0.0 ),
-    Vec3d( 0.8125,       0.0,        0.0 ),
-    Vec3d( 0.75,         0.0,        0.0 ),
-    Vec3d( 0.6875,       0.0,        0.0 ),
-    Vec3d( 0.625,        0.0,        0.0 ),
-    Vec3d( 0.5625,       0.0,        0.0 )
-};
-
 
 // --------------------------------------------------------------------------------------
 // ---  Topology Creation/Destruction functions
@@ -1815,27 +1747,6 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
 // --------------------------------------------------------------------------------------
 
 template<class DataTypes>
-Vec3d TriangularFEMForceField<DataTypes>::getVertexColor(Index vertexIndex, double maxStress, double minStress)
-{
-    double averageStress = vertexInfo.getValue()[vertexIndex].stress;
-    if (maxStress &&  maxStress != minStress)
-    {
-        averageStress -= minStress;
-        averageStress /= (maxStress - minStress);
-
-        if (averageStress > 1.0)
-            averageStress=1.0;
-    }
-    else
-    {
-        averageStress = 0;
-    }
-
-    return ColorMap[(int)(averageStress*63)];
-}
-
-
-template<class DataTypes>
 void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields())
@@ -1920,6 +1831,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 maxStress = averageStress;
         }
 
+        visualmodel::ColorMap::evaluator<double> evalColor = visualmodel::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
         glBegin(GL_TRIANGLES);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
@@ -1927,11 +1839,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
 
-            glColor3dv(getVertexColor(a, maxStress, minStress).ptr());
+            glColor4fv(evalColor(vertexInf[a].stress).ptr());
             helper::gl::glVertexT(x[a]);
-            glColor3dv(getVertexColor(b, maxStress, minStress).ptr());
+            glColor4fv(evalColor(vertexInf[b].stress).ptr());
             helper::gl::glVertexT(x[b]);
-            glColor3dv(getVertexColor(c, maxStress, minStress).ptr());
+            glColor4fv(evalColor(vertexInf[c].stress).ptr());
             helper::gl::glVertexT(x[c]);
         }
         glEnd();
