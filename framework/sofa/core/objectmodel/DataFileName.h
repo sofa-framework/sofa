@@ -176,9 +176,16 @@ public:
         Inherit::endEdit(params);
     }
 
+    void setValue(const sofa::helper::vector<std::string>& v)
+    {
+        *beginEdit() = v;
+        endEdit();
+    }
     void setValue(const std::string& v)
     {
-        beginEdit()->push_back(v);
+        sofa::helper::vector<std::string>& val = *beginEdit();
+        val.clear();
+        val.push_back(v);
         endEdit();
     }
     virtual void virtualEndEdit() { endEdit(); }
