@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
@@ -53,6 +54,12 @@ SOFA_DECL_CLASS(OglModel)
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()
         ;
+
+template<class T>
+const T* getData(const defaulttype::ResizableExtVector<T>& v) { return v.getData(); }
+
+template<class T>
+const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
@@ -135,7 +142,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const VecCoord& vertices = this->getVertices();
     const ResizableExtVector<Deriv>& vnormals = this->getVnormals();
 
     FaceGroup g;
@@ -182,8 +189,8 @@ void OglModel::drawGroup(int ig, bool transparent)
         else
         {
             //get the texture coordinates
-            const ResizableExtVector<TexCoord>& vtexcoords = this->getVtexcoords();
-            glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
+            const VecTexCoord& vtexcoords = this->getVtexcoords();
+            glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 //
@@ -365,18 +372,18 @@ void OglModel::drawGroups(bool transparent)
 
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
-    m_vtexcoords.updateIfDirty();
+//    m_vtexcoords.updateIfDirty();
 //    serr<<" OglModel::internalDraw()"<<sendl;
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const VecCoord& vertices = this->getVertices();
     const ResizableExtVector<Deriv>& vnormals = this->getVnormals();
-    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
-    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
-    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    const VecTexCoord& vtexcoords= this->getVtexcoords();
+    const VecCoord& vtangents= this->getVtangents();
+    const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
     glEnable(GL_LIGHTING);
@@ -419,7 +426,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
         else
         {
-            glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
+            glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -572,7 +579,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glPopMatrix();
         }
     }
-    m_vtexcoords.updateIfDirty();
+//    m_vtexcoords.updateIfDirty();
 }
 
 bool OglModel::loadTexture(const std::string& filename)
@@ -797,11 +804,11 @@ void OglModel::initVertexBuffer()
 {
     unsigned positionsBufferSize, normalsBufferSize;
     unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
-    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
-    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
-    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
-    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    const VecCoord& vertices = this->getVertices();
+    const VecCoord& vnormals = this->getVnormals();
+    const VecTexCoord& vtexcoords= this->getVtexcoords();
+    const VecCoord& vtangents= this->getVtangents();
+    const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
@@ -858,11 +865,11 @@ void OglModel::initQuadsIndicesBuffer()
 
 void OglModel::updateVertexBuffer()
 {
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
-    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
-    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
-    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
-    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    const VecCoord& vertices = this->getVertices();
+    const VecCoord& vnormals = this->getVnormals();
+    const VecTexCoord& vtexcoords= this->getVtexcoords();
+    const VecCoord& vtangents= this->getVtangents();
+    const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
     unsigned positionsBufferSize, normalsBufferSize;
@@ -900,7 +907,7 @@ void OglModel::updateVertexBuffer()
         glBufferSubDataARB(GL_ARRAY_BUFFER,
                 positionsBufferSize + normalsBufferSize,
                 textureCoordsBufferSize,
-                vtexcoords.getData());
+                getData(vtexcoords));
 
         if (hasTangents)
         {
@@ -940,7 +947,7 @@ void OglModel::updateBuffers()
 {
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const VecCoord& vertices = this->getVertices();
 
     if (initDone)
     {

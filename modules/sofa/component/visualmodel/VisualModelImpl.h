@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/component/component.h>
 
@@ -89,9 +90,9 @@ public:
 class ExtVec3fState : public core::State< ExtVec3fTypes >
 {
 public:
-    Data< ResizableExtVector<Coord> > m_positions;
-    Data< ResizableExtVector<Coord> > m_restPositions;
-    Data< ResizableExtVector<Deriv> > m_vnormals;
+    topology::PointData< ResizableExtVector<Coord> > m_positions;
+    topology::PointData< ResizableExtVector<Coord> > m_restPositions;
+    topology::PointData< ResizableExtVector<Deriv> > m_vnormals;
     bool modified; ///< True if input vertices modified since last rendering
 
     ExtVec3fState()
@@ -178,6 +179,7 @@ public:
 //    SOFA_CLASS3(VisualModelImpl, core::visual::VisualModel, ExtVec3fState , RigidState);
 
     typedef Vec<2, float> TexCoord;
+    typedef helper::vector<TexCoord> VecTexCoord;
 
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -203,11 +205,12 @@ protected:
     Data<bool> m_updateNormals; ///< True if normals should be updated at each iteration
     Data<bool> m_computeTangents; ///< True if tangents should be computed at startup
     Data<bool> m_updateTangents; ///< True if tangents should be updated at each iteration
+    Data<bool> m_handleDynamicTopology; ///< True if topological changes should be handled
 
-    Data< ResizableExtVector< Coord > > m_vertices;
-    Data< ResizableExtVector< TexCoord > > m_vtexcoords;
-    Data< ResizableExtVector< Coord > > m_vtangents;
-    Data< ResizableExtVector< Coord > > m_vbitangents;
+    Data< VecCoord > m_vertices2;
+    topology::PointData< VecTexCoord > m_vtexcoords;
+    topology::PointData< VecCoord > m_vtangents;
+    topology::PointData< VecCoord > m_vbitangents;
     Data< ResizableExtVector< Triangle > > m_triangles;
     Data< ResizableExtVector< Quad > > m_quads;
 
@@ -222,6 +225,9 @@ protected:
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
+
+    template<class VecType>
+    void addTopoHandler(topology::PointData<VecType>* data, int algo = 0);
 
 public:
 
@@ -372,7 +378,7 @@ public:
         if (!m_vertPosIdx.getValue().empty())
         {
             // Splitted vertices for multiple texture or normal coordinates per vertex.
-            return m_vertices.getValue();
+            return m_vertices2.getValue();
         }
 
         return m_positions.getValue();
@@ -383,7 +389,7 @@ public:
         return m_vnormals.getValue();
     };
 
-    const ResizableExtVector<TexCoord>& getVtexcoords() const
+    const VecTexCoord& getVtexcoords() const
     {
         return m_vtexcoords.getValue();
     };
@@ -410,7 +416,8 @@ public:
 
     void setVertices(ResizableExtVector<Coord> * x)
     {
-        m_vertices.setValue(*x);
+        //m_vertices2.setValue(*x);
+        this->m_positions.setValue(*x);
     };
 
     void setVnormals(ResizableExtVector<Deriv> * vn)
@@ -418,7 +425,7 @@ public:
         m_vnormals.setValue(*vn);
     };
 
-    void setVtexcoords(ResizableExtVector<TexCoord> * vt)
+    void setVtexcoords(VecTexCoord * vt)
     {
         m_vtexcoords.setValue(*vt);
     };
@@ -487,6 +494,7 @@ public:
     Rigid3fTypes::VecCoord xforms;
     bool xformsModified;
 };
+
 
 } // namespace visualmodel
 

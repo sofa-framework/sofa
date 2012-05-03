@@ -47,19 +47,22 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 
 
 
-MeshObjLoader::MeshObjLoader(): MeshLoader()
+MeshObjLoader::MeshObjLoader()
+    : MeshLoader()
     , faceType(MeshObjLoader::TRIANGLE)
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
-    , texIndexList(initData(&texIndexList,"texIndex","Indices of textures coordinates used in faces definition."))
-    , texCoordsList(initData(&texCoordsList,"texCoordsDefinition", "Texture coordinates definition"))
+    , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
+    , texCoordsList(initData(&texCoordsList,"texcoordsDefinition", "Texture coordinates definition"))
+    , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
+    , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
-    , normalsList(initData(&normalsList,"normalsList","List of normals of elements of the mesh loaded."))
-    , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than \
-                                               one texcoord normal pair is attached to a vertex." ) )
+//  , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than one texcoord normal pair is attached to a vertex." ) )
 {
-    texIndexList.setPersistent(false);
-    texCoords.setPersistent(false);
-    normalsList.setPersistent(false);
+    faceList.setGroup("OBJ");
+    texIndexList.setGroup("OBJ");
+    texCoordsList.setGroup("OBJ");
+    normalsIndexList.setGroup("OBJ");
+    normalsList.setGroup("OBJ");
 }
 
 
@@ -271,14 +274,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             my_normalsList.push_back(nIndices);
             my_texturesList.push_back(tIndices);
 
-
-            for( unsigned int i =0 ; i < nodes.size(); ++i)
-            {
-                vertexIdx2textureNormalIdx[nodes[i]].insert( std::make_pair(tIndices[i],nIndices[i]) );
-            }
-
-
-
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
@@ -319,23 +314,10 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     if (curGroup.nbp > 0) addGroup(curGroup);
 
 
-    unsigned int vertexCount = 0;
-
-    VertexIdx2TextureNormalIdxPairs::const_iterator iterVertexIndex;
-    for( iterVertexIndex = vertexIdx2textureNormalIdx.begin();
-            iterVertexIndex != vertexIdx2textureNormalIdx.end();
-            ++iterVertexIndex )
-    {
-        const std::set< std::pair< int, int > >& setTextureNormalIndex = iterVertexIndex->second;
-        vertexCount += setTextureNormalIndex.size();
-    }
-
-
     helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
-    //helper::vector<sofa::defaulttype::Vector3>& vNormals   = *normals.beginEdit();
-    helper::vector<sofa::defaulttype::Vector3>& vVertices  = *vertices.beginEdit();
-
-    vVertices.resize(vertexCount);
+    helper::vector<sofa::defaulttype::Vector3>& vNormals   = *normals.beginEdit();
+    //helper::vector<sofa::defaulttype::Vector3>& vVertices  = *vertices.beginEdit();
+    unsigned int vertexCount = my_positions.size();
     if( my_texCoords.size() > 0 )
     {
         vTexCoords.resize(vertexCount);
@@ -344,61 +326,35 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     {
         vTexCoords.resize(0);
     }
-    /* if( my_normals.size() > 0 ){
-       vNormals.resize(vertexCount);
-     }
-     else{
-       vNormals.resize(0);
-     }*/
-
-    for ( iterVertexIndex = vertexIdx2textureNormalIdx.begin(); iterVertexIndex != vertexIdx2textureNormalIdx.end(); ++iterVertexIndex)
+    if( my_normals.size() > 0 )
     {
-        const int vertexIndex = iterVertexIndex->first;
-        const std::set< std::pair< int, int > >& setTextureNormalIndex = iterVertexIndex->second;
-        std::set< std::pair< int, int >  > ::const_iterator itTextureNormalIndex;
-        for( itTextureNormalIndex = setTextureNormalIndex.begin();
-                itTextureNormalIndex != setTextureNormalIndex.end();
-                ++itTextureNormalIndex)
+        vNormals.resize(vertexCount);
+    }
+    else
+    {
+        vNormals.resize(0);
+    }
+    for (unsigned int fi=0; fi<my_faceList.size(); ++fi)
+    {
+        const helper::SVector<int>& nodes = my_faceList[fi];
+        const helper::SVector<int>& nIndices = my_normalsList[fi];
+        const helper::SVector<int>& tIndices = my_texturesList[fi];
+
+        for (unsigned int i = 0; i < nodes.size(); ++i)
         {
-            if( vertexIndex >= (int)my_positions.size() )
-            {
-                this->serr << "Invalid index for vertex: " << vertexIndex << " >= " <<
-                        my_positions.size() << this->sendl;
-                vVertices[vertexIndex] = sofa::defaulttype::Vector3();
-            }
-            else
-            {
-                vVertices[vertexIndex] = my_positions[vertexIndex];
-
-            }
-
-
-            const std::pair < int, int >& textureNormalIndex = *itTextureNormalIndex;
-            if( vTexCoords.size() > 0 )
-            {
-                if( textureNormalIndex.first >= (int)my_texCoords.size() )
-                {
-                    this->serr << "Invalid index for texture: " << textureNormalIndex.first << " >= "
-                            << my_texCoords.size() << this->sendl;
-                    vTexCoords[vertexIndex] = sofa::defaulttype::Vector2();
-                }
-                else
-                {
-                    vTexCoords[vertexIndex] = my_texCoords[textureNormalIndex.first < 0 ? 0 : textureNormalIndex.first];
-                }
-            }
-            /*        if( vNormals.size() > 0 ){
-                      if( (int)my_normals.size() < textureNormalIndex.second ){
-                        this->serr << "Invalid index for normal: " << textureNormalIndex.second << " > "
-                          << my_normals.size() << this->sendl;
-                        vNormals[vertexIndex] = sofa::defaulttype::Vector3();
-                      }
-                      else{
-                       vNormals[vertexIndex] = my_normals[textureNormalIndex.second == -1 ? 0 : textureNormalIndex.second];
-                      }
-                    }    */
+            unsigned int pi = nodes[i];
+            unsigned int ni = nIndices[i];
+            unsigned int ti = tIndices[i];
+            if (i >= vertexCount) continue;
+            if (ti < my_texCoords.size() && vTexCoords[pi] == sofa::defaulttype::Vector2())
+                vTexCoords[pi] = my_texCoords[ti];
+            if (ni < my_normals.size())
+                vNormals[pi] += my_normals[ni];
         }
-
+    }
+    for (unsigned int i=0; i<vNormals.size(); ++i)
+    {
+        vNormals[i].normalize();
     }
 
     positions.endEdit();
@@ -412,8 +368,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     texCoordsList.endEdit();
     texCoords.endEdit();
     faceList.endEdit();
-    vertices.endEdit();
-    //normals.endEdit();
+    //vertices.endEdit();
+    normals.endEdit();
     return true;
 }
 

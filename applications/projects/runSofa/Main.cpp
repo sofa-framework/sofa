@@ -97,7 +97,7 @@ int main(int argc, char** argv)
     bool        loadRecent = false;
     bool        temporaryFile = false;
     int	        nbIterations = 0;
-    unsigned    computationTimeSampling=100; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     std::string gui = "";
     std::string verif = "";
