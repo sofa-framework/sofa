@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RelativeRigidMapping_H
-#define SOFA_COMPONENT_MAPPING_RelativeRigidMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_LogRigidMapping_H
+#define SOFA_COMPONENT_MAPPING_LogRigidMapping_H
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -57,7 +57,7 @@ namespace mapping
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class RelativeRigidMappingInternalData
+class LogRigidMappingInternalData
 {
 public:
 };
@@ -70,10 +70,10 @@ public:
 @author Maxime Tournier
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API RelativeRigidMapping : public core::Mapping<TIn, TOut>
+class SOFA_Flexible_API LogRigidMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(RelativeRigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(LogRigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -111,50 +111,24 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    RelativeRigidMapping();
-    virtual ~RelativeRigidMapping();
+    LogRigidMapping();
+    virtual ~LogRigidMapping();
 
     SparseMatrixEigen jacobian;                           ///< Jacobian of the mapping
     vector< defaulttype::BaseMatrix* > baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    typedef unsigned int index_type;
-    typedef vector< defaulttype::Vec<2, index_type> > edges_type;
-
-    // stores mapped pairs (p, c) -> inv(p) * c
-    Data< edges_type > edges;
-
     typedef SE3<Real> se3_type;
-
-    typedef typename se3_type::mat66 mat66;
-    typedef typename se3_type::coord_type coord_type;
-
-    // mapping block: d( (a, b) -> inv(a) * b )
-    static void blocks(mat66& Ja, mat66& Jb,
-            const coord_type& a, const coord_type& b)
-    {
-
-        se3_type se3;
-
-        coord_type diff = se3.prod(se3.inv(a), b);
-
-        Ja = -se3.ad( se3.inv(diff) );
-        Jb.setIdentity();
-
-        // TODO optimize body/sofa conversions
-        Ja = se3.sofa(diff) * Ja * se3.body(a);
-        Jb = se3.sofa(diff) * Jb * se3.body(b);
-    }
 
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_RelativeRigidMapping_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_LogRigidMapping_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RelativeRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_RIGID_API LogRigidMapping< Rigid3dTypes, Vec6dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RelativeRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_RIGID_API LogRigidMapping< Rigid3fTypes, Vec6fTypes >;
 #endif
 
 #endif
