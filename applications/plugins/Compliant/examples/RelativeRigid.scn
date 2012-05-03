@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<Node 	name="RelativeRigidScene" >
-    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="false" warm="true" 
-                  maxIterations="20" precision="1e-3" />
-    <MechanicalObject name="arbDOF" template="Rigid"  src="@loader" />
-    <UniformMass />
-    <Node name="relativeNode" >
-        <MechanicalObject template="Rigid"  name="relativeDOF" />
-        <RelativeRigidMapping edges="0 1" />
-        <UniformCompliance template="Rigid" compliance="[[0.0000001]]" dampingRatio="0.0"  />
-    </Node>
-</Node>
+<Node 	 name="Root"  printLog="1"  dt="0.0001"  >
+	<VisualStyle name="visualStyle0"  displayFlags="hideVisual showBehaviorModels hideForceFields hideInteractionForceFields hideCollision hideMapping hideOptions" />
+	<Node 	 name="RigidBody"  printLog="1"  >
+		<MinresSolver name="minresSolver4" />
+		<MechanicalObject template="Rigid" name="arbDOF"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+		<UniformMass template="Rigid" name="uniformMass1" />
+		<Node 	 name="Relative"  printLog="1"  >
+			<MechanicalObject template="Rigid" name="relativeDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+			<RelativeRigidMapping template="Rigid,Rigid" name="relativeRigidMap"  edges="0 1"  input="@../"  output="@./" />
+			<Node 	 name="Log"  printLog="1"  >
+				<MechanicalObject template="Vec6d" name="logDOF"  position="0 0 0 0 0 0"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+				<LogRigidMapping template="Rigid,Vec6d" name="logRigidMap"  input="@../"  output="@./" />
+				<UniformCompliance template="Vec6d" name="uniformCompliance0"  compliance="0.0001" />
+			</Node>
+		</Node>
+	</Node>
 </Node>
