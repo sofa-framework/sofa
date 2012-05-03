@@ -33,6 +33,7 @@
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/component/topology/SparseGridTopology.h>
 
@@ -117,7 +118,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_updateNormals   (initData   (&m_updateNormals, true, "updateNormals", "True if normals should be updated at each iteration"))
     , m_computeTangents (initData   (&m_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
     , m_updateTangents  (initData   (&m_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
-    , m_vertices		(initData   (&m_vertices, "vertices", "vertices of the model"))
+    , m_handleDynamicTopology  (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
+    , m_vertices2		(initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
     , m_vtexcoords		(initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
     , m_vtangents		(initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
     , m_vbitangents		(initData   (&m_vbitangents, "bitangents", "tangents for normal mapping"))
@@ -150,7 +152,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     material.setDisplayed(false);
     addAlias(&fileMesh, "filename");
 
-    m_vertices		.setGroup("Vector");
+    m_vertices2		.setGroup("Vector");
     m_vnormals		.setGroup("Vector");
     m_vtexcoords	.setGroup("Vector");
     m_vtangents		.setGroup("Vector");
@@ -324,10 +326,10 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         vsplit = true;
 
     // Then we can create the final arrays
-    ResizableExtVector<Coord>& positions = *(m_positions.beginEdit());
-    ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
+    VecCoord& positions = *(m_positions.beginEdit());
+    VecCoord& vertices2 = *(m_vertices2.beginEdit());
     ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
-    ResizableExtVector<TexCoord>& vtexcoords = *(m_vtexcoords.beginEdit());
+    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     ResizableExtVector<int>& vertPosIdx = (*m_vertPosIdx.beginEdit());
     ResizableExtVector<int>& vertNormIdx = (*m_vertNormIdx.beginEdit());;
 
@@ -335,7 +337,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
     if (vsplit)
     {
-        vertices.resize(nbVOut);
+        vertices2.resize(nbVOut);
         vnormals.resize(nbVOut);
         vtexcoords.resize(nbVOut);
         vertPosIdx.resize(nbVOut);
@@ -343,7 +345,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
     else
     {
-        vertices.resize(nbVIn);
+        //vertices2.resize(nbVIn);
         vnormals.resize(nbVIn);
         vtexcoords.resize(nbVIn);
     }
@@ -357,7 +359,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
                 it != vertTexNormMap[i].end(); ++it)
         {
-            vertices[j] = verticesImport[i];
             int t = it->first.first;
             int n = it->first.second;
             if ((unsigned)n < normalsImport.size())
@@ -367,6 +368,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
             if (vsplit)
             {
+                vertices2[j] = verticesImport[i];
                 vertPosIdx[j] = i;
                 if (normMap.count(n))
                     vertNormIdx[j] = normMap[n];
@@ -386,7 +388,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         vertNormIdx.resize(0);
 
 
-    m_vertices.endEdit();
+    m_vertices2.endEdit();
     m_vnormals.endEdit();
     m_vtexcoords.endEdit();
     m_positions.endEdit();
@@ -453,7 +455,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     }
 
     // Make sure all Data are up-to-date
-    m_vertices.updateIfDirty();
+    m_vertices2.updateIfDirty();
     m_vnormals.updateIfDirty();
     m_vtexcoords.updateIfDirty();
     m_vtangents.updateIfDirty();
@@ -461,7 +463,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
 
-    if (!filename.empty() && (m_vertices.getValue()).size() == 0)
+    if (!filename.empty() && (m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
     {
         std::string meshFilename(filename);
         if (sofa::helper::system::DataRepository.findFile(meshFilename))
@@ -515,7 +517,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     }
     else
     {
-        if ((m_vertices.getValue()).size() == 0)
+        if ((m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
         {
             sout << "VisualModel: will use Topology." << sendl;
             useTopology = true;
@@ -545,8 +547,8 @@ void VisualModelImpl::applyTranslation(const double dx, const double dy, const d
 {
     Vector3 d((GLfloat)dx,(GLfloat)dy,(GLfloat)dz);
 
-    Data< ResizableExtVector<Coord> >* d_x = this->write(core::VecCoordId::position());
-    ResizableExtVector<Coord> &x = *d_x->beginEdit();
+    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    VecCoord &x = *d_x->beginEdit();
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
@@ -566,8 +568,8 @@ void VisualModelImpl::applyRotation(const double rx, const double ry, const doub
 
 void VisualModelImpl::applyRotation(const Quat q)
 {
-    Data< ResizableExtVector<Coord> >* d_x = this->write(core::VecCoordId::position());
-    ResizableExtVector<Coord> &x = *d_x->beginEdit();
+    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    VecCoord &x = *d_x->beginEdit();
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
@@ -581,8 +583,8 @@ void VisualModelImpl::applyRotation(const Quat q)
 
 void VisualModelImpl::applyScale(const double sx, const double sy, const double sz)
 {
-    Data< ResizableExtVector<Coord> >* d_x = this->write(core::VecCoordId::position());
-    ResizableExtVector<Coord> &x = *d_x->beginEdit();
+    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    VecCoord &x = *d_x->beginEdit();
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
@@ -598,7 +600,7 @@ void VisualModelImpl::applyScale(const double sx, const double sy, const double 
 
 void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
 {
-    ResizableExtVector<TexCoord>& vtexcoords = *(m_vtexcoords.beginEdit());
+    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
         vtexcoords[i][0] += (GLfloat) dU;
@@ -609,7 +611,7 @@ void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
 
 void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 {
-    ResizableExtVector<TexCoord>& vtexcoords = *(m_vtexcoords.beginEdit());
+    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
         vtexcoords[i][0] *= (GLfloat) scaleU;
@@ -618,19 +620,72 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
     m_vtexcoords.endEdit();
 }
 
+
+template<class VecCoord>
+class VisualModelPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
+{
+public:
+    typedef typename VecCoord::value_type Coord;
+    VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
+        : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
+
+    void applyCreateFunction(unsigned int pointIndex, Coord& dest, const sofa::core::topology::Point &,
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double > &coefs)
+    {
+        const VecCoord& x = this->m_topologyData->getValue();
+        std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
+        if (!ancestors.empty() )
+        {
+            dest = x[ancestors[0]]*coefs[0];
+            for (unsigned int i=1; i<ancestors.size(); ++i)
+                dest += x[ancestors[i]]*coefs[i];
+        }
+    }
+
+    void applyDestroyFunction(unsigned int, Coord& )
+    {
+    }
+
+protected:
+    VisualModelImpl* obj;
+    int algo;
+};
+
+template<class VecType>
+void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
+{
+    data->createTopologicalEngine(m_topology, new VisualModelPointHandler<VecType>(this, data, algo), true);
+    data->registerTopologicalData();
+}
+
 void VisualModelImpl::init()
 {
     load(fileMesh.getFullPath(), "", texturename.getFullPath());
     m_topology = getContext()->getMeshTopology();
 
-    if (m_topology == 0)
+    if (m_topology == 0 || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != (unsigned int)m_topology->getNbPoints()))
     {
         // Fixes bug when neither an .obj file nor a topology is present in the VisualModel Node.
         // Thus nothing will be displayed.
         useTopology = false;
     }
+    else
+    {
+        sout << "Use topology " << m_topology->getName() << sendl;
+        // add the functions to handle topology changes.
+        if (m_handleDynamicTopology.getValue())
+        {
+            //addTopoHandler(&m_positions);
+            //addTopoHandler(&m_restPositions);
+            //addTopoHandler(&m_vnormals);
+            addTopoHandler(&m_vtexcoords);
+            //addTopoHandler(&m_vtangents);
+            //addTopoHandler(&m_vbitangents);
+        }
+    }
 
-    m_vertices.beginEdit();
+    m_vertices2.beginEdit();
     m_vnormals.beginEdit();
     m_vtexcoords.beginEdit();
     m_vtangents.beginEdit();
@@ -653,8 +708,8 @@ void VisualModelImpl::init()
 
 void VisualModelImpl::computeNormals()
 {
-    const ResizableExtVector<Coord>& vertices = getVertices();
-    //const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
+    const VecCoord& vertices = getVertices();
+    //const VecCoord& vertices = m_vertices2.getValue();
     if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (vertices).size())) return;
 
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
@@ -787,10 +842,10 @@ void VisualModelImpl::computeTangents()
 
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
-    const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
-    const ResizableExtVector<TexCoord>& texcoords = m_vtexcoords.getValue();
-    ResizableExtVector<Coord>& tangents = *(m_vtangents.beginEdit());
-    ResizableExtVector<Coord>& bitangents = *(m_vbitangents.beginEdit());
+    const VecCoord& vertices = getVertices();
+    const VecTexCoord& texcoords = m_vtexcoords.getValue();
+    VecCoord& tangents = *(m_vtangents.beginEdit());
+    VecCoord& bitangents = *(m_vbitangents.beginEdit());
 
     tangents.resize(vertices.size());
     bitangents.resize(vertices.size());
@@ -864,7 +919,7 @@ void VisualModelImpl::computeTangents()
 
 void VisualModelImpl::computeBBox(sofa::core::ExecParams* params)
 {
-    const VecCoord& x = m_vertices.getValue(params);
+    const VecCoord& x = getVertices(); //m_vertices.getValue(params);
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
     for (unsigned int i = 0; i < x.size(); i++)
@@ -997,6 +1052,14 @@ static colors colorTab[]=
 
 void VisualModelImpl::updateVisual()
 {
+    /*
+        static unsigned int last = 0;
+        if (m_vtexcoords.getValue().size() != last)
+        {
+            std::cout << m_vtexcoords.getValue().size() << std::endl;
+            last = m_vtexcoords.getValue().size();
+        }
+    */
 #ifdef SOFA_SMP
     modified = true;
 #endif
@@ -1005,7 +1068,7 @@ void VisualModelImpl::updateVisual()
     //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
     //if ((m_vertices.getValue()).size()>10)
     //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
-    if (modified && (!(m_vertices.getValue()).empty() || useTopology))
+    if (modified && (!getVertices().empty() || useTopology))
     {
         if (useTopology)
         {
@@ -1033,9 +1096,10 @@ void VisualModelImpl::updateVisual()
         modified = false;
     }
 
-    m_vertices.updateIfDirty();
+    m_positions.updateIfDirty();
+    m_vertices2.updateIfDirty();
     m_vnormals.updateIfDirty();
-    m_vtexcoords.updateIfDirty();
+    //m_vtexcoords.updateIfDirty();
     m_vtangents.updateIfDirty();
     m_vbitangents.updateIfDirty();
     m_triangles.updateIfDirty();
@@ -1080,13 +1144,13 @@ void VisualModelImpl::computePositions()
     if (!vertPosIdx.empty())
     {
         // Need to transfer positions
-        ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
-        const ResizableExtVector<Coord>& positions = this->m_positions.getValue();
+        VecCoord& vertices = *(m_vertices2.beginEdit());
+        const VecCoord& positions = this->m_positions.getValue();
 
         for (unsigned int i=0 ; i < vertices.size(); ++i)
             vertices[i] = positions[vertPosIdx[i]];
 
-        m_vertices.endEdit();
+        m_vertices2.endEdit();
     }
 }
 
@@ -1095,9 +1159,9 @@ void VisualModelImpl::computeMesh()
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
-    if ((m_vertices.getValue()).empty())
+    if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
-        ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
+        VecCoord& vertices = *(m_positions.beginEdit());
 
         if (m_topology->hasPos())
         {
@@ -1143,7 +1207,7 @@ void VisualModelImpl::computeMesh()
                 }
             }
         }
-        m_vertices.endEdit();
+        m_positions.endEdit();
     }
 
     lastMeshRev = m_topology->getRevision();
@@ -1180,12 +1244,16 @@ void VisualModelImpl::computeMesh()
 void VisualModelImpl::handleTopologyChange()
 {
     if (!m_topology) return;
+    //if (!m_vertPosIdx.getValue().empty()) return;
+
+//    std::cout << "> " << m_vtexcoords.getValue().size() << std::endl;
 
     bool debug_mode = false;
 
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
-    ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
+    //VecCoord& positions = *
+    m_positions.beginEdit();
 
 
     std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
@@ -1536,6 +1604,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::topology::POINTSADDED:
         {
+#if 0
             using sofa::core::behavior::BaseMechanicalState;
             BaseMechanicalState* mstate;
             //const unsigned int nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
@@ -1585,6 +1654,7 @@ void VisualModelImpl::handleTopologyChange()
                 }
             }
             updateVisual();
+#endif
             break;
         }
 
@@ -1598,7 +1668,9 @@ void VisualModelImpl::handleTopologyChange()
 
     m_triangles.endEdit();
     m_quads.endEdit();
-    m_vertices.endEdit();
+    m_positions.endEdit();
+
+//    std::cout << "< " << m_vtexcoords.getValue().size() << std::endl;
 }
 
 void VisualModelImpl::initVisual()
@@ -1639,9 +1711,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         *out << "usemtl "<<name<<'\n';
     }
 
-    const ResizableExtVector<Coord>& x = m_positions.getValue();
+    const VecCoord& x = m_positions.getValue();
     const ResizableExtVector<Deriv>& vnormals = m_vnormals.getValue();
-    const ResizableExtVector<TexCoord>& vtexcoords = m_vtexcoords.getValue();
+    const VecTexCoord& vtexcoords = m_vtexcoords.getValue();
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
 
@@ -1730,7 +1802,17 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     tindex+=nbt;
 }
 
+//template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<ExtVec3fTypes::Coord> >;
+template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<VisualModelImpl::Coord> >;
+template class SOFA_BASE_VISUAL_API VisualModelPointHandler< ResizableExtVector<VisualModelImpl::TexCoord> >;
+
 } // namespace visualmodel
+
+namespace topology
+{
+template class PointData< ResizableExtVector<ExtVec3fTypes::Coord> >;
+template class PointData< ResizableExtVector<ExtVec2fTypes::Coord> >;
+}
 
 } // namespace component
 

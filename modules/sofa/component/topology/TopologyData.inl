@@ -51,7 +51,7 @@ TopologyDataImpl <TopologyElementType, VecT>::~TopologyDataImpl()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* _topologyHandler, bool deleteHandler)
 {
     this->m_topology = _topology;
     if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
@@ -62,14 +62,17 @@ void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa:
         this->m_topologicalEngine->init();
         this->linkToElementDataArray();
         this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology." << this->getOwner()->sendl;
+        if (deleteHandler && _topologyHandler) m_topologyHandler = _topologyHandler;
     }
     else if (_topology)
     {
         this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology." << this->getOwner()->sendl;
+        if (deleteHandler && _topologyHandler) delete _topologyHandler;
     }
     else
     {
         this->getOwner()->sout<<"TopologyDataImpl: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled." << this->getOwner()->sendl;
+        if (deleteHandler && _topologyHandler) delete _topologyHandler;
     }
 }
 

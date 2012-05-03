@@ -69,9 +69,6 @@ protected:
     FaceType faceType;
 
 
-    typedef std::map< int, std::set< std::pair<int,int> > > VertexIdx2TextureNormalIdxPairs;
-    VertexIdx2TextureNormalIdxPairs vertexIdx2textureNormalIdx;
-
 public:
 
     Data <helper::vector <sofa::core::loader::Material> > materials;
@@ -82,10 +79,10 @@ public:
 
     Data <helper::SVector <helper::SVector <int> > > texIndexList;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoordsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
     Data <helper::SVector<helper::SVector<int> > > normalsIndexList;
     Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > vertices;
+    //Data <helper::vector<sofa::defaulttype::Vector3> > vertices;
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 
