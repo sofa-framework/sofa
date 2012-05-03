@@ -70,7 +70,6 @@ void RelativeRigidMapping<TIn, TOut>::init()
 }
 
 
-
 template <class TIn, class TOut>
 void RelativeRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
@@ -80,18 +79,19 @@ void RelativeRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mpa
     // TODO is this needed on each apply ?
     jacobian.resizeBlocks(out.size(), in.size());
 
-    // typedef Rigid3dTypes rigid;
+    typedef Rigid3Types rigid;
 
 
-    // // for each edge in the topology
-    // index_type i = 0;
-    // for(typename parent_type::iterator p = parent.begin(), end = parent.end();
-    // 	p != end; ++p, ++i) {
+    // for each edge in the topology
+    index_type i = 0;
+    for(typename parent_type::iterator p = parent.begin(), end = parent.end();
+        p != end; ++p, ++i)
+    {
 
-    //   out[ i ] = rigid::mult( rigid::inverse(in[ p->second ]),
-    // 			      in[ p->first ] );
+        out[ i ] = rigid::mult( rigid::inverse(in[ p->second ]),
+                in[ p->first ] );
 
-    // }
+    }
 
 
 
