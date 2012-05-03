@@ -641,6 +641,8 @@ public:
             for (unsigned int i=1; i<ancestors.size(); ++i)
                 dest += x[ancestors[i]]*coefs[i];
         }
+        // BUGFIX: remove link to the Data as it is now specific to this instance
+        this->m_topologyData->setParent(NULL);
     }
 
     void applyDestroyFunction(unsigned int, Coord& )

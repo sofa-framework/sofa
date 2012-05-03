@@ -179,7 +179,8 @@ public:
 //    SOFA_CLASS3(VisualModelImpl, core::visual::VisualModel, ExtVec3fState , RigidState);
 
     typedef Vec<2, float> TexCoord;
-    typedef helper::vector<TexCoord> VecTexCoord;
+    //typedef helper::vector<TexCoord> VecTexCoord;
+    typedef ResizableExtVector<TexCoord> VecTexCoord;
 
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
