@@ -42,6 +42,8 @@
 
 #include "../initFlexible.h"
 
+#include "../utils/se3.h"
+
 
 namespace sofa
 {
@@ -119,6 +121,29 @@ protected:
     typedef std::map<index_type, index_type> parent_type;
 
     parent_type parent;
+
+
+    typedef SE3<Real> se3_type;
+
+    typedef typename se3_type::mat66 mat66;
+    typedef typename se3_type::coord_type coord_type;
+
+    // mapping block: d( (a, b) -> inv(a) * b )
+    static void blocks(mat66& Ja, mat66& Jb,
+            const coord_type& a, const coord_type& b)
+    {
+
+        se3_type se3;
+
+        coord_type diff = se3.prod(se3.inv(a), b);
+
+        // TODO optimize
+        Jb.setIdentity();
+        Ja = se3.ad( se3.inv(diff) );
+
+        Ja = se3.sofa(diff) * Ja * se3.body(a);
+        Jb = se3.sofa(diff) * Jb * se3.body(b);
+    }
 };
 
 
