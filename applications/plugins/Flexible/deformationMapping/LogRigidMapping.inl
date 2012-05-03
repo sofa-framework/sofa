@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RelativeRigidMapping_INL
-#define SOFA_COMPONENT_MAPPING_RelativeRigidMapping_INL
+#ifndef SOFA_COMPONENT_MAPPING_LogRigidMapping_INL
+#define SOFA_COMPONENT_MAPPING_LogRigidMapping_INL
 
-#include "../deformationMapping/RelativeRigidMapping.h"
+#include "../deformationMapping/LogRigidMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 
@@ -47,21 +47,20 @@ using namespace sofa::defaulttype;
 
 
 template <class TIn, class TOut>
-RelativeRigidMapping<TIn, TOut>::RelativeRigidMapping()
-    : Inherit(),
-      edges( initData(&edges, "edges", "edges: (p, c) -> inv(p) * c"))
+LogRigidMapping<TIn, TOut>::LogRigidMapping()
+    : Inherit()
 
 {
 }
 
 template <class TIn, class TOut>
-RelativeRigidMapping<TIn, TOut>::~RelativeRigidMapping()
+LogRigidMapping<TIn, TOut>::~LogRigidMapping()
 {
 }
 
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::init()
+void LogRigidMapping<TIn, TOut>::init()
 {
     // TODO wrap this somehow ?
     baseMatrices.resize( 1 );
@@ -72,100 +71,80 @@ void RelativeRigidMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void LogRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    assert( Nout == Nin );
+
+    assert( in.size() <= out.size() );
+    assert(  Nout == Nin  );
 
     // TODO is this needed on each apply ?
     this->jacobian.resizeBlocks(out.size(), in.size());
 
     se3_type se3;
+    typedef unsigned int index_type;
 
-    const edges_type& edges = this->edges.getValue();
-    assert(out.size() >= edges.size() );
-
-
-    // for each edge in the topology
-    index_type off = 0;
-    for(typename edges_type::const_iterator e = edges.begin(), end = edges.end();
-        e != end; ++e, ++off)
+    for(index_type d = 0; d < in.size(); ++d)
     {
 
-        // parent/child indices
-        index_type p = e->data()[0];
-        index_type c = e->data()[1];
+        out[ d ] = se3.product_log( in[ d ] ).getVAll();
 
-        assert( p != c );
+        typename se3_type::mat66 chunk = se3.product_dlog( in[d] );
 
-        // mapping output
-        out[ off ] = se3.prod( se3.inv(in[ p ]), in[ c ] );
-
-        // ordered matrix chunks
-        typedef std::map<index_type, mat66> chunk_type;
-        chunk_type chunk;
-
-        blocks(chunk[ p ], chunk[ c ], in[ p ], in[ c ]);
-
-        // fills sparse row
         for(index_type i = 0; i < Nout; ++i)
         {
-            index_type row = Nout * off + i;
-
+            index_type row = d * Nout + i;
             jacobian.beginRow( row );
 
-            for(typename chunk_type::iterator c = chunk.begin(); c != chunk.end(); ++c)
+            for(index_type j = 0; j < Nin; ++j)
             {
+                index_type col = d * Nin + j;
 
-                for(index_type j = 0; j < Nin; ++j)
-                {
-                    index_type col = Nin * c->first + j;
-                    jacobian.set( row, col, c->second(i, j) );
-                }
+                jacobian.set( row, col, chunk(i, j) );
+
             }
         }
     }
 
     jacobian.endEdit();
-
 }
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void LogRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if( jacobian.rowSize() > 0 )
         jacobian.mult(dOut,dIn);
 }
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
+void LogRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if( jacobian.rowSize() > 0 )
         jacobian.addMultTranspose(dIn,dOut);
 }
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void LogRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"RelativeRigidMapping<TIn, TOut>::applyJT does nothing " << endl;
+    //    cerr<<"LogRigidMapping<TIn, TOut>::applyJT does nothing " << endl;
 }
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* RelativeRigidMapping<TIn, TOut>::getJ()
+const sofa::defaulttype::BaseMatrix* LogRigidMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* RelativeRigidMapping<TIn, TOut>::getJs()
+const vector<sofa::defaulttype::BaseMatrix*>* LogRigidMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
+void LogRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     // typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     // SeqEdges links = edgeContainer->getEdges();

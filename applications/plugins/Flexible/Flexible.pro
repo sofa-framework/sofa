@@ -19,6 +19,7 @@ SOURCES = initFlexible.cpp\
     deformationMapping/DistanceMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
+    deformationMapping/LogRigidMapping.cpp \
     deformationMapping/RelativeRigidMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \

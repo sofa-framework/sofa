@@ -10,6 +10,7 @@
 #include <Eigen/Geometry>
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <boost/math/special_functions/sinc.hpp>
 
 template<class U>
 struct SE3
@@ -17,7 +18,7 @@ struct SE3
 
     typedef U real;
 
-    // TODO SOFA types
+    // TO DO SOFA types
     typedef ::sofa::defaulttype::RigidCoord<3, real> coord_type;
     typedef ::sofa::defaulttype::RigidDeriv<3, real> deriv_type;
 
@@ -29,8 +30,21 @@ struct SE3
 
     typedef Eigen::Quaternion<real> quat;
 
-    // order: orientation, translation
+    // order: translation, rotation
     typedef vec6 twist;
+
+
+    // easy mapping between vector types
+    static Eigen::Map<vec3> map(::sofa::defaulttype::Vec<3, real>& v)
+    {
+        return Eigen::Map<vec3>(v.ptr());
+    }
+
+    static Eigen::Map<const vec3> map(const ::sofa::defaulttype::Vec<3, real>& v)
+    {
+        return Eigen::Map<const vec3>(v.ptr());
+    }
+
 
 
     // rotation quaternion
@@ -42,10 +56,10 @@ struct SE3
                 at.getOrientation()[2]);
     }
 
-    // rotation quaternion
+    // translation vector
     static vec3 translation(const coord_type& at)
     {
-        return Eigen::Map<const vec3>(at.getCenter().ptr());
+        return map( at.getCenter() );
     }
 
     // sofa -> body velocity conversion
@@ -56,8 +70,8 @@ struct SE3
         quat qT = rotation(at).conjugate();
 
         // orientation
-        res.template head<3>() = qT * Eigen::Map<const vec3>(sofa.getVOrientation().ptr() );
-        res.template tail<3>() = qT * Eigen::Map<const vec3>(sofa.getVCenter().ptr() );
+        res.template tail<3>() = qT * map(sofa.getVOrientation() );
+        res.template head<3>() = qT * map(sofa.getVCenter() );
 
         return res;
     }
@@ -70,8 +84,8 @@ struct SE3
         mat33 R = rotation(at).toRotationMatrix();
 
         res <<
-            mat33::Zero(), R.transpose(),
-                  R.transpose(), mat33::Zero();
+            R.transpose(), mat33::Zero(),
+                        mat33::Zero(), R.transpose();
 
         return res;
     }
@@ -84,9 +98,8 @@ struct SE3
 
         quat q = rotation(at);
 
-
-        Eigen::Map<vec3>(res.getVOrientation().ptr()) = q * body.template head<3>();
-        Eigen::Map<vec3>(res.getVCenter().ptr()) = q * body.template tail<3>();
+        map( res.getVOrientation() )  = q * body.template tail<3>();
+        map( res.getVCenter() ) = q * body.template head<3>();
 
         return res;
     }
@@ -99,8 +112,8 @@ struct SE3
         mat33 R = rotation(at).toRotationMatrix();
 
         res <<
-            mat33::Zero(), R,
-                  R, mat33::Zero();
+            R,  mat33::Zero(),
+                mat33::Zero(), R;
 
         return res;
     };
@@ -115,8 +128,9 @@ struct SE3
 
         twist res;
 
-        res.template head<3>() = q * v.template head<3>();
-        res.template tail<3>() = t.cross(res.template head<3>()) + q * v.template tail<3>();
+        res.template tail<3>() = q * v.template tail<3>();
+
+        res.template head<3>() = t.cross(res.template tail<3>()) + q * v.template head<3>();
 
         return res;
     }
@@ -149,8 +163,8 @@ struct SE3
 
         mat66 res;
         res <<
-            R, mat33::Zero(),
-               T * R, R;
+            R, T * R,
+               mat33::Zero(), R;
 
         return res;
     }
@@ -164,6 +178,89 @@ struct SE3
     static coord_type prod(const coord_type& a, const coord_type& b)
     {
         return ::sofa::defaulttype::Rigid3Types::mult(a, b);
+    }
+
+
+    static const real epsilon = 1e-7;
+
+
+
+    // SO(3) log
+    static vec3 log(quat q)
+    {
+
+        q.normalize();
+
+        // flip if needed
+        if( q.w() < 0 ) q.coeffs() = -q.coeffs();
+
+        // (half) rotation angle
+        real theta = std::asin( q.vec().norm() );
+
+        if( std::abs(theta) < epsilon )
+        {
+            return q.vec();
+        }
+        else
+        {
+            // TODO use boost::sinc ?
+            return theta * q.vec().normalized();
+        }
+
+    }
+
+    // SO(3) log body differential
+    static mat33 dlog(const quat& q)
+    {
+
+        vec3 log_q = log(q);
+        real theta = log_q.norm();
+
+        if( theta < epsilon ) return mat33::Identity();
+
+        vec3 n = log_q.normalized();
+
+        real cos = std::cos(theta);
+        real sinc = boost::math::sinc_pi(theta);
+
+        real alpha = cos / sinc;
+
+        mat33 res = mat33::Zero();
+
+        res += alpha * mat33::Identity();
+        res += hat( log_q );
+
+        res -= (alpha - 1) * n * n.transpose();
+
+        return res;
+    }
+
+
+    // R(3) x SO(3) logarithm (i.e. *not* SE(3))
+    static deriv_type product_log(const coord_type& g)
+    {
+
+        deriv_type res;
+
+        res.getVCenter() = g.getCenter();
+        map(res.getVOrientation() ) = log( rotation(g) );
+
+        return res;
+    }
+
+    // R(3) x SO(3) logarithm derivative. applies to *sofa* velocities !
+    static mat66 product_dlog(const coord_type& g)
+    {
+        mat66 res;
+
+        quat q = rotation(g);
+        mat33 R = q.toRotationMatrix();
+
+        res <<
+            mat33::Identity(), mat33::Zero(),
+                  mat33::Zero(), dlog( q ) * R.transpose();
+
+        return res;
     }
 
 };

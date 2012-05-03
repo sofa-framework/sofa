@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_RelativeRigidMapping_CPP
+#define SOFA_COMPONENT_MAPPING_LogRigidMapping_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/RelativeRigidMapping.inl"
+#include "../deformationMapping/LogRigidMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/vector.h>
@@ -40,26 +40,26 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(RelativeRigidMapping)
+SOFA_DECL_CLASS(LogRigidMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
-int RelativeRigidMappingClass = core::RegisterObject("Computes relative rigid configurations")
+int LogRigidMappingClass = core::RegisterObject("Computes relative rigid configurations")
 #ifndef SOFA_FLOAT
-        .add< RelativeRigidMapping< Rigid3dTypes, Rigid3dTypes > >()
+        .add< LogRigidMapping< Rigid3dTypes, Vec6dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< RelativeRigidMapping< Rigid3fTypes, Rigid3fTypes > >()
+        .add< LogRigidMapping< Rigid3fTypes, Vec6fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_Flexible_API RelativeRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_Flexible_API LogRigidMapping< Rigid3dTypes, Vec6dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API RelativeRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_Flexible_API LogRigidMapping< Rigid3fTypes, Vec6fTypes >;
 #endif
 
 
