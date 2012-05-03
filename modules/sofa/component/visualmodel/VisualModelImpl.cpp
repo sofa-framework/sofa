@@ -119,6 +119,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_computeTangents (initData   (&m_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
     , m_updateTangents  (initData   (&m_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
     , m_handleDynamicTopology  (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
+    , m_fixMergedUVSeams  (initData   (&m_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
     , m_vertices2		(initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
     , m_vtexcoords		(initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
     , m_vtangents		(initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
@@ -626,6 +627,7 @@ class VisualModelPointHandler : public sofa::component::topology::TopologyDataHa
 {
 public:
     typedef typename VecCoord::value_type Coord;
+    typedef typename Coord::value_type Real;
     VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
@@ -635,11 +637,26 @@ public:
     {
         const VecCoord& x = this->m_topologyData->getValue();
         std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
-        if (!ancestors.empty() )
+        if (!ancestors.empty())
         {
-            dest = x[ancestors[0]]*coefs[0];
-            for (unsigned int i=1; i<ancestors.size(); ++i)
-                dest += x[ancestors[i]]*coefs[i];
+            if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
+            {
+                Coord c0 = x[ancestors[0]];
+                dest = c0*coefs[0];
+                for (unsigned int i=1; i<ancestors.size(); ++i)
+                {
+                    Coord ci = x[ancestors[i]];
+                    for (unsigned int j=0; j<ci.size(); ++j)
+                        ci[j] += helper::rnear(c0[j]-ci[j]);
+                    dest += ci*coefs[i];
+                }
+            }
+            else
+            {
+                dest = x[ancestors[0]]*coefs[0];
+                for (unsigned int i=1; i<ancestors.size(); ++i)
+                    dest += x[ancestors[i]]*coefs[i];
+            }
         }
         // BUGFIX: remove link to the Data as it is now specific to this instance
         this->m_topologyData->setParent(NULL);
@@ -681,7 +698,7 @@ void VisualModelImpl::init()
             //addTopoHandler(&m_positions);
             //addTopoHandler(&m_restPositions);
             //addTopoHandler(&m_vnormals);
-            addTopoHandler(&m_vtexcoords);
+            addTopoHandler(&m_vtexcoords,(m_fixMergedUVSeams.getValue()?1:0));
             //addTopoHandler(&m_vtangents);
             //addTopoHandler(&m_vbitangents);
         }
@@ -857,15 +874,23 @@ void VisualModelImpl::computeTangents()
         tangents[i].clear();
         bitangents[i].clear();
     }
-
+    const bool fixMergedUVSeams = m_fixMergedUVSeams.getValue();
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
         const Coord v1 = vertices[triangles[i][0]];
         const Coord v2 = vertices[triangles[i][1]];
         const Coord v3 = vertices[triangles[i][2]];
-        const TexCoord t1 = texcoords[triangles[i][0]];
-        const TexCoord t2 = texcoords[triangles[i][1]];
-        const TexCoord t3 = texcoords[triangles[i][2]];
+        TexCoord t1 = texcoords[triangles[i][0]];
+        TexCoord t2 = texcoords[triangles[i][1]];
+        TexCoord t3 = texcoords[triangles[i][2]];
+        if (fixMergedUVSeams)
+        {
+            for (unsigned int j=0; j<t1.size(); ++j)
+            {
+                t2[j] += helper::rnear(t1[j]-t2[j]);
+                t3[j] += helper::rnear(t1[j]-t3[j]);
+            }
+        }
         Coord t = computeTangent(v1, v2, v3, t1, t2, t3);
         Coord b = computeBitangent(v1, v2, v3, t1, t2, t3);
 

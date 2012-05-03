@@ -207,6 +207,7 @@ protected:
     Data<bool> m_computeTangents; ///< True if tangents should be computed at startup
     Data<bool> m_updateTangents; ///< True if tangents should be updated at each iteration
     Data<bool> m_handleDynamicTopology; ///< True if topological changes should be handled
+    Data<bool> m_fixMergedUVSeams; ///< True if UV seams should be handled even when duplicate UVs are merged
 
     Data< VecCoord > m_vertices2;
     topology::PointData< VecTexCoord > m_vtexcoords;
