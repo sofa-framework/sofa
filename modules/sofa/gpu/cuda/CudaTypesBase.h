@@ -280,14 +280,21 @@ public :
         return res;
     }
 
-    void mult(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r)
-    {
-        CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
-                m.deviceRead(),
-                m.getPitchDevice(),
-                r.getCudaVector().deviceRead(),
-                v.getCudaVector().deviceWrite());
-    }
+//        void mul(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r) {
+//            CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
+//                                        m.deviceRead(),
+//                                        m.getPitchDevice(),
+//                                        r.getCudaVector().deviceRead(),
+//                                        v.getCudaVector().deviceWrite());
+//        }
+
+//		void mulT(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r) {
+//            CudaMatrixUtilsKernels<Real>::matrixT_vector_product(rowSize(),
+//								        m.deviceRead(),
+//								        m.getPitchDevice(),
+//								        r.getCudaVector().deviceRead(),
+//								        v.getCudaVector().deviceWrite());
+//		}
 
     void operator= ( const CudaBaseMatrix<T>& mat )
     {

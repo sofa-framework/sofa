@@ -309,6 +309,31 @@ public:
         return res;
     }
 
+    template<class Real2>
+    void mul(FullVector<Real2>& res,const FullVector<Real2>& b) const
+    {
+        for (Index i=0; i<nRow; ++i)
+        {
+            Real r = 0;
+            for (Index j=0; j<nCol; ++j)
+                r += data[i*pitch+j] * b[j];
+            res[i] = r;
+        }
+    }
+
+    template<class Real2>
+    void mulT(FullVector<Real2>& res,const FullVector<Real2>& b) const
+    {
+        for (Index i=0; i<nCol; ++i)
+        {
+            Real r = 0;
+            for (Index j=0; j<nRow; ++j)
+                r += data[j*pitch+i] * b[j];
+            res[i] = r;
+        }
+    }
+
+
     friend std::ostream& operator << (std::ostream& out, const FullMatrix<T>& v )
     {
         int nx = v.colSize();
