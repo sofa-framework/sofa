@@ -143,22 +143,26 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(sofa-asclepios)
 	}
 
-contains(DEFINES, SOFA_HAVE_PLUGIN_FEM) {
-	usePlugin(FEM)
-}
+	contains(DEFINES, SOFA_HAVE_ELECTROPHYSIOLOGY) {
+		usePlugin(Electrophysiology)
+	}
 
-contains (DEFINES, SOFA_HAVE_SOHUSIM) {
-	usePlugin(Sohusim)
-}
+	contains(DEFINES, SOFA_HAVE_PLUGIN_FEM) {
+		usePlugin(FEM)
+	}
 
-contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
-	usePlugin(StableFluidBehaviorPlugin)
-	usePlugin(StableFluidModelPlugin)
-}
+	contains (DEFINES, SOFA_HAVE_SOHUSIM) {
+		usePlugin(Sohusim)
+	}
 
-contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
-	usePlugin(ManifoldTopologies)
-}
+	contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
+		usePlugin(StableFluidBehaviorPlugin)
+		usePlugin(StableFluidModelPlugin)
+	}
+
+	contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
+		usePlugin(ManifoldTopologies)
+	}
 
 
 } # END SOFA_DEV
