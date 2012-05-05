@@ -29,6 +29,7 @@
 
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -100,24 +101,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
                 for (int i=0; i<fromModel->getNbEdges(); i++)
                 {
-                    for (unsigned int j=0; j<edgeBaryCoords.getValue().size(); j++)
-                    {
-                        Edge e = fromModel->getEdge(i);
-
-                        Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
-                        Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
-
-                        double fx = edgeBaryCoords.getValue()[j][0];
-
-                        Vec3d result = p0 * (1-fx)
-                                + p1 * fx;
-
-                        toModel->addPoint(result[0], result[1], result[2]);
-
-                        pointsMappedFrom[EDGE][i].push_back(toModelLastPointIndex);
-                        pointSource.push_back(std::make_pair(EDGE,i));
-                        toModelLastPointIndex++;
-                    }
+                    addInputEdge(i, false);
                 }
             }
 
@@ -127,27 +111,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
                 for (int i=0; i<fromModel->getNbTriangles(); i++)
                 {
-                    for (unsigned int j=0; j<triangleBaryCoords.getValue().size(); j++)
-                    {
-                        Triangle t = fromModel->getTriangle(i);
-
-                        Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
-                        Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
-                        Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
-
-                        double fx = triangleBaryCoords.getValue()[j][0];
-                        double fy = triangleBaryCoords.getValue()[j][1];
-
-                        Vec3d result =  p0 * (1-fx-fy)
-                                + p1 * fx
-                                + p2 * fy;
-
-                        toModel->addPoint(result[0], result[1], result[2]);
-
-                        pointsMappedFrom[TRIANGLE][i].push_back(toModelLastPointIndex);
-                        pointSource.push_back(std::make_pair(TRIANGLE,i));
-                        toModelLastPointIndex++;
-                    }
+                    addInputTriangle(i, false);
                 }
             }
 
@@ -260,6 +224,82 @@ void Mesh2PointTopologicalMapping::init()
     }
 }
 
+void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, bool bSignal)
+{
+    if (pointsMappedFrom[EDGE].size() < i+1)
+        pointsMappedFrom[EDGE].resize(i+1);
+    else
+        pointsMappedFrom[EDGE][i].clear();
+
+    Edge e = fromModel->getEdge(i);
+
+    Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
+    Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
+
+    if (bSignal)
+    {
+        PointSetTopologyModifier *to_pstm;
+        toModel->getContext()->get(to_pstm);
+
+        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
+        sofa::helper::vector< sofa::helper::vector< double       > > coefs;
+        to_pstm->addPointsWarning(edgeBaryCoords.getValue().size(), ancestors, coefs);
+    }
+
+    for (unsigned int j=0; j<edgeBaryCoords.getValue().size(); j++)
+    {
+        double fx = edgeBaryCoords.getValue()[j][0];
+
+        Vec3d result = p0 * (1-fx)
+                + p1 * fx;
+
+        toModel->addPoint(result[0], result[1], result[2]);
+
+        pointsMappedFrom[EDGE][i].push_back(pointSource.size());
+        pointSource.push_back(std::make_pair(EDGE,i));
+    }
+}
+
+void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, bool bSignal)
+{
+    if (pointsMappedFrom[TRIANGLE].size() < i+1)
+        pointsMappedFrom[TRIANGLE].resize(i+1);
+    else
+        pointsMappedFrom[TRIANGLE][i].clear();
+
+    Triangle t = fromModel->getTriangle(i);
+
+    Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
+    Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
+    Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
+
+    if (bSignal)
+    {
+        PointSetTopologyModifier *to_pstm;
+        toModel->getContext()->get(to_pstm);
+
+        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
+        sofa::helper::vector< sofa::helper::vector< double       > > coefs;
+        to_pstm->addPointsWarning(triangleBaryCoords.getValue().size(), ancestors, coefs);
+    }
+
+    for (unsigned int j=0; j<triangleBaryCoords.getValue().size(); j++)
+    {
+        double fx = triangleBaryCoords.getValue()[j][0];
+        double fy = triangleBaryCoords.getValue()[j][1];
+
+        Vec3d result =  p0 * (1-fx-fy)
+                + p1 * fx
+                + p2 * fy;
+
+        toModel->addPoint(result[0], result[1], result[2]);
+
+        pointsMappedFrom[TRIANGLE][i].push_back(pointSource.size());
+        pointSource.push_back(std::make_pair(TRIANGLE,i));
+    }
+}
+
+
 void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if(fromModel && toModel)
@@ -287,6 +327,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::POINTSADDED:
             {
                 /// @TODO
+//				sout << "INPUT ADD POINTS " << sendl;
                 break;
             }
             case core::topology::POINTSREMOVED:
@@ -305,7 +346,11 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::EDGESADDED:
             {
-                /// @TODO
+                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const EdgesAdded *>( *changeIt ) )->edgeIndexArray;
+//				sout << "INPUT ADD EDGES " << tab << sendl;
+                for (unsigned int i=0; i < tab.size(); i++)
+                    addInputEdge(tab[i]);
+                to_pstm->propagateTopologicalChanges();
                 break;
             }
             case core::topology::EDGESREMOVED:
@@ -317,7 +362,11 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::TRIANGLESADDED:
             {
-                /// @TODO
+                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *changeIt ) )->getArray();
+//				sout << "INPUT ADD TRIANGLES " << tab << sendl;
+                for (unsigned int i=0; i < tab.size(); i++)
+                    addInputTriangle(tab[i]);
+                to_pstm->propagateTopologicalChanges();
                 break;
             }
             case core::topology::TRIANGLESREMOVED:
@@ -365,17 +414,30 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::ENDING_EVENT:
             {
+//			    sout << "ENDING EVENT" << sendl;
                 pointsToRemove.erase(BaseMeshTopology::InvalidID);
                 if (to_pstm != NULL && !pointsToRemove.empty())
                 {
+                    // TODO: This will fail to work if add and
+                    // remove changes are combined and removes are
+                    // signaled prior to adds! The indices will mix
+                    // up.
+
                     sofa::helper::vector<unsigned int> vitems;
                     vitems.reserve(pointsToRemove.size());
                     vitems.insert(vitems.end(), pointsToRemove.rbegin(), pointsToRemove.rend());
 
-                    to_pstm->removePointsWarning(vitems);
+                    to_pstm->removePointsWarning(vitems, false);
                     to_pstm->propagateTopologicalChanges();
-                    to_pstm->removePointsProcess(vitems);
+
                     removeOutputPoints(vitems);
+
+                    to_pstm->removePointsProcess(vitems, false);
+
+                    to_pstm->propagateTopologicalChanges();
+                    to_pstm->notifyEndingEvent();
+                    to_pstm->propagateTopologicalChanges();
+
                     pointsToRemove.clear();
                 }
 
@@ -452,6 +514,15 @@ void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::helpe
 
 void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeLast)
 {
+    PointSetTopologyContainer *cont = dynamic_cast<PointSetTopologyContainer*>(toModel.get());
+    if (!cont) return;
+    PointSetTopologyContainer::InitTypes::VecCoord& pts =
+        *cont->getPointDataArray().beginEdit();
+    PointSetTopologyContainer::InitTypes::VecCoord::value_type tmp = pts[i1];
+    pts[i1] = pts[i2];
+    pts[i2] = tmp;
+    cont->getPointDataArray().endEdit();
+
     std::pair<Element, int> i1Source = pointSource[i1];
     std::pair<Element, int> i2Source = pointSource[i2];
     pointSource[i1] = i2Source;
@@ -494,6 +565,12 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vecto
     }
 
     pointSource.resize(last + 1);
+
+    // Remove points from the topology container
+    PointSetTopologyContainer *cont = dynamic_cast<PointSetTopologyContainer*>(toModel.get());
+    if (!cont) return;
+    cont->getPointDataArray().beginEdit()->resize(last+1);
+    cont->getPointDataArray().endEdit();
 }
 
 } // namespace topology

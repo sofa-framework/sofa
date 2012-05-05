@@ -139,6 +139,9 @@ protected:
 
     std::set<unsigned int> pointsToRemove;
 
+    void addInputEdge(unsigned int i, bool bSignal=true);
+    void addInputTriangle(unsigned int i, bool bSignal=true);
+
     void swapInput(Element elem, int i1, int i2);
     void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );
     void renumberInput(Element elem, const sofa::helper::vector<unsigned int>& index );
