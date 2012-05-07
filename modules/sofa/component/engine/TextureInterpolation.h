@@ -121,13 +121,12 @@ protected:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API TextureInterpolation<defaulttype::Vec1dTypes>;
+extern template class SOFA_ENGINE_API TextureInterpolation<defaulttype::Vec1dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API TextureInterpolation<defaulttype::Vec1fTypes>;
+extern template class SOFA_ENGINE_API TextureInterpolation<defaulttype::Vec1fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

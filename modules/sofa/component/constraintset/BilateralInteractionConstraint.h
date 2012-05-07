@@ -307,7 +307,34 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
+#ifndef SOFA_FLOAT
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1, const DataVecCoord &x2);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
+
+#endif
+
+#ifndef SOFA_DOUBLE
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1_d, const DataVecCoord &x2_d);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
+
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
+#endif
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3dTypes >;
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3dTypes >;

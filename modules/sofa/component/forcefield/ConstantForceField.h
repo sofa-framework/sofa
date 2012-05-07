@@ -107,6 +107,20 @@ protected:
 
 };
 
+#ifndef SOFA_FLOAT
+template <>
+double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+template <>
+double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+template <>
+double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+#endif
+
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
@@ -120,8 +134,7 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec2dTypes>;

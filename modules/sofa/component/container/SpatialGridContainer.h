@@ -369,7 +369,7 @@ protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
 #endif

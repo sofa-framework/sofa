@@ -184,8 +184,7 @@ protected:
     Quat orientation;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_USER_INTERACTION)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_USER_INTERACTION)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec3dTypes>;
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec2dTypes>;

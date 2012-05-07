@@ -598,10 +598,6 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
     delete v;
 }
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
-extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
-#endif
-
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resetSystem();
 
@@ -701,6 +697,10 @@ public:
     GraphScatteredVector* createTempVector() { return new GraphScatteredVector(&vops); }
     void deleteTempVector(GraphScatteredVector* v) { delete v; }
 };
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
+extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
+#endif
 
 } // namespace linearsolver
 

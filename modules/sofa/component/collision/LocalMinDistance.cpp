@@ -1851,14 +1851,17 @@ void LocalMinDistance::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-#if defined(WIN32)
-template class SOFA_CONSTRAINT_API core::collision::IntersectorFactory<LocalMinDistance>;
-#endif
-
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+}
+}
 
 } // namespace sofa
 

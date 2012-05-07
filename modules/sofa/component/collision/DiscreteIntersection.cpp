@@ -99,15 +99,17 @@ int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
 //	return 0;
 //}
 
-
-#if defined(WIN32)
-template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<DiscreteIntersection>;
-#endif
-
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+}
+}
 
 } // namespace sofa
 

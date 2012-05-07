@@ -83,14 +83,13 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
-#pragma warning(disable : 4231)
-template class SOFA_ENGINE_API MapIndices<int>;
-template class SOFA_ENGINE_API MapIndices<unsigned int>;
-template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+extern template class SOFA_ENGINE_API MapIndices<int>;
+extern template class SOFA_ENGINE_API MapIndices<unsigned int>;
+extern template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
+extern template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
+extern template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
+extern template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
 #endif
 
 } // namespace engine

@@ -167,8 +167,7 @@ protected :
 };
 
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CONSTRAINT)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3dTypes>;

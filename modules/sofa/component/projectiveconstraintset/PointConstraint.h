@@ -108,7 +108,7 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec2dTypes>;

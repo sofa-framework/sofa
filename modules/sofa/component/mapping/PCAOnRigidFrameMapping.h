@@ -295,8 +295,7 @@ protected:
 
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
 //extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;

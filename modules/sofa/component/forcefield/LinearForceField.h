@@ -132,6 +132,21 @@ protected:
 
 }; // definition of the LinearForceField class
 
+
+#ifndef SOFA_FLOAT
+template <>
+double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+template <>
+double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+template <>
+double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+#endif
+
 using sofa::defaulttype::Vec6dTypes;
 using sofa::defaulttype::Vec6fTypes;
 using sofa::defaulttype::Vec3dTypes;
@@ -143,8 +158,8 @@ using sofa::defaulttype::Vec1fTypes;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3dTypes>;
@@ -152,7 +167,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3dTypes>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2dTypes>;
+// extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3fTypes>;
@@ -160,10 +175,10 @@ extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3fTypes>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
+// extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
 
 } // namespace forcefield

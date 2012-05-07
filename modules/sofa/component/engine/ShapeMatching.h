@@ -129,14 +129,14 @@ private:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
-template class SOFA_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;
+extern template class SOFA_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API ShapeMatching<defaulttype::Vec3fTypes>;
-template class SOFA_ENGINE_API ShapeMatching<defaulttype::Rigid3fTypes>;
+extern template class SOFA_ENGINE_API ShapeMatching<defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API ShapeMatching<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

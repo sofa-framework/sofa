@@ -112,15 +112,14 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3fTypes>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

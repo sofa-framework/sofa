@@ -99,7 +99,7 @@ protected :
     MouseMapping mouseMapping;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 #ifndef SOFA_DOUBLE
 extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
 extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
@@ -108,10 +108,17 @@ extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defau
 extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
 extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
 #endif
-extern template class SOFA_USER_INTERACTION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 #endif
 }
 }
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+namespace helper
+{
+extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+}
+#endif
+
 }
 
 #endif

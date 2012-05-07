@@ -117,8 +117,7 @@ private :
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
 
 using namespace sofa::defaulttype;
 
@@ -139,7 +138,7 @@ extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid3fType
 //extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
 
 } // namespace forcefield
 

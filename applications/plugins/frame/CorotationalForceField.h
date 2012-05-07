@@ -101,7 +101,7 @@ protected :
     vector< StressStrainMatrix > stressStrainMatrices;
 };
 
-#if defined(WIN32) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332dTypes>;

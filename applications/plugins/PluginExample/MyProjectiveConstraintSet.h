@@ -71,7 +71,7 @@ private:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
 #ifndef SOFA_FLOAT
 extern template class MyProjectiveConstraintSet<defaulttype::Vec3dTypes>;
 extern template class MyProjectiveConstraintSet<defaulttype::Rigid3dTypes>;

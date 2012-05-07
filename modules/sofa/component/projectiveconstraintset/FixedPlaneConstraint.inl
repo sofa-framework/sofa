@@ -210,22 +210,6 @@ void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
     glEnd();
 }
 
-#ifndef SOFA_FLOAT
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
-
-template <>
-bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Coord /*p*/);
-#endif
-
-#ifndef SOFA_DOUBLE
-template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
-
-template <>
-bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord /*p*/);
-#endif
-
 } // namespace constraint
 
 } // namespace component

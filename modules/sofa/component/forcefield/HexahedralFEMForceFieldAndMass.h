@@ -141,8 +141,7 @@ protected:
     PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
 #endif

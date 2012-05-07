@@ -100,7 +100,7 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(FRAME_FRAMEFIXEDCONSTRAINT_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEFIXEDCONSTRAINT_CPP)
 extern template class SOFA_FRAME_API FrameFixedConstraint<Affine3dTypes>;
 extern template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3dTypes>;
 extern template class SOFA_FRAME_API FrameFixedConstraint<Affine3fTypes>;

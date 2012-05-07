@@ -104,8 +104,11 @@ public:
     typedef vector<ElementStiffness> VecElementStiffness;
 
 
-    static const int LARGE = 0;   ///< Symbol of large displacements hexahedron solver
-    static const int POLAR = 1;   ///< Symbol of polar displacements hexahedron solver
+    enum
+    {
+        LARGE = 0,   ///< Symbol of large displacements hexahedron solver
+        POLAR = 1,   ///< Symbol of polar displacements hexahedron solver
+    };
 
 protected:
 
@@ -225,8 +228,7 @@ protected:
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API HexahedralFEMForceField<defaulttype::Vec3dTypes>;
 #endif

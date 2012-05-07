@@ -91,15 +91,6 @@ void DistanceLMConstraint<DataTypes>::updateRestLength()
     }
 }
 
-#ifndef SOFA_FLOAT
-template<>
-Rigid3dTypes::Deriv DistanceLMConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-Rigid3fTypes::Deriv DistanceLMConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
-
 template<class DataTypes>
 typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {

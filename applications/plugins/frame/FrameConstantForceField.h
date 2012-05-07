@@ -41,7 +41,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-#if defined(WIN32) && !defined(FRAME_FRAMECONSTANTFROCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMECONSTANTFROCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 //                extern template class SOFA_FRAME_API ConstantForceField<DeformationGradient331dTypes>;
 extern template class SOFA_FRAME_API ConstantForceField<Affine3dTypes>;

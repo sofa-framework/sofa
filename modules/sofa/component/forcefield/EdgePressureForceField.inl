@@ -32,10 +32,6 @@
 #include <vector>
 #include <set>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 using std::cout;
 using std::cerr;
 using std::endl;

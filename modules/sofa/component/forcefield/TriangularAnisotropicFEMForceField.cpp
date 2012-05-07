@@ -26,11 +26,6 @@
 #include <sofa/component/forcefield/TriangularAnisotropicFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-
 // #define DEBUG_TRIANGLEFEM
 
 namespace sofa

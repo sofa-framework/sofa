@@ -206,8 +206,7 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_DEFORMABLE)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3dTypes>;
 #endif

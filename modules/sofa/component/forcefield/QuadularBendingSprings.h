@@ -201,8 +201,7 @@ protected:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3dTypes>;
@@ -212,7 +211,7 @@ extern template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3fTypes>;
 #endif
 
 
-#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
+#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP)
 
 } // namespace forcefield
 

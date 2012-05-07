@@ -101,9 +101,11 @@ public:
     typedef core::topology::BaseMeshTopology::SeqCubes VecElement;
 #endif
 
-    static const int LARGE = 0;   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
-    static const int POLAR = 1;   ///< Symbol of polar displacements tetrahedron solver
-
+    enum
+    {
+        LARGE = 0,   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
+        POLAR = 1,   ///< Symbol of polar displacements tetrahedron solver
+    };
 
 
 
@@ -266,8 +268,7 @@ protected:
     bool _alreadyInit;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<defaulttype::Vec3dTypes>;
 #endif

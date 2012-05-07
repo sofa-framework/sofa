@@ -278,7 +278,7 @@ inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->
 typedef TTriangleModel<Vec3Types> TriangleModel;
 typedef TTriangle<Vec3Types> Triangle;
 
-#if defined(WIN32) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
 #endif

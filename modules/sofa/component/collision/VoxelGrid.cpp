@@ -34,12 +34,6 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 
-
-/* for debugging the collision method */
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 namespace sofa
 {
 

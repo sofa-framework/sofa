@@ -75,7 +75,7 @@ public :
     void solveT(float * z, float * r);
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_SPARSE_SOLVER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SPARSE_SOLVER)
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif

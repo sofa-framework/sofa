@@ -182,7 +182,7 @@ public:
     }
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_MISC_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_COLLISION)
 extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel>;
 #endif
 

@@ -334,8 +334,7 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_MISC_FORCEFIELD)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_FORCEFIELD)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
 extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;

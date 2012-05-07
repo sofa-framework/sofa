@@ -89,13 +89,17 @@ int NewProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*
     return 0; /// \todo
 }
 
-#if defined(WIN32)
-template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<NewProximityIntersection>;
-#endif
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+}
+}
 
 } // namespace sofa
 

@@ -196,16 +196,6 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     return true;
 }
 
-#ifndef SOFA_FLOAT
-template<>
-bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
-#endif
-
 }
 }
 }

@@ -117,8 +117,7 @@ using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
@@ -133,7 +132,7 @@ extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTy
 extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
-#endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
+#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)
 
 
 

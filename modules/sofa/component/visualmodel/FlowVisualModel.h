@@ -224,8 +224,7 @@ public:
 
 };
 /*
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_FLUIDSOLIDINTERACTIONFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FLUIDSOLIDINTERACTIONFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class FlowVisualModel<defaulttype::Vec3dTypes>;
 extern template class FlowVisualModel<defaulttype::Vec2dTypes>;

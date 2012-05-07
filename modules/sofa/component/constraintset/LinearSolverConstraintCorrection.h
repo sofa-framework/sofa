@@ -175,7 +175,7 @@ private:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3dTypes>;
 extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1dTypes>;

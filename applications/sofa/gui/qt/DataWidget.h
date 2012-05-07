@@ -314,19 +314,23 @@ protected:
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
 
+
+} // namespace qt
+} // namespace gui
+
 //MOC_SKIP_BEGIN
 #ifdef SOFA_QT4
-#if defined(WIN32) && !defined(SOFA_BUILD_SOFAGUIQT)
-//delay load of the specialized Factory class. unique definition reside in the cpp file.
-extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SOFAGUIQT)
+namespace helper
+{
+//delay load of the specialized Factory class. unique definition reside in the cpp file
+extern template class SOFA_SOFAGUIQT_API Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
+}
 #endif
 #endif
 //MOC_SKIP_END
 
-
-} // qt
-} // gui
-} // sofa
+} // namespace sofa
 
 #endif // SOFA_GUI_QT_DATAWIDGET_H
 

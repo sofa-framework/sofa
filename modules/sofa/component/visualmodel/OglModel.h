@@ -36,10 +36,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif // _WIN32
-
 #define   NB_MAX_TEXTURES 16
 
 namespace sofa

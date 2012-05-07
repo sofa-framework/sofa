@@ -83,7 +83,7 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_SPARSE_SOLVER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SPARSE_SOLVER)
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;

@@ -293,8 +293,7 @@ public:
     static const char* Name() { return "FullVector"; }
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
 //extern template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
 #endif
 

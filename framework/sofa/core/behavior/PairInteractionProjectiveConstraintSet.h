@@ -250,7 +250,7 @@ protected:
     ParticleMask *mask2;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec2dTypes>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec1dTypes>;

@@ -29,11 +29,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <assert.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-
 // #define DEBUG_TRIANGLEFEM
 
 namespace sofa

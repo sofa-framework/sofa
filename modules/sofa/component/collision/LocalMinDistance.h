@@ -128,13 +128,19 @@ private:
     double mainContactDistance;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CONSTRAINT)
-extern template class SOFA_CONSTRAINT_API core::collision::IntersectorFactory<LocalMinDistance>;
-#endif
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
+extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+#endif
+}
+}
 
 } // namespace sofa
 

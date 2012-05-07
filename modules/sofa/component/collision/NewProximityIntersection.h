@@ -82,14 +82,19 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<NewProximityIntersection>;
-#endif
-
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+#endif
+}
+}
 
 } // namespace sofa
 

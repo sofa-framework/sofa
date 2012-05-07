@@ -32,11 +32,11 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 #include <vector>
 #include <fstream>
@@ -450,24 +450,61 @@ protected :
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
+#endif
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
+#endif
+template<>
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2dTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1dTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
-//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6fTypes>;
-//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
 #endif
-//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container

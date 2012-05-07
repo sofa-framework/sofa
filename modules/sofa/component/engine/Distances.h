@@ -242,8 +242,7 @@ private:
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_MISC_ENGINE)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_ENGINE)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
 //extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;

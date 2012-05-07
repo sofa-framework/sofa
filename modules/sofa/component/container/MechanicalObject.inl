@@ -678,15 +678,6 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
     }
 }
 
-#ifndef SOFA_FLOAT
-template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
 {
@@ -901,16 +892,6 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
     }
 }
 
-
-#ifndef SOFA_FLOAT
-template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
 {
@@ -949,15 +930,6 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
         offset += vDest.size() * derivDim;
     }
 }
-
-#ifndef SOFA_FLOAT
-template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
@@ -2437,17 +2409,6 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 
     return result;
 }
-
-#ifndef SOFA_FLOAT
-template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-template<>
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)

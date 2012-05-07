@@ -84,8 +84,7 @@ private:
     PointSetGeometryAlgorithms< DataTypes >*	m_geometryAlgorithms;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec2dTypes>;

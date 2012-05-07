@@ -109,11 +109,10 @@ protected :
 
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
 
 using namespace sofa::defaulttype;
 
-#pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
 #endif

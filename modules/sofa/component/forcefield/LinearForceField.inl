@@ -188,21 +188,6 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
     return e;
 }// LinearForceField::getPotentialEnergy
 
-#ifndef SOFA_FLOAT
-template <>
-double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
-template <>
-double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
-#endif
-
-#ifndef SOFA_DOUBLE
-template <>
-double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
-template <>
-double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
-#endif
-
-
 template< class DataTypes>
 void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {

@@ -90,24 +90,23 @@ protected:
     Data<bool> inverse;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
-template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
-template class SOFA_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
+extern template class SOFA_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 #endif
 
 } // namespace engine

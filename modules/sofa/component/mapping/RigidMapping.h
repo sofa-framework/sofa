@@ -167,8 +167,7 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
 extern template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2dTypes >;

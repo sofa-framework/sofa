@@ -90,13 +90,12 @@ public:
     Data<SeqTriangles> f_triangles;
 };
 
-#if defined(WIN32) && !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3dTypes>;
+extern template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3fTypes>;
+extern template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

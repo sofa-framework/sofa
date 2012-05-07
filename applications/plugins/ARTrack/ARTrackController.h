@@ -158,16 +158,16 @@ protected:
     Vec3d beginLocalPosition,endLocalPosition;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class ARTrackController<defaulttype::Vec1dTypes>;
-template class ARTrackController<defaulttype::Vec3dTypes>;
+extern template class ARTrackController<defaulttype::Vec3dTypes>;
 extern template class ARTrackController<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class ARTrackController<defaulttype::Vec1fTypes>;
-template class ARTrackController<defaulttype::Vec3fTypes>;
+extern template class ARTrackController<defaulttype::Vec3fTypes>;
 extern template class ARTrackController<defaulttype::Rigid3fTypes>;
 #endif
 #endif

@@ -154,7 +154,21 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+// Specialization for rigids
+#ifndef SOFA_FLOAT
+template <>
+void FixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+template <>
+void FixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void FixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+template <>
+void FixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2dTypes>;

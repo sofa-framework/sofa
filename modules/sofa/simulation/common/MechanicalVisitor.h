@@ -2111,7 +2111,7 @@ public:
     }
 #endif
 };
-#if defined(WIN32) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
 extern template class MechanicalVAvailVisitor<V_COORD>;
 extern template class MechanicalVAvailVisitor<V_DERIV>;
 extern template class MechanicalVAllocVisitor<V_COORD>;
