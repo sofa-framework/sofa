@@ -34,10 +34,6 @@
 #include <math.h>
 #include <iostream>
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 namespace sofa
 {
 

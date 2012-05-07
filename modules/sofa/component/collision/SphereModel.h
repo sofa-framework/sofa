@@ -199,7 +199,7 @@ inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->ms
 typedef TSphereModel<Vec3Types> SphereModel;
 typedef TSphere<Vec3Types> Sphere;
 
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
 #endif

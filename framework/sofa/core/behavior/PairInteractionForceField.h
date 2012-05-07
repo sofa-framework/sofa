@@ -286,7 +286,7 @@ protected:
     ParticleMask *mask2;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec2dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec1dTypes>;

@@ -500,7 +500,7 @@ namespace component
 namespace container
 {
 
-#if defined(WIN32) && !defined(FLEXIBLE_AffineTYPES_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineTYPES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Affine3dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3dTypes>;

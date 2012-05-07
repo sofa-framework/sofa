@@ -361,16 +361,6 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     glEnd();
 }
 
-// Specialization for rigids
-template <>
-void LinearVelocityConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void LinearVelocityConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void LinearVelocityConstraint<Vec6dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void LinearVelocityConstraint<Vec6fTypes >::draw(const core::visual::VisualParams* vparams);
-
 } // namespace constraint
 
 } // namespace component

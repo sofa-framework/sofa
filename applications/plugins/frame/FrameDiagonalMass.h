@@ -149,8 +149,7 @@ private:
 
 
 
-#if defined(WIN32) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3dMass>;
 extern template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;

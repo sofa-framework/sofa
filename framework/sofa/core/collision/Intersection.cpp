@@ -86,7 +86,22 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
 
     std::cerr << "ERROR: Element Intersector "
             << gettypename(t1) << "-"
-            << gettypename(t2) << " NOT FOUND." << std::endl;
+            << gettypename(t2) << " NOT FOUND within :" << std::endl;
+    for(InternalMap::const_iterator it = intersectorsMap.begin(), itEnd = intersectorsMap.end(); it != itEnd; ++it)
+    {
+        helper::TypeInfo t1 = it->first.first;
+        helper::TypeInfo t2 = it->first.second;
+        std::cerr << "  "
+                << gettypename(t1) << "-"
+                << gettypename(t2);
+        ElementIntersector* i = it->second;
+        if (!i) std::cout << "  NULL";
+        else
+            std::cout << "  " << i->name();
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
     insert(t1, t2, 0);
     return 0;
 }

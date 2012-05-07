@@ -120,7 +120,7 @@ public:
     }
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
 
 #endif
@@ -129,7 +129,7 @@ extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec
 
 } // namespace component
 
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 namespace helper
 {
 extern template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;

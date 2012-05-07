@@ -131,7 +131,7 @@ protected:
 
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_SCULPTBODYPERFORMER_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_SCULPTBODYPERFORMER_CPP)
 extern template class SOFA_COMPONENT_MISC_API SculptBodyPerformer<defaulttype::Vec3Types>;
 #endif
 

@@ -28,10 +28,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 // #define DEBUG_TRIANGLEFEM
 
 namespace sofa

@@ -122,8 +122,7 @@ protected:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_LogRigidMapping_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LogRigidMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_RIGID_API LogRigidMapping< Rigid3dTypes, Vec6dTypes >;
 #endif

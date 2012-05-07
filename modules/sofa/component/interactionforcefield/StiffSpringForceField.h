@@ -110,8 +110,7 @@ public:
     virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_DEFORMABLE)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2dTypes>;

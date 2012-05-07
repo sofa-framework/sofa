@@ -69,12 +69,11 @@ public:
     Data<std::string> f_op;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
-#pragma warning(disable : 4231)
-template class SOFA_ENGINE_API MergeSets<int>;
-template class SOFA_ENGINE_API MergeSets<unsigned int>;
-//template class SOFA_ENGINE_API MergeSets<long long>;
-//template class SOFA_ENGINE_API MergeSets<unsigned long long>;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
+extern template class SOFA_ENGINE_API MergeSets<int>;
+extern template class SOFA_ENGINE_API MergeSets<unsigned int>;
+//extern template class SOFA_ENGINE_API MergeSets<long long>;
+//extern template class SOFA_ENGINE_API MergeSets<unsigned long long>;
 #endif
 
 } // namespace engine

@@ -72,32 +72,31 @@ public:
     core::objectmodel::Data<VecIndex> f_indices;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
-#pragma warning(disable : 4231)
-template class SOFA_ENGINE_API IndicesFromValues<std::string>;
-template class SOFA_ENGINE_API IndicesFromValues<int>;
-template class SOFA_ENGINE_API IndicesFromValues<unsigned int>;
-template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
+extern template class SOFA_ENGINE_API IndicesFromValues<std::string>;
+extern template class SOFA_ENGINE_API IndicesFromValues<int>;
+extern template class SOFA_ENGINE_API IndicesFromValues<unsigned int>;
+extern template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
+extern template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
+extern template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
+extern template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API IndicesFromValues<double>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
+extern template class SOFA_ENGINE_API IndicesFromValues<double>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API IndicesFromValues<float>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2f>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3f>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
-template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
+extern template class SOFA_ENGINE_API IndicesFromValues<float>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2f>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3f>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
+extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
 #endif //SOFA_DOUBLE
 #endif
 

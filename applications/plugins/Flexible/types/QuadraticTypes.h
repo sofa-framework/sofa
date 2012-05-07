@@ -578,7 +578,7 @@ namespace component
 namespace container
 {
 
-#if defined(WIN32) && !defined(FLEXIBLE_QuadraticTYPES_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_QuadraticTYPES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Quadratic3dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Quadratic3dTypes>;

@@ -54,9 +54,6 @@
 #endif
 #include <fstream>
 #include <string.h>
-#ifndef WIN32
-#include <locale.h>
-#endif
 #include <sofa/helper/system/thread/CTime.h>
 using
 sofa::helper::system::thread::CTime;

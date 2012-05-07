@@ -397,8 +397,7 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_RIGID)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_RIGID)
 #ifndef SOFA_FLOAT
 extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
 extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3dTypes>;

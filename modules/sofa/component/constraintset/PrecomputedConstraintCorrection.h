@@ -202,7 +202,54 @@ protected:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
+/////////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef SOFA_FLOAT
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints(bool back);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints(bool back);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* vparams);
+
+#endif
+
+#ifndef SOFA_DOUBLE
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints(bool back);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints(bool back);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* vparams);
+
+#endif
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
 extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;

@@ -907,7 +907,7 @@ void TimerData::print()
                 out << "TOTAL";
             else
             {
-                for(unsigned ii=0; ii<data.level; ii++) out<<".";  // indentation to show the hierarchy level
+                for(int ii=0; ii<data.level; ii++) out<<".";  // indentation to show the hierarchy level
                 out << steps[s];
             }
             out << '\n';

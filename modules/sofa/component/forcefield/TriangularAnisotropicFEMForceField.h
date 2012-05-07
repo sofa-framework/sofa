@@ -120,8 +120,7 @@ public:
     TRQSTriangleHandler* triangleHandler;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API TriangularAnisotropicFEMForceField<defaulttype::Vec3dTypes>;
 #endif

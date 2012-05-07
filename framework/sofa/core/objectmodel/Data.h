@@ -510,15 +510,6 @@ private:
     Data& operator=(const Data& );
 };
 
-#if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
-
-extern template class SOFA_CORE_API TData< std::string >;
-extern template class SOFA_CORE_API Data< std::string >;
-extern template class SOFA_CORE_API TData< bool >;
-extern template class SOFA_CORE_API Data< bool >;
-
-#endif
-
 /// Specialization for reading strings
 template<>
 bool TData<std::string>::read( const std::string& str );
@@ -554,6 +545,15 @@ std::string TData<T>::getValueTypeString() const
     return BaseData::typeName(&virtualGetValue());
 }
 
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+
+extern template class SOFA_CORE_API TData< std::string >;
+extern template class SOFA_CORE_API Data< std::string >;
+extern template class SOFA_CORE_API TData< bool >;
+extern template class SOFA_CORE_API Data< bool >;
+
+#endif
 
 } // namespace objectmodel
 

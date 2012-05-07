@@ -163,13 +163,17 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-#if defined(WIN32)
-template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<MinProximityIntersection>;
-#endif
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+}
+}
 
 } // namespace sofa
 

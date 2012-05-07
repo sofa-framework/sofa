@@ -186,8 +186,7 @@ public:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
 #endif

@@ -237,13 +237,16 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_SIMULATION_COMMON)
-extern template class SOFA_SIMULATION_COMMON_API helper::Factory< std::string, BaseElement, std::pair<std::string, std::string> >;
-#endif
-
 } // namespace xml
 
 } // namespace simulation
+
+namespace helper
+{
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+#endif
+} // namespace helper
 
 } // namespace sofa
 

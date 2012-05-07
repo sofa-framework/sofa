@@ -88,13 +88,18 @@ public:
     }
 
 };
-#if defined WIN32 && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP)
+
+} // namespace collision
+} // namespace component
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP)
+namespace helper
+{
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
-extern template class SOFA_USER_INTERACTION_API helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*>;
+extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+}
 #endif
 
-}
-}
-}
+} // namespace sofa
 
 #endif

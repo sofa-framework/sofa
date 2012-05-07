@@ -83,14 +83,19 @@ private:
     double mainContactDistance;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<MinProximityIntersection>;
-#endif
-
-
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+#endif
+}
+}
 
 } // namespace sofa
 

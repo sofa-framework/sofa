@@ -375,22 +375,6 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void FixedConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void FixedConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void FixedConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void FixedConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
-
-
 } // namespace constraint
 
 } // namespace component

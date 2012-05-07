@@ -248,7 +248,7 @@ protected:
     SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec1dTypes >;

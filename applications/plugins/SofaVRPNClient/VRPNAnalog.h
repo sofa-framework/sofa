@@ -94,13 +94,12 @@ private:
     //static void handle_analog(void *userdata, const vrpn_ANALOGCB a);
 };
 
-#if defined(WIN32) && !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
 #ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3dTypes>;
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3fTypes>;
+extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

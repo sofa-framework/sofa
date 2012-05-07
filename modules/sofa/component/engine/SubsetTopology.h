@@ -184,13 +184,12 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API SubsetTopology<defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API SubsetTopology<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API SubsetTopology<defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API SubsetTopology<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

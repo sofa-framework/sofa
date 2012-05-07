@@ -504,43 +504,6 @@ void UniformMass<DataTypes, MassType>::loadRigidMass ( std::string )
     this->mass.setDisplayed ( false );
 }
 
-
-//Specialization for rigids
-#ifndef SOFA_FLOAT
-template<>
-void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit();
-template<>
-void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass ( std::string );
-template <>
-void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const;
-template <>
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const;
-template <>
-void UniformMass<Vec6dTypes,double>::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit();
-template<>
-void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass ( std::string );
-template <>
-void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
-template <>
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const;
-template <>
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const;
-template <>
-void UniformMass<Vec6fTypes,float>::draw(const core::visual::VisualParams* vparams);
-#endif
-
-
-
 } // namespace mass
 
 } // namespace component

@@ -255,8 +255,40 @@ public:
     }
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
-#pragma warning(disable : 4231)
+
+// Specialization for rigids
+#ifndef SOFA_FLOAT
+/*template <>
+    inline void MassEdgeDestroyFunction<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
+    void* , vector<defaulttype::Rigid3dMass> &);
+
+template <>
+    inline void MassEdgeCreationFunction<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
+    void* , vector<defaulttype::Rigid3dMass> &);*/
+
+template <>
+double DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+template <>
+double DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+template <>
+void DiagonalMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
+template <>
+void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+double DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+template <>
+double DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+
+template <>
+void DiagonalMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
+template <>
+void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
+#endif
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3dTypes,double>;
 extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2dTypes,double>;

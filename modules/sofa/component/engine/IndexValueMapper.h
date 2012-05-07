@@ -87,13 +87,12 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(INDEXVALUEMAPPER_CPP_)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INDEXVALUEMAPPER_CPP_)
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

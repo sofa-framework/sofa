@@ -143,8 +143,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_OBJECT_INTERACTION)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_OBJECT_INTERACTION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
 #endif

@@ -136,8 +136,7 @@ using sofa::defaulttype::ExtVec3fTypes;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, Vec3dTypes >;
 extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, ExtVec3fTypes >;
@@ -152,7 +151,7 @@ extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, Vec3fTypes >
 extern template class SOFA_RIGID_API SkinningMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
-#endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
 

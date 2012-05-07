@@ -512,7 +512,7 @@ public:
     }
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
 
 extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
 
@@ -605,7 +605,7 @@ public:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
 
 //#ifndef SOFA_DOUBLE
 //extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3fTypes>;
