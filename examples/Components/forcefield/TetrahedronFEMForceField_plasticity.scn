@@ -1,0 +1,95 @@
+<Node name="root" dt="0.01">
+  <VisualStyle displayFlags="showForceFields" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
+    
+    <EulerImplicit name="cg_odesolver" printLog="false" />
+    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+    
+    <Node name="Plastic">
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" />
+	<Mesh src="@loader" />
+	<MechanicalObject src="@loader"  />
+	<UniformMass totalmass="5" />
+	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.01" plasticMaxThreshold="0.025" plasticCreep="1"/>
+	<PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
+	<Node name="Visu">
+	    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" rotation="90 0 0"/>
+	    <BarycentricMapping object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+	    <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0"/>
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader"  />
+	    <Triangle />
+	    <BarycentricMapping />
+	</Node>
+  </Node>
+  
+  
+      <Node name="Plastic">
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="-6 0 0"/>
+	<Mesh src="@loader" />
+	<MechanicalObject src="@loader"  />
+	<UniformMass totalmass="5" />
+	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep="1"/>
+	<PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
+	<Node name="Visu">
+	    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="blue" rotation="90 0 0" translation="-6 0 0"/>
+	    <BarycentricMapping object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+	    <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-6 0 0"/>
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader"  />
+	    <Triangle />
+	    <BarycentricMapping />
+	</Node>
+  </Node>
+  
+  
+      <Node name="Plastic">
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="-12 0 0"/>
+	<Mesh src="@loader" />
+	<MechanicalObject src="@loader"  />
+	<UniformMass totalmass="5" />
+	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep=".1"/>
+	<PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
+	<Node name="Visu">
+	    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" rotation="90 0 0" translation="-12 0 0"/>
+	    <BarycentricMapping object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+	    <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="-12 0 0"/>
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader"  />
+	    <Triangle />
+	    <BarycentricMapping />
+	</Node>
+  </Node>
+  
+      <Node name="Elastic">
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" rotation="90 0 0" translation="6 0 0" />
+	<Mesh src="@loader" />
+	<MechanicalObject src="@loader"  />
+	<UniformMass totalmass="5" />
+	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
+	<PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
+	<Node name="Visu">
+	    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="green" rotation="90 0 0" translation="6 0 0"/>
+	    <BarycentricMapping object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+	    <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" rotation="90 0 0" translation="6 0 0"/>
+	    <Mesh src="@loader" />
+	    <MechanicalObject src="@loader"  />
+	    <Triangle />
+	    <BarycentricMapping />
+	</Node>
+  </Node>
+  
+  
+</Node>

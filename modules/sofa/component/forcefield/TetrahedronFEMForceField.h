@@ -130,6 +130,9 @@ protected:
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef Mat<12, 12, Real> StiffnessMatrix;
 
+    /// Symetrical tensor written as a vector following the Voigt notation
+    typedef VecNoInit<6,Real> VoigtTensor;
+
     /// @}
 
     /// Vector of material stiffness of each tetrahedron
@@ -140,6 +143,8 @@ protected:
     VecMaterialStiffness materialsStiffnesses;
     VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
     vector<Transformation> rotations;
+
+    vector<VoigtTensor> _plasticStrains; ///< one plastic strain per element
 
     /// @name Full system matrix assembly support
     /// @{
@@ -204,6 +209,16 @@ public:
     Data<VecReal> _localStiffnessFactor;
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
+
+
+    /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
+    /// @{
+    Data<Real> _plasticMaxThreshold;
+    Data<Real> _plasticYieldThreshold;
+    Data<Real> _plasticCreep; ///< this parameters is different from the article, here it includes the multiplication by dt
+    /// @}
+
+
     Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
     Data< bool > drawHeterogeneousTetra;
@@ -218,11 +233,14 @@ protected:
         , needUpdateTopology(false)
         , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
         , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
         , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
         , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
         , _updateStiffnessMatrix(initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , _assembling(initData(&_assembling,false,"computeGlobalMatrix",""))
+        , _plasticMaxThreshold(initData(&_plasticMaxThreshold,(Real)0.f,"plasticMaxThreshold","Plastic Max Threshold (2-norm of the strain)"))
+        , _plasticYieldThreshold(initData(&_plasticYieldThreshold,(Real)0.0001f,"plasticYieldThreshold","Plastic Yield Threshold (2-norm of the strain)"))
+        , _plasticCreep(initData(&_plasticCreep,(Real)0.9f,"plasticCreep","Plastic Creep Factor * dt [0,1]. Warning this factor depends on dt."))
         , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
@@ -295,6 +313,7 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
+    virtual void reset();
     virtual void init();
     virtual void reinit();
 
@@ -319,8 +338,11 @@ protected:
 
     virtual void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
 
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
+
+    void computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J );
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
+
+
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
