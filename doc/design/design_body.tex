@@ -28,10 +28,27 @@ The conventions used in UML class diagrams are presented in Fig~\ref{fig:uml-leg
 
 \subsubsection{Changes compared to the 1.0~beta~4 version}\label{sec:design-core-objectmodel-changes}
 
+\paragraph{Memory managment based on smart pointers}
+
+In SOFA there are many places where pointers to components, data or graph nodes are stored or manipulated.
+In the beta 4 version, we only used "raw" pointers (i.e. T*) with no information about ownership rules (who is responsible to create or delete the pointer objects) or validity (when an object is deleted, pointers refering it can still exist and become invalid without any way to detect it).
+In a single-threaded context, it is still possible with simple rules to handle most situations.
+The original semantic was that all objects and nodes are owned by their parent node, i.e. all components and sub-trees are deleted when the graph root node is deleted.
+There were exceptions and specific cases (contacts created by the collision pipeline, Simulation components, visual graph, ...), so the actual destruction of the graph was rather complex and error-prone.
+Things get even more complicated when we start to support multiple threads manipulating shared portions of the graphs or components.
+%In this context, manually handling the ownership and destruction of objects becomes significantly more complex.
+% For example, if the simulation deletes a component or node (due to a contact being no longer active or a simulated object being removed from the scene) while the rendering or haptic thread is manipulating it then the program crashes (or worse, corrupts its memory so that it will crash later in an unrelated computation).
+We explain below all the changes we propose, but to summarize the most important ones are :
+\begin{itemize}
+\item All pointers T* used for graph manipulation (object creation and deletion, attachment and detachment from graph nodes) in method parameters, return values, and local variables will be replaced by smart pointers T::SPtr.
+\item All pointers T* stored as class members will be replaced by Link<T> with additional information such as ownership policy, multiplicity, reciprocity. They will be used and managed with an API similar to Data, with some adaptation for ease of use (such as \textcode{myLink->doSomething()} instead of Data-like \textcode{myLink->getValue()->doSomething()}).
+\begin{itemize}
+
 \paragraph{New class description system.}
 It is based on the \textcode{BaseClass} and \textcode{TClass} classes, and requires to add the \textcode{SOFA\_CLASS} macro in the declaration of all classes deriving from Base.
 The benefits are that it is now possible to follow the full hierarchy of classes from the final components, instead of having just a fixed set of categories.
 This macro is also necessary in classes with a templated parent class to be able to use methods and member variables defined in \textcode{Base} such as \textcode{initData} or \textcode{sout}. This removed all the previously redundant direct heritage to \textcode{BaseObject} that was previously required.
+Additionally, the \textcode{SPtr} typedef is defined by this macro, to ease the use of smart pointers.
 
 %%%%%%%%%%%%%% Alreaday included in datastructure/engine.tex %%%%%%%%
 \paragraph{Objects and node tagging (\textcode{Tag} and \textcode{TagSet}).}
