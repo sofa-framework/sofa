@@ -214,7 +214,7 @@ public:
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
         CImg<bool> ret;
         if(axis==0)  ret=CImg<bool>(dim[2],dim[1]);
-        else if(axis==1)  ret=CImg<bool>(dim[1],dim[2]);
+        else if(axis==1)  ret=CImg<bool>(dim[0],dim[2]);
         else ret=CImg<bool>(dim[0],dim[1]);
         ret.fill(false);
 
@@ -703,7 +703,7 @@ public:
         const unsigned int dim[3]= {roi[1][0]-roi[0][0]+1,roi[1][1]-roi[0][1]+1,roi[1][2]-roi[0][2]+1};
         CImg<unsigned char> ret;
         if(axis==0)  ret=CImg<unsigned char>(dim[2],dim[1],1,3);
-        else if(axis==1)  ret=CImg<unsigned char>(dim[1],dim[2],1,3);
+        else if(axis==1)  ret=CImg<unsigned char>(dim[0],dim[2],1,3);
         else ret=CImg<unsigned char>(dim[0],dim[1],1,3);
         ret.fill(0);
 

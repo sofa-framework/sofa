@@ -232,6 +232,7 @@ protected:
         if(!nb) return;
 
         Vec<2,Coord> BB = this->getBB(0);
+        Coord minScale = this->getScale(0);
         for(unsigned int j=1; j<nb; j++)
         {
             Vec<2,Coord> bb = this->getBB(j);
@@ -240,14 +241,18 @@ protected:
                 if(BB[0][k]>bb[0][k]) BB[0][k]=bb[0][k];
                 if(BB[1][k]<bb[1][k]) BB[1][k]=bb[1][k];
             }
+            for(unsigned int k=0; k<3; k++)
+                if( minScale[k] > this->getScale(j)[k] )
+                    minScale[k] = this->getScale(j)[k];
         }
 
 
-        // transform = translated version of inputTransforms[0]
+        // transform = translated version of inputTransforms[0] with minimum voxel size
         raTransform inT0(this->inputTransforms[0]);
         waTransform outT(this->transform);
         outT->operator=(inT0);
         outT->getTranslation()=BB[0];
+        outT->getScale()=minScale;
 
         // set image
         raImage in0(this->inputImages[0]);
@@ -377,7 +382,13 @@ protected:
         return BB;
     }
 
-
+    Coord getScale(unsigned int i)
+    {
+        Coord scale;
+        raTransform rtransform(this->inputTransforms[i]);
+        scale=rtransform->getScale();
+        return scale;
+    }
 };
 
 

@@ -54,6 +54,7 @@
 #define GRADIENT 17
 #define HESSIAN 18
 #define NORMALIZE 19
+#define RESAMPLE 20
 
 
 namespace sofa
@@ -125,7 +126,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(20	,"0 - None"
+        helper::OptionsGroup filterOptions(21	,"0 - None"
                 ,"1 - Blur ( sigma )"
                 ,"2 - Blur Median ( n )"
                 ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -145,6 +146,7 @@ public:
                 ,"17 - Gradient ( axis x | y | z | magnitude)"
                 ,"18 - Hessian (axis1 , axis2) "
                 ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
+                ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
                                           );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -384,6 +386,49 @@ protected:
                 cimglist_for(img,l) {img(l).cut(i1 , i2).normalize( o1   , o2);  }
             }
             break;
+        case RESAMPLE:
+            if(updateImage || updateTransform)
+            {
+                Coord origin = inT->getTranslation();
+                if(p.size()>0) origin[0]=(Real)p[0];
+                if(p.size()>1) origin[1]=(Real)p[1];
+                if(p.size()>2) origin[2]=(Real)p[2];
+                unsigned int dimx=in->getDimensions()[0]; if(p.size()>3) dimx=(unsigned int)p[3];
+                unsigned int dimy=in->getDimensions()[1]; if(p.size()>4) dimy=(unsigned int)p[4];
+                unsigned int dimz=in->getDimensions()[2]; if(p.size()>5) dimz=(unsigned int)p[5];
+                Coord scale = inT->getScale();
+                if(p.size()>6) scale[0]=(Real)p[6];
+                if(p.size()>7) scale[1]=(Real)p[7];
+                if(p.size()>8) scale[2]=(Real)p[8];
+                unsigned int interpolation=1; if(p.size()>9) interpolation=(unsigned int)p[9];
+
+                outT->getTranslation() = origin;
+                outT->getScale() = scale;
+                outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
+
+                const CImgList<Ti>& imgIn = in->getCImgList();
+                unsigned int nbc=in->getDimensions()[3];
+                Ti OutValue=(Ti)0.;
+                cimglist_for(img,l)
+                {
+                    img(l).resize(dimx,dimy,dimz,nbc);
+                    cimg_forXYZ(img(l),x,y,z)
+                    {
+                        Coord p=inT->toImage(outT->fromImage(Coord(x,y,z)));
+                        if(p[0]<0 || p[1]<0 || p[2]<0 || p[0]>=imgIn(l).width() || p[1]>=imgIn(l).height() || p[2]>=imgIn(l).depth())
+                            for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
+                        else
+                        {
+                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).atXYZ(round((double)p[0]),round((double)p[1]),round((double)p[2]),k);
+                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg::type<Ti>::min(),cimg::type<Ti>::max());
+                        }
+                    }
+                }
+
+            }
+            break;
+
         default:
             break;
         }
