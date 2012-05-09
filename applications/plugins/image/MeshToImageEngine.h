@@ -91,14 +91,17 @@ public:
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
+    Data< SeqPositions > closingPosition;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
+    Data< SeqTriangles > closingTriangles;
 
     Data< double > value;
+    Data< double > closingValue;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
@@ -111,8 +114,11 @@ public:
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
         , position(initData(&position,SeqPositions(),"position","input positions"))
+        , closingPosition(initData(&closingPosition,SeqPositions(),"closingPosition","ouput closing positions"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","input triangles"))
+        , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
         , value(initData(&value,1.,"value","pixel value inside mesh"))
+        , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
     {
         position.setReadOnly(true);
         triangles.setReadOnly(true);
@@ -126,6 +132,8 @@ public:
     {
         addInput(&position);
         addInput(&triangles);
+        addOutput(&closingPosition);
+        addOutput(&closingTriangles);
         addOutput(&image);
         addOutput(&transform);
         setDirtyValue();
@@ -139,10 +147,18 @@ protected:
     {
         cleanDirty();
 
+        this->closeMesh();
+
         raPositions pos(this->position);        unsigned int nbp = pos.size();
         raTriangles tri(this->triangles);       unsigned int nbtri = tri.size();
+        raPositions clpos(this->closingPosition);
+        raTriangles cltri(this->closingTriangles);
 
         if(!nbp || !nbtri) return;
+
+
+        //        bool isTransformSet=false;
+        //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
 
         waImage iml(this->image);
         waTransform tr(this->transform);
@@ -184,13 +200,13 @@ protected:
             tr->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
             tr->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
 
-//std::cout<<"M="<<M<<std::endl;
-//std::cout<<"q="<<q<<std::endl;
-//std::cout<<"rot="<<tr->getRotation()<<std::endl;
-//helper::Quater< Real > qtest= helper::Quater< Real >::createQuaterFromEuler(tr->getRotation());
-//std::cout<<"qtest="<<qtest<<std::endl;
-//Mat<3,3,Real> Mtest; qtest.toMatrix(Mtest);
-//std::cout<<"Mtest="<<Mtest<<std::endl;
+            //std::cout<<"M="<<M<<std::endl;
+            //std::cout<<"q="<<q<<std::endl;
+            //std::cout<<"rot="<<tr->getRotation()<<std::endl;
+            //helper::Quater< Real > qtest= helper::Quater< Real >::createQuaterFromEuler(tr->getRotation());
+            //std::cout<<"qtest="<<qtest<<std::endl;
+            //Mat<3,3,Real> Mtest; qtest.toMatrix(Mtest);
+            //std::cout<<"Mtest="<<Mtest<<std::endl;
 
             // get bb
             Coord P=MT*pos[0];
@@ -204,14 +220,14 @@ protected:
         tr->getScaleT()=(Real)1.0;
         tr->isPerspective()=false;
         tr->update(); // update of internal data
-
         // update image extents
         unsigned int dim[3];
         for(unsigned int j=0; j<3; j++) dim[j]=1+ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
+
         CImg<T>& im=iml->getCImg();
-        T color0=(T)0,color1=(T)this->value.getValue();
-        im.fill(color1);
+        T color0=(T)0,color1=(T)this->value.getValue(),color2=(T)this->closingValue.getValue();
+        im.fill(color0);
 
         // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing triangles.."<<std::endl;
@@ -221,15 +237,24 @@ protected:
         {
             Coord pts[3];
             for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],color0,this->subdiv.getValue());
-            this->draw_triangle(im,pts[1],pts[2],pts[0],color0,this->subdiv.getValue());
+            this->draw_triangle(im,pts[0],pts[1],pts[2],color1,this->subdiv.getValue());
+            this->draw_triangle(im,pts[1],pts[2],pts[0],color1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
+
+        #pragma omp parallel for
+        for(unsigned int i=0; i<cltri.size(); i++)
+        {
+            Coord pts[3];
+            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+            this->draw_triangle(im,pts[0],pts[1],pts[2],color2,this->subdiv.getValue());
+            this->draw_triangle(im,pts[1],pts[2],pts[0],color2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
 
         // flood fill from the exterior point (0,0,0)
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Filling object.."<<std::endl;
         CImg<T> im2=im;
-        im.draw_fill(0,0,0,&color0);
-        cimg_foroff(im2,off) if(!im2[off]) im[off]=color1;
+        im2.draw_fill(0,0,0,&color1);
+        cimg_foroff(im,off) if(!im2[off]) im[off]=color1;
 
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelization done."<<std::endl;
     }
@@ -293,6 +318,77 @@ protected:
             P+=dP;
         }
     }
+
+
+    void closeMesh()
+    {
+        raPositions pos(this->position);
+        raTriangles tri(this->triangles);
+
+        waPositions clpos(this->closingPosition);
+        waTriangles cltri(this->closingTriangles);
+
+        typedef std::pair<unsigned int,unsigned int> edge;
+        typedef std::set< edge > edgeset;
+        typedef typename edgeset::iterator edgesetit;
+
+        // get list of border edges
+        edgeset edges;
+        for(unsigned int i=0; i<tri.size(); i++)
+            for(unsigned int j=0; j<3; j++)
+            {
+                unsigned int p1=tri[i][(j==0)?2:j-1],p2=tri[i][j];
+                edgesetit it=edges.find(edge(p2,p1));
+                if(it==edges.end()) edges.insert(edge(p1,p2));
+                else edges.erase(it);
+            }
+        if(!edges.size()) return; // no hole
+
+        // get loops
+        typedef std::map<unsigned int,unsigned int> edgemap;
+        edgemap emap;
+        for(edgesetit it=edges.begin(); it!=edges.end(); it++)
+            emap[it->first]=it->second;
+
+        typename edgemap::iterator it=emap.begin();
+        std::vector<std::vector<unsigned int> > loops; loops.resize(1);
+        loops.back().push_back(it->first);
+        while(emap.size())
+        {
+            unsigned int i=it->second;
+            loops.back().push_back(i);  // insert point in loop
+            emap.erase(it);
+            if(emap.size())
+            {
+                if(i==loops.back().front())  loops.push_back(std::vector<unsigned int>());  //  loop termination
+                it=emap.find(i);
+                if(it==emap.end())
+                {
+                    it=emap.begin();
+                    loops.back().push_back(it->first);
+                }
+            }
+        }
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: found "<< loops.size()<<" loops"<<std::endl;
+        //for(unsigned int i=0;i<loops.size();i++) for(unsigned int j=0;j<loops[i].size();j++) std::cout<<"loop "<<i<<","<<j<<":"<<loops[i][j]<<std::endl;
+
+        // insert points at loop centroids and triangles connecting loop edges and centroids
+        for(unsigned int i=0; i<loops.size(); i++)
+            if(loops[i].size()>2)
+            {
+                Coord centroid;
+                unsigned int indexCentroid=clpos.size()+loops[i].size()-1;
+                for(unsigned int j=0; j<loops[i].size()-1; j++)
+                {
+                    clpos.push_back(pos[loops[i][j]]);
+                    centroid+=pos[loops[i][j]];
+                    cltri.push_back(Triangle(indexCentroid,clpos.size()-1,j?clpos.size()-2:indexCentroid-1));
+                }
+                centroid/=(Real)(loops[i].size()-1);
+                clpos.push_back(centroid);
+            }
+    }
+
 
 };
 

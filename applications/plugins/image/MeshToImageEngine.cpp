@@ -43,6 +43,7 @@ SOFA_DECL_CLASS(MeshToImageEngine)
 int MeshToImageEngineClass = core::RegisterObject("Compute a rasterization image from a mesh")
         .add<MeshToImageEngine<ImageB> >(true)
         .add<MeshToImageEngine<ImageUC> >()
+        .add<MeshToImageEngine<ImageUS> >()
         ;
 
 template class SOFA_IMAGE_API MeshToImageEngine<ImageB>;
