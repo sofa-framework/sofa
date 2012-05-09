@@ -1,0 +1,290 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Plugins                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef PYTHONMACROS_H
+#define PYTHONMACROS_H
+
+#include <Python.h>
+#include <boost/intrusive_ptr.hpp>
+
+// parameters convertion
+/*
+PyObject* _PyObject_cast(bool b) {return PyBool_FromLong(b);}
+PyObject* _PyObject_cast(int i) {return PyLong_FromLong(i);}
+PyObject* _PyObject_cast(float f) {return PyFloat_FromDouble(f);}
+PyObject* _PyObject_cast(double f) {return PyFloat_FromDouble(f);}
+PyObject* _PyObject_cast(char* str) {return PyString_FromString(str);}
+*/
+
+// =============================================================================
+// Python structures names in sofa...
+// naming convention:
+// classe C++:          X
+// objet python:        X_PyObject
+// object type python:  X_PyTypeObject
+// table des méthodes:  X_PyMethods
+// =============================================================================
+#define SP_SOFAPYOBJECT(X) X##_PyObject
+#define SP_SOFAPYTYPEOBJECT(X) X##_PyTypeObject
+#define SP_SOFAPYMETHODS(X) X##_PyMethods
+#define SP_SOFAPYATTRIBUTES(X) X##_PyAttributes
+#define SP_SOFAPYNEW(X) X##_PyNew       // allocator
+#define SP_SOFAPYFREE(X) X##_PyFree     // deallocator
+
+
+
+
+// =============================================================================
+// SPtr objects passed to python
+// object MUST inherit from Base, or the dynamic_cast will fail later
+// =============================================================================
+template <class T>
+struct PySPtr
+{
+    PyObject_HEAD
+    boost::intrusive_ptr<T> object;
+//    PySPtr()        { object=0; }
+//    PySPtr(T *obj)  { object=obj; }
+};
+
+template <class T>
+PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
+{
+    PySPtr<T> * pyObj = (PySPtr<T> *)PyType_GenericAlloc(pto, 0);
+    pyObj->object = obj;
+    return (PyObject*)pyObj;
+}
+#define SP_BUILD_PYSPTR(T,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(T))
+// on n'utilise pas BuildPySPtr<T> car la dynamic_cast se fera sur un T* et pas un T::SPtr
+
+
+// =============================================================================
+// Ptr objects passed to python
+// deletion can be made by Python IF the "deletable" flag is true,
+// and if a FreeFunc is provided in the class definition (see SP_CLASS_TYPE_DEF)
+// (I miss smart pointers...)
+// =============================================================================
+template <class T>
+struct PyPtr
+{
+    PyObject_HEAD
+    T* object;
+    bool deletable;
+};
+
+template <class T>
+PyObject* BuildPyPtr(T* obj,PyTypeObject *pto,bool del)
+{
+    PyPtr<T> * pyObj = (PyPtr<T> *)PyType_GenericAlloc(pto, 0);
+    pyObj->object = obj;
+    pyObj->deletable = del;
+    return (PyObject*)pyObj;
+}
+#define SP_BUILD_PYPTR(T,OBJ,DEL) BuildPyPtr<T>(OBJ,&SP_SOFAPYTYPEOBJECT(T),DEL)
+
+
+
+
+
+// =============================================================================
+// SOFA PYTHON CLASSES DECLARATION&DEFINITION
+// =============================================================================
+
+/*
+static PyMethodDef DummyClass_PyMethods[] =
+{
+    {"setValue", DummyClass_setValue, METH_VARARGS, "doc string"},
+    {"getValue", DummyClass_getValue, METH_VARARGS, "doc string"},
+    {NULL}
+};
+
+becomes...
+
+SP_CLASS_METHODS_BEGIN(DummyClass)
+SP_CLASS_METHOD(DummyClass,setValue)
+SP_CLASS_METHOD(DummyClass,getValue)
+SP_CLASS_METHODS_END
+
+*/
+#define SP_CLASS_METHODS_BEGIN(C) static PyMethodDef SP_SOFAPYMETHODS(C)[] = {
+#define SP_CLASS_METHODS_END {NULL,NULL,NULL,NULL} };
+#define SP_CLASS_METHOD(C,M) {#M, C##_##M, METH_VARARGS, ""},
+
+/*
+static PyGetSetDef DummyClass_PyAttributes[] =
+{
+    {"name", DummyClass_getAttr_name, DummyClass_setAttr_name, "", 0},
+    {NULL}
+}
+
+becomes...
+
+SP_CLASS_ATTRS_BEGIN(DummyClass)
+SP_CLASS_ATTR(DummyClass,name)
+SP_CLASS_ATTRS_END
+
+*/
+#define SP_CLASS_ATTRS_BEGIN(C) static PyGetSetDef SP_SOFAPYATTRIBUTES(C)[] = {
+#define SP_CLASS_ATTR(C,A) {(char*)#A, C##_getAttr_##A, C##_setAttr_##A, NULL, 0},
+#define SP_CLASS_ATTRS_END {NULL,NULL,NULL,NULL,NULL} };
+
+
+
+/*
+    if (PyType_Ready(&DummyClass_PyTypeObject) < 0) return 0;
+    Py_INCREF(&DummyClass_PyTypeObject);
+    PyModule_AddObject(module, "DummyClass", (PyObject *)&DummyClass_PyTypeObject);
+
+becomes...
+
+    SP_ADD_CLASS(module,DummyClass)
+*/
+
+#define SP_ADD_CLASS(M,C)   PyType_Ready(&SP_SOFAPYTYPEOBJECT(C));   \
+                            Py_INCREF(&SP_SOFAPYTYPEOBJECT(C)); \
+                            PyModule_AddObject(M, #C, (PyObject *)&SP_SOFAPYTYPEOBJECT(C));
+
+
+
+
+
+/*
+static PyTypeObject DummyChild_PyTypeObject = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "python_sandbox.DummyChild",        //tp_name
+    sizeof(VoidClass_PyObject),        //tp_basicsize
+    0,                                  //tp_itemsize
+    // methods
+    0,                                  //tp_dealloc
+    0,                                  //tp_print
+    0,                                  //tp_getattr
+    0,                                  //tp_setattr
+    0,                                  //tp_compare
+    0,                                  //tp_repr
+    0,                                  //tp_as_number
+    0,                                  //tp_as_sequence
+    0,                                  //tp_as_mapping
+    0,                                  //tp_hash
+    0,                                  //tp_call
+    0,                                  //tp_str
+    0,                                  //tp_getattro
+    0,                                  //tp_setattro
+    0,                                  //tp_as_buffer
+    Py_TPFLAGS_DEFAULT,// | Py_TPFLAGS_BASETYPE,           //tp_flags
+
+    0,                   //tp_doc
+    0,                                  //tp_traverse
+    0,                                  //tp_clear
+    0,                                  //tp_richcompare
+    0,                                  //tp_weaklistoffset
+    0,                                  //tp_iter
+    0,                                  //tp_iternext
+    DummyChild_PyMethods,               //tp_methods
+    0,                                  //tp_members
+    0,                                  //tp_getset
+    &DummyClass_PyTypeObject,           //tp_base
+    0,                                  //tp_dict
+    0,                                  //tp_descr_get
+    0,                                  //tp_descr_set
+    0,                                  //tp_dictoffset
+    0,                                  //tp_init
+    0,                                  //tp_alloc
+    DummyChild_new,                     //tp_new
+    VoidClass_free,                     //tp_free
+};
+*/
+
+// déclaration, .h
+#define SP_DECLARE_CLASS_TYPE(Type) extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
+
+// définition générique (macro intermédiaire)
+#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc)   \
+                                                                    PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
+                                                                    PyVarObject_HEAD_INIT(NULL, 0) \
+                                                                    "Sofa."#Type, \
+                                                                    ObjSize, \
+                                                                    0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,  \
+                                                                    Py_TPFLAGS_DEFAULT, \
+                                                                    0,0,0,0,0,0,0, \
+                                                                    SP_SOFAPYMETHODS(Type), \
+                                                                    0, \
+                                                                    AttrTable, \
+                                                                    ParentTypeObjet, \
+                                                                    0,0,0,0,0,0, \
+                                                                    NewFunc, FreeFunc, \
+                                                                    0,0,0,0,0,0,0,0 \
+                                                                };
+
+
+// définition type de base(=sans parent) sans attributs
+#define SP_CLASS_TYPE_BASE_SPTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,0,SP_SOFAPYNEW(Type),SP_SOFAPYFREE(Type))
+
+
+// définition type de base(=sans parent) avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
+#define SP_CLASS_TYPE_BASE_SPTR_ATTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,SP_SOFAPYNEW(Type),SP_SOFAPYFREE(Type))
+
+// définition type hérité de "Parent" sans attributs
+#define SP_CLASS_TYPE_SPTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_PTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+
+// définition type hérité de "Parent" avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
+#define SP_CLASS_TYPE_SPTR_ATTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),SP_SOFAPYATTRIBUTES(Type),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_PTR_ATTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+
+
+// =============================================================================
+// SOFA DATA MEMBERS ACCESS AS ATTRIBUTES
+// replace the two definitions of "Base_getAttr_name" and "Base_setAttr_name"
+// by a single line:
+// SP_CLASS_DATA_ATTRIBUTE(Base,name)
+// (+ the entry in the SP_CLASS_ATTR array)
+// =============================================================================
+
+#define SP_CLASS_DATA_ATTRIBUTE(C,D) \
+    extern "C" PyObject * C##_getAttr_##D(PyObject *self, void*) \
+    { \
+        C::SPtr obj=((PySPtr<C>*)self)->object;  \
+        return PyString_FromString(obj->findData(#D)->getValueString().c_str()); \
+    } \
+    extern "C" int C##_setAttr_##D(PyObject *self, PyObject * args, void*) \
+    { \
+        C::SPtr obj=((PySPtr<C>*)self)->object; \
+        char *str = PyString_AsString(args); \
+        obj->findData(#D)->read(str); \
+        return 0; \
+    }
+
+// =============================================================================
+// PYTHON SCRIPT METHOD CALL
+// =============================================================================
+
+#define SP_CALL(func, ...) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
+#define SP_CALL_NOPARAM(func) { if (!PyObject_CallObject(func,0)) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
+
+
+#endif // PYTHONMACROS_H
