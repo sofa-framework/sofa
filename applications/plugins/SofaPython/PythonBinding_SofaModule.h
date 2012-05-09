@@ -1,0 +1,7 @@
+#ifndef PYTHONBINDING_SOFAMODULE_H
+#define PYTHONBINDING_SOFAMODULE_H
+
+void registerSofaPythonModule();
+
+
+#endif // PYTHONBINDING_SOFAMODULE_H

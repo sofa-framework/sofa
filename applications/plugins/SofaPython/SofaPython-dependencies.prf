@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+	declare(SofaPython, applications/plugins/SofaPython, sofaguiqt)
+	
+	enable(SofaPython)
+}
