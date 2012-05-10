@@ -7,16 +7,16 @@
 
     <Node 	name="Flexible"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 0 5 2 5" />
-	    <ConstantForceField points="50" force="0 0 0" />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
 
 	    <BarycentricShapeFunction  />
 
 	    <Node 	name="behavior"   >
-		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false"/>
+		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false" />
 		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
@@ -28,6 +28,11 @@
 		</Node>
 	    </Node>
 
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position" />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
@@ -37,11 +42,13 @@
 
     <Node 	name="FEM"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	    <Mesh src="@loader" />
-	    <MechanicalObject src="@loader" name="parent" />
-	    <UniformMass mass="1" />
-	    <BoxConstraint box="0 -2 0 5 2 5" />
-	   <ConstantForceField points="50" force="0 0 0" />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	<UniformMass totalMass="250" />
 
 	    <!-- <StandardTetrahedralFEMForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 1000 100" />  -->
 	  <MJEDTetrahedralForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 100 1000" /> 

@@ -144,7 +144,7 @@ const vector<sofa::defaulttype::BaseMatrix*>* LogRigidMapping<TIn, TOut>::getJs(
 }
 
 template <class TIn, class TOut>
-void LogRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
+void LogRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* /*vparams*/)
 {
     // typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     // SeqEdges links = edgeContainer->getEdges();
