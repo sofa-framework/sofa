@@ -30,6 +30,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/component/component.h>
@@ -57,6 +58,7 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Vector3;
 using defaulttype::Mat;
+using namespace helper;
 using namespace cimg_library;
 
 /**

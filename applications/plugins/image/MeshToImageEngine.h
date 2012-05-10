@@ -27,6 +27,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include <sofa/helper/rmath.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -51,6 +52,7 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
+using namespace helper;
 using namespace cimg_library;
 
 /**
