@@ -68,8 +68,8 @@ public:
 protected:
     MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C1(initData(&f_C1,(Real)1000,"C1","weight of (~I1-3)^p term in energy"))
-        , f_C2(initData(&f_C2,(Real)1000,"C2","weight of (~I2-3)^p term in energy"))
+        , f_C1(initData(&f_C1,(Real)1000,"C1","weight of (~I1-3) term in energy"))
+        , f_C2(initData(&f_C2,(Real)1000,"C2","weight of (~I2-3) term in energy"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
     }

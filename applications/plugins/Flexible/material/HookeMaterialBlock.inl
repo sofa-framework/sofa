@@ -81,12 +81,15 @@ public:
 
     static const bool constantK=true;
 
-    /**
-      * stress = lambda.trace(strain) I  + 2.mu.strain
-      *        = H.strain
-      * W = vol*stress.strain/2
-      * f = - H.vol.strain - viscosity.vol.strainRate
-      * df = (- H.vol.kfactor - viscosity.vol.bfactor) dstrain
+    /** In matrix form :
+      *     stress = lambda.trace(strain) I  + 2.mu.strain
+      *     W = lambda/2 tr(strain)^2 + mu tr(strain^2)
+      *
+      * In Voigt notation: (e1=exx, e2=eyy, e3=ezz, e4=2exy, e5=2eyz, e6=2ezx, s1=sxx, s2=syy, s3=szz, s4=sxy, s5=syz, s6=szx)
+      *      stress = H.strain
+      *      W = stressvol*stress.strain/2
+      *      f = - H.vol.strain - viscosity.vol.strainRate
+      *      df = (- H.vol.kfactor - viscosity.vol.bfactor) dstrain
       */
 
     Real lambdaVol;  ///< Lamé first coef * volume
@@ -105,17 +108,19 @@ public:
 
     Real getPotentialEnergy(const Coord& x) const
     {
-        StrainVec stress=x.getStrain()*mu2Vol;
+        StrainVec stress;
+        for(unsigned int i=0; i<material_dimensions; i++)             stress[i]-=x.getStrain()[i]*mu2Vol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   stress[i]-=(x.getStrain()[i]*mu2Vol)*0.5;
         Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
         for(unsigned int i=0; i<material_dimensions; i++) stress[i]+=tce;
-        Real W=dot(stress,x.getStrain())/(Real)2.;
+        Real W=dot(stress,x.getStrain())*0.5;
         return W;
     }
 
     void addForce( Deriv& f , const Coord& x , const Deriv& v)
     {
-        f.getStrain()-=x.getStrain()*mu2Vol + v.getStrain()*viscosityVol;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) f.getStrain()[i]-=x.getStrain()[i]*mu2Vol; // hack to match FEM results !! to do: fix this
+        for(unsigned int i=0; i<material_dimensions; i++)             f.getStrain()[i]-=x.getStrain()[i]*mu2Vol + v.getStrain()[i]*viscosityVol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   f.getStrain()[i]-=(x.getStrain()[i]*mu2Vol + v.getStrain()[i]*viscosityVol)*0.5;
 
         Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
         for(unsigned int i=0; i<material_dimensions; i++) f.getStrain()[i]-=tce;
@@ -123,9 +128,8 @@ public:
 
     void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
     {
-        df.getStrain()-=dx.getStrain()*mu2Vol*kfactor + dx.getStrain()*viscosityVol*bfactor;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor; // hack to match FEM results !! to do: fix this
-
+        for(unsigned int i=0; i<material_dimensions; i++)             df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   df.getStrain()[i]-=(dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor)*0.5;
         Real tce=(dx.getStrain()[0]+dx.getStrain()[1]+dx.getStrain()[2])*lambdaVol*kfactor;
         for(unsigned int i=0; i<material_dimensions; i++) df.getStrain()[i]-=tce;
     }
@@ -134,8 +138,8 @@ public:
     MatBlock getK()
     {
         MatBlock K;
-        for(unsigned int i=0; i<strain_size; i++)  K[i][i]-=mu2Vol;
-        for(unsigned int i=material_dimensions; i<strain_size; i++) K[i][i]-=mu2Vol; // hack to match FEM results !! to do: fix this
+        for(unsigned int i=0; i<material_dimensions; i++)  K[i][i]-=mu2Vol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) K[i][i]-=mu2Vol*0.5;
         for(unsigned int i=0; i<material_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) K[i][j]-=lambdaVol;
         return K;
     }
@@ -149,7 +153,8 @@ public:
     MatBlock getB()
     {
         MatBlock B;
-        for(unsigned int i=0; i<strain_size; i++)  B[i][i]-=viscosityVol;
+        for(unsigned int i=0; i<material_dimensions; i++)  B[i][i]-=viscosityVol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) B[i][i]-=viscosityVol*0.5;
         return B;
     }
 };

@@ -165,7 +165,7 @@ const vector<sofa::defaulttype::BaseMatrix*>* RelativeRigidMapping<TIn, TOut>::g
 }
 
 template <class TIn, class TOut>
-void RelativeRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
+void RelativeRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* /*vparams*/)
 {
     // typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     // SeqEdges links = edgeContainer->getEdges();

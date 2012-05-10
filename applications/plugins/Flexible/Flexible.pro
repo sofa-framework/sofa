@@ -48,6 +48,8 @@ HEADERS = initFlexible.h \
     deformationMapping/LinearMapping.h \
     deformationMapping/LinearJacobianBlock.h \
     deformationMapping/LinearJacobianBlock.inl \
+    deformationMapping/LogRigidMapping.h \
+    deformationMapping/LogRigidMapping.inl \
     deformationMapping/RelativeRigidMapping.h \
     deformationMapping/RelativeRigidMapping.inl \
     strainMapping/BaseStrainMapping.h \

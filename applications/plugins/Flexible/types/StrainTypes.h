@@ -448,7 +448,7 @@ template<> struct DataTypeName< defaulttype::I333dTypes::Coord > { static const 
 // ==========================================================================
 // Helpers
 
-/// Convert a symetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2,
+/// Convert a symetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
 template<int material_dimensions, typename Real>
 static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> MatToVoigt(  const  Mat<material_dimensions,material_dimensions, Real>& f)
 {
@@ -458,11 +458,12 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> MatTo
     unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++)
         for( unsigned int k=0; k<material_dimensions-j; k++ )
-            s[ei++] = (f[k][k+j]+f[k+j][k])*(Real)0.5;
+            if(0!=j) s[ei++] = (f[k][k+j]+f[k+j][k]);
+            else s[ei++] = (f[k][k+j]+f[k+j][k])*(Real)0.5;
     return s;
 }
 
-/// Voigt notation to symmetric matrix (F+F^T)/2  Fxx=exx, Fxy=Fyx=exy/2, etc.
+/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc.
 template<typename Real>
 static inline Mat<3,3, Real> VoigtToMat( const Vec<6, Real>& s  )
 {
@@ -472,11 +473,7 @@ static inline Mat<3,3, Real> VoigtToMat( const Vec<6, Real>& s  )
     for(unsigned int j=0; j<material_dimensions; j++)
     {
         for( unsigned int k=0; k<material_dimensions-j; k++ )
-        {
-            f[k][k+j] = f[k+j][k] = s[ei] ;
-            if(0!=j) {f[k][k+j] *= 0.5; f[k+j][k] *= 0.5;}
-            ei++;
-        }
+            f[k][k+j] = f[k+j][k] = s[ei++] ;
     }
     return f;
 }

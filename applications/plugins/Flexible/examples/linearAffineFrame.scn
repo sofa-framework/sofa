@@ -23,16 +23,16 @@ position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] 0 0 0 [1 0 0,
 	    <FixedConstraint indices="0" />
 -->
 
-	    <VoronoiShapeFunction name="SF" src="@../image" useDijkstra="true" method="1"/>
+	    <VoronoiShapeFunction name="SF" src="@../image" useDijkstra="true" method="2"/>
 <!--
    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/> 
 -->
 	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="0" showSamples="true" printLog="true"/>
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="true" printLog="true"/>
    	    <ImageViewer template="ImageD" name="viewer" image="@sampler.outputImage" transform="@sampler.transform" plane="6 6 30"/> 
 
-		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;NewAffine,F331&gt;" assembleJ="false"/>
+		<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;NewAffine,F332&gt;" assembleJ="false"/>
 
 <!--
 		<Node 	name="E"   >

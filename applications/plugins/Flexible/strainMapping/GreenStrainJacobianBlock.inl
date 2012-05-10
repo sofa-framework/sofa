@@ -62,9 +62,9 @@ static Mat<6,9,Real> assembleJ(const  Mat<3,3,Real>& f) // 3D
             J[j][j+material_dimensions*k]=f[k][j];
     for( unsigned int k=0; k<spatial_dimensions; k++ )
     {
-        J[3][material_dimensions*k+1]=J[5][material_dimensions*k+2]=f[k][0]*0.5;
-        J[3][material_dimensions*k]=J[4][material_dimensions*k+2]=f[k][1]*0.5;
-        J[5][material_dimensions*k]=J[4][material_dimensions*k+1]=f[k][2]*0.5;
+        J[3][material_dimensions*k+1]=J[5][material_dimensions*k+2]=f[k][0];
+        J[3][material_dimensions*k]=J[4][material_dimensions*k+2]=f[k][1];
+        J[5][material_dimensions*k]=J[4][material_dimensions*k+1]=f[k][2];
     }
     return J;
 }
@@ -81,8 +81,8 @@ static Mat<3,4,Real> assembleJ(const  Mat<2,2,Real>& f) // 2D
             J[j][j+material_dimensions*k]=f[k][j];
     for( unsigned int k=0; k<spatial_dimensions; k++ )
     {
-        J[material_dimensions][material_dimensions*k+1]=f[k][0]*0.5;
-        J[material_dimensions][material_dimensions*k]=f[k][1]*0.5;
+        J[material_dimensions][material_dimensions*k+1]=f[k][0];
+        J[material_dimensions][material_dimensions*k]=f[k][1];
     }
     return J;
 }

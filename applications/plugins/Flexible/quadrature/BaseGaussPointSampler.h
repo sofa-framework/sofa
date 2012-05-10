@@ -103,7 +103,7 @@ public:
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
-                ,"1 - Newton–Cotes"
+                ,"1 - Newton-Cotes"
                 ,"2 - Elastons"
                                           );
         methodOptions.setSelectedItem(GAUSSLEGENDRE);

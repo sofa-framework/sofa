@@ -167,7 +167,7 @@ protected:
 
         // add initial points from user
         const unsigned int initialPosSize=pos.size();
-        std::cout<<"initialPosSize="<<initialPosSize<<std::endl;
+
         for(unsigned int i=0; i<initialPosSize; i++)
         {
             Coord p = transform->toImage(pos[i]);
@@ -210,16 +210,18 @@ protected:
             pos.resize ( (List.size()>targetNumber.getValue())?List.size():targetNumber.getValue() );
             vol.resize ( pos.size() );
 
+            int dimBasis=(this->f_order.getValue()+1)*(this->f_order.getValue()+2)*(this->f_order.getValue()+3)/6; // dimension of polynomial basis in 3d
+
             for(unsigned int i=initialPosSize; i<List.size(); i++)
             {
+                int nb=regions[i].nb;
                 pos[i]=Coord(0,0,0);
-                vector<Coord> pi((int)regions[i].nb);
+                vol[i]=vector<Real>(dimBasis,(Real)0);
+
+                vector<Coord> pi(nb);
                 typedef std::map<unsigned int, vector<Real> > wiMap;
                 wiMap wi;
-                for(indList::iterator it=regions[i].indices.begin(); it!=regions[i].indices.end(); it++)
-                {
-                    vector<Real> w; w.reserve(regions[i].nb);  wi[*it]=w;
-                }
+                for(indList::iterator it=regions[i].indices.begin(); it!=regions[i].indices.end(); it++) wi[*it]=vector<Real>(nb,(Real)0);
 
                 unsigned int count=0;
                 cimg_forXYZ(outimg,x,y,z)
@@ -230,8 +232,7 @@ protected:
                     {
                         typename wiMap::iterator wIt;
                         wIt=wi.find(indices(x,y,z,k));
-                        if(wIt!=wi.end()) wIt->second.push_back((Real)weights(x,y,z,k));
-                        else wIt->second.push_back((Real)0);
+                        if(wIt!=wi.end()) wIt->second[count]=(Real)weights(x,y,z,k);
                     }
                     // store voxel positions
                     pi[count]=transform->fromImage(Coord(x,y,z));
@@ -239,10 +240,15 @@ protected:
                     count++;
                 }
                 // compute region center
-                pos[i]/=(Real)regions[i].nb;
+                pos[i]/=(Real)nb;
 
-                // compute relative positions
-                for(unsigned int j=0; j<regions[i].nb; j++)  { pi[j]-=pos[i]; pi[j]*=(Real)(-1); }
+                // compute relative positions and volume integral
+                for(int j=0; j<nb; j++)
+                {
+                    pi[j]-=pos[i]; pi[j]*=(Real)(-1);
+                    vector<Real> basis; defaulttype::getCompleteBasis(basis,pi[j],this->f_order.getValue());
+                    for(int k=0; k<dimBasis; k++) vol[i][k]+=basis[k]*dv;
+                }
 
                 // fit weights
                 for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
@@ -254,17 +260,24 @@ protected:
 
                 }
 
+                count=0;
                 cimg_forXYZ(outimg,x,y,z)
                 if(outimg(x,y,z)==i)
                 {
                     outimg(x,y,z)=0;
-
+                    unsigned int j=0;
+                    for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
+                        outimg(x,y,z)+=defaulttype::getPolynomialFit_Error(regions[i].coeff[j++],wIt->second[count],pi[count]);
+                    count++;
                 }
             }
 
         }
 
 
+        cimg_forXYZ(outimg,x,y,z)
+        if(outimg(x,y,z)==-1)
+            outimg(x,y,z)=0;
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"ImageGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
     }
