@@ -98,7 +98,14 @@ void PythonScriptController::loadScript()
     BIND_SCRIPT_FUNC(onLoaded)
     BIND_SCRIPT_FUNC(createGraph)
     BIND_SCRIPT_FUNC(initGraph)
+    BIND_SCRIPT_FUNC(onKeyPressed)
+    BIND_SCRIPT_FUNC(onKeyReleased)
+    BIND_SCRIPT_FUNC(onMouseButtonLeft)
+    BIND_SCRIPT_FUNC(onMouseButtonRight)
+    BIND_SCRIPT_FUNC(onMouseButtonMiddle)
+    BIND_SCRIPT_FUNC(onMouseWheel)
     BIND_SCRIPT_FUNC(onBeginAnimationStep)
+    BIND_SCRIPT_FUNC(onEndAnimationStep)
     BIND_SCRIPT_FUNC(storeResetState)
     BIND_SCRIPT_FUNC(reset)
     BIND_SCRIPT_FUNC(cleanup)
@@ -124,9 +131,47 @@ void PythonScriptController::script_initGraph(GNode *node)
     SP_CALL(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(GNode,node))
 }
 
+void PythonScriptController::script_onKeyPressed(const char c)
+{
+    SP_CALL(m_Func_onKeyPressed, "(c)", c)
+}
+void PythonScriptController::script_onKeyReleased(const char c)
+{
+    SP_CALL(m_Func_onKeyReleased, "(c)", c)
+}
+
+void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
+{
+    PyObject *pyPressed = pressed? Py_True : Py_False;
+    SP_CALL(m_Func_onMouseButtonLeft, "(iiO)", posX,posY,pyPressed)
+}
+
+void PythonScriptController::script_onMouseButtonRight(const int posX,const int posY,const bool pressed)
+{
+    PyObject *pyPressed = pressed? Py_True : Py_False;
+    SP_CALL(m_Func_onMouseButtonRight, "(iiO)", posX,posY,pyPressed)
+}
+
+void PythonScriptController::script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed)
+{
+    PyObject *pyPressed = pressed? Py_True : Py_False;
+    SP_CALL(m_Func_onMouseButtonMiddle, "(iiO)", posX,posY,pyPressed)
+}
+
+void PythonScriptController::script_onMouseWheel(const int posX,const int posY,const int delta)
+{
+    SP_CALL(m_Func_onMouseWheel, "(iii)", posX,posY,delta)
+}
+
+
 void PythonScriptController::script_onBeginAnimationStep(const double dt)
 {
     SP_CALL(m_Func_onBeginAnimationStep, "(d)", dt)
+}
+
+void PythonScriptController::script_onEndAnimationStep(const double dt)
+{
+    SP_CALL(m_Func_onEndAnimationStep, "(d)", dt)
 }
 
 void PythonScriptController::script_storeResetState()

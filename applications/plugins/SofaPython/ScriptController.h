@@ -83,7 +83,30 @@ public:
     /// @name Controller notifications
     /// @{
 
-    virtual void onBeginAnimationStep(const double dt);
+    /**
+    * @brief Mouse event callback.
+    */
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
+
+    /**
+    * @brief Key Press event callback.
+    */
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+
+    /**
+    * @brief Key Release event callback.
+    */
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+
+    /**
+    * @brief Begin Animation event callback.
+    */
+    virtual void onBeginAnimationStep(const double);
+
+    /**
+    * @brief End Animation event callback.
+    */
+    virtual void onEndAnimationStep(const double);
 
     /// @}
 
@@ -111,8 +134,18 @@ protected:
 
     virtual void script_cleanup() = 0;
 
+    /// keyboard & mouse events
+    virtual void script_onKeyPressed(const char c) = 0;
+    virtual void script_onKeyReleased(const char c) = 0;
+
+    virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) = 0;
+    virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) = 0;
+    virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) = 0;
+    virtual void script_onMouseWheel(const int posX,const int posY,const int delta) = 0;
+
     /// called once per frame
     virtual void script_onBeginAnimationStep(const double dt) = 0;
+    virtual void script_onEndAnimationStep(const double dt) = 0;
 
     /// GUI interaction
     virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) = 0;

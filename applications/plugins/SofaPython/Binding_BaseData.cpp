@@ -23,7 +23,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+
 using namespace sofa::core::objectmodel;
+using namespace sofa::defaulttype;
+
+
+// TODO:
+// se servir du DataTypeInfo pour utiliser directement les bons type :-)
+
 
 #include "Binding_BaseData.h"
 
@@ -43,13 +51,47 @@ extern "C" int BaseData_setAttr_name(PyObject *self, PyObject * args, void*)
 extern "C" PyObject * BaseData_getAttr_value(PyObject *self, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+
+    // on s'occupe du type
+    printf("BaseData_getAttr_value typestring=%s\n",data->getValueString().c_str());
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    if (typeinfo->Text())
+    {
+        // it's some text
+        printf("data type=text\n");
+        //  return PyString_FromString(data->)
+    }
+
     return PyString_FromString(data->getValueString().c_str());
 }
 extern "C" int BaseData_setAttr_value(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    // de quel type est args ?
+    PyTypeObject *type = args->ob_type;
+    bool isInt = PyType_IsSubtype(type,&PyInt_Type);
+    bool isScalar = PyType_IsSubtype(type,&PyFloat_Type);
+    bool isString = PyType_IsSubtype(type,&PyString_Type);
+    printf ("isInt=%d\n", isInt);
+    printf ("isScalar=%d\n", isScalar);
+    printf ("isString=%d\n", isString);
+    if (PyType_IsSubtype(type,&PyFloat_Type))
+    {
+        // it's a scalar
+    }
+    else if (PyType_IsSubtype(type,&PyFloat_Type))
+    {
+        // it's a scalar
+    }
+    else if (PyType_IsSubtype(type,&PyFloat_Type))
+    {
+        // it's a scalar
+    }
+
+    //
     char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
-    data->read(str);
+    //data->read(str);
     return 0;
 }
 

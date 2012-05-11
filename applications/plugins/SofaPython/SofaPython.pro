@@ -33,7 +33,8 @@ SOURCES = initSofaPython.cpp \
     Binding_BaseContext.cpp \
     Binding_Node.cpp \
     Binding_GNode.cpp \
-    Binding_Vec3.cpp
+    Binding_Vec3.cpp \
+    Binding_BaseObjectDescription.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -48,7 +49,8 @@ HEADERS = initSofaPython.h \
     Binding_GNode.h \
     Binding_Context.h \
     Binding_BaseContext.h \
-    Binding_Vec3.h
+    Binding_Vec3.h \
+    Binding_BaseObjectDescription.h
 
 README_FILE = SofaPython.txt
 

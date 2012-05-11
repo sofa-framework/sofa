@@ -41,17 +41,36 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * args)
+extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
     return SP_BUILD_PYPTR(Vec3,new Vec3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
+extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
+{
+    BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+    return PyFloat_FromDouble(obj->getTime());
+}
+
+extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
+{
+    BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+    return PyFloat_FromDouble(obj->getDt());
+}
+
+extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
+{
+    BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+    return SP_BUILD_PYSPTR(BaseContext,obj->getRootContext());
+}
+
+
 
 SP_CLASS_METHODS_BEGIN(BaseContext)
-//SP_CLASS_METHOD(BaseContext,getRootContext)
-//SP_CLASS_METHOD(BaseContext,getTime)
-//SP_CLASS_METHOD(BaseContext,getDt)
+SP_CLASS_METHOD(BaseContext,getRootContext)
+SP_CLASS_METHOD(BaseContext,getTime)
+SP_CLASS_METHOD(BaseContext,getDt)
 SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHODS_END

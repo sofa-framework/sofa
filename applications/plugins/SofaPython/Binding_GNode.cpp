@@ -86,14 +86,55 @@ extern "C" PyObject * GNode_moveChild(PyObject *self, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
+extern "C" PyObject * GNode_addObject(PyObject *self, PyObject * args)
+{
+    GNode* node=dynamic_cast<GNode*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseObject* object=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!object)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    node->addObject(object);
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * GNode_removeObject(PyObject *self, PyObject * args)
+{
+    GNode* node=dynamic_cast<GNode*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseObject* object=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!object)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    node->removeObject(object);
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * GNode_detachFromGraph(PyObject *self, PyObject * /*args*/)
+{
+    GNode* node=dynamic_cast<GNode*>(((PySPtr<Base>*)self)->object.get());
+    node->detachFromGraph();
+    return Py_BuildValue("i",0);
+}
+
+
+
 SP_CLASS_METHODS_BEGIN(GNode)
 SP_CLASS_METHOD(GNode,createChild)
 SP_CLASS_METHOD(GNode,addChild)
 SP_CLASS_METHOD(GNode,removeChild)
 SP_CLASS_METHOD(GNode,moveChild)
-//SP_CLASS_METHOD(GNode,addObject)
-//SP_CLASS_METHOD(GNode,removeObject)
-//SP_CLASS_METHOD(GNode,detachFromGraph)
+SP_CLASS_METHOD(GNode,addObject)
+SP_CLASS_METHOD(GNode,removeObject)
+SP_CLASS_METHOD(GNode,detachFromGraph)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(GNode,Node)

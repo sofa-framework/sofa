@@ -25,6 +25,9 @@
 
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/GUIEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 namespace sofa
 {
@@ -90,6 +93,56 @@ void ScriptController::cleanup()
 void ScriptController::onBeginAnimationStep(const double dt)
 {
     script_onBeginAnimationStep(dt);
+}
+
+void ScriptController::onEndAnimationStep(const double dt)
+{
+    script_onEndAnimationStep(dt);
+}
+
+void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
+{
+    switch(evt->getState())
+    {
+    case core::objectmodel::MouseEvent::Move:
+        break;
+    case core::objectmodel::MouseEvent::LeftPressed:
+        script_onMouseButtonLeft(evt->getPosX(),evt->getPosY(),true);
+        break;
+    case core::objectmodel::MouseEvent::LeftReleased:
+        script_onMouseButtonLeft(evt->getPosX(),evt->getPosY(),false);
+        break;
+    case core::objectmodel::MouseEvent::RightPressed:
+        script_onMouseButtonRight(evt->getPosX(),evt->getPosY(),true);
+        break;
+    case core::objectmodel::MouseEvent::RightReleased:
+        script_onMouseButtonRight(evt->getPosX(),evt->getPosY(),false);
+        break;
+    case core::objectmodel::MouseEvent::MiddlePressed:
+        script_onMouseButtonMiddle(evt->getPosX(),evt->getPosY(),true);
+        break;
+    case core::objectmodel::MouseEvent::MiddleReleased:
+        script_onMouseButtonMiddle(evt->getPosX(),evt->getPosY(),false);
+        break;
+    case core::objectmodel::MouseEvent::Wheel:
+        script_onMouseWheel(evt->getPosX(),evt->getPosY(),evt->getWheelDelta());
+        break;
+    case core::objectmodel::MouseEvent::Reset:
+        break;
+    default:
+        break;
+
+    }
+}
+
+void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
+{
+    script_onKeyPressed(evt->getKey());
+}
+
+void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
+{
+    script_onKeyReleased(evt->getKey());
 }
 
 void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)

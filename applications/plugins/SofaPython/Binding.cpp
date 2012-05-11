@@ -32,6 +32,7 @@
 #include "Binding_Node.h"
 #include "Binding_GNode.h"
 #include "Binding_Vec3.h"
+#include "Binding_BaseObjectDescription.h"
 
 #include <Python.h>
 
@@ -44,23 +45,24 @@ void bindSofaPythonModule()
 {
     //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
 
-    SofaPythonModule = Py_InitModule("Sofa",SofaModuleMethods);
+    SofaPythonModule = SP_INIT_MODULE(Sofa)
 
-    SP_ADD_CLASS(SofaPythonModule,BaseData)
-    SP_ADD_CLASS(SofaPythonModule,Vec3)
+            SP_ADD_CLASS(SofaPythonModule,BaseData)
+            SP_ADD_CLASS(SofaPythonModule,Vec3)
+            SP_ADD_CLASS(SofaPythonModule,BaseObjectDescription)
 
-    SP_ADD_CLASS(SofaPythonModule,Base)
-    SP_ADD_CLASS(SofaPythonModule,BaseContext)
-    SP_ADD_CLASS(SofaPythonModule,Context)
-    SP_ADD_CLASS(SofaPythonModule,Node)
-    SP_ADD_CLASS(SofaPythonModule,GNode)
-    /*
-            SP_ADD_CLASS(SofaPythonModule,BaseObject)
-                SP_ADD_CLASS(SofaPythonModule,BaseController)
-                    SP_ADD_CLASS(SofaPythonModule,Controller)
-                        SP_ADD_CLASS(SofaPythonModule,ScriptController)
-                            SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
-    */
+            SP_ADD_CLASS(SofaPythonModule,Base)
+            SP_ADD_CLASS(SofaPythonModule,BaseContext)
+            SP_ADD_CLASS(SofaPythonModule,Context)
+            SP_ADD_CLASS(SofaPythonModule,Node)
+            SP_ADD_CLASS(SofaPythonModule,GNode)
+            /*
+                    SP_ADD_CLASS(SofaPythonModule,BaseObject)
+                        SP_ADD_CLASS(SofaPythonModule,BaseController)
+                            SP_ADD_CLASS(SofaPythonModule,Controller)
+                                SP_ADD_CLASS(SofaPythonModule,ScriptController)
+                                    SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
+            */
 }
 
 
@@ -87,7 +89,7 @@ void bindSofaPythonModule()
 
 #include "PythonScriptController.h"
 
-using namespace sofa::core;
+        using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using namespace sofa::simulation::tree;
@@ -118,49 +120,6 @@ BOOST_PYTHON_MODULE( Sofa )
 
     // send message to the GUI...
     def ("sendGUIMessage", sendGUIMessage);
-
-    class_ <BaseNode, BaseNode::SPtr, bases<Base>, boost::noncopyable>("BaseNode", no_init)
-            ;
-
-    class_ <BaseObject, BaseObject::SPtr, bases<Base>, boost::noncopyable>("BaseObject", no_init)
-            ;
-
-    class_ <BaseContext, BaseContext::SPtr, bases<Base>, boost::noncopyable>("BaseContext", no_init)
-            .def("isActive",&BaseContext::isActive)
-            .def("setActive",&BaseContext::setActive)
-            .def("getTime",&BaseContext::getTime)
-            .def("getDt",&BaseContext::getDt)
-            .def("getAnimate",&BaseContext::getAnimate)
-            .def("getGravity",&BaseContext::getGravity,return_value_policy<copy_const_reference>())
-            .def("setGravity",&BaseContext::setGravity)
-            .def("getRootContext",&BaseContext::getRootContext,return_value_policy<reference_existing_object>())
-            .def("setAnimate",&BaseContext::setAnimate)
-        //    .def("getObject",&getBaseObject)
-            ;
-
-    // POUAH ! dégueulasse de mettre des double directement
-    class_ <Vec3d>("Vec3",init<double,double,double>())
-            ;
-
-    // inutile de déclarer coord3 et deriv3, ça rentre en conflit avec Vec3...
-//    class_ <Deriv3>("Deriv3",init<double,double,double>())
-//            ;
-
-    class_ <GNode, GNode::SPtr, bases<Node>, boost::noncopyable>("GNode", no_init)
-            .def("createChild",&GNode::createChild,return_value_policy<reference_existing_object>())
-            .def("addChild",&GNode::addChild)
-            .def("removeChild",&GNode::removeChild)
-            .def("moveChild",&GNode::moveChild)
-            .def("addObject",&GNode::addObject)
-            .def("removeObject",&GNode::removeObject)
-            .def("detachFromGraph",&GNode::detachFromGraph)
-            ;
-
-    class_ <OdeSolver, OdeSolver::SPtr, bases<BaseObject>, boost::noncopyable>("OdeSolver", no_init)
-            ;
-
-    class_ <EulerSolver, EulerSolver::SPtr, bases<OdeSolver>, boost::noncopyable>("EulerSolver", no_init)
-            ;
 
     // TODO: double héritage BaseMechanicalState & State<sofa::defaulttype::Vec3Types>
     class_ <MechanicalState<sofa::defaulttype::Vec3Types> , MechanicalState<sofa::defaulttype::Vec3Types>::SPtr, bases<BaseObject>, boost::noncopyable>("MechanicalState", no_init)
