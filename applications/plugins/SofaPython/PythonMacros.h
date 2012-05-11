@@ -53,6 +53,17 @@ PyObject* _PyObject_cast(char* str) {return PyString_FromString(str);}
 #define SP_SOFAPYFREE(X) X##_PyFree     // deallocator
 
 
+// =============================================================================
+// Module declarations & methods
+// =============================================================================
+
+// PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
+#define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
+
+#define SP_MODULE_METHODS_BEGIN(MODULENAME) static PyMethodDef MODULENAME##ModuleMethods[] = {
+#define SP_MODULE_METHODS_END {NULL,NULL,NULL,NULL} };
+#define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
+
 
 
 // =============================================================================
@@ -125,8 +136,8 @@ SP_CLASS_METHODS_BEGIN(DummyClass)
 SP_CLASS_METHOD(DummyClass,setValue)
 SP_CLASS_METHOD(DummyClass,getValue)
 SP_CLASS_METHODS_END
-
 */
+
 #define SP_CLASS_METHODS_BEGIN(C) static PyMethodDef SP_SOFAPYMETHODS(C)[] = {
 #define SP_CLASS_METHODS_END {NULL,NULL,NULL,NULL} };
 #define SP_CLASS_METHOD(C,M) {#M, C##_##M, METH_VARARGS, ""},
@@ -283,8 +294,8 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
 
-#define SP_CALL(func, ...) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
-#define SP_CALL_NOPARAM(func) { if (!PyObject_CallObject(func,0)) { printf("<PYTHON> exception\n"); PyErr_Print(); } }
+#define SP_CALL(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
+#define SP_CALL_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
 
 
 #endif // PYTHONMACROS_H

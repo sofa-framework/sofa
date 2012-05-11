@@ -63,7 +63,18 @@ protected:
 
     virtual void script_cleanup();
 
+    /// keyboard & mouse events
+    virtual void script_onKeyPressed(const char c);
+    virtual void script_onKeyReleased(const char c);
+
+    virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed);
+    virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed);
+    virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed);
+    virtual void script_onMouseWheel(const int posX,const int posY,const int delta);
+
+    /// called each frame
     virtual void script_onBeginAnimationStep(const double dt);
+    virtual void script_onEndAnimationStep(const double dt);
 
     virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value);
     /// @}
@@ -78,8 +89,15 @@ protected:
     PyObject *m_ScriptDict;     // functions dictionnary
 
     // optionnal script entry points:
+    PyObject *m_Func_onKeyPressed;
+    PyObject *m_Func_onKeyReleased;
+    PyObject *m_Func_onMouseButtonLeft;
+    PyObject *m_Func_onMouseButtonRight;
+    PyObject *m_Func_onMouseButtonMiddle;
+    PyObject *m_Func_onMouseWheel;
     PyObject *m_Func_onGUIEvent;
     PyObject *m_Func_onBeginAnimationStep;
+    PyObject *m_Func_onEndAnimationStep;
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;
     PyObject *m_Func_initGraph;
