@@ -173,7 +173,6 @@ public:
 
     void getRotations(VecReal& vecR)
     {
-        vecR.resize(_indexedElements->size()*9);
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
             getRotation(*(Transformation*)&(vecR[i*9]),i);
     }
@@ -182,7 +181,6 @@ public:
     {
         unsigned int nbdof = this->mstate->getX()->size();
 
-        rotations->resize(nbdof*3,nbdof*3);
         if (component::linearsolver::RotationMatrix<Real> * diag = dynamic_cast<component::linearsolver::RotationMatrix<Real> *>(rotations))
         {
             for (unsigned int i=0; i<nbdof; ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);

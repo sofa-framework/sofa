@@ -179,12 +179,12 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
             }
         }
 
-        for (unsigned int i=0; i<preconditioners.size(); ++i)
-        {
-            preconditioners[i]->updateSystemMatrix();
-        }
-
         sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
+    }
+
+    for (unsigned int i=0; i<preconditioners.size(); ++i)
+    {
+        preconditioners[i]->updateSystemMatrix();
     }
 
     next_refresh_iteration = 1;

@@ -52,6 +52,7 @@
 #include <sofa/gpu/cuda/initCudaDev.h>
 #include <sofa/component/initMiscMappingDev.h>
 #include <sofa/component/initAdvancedFEM.h>
+#include <sofa/component/initAdvancedInteraction.h>
 #endif
 
 
@@ -186,6 +187,7 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
     sofa::component::init();
+    sofa::component::initAdvancedInteraction();
 
 #ifdef SOFA_DEV
     // load cuda_dev library

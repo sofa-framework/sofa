@@ -627,7 +627,6 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m,defaulttype::BaseMatrix * rotations,int offset)
 {
     Data& data = m->data;
-    rotations->resize(data.nbVertex*3,data.nbVertex*3);
 
 #ifdef SOFA_DEV
     if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
