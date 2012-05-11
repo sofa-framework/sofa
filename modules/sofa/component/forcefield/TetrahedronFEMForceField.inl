@@ -688,16 +688,18 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         		serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
 
         F = JKJt * D;
+
+
+        f[a] += Deriv( F[0], F[1], F[2] );
+        f[b] += Deriv( F[3], F[4], F[5] );
+        f[c] += Deriv( F[6], F[7], F[8] );
+        f[d] += Deriv( F[9], F[10], F[11] );
     }
     else
     {
         serr << "TODO(TetrahedronFEMForceField): support for assembling system matrix when using plasticity."<<sendl;
     }
 
-    f[a] += Deriv( F[0], F[1], F[2] );
-    f[b] += Deriv( F[3], F[4], F[5] );
-    f[c] += Deriv( F[6], F[7], F[8] );
-    f[d] += Deriv( F[9], F[10], F[11] );
 }
 
 template<class DataTypes>
@@ -1243,7 +1245,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
         // the numbers of strain values too close to 0 indicates the kind of degenerescence
         int degeneratedF;
-        for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF );
+        for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
 
         switch( degeneratedF )
         {

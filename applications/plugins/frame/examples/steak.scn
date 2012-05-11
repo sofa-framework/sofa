@@ -32,8 +32,8 @@
 			<FrameBlendingMapping template="Mapping&lt;Affine,DeformationGradient332&gt;" name="PMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="3"
 				targetSampleNumber="1" initializeFramesInRigidParts="1" />
-			<!--GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/-->
-			<CorotationalForceField template="DeformationGradient332"   printLog="0" />
+			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>
+			<!--CorotationalForceField template="DeformationGradient332"   printLog="0" /-->
 		</Node>
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/steak.obj"/>
