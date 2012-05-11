@@ -38,7 +38,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -199,8 +199,8 @@ public:
         /// project to a rigid displacement
         void setRigid()
         {
-            Affine rotation, def;
-            polar_decomp( getAffine(), rotation, def );
+            Affine rotation;
+            polarDecomposition( getAffine(), rotation );
             getAffine() = rotation;
         }
 

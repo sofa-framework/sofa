@@ -28,7 +28,7 @@
 #include "Blending.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 #if defined(WIN32)
 #define finite(x) (_finite(x))
@@ -384,7 +384,7 @@ struct LinearBlending<
             result.getCenter() += d[index[i]].getCenter() * Jb[i].Pt + d[index[i]].getAffine() * Jb[i].Pa.getCenter();
             A += d[index[i]].getAffine() * Jb[i].Pa.getAffine();
         }
-        polar_decomp(A, R, S);
+        polarDecomposition(A, R, S);
         Ainv.invert(A);
         result.getOrientation().fromMatrix(R);
         return result;
@@ -1805,7 +1805,7 @@ struct LinearBlending<
             Jb[i].Pa.getAffine() = Transform33 * Jb[i].Pa0.getAffine();
             A += Jb[i].Pa.getAffine();
         }
-        polar_decomp(A, R, S);
+        polarDecomposition(A, R, S);
         Ainv.invert(A);
 
         res.getOrientation().fromMatrix(R);
@@ -1850,7 +1850,7 @@ struct LinearBlending<
         */
 
         /*				Mat33 Sinv2,R2,S2,A2=Adot+A,I;
-             polar_decomp(A2, R2, S2);
+             polarDecomposition(A2, R2, S2);
         Quat q1; q1.fromMatrix(R);
         Quat q2; q2.fromMatrix(R2);
         Quat q=q2*q1.inverse();

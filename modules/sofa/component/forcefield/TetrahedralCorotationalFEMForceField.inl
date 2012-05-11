@@ -31,7 +31,7 @@
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <assert.h>
@@ -1178,8 +1178,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a,
     tetrahedronInf[i].initialTransformation = A;
 
     Transformation R_0_1;
-    MatNoInit<3,3,Real> S;
-    polar_decomp(A, R_0_1, S);
+    polarDecomposition(A, R_0_1);
 
     tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(*X0)[a];
     tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(*X0)[b];
@@ -1203,7 +1202,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
 
     Transformation R_0_2;
     MatNoInit<3,3,Real> S;
-    polar_decomp(A, R_0_2, S);
+    polarDecomposition(A, R_0_2);
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 

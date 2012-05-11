@@ -613,7 +613,7 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
 
-    Coord deforme_a = Coord(0,0,0);
+    //Coord deforme_a = Coord(0,0,0);
     Coord deforme_b = p[b]-p[a];
     Coord deforme_c = p[c]-p[a];
 

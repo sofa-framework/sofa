@@ -82,6 +82,7 @@ public:
 
 
 /** Compute Finite Element forces based on tetrahedral elements.
+*   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
 class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
@@ -106,9 +107,10 @@ public:
     typedef BaseMeshTopology::Tetrahedron Tetrahedron;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
-            LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
-            POLAR = 2
-         }; ///< Symbol of polar displacements tetrahedron solver
+            LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"
+            POLAR = 2,   ///< Symbol of corotational large displacements tetrahedron solver based on a polar decomposition -> Muller et al 2004 "Interactive Virtual Materials"
+            SVD = 3      ///< Symbol of corotational large displacements tetrahedron solver based on a SVD decomposition   -> inspired from Irving et al 2004 "Invertible Finite Element for Robust Simulation of Large Deformation"
+         };
 
 protected:
 
@@ -232,7 +234,7 @@ protected:
         , _indexedElements(NULL)
         , needUpdateTopology(false)
         , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
-        , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
+        , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
         , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
         , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
         , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
@@ -292,10 +294,11 @@ public:
     {
         if (methodName == "small")	this->setMethod(SMALL);
         else if (methodName  == "polar")	this->setMethod(POLAR);
+        else if (methodName  == "svd")	this->setMethod(SVD);
         else
         {
             if (methodName != "large")
-                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\" "<<sendl;
+                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\", \"svd\" "<<sendl;
             this->setMethod(LARGE);
         }
     }
@@ -307,6 +310,7 @@ public:
         {
         case SMALL: f_method.setValue("small"); break;
         case POLAR: f_method.setValue("polar"); break;
+        case SVD:   f_method.setValue("svd"); break;
         default   : f_method.setValue("large");
         };
     }
@@ -343,7 +347,6 @@ protected:
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
 
 
-
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
@@ -355,14 +358,19 @@ protected:
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
     ////////////// polar decomposition method
-    vector<Transformation>  _initialTransformation;
     vector<unsigned int> _rotationIdx;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
+
+    ////////////// svd decomposition method
+    vector<Transformation>  _initialTransformation;
+    void initSVD(int i, Index&a, Index&b, Index&c, Index&d);
+    void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
+
+    void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
+
 
     void handleTopologyChange()
     {

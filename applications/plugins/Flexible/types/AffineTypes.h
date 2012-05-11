@@ -37,7 +37,7 @@
 #endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -273,8 +273,8 @@ public:
         /// project to a rigid displacement
         void setRigid()
         {
-            Frame rotation, def;
-            polar_decomp( getAffine(), rotation, def );
+            Frame rotation;
+            polarDecomposition( getAffine(), rotation );
             getAffine() = rotation;
         }
     };

@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 #ifdef SOFA_IP_TRACES
 #include <sofa/component/mapping/_IP_MapTraceMacros.h>

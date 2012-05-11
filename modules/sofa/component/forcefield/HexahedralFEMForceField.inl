@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedralFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
@@ -578,8 +578,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
         for(int j=0; j<3; ++j)
             HT[k][j]=A[k][j];
 
-    Mat33 S;
-    polar_decomp(HT, r, S);
+    polarDecomposition(HT, r);
 }
 
 

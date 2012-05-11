@@ -31,7 +31,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/engine/ShapeMatching.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
@@ -200,10 +200,10 @@ void ShapeMatching<DataTypes>::update()
         {
             T[i] -= covNN(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
             Xcm[i] /= W[i];
-            Mat3x3 R,S;
+            Mat3x3 R;
             if(affineRatio.getValue()!=(Real)1.0)
             {
-                polar_decomp(T[i], R, S);
+                polarDecomposition(T[i], R);
                 //if (determinant(R) < 0) for(unsigned int j=0 ; j<3;j++) R[j][0] *= -1;  // handle symmetry
             }
             if(affineRatio.getValue()!=(Real)0.0)
