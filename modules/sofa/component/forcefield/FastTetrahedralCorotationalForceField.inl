@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -351,7 +351,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
                 }
             }
             // polar decomposition of the transformation
-            polar_decomp(deformationGradient,R,S);
+            polarDecomposition(deformationGradient,R);
         }
         else
         {

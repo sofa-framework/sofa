@@ -37,7 +37,7 @@
 #endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -332,8 +332,8 @@ public:
         {
             Frame& q = getQuadratic();
             // first matrix is pure rotation
-            Affine a = getAffine(), rotation, def;
-            polar_decomp(a, rotation, def);
+            Affine a = getAffine(), rotation;
+            polarDecomposition(a, rotation);
             for(unsigned i=0; i<spatial_dimensions; i++)
             {
                 for(unsigned j=0; j<spatial_dimensions; j++)

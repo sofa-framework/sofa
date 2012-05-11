@@ -28,7 +28,7 @@
 #include <sofa/component/mapping/BarycentricMappingRigid.h>
 #include <sofa/component/mapping/BarycentricMapping.inl>
 
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 #ifdef SOFA_IP_TRACES
 #include <sofa/component/mapping/_IP_MapTraceMacros.h>
@@ -206,7 +206,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         const topology::Tetrahedron& tetra = tetrahedra[index];
 
         //compute the rotation of the rigid point using the "basis" approach
-        Matrix3 orientationMatrix, polarMatrixQ, polarMatrixS; // orthogMatrix
+        Matrix3 orientationMatrix, polarMatrixQ; // orthogMatrix
         Matrix3 m,basis;
         m[0] = in[tetra[1]]-in[tetra[0]];
         m[1] = in[tetra[2]]-in[tetra[0]];
@@ -224,7 +224,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         }
 
         orientationMatrix.transpose();
-        polar_decomp(orientationMatrix, polarMatrixQ, polarMatrixS);
+        polarDecomposition(orientationMatrix, polarMatrixQ);
         Quat quatA;
         quatA.fromMatrix(polarMatrixQ);
         Out::setCRot(out[point], quatA);

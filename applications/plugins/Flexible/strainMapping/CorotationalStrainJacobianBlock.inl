@@ -31,7 +31,7 @@
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -157,7 +157,7 @@ public:
     {
         StrainMat strainmat;
         if(decompositionMethod==0)      // polar
-            helper::polar_decomp(data.getF(), R, strainmat);
+            helper::polarDecomposition(data.getF(), R, strainmat);
         else if(decompositionMethod==1)   // large (by QR)
         {
             computeQR(R,data.getF());

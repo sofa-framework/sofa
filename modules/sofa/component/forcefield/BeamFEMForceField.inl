@@ -32,7 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/rmath.h>

@@ -334,6 +334,18 @@ public:
         return true;
     }
 
+    bool isDiagonal() const
+    {
+        for (int i=0; i<L; i++)
+        {
+            for (int j=0; j<i-1; j++)
+                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+            for (int j=i+1; j<C; j++)
+                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+        }
+        return true;
+    }
+
 
     /// @}
 

@@ -12,7 +12,7 @@
             <Triangle simulated="0" moving="0" />
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
-        <Node name="TorusFEM">
+        <Node name="TorusFEM_LARGE">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
@@ -32,16 +32,16 @@
                 <BarycentricMapping />
             </Node>
         </Node>
-        <Node name="TorusFEM">
+        <Node name="TorusFEM_POLAR">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
             <UniformMass totalmass="5" />
-            <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" dx="5" />
+                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="blue" dx="5" />
                 <BarycentricMapping object1="../.." object2="Visual" />
             </Node>
             <Node name="Surf2">
@@ -52,42 +52,22 @@
                 <BarycentricMapping />
             </Node>
         </Node>
-        <Node name="TorusFEM">
+        <Node name="TorusFEM_SVD">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" />
             <UniformMass totalmass="5" />
-            <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="7.5" />
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" dx="7.5" />
                 <BarycentricMapping object1="../.." object2="Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" />
-                <Triangle />
-                <BarycentricMapping />
-            </Node>
-        </Node>
-        <Node name="TorusFEM">
-            <EulerImplicit name="cg_odesolver" printLog="false" />
-            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-            <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="10" />
-            <UniformMass totalmass="5" />
-            <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
-            <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="blue" dx="10" />
-                <BarycentricMapping object1="../.." object2="Visual" />
-            </Node>
-            <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
-                <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="10" />
                 <Triangle />
                 <BarycentricMapping />
             </Node>
