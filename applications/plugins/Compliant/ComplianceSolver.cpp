@@ -44,23 +44,23 @@ void ComplianceSolver::solveEquation()
     {
         SMatrix schur( _matJ * PMinvP() * _matJ.transpose() + _matC );
         SparseLDLT schurDcmp(schur);
-        VectorEigen& lambda = _vecLambda.getVectorEigen() =  _vecPhi.getVectorEigen() - _matJ * ( PMinvP() * _vecF.getVectorEigen() );
+        VectorEigen& lambda = _vecLambda.getVectorEigen() =  _vecPhi.getVectorEigen() - _matJ * ( PMinvP() * _vecF.getVectorEigen() ); // right-hand term
         if( verbose.getValue() )
         {
-            cerr<<"ComplianceSolver::solve, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
-            cerr<<"ComplianceSolver::solve,  Minv * vecF.getVectorEigen() = " << (PMinvP() * _vecF.getVectorEigen()).transpose() << endl;
-            cerr<<"ComplianceSolver::solve, matJ * ( Minv * vecF.getVectorEigen())  = " << ( _matJ * ( PMinvP() * _vecF.getVectorEigen())).transpose() << endl;
-            cerr<<"ComplianceSolver::solve,  vecPhi.getVectorEigen()  = " <<  _vecPhi.getVectorEigen().transpose() << endl;
-            cerr<<"ComplianceSolver::solve, right-hand term = " << lambda.transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
+            cerr<<"ComplianceSolver::solvEquatione,  Minv * vecF.getVectorEigen() = " << (PMinvP() * _vecF.getVectorEigen()).transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation, matJ * ( Minv * vecF.getVectorEigen())  = " << ( _matJ * ( PMinvP() * _vecF.getVectorEigen())).transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation,  vecPhi.getVectorEigen()  = " <<  _vecPhi.getVectorEigen().transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation, right-hand term = " << lambda.transpose() << endl;
         }
         schurDcmp.solveInPlace( lambda );                                              // solve (J.M^{-1}.J^T + C).lambda = c - J.M^{-1}.f
         _vecF.getVectorEigen() = _vecF.getVectorEigen() + _matJ.transpose() * lambda ; // f = f_ext + J^T.lambda
         _vecDv.getVectorEigen() = PMinvP() * _vecF.getVectorEigen();                   // v = M^{-1}.f
         if( verbose.getValue() )
         {
-            cerr<<"ComplianceSolver::solve, constraint forces = " << lambda.transpose() << endl;
-            cerr<<"ComplianceSolver::solve, net forces = " << _vecF << endl;
-            cerr<<"ComplianceSolver::solve, vecDv = " << _vecDv << endl;
+            cerr<<"ComplianceSolver::solveEquation, constraint forces = " << lambda.transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation, net forces = " << _vecF << endl;
+            cerr<<"ComplianceSolver::solveEquation, vecDv = " << _vecDv << endl;
         }
     }
     else   // unconstrained dynamics, solve M.dv = f
@@ -98,26 +98,24 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     MultiVecCoord nextPos(&vop, xResult );
     MultiVecDeriv nextVel(&vop, vResult );
 
+    sofa::helper::AdvancedTimer::stepBegin("Build linear equation");
 
-
-    // Compute right-hand term
+    // ==== Accumulate forces
+    sofa::helper::AdvancedTimer::stepBegin("forces in the right-hand term");
     mop.computeForce(f);
     mop.projectResponse(f);
     if( verbose.getValue() )
     {
         cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
     }
+    sofa::helper::AdvancedTimer::stepEnd("forces in the right-hand term");
 
 
-    // Compute system matrices and vectors
-    sofa::helper::AdvancedTimer::stepBegin("Build linear equation");
+    // ==== Resize global matrices and vectors
     _PMinvP_isDirty = true;
     MatrixAssemblyVisitor assembly(&cparams,this);
     this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE)); // first the size
     //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
-
-    //    if( assembly.sizeC > 0 ){
-
 
     _matM.resize(assembly.sizeM,assembly.sizeM);
     _matK.resize(assembly.sizeM,assembly.sizeM);
@@ -135,11 +133,50 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     _vecLambda.resize(assembly.sizeC);
     _vecLambda.clear();
 
-    // Matrix assembly
+
+
+    // ==== Create local matrices J,K,M,C at each level
+    s2mjc.clear();
     this->getContext()->executeVisitor(&assembly(DO_SYSTEM_ASSEMBLY));
+
+
+
+    // ==== Global matrix assembly
+    sofa::helper::AdvancedTimer::stepBegin("JMJt, JKJt, JCJt");
+    for(State_MJC::iterator i=s2mjc.begin(),iend=s2mjc.end(); i!=iend; i++ )
+    {
+        core::behavior::BaseMechanicalState* s = (*i).first;
+        if(verbose.getValue())
+        {
+            cerr<<"ComplianceSolver::solve, state = " << s->getName() << endl;
+//            cerr<<"  M = " << s2mjc[s].M << endl;
+//            cerr<<"  K = " << s2mjc[s].K << endl;
+//            cerr<<"  J = " << s2mjc[s].J << endl;
+//            cerr<<"  c_offset = " << s2mjc[s].c_offset << endl;
+//            cerr<<"  C = " << s2mjc[s].C << endl;
+
+        }
+        if( s2mjc[s].M.rows()>0 )
+            _matM += s2mjc[s].J.transpose() * s2mjc[s].M * s2mjc[s].J;
+        if( s2mjc[s].K.rows()>0 )
+            _matK += s2mjc[s].J.transpose() * s2mjc[s].K * s2mjc[s].J;
+        if( s2mjc[s].C.rows()>0 )
+        {
+            SMatrix C0 = createShiftMatrix( s2mjc[s].C.rows(), _matC.cols(), s2mjc[s].c_offset );
+            _matC += C0.transpose() * s2mjc[s].C * C0;
+//            cerr<<"  C0 = " << C0 << endl;
+//            cerr<<"  J = " << s2mjc[s].J << endl;
+//            cerr<<"  matJ before = " << _matJ << endl;
+//            cerr<<"  matJ += " << dJ << endl;
+            _matJ += SMatrix(C0.transpose() * s2mjc[s].J);        // J vertically shifted, aligned with the compliance matrix
+//            cerr<<"  matJ after = " << _matJ << endl;
+        }
+    }
+    sofa::helper::AdvancedTimer::stepEnd("JMJt, JKJt, JCJt");
 
     if( verbose.getValue() )
     {
+        cerr<<"ComplianceSolver::solve, final matrices ==================================== " << endl ;
         cerr<<"ComplianceSolver::solve, final M = " << endl << _matM << endl;
         cerr<<"ComplianceSolver::solve, final K = " << endl << _matK << endl;
         cerr<<"ComplianceSolver::solve, final P = " << endl << P() << endl;
@@ -150,26 +187,31 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         cerr<<"ComplianceSolver::solve, final v = " << _vecV << endl;
     }
 
+
+
+    // ==== Compute the implicit matrix and right-hand term
     // The implicit matrix is scaled by 1/h before solving the equation
+    sofa::helper::AdvancedTimer::stepBegin("implicit equation: scaling and sum of matrices, update right-hand term ");
     _matM *= (1.0+f_rayleighMass.getValue())/h;
     _matM -= _matK * (h+f_rayleighStiffness.getValue());
 //    cerr<<"ComplianceSolver::solve, final M.size() = " <<  _matM.rows() << ", non zeros: " << _matM.nonZeros() << endl; //49548
 
     // complete the right-hand term
     _vecF.getVectorEigen() += _matK * _vecV.getVectorEigen() * (h * implicitVelocity.getValue());
+    sofa::helper::AdvancedTimer::stepEnd("implicit equation: scaling and sum of matrices, update right-hand term ");
+
     sofa::helper::AdvancedTimer::stepEnd("Build linear equation");
 
-    // Solve equation system
+    // ==== Solve equation system
     sofa::helper::AdvancedTimer::stepBegin("Solve linear equation");
     solveEquation();
     sofa::helper::AdvancedTimer::stepEnd("Solve linear equation");
 
     this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
-    //    }
 
 
 
-    // Apply integration scheme
+    // ==== Apply the result
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp vmOp;
@@ -198,6 +240,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
 simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown(simulation::Node* node)
 {
+    ComplianceSolver::State_MJC& s2mjc = solver->s2mjc;
+
     //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown visit Node "<<node->getName()<<endl;
     if( pass== COMPUTE_SIZE )
     {
@@ -205,27 +249,24 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
         {
             //        cerr<<"node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-            m_offset[node->mechanicalState] = sizeM;
+            s2mjc[node->mechanicalState].m_offset = sizeM;
             sizeM += node->mechanicalState->getMatrixSize();
         }
 
         // ==== Compliances require a block in the global compliance matrix
         if( node->mechanicalState  )
         {
-            //            unsigned numCompliances=0;
             for(unsigned i=0; i<node->forceField.size(); i++)
             {
                 if(node->forceField[i]->getComplianceMatrix(mparams))
                 {
-                    c_offset[node->forceField[i]] = sizeC;
+                    s2mjc[node->mechanicalState].c_offset = sizeC;
                     sizeC += node->mechanicalState->getMatrixSize();
-                    //                    numCompliances++;
                 }
                 else      // stiffness does not contribute to matrix size, since the stiffness matrix is added to the mass matrix of the state.
                 {
                 }
             }
-            //            assert(numCompliances<2); // more than 1 compliance in a node makes no sense (or do they, if they are not all null ??? It would probably be better to replace them with their harmonic sum, however)
         }
 
         // ==== register all the DOFs
@@ -235,76 +276,80 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
     }
     else if (pass== DO_SYSTEM_ASSEMBLY)
     {
+        if( node->mechanicalState == NULL ) return RESULT_CONTINUE;
+
+        SMatrix& J0 = s2mjc[node->mechanicalState].J;
+        SMatrix& localM  = s2mjc[node->mechanicalState].M;
+        SMatrix& localC  = s2mjc[node->mechanicalState].C;
+        SMatrix& localK  = s2mjc[node->mechanicalState].K;
+        const unsigned& m_offset = s2mjc[node->mechanicalState].m_offset;
+        const unsigned& c_offset = s2mjc[node->mechanicalState].c_offset;
+        unsigned localSize = node->mechanicalState->getMatrixSize();
+
         // ==== independent DOFs
-        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
+        if ( node->mechanicalMapping == NULL )
         {
-            sofa::helper::AdvancedTimer::stepBegin("assembly: shift and project independent states");
-            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-            ComplianceSolver::SMatrix shiftMatrix = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeM, m_offset[node->mechanicalState] );
-            jMap[node->mechanicalState]= shiftMatrix ;
+            sofa::helper::AdvancedTimer::stepBegin("shift and project independent states");
+            J0 = createShiftMatrix( localSize, sizeM, m_offset );
 
             // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
             for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++)
             {
-                node->projectiveConstraintSet[i]->projectMatrix(&solver->_projMatrix,m_offset[node->mechanicalState]);
+                node->projectiveConstraintSet[i]->projectMatrix(&solver->_projMatrix,m_offset);
             }
 
-            // Right-hand term
-            unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            // Right-hand term (includes force applied to slave dofs, mapped upward)
+            unsigned offset = m_offset; // use a copy, because the parameter is modified by addToBaseVector
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<",  force before = " << solver->vecF << endl;
             node->mechanicalState->addToBaseVector(&solver->_vecF,core::VecDerivId::force(),offset);
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mechanical state "<< node->mechanicalState->getName() <<", cumulated force = " << solver->vecF << endl;
-            offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            offset = m_offset; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->addToBaseVector(&solver->_vecV, core::VecDerivId::velocity(), offset );
 
-            sofa::helper::AdvancedTimer::stepEnd("assembly: shift and project independent states");
+            sofa::helper::AdvancedTimer::stepEnd("shift and project independent states");
 
 
         }
-
-        // ==== mechanical mapping
-        if ( node->mechanicalMapping != NULL )
+        else    // process the mapping
         {
-            sofa::helper::AdvancedTimer::stepBegin( "assembly: J");
+            sofa::helper::AdvancedTimer::stepBegin(        "J products");
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             const vector<sofa::defaulttype::BaseMatrix*>* pJs = node->mechanicalMapping->getJs();
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
-            MechanicalState* mtarget = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Only N-to-1 mappings are handled yet
+            MechanicalState* cstate = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Child state. Only N-to-1 mappings are handled yet
             for( unsigned i=0; i<pStates.size(); i++ )
             {
-                MechanicalState* mstate = dynamic_cast<MechanicalState*>(pStates[i]);
-                assert(mstate);
-                if( localDOFs.find(mstate)==localDOFs.end() ) // skip states which are not in the scope of the solver, such as mouse DOFs
+                MechanicalState* pstate = dynamic_cast<MechanicalState*>(pStates[i]);  // parent state
+                assert(pstate);
+                if( localDOFs.find(pstate)==localDOFs.end() ) // skip states which are not in the scope of the solver, such as mouse DOFs
                     continue;
-                SMatrix J = getSMatrix( (*pJs)[i] );
-                SMatrix contribution;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = "<< endl << J << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, contribution of parent state  "<< mstate->getName() << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, jMap[ mstate ] = "<< endl << jMap[ mstate ] << endl;
-                contribution = J * jMap[ mstate ];
-                if( jMap[mtarget].rows()!=contribution.rows() || jMap[mtarget].cols()!=contribution.cols() )
-                    jMap[mtarget].resize(contribution.rows(),contribution.cols());
-                jMap[mtarget] += contribution;
+                SMatrix Jcp = getSMatrix( (*pJs)[i] ); // child wrt parent
+                SMatrix& Jp0 = s2mjc[pstate].J;        // parent wrt global DOF
+//                SMatrix contribution = Jcp * Jp0;
+
+                // contribute to the child wrt global DOF matrix
+                SMatrix& Jc0 = s2mjc[cstate].J;  // child wrt global DOF;
+                if( Jc0.rows()==0 )
+                    Jc0 = SMatrix(Jcp * Jp0);
+                else
+                    Jc0 += SMatrix(Jcp * Jp0);
             }
-            sofa::helper::AdvancedTimer::stepEnd( "assembly: J");
+            sofa::helper::AdvancedTimer::stepEnd(        "J products");
         }
 
         // ==== mass
         if (node->mass != NULL  )
         {
-            sofa::helper::AdvancedTimer::stepBegin( "assembly: JtMJ");
-            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", mass: " << node->mass->getName() << endl;
-            assert( node->mechanicalState != NULL );
+            sofa::helper::AdvancedTimer::stepBegin( "local M");
+
+            // todo: better way to fill the mass matrix
             linearsolver::EigenSparseSquareMatrix<SReal> sqmat(node->mechanicalState->getMatrixSize(),node->mechanicalState->getMatrixSize());
             linearsolver::SingleMatrixAccessor accessor( &sqmat );
             node->mass->addMToMatrix( mparams, &accessor );
-            //                    cerr<<"eigen matrix of the mass: " << sqmat  << endl;
-            SMatrix JtMJtop;
-            JtMJtop = jMap[node->mechanicalState].transpose() * sqmat.eigenMatrix * jMap[node->mechanicalState];
-            //                    cerr<<"contribution to the mass matrix: " << endl << JtMJtop << endl;
-            solver->_matM += JtMJtop;  // add J^T M J to the assembled mass matrix
-            sofa::helper::AdvancedTimer::stepEnd( "assembly: JtMJ");
+            localM = sqmat.eigenMatrix;
+
+            sofa::helper::AdvancedTimer::stepEnd( "local M");
         }
 
         // ==== compliance
@@ -314,57 +359,38 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << endl;
             if( ffield->getComplianceMatrix(mparams)!=NULL )
             {
-                sofa::helper::AdvancedTimer::stepBegin( "assembly: JtCJ");
+                sofa::helper::AdvancedTimer::stepBegin( "local C and right-hand term");
                 //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has compliance" << endl;
-                SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset[ffield] );
+                SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset );
 
-                SMatrix J = SMatrix( compOffset.transpose() * jMap[node->mechanicalState] ); // shift J
-                solver->_matJ += J;                                          // assemble
-
+                // compute scaling of C, based on time step, damping and implicit coefficients
                 SReal alpha = cparams.implicitVelocity(); // implicit velocity factor in the integration scheme
                 SReal beta  = cparams.implicitPosition(); // implicit position factor in the integration scheme
                 SReal l = alpha * (beta * mparams->dt() + ffield->getDampingRatio() );
                 if( fabs(l)<1.0e-10 ) solver->serr << ffield->getName() << ", l is not invertible in ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown" << solver->sendl;
                 SReal invl = 1.0/l;
-                //            SMatrix complianceMatrix = getSMatrix(ffield->getComplianceMatrix(mparams));
-                //            cerr<<"assembly, compliance " << ffield->getName() <<", compliance matrix = " << endl << complianceMatrix << endl;
-                solver->_matC += SMatrix( compOffset.transpose() * getSMatrix(ffield->getComplianceMatrix(mparams)) * compOffset ) * invl;  // assemble
+
+                localC = getSMatrix(ffield->getComplianceMatrix(mparams)) *  invl;
 
                 // Right-hand term
                 ffield->writeConstraintValue( &cparams, core::VecDerivId::force() );
-                unsigned offset = c_offset[ffield]; // use a copy, because the parameter is modified by addToBaseVector
+                unsigned offset = c_offset; // use a copy, because the parameter is modified by addToBaseVector
                 node->mechanicalState->addToBaseVector(&solver->_vecPhi, core::VecDerivId::force(), offset );
-                sofa::helper::AdvancedTimer::stepEnd( "assembly: JtCJ");
+                sofa::helper::AdvancedTimer::stepEnd( "local C and right-hand term");
             }
             else if (ffield->getStiffnessMatrix(mparams)) // accumulate the stiffness if the matrix is not null. TODO: Rayleigh damping
             {
-                sofa::helper::AdvancedTimer::stepBegin( "assembly: JtKJ");
+                sofa::helper::AdvancedTimer::stepBegin( "local K");
                 //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has stiffness" << endl;
-                const SMatrix& K = getSMatrix(ffield->getStiffnessMatrix(mparams));
-                const SMatrix& J = jMap[node->mechanicalState];
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, stiffness = " << endl << K << endl;
-                //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, local J = " << endl << J << endl;
-                SMatrix JtKJ;
-                JtKJ = J.transpose() * K *J;  // assemble
-                solver->_matK += JtKJ ;  // assemble
-                sofa::helper::AdvancedTimer::stepEnd( "assembly: JtKJ");
+                if( localK.rows() != localSize )
+                    localK.resize(localSize, localSize);
+                localK += getSMatrix(ffield->getStiffnessMatrix(mparams));
+                sofa::helper::AdvancedTimer::stepEnd( "local K");
             }
         }
 
     }
-    //    else if (pass== PROJECT_MATRICES)
-    //    {
-    //        // ==== independent DOFs
-    //        if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
-    //        {
-    //            //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-    //            // projections applied to the independent DOFs. The projection applied to mapped DOFs are ignored.
-    //            for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
-    //                  node->projectiveConstraintSet[i]->projectMatrix(&solver->_projMatrix,m_offset[node->mechanicalState]);
-    //            }
-    //        }
 
-    //    }
     else if (pass== DISTRIBUTE_SOLUTION)
     {
         typedef defaulttype::BaseVector  SofaVector;
@@ -373,10 +399,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         if (node->mechanicalState != NULL  && node->mechanicalMapping == NULL )
         {
             //            cerr<<"pass "<< pass << ", node " << node->getName() << ", independent mechanical state: " << node->mechanicalState->getName() << endl;
-            unsigned offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            unsigned offset = s2mjc[node->mechanicalState].m_offset; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->copyFromBaseVector(core::VecDerivId::force(), &solver->_vecF, offset );
 
-            offset = m_offset[node->mechanicalState]; // use a copy, because the parameter is modified by addToBaseVector
+            offset = s2mjc[node->mechanicalState].m_offset; // use a copy, because the parameter is modified by addToBaseVector
             node->mechanicalState->copyFromBaseVector(core::VecDerivId::dx(), &solver->_vecDv, offset );
         }
 
@@ -425,7 +451,7 @@ const ComplianceSolver::SMatrix& ComplianceSolver::PMinvP()
 
 /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
 /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-ComplianceSolver::SMatrix ComplianceSolver::MatrixAssemblyVisitor::createShiftMatrix( unsigned rows, unsigned cols, unsigned offset )
+ComplianceSolver::SMatrix ComplianceSolver::createShiftMatrix( unsigned rows, unsigned cols, unsigned offset )
 {
     SMatrix m(rows,cols);
     for(unsigned i=0; i<rows; i++ )

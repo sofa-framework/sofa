@@ -20,7 +20,7 @@
             <TetrahedronSetTopologyContainer name="TetraContainer" />
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
-            <TetrahedronSetGeometryAlgorithms template="Vec3d" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" />
             <Hexa2TetraTopologicalMapping name="default28" object1="../grid" object2="TetraContainer" />
 <!--            <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />-->
             <BarycentricShapeFunction position="@../DOF.rest_position" />

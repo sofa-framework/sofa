@@ -170,15 +170,6 @@ protected:
         MatrixAssemblyVisitor& operator() ( Pass p ) { pass =p; return *this; }
 
         virtual Visitor::Result processNodeTopDown(simulation::Node* node);
-//        virtual void processNodeBottomUp(simulation::Node* node);
-
-        std::map<MechanicalState*, unsigned> m_offset;                 ///< Start index of independent DOFs in the mass matrix
-        std::map<core::behavior::BaseForceField*, unsigned> c_offset;  ///< Start index of compliances in the compliance matrix
-        std::map<MechanicalState*,SMatrix> jMap;                       ///< jacobian matrices of each mechanical state, with respect to the vector of all independent DOFs.
-
-        /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
-        /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
-        static SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
         /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
@@ -186,6 +177,10 @@ protected:
 
     // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
     typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
+
+    /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
+    /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
+    static SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
     /// Compute the inverse of the matrix. The input matrix MUST be diagonal. Return false if the matrix is not diagonal. The threshold parameter is currently unused.
     static bool inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m );
@@ -195,6 +190,75 @@ protected:
 
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
+
+
+    /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
+      This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
+      or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
+      */
+    struct StateMatrices
+    {
+        SMatrix M;         ///< local mass matrix
+        SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
+        SMatrix C;         ///< local compliance matrix, if any
+        SMatrix K;         ///< local stiffness matrix, if any
+        unsigned m_offset; ///< start index in the assembled mass matrix
+        unsigned c_offset; ///< start index in the assembled compliance matrix
+    };
+    typedef std::map<core::behavior::BaseMechanicalState*,StateMatrices> State_MJC;
+    State_MJC s2mjc; ///< The container of a local matrices and the jacobians of the local DOF wrt global DOF.
+
+
+    /** @name Global matrix-vector product */
+    ///@{
+
+    /// Compute the product of a vector with implicit matrix M, which may not be assembled. M may be the implicit matrix e.g. M-h²K
+    struct MatrixProduct
+    {
+    protected:
+        ComplianceSolver& solver;
+        mutable VectorEigen product;
+    public:
+
+        MatrixProduct( ComplianceSolver& s ) : solver(s) {}
+
+        /// Product of a vector with matrix M. The default implementation assumes that M is assembled.
+        virtual const VectorEigen& operator()(const VectorEigen& x) const
+        {
+            product.noalias() = solver.M() * x;
+            return product;
+        }
+    };
+
+
+    /// Compute the product of a vector with matrix M, in case the J products are computed but matrix M is not assembled
+    struct JtAJProduct: public MatrixProduct
+    {
+        JtAJProduct( ComplianceSolver& s ) : MatrixProduct(s) {}
+
+        /// Product of a vector with matrix M.
+        virtual const VectorEigen& operator()(const VectorEigen& x) const
+        {
+            product.resize(x.size());
+            solver.multM(product,x);
+            return product;
+        }
+    };
+
+
+
+    /// Compute the product of the non-assembled implicit matrix with a vector, using local M as implicit matrix
+    void multM(VectorEigen& Mx, const VectorEigen& x)
+    {
+        for( State_MJC::iterator i=s2mjc.begin(), iend=s2mjc.end(); i!=iend; i++ )
+        {
+            const SMatrix& J = (*i).second.J;
+            const SMatrix& M = (*i).second.M;
+            Mx += J.transpose() * (M * (J * x));
+        }
+    }
+    ///@}  // end group matrix-vector product
+
 
 };
 

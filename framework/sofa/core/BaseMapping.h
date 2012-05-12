@@ -69,6 +69,7 @@ public:
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
     virtual void applyJ(const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
     /// Accessor to the input model of this mapping
@@ -79,11 +80,19 @@ public:
     /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
     virtual bool setTo( BaseState* to );
 
-    // BaseMechanicalMapping
-    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
-    virtual void applyDJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
-    virtual void applyJT(const ConstraintParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
+    /** @name Mechanical mapping API
+     *  Methods related to the transmission of forces
+     */
+    ///@{
+    /// Accumulate child force in the parent force. In implicit methods, this is also used to accumulate a change of child force to a change of parent force.
+    virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    /// Accumulate a change of parent force due to the change of the mapping, for a constant child force. Null for linear mappings.
+    virtual void applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    /// Store data used to apply geometric stiffness. The child force can be read using mparams->readF(this->toModel). Default implementation does nothing, corresponding to a linear mapping.
+    virtual void computeGeometricStiffness(const MechanicalParams* /*mparams*/) {}
+    /// Propagate constraint Jacobians upward
+    virtual void applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
 
     virtual bool areForcesMapped() const;
     virtual bool areConstraintsMapped() const;
@@ -96,6 +105,7 @@ public:
     virtual void setMatricesMapped(bool b);
 
     virtual void setNonMechanical();
+    ///@}
 
     /// Return true if this mapping should be used as a mechanical mapping.
     virtual bool isMechanical() const;

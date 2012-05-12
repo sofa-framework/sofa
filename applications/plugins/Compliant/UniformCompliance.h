@@ -60,6 +60,9 @@ public:
     /// addForce does nothing when this component is processed like a compliance.
     virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);
 
+    /// addDForce does nothing when this component is processed like a compliance.
+    virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
+
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 

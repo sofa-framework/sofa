@@ -29,6 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 #ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
@@ -66,6 +67,7 @@ public:
     typedef TReal Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Matrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
+    typedef EigenBaseSparseMatrix<TReal> ThisMatrix;
 
     Matrix eigenMatrix;    ///< the data
 
@@ -154,7 +156,7 @@ public:
         for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
         {
             if(it.index()==i) // diagonal entry
-                it.valueRef()=1.0e-100;
+                it.valueRef()=(Real)1.0e-100;
             else it.valueRef() = 0;
         }
     }
@@ -178,7 +180,7 @@ public:
                 if( it.col()==col)
                 {
                     if(it.index()==i) // diagonal entry
-                        it.valueRef()=1.0e-100;
+                        it.valueRef()=(Real)1.0e-100;
                     else it.valueRef() = 0;
 
                 }
@@ -272,6 +274,48 @@ public:
     }
 #endif
 
+
+    /// View this matrix as a MultiMatrix
+    class MatrixAccessor: public core::behavior::MultiMatrixAccessor
+    {
+    public:
+
+        MatrixAccessor( ThisMatrix* m=0 ) { setMatrix(m); }
+        virtual ~MatrixAccessor() {}
+
+        void setMatrix( ThisMatrix* m )
+        {
+            matrix = m;
+            matRef.matrix = m;
+        }
+        ThisMatrix* getMatrix() { return matrix; }
+        const ThisMatrix* getMatrix() const { return matrix; }
+
+
+        virtual int getGlobalDimension() const { return matrix->rowSize(); }
+        virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
+        virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const
+        {
+            //    cerr<<"SingleMatrixAccessor::getMatrix" << endl;
+            return matRef;
+        }
+
+
+        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const
+        {
+            assert(false);
+            InteractionMatrixRef ref;
+            return ref;
+        }
+
+    protected:
+        ThisMatrix* matrix;   ///< The single matrix
+        MatrixRef matRef; ///< The accessor to the single matrix
+
+    };
+
+    /// Get a view of this matrix as a MultiMatrix
+    MatrixAccessor getAccessor() { return MatrixAccessor(this); }
 
 
 };

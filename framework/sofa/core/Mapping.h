@@ -169,7 +169,7 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyDJT (Force)///
-    /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement.
+    /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement. Also called geometric stiffness.
     /// The default implementation does nothing, assuming a linear mapping.
     ///
     /// This method computes
@@ -177,8 +177,9 @@ public:
     /// where J is the tangent operator (the linear approximation) of the mapping
     /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
     /// The displacement is accessed in the parent state using mparams->readDx() .
-    /// This method corresponds to a non-symmetric matrix. Thus, it is called only if the symmetry flag is not set in the MechanicalParam
-    virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
+    /// This method generally corresponds to a symmetric stiffness matrix, but with rotations (which are not a commutative group) it is not the case.
+    /// Since some solvers (including the Conjugate Gradient) require symmetric matrices, a flag is set in the MechanicalParams to say if symmetric matrices are required. If so, non-symmetric geometric stiffness should not be applied.
+    virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
     /// ApplyJT (Constraint)///
     virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst );
