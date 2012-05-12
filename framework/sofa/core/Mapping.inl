@@ -252,6 +252,14 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams /* PARAMS FIRST  =
     }
 }// Mapping::applyJT (Constraint)
 
+
+template <class In, class Out>
+void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
+{
+    sout<<"Mapping<In,Out>::applyDJT"<<sendl;
+}
+
+
 template <class In, class Out>
 void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {

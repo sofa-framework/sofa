@@ -190,7 +190,7 @@ void ExtensionMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)f/l
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -201,13 +201,14 @@ void ExtensionMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams
                     b[j][k] =    - directions[i][j]*directions[i][k];
             }
         }
-        b *= childForce[i][0] * invlengths[i] * kfactor;  // *f/l*kfactor     do not forget kfactor !
+        b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
+        // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
 
         InDeriv dx = parentDisplacement[links[i][1]] - parentDisplacement[links[i][0]];
         InDeriv df = b*dx;
-        parentForce[links[i][0]] += df;
-        parentForce[links[i][1]] -= df;
-        cerr<<"ExtensionMapping<TIn, TOut>::applyDJT, df = " << df << endl;
+        parentForce[links[i][0]] -= df;
+        parentForce[links[i][1]] += df;
+//        cerr<<"ExtensionMapping<TIn, TOut>::applyDJT, df = " << df << endl;
     }
 }
 
