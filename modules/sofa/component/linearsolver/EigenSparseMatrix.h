@@ -96,12 +96,12 @@ public:
 
     }
 
-//    bool canCast( const OutVecDeriv& v ) const
-//    {
-//        if(  (v.size()-1)*sizeof(OutDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
-//            return true;
-//        else return false;
-//    }
+    //    bool canCast( const OutVecDeriv& v ) const
+    //    {
+    //        if(  (v.size()-1)*sizeof(OutDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
+    //            return true;
+    //        else return false;
+    //    }
 
     /** Insert a new row of blocks in the matrix. The rows must be inserted in increasing order. bRow is the row number. brow and bcolumns are block indices.
       Insert one row of scalars after another
@@ -434,14 +434,6 @@ public:
     /// compute result = A * data
     void mult( OutVecDeriv& result, const InVecDeriv& data ) const
     {
-//        // use optimized product if possible
-//        if(canCast(data)){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-//            r = eigenMatrix * d;
-//        }
-//        else {
-
         // convert the data to Eigen type
         VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
         for(unsigned i=0; i<data.size(); i++)
@@ -457,7 +449,6 @@ public:
             for(unsigned j=0; j<Nout; j++)
                 result[i][j] = aux2[Nout* i+j];
         }
-//        }
     }
 
     /// compute result = A * data
@@ -466,17 +457,17 @@ public:
         helper::WriteAccessor<Data<OutVecDeriv> > result (_result);
         helper::ReadAccessor<Data<InVecDeriv> > data (_data);
 
-//        // use optimized product if possible
-//        if(canCast(data.ref())){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-//            r = eigenMatrix * d;
-//            //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
-//            //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
-//            //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
-//            //            cerr<<"EigenSparseMatrix::mult using maps, map<out> = "<< r.transpose() << endl;
-//            return;
-//        }
+        //        // use optimized product if possible
+        //        if(canCast(data.ref())){
+        //            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
+        //            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
+        //            r = eigenMatrix * d;
+        //            //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
+        //            //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
+        //            //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
+        //            //            cerr<<"EigenSparseMatrix::mult using maps, map<out> = "<< r.transpose() << endl;
+        //            return;
+        //        }
 
         // convert the data to Eigen type
         VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
@@ -498,14 +489,6 @@ public:
     /// compute result += A * data
     void addMult( OutVecDeriv& result, const InVecDeriv& data ) const
     {
-//        // use optimized product if possible
-//        if(canCast(data)){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-//            r += eigenMatrix * d;
-//            return;
-//        }
-
         // convert the data to Eigen type
         VectorEigen aux1(this->colSize()),aux2(this->rowSize());
         for(unsigned i=0; i<data.size(); i++)
@@ -523,16 +506,17 @@ public:
         }
     }
 
+
     /// compute result += A * data
     void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const
     {
-//        // use optimized product if possible
-//        if(canCast(result)){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
-//            r += eigenMatrix.transpose() * d;
-//            return;
-//        }
+        //        // use optimized product if possible
+        //        if(canCast(result)){
+        //            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
+        //            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
+        //            r += eigenMatrix.transpose() * d;
+        //            return;
+        //        }
 
         // convert the data to Eigen type
         VectorEigen aux1(this->rowSize()),aux2(this->colSize());
@@ -557,13 +541,13 @@ public:
         helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
 
 
-//        // use optimized product if possible
-//        if(canCast(res.wref())){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nout);
-//            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nin);
-//            r += eigenMatrix.transpose() * d;
-//            return;
-//        }
+        //        // use optimized product if possible
+        //        if(canCast(res.wref())){
+        //            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nout);
+        //            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nin);
+        //            r += eigenMatrix.transpose() * d;
+        //            return;
+        //        }
 
 
         // convert the data to Eigen type
@@ -584,7 +568,7 @@ public:
     }
 
 
-//    static const char* Name();
+    //    static const char* Name();
 
 
 };

@@ -60,16 +60,13 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     int i,
     const Spring& spring)
 {
-    // F =   k_s.(l-l_0 ).u + k_d((v_b - v_a).u).u = f.u   where f is the intensity and u the direction
-    // the force change dF comes from length change dl and unit vector change du:
-    // dF = k_s.dl.u + f.du
-    // du = 1/l.(I-u^Tu).dx
     int a = spring.m1;
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
     if( d>1.0e-4 )
     {
+        // F =   k_s.(l-l_0 ).U + k_d((V_b - V_a).U).U = f.U   where f is the intensity and U the direction
         Real inverseLength = 1.0f/d;
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
@@ -88,6 +85,13 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
             this->mstate1->forceMask.insertEntry(a);
             this->mstate2->forceMask.insertEntry(b);
         }
+
+        // Compute stiffness dF/dX
+        // The force change dF comes from length change dl and unit vector change dU:
+        // dF = k_s.dl.U + f.dU
+        // dU = 1/l.(I-U.U^T).dX   where dX = dX_1 - dX_0  and I is the identity matrix
+        // dl = U^T.dX
+        // dF = k_s.U.U^T.dX + f/l.(I-U.U^T).dX = ((k_s-f/l).U.U^T + f/l.I).dX
         Mat& m = this->dfdx[i];
         Real tgt = forceIntensity * inverseLength;
         for( int j=0; j<N; ++j )

@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
+
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.05" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
-    <EulerImplicitSolver verbose="0" />
-    <CGSolver verbose="0" />
+    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" />
     <GridMeshCreator name="loader" filename="nofile" resolution="30 30" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 1.005 0.005  " />
-    <UniformMass />
-    <MeshSpringForceField name="Springs" linesStiffness="400" linesDamping="0" />
+    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
+    <UniformMass  name="mass" />
+<!--    <MeshSpringForceField name="Springs" linesStiffness="1.e+3" linesDamping="0" />-->
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <ExtensionMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-3" dampingRatio="0.1"  isCompliance="0" />
+    </Node>
 </Node>
 </Node>

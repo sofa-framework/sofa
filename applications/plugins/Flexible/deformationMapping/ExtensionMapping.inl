@@ -94,13 +94,16 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
     helper::WriteAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
-//    jacobian.clear();
+    //    jacobian.clear();
     jacobian.resizeBlocks(out.size(),in.size());
+    directions.resize(out.size());
+    invlengths.resize(out.size());
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        Block block;
-        typename Block::Line& gap = block[0];
+//        Block block;
+//        typename Block::Line& gap = block[0];
+        InDeriv& gap = directions[i];
 
         gap = in[links[i][1]] - in[links[i][0]];
         Real gapNorm = gap.norm();
@@ -109,10 +112,12 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
         // normalize
         if( gapNorm>1.e-10 )
         {
-            gap *= 1/gapNorm;
+            invlengths[i] = 1/gapNorm;
+            gap *= invlengths[i];
         }
         else
         {
+            invlengths[i] = 0;
             gap = InDeriv();
             gap[0]=1.0;  // arbitrary unit vector
         }
@@ -154,6 +159,12 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
 
 }
 
+//template <class TIn, class TOut>
+//void ExtensionMapping<TIn, TOut>::computeGeometricStiffness(const core::MechanicalParams *mparams)
+//{
+
+//}
+
 template <class TIn, class TOut>
 void ExtensionMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
@@ -169,9 +180,41 @@ void ExtensionMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpara
 }
 
 template <class TIn, class TOut>
+void ExtensionMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+{
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
+    Real kfactor = mparams->kFactor();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
+    SeqEdges links = edgeContainer->getEdges();
+
+    for(unsigned i=0; i<links.size(); i++ )
+    {
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)f/l
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                if( j==k )
+                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                else
+                    b[j][k] =    - directions[i][j]*directions[i][k];
+            }
+        }
+        b *= childForce[i][0] * invlengths[i] * kfactor;  // *f/l*kfactor     do not forget kfactor !
+
+        InDeriv dx = parentDisplacement[links[i][1]] - parentDisplacement[links[i][0]];
+        InDeriv df = b*dx;
+        parentForce[links[i][0]] += df;
+        parentForce[links[i][1]] -= df;
+        cerr<<"ExtensionMapping<TIn, TOut>::applyDJT, df = " << df << endl;
+    }
+}
+
+template <class TIn, class TOut>
 void ExtensionMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"ExtensionMapping<TIn, TOut>::applyJT does nothing " << endl;
+    //    cerr<<"ExtensionMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 

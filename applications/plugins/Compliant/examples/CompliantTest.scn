@@ -10,7 +10,7 @@
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="0 1  " />
         <ExtensionMapping />
-        <UniformCompliance template="Vec1d" compliance="[[0.0]]" dampingRatio="0.1"  />
+        <UniformCompliance template="Vec1d" compliance="0." dampingRatio="0.1"  isCompliance="1"/>
     </Node>
 </Node>
 </Node>

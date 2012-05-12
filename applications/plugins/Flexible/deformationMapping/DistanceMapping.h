@@ -129,10 +129,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
+//extern template class SOFA_RIGID_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
+//extern template class SOFA_RIGID_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #endif

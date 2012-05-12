@@ -110,6 +110,23 @@ void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, Data
 
 }
 
+template<class DataTypes>
+void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
+{
+    if( isCompliance.getValue())
+        return;
+
+    helper::ReadAccessor< DataVecDeriv >  dx(_dx);
+    helper::WriteAccessor< DataVecDeriv > df(_df);
+    Real kfactor = mparams->kFactor();
+
+    Real stiffness = -kfactor/compliance.getValue();
+
+    for(unsigned i=0; i<df.size(); i++)
+        df[i] += dx[i] * stiffness;
+
+}
+
 
 }
 }

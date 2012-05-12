@@ -36,14 +36,14 @@ order=-1
 
 [item:sofadocumentation.tex]
 archive=true
-column=25
+column=0
 encoding=ISO-8859-1
 highlight=LaTeX
-line=33
+line=61
 mode=LaTeX
 open=true
 order=0
 
 [view-settings,view=0,item:sofadocumentation.tex]
-CursorColumn=25
-CursorLine=33
+CursorColumn=0
+CursorLine=61
