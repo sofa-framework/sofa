@@ -1,16 +1,19 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.001" >
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.1" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
-    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
+<!--    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>-->
+    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9"/>
     <MechanicalObject template="Vec3d" position="0 0 0   1 0 0 " name="particleDOFs" />
     <FixedConstraint template="Vec3d" indices="0" />
     <UniformMass />
+<!--    <RegularGrid nx="2" ny="1" nz="1" xmin="0" xmax="1" ymin="0" ymax="0" zmin="0" zmax="0" />
+    <RegularGridSpringForceField name="Springs" stiffness="1000" damping="0" />-->
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="0 1  " />
         <ExtensionMapping />
-        <UniformCompliance template="Vec1d" compliance="0." dampingRatio="0.1"  isCompliance="1"/>
+        <UniformCompliance template="Vec1d" compliance="1.e-3" dampingRatio="0"  isCompliance="0"/>
     </Node>
 </Node>
 </Node>

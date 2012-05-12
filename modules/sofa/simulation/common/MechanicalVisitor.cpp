@@ -1226,6 +1226,7 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
     {
         ForceMaskActivate(map->getMechFrom() );
         ForceMaskActivate(map->getMechTo() );
+//        cerr<<"MechanicalComputeDfVisitor::bwdMechanicalMapping"<<endl;
         map->applyJT(mparams /* PARAMS FIRST */, res, res);  // apply material stiffness: variation of force below the mapping
         map->applyDJT(mparams /* PARAMS FIRST */, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
         ForceMaskDeactivate( map->getMechTo() );
@@ -1271,8 +1272,7 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 
         //map->accumulateDf();
         map->applyJT(mparams /* PARAMS FIRST */, res, res);
-        //        if( !this->mparams->symmetricMatrix() )
-        //            map->applyDJT(mparams /* PARAMS FIRST */, res, res);
+        map->applyDJT(mparams /* PARAMS FIRST */, res, res);
         ForceMaskDeactivate( map->getMechTo() );
     }
 }

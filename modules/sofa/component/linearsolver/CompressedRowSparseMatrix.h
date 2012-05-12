@@ -51,8 +51,8 @@ public:
     typedef TBloc Bloc;
     typedef matrix_bloc_traits<Bloc> traits;
     typedef typename traits::Real Real;
-    enum { NL = traits::NL };
-    enum { NC = traits::NC };
+    enum { NL = traits::NL };  ///< Number of rows of a block
+    enum { NC = traits::NC };  ///< Number of columns of a block
     typedef int Index;
 
     typedef Matrix Expr;
@@ -145,14 +145,19 @@ public:
     }
 
 public :
-    Index nRow,nCol;
-    Index nBlocRow,nBlocCol;
-    bool compressed;
-    VecIndex rowIndex;
-    VecIndex rowBegin;
-    VecIndex colsIndex;
-    VecBloc  colsValue;
-    VecIndexedBloc btemp;
+    // size
+    Index nRow,nCol;         ///< Mathematical size of the matrix, in scalars
+    Index nBlocRow,nBlocCol; ///< Mathematical size of the matrix, in blocks.
+
+    // compressed sparse data structure
+    VecIndex rowIndex;   ///< indices of non-empty block rows
+    VecIndex rowBegin;   ///< column indices of non-empty blocks in each row. The column indices of the non-empty block within the i-th non-empty row are all the colsIndex[j],  j  in [rowBegin[i],rowBegin[i+1])
+    VecIndex colsIndex;  ///< column indices of all the non-empty blocks, sorted by increasing row index and column index
+    VecBloc  colsValue;  ///< values of the non-empty blocks, in the same order as in colsIndex
+
+    // additional storage to make block insertion more efficient
+    VecIndexedBloc btemp; ///< unsorted blocks and their indices
+    bool compressed;      ///< true if the additional storage is empty or has been transfered to the compressed data structure
 
     // Temporary vectors used during compression
     VecIndex oldRowIndex;
@@ -355,9 +360,9 @@ public:
             }
         }
         rowBegin.push_back(outValId);
-//#ifdef SPARSEMATRIX_VERBOSE
+        //#ifdef SPARSEMATRIX_VERBOSE
         //          std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): compressed " << oldColsIndex.size()<<" old blocs and " << btemp.size() << " temp blocs into " << rowIndex.size() << " lines and " << colsIndex.size() << " blocs."<<std::endl;
-//#endif
+        //#endif
         btemp.clear();
         compressed = true;
     }
@@ -1243,22 +1248,29 @@ public:
     {
         ((Matrix*)this)->compress();
         res.resize(rowSize());
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)
+        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
         {
-            Index iN = rowIndex[xi] * NL;
+            defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+            // multiply the non-null blocks with the corresponding chunks of the large vector
             Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            defaulttype::Vec<NL,Real2> r;
             for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                Index jN = colsIndex[xj] * NC;
-                const Bloc& b = colsValue[xj];
+                // transfer a chunk of large vector to a local block-sized vector
                 defaulttype::Vec<NC,Real2> v;
+                Index jN = colsIndex[xj] * NC;    // scalar column index
                 for (int bj = 0; bj < NC; ++bj)
                     v[bj] = vget(vec,jN + bj);
+
+                // multiply the block with the local vector
+                const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
                 for (int bi = 0; bi < NL; ++bi)
                     for (int bj = 0; bj < NC; ++bj)
                         r[bi] += traits::v(b, bi, bj) * v[bj];
             }
+
+            // transfer the local result  to the large result vector
+            Index iN = rowIndex[xi] * NL;                      // scalar row index
             for (int bi = 0; bi < NL; ++bi)
                 vset(res, iN + bi, r[bi]);
         }
@@ -1288,6 +1300,43 @@ public:
                         r[bj] += traits::v(b, bi, bj) * v[bi];
                 for (int bj = 0; bj < NC; ++bj)
                     vadd(res, jN + bj, r[bj]);
+            }
+        }
+    }
+
+    /** Compute res = this * m
+      The block sizes must be compatible, i.e. res::NR==this::NR and res::NC==m::NC.
+      The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
+      */
+    template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
+    void mul(CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m) const
+    {
+        compress();
+        m.compress();
+        res.resize(this->nRow,m.nCol);  // clear and resize the result
+
+        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-null block row
+        {
+            unsigned mr=0; // block row index in m
+
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+            {
+                Index row = rowIndex[xi];      // block row
+                Index col = colsIndex[xj];     // block column
+                const Bloc& b = colsValue[xj]; // block value
+
+                // find the non-null row in m, if any
+                while(m.rowIndex[mr]<col) mr++;
+                if(m.rowIndex[mr]>col) continue;  // no matching row, ignore this block
+
+                // Accumulate  res[row] += b * m[col]
+                Range mrowRange(m.rowBegin[mr], m.rowBegin[mr+1]);
+                for (Index mj = mrowRange.begin();  mj< rowRange.end(); ++mj) // for each non-null block in  m[col]
+                {
+                    Index mcol = m.colsIndex[mj];     // column index of the non-null block
+                    *res.wbloc(row,mcol,true) += b * m.colsValue[mj];  // find the matching bloc in res, and accumulate the block product
+                }
             }
         }
     }
