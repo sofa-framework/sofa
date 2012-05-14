@@ -99,7 +99,7 @@
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" />
+	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" assembleK="false" />
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
             </Node>
         </Node>

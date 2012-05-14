@@ -26,6 +26,8 @@
 #define FLEXIBLE_BaseJacobian_H
 
 #include <sofa/defaulttype/Mat.h>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 
 namespace sofa
 {
@@ -54,6 +56,7 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
 
     typedef Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
+    typedef Mat<In::deriv_total_size,In::deriv_total_size,Real> KBlock;
     static const bool constantJ=false; ///< tells if the jacobian is constant (to avoid recomputations)
 
     // Called in Apply
@@ -64,6 +67,11 @@ public:
     virtual void addMultTranspose( InDeriv& result, const OutDeriv& data )=0;
     // Called in getJ
     virtual MatBlock getJ()=0;
+
+    // Geometric Stiffness = dJ^T.fc
+    virtual KBlock getK(const OutDeriv& childForce)=0;
+    // compute $ df += K dx $
+    virtual void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )=0;
 };
 
 

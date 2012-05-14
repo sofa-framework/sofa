@@ -84,7 +84,7 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
-//    enum { spatial_dimensions = Out::spatial_dimensions };
+    //    enum { spatial_dimensions = Out::spatial_dimensions };
     //@}
 
     /** @name  Jacobian types    */
@@ -94,6 +94,9 @@ public:
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
+
+    typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
+    typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
     /** @name Mapping functions */
@@ -183,7 +186,32 @@ public:
 
     }
 
-    //    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    {
+        if(BlockType::constantJ) return;
+
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
+        const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
+
+        helper::WriteAccessor<Data<InVecDeriv> > parentForce (parentForceData);
+        helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
+        helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
+
+        if(this->assembleK.getValue())
+        {
+            updateK(childForce.ref());
+            K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+        }
+        else
+        {
+            for(unsigned int i=0; i<jacobian.size(); i++)
+            {
+                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+            }
+        }
+    }
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
     {
@@ -208,7 +236,8 @@ protected:
         : Inherit ( from, to )
         , maskFrom(NULL)
         , maskTo(NULL)
-        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Construct the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
+        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
+        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
     {
 
     }
@@ -243,7 +272,22 @@ protected:
         eigenJacobian.endEdit();
     }
 
-
+    Data<bool> assembleK;
+    SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
+    void updateK(const OutVecDeriv& childForce)
+    {
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        K.resizeBlocks(in.size(),in.size());
+        for(unsigned int i=0; i<jacobian.size(); i++)
+        {
+            vector<KBlock> blocks;
+            vector<unsigned> columns;
+            columns.push_back( i );
+            blocks.push_back( jacobian[i].getK(childForce[i]) );
+            K.appendBlockRow( i, columns, blocks );
+        }
+        K.endEdit();
+    }
 };
 
 
