@@ -22,15 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_ExtensionMapping_H
-#define SOFA_COMPONENT_MAPPING_ExtensionMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
+#define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include "../initFlexible.h"
+#include "../types/DeformationGradientTypes.h"
 
 
 namespace sofa
@@ -45,22 +46,22 @@ namespace mapping
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class ExtensionMappingInternalData
+class TriangleDeformationMappingInternalData
 {
 public:
 };
 
 
-/** Maps point positions to line extensions.
+/** Maps triangle vertex positions to deformation gradients.
   Type TOut corresponds to a scalar value.
 
 @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  ExtensionMapping : public core::Mapping<TIn, TOut>
+class SOFA_Flexible_API  TriangleDeformationMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ExtensionMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(TriangleDeformationMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -71,6 +72,7 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
+    typedef typename Out::Frame Frame;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Coord InCoord;
@@ -78,11 +80,12 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+    typedef defaulttype::Mat<In::deriv_total_size, In::deriv_total_size,Real>  InBlock;
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
+    typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
 
-    Data< vector< Real > > f_restLengths;  ///< rest length of each link
+    Data< vector< InBlock > > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
 
     virtual void init();
 
@@ -96,7 +99,7 @@ public:
 
 //    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+//    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
@@ -104,24 +107,24 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    ExtensionMapping();
-    virtual ~ExtensionMapping();
+    TriangleDeformationMapping();
+    virtual ~TriangleDeformationMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::TriangleSetTopologyContainer* triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    SparseMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
-    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+//    SparseMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
+//    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
+//    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ExtensionMapping_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API ExtensionMapping< Vec3dTypes, Vec1dTypes >;
+extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API ExtensionMapping< Vec3fTypes, Vec1fTypes >;
+extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
 #endif
 
 #endif
