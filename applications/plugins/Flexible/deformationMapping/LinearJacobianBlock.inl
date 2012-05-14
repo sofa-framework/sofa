@@ -102,6 +102,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -147,10 +148,14 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +176,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -216,10 +222,14 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -241,6 +251,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -297,11 +308,15 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+dim+i*mdim][i]=Ft[j];
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+dim+i*mdim,i)=Ft[j];
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -323,6 +338,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -394,24 +410,24 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
         unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+offset+i*mdim][i]=Ft[j];
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+offset+i*mdim,i)=Ft[j];
         offset+=mdim*dim;
         for (unsigned int k = 0; k < dim; ++k)
         {
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+dim+i*mdim][i]=Ft[j];
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; i++) J[j+offset+i*mdim][i]=dFt[k][j];
+            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+dim+i*mdim,i)=Ft[j];
+            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; i++) J(j+offset+i*mdim,i)=dFt[k][j];
             offset+=mdim*dim;
         }
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
-
-
-
-
 
 
 
@@ -435,6 +451,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -482,11 +499,15 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; ++i) J[i][i]=Pt;
-        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J[j][i+(j+1)*dim]=Pa[i];
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J(j,i+(j+1)*dim)=Pa[i];
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -509,6 +530,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -556,11 +578,15 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; ++i) J[i][i]=Pt;
-        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J[j][i+(j+1)*dim]=Pa[i];
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J(j,i+(j+1)*dim)=Pa[i];
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -582,6 +608,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -647,14 +674,19 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; ++i) J[i][i]=Pt;
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
         unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J[j][i+offset+j*dim]=PFa.getCenter()[i];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+offset+l*dim]=PFa.getF()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J(j,i+offset+j*dim)=PFa.getCenter()[i];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+offset+l*dim)=PFa.getF()[i][j];
         return J;
     }
+
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -676,6 +708,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
@@ -756,20 +789,24 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock J;
-        for(unsigned int i=0; i<dim; ++i) J[i][i]=Pt;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J[j][i+dim+j*dim]=PFdFa.getCenter()[i];
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J(j,i+dim+j*dim)=PFdFa.getCenter()[i];
         unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getF()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+dim+l*dim)=PFdFa.getF()[i][j];
         for(unsigned int k=0; k<dim; ++k)
         {
             offset+=dim*mdim;
-            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J[j+offset+i*mdim][i]=dFt[k][j];
-            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J[j+offset+l*mdim][i+dim+l*dim]=PFdFa.getGradientF(k)[i][j];
+            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
+            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+dim+l*dim)=PFdFa.getGradientF(k)[i][j];
         }
         return J;
     }
+
+    // no geometric striffness (contstant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 } // namespace defaulttype

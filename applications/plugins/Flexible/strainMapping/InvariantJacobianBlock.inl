@@ -55,7 +55,7 @@ namespace defaulttype
 
 /// return dest = det(from).from^-T and det(from)
 template<class real>
-inline real getDerivDeterminant(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+inline real getDeterminantGradient(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=determinant(from);
 
@@ -72,6 +72,22 @@ inline real getDerivDeterminant(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
     return det;
 }
 
+/// return dest = d( det(from).from^-T )/d from
+template<class real>
+static Eigen::Matrix<real,9,9,Eigen::RowMajor> getDeterminantHessian(const Mat<3,3,real>& from)
+{
+    typedef Eigen::Matrix<real,9,9,Eigen::RowMajor> block;
+    block ret=block::Zero();
+
+    ret(0,4)=ret(4,0)=from(2,2);    ret(0,5)=ret(5,0)=-from(2,1);    ret(0,7)=ret(7,0)=-from(1,2);    ret(0,8)=ret(8,0)=from(1,1);
+    ret(1,3)=ret(3,1)=-from(2,2);   ret(1,5)=ret(5,1)=from(2,0);    ret(1,6)=ret(6,1)=from(1,2);    ret(1,8)=ret(8,1)=-from(1,0);
+    ret(2,3)=ret(3,2)=from(2,1);    ret(2,4)=ret(4,2)=-from(2,0);    ret(2,6)=ret(6,2)=-from(1,1);    ret(2,7)=ret(7,2)=from(1,0);
+    ret(3,2)=ret(2,3)=from(2,1);    ret(3,7)=ret(7,3)=from(0,2);    ret(3,8)=ret(8,3)=-from(0,1);
+    ret(4,6)=ret(6,4)=-from(0,2);   ret(4,8)=ret(8,4)=from(0,0);
+    ret(5,6)=ret(6,5)=from(0,1);    ret(5,7)=ret(7,5)=-from(0,0);
+    ret(5,8)=ret(5,6)=from(0,1);
+    return ret;
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> I331
@@ -91,6 +107,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
@@ -121,14 +138,15 @@ public:
     Real Jm13; Real Jm23; Real Jm43; Real Jm53; ///< stored variables to handle deviatoric invariants
 
     /// mapping parameters
+    Frame F;
     Frame dsrI1;
     Frame dsrI2;
     Frame dJ;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        Frame F=data.getF();
-        Real detF=getDerivDeterminant(dJ, F);
+        F=data.getF();
+        Real detF=getDeterminantGradient(dJ, F);
 
         if ( detF<=MIN_DETERMINANT) detF = MIN_DETERMINANT;   // CLAMP J
 
@@ -150,7 +168,6 @@ public:
             srI1*=Jm13; srI2*=Jm23;
             Jm43=srI1/(detF*(Real)3.); Jm53=(Real)2.*srI2/(detF*(Real)3.);
         }
-
 
         result.getStrain()[0]+= srI1;
         result.getStrain()[1]+= srI2;
@@ -191,19 +208,35 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock B;
+        MatBlock B = MatBlock();
         if(deviatoric)
         {
-            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
-            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
+            for(unsigned int j=0; j<frame_size; j++)      B(0,j+spatial_dimensions) +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
+            for(unsigned int j=0; j<frame_size; j++)      B(1,j+spatial_dimensions) +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
         }
         else
         {
-            for(unsigned int j=0; j<frame_size; j++)      B[0][j+spatial_dimensions] +=  *(&dsrI1[0][0]+j);
-            for(unsigned int j=0; j<frame_size; j++)      B[1][j+spatial_dimensions] +=  *(&dsrI2[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B(0,j+spatial_dimensions) +=  *(&dsrI1[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B(1,j+spatial_dimensions) +=  *(&dsrI2[0][0]+j);
         }
-        for(unsigned int j=0; j<frame_size; j++)      B[2][j+spatial_dimensions] +=  *(&dJ[0][0]+j);
+        for(unsigned int j=0; j<frame_size; j++)      B(2,j+spatial_dimensions) +=  *(&dJ[0][0]+j);
         return B;
+    }
+
+    KBlock getK(const OutDeriv& childForce)
+    {
+        KBlock K = KBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eK(&K[0][0]);
+
+        Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> ddJ = getDeterminantHessian(F);
+
+        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += ddJ * childForce[2];
+
+        return K;
+    }
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    {
     }
 };
 

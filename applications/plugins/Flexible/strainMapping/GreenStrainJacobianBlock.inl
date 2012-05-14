@@ -49,40 +49,41 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
-
 template<typename Real>
-static Mat<6,9,Real> assembleJ(const  Mat<3,3,Real>& f) // 3D
+static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const  Mat<3,3,Real>& f) // 3D
 {
     static const unsigned int spatial_dimensions = 3;
     static const unsigned int material_dimensions = 3;
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    Mat<strain_size,spatial_dimensions*material_dimensions,Real> J;
+    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
+    JBlock J=JBlock::Zero();
     for( unsigned int k=0; k<spatial_dimensions; k++ )
         for(unsigned int j=0; j<material_dimensions; j++)
-            J[j][j+material_dimensions*k]=f[k][j];
+            J(j,j+material_dimensions*k)=f[k][j];
     for( unsigned int k=0; k<spatial_dimensions; k++ )
     {
-        J[3][material_dimensions*k+1]=J[5][material_dimensions*k+2]=f[k][0];
-        J[3][material_dimensions*k]=J[4][material_dimensions*k+2]=f[k][1];
-        J[5][material_dimensions*k]=J[4][material_dimensions*k+1]=f[k][2];
+        J(3,material_dimensions*k+1)=J(5,material_dimensions*k+2)=f[k][0];
+        J(3,material_dimensions*k)=J(4,material_dimensions*k+2)=f[k][1];
+        J(5,material_dimensions*k)=J(4,material_dimensions*k+1)=f[k][2];
     }
     return J;
 }
 
 template<typename Real>
-static Mat<3,4,Real> assembleJ(const  Mat<2,2,Real>& f) // 2D
+static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const  Mat<2,2,Real>& f) // 2D
 {
     static const unsigned int spatial_dimensions = 2;
     static const unsigned int material_dimensions = 2;
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    Mat<strain_size,spatial_dimensions*material_dimensions,Real> J;
+    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
+    JBlock J=JBlock::Zero();
     for( unsigned int k=0; k<spatial_dimensions; k++ )
         for(unsigned int j=0; j<material_dimensions; j++)
-            J[j][j+material_dimensions*k]=f[k][j];
+            J(j,j+material_dimensions*k)=f[k][j];
     for( unsigned int k=0; k<spatial_dimensions; k++ )
     {
-        J[material_dimensions][material_dimensions*k+1]=f[k][0];
-        J[material_dimensions][material_dimensions*k]=f[k][1];
+        J(material_dimensions,material_dimensions*k+1)=f[k][0];
+        J(material_dimensions,material_dimensions*k)=f[k][1];
     }
     return J;
 }
@@ -105,6 +106,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
@@ -145,10 +147,30 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock B;
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getF());
-        for(unsigned int j=0; j<strain_size; j++) memcpy(&B[j][spatial_dimensions],&J[j][0],frame_size*sizeof(Real)); // offset to account for spatialCoord of F
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
+        // order 0
+        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(F.getF());
         return B;
+    }
+
+    KBlock getK(const OutDeriv& childForce)
+    {
+        KBlock K = KBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eK(&K[0][0]);
+        // order 0
+        StrainMat sigma=VoigtToMat( childForce.getStrain() );
+        typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
+        KBlock s(&sigma[0][0]);
+        for(unsigned int j=0; j<spatial_dimensions; j++)
+            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) = s;
+        return K;
+    }
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        df.getF() += dx.getF()*VoigtToMat( childForce.getStrain() )*kfactor;
     }
 };
 
@@ -171,6 +193,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
@@ -231,19 +254,18 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
-        StrainMat strainmat=F.getF().multTranspose( data.getF() );
-        result.getStrain() += MatToVoigt( strainmat );
+        result.getStrain() += MatToVoigt( F.getF().multTranspose( data.getF() ) );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat = F.getF().multTranspose( data.getGradientF(k) ) + F.getGradientF(k).multTranspose( data.getF() );
+            StrainMat strainmat = F.getF().multTranspose( data.getGradientF(k) ) + F.getGradientF(k).multTranspose( data.getF() );
             result.getStrainGradient(k) += MatToVoigt( strainmat );
         }
         // order 2
         for(unsigned int k=0; k<spatial_dimensions; k++)
             for(unsigned int j=0; j<spatial_dimensions; j++)
             {
-                strainmat = F.getGradientF(k).multTranspose( data.getGradientF(j) );
+                StrainMat strainmat = F.getGradientF(k).multTranspose( data.getGradientF(j) );
                 result.getStrainHessian(j,k) += MatToVoigt( strainmat );
             }
     }
@@ -251,12 +273,11 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         // order 0
-        StrainMat strainmat=VoigtToMat( data.getStrain() );
         result.getF() += F.getF()*VoigtToMat( data.getStrain() );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat=VoigtToMat( data.getStrainGradient(k) );
+            StrainMat strainmat=VoigtToMat( data.getStrainGradient(k) );
             result.getF() += F.getGradientF(k)*strainmat;
             result.getGradientF(k) += F.getF()*strainmat;
         }
@@ -264,7 +285,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
             for(unsigned int j=k; j<spatial_dimensions; j++)
             {
-                strainmat=VoigtToMat( data.getStrainHessian(k,j) );
+                StrainMat strainmat=VoigtToMat( data.getStrainHessian(k,j) );
                 result.getGradientF(k) += F.getGradientF(j)*strainmat;
                 if(j!=k) result.getGradientF(j) += F.getGradientF(k)*strainmat;
             }
@@ -272,31 +293,90 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock B;
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
         // order 0
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getF());
-        for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i][spatial_dimensions],&J[i][0],frame_size*sizeof(Real));
+        typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
+        JBlock J = assembleJ(F.getF());
+        eB.template block(0,spatial_dimensions,strain_size,frame_size) = J;
         // order 1
-        Vec<spatial_dimensions, Mat<strain_size,frame_size,Real> > Jgrad;
+        Vec<spatial_dimensions,JBlock> Jgrad;
         for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
-
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions],&Jgrad[k][i][0],frame_size*sizeof(Real));
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(k+1)*frame_size],&J[i][0],frame_size*sizeof(Real));
+            eB.template block(offsetE,spatial_dimensions,strain_size,frame_size) = Jgrad[k];
+            eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = J;
             offsetE+=strain_size;
         }
         // order 2
         for(unsigned int k=0; k<spatial_dimensions; k++)
             for(unsigned int j=0; j<spatial_dimensions; j++)
             {
-                for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(j+1)*frame_size],&Jgrad[k][i][0],frame_size*sizeof(Real));
-                if(j!=k) for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(k+1)*frame_size],&Jgrad[j][i][0],frame_size*sizeof(Real));
+                eB.template block(offsetE,spatial_dimensions+(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
+                if(j!=k) eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];
                 offsetE+=strain_size;
             }
         return B;
     }
+
+    KBlock getK(const OutDeriv& childForce)
+    {
+        KBlock K = KBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eK(&K[0][0]);
+        // order 0
+        StrainMat sigma=VoigtToMat( childForce.getStrain() );
+        typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
+        KBlock s(&sigma[0][0]);
+        for(unsigned int j=0; j<spatial_dimensions*spatial_dimensions; j++)
+            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            sigma=VoigtToMat( childForce.getStrainGradient(k) );
+            for(unsigned int i=0; i<spatial_dimensions; i++)
+                for(unsigned int j=0; j<spatial_dimensions; j++)
+                {
+                    eK.template block(spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                }
+        }
+        // order 2
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+            for(unsigned int l=k; l<spatial_dimensions; l++)
+            {
+                sigma=VoigtToMat( childForce.getStrainHessian(k,l) );
+                for(unsigned int j=0; j<spatial_dimensions; j++)
+                {
+                    eK.template block(spatial_dimensions+j*material_dimensions+k*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions+l*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                    if(k!=l) eK.template block(spatial_dimensions+j*material_dimensions+l*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions+k*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                }
+            }
+        return K;
+    }
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        // order 0
+        df.getF() += dx.getF()*VoigtToMat( childForce.getStrain() )*kfactor;
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            StrainMat strainmat=VoigtToMat( childForce.getStrainGradient(k) )*kfactor;
+            df.getF() += dx.getGradientF(k)*strainmat;
+            df.getGradientF(k) += dx.getF()*strainmat;
+        }
+        // order 2
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+            for(unsigned int j=k; j<spatial_dimensions; j++)
+            {
+                StrainMat strainmat=VoigtToMat( childForce.getStrainHessian(k,j) )*kfactor;
+                df.getGradientF(k) += dx.getGradientF(j)*strainmat;
+                if(j!=k) df.getGradientF(j) += dx.getGradientF(k)*strainmat;
+            }
+    }
+
 };
 
 
@@ -318,6 +398,7 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
@@ -361,12 +442,11 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
-        StrainMat strainmat=F.getF().multTranspose( data.getF() );
-        result.getStrain() += MatToVoigt( strainmat );
+        result.getStrain() += MatToVoigt( F.getF().multTranspose( data.getF() ) );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat = F.getF().multTranspose( data.getGradientF(k) ) + F.getGradientF(k).multTranspose( data.getF() );
+            StrainMat strainmat = F.getF().multTranspose( data.getGradientF(k) ) + F.getGradientF(k).multTranspose( data.getF() );
             result.getStrainGradient(k) += MatToVoigt( strainmat );
         }
     }
@@ -374,12 +454,11 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         // order 0
-        StrainMat strainmat=VoigtToMat( data.getStrain() );
         result.getF() += F.getF()*VoigtToMat( data.getStrain() );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            strainmat=VoigtToMat( data.getStrainGradient(k) );
+            StrainMat strainmat=VoigtToMat( data.getStrainGradient(k) );
             result.getF() += F.getGradientF(k)*strainmat;
             result.getGradientF(k) += F.getF()*strainmat;
         }
@@ -387,22 +466,61 @@ public:
 
     MatBlock getJ()
     {
-        MatBlock B;
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
         // order 0
-        Mat<strain_size,frame_size,Real> J = assembleJ(F.getF());
-        for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i][spatial_dimensions],&J[i][0],frame_size*sizeof(Real));
+        typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
+        JBlock J = assembleJ(F.getF());
+        eB.template block(0,spatial_dimensions,strain_size,frame_size) = J;
         // order 1
-        Vec<spatial_dimensions, Mat<strain_size,frame_size,Real> > Jgrad;
+        Vec<3,JBlock> Jgrad;
         for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
-
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions],&Jgrad[k][i][0],frame_size*sizeof(Real));
-            for(unsigned int i=0; i<strain_size; i++)  memcpy(&B[i+offsetE][spatial_dimensions+(k+1)*frame_size],&J[i][0],frame_size*sizeof(Real));
+            eB.template block(offsetE,spatial_dimensions,strain_size,frame_size) = Jgrad[k];
+            eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = J;
             offsetE+=strain_size;
         }
         return B;
+    }
+
+    KBlock getK(const OutDeriv& childForce)
+    {
+        KBlock K = KBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eK(&K[0][0]);
+        // order 0
+        StrainMat sigma=VoigtToMat( childForce.getStrain() );
+        typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
+        KBlock s(&sigma[0][0]);
+        for(unsigned int j=0; j<spatial_dimensions*spatial_dimensions; j++)
+            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            sigma=VoigtToMat( childForce.getStrainGradient(k) );
+            for(unsigned int i=0; i<spatial_dimensions; i++)
+                for(unsigned int j=0; j<spatial_dimensions; j++)
+                {
+                    eK.template block(spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                }
+        }
+        return K;
+    }
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        // order 0
+        df.getF() += dx.getF()*VoigtToMat( childForce.getStrain() )*kfactor;
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            StrainMat strainmat=VoigtToMat( childForce.getStrainGradient(k) )*kfactor;
+            df.getF() += dx.getGradientF(k)*strainmat;
+            df.getGradientF(k) += dx.getF()*strainmat;
+        }
     }
 };
 
