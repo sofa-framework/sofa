@@ -151,6 +151,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
         MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping();
         m_constraint = sofa::core::objectmodel::New<constraintset::UnilateralInteractionConstraint<Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
+        setInteractionTags(mmodel1, mmodel2);
         m_constraint->setCustomTolerance( tol.getValue() );
     }
 
@@ -263,6 +264,18 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
         }
         parent = NULL;
     }
+}
+
+template < class TCollisionModel1, class TCollisionModel2 >
+void FrictionContact<TCollisionModel1,TCollisionModel2>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
+{
+    TagSet tagsm1 = mstate1->getTags();
+    TagSet tagsm2 = mstate2->getTags();
+    TagSet::iterator it;
+    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+        m_constraint->addTag(*it);
+    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+        m_constraint->addTag(*it);
 }
 
 } // namespace collision

@@ -91,6 +91,9 @@ protected:
 
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricPenalityContact();
+
+    void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
+
 public:
     void cleanup();
 
@@ -103,6 +106,7 @@ public:
     void removeResponse();
 
     void draw(const core::visual::VisualParams* vparams);
+
 };
 
 } // namespace collision

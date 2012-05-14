@@ -25,6 +25,7 @@
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/Tag.h>
 
 
 
@@ -133,6 +134,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             {
                 contactMap[std::make_pair(model1, model2)] = contact;
                 contact->setName(model1->getName()+std::string("-")+model2->getName());
+                setContactTags(model1, model2, contact);
                 contact->f_printLog.setValue(this->f_printLog.getValue());
                 contact->init();
                 contact->setDetectionOutputs(outputsIt->second);
@@ -270,6 +272,17 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
         ++remove_it;
     }
 
+}
+
+void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact)
+{
+    sofa::core::objectmodel::TagSet tagsm1 = model1->getTags();
+    sofa::core::objectmodel::TagSet tagsm2 = model2->getTags();
+    sofa::core::objectmodel::TagSet::iterator it;
+    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+        contact->addTag(*it);
+    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+        contact->addTag(*it);
 }
 
 } // namespace collision
