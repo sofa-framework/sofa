@@ -1341,6 +1341,15 @@ public:
         }
     }
 
+    /** Helper class to represent a column of the block matrix.
+      Stores indices of one bloc per row. In each row, if the bloc in the derired colum is null, the next bloc is indexed.
+      */
+    struct Column
+    {
+        Index column; ///< the index of the column
+        VecIndex indices;  ///< In each row: index of the first non-null bloc with column equal or superior to the desired column.
+    };
+
     template<class Real2>
     void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {

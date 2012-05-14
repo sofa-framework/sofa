@@ -21,6 +21,7 @@ SOURCES = initFlexible.cpp\
     deformationMapping/LinearMapping.cpp \
     deformationMapping/LogRigidMapping.cpp \
     deformationMapping/RelativeRigidMapping.cpp \
+    deformationMapping/TriangleDeformationMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \
     strainMapping/InvariantMapping.cpp \
@@ -52,6 +53,8 @@ HEADERS = initFlexible.h \
     deformationMapping/LogRigidMapping.inl \
     deformationMapping/RelativeRigidMapping.h \
     deformationMapping/RelativeRigidMapping.inl \
+    deformationMapping/TriangleDeformationMapping.h \
+    deformationMapping/TriangleDeformationMapping.inl \
     strainMapping/BaseStrainMapping.h \
     strainMapping/GreenStrainMapping.h \
     strainMapping/GreenStrainJacobianBlock.h \
