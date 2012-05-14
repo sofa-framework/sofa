@@ -81,6 +81,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         MechanicalState2* mstate2 = mapper2.createMapping();
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
+        setInteractionTags(mstate1, mstate2);
         ff->init();
 #ifdef SOFA_SMP
         ff->setPartition(mstate1->getPartition());
@@ -243,10 +244,25 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     //		ff->draw(vparams);
 }
 
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
+{
+    TagSet tagsm1 = mstate1->getTags();
+    TagSet tagsm2 = mstate2->getTags();
+    TagSet::iterator it;
+    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+        ff->addTag(*it);
+    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+        ff->addTag(*it);
+}
+
 } // namespace collision
 
 } // namespace component
 
 } // namespace sofa
 
+
+
 #endif
+

@@ -69,6 +69,9 @@ protected:
 
     constraintset::LagrangianMultiplierContactConstraint<Vec3Types>* ff;
     core::objectmodel::BaseContext* parent;
+
+    void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
+
 public:
     BarycentricLagrangianMultiplierContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricLagrangianMultiplierContact();

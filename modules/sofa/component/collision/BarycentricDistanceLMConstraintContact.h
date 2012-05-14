@@ -86,6 +86,7 @@ protected:
     BarycentricDistanceLMConstraintContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricDistanceLMConstraintContact();
 
+    void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
 public:
 

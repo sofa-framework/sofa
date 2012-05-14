@@ -82,6 +82,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         MechanicalState2* mstate2 = mapper2.createMapping();
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName());
+        setInteractionTags(mstate1, mstate2);
     }
 
     int insize = outputs.size();
@@ -239,6 +240,18 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 {
     //	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
     //		dynamic_cast<core::VisualModel*>(ff)->draw(vparams);
+}
+
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
+{
+    TagSet tagsm1 = mstate1->getTags();
+    TagSet tagsm2 = mstate2->getTags();
+    TagSet::iterator it;
+    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+        ff->addTag(*it);
+    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+        ff->addTag(*it);
 }
 
 } // namespace collision

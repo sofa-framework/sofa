@@ -109,8 +109,7 @@ protected:
 
     void activateMappers();
 
-
-
+    void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
     FrictionContact() {}
 

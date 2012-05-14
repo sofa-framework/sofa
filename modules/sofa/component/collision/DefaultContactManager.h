@@ -56,6 +56,8 @@ public:
 protected:
     DefaultContactManager();
     ~DefaultContactManager();
+    void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact);
+
 public:
     void createContacts(DetectionOutputMap& outputs);
 

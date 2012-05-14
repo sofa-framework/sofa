@@ -79,6 +79,8 @@ protected:
     BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricStickContact();
 
+    void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
+
 public:
     Data<bool> f_keepAlive;
 

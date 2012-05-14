@@ -88,6 +88,7 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
         ff = new constraintset::LagrangianMultiplierContactConstraint<Vec3Types>(mstate1,mstate2);
+        setInteractionTags(mstate1, mstate2);
     }
 
     int size = contacts.size();
@@ -157,6 +158,19 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
 //	if (ff!=NULL)
 //		ff->draw(vparams);
 }
+
+template < class TCollisionModel1, class TCollisionModel2 >
+void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
+{
+    TagSet tagsm1 = mstate1->getTags();
+    TagSet tagsm2 = mstate2->getTags();
+    TagSet::iterator it;
+    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+        ff->addTag(*it);
+    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+        ff->addTag(*it);
+}
+
 
 } // namespace collision
 
