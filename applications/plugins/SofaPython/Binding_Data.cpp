@@ -105,6 +105,7 @@ extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
     printf("<PYTHON> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
     return PyString_FromString(data->getValueString().c_str());
 }
+
 extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
@@ -240,11 +241,81 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         return 0;
     }
 
-
     printf("<PYTHON> argument type not supported\n");
     PyErr_BadArgument();
     return -1;
 }
+
+// access ONE element of the vector
+extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    int index;
+    if (!PyArg_ParseTuple(args, "i",&index))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    if (index>=typeinfo->size())
+    {
+        // out of bounds!
+        printf("<PYTHON> Error: Data.getValue index overflow\n");
+        PyErr_BadArgument();
+        return 0;
+    }
+    if (typeinfo->Scalar())
+        return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
+    if (typeinfo->Integer())
+        return PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),index));
+    if (typeinfo->Text())
+        return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
+
+    // should never happen....
+    printf("<PYTHON> Error: Data.getValue unknown data type\n");
+    PyErr_BadArgument();
+    return 0;
+}
+extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    int index;
+    PyObject *value;
+    if (!PyArg_ParseTuple(args, "iO",&index,&value))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    if (index>=typeinfo->size())
+    {
+        // out of bounds!
+        printf("<PYTHON> Error: Data.setValue index overflow\n");
+        PyErr_BadArgument();
+        return 0;
+    }
+    if (typeinfo->Scalar() && PyFloat_Check(value))
+    {
+        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
+        return PyInt_FromLong(0);
+    }
+    if (typeinfo->Integer() && PyInt_Check(value))
+    {
+        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),index,PyInt_AsLong(value));
+        return PyInt_FromLong(0);
+    }
+    if (typeinfo->Text() && PyString_Check(value))
+    {
+        typeinfo->setTextValue((void*)data->getValueVoidPtr(),index,PyString_AsString(value));
+        return PyInt_FromLong(0);
+    }
+
+    // should never happen....
+    printf("<PYTHON> Error: Data.setValue type mismatch\n");
+    PyErr_BadArgument();
+    return 0;
+}
+
 
 extern "C" PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
@@ -254,6 +325,8 @@ extern "C" PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
+SP_CLASS_METHOD(Data,setValue)
+SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHODS_END
 
 SP_CLASS_ATTRS_BEGIN(Data)
