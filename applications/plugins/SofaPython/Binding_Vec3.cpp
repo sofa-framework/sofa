@@ -104,7 +104,7 @@ PyObject * Vec3_PyNew(PyTypeObject */*type*/, PyObject *args, PyObject */*kwds*/
     obj->x()=x;
     obj->y()=y;
     obj->z()=z;
-    return SP_BUILD_PYPTR(Vec3,obj,true); // "true", because I manage the deletion myself (below)
+    return SP_BUILD_PYPTR(Vec3,Vec3,obj,true); // "true", because I manage the deletion myself (below)
 }
 void Vec3_PyFree(void * self)
 {
@@ -124,4 +124,4 @@ SP_CLASS_ATTR(Vec3,y)
 SP_CLASS_ATTR(Vec3,z)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Vec3)
+SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Vec3,Vec3)

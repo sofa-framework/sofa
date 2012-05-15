@@ -60,7 +60,7 @@ PyObject* _PyObject_cast(char* str) {return PyString_FromString(str);}
 // PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
 #define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
 
-#define SP_MODULE_METHODS_BEGIN(MODULENAME) static PyMethodDef MODULENAME##ModuleMethods[] = {
+#define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,NULL,NULL} };
 #define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
 
@@ -86,8 +86,9 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
     pyObj->object = obj;
     return (PyObject*)pyObj;
 }
-#define SP_BUILD_PYSPTR(T,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(T))
+#define SP_BUILD_PYSPTR(PyType,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(PyType))
 // on n'utilise pas BuildPySPtr<T> car la dynamic_cast se fera sur un T* et pas un T::SPtr
+// le type cpp n'est pas nécessaire, tous les SPtr de Sofa héritant de Base
 
 
 // =============================================================================
@@ -112,7 +113,7 @@ PyObject* BuildPyPtr(T* obj,PyTypeObject *pto,bool del)
     pyObj->deletable = del;
     return (PyObject*)pyObj;
 }
-#define SP_BUILD_PYPTR(T,OBJ,DEL) BuildPyPtr<T>(OBJ,&SP_SOFAPYTYPEOBJECT(T),DEL)
+#define SP_BUILD_PYPTR(PyType,CppType,OBJ,DEL) BuildPyPtr<CppType>(OBJ,&SP_SOFAPYTYPEOBJECT(PyType),DEL)
 
 
 
@@ -249,23 +250,23 @@ static PyTypeObject DummyChild_PyTypeObject = {
 
 
 // définition type de base(=sans parent) sans attributs
-#define SP_CLASS_TYPE_BASE_SPTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,0,SP_SOFAPYNEW(Type),SP_SOFAPYFREE(Type))
+#define SP_CLASS_TYPE_BASE_SPTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,0,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
 
 
 // définition type de base(=sans parent) avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
-#define SP_CLASS_TYPE_BASE_SPTR_ATTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Type) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),0,SP_SOFAPYNEW(Type),SP_SOFAPYFREE(Type))
+#define SP_CLASS_TYPE_BASE_SPTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
 
 // définition type hérité de "Parent" sans attributs
-#define SP_CLASS_TYPE_SPTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
-#define SP_CLASS_TYPE_PTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_SPTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_PTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
 
 // définition type hérité de "Parent" avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
-#define SP_CLASS_TYPE_SPTR_ATTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PySPtr<Type>),SP_SOFAPYATTRIBUTES(Type),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
-#define SP_CLASS_TYPE_PTR_ATTR(Type,Parent) SP_CLASS_TYPE_DEF(Type,sizeof(PyPtr<Type>),SP_SOFAPYATTRIBUTES(Type),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_SPTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
+#define SP_CLASS_TYPE_PTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0)
 
 
 // =============================================================================

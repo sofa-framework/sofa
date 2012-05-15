@@ -22,14 +22,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/Context.h>
+
+#include "Binding_BaseState.h"
+#include "Binding_BaseObject.h"
+
+#include <sofa/core/BaseState.h>
 using namespace sofa::core::objectmodel;
-
-#include "Binding_Context.h"
-#include "Binding_BaseContext.h"
+using namespace sofa::core;
 
 
-SP_CLASS_METHODS_BEGIN(Context)
+
+extern "C" PyObject * BaseState_resize(PyObject *self, PyObject * args)
+{
+    BaseState* obj=dynamic_cast<BaseState*>(((PySPtr<Base>*)self)->object.get());
+    int newSize;
+    if (!PyArg_ParseTuple(args, "i",&newSize))
+        return 0;
+    obj->resize(newSize);
+    return Py_BuildValue("i",0);
+}
+
+
+
+
+SP_CLASS_METHODS_BEGIN(BaseState)
+SP_CLASS_METHOD(BaseState,resize)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(Context,Context,BaseContext)
+
+SP_CLASS_TYPE_SPTR(BaseState,BaseState,BaseObject)

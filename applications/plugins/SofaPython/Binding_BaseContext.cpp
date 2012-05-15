@@ -44,7 +44,7 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    return SP_BUILD_PYPTR(Vec3,new Vec3(obj->getGravity()),true); // "true", because I manage the deletion myself
+    return SP_BUILD_PYPTR(Vec3,Vec3,new Vec3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
 extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
@@ -140,4 +140,4 @@ SP_CLASS_ATTR(BaseContext,animate)
 //SP_CLASS_ATTR(BaseContext,gravity) // attribut objets = problème... le setter ne fonctionne pas
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_SPTR_ATTR(BaseContext,Base)
+SP_CLASS_TYPE_SPTR_ATTR(BaseContext,BaseContext,Base)
