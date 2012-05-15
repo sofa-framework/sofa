@@ -25,8 +25,10 @@
 #include "Binding.h"
 #include "Binding_SofaModule.h"
 
-#include "Binding_BaseData.h"
+#include "Binding_Data.h"
 #include "Binding_Base.h"
+#include "Binding_BaseObject.h"
+#include "Binding_BaseState.h"
 #include "Binding_BaseContext.h"
 #include "Binding_Context.h"
 #include "Binding_Node.h"
@@ -47,7 +49,7 @@ void bindSofaPythonModule()
 
     SofaPythonModule = SP_INIT_MODULE(Sofa)
 
-            SP_ADD_CLASS(SofaPythonModule,BaseData)
+            SP_ADD_CLASS(SofaPythonModule,Data)
             SP_ADD_CLASS(SofaPythonModule,Vec3)
             SP_ADD_CLASS(SofaPythonModule,BaseObjectDescription)
 
@@ -56,8 +58,9 @@ void bindSofaPythonModule()
             SP_ADD_CLASS(SofaPythonModule,Context)
             SP_ADD_CLASS(SofaPythonModule,Node)
             SP_ADD_CLASS(SofaPythonModule,GNode)
+            SP_ADD_CLASS(SofaPythonModule,BaseObject)
+            SP_ADD_CLASS(SofaPythonModule,BaseState)
             /*
-                    SP_ADD_CLASS(SofaPythonModule,BaseObject)
                         SP_ADD_CLASS(SofaPythonModule,BaseController)
                             SP_ADD_CLASS(SofaPythonModule,Controller)
                                 SP_ADD_CLASS(SofaPythonModule,ScriptController)
@@ -84,8 +87,6 @@ void bindSofaPythonModule()
 #include <sofa/component/typedef/MechanicalState_double.h>
 #include <sofa/component/typedef/Mass_double.h>
 #include <sofa/component/typedef/Particles_double.h>
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/SofaGUI.h>
 
 #include "PythonScriptController.h"
 
@@ -99,7 +100,6 @@ using namespace sofa::component::container;
 using namespace sofa::component::controller;
 using namespace sofa::core::behavior;
 using namespace sofa::core::visual;
-using namespace sofa::gui;
 
 //sofa::simulation::xml::BaseElement::NodeFactory* getNodeFactory() {return sofa::simulation::xml::BaseElement::NodeFactory::getInstance();}
 
@@ -114,12 +114,8 @@ void (Base::*setName1)(const std::string&) = &Base::setName;
 /*
 BOOST_PYTHON_MODULE( Sofa )
 {
-    def ("createObject", createObject);//, return_value_policy<reference_existing_object>());
     def ("getObject", getObject);//, return_value_policy<reference_existing_object>());
     def ("getChildNode", getChildNode);//, return_value_policy<reference_existing_object>());
-
-    // send message to the GUI...
-    def ("sendGUIMessage", sendGUIMessage);
 
     // TODO: double héritage BaseMechanicalState & State<sofa::defaulttype::Vec3Types>
     class_ <MechanicalState<sofa::defaulttype::Vec3Types> , MechanicalState<sofa::defaulttype::Vec3Types>::SPtr, bases<BaseObject>, boost::noncopyable>("MechanicalState", no_init)
@@ -137,15 +133,6 @@ BOOST_PYTHON_MODULE( Sofa )
             .def("setMass",&UniformMass3::setMass)
             ;
 
-    // BaseObjectDescription n'a pas de smart pointer ?? bon bah ok alors
-    class_ <BaseObjectDescription>("BaseObjectDescription",init<const char*,const char*>())
-            .add_property("name",
-                          &BaseObjectDescription::getName,
-                          &BaseObjectDescription::setName)
-
-            .def("getAttribute",&BaseObjectDescription::getAttribute)
-            .def("setAttribute",&BaseObjectDescription::setAttribute)
-            ;
 
 
     class_ <tristate>("tristate",init<int>())
@@ -208,6 +195,7 @@ BOOST_PYTHON_MODULE( Sofa )
     // note: pour les overloads de beginEdit, voir "BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(george_overloads, wack_em, 1, 3)" plus haut
     class_ <TData<DisplayFlags>, bases<BaseData>, boost::noncopyable>("TDataDisplayFlags", no_init)
             ;
+
     class_ <Data<DisplayFlags>, bases<TData<DisplayFlags> >, boost::noncopyable>("DataDisplayFlags", no_init)
             .def("beginEdit",&Data<DisplayFlags>::beginEdit,return_value_policy<reference_existing_object>())
             .def("endEdit",&Data<DisplayFlags>::endEdit)

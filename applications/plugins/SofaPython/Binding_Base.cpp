@@ -27,7 +27,7 @@
 using namespace sofa::core::objectmodel;
 
 #include "Binding_Base.h"
-#include "Binding_BaseData.h"
+#include "Binding_Data.h"
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 {
@@ -41,7 +41,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
-    return SP_BUILD_PYPTR(BaseData,data,false);
+    return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
 
 
@@ -56,4 +56,4 @@ SP_CLASS_ATTRS_BEGIN(Base)
 SP_CLASS_ATTR(Base,name)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_BASE_SPTR_ATTR(Base)
+SP_CLASS_TYPE_BASE_SPTR_ATTR(Base,Base)

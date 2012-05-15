@@ -22,11 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_BASEDATA_H
-#define BINDING_BASEDATA_H
+#include <sofa/core/objectmodel/BaseContext.h>
+using namespace sofa::core::objectmodel;
 
-#include "PythonMacros.h"
+#include "Binding_BaseObject.h"
+#include "Binding_Base.h"
 
-SP_DECLARE_CLASS_TYPE(BaseData)
 
-#endif // BINDING_BASEDATA_H
+
+SP_CLASS_METHODS_BEGIN(BaseObject)
+SP_CLASS_METHODS_END
+
+
+SP_CLASS_TYPE_SPTR(BaseObject,BaseObject,Base)

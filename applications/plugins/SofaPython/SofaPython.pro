@@ -28,13 +28,15 @@ SOURCES = initSofaPython.cpp \
     Binding.cpp \
     Binding_SofaModule.cpp \
     Binding_Base.cpp \
-    Binding_BaseData.cpp \
     Binding_Context.cpp \
     Binding_BaseContext.cpp \
     Binding_Node.cpp \
     Binding_GNode.cpp \
     Binding_Vec3.cpp \
-    Binding_BaseObjectDescription.cpp
+    Binding_BaseObjectDescription.cpp \
+    Binding_Data.cpp \
+    Binding_BaseObject.cpp \
+    Binding_BaseState.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -44,13 +46,15 @@ HEADERS = initSofaPython.h \
     Binding.h \
     Binding_Base.h \
     Binding_SofaModule.h \
-    Binding_BaseData.h \
     Binding_Node.h \
     Binding_GNode.h \
     Binding_Context.h \
     Binding_BaseContext.h \
     Binding_Vec3.h \
-    Binding_BaseObjectDescription.h
+    Binding_BaseObjectDescription.h \
+    Binding_Data.h \
+    Binding_BaseObject.h \
+    Binding_BaseState.h
 
 README_FILE = SofaPython.txt
 

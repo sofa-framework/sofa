@@ -32,4 +32,4 @@ using namespace sofa::simulation;
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(Node,Context)
+SP_CLASS_TYPE_SPTR(Node,Node,Context)

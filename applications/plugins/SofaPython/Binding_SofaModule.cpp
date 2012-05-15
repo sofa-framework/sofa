@@ -23,27 +23,72 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "Binding_SofaModule.h"
+#include "Binding_BaseObject.h"
+#include "Binding_BaseState.h"
+#include "Binding_Node.h"
+#include "PythonMacros.h"
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 
 
-/*
-// factory!
-BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+using namespace sofa::core;
+using namespace sofa::core::objectmodel;
+
+#include <sofa/simulation/common/Node.h>
+using namespace sofa::simulation;
+
+
+// object factory
+extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args)
 {
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,arg);//.get();
+    PyObject* pyContext;
+    PyObject* pyDesc;
+    if (!PyArg_ParseTuple(args, "OO",&pyContext,&pyDesc))
+        return 0;
+    BaseContext *context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)pyContext)->object.get());
+    BaseObjectDescription *desc=(((PyPtr<BaseObjectDescription>*)pyDesc)->object);
+
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,desc);//.get();
     if (obj==0)
+    {
         printf("<PYTHON> ERROR createObject '%s' of type '%s' in node '%s'\n",
-                        arg->getName().c_str(),
-                        arg->getAttribute("type",""),
-                        context->getName().c_str());
-    return obj;
+                desc->getName().c_str(),
+                desc->getAttribute("type",""),
+                context->getName().c_str());
+        PyErr_BadArgument();
+        return 0;
+    }
+
+    // on tente toujours de retourner le type le plus haut niveau possible (héritage)
+    if (dynamic_cast<BaseState*>(obj.get()))
+        return SP_BUILD_PYSPTR(BaseState,dynamic_cast<BaseState*>(obj.get()));
+
+    // par défaut, ce sera toujours au minimum un BaseObject...
+    return SP_BUILD_PYSPTR(BaseObject,obj.get());
 }
-// fonction templatisée, on passe par une autre qui ne l'est pas sinon c'est juste illisible...
-BaseObject::SPtr getObject(objectmodel::BaseContext* context,const std::string& path)
+
+
+extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * args)
 {
+    PyObject* pyContext;
+    char *path;
+    if (!PyArg_ParseTuple(args, "Os",&pyContext,&path))
+        return 0;
+    BaseContext *context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)pyContext)->object.get());
+    if (!context || !path)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
-    return sptr;
+
+    return SP_BUILD_PYSPTR(BaseObject,sptr.get());
 }
+
+/*
 BaseNode::SPtr getChildNode(objectmodel::BaseNode* node,const std::string& path)
 {
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -56,20 +101,58 @@ BaseNode::SPtr getChildNode(objectmodel::BaseNode* node,const std::string& path)
         }
     return sptr;
 }
-// send a message to the GUI
-void sendGUIMessage(const std::string& msgType, const std::string& msgValue)
+*/
+extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * args)
 {
+    PyObject* pyBaseNode;
+    char *path;
+    if (!PyArg_ParseTuple(args, "Os",&pyBaseNode,&path))
+        return 0;
+    BaseNode *node=dynamic_cast<BaseNode*>(((PySPtr<Base>*)pyBaseNode)->object.get());
+    if (!node || !path)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+
+    const objectmodel::BaseNode::Children& children = node->getChildren();
+    Node *childNode = 0;
+    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
+    // on caste directement en Node.
+    for (unsigned int i=0; i<children.size(); ++i)
+        if (children[i]->getName() == path)
+        {
+            childNode = dynamic_cast<Node*>(children[i]);
+            break;
+        }
+    if (!childNode)
+    {
+        printf("<PYTHON> Error: Sofa.getChildNode(%s) not found.\n",path);
+        return 0;
+    }
+    return SP_BUILD_PYSPTR(Node,childNode);
+}
+
+using namespace sofa::gui;
+
+// send a text message to the GUI
+extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
+{
+    char *msgType;
+    char *msgValue;
+    if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
+        return 0;
     SofaGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType.c_str(),msgValue.c_str());
-        return;
+        printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
+        return Py_BuildValue("i",-1);
     }
     gui->sendMessage(msgType,msgValue);
+
+
+    return Py_BuildValue("i",0);
 }
-
-*/
-
 
 
 
@@ -77,9 +160,12 @@ void sendGUIMessage(const std::string& msgType, const std::string& msgValue)
 
 
 // Méthodes du module
-PyMethodDef SofaModuleMethods[] =
-{
-//    { "HelloCWorld", module_HelloCWorld, METH_VARARGS, "Helloworld func (with a string argument).\n" },
-//    { "createObject", module_createObject, METH_VARARGS, "Create a DummyClass object.\n" },
-    {0,0,0,0}
-};
+SP_MODULE_METHODS_BEGIN(Sofa)
+SP_MODULE_METHOD(Sofa,createObject)
+SP_MODULE_METHOD(Sofa,getObject)
+SP_MODULE_METHOD(Sofa,getChildNode)
+SP_MODULE_METHOD(Sofa,sendGUIMessage)
+SP_MODULE_METHODS_END
+
+
+
