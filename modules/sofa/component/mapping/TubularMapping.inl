@@ -45,11 +45,11 @@ void TubularMapping<TIn, TOut>::init()
     if (!m_radius.isSet())
     {
         this->getContext()->get(radiusContainer);
-        sout << "get Radius Container" << std::endl;
+        sout << "get Radius Container" << sendl;
         if(!radiusContainer)
             serr << "TubularMapping : No Radius defined" << sendl;
     }
-    else sout << "get Radius tout court" << std::endl;
+    else sout << "get Radius tout court" << sendl;
 
     Inherit::init();
 

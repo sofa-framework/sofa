@@ -1088,12 +1088,12 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
 
-        //		sout << endl;
-        //		sout << "p[a]=(" << p[a] << ") - p[b]=(" << p[b] << ") - p[c]=(" << p[c] << ")" << endl;
-        //		sout << "D: " << D << endl;
-        //		sout << "J: " << J << endl;
-        //		sout << "Strain: " << strain << endl;
-        //              sout << "Stress: " << stress << endl;
+        //		sout << sendl;
+        //		sout << "p[a]=(" << p[a] << ") - p[b]=(" << p[b] << ") - p[c]=(" << p[c] << ")" << sendl;
+        //		sout << "D: " << D << sendl;
+        //		sout << "J: " << J << sendl;
+        //		sout << "Strain: " << strain << sendl;
+        //              sout << "Stress: " << stress << sendl;
 
         // Compute F = J * stress;
         // Optimisations: The following values are 0 (per computeStrainDisplacement )
@@ -1196,13 +1196,13 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
     Coord dir_local = Rt * dir;
     dir_local[2] = 0; // project direction
     dir_local.normalize();
-    //	sout << "dir_local : " << dir_local << endl;
+    //	sout << "dir_local : " << dir_local << sendl;
 
     // compute stress along specified direction 'dir'
     Real cos_theta = dir_local[0];
     Real sin_theta = dir_local[1];
     stress_along_dir = stress[0]*cos_theta*cos_theta + stress[1]*sin_theta*sin_theta + stress[2]*2*cos_theta*sin_theta;
-    //sout << "computeStressAlongDirection :: stress ( " << stress << ") along local direction = (" << dir_local << ") = " <<  stress_along_dir << endl;
+    //sout << "computeStressAlongDirection :: stress ( " << stress << ") along local direction = (" << dir_local << ") = " <<  stress_along_dir << sendl;
     triangleInfo.endEdit();
 }
 

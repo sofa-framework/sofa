@@ -298,10 +298,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     //tinfo->materialMatrix *= (Real)(1.0/12.0);
 
-    //serr << "Young1=" << Inherited::f_young.getValue() << endl;
-    //serr << "Young2=" << f_young2.getValue() << endl;
-    //serr << "Poisson1=" << Inherited::f_poisson.getValue() << endl;
-    //serr << "Poisson2=" << f_poisson2.getValue() << endl;
+    //serr << "Young1=" << Inherited::f_young.getValue() << sendl;
+    //serr << "Young2=" << f_young2.getValue() << sendl;
+    //serr << "Poisson1=" << Inherited::f_poisson.getValue() << sendl;
+    //serr << "Poisson2=" << f_poisson2.getValue() << sendl;
 
     localFiberDirection.endEdit();
     Inherited::triangleInfo.endEdit();

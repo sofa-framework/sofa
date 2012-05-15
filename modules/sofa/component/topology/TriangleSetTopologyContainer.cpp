@@ -85,7 +85,7 @@ void TriangleSetTopologyContainer::reinit()
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {
 #ifndef NDEBUG
-    sout << "Error. [TriangleSetTopologyContainer::createTriangleSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [TriangleSetTopologyContainer::createTriangleSetArray] This method must be implemented by a child topology." << sendl;
 #endif
 }
 
@@ -94,7 +94,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundVertexArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundVertexArray] triangle array is empty." << sendl;
 #endif
         createTriangleSetArray();
     }
@@ -120,7 +120,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] triangle array is empty." << sendl;
 #endif
         createTriangleSetArray();
     }
@@ -128,7 +128,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] edge array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTrianglesAroundEdgeArray] edge array is empty." << sendl;
 #endif
         createEdgeSetArray();
     }
@@ -162,7 +162,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] triangle array is empty." << sendl;
 #endif
         createTriangleSetArray();
     }
@@ -170,7 +170,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     if(hasEdges())
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] edge array is not empty." << sendl;
 #endif
 
         // clear edges and all shells that depend on edges
@@ -216,7 +216,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] triangle array is empty." << sendl;
 #endif
         createTriangleSetArray();
     }
@@ -230,7 +230,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] edge array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgesInTriangleArray] edge array is empty." << sendl;
 #endif
 
         /// create edge array and triangle edge array at the same time
@@ -307,7 +307,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 }
 #ifndef NDEBUG
                 if (foundEdge==false)
-                    sout << "[TriangleSetTopologyContainer::getTriangleArray] cannot find edge for triangle " << i << "and edge "<< j << endl;
+                    sout << "[TriangleSetTopologyContainer::getTriangleArray] cannot find edge for triangle " << i << "and edge "<< j << sendl;
 #endif
             }
         }
@@ -411,7 +411,7 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
     if (id >= (unsigned int)this->getNbTriangles())
     {
 #ifndef NDEBUG
-        sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << endl;
+        sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << sendl;
 #endif
         return;
     }
@@ -431,7 +431,7 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
     if(!hasTriangles() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        sout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << endl;
+        sout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << sendl;
 #endif
         createTriangleSetArray();
     }
@@ -476,7 +476,7 @@ int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, Point
 
 #ifndef NDEBUG
     if(out2.size() > 1)
-        sout << "Warning. [TriangleSetTopologyContainer::getTriangleIndex] more than one triangle found" << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleIndex] more than one triangle found" << sendl;
 #endif
 
     if (out2.size()==1)
@@ -500,7 +500,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexArray] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexArray] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -513,7 +513,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeArray] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeArray] triangle edge shell array is empty." << sendl;
 #endif
         createTrianglesAroundEdgeArray();
     }
@@ -534,14 +534,14 @@ const TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVer
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertex] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertex] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
     else if( i >= m_trianglesAroundVertex.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertex] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertex] index out of bounds." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -554,14 +554,14 @@ const TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdge] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdge] triangle edge shell array is empty." << sendl;
 #endif
         createTrianglesAroundEdgeArray();
     }
     else if( i >= m_trianglesAroundEdge.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdge] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdge] index out of bounds." << sendl;
 #endif
         createTrianglesAroundEdgeArray();
     }
@@ -577,7 +577,7 @@ const EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const un
     if( i >= m_edgesInTriangle.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getEdgesInTriangle] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getEdgesInTriangle] index out of bounds." << sendl;
 #endif
         createEdgesInTriangleArray();
     }
@@ -615,7 +615,7 @@ const sofa::helper::vector <TriangleID>& TriangleSetTopologyContainer::getTriang
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTrianglesOnBorder] A border element list is empty." << endl;
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTrianglesOnBorder] A border element list is empty." << sendl;
 #endif
         createElementsOnBorder();
     }
@@ -629,7 +629,7 @@ const sofa::helper::vector <EdgeID>& TriangleSetTopologyContainer::getEdgesOnBor
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgesOnBorder] A border element list is empty." << endl;
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgesOnBorder] A border element list is empty." << sendl;
 #endif
         createElementsOnBorder();
     }
@@ -643,7 +643,7 @@ const sofa::helper::vector <PointID>& TriangleSetTopologyContainer::getPointsOnB
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getPointsOnBorder] A border element list is empty." << endl;
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getPointsOnBorder] A border element list is empty." << sendl;
 #endif
         createElementsOnBorder();
     }
@@ -657,7 +657,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangles
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] triangle edge shell array is empty." << sendl;
 #endif
         createTrianglesAroundEdgeArray();
     }
@@ -665,7 +665,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangles
     if( i >= m_trianglesAroundEdge.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundEdgeForModification] index out of bounds." << sendl;
 #endif
         createTrianglesAroundEdgeArray();
     }
@@ -678,7 +678,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangles
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -686,7 +686,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangles
     if( i >= m_trianglesAroundVertex.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTrianglesAroundVertexForModification] index out of bounds." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -789,7 +789,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::checkConnexity] Can't compute connexity as there are no triangles" << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::checkConnexity] Can't compute connexity as there are no triangles" << sendl;
 #endif
         return false;
     }
@@ -812,7 +812,7 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no triangles" << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no triangles" << sendl;
 #endif
         return 0;
     }
@@ -846,7 +846,7 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getConnectedElement] triangle vertex shell array is empty." << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::getConnectedElement] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -912,7 +912,7 @@ const VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(Triang
     if (!hasTrianglesAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElement] triangle vertex shell array is empty." << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElement] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }
@@ -954,7 +954,7 @@ const VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTr
     if (!hasTrianglesAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElements] triangle vertex shell array is empty." << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElements] triangle vertex shell array is empty." << sendl;
 #endif
         createTrianglesAroundVertexArray();
     }

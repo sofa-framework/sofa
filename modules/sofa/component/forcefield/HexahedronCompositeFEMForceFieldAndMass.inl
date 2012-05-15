@@ -607,7 +607,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice)
 {
-    serr<<"computeMechanicalMatricesDirectlyFromTheFinestToCoarse"<<endl;
+    serr<<"computeMechanicalMatricesDirectlyFromTheFinestToCoarse"<<sendl;
     helper::vector<int> finestChildren;
 
     //find them

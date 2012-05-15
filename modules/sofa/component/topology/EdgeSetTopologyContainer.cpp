@@ -99,7 +99,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     if(!hasEdges())	// this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << sendl;
 #endif
         createEdgeSetArray();
     }
@@ -133,7 +133,7 @@ void EdgeSetTopologyContainer::reinit()
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
 #ifndef NDEBUG
-    sout << "Error. [EdgeSetTopologyContainer::createEdgeSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [EdgeSetTopologyContainer::createEdgeSetArray] This method must be implemented by a child topology." << sendl;
 #endif
 }
 
@@ -142,7 +142,7 @@ const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
     if(!hasEdges() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeArray] creating edge array." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgeArray] creating edge array." << sendl;
 #endif
         createEdgeSetArray();
     }
@@ -155,7 +155,7 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
     if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeIndex] edge array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgeIndex] edge array is empty." << sendl;
 #endif
         createEdgeSetArray();
     }
@@ -262,7 +262,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::checkConnexity] Can't compute connexity as there are no edges" << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::checkConnexity] Can't compute connexity as there are no edges" << sendl;
 #endif
         return false;
     }
@@ -286,7 +286,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no edges" << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no edges" << sendl;
 #endif
         return 0;
     }
@@ -321,7 +321,7 @@ const VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getConnectedElement] EdgesAroundVertex shell array is empty." << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::getConnectedElement] EdgesAroundVertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }
@@ -390,7 +390,7 @@ const VecEdgeID EdgeSetTopologyContainer::getElementAroundElement(EdgeID elem)
     if (!hasEdgesAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElement] edge vertex shell array is empty." << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElement] edge vertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }
@@ -433,7 +433,7 @@ const VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID ele
     if (!hasEdgesAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElements] edge vertex shell array is empty." << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElements] edge vertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }
@@ -496,7 +496,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopolog
     if(!hasEdgesAroundVertex())
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexArray] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexArray] edge vertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }
@@ -509,7 +509,7 @@ const EdgesAroundVertex& EdgeSetTopologyContainer::getEdgesAroundVertex(PointID 
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }
@@ -517,7 +517,7 @@ const EdgesAroundVertex& EdgeSetTopologyContainer::getEdgesAroundVertex(PointID 
 #ifndef NDEBUG
     if(m_edgesAroundVertex.size() <= i)
         sout << "Error. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array out of bounds: "
-                << i << " >= " << m_edgesAroundVertex.size() << endl;
+                << i << " >= " << m_edgesAroundVertex.size() << sendl;
 #endif
 
     return m_edgesAroundVertex[i];
@@ -528,7 +528,7 @@ sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgesAroundVe
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexForModification] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexForModification] edge vertex shell array is empty." << sendl;
 #endif
         createEdgesAroundVertexArray();
     }

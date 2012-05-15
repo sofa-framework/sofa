@@ -104,7 +104,7 @@ void TetrahedronSetTopologyContainer::init()
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 {
 #ifndef NDEBUG
-    sout << "Error. [TetrahedronSetTopologyContainer::createTetrahedronSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [TetrahedronSetTopologyContainer::createTetrahedronSetArray] This method must be implemented by a child topology." << sendl;
 #endif
 }
 
@@ -113,7 +113,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     if(hasEdges())
     {
 #ifndef NDEBUG
-        sout << "Warning. [TetrahedronSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
+        sout << "Warning. [TetrahedronSetTopologyContainer::createEdgeSetArray] edge array is not empty." << sendl;
 #endif
 
         EdgeSetTopologyContainer::clear();
@@ -158,7 +158,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
     if(!hasTetrahedra()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] tetra array is empty." << endl;
+        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] tetra array is empty." << sendl;
 #endif
         createTetrahedronSetArray();
     }
@@ -171,7 +171,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
     if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
 #ifndef NDEBUG
-        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] edge array is empty." << endl;
+        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] edge array is empty." << sendl;
 #endif
 
         /// create edge array and triangle edge array at the same time
@@ -245,7 +245,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                 }
 #ifndef NDEBUG
                 if (foundEdge==false)
-                    sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j << endl;
+                    sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j << sendl;
 #endif
             }
         }
@@ -408,7 +408,7 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
     if (!hasTetrahedra() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] creating tetrahedron array." << endl;
+        sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] creating tetrahedron array." << sendl;
 #endif
         createTetrahedronSetArray();
     }
@@ -749,7 +749,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [TetrahedronSetTopologyContainer::checkConnexity] Can't compute connexity as there are no tetrahedra" << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::checkConnexity] Can't compute connexity as there are no tetrahedra" << sendl;
 #endif
         return false;
     }
@@ -773,7 +773,7 @@ unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [TetrahedronSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no tetrahedra" << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no tetrahedra" << sendl;
 #endif
         return 0;
     }
@@ -808,7 +808,7 @@ const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID el
     if(!hasTetrahedraAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        serr << "Warning. [TetrahedronSetTopologyContainer::getConnectedElement] tetrahedra vertex shell array is empty." << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::getConnectedElement] tetrahedra vertex shell array is empty." << sendl;
 #endif
         createTetrahedraAroundVertexArray();
     }
@@ -877,7 +877,7 @@ const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraI
     if (!hasTetrahedraAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElement] tetrahedra vertex shell array is empty." << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElement] tetrahedra vertex shell array is empty." << sendl;
 #endif
         createTetrahedraAroundVertexArray();
     }
@@ -920,7 +920,7 @@ const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElements(VecTe
     if (!hasTetrahedraAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElements] tetrahedra vertex shell array is empty." << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElements] tetrahedra vertex shell array is empty." << sendl;
 #endif
         createTetrahedraAroundVertexArray();
     }
