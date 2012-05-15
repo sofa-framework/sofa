@@ -9,12 +9,12 @@ SOURCES = Main.cpp
 
 contains (CONFIGDEBUG, debug) {
 	unix: QMAKE_POST_LINK = ../../../bin/sofaTypedefsd
-	win32: QMAKE_POST_LINK = call ..\..\..\bin\sofaTypedefsd.exe
+	win32: QMAKE_POST_LINK = call ..\\..\\..\\bin\\sofaTypedefsd.exe
 }
 	
 contains (CONFIGDEBUG, release) {
 	unix: QMAKE_POST_LINK = ../../../bin/sofaTypedefs
-	win32: QMAKE_POST_LINK = call ..\..\..\bin\sofaTypedefs.exe
+	win32: QMAKE_POST_LINK = call ..\\..\\..\\bin\\sofaTypedefs.exe
 }
 
 
