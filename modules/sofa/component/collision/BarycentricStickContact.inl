@@ -245,9 +245,9 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2)
 {
-    TagSet tagsm1 = mstate1->getTags();
-    TagSet tagsm2 = mstate2->getTags();
-    TagSet::iterator it;
+    core::objectmodel::TagSet tagsm1 = mstate1->getTags();
+    core::objectmodel::TagSet tagsm2 = mstate2->getTags();
+    core::objectmodel::TagSet::iterator it;
     for(it=tagsm1.begin(); it != tagsm1.end(); it++)
         ff->addTag(*it);
     for(it=tagsm2.begin(); it!=tagsm2.end(); it++)

@@ -94,11 +94,13 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     enum { spatial_dimensions = Out::spatial_dimensions };
+//    enum { material_dimensions = Out::material_dimensions };
     //@}
 
     /** @name  Shape Function types    */
     //@{
     typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
+//    typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
     typedef typename BaseShapeFunction::VGradient VGradient;

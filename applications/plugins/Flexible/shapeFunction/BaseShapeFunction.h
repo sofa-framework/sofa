@@ -28,6 +28,7 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/MatSym.h>
 #include <sofa/defaulttype/Vec.h>
@@ -42,17 +43,20 @@ namespace core
 namespace behavior
 {
 
+using defaulttype::StdVectorTypes;
 using defaulttype::Vec;
 using defaulttype::Mat;
 using defaulttype::MatSym;
 using helper::vector;
 
-/** A shape function $w_i(x)$ encodes the influence of a parent node $x_i$ over a child node $x$.
+/** Compute interpolation weights and their derivatives.
+  Interpolation is defined across a material space as \f$ x_j = \sum_i w_{ij} x_i \f$, where the x are material coordinates (3 dimensions for a volumetris solid, 2 for a surface, 1 for a line, independently of the dimension of the space they are moving in).
+  Shape function \f$ w_{ij}(x_j) \f$ encodes the influence of a parent node at \f$ x_i \f$ an a child node at \f$ x_j \f$.
   It is used to map displacements/velocities/forces, but any other quantities in general.
-  Child nodes depend at most on on nbRef parents (use of fixed sizes for efficiency)
-  In general, it is a partition of unity : $sum_i w_i(x)=1$
-  When $w_i(x_j)=0, i!=j$ and  $w_i(x_i)=1$, shape functions are interpolating. Otherwise they are approximating.
-  In first order finite elements, shape functions are barycentric coordinates.
+  For efficiency, child nodes depend at most on nbRef parents.
+  In general, it is a partition of unity : \f$ sum_i w_{ij}(x)=1 \f$ everywhere.
+  When \f$ w_i(x_j)=0, i!=j \f$ and  \f$ w_i(x_i)=1 \f$, shape functions are called interpolating. Otherwise they are called approximating.
+  In first order finite elements, the shape functions are the barycentric coordinates.
   */
 template <class TShapeFunctionTypes>
 class BaseShapeFunction : public virtual core::objectmodel::BaseObject
@@ -69,16 +73,16 @@ public:
     typedef vector<unsigned int> VRef;
     typedef vector<Real> VReal;
     typedef Vec<material_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
-    typedef Vec<material_dimensions,Real> Gradient;                       ///< gradient of a scalar value in material space
+    typedef Vec<material_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
     typedef vector<Gradient> VGradient;
-    typedef Mat<material_dimensions,material_dimensions,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
+    typedef Mat<material_dimensions,material_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
     typedef vector<Hessian> VHessian;
     //@}
 
     /** @name data */
     //@{
-    Data<unsigned int > f_nbRef; ///< maximum number of parents per child
-    Data<vector<Coord> > f_position;
+    Data<unsigned int > f_nbRef;      ///< maximum number of parents per child
+    Data<vector<Coord> > f_position;  ///< material coordinates of the parent nodes
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -88,6 +92,7 @@ public:
     virtual void init()
     {
         if(!f_position.isSet())
+            // material positions are not given, so we compute them based on the current spatial positions
         {
             BaseMechanicalState* state = NULL;
             this->getContext()->get(state,core::objectmodel::BaseContext::Local);
@@ -98,7 +103,8 @@ public:
                 pos.resize(state->getSize());
                 for(unsigned int i=0; i<pos.size(); ++i)
                 {
-                    pos[i]=Coord(state->getPX(i),state->getPY(i),state->getPZ(i));
+                    StdVectorTypes<Coord,Coord>::set( pos[i], state->getPX(i),state->getPY(i),state->getPZ(i) );
+//                    pos[i]=Coord(state->getPX(i),state->getPY(i),state->getPZ(i));
 //                std::cout<<"pts: "<<state->getPX(0)<<", "<<state->getPY(0)<<", "<<state->getPZ(0);
                 }
             }
@@ -187,15 +193,21 @@ struct ShapeFunctionTypes
     static const char* Name();
 };
 
-typedef ShapeFunctionTypes<3,float> ShapeFunction3f;
+typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
+typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
+typedef ShapeFunctionTypes<3,float>  ShapeFunction3f;
 typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
 
 #ifdef SOFA_FLOAT
+typedef ShapeFunction2f ShapeFunction2;
 typedef ShapeFunction3f ShapeFunction3;
 #else
+typedef ShapeFunction2d ShapeFunction2;
 typedef ShapeFunction3d ShapeFunction3;
 #endif
 
+template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
+template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
 template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
 template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
 

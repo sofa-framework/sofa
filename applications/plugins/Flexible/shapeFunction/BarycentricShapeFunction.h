@@ -279,7 +279,7 @@ public:
                     BasesType m,mt;
                     m[0] = parent[triangles[t][1]]-parent[triangles[t][0]];
                     m[1] = parent[triangles[t][2]]-parent[triangles[t][0]];
-                    m[2] = cross ( m[0],m[1] );
+//                    m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[t].invert ( mt );
                 }
@@ -289,7 +289,7 @@ public:
                     BasesType m,mt;
                     m[0] = parent[quads[c][1]]-parent[quads[c][0]];
                     m[1] = parent[quads[c][3]]-parent[quads[c][0]];
-                    m[2] = cross ( m[0],m[1] );
+//                    m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[c0+c].invert ( mt );
                 }

@@ -12,6 +12,7 @@
     <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
     <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
     <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0 0 1" />
+    <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  0 1" />
 
 
 
