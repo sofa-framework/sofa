@@ -75,7 +75,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     if(e[0] == e[1])
     {
         sout << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
-                << e[0] << ", " << e[1] << endl;
+                << e[0] << ", " << e[1] << sendl;
 
         return;
     }
@@ -87,7 +87,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
         if(m_container->getEdgeIndex(e[0],e[1]) != -1)
         {
             sout << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
-                    << e[0] << ", " << e[1] << " already exists." << endl;
+                    << e[0] << ", " << e[1] << " already exists." << sendl;
             return;
         }
     }
@@ -186,7 +186,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
 {
     if(!m_container->hasEdges())	// this method should only be called when edges exist
     {
-        sout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << sendl;
         return;
     }
 
@@ -730,7 +730,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
     //reverse cuthill_mckee_ordering
     cuthill_mckee_ordering(G, inv_perm.rbegin());
 
-    //sout << "Reverse Cuthill-McKee ordering:" << endl;
+    //sout << "Reverse Cuthill-McKee ordering:" << sendl;
     //sout << "  ";
     unsigned int ind_i = 0;
     for (std::vector<Vertex>::const_iterator it = inv_perm.begin();
@@ -739,7 +739,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
         //sout << index_map[*it] << " ";
         inverse_permutation[ind_i++]=index_map[*it];
     }
-    //sout << endl;
+    //sout << sendl;
 
     for (size_type c=0; c!=inv_perm.size(); ++c)
         perm[index_map[inv_perm[c]]] = c;

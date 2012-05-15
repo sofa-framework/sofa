@@ -357,7 +357,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << endl;
+        sout << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << sendl;
 #endif
         return;
     }

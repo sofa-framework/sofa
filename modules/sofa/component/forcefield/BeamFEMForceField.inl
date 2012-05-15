@@ -796,7 +796,7 @@ void BeamInfo::localStiffness()
 // 			_k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
 
 	}
-	CatchAll { sout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << endl;
+	CatchAll { sout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << sendl;
 	}
 }
 */
@@ -827,7 +827,7 @@ void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3
 		K.SubMatrix(1,6,1,6) = _k_loc.SubMatrix(7,12,7,12);
 	}
 	CatchAll {
-		sout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << endl;
+		sout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << sendl;
 	}
 
 	P1P2 = P2 - P1;
@@ -857,7 +857,7 @@ void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3
 	}
 	CatchAll
 	{
-		sout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << endl;
+		sout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << sendl;
 	}
 	_u_init=0.0;
  	_u_init.SubMatrix(7,12,1,1) = Uinit.SubMatrix(1,6,1,1);

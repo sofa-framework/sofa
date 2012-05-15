@@ -420,7 +420,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         serr << sendl;
     }
 
-    //sout << "quit init "  << endl;
+    //sout << "quit init "  << sendl;
 
     //sout << "----------- Test Quaternions --------------" << sendl;
 

@@ -79,7 +79,7 @@ void InputEventReader::init()
             outFile->open(p_outputFilename.getFullPath().c_str());
             if( !outFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not writable" << std::endl;
+                serr << "File " <<p_outputFilename.getFullPath() << " not writable" << sendl;
                 delete outFile;
                 outFile = NULL;
             }
@@ -89,7 +89,7 @@ void InputEventReader::init()
             inFile = new std::ifstream(p_outputFilename.getFullPath().c_str(), std::ifstream::in | std::ifstream::binary);
             if( !inFile->is_open() )
             {
-                serr << "File " <<p_outputFilename.getFullPath() << " not readable" << std::endl;
+                serr << "File " <<p_outputFilename.getFullPath() << " not readable" << sendl;
                 delete inFile;
                 inFile = NULL;
             }

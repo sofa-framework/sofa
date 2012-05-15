@@ -232,7 +232,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
-        sout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << endl;
+        sout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << sendl;
 #endif
         return;
     }

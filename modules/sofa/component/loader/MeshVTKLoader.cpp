@@ -102,7 +102,7 @@ bool MeshVTKLoader::load()
         break;
     case NONE:
     default:
-        serr << "Header not recognized" << std::endl;
+        serr << "Header not recognized" << sendl;
         reader = NULL;
         break;
     }

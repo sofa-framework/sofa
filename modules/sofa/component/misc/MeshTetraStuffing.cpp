@@ -314,7 +314,7 @@ void MeshTetraStuffing::init()
                     alpha = alphaShort;
                 if (eBDist[p][e] != 0.0 && eBDist[p][e] < alpha)
                 {
-                    //sout << "point " << p << " violated on edge " << e << " by alpha " << eBDist[p][e] << endl;
+                    //sout << "point " << p << " violated on edge " << e << " by alpha " << eBDist[p][e] << sendl;
                     violated = true;
                 }
             }

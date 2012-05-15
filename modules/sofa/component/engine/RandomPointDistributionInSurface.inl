@@ -220,7 +220,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {
-        serr << "Error in input data (number of vertices of triangles is less than 1)." << std::endl;
+        serr << "Error in input data (number of vertices of triangles is less than 1)." << sendl;
         return;
     }
 

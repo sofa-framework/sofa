@@ -437,7 +437,7 @@ const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexah
     if(!hasHexahedra() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        sout << "Warning. [HexahedronSetTopologyContainer::getHexahedronArray] creating hexahedron array." << endl;
+        sout << "Warning. [HexahedronSetTopologyContainer::getHexahedronArray] creating hexahedron array." << sendl;
 #endif
         createHexahedronSetArray();
     }
@@ -597,7 +597,7 @@ QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID,
     if (QaroundE.size() < 2)
     {
 #ifndef NDEBUG
-        serr << "Error: getNextAdjacentQuad: no quad around edge: " << the_edgeID << endl;
+        serr << "Error: getNextAdjacentQuad: no quad around edge: " << the_edgeID << sendl;
 #endif
         return nextQuad;
     }
@@ -883,7 +883,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [HexahedronSetTopologyContainer::checkConnexity] Can't compute connexity as there are no Hexahedra" << endl;
+        serr << "Warning. [HexahedronSetTopologyContainer::checkConnexity] Can't compute connexity as there are no Hexahedra" << sendl;
 #endif
         return false;
     }
@@ -907,7 +907,7 @@ unsigned int HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
     if (nbr == 0)
     {
 #ifndef NDEBUG
-        serr << "Warning. [HexahedronSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no Hexahedra" << endl;
+        serr << "Warning. [HexahedronSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no Hexahedra" << sendl;
 #endif
         return 0;
     }
@@ -942,7 +942,7 @@ const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
     if(!hasHexahedraAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        serr << "Warning. [HexahedronSetTopologyContainer::getConnectedElement] hexahedron vertex shell array is empty." << endl;
+        serr << "Warning. [HexahedronSetTopologyContainer::getConnectedElement] hexahedron vertex shell array is empty." << sendl;
 #endif
         createHexahedraAroundVertexArray();
     }
@@ -1011,7 +1011,7 @@ const VecHexaID HexahedronSetTopologyContainer::getElementAroundElement(HexaID e
     if (!hasHexahedraAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [HexahedronSetTopologyContainer::getElementAroundElement] hexahedron vertex shell array is empty." << endl;
+        serr << "Warning. [HexahedronSetTopologyContainer::getElementAroundElement] hexahedron vertex shell array is empty." << sendl;
 #endif
         createHexahedraAroundVertexArray();
     }
@@ -1054,7 +1054,7 @@ const VecHexaID HexahedronSetTopologyContainer::getElementAroundElements(VecHexa
     if (!hasHexahedraAroundVertex())
     {
 #ifndef NDEBUG
-        serr << "Warning. [HexahedronSetTopologyContainer::getElementAroundElements] hexahedron vertex shell array is empty." << endl;
+        serr << "Warning. [HexahedronSetTopologyContainer::getElementAroundElements] hexahedron vertex shell array is empty." << sendl;
 #endif
         createHexahedraAroundVertexArray();
     }
