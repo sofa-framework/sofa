@@ -36,7 +36,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
 #include <set>
 
 namespace sofa

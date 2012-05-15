@@ -33,7 +33,7 @@
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
-#ifdef WIN32
+#if defined(WIN32) && defined(SOFA_HAVE_PLUGIN_Compliant)
 #include <plugins/Compliant/CompliantAttachPerformer.h>
 #endif
 #endif

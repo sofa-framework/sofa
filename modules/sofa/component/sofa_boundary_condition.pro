@@ -59,13 +59,7 @@ HEADERS += initBoundaryCondition.h \
            projectiveconstraintset/PointConstraint.h \
            projectiveconstraintset/PointConstraint.inl \
            projectiveconstraintset/PositionBasedDynamicsConstraint.h \
-           projectiveconstraintset/PositionBasedDynamicsConstraint.inl \
-           projectiveconstraintset/ProjectToPlaneConstraint.h \
-           projectiveconstraintset/ProjectToLineConstraint.inl \
-           projectiveconstraintset/ProjectToPlaneConstraint.h \
-           projectiveconstraintset/ProjectToPlaneConstraint.inl \
-           projectiveconstraintset/ProjectToPointConstraint.h \
-           projectiveconstraintset/ProjectToPointConstraint.inl
+           projectiveconstraintset/PositionBasedDynamicsConstraint.inl
 
 
 SOURCES += initBoundaryCondition.cpp \
@@ -95,10 +89,22 @@ SOURCES += initBoundaryCondition.cpp \
            projectiveconstraintset/PartialFixedConstraint.cpp \
            projectiveconstraintset/PartialLinearMovementConstraint.cpp \
            projectiveconstraintset/PointConstraint.cpp \
-           projectiveconstraintset/PositionBasedDynamicsConstraint.cpp \
-           projectiveconstraintset/ProjectToLineConstraint.cpp \
+           projectiveconstraintset/PositionBasedDynamicsConstraint.cpp
+           
+		   
+contains(DEFINES,SOFA_HAVE_EIGEN2){
+HEADERS += projectiveconstraintset/ProjectToLineConstraint.h \
+           projectiveconstraintset/ProjectToLineConstraint.inl \
+		   projectiveconstraintset/ProjectToPlaneConstraint.h \
+           projectiveconstraintset/ProjectToPlaneConstraint.inl \
+           projectiveconstraintset/ProjectToPointConstraint.h \
+           projectiveconstraintset/ProjectToPointConstraint.inl
+
+
+SOURCES += projectiveconstraintset/ProjectToLineConstraint.cpp \
            projectiveconstraintset/ProjectToPlaneConstraint.cpp \
            projectiveconstraintset/ProjectToPointConstraint.cpp
+}
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
