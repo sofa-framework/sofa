@@ -56,10 +56,10 @@ public:
     /// Read the value of the element at row i, column j (using 0-based indices)
     virtual SReal element(int i, int j) const
     {
-        int bd = (i/3)*3;
-        if ((j<bd) || (j>bd+2)) return 0.0 ;
+        int bd = j-(i/3)*3;
+        if ((bd<0) || (bd>2)) return 0.0 ;
 
-        return data[i*3+j-bd];
+        return data[i*3+bd];
     }
 
     /// Resize the matrix and reset all values to 0
