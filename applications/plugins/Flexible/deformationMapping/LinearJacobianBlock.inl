@@ -46,6 +46,7 @@ namespace defaulttype
 #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
 #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 #define F331(type)  DefGradientTypes<3,3,0,type>
+#define F321(type)  DefGradientTypes<3,2,0,type>
 #define F332(type)  DefGradientTypes<3,3,1,type>
 #define Rigid3(type)  StdRigidTypes<3,type>
 #define Affine3(type)  StdAffineTypes<3,type>
@@ -317,6 +318,90 @@ public:
     // no geometric striffness (contstant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Vec3 -> F321
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class LinearJacobianBlock< V3(InReal) , F321(OutReal) > :
+    public  BaseJacobianBlock< V3(InReal) , F321(OutReal) >
+{
+public:
+    typedef V3(InReal) In;
+    typedef F321(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { dim = Out::spatial_dimensions };
+    enum { mdim = Out::material_dimensions };
+//    enum { mdim = Out::spatial_dimensions };
+
+    typedef Vec<mdim,Real> Gradient;
+//    typedef Mat<mdim,dim,Real> Hessian;
+    typedef Mat<2,3,Real> Hessian;
+
+    /**
+    Mapping:
+        - \f$ p = w.t + w.(p0-t0)  \f$
+        - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
+    where :
+        - t0 is t in the reference configuration,
+        - p0 is the position of p in the reference configuration.
+        - grad denotes spatial derivatives
+    Jacobian:
+        - \f$ dp = w.dt \f$
+        - \f$ d F = dt.grad w \f$
+      */
+
+    static const bool constantJ=true;
+
+    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I   =  constant term
+    Real Pt;           ///< =   w     =  dp/dt
+    Gradient Ft;  ///< =   grad w     =  d F/dt
+
+    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    {
+        Pt=w;
+        C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
+        Ft=dw;
+        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
+    }
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        result.getCenter() +=  data * Pt + C.getCenter();
+        result.getF() +=  covMN(data,Ft) + C.getF();
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getCenter() += data * Pt ;
+        result.getF() += covMN(data,Ft) ;
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result += data.getCenter() * Pt ;
+        result += data.getF() * Ft ;
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock J;
+        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+dim+i*mdim][i]=Ft[j];
+        return J;
+    }
 };
 
 
