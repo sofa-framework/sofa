@@ -71,7 +71,7 @@ public:
     /**
       * DOFs: sqrt(I1), sqrt(I2), J
       *
-      * power =1 : classic Mooney rivlin
+      * classic Mooney rivlin
       *     - W = vol* [ C1 ( I1 - 3)  + C2 ( I2 - 3) ]
       *     - f = - 2 [ vol*C1*sqrt(I1) , vol*C2*sqrt(I12) , 0 ]
       *     - df =  - 2 [ vol*C1 , vol*C2 , 0 ]
