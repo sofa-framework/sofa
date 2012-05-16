@@ -114,10 +114,10 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
     bool isScalar = PyFloat_Check(args);
     bool isString = PyString_Check(args);
     bool isList = PyList_Check(args);
-    printf ("isInt=%d\n", isInt);
-    printf ("isScalar=%d\n", isScalar);
-    printf ("isString=%d\n", isString);
-    printf ("isList=%d\n", isList);
+//    printf ("isInt=%d\n", isInt);
+//    printf ("isScalar=%d\n", isScalar);
+//    printf ("isString=%d\n", isString);
+//    printf ("isList=%d\n", isList);
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     if (isInt)
     {
@@ -257,7 +257,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
-    if (index>=typeinfo->size())
+    if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         printf("<PYTHON> Error: Data.getValue index overflow\n");
@@ -287,7 +287,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
-    if (index>=typeinfo->size())
+    if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         printf("<PYTHON> Error: Data.setValue index overflow\n");
