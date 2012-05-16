@@ -41,7 +41,7 @@ SOFA_DECL_CLASS(BarycentricShapeFunction)
 int BarycentricShapeFunctionClass = core::RegisterObject("Computes Barycentric shape functions")
 #ifndef SOFA_FLOAT
         .add< BarycentricShapeFunction<ShapeFunction2d> >()
-        .add< BarycentricShapeFunction<ShapeFunction3d> >()
+        .add< BarycentricShapeFunction<ShapeFunction3d> >(true)
 #endif
 #ifndef SOFA_DOUBLE
         .add< BarycentricShapeFunction<ShapeFunction2f> >()

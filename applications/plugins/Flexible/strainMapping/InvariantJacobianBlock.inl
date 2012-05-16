@@ -72,12 +72,11 @@ inline real getDeterminantGradient(Mat<3,3,real>& dest, const Mat<3,3,real>& fro
     return det;
 }
 
-/// return dest = d( det(from).from^-T )/d from
+/// returns  d^2 det(from)/d from^2 = d( det(from).from^-T )/d from
 template<class real>
-static Eigen::Matrix<real,9,9,Eigen::RowMajor> getDeterminantHessian(const Mat<3,3,real>& from)
+static Mat<9,9,real> getDeterminantHessian(const Mat<3,3,real>& from)
 {
-    typedef Eigen::Matrix<real,9,9,Eigen::RowMajor> block;
-    block ret=block::Zero();
+    Mat<9,9,real> ret;
 
     ret(0,4)=ret(4,0)=from(2,2);    ret(0,5)=ret(5,0)=-from(2,1);    ret(0,7)=ret(7,0)=-from(1,2);    ret(0,8)=ret(8,0)=from(1,1);
     ret(1,3)=ret(3,1)=-from(2,2);   ret(1,5)=ret(5,1)=from(2,0);    ret(1,6)=ret(6,1)=from(1,2);    ret(1,8)=ret(8,1)=-from(1,0);
@@ -86,6 +85,52 @@ static Eigen::Matrix<real,9,9,Eigen::RowMajor> getDeterminantHessian(const Mat<3
     ret(4,6)=ret(6,4)=-from(0,2);   ret(4,8)=ret(8,4)=from(0,0);
     ret(5,6)=ret(6,5)=from(0,1);    ret(5,7)=ret(7,5)=-from(0,0);
     ret(5,8)=ret(5,6)=from(0,1);
+    return ret;
+}
+
+//template<class real>
+//static void addMultDeterminantHessian(Mat<3,3,real>& out, const Mat<3,3,real>& in, const Mat<3,3,real>& from)
+//{
+//    out(0,0)+=from(2,2)*in(1,1)-from(2,1)*in(1,2)-from(1,2)*in(2,1)+from(1,1)*in(2,2);  out(0,1)+=-from(2,2)*in(1,0)+from(2,0)*in(1,2)+from(1,2)*in(2,0)-from(1,0)*in(2,2); out(0,2)+=from(2,1)*in(1,0)-from(2,0)*in(1,1)-from(1,1)*in(2,0)+from(1,0)*in(2,1);
+//    out(1,0)+=-from(2,2)*in(0,1)+from(2,1)*in(0,2)+from(0,2)*in(2,1)-from(0,1)*in(2,2); out(1,1)+=from(2,2)*in(0,0)-from(2,0)*in(0,2)-from(0,2)*in(2,0)+from(0,0)*in(2,2);  out(1,2)+=-from(2,1)*in(0,0)+from(2,0)*in(0,1)+from(0,1)*in(2,0)-from(0,0)*in(2,1);
+//    out(2,0)+=from(1,2)*in(0,1)-from(1,1)*in(0,2)-from(0,2)*in(1,1)+from(0,1)*in(1,2);  out(2,1)+=-from(1,2)*in(0,0)+from(1,0)*in(0,2)+from(0,2)*in(1,0)-from(0,0)*in(1,2); out(2,2)+=from(1,1)*in(0,0)-from(1,0)*in(0,1)-from(0,1)*in(1,0)+from(0,0)*in(1,1);
+//}
+
+/// returns  d^2 I2 /d from^2 = d( from.(I1*Id - from^T.from) )/d from
+template<class real>
+static Mat<9,9,real> getI1Hessian()
+{
+    Mat<9,9,real> ret;
+    for ( unsigned int i = 0; i < 9; ++i)        ret(i,i)=(real)2.;
+    return ret;
+}
+
+/// returns  d^2 I2 /d from^2 = d( from.(I1*Id - from^T.from) )/d from
+template<class real>
+static Mat<9,9,real> getI2Hessian(const Mat<3,3,real>& from)
+{
+    Mat<9,9,real> ret;
+    ret(0,0) = from(1,1)*from(1,1)+from(2,1)*from(2,1)+from(1,2)*from(1,2)+from(2,2)*from(2,2); ret(0,1) = ret(1,0) = -from(1,0)*from(1,1)-from(2,0)*from(2,1);         ret(0,2) = ret(2,0) = -from(1,0)*from(1,2)-from(2,0)*from(2,2);          ret(0,3) = ret(3,0) = -from(1,1)*from(0,1)-from(1,2)*from(0,2); ret(0,4) = ret(4,0) = (real)2.*from(0,0)*from(1,1)-from(1,0)*from(0,1); ret(0,5) = ret(5,0) = (real)2.*from(0,0)*from(1,2)-from(1,0)*from(0,2); ret(0,6) = ret(6,0) = -from(2,1)*from(0,1)-from(2,2)*from(0,2); ret(0,7) = ret(7,0) = (real)2.*from(0,0)*from(2,1)-from(2,0)*from(0,1); ret(0,8) = ret(8,0) = (real)2.*from(0,0)*from(2,2)-from(2,0)*from(0,2);
+    ret(1,1) = from(1,0)*from(1,0)+from(2,0)*from(2,0)+from(1,2)*from(1,2)+from(2,2)*from(2,2); ret(1,2) = ret(2,1) = -from(1,1)*from(1,2)-from(2,1)*from(2,2);         ret(1,3) = ret(3,1) = (real)2.*from(1,0)*from(0,1)-from(0,0)*from(1,1);  ret(1,4) = ret(4,1) = -from(1,0)*from(0,0)-from(1,2)*from(0,2); ret(1,5) = ret(5,1) = (real)2.*from(0,1)*from(1,2)-from(1,1)*from(0,2); ret(1,6) = ret(6,1) = (real)2.*from(2,0)*from(0,1)-from(0,0)*from(2,1); ret(1,7) = ret(7,1) = -from(2,0)*from(0,0)-from(2,2)*from(0,2); ret(1,8) = ret(8,1) = (real)2.*from(0,1)*from(2,2)-from(2,1)*from(0,2);
+    ret(2,2) = from(1,0)*from(1,0)+from(2,0)*from(2,0)+from(1,1)*from(1,1)+from(2,1)*from(2,1); ret(2,3) = ret(3,2) = (real)2.*from(1,0)*from(0,2)-from(0,0)*from(1,2); ret(2,4) = ret(4,2) = (real)2.*from(1,1)*from(0,2)-from(0,1)*from(1,2);  ret(2,5) = ret(5,2) = -from(1,0)*from(0,0)-from(1,1)*from(0,1); ret(2,6) = ret(6,2) = (real)2.*from(2,0)*from(0,2)-from(0,0)*from(2,2); ret(2,7) = ret(7,2) = (real)2.*from(2,1)*from(0,2)-from(0,1)*from(2,2); ret(2,8) = ret(8,2) = -from(2,0)*from(0,0)-from(2,1)*from(0,1);
+    ret(3,3) = from(0,1)*from(0,1)+from(2,1)*from(2,1)+from(0,2)*from(0,2)+from(2,2)*from(2,2); ret(3,4) = ret(4,3) = -from(0,0)*from(0,1)-from(2,0)*from(2,1);         ret(3,5) = ret(5,3) = -from(0,0)*from(0,2)-from(2,0)*from(2,2);          ret(3,6) = ret(6,3) = -from(2,1)*from(1,1)-from(2,2)*from(1,2); ret(3,7) = ret(7,3) = (real)2.*from(1,0)*from(2,1)-from(2,0)*from(1,1); ret(3,8) = ret(8,3) = (real)2.*from(1,0)*from(2,2)-from(2,0)*from(1,2);
+    ret(4,4) = from(0,0)*from(0,0)+from(2,0)*from(2,0)+from(0,2)*from(0,2)+from(2,2)*from(2,2); ret(4,5) = ret(5,4) = -from(0,1)*from(0,2)-from(2,1)*from(2,2);         ret(4,6) = ret(6,4) = (real)2.*from(2,0)*from(1,1)-from(1,0)*from(2,1);  ret(4,7) = ret(7,4) = -from(2,0)*from(1,0)-from(2,2)*from(1,2); ret(4,8) = ret(8,4) = (real)2.*from(1,1)*from(2,2)-from(1,2)*from(2,1);
+    ret(5,5) = from(0,0)*from(0,0)+from(2,0)*from(2,0)+from(0,1)*from(0,1)+from(2,1)*from(2,1); ret(5,6) = ret(6,5) = (real)2.*from(2,0)*from(1,2)-from(1,0)*from(2,2); ret(5,7) = ret(7,5) = (real)2.*from(1,2)*from(2,1)-from(1,1)*from(2,2);  ret(5,8) = ret(8,5) = -from(2,0)*from(1,0)-from(2,1)*from(1,1);
+    ret(6,6) = from(0,1)*from(0,1)+from(1,1)*from(1,1)+from(0,2)*from(0,2)+from(1,2)*from(1,2); ret(6,7) = ret(7,6) = -from(0,0)*from(0,1)-from(1,0)*from(1,1);         ret(6,8) = ret(8,6) = -from(0,0)*from(0,2)-from(1,0)*from(1,2);
+    ret(7,7) = from(0,0)*from(0,0)+from(1,0)*from(1,0)+from(0,2)*from(0,2)+from(1,2)*from(1,2); ret(7,8) = ret(8,7) = -from(0,1)*from(0,2)-from(1,1)*from(1,2);
+    ret(8,8) = from(0,0)*from(0,0)+from(1,0)*from(1,0)+from(0,1)*from(0,1)+from(1,1)*from(1,1);
+    ret*=(real)2.;
+    return ret;
+}
+
+/// returns  U.V^T where U and V are 9d vectors
+template<class real>
+static Mat<9,9,real> getCov(const real* u,const real* v)
+{
+    Mat<9,9,real> ret;
+    for ( unsigned int i = 0; i < 9; ++i)
+        for ( unsigned int j = 0; j < 9; ++j)
+            ret(i,j) = u[i] * v[j];
     return ret;
 }
 
@@ -111,41 +156,51 @@ public:
     typedef typename Inherit::Real Real;
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
     typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;
+    typedef Mat<frame_size,frame_size,Real> Hessian; ///< Matrix representing the Hessian of a scalar wrt. deformation gradient
 
     /**
     Mapping:
-        - \f$ I1^{1/2} = trace(C)^{1/2} \f$
-        - \f$ I2^{1/2} = [ ( trace(C^2)+trace(C)^2 )/2 ] ^{1/2} \f$
-        - \f$ J = det(F) \f$
-    where:
-        - \f$  C=F^TF \f$ is the right Cauchy deformation tensor
+        - non-deviatoric: \f$ F -> [ sqrt(I1) , sqrt(I2), J ] \f$
+        - deviatoric \f$ F -> [ sqrt(I1/J^{2/3}) , sqrt(I2/J^{4/3}), J ] \f$
     Jacobian:
-        - \f$ dI1^{1/2} = I1^{-1/2}/2 dI1 = I1^{-1/2}/2 trace(dF^T F + F^T dF ) = I1^{-1/2} * sum F_i.dF_i \f$
-        - \f$ dI2^{1/2} = I2^{-1/2}/2 dI2 = I2^{-1/2} * sum ( F(I1*Id - C) )_i dF_i \f$
-        - \f$ dJ = J sum (F^-T)_i dF_i \f$
+        - non-deviatoric: \f$ J = [ dI1/(2.sqrt(I1)) , dI2/(2.sqrt(I2)), dJ ] \f$
+        - deviatoric \f$ J = [ d(sqrt(I1))/J^{1/3} - dJ*sqrt(I1/J^{2/3})/3J, d(sqrt(I2))/J^{2/3} - dJ*sqrt(I2/J^{2/3})*2/3J, dJ ] \f$
+    Hessian:
+        - non-deviatoric: \f$ H = [ ddI1/(2.sqrt(I1)) - dI1^T.dI1/(4*I1^{3/2}), ddI2/(2.sqrt(I2)) - dI2^T.dI2/(4*I2^{3/2}), dJ ] \f$
+    where:
+        - \f$ I1 = trace(C) \f$ ,                           \f$ dI1 = trace(dF^T F + F^T dF ) = 2 sum F_i.dF_i \f$
+        - \f$ I2 = [ ( trace(C^2)+trace(C)^2 )/2 ]  \f$ ,   \f$ dI2 = 2 sum ( F(I1*Id - C) )_i dF_i \f$
+        - \f$ J = det(F) \f$ ,                              \f$ dJ = J sum (F^-T)_i dF_i \f$
+        - \f$ C=F^TF \f$ is the right Cauchy deformation tensor
     */
 
-    static const Real MIN_DETERMINANT=0.2;
+
+
+    static const Real MIN_DETERMINANT=0.001; ///< J is clamped to avoid undefined deviatoric expressions
 
     static const bool constantJ=false;
     bool deviatoric;
     Real Jm13; Real Jm23; Real Jm43; Real Jm53; ///< stored variables to handle deviatoric invariants
 
     /// mapping parameters
-    Frame F;
     Frame dsrI1;
     Frame dsrI2;
     Frame dJ;
 
+    Hessian dd1;
+    Hessian dd2;
+    Hessian ddJ;
+
     void addapply( OutCoord& result, const InCoord& data )
     {
-        F=data.getF();
+        Frame F=data.getF();
         Real detF=getDeterminantGradient(dJ, F);
 
         if ( detF<=MIN_DETERMINANT) detF = MIN_DETERMINANT;   // CLAMP J
@@ -162,13 +217,30 @@ public:
         dsrI1=F/srI1;
         dsrI2=-F*C/srI2;
 
+        // hessian
+        ddJ = getDeterminantHessian(F);
+        dd1 = (getI1Hessian<Real>()*0.5 - getCov(&dsrI1[0][0],&dsrI1[0][0]))/srI1;
+        dd2 = (getI2Hessian(F)*0.5 - getCov(&dsrI2[0][0],&dsrI2[0][0]))/srI2;
+
         if(deviatoric)
         {
             Jm13=pow(detF,-(Real)1./(Real)3.); Jm23=Jm13*Jm13;
             srI1*=Jm13; srI2*=Jm23;
             Jm43=srI1/(detF*(Real)3.); Jm53=(Real)2.*srI2/(detF*(Real)3.);
-        }
 
+            // hessian
+            ddJ = getDeterminantHessian(F);
+            dd1 = dd1*Jm13 - ddJ*Jm43
+                    - (getCov(&dsrI1[0][0],&dJ[0][0])+getCov(&dJ[0][0],&dsrI1[0][0]))*Jm23*Jm23/(Real)3.
+                    + getCov(&dJ[0][0],&dJ[0][0])*(Real)4.*srI1/(detF*detF*(Real)9.);
+            dd2 = dd2*Jm23 - ddJ*Jm53
+                    - (getCov(&dsrI2[0][0],&dJ[0][0])+getCov(&dJ[0][0],&dsrI2[0][0]))*(Real)2.*Jm23/(detF*(Real)3.)
+                    + getCov(&dJ[0][0],&dJ[0][0])*(Real)10.*srI2/(detF*detF*(Real)9.);
+        }
+//        std::cout<<"F="<<F<<std::endl;
+//        std::cout<<"dd1="<<dd1<<std::endl;
+//        std::cout<<"dd2="<<dd2<<std::endl;
+//        std::cout<<"ddJ="<<ddJ<<std::endl;
         result.getStrain()[0]+= srI1;
         result.getStrain()[1]+= srI2;
         result.getStrain()[2]+= detF;
@@ -226,17 +298,23 @@ public:
     KBlock getK(const OutDeriv& childForce)
     {
         KBlock K = KBlock();
+        Hessian H=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
+
         typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eK(&K[0][0]);
+        typedef Eigen::Map<Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> > EigenHMap;
+        EigenHMap eH(&H[0][0]);
 
-        Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> ddJ = getDeterminantHessian(F);
-
-        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += ddJ * childForce[2];
+        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += eH;
 
         return K;
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
+        Hessian H=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
+        const Vec<frame_size,Real>& vdx = *reinterpret_cast<const Vec<frame_size,Real>*>(&dx.getF()[0][0]);
+        Vec<frame_size,Real>& vdf = *reinterpret_cast<Vec<frame_size,Real>*>(&df.getF()[0][0]);
+        vdf += H*vdx*kfactor;
     }
 };
 

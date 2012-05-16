@@ -1,4 +1,14 @@
-\documentclass{article}
+\documentclass[a4paper,11pt]{article}
+\input{../../../../doc/macros_docu} % This file is in parent directory. Your TEXINPUTS environment variable must include .. to reach this file. Example: setenv TEXINPUTS ..:../..:${TEXINPUTS}
+
+% ---- format de page A4
+	\setlength{\textwidth }{16cm}	% largeur de ligne
+	\setlength{\textheight}{23cm}   % hauteur du texte
+	\setlength{\oddsidemargin}{0cm} % marge pages impaires
+	\setlength{\evensidemargin}{0cm}% marge pages paires
+	\setlength{\topmargin}{0cm} 	
+	\setlength{\headheight}{14pt} 
+	\setlength{\headsep}{0.5cm} 
 
 \newenvironment{componentoption}[1]%
 {\textbf{#1}\newline}
@@ -7,6 +17,8 @@
 \newcommand{\aliases}[1] {\newline \textit{Aliases - } #1}
 \newcommand{\defaultvalue}[1] {\newline \textit{Default Value - } #1}
 \newcommand{\valuetype}[1] {\newline \textit{Value Type - } \textbf{#1}}
+
+\usepackage{hyperref}
 
 \begin{document}
 \raggedright
@@ -17,8 +29,11 @@
 \maketitle
 
 \begin{abstract}
-Replace this with your plugin documentation. You may want to use the following structure.
+
 \end{abstract}
+
+\include{flexible_body}
+
 
 \section{Requirements}
 
