@@ -28,6 +28,7 @@
 #include <Python.h>
 #include <boost/intrusive_ptr.hpp>
 
+
 // parameters convertion
 /*
 PyObject* _PyObject_cast(bool b) {return PyBool_FromLong(b);}
@@ -89,6 +90,7 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
 #define SP_BUILD_PYSPTR(PyType,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(PyType))
 // on n'utilise pas BuildPySPtr<T> car la dynamic_cast se fera sur un T* et pas un T::SPtr
 // le type cpp n'est pas nécessaire, tous les SPtr de Sofa héritant de Base
+
 
 
 // =============================================================================

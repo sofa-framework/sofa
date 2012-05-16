@@ -92,7 +92,7 @@ PyObject * BaseObjectDescription_PyNew(PyTypeObject */*type*/, PyObject *args, P
     char *type;
     if (!PyArg_ParseTuple(args, "ss",&name,&type))
         return 0;
-    printf("BaseObjectDescription name=%S type =%s\n",name,type);
+    printf("BaseObjectDescription name=%s type =%s\n",name,type);
     return SP_BUILD_PYPTR(BaseObjectDescription,BaseObjectDescription,new BaseObjectDescription(name,type),true); // "true", because I manage the deletion myself (below)
 }
 void BaseObjectDescription_PyFree(void * self)
