@@ -138,18 +138,21 @@ using namespace sofa::gui;
 // send a text message to the GUI
 extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 {
-    char *msgType;
-    char *msgValue;
-    if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
-        return 0;
-    SofaGUI *gui = GUIManager::getGUI();
-    if (!gui)
-    {
-        printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
-        return Py_BuildValue("i",-1);
-    }
-    gui->sendMessage(msgType,msgValue);
+    /*
+      // temp
 
+        char *msgType;
+        char *msgValue;
+        if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
+            return 0;
+        SofaGUI *gui = GUIManager::getGUI();
+        if (!gui)
+        {
+            printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
+            return Py_BuildValue("i",-1);
+        }
+        gui->sendMessage(msgType,msgValue);
+    */
 
     return Py_BuildValue("i",0);
 }
