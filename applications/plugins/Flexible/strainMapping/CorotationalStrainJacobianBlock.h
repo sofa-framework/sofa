@@ -33,6 +33,9 @@ namespace sofa
 namespace defaulttype
 {
 
+
+typedef enum { POLAR, QR, SMALL, SVD } RotationDecompositionMethod;
+
 /** Template class used to implement one jacobian block for CorotationalStrainMapping */
 template<class TIn, class TOut>
 class CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};

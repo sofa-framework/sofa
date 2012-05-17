@@ -277,6 +277,16 @@ public:
             this->elems[i][i]=1;
     }
 
+    /// Returns the identity matrix
+    static Mat<L,L,real> Identity()
+    {
+        BOOST_STATIC_ASSERT(L == C);
+        Mat<L,L,real> id;
+        for (int i=0; i<L; i++)
+            id[i][i]=1;
+        return id;
+    }
+
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
@@ -406,6 +416,18 @@ public:
         return r;
     }
 
+
+    /// Multiplication with a diagonal Matrix represented as a vector (possible for square matrices only)
+    Mat<L,C,real> multDiagonal(const Col& d) const
+    {
+        BOOST_STATIC_ASSERT(L==C);
+        Mat<L,C,real> r(NOINIT);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<C; j++)
+                r[i][j]=(*this)[i][j] * d[j];
+        return r;
+    }
+
     /// Multiplication of the transposed Matrix * Column
     Line multTranspose(const Col& v) const
     {
@@ -432,6 +454,41 @@ public:
                 for(int k=1; k<L; k++)
                     r[i][j] += (*this)[k][i] * m[k][j];
             }
+        return r;
+    }
+
+    /// Multiplication with the transposed of the given matrix operator \returns this * mt
+    template <int P>
+    Mat<L,P,real> multTransposed(const Mat<P,C,real>& m) const
+    {
+        Mat<L,P,real> r(NOINIT);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<P; j++)
+            {
+                r[i][j]=(*this)[i][0] * m[j][0];
+                for(int k=1; k<C; k++)
+                    r[i][j] += (*this)[i][k] * m[j][k];
+            }
+        return r;
+    }
+
+    /// Addition with the transposed of the given matrix operator \returns this + mt
+    Mat<L,C,real> plusTransposed(const Mat<C,L,real>& m) const
+    {
+        Mat<L,C,real> r(NOINIT);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<C; j++)
+                r[i][j] = (*this)[i][j] + m[j][i];
+        return r;
+    }
+
+    /// Substraction with the transposed of the given matrix operator \returns this - mt
+    Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const
+    {
+        Mat<L,C,real> r(NOINIT);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<C; j++)
+                r[i][j] = (*this)[i][j] - m[j][i];
         return r;
     }
 
@@ -483,21 +540,21 @@ public:
             this->elems[i]+=m[i];
     }
 
-    /// Addition of the transposed of m (possible for square matrices only)
-    void addTransposed(const Mat<L,C,real>& m)
+    /// Addition of the transposed of m
+    void addTransposed(const Mat<C,L,real>& m)
     {
         BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
-            for(int j=0; j<L; j++)
+            for(int j=0; j<C; j++)
                 (*this)[i][j] += m[j][i];
     }
 
-    /// Substraction of the transposed of m (possible for square matrices only)
-    void subTransposed(const Mat<L,C,real>& m)
+    /// Substraction of the transposed of m
+    void subTransposed(const Mat<C,L,real>& m)
     {
         BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
-            for(int j=0; j<L; j++)
+            for(int j=0; j<C; j++)
                 (*this)[i][j] -= m[j][i];
     }
 

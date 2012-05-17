@@ -242,13 +242,13 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
 
 
 
-        Transformation R_0_1;
-        polarDecomposition( A, R_0_1 );
-        R_0_1.transpose();
-        _initialRotation[i] = ( R_0_1 );
-        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField R_0_1 "<<R_0_1<<sendl;
+        //Transformation R_0_1;
+        polarDecomposition( A, _initialRotation[i] );
+        _initialRotation[i].transpose();
+        //_initialRotation[i] = R_0_1;
+        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField initialRotation "<<_initialRotation[i]<<sendl;
 
-        _initialTransformation[i].invert( R_0_1 * A );
+        _initialTransformation[i].invert( _initialRotation[i] * A );
 
 
         /*serr<<"R_0_1 * A "<<R_0_1 * A<<sendl;
@@ -314,20 +314,15 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
         Coord N1 = cross( ac, ad ); // face (a,c,d)
         Coord N0 = cross( bd, bc ); // face (b,c,d)
 
-        /*    Coord N3 = -cross( -ac, -ab ); // face (a,b,c)
-                    Coord N2 = -cross( ad, bd ); // face (a,d,b)
-                    Coord N1 = -cross( ac, -cd ); // face (a,c,d)
-                    Coord N0 = -cross( -bc, -bd ); // face (b,c,d)*/
-
         // the node ordering changes the normal directions
         Real coef = determinant(A)>0 ? 1/6.0 : -1/6.0;
 
-        R_0_1.transpose();
+        //_initialRotation[i].transpose();
 
         ////// compute b_i = -(Nj+Nk+Nl)/3 where N_j are the area-weighted normals of the triangles incident to the node i
-        _b[i][0] = /*R_0_1 **/ ( N1 + N2 + N3 ) * coef;
-        _b[i][1] = /*R_0_1 **/ ( N0 + N2 + N3 ) * coef;
-        _b[i][2] = /*R_0_1 **/ ( N0 + N1 + N3 ) * coef;
+        _b[i][0] = /*_initialRotation[i] **/ ( N1 + N2 + N3 ) * coef;
+        _b[i][1] = /*_initialRotation[i] **/ ( N0 + N2 + N3 ) * coef;
+        _b[i][2] = /*_initialRotation[i] **/ ( N0 + N1 + N3 ) * coef;
         //_b[i][3] = ( N0 + N1 + N2 ) * coef;
 
         if( _verbose.getValue() && determinant(A) < 0 ) serr<<"detA "<<determinant(A)<<sendl;
