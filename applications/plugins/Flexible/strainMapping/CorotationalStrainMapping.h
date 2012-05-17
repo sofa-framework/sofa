@@ -52,16 +52,16 @@ public:
 
     /** @name  Corotational methods */
     //@{
-    typedef enum { POLAR, QR, SMALL } RotationDecompositionMethod;
     Data<std::string> f_method;
-    RotationDecompositionMethod decompositionMethod;
+    sofa::defaulttype::RotationDecompositionMethod decompositionMethod;
     //@}
 
     virtual void reinit()
     {
-        if (f_method.getValue() == "small") decompositionMethod= SMALL;
-        else if (f_method.getValue() == "large") decompositionMethod= QR;
-        else decompositionMethod= POLAR;
+        if (f_method.getValue() == "small") decompositionMethod = sofa::defaulttype::SMALL;
+        else if (f_method.getValue() == "large" || f_method.getValue() == "qr") decompositionMethod = sofa::defaulttype::QR;
+        else if (f_method.getValue() == "svd") decompositionMethod = sofa::defaulttype::SVD;
+        else  decompositionMethod = sofa::defaulttype::POLAR;
 
         for(unsigned int i=0; i<this->jacobian.size(); i++) this->jacobian[i].decompositionMethod=decompositionMethod;
         Inherit::reinit();
@@ -71,7 +71,7 @@ public:
 protected:
     CorotationalStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
-        , f_method(initData(&f_method,std::string("polar"),"method","\"large\" (by QR), \"polar\" or \"small\" displacements"))
+        , f_method(initData(&f_method,std::string("polar"),"method", "\"qr\", \"polar\", \"svd\" or \"small\" displacements"))
     {
     }
 

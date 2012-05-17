@@ -17,11 +17,11 @@
 
 	     <UniformMass totalMass="250" />
 
-	     <TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/> 
-	 <!--  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/>  -->
+	     <TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/> 
+	  <!--TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/-->  
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1"/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
@@ -43,7 +43,7 @@
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar"/>
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
 	    </Node>
         </Node>

@@ -13,10 +13,14 @@
 	      
 	      <Node name="FVM">
 	      <EulerSolver name="odeExplicitSolver" />
-            <MeshGmshLoader name="loader" filename="mesh/single_tetra3.msh" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader"  />
-            <UniformMass totalmass="5" />
+	      
+	      <!--Mesh name="mesh" position="0 0 0  1 0 0  0 1 0  0 0 1" tetrahedra="0 1 2 3" />   <!--regular tetra-->
+	      <!--Mesh name="mesh" position="0 0 0  1 0 0  0 1 0  0 0 -1" tetrahedra="0 1 2 3" />   <!--inverted tetra-->
+	      <Mesh name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
+	      <!--Mesh name="mesh" position="0.2 -0.1 0.3  0.7 0.2 0.1  -0.2 0.7 0.2  0.2 -0.1 1" tetrahedra="0 1 2 3" />   <!--crappy tetra-->
+	    
+            <MechanicalObject src="@mesh"  />
+            <UniformMass totalmass="4" />
             <InvertibleFVMForceField name="FEM" youngModulus="1000" poissonRatio="0" verbose="true"/>
 	    <Point />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
@@ -27,10 +31,11 @@
 	    
 	    <Node name="FEM">
 	    <EulerSolver name="odeExplicitSolver" />
-            <MeshGmshLoader name="loader2" filename="mesh/single_tetra3.msh" />
-            <Mesh src="@loader2" />
-            <MechanicalObject src="@loader2" dx="2" />
-            <UniformMass totalmass="5" />
+	    
+             <Mesh name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
+	     
+            <MechanicalObject src="@mesh" dx="2" />
+            <UniformMass totalmass="4" />
 	    <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
 	    <Point />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />

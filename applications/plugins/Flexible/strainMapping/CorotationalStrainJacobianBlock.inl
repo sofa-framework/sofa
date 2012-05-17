@@ -92,11 +92,212 @@ static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const  Mat<2,2,Real>& f
 }
 
 template<typename Real>
-void  computeQR( Mat<3,3,Real> &r, const  Mat<3,3,Real>& f)
+void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
     Vec<3,Real> edgex(f[0][0],f[1][0],f[2][0]);
     Vec<3,Real> edgey(f[0][1],f[1][1],f[2][1]);
-    helper::getRotation(r,edgex,edgey);
+    helper::getRotation( r, edgex, edgey );
+
+    Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
+    s = T.plusTransposed( T )*(Real)0.5; // s = ( T + Tt ) * 0.5
+}
+
+template<typename Real>
+void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
+{
+    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerated cases
+    {
+
+        // using "invertible FEM" article notations
+
+        Mat<3,3,Real> U, V; // the two rotations
+        Vec<3,Real> F_diagonal, P_diagonal; // diagonalized strain, diagonalized stress
+
+        Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+
+        eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+
+
+        // if V is a reflexion -> made it a rotation by negating a column
+        if( determinant(V) < 0 )
+            for( int i=0 ; i<3; ++i )
+                V[i][0] = -V[i][0];
+
+        // compute the diagonalized strain
+        for( int i = 0 ; i<3; ++i )
+        {
+            if( F_diagonal[i] < 1e-6 ) // numerical issues
+                F_diagonal[i] = 0;
+            else
+                F_diagonal[i] = helper::rsqrt( F_diagonal[i] );
+        }
+
+        // sort F_diagonal from small to large
+        Vec<3,unsigned> Forder;
+        if( F_diagonal[0]<F_diagonal[1] )
+        {
+            if( F_diagonal[0]<F_diagonal[2] )
+            {
+                Forder[0] = 0;
+                if( F_diagonal[1]<F_diagonal[2] )
+                {
+                    Forder[1] = 1;
+                    Forder[2] = 2;
+                }
+                else
+                {
+                    Forder[1] = 2;
+                    Forder[2] = 1;
+                }
+            }
+            else
+            {
+                Forder[0] = 2;
+                Forder[1] = 0;
+                Forder[2] = 1;
+            }
+        }
+        else
+        {
+            if( F_diagonal[1]<F_diagonal[2] )
+            {
+                Forder[0] = 1;
+                if( F_diagonal[0]<F_diagonal[2] )
+                {
+                    Forder[1] = 0;
+                    Forder[2] = 2;
+                }
+                else
+                {
+                    Forder[1] = 2;
+                    Forder[2] = 0;
+                }
+            }
+            else
+            {
+                Forder[0] = 2;
+                Forder[1] = 1;
+                Forder[2] = 0;
+            }
+        }
+
+
+        // the numbers of strain values too close to 0 indicates the kind of degenerescence
+        int degeneratedF;
+        for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
+
+
+        // Warning: after the switch F_diagonal is no longer valid (it can be is its own inverse)
+        switch( degeneratedF )
+        {
+        case 0: // no null value -> inverted but not degenerate
+        {
+            F_diagonal[0] = (Real)1.0/F_diagonal[0];
+            F_diagonal[1] = (Real)1.0/F_diagonal[1];
+            F_diagonal[2] = (Real)1.0/F_diagonal[2];
+            U = F * V.multDiagonal( F_diagonal );
+            break;
+        }
+        case 1: // 1 null value -> collapsed to a plane -> keeps the 2 valid edges and construct the third
+        {
+            F_diagonal[Forder[0]] = (Real)1.0;
+            F_diagonal[Forder[1]] = (Real)1.0/F_diagonal[Forder[1]];
+            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
+            U = F * V.multDiagonal( F_diagonal );
+
+            Vec<3,Real> c = cross( Vec<3,Real>(U[0][Forder[1]],U[1][Forder[1]],U[2][Forder[1]]), Vec<3,Real>(U[0][Forder[2]],U[1][Forder[2]],U[2][Forder[2]]) );
+            U[0][Forder[0]] = c[0];
+            U[1][Forder[0]] = c[1];
+            U[2][Forder[0]] = c[2];
+            break;
+        }
+        case 2: // 2 null values -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
+        {
+            F_diagonal[Forder[0]] = (Real)1.0;
+            F_diagonal[Forder[1]] = (Real)1.0;
+            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
+            U = F * V.multDiagonal( F_diagonal );
+
+            // TODO: check if there is a more efficient way to do this
+
+            Vec<3,Real> edge0, edge1, edge2( U[0][Forder[2]], U[1][Forder[2]], U[2][Forder[2]] );
+
+            // check the main direction of edge2 to try to take a not too close arbritary vector
+            Real abs0 = helper::rabs( edge2[0] );
+            Real abs1 = helper::rabs( edge2[1] );
+            Real abs2 = helper::rabs( edge2[2] );
+            if( abs0 > abs1 )
+            {
+                if( abs0 > abs2 )
+                {
+                    edge0[0] = 0; edge0[1] = 1; edge0[2] = 0;
+                }
+                else
+                {
+                    edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+                }
+            }
+            else
+            {
+                if( abs1 > abs2 )
+                {
+                    edge0[0] = 0; edge0[1] = 0; edge0[2] = 1;
+                }
+                else
+                {
+                    edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+                }
+            }
+
+            edge1 = cross( edge2, edge0 );
+            edge1.normalize();
+            edge0 = cross( edge1, edge2 );
+
+            U[0][Forder[0]] = edge0[0];
+            U[1][Forder[0]] = edge0[1];
+            U[2][Forder[0]] = edge0[2];
+
+            U[0][Forder[1]] = edge1[0];
+            U[1][Forder[1]] = edge1[1];
+            U[2][Forder[1]] = edge1[2];
+
+            break;
+        }
+        case 3: // 3 null values -> collapsed to a point -> build any orthogonal frame
+            U.identity();
+            break;
+        }
+
+        // un-inverting the element -> made U a rotation by negating a column
+        if( determinant(U) < 0 ) // should always be true since we are handling the case det(F)<0, but it is not (due to numerical considerations?)
+        {
+            U[0][Forder[0]] *= -1;
+            U[1][Forder[0]] *= -1;
+            U[2][Forder[0]] *= -1;
+        }
+
+        // assert U & V are rotations
+        /*assert( fabs( determinant(U) -1 ) < 1e-5 );
+        assert( fabs( determinant(V) -1 ) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(U[0][0],U[1][0],U[2][0]).norm()-1) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(U[0][1],U[1][1],U[2][1]).norm()-1) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(U[0][2],U[1][2],U[2][2]).norm()-1) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(V[0][0],V[1][0],V[2][0]).norm()-1) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(V[0][1],V[1][1],V[2][1]).norm()-1) < 1e-5 );
+        assert( helper::rabs(Vec<3,Real>(V[0][2],V[1][2],V[2][2]).norm()-1) < 1e-5 );*/
+
+
+        // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
+        r = U.multTransposed( V ); // r = U * Vt
+
+        Mat<3,3,Real> T = r.multTranspose( F ); // T = rt * F
+        s = T.plusTransposed( T )*(Real)0.5; // s = ( T + Tt ) * 0.5
+
+    }
+    else // not inverted -> classical polar
+    {
+        polarDecomposition( F, r, s );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +309,7 @@ class CorotationalStrainJacobianBlock< F331(InReal) , E331(OutReal) > :
     public  BaseJacobianBlock< F331(InReal) , E331(OutReal) >
 {
 public:
+
     typedef F331(InReal) In;
     typedef E331(OutReal) Out;
 
@@ -143,19 +345,24 @@ public:
     void addapply( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
-        if(decompositionMethod==0)      // polar
-            helper::polarDecomposition(data.getF(), R, strainmat);
-        else if(decompositionMethod==1)   // large (by QR)
+
+        switch( decompositionMethod )
         {
-            computeQR(R,data.getF());
-            StrainMat T=R.transposed()*data.getF();
-            strainmat=(T+T.transposed())*(Real)0.5;
+        case POLAR:
+            helper::polarDecomposition( data.getF(), R, strainmat);
+            break;
+        case QR:
+            computeQR( data.getF(), R, strainmat );
+            break;
+        case SMALL:
+            strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
+            R.identity();
+            break;
+        case SVD:
+            computeSVD( data.getF(), R, strainmat );
+            break;
         }
-        else if(decompositionMethod==2)   // small
-        {
-            strainmat=(data.getF()+data.getF().transposed())*(Real)0.5;
-            R.fill(0); for(unsigned int j=0; j<material_dimensions; j++) R[j][j]=(Real)1.;
-        }
+
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += MatToVoigt( strainmat );
     }
@@ -257,18 +464,21 @@ public:
 //        }
 
 //        StrainMat strainmat;
-//        if(decompositionMethod==0)      // polar
-//            helper::polarDecomposition(data.getF(), R, strainmat);
-//        else if(decompositionMethod==1)   // large (by QR)
+//        switch( decompositionMethod )
 //        {
-//            computeQR(R,data.getF());
-//            StrainMat T=R.transposed()*data.getF();
-//            strainmat=(T+T.transposed())*(Real)0.5;
-//        }
-//        else if(decompositionMethod==2)   // small
-//        {
-//            strainmat=(data.getF()+data.getF().transposed())*(Real)0.5;
-//            R.fill(0); for(unsigned int j=0;j<material_dimensions;j++) R[j][j]=(Real)1.;
+//            case POLAR:
+//                helper::polarDecomposition(data.getF(), R, strainmat);
+//                break;
+//            case QR:
+//                computeQR( data.getF(), R, strainmat );
+//                break;
+//            case SMALL:
+//                strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
+//                R.identity();
+//                break;
+//            case SVD:
+//                computeSVD( data.getF(), R, strainmat );
+//                break;
 //        }
 //        for(unsigned int j=0;j<material_dimensions;j++) strainmat[j][j]-=(Real)1.;
 //        result.getStrain() += MatToVoigt( strainmat );
@@ -317,6 +527,7 @@ class CorotationalStrainJacobianBlock< F332(InReal) , E332(OutReal) > :
     public  BaseJacobianBlock< F332(InReal) , E332(OutReal) >
 {
 public:
+
     typedef F332(InReal) In;
     typedef E332(OutReal) Out;
 
@@ -359,19 +570,23 @@ public:
     {
         // order 0
         StrainMat strainmat;
-        if(decompositionMethod==0)      // polar
+        switch( decompositionMethod )
+        {
+        case POLAR:
             helper::polarDecomposition(data.getF(), R, strainmat);
-        else if(decompositionMethod==1)   // large (by QR)
-        {
-            computeQR(R,data.getF());
-            StrainMat T=R.transposed()*data.getF();
-            strainmat=(T+T.transposed())*(Real)0.5;
+            break;
+        case QR:
+            computeQR( data.getF(), R, strainmat );
+            break;
+        case SMALL:
+            strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
+            R.identity();
+            break;
+        case SVD:
+            computeSVD( data.getF(), R, strainmat );
+            break;
         }
-        else if(decompositionMethod==2)   // small
-        {
-            strainmat=(data.getF()+data.getF().transposed())*(Real)0.5;
-            R.fill(0); for(unsigned int j=0; j<material_dimensions; j++) R[j][j]=(Real)1.;
-        }
+
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += MatToVoigt( strainmat );
 
@@ -379,7 +594,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T=R.transposed()*data.getGradientF(k);
-            result.getStrainGradient(k) += MatToVoigt( (T+T.transposed())*(Real)0.5 );
+            result.getStrainGradient(k) += MatToVoigt( T.plusTransposed( T ) * (Real)0.5 );
         }
     }
 

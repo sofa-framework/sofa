@@ -946,7 +946,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
         // compute force on element
         computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
+            f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( F[i], F[i+1],  F[i+2] ) );
 
 
         //serr<<"p large : "<<p<<sendl;
@@ -1099,7 +1099,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     {
         computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
+            f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( F[i], F[i+1],  F[i+2] ) );
     }
     else
     {
@@ -1175,7 +1175,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         Mat<3,3,Real> U, V; // the two rotations
         Vec<3,Real> F_diagonal, P_diagonal; // diagonalized strain, diagonalized stress
 
-        Mat<3,3,Real> FtF = F.transposed() * F; // transformation from actual pos to rest pos
+        Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
         eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
@@ -1244,30 +1244,28 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         }
 
 
-        // TODO optmize computation of U = F * V * F_diagonal_1; by using a real diagonal vec3 F_diagonal_1
-
         // the numbers of strain values too close to 0 indicates the kind of degenerescence
         int degeneratedF;
         for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
 
+        // Warning: after the switch F_diagonal is no longer valid (it can be is its own inverse)
         switch( degeneratedF )
         {
         case 0: // no null value -> inverted but not degenerate
         {
-            Mat<3,3,Real> F_diagonal_1; // inverse of F_diagonal
-            F_diagonal_1[0][0] = (Real)1.0/F_diagonal[0];
-            F_diagonal_1[1][1] = (Real)1.0/F_diagonal[1];
-            F_diagonal_1[2][2] = (Real)1.0/F_diagonal[2];
-            U = F * V * F_diagonal_1;
+            F_diagonal[0] = (Real)1.0/F_diagonal[0];
+            F_diagonal[1] = (Real)1.0/F_diagonal[1];
+            F_diagonal[2] = (Real)1.0/F_diagonal[2];
+            U = F * V.multDiagonal( F_diagonal );
             break;
         }
         case 1: // 1 null value -> collapsed to a plane -> keeps the 2 valid edges and construct the third
         {
-            Mat<3,3,Real> F_diagonal_1; // inverse of F_diagonal
-            F_diagonal_1[Forder[0]][Forder[0]] = (Real)1.0;
-            F_diagonal_1[Forder[1]][Forder[1]] = (Real)1.0/F_diagonal[Forder[1]];
-            F_diagonal_1[Forder[2]][Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
-            U = F * V * F_diagonal_1;
+            F_diagonal[Forder[0]] = (Real)1.0;
+            F_diagonal[Forder[1]] = (Real)1.0/F_diagonal[Forder[1]];
+            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
+            U = F * V.multDiagonal( F_diagonal );
+
             Vec<3,Real> c = cross( Vec<3,Real>(U[0][Forder[1]],U[1][Forder[1]],U[2][Forder[1]]), Vec<3,Real>(U[0][Forder[2]],U[1][Forder[2]],U[2][Forder[2]]) );
             U[0][Forder[0]] = c[0];
             U[1][Forder[0]] = c[1];
@@ -1276,11 +1274,10 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         }
         case 2: // 2 null values -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
         {
-            Mat<3,3,Real> F_diagonal_1; // inverse of F_diagonal
-            F_diagonal_1[Forder[0]][Forder[0]] = (Real)1.0;
-            F_diagonal_1[Forder[1]][Forder[1]] = (Real)1.0;
-            F_diagonal_1[Forder[2]][Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
-            U = F * V * F_diagonal_1;
+            F_diagonal[Forder[0]] = (Real)1.0;
+            F_diagonal[Forder[1]] = (Real)1.0;
+            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
+            U = F * V.multDiagonal( F_diagonal );
 
             // TODO: check if there is a more efficient way to do this
 
@@ -1355,7 +1352,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         // in order to fit the TetrahedronFEMForceField way to implement the corotational (by removing the world rotation + strain-displacement matrix)
 
         // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
-        R_0_2 = U * V.transposed() * _initialRotations[elementIndex].transposed();
+        R_0_2 = U.multTransposed( V ).multTransposed( _initialRotations[elementIndex] );
 
     }
     else // not inverted -> classical polar
@@ -1363,9 +1360,6 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         polarDecomposition( A, R_0_2 );
     }
 
-
-
-    rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced tetrahedron in its frame
     helper::fixed_array<Coord, 4>  deforme;
@@ -1397,7 +1391,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     for( int i=0 ; i<12 ; i+=3 )
     {
         //serr<<rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] )<<sendl;
-        f[index[i/3]] += rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] );
+        f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( Forces[i], Forces[i+1],  Forces[i+2] ) );
     }
 }
 
@@ -1410,26 +1404,24 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
-    Transformation R_0_2;
-    R_0_2.transpose( rotations[i] );
-
     Displacement X;
 
-    X[0]  = R_0_2[0][0] * x[a][0] + R_0_2[0][1] * x[a][1] + R_0_2[0][2] * x[a][2];
-    X[1]  = R_0_2[1][0] * x[a][0] + R_0_2[1][1] * x[a][1] + R_0_2[1][2] * x[a][2];
-    X[2]  = R_0_2[2][0] * x[a][0] + R_0_2[2][1] * x[a][1] + R_0_2[2][2] * x[a][2];
+    // rotate by rotations[i] transposed
+    X[0]  = rotations[i][0][0] * x[a][0] + rotations[i][1][0] * x[a][1] + rotations[i][2][0] * x[a][2];
+    X[1]  = rotations[i][0][1] * x[a][0] + rotations[i][1][1] * x[a][1] + rotations[i][2][1] * x[a][2];
+    X[2]  = rotations[i][0][2] * x[a][0] + rotations[i][1][2] * x[a][1] + rotations[i][2][2] * x[a][2];
 
-    X[3]  = R_0_2[0][0] * x[b][0] + R_0_2[0][1] * x[b][1] + R_0_2[0][2] * x[b][2];
-    X[4]  = R_0_2[1][0] * x[b][0] + R_0_2[1][1] * x[b][1] + R_0_2[1][2] * x[b][2];
-    X[5]  = R_0_2[2][0] * x[b][0] + R_0_2[2][1] * x[b][1] + R_0_2[2][2] * x[b][2];
+    X[3]  = rotations[i][0][0] * x[b][0] + rotations[i][1][0] * x[b][1] + rotations[i][2][0] * x[b][2];
+    X[4]  = rotations[i][0][1] * x[b][0] + rotations[i][1][1] * x[b][1] + rotations[i][2][1] * x[b][2];
+    X[5]  = rotations[i][0][2] * x[b][0] + rotations[i][1][2] * x[b][1] + rotations[i][2][2] * x[b][2];
 
-    X[6]  = R_0_2[0][0] * x[c][0] + R_0_2[0][1] * x[c][1] + R_0_2[0][2] * x[c][2];
-    X[7]  = R_0_2[1][0] * x[c][0] + R_0_2[1][1] * x[c][1] + R_0_2[1][2] * x[c][2];
-    X[8]  = R_0_2[2][0] * x[c][0] + R_0_2[2][1] * x[c][1] + R_0_2[2][2] * x[c][2];
+    X[6]  = rotations[i][0][0] * x[c][0] + rotations[i][1][0] * x[c][1] + rotations[i][2][0] * x[c][2];
+    X[7]  = rotations[i][0][1] * x[c][0] + rotations[i][1][1] * x[c][1] + rotations[i][2][1] * x[c][2];
+    X[8]  = rotations[i][0][2] * x[c][0] + rotations[i][1][2] * x[c][1] + rotations[i][2][2] * x[c][2];
 
-    X[9]  = R_0_2[0][0] * x[d][0] + R_0_2[0][1] * x[d][1] + R_0_2[0][2] * x[d][2];
-    X[10] = R_0_2[1][0] * x[d][0] + R_0_2[1][1] * x[d][1] + R_0_2[1][2] * x[d][2];
-    X[11] = R_0_2[2][0] * x[d][0] + R_0_2[2][1] * x[d][1] + R_0_2[2][2] * x[d][2];
+    X[9]  = rotations[i][0][0] * x[d][0] + rotations[i][1][0] * x[d][1] + rotations[i][2][0] * x[d][2];
+    X[10] = rotations[i][0][1] * x[d][0] + rotations[i][1][1] * x[d][1] + rotations[i][2][1] * x[d][2];
+    X[11] = rotations[i][0][2] * x[d][0] + rotations[i][1][2] * x[d][1] + rotations[i][2][2] * x[d][2];
 
     Displacement F;
 
@@ -1439,6 +1431,8 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 
     //serr<<"F : "<<F<<sendl;
 
+
+    // rotate by rotations[i]
     f[a][0] -= rotations[i][0][0] *  F[0] +  rotations[i][0][1] * F[1]  + rotations[i][0][2] * F[2];
     f[a][1] -= rotations[i][1][0] *  F[0] +  rotations[i][1][1] * F[1]  + rotations[i][1][2] * F[2];
     f[a][2] -= rotations[i][2][0] *  F[0] +  rotations[i][2][1] * F[1]  + rotations[i][2][2] * F[2];
