@@ -134,9 +134,9 @@ inline typename TriangleDeformationMapping<TIn, TOut>::Block TriangleDeformation
     Block b;  // initialized to 0
     for(unsigned i=0; i<3; i++)
     {
-        b[i  ][i] = top;
-        b[i+3][i] = middle;
-        b[i+6][i] = bottom;
+        b[  i][i] = top;       // influence on the centre
+        b[3+2*i][i] = middle;  // influence on the two axes, interleaved because the axes are the columns of the matrix
+        b[4+2*i][i] = bottom;
     }
 //    cerr<<"TriangleDeformationMapping<TIn, TOut>::createBlock " << endl << b << endl;
     return b;
@@ -172,7 +172,7 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
         jacobian.beginBlockRow(i);
         // each block defined by its column and its contributions to centre, first axis, second axis, respectively
         jacobian.createBlock( triangles[i][0], makeBlock(1.0/3, -M[0][0]-M[1][0], -M[0][1]-M[1][1]) );
-        jacobian.createBlock( triangles[i][1], makeBlock(1.0/3,  M[0][0]        ,          M[1][1]) );
+        jacobian.createBlock( triangles[i][1], makeBlock(1.0/3,  M[0][0]        ,  M[0][1]        ) );
         jacobian.createBlock( triangles[i][2], makeBlock(1.0/3,          M[1][0],          M[1][1]) );
         jacobian.endBlockRow();
     }
@@ -229,16 +229,19 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
     typename core::behavior::MechanicalState<Out>::ReadVecCoord pos = this->getToModel()->readPositions();
     SeqTriangles triangles = triangleContainer->getTriangles();
 
+
     // x axes
     vector< Vec3d > points;
     for(unsigned i=0; i<triangles.size(); i++ )
     {
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getVec() << endl;
         points.push_back(pos[i].getCenter());
         unsigned id=0; // x
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
         points.push_back(pos[i].getCenter()+  (axis * f_scaleView.getValue()));
     }
-//    cerr<<"riangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
+//    cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) ); // red
 
     // y axes
