@@ -42,8 +42,10 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
+#define F321(type)  DefGradientTypes<3,2,0,type>
 #define F331(type)  DefGradientTypes<3,3,0,type>
 #define F332(type)  DefGradientTypes<3,3,1,type>
+#define E221(type)  StrainTypes<2,2,0,type>
 #define E331(type)  StrainTypes<3,3,0,type>
 #define E332(type)  StrainTypes<3,3,1,type>
 
@@ -189,6 +191,120 @@ public:
     {
     }
 };
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//////  F321 -> E221
+////////////////////////////////////////////////////////////////////////////////////
+
+//template<class InReal,class OutReal>
+//class CorotationalStrainJacobianBlock< F321(InReal) , E221(OutReal) > :
+//        public  BaseJacobianBlock< F321(InReal) , E221(OutReal) >
+//{
+//public:
+//    typedef F321(InReal) In;
+//    typedef E221(OutReal) Out;
+
+//    typedef BaseJacobianBlock<In,Out> Inherit;
+//    typedef typename Inherit::InCoord InCoord;
+//    typedef typename Inherit::InDeriv InDeriv;
+//    typedef typename Inherit::OutCoord OutCoord;
+//    typedef typename Inherit::OutDeriv OutDeriv;
+//    typedef typename Inherit::MatBlock MatBlock;
+//    typedef typename Inherit::KBlock KBlock;
+//    typedef typename Inherit::Real Real;
+
+//    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+//    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
+//    enum { material_dimensions = In::material_dimensions };
+//    enum { spatial_dimensions = In::spatial_dimensions };
+//    enum { strain_size = Out::strain_size };
+//    enum { frame_size = spatial_dimensions*material_dimensions };
+
+//    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
+
+//    /**
+//    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+//    where:  R/D are the rotational/skew symmetric parts of F=RD
+//    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
+//    */
+
+//    static const bool constantJ=false;
+
+//    Affine R;   ///< =  store rotational part of deformation gradient to compute J
+//    unsigned int decompositionMethod;
+
+//    void addapply( OutCoord& result, const InCoord& data32 )
+//    {
+
+//        // compute a 2*2 matrix based on the 3*2 matrix, in the plane of the  3-vectors.
+//        F221 data;
+//        Vec<3,Real> e0, e1, e2;
+//        for(unsigned i=0; i<3; i++){
+//            e0[i]=data32[i];
+//            e1[i]=data32[i+3];
+//        }
+//        Vec<2,Real> f0(e0.norm(),0);
+//        e0.normalize();
+//        e2=cross(e0,e1);
+//        e2.normalize();
+//        Vec<3,Real> ee1=cross(e2,e0);
+//        Vec<2,Real> f1(e1*e0,e1*ee1);
+//        for(unsigned i=0; i<2; i++){
+//            data[i][0]=f0[i];
+//            data[i][1]=f1[i];
+//        }
+
+//        StrainMat strainmat;
+//        if(decompositionMethod==0)      // polar
+//            helper::polarDecomposition(data.getF(), R, strainmat);
+//        else if(decompositionMethod==1)   // large (by QR)
+//        {
+//            computeQR(R,data.getF());
+//            StrainMat T=R.transposed()*data.getF();
+//            strainmat=(T+T.transposed())*(Real)0.5;
+//        }
+//        else if(decompositionMethod==2)   // small
+//        {
+//            strainmat=(data.getF()+data.getF().transposed())*(Real)0.5;
+//            R.fill(0); for(unsigned int j=0;j<material_dimensions;j++) R[j][j]=(Real)1.;
+//        }
+//        for(unsigned int j=0;j<material_dimensions;j++) strainmat[j][j]-=(Real)1.;
+//        result.getStrain() += MatToVoigt( strainmat );
+//    }
+
+//    void addmult( OutDeriv& result,const InDeriv& data )
+//    {
+//        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
+//    }
+
+//    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+//    {
+//        result.getF() += R*VoigtToMat( data.getStrain() );
+//    }
+
+//    MatBlock getJ()
+//    {
+//        MatBlock B = MatBlock();
+//        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+//        EigenMap eB(&B[0][0]);
+//        // order 0
+//        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(R);
+//        return B;
+//    }
+
+
+//    // requires derivative of R. Not Yet implemented..
+//    KBlock getK(const OutDeriv& /*childForce*/)
+//    {
+//        KBlock K = KBlock();
+//        return K;
+//    }
+//    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+//    {
+//    }
+//};
 
 
 

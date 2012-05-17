@@ -73,6 +73,7 @@ public:
     typedef vector<unsigned int> VRef;
     typedef vector<Real> VReal;
     typedef Vec<material_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef vector<Coord> VCoord;
     typedef Vec<material_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
     typedef vector<Gradient> VGradient;
     typedef Mat<material_dimensions,material_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
@@ -82,7 +83,7 @@ public:
     /** @name data */
     //@{
     Data<unsigned int > f_nbRef;      ///< maximum number of parents per child
-    Data<vector<Coord> > f_position;  ///< material coordinates of the parent nodes
+    Data< VCoord > f_position;  ///< material coordinates of the parent nodes
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }

@@ -40,8 +40,10 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
+#define F321(type)  DefGradientTypes<3,2,0,type>
 #define F331(type)  DefGradientTypes<3,3,0,type>
 #define F332(type)  DefGradientTypes<3,3,1,type>
+#define E221(type)  StrainTypes<2,2,0,type>
 #define E331(type)  StrainTypes<3,3,0,type>
 #define E332(type)  StrainTypes<3,3,1,type>
 #define E333(type)  StrainTypes<3,3,2,type>
@@ -88,6 +90,25 @@ static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const  Mat<2,2,Real>& f
     return J;
 }
 
+template<typename Real>
+static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const  Mat<3,2,Real>& f) // 2D
+{
+    static const unsigned int spatial_dimensions = 3;
+    static const unsigned int material_dimensions = 2;
+    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
+    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
+    JBlock J=JBlock::Zero();
+    for( unsigned int k=0; k<spatial_dimensions; k++ )
+        for(unsigned int j=0; j<material_dimensions; j++)
+            J(j,j+material_dimensions*k)=f[k][j];
+    for( unsigned int k=0; k<spatial_dimensions; k++ )
+    {
+        J(material_dimensions,material_dimensions*k+1)=f[k][0];
+        J(material_dimensions,material_dimensions*k)=f[k][1];
+    }
+    return J;
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> E331
 //////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +120,93 @@ class GreenStrainJacobianBlock< F331(InReal) , E331(OutReal) > :
 public:
     typedef F331(InReal) In;
     typedef E331(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
+    enum { material_dimensions = In::material_dimensions };
+    enum { spatial_dimensions = In::spatial_dimensions };
+    enum { strain_size = Out::strain_size };
+    enum { frame_size = spatial_dimensions*material_dimensions };
+
+    /**
+    Mapping:   \f$ E = [F^T.F - I ]/2  \f$
+    Jacobian:    \f$  dE = [ F^T.dF + dF^T.F ]/2 \f$
+      */
+
+    static const bool constantJ=false;
+
+    InCoord F;   ///< =  store deformation gradient to compute J
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        F=data;
+        StrainMat strainmat=F.getF().multTranspose( F.getF() );
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
+        strainmat*=(Real)0.5;
+        result.getStrain() += MatToVoigt( strainmat );
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        StrainMat strainmat=F.getF().multTranspose( data.getF() );
+        result.getStrain() += MatToVoigt( strainmat );
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result.getF() += F.getF()*VoigtToMat( data.getStrain() );
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
+        // order 0
+        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(F.getF());
+        return B;
+    }
+
+    KBlock getK(const OutDeriv& childForce)
+    {
+        KBlock K = KBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eK(&K[0][0]);
+        // order 0
+        StrainMat sigma=VoigtToMat( childForce.getStrain() );
+        typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
+        KBlock s(&sigma[0][0]);
+        for(unsigned int j=0; j<spatial_dimensions; j++)
+            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) = s;
+        return K;
+    }
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        df.getF() += dx.getF()*VoigtToMat( childForce.getStrain() )*kfactor;
+    }
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  F321 -> E221
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) > :
+    public  BaseJacobianBlock< F321(InReal) , E221(OutReal) >
+{
+public:
+    typedef F321(InReal) In;
+    typedef E221(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
     typedef typename Inherit::InCoord InCoord;

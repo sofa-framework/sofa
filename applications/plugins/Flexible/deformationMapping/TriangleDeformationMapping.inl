@@ -47,6 +47,7 @@ template <class TIn, class TOut>
 TriangleDeformationMapping<TIn, TOut>::TriangleDeformationMapping()
     : Inherit()
     , f_inverseRestEdges(initData(&f_inverseRestEdges, "restLengths", "Rest lengths of the connections."))
+    , f_scaleView(initData(&f_scaleView, (SReal)1.0, "scaleView", "Scale the display of the deformation gradients."))
 {
 }
 
@@ -66,32 +67,58 @@ void TriangleDeformationMapping<TIn, TOut>::init()
 
     this->getToModel()->resize( triangles.size() );
 
-    // compute the rest lengths if they are not known
+
+
+    // compute the reference matrices if they are not known
     if( f_inverseRestEdges.getValue().size() != triangles.size() )
     {
-        helper::WriteAccessor< Data<vector<InBlock> > > inverseRestEdges(f_inverseRestEdges);
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
+        helper::WriteAccessor< Data<VMMat> > inverseRestEdges(f_inverseRestEdges);
         inverseRestEdges.resize( triangles.size() );
-        for(unsigned i=0; i<triangles.size(); i++ )
-        {
-            InDeriv edge01 = pos[triangles[i][1]] - pos[triangles[i][0]];
-            InDeriv edge02 = pos[triangles[i][2]] - pos[triangles[i][0]];
-            InDeriv normal = cross(edge01,edge02); // no need to normalize it, as only the two first coordinates of the deformation gradient will be used during the simulation.
 
-            // the edges and the normal are the columns of the matrix
-            InBlock m;
-            for(unsigned j=0; j<3; j++)
+        // look for the shape function, to get the material coordinates
+        ShapeFunction* shapeFunction=NULL;
+        this->getContext()->get(shapeFunction,core::objectmodel::BaseContext::SearchUp);
+
+        if( shapeFunction!=NULL && shapeFunction->f_position.getValue().size() == pos.size() ) // if material coordinates are available
+        {
+            helper::ReadAccessor<Data<VMCoord> > mcoords(shapeFunction->f_position);
+//            cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), found material coordinates : " << mcoords << endl ;
+            for(unsigned i=0; i<triangles.size(); i++ )
             {
-                m[j][0] = edge01[j];
-                m[j][1] = edge02[j];
-                m[j][2] = normal[j];
+                MMat m;
+                m[0] = mcoords[triangles[i][1]] - mcoords[triangles[i][0]];   // edge01
+                m[1] = mcoords[triangles[i][2]] - mcoords[triangles[i][0]];   // edge02
+                m.transpose();
+                bool inverted = invertMatrix(inverseRestEdges[i], m);
+
+                if( !inverted  )
+                {
+                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
+                }
+//                else {
+//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), edge matrix: " << endl << m << endl;
+//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix: " << endl << inverseRestEdges[i] << endl;
+//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), product: " << endl << m * inverseRestEdges[i] << endl;
+//                }
             }
-            if( ! invertMatrix(inverseRestEdges[i], m) )
-            {
-                cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
-            }
-//            else cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix " << endl << m << endl;
         }
+        else for(unsigned i=0; i<triangles.size(); i++ ) // otherwise use the world coordinates to create a local parametrization
+            {
+                MMat m;
+                InDeriv edge01 = pos[triangles[i][1]] - pos[triangles[i][0]];
+                m[0] = MCoord( edge01.norm(), 0. );                      // first axis aligned with first edge
+                InDeriv edge02 = pos[triangles[i][2]] - pos[triangles[i][0]];
+                InDeriv normal = cross(edge01,edge02);
+                InDeriv v = cross(normal,edge01);                        // second axis orthogonal to the first, in the plane of the triangle
+                m[1] = MCoord( edge01*edge02/edge01.norm(), v*edge02 );  // second edge in the local orthonormal frame
+
+                if( ! invertMatrix(inverseRestEdges[i], m) )
+                {
+                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
+                }
+                //            else cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix " << endl << m << endl;
+            }
     }
 
     baseMatrices.resize( 1 );
@@ -100,20 +127,30 @@ void TriangleDeformationMapping<TIn, TOut>::init()
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
-
+// Return a 9*3 matrix made of three scaled identity matrices.
+template <class TIn, class TOut>
+inline typename TriangleDeformationMapping<TIn, TOut>::Block TriangleDeformationMapping<TIn, TOut>::makeBlock( Real top, Real middle, Real bottom )
+{
+    Block b;  // initialized to 0
+    for(unsigned i=0; i<3; i++)
+    {
+        b[i  ][i] = top;
+        b[i+3][i] = middle;
+        b[i+6][i] = bottom;
+    }
+//    cerr<<"TriangleDeformationMapping<TIn, TOut>::createBlock " << endl << b << endl;
+    return b;
+}
 
 template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<OutVecCoord> >  F = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  pos = dIn;
-    helper::ReadAccessor<Data<vector<InBlock> > > inverseRestEdges(f_inverseRestEdges);
+    helper::ReadAccessor<Data<VMMat> > inverseRestEdges(f_inverseRestEdges);
     SeqTriangles triangles = triangleContainer->getTriangles();
 
-    //    jacobian.clear();
     jacobian.resizeBlocks(F.size(),pos.size());
-//    directions.resize(out.size());
-//    invlengths.resize(out.size());
 
     for(unsigned i=0; i<triangles.size(); i++ )
     {
@@ -124,39 +161,23 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
             F1[j][0] = pos[triangles[i][1]][j] - pos[triangles[i][0]][j];  // edge01
             F1[j][1] = pos[triangles[i][2]][j] - pos[triangles[i][0]][j];  // edge02
         }
-        F[i].getF() = inverseRestEdges[i] * F1;
-        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, ref = " << inverseRestEdges[i] << endl;
-        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, edges = " << F1 << endl;
-        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F = " << F[i] << endl;
-        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F.getF() = " << F[i].getF() << endl;
-        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F.getVec() = " << F[i].getVec() << endl;
 
-//        // insert in increasing row and column order
-//        jacobian.beginRow(i);
-//        if( triangles[i][1]<triangles[i][0]){
-//            for(unsigned j=0; j<Nout; j++){
-//                for(unsigned k=0; k<Nin; k++ ){
-//                    jacobian.set( i*Nout+j, triangles[i][1]*Nin+k, gap[k] );
-//                }
-//                for(unsigned k=0; k<Nin; k++ ){
-//                    jacobian.set( i*Nout+j, triangles[i][0]*Nin+k, -gap[k] );
-//                }
-//            }
-//        }
-//        else {
-//            for(unsigned j=0; j<Nout; j++){
-//                for(unsigned k=0; k<Nin; k++ ){
-//                    jacobian.set( i*Nout+j, triangles[i][0]*Nin+k, -gap[k] );
-//                }
-//                for(unsigned k=0; k<Nin; k++ ){
-//                    jacobian.set( i*Nout+j, triangles[i][1]*Nin+k, gap[k] );
-//                }
-//            }
-//        }
+        const MMat& M = inverseRestEdges[i];
+        F[i].getF() = F1 * M;
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, ref matrix = " << inverseRestEdges[i] << endl;
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, edges = " << F1.transposed() << endl;
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F.getCenter() = " << F[i].getCenter() << endl;
+//        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F.getF() transposed = " << F[i].getF().transposed() << endl;
+
+        jacobian.beginBlockRow(i);
+        // each block defined by its column and its contributions to centre, first axis, second axis, respectively
+        jacobian.createBlock( triangles[i][0], makeBlock(1.0/3, -M[0][0]-M[1][0], -M[0][1]-M[1][1]) );
+        jacobian.createBlock( triangles[i][1], makeBlock(1.0/3,  M[0][0]        ,          M[1][1]) );
+        jacobian.createBlock( triangles[i][2], makeBlock(1.0/3,          M[1][0],          M[1][1]) );
+        jacobian.endBlockRow();
     }
 
-//    jacobian.endEdit();
-    //      cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+//    cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
 
 }
 
@@ -203,9 +224,10 @@ const vector<sofa::defaulttype::BaseMatrix*>* TriangleDeformationMapping<TIn, TO
 template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
     typename core::behavior::MechanicalState<Out>::ReadVecCoord pos = this->getToModel()->readPositions();
     SeqTriangles triangles = triangleContainer->getTriangles();
-
 
     // x axes
     vector< Vec3d > points;
@@ -213,9 +235,10 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
     {
         points.push_back(pos[i].getCenter());
         unsigned id=0; // x
-        InDeriv axis( pos[i].getF()[id][0], pos[i].getF()[id][1], pos[i].getF()[id][2] ); // not sure that  getF()[id] is really the axis. Probably need to transpose.
-        points.push_back(pos[i].getCenter()+axis);
+        InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
+        points.push_back(pos[i].getCenter()+  (axis * f_scaleView.getValue()));
     }
+//    cerr<<"riangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) ); // red
 
     // y axes
@@ -224,8 +247,8 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
     {
         points.push_back(pos[i].getCenter());
         unsigned id=1; // y
-        InDeriv axis( pos[i].getF()[id][0], pos[i].getF()[id][1], pos[i].getF()[id][2] ); // not sure that  getF()[id] is really the axis. Probably need to transpose.
-        points.push_back(pos[i].getCenter()+axis);
+        InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );
+        points.push_back(pos[i].getCenter()+  (axis*f_scaleView.getValue()) );
     }
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) ); // green
 }
