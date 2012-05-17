@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include "../initFlexible.h"
 #include "../types/DeformationGradientTypes.h"
+#include "../shapeFunction/BaseShapeFunction.h"
 
 
 namespace sofa
@@ -72,7 +73,8 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
-    typedef typename Out::Frame Frame;
+//    typedef typename Out::Frame Frame;
+    typedef defaulttype::Mat<3,2,Real> Frame;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Coord InCoord;
@@ -84,8 +86,16 @@ public:
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
+    typedef core::behavior::ShapeFunctionTypes<2,Real> ShapeFunctionType;             // 2d shape function
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
+    typedef typename ShapeFunction::Coord MCoord;                                     ///< material coordinates
+    typedef typename ShapeFunction::VCoord VMCoord;                                   ///< vector of material coordinates
+    typedef defaulttype::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
+    typedef vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
 
-    Data< vector< InBlock > > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
+
+    Data< VMMat > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
+    Data< SReal > f_scaleView; ///< scaling factor for the drawing of the deformation gradient
 
     virtual void init();
 
@@ -113,6 +123,8 @@ protected:
     topology::TriangleSetTopologyContainer* triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+
+    Block makeBlock( Real top, Real middle, Real bottom );  ///< helper for the creation of the jacobian
 //    SparseMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
 //    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
 //    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)

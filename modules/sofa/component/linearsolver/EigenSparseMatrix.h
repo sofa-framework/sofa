@@ -104,7 +104,8 @@ public:
     //    }
 
     /** Insert a new row of blocks in the matrix. The rows must be inserted in increasing order. bRow is the row number. brow and bcolumns are block indices.
-      Insert one row of scalars after another
+      Insert one row of scalars after another.
+      @deprecated Use beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ), endBlockRow() instead
     */
     void appendBlockRow(  unsigned bRow, const vector<unsigned>& bColumns, const vector<Block>& blocks )
     {
@@ -124,7 +125,59 @@ public:
         }
     }
 
+    /** Prepare the insertion of a new row of blocks in the matrix.
+       Then create blocks using createBlock( unsigned column,  const Block& b ).
+        Then finally use endBlockRow() to validate the row insertion.
+        @sa createBlock( unsigned column,  const Block& b )
+        @sa endBlockRow()
+        */
+    void beginBlockRow(unsigned row)
+    {
+        bRow = row;
+        bColumns.clear();
+        blocks.clear();
+    }
 
+    /** Create a block in the current row, previously initialized using beginBlockRow(unsigned row).
+        The blocks need not be created in column order. The blocks are not actually created in the matrix until method endBlockRow() is called.
+        */
+    void createBlock( unsigned column,  const Block& b )
+    {
+        blocks.push_back(b);
+        bColumns.push_back(column);
+    }
+
+    /** Finalize the creation of the current block row.
+      @sa beginBlockRow(unsigned row)
+      @sa createBlock( unsigned column,  const Block& b )
+      */
+    void endBlockRow()
+    {
+        vector<unsigned> p = helper::sortedPermutation(bColumns); // indices in ascending column order
+
+        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
+        {
+            beginRow(r+ bRow*Nout);
+            for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
+            {
+                const Block& b = blocks[p[i]];
+                for( unsigned c=0; c<Nin; c++ )
+                {
+                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                }
+            }
+        }
+    }
+
+private:
+    //@{
+    /** Auxiliary variables for methods beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ) and endBlockRow() */
+    unsigned bRow;
+    vector<unsigned> bColumns;
+    vector<Block> blocks;
+    //@}
+
+public:
     /// compute result = A * data
     void mult( OutVecDeriv& result, const InVecDeriv& data ) const
     {

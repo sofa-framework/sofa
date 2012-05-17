@@ -47,6 +47,7 @@ using namespace sofa::defaulttype;
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
 
         .add< MechanicalObject<E331Types> >()
+        .add< MechanicalObject<E221Types> >()
         .add< MechanicalObject<E332Types> >()
         .add< MechanicalObject<E333Types> >()
 
@@ -56,6 +57,7 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
         ;
 
 template class SOFA_Flexible_API MechanicalObject<E331Types>;
+template class SOFA_Flexible_API MechanicalObject<E221Types>;
 template class SOFA_Flexible_API MechanicalObject<E332Types>;
 template class SOFA_Flexible_API MechanicalObject<E333Types>;
 

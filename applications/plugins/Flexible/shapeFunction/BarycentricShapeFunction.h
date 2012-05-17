@@ -31,6 +31,8 @@
 
 #include <algorithm>
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -282,6 +284,9 @@ public:
 //                    m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[t].invert ( mt );
+//                    cerr<<"BarycentricShapeFunctio::init(), parent[triangles[t][1]]-parent[triangles[t][0]] = " << parent[triangles[t][1]]-parent[triangles[t][0]] << endl;
+//                    cerr<<"BarycentricShapeFunctio::init(), parent[triangles[t][2]]-parent[triangles[t][0]] = " << parent[triangles[t][2]]-parent[triangles[t][0]] << endl;
+//                    cerr<<"BarycentricShapeFunctio::init(), m = " << m << endl;
                 }
                 int c0 = triangles.size();
                 for ( unsigned int c = 0; c < quads.size(); c++ )

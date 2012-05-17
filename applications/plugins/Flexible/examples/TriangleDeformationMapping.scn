@@ -1,30 +1,35 @@
 <?xml version="1.0"?>
 
-<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.02" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<Node 	name="Root" gravity="0 0 -1" time="0" animate="0"  dt="0.02" >
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
-<!--    <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="1" rotation="90 0 0 " scale="1 1 0" />
+<!--parametrizable mesh-->
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
-    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />-->
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
 
-    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
+<!--simple mesh-->
+<!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
     <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
-    <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0 0 1" />
-    <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  0 1" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  1 1 0" />-->
 
 
-
+    <BarycentricShapeFunction template="ShapeFunction2d"  />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
     <UniformMass  name="mass" />
 
 
+<!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
     <Node name="deformationNode" >
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
         <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
-        <TriangleDeformationMapping  />
+        <TriangleDeformationMapping  scaleView="0.03" />
     </Node>
+
+<!--    elastic force, until we set up triangle FEM-->
+    <MeshSpringForceField linesStiffness="10"/>
 
 </Node>
 </Node>
