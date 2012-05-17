@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<Node 	name="Root" gravity="0 0 -1" time="0" animate="0"  dt="0.02" >
+<Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -9,16 +9,17 @@
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BarycentricShapeFunction template="ShapeFunction2d"  />
 
 <!--simple mesh-->
 <!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
     <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
-    <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  1 1 0" />-->
+    <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0.1 1 0" />
+    <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  0 1" />-->
 
 
-    <BarycentricShapeFunction template="ShapeFunction2d"  />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
-    <UniformMass  name="mass" />
+    <UniformMass  name="mass" totalMass="1"/>
 
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
@@ -26,10 +27,15 @@
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
         <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
         <TriangleDeformationMapping  scaleView="0.03" />
+        <Node name="StrainNode">
+            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
+            <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
+            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
+        </Node>
     </Node>
 
 <!--    elastic force, until we set up triangle FEM-->
-    <MeshSpringForceField linesStiffness="10"/>
+<!--    <MeshSpringForceField linesStiffness="10"/>-->
 
 </Node>
 </Node>

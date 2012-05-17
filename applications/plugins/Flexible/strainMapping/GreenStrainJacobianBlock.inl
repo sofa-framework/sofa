@@ -250,6 +250,7 @@ public:
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
+//        cerr<<""
         result.getF() += F.getF()*VoigtToMat( data.getStrain() );
     }
 
