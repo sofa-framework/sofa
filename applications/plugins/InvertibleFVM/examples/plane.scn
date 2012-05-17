@@ -1,0 +1,56 @@
+<Node name="root" dt="0.005">
+  <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
+        
+    
+     <!--EulerImplicit name="cg_odesolver" printLog="false" dt="0.01"/>
+	    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /-->
+    
+        <Node name="FVM">
+            <EulerSolver name="odeExplicitSolver" />
+            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader"  />
+            <UniformMass totalmass="5" />
+            <InvertibleFVMForceField name="FEM" youngModulus="100" poissonRatio="0"  />
+	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
+            <Node name="Visu">
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red"  />
+                <BarycentricMapping object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <Mesh src="@loader" />
+                <MechanicalObject src="@loader"  />
+                <Triangle />
+                <BarycentricMapping />
+            </Node>
+        </Node>
+	
+	
+        <Node name="FEM">
+            <EulerSolver name="odeExplicitSolver" />
+            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" dx="7" />
+            <UniformMass totalmass="5" />
+            <TetrahedronFEMForceField name="FEM" youngModulus="100" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
+	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
+            <Node name="Visu">
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="blue" dx="7" />
+                <BarycentricMapping object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <Mesh src="@loader" />
+                <MechanicalObject src="@loader" dx="7" />
+                <Triangle />
+                <BarycentricMapping />
+            </Node>
+        </Node>
+	
+</Node>

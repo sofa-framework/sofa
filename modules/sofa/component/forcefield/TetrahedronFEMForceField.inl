@@ -688,17 +688,18 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         		serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
 
         F = JKJt * D;
-
-
-        f[a] += Deriv( F[0], F[1], F[2] );
-        f[b] += Deriv( F[3], F[4], F[5] );
-        f[c] += Deriv( F[6], F[7], F[8] );
-        f[d] += Deriv( F[9], F[10], F[11] );
     }
     else
     {
         serr << "TODO(TetrahedronFEMForceField): support for assembling system matrix when using plasticity."<<sendl;
+        return;
     }
+
+
+    f[a] += Deriv( F[0], F[1], F[2] );
+    f[b] += Deriv( F[3], F[4], F[5] );
+    f[c] += Deriv( F[6], F[7], F[8] );
+    f[d] += Deriv( F[9], F[10], F[11] );
 
 }
 
@@ -1034,7 +1035,7 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     Transformation R_0_1;
     polarDecomposition( A, R_0_1 );
 
-    _initialRotations[i].transpose( R_0_1);
+    _initialRotations[i].transpose( R_0_1 );
     rotations[i] = _initialRotations[i];
 
     //save the element index as the node index
@@ -1243,6 +1244,8 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         }
 
 
+        // TODO optmize computation of U = F * V * F_diagonal_1; by using a real diagonal vec3 F_diagonal_1
+
         // the numbers of strain values too close to 0 indicates the kind of degenerescence
         int degeneratedF;
         for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
@@ -1392,7 +1395,10 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     Displacement Forces;
     computeForce( Forces, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
     for( int i=0 ; i<12 ; i+=3 )
+    {
+        //serr<<rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] )<<sendl;
         f[index[i/3]] += rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] );
+    }
 }
 
 

@@ -1,0 +1,39 @@
+<Node name="root" dt="0.005" gravity="0 0 0">
+  <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
+    
+    
+        
+            <!--EulerImplicit name="cg_odesolver" printLog="false" dt="0.01"/>
+	    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /-->
+	      
+	      <Node name="FVM">
+	      <EulerSolver name="odeExplicitSolver" />
+            <MeshGmshLoader name="loader" filename="mesh/single_tetra3.msh" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader"  />
+            <UniformMass totalmass="5" />
+            <InvertibleFVMForceField name="FEM" youngModulus="1000" poissonRatio="0" verbose="true"/>
+	    <Point />
+	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
+	    <!--ProjectToLineConstraint direction="0 0 1" origin="0 0 0" indices="0" drawSize="0.03" /-->
+	    <!--ProjectToPlaneConstraint normal="0 1 0" indices="1" drawSize="0.03" /-->
+	    </Node>
+	    
+	    
+	    <Node name="FEM">
+	    <EulerSolver name="odeExplicitSolver" />
+            <MeshGmshLoader name="loader2" filename="mesh/single_tetra3.msh" />
+            <Mesh src="@loader2" />
+            <MechanicalObject src="@loader2" dx="2" />
+            <UniformMass totalmass="5" />
+	    <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
+	    <Point />
+	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
+	    </Node>
+
+</Node>

@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+	declare(InvertibleFVM, applications/plugins/InvertibleFVM, sofaguiqt)
+	
+	enable(InvertibleFVM)
+}
