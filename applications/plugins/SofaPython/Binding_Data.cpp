@@ -122,14 +122,18 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
     if (isInt)
     {
         // it's an int
-        if (typeinfo->size()<1 || !typeinfo->Integer())
+
+        if (typeinfo->size()<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
         {
             // type mismatch or too long list
             PyErr_BadArgument();
             return -1;
         }
         long value = PyInt_AsLong(args);
-        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),0,value);
+        if (typeinfo->Scalar())
+            typeinfo->setScalarValue((void*)data->getValueVoidPtr(),0,(SReal)value); // cast int to float
+        else
+            typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),0,value);
         return 0;
     }
     else if (isScalar)
@@ -148,16 +152,8 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
     else if (isString)
     {
         // it's a string
-        /* don't consider the type of the parameter, strings can be used to set other types by default
-        if (typeinfo->size()<1 || !typeinfo->Text())
-        {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return -1;
-        }*/
         char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
         data->read(str);
-        //typeinfo->setTextValue((void*)data->getValueVoidPtr(),0,str);
         return 0;
     }
     else if (isList)
@@ -169,15 +165,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
             // empty list: ignored
             return 0;
         }
-        // check list type consistency (very important)...
-        PyTypeObject *type = PyList_GetItem(args,0)->ob_type;
-        for (int i=1; i<PyList_Size(args); i++)
-            if (!PyObject_TypeCheck(PyList_GetItem(args,i),type))
-            {
-                printf("list type inconsistency\n");
-                PyErr_BadArgument();
-                return -1;
-            }
+
         // right number if list members ?
         int size = typeinfo->size();
         if (PyList_Size(args)!=typeinfo->size())
@@ -196,14 +184,24 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
             if (PyInt_Check(listElt))
             {
                 // it's an int
-                if (!typeinfo->Integer())
+                if (typeinfo->Integer())
+                {
+                    // integer value
+                    long value = PyInt_AsLong(listElt);
+                    typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i,value);
+                }
+                else if (typeinfo->Scalar())
+                {
+                    // cast to scalar value
+                    SReal value = (SReal)PyInt_AsLong(listElt);
+                    typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                }
+                else
                 {
                     // type mismatch
                     PyErr_BadArgument();
                     return -1;
                 }
-                long value = PyInt_AsLong(listElt);
-                typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i,value);
             }
             else if (PyFloat_Check(listElt))
             {
