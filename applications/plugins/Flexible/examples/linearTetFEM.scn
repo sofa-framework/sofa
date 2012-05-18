@@ -17,8 +17,8 @@
 
 	     <UniformMass totalMass="250" />
 
-	     <TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/> 
-	  <!--TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/-->  
+	     <!--TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/--> 
+	  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
