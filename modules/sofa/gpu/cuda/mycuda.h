@@ -73,6 +73,8 @@ extern "C" {
 
     extern void SOFA_GPU_CUDA_API mycudaCheckError(const char* src);
 
+    extern void SOFA_GPU_CUDA_API displayStack(const char * name);
+
 #ifdef SOFA_GPU_CUBLAS
     extern cusparseHandle_t SOFA_GPU_CUDA_API getCusparseCtx();
     extern cublasHandle_t SOFA_GPU_CUDA_API getCublasCtx();
@@ -103,7 +105,8 @@ extern "C" {
         LOG_NONE = 0,
         LOG_ERR = 1,
         LOG_INFO = 2,
-        LOG_TRACE = 3
+        LOG_TRACE = 3,
+        LOG_STACK_TRACE = 4
     };
 
     extern MycudaVerboseLevel SOFA_GPU_CUDA_API mycudaVerboseLevel;
