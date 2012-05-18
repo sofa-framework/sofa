@@ -946,7 +946,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
         // compute force on element
         computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( F[i], F[i+1],  F[i+2] ) );
+            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
 
 
         //serr<<"p large : "<<p<<sendl;
@@ -1099,7 +1099,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     {
         computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( F[i], F[i+1],  F[i+2] ) );
+            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
     }
     else
     {
@@ -1360,6 +1360,8 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         polarDecomposition( A, R_0_2 );
     }
 
+    rotations[elementIndex].transpose( R_0_2 );
+
 
     // positions of the deformed and displaced tetrahedron in its frame
     helper::fixed_array<Coord, 4>  deforme;
@@ -1391,7 +1393,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     for( int i=0 ; i<12 ; i+=3 )
     {
         //serr<<rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] )<<sendl;
-        f[index[i/3]] += rotations[elementIndex].multTranspose( Deriv( Forces[i], Forces[i+1],  Forces[i+2] ) );
+        f[index[i/3]] += rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] );
     }
 }
 
