@@ -284,6 +284,8 @@ void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count,int /*d*/
     //count = (count+3)&(size_t)-4;
     if (!cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice"))
         myprintf("in mycudaMemcpyHostToDevice(0x%x, 0x%x, %d)\n",dst,src,count);
+
+    if (mycudaVerboseLevel>=LOG_STACK_TRACE) displayStack("mycudaMemcpyHostToDevice");
 }
 
 void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count,int /*d*/		)
@@ -295,11 +297,15 @@ void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count,int /*d*/
 {
     //count = (count+3)&(size_t)-4;
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost");
+
+    if (mycudaVerboseLevel>=LOG_STACK_TRACE) displayStack("mycudaMemcpyDeviceToHost");
 }
 
 void mycudaMemcpyHostToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height)
 {
     cudaCheck(cudaMemcpy2D(dst, dpitch, src, spitch, width, height, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice2D");
+
+    if (mycudaVerboseLevel>=LOG_STACK_TRACE) displayStack("mycudaMemcpyHostToDevice2D");
 }
 
 void mycudaMemcpyDeviceToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height)
@@ -310,6 +316,8 @@ void mycudaMemcpyDeviceToDevice2D(void *dst, size_t dpitch, const void *src, siz
 void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height)
 {
     cudaCheck(cudaMemcpy2D(dst, dpitch, src, spitch, width, height, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost2D");
+
+    if (mycudaVerboseLevel>=LOG_STACK_TRACE) displayStack("mycudaMemcpyDeviceToHost2D");
 }
 
 void mycudaMemset(void *devPtr, int val, size_t size,int d)

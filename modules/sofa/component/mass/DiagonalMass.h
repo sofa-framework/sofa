@@ -64,10 +64,13 @@ template<class DataTypes, class TMassType>
 class DiagonalMassInternalData
 {
 public :
-
+    typedef typename DataTypes::Real Real;
     typedef helper::vector<TMassType> MassVector;
     typedef sofa::component::topology::PointData<MassVector> VecMass;
 
+    // In case of non 3D template
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
 template <class DataTypes, class TMassType>
@@ -86,10 +89,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    // In case of non 3D template
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
-    typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real >     GeometricalTypes ; /// assumes the geometry object type is 3D
-
     typedef enum
     {
         TOPOLOGY_UNKNOWN=0,
@@ -102,6 +101,7 @@ public:
 
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
     VecMass f_mass;
 

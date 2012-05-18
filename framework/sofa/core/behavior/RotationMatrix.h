@@ -101,7 +101,7 @@ public:
     {
         //Solve lv = R * lvR
         unsigned int k = 0,l = 0;
-        while (k < data.size())
+        while (l < v->size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
             result->set(l+1,data[k + 3] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 5] * v->element(l+2));
@@ -114,7 +114,7 @@ public:
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         unsigned int k = 0,l = 0;
-        while (k < data.size())
+        while (l < v->size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
             result->set(l+1,data[k + 1] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 7] * v->element(l+2));
@@ -158,12 +158,13 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const RotationMatrix<Real> & v )
     {
+        std::cout.precision(4);
         out << "[";
         for (unsigned y=0; y<v.data.size(); y+=9)
         {
             for (int x=0; x<3; ++x)
             {
-                out << "\n[" << v.data[y+x*3] << " " << v.data[y+x*3+1] << " " << v.data[y+x*3+2] << "]";
+                out << "\n[" << std::fixed << v.data[y+x*3] << " " << std::fixed << v.data[y+x*3+1] << " " << std::fixed << v.data[y+x*3+2] << "]";
             }
         }
         out << "\n]";
