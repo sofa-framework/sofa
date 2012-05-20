@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
-#define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_H
+#define SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_H
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
@@ -47,21 +47,22 @@ namespace mapping
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
-class TriangleDeformationMappingInternalData
+class TriangleStrainAverageMappingInternalData
 {
 public:
 };
 
 
-/** Maps triangle vertex positions to deformation gradients.
+/** Averages triangle strains to the nodes of the triangles.
+  Input: strains in triangles. Output: strains in nodes, as averages of the strains of the adjacent triangles.
 
 @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  TriangleDeformationMapping : public core::Mapping<TIn, TOut>
+class SOFA_Flexible_API  TriangleStrainAverageMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(TriangleDeformationMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(TriangleStrainAverageMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -72,8 +73,7 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
-//    typedef typename Out::Frame Frame;
-    typedef defaulttype::Mat<3,2,Real> Frame;
+
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Coord InCoord;
@@ -85,16 +85,11 @@ public:
     typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
-    typedef core::behavior::ShapeFunctionTypes<2,Real> ShapeFunctionType;             // 2d shape function
-    typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
-    typedef typename ShapeFunction::Coord MCoord;                                     ///< material coordinates
-    typedef typename ShapeFunction::VCoord VMCoord;                                   ///< vector of material coordinates
-    typedef defaulttype::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
-    typedef vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
 
 
-    Data< VMMat > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
-    Data< SReal > f_scaleView; ///< scaling factor for the drawing of the deformation gradient
+    Data< vector<unsigned> > f_triangleIndices;  ///< For each node, indices of the adjacent triangles
+    Data< vector<unsigned> > f_endIndices;   ///< For each node, index of the end of the list of triangle indices, in f_indices.
+    Data< vector<Real> > f_weights;      ///< For each node, weight of the triangles in the average
 
     virtual void init();
 
@@ -106,33 +101,32 @@ public:
 
     virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-//    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
-
-//    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
-    virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    TriangleDeformationMapping();
-    virtual ~TriangleDeformationMapping();
+    TriangleStrainAverageMapping();
+    virtual ~TriangleStrainAverageMapping();
 
-    topology::TriangleSetTopologyContainer* triangleContainer;  ///< where the edges are defined
+    topology::TriangleSetTopologyContainer::SPtr triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    Block makeBlock( Real top, Real middle, Real bottom );  ///< helper for the creation of the jacobian
+    /// Compute the product, used in apply and applyJ
+    virtual void mult(Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+
+    vector<Real> diagMat; ///< diagonal matrix used to scale up node values based on the area they represent
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
+extern template class SOFA_RIGID_API TriangleStrainAverageMapping< Vec3dTypes, F321dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
+extern template class SOFA_RIGID_API TriangleStrainAverageMapping< Vec3fTypes, F321fTypes >;
 #endif
 
 #endif
