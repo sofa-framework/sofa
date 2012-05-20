@@ -158,98 +158,98 @@ public:
         return c;
     }
 
-    class Coord
-    {
-    protected:
-        Basis v;
+    typedef Deriv Coord;
 
-    public:
-        Coord() { v.clear(); }
-        Coord( const Basis& d):v(d) {}
-        Coord( const TotalVec& d):v(d) {}
-        void clear() { v.clear(); }
+//    class Coord
+//    {
+//    protected:
+//        Basis v;
 
-        static const unsigned int total_size = VSize;
-        typedef Real value_type;
+//    public:
+//        Coord(){ v.clear(); }
+//        Coord( const Basis& d):v(d){}
+//        Coord( const TotalVec& d):v(d){}
+//        void clear(){ v.clear(); }
 
-        static unsigned int size() { return VSize; }
+//        static const unsigned int total_size = VSize;
+//        typedef Real value_type;
 
-        /// seen as a vector
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
+//        static unsigned int size() { return VSize; }
 
-        TotalVec& getVec() { return v.getVec(); }
-        const TotalVec& getVec() const { return v.getVec(); }
+//        /// seen as a vector
+//        Real* ptr() { return v.ptr(); }
+//        const Real* ptr() const { return v.ptr(); }
 
-        Real& operator[](int i) { return getVec()[i]; }
-        const Real& operator[](int i) const    { return getVec()[i]; }
+//        TotalVec& getVec(){ return v.getVec(); }
+//        const TotalVec& getVec() const { return v.getVec(); }
 
-        /// basis
-        Basis& getBasis() { return v; }
-        const Basis& getBasis() const { return v; }
+//        Real& operator[](int i) { return getVec()[i]; }
+//        const Real& operator[](int i) const    { return getVec()[i]; }
 
-        StrainVec& getStrain() { return v.getVal(); }
-        const StrainVec& getStrain() const { return v.getVal(); }
+//        /// basis
+//        Basis& getBasis(){ return v; }
+//        const Basis& getBasis() const { return v; }
 
-        StrainVec& getStrainGradient(int i) { return v.getGradient()[i]; }
-        const StrainVec& getStrainGradient(int i) const { return v.getGradient()[i]; }
+//        StrainVec& getStrain(){ return v.getVal(); }
+//        const StrainVec& getStrain() const { return v.getVal(); }
 
-        StrainVec& getStrainHessian(int i,int j) { return v.getHessian()(i,j); }
-        const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
+//        StrainVec& getStrainGradient(int i){ return v.getGradient()[i]; }
+//        const StrainVec& getStrainGradient(int i) const { return v.getGradient()[i]; }
 
-        Coord operator +(const Coord& a) const { return Coord(getVec()+a.getVec()); }
-        void operator +=(const Coord& a) { getVec()+=a.getVec(); }
+//        StrainVec& getStrainHessian(int i,int j){ return v.getHessian()(i,j); }
+//        const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
 
-        Coord operator +(const Deriv& a) const { return Coord(getVec()+a.getVec()); }
-        void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
+//        Coord operator +(const Coord& a) const { return Coord(getVec()+a.getVec()); }
+//        void operator +=(const Coord& a){ getVec()+=a.getVec(); }
 
-        Coord operator -(const Coord& a) const { return Coord(getVec()-a.getVec()); }
-        void operator -=(const Coord& a) { getVec()-=a.getVec(); }
+//        Coord operator +(const Deriv& a) const { return Coord(getVec()+a.getVec()); }
+//        void operator +=(const Deriv& a){ getVec()+=a.getVec(); }
 
-        template<typename real2>
-        Coord operator *(real2 a) const { return Coord(getVec()*a); }
-        template<typename real2>
-        void operator *=(real2 a) { getVec() *= a; }
+//        Coord operator -(const Coord& a) const { return Coord(getVec()-a.getVec()); }
+//        void operator -=(const Coord& a){ getVec()-=a.getVec(); }
 
-        template<typename real2>
-        void operator /=(real2 a) { getVec() /= a; }
+//        template<typename real2>
+//        Coord operator *(real2 a) const { return Coord(getVec()*a); }
+//        template<typename real2>
+//        void operator *=(real2 a){ getVec() *= a; }
 
-        Coord operator - () const { return Coord(-getVec()); }
+//        template<typename real2>
+//        void operator /=(real2 a){ getVec() /= a; }
 
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return getVec()*a.getVec();    }
+//        Coord operator - () const { return Coord(-getVec()); }
 
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
-        {
-            out<<c.getVec();
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Coord& c )
-        {
-            in>>c.getVec();
-            return in;
-        }
+//        /// dot product, mostly used to compute residuals as sqrt(x*x)
+//        Real operator*(const Coord& a) const    { return getVec()*a.getVec();    }
 
-        /// Write the OpenGL transformation matrix
-        void writeOpenGlMatrix ( float m[16] ) const
-        {
-            for(unsigned int i=0; i<15; i++) m[i]=0.; m[15]=1.;
-        }
-    };
+//        /// write to an output stream
+//        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c ){
+//            out<<c.getVec();
+//            return out;
+//        }
+//        /// read from an input stream
+//        inline friend std::istream& operator >> ( std::istream& in, Coord& c ){
+//            in>>c.getVec();
+//            return in;
+//        }
+
+//    /// Write the OpenGL transformation matrix
+//    void writeOpenGlMatrix ( float m[16] ) const
+//    {
+//        for(unsigned int i=0;i<15;i++) m[i]=0.; m[15]=1.;
+//   }
+//};
 
     typedef vector<Coord> VecCoord;
 
     static const char* Name();
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
-    {
-        assert ( ancestors.size() == coefs.size() );
-        Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
-        return c;
-    }
+//    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+//    {
+//        assert ( ancestors.size() == coefs.size() );
+//        Coord c;
+//        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+//        return c;
+//    }
 
     /** @name Conversions
               * Convert to/from points in space
@@ -261,12 +261,12 @@ public:
     static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Deriv& /*c*/ ) {    }
     template<typename T>
     static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
-    template<typename T>
-    static void set ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
-    template<typename T>
-    static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Coord& /*c*/ )    {    }
-    template<typename T>
-    static void add ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
+//    template<typename T>
+//    static void set ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
+//    template<typename T>
+//    static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Coord& /*c*/ )    {    }
+//    template<typename T>
+//    static void add ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}
 
 };
