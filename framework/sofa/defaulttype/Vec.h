@@ -65,27 +65,83 @@ public:
     /// Specific constructor for 1-element vectors.
     explicit Vec(real r1)
     {
-        BOOST_STATIC_ASSERT(N==1);
-        this->elems[0]=r1;
+        set( r1 );
     }
 
     /// Specific constructor for 1-element vectors.
     void operator=(real r1)
     {
-        BOOST_STATIC_ASSERT(N == 1);
-        this->elems[0]=r1;
+        set( r1 );
     }
 
     /// Specific constructor for 2-elements vectors.
     Vec(real r1, real r2)
+    {
+        set( r1, r2 );
+    }
+
+    /// Specific constructor for 3-elements vectors.
+    Vec(real r1, real r2, real r3)
+    {
+        set( r1, r2, r3 );
+    }
+
+    /// Specific constructor for 4-elements vectors.
+    Vec(real r1, real r2, real r3, real r4)
+    {
+        set( r1, r2, r3, r4 );
+    }
+
+    /// Specific constructor for 6-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6)
+    {
+        set( r1, r2, r3, r4, r5, r6 );
+    }
+
+    /// Specific constructor for 6-elements vectors.
+    template<typename R, typename T>
+    Vec( const Vec<3,R>& a , const Vec<3,T>& b )
+    {
+        set( a[0], a[1], a[2], b[0], b[1], b[2] );
+    }
+
+    /// Specific constructor for 8-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
+    {
+        set( r1, r2, r3, r4, r5, r6, r7, r8 );
+    }
+
+    /// Specific constructor for 9-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
+    {
+        set( r1, r2, r3, r4, r5, r6, r7, r8, r9 );
+    }
+
+    /// Specific constructor for 12-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
+    {
+        set( r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12 );
+    }
+
+
+
+    /// Specific set for 1-element vectors.
+    void set(real r1)
+    {
+        BOOST_STATIC_ASSERT(N==1);
+        this->elems[0]=r1;
+    }
+
+    /// Specific set for 2-elements vectors.
+    void set(real r1, real r2)
     {
         BOOST_STATIC_ASSERT(N == 2);
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
 
-    /// Specific constructor for 3-elements vectors.
-    Vec(real r1, real r2, real r3)
+    /// Specific set for 3-elements vectors.
+    void set(real r1, real r2, real r3)
     {
         BOOST_STATIC_ASSERT(N == 3);
         this->elems[0]=r1;
@@ -93,8 +149,8 @@ public:
         this->elems[2]=r3;
     }
 
-    /// Specific constructor for 4-elements vectors.
-    Vec(real r1, real r2, real r3, real r4)
+    /// Specific set for 4-elements vectors.
+    void set(real r1, real r2, real r3, real r4)
     {
         BOOST_STATIC_ASSERT(N == 4);
         this->elems[0]=r1;
@@ -103,8 +159,8 @@ public:
         this->elems[3]=r4;
     }
 
-    /// Specific constructor for 6-elements vectors.
-    Vec(real r1, real r2, real r3, real r4, real r5, real r6)
+    /// Specific set for 6-elements vectors.
+    void set(real r1, real r2, real r3, real r4, real r5, real r6)
     {
         BOOST_STATIC_ASSERT(N == 6);
         this->elems[0]=r1;
@@ -115,21 +171,8 @@ public:
         this->elems[5]=r6;
     }
 
-    /// Specific constructor for 6-elements vectors.
-    template<typename R, typename T>
-    Vec( const Vec<3,R>& a , const Vec<3,T>& b )
-    {
-        BOOST_STATIC_ASSERT(N == 6);
-        this->elems[0]=a[0];
-        this->elems[1]=a[1];
-        this->elems[2]=a[2];
-        this->elems[3]=b[0];
-        this->elems[4]=b[1];
-        this->elems[5]=b[2];
-    }
-
-    /// Specific constructor for 8-elements vectors.
-    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
+    /// Specific set for 8-elements vectors.
+    void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
         BOOST_STATIC_ASSERT(N == 8);
         this->elems[0]=r1;
@@ -142,8 +185,8 @@ public:
         this->elems[7]=r8;
     }
 
-    /// Specific constructor for 9-elements vectors.
-    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
+    /// Specific set for 9-elements vectors.
+    void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
         BOOST_STATIC_ASSERT(N == 9);
         this->elems[0]=r1;
@@ -157,8 +200,8 @@ public:
         this->elems[8]=r9;
     }
 
-    /// Specific constructor for 12-elements vectors.
-    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
+    /// Specific set for 12-elements vectors.
+    void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
         BOOST_STATIC_ASSERT(N == 12);
         this->elems[0]=r1;
@@ -509,13 +552,18 @@ public:
         return helper::rsqrt(norm2());
     }
 
+    /// Normalize the vector with the given norm
+    void normalizeWithNorm(real norm, real threshold=(real)1e-20)
+    {
+        if (norm>threshold)
+            for (int i=0; i<N; i++)
+                this->elems[i]/=norm;
+    }
+
     /// Normalize the vector.
     void normalize(real threshold=(real)1e-20)
     {
-        const real r = norm();
-        if (r>threshold)
-            for (int i=0; i<N; i++)
-                this->elems[i]/=r;
+        normalizeWithNorm(norm(),threshold);
     }
 
     template<typename R>
@@ -631,6 +679,13 @@ template<int N,typename real>
 inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
 {
     return a*b;
+}
+
+/// multiplication with a scalar \returns a*V
+template <int N, typename real>
+Vec<N,real> operator*(const real& a, const Vec<N,real>& V)
+{
+    return V * a;
 }
 
 typedef Vec<1,float> Vec1f;

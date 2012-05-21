@@ -25,11 +25,12 @@
 #ifndef FLEXIBLE_CorotationalStrainJacobianBlock_INL
 #define FLEXIBLE_CorotationalStrainJacobianBlock_INL
 
-#include "../strainMapping/CorotationalStrainJacobianBlock.h"
+#include "CorotationalStrainJacobianBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
+#include "../helper.h"
 
 #include <sofa/helper/decompose.h>
 
@@ -42,6 +43,7 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
+#define F221(type)  DefGradientTypes<2,2,0,type>
 #define F321(type)  DefGradientTypes<3,2,0,type>
 #define F331(type)  DefGradientTypes<3,3,0,type>
 #define F332(type)  DefGradientTypes<3,3,1,type>
@@ -52,70 +54,33 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
-template<typename Real>
-static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const  Mat<3,3,Real>& f) // 3D
-{
-    static const unsigned int spatial_dimensions = 3;
-    static const unsigned int material_dimensions = 3;
-    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
-    JBlock J=JBlock::Zero();
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-        for(unsigned int j=0; j<material_dimensions; j++)
-            J(j,j+material_dimensions*k)=f[k][j];
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-    {
-        J(3,material_dimensions*k+1)=J(5,material_dimensions*k+2)=f[k][0];
-        J(3,material_dimensions*k)=J(4,material_dimensions*k+2)=f[k][1];
-        J(5,material_dimensions*k)=J(4,material_dimensions*k+1)=f[k][2];
-    }
-    return J;
-}
 
-template<typename Real>
-static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const  Mat<2,2,Real>& f) // 2D
-{
-    static const unsigned int spatial_dimensions = 2;
-    static const unsigned int material_dimensions = 2;
-    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
-    JBlock J=JBlock::Zero();
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-        for(unsigned int j=0; j<material_dimensions; j++)
-            J(j,j+material_dimensions*k)=f[k][j];
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-    {
-        J(material_dimensions,material_dimensions*k+1)=f[k][0];
-        J(material_dimensions,material_dimensions*k)=f[k][1];
-    }
-    return J;
-}
 
+/// 3D->3D
 template<typename Real>
 void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    Vec<3,Real> edgex(f[0][0],f[1][0],f[2][0]);
-    Vec<3,Real> edgey(f[0][1],f[1][1],f[2][1]);
-    helper::getRotation( r, edgex, edgey );
+    helper::QRDecomposition_stable( f, r );
 
     Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
-    s = T.plusTransposed( T )*(Real)0.5; // s = ( T + Tt ) * 0.5
+    s = helper::symetrize( T ); // s = ( T + Tt ) * 0.5
 }
 
+/// 3D->3D
 template<typename Real>
 void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerated cases
+    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
     {
 
         // using "invertible FEM" article notations
 
         Mat<3,3,Real> U, V; // the two rotations
-        Vec<3,Real> F_diagonal, P_diagonal; // diagonalized strain, diagonalized stress
+        Vec<3,Real> F_diagonal; // diagonalized strain
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        eigenDecomposition_noniterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -276,29 +241,54 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
             U[2][Forder[0]] *= -1;
         }
 
-        // assert U & V are rotations
-        /*assert( fabs( determinant(U) -1 ) < 1e-5 );
-        assert( fabs( determinant(V) -1 ) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(U[0][0],U[1][0],U[2][0]).norm()-1) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(U[0][1],U[1][1],U[2][1]).norm()-1) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(U[0][2],U[1][2],U[2][2]).norm()-1) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(V[0][0],V[1][0],V[2][0]).norm()-1) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(V[0][1],V[1][1],V[2][1]).norm()-1) < 1e-5 );
-        assert( helper::rabs(Vec<3,Real>(V[0][2],V[1][2],V[2][2]).norm()-1) < 1e-5 );*/
-
-
         // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
         r = U.multTransposed( V ); // r = U * Vt
-
-        Mat<3,3,Real> T = r.multTranspose( F ); // T = rt * F
-        s = T.plusTransposed( T )*(Real)0.5; // s = ( T + Tt ) * 0.5
-
+        s = r.multTranspose( F ); // s = rt * F
     }
     else // not inverted -> classical polar
     {
         polarDecomposition( F, r, s );
     }
 }
+
+
+/// 3D->2D
+template<typename Real>
+void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
+{
+    Mat<3,2,Real> U;
+    Mat<2,2,Real> V;
+    Vec<2,Real> F_diagonal; // diagonalized strain
+
+    Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+
+    eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+
+
+    // if V is a reflexion -> made it a rotation by negating a column
+    if( determinant(V) < 0 )
+        for( int i=0 ; i<2; ++i )
+            V[i][0] = -V[i][0];
+
+    // compute the diagonalized strain and take the inverse
+    for( int i = 0 ; i<2; ++i )
+    {
+        if( F_diagonal[i] < 1e-6 ) // numerical issues
+            F_diagonal[i] = 1;
+        else
+            F_diagonal[i] = (Real)1.0 / helper::rsqrt( F_diagonal[i] );
+    }
+
+    // TODO check for degenerate cases (collapsed to a point, to an edge)
+    // note that inversion is not defined for a 2d element in a 3d world
+
+    U = F * V.multDiagonal( F_diagonal );
+
+    r = U.multTransposed( V ); // r = U * Vt
+    s = r.multTranspose( F ); // s = rt * F
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> E331
@@ -349,13 +339,13 @@ public:
         switch( decompositionMethod )
         {
         case POLAR:
-            helper::polarDecomposition( data.getF(), R, strainmat);
+            helper::polarDecomposition( data.getF(), R, strainmat );
             break;
         case QR:
             computeQR( data.getF(), R, strainmat );
             break;
         case SMALL:
-            strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
+            strainmat = helper::symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
             R.identity();
             break;
         case SVD:
@@ -405,116 +395,115 @@ public:
 //////  F321 -> E221
 ////////////////////////////////////////////////////////////////////////////////////
 
-//template<class InReal,class OutReal>
-//class CorotationalStrainJacobianBlock< F321(InReal) , E221(OutReal) > :
-//        public  BaseJacobianBlock< F321(InReal) , E221(OutReal) >
-//{
-//public:
-//    typedef F321(InReal) In;
-//    typedef E221(OutReal) Out;
+template<class InReal,class OutReal>
+class CorotationalStrainJacobianBlock< F321(InReal) , E221(OutReal) > :
+    public  BaseJacobianBlock< F321(InReal) , E221(OutReal) >
+{
+public:
+    typedef F321(InReal) In;
+    typedef E221(OutReal) Out;
 
-//    typedef BaseJacobianBlock<In,Out> Inherit;
-//    typedef typename Inherit::InCoord InCoord;
-//    typedef typename Inherit::InDeriv InDeriv;
-//    typedef typename Inherit::OutCoord OutCoord;
-//    typedef typename Inherit::OutDeriv OutDeriv;
-//    typedef typename Inherit::MatBlock MatBlock;
-//    typedef typename Inherit::KBlock KBlock;
-//    typedef typename Inherit::Real Real;
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
 
-//    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
-//    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
-//    enum { material_dimensions = In::material_dimensions };
-//    enum { spatial_dimensions = In::spatial_dimensions };
-//    enum { strain_size = Out::strain_size };
-//    enum { frame_size = spatial_dimensions*material_dimensions };
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
+    enum { material_dimensions = In::material_dimensions };
+    enum { spatial_dimensions = In::spatial_dimensions };
+    enum { strain_size = Out::strain_size };
+    enum { frame_size = spatial_dimensions*material_dimensions };
 
-//    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
+    typedef Mat<spatial_dimensions,material_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
 
-//    /**
-//    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
-//    where:  R/D are the rotational/skew symmetric parts of F=RD
-//    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
-//    */
+    /**
+    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+    where:  R/D are the rotational/skew symmetric parts of F=RD
+    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
+    */
 
-//    static const bool constantJ=false;
+    static const bool constantJ=false;
 
-//    Affine R;   ///< =  store rotational part of deformation gradient to compute J
-//    unsigned int decompositionMethod;
+    Affine R;   ///< =  store rotational part of deformation gradient to compute J
+    unsigned int decompositionMethod;
 
-//    void addapply( OutCoord& result, const InCoord& data32 )
-//    {
+    void addapply( OutCoord& result, const InCoord& data )
+    {
 
-//        // compute a 2*2 matrix based on the 3*2 matrix, in the plane of the  3-vectors.
-//        F221 data;
-//        Vec<3,Real> e0, e1, e2;
-//        for(unsigned i=0; i<3; i++){
-//            e0[i]=data32[i];
-//            e1[i]=data32[i+3];
-//        }
-//        Vec<2,Real> f0(e0.norm(),0);
-//        e0.normalize();
-//        e2=cross(e0,e1);
-//        e2.normalize();
-//        Vec<3,Real> ee1=cross(e2,e0);
-//        Vec<2,Real> f1(e1*e0,e1*ee1);
-//        for(unsigned i=0; i<2; i++){
-//            data[i][0]=f0[i];
-//            data[i][1]=f1[i];
-//        }
-
-//        StrainMat strainmat;
-//        switch( decompositionMethod )
-//        {
-//            case POLAR:
-//                helper::polarDecomposition(data.getF(), R, strainmat);
-//                break;
-//            case QR:
-//                computeQR( data.getF(), R, strainmat );
-//                break;
-//            case SMALL:
-//                strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
-//                R.identity();
-//                break;
-//            case SVD:
-//                computeSVD( data.getF(), R, strainmat );
-//                break;
-//        }
-//        for(unsigned int j=0;j<material_dimensions;j++) strainmat[j][j]-=(Real)1.;
-//        result.getStrain() += MatToVoigt( strainmat );
-//    }
-
-//    void addmult( OutDeriv& result,const InDeriv& data )
-//    {
-//        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
-//    }
-
-//    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-//    {
-//        result.getF() += R*VoigtToMat( data.getStrain() );
-//    }
-
-//    MatBlock getJ()
-//    {
-//        MatBlock B = MatBlock();
-//        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-//        EigenMap eB(&B[0][0]);
-//        // order 0
-//        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(R);
-//        return B;
-//    }
+        // compute a 2*2 matrix based on the 3*2 matrix, in the plane of the  3-vectors.
+        /*F221(InReal) data;
+        Vec<3,Real> e0, e1, e2;
+        for(unsigned i=0; i<3; i++){
+            e0[i]=data32[i];
+            e1[i]=data32[i+3];
+        }
+        Vec<2,Real> f0(e0.norm(),0);
+        e0.normalize();
+        e2=cross(e0,e1);
+        e2.normalize();
+        Vec<3,Real> ee1=cross(e2,e0);
+        Vec<2,Real> f1(e1*e0,e1*ee1);
+        for(unsigned i=0; i<2; i++){
+            data[i][0]=f0[i];
+            data[i][1]=f1[i];
+        }*/
 
 
-//    // requires derivative of R. Not Yet implemented..
-//    KBlock getK(const OutDeriv& /*childForce*/)
-//    {
-//        KBlock K = KBlock();
-//        return K;
-//    }
-//    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
-//    {
-//    }
-//};
+
+        StrainMat strainmat;
+
+        switch( decompositionMethod )
+        {
+        case QR: // TODO
+            //break;
+        case SMALL: // TODO
+            //break;
+
+        case POLAR: // polar & svd are identical since inversion is not defined for 2d elements in a 3d world
+        case SVD:
+            computeSVD( data.getF(), R, strainmat );
+            break;
+        }
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += MatToVoigt( strainmat );
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result.getF() += R*VoigtToMat( data.getStrain() );
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
+        // order 0
+        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(R);
+        return B;
+    }
+
+
+    // requires derivative of R. Not Yet implemented..
+    KBlock getK(const OutDeriv& /*childForce*/)
+    {
+        KBlock K = KBlock();
+        return K;
+    }
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    {
+    }
+};
 
 
 
@@ -579,7 +568,7 @@ public:
             computeQR( data.getF(), R, strainmat );
             break;
         case SMALL:
-            strainmat = data.getF().plusTransposed( data.getF() ) * (Real)0.5; // strainmat = ( F + Ft ) * 0.5
+            strainmat = helper::symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
             R.identity();
             break;
         case SVD:

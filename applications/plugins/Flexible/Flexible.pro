@@ -32,6 +32,7 @@ SOURCES = initFlexible.cpp\
 
 HEADERS = initFlexible.h \
     BaseJacobian.h \
+    helper.h \
     types/DeformationGradientTypes.h \
     types/StrainTypes.h \
     types/AffineTypes.h \

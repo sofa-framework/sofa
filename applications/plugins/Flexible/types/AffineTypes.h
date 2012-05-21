@@ -37,7 +37,6 @@
 #endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/decompose.h>
 
 namespace sofa
 {

@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_CPP
 
 #include "../initFlexible.h"
-#include "../strainMapping/CorotationalStrainMapping.h"
+#include "CorotationalStrainMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include "../types/DeformationGradientTypes.h"
@@ -46,11 +46,11 @@ using namespace defaulttype;
 int CorotationalStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Corotational Strain (small local deformations).")
 
         .add< CorotationalStrainMapping< F331Types, E331Types > >(true)
-//.add< CorotationalStrainMapping< F321Types, E221Types > >()
+        .add< CorotationalStrainMapping< F321Types, E221Types > >()
         .add< CorotationalStrainMapping< F332Types, E332Types > >();
 
 template class SOFA_Flexible_API CorotationalStrainMapping< F331Types, E331Types >;
-//template class SOFA_Flexible_API CorotationalStrainMapping< F321Types, E221Types >;
+template class SOFA_Flexible_API CorotationalStrainMapping< F321Types, E221Types >;
 template class SOFA_Flexible_API CorotationalStrainMapping< F332Types, E332Types >;
 
 } // namespace mapping

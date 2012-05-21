@@ -543,7 +543,6 @@ public:
     /// Addition of the transposed of m
     void addTransposed(const Mat<C,L,real>& m)
     {
-        BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
             for(int j=0; j<C; j++)
                 (*this)[i][j] += m[j][i];
@@ -552,7 +551,6 @@ public:
     /// Substraction of the transposed of m
     void subTransposed(const Mat<C,L,real>& m)
     {
-        BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
             for(int j=0; j<C; j++)
                 (*this)[i][j] -= m[j][i];
