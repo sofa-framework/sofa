@@ -2,7 +2,9 @@
 
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
-<Node 	name="complianceSolverScene" >
+
+
+<Node 	name="GreenLagrange" >
     <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
 <!--parametrizable mesh-->
@@ -29,7 +31,7 @@
         <TriangleDeformationMapping  scaleView="0.03" />
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-            <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
+	    <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
             <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
@@ -38,4 +40,31 @@
 <!--    <MeshSpringForceField linesStiffness="10"/>-->
 
 </Node>
+
+
+
+<Node 	name="Corotational" >
+    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="1.2 0 0" rotation="0 0 0 " scale="1 1 0" />
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BarycentricShapeFunction template="ShapeFunction2d"  />
+
+    <BoxConstraint box="1.195 -0.005 -0.005    2.205 0.005 0.005  " />
+    <UniformMass  name="mass" totalMass="1"/>
+
+    <Node name="deformationNode" >
+        <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+        <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
+        <TriangleDeformationMapping  scaleView="0.03" />
+        <Node name="StrainNode">
+            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
+	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="small"/>
+            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
+        </Node>
+    </Node>
+</Node>
+
+
 </Node>

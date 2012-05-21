@@ -42,24 +42,225 @@ using defaulttype::Vec;
 
 /** QR decomposition
   Compute an orthonormal right-handed 3x3 basis based on two vectors using Gram-Schmidt orthogonalization.
-  The basis vectors are the columns of the returned matrix. The matrix represents the rotation of the local frame with respect to the reference frame.
+  The basis vectors are the columns of the matrix R. The matrix represents the rotation of the local frame with respect to the reference frame.
   The first basis vector is aligned to the first given vector, the second basis vector is in the plane of the two first given vectors, and the third basis vector is orthogonal to the two others.
   Undefined result if one of the vectors is null, or if the two vectors are parallel.
   */
 template<class real>
-void getRotation(Mat<3,3,real>& r, Vec<3,real>& edgex, Vec<3,real>& edgey  )
+void getRotation( Mat<3,3,real>& r, Vec<3,real>& edgex, Vec<3,real>& edgey )
 {
     edgex.normalize();
     Vec<3,real> edgez = cross( edgex, edgey );
     edgez.normalize();
     edgey = cross( edgez, edgex );
 
-    r[0][0] = edgex[0]; r[0][1]= edgey[0]; r[0][2]= edgez[0];
-    r[1][0] = edgex[1]; r[1][1]= edgey[1]; r[1][2]= edgez[1];
-    r[2][0] = edgex[2]; r[2][1]= edgey[2]; r[2][2]= edgez[2];
+    r[0][0] = edgex[0]; r[0][1] = edgey[0]; r[0][2] = edgez[0];
+    r[1][0] = edgex[1]; r[1][1] = edgey[1]; r[1][2] = edgez[1];
+    r[2][0] = edgex[2]; r[2][1] = edgey[2]; r[2][2] = edgez[2];
 }
 
 
+/** QR decomposition
+  Compute an orthonormal right-handed 3x3 basis based on a matrix using Gram-Schmidt orthogonalization.
+  The basis vectors are the columns of the matrix R. The matrix represents the rotation of the local frame with respect to the reference frame.
+  The first basis vector is aligned to the first given vector, the second basis vector is in the plane of the two first given vectors, and the third basis vector is orthogonal to the two others.
+  Undefined result if one of the vectors is null, or if the two vectors are parallel.
+  */
+template<class Real>
+void QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
+{
+    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
+    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+
+    getRotation( R, edgex, edgey );
+}
+
+
+
+
+/** QR decomposition stable to null columns.
+  * Result is still undefined if two columns are parallel.
+  * In the clean case (not degenerated), there are only two additional 'if(x<e)' but no additional computations.
+  */
+template<class Real>
+void QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
+{
+    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
+    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+    Vec<3,Real> edgez;
+
+    Real nx = edgex.norm2();
+    Real ny = edgey.norm2();
+
+    if( nx < 1e-6 )
+    {
+        if( ny < 1e-6 )
+        {
+            edgez.set( M[0][2], M[1][2], M[2][2] );
+            Real nz = edgez.norm2();
+
+            if( nz < 1e-6 ) // edgex, edgey, edgez are null -> collapsed to a point
+            {
+                //std::cerr<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
+                R.identity();
+                return;
+            }
+            else // collapsed to edgez
+            {
+                //std::cerr<<"QRDecomposition_stable collapased to edgez "<<M<<std::endl;
+
+                edgez.normalizeWithNorm( helper::rsqrt(nz) );
+
+                // check the main direction of edgez to try to take a not too close arbritary vector
+                Real abs0 = helper::rabs( edgez[0] );
+                Real abs1 = helper::rabs( edgez[1] );
+                Real abs2 = helper::rabs( edgez[2] );
+                if( abs0 > abs1 )
+                {
+                    if( abs0 > abs2 )
+                    {
+                        edgex[0] = 0; edgex[1] = 1; edgex[2] = 0;
+                    }
+                    else
+                    {
+                        edgex[0] = 1; edgex[1] = 0; edgex[2] = 0;
+                    }
+                }
+                else
+                {
+                    if( abs1 > abs2 )
+                    {
+                        edgex[0] = 0; edgex[1] = 0; edgex[2] = 1;
+                    }
+                    else
+                    {
+                        edgex[0] = 1; edgex[1] = 0; edgex[2] = 0;
+                    }
+                }
+
+                edgey = cross( edgez, edgex );
+                edgey.normalize();
+                edgex = cross( edgey, edgez );
+            }
+        }
+        else
+        {
+            edgey.normalizeWithNorm( helper::rsqrt(ny) );
+
+            edgez.set( M[0][2], M[1][2], M[2][2] );
+            Real nz = edgez.norm2();
+
+            if( nz < 1e-6 ) // collapsed to edgey
+            {
+                //std::cerr<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
+
+                // check the main direction of edgey to try to take a not too close arbritary vector
+                Real abs0 = helper::rabs( edgey[0] );
+                Real abs1 = helper::rabs( edgey[1] );
+                Real abs2 = helper::rabs( edgey[2] );
+                if( abs0 > abs1 )
+                {
+                    if( abs0 > abs2 )
+                    {
+                        edgez[0] = 0; edgez[1] = 1; edgez[2] = 0;
+                    }
+                    else
+                    {
+                        edgez[0] = 1; edgez[1] = 0; edgez[2] = 0;
+                    }
+                }
+                else
+                {
+                    if( abs1 > abs2 )
+                    {
+                        edgez[0] = 0; edgez[1] = 0; edgez[2] = 1;
+                    }
+                    else
+                    {
+                        edgez[0] = 1; edgez[1] = 0; edgez[2] = 0;
+                    }
+                }
+
+                edgex = cross( edgey, edgez );
+                edgex.normalize();
+                edgez = cross( edgex, edgey );
+            }
+            else // collapsed to face (edgey, edgez)
+            {
+                //std::cerr<<"QRDecomposition_stable collapased to face (edgey, edgez) "<<M<<std::endl;
+
+                edgex = cross( edgey, edgez );
+                edgex.normalize();
+                edgez = cross( edgex, edgey );
+            }
+        }
+    }
+    else
+    {
+        edgex.normalizeWithNorm( helper::rsqrt(nx) );
+
+        if( ny < 1e-6 )
+        {
+
+            edgez.set( M[0][2], M[1][2], M[2][2] );
+            Real nz = edgez.norm2();
+
+            if( nz < 1e-6 ) // collapsed to edgex
+            {
+                //std::cerr<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
+
+                // check the main direction of edgex to try to take a not too close arbritary vector
+                Real abs0 = helper::rabs( edgex[0] );
+                Real abs1 = helper::rabs( edgex[1] );
+                Real abs2 = helper::rabs( edgex[2] );
+                if( abs0 > abs1 )
+                {
+                    if( abs0 > abs2 )
+                    {
+                        edgey[0] = 0; edgey[1] = 1; edgey[2] = 0;
+                    }
+                    else
+                    {
+                        edgey[0] = 1; edgey[1] = 0; edgey[2] = 0;
+                    }
+                }
+                else
+                {
+                    if( abs1 > abs2 )
+                    {
+                        edgey[0] = 0; edgey[1] = 0; edgey[2] = 1;
+                    }
+                    else
+                    {
+                        edgey[0] = 1; edgey[1] = 0; edgey[2] = 0;
+                    }
+                }
+
+                edgez = cross( edgex, edgey );
+                edgez.normalize();
+                edgey = cross( edgez, edgex );
+            }
+            else // collapsed to face (edgez,edgex)
+            {
+                //std::cerr<<"QRDecomposition_stable collapased to face (edgez, edgex) "<<M<<std::endl;
+
+                edgey = cross( edgez, edgex );
+                edgey.normalize();
+                edgez = cross( edgex, edgey );
+            }
+        }
+        else // edgex & edgey are ok (either not collapsed or collapsed to face (edgex,edgey) )
+        {
+            edgez = cross( edgex, edgey );
+            edgez.normalize();
+            edgey = cross( edgez, edgex );
+        }
+    }
+
+    R[0][0] = edgex[0]; R[0][1] = edgey[0]; R[0][2] = edgez[0];
+    R[1][0] = edgex[1]; R[1][1] = edgey[1]; R[1][2] = edgez[1];
+    R[2][0] = edgex[2]; R[2][1] = edgey[2]; R[2][2] = edgez[2];
+}
 
 
 
@@ -69,7 +270,9 @@ void getRotation(Mat<3,3,real>& r, Vec<3,real>& edgex, Vec<3,real>& edgey  )
 
 /******* Matrix Preliminaries *******/
 
-/** Set MadjT to transpose of inverse of M times determinant of M **/
+/** @internal useful for polarDecomposition
+  * Set MadjT to transpose of inverse of M times determinant of M
+  */
 template<class Real>
 void adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT)
 {
@@ -78,7 +281,9 @@ void adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3
     MadjT[2] = cross(M[0],M[1]);
 }
 
-/** Compute the infinity norm of M **/
+/** @internal useful for polarDecomposition
+  * Compute the infinity norm of M
+  */
 template<class Real>
 Real norm_inf(const defaulttype::Mat<3,3,Real>& M)
 {
@@ -91,7 +296,9 @@ Real norm_inf(const defaulttype::Mat<3,3,Real>& M)
     return max;
 }
 
-/** Compute the 1 norm of M **/
+/** @internal useful for polarDecomposition
+  * Compute the 1 norm of M
+  */
 template<class Real>
 Real norm_one(const defaulttype::Mat<3,3,Real>& M)
 {
@@ -104,7 +311,9 @@ Real norm_one(const defaulttype::Mat<3,3,Real>& M)
     return max;
 }
 
-/** Return index of column of M containing maximum abs entry, or -1 if M=0 **/
+/** @internal useful for polarDecomposition
+  * Return index of column of M containing maximum abs entry, or -1 if M=0
+  */
 template<class Real>
 int find_max_col(const defaulttype::Mat<3,3,Real>& M)
 {
@@ -119,7 +328,9 @@ int find_max_col(const defaulttype::Mat<3,3,Real>& M)
     return col;
 }
 
-/** Setup u for Household reflection to zero all v components but first **/
+/** @internal useful for polarDecomposition
+  * Setup u for Household reflection to zero all v components but first
+  */
 template<class Real>
 void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u)
 {
@@ -130,7 +341,9 @@ void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>&
     u[0] = u[0]*s; u[1] = u[1]*s; u[2] = u[2]*s;
 }
 
-/** Apply Householder reflection represented by u to column vectors of M **/
+/** @internal useful for polarDecomposition
+  * Apply Householder reflection represented by u to column vectors of M
+  */
 template<class Real>
 void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
 {
@@ -141,7 +354,9 @@ void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>&
             M[j][i] -= u[j]*s;
     }
 }
-/** Apply Householder reflection represented by u to row vectors of M **/
+/** @internal useful for polarDecomposition
+  * Apply Householder reflection represented by u to row vectors of M
+  */
 template<class Real>
 void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
 {
@@ -153,7 +368,9 @@ void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>&
     }
 }
 
-/** Find orthogonal factor Q of rank 1 (or less) M **/
+/** @internal useful for polarDecomposition
+  * Find orthogonal factor Q of rank 1 (or less) M
+  */
 template<class Real>
 void do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q)
 {
@@ -173,7 +390,9 @@ void do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q)
     reflect_cols(Q, v1); reflect_rows(Q, v2);
 }
 
-/** Find orthogonal factor Q of rank 2 (or less) M using adjoint transpose **/
+/** @internal useful for polarDecomposition
+  * Find orthogonal factor Q of rank 2 (or less) M using adjoint transpose
+  */
 template<class Real>
 void do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q)
 {
@@ -283,68 +502,33 @@ Real polarDecomposition( const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3
 
 
 
+/** Polar decomposition of a 2x2 matix M = QS
+ *  Analytic formulation given in
+ *  "Matrix Animation and Polar Decomposition"
+ *  Ken Shoemake, Computer Graphics Laboratory, University of Pennsylvania
+ *  Tom Duff, AT&T Bell Laboratories, Murray Hill
+ */
+template<class Real>
+void polarDecomposition( const defaulttype::Mat<2,2,Real>& M, defaulttype::Mat<2,2,Real>& Q )
+{
+    Q[0][0] =  M[1][1];
+    Q[0][1] = -M[1][0];
+    Q[1][0] = -M[0][1];
+    Q[1][1] =  M[0][0];
+    Q = M + ( determinant( M ) < 0 ? -1 : 1 ) * Q;
+}
+
+
 ///////////////////////////////
 
-
-
-/** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
-This is derived from the non-longer existing library magic-software.
-Should be faster than using generic size algorithm from Eigen library.
-*/
-template<class Real>
-void eigenDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+/** QL algorithm with implicit shifting, applies to tridiagonal matrices
+  * @internal useful for eigenDecomposition
+  * Derived from Wild Magic Library
+  */
+template<int iSize, class Real>
+void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V )
 {
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-
-
-    Vec3 subDiag;
-
-    //////////////////////
-    ///// Tridiagonalize
-    //////////////////////
-
-    const Real &fM00 = M[0][0];
-    Real fM01 = M[0][1];
-    Real fM02 = M[0][2];
-    const Real &fM11 = M[1][1];
-    const Real &fM12 = M[1][2];
-    const Real &fM22 = M[2][2];
-
-    diag[0] = fM00;
-    subDiag[2] = (Real)0.0;
-    if ( fM02 != (Real)0.0 )
-    {
-        Real fLength = helper::rsqrt(fM01*fM01+fM02*fM02);
-        Real fInvLength = ((Real)1.0)/fLength;
-        fM01 *= fInvLength;
-        fM02 *= fInvLength;
-        Real fQ = ((Real)2.0)*fM01*fM12+fM02*(fM22-fM11);
-        diag[1] = fM11+fM02*fQ;
-        diag[2] = fM22-fM02*fQ;
-        subDiag[0] = fLength;
-        subDiag[1] = fM12-fM01*fQ;
-        V[0][0] = (Real)1.0; V[0][1] = (Real)0.0; V[0][2] = (Real)0.0;
-        V[1][0] = (Real)0.0; V[1][1] = fM01;      V[1][2] = fM02;
-        V[2][0] = (Real)0.0; V[2][1] = fM02;      V[2][2] = -fM01;
-    }
-    else
-    {
-        diag[1] = fM11;
-        diag[2] = fM22;
-        subDiag[0] = fM01;
-        subDiag[1] = fM12;
-        V.identity();
-    }
-
-
-
-    /////////////////////
-    ///// QLAlgorithm
-    /////////////////////
-
     static const int iMaxIter = 32;
-    static const int iSize = 3;
 
     for (int i0 = 0; i0 < iSize; ++i0)
     {
@@ -412,7 +596,484 @@ void eigenDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3
     }
 }
 
+/** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
+  * Derived from Wild Magic Library
+  */
+template<class Real>
+void eigenDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+{
+    Vec<3,Real> subDiag;
 
+    //////////////////////
+    ///// Tridiagonalize
+    //////////////////////
+
+    const Real &fM00 = M[0][0];
+    Real fM01 = M[0][1];
+    Real fM02 = M[0][2];
+    const Real &fM11 = M[1][1];
+    const Real &fM12 = M[1][2];
+    const Real &fM22 = M[2][2];
+
+    diag[0] = fM00;
+    subDiag[2] = (Real)0.0;
+    if ( fM02 != (Real)0.0 )
+    {
+        Real fLength = helper::rsqrt(fM01*fM01+fM02*fM02);
+        Real fInvLength = ((Real)1.0)/fLength;
+        fM01 *= fInvLength;
+        fM02 *= fInvLength;
+        Real fQ = ((Real)2.0)*fM01*fM12+fM02*(fM22-fM11);
+        diag[1] = fM11+fM02*fQ;
+        diag[2] = fM22-fM02*fQ;
+        subDiag[0] = fLength;
+        subDiag[1] = fM12-fM01*fQ;
+        V[0][0] = (Real)1.0; V[0][1] = (Real)0.0; V[0][2] = (Real)0.0;
+        V[1][0] = (Real)0.0; V[1][1] = fM01;      V[1][2] = fM02;
+        V[2][0] = (Real)0.0; V[2][1] = fM02;      V[2][2] = -fM01;
+    }
+    else
+    {
+        diag[1] = fM11;
+        diag[2] = fM22;
+        subDiag[0] = fM01;
+        subDiag[1] = fM12;
+        V.identity();
+    }
+
+    ////////////
+
+    QLAlgorithm( diag, subDiag, V );
+
+}
+
+
+
+
+/** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param M
+  * Derived from Wild Magic Library
+  */
+template<class Real>
+void eigenDecomposition( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
+{
+    typedef defaulttype::Vec<2,Real> Vec2;
+    typedef defaulttype::Mat<2,2,Real> Mat22;
+
+    Vec<2,Real> subDiag;
+
+    // matrix is already tridiagonal
+    diag[0] = M[0][0];
+    diag[1] = M[1][1];
+    subDiag[0] = M[0][1];
+    subDiag[1] = 0.0;
+    V.identity();
+
+    QLAlgorithm( diag, subDiag, V );
+}
+
+
+/////////////////////////
+
+
+
+
+/// @internal useful for eigenDecomposition_noniterative
+template<class Real>
+Real ATan2( const Real& y, const Real& x )
+{
+    if (x != (Real)0 || y != (Real)0)
+    {
+        return atan2(y, x);
+    }
+    else
+    {
+        // Mathematically, ATan2(0,0) is undefined, but ANSI standards
+        // require the function to return 0.
+        return (Real)0;
+    }
+}
+
+/// @internal useful for eigenDecomposition_noniterative
+static const double sZeroTolerance = 1e-6; // should be 1e-6 for float and 1e-8 for double
+
+/// @internal useful for eigenDecomposition_noniterative
+template <typename Real>
+void ComputeRoots (const Mat<3,3,Real>& A, double root[3])
+{
+    static const Real msInv3 = (Real)1.0/(Real)3.0;
+    static const Real msRoot3 = helper::rsqrt((Real)3.0);
+
+    // Convert the unique matrix entries to double precision.
+    double a00 = (double)A[0][0];
+    double a01 = (double)A[0][1];
+    double a02 = (double)A[0][2];
+    double a11 = (double)A[1][1];
+    double a12 = (double)A[1][2];
+    double a22 = (double)A[2][2];
+
+    // The characteristic equation is x^3 - c2*x^2 + c1*x - c0 = 0.  The
+    // eigenvalues are the roots to this equation, all guaranteed to be
+    // real-valued, because the matrix is symmetric.
+    double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 -
+            a11*a02*a02 - a22*a01*a01;
+
+    double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 +
+            a11*a22 - a12*a12;
+
+    double c2 = a00 + a11 + a22;
+
+    // Construct the parameters used in classifying the roots of the equation
+    // and in solving the equation for the roots in closed form.
+    double c2Div3 = c2*msInv3;
+    double aDiv3 = (c1 - c2*c2Div3)*msInv3;
+    if (aDiv3 > 0.0)
+    {
+        aDiv3 = 0.0;
+    }
+
+    double halfMB = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
+
+    double q = halfMB*halfMB + aDiv3*aDiv3*aDiv3;
+    if (q > 0.0)
+    {
+        q = 0.0;
+    }
+
+    // Compute the eigenvalues by solving for the roots of the polynomial.
+    double magnitude = helper::rsqrt(-aDiv3);
+    double angle = ATan2(helper::rsqrt(-q), halfMB)*msInv3;
+    double cs = cos(angle);
+    double sn = sin(angle);
+    double root0 = c2Div3 + 2.0*magnitude*cs;
+    double root1 = c2Div3 - magnitude*(cs + msRoot3*sn);
+    double root2 = c2Div3 - magnitude*(cs - msRoot3*sn);
+
+    // Sort in increasing order.
+    if (root1 >= root0)
+    {
+        root[0] = root0;
+        root[1] = root1;
+    }
+    else
+    {
+        root[0] = root1;
+        root[1] = root0;
+    }
+
+    if (root2 >= root[1])
+    {
+        root[2] = root2;
+    }
+    else
+    {
+        root[2] = root[1];
+        if (root2 >= root[0])
+        {
+            root[1] = root2;
+        }
+        else
+        {
+            root[1] = root[0];
+            root[0] = root2;
+        }
+    }
+}
+
+/// @internal useful for eigenDecomposition_noniterative
+template <typename Real>
+bool PositiveRank (Mat<3,3,Real>& M, Real& maxEntry, Vec<3,Real>& maxRow)
+{
+    // Locate the maximum-magnitude entry of the matrix.
+    maxEntry = (Real)-1;
+    int row, maxRowIndex = -1;
+    for (row = 0; row < 3; ++row)
+    {
+        for (int col = row; col < 3; ++col)
+        {
+            Real absValue = helper::rabs(M[row][col]);
+            if (absValue > maxEntry)
+            {
+                maxEntry = absValue;
+                maxRowIndex = row;
+            }
+        }
+    }
+
+    // Return the row containing the maximum, to be used for eigenvector
+    // construction.
+    maxRow = M[maxRowIndex];
+
+    return maxEntry >= sZeroTolerance;
+}
+
+
+
+/// @internal useful for eigenDecomposition_noniterative
+// Input vec0 must be a unit-length vector.  The output vectors
+// {vec0,vec1} are unit length and mutually perpendicular, and
+// {vec0,vec1,vec2} is an orthonormal basis.
+template<class AVector>
+void GenerateComplementBasis (AVector& vec0, AVector& vec1, const AVector& vec2)
+{
+    float invLength;
+
+    if (fabsf(vec2[0]) >= fabsf(vec2[1]))
+    {
+        // vec2.x or vec2.z is the largest magnitude component, swap them
+        invLength = 1.0f/sqrtf(vec2[0]*vec2[0] + vec2[2]*vec2[2]);
+        vec0[0] = -vec2[2]*invLength;
+        vec0[1] = 0.0f;
+        vec0[2] = +vec2[0]*invLength;
+        vec1[0] = vec2[1]*vec0[2];
+        vec1[1] = vec2[2]*vec0[0] - vec2[0]*vec0[2];
+        vec1[2] = -vec2[1]*vec0[0];
+    }
+    else
+    {
+        // vec2.y or vec2.z is the largest magnitude component, swap them
+        invLength = 1.0f/sqrtf(vec2[1]*vec2[1] + vec2[2]*vec2[2]);
+        vec0[0] = 0.0f;
+        vec0[1] = +vec2[2]*invLength;
+        vec0[2] = -vec2[1]*invLength;
+        vec1[0] = vec2[1]*vec0[2] - vec2[2]*vec0[1];
+        vec1[1] = -vec2[0]*vec0[2];
+        vec1[2] = vec2[0]*vec0[1];
+    }
+}
+
+/// @internal useful for eigenDecomposition_noniterative
+template <typename Real>
+void ComputeVectors (const Mat<3,3,Real>& A, Vec<3,Real>& U2, int i0, int i1, int i2, Mat<3,3,Real> &V, Vec<3,Real> &diag)
+{
+    Vec<3,Real> U0, U1;
+    GenerateComplementBasis(U0, U1, U2);
+
+    // V[i2] = c0*U0 + c1*U1,  c0^2 + c1^2=1
+    // e2*V[i2] = c0*A*U0 + c1*A*U1
+    // e2*c0 = c0*U0.Dot(A*U0) + c1*U0.Dot(A*U1) = d00*c0 + d01*c1
+    // e2*c1 = c0*U1.Dot(A*U0) + c1*U1.Dot(A*U1) = d01*c0 + d11*c1
+    Vec<3,Real> tmp = A*U0;
+    Real p00 = diag[i2] - U0 * tmp;
+    Real p01 = U1 * tmp;
+    Real p11 = diag[i2] - U1 * (A*U1);
+    Real invLength;
+    Real maxValue = helper::rabs(p00);
+    int row = 0;
+    Real absValue = helper::rabs(p01);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(p11);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+        row = 1;
+    }
+
+    if (maxValue >= sZeroTolerance)
+    {
+        if (row == 0)
+        {
+            invLength = (Real)1 / helper::rsqrt(p00*p00 + p01*p01);
+            p00 *= invLength;
+            p01 *= invLength;
+            V[i2] = U0*p01 + U1*p00;
+        }
+        else
+        {
+            invLength = (Real)1 / helper::rsqrt(p11*p11 + p01*p01);
+            p11 *= invLength;
+            p01 *= invLength;
+            V[i2] = U0*p11 + U1*p01;
+        }
+    }
+    else
+    {
+        if (row == 0)
+        {
+            V[i2] = U1;
+        }
+        else
+        {
+            V[i2] = U0;
+        }
+    }
+
+    // V[i0] = c0*U2 + c1*Cross(U2,V[i2]) = c0*R + c1*S
+    // e0*V[i0] = c0*A*R + c1*A*S
+    // e0*c0 = c0*R.Dot(A*R) + c1*R.Dot(A*S) = d00*c0 + d01*c1
+    // e0*c1 = c0*S.Dot(A*R) + c1*S.Dot(A*S) = d01*c0 + d11*c1
+    Vec<3,Real> S = cross( U2, V[i2] );
+    tmp = A*U2;
+    p00 = diag[i0] - U2 * tmp;
+    p01 = S * tmp;
+    p11 = diag[i0] - S * (A*S);
+    maxValue = helper::rabs(p00);
+    row = 0;
+    absValue = helper::rabs(p01);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(p11);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+        row = 1;
+    }
+
+    if (maxValue >= sZeroTolerance)
+    {
+        if (row == 0)
+        {
+            invLength = (Real)1 / helper::rsqrt(p00*p00 + p01*p01);
+            p00 *= invLength;
+            p01 *= invLength;
+            V[i0] = p01*U2 + S*p00;
+        }
+        else
+        {
+            invLength = (Real)1 / helper::rsqrt(p11*p11 + p01*p01);
+            p11 *= invLength;
+            p01 *= invLength;
+            V[i0] = U2*p11 + S*p01;
+        }
+    }
+    else
+    {
+        if (row == 0)
+        {
+            V[i0] = S;
+        }
+        else
+        {
+            V[i0] = U2;
+        }
+    }
+
+    // V[i1] = Cross(V[i2],V[i0])
+    V[i1] = cross( V[i2], V[i0] );
+}
+
+
+/** Non-iterative & faster Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
+  * Derived from Wild Magic Library
+  */
+template <typename Real>
+void eigenDecomposition_noniterative( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+{
+    // Scale the matrix so its entries are in [-1,1].  The scaling is applied
+    // only when at least one matrix entry has magnitude larger than 1.
+    Mat<3,3,Real> AScaled = A;
+    Real* scaledEntry = (Real*)&AScaled[0];
+    Real maxValue = helper::rabs(scaledEntry[0]);
+    Real absValue = helper::rabs(scaledEntry[1]);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(scaledEntry[2]);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(scaledEntry[4]);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(scaledEntry[5]);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+    absValue = helper::rabs(scaledEntry[8]);
+    if (absValue > maxValue)
+    {
+        maxValue = absValue;
+    }
+
+    int i;
+    if (maxValue > (Real)1)
+    {
+        Real invMaxValue = ((Real)1)/maxValue;
+        for (i = 0; i < 9; ++i)
+        {
+            scaledEntry[i] *= invMaxValue;
+        }
+    }
+
+    // Compute the eigenvalues using double-precision arithmetic.
+    double root[3];
+    ComputeRoots(AScaled,root);
+    diag[0] = (Real)root[0];
+    diag[1] = (Real)root[1];
+    diag[2] = (Real)root[2];
+
+    Real maxEntry[3];
+    Vec<3,Real> maxRow[3];
+    for (i = 0; i < 3; ++i)
+    {
+        Mat<3,3,Real> M = AScaled;
+        M[0][0] -= diag[i];
+        M[1][1] -= diag[i];
+        M[2][2] -= diag[i];
+        if (!PositiveRank(M, maxEntry[i], maxRow[i]))
+        {
+            // Rescale back to the original size.
+            if (maxValue > (Real)1)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    diag[j] *= maxValue;
+                }
+            }
+
+            V.identity();
+            return;
+        }
+    }
+
+    Real totalMax = maxEntry[0];
+    i = 0;
+    if (maxEntry[1] > totalMax)
+    {
+        totalMax = maxEntry[1];
+        i = 1;
+    }
+    if (maxEntry[2] > totalMax)
+    {
+        i = 2;
+    }
+
+    if (i == 0)
+    {
+        maxRow[0].normalize();
+        ComputeVectors(AScaled, maxRow[0], 1, 2, 0, V, diag);
+    }
+    else if (i == 1)
+    {
+        maxRow[1].normalize();
+        ComputeVectors(AScaled, maxRow[1], 2, 0, 1, V, diag);
+    }
+    else
+    {
+        maxRow[2].normalize();
+        ComputeVectors(AScaled, maxRow[2], 0, 1, 2, V, diag);
+    }
+
+    // Rescale back to the original size.
+    if (maxValue > (Real)1)
+    {
+        for (i = 0; i < 3; ++i)
+        {
+            diag[i] *= maxValue;
+        }
+    }
+
+    V.transpose();
+}
 
 } // namespace helper
 

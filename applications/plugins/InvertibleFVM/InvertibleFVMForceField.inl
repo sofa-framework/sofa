@@ -378,7 +378,7 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
 
 
 
-        Mat<3,3,Real> F = _initialRotation[elementIndex] * A * _initialTransformation[elementIndex];
+        Mat<3,3,Real> F = /*_initialRotation[elementIndex] **/ A * _initialTransformation[elementIndex];
 
 
 
@@ -624,7 +624,7 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
 
         //if( _verbose.getValue() ) serr<<"InvertibleFVMForceField P "<<P<<sendl;
 
-        P = /*_initialRotation[elementIndex] **/ U * P * V.transposed();
+        P = _initialRotation[elementIndex] * U * P * V.transposed();
 
         _U[elementIndex].transpose( U );
         _V[elementIndex] = V;

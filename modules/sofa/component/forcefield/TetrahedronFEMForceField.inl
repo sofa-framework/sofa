@@ -1177,7 +1177,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        eigenDecomposition_noniterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column

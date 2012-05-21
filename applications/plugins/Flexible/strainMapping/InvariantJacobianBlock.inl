@@ -32,8 +32,6 @@
 #include "../types/StrainTypes.h"
 #include "../types/PolynomialBasis.h"
 
-#include <sofa/helper/decompose.h>
-
 namespace sofa
 {
 

@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_GreenStrainJacobianBlock_INL
 #define FLEXIBLE_GreenStrainJacobianBlock_INL
 
-#include "../strainMapping/GreenStrainJacobianBlock.h"
+#include "GreenStrainJacobianBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
@@ -51,63 +51,9 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
-template<typename Real>
-static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const  Mat<3,3,Real>& f) // 3D
-{
-    static const unsigned int spatial_dimensions = 3;
-    static const unsigned int material_dimensions = 3;
-    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
-    JBlock J=JBlock::Zero();
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-        for(unsigned int j=0; j<material_dimensions; j++)
-            J(j,j+material_dimensions*k)=f[k][j];
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-    {
-        J(3,material_dimensions*k+1)=J(5,material_dimensions*k+2)=f[k][0];
-        J(3,material_dimensions*k)=J(4,material_dimensions*k+2)=f[k][1];
-        J(5,material_dimensions*k)=J(4,material_dimensions*k+1)=f[k][2];
-    }
-    return J;
-}
 
-template<typename Real>
-static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const  Mat<2,2,Real>& f) // 2D
-{
-    static const unsigned int spatial_dimensions = 2;
-    static const unsigned int material_dimensions = 2;
-    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
-    JBlock J=JBlock::Zero();
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-        for(unsigned int j=0; j<material_dimensions; j++)
-            J(j,j+material_dimensions*k)=f[k][j];
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-    {
-        J(material_dimensions,material_dimensions*k+1)=f[k][0];
-        J(material_dimensions,material_dimensions*k)=f[k][1];
-    }
-    return J;
-}
 
-template<typename Real>
-static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const  Mat<3,2,Real>& f) // 2D
-{
-    static const unsigned int spatial_dimensions = 3;
-    static const unsigned int material_dimensions = 2;
-    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
-    typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
-    JBlock J=JBlock::Zero();
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-        for(unsigned int j=0; j<material_dimensions; j++)
-            J(j,j+material_dimensions*k)=f[k][j];
-    for( unsigned int k=0; k<spatial_dimensions; k++ )
-    {
-        J(material_dimensions,material_dimensions*k+1)=f[k][0];
-        J(material_dimensions,material_dimensions*k)=f[k][1];
-    }
-    return J;
-}
+
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331 -> E331
