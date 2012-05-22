@@ -372,8 +372,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        // order 0
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(R);
+        eB = assembleJ(R);
         return B;
     }
 
@@ -381,8 +380,7 @@ public:
     // requires derivative of R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
-        KBlock K = KBlock();
-        return K;
+        return KBlock();
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
     {
@@ -488,8 +486,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        // order 0
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(R);
+        eB = assembleJ(R);
         return B;
     }
 
@@ -497,8 +494,7 @@ public:
     // requires derivative of R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
-        KBlock K = KBlock();
-        return K;
+        return KBlock();
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
     {
@@ -617,12 +613,12 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = assembleJ(R);
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = J;
+        eB.template block(0,0,strain_size,frame_size) = J;
         // order 1
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = J;
+            eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
             offsetE+=strain_size;
         }
         return B;
@@ -631,8 +627,7 @@ public:
     // requires derivative of R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
-        KBlock K;
-        return K;
+        return KBlock();
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
     {

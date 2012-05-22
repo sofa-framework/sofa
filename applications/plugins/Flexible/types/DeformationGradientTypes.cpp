@@ -29,7 +29,6 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/component/container/MechanicalObject.inl>
-#include "../quadrature/BaseGaussPointSampler.h"
 
 namespace sofa
 {
@@ -40,7 +39,7 @@ namespace container
 
 // ==========================================================================
 // Init Specializations (initialization from GaussPointSampler)
-
+/*
 template <>
 void MechanicalObject<F331Types>::init()
 {
@@ -53,7 +52,7 @@ void MechanicalObject<F331Types>::init()
 
         Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
         VecCoord& x_wA = *x_wAData->beginEdit();
-        for(unsigned int i=0; i<nbp; i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
+        for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
 
         VecCoord *x0_edit = x0.beginEdit();
         x0.setValue(x.getValue());
@@ -77,7 +76,7 @@ void MechanicalObject<F332Types>::init()
 
         Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
         VecCoord& x_wA = *x_wAData->beginEdit();
-        for(unsigned int i=0; i<nbp; i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
+        for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
 
         VecCoord *x0_edit = x0.beginEdit();
         x0.setValue(x.getValue());
@@ -88,10 +87,10 @@ void MechanicalObject<F332Types>::init()
         reinit();
     }
 }
-
+*/
 // ==========================================================================
 // Draw Specializations
-
+/*
 template <>
 void MechanicalObject<F331Types>::draw(const core::visual::VisualParams* vparams)
 {
@@ -235,7 +234,7 @@ void MechanicalObject<F332Types >::draw(const core::visual::VisualParams* vparam
         glPopAttrib();
     }
 }
-
+*/
 
 // ==========================================================================
 // Instanciation

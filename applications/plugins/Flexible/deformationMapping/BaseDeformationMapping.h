@@ -35,6 +35,7 @@
 #include <sofa/helper/vector.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
+#include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -45,7 +46,6 @@
 #include <sofa/core/Mapping.inl>
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
-
 
 namespace sofa
 {
@@ -94,19 +94,25 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     enum { spatial_dimensions = Out::spatial_dimensions };
-//    enum { material_dimensions = Out::material_dimensions };
+    //    enum { material_dimensions = Out::material_dimensions };
     //@}
 
     /** @name  Shape Function types    */
     //@{
     typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
-//    typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
+    //    typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
+    //@}
+
+    /** @name  Shape Function types    */
+    //@{
+    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef vector<Coord> VecCoord;
     //@}
 
     /** @name  Jacobian types    */
@@ -132,14 +138,29 @@ public:
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+        helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_position0);
+
+
+        engine::BaseGaussPointSampler* sampler=NULL;
+        this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
+        if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
+        {
+            unsigned int nbp=sampler->getNbSamples();
+            this->toModel->resize(nbp);
+            pos0.resize(nbp);  for(unsigned int i=0; i<nbp; i++) pos0[i]=sampler->getSample(i);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+        }
+        else  // retrieve initial positions from children dofs (vec types)
+        {
+            pos0.resize(out.size());  for(unsigned int i=0; i<out.size(); i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
+        }
 
         // init shape function
         this->getContext()->get(ShapeFunction,core::objectmodel::BaseContext::SearchUp);
         if ( !ShapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
         else
         {
-            vector<mCoord> initmPos; initmPos.resize(out.size());  for(unsigned int i=0; i<out.size(); i++ )  Out::get(initmPos[i][0],initmPos[i][1],initmPos[i][2],out[i]);
-            ShapeFunction->computeShapeFunction(initmPos,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            ShapeFunction->computeShapeFunction(pos0.wref(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
             this->f_index.endEdit();        this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 
@@ -152,7 +173,7 @@ public:
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                jacobian[i][j].init( in[index],out[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
+                jacobian[i][j].init( in[index],pos0[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
 
@@ -190,6 +211,8 @@ public:
         if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
     }
 
+
+
     virtual void applyJ(const core::MechanicalParams */*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
         if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
@@ -198,13 +221,31 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            if ((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
             {
-                out[i]=OutDeriv();
-                for(unsigned int j=0; j<jacobian[i].size(); j++)
+                for(unsigned int i=0; i<jacobian.size(); i++)
                 {
-                    unsigned int index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addmult(out[i],in[index]);
+                    out[i]=OutDeriv();
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addmult(out[i],in[index]);
+                    }
+                }
+            }
+            else
+            {
+                typedef helper::ParticleMask ParticleMask;
+                const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+                for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+                {
+                    unsigned int i= ( unsigned int ) ( *it );
+                    out[i]=OutDeriv();
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addmult(out[i],in[index]);
+                    }
                 }
             }
 
@@ -221,12 +262,29 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
             {
-                for(unsigned int j=0; j<jacobian[i].size(); j++)
+                for(unsigned int i=0; i<jacobian.size(); i++)
                 {
-                    unsigned int index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addMultTranspose(in[index],out[i]);
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addMultTranspose(in[index],out[i]);
+                    }
+                }
+            }
+            else
+            {
+                typedef helper::ParticleMask ParticleMask;
+                const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+                for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+                {
+                    const int i= ( int ) ( *it );
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addMultTranspose(in[index],out[i]);
+                    }
                 }
             }
 
@@ -258,12 +316,29 @@ public:
         }
         else
         {
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
             {
-                for(unsigned int j=0; j<jacobian[i].size(); j++)
+                for(unsigned int i=0; i<jacobian.size(); i++)
                 {
-                    unsigned int index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    }
+                }
+            }
+            else
+            {
+                typedef helper::ParticleMask ParticleMask;
+                const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+                for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+                {
+                    const int i= ( int ) ( *it );
+                    for(unsigned int j=0; j<jacobian[i].size(); j++)
+                    {
+                        unsigned int index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    }
                 }
             }
         }
@@ -277,6 +352,23 @@ public:
 
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+
+    // map spatial positions when needed (not contained in output type)
+    //    void applyPositions(VecCoord& dOut)
+    //    {
+
+    //        const InVecCoord&  in = dIn.getValue();
+
+    //        for(unsigned int i=0;i<jacobian.size();i++)
+    //        {
+    //            out[i]=OutCoord();
+    //            for(unsigned int j=0;j<jacobian[i].size();j++)
+    //            {
+    //                unsigned int index=this->f_index.getValue()[i][j];
+    //                jacobian[i][j].addapply(out[i],in[index]);
+    //            }
+    //        }
+    //    }
 
     void draw(const core::visual::VisualParams* vparams)
     {
@@ -313,6 +405,7 @@ protected:
         , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
         , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
+        , f_position0 ( initData ( &f_position0,"restPosition","initial spatial positions of children" ) )
         , maskFrom(NULL)
         , maskTo(NULL)
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
@@ -328,6 +421,8 @@ protected:
     Data<vector<VReal> >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
+
+    Data<VecCoord >    f_position0; ///< initial spatial positions of children
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 

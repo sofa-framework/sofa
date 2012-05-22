@@ -64,7 +64,7 @@ struct DefGradientTypes
     typedef PolynomialBasis<spatial_dimensions*material_dimensions, Real, spatial_dimensions, _order> Basis;    ///< deformation gradient, expressed on a certain basis
     typedef typename Basis::TotalVec BasisVec;                            ///< decomposed deformation gradient in a single vector
 
-    enum { VSize = spatial_dimensions + Basis::total_size };  ///< number of entries: point + decomposed deformation gradient
+    enum { VSize = Basis::total_size };  ///< number of entries: point + decomposed deformation gradient
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
 
@@ -75,13 +75,12 @@ struct DefGradientTypes
     class Deriv
     {
     protected:
-        SpatialCoord v;
         Basis b;
 
     public:
-        Deriv() { v.clear(); b.clear(); }
-        Deriv( const SpatialCoord& q, const Basis& d):v(q),b(d) {}
-        void clear() {  v.clear(); b.clear();}
+        Deriv() { b.clear(); }
+        Deriv( const Basis& d):b(d) {}
+        void clear() {  b.clear();}
 
         static const unsigned int total_size = VSize;
         typedef Real value_type;
@@ -95,12 +94,8 @@ struct DefGradientTypes
         BasisVec& getVec() { return b.getVec(); }
         const BasisVec& getVec() const { return b.getVec(); }
 
-        Real& operator[](int i) { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
-        const Real& operator[](int i) const    { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
-
-        /// point
-        SpatialCoord& getCenter() { return v; }
-        const SpatialCoord& getCenter() const { return v; }
+        Real& operator[](int i) { return getVec()[i]; }
+        const Real& operator[](int i) const    { return getVec()[i]; }
 
         /// basis
         Basis& getBasis() { return b; }
@@ -115,21 +110,21 @@ struct DefGradientTypes
         Frame& getHessianF(int i,int j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
         const Frame& getHessianF(int i,int j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
 
-        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v,getVec()+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.v; getVec()+=a.getVec(); }
+        Deriv operator +(const Deriv& a) const { return Deriv(getVec()+a.getVec()); }
+        void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
 
-        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v,getVec()-a.getVec()); }
-        void operator -=(const Deriv& a) { v-=a.v; getVec()-=a.getVec(); }
-
-        template<typename real2>
-        Deriv operator *(real2 a) const { return Deriv(v*a,getVec()*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; getVec() *= a; }
+        Deriv operator -(const Deriv& a) const { return Deriv(getVec()-a.getVec()); }
+        void operator -=(const Deriv& a) { getVec()-=a.getVec(); }
 
         template<typename real2>
-        void operator /=(real2 a) { v /= a; getVec() /= a; }
+        Deriv operator *(real2 a) const { return Deriv(getVec()*a); }
+        template<typename real2>
+        void operator *=(real2 a) { getVec() *= a; }
 
-        Deriv operator - () const { return Deriv(-v, -getVec()); }
+        template<typename real2>
+        void operator /=(real2 a) { getVec() /= a; }
+
+        Deriv operator - () const { return Deriv(-getVec()); }
 
         /// dot product, mostly used to compute residuals as sqrt(x*x)
         Real operator*(const Deriv& a) const    { return getVec()*a.getVec(); }
@@ -137,13 +132,13 @@ struct DefGradientTypes
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
         {
-            out<<c.v<<" "<<c.getVec();
+            out<<" "<<c.getVec();
             return out;
         }
         /// read from an input stream
         inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
         {
-            in>>c.v>>c.getVec();
+            in>>c.getVec();
             return in;
         }
     };
@@ -159,173 +154,24 @@ struct DefGradientTypes
         return c;
     }
 
-    /** Deformation gradient , or other vector-like associated quantities, such as generalized force
-    */
-    class Coord
-    {
-    protected:
-        SpatialCoord v;
-        Basis b;
+    typedef Deriv Coord;
 
-    public:
-        Coord() { v.clear(); b.clear(); }
-        Coord( const SpatialCoord& q, const Basis& d):v(q),b(d) {}
-        void clear() { v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
-
-        static const unsigned int total_size = VSize;
-        typedef Real value_type;
-
-        /// seen as a vector
-        Real* ptr() { return b.ptr(); }
-        const Real* ptr() const { return b.ptr(); }
-
-        BasisVec& getVec() { return b.getVec(); }
-        const BasisVec& getVec() const { return b.getVec(); }
-
-        Real& operator[](int i) { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
-        const Real& operator[](int i) const    { if(i<(int)spatial_dimensions) return v[i]; else return getVec()[i-spatial_dimensions]; }
-
-        /// point
-        SpatialCoord& getCenter() { return v; }
-        const SpatialCoord& getCenter() const { return v; }
-
-        /// basis
-        Basis& getBasis() { return b; }
-        const Basis& getBasis() const { return b; }
-
-        Frame& getF() { return *reinterpret_cast<Frame*>(&b.getVal()); }
-        const Frame& getF() const { return *reinterpret_cast<const Frame*>(&b.getVal()); }
-
-        Frame& getGradientF(int i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
-        const Frame& getGradientF(int i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
-
-        Frame& getHessianF(int i,int j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
-        const Frame& getHessianF(int i,int j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
-
-        Coord operator +(const Coord& a) const { return Coord(v+a.v,getVec()+a.getVec()); }
-        void operator +=(const Coord& a) { v+=a.v; getVec()+=a.getVec(); }
-
-        Coord operator +(const Deriv& a) const { return Coord(v+a.v,getVec()+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.getCenter(); getVec()+=a.getVec(); }
-
-        Coord operator -(const Coord& a) const { return Coord(v-a.v,getVec()-a.getVec()); }
-        void operator -=(const Coord& a) { v-=a.v; getVec()-=a.getVec(); }
-
-        template<typename real2>
-        Coord operator *(real2 a) const { return Coord(v*a,getVec()*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; getVec() *= a; }
-
-        template<typename real2>
-        void operator /=(real2 a) { v /= a; getVec() /= a; }
-
-        Coord operator - () const { return Coord(-v, -getVec()); }
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return getVec()*a.getVec(); }
-
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
-        {
-            out<<c.v<<" "<<c.getVec();
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Coord& c )
-        {
-            in>>c.v>>c.getVec();
-            return in;
-        }
-
-        /// Write the OpenGL transformation matrix
-        void writeOpenGlMatrix ( float m[16] ) const
-        {
-            BOOST_STATIC_ASSERT(spatial_dimensions == 3);
-            m[0] = (float)getF()(0,0);
-            m[4] = (float)getF()(0,1);
-            m[8] = (float)getF()(0,2);
-            m[1] = (float)getF()(1,0);
-            m[5] = (float)getF()(1,1);
-            m[9] = (float)getF()(1,2);
-            m[2] = (float)getF()(2,0);
-            m[6] = (float)getF()(2,1);
-            m[10] = (float)getF()(2,2);
-            m[3] = 0;
-            m[7] = 0;
-            m[11] = 0;
-            m[12] = ( float ) getCenter()[0];
-            m[13] = ( float ) getCenter()[1];
-            m[14] = ( float ) getCenter()[2];
-            m[15] = 1;
-        }
-    };
+//    void clear(){ v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
 
     typedef vector<Coord> VecCoord;
 
     static const char* Name();
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
-    {
-        assert ( ancestors.size() == coefs.size() );
-        Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
-        return c;
-    }
-
     /** @name Conversions
               * Convert to/from points in space
              */
     //@{
-
     template<typename T>
-    static void set ( Deriv& c, T x, T y, T z )
-    {
-        c.clear();
-        c.getCenter()[0] = ( Real ) x;
-        c.getCenter() [1] = ( Real ) y;
-        c.getCenter() [2] = ( Real ) z;
-    }
-
+    static void set ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )  {    }
     template<typename T>
-    static void get ( T& x, T& y, T& z, const Deriv& c )
-    {
-        x = ( T ) c.getCenter() [0];
-        y = ( T ) c.getCenter() [1];
-        z = ( T ) c.getCenter() [2];
-    }
-
+    static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Deriv& /*c*/ ) {    }
     template<typename T>
-    static void add ( Deriv& c, T x, T y, T z )
-    {
-        c.getCenter() [0] += ( Real ) x;
-        c.getCenter() [1] += ( Real ) y;
-        c.getCenter() [2] += ( Real ) z;
-    }
-
-    template<typename T>
-    static void set ( Coord& c, T x, T y, T z )
-    {
-        c.clear();
-        c.getCenter()[0] = ( Real ) x;
-        c.getCenter() [1] = ( Real ) y;
-        c.getCenter() [2] = ( Real ) z;
-    }
-
-    template<typename T>
-    static void get ( T& x, T& y, T& z, const Coord& c )
-    {
-        x = ( T ) c.getCenter() [0];
-        y = ( T ) c.getCenter() [1];
-        z = ( T ) c.getCenter() [2];
-    }
-
-    template<typename T>
-    static void add ( Coord& c, T x, T y, T z )
-    {
-        c.getCenter() [0] += ( Real ) x;
-        c.getCenter() [1] += ( Real ) y;
-        c.getCenter() [2] += ( Real ) z;
-    }
+    static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}
 
 };
