@@ -1,5 +1,0 @@
-includeOnce($$_FILE_) {
-	declare(Python, applications/plugins/Python, sofaguimain)
-	
-	enable(Python)
-}
