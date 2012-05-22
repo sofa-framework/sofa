@@ -123,7 +123,7 @@ protected:
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    Block makeBlock( Real top, Real middle, Real bottom );  ///< helper for the creation of the jacobian
+    Block makeBlock(  Real middle, Real bottom );  ///< helper for the creation of the jacobian
 };
 
 
