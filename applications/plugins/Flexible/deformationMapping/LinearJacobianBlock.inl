@@ -155,7 +155,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -230,7 +230,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -261,7 +261,7 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,dim,Real> Hessian;
+    typedef Mat<mdim,mdim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
 
 
@@ -310,7 +310,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -334,15 +334,14 @@ public:
     typedef typename Inherit::OutCoord OutCoord;
     typedef typename Inherit::OutDeriv OutDeriv;
     typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
-//    enum { mdim = Out::spatial_dimensions };
 
     typedef Vec<mdim,Real> Gradient;
-//    typedef Mat<mdim,dim,Real> Hessian;
-    typedef Mat<2,3,Real> Hessian;
+    typedef Mat<mdim,mdim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
 
     /**
@@ -358,7 +357,7 @@ public:
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I   =  constant term
+    OutCoord C;       ///< =  (p0-t0).grad w + w.I   =  constant term
     Gradient Ft;  ///< =   grad w     =  d F/dt
 
     void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
@@ -389,6 +388,10 @@ public:
         for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+i*mdim][i]=Ft[j];
         return J;
     }
+
+    // no geometric striffness (constant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
 
@@ -417,8 +420,8 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,dim,Real> Hessian;
-    typedef Mat<dim,mdim,Real> HessianT;
+    typedef Mat<mdim,mdim,Real> Hessian;
+    typedef Mat<mdim,mdim,Real> HessianT;
     typedef Vec<dim, Real> SpatialCoord;
 
     /**
@@ -488,7 +491,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -570,7 +573,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -650,7 +653,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -738,7 +741,7 @@ public:
     }
 
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
@@ -847,7 +850,7 @@ public:
         return J;
     }
 
-    // no geometric striffness (contstant J)
+    // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };

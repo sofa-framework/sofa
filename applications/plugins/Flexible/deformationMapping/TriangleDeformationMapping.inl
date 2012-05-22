@@ -129,14 +129,13 @@ void TriangleDeformationMapping<TIn, TOut>::init()
 
 // Return a 9*3 matrix made of three scaled identity matrices.
 template <class TIn, class TOut>
-inline typename TriangleDeformationMapping<TIn, TOut>::Block TriangleDeformationMapping<TIn, TOut>::makeBlock( Real top, Real middle, Real bottom )
+inline typename TriangleDeformationMapping<TIn, TOut>::Block TriangleDeformationMapping<TIn, TOut>::makeBlock( Real middle, Real bottom )
 {
     Block b;  // initialized to 0
     for(unsigned i=0; i<3; i++)
     {
-        b[  i][i] = top;       // influence on the centre
-        b[3+2*i][i] = middle;  // influence on the two axes, interleaved because the axes are the columns of the matrix
-        b[4+2*i][i] = bottom;
+        b[2*i][i] = middle;  // influence on the two axes, interleaved because the axes are the columns of the matrix
+        b[1+2*i][i] = bottom;
     }
 //    cerr<<"TriangleDeformationMapping<TIn, TOut>::createBlock " << endl << b << endl;
     return b;
@@ -154,7 +153,6 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
 
     for(unsigned i=0; i<triangles.size(); i++ )
     {
-        //F[i].getCenter() = ( pos[triangles[i][0]] + pos[triangles[i][1]] + pos[triangles[i][2]] ) *1.0/3;  // centre of the triangle
         Frame F1;
         for(unsigned j=0; j<Nin; j++)
         {
@@ -170,10 +168,10 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::apply, F.getF() transposed = " << F[i].getF().transposed() << endl;
 
         jacobian.beginBlockRow(i);
-        // each block defined by its column and its contributions to centre, first axis, second axis, respectively
-        jacobian.createBlock( triangles[i][0], makeBlock(1.0/3, -M[0][0]-M[1][0], -M[0][1]-M[1][1]) );
-        jacobian.createBlock( triangles[i][1], makeBlock(1.0/3,  M[0][0]        ,  M[0][1]        ) );
-        jacobian.createBlock( triangles[i][2], makeBlock(1.0/3,          M[1][0],          M[1][1]) );
+        // each block defined by its column and its contributions to  first axis, second axis, respectively
+        jacobian.createBlock( triangles[i][0], makeBlock(-M[0][0]-M[1][0], -M[0][1]-M[1][1]) );
+        jacobian.createBlock( triangles[i][1], makeBlock( M[0][0]        ,  M[0][1]        ) );
+        jacobian.createBlock( triangles[i][2], makeBlock(         M[1][0],          M[1][1]) );
         jacobian.endBlockRow();
     }
 

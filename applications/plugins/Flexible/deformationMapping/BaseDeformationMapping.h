@@ -49,6 +49,31 @@
 
 namespace sofa
 {
+
+
+template< class OutDataTypes>
+class OutDataTypesInfo
+{
+public:
+    enum {material_dimensions = OutDataTypes::material_dimensions};
+};
+
+template<class TCoord, class TDeriv, class TReal>
+class OutDataTypesInfo<defaulttype::StdVectorTypes<TCoord, TDeriv, TReal> >
+{
+public:
+    enum {material_dimensions = TCoord::spatial_dimensions};
+};
+
+template<class TCoord, class TDeriv, class TReal>
+class OutDataTypesInfo<defaulttype::ExtVectorTypes<TCoord, TDeriv, TReal> >
+{
+public:
+    enum {material_dimensions = TCoord::spatial_dimensions};
+};
+
+
+
 namespace component
 {
 namespace mapping
@@ -94,13 +119,12 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     enum { spatial_dimensions = Out::spatial_dimensions };
-    //    enum { material_dimensions = Out::material_dimensions };
+    enum { material_dimensions = OutDataTypesInfo<Out>::material_dimensions };
     //@}
 
     /** @name  Shape Function types    */
     //@{
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
-    //    typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
     typedef typename BaseShapeFunction::VGradient VGradient;
@@ -160,7 +184,11 @@ public:
         if ( !ShapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
         else
         {
-            ShapeFunction->computeShapeFunction(pos0.wref(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            vector<mCoord> mpos0;
+            mpos0.resize(pos0.size());
+            for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
+
+            ShapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
             this->f_index.endEdit();        this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 

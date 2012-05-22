@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
+<VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
 
 
 <Node 	name="GreenLagrange" >
@@ -26,15 +26,24 @@
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
     <Node name="deformationNode" >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-        <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
+  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+<!--            
+	<TriangleSetTopologyContainer triangles="@../mesh.triangles" />
         <TriangleDeformationMapping  scaleView="0.03" />
+-->
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
 	    <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
             <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  />
+             <IdentityMapping />
+	</Node>
 
 <!--    elastic force, until we set up triangle FEM-->
 <!--    <MeshSpringForceField linesStiffness="10"/>-->
@@ -55,15 +64,25 @@
     <UniformMass  name="mass" totalMass="1"/>
 
     <Node name="deformationNode" >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-        <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
+  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+<!--            
+	<TriangleSetTopologyContainer triangles="@../mesh.triangles" />
         <TriangleDeformationMapping  scaleView="0.03" />
+-->
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
 	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd"/>
             <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  />
+             <IdentityMapping />
+	</Node>
+
 </Node>
 
 

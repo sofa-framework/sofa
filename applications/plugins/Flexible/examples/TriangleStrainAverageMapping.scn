@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
-<VisualStyle displayFlags="showVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
+<VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
     <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
@@ -26,9 +26,14 @@
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
     <Node name="deformationNode" >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+    
         <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
+<!--
         <TriangleDeformationMapping  scaleView="0.03" />
+-->
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="triangleVoigtStrainDOF" />
             <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
@@ -36,7 +41,7 @@
             <Node>
                 <MechanicalObject template="E221"  name="nodeVoigtStrainDOF" />
                 <TriangleStrainAverageMapping template="Mapping&lt;E221,E221&gt;" />
-                <HookeForceField template="E221" youngModulus="1" poissonRatio="0.4" />
+                <HookeForceField template="E221" youngModulus="1000" poissonRatio="0.4" />
             </Node>
         </Node>
     </Node>
