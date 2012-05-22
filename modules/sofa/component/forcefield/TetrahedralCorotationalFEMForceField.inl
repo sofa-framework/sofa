@@ -1178,7 +1178,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a,
     tetrahedronInf[i].initialTransformation = A;
 
     Transformation R_0_1;
-    polarDecomposition(A, R_0_1);
+    helper::Decompose<Real>::polarDecomposition(A, R_0_1);
 
     tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(*X0)[a];
     tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(*X0)[b];
@@ -1202,7 +1202,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
 
     Transformation R_0_2;
     MatNoInit<3,3,Real> S;
-    polarDecomposition(A, R_0_2);
+    helper::Decompose<Real>::polarDecomposition(A, R_0_2);
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 

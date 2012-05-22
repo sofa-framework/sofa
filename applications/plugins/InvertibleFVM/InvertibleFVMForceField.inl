@@ -243,7 +243,7 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
 
 
         //Transformation R_0_1;
-        polarDecomposition( A, _initialRotation[i] );
+        helper::Decompose<Real>::polarDecomposition( A, _initialRotation[i] );
         _initialRotation[i].transpose();
         //_initialRotation[i] = R_0_1;
         if( _verbose.getValue() ) serr<<"InvertibleFVMForceField initialRotation "<<_initialRotation[i]<<sendl;
@@ -390,7 +390,7 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
 
         Mat<3,3,Real> FtF = F.transposed() * F; // transformation from actual pos to rest pos
 
-        eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion det(V)=-1 -> made it a rotation by negating a column

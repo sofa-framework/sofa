@@ -351,7 +351,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
                 }
             }
             // polar decomposition of the transformation
-            polarDecomposition(deformationGradient,R);
+            helper::Decompose<Real>::polarDecomposition(deformationGradient,R);
         }
         else
         {

@@ -200,7 +200,7 @@ public:
         void setRigid()
         {
             Affine rotation;
-            polarDecomposition( getAffine(), rotation );
+            helper::Decompose<Real>::polarDecomposition( getAffine(), rotation );
             getAffine() = rotation;
         }
 

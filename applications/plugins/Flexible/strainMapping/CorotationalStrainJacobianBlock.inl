@@ -60,7 +60,7 @@ namespace defaulttype
 template<typename Real>
 void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    helper::QRDecomposition_stable( f, r );
+    helper::Decompose<Real>::QRDecomposition_stable( f, r );
 
     Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
     s = helper::symetrize( T ); // s = ( T + Tt ) * 0.5
@@ -80,7 +80,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        eigenDecomposition_noniterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -247,7 +247,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
     }
     else // not inverted -> classical polar
     {
-        polarDecomposition( F, r, s );
+        helper::Decompose<Real>::polarDecomposition( F, r, s );
     }
 }
 
@@ -262,8 +262,7 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 
     Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-    eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
-
+    helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal );
 
     // if V is a reflexion -> made it a rotation by negating a column
     if( determinant(V) < 0 )
@@ -287,6 +286,7 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
     r = U.multTransposed( V ); // r = U * Vt
     s = r.multTranspose( F ); // s = rt * F
 }
+
 
 
 
@@ -339,7 +339,7 @@ public:
         switch( decompositionMethod )
         {
         case POLAR:
-            helper::polarDecomposition( data.getF(), R, strainmat );
+            helper::Decompose<Real>::polarDecomposition( data.getF(), R, strainmat );
             break;
         case QR:
             computeQR( data.getF(), R, strainmat );
@@ -558,7 +558,7 @@ public:
         switch( decompositionMethod )
         {
         case POLAR:
-            helper::polarDecomposition(data.getF(), R, strainmat);
+            helper::Decompose<Real>::polarDecomposition(data.getF(), R, strainmat);
             break;
         case QR:
             computeQR( data.getF(), R, strainmat );

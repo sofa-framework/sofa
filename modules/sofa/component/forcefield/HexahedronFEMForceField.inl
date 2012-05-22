@@ -1028,7 +1028,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
     //HT[3][0] = HT[3][1] = HT[3][2] = HT[0][3] = HT[1][3] = HT[2][3] = 0;
     //HT[3][3] = 1;
 
-    polarDecomposition(HT, r);
+    helper::Decompose<Real>::polarDecomposition(HT, r);
 }
 
 

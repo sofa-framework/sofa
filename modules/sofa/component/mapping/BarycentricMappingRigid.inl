@@ -224,7 +224,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         }
 
         orientationMatrix.transpose();
-        polarDecomposition(orientationMatrix, polarMatrixQ);
+        helper::Decompose<Matrix3::Real>::polarDecomposition(orientationMatrix, polarMatrixQ);
         Quat quatA;
         quatA.fromMatrix(polarMatrixQ);
         Out::setCRot(out[point], quatA);

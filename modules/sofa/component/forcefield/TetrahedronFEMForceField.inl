@@ -838,7 +838,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     defaulttype::Mat<3,3,Real> Rmoy;
 
 
-    helper::polarDecomposition( R, Rmoy );
+    helper::Decompose<Real>::polarDecomposition( R, Rmoy );
 
     R = Rmoy;
 
@@ -1033,7 +1033,7 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     //_initialTransformation[i] = A;
 
     Transformation R_0_1;
-    polarDecomposition( A, R_0_1 );
+    helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
 
     _initialRotations[i].transpose( R_0_1 );
     rotations[i] = _initialRotations[i];
@@ -1063,7 +1063,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     A[2] = p[index[3]]-p[index[0]];
 
     Transformation R_0_2;
-    polarDecomposition( A, R_0_2 );
+    helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
 
     rotations[elementIndex].transpose( R_0_2 );
 
@@ -1124,7 +1124,7 @@ void TetrahedronFEMForceField<DataTypes>::initSVD( int i, Index& a, Index&b, Ind
     _initialTransformation[i].invert( A );
 
     Transformation R_0_1;
-    polarDecomposition( A, R_0_1 );
+    helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
 
     _initialRotations[i].transpose( R_0_1);
     rotations[i] = _initialRotations[i];
@@ -1177,7 +1177,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        eigenDecomposition_noniterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -1357,7 +1357,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     }
     else // not inverted -> classical polar
     {
-        polarDecomposition( A, R_0_2 );
+        helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
     }
 
     rotations[elementIndex].transpose( R_0_2 );
