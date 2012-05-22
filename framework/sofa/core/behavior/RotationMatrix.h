@@ -134,17 +134,17 @@ public:
                 Real tmp[9];
                 for (unsigned i=0; i<data.size(); i+=9)
                 {
-                    tmp[0] = data[i+0] * m->data[i+0] + data[i+3] * m->data[i+3] + data[i+6] * m->data[i+6];
-                    tmp[1] = data[i+0] * m->data[i+1] + data[i+3] * m->data[i+4] + data[i+6] * m->data[i+7];
-                    tmp[2] = data[i+0] * m->data[i+2] + data[i+3] * m->data[i+5] + data[i+6] * m->data[i+8];
+                    tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
+                    tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
+                    tmp[2] = data[i+0] * m->data[i+6] + data[i+1] * m->data[i+7] + data[i+2] * m->data[i+8];
 
-                    tmp[3] = data[i+1] * m->data[i+0] + data[i+4] * m->data[i+3] + data[i+7] * m->data[i+6];
-                    tmp[4] = data[i+1] * m->data[i+1] + data[i+4] * m->data[i+4] + data[i+7] * m->data[i+7];
-                    tmp[5] = data[i+1] * m->data[i+2] + data[i+4] * m->data[i+5] + data[i+7] * m->data[i+8];
+                    tmp[3] = data[i+3] * m->data[i+0] + data[i+4] * m->data[i+1] + data[i+5] * m->data[i+2];
+                    tmp[4] = data[i+3] * m->data[i+3] + data[i+4] * m->data[i+4] + data[i+5] * m->data[i+5];
+                    tmp[5] = data[i+3] * m->data[i+6] + data[i+4] * m->data[i+7] + data[i+5] * m->data[i+8];
 
-                    tmp[6] = data[i+2] * m->data[i+0] + data[i+5] * m->data[i+3] + data[i+8] * m->data[i+6];
-                    tmp[7] = data[i+2] * m->data[i+1] + data[i+5] * m->data[i+4] + data[i+8] * m->data[i+7];
-                    tmp[8] = data[i+2] * m->data[i+2] + data[i+5] * m->data[i+5] + data[i+8] * m->data[i+8];
+                    tmp[6] = data[i+6] * m->data[i+0] + data[i+7] * m->data[i+1] + data[i+8] * m->data[i+2];
+                    tmp[7] = data[i+6] * m->data[i+3] + data[i+7] * m->data[i+4] + data[i+8] * m->data[i+5];
+                    tmp[8] = data[i+6] * m->data[i+6] + data[i+7] * m->data[i+7] + data[i+8] * m->data[i+8];
 
                     result->data[i+0] = tmp[0]; result->data[i+1] = tmp[1]; result->data[i+2] = tmp[2];
                     result->data[i+3] = tmp[3]; result->data[i+4] = tmp[4]; result->data[i+5] = tmp[5];

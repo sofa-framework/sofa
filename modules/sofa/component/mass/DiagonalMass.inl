@@ -584,7 +584,6 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
-    printf("LLLLLL\n");
     if (! f_update_mass.getValue()) return;
 
     // add the functions to handle topology changes.
