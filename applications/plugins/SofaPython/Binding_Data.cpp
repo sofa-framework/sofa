@@ -153,6 +153,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
     {
         // it's a string
         char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
+        printf("Data_setAttr_value str=%s\n",str);
         data->read(str);
         return 0;
     }
@@ -321,8 +322,15 @@ extern "C" PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*
     return PyString_FromString(data->getValueTypeString().c_str());
 }
 
+extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    return PyString_FromString(data->getValueString().c_str());
+}
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
+SP_CLASS_METHOD(Data,getValueString)
 SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHODS_END

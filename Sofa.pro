@@ -27,7 +27,7 @@ contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION) {
 }
 
 contains(DEFINES, SOFA_HAVE_PYTHON) {
-        usePlugin(Python)
+        usePlugin(SofaPython)
 }
 
 contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS) {

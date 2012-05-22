@@ -19,7 +19,7 @@ int PythonScriptControllerClass = core::RegisterObject("A python component exper
         .addAlias("Python")
         ;
 
-SOFA_DECL_CLASS(PythonController)
+SOFA_DECL_CLASS(PythonControllerOld)
 
 
 
