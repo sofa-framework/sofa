@@ -89,5 +89,5 @@ const char* getModuleComponentList()
 //SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 //SOFA_LINK_CLASS(MyBehaviorModel)
 //SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-SOFA_LINK_CLASS(PythonController)
+SOFA_LINK_CLASS(PythonControllerOld)
 

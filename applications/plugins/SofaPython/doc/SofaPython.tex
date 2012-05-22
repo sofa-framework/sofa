@@ -11,19 +11,24 @@
 \begin{document}
 \raggedright
 
-\title{EmptyPlugin}
-\author{SOFA}
+\title{SofaPython plugin}
+\author{Bruno Carrez}
 
 \maketitle
 
 \begin{abstract}
-Replace this with your plugin documentation. You may want to use the following structure.
+The goal of this plugin is to provide python integration into Sofa. 
 
-The source is split in two so that this plugin documentation can be a stand-alone document as well as included in a more general documentation.
+Therefore, it is possible to add new features in Sofa without modifying Sofa codebase. Moreover, python scripts are stored in the same place as the corresponding scene, for a cleaner integration of scene-specific code without polluting the rest of Sofa codebase.
+
+This plugin provides a « Sofa » module available from python scripts, to interact with Sofa. 
 \end{abstract}
 
-\include{EmptyPlugin_body}
 
+\include{SofaPython_body}
+
+\include{SofaPython_API}
+\include{SofaPython_PythonScriptController}
 
 
 \end{document}
