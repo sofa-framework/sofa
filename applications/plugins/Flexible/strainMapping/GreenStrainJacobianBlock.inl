@@ -117,8 +117,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        // order 0
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(F.getF());
+        eB = assembleJ(F.getF());
         return B;
     }
 
@@ -132,7 +131,7 @@ public:
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
         for(unsigned int j=0; j<spatial_dimensions; j++)
-            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) = s;
+            eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) = s;
         return K;
     }
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
@@ -205,8 +204,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        // order 0
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = assembleJ(F.getF());
+        eB = assembleJ(F.getF());
         return B;
     }
 
@@ -220,7 +218,7 @@ public:
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
         for(unsigned int j=0; j<spatial_dimensions; j++)
-            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) = s;
+            eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) = s;
         return K;
     }
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
@@ -354,23 +352,23 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = assembleJ(F.getF());
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = J;
+        eB.template block(0,0,strain_size,frame_size) = J;
         // order 1
         Vec<spatial_dimensions,JBlock> Jgrad;
         for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            eB.template block(offsetE,spatial_dimensions,strain_size,frame_size) = Jgrad[k];
-            eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = J;
+            eB.template block(offsetE,0,strain_size,frame_size) = Jgrad[k];
+            eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
             offsetE+=strain_size;
         }
         // order 2
         for(unsigned int k=0; k<spatial_dimensions; k++)
             for(unsigned int j=0; j<spatial_dimensions; j++)
             {
-                eB.template block(offsetE,spatial_dimensions+(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
-                if(j!=k) eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];
+                eB.template block(offsetE,(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
+                if(j!=k) eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];
                 offsetE+=strain_size;
             }
         return B;
@@ -386,7 +384,7 @@ public:
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
         for(unsigned int j=0; j<spatial_dimensions*spatial_dimensions; j++)
-            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+            eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
@@ -394,8 +392,8 @@ public:
             for(unsigned int i=0; i<spatial_dimensions; i++)
                 for(unsigned int j=0; j<spatial_dimensions; j++)
                 {
-                    eK.template block(spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
-                    eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(j*material_dimensions+i*material_dimensions*spatial_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(j*material_dimensions,j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
                 }
         }
         // order 2
@@ -405,8 +403,8 @@ public:
                 sigma=VoigtToMat( childForce.getStrainHessian(k,l) );
                 for(unsigned int j=0; j<spatial_dimensions; j++)
                 {
-                    eK.template block(spatial_dimensions+j*material_dimensions+k*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions+l*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
-                    if(k!=l) eK.template block(spatial_dimensions+j*material_dimensions+l*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions+k*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(j*material_dimensions+k*material_dimensions*spatial_dimensions,j*material_dimensions+l*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                    if(k!=l) eK.template block(j*material_dimensions+l*material_dimensions*spatial_dimensions,j*material_dimensions+k*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
                 }
             }
         return K;
@@ -527,15 +525,15 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = assembleJ(F.getF());
-        eB.template block(0,spatial_dimensions,strain_size,frame_size) = J;
+        eB.template block(0,0,strain_size,frame_size) = J;
         // order 1
         Vec<3,JBlock> Jgrad;
         for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
         unsigned int offsetE=strain_size;
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            eB.template block(offsetE,spatial_dimensions,strain_size,frame_size) = Jgrad[k];
-            eB.template block(offsetE,spatial_dimensions+(k+1)*frame_size,strain_size,frame_size) = J;
+            eB.template block(offsetE,0,strain_size,frame_size) = Jgrad[k];
+            eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
             offsetE+=strain_size;
         }
         return B;
@@ -551,7 +549,7 @@ public:
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
         for(unsigned int j=0; j<spatial_dimensions*spatial_dimensions; j++)
-            eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
+            eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
@@ -559,8 +557,8 @@ public:
             for(unsigned int i=0; i<spatial_dimensions; i++)
                 for(unsigned int j=0; j<spatial_dimensions; j++)
                 {
-                    eK.template block(spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,spatial_dimensions+j*material_dimensions,material_dimensions,material_dimensions) += s;
-                    eK.template block(spatial_dimensions+j*material_dimensions,spatial_dimensions+j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(j*material_dimensions+i*material_dimensions*spatial_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
+                    eK.template block(j*material_dimensions,j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
                 }
         }
         return K;

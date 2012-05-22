@@ -160,96 +160,9 @@ public:
 
     typedef Deriv Coord;
 
-//    class Coord
-//    {
-//    protected:
-//        Basis v;
-
-//    public:
-//        Coord(){ v.clear(); }
-//        Coord( const Basis& d):v(d){}
-//        Coord( const TotalVec& d):v(d){}
-//        void clear(){ v.clear(); }
-
-//        static const unsigned int total_size = VSize;
-//        typedef Real value_type;
-
-//        static unsigned int size() { return VSize; }
-
-//        /// seen as a vector
-//        Real* ptr() { return v.ptr(); }
-//        const Real* ptr() const { return v.ptr(); }
-
-//        TotalVec& getVec(){ return v.getVec(); }
-//        const TotalVec& getVec() const { return v.getVec(); }
-
-//        Real& operator[](int i) { return getVec()[i]; }
-//        const Real& operator[](int i) const    { return getVec()[i]; }
-
-//        /// basis
-//        Basis& getBasis(){ return v; }
-//        const Basis& getBasis() const { return v; }
-
-//        StrainVec& getStrain(){ return v.getVal(); }
-//        const StrainVec& getStrain() const { return v.getVal(); }
-
-//        StrainVec& getStrainGradient(int i){ return v.getGradient()[i]; }
-//        const StrainVec& getStrainGradient(int i) const { return v.getGradient()[i]; }
-
-//        StrainVec& getStrainHessian(int i,int j){ return v.getHessian()(i,j); }
-//        const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
-
-//        Coord operator +(const Coord& a) const { return Coord(getVec()+a.getVec()); }
-//        void operator +=(const Coord& a){ getVec()+=a.getVec(); }
-
-//        Coord operator +(const Deriv& a) const { return Coord(getVec()+a.getVec()); }
-//        void operator +=(const Deriv& a){ getVec()+=a.getVec(); }
-
-//        Coord operator -(const Coord& a) const { return Coord(getVec()-a.getVec()); }
-//        void operator -=(const Coord& a){ getVec()-=a.getVec(); }
-
-//        template<typename real2>
-//        Coord operator *(real2 a) const { return Coord(getVec()*a); }
-//        template<typename real2>
-//        void operator *=(real2 a){ getVec() *= a; }
-
-//        template<typename real2>
-//        void operator /=(real2 a){ getVec() /= a; }
-
-//        Coord operator - () const { return Coord(-getVec()); }
-
-//        /// dot product, mostly used to compute residuals as sqrt(x*x)
-//        Real operator*(const Coord& a) const    { return getVec()*a.getVec();    }
-
-//        /// write to an output stream
-//        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c ){
-//            out<<c.getVec();
-//            return out;
-//        }
-//        /// read from an input stream
-//        inline friend std::istream& operator >> ( std::istream& in, Coord& c ){
-//            in>>c.getVec();
-//            return in;
-//        }
-
-//    /// Write the OpenGL transformation matrix
-//    void writeOpenGlMatrix ( float m[16] ) const
-//    {
-//        for(unsigned int i=0;i<15;i++) m[i]=0.; m[15]=1.;
-//   }
-//};
-
     typedef vector<Coord> VecCoord;
 
     static const char* Name();
-
-//    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
-//    {
-//        assert ( ancestors.size() == coefs.size() );
-//        Coord c;
-//        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
-//        return c;
-//    }
 
     /** @name Conversions
               * Convert to/from points in space
@@ -261,12 +174,6 @@ public:
     static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Deriv& /*c*/ ) {    }
     template<typename T>
     static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
-//    template<typename T>
-//    static void set ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
-//    template<typename T>
-//    static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Coord& /*c*/ )    {    }
-//    template<typename T>
-//    static void add ( Coord& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}
 
 };
@@ -373,36 +280,6 @@ template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const 
 
 // ==========================================================================
 // Specialization for Strain defined using Invariants of right Cauchy Green deformation tensor
-/*
-template<int _spatial_dimensions, int _order, typename _Real>
-class InvariantsTypes: public BaseStrainTypes<_spatial_dimensions,3,_order,_Real>
-{
-public:
-    typedef BaseStrainTypes<3,_order,_Real> Inherit;
-
-    enum { spatial_dimensions = Inherit::spatial_dimensions };
-    enum { order = Inherit::order };
-    enum { strain_size = Inherit::strain_size };
-    enum { NumStrainVec = Inherit::NumStrainVec } ;
-    enum { VSize = Inherit::VSize } ;
-    enum { coord_total_size = Inherit::coord_total_size };
-    enum { deriv_total_size = Inherit::deriv_total_size };
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::VecReal VecReal;
-    typedef typename Inherit::StrainVec StrainVec;
-    typedef typename Inherit::StrainGradient StrainGradient;
-    typedef typename Inherit::StrainHessian StrainHessian;
-    typedef typename Inherit::VecDeriv VecDeriv;
-    typedef typename Inherit::MatrixDeriv MatrixDeriv;
-    typedef typename Inherit::VecCoord VecCoord;
-    static const char* Name();
-
-    static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
-    typedef Vec<material_dimensions, Real> MaterialCoord;
-    typedef vector<MaterialCoord> VecMaterialCoord;
-    typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
-};
-*/
 
 typedef BaseStrainTypes<3, 3, 0, double> I331dTypes;
 typedef BaseStrainTypes<3, 3, 0, float>  I331fTypes;

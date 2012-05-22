@@ -154,7 +154,7 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
 
     for(unsigned i=0; i<triangles.size(); i++ )
     {
-        F[i].getCenter() = ( pos[triangles[i][0]] + pos[triangles[i][1]] + pos[triangles[i][2]] ) *1.0/3;  // centre of the triangle
+        //F[i].getCenter() = ( pos[triangles[i][0]] + pos[triangles[i][1]] + pos[triangles[i][2]] ) *1.0/3;  // centre of the triangle
         Frame F1;
         for(unsigned j=0; j<Nin; j++)
         {
@@ -228,32 +228,31 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
 
     typename core::behavior::MechanicalState<Out>::ReadVecCoord pos = this->getToModel()->readPositions();
     SeqTriangles triangles = triangleContainer->getTriangles();
+    /*
 
+        // x axes
+        vector< Vec3d > points;
+        for(unsigned i=0; i<triangles.size(); i++ ){
+    //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;
+    //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getVec() << endl;
+            points.push_back(pos[i].getCenter());
+            unsigned id=0; // x
+            InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
+            points.push_back(pos[i].getCenter()+  (axis * f_scaleView.getValue()));
+        }
+    //    cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
+        vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) ); // red
 
-    // x axes
-    vector< Vec3d > points;
-    for(unsigned i=0; i<triangles.size(); i++ )
-    {
-//        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;
-//        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getVec() << endl;
-        points.push_back(pos[i].getCenter());
-        unsigned id=0; // x
-        InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
-        points.push_back(pos[i].getCenter()+  (axis * f_scaleView.getValue()));
-    }
-//    cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) ); // red
-
-    // y axes
-    points.clear();
-    for(unsigned i=0; i<triangles.size(); i++ )
-    {
-        points.push_back(pos[i].getCenter());
-        unsigned id=1; // y
-        InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );
-        points.push_back(pos[i].getCenter()+  (axis*f_scaleView.getValue()) );
-    }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) ); // green
+        // y axes
+        points.clear();
+        for(unsigned i=0; i<triangles.size(); i++ ){
+            points.push_back(pos[i].getCenter());
+            unsigned id=1; // y
+            InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );
+            points.push_back(pos[i].getCenter()+  (axis*f_scaleView.getValue()) );
+        }
+        vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) ); // green
+        */
 }
 
 

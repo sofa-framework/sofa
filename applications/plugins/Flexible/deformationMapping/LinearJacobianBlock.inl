@@ -110,6 +110,7 @@ public:
 
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
@@ -126,7 +127,7 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         C=(OutPos-InPos)*Pt;
@@ -184,6 +185,7 @@ public:
 
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
@@ -200,7 +202,7 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         C=(OutPos-InPos)*Pt;
@@ -260,58 +262,51 @@ public:
 
     typedef Vec<mdim,Real> Gradient;
     typedef Mat<mdim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
+
 
     /**
     Mapping:
-        - \f$ p = w.t + w.(p0-t0)  \f$
         - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
     where :
         - t0 is t in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ dp = w.dt \f$
         - \f$ d F = dt.grad w \f$
       */
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I   =  constant term
-    Real Pt;           ///< =   w     =  dp/dt
+    OutCoord C;       ///< =  (p0-t0).grad w + w.I   =  constant term
     Gradient Ft;  ///< =   grad w     =  d F/dt
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Pt=w;
-        C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
         Ft=dw;
-        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        C.getF()=covMN(OutPos-InPos,Ft);
         for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getCenter() +=  data * Pt + C.getCenter();
         result.getF() +=  covMN(data,Ft) + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getCenter() += data * Pt ;
         result.getF() += covMN(data,Ft) ;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getCenter() * Pt ;
         result += data.getF() * Ft ;
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+dim+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
         return J;
     }
 
@@ -348,58 +343,50 @@ public:
     typedef Vec<mdim,Real> Gradient;
 //    typedef Mat<mdim,dim,Real> Hessian;
     typedef Mat<2,3,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:
-        - \f$ p = w.t + w.(p0-t0)  \f$
         - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
     where :
         - t0 is t in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ dp = w.dt \f$
         - \f$ d F = dt.grad w \f$
       */
 
     static const bool constantJ=true;
 
     OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I   =  constant term
-    Real Pt;           ///< =   w     =  dp/dt
     Gradient Ft;  ///< =   grad w     =  d F/dt
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Pt=w;
-        C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
         Ft=dw;
-        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        C.getF()=covMN(OutPos-InPos,Ft);
         for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getCenter() +=  data * Pt + C.getCenter();
         result.getF() +=  covMN(data,Ft) + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getCenter() += data * Pt ;
         result.getF() += covMN(data,Ft) ;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getCenter() * Pt ;
         result += data.getF() * Ft ;
     }
 
     MatBlock getJ()
     {
         MatBlock J;
-        for(unsigned int i=0; i<dim; i++) J[i][i]=Pt;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+dim+i*mdim][i]=Ft[j];
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J[j+i*mdim][i]=Ft[j];
         return J;
     }
 };
@@ -432,10 +419,10 @@ public:
     typedef Vec<mdim,Real> Gradient;
     typedef Mat<mdim,dim,Real> Hessian;
     typedef Mat<dim,mdim,Real> HessianT;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:
-        - \f$ p = w.t + w.(p0-t0)  \f$
         - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
         - \f$ (grad F)_k = (t+p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]  \f$ the second term can be removed because \f$ \sum_i grad w_i =0\f$
     where :
@@ -444,7 +431,6 @@ public:
         - grad denotes spatial derivatives
         - _k denotes component/column k
     Jacobian:
-        - \f$ dp = w.dt \f$
         - \f$ d F = dt.grad w \f$
         - \f$ d (grad F)_k = dt.(grad2 w)_k^T \f$
       */
@@ -456,17 +442,15 @@ public:
     Gradient Ft;  ///< =   grad w     =  d F/dt
     HessianT dFt;  ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Pt=w;
-        C.getCenter()=(OutPos.getCenter()-InPos)*Pt;
         Ft=dw;
-        C.getF()=covMN(OutPos.getCenter()-InPos,Ft);
+        C.getF()=covMN(OutPos-InPos,Ft);
         for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
         dFt=ddw.transposed();
         for (unsigned int k = 0; k < dim; ++k)
         {
-            C.getGradientF(k)=covMN(OutPos.getCenter()-InPos,dFt[k]);
+            C.getGradientF(k)=covMN(OutPos-InPos,dFt[k]);
             //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[i][i]+=Ft[k]; // to do: anisotropy
             //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[k][i]+=Ft[i]; // to do: anisotropy
         }
@@ -474,21 +458,18 @@ public:
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getCenter() +=  data * Pt + C.getCenter();
         result.getF() +=  covMN(data,Ft) + C.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data, dFt[k]) + C.getGradientF(k);
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getCenter() += data * Pt ;
         result.getF() += covMN(data,Ft) ;
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data,dFt[k]) ;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getCenter() * Pt ;
         result += data.getF() * Ft ;
         for (unsigned int k = 0; k < dim; ++k) result += data.getGradientF(k) * dFt[k] ;
     }
@@ -496,13 +477,11 @@ public:
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
-        unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+offset+i*mdim,i)=Ft[j];
-        offset+=mdim*dim;
+        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
+        unsigned int offset=mdim*dim;
         for (unsigned int k = 0; k < dim; ++k)
         {
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+dim+i*mdim,i)=Ft[j];
+            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
             for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; i++) J(j+offset+i*mdim,i)=dFt[k][j];
             offset+=mdim*dim;
         }
@@ -543,6 +522,7 @@ public:
 
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -560,7 +540,7 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
@@ -622,6 +602,7 @@ public:
 
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -639,7 +620,7 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
@@ -701,58 +682,49 @@ public:
 
     typedef Vec<mdim,Real> Gradient;
     typedef Mat<mdim,dim,Real> Hessian;
-
-    typedef typename Out::SpatialCoord SpatialCoord;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:
-        - \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
         - \f$ F = grad p = (t+A.q0).grad w + w.A.A0^{-1}  \f$
     where :
         - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - q0 is the local position of p0.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ dp = w.dt + w.dA.q0 \f$
         - \f$ d F = dt.grad w + dA.( q0.grad w + w.A0^{-1} )\f$
     */
 
     static const bool constantJ=true;
 
-    Real Pt;           ///< =   w     =  dp/dt
     Gradient Ft;       ///< =   grad w     =  d F/dt
-    OutCoord PFa;      ///< =   w.q0   ,  q0.grad w + w.A0^{-1}   =  dp/dA , dF/dA
+    OutCoord PFa;      ///< =   q0.grad w + w.A0^{-1}   =  dF/dA
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Pt=w;
         Ft=dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
-        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos.getCenter());  // q0
-        PFa.getCenter()=vectorInLocalCoordinates*Pt;
-        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
+        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * w; // to do: anisotropy
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getCenter() +=  data.getCenter() * Pt + data.getAffine()*PFa.getCenter();
         result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getCenter() += data.getVCenter() * Pt + data.getVAffine()*PFa.getCenter();
         result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getF();
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getVCenter() += data.getCenter() * Pt ;
         result.getVCenter() += data.getF() * Ft ;
 
         for (unsigned int j = 0; j < dim; ++j)
         {
-            result.getVAffine()[j] += PFa.getCenter() * (data.getCenter()[j]);
             result.getVAffine()[j] += PFa.getF() * (data.getF()[j]);
         }
     }
@@ -760,11 +732,8 @@ public:
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
-        unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J(j,i+offset+j*dim)=PFa.getCenter()[i];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+offset+l*dim)=PFa.getF()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFa.getF()[i][j];
         return J;
     }
 
@@ -802,42 +771,37 @@ public:
     typedef Vec<mdim,Real> Gradient;
     typedef Mat<mdim,dim,Real> Hessian;
     typedef Mat<dim,mdim,Real> HessianT;
-
-    typedef typename Out::SpatialCoord SpatialCoord;
+    typedef Vec<dim, Real> SpatialCoord;
 
     /**
     Mapping:
-        - \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
         - \f$ F = grad p = (t+A.q0).grad w + w.A.A0^{-1}  \f$
         - \f$ (grad F)_k = (t+A.q0).(grad2 w)_k^T + A.[(grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]  \f$
     where :
         - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - q0 is the local position of p0.
         - grad denotes spatial derivatives
         - _k denotes component/column k
     Jacobian:
-        - \f$ dp = w.dt + w.dA.q0 \f$
         - \f$ d F = dt.grad w + dA.( q0.grad w + w.A0^{-1} )\f$
         - \f$ d (grad F)_k = dt.(grad2 w)_k^T + dA.[q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w] \f$
     */
 
     static const bool constantJ=true;
 
-    Real Pt;           ///< =   w     =  dp/dt
     Gradient Ft;       ///< =   grad w     =  d F/dt
     HessianT dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
-    OutCoord PFdFa;      ///< =   w.q0   ,  q0.grad w + w.A0^{-1}, [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]   =  dp/dA , dF/dA , d (grad F)_k/dA
+    OutCoord PFdFa;      ///< =   q0.grad w + w.A0^{-1}, [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
-    void init( const InCoord& InPos, const OutCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Pt=w;
         Ft=dw;
         dFt=ddw.transposed();
 
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
-        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos.getCenter());  // q0
-        PFdFa.getCenter()=vectorInLocalCoordinates*Pt;
-        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * Pt; // to do: anisotropy
+        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
+        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * w; // to do: anisotropy
 
         Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
         Mat<dim,dim> AOinvT = AOinv.transposed();
@@ -846,27 +810,23 @@ public:
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getCenter() +=  data.getCenter() * Pt + data.getAffine()*PFdFa.getCenter();
         result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFdFa.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data.getCenter(), dFt[k]) + data.getAffine() * PFdFa.getGradientF(k);
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getCenter() += data.getVCenter() * Pt + data.getVAffine()*PFdFa.getCenter();
         result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFdFa.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data.getVCenter(),dFt[k]) + data.getVAffine() * PFdFa.getGradientF(k);
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getVCenter() += data.getCenter() * Pt ;
         result.getVCenter() += data.getF() * Ft ;
         for (unsigned int k = 0; k < dim; ++k) result.getVCenter() += data.getGradientF(k) * dFt[k] ;
 
         for (unsigned int j = 0; j < dim; ++j)
         {
-            result.getVAffine()[j] += PFdFa.getCenter() * (data.getCenter()[j]);
             result.getVAffine()[j] += PFdFa.getF() * (data.getF()[j]);
             for (unsigned int k = 0; k < dim; ++k) result.getVAffine()[j] += PFdFa.getGradientF(k) * (data.getGradientF(k)[j]);
         }
@@ -875,16 +835,14 @@ public:
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j) J(j,i+dim+j*dim)=PFdFa.getCenter()[i];
-        unsigned int offset=dim;
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=Ft[j];
-        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+dim+l*dim)=PFdFa.getF()[i][j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFdFa.getF()[i][j];
+        unsigned int offset=dim*mdim;
         for(unsigned int k=0; k<dim; ++k)
         {
-            offset+=dim*mdim;
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+dim+l*dim)=PFdFa.getGradientF(k)[i][j];
+            offset+=dim*mdim;
         }
         return J;
     }
