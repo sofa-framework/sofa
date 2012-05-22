@@ -62,6 +62,7 @@ HEADERS += helper.h \
     MemoryManager.h \
     ParticleMask.h \
     decompose.h \
+    decompose.inl \
     Quater.h \
     Quater.inl \
     rmath.h \
@@ -131,6 +132,7 @@ SOURCES += ArgumentParser.cpp \
     io/bvh/BVHMotion.cpp \
     LCPcalc.cpp \
     MarchingCubeUtility.cpp \
+    decompose.cpp \
     Quater.cpp \
     RandomGenerator.cpp \
     system/SetDirectory.cpp \

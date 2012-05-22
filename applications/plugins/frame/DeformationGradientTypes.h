@@ -138,7 +138,7 @@ public:
         if(iscorotational) // cauchy strain (order 0 or 1) : e= [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I
         {
             MaterialFrame strainmat;
-            helper::polarDecomposition(F.getMaterialFrame(), *rotation, strainmat); // decompose F=RD
+            helper::Decompose<Real>::polarDecomposition(F.getMaterialFrame(), *rotation, strainmat); // decompose F=RD
 
             // order 0: e = [R^T F + F^T R ]/2 - I = D - I
             for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;

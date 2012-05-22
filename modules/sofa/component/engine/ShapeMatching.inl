@@ -203,7 +203,7 @@ void ShapeMatching<DataTypes>::update()
             Mat3x3 R;
             if(affineRatio.getValue()!=(Real)1.0)
             {
-                polarDecomposition(T[i], R);
+                helper::Decompose<Real>::polarDecomposition(T[i], R);
                 //if (determinant(R) < 0) for(unsigned int j=0 ; j<3;j++) R[j][0] *= -1;  // handle symmetry
             }
             if(affineRatio.getValue()!=(Real)0.0)
