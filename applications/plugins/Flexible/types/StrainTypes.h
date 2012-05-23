@@ -337,9 +337,9 @@ template<> struct DataTypeName< defaulttype::I333dTypes::Coord > { static const 
 // ==========================================================================
 // Helpers
 
-/// Convert a symetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
+/// Convert a symetric strain matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
 template<int material_dimensions, typename Real>
-static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> MatToVoigt(  const  Mat<material_dimensions,material_dimensions, Real>& f)
+static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
 {
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
     typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
@@ -347,38 +347,108 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> MatTo
     unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++)
         for( unsigned int k=0; k<material_dimensions-j; k++ )
-            if(0!=j) s[ei++] = (f[k][k+j]+f[k+j][k]);
-            else s[ei++] = (f[k][k+j]+f[k+j][k])*(Real)0.5;
+            if(0!=j) s[ei++] = (f[k][k+j]+f[k+j][k]); // shear *2
+            else s[ei++] = f[k][k]; // stretch
     return s;
 }
 
-/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc.
+
+/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy/2, etc. for strain tensors
 template<typename Real>
-static inline Mat<3,3, Real> VoigtToMat( const Vec<6, Real>& s  )
+static inline Mat<3,3, Real> StrainVoigtToMat( const Vec<6, Real>& s )
 {
     static const unsigned int material_dimensions=3;
     Mat<material_dimensions,material_dimensions, Real> f;
-    unsigned int ei=0;
-    for(unsigned int j=0; j<material_dimensions; j++)
-    {
+
+    /*unsigned int ei=0;
+    for(unsigned int j=0; j<material_dimensions; j++){
         for( unsigned int k=0; k<material_dimensions-j; k++ )
-            f[k][k+j] = f[k+j][k] = s[ei++] ;
-    }
+            if(0!=j) f[k][k+j] = f[k+j][k] = s[ei++] * (Real)0.5; // shear
+            else f[k][k] = s[ei++];// stretch
+    }*/
+
+    f[0][0] = s[0];
+    f[1][1] = s[1];
+    f[2][2] = s[2];
+    f[0][1] = f[1][0] = s[3] * 0.5;
+    f[1][2] = f[2][1] = s[4] * 0.5;
+    f[0][2] = f[2][0] = s[5] * 0.5;
+
     return f;
 }
 
-/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc.
+/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy/2, etc. for strain tensors
 template<typename Real>
-static inline Mat<2,2, Real> VoigtToMat( const Vec<3, Real>& s  )
+static inline Mat<2,2, Real> StrainVoigtToMat( const Vec<3, Real>& s )
 {
     static const unsigned int material_dimensions=2;
     Mat<material_dimensions,material_dimensions, Real> f;
+
+    /*unsigned int ei=0;
+    for(unsigned int j=0; j<material_dimensions; j++){
+        for( unsigned int k=0; k<material_dimensions-j; k++ )
+            if(0!=j) f[k][k+j] = f[k+j][k] = s[ei++] * (Real)0.5; // shear
+            else f[k][k] = s[ei++];// stretch
+    }*/
+
+    f[0][0] = s[0];
+    f[1][1] = s[1];
+    f[0][1] = f[1][0] = s[2] * 0.5;
+
+    return f;
+}
+
+
+
+/// Convert a symetric stress matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2
+template<int material_dimensions, typename Real>
+static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StressMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
+{
+    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
+    typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
+    StrainVec s;
     unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++)
-    {
+        for( unsigned int k=0; k<material_dimensions-j; k++ )
+            s[ei++] = (f[k][k+j]+f[k+j][k])*(Real)0.5;
+    return s;
+}
+
+
+/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc. for stress tensors
+template<typename Real>
+static inline Mat<3,3, Real> StressVoigtToMat( const Vec<6, Real>& s )
+{
+    static const unsigned int material_dimensions=3;
+    Mat<material_dimensions,material_dimensions, Real> f;
+    /*unsigned int ei=0;
+    for(unsigned int j=0; j<material_dimensions; j++){
         for( unsigned int k=0; k<material_dimensions-j; k++ )
             f[k][k+j] = f[k+j][k] = s[ei++] ;
-    }
+    }*/
+    f[0][0] = s[0];
+    f[1][1] = s[1];
+    f[2][2] = s[2];
+    f[0][1] = f[1][0] = s[3];
+    f[1][2] = f[2][1] = s[4];
+    f[0][2] = f[2][0] = s[5];
+    return f;
+}
+
+/// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc. for stress tensors
+template<typename Real>
+static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
+{
+    static const unsigned int material_dimensions=2;
+    Mat<material_dimensions,material_dimensions, Real> f;
+    /*unsigned int ei=0;
+    for(unsigned int j=0; j<material_dimensions; j++){
+        for( unsigned int k=0; k<material_dimensions-j; k++ )
+            f[k][k+j] = f[k+j][k] = s[ei++] ;
+    }*/
+    f[0][0] = s[0];
+    f[1][1] = s[1];
+    f[0][1] = f[1][0] = s[2];
     return f;
 }
 

@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+    <EulerImplicitSolver />
+    <CGLinearSolver  />
+
+    <Node 	name="Plastic ADD"   >
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	<Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+	
+	 <!--PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" /-->
+        
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
+	        <Node 	name="PlasticStrain"   >
+		  <MechanicalObject  template="E331" name="E"  />
+		  <PlasticStrainMapping template="Mapping&lt;E331,E331&gt;" assembleJ="false" method="addition" max="0.35" yield="0.3" creep="1"/>
+		  <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0" assembleK="false" assembleB="false"/>	    
+		</Node>    
+	    </Node>
+        </Node>
+
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position"  />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
+
+	<Node name="collision"  >
+	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
+	     <Mesh src="@loader"/>
+ 	     <MechanicalObject useMask="true" />
+             <Triangle />
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+	</Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" />
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	</Node>
+    </Node>
+    
+    
+    <Node name="Plastic MULT"   >
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	<Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+	        
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
+	        <Node 	name="PlasticStrain"   >
+		  <MechanicalObject  template="E331" name="E"  />
+		  <PlasticStrainMapping template="Mapping&lt;E331,E331&gt;" assembleJ="false" method="multiplication" max="0.35" yield="0.3" creep="1"/>
+		  <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0" assembleK="false" assembleB="false"/>	    
+		</Node>    
+	    </Node>
+        </Node>
+
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position"  />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
+
+	<Node name="collision"  >
+	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
+	     <Mesh src="@loader"/>
+ 	     <MechanicalObject useMask="true" />
+             <Triangle />
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+	</Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" color="0.2 0.8 0.2 1"/>
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	</Node>
+    </Node>
+    
+    
+    <Node name="Elastic"   >
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	<Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+	
+	 <!--PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" /-->
+        
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    </Node>
+        </Node>
+
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position"  />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
+
+	<Node name="collision"  >
+	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
+	     <Mesh src="@loader"/>
+ 	     <MechanicalObject useMask="true" />
+             <Triangle />
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+	</Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	</Node>
+    </Node>
+    
+	
+    
+ 
+	      
+	
+</Node>

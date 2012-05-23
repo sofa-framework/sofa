@@ -262,7 +262,7 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 
     Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-    helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal );
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal );
 
     // if V is a reflexion -> made it a rotation by negating a column
     if( determinant(V) < 0 )
@@ -330,7 +330,7 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    unsigned int decompositionMethod;
+    RotationDecompositionMethod decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -354,17 +354,17 @@ public:
         }
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += MatToVoigt( strainmat );
+        result.getStrain() += StrainMatToVoigt( strainmat );
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getF() += R*VoigtToMat( data.getStrain() );
+        result.getF() += R*StressVoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
@@ -428,7 +428,7 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    unsigned int decompositionMethod;
+    RotationDecompositionMethod decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -459,7 +459,7 @@ public:
         {
         case QR: // TODO
             //break;
-        case SMALL: // TODO
+        case SMALL: // is a pure Cauchy tensor possible for a 2D element in a 3D world?
             //break;
 
         case POLAR: // polar & svd are identical since inversion is not defined for 2d elements in a 3d world
@@ -468,17 +468,17 @@ public:
             break;
         }
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += MatToVoigt( strainmat );
+        result.getStrain() += StrainMatToVoigt( strainmat );
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getF() += R*VoigtToMat( data.getStrain() );
+        result.getF() += R*StressVoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
@@ -549,7 +549,7 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    unsigned int decompositionMethod;
+    RotationDecompositionMethod decompositionMethod;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -573,35 +573,35 @@ public:
         }
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += MatToVoigt( strainmat );
+        result.getStrain() += StrainMatToVoigt( strainmat );
 
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T=R.transposed()*data.getGradientF(k);
-            result.getStrainGradient(k) += MatToVoigt( T.plusTransposed( T ) * (Real)0.5 );
+            result.getStrainGradient(k) += StrainMatToVoigt( T.plusTransposed( T ) * (Real)0.5 );
         }
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
-        result.getStrain() += MatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            result.getStrainGradient(k) += MatToVoigt( R.multTranspose( data.getGradientF(k) ) );
+            result.getStrainGradient(k) += StrainMatToVoigt( R.multTranspose( data.getGradientF(k) ) );
         }
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         // order 0
-        result.getF() += R*VoigtToMat( data.getStrain() );
+        result.getF() += R*StressVoigtToMat( data.getStrain() );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            result.getGradientF(k) += R*VoigtToMat( data.getStrainGradient(k) );
+            result.getGradientF(k) += R*StressVoigtToMat( data.getStrainGradient(k) );
         }
     }
 

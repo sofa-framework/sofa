@@ -117,8 +117,19 @@ public:
     static void eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
 
     /// Non-iterative Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param M
+    /// @warning this method is instable in specific configurations TODO
     static void eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag );
 
+
+    /** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
+      * Derived from Wild Magic Library
+      */
+    static void eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
+
+    /** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param M
+      * Derived from Wild Magic Library
+      */
+    static void eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag );
 
     /** @} */
 
@@ -197,6 +208,13 @@ private:
     /// @internal useful for eigenDecomposition
     static void ComputeVectors( const defaulttype::Mat<3,3,Real>& A, defaulttype::Vec<3,Real>& U2, int i0, int i1, int i2, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
 
+
+    /** @internal useful for iterative eigenDecomposition
+      * QL algorithm with implicit shifting, applies to tridiagonal matrices
+      * Derived from numerical recipies
+      */
+    template <int iSize>
+    static void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
 
 }; // class Decompose
 

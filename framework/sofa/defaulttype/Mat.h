@@ -49,6 +49,9 @@ public:
     typedef VecNoInit<C,real> LineNoInit;
     typedef Vec<L,real> Col;
 
+    static const int nbLines = L;
+    static const int nbCols  = C;
+
     Mat()
     {
         clear();

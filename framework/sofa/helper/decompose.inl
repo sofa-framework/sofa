@@ -902,6 +902,154 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, d
     V.transpose();
 }
 
+
+
+
+template <typename Real>
+template <int iSize>
+void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V )
+{
+    static const int iMaxIter = 32;
+
+    for (int i0 = 0; i0 < iSize; ++i0)
+    {
+        int i1;
+        for (i1 = 0; i1 < iMaxIter; ++i1)
+        {
+            int i2;
+            for (i2 = i0; i2 <= iSize-2; ++i2)
+            {
+                Real fTmp = helper::rabs(diag[i2]) + helper::rabs(diag[i2+1]);
+                if ( helper::rabs(subDiag[i2]) + fTmp == fTmp )
+                    break;
+            }
+            if ( i2 == i0 )
+                break;
+            Real fG = (diag[i0+1] - diag[i0])/(((Real)2.0) *  subDiag[i0]);
+            Real fR = helper::rsqrt(fG*fG+(Real)1.0);
+            if ( fG < (Real)0.0 )
+                fG = diag[i2]-diag[i0]+subDiag[i0]/(fG-fR);
+            else
+                fG = diag[i2]-diag[i0]+subDiag[i0]/(fG+fR);
+
+            Real fSin = 1.0;
+            Real fCos = 1.0;
+            Real fP   = 0.0;
+
+            for (int i3 = i2-1; i3 >= i0; --i3)
+            {
+                Real fF = fSin*subDiag[i3];
+                Real fB = fCos*subDiag[i3];
+                if ( helper::rabs(fF) >= helper::rabs(fG) )
+                {
+                    fCos = fG/fF;
+                    fR = helper::rsqrt(fCos*fCos+(Real)1.0);
+                    subDiag[i3+1] = fF*fR;
+                    fSin = ((Real)1.0)/fR;
+                    fCos *= fSin;
+                }
+                else
+                {
+                    fSin = fF/fG;
+                    fR = helper::rsqrt(fSin*fSin+(Real)1.0);
+                    subDiag[i3+1] = fG*fR;
+                    fCos = ((Real)1.0)/fR;
+                    fSin *= fCos;
+                }
+                fG = diag[i3+1]-fP;
+                fR = (diag[i3]-fG)*fSin+((Real)2.0)*fB*fCos;
+                fP = fSin*fR;
+                diag[i3+1] = fG+fP;
+                fG = fCos*fR-fB;
+                for (int i4 = 0; i4 < iSize; ++i4)
+                {
+                    fF = V[i4][i3+1];
+                    V[i4][i3+1] = fSin*V[i4][i3]+fCos*fF;
+                    V[i4][i3]   = fCos*V[i4][i3]-fSin*fF;
+                }
+            }
+            diag[i0] -= fP;
+            subDiag[i0] = fG;
+            subDiag[i2] = (Real)0.0;
+        }
+        if ( i1 == iMaxIter )
+            return;
+    }
+}
+
+/** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
+  * Derived from Wild Magic Library
+  */
+template<class Real>
+void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+{
+    Vec<3,Real> subDiag;
+
+    //////////////////////
+    ///// Tridiagonalize
+    //////////////////////
+
+    const Real &fM00 = M[0][0];
+    Real fM01 = M[0][1];
+    Real fM02 = M[0][2];
+    const Real &fM11 = M[1][1];
+    const Real &fM12 = M[1][2];
+    const Real &fM22 = M[2][2];
+
+    diag[0] = fM00;
+    subDiag[2] = (Real)0.0;
+    if ( fM02 != (Real)0.0 )
+    {
+        Real fLength = helper::rsqrt(fM01*fM01+fM02*fM02);
+        Real fInvLength = ((Real)1.0)/fLength;
+        fM01 *= fInvLength;
+        fM02 *= fInvLength;
+        Real fQ = ((Real)2.0)*fM01*fM12+fM02*(fM22-fM11);
+        diag[1] = fM11+fM02*fQ;
+        diag[2] = fM22-fM02*fQ;
+        subDiag[0] = fLength;
+        subDiag[1] = fM12-fM01*fQ;
+        V[0][0] = (Real)1.0; V[0][1] = (Real)0.0; V[0][2] = (Real)0.0;
+        V[1][0] = (Real)0.0; V[1][1] = fM01;      V[1][2] = fM02;
+        V[2][0] = (Real)0.0; V[2][1] = fM02;      V[2][2] = -fM01;
+    }
+    else
+    {
+        diag[1] = fM11;
+        diag[2] = fM22;
+        subDiag[0] = fM01;
+        subDiag[1] = fM12;
+        V.identity();
+    }
+
+    ////////////
+
+    QLAlgorithm( diag, subDiag, V );
+
+}
+
+
+
+
+
+template<class Real>
+void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
+{
+    typedef defaulttype::Vec<2,Real> Vec2;
+    typedef defaulttype::Mat<2,2,Real> Mat22;
+
+    Vec<2,Real> subDiag;
+
+    // matrix is already tridiagonal
+    diag[0] = M[0][0];
+    diag[1] = M[1][1];
+    subDiag[0] = M[0][1];
+    subDiag[1] = 0.0;
+    V.identity();
+
+    QLAlgorithm( diag, subDiag, V );
+}
+
 } // namespace helper
 
 } // namespace sofa
