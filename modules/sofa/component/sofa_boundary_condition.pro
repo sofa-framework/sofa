@@ -6,8 +6,6 @@ TARGET = sofa_boundary_condition
 DEFINES += SOFA_BUILD_BOUNDARY_CONDITION
 
 HEADERS += initBoundaryCondition.h \
-           forcefield/AspirationForceField.h \
-           forcefield/AspirationForceField.inl \
            forcefield/BuoyantForceField.h \
            forcefield/BuoyantForceField.inl \
            forcefield/ConicalForceField.h \
@@ -63,7 +61,6 @@ HEADERS += initBoundaryCondition.h \
 
 
 SOURCES += initBoundaryCondition.cpp \
-           forcefield/AspirationForceField.cpp \
            forcefield/BuoyantForceField.cpp \
            forcefield/ConicalForceField.cpp \
            forcefield/ConstantForceField.cpp \

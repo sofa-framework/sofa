@@ -115,6 +115,14 @@ public :
         v[i] += (T)val;
     }
 
+    /// v += a*f
+    template<typename Real2,typename Real3>
+    void peq(const CudaBaseVector<Real2>& a, Real3 f)
+    {
+        for(unsigned i=0; i<v.size(); ++i)
+            v[i] += (Real)(a.v[i]*f);
+    }
+
     void operator=(const CudaBaseVector<Real> & e)
     {
         v = e.v;
@@ -204,6 +212,34 @@ public :
     void eq(CudaBaseMatrix & mat)
     {
         m = mat.m;
+    }
+
+    template<class Real2>
+    void mul(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const
+    {
+        for (unsigned i=0; i<m.getSizeY(); ++i)
+        {
+            Real r = 0;
+            for (unsigned j=0; j<m.getSizeX(); ++j)
+            {
+                r += m[i][j] * b[j];
+            }
+            res[i] = r;
+        }
+    }
+
+    template<class Real2>
+    void mulT(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const
+    {
+        for (unsigned i=0; i<m.getSizeX(); ++i)
+        {
+            Real r = 0;
+            for (unsigned j=0; j<m.getSizeY(); ++j)
+            {
+                r += m[j][i] * b[j];
+            }
+            res[i] = r;
+        }
     }
 
     unsigned int rowSize() const
