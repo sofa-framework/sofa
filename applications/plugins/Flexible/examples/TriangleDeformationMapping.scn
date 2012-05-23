@@ -73,7 +73,7 @@
 	
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd"/>
+	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="qr"/>
             <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
