@@ -63,10 +63,10 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args)
 
     // on tente toujours de retourner le type le plus haut niveau possible (héritage)
     if (dynamic_cast<BaseState*>(obj.get()))
-        return SP_BUILD_PYSPTR(BaseState,dynamic_cast<BaseState*>(obj.get()));
+        return SP_BUILD_PYSPTR(dynamic_cast<BaseState*>(obj.get()));
 
     // par défaut, ce sera toujours au minimum un BaseObject...
-    return SP_BUILD_PYSPTR(BaseObject,obj.get());
+    return SP_BUILD_PYSPTR(obj.get());
 }
 
 
@@ -85,7 +85,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * args)
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
 
-    return SP_BUILD_PYSPTR(BaseObject,sptr.get());
+    return SP_BUILD_PYSPTR(sptr.get());
 }
 
 /*
@@ -130,7 +130,7 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * args)
         printf("<PYTHON> Error: Sofa.getChildNode(%s) not found.\n",path);
         return 0;
     }
-    return SP_BUILD_PYSPTR(Node,childNode);
+    return SP_BUILD_PYSPTR(childNode);
 }
 
 using namespace sofa::gui;

@@ -36,7 +36,8 @@ SOURCES = initSofaPython.cpp \
     Binding_BaseObjectDescription.cpp \
     Binding_Data.cpp \
     Binding_BaseObject.cpp \
-    Binding_BaseState.cpp
+    Binding_BaseState.cpp \
+    PythonMacros.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \

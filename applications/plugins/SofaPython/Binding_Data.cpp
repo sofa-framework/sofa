@@ -153,7 +153,6 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
     {
         // it's a string
         char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
-        printf("Data_setAttr_value str=%s\n",str);
         data->read(str);
         return 0;
     }
