@@ -64,13 +64,13 @@
     <UniformMass  name="mass" totalMass="1"/>
 
     <Node name="deformationNode" >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+ 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" /> 
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
-<!--            
-	<TriangleSetTopologyContainer triangles="@../mesh.triangles" />
-        <TriangleDeformationMapping  scaleView="0.03" />
--->
+   	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
+            
+<!-- 	<TriangleSetTopologyContainer triangles="@../mesh.triangles" /> -->
+<!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
+	
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
 	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd"/>
@@ -84,6 +84,10 @@
 	</Node>
 
 </Node>
+
+
+
+
 
 
 </Node>

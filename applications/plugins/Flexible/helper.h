@@ -22,5 +22,7 @@ static defaulttype::Mat<N,N,Real> symetrize( const defaulttype::Mat<N,N,Real>& A
 }
 
 
+
+
 } // namespace helper
 } // namespace sofa

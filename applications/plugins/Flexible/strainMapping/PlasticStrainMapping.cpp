@@ -22,27 +22,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_CorotationalStrainJacobianBlock_H
-#define FLEXIBLE_CorotationalStrainJacobianBlock_H
+#define SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_CPP
 
-#include "../BaseJacobian.h"
+
+#include "PlasticStrainMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
+#include "../types/DeformationGradientTypes.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
-
-namespace defaulttype
+namespace component
+{
+namespace mapping
 {
 
+SOFA_DECL_CLASS(PlasticStrainMapping);
 
-enum RotationDecompositionMethod { POLAR, QR, SMALL, SVD };
+using namespace defaulttype;
 
-/** Template class used to implement one jacobian block for CorotationalStrainMapping */
-template<class TIn, class TOut>
-class CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+// Register in the Factory
+int PlasticStrainMappingClass = core::RegisterObject("Map a total strain to an elastic strain + a plastic strain.")
 
-} // namespace defaulttype
+        .add< PlasticStrainMapping< E331Types > >(true)
+        .add< PlasticStrainMapping< E221Types > >()
+        .add< PlasticStrainMapping< E332Types > >()
+        .add< PlasticStrainMapping< E333Types > >();
+
+template class SOFA_Flexible_API PlasticStrainMapping< E331Types >;
+template class SOFA_Flexible_API PlasticStrainMapping< E221Types >;
+template class SOFA_Flexible_API PlasticStrainMapping< E332Types >;
+template class SOFA_Flexible_API PlasticStrainMapping< E333Types >;
+
+} // namespace mapping
+} // namespace component
 } // namespace sofa
 
-
-
-#endif
