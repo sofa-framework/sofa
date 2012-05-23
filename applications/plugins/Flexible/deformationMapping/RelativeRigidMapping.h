@@ -135,14 +135,14 @@ protected:
 
         se3_type se3;
 
-        coord_type diff = se3.prod(se3.inv(a), b);
+        coord_type at = se3.prod(se3.inv(a), b);
 
-        Ja = -se3.ad( se3.inv(diff) );
+        Ja = -se3.Ad( se3.inv( at ) );
         Jb.setIdentity();
 
         // TODO optimize body/sofa conversions
-        Ja = se3.sofa(diff) * Ja * se3.body(a);
-        Jb = se3.sofa(diff) * Jb * se3.body(b);
+        Ja = se3.sofa( at ) * Ja * se3.body(a);
+        Jb = se3.sofa( at ) * Jb * se3.body(b);
     }
 
 };

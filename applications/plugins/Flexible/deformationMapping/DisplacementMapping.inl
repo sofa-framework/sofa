@@ -73,8 +73,7 @@ void DisplacementMapping<TIn, TOut>::init()
 namespace impl
 {
 
-// delta computations for various dof types
-
+// delta computations for different dof types
 template<class U>
 defaulttype::RigidCoord<3, U> delta(const defaulttype::RigidCoord<3, U>& lhs,
         const defaulttype::RigidCoord<3, U>& rhs)
@@ -90,6 +89,27 @@ defaulttype::Vec<N, U> delta(const defaulttype::Vec<N, U>& lhs,
 {
     return lhs - rhs;
 }
+
+
+
+template<class U>
+typename SE3<U>::mat66 d_delta(const defaulttype::RigidCoord<3, U>& lhs,
+        const defaulttype::RigidCoord<3, U>& rhs)
+{
+    SE3<U> se3;
+
+    return se3.dR(se3.inv(rhs), lhs );
+}
+
+
+template<int N, class U>
+Eigen::Matrix<U, N, N> d_delta(const defaulttype::Vec<N, U>&,
+        const defaulttype::Vec<N, U>& )
+{
+    return Eigen::Matrix<U, N, N>::Identity();
+}
+
+
 }
 
 
@@ -106,17 +126,25 @@ void DisplacementMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mpar
     // TODO is this needed on each apply ?
     this->jacobian.resizeBlocks(out.size(), in.size());
 
-    for(unsigned int d = 0; d < in.size(); ++d)
+    typedef unsigned int uint;
+
+    for(uint d = 0; d < in.size(); ++d)
     {
 
         out[ d ] = impl::delta(in[ d ], reference.getValue()[d] );
 
-        // TODO OPTIMIZE IDENTITY MATRIX
-        for(unsigned int i = 0; i < Nout; ++i)
+        Eigen::Matrix<Real, Nout, Nin> chunk = impl::d_delta( in[ d ], reference.getValue()[d] );
+
+        for(uint i = 0; i < Nout; ++i)
         {
-            unsigned int row = d * Nout + i;
+            uint row = d * Nout + i;
             jacobian.beginRow( row );
-            jacobian.set(row, row, 1);
+
+            for(uint j = 0; j < Nin; ++j)
+            {
+                uint col = d * Nin + j;
+                jacobian.set(row, col, chunk(i, j));
+            }
         }
     }
 
