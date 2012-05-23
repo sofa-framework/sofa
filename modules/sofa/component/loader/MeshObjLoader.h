@@ -65,6 +65,7 @@ protected:
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 
     sofa::core::loader::Material material;
+    Data<bool> loadMaterial;
     std::string textureName;
     FaceType faceType;
 

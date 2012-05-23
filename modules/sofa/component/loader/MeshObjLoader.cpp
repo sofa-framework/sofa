@@ -56,6 +56,7 @@ MeshObjLoader::MeshObjLoader()
     , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
     , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
+    , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
 //  , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than one texcoord normal pair is attached to a vertex." ) )
 {
     faceList.setGroup("OBJ");
@@ -171,7 +172,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             values >> result[0] >> result[1];
             my_texCoords.push_back(Vector2(result[0],result[1]));
         }
-        else if (token == "mtllib")
+        else if ((token == "mtllib") && loadMaterial.getValue())
         {
             while (!values.eof())
             {
