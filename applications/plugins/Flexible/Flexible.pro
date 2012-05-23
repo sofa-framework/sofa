@@ -17,6 +17,7 @@ SOURCES = initFlexible.cpp\
     shapeFunction/ShepardShapeFunction.cpp \
     shapeFunction/BarycentricShapeFunction.cpp \
     deformationMapping/DistanceMapping.cpp \
+    deformationMapping/DisplacementMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
     deformationMapping/LogRigidMapping.cpp \
