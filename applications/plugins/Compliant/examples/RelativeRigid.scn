@@ -3,15 +3,19 @@
 	<VisualStyle name="visualStyle0"  displayFlags="hideVisual showBehaviorModels hideForceFields hideInteractionForceFields hideCollision hideMapping hideOptions" />
 	<Node 	 name="RigidBody"  printLog="1"  >
 		<MinresSolver name="minresSolver4" />
-		<MechanicalObject template="Rigid" name="arbDOF"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+		<MechanicalObject template="Rigid" name="arbDOF"  position="0 0 0 0 0 0 1 2 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
 		<UniformMass template="Rigid" name="uniformMass1" />
-		<Node 	 name="Relative"  printLog="1"  >
-			<MechanicalObject template="Rigid" name="relativeDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
-			<RelativeRigidMapping template="Rigid,Rigid" name="relativeRigidMap"  edges="0 1"  input="@../"  output="@./" />
-			<Node 	 name="Log"  printLog="1"  >
-				<MechanicalObject template="Vec6d" name="logDOF"  position="0 0 0 0 0 0"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-				<LogRigidMapping template="Rigid,Vec6d" name="logRigidMap"  input="@../"  output="@./" />
-				<UniformCompliance template="Vec6d" name="uniformCompliance0"  compliance="0.0001" />
+		<Node 	 name="Joint"  printLog="1"  >
+			<MechanicalObject template="Rigid" name="mObject5"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+			<DisplacementMapping template="Rigid,Rigid" name="displacementMap17"  mapMasses="1"  reference="-1 0 0 0 0 0 1 1 0 0 0 0 0 1"  input="@../"  output="@./" />
+			<Node 	 name="Relative"  printLog="1"  >
+				<MechanicalObject template="Rigid" name="relativeDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+				<RelativeRigidMapping template="Rigid,Rigid" name="relativeRigidMap"  mapMasses="1"  edges="0 1"  input="@../"  output="@./" />
+				<Node 	 name="Log"  printLog="1"  >
+					<MechanicalObject template="Vec6d" name="logDOF"  position="0 0 0 0 0 0"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+					<LogRigidMapping template="Rigid,Vec6d" name="logRigidMap"  mapMasses="1"  input="@../"  output="@./" />
+					<DiagonalCompliance template="Vec6d" name="diagonalCompliance0"  compliance="1e-07 1e-07 1e-07 10 10 10"  dampingRatio="0" />
+				</Node>
 			</Node>
 		</Node>
 	</Node>

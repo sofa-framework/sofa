@@ -12,6 +12,7 @@ SOURCES = \
     CompliantAttachButtonSetting.cpp \
     CompliantAttachPerformer.cpp \
     UniformCompliance.cpp \
+    DiagonalCompliance.cpp \
     ComplianceSolver.cpp \
     MinresSolver.cpp \
 

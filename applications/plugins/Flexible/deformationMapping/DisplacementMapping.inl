@@ -48,8 +48,8 @@ using namespace sofa::defaulttype;
 
 template <class TIn, class TOut>
 DisplacementMapping<TIn, TOut>::DisplacementMapping()
-    : Inherit()
-
+    : Inherit(),
+      reference(initData(&reference, "reference", "reference configuration"))
 {
 }
 
@@ -157,7 +157,7 @@ const vector<sofa::defaulttype::BaseMatrix*>* DisplacementMapping<TIn, TOut>::ge
 }
 
 template <class TIn, class TOut>
-void DisplacementMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
+void DisplacementMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
 {
     // typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     // SeqEdges links = edgeContainer->getEdges();
