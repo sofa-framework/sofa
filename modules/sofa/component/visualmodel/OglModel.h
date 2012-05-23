@@ -107,6 +107,7 @@ public:
 
     virtual void updateBuffers();
 
+    bool hasTransparent();
 
 public:
     bool isUseTriangles()	{ return useTriangles; }

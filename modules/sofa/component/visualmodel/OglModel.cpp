@@ -164,8 +164,9 @@ void OglModel::drawGroup(int ig, bool transparent)
     else
         m = this->materials.getValue()[g.materialId];
 
-    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0);
+    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0) || hasTransparent();
     if (transparent ^ isTransparent) return;
+
 
     if (!tex && m.useTexture && m.activated)
     {
@@ -580,6 +581,13 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
     }
 //    m_vtexcoords.updateIfDirty();
+}
+
+bool OglModel::hasTransparent()
+{
+    if(alphaBlend.getValue())
+        return true;
+    return VisualModelImpl::hasTransparent();
 }
 
 bool OglModel::loadTexture(const std::string& filename)
