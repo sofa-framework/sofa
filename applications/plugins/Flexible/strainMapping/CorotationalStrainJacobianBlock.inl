@@ -25,20 +25,27 @@
 #ifndef FLEXIBLE_CorotationalStrainJacobianBlock_INL
 #define FLEXIBLE_CorotationalStrainJacobianBlock_INL
 
+
 #include "CorotationalStrainJacobianBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
-#include "../helper.h"
 
 #include <sofa/helper/decompose.h>
+
+
+
+#include <sofa/helper/MatEigen.h>
+#include <Eigen/QR>
+
 
 namespace sofa
 {
 
 namespace defaulttype
 {
+
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
@@ -63,14 +70,35 @@ void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
     helper::Decompose<Real>::QRDecomposition_stable( f, r );
 
     Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
-    s = helper::symetrize( T ); // s = ( T + Tt ) * 0.5
+    s = symetrize( T ); // s = ( T + Tt ) * 0.5
 }
+
+/// 3D->2D
+template<typename Real>
+void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
+{
+    Vec<3,Real> edgex( f[0][0], f[1][0], f[2][0] );
+    Vec<3,Real> edgey( f[0][1], f[1][1], f[2][1] );
+
+    edgex.normalize();
+    Vec<3,Real> edgez = cross( edgex, edgey );
+    edgez.normalize();
+    edgey = cross( edgez, edgex );
+
+    r[0][0] = edgex[0]; r[0][1] = edgey[0];
+    r[1][0] = edgex[1]; r[1][1] = edgey[1];
+    r[2][0] = edgex[2]; r[2][1] = edgey[2];
+
+    Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
+    s = symetrize( T ); // s = ( T + Tt ) * 0.5
+}
+
 
 /// 3D->3D
 template<typename Real>
 void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
+    //if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
     {
 
         // using "invertible FEM" article notations
@@ -245,10 +273,10 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
         r = U.multTransposed( V ); // r = U * Vt
         s = r.multTranspose( F ); // s = rt * F
     }
-    else // not inverted -> classical polar
+    /*else // not inverted -> classical polar
     {
         helper::Decompose<Real>::polarDecomposition( F, r, s );
-    }
+    }*/
 }
 
 
@@ -345,7 +373,7 @@ public:
             computeQR( data.getF(), R, strainmat );
             break;
         case SMALL:
-            strainmat = helper::symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+            strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
             R.identity();
             break;
         case SVD:
@@ -432,36 +460,24 @@ public:
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-
-        // compute a 2*2 matrix based on the 3*2 matrix, in the plane of the  3-vectors.
-        /*F221(InReal) data;
-        Vec<3,Real> e0, e1, e2;
-        for(unsigned i=0; i<3; i++){
-            e0[i]=data32[i];
-            e1[i]=data32[i+3];
-        }
-        Vec<2,Real> f0(e0.norm(),0);
-        e0.normalize();
-        e2=cross(e0,e1);
-        e2.normalize();
-        Vec<3,Real> ee1=cross(e2,e0);
-        Vec<2,Real> f1(e1*e0,e1*ee1);
-        for(unsigned i=0; i<2; i++){
-            data[i][0]=f0[i];
-            data[i][1]=f1[i];
-        }*/
-
-
-
         StrainMat strainmat;
 
         switch( decompositionMethod )
         {
-        case QR: // TODO
-            //break;
         case SMALL: // is a pure Cauchy tensor possible for a 2D element in a 3D world?
-            //break;
+            /*{
+                R[0][0] = 1; R[0][1] = 0;
+                R[1][0] = 0; R[1][1] = 1;
+                R[2][0] = 0; R[2][1] = 0;
 
+                Mat<2,2,Real> T = R.multTranspose( data.getF() ); // T = rt * f
+                strainmat = symetrize( T ); // s = ( T + Tt ) * 0.5
+
+                break;
+            }*/
+        case QR:
+            computeQR( data.getF(), R, strainmat );
+            break;
         case POLAR: // polar & svd are identical since inversion is not defined for 2d elements in a 3d world
         case SVD:
             computeSVD( data.getF(), R, strainmat );
@@ -564,7 +580,7 @@ public:
             computeQR( data.getF(), R, strainmat );
             break;
         case SMALL:
-            strainmat = helper::symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+            strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
             R.identity();
             break;
         case SVD:
