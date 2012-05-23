@@ -28,6 +28,10 @@
 #include <Python.h>
 #include <boost/intrusive_ptr.hpp>
 
+#include <sofa/core/objectmodel/Base.h>
+using namespace sofa::core::objectmodel;
+
+
 
 // parameters convertion
 /*
@@ -87,9 +91,15 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
     pyObj->object = obj;
     return (PyObject*)pyObj;
 }
-#define SP_BUILD_PYSPTR(PyType,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(PyType))
+
+//#define SP_BUILD_PYSPTR(PyType,OBJ) BuildPySPtr<Base>(OBJ,&SP_SOFAPYTYPEOBJECT(PyType))
 // on n'utilise pas BuildPySPtr<T> car la dynamic_cast se fera sur un T* et pas un T::SPtr
 // le type cpp n'est pas nécessaire, tous les SPtr de Sofa héritant de Base
+
+// nouvelle version, retournant automatiquement le type Python de plus haut niveau possible,
+// en fonction du type de l'objet Cpp
+// afin de permettre l'utilisation de fonctions des sous-classes de Base
+PyObject* SP_BUILD_PYSPTR(Base* obj);
 
 
 

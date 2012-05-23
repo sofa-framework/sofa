@@ -118,17 +118,17 @@ using namespace sofa::core::objectmodel;
 
 void PythonScriptController::script_onLoaded(GNode *node)
 {
-    SP_CALL(m_Func_onLoaded, "(O)", SP_BUILD_PYSPTR(GNode,node))
+    SP_CALL(m_Func_onLoaded, "(O)", SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_createGraph(GNode *node)
 {
-    SP_CALL(m_Func_createGraph, "(O)", SP_BUILD_PYSPTR(GNode,node))
+    SP_CALL(m_Func_createGraph, "(O)", SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_initGraph(GNode *node)
 {
-    SP_CALL(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(GNode,node))
+    SP_CALL(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_onKeyPressed(const char c)

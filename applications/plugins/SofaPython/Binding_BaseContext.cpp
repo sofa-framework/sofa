@@ -62,7 +62,7 @@ extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    return SP_BUILD_PYSPTR(BaseContext,obj->getRootContext());
+    return SP_BUILD_PYSPTR(obj->getRootContext());
 }
 
 
