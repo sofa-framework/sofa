@@ -101,7 +101,7 @@ public:
     {
         //Solve lv = R * lvR
         unsigned int k = 0,l = 0;
-        while (l < v->size())
+        while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
             result->set(l+1,data[k + 3] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 5] * v->element(l+2));
@@ -114,7 +114,7 @@ public:
     virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
     {
         unsigned int k = 0,l = 0;
-        while (l < v->size())
+        while (k < data.size())
         {
             result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
             result->set(l+1,data[k + 1] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 7] * v->element(l+2));

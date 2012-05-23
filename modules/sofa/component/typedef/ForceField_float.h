@@ -46,7 +46,6 @@
 #endif
 
 
-#include <sofa/component/forcefield/AspirationForceField.h>
 #include <sofa/component/forcefield/BeamFEMForceField.h>
 #include <sofa/component/interactionforcefield/BoxStiffSpringForceField.h>
 #include <sofa/component/forcefield/BuoyantForceField.h>
@@ -93,11 +92,6 @@
 #include <sofa/component/interactionforcefield/VectorSpringForceField.h>
 #include <sofa/component/forcefield/WashingMachineForceField.h>
 
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for AspirationForceField
-typedef sofa::component::forcefield::AspirationForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > AspirationForceField3f;
 
 
 
@@ -414,7 +408,6 @@ typedef sofa::component::forcefield::WashingMachineForceField<sofa::defaulttype:
 
 
 #ifdef SOFA_FLOAT
-typedef AspirationForceField3f AspirationForceField3;
 typedef BeamFEMForceFieldRigid3f BeamFEMForceFieldRigid3;
 typedef BoxStiffSpringForceField1f BoxStiffSpringForceField1;
 typedef BoxStiffSpringForceField2f BoxStiffSpringForceField2;

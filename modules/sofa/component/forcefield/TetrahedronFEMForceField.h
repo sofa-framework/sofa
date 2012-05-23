@@ -185,6 +185,36 @@ public:
         {
             for (unsigned int i=0; i<nbdof; ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);
         }
+        else if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+        {
+            Transformation R;
+            for (unsigned int e=0; e<_indexedElements->size(); ++e)
+            {
+                getRotation(R,e);
+                for(int j=0; j<3; j++)
+                {
+                    for(int i=0; i<3; i++)
+                    {
+                        diag->getVector()[e*9 + j*3 + i] = R[j][i];
+                    }
+                }
+            }
+        }
+        else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
+        {
+            Transformation R;
+            for (unsigned int e=0; e<_indexedElements->size(); ++e)
+            {
+                getRotation(R,e);
+                for(int j=0; j<3; j++)
+                {
+                    for(int i=0; i<3; i++)
+                    {
+                        diag->getVector()[e*9 + j*3 + i] = R[j][i];
+                    }
+                }
+            }
+        }
         else
         {
             for (unsigned int i=0; i<nbdof; ++i)

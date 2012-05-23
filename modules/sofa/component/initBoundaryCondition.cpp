@@ -42,7 +42,6 @@ void initBoundaryCondition()
     }
 }
 
-SOFA_LINK_CLASS(AspirationForceField)
 SOFA_LINK_CLASS(BuoyantForceField)
 SOFA_LINK_CLASS(ConicalForceField)
 SOFA_LINK_CLASS(ConstantForceField)
