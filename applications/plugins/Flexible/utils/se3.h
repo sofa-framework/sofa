@@ -162,6 +162,7 @@ struct SE3
         mat33 T = hat( translation(at) );
 
         mat66 res;
+
         res <<
             R, T * R,
                mat33::Zero(), R;
@@ -223,14 +224,14 @@ struct SE3
         real cos = std::cos(theta);
         real sinc = boost::math::sinc_pi(theta);
 
-        real alpha = cos / sinc;
+        real alpha = cos / sinc - 1;
 
         mat33 res = mat33::Zero();
 
-        res += alpha * mat33::Identity();
+        res += ( 1 + alpha ) * mat33::Identity();
         res += hat( log_q );
 
-        res -= (alpha - 1) * n * n.transpose();
+        res -= (alpha * n) * n.transpose();
 
         return res;
     }
