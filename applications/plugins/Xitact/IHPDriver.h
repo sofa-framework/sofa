@@ -106,9 +106,9 @@ typedef struct
 
 typedef struct
 {
-    simulation::Node *node;
-    sofa::component::visualmodel::OglModel *visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  > *mapping;
+    simulation::Node::SPtr node;
+    sofa::component::visualmodel::OglModel::SPtr visu;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
 
 } VisualComponent;
 
@@ -201,14 +201,14 @@ private:
     bool changeScale;
     float oldScale;
     VisualComponent visualNode[7];
-    simulation::Node *nodePrincipal;
-    simulation::Node *nodeBati;
-    simulation::Node *nodeAxes;
-    simulation::Node *nodeTool;
-    simulation::Node *nodeAxesVisual;
-    simulation::Node *nodeXitactVisual;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>  *visualAxesDOF;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>  *visualXitactDOF;
+    simulation::Node::SPtr nodePrincipal;
+    simulation::Node::SPtr nodeBati;
+    simulation::Node::SPtr nodeAxes;
+    simulation::Node::SPtr nodeTool;
+    simulation::Node::SPtr nodeAxesVisual;
+    simulation::Node::SPtr nodeXitactVisual;
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr visualAxesDOF;
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr visualXitactDOF;
 
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *posBati;

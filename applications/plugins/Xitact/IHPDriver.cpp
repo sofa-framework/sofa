@@ -156,9 +156,9 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
             SolidTypes<double>::SpatialVector Wrench_tool_inXiatctBase(myData->xiToolData[i]->quatBase.inverseRotate(Wrench_tool_inWorld.getForce()),  myData->xiToolData[i]->quatBase.inverseRotate(Wrench_tool_inWorld.getTorque())  );
 
             XiToolForce_ ff;
-            ff.tipForce[0] = (Wrench_tool_inXiatctBase.getForce()[0] * myData->xiToolData[i]->forceScale);  //OK
-            ff.tipForce[1] = -(Wrench_tool_inXiatctBase.getForce()[2] * myData->xiToolData[i]->forceScale);	 //OK
-            ff.tipForce[2] = (Wrench_tool_inXiatctBase.getForce()[1] * myData->xiToolData[i]->forceScale);  // OK
+            ff.tipForce[0] = (float)(Wrench_tool_inXiatctBase.getForce()[0] * myData->xiToolData[i]->forceScale);  //OK
+            ff.tipForce[1] = (float)-(Wrench_tool_inXiatctBase.getForce()[2] * myData->xiToolData[i]->forceScale);	 //OK
+            ff.tipForce[2] = (float)(Wrench_tool_inXiatctBase.getForce()[1] * myData->xiToolData[i]->forceScale);  // OK
 
             //if(Wrench_tool_inXiatctBase.getForce()[0]>0.0000001)
             //	cout<<"Wrench_tool_inXiatctBase.getForce()"<<Wrench_tool_inXiatctBase.getForce()<<endl;
@@ -349,8 +349,8 @@ void IHPDriver::setLCPForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
             return;
         }
 
-        if(data.lcp_forceFeedback)
-            delete data.lcp_forceFeedback;
+//		if(data.lcp_forceFeedback)
+//			delete data.lcp_forceFeedback;
         data.lcp_forceFeedback=NULL;
         data.lcp_forceFeedback =ff;
         data.lcp_true_vs_vm_false = true;
@@ -366,8 +366,8 @@ void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTy
         return;
     }
 
-    if(data.vm_forceFeedback)
-        delete data.vm_forceFeedback;
+//	if(data.vm_forceFeedback)
+//		delete data.vm_forceFeedback;
     data.vm_forceFeedback =ff;
     data.lcp_true_vs_vm_false=false;
 
@@ -425,7 +425,7 @@ void IHPDriver::init()
             visuActif = true;
         }
 
-        visualXitactDOF = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
+        visualXitactDOF = sofa::core::objectmodel::New< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
         nodeXitactVisual->addObject(visualXitactDOF);
         visualXitactDOF->name.setValue("rigidDOF");
 
@@ -441,7 +441,7 @@ void IHPDriver::init()
         //Axes node
         nodeAxesVisual = sofa::simulation::getSimulation()->createNewGraph("nodeAxesVisual "+this->name.getValue());
 
-        visualAxesDOF = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
+        visualAxesDOF = sofa::core::objectmodel::New< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
         nodeAxesVisual->addObject(visualAxesDOF);
         visualAxesDOF->name.setValue("rigidDOF");
 
@@ -470,7 +470,7 @@ void IHPDriver::init()
             visualNode[i].mapping = NULL;
             if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
             {
-                visualNode[i].visu = new sofa::component::visualmodel::OglModel();
+                visualNode[i].visu = sofa::core::objectmodel::New< sofa::component::visualmodel::OglModel >();
                 visualNode[i].node->addObject(visualNode[i].visu);
                 visualNode[i].visu->name.setValue("VisualParticles");
                 if(i==0)
@@ -500,16 +500,24 @@ void IHPDriver::init()
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
                 if(i<4)
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualXitactDOF,visualNode[i].visu);
+                {
+                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+                    visualNode[i].mapping->setModels(visualXitactDOF.get(),visualNode[i].visu.get());
+                }
                 else
-                    visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(visualAxesDOF,visualNode[i].visu);
+                {
+                    visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
+                    visualNode[i].mapping->setModels(visualAxesDOF.get(),visualNode[i].visu.get());
+                }
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
                 visualNode[i].mapping->f_mapForces.setValue(false);
                 visualNode[i].mapping->f_mapMasses.setValue(false);
-                visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
-                visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
+                visualNode[i].mapping->setPathInputObject("@../RigidDOF");
+                visualNode[i].mapping->setPathOutputObject("@VisualParticles");
+//				visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
+//				visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
                 if(i<4)
                     visualNode[i].mapping->index.setValue(i);
                 else
@@ -752,7 +760,8 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
     if (firstDevice && dynamic_cast<sofa::simulation::AnimateEndEvent *> (event))
     {
         // force the simulation to be "real-time"
-        CTime *timer = new CTime();
+        CTime *timer;
+        timer = new CTime();
         double time = 0.001*timer->getRefTime()* PaceMaker::time_scale; // in sec
 
         // if the computation time is shorter than the Dt set in the simulation... it waits !
@@ -911,7 +920,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
             posTool->x0.endEdit();
         }
 
-        sofa::helper::Quater<float> quarter4(Vec3d(0.0,1.0,0.0),-data.simuState.opening/2.0);
+        sofa::helper::Quater<float> quarter4(Vec3d(0.0,1.0,0.0),-data.simuState.opening/(float)2.0);
         SolidTypes<double>::Transform transform4(Vec3d(0.0,0.0,0.44*Scale.getValue()),quarter4);
         tampon*=transform4;
         posD[3].getCenter() =  tampon.getOrigin();
