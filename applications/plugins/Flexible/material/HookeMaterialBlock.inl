@@ -235,10 +235,13 @@ public:
 
     void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
     {
+//        cerr<<"HookeMaterialBlock::addDForce, df before = " << df << endl;
+//        cerr<<"HookeMaterialBlock::addDForce, dx  = " << dx << endl;
         for(unsigned int i=0; i<material_dimensions; i++)             df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor;
         for(unsigned int i=material_dimensions; i<strain_size; i++)   df.getStrain()[i]-=(dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor)*0.5;
         Real tce=(dx.getStrain()[0]+dx.getStrain()[1]+dx.getStrain()[2])*lambdaVol*kfactor;
         for(unsigned int i=0; i<material_dimensions; i++) df.getStrain()[i]-=tce;
+//        cerr<<"HookeMaterialBlock::addDForce, f after = " << df << endl;
     }
 
 

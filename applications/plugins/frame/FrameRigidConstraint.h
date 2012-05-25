@@ -41,7 +41,7 @@ namespace projectiveconstraintset
 using helper::vector;
 
 using namespace sofa::defaulttype;
-/** Attach given particles to their initial positions.
+/** Make non-rigid frames rigid.
 */
 template <class DataTypes>
 class FrameRigidConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
@@ -53,7 +53,6 @@ public:
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
     typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
-//        static const unsigned dimensions = DataTypes::Deriv::total_size;
 
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
     Data<double> _drawSize;
@@ -75,20 +74,20 @@ public:
     void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 
     // Handle topological changes
-//        virtual void handleTopologyChange();
+    //        virtual void handleTopologyChange();
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
 
 protected :
 
-//        sofa::core::topology::BaseMeshTopology* topology;
+    //        sofa::core::topology::BaseMeshTopology* topology;
 
-//        // Define TestNewPointFunction
-//    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-//
-//        // Define RemovalFunction
-//        static void FCRemovalFunction ( int , void*);
+    //        // Define TestNewPointFunction
+    //    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
+    //
+    //        // Define RemovalFunction
+    //        static void FCRemovalFunction ( int , void*);
 
 };
 

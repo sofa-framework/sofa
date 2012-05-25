@@ -29,8 +29,8 @@ int ComplianceSolverClass = core::RegisterObject("A simple explicit time integra
 
 
 ComplianceSolver::ComplianceSolver()
-    :implicitVelocity( initData(&implicitVelocity,(SReal)0.5,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
-    , implicitPosition( initData(&implicitPosition,(SReal)0.5,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
+    : implicitVelocity( initData(&implicitVelocity,(SReal)1.,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
+    , implicitPosition( initData(&implicitPosition,(SReal)1.,"implicitPosition","Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit."))
     , f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
     , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , verbose( initData(&verbose,false,"verbose","Print a lot of info for debug"))
@@ -146,16 +146,14 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     for(State_MJC::iterator i=s2mjc.begin(),iend=s2mjc.end(); i!=iend; i++ )
     {
         core::behavior::BaseMechanicalState* s = (*i).first;
-        if(verbose.getValue())
-        {
-            cerr<<"ComplianceSolver::solve, state = " << s->getName() << endl;
+//        if(verbose.getValue()){
+//            cerr<<"ComplianceSolver::solve, state = " << s->getName() << endl;
 //            cerr<<"  M = " << s2mjc[s].M << endl;
 //            cerr<<"  K = " << s2mjc[s].K << endl;
 //            cerr<<"  J = " << s2mjc[s].J << endl;
 //            cerr<<"  c_offset = " << s2mjc[s].c_offset << endl;
 //            cerr<<"  C = " << s2mjc[s].C << endl;
-
-        }
+//        }
         if( s2mjc[s].M.rows()>0 )
             _matM += s2mjc[s].J.transpose() * s2mjc[s].M * s2mjc[s].J;
         if( s2mjc[s].K.rows()>0 )
@@ -172,6 +170,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 //            cerr<<"  matJ after = " << _matJ << endl;
         }
     }
+    _matK = P() * _matK * P();  /// Filter the matrix. @todo this is not enough to guarantee that the projected DOFs are isolated. M should be set diagonal.
     sofa::helper::AdvancedTimer::stepEnd("JMJt, JKJt, JCJt");
 
     if( verbose.getValue() )
@@ -190,16 +189,26 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
 
     // ==== Compute the implicit matrix and right-hand term
-    // The implicit matrix is scaled by 1/h before solving the equation
     sofa::helper::AdvancedTimer::stepBegin("implicit equation: scaling and sum of matrices, update right-hand term ");
-    _matM *= (1.0+f_rayleighMass.getValue())/h;
-    _matM -= _matK * (h+f_rayleighStiffness.getValue());
+    SReal rs = f_rayleighStiffness.getValue();
+    SReal rm = f_rayleighMass.getValue();
+    // complete the right-hand term b = f0 + (h+rs) K v - rm M v    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
+    _vecF.getVectorEigen() += _matK * _vecV.getVectorEigen() * ( implicitVelocity.getValue() * (h + rs) );
+//    cerr<<"ComplianceSolver::solve, added to f: " << (_matK * _vecV.getVectorEigen() * (implicitVelocity.getValue() * (h + rs) )) << endl;
+    _vecF.getVectorEigen() -= _matM * _vecV.getVectorEigen() * rm;
+//    cerr<<"ComplianceSolver::solve, substracted from f: " << (_matM * _vecV.getVectorEigen() * rm) << endl;
+    _vecF.getVectorEigen() = P() * _vecF.getVectorEigen(); // filter the right-hand term
+    // The implicit matrix is scaled by 1/h before solving the equation: M = ( (1+h*rm)M - h*B - h*(h+rs)K  )/h = (rm+1/h)M - (rs+h)K  since we ignore B
+    _matM *= rm + 1.0/h;
+    _matM -= _matK * (h+rs);
 //    cerr<<"ComplianceSolver::solve, final M.size() = " <<  _matM.rows() << ", non zeros: " << _matM.nonZeros() << endl; //49548
+    if( verbose.getValue() )
+    {
+        cerr<<"ComplianceSolver::solve, implicit matrix = " << endl << _matM << endl;
+        cerr<<"ComplianceSolver::solve, right-hand term = " << _vecF << endl;
+    }
 
-    // complete the right-hand term
-    _vecF.getVectorEigen() += _matK * _vecV.getVectorEigen() * (h * implicitVelocity.getValue());
     sofa::helper::AdvancedTimer::stepEnd("implicit equation: scaling and sum of matrices, update right-hand term ");
-
     sofa::helper::AdvancedTimer::stepEnd("Build linear equation");
 
     // ==== Solve equation system
@@ -313,8 +322,9 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
         else    // process the mapping
         {
             sofa::helper::AdvancedTimer::stepBegin(        "J products");
-            //            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
+//            cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<< endl;
             const vector<sofa::defaulttype::BaseMatrix*>* pJs = node->mechanicalMapping->getJs();
+            const vector<sofa::defaulttype::BaseMatrix*>* pKs = node->mechanicalMapping->getKs();
             vector<core::BaseState*> pStates = node->mechanicalMapping->getFrom();
             assert( pJs->size() == pStates.size());
             MechanicalState* cstate = dynamic_cast<MechanicalState*>(  node->mechanicalMapping->getTo()[0] ); // Child state. Only N-to-1 mappings are handled yet
@@ -326,14 +336,24 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                     continue;
                 SMatrix Jcp = getSMatrix( (*pJs)[i] ); // child wrt parent
                 SMatrix& Jp0 = s2mjc[pstate].J;        // parent wrt global DOF
-//                SMatrix contribution = Jcp * Jp0;
 
-                // contribute to the child wrt global DOF matrix
+                // contribute to the Jacobian matrix of the child wrt global DOF
                 SMatrix& Jc0 = s2mjc[cstate].J;  // child wrt global DOF;
                 if( Jc0.rows()==0 )
                     Jc0 = SMatrix(Jcp * Jp0);
                 else
                     Jc0 += SMatrix(Jcp * Jp0);
+
+                // Geometric stiffness
+                if( pKs!=NULL && (*pKs)[i]!=NULL )
+                {
+                    SMatrix K = getSMatrix( (*pKs)[i] ); // geometric stiffness related to this parent
+                    SMatrix& pK = s2mjc[pstate].K;       // parent stiffness
+                    if( pK.rows()==0 )
+                        pK = K;
+                    else pK += K;
+//                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, mapping  " << node->mechanicalMapping->getName()<<" adding geometric stiffness to parent : " << endl << K << endl;
+                }
             }
             sofa::helper::AdvancedTimer::stepEnd(        "J products");
         }
@@ -344,7 +364,8 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             sofa::helper::AdvancedTimer::stepBegin( "local M");
 
             // todo: better way to fill the mass matrix
-            linearsolver::EigenSparseSquareMatrix<SReal> sqmat(node->mechanicalState->getMatrixSize(),node->mechanicalState->getMatrixSize());
+            typedef linearsolver::EigenSparseSquareMatrix<SReal> Sqmat;
+            Sqmat sqmat(node->mechanicalState->getMatrixSize(),node->mechanicalState->getMatrixSize());
             linearsolver::SingleMatrixAccessor accessor( &sqmat );
             node->mass->addMToMatrix( mparams, &accessor );
             localM = sqmat.eigenMatrix;
@@ -382,7 +403,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             {
                 sofa::helper::AdvancedTimer::stepBegin( "local K");
                 //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has stiffness" << endl;
-                if( localK.rows() != localSize )
+                if( localK.rows() != (int) localSize )
                     localK.resize(localSize, localSize);
                 localK += getSMatrix(ffield->getStiffnessMatrix(mparams));
                 sofa::helper::AdvancedTimer::stepEnd( "local K");
@@ -505,7 +526,7 @@ bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
 
 void ComplianceSolver::inverseMatrix(SMatrix& Minv, const SMatrix& M)
 {
-
+    cerr<<"ComplianceSolver::inverseMatrix NOT IMPLEMENTED !!!!"<< endl;
 }
 
 

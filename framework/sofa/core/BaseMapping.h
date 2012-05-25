@@ -131,9 +131,6 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
-    /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
-
     typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
 
 
@@ -152,6 +149,17 @@ public:
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
+
+    /// @name Experimental assembly API
+    /// @{
+
+    /// Returns pointers to Jacobian mmatrices associated with parent states, consistently with  getFrom().
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
+
+    /// Return pointers to the geometric stiffness matrices. This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getKs() { return NULL; }
+
+    /// @}
 
 protected:
     bool testMechanicalState(BaseState* state);
