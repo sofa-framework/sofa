@@ -98,7 +98,7 @@ void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 template<typename Real>
 void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    //if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
+    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
     {
 
         // using "invertible FEM" article notations
@@ -108,7 +108,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition/*_iterative*/( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -273,10 +273,10 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
         r = U.multTransposed( V ); // r = U * Vt
         s = r.multTranspose( F ); // s = rt * F
     }
-    /*else // not inverted -> classical polar
+    else // not inverted -> classical polar
     {
         helper::Decompose<Real>::polarDecomposition( F, r, s );
-    }*/
+    }
 }
 
 
@@ -358,28 +358,43 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    RotationDecompositionMethod decompositionMethod;
 
-    void addapply( OutCoord& result, const InCoord& data )
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_small( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+        R.identity();
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+    }
+
+    void addapply_qr( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        switch( decompositionMethod )
-        {
-        case POLAR:
-            helper::Decompose<Real>::polarDecomposition( data.getF(), R, strainmat );
-            break;
-        case QR:
-            computeQR( data.getF(), R, strainmat );
-            break;
-        case SMALL:
-            strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
-            R.identity();
-            break;
-        case SVD:
-            computeSVD( data.getF(), R, strainmat );
-            break;
-        }
+        computeQR( data.getF(), R, strainmat );
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+    }
+
+    void addapply_polar( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+
+        helper::Decompose<Real>::polarDecomposition( data.getF(), R, strainmat );
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+    }
+
+    void addapply_svd( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+
+        computeSVD( data.getF(), R, strainmat );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -456,33 +471,39 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    RotationDecompositionMethod decompositionMethod;
 
-    void addapply( OutCoord& result, const InCoord& data )
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_small( OutCoord& result, const InCoord& data )
+    {
+        // is a pure Cauchy tensor possible for a 2D element in a 3D world?
+        // TODO
+
+        addapply_qr( result, data );
+    }
+
+    void addapply_qr( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        switch( decompositionMethod )
-        {
-        case SMALL: // is a pure Cauchy tensor possible for a 2D element in a 3D world?
-            /*{
-                R[0][0] = 1; R[0][1] = 0;
-                R[1][0] = 0; R[1][1] = 1;
-                R[2][0] = 0; R[2][1] = 0;
+        computeQR( data.getF(), R, strainmat );
 
-                Mat<2,2,Real> T = R.multTranspose( data.getF() ); // T = rt * f
-                strainmat = symetrize( T ); // s = ( T + Tt ) * 0.5
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+    }
 
-                break;
-            }*/
-        case QR:
-            computeQR( data.getF(), R, strainmat );
-            break;
-        case POLAR: // polar & svd are identical since inversion is not defined for 2d elements in a 3d world
-        case SVD:
-            computeSVD( data.getF(), R, strainmat );
-            break;
-        }
+    void addapply_polar( OutCoord& result, const InCoord& data )
+    {
+        // polar & svd are identical since inversion is not defined for 2d elements in a 3d world
+        addapply_svd( result, data );
+    }
+
+    void addapply_svd( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+
+        computeSVD( data.getF(), R, strainmat );
+
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
     }
@@ -565,28 +586,14 @@ public:
     static const bool constantJ=false;
 
     Affine R;   ///< =  store rotational part of deformation gradient to compute J
-    RotationDecompositionMethod decompositionMethod;
 
-    void addapply( OutCoord& result, const InCoord& data )
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_small( OutCoord& result, const InCoord& data )
     {
         // order 0
-        StrainMat strainmat;
-        switch( decompositionMethod )
-        {
-        case POLAR:
-            helper::Decompose<Real>::polarDecomposition(data.getF(), R, strainmat);
-            break;
-        case QR:
-            computeQR( data.getF(), R, strainmat );
-            break;
-        case SMALL:
-            strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
-            R.identity();
-            break;
-        case SVD:
-            computeSVD( data.getF(), R, strainmat );
-            break;
-        }
+        StrainMat strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+        R.identity();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -594,8 +601,59 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T=R.transposed()*data.getGradientF(k);
-            result.getStrainGradient(k) += StrainMatToVoigt( T.plusTransposed( T ) * (Real)0.5 );
+            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+        }
+    }
+
+    void addapply_qr( OutCoord& result, const InCoord& data )
+    {
+        // order 0
+        StrainMat strainmat;
+        computeQR( data.getF(), R, strainmat );
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+        }
+    }
+
+    void addapply_polar( OutCoord& result, const InCoord& data )
+    {
+        // order 0
+        StrainMat strainmat;
+        helper::Decompose<Real>::polarDecomposition(data.getF(), R, strainmat);
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+        }
+    }
+
+    void addapply_svd( OutCoord& result, const InCoord& data )
+    {
+        // order 0
+        StrainMat strainmat;
+        computeSVD( data.getF(), R, strainmat );
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+
+        // order 1
+        for(unsigned int k=0; k<spatial_dimensions; k++)
+        {
+            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
         }
     }
 

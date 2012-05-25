@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
 
-#include "../types/StrainTypes.h"
 
 namespace sofa
 {
@@ -75,33 +74,56 @@ public:
 
     Real KVol;  ///< bulk  * volume
     Real J; ///< store J for stiffness
-    unsigned int Method;
 
-    void init(const Real &k,const unsigned int &method)
+    void init( const Real &k )
     {
         Real vol=1.;
         if(this->volume) vol=(*this->volume)[0];
         KVol=k*vol;
-        Method=method;
     }
 
-    Real getPotentialEnergy(const Coord& x) const
+
+
+    Real getPotentialEnergy( const Coord& ) const { return 0; }
+
+    Real getPotentialEnergy_method0(const Coord& x) const
     {
-        if(Method==0) return KVol*log(x.getStrain()[2])*log(x.getStrain()[2])*(Real)0.5;
-        else return KVol*(x.getStrain()[2]-(Real)1.)*(x.getStrain()[2]-(Real)1.)*(Real)0.5;
+        return KVol*log(x.getStrain()[2])*log(x.getStrain()[2])*(Real)0.5;
     }
 
-    void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/)
+    Real getPotentialEnergy_method1(const Coord& x) const
+    {
+        return KVol*(x.getStrain()[2]-(Real)1.)*(x.getStrain()[2]-(Real)1.)*(Real)0.5;
+    }
+
+
+
+    void addForce( Deriv& , const Coord& , const Deriv& ) {};
+
+    void addForce_method0( Deriv& f , const Coord& x , const Deriv& /*v*/)
     {
         J=x.getStrain()[2];
-        if(Method==0) f.getStrain()[2]-=KVol*log(J)/J;
-        else f.getStrain()[2]-=KVol*(J-1);
+        f.getStrain()[2]-=KVol*log(J)/J;
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)
     {
-        if(Method==0) df.getStrain()[2]+=KVol*(log(J)-(Real)1.)/(J*J)*dx.getStrain()[2]*kfactor;
-        else df.getStrain()[2]-=KVol*dx.getStrain()[2]*kfactor;
+        J=x.getStrain()[2];
+        f.getStrain()[2]-=KVol*(J-1);
+    }
+
+
+
+    void addDForce( Deriv& , const Deriv& , const double& , const double&  ) {}
+
+    void addDForce_method0( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    {
+        df.getStrain()[2]+=KVol*(log(J)-(Real)1.)/(J*J)*dx.getStrain()[2]*kfactor;
+    }
+
+    void addDForce_method1( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    {
+        df.getStrain()[2]-=KVol*dx.getStrain()[2]*kfactor;
     }
 
 

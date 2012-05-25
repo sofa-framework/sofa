@@ -70,6 +70,17 @@ OptionsGroup & OptionsGroup::operator=(const OptionsGroup & m_radiotrick)
     return *this;
 }
 ///////////////////////////////////////
+void OptionsGroup::setNbItems( unsigned int nbofRadioButton )
+{
+    textItems.resize( nbofRadioButton );
+    selectedItem = 0;
+}
+///////////////////////////////////////
+void OptionsGroup::setItemName( unsigned int id_item, const std::string& name )
+{
+    textItems[id_item] = name;
+}
+///////////////////////////////////////
 void OptionsGroup::setNames(int nbofRadioButton,...)
 {
     textItems.resize(nbofRadioButton);

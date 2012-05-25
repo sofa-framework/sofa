@@ -48,6 +48,8 @@ HEADERS = initFlexible.h \
     deformationMapping/BaseDeformationMapping.h \
     deformationMapping/DistanceMapping.h \
     deformationMapping/DistanceMapping.inl \
+    deformationMapping/DisplacementMapping.h \
+    deformationMapping/DisplacementMapping.inl \
     deformationMapping/ExtensionMapping.h \
     deformationMapping/ExtensionMapping.inl \
     deformationMapping/LinearMapping.h \

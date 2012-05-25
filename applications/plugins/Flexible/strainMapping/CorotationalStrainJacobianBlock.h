@@ -34,8 +34,6 @@ namespace defaulttype
 {
 
 
-enum RotationDecompositionMethod { POLAR, QR, SMALL, SVD };
-
 /** Template class used to implement one jacobian block for CorotationalStrainMapping */
 template<class TIn, class TOut>
 class CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};

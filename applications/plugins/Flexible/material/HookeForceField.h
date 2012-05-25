@@ -29,6 +29,8 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/HookeMaterialBlock.inl"
 
+
+
 namespace sofa
 {
 namespace component
@@ -58,11 +60,17 @@ public:
     Data<Real> _youngModulus;
     Data<Real> _poissonRatio;
     Data<Real> _viscosity;
+    Real _lambda;  ///< Lamé first coef
+    Real _mu2;     ///< Lamé second coef * 2
     //@}
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->_youngModulus.getValue(),this->_poissonRatio.getValue(),this->_viscosity.getValue());
+        // convert to lame coef
+        _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
+        _mu2 = _youngModulus.getValue()/(1+_poissonRatio.getValue());
+
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _lambda, _mu2, this->_viscosity.getValue() );
         Inherit::reinit();
     }
 

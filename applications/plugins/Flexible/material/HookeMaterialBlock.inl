@@ -44,17 +44,7 @@ namespace defaulttype
 #define E332(type)  StrainTypes<3,3,1,type>
 #define E333(type)  StrainTypes<3,3,2,type>
 
-//////////////////////////////////////////////////////////////////////////////////
-////  helpers
-//////////////////////////////////////////////////////////////////////////////////
 
-
-template<class Real>
-void getLame(const Real &youngModulus,const Real &poissonRatio,Real &lambda,Real &mu)
-{
-    lambda= youngModulus*poissonRatio/((1-2*poissonRatio)*(1+poissonRatio));
-    mu = youngModulus/(2*(1+poissonRatio));
-}
 
 
 
@@ -97,14 +87,13 @@ public:
     Real mu2Vol;  ///< Lamé second coef * 2 * volume
     Real viscosityVol;  ///< stress/strain rate  * volume
 
-    void init(const Real &youngModulus,const Real &poissonRatio,const Real &visc)
+    void init( const Real &lambda,const Real &mu2, const Real &visc )
     {
         Real vol=1.;
         if(this->volume) vol=(*this->volume)[0];
-        getLame(youngModulus,poissonRatio,lambdaVol,mu2Vol);
-        lambdaVol*=vol;
-        mu2Vol*=(Real)2.*vol;
-        viscosityVol=visc*vol;
+        lambdaVol = lambda * vol;
+        mu2Vol = mu2 * vol;
+        viscosityVol = visc*vol;
     }
 
     Real getPotentialEnergy(const Coord& x) const
@@ -200,14 +189,13 @@ public:
     Real mu2Vol;  ///< Lamé second coef * 2 * volume
     Real viscosityVol;  ///< stress/strain rate  * volume
 
-    void init(const Real &youngModulus,const Real &poissonRatio,const Real &visc)
+    void init( const Real &lambda,const Real &mu2, const Real &visc )
     {
         Real vol=1.;
         if(this->volume) vol=(*this->volume)[0];
-        getLame(youngModulus,poissonRatio,lambdaVol,mu2Vol);
-        lambdaVol*=vol;
-        mu2Vol*=(Real)2.*vol;
-        viscosityVol=visc*vol;
+        lambdaVol = lambda * vol;
+        mu2Vol = mu2 * vol;
+        viscosityVol = visc*vol;
     }
 
     Real getPotentialEnergy(const Coord& x) const
