@@ -76,13 +76,6 @@ public:
     */
 
 
-    enum PlasticMethod { ADDITION, MULTIPLICATION }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
-    PlasticMethod _method;
-
-    Real _max;
-    Real _yield; ///< squared _yield
-    Real _creep;
-
     StrainVec _plasticStrain;
 
     void reset()
@@ -91,57 +84,59 @@ public:
     }
 
 
-    void addapply( OutCoord& result, const InCoord& data )
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_multiplication( OutCoord& result, const InCoord& data, Real max, Real squaredYield, Real creep )
     {
         // eventually remove a part of the strain to simulate plasticity
 
-        if( _method == MULTIPLICATION ) // totalStrain = elasticStrain * plasticStrain
-        {
-            // could be optimized by storing the computation of the previous time step
-            StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
-            StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
+        // could be optimized by storing the computation of the previous time step
+        StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
+        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
 
-            // elasticStrain = totalStrain * plasticStrain^-1
-            StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-            StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+        // elasticStrain = totalStrain * plasticStrain^-1
+        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
+        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
 
-            // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
-            if( elasticStrainVec.norm2() > _yield )
-                _plasticStrain += _creep * elasticStrainVec;
+        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
+        if( elasticStrainVec.norm2() > squaredYield )
+            _plasticStrain += creep * elasticStrainVec;
 
-            // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-            Real plasticStrainNorm2 = _plasticStrain.norm2();
-            if( plasticStrainNorm2 > _max*_max )
-                _plasticStrain *= _max / helper::rsqrt( plasticStrainNorm2 );
+        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
+        Real plasticStrainNorm2 = _plasticStrain.norm2();
+        if( plasticStrainNorm2 > max*max )
+            _plasticStrain *= max / helper::rsqrt( plasticStrainNorm2 );
 
-            plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
+        plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
 
-            // remaining elasticStrain = totalStrain * plasticStrain^-1
-            plasticStrainMatInverse.invert( plasticStrainMat );
-            elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-            elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+        // remaining elasticStrain = totalStrain * plasticStrain^-1
+        plasticStrainMatInverse.invert( plasticStrainMat );
+        elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
+        elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
 
-            result.getStrain() += elasticStrainVec;
-        }
-        else //if( _method == ADDITION ) // totalStrain = elasticStrain + plasticStrain
-        {
-            // elasticStrain = totalStrain - plasticStrain
-            StrainVec elasticStrain = data.getStrain() - _plasticStrain;
+        result.getStrain() += elasticStrainVec;
+    }
 
-            // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
-            if( elasticStrain.norm2() > _yield )
-                _plasticStrain += _creep * elasticStrain;
+    void addapply_addition( OutCoord& result, const InCoord& data, Real max, Real squaredYield, Real creep )
+    {
+        // eventually remove a part of the strain to simulate plasticity
 
-            // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-            Real plasticStrainNorm2 = _plasticStrain.norm2();
-            if( plasticStrainNorm2 > _max*_max )
-                _plasticStrain *= _max / helper::rsqrt( plasticStrainNorm2 );
+        // elasticStrain = totalStrain - plasticStrain
+        StrainVec elasticStrain = data.getStrain() - _plasticStrain;
 
-            // remaining elasticStrain = totatStrain - plasticStrain
-            elasticStrain = data.getStrain() - _plasticStrain;
+        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
+        if( elasticStrain.norm2() > squaredYield )
+            _plasticStrain += creep * elasticStrain;
 
-            result.getStrain() += elasticStrain;
-        }
+        // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
+        Real plasticStrainNorm2 = _plasticStrain.norm2();
+        if( plasticStrainNorm2 > max*max )
+            _plasticStrain *= max / helper::rsqrt( plasticStrainNorm2 );
+
+        // remaining elasticStrain = totatStrain - plasticStrain
+        elasticStrain = data.getStrain() - _plasticStrain;
+
+        result.getStrain() += elasticStrain;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )

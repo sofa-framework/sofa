@@ -29,6 +29,9 @@
 #include "BaseStrainMapping.h"
 #include "PlasticStrainJacobianBlock.h"
 
+#include <sofa/helper/OptionsGroup.h>
+
+
 namespace sofa
 {
 namespace component
@@ -47,36 +50,31 @@ public:
     typedef BaseStrainMapping<BlockType> Inherit;
     typedef typename Inherit::Real Real;
 
+
     SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMapping,BlockType));
 
 
-    /** @name  Different ways to decompose the strain */
+    /// @name  Different ways to decompose the strain
     //@{
-    Data<std::string> f_method;
-    typename BlockType::PlasticMethod _method;
+    enum PlasticMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
+    Data<helper::OptionsGroup> f_method;
     //@}
 
 
-    /// Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
+    /// @name  Plasticity parameters such as "Interactive Virtual Materials", Muller & Gross, GI 2004
+    //@{
     Data<Real> _max;
     Data<Real> _yield;
+    Real _squaredYield;
     Data<Real> _creep; ///< this parameters is different from the article, here it includes the multiplication by dt
+    //@}
 
 
 
     virtual void reinit()
     {
-        if( f_method.getValue() == "multiplication" ) _method = BlockType::MULTIPLICATION;
-        else _method = BlockType::ADDITION;
+        _squaredYield = _yield.getValue() * _yield.getValue();
 
-        Real squaredYield = _yield.getValue()*_yield.getValue();
-        for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
-        {
-            this->jacobian[i]._method = _method;
-            this->jacobian[i]._max = _max.getValue();
-            this->jacobian[i]._yield = squaredYield;
-            this->jacobian[i]._creep = _creep.getValue();
-        }
         Inherit::reinit();
     }
 
@@ -94,14 +92,51 @@ protected:
 
     PlasticStrainMapping( core::State<TStrain>* from = NULL, core::State<TStrain>* to = NULL )
         : Inherit ( from, to )
-        , f_method( initData(&f_method,std::string("addition"),"method", "\"multiplication\", \"addition\""))
+        , f_method ( initData ( &f_method,"method","" ) )
         , _max(initData(&_max,(Real)0.1f,"max","Plastic Max Threshold (2-norm of the strain)"))
         , _yield(initData(&_yield,(Real)0.0001f,"yield","Plastic Yield Threshold (2-norm of the strain)"))
         , _creep(initData(&_creep,(Real)1.f,"creep","Plastic Creep Factor * dt [0,1]. 1 <-> pure plastic ; <1 <-> visco-plastic (warning depending on dt)"))
     {
+        helper::OptionsGroup Options;
+        Options.setNbItems( NB_PlasticMethod );
+        Options.setItemName( ADDITION,       "addition" );
+        Options.setItemName( MULTIPLICATION, "multiplication" );
+        Options.setSelectedItem( ADDITION );
+        f_method.setValue( Options );
     }
 
-    virtual ~PlasticStrainMapping()     { }
+    virtual ~PlasticStrainMapping() { }
+
+    virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    {
+        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+        case MULTIPLICATION:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_multiplication( out[i], in[i], _max.getValue(), _squaredYield, _creep.getValue() );
+            }
+            break;
+        }
+        case ADDITION:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_addition( out[i], in[i], _max.getValue(), _squaredYield, _creep.getValue() );
+            }
+            break;
+        }
+        }
+
+        dOut.endEdit();
+
+    }
 
 }; // class PlasticStrainMapping
 

@@ -1126,7 +1126,7 @@ void TetrahedronFEMForceField<DataTypes>::initSVD( int i, Index& a, Index&b, Ind
     Transformation R_0_1;
     helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
 
-    _initialRotations[i].transpose( R_0_1);
+    _initialRotations[i].transpose( R_0_1 );
     rotations[i] = _initialRotations[i];
 
     //save the element index as the node index
@@ -1173,11 +1173,11 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         // using "invertible FEM" article notations
 
         Mat<3,3,Real> U, V; // the two rotations
-        Vec<3,Real> F_diagonal, P_diagonal; // diagonalized strain, diagonalized stress
+        Vec<3,Real> F_diagonal; // diagonalized strain
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        helper::Decompose<Real>::eigenDecomposition( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition/*_iterative*/( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -1247,6 +1247,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
         // the numbers of strain values too close to 0 indicates the kind of degenerescence
         int degeneratedF;
         for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
+
 
         // Warning: after the switch F_diagonal is no longer valid (it can be is its own inverse)
         switch( degeneratedF )
@@ -1353,7 +1354,6 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
         // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
         R_0_2 = U.multTransposed( V ).multTransposed( _initialRotations[elementIndex] );
-
     }
     else // not inverted -> classical polar
     {

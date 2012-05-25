@@ -73,6 +73,12 @@ public :
     /// @name setting operators
     /// @{
 
+    ///Set the number of items
+    void setNbItems( unsigned int nbofRadioButton );
+
+    ///Set the name of the id-th item
+    void setItemName( unsigned int id_item, const std::string& name );
+
     ///Reinitializing options by a pre-constructed optionsgroup objected
     ///Example m_options.setNames(4,"button0","button1","button2","button3");
     void setNames(int nbofRadioButton,...);

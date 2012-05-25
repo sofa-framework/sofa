@@ -29,6 +29,8 @@
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/CorotationalStrainJacobianBlock.inl"
 
+#include <sofa/helper/OptionsGroup.h>
+
 namespace sofa
 {
 namespace component
@@ -52,18 +54,12 @@ public:
 
     /** @name  Corotational methods */
     //@{
-    Data<std::string> f_method;
-    sofa::defaulttype::RotationDecompositionMethod decompositionMethod;
+    enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, NB_DecompositionMethod };
+    Data<helper::OptionsGroup> f_method;
     //@}
 
     virtual void reinit()
     {
-        if (f_method.getValue() == "small") decompositionMethod = sofa::defaulttype::SMALL;
-        else if (f_method.getValue() == "large" || f_method.getValue() == "qr") decompositionMethod = sofa::defaulttype::QR;
-        else if (f_method.getValue() == "svd") decompositionMethod = sofa::defaulttype::SVD;
-        else  decompositionMethod = sofa::defaulttype::POLAR;
-
-        for(unsigned int i=0; i<this->jacobian.size(); i++) this->jacobian[i].decompositionMethod=decompositionMethod;
         Inherit::reinit();
     }
 
@@ -71,11 +67,69 @@ public:
 protected:
     CorotationalStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
-        , f_method(initData(&f_method,std::string("polar"),"method", "\"qr\", \"polar\", \"svd\" or \"small\" displacements"))
+        , f_method( initData( &f_method, "method", "Decomposition method" ))
     {
+        helper::OptionsGroup Options;
+        Options.setNbItems( NB_DecompositionMethod );
+        Options.setItemName( SMALL, "small" );
+        Options.setItemName( QR,    "qr"    );
+        Options.setItemName( POLAR, "polar" );
+        Options.setItemName( SVD,   "svd"   );
+        Options.setSelectedItem( SVD );
+        f_method.setValue( Options );
     }
 
-    virtual ~CorotationalStrainMapping()     { }
+    virtual ~CorotationalStrainMapping() { }
+
+    virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    {
+        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+        case SMALL:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_small( out[i], in[i] );
+            }
+            break;
+        }
+        case QR:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_qr( out[i], in[i] );
+            }
+            break;
+        }
+        case POLAR:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_polar( out[i], in[i] );
+            }
+            break;
+        }
+        case SVD:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_svd( out[i], in[i] );
+            }
+            break;
+        }
+        }
+
+        dOut.endEdit();
+
+        /*if(!BlockType::constantJ)*/ if(this->assembleJ.getValue()) this->updateJ();
+    }
 
 };
 
