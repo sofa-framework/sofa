@@ -185,18 +185,23 @@ public:
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
         strainmat*=(Real)0.5;
         result.getStrain() += StrainMatToVoigt( strainmat );
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addapply, data = " << data << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addapply, result = " << result << endl;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         StrainMat strainmat=F.getF().multTranspose( data.getF() );
         result.getStrain() += StrainMatToVoigt( strainmat );
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addmult, data = " << data << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addmult, result = " << result << endl;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-//        cerr<<""
         result.getF() += F.getF()*StressVoigtToMat( data.getStrain() );
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addmultTranspose, data = " << data << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addmultTranspose, result = " << result << endl;
     }
 
     MatBlock getJ()
@@ -223,7 +228,13 @@ public:
     }
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce, kfactor = " << kfactor << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce, dx = " << dx << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce, childForce = " << childForce << endl;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce, parent df before = " << df << endl;
         df.getF() += dx.getF()*StressVoigtToMat( childForce.getStrain() )*kfactor;
+//        cerr<<"GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce, parent df after = " << df << endl;
+//        cerr<<"WARNING GreenStrainJacobianBlock< F321(InReal) , E221(OutReal) >::addDForce TEMPORARILY DEACTIVATED FOR DEBUG PURPOSES "  << endl;
     }
 };
 

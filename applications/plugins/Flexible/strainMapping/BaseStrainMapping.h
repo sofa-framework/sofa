@@ -115,12 +115,14 @@ public:
 
         // init jacobians
         jacobian.resize(in.size());
-
         baseMatrices.resize( 1 ); // just a wrapping for getJs()
         baseMatrices[0] = &eigenJacobian;
 
-        reinit();
+        // init geometric stiffnesses
+        stiffnessBaseMatrices.resize(1);
+        stiffnessBaseMatrices[0] = &K;
 
+        reinit();
         Inherit::init();
     }
 
@@ -199,6 +201,8 @@ public:
         helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
+//        cerr<<"BaseStrainMapping::applyDJT, parentForce before = " << parentForce << endl;
+
         if(this->assembleK.getValue())
         {
             updateK(childForce.ref());
@@ -211,6 +215,7 @@ public:
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
             }
         }
+//        cerr<<"BaseStrainMapping::applyDJT, parentForce after = " << parentForce << endl;
     }
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
@@ -220,7 +225,11 @@ public:
     }
 
     // Compliant plugin experimental API
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
+    {
+        if(!this->assembleJ.getValue()) updateJ();
+        return &baseMatrices;
+    }
 
 
     void draw(const core::visual::VisualParams* /*vparams*/)
@@ -274,6 +283,7 @@ protected:
 
     Data<bool> assembleK;
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
+    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce)
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -287,6 +297,11 @@ protected:
             K.appendBlockRow( i, columns, blocks );
         }
         K.endEdit();
+    }
+    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    {
+        updateK(this->toModel->readForces().ref());
+        return &stiffnessBaseMatrices;
     }
 };
 

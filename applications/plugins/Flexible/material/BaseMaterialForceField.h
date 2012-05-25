@@ -161,6 +161,7 @@ public:
     {
         if( isCompliance.getValue() ) return NULL; // if seen as a compliance, then return no stiffness matrix
         if(!this->assembleK.getValue()) updateK();
+//        cerr<<"BaseMaterialForceField::getStiffnessMatrix, K = " << K << endl;
         return &K;
     }
 

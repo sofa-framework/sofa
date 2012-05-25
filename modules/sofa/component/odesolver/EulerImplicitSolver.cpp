@@ -153,8 +153,12 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
 
         // force in the current configuration
         b.eq(f);                                                                         // b = f0
+        if( verbose )
+            serr<<"EulerImplicitSolver, f = "<< f <<sendl;
+
         // add the change of force due to stiffness + Rayleigh damping
         mop.addMBKv(b, -f_rayleighMass.getValue(), 0, h+f_rayleighStiffness.getValue()); // b =  f0 + (h+rs) K v - rm M v
+
         // integration over a time step
         b.teq(h);                                                                        // b = h(f0 + (h+rs) K v - rm M v )
 #endif
