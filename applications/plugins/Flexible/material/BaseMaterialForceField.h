@@ -112,6 +112,8 @@ public:
 
     virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
+        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints in writeConstraints
+
         VecDeriv&  f = *_f.beginEdit();
         const VecCoord&  x = _x.getValue();
         const VecDeriv&  v = _v.getValue();
@@ -132,6 +134,8 @@ public:
 
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   _df , const DataVecDeriv&   _dx )
     {
+        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints
+
         if(this->assembleK.getValue())
         {
             K.addMult(_df,_dx,mparams->kFactor());
@@ -149,6 +153,7 @@ public:
             _df.endEdit();
         }
     }
+
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams */*mparams*/)
     {

@@ -198,9 +198,10 @@ template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
 //    cerr<<"TriangleDeformationMapping<TIn, TOut>::applyJT, child  = " << dOut.getValue() << endl;
+//    cerr<<"TriangleDeformationMapping<TIn, TOut>::applyJT, parent before = " << dIn.getValue() << endl;
     if( jacobian.rowSize() > 0 )
         jacobian.addMultTranspose(dIn,dOut);
-//    cerr<<"TriangleDeformationMapping<TIn, TOut>::applyJT, parent = " << dIn.getValue() << endl;
+//    cerr<<"TriangleDeformationMapping<TIn, TOut>::applyJT, parent after = " << dIn.getValue() << endl;
 }
 
 
