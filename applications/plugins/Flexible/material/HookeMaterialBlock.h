@@ -26,15 +26,136 @@
 #define FLEXIBLE_HookeMaterialBlock_H
 
 #include "../material/BaseMaterial.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
 namespace defaulttype
 {
 
-/** Template class used to implement one material block for Hooke Material*/
-template<class T>
-class HookeMaterialBlock : public BaseMaterialBlock<T> {};
+
+
+/** Template class used to implement one material block for Hooke Material
+
+In matrix form :
+           stress = lambda.trace(strain) I  + 2.mu.strain
+           W = lambda/2 tr(strain)^2 + mu tr(strain^2)
+
+       In Voigt notation: (e1=exx, e2=eyy, e3=ezz, e4=2exy, e5=2eyz, e6=2ezx, s1=sxx, s2=syy, s3=szz, s4=sxy, s5=syz, s6=szx)
+            stress = H.strain
+            W = stressvol*stress.strain/2
+            f = - H.vol.strain - viscosity.vol.strainRate
+            df = (- H.vol.kfactor - viscosity.vol.bfactor) dstrain
+
+See http://en.wikipedia.org/wiki/Hooke%27s_law
+
+*/
+template<class _Strain>
+class HookeMaterialBlock : public  BaseMaterialBlock< _Strain >
+{
+public:
+    typedef _Strain T;
+
+    typedef BaseMaterialBlock<T> Inherit;
+    typedef typename Inherit::Coord Coord;
+    typedef typename Inherit::Deriv Deriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { material_dimensions = T::material_dimensions };
+    enum { strain_size = T::strain_size };
+    enum { spatial_dimensions = T::spatial_dimensions };
+    typedef typename T::StrainVec StrainVec;
+
+    static const bool constantK=true;
+
+    //@{
+    /** Constants precomputed for the stiffness matrix */
+    Real lambdaVol;  ///< Lamé first coef * volume
+    Real mu2Vol;  ///< Lamé second coef * 2 * volume
+    Real viscosityVol;  ///< stress/strain rate  * volume
+    //@}
+
+    //@{
+    /** Constants precomputed for the compliance matrix */
+    Real volOverE; ///< compliance: vol / E
+    Real poissonRatio;
+    //@}
+
+    /// Initialize based on the material parameters: Young modulus, Poisson Ratio, Lamé coefficients (which are redundant with Young modulus and Poisson ratio) and viscosity (stress/strain rate).
+    void init( const Real &youngModulus, const Real& poissonR, const Real &lambda,const Real &mu2, const Real &visc )
+    {
+        Real vol=1.;
+        if(this->volume) vol=(*this->volume)[0];
+
+        // used in stiffness:
+        lambdaVol = lambda * vol;
+        mu2Vol = mu2*vol;
+        viscosityVol = visc*vol;
+
+        // used in compliance:
+        volOverE = vol/youngModulus;
+        poissonRatio = poissonR;
+    }
+
+    Real getPotentialEnergy(const Coord& x) const
+    {
+        StrainVec stress;
+        for(unsigned int i=0; i<material_dimensions; i++)             stress[i]-=x.getStrain()[i]*mu2Vol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   stress[i]-=(x.getStrain()[i]*mu2Vol)*0.5;
+        Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
+        for(unsigned int i=0; i<material_dimensions; i++) stress[i]+=tce;
+        Real W=dot(stress,x.getStrain())*0.5;
+        return W;
+    }
+
+    void addForce( Deriv& f , const Coord& x , const Deriv& v)
+    {
+        for(unsigned int i=0; i<material_dimensions; i++)             f.getStrain()[i]-=x.getStrain()[i]*mu2Vol + v.getStrain()[i]*viscosityVol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   f.getStrain()[i]-=(x.getStrain()[i]*mu2Vol + v.getStrain()[i]*viscosityVol)*0.5;
+
+        Real tce=(x.getStrain()[0]+x.getStrain()[1]+x.getStrain()[2])*lambdaVol;
+        for(unsigned int i=0; i<material_dimensions; i++) f.getStrain()[i]-=tce;
+    }
+
+    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
+    {
+        for(unsigned int i=0; i<material_dimensions; i++)             df.getStrain()[i]-=dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)   df.getStrain()[i]-=(dx.getStrain()[i]*mu2Vol*kfactor + dx.getStrain()[i]*viscosityVol*bfactor)*0.5;
+        Real tce=(dx.getStrain()[0]+dx.getStrain()[1]+dx.getStrain()[2])*lambdaVol*kfactor;
+        for(unsigned int i=0; i<material_dimensions; i++) df.getStrain()[i]-=tce;
+    }
+
+
+    MatBlock getK()
+    {
+        MatBlock K;
+        for(unsigned int i=0; i<material_dimensions; i++)  K[i][i]-=mu2Vol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) K[i][i]-=mu2Vol*0.5;
+        for(unsigned int i=0; i<material_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) K[i][j]-=lambdaVol;
+        return K;
+    }
+
+    MatBlock getC()
+    {
+        MatBlock C;
+        for(unsigned int i=0; i<material_dimensions; i++)  C[i][i] = volOverE;
+        for(unsigned int i=material_dimensions; i<strain_size; i++)  C[i][i] = 2 * volOverE * (1+poissonRatio);
+        for(unsigned int i=0; i<material_dimensions; i++) for(unsigned int j=0; j<i; j++) C[i][j] = C[j][i] = -volOverE * poissonRatio;
+        return C;
+    }
+
+    MatBlock getB()
+    {
+        MatBlock B;
+        for(unsigned int i=0; i<material_dimensions; i++)  B[i][i]-=viscosityVol;
+        for(unsigned int i=material_dimensions; i<strain_size; i++) B[i][i]-=viscosityVol*0.5;
+        return B;
+    }
+
+
+};
+
 
 }
 }

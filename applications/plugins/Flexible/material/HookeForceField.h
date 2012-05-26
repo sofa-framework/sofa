@@ -27,7 +27,10 @@
 
 #include "../initFlexible.h"
 #include "../material/BaseMaterialForceField.h"
-#include "../material/HookeMaterialBlock.inl"
+//#include "../material/HookeMaterialBlock.inl"
+#include "../material/HookeMaterialBlock.h"
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 
 
 
@@ -70,9 +73,33 @@ public:
         _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
         _mu2 = _youngModulus.getValue()/(1+_poissonRatio.getValue());
 
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _lambda, _mu2, this->_viscosity.getValue() );
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), _lambda, _mu2, this->_viscosity.getValue() );
         Inherit::reinit();
     }
+
+    /// Set the constraint value
+    virtual void writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId constraintId )
+    {
+        if( ! this->isCompliance.getValue() ) return; // if not seen as a compliance, then apply  forces in addForce
+
+        helper::ReadAccessor< typename Inherit::DataVecCoord > x = params->readX(this->mstate);
+        helper::ReadAccessor< typename Inherit::DataVecDeriv > v = params->readV(this->mstate);
+        helper::WriteAccessor<typename Inherit::DataVecDeriv > c = *constraintId[this->mstate.get(params)].write();
+        Real alpha = params->implicitVelocity();
+        Real beta  = params->implicitPosition();
+        Real h     = params->dt();
+        Real d     = this->getDampingRatio();
+
+        for(unsigned i=0; i<c.size(); i++)
+            c[i] = -( x[i] + v[i] * (d + alpha*h) ) * (1./ (alpha * (h*beta +d)));
+    }
+
+    /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
+    virtual SReal getDampingRatio()
+    {
+        return this->_viscosity.getValue()/this->_youngModulus.getValue(); // somehow arbitrary. todo: check this.
+    }
+
 
 protected:
     HookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
@@ -85,6 +112,13 @@ protected:
     }
 
     virtual ~HookeForceField()     {    }
+
+
+    static void getLame(const Real &youngModulus,const Real &poissonRatio,Real &lambda,Real &mu)
+    {
+        lambda= youngModulus*poissonRatio/((1-2*poissonRatio)*(1+poissonRatio));
+        mu = youngModulus/(2*(1+poissonRatio));
+    }
 
 };
 
