@@ -374,15 +374,22 @@ protected:
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
         // farthest point sampling using geodesic distances
-        for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],i+1);
+        vector<unsigned int> fpos_voronoiIndex;
+        vector<unsigned int> pos_voronoiIndex;
+        for(unsigned int i=0; i<fpos.size(); i++)
+        {
+            fpos_voronoiIndex.push_back(i+1);
+            AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+        }
         while(pos.size()<nb)
         {
             Real dmax=0;  Coord pmax;
             cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
             if(dmax)
             {
+                pos_voronoiIndex.push_back(fpos.size()+pos.size()+1);
                 pos.push_back(inT->fromImage(pmax));
-                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos.back(),fpos.size()+pos.size());
+                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos.back(),pos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(),biasFactor );
             }
@@ -395,11 +402,11 @@ protected:
 
         while(!converged)
         {
-            if(Lloyd<Real,T>(pos,dist,voronoi,this->transform.getValue(),NULL))
+            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL))
             {
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], i+1);
-                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], i+1+fpos.size());
+                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;

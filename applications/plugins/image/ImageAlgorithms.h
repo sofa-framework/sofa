@@ -55,7 +55,7 @@ int round(real r)
 */
 
 template<typename real,typename T>
-bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::ImageLPTransform<real>& transform,  const CImg<T>* biasFactor=NULL)
+bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, std::vector<unsigned int>& voronoiIndex, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::ImageLPTransform<real>& transform,  const CImg<T>* biasFactor=NULL)
 {
     typedef sofa::defaulttype::Vec<3,real> Coord;
     unsigned int nbp=pos.size();
@@ -73,7 +73,7 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, CImg<real>& dista
         Coord c,p,u;
         unsigned int count=0;
         bool valid=true;
-        cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==i+1)
+        cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==voronoiIndex[i])
         {
             p=transform.fromImage(Coord(x,y,z));
             //u=p-pos[i]; u.normalize();
@@ -102,7 +102,7 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, CImg<real>& dista
         while(!valid)  // get closest unoccupied point in voronoi
         {
             real dmin=cimg::type<real>::max();
-            cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==i+1)
+            cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==voronoiIndex[i])
             {
                 Coord pi=transform.fromImage(Coord(x,y,z));
                 real d2=(c-pi).norm2();

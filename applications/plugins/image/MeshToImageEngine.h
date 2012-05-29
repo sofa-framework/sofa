@@ -273,15 +273,15 @@ protected:
     // floating point bresenham
     {
         Coord P0(p0),P1(p1);
-        unsigned int dim[3]= {im.width(),im.height(),im.depth()};
 
-        for(unsigned int j=0; j<3; j++)
-        {
-            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
-            if (P1[j]<0 || P0[j]>=dim[j]) return;
-            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
-            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
-        }
+//        unsigned int dim[3]={im.width(),im.height(),im.depth()};
+//        for(unsigned int j=0;j<3;j++)
+//        {
+//            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
+//            if (P1[j]<0 || P0[j]>=dim[j]) return;
+//            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
+//            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
+//        }
 
         Coord delta = P1 - P0;
         unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
@@ -299,15 +299,16 @@ protected:
     // double bresenham
     {
         Coord P0(p0),P1(p1);
-        unsigned int dim[3]= {im.width(),im.height(),im.depth()};
 
-        for(unsigned int j=0; j<3; j++)
-        {
-            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
-            if (P1[j]<0 || P0[j]>=dim[j]) return;
-            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
-            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0; k<3; k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
-        }
+
+//        unsigned int dim[3]={im.width(),im.height(),im.depth()};
+//        for(unsigned int j=0;j<3;j++)
+//        {
+//            if(P0[j]>P1[j]) {Coord tmp(P0); P0=P1; P1=tmp;}
+//            if (P1[j]<0 || P0[j]>=dim[j]) return;
+//            if (P0[j]<0) { const Real D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P0[k]-=(int)(P0[j]*((Real)1.0 + P1[k] - P0[k])/D);  P0[j] = 0; }
+//            if (P1[j]>=dim[j]) { const Real d = P1[j] - (Real)dim[j], D = (Real)1.0 + P1[j] - P0[j]; for(unsigned int k=0;k<3;k++) if(j!=k) P1[k]+=(int)(d*((Real)1.0 + P0[k] - P1[k])/D);  P1[j] = (Real)dim[j] - (Real)1.0; }
+//        }
 
         Coord delta = P1 - P0;
         unsigned int dmax = cimg::max(cimg::abs(delta[0]),cimg::abs(delta[1]),cimg::abs(delta[2]));
