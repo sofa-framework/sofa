@@ -33,6 +33,9 @@
 #include <sofa/component/linearsolver/FullVector.h>
 #include <math.h>
 #include <sofa/core/behavior/RotationMatrix.h>
+#include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/core/behavior/RotationMatrix.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
 
 #include <map>
 
@@ -45,23 +48,93 @@ namespace component
 namespace linearsolver
 {
 
-template<class TDataTypes>
+template<class DataTypes>
 class WarpPreconditionerInternalData
 {
 public:
-    typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
     typedef RotationMatrix<Real> TRotationMatrix;
     typedef FullVector<Real> TVector;
+    typedef typename sofa::component::linearsolver::SparseMatrix<Real> JMatrixType;
+
+    template<typename MReal>
+    JMatrixType * copyJmatrix(SparseMatrix<MReal> * J)
+    {
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        {
+            int l = jit1->first;
+            for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+            {
+                int c = i1->first;
+                MReal val = i1->second;
+                J_local.set(l,c,val);
+            }
+        }
+        return &J_local;
+    }
+
+    JMatrixType * getLocalJ(defaulttype::BaseMatrix* J)
+    {
+        if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
+        {
+            return j;
+        }
+        else if (SparseMatrix<double> * j = dynamic_cast<SparseMatrix<double> *>(J))
+        {
+            return copyJmatrix(j);
+        }
+        else if (SparseMatrix<float> * j = dynamic_cast<SparseMatrix<float> *>(J))
+        {
+            return copyJmatrix(j);
+        }
+        else
+        {
+            J_local.clear();
+            J_local.resize(J->rowSize(),J->colSize());
+
+            for (unsigned j=0; j<J->rowSize(); j++)
+            {
+                for (unsigned i=0; i<J->colSize(); i++)
+                {
+                    J_local.set(j,i,J->element(j,i));
+                }
+            }
+
+            return &J_local;
+        }
+    }
+
+    void opMulJ(TRotationMatrix * R,JMatrixType * J)
+    {
+        for (typename sofa::component::linearsolver::SparseMatrix<Real>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        {
+            int l = jit1->first;
+            for (typename sofa::component::linearsolver::SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+            {
+                int c = i1->first;
+                Real v0 = (Real)i1->second; i1++; if (i1==jit1->second.end()) break;
+                Real v1 = (Real)i1->second; i1++; if (i1==jit1->second.end()) break;
+                Real v2 = (Real)i1->second; i1++;
+                J->set(l,c+0,v0 * R->getVector()[(c+0)*3+0] + v1 * R->getVector()[(c+1)*3+0] + v2 * R->getVector()[(c+2)*3+0] );
+                J->set(l,c+1,v0 * R->getVector()[(c+0)*3+1] + v1 * R->getVector()[(c+1)*3+1] + v2 * R->getVector()[(c+2)*3+1] );
+                J->set(l,c+2,v0 * R->getVector()[(c+0)*3+2] + v1 * R->getVector()[(c+1)*3+2] + v2 * R->getVector()[(c+2)*3+2] );
+            }
+        }
+    }
+
+private :
+    JMatrixType J_local;
 };
 
 /// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
-template<class TDataTypes>
+template<class DataTypes>
 class WarpPreconditioner : public core::behavior::LinearSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,TDataTypes),sofa::core::behavior::LinearSolver);
-    typedef TDataTypes DataTypes;
+    SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,DataTypes),sofa::core::behavior::LinearSolver);
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
@@ -69,98 +142,66 @@ public:
     typedef typename DataTypes::Real Real;
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
     typedef sofa::core::behavior::LinearSolver Inherit;
+
     typedef typename WarpPreconditionerInternalData<DataTypes>::TRotationMatrix TRotationMatrix;
     typedef typename WarpPreconditionerInternalData<DataTypes>::TVector TVector;
+    typedef typename WarpPreconditionerInternalData<DataTypes>::JMatrixType JMatrixType;
 
     Data<bool> f_verbose;
     Data <std::string> solverName;
     Data<unsigned> f_useRotationFinder;
+    Data<double> f_draw_rotations_scale;
+
 protected:
     WarpPreconditioner();
+
 public:
-    //void solve (TMatrix& M, TVector& x, TVector& b);
-    //void invert(TMatrix& M);
-    //void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
-    //bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+
+    ~WarpPreconditioner();
+
     void bwdInit();
-    //void loadMatrix();
 
-    /// Reset the current linear system.
-    virtual void resetSystem();
-
-    /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
-    ///
-    /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
     virtual void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams);
 
-    /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    virtual void setSystemRHVector(core::MultiVecDerivId v);
-
-    /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    /// This vector will be replaced by the solution of the system once solveSystem is called
-    virtual void setSystemLHVector(core::MultiVecDerivId v);
-
-    /// Solve the system as constructed using the previous methods
     virtual void solveSystem();
 
-    /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+
+    unsigned getSystemDimention();
+
+    virtual void resetSystem();
+
     virtual void invertSystem();
 
-    /// Multiply the inverse of the system matrix by the transpose of the given matrix J
-    ///
-    /// @param result the variable where the result will be added
-    /// @param J the matrix J to use
-    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
-    { if (realSolver) return realSolver->addMInvJt(result, J, fact); else return false; }
+    virtual void setSystemLHVector(core::MultiVecDerivId v);
 
-    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
-    ///
-    /// @param result the variable where the result will be added
-    /// @param J the matrix J to use
-    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
-    { if (realSolver) return realSolver->addJMInvJt(result, J, fact); else return false; }
+    virtual void setSystemRHVector(core::MultiVecDerivId v);
 
-    /// Get the linear system matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemBaseMatrix()
-    { if (realSolver) return realSolver->getSystemBaseMatrix(); else return NULL; }
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
-    /// Get the linear system right-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemRHBaseVector()
-    { if (realSolver) return realSolver->getSystemRHBaseVector(); else return NULL; }
+    virtual defaulttype::BaseMatrix* getSystemBaseMatrix();
 
-    /// Get the linear system left-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemLHBaseVector()
-    { if (realSolver) return realSolver->getSystemLHBaseVector(); else return NULL; }
+    virtual defaulttype::BaseVector* getSystemRHBaseVector();
 
-    /// Get the linear system inverse matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix()
-    { if (realSolver) return realSolver->getSystemInverseBaseMatrix(); else return NULL; }
+    virtual defaulttype::BaseVector* getSystemLHBaseVector();
 
-    /// Read the Matrix solver from a file
-    virtual bool readFile(std::istream& in)
-    { if (realSolver) return realSolver->readFile(in); else return false; }
+    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix();
 
-    /// Read the Matrix solver from a file
-    virtual bool writeFile(std::ostream& out)
-    { if (realSolver) return realSolver->writeFile(out); else return false; }
+    virtual bool readFile(std::istream& in);
 
-    /// Ask the solver to no longer update the system matrix
-    virtual void freezeSystemMatrix()
-    {
-        Inherit::freezeSystemMatrix();
-        if (realSolver) realSolver->freezeSystemMatrix();
-    }
+    virtual bool writeFile(std::ostream& out);
+
+    virtual void freezeSystemMatrix();
 
     virtual void updateSystemMatrix();
 
-    //template<class JMatrix>
-    //void ComputeCudaResult(CudaBaseMatrix<float>& result,JMatrix& J, float fact, bool localW);
+    virtual void draw(const core::visual::VisualParams* vparams);
 
+    TRotationMatrix* createRotationMatrix()
+    {
+        return new TRotationMatrix;
+    }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -179,54 +220,36 @@ public:
         return DataTypes::Name();
     }
 
-
-    void prepareVisitor(Visitor* v)
-    {
-        v->setTags(this->getTags());
-    }
-
-    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
-    {
-        prepareVisitor((Visitor*)v);
-    }
-
     template<class T>
     void executeVisitor(T v)
     {
-        prepareVisitor(&v);
+        v.setTags(this->getTags());
         v.execute( this->getContext() );
-    }
-
-    template<class T>
-    void executeVisitor(T* v)
-    {
-        prepareVisitor(v);
-        v->execute( this->getContext() );
     }
 
 
 private :
-    //CudaBaseVector<cuda_real> CudaR;
-    //CudaBaseVector<cuda_real> CudaT;
 
     core::behavior::LinearSolver* realSolver;
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    core::MultiVecDerivId systemLHVId;
-    core::MultiVecDerivId systemRHVId;
+    core::MultiVecDerivId systemLHVId,systemRHVId;
+    GraphScatteredVector * tmpVecId;
 
-    TVector tmpVector1;
-    TVector tmpVector2;
+    TVector tmpVector1,tmpVector2;
 
-    WarpPreconditionerInternalData<DataTypes> data;
+    int indRotationFinder;
+    core::MechanicalParams params;
 
-    //CudaMatrixUtils Utils;
+    int updateSystemSize,currentSystemSize;
 
-    unsigned indRotationFinder;
-    std::vector< sofa::core::behavior::BaseRotationFinder * > rotationFinders;
+    int indexwork;
+    bool first;
 
     TRotationMatrix Rcur;
-
+    TRotationMatrix * rotationWork[2];
+    std::vector<sofa::core::behavior::BaseRotationFinder *> rotationFinders;
+    WarpPreconditionerInternalData<DataTypes> internalData;
 };
 
 

@@ -57,10 +57,6 @@ public:
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
 
-    virtual bool isParallelSolver() { return false; }
-
-    virtual bool hasUpdatedMatrix() { return true; }
-
     virtual Matrix * getSystemMatrix() = 0;
 };
 

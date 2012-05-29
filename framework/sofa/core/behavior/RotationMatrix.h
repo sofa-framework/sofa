@@ -150,6 +150,8 @@ public:
                     result->data[i+3] = tmp[3]; result->data[i+4] = tmp[4]; result->data[i+5] = tmp[5];
                     result->data[i+6] = tmp[6]; result->data[i+7] = tmp[7]; result->data[i+8] = tmp[8];
                 }
+                if (data.size() != m->data.size() || data.size() != result->data.size() ) std::cerr << "Copier la fin des rotations" << std::endl;
+
                 return;
             }
         }

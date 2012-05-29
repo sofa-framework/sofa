@@ -29,6 +29,7 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/gpu/cuda/CudaMatrixUtils.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 
 //#define DEBUG_BASE
 
@@ -383,6 +384,214 @@ typedef CudaBaseMatrix<double> CudaBaseMatrixd;
 template<> inline const char* CudaBaseMatrixf::Name() { return "CudaBaseMatrixf"; }
 template<> inline const char* CudaBaseMatrixd::Name() { return "CudaBaseMatrixd"; }
 
+template <class T>
+class CudaSparseMatrix : public BaseMatrix
+{
+public :
+    typedef T Real;
+
+    void resize(int nbRow, int nbCol)
+    {
+        colsize = nbCol;
+        rowsize = nbRow;
+        colptr.resize(rowsize);
+    }
+
+    unsigned int rowSize() const
+    {
+        return rowsize;
+    }
+
+    unsigned int colSize() const
+    {
+        return colsize;
+    }
+
+    SReal element(int j, int i) const
+    {
+        for (int k=colptr[j]; k<colptr[j+1]; k++)
+        {
+            if (rowind[k]==i) return values[k];
+        }
+        return 0.0;
+    }
+
+    void clear()
+    {
+        nnz = 0;
+        colsize = 0;
+        rowsize = 0;
+        colptr.clear();
+        rowind.clear();
+        values.clear();
+    }
+
+    void set(int /*j*/, int /*i*/, double /*v*/)
+    {
+        std::cerr << "ERROR method set in sofa::gpu::cuda::CudaSparseMatrix in not implemented" << std::endl;
+    }
+
+    void add(int /*j*/, int /*i*/, double /*v*/)
+    {
+        std::cerr << "ERROR method add in sofa::gpu::cuda::CudaSparseMatrix in not implemented" << std::endl;
+    }
+
+    void buildFromBaseMatrix(BaseMatrix * J)
+    {
+        clear();
+        if (sofa::component::linearsolver::SparseMatrix<double> * j = dynamic_cast<sofa::component::linearsolver::SparseMatrix<double> *>(J))
+        {
+            buildFromSparseMatrix(j);
+        }
+        else if (sofa::component::linearsolver::SparseMatrix<float> * j = dynamic_cast<sofa::component::linearsolver::SparseMatrix<float> *>(J))
+        {
+            buildFromSparseMatrix(j);
+        }
+        else if (CudaSparseMatrix<double> * j = dynamic_cast<CudaSparseMatrix<double> *>(J))
+        {
+            buildFromCudaSparseMatrix(j);
+        }
+        else if (CudaSparseMatrix<float> * j = dynamic_cast<CudaSparseMatrix<float> *>(J))
+        {
+            buildFromCudaSparseMatrix(j);
+        }
+        else
+        {
+            buildFromDenseMatrix(J);
+        }
+    }
+
+    CudaVector<int> & getColptr()
+    {
+        return colptr;
+    }
+
+    CudaVector<int> & getRowind()
+    {
+        return rowind;
+    }
+
+    CudaVector<Real> & getValues()
+    {
+        return values;
+    }
+
+    unsigned getNnz()
+    {
+        return nnz;
+    }
+
+    static const char* Name();
+
+protected :
+    unsigned colsize,rowsize,nnz;
+    CudaVector<int> colptr;
+    CudaVector<int> rowind;
+    CudaVector<Real> values;
+
+    template <class JMatrix>
+    void buildFromCudaSparseMatrix(JMatrix * J)
+    {
+        // rebuild a CRS matrix from a CSR matrix
+        // this should be replaced by :
+        //colptr = J->getColptr().size();
+        //rowind = J->getRowind().size();
+        //values = J->getValues().size();
+        // and the operator = should be able to copy vector<float> <-> vector<double>
+
+        colptr.resize(J->getColptr().size());
+        rowind.resize(J->getRowind().size());
+        values.resize(J->getValues().size());
+        for (unsigned i=0; i<J->getColptr().size(); i++) colptr[i] = J->getColptr()[i];
+        for (unsigned i=0; i<J->getRowind().size(); i++) rowind[i] = J->getRowind()[i];
+        for (unsigned i=0; i<J->getValues().size(); i++) values[i] = J->getValues()[i];
+        nnz = J->getNnz();
+        colsize = J->colSize();
+        rowsize = J->rowSize();
+    }
+
+    template <class JMatrix>
+    void buildFromSparseMatrix(JMatrix * J)
+    {
+        // rebuild a CRS matrix from a sparse matrix
+        colptr.recreate(J->rowSize()+1);
+        int * colptr_ptr = colptr.hostWrite();
+
+        colptr_ptr[0] = 0;
+        for (unsigned j=0; j<J->rowSize(); j++)
+        {
+            const typename JMatrix::Line & lJ = (*J)[j];
+            colptr_ptr[j+1] = colptr_ptr[j] + lJ.size();
+        }
+        nnz = colptr_ptr[J->rowSize()];
+        rowind.recreate(nnz);
+        values.recreate(nnz);
+        int * rowind_ptr = rowind.hostWrite();
+        Real * values_ptr = values.hostWrite();
+
+        int id  = 0;
+        for (unsigned j=0; j<J->rowSize(); j++)
+        {
+            const typename JMatrix::Line & lJ = (*J)[j];
+            for (typename JMatrix::LElementConstIterator i1 = lJ.begin(), i1end = lJ.end(); i1 != i1end; ++i1)
+            {
+                rowind_ptr[id] = i1->first;
+                values_ptr[id] = i1->second;
+                id++;
+            }
+        }
+        colsize = J->colSize();
+        rowsize = J->rowSize();
+    }
+
+    void buildFromDenseMatrix(BaseMatrix * J)
+    {
+        // rebuild a CRS matrix from a dense matrix
+        colptr.recreate(J->rowSize()+1);
+        int * colptr_ptr = colptr.hostWrite();
+
+        colptr_ptr[0] = 0;
+        for (unsigned j=0; j<J->rowSize(); j++)
+        {
+            for (unsigned i=0; i<J->rowSize(); i++)
+            {
+                if (J->element(j,i)!=0.0)
+                {
+                    colptr_ptr[j+1]++;
+                }
+            }
+        }
+
+        nnz = colptr_ptr[J->rowSize()];
+        rowind.recreate(nnz);
+        values.recreate(nnz);
+        int * rowind_ptr = rowind.hostWrite();
+        Real * values_ptr = values.hostWrite();
+
+        int id  = 0;
+        for (unsigned j=0; j<J->rowSize(); j++)
+        {
+            for (unsigned i=0; i<J->rowSize(); i++)
+            {
+                if (J->element(j,i)!=0.0)
+                {
+                    rowind_ptr[id] = i;
+                    values_ptr[id] = J->element(j,i);
+                    id++;
+                }
+            }
+        }
+
+        colsize = J->colSize();
+        rowsize = J->rowSize();
+    }
+};
+
+typedef CudaSparseMatrix<float> CudaSparseMatrixf;
+typedef CudaSparseMatrix<double> CudaSparseMatrixd;
+
+template<> inline const char* CudaSparseMatrixf::Name() { return "CudaSparseMatrixf"; }
+template<> inline const char* CudaSparseMatrixd::Name() { return "CudaSparseMatrixd"; }
 
 
 template<class Real>
