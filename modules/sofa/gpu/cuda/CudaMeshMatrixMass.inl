@@ -43,9 +43,10 @@ extern "C"
 {
     void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
     void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_accFromF2f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 }
-}//cuda
-}//gpu
+}// cuda
+}// gpu
 
 namespace component
 {
@@ -54,10 +55,11 @@ namespace mass
 {
 
 using namespace sofa::gpu::cuda;
+
+
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-//    std::cout<<"CudaMeshMatrixMass::copyVertexMass is called"<<std::endl;
     vector<MassType>& vertexInf = *(vertexMassInfo.beginEdit());
     data.vMass.resize(_topology->getNbPoints());
 
@@ -79,8 +81,9 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
     d_f.endEdit();
 }
 
+
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
@@ -88,6 +91,18 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
 
     MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) massLumpingCoeff);
     d_f.endEdit();
+}
+
+
+template<>
+void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+{
+    VecDeriv& _acc = *a.beginEdit();
+    const VecDeriv& _f = f.getValue();
+    const CudaVector<float>& vertexMass = data.vMass;
+
+    MeshMatrixMassCuda_accFromF2f( vertexMass.size(), _acc.deviceWrite(), _f.deviceRead(), vertexMass.deviceRead(), (float) massLumpingCoeff);
+    a.endEdit();
 }
 
 
