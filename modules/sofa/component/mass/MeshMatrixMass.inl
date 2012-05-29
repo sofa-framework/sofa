@@ -921,11 +921,24 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
 {
-    (void)a;
-    (void)f;
+    helper::WriteAccessor< DataVecDeriv > _a = a;
+    const VecDeriv& _f = f.getValue();
+    const MassVector &vertexMass= vertexMassInfo.getValue();
 
-    serr << "WARNING: the methode 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. \nPlease proceed to mass lumping." << sendl;
-    return;
+    if(this->lumping.getValue())
+    {
+        for (unsigned int i=0; i<vertexMass.size(); i++)
+        {
+            _a[i] = _f[i] / ( vertexMass[i] * massLumpingCoeff);
+        }
+    }
+    else
+    {
+        (void)a;
+        (void)f;
+        serr << "WARNING: the methode 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. \nPlease proceed to mass lumping." << sendl;
+        return;
+    }
 }
 
 
