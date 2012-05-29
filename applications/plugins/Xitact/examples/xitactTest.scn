@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<Node name="root"  dt="0.05" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" showWireFrame="0" gravity="0 0 -9810">
-	<MasterConstraintSolver printLog="0" doubleBuffer="true"/>
+<Node name="root"  dt="0.05" gravity="0 0 -9810">
+	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
+	<FreeMotionAnimationLoop />
+	<GenericConstraintSolver/>
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.06" contactDistance="0.02" coneFactor="0.5" angleCone="-0.001"/>
@@ -24,11 +26,11 @@
     </Node>
 
     <Node name="Grasper">
+      <IHPDriver toolIndex="0" permanent="true" RefreshFrequency="500" forceScale="0.1"/>
       <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0 0" rest_position="0 0 0 0 0 0"/>
       <!--	<UniformMass mass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000 1000 1000 10000 1000 1000 " />
       <UncoupledConstraintCorrection compliance="0.01 0.01 0.01 0.0001 0.001 0.001 " />
-      <IHPDriver toolIndex="0" permanent="true" RefreshFrequency="500" forceScale="0.1"/>
       <VMechanismsForceFeedback activate="true"/>
       <!--<LCPForceFeedback /> -->
       
@@ -84,7 +86,7 @@
           <RigidMapping object1="../.." object2="CM" index="3"/>
         </Node>
 -->
-        <ArticulatedSystemMapping object1="Articulations" object2="Jaws/GrasperDOFs" rootModel="../bati"/>
+        <ArticulatedSystemMapping input1="@../Articulations" output="@GrasperDOFs" />
       </Node>
 
       <ArticulatedHierarchyContainer/>
@@ -125,7 +127,7 @@
 
 
   <Node name="BOX">
-    <MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
+    <MeshObjLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
     <Mesh/>
     <MechanicalObject scale="0.1" dx="0.4" dy="-0.3" dz="0.4"/>
     <Triangle simulated="0" moving="0"/>
