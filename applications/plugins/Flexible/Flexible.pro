@@ -26,6 +26,7 @@ SOURCES = initFlexible.cpp\
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \
+    strainMapping/DiagonalStrainMapping.cpp \
     strainMapping/InvariantMapping.cpp \
     strainMapping/PlasticStrainMapping.cpp \
     material/HookeForceField.cpp \
@@ -70,6 +71,8 @@ HEADERS = initFlexible.h \
     strainMapping/CorotationalStrainMapping.h \
     strainMapping/CorotationalStrainJacobianBlock.h \
     strainMapping/CorotationalStrainJacobianBlock.inl \
+    strainMapping/DiagonalStrainMapping.h \
+    strainMapping/DiagonalStrainJacobianBlock.h \
     strainMapping/InvariantMapping.h \
     strainMapping/InvariantJacobianBlock.h \
     strainMapping/InvariantJacobianBlock.inl \

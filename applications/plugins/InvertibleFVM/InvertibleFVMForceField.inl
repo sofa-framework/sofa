@@ -595,6 +595,11 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         Real lambda = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
         Real mu     = youngModulus / (/*2**/(1+poissonRatio));
 
+
+        //Real volume = helper::rabs( determinant( A ) ) / (Real)6.;
+        //lambda *= volume;
+        //mu *= volume;
+
         //serr<<F_diagonal<<sendl;
 
         F_diagonal[0] -= 1;
@@ -698,7 +703,7 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
 
 
         // edges
-        const VecCoord &initialPoints=_initialPoints.getValue();
+        //const VecCoord &initialPoints=_initialPoints.getValue();
         /*Coord ab = initialPoints[b]+dx[b]-(initialPoints[a]+dx[a]);
         Coord ac = initialPoints[c]+dx[c]-(initialPoints[a]+dx[a]);
         Coord ad = initialPoints[d]+dx[d]-(initialPoints[a]+dx[a]);*/

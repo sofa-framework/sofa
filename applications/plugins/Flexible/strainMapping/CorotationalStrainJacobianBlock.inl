@@ -34,10 +34,7 @@
 
 #include <sofa/helper/decompose.h>
 
-
-
 #include <sofa/helper/MatEigen.h>
-#include <Eigen/QR>
 
 
 namespace sofa
@@ -98,7 +95,7 @@ void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 template<typename Real>
 void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
+    //if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
     {
 
         // using "invertible FEM" article notations
@@ -108,7 +105,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 
         Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
-        helper::Decompose<Real>::eigenDecomposition/*_iterative*/( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
+        helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
 
         // if V is a reflexion -> made it a rotation by negating a column
@@ -181,6 +178,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 
 
         // Warning: after the switch F_diagonal is no longer valid (it can be is its own inverse)
+        //Vec<3,Real> F_diagonalOld = F_diagonal; // diagonalized strain
         switch( degeneratedF )
         {
         case 0: // no null value -> inverted but not degenerate
@@ -272,10 +270,11 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
         // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
         r = U.multTransposed( V ); // r = U * Vt
         s = r.multTranspose( F ); // s = rt * F
+        //s = V.multDiagonal( F_diagonalOld ).multTransposed( V ); // s = V * F_diag * Vt
     }
-    else // not inverted -> classical polar
+    //else // not inverted -> classical polar
     {
-        helper::Decompose<Real>::polarDecomposition( F, r, s );
+        //    helper::Decompose<Real>::polarDecomposition( F, r, s );
     }
 }
 
