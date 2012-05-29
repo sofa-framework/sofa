@@ -62,6 +62,12 @@ public:
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
     virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
 
+    /// Indicate if the solver update the system in parallel
+    virtual bool isParallelSolver() { return false; }
+
+    /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
+    virtual bool hasUpdatedMatrix() { return true; }
+
     /// This function is use for the preconditioner it must be called at each time step event if setSystemMBKMatrix is not called
     virtual void updateSystemMatrix() {}
 
@@ -74,7 +80,6 @@ public:
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
-
 
     ///
     virtual void init_partial_solve() {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }

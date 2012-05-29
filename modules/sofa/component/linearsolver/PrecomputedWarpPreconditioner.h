@@ -143,6 +143,8 @@ public:
     void init();
     void loadMatrix(TMatrix& M);
 
+    bool hasUpdatedMatrix() {return false;}
+
     TBaseMatrix * getSystemMatrixInv()
     {
         return internalData.MinvPtr;

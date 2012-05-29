@@ -173,22 +173,22 @@ public:
 
     void getRotations(VecReal& vecR)
     {
-        for (unsigned int i=0; i<_indexedElements->size(); ++i)
+        unsigned int nbdof = this->mstate->getX()->size();
+        for (unsigned int i=0; i<nbdof; ++i)
+        {
+
             getRotation(*(Transformation*)&(vecR[i*9]),i);
+        }
     }
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
         unsigned int nbdof = this->mstate->getX()->size();
 
-        if (component::linearsolver::RotationMatrix<Real> * diag = dynamic_cast<component::linearsolver::RotationMatrix<Real> *>(rotations))
-        {
-            for (unsigned int i=0; i<nbdof; ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);
-        }
-        else if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+        if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
         {
             Transformation R;
-            for (unsigned int e=0; e<_indexedElements->size(); ++e)
+            for (unsigned int e=0; e<nbdof; ++e)
             {
                 getRotation(R,e);
                 for(int j=0; j<3; j++)
@@ -203,7 +203,7 @@ public:
         else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
         {
             Transformation R;
-            for (unsigned int e=0; e<_indexedElements->size(); ++e)
+            for (unsigned int e=0; e<nbdof; ++e)
             {
                 getRotation(R,e);
                 for(int j=0; j<3; j++)

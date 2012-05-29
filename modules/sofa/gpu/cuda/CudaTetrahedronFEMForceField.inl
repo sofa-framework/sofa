@@ -631,7 +631,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 #ifdef SOFA_DEV
     if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
     {
-        data.getRotations(m,diagd->getCudaVector());
+        data.getRotations(m,diagd->getVector());
     }
     else
 #endif // SOFA_DEV
@@ -643,11 +643,11 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 #ifdef SOFA_DEV
         if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
         {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getCudaVector()[i] = data.vecTmpRotation[i];
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
         }
         else if (CudaRotationMatrix<double> * diagd = dynamic_cast<CudaRotationMatrix<double> * >(rotations))
         {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getCudaVector()[i] = data.vecTmpRotation[i];
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
         }
         else if (component::linearsolver::RotationMatrix<float> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<float> * >(rotations))
         {
