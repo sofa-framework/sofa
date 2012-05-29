@@ -46,14 +46,16 @@ namespace defaulttype
 using std::endl;
 using helper::vector;
 
+
 /**
     Generic class to implement a mechanical state representing strain
     strain is decomposed in a basis of an certain order.
     It is used here to implement different measures: Corotational, Green-Lagrange, Invariants of right Cauchy Green deformation tensor, etc.
     Can also represent the corresponding stress. Used by the materials to compute stress based on strain.
+    _name template parameter is useful to be able to differenciate several BaseStrainTypes templated on the same _spatial_dimensions/_strain_size/_order/_Real
   */
 
-template< int _spatial_dimensions, int _strain_size, int _order, typename _Real >
+template< int _spatial_dimensions, int _strain_size, int _order, typename _Real, char _name >
 class BaseStrainTypes
 {
 public:
@@ -185,11 +187,11 @@ public:
 // Specialization for strain defined using Voigt notation
 
 
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real >
-class StrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real>
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='E' >
+class StrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real,_name>
 {
 public:
-    typedef BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real> Inherit;
+    typedef BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real,_name> Inherit;
 
     typedef typename Inherit::Basis Basis;
     enum { spatial_dimensions = Inherit::spatial_dimensions };
@@ -279,14 +281,97 @@ template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const 
 
 
 // ==========================================================================
+// Specialization for diagonalized strain
+
+
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='D' >
+class DiagonalizedStrainTypes: public StrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real,_name>
+{
+public:
+    static const char* Name();
+};
+
+typedef DiagonalizedStrainTypes<3, 3, 0, double> D331dTypes;
+typedef DiagonalizedStrainTypes<3, 3, 0, float>  D331fTypes;
+typedef DiagonalizedStrainTypes<2, 2, 0, double> D221dTypes;
+typedef DiagonalizedStrainTypes<2, 2, 0, float>  D221fTypes;
+typedef DiagonalizedStrainTypes<3, 3, 1, double> D332dTypes;
+typedef DiagonalizedStrainTypes<3, 3, 1, float>  D332fTypes;
+typedef DiagonalizedStrainTypes<3, 3, 2, double> D333dTypes;
+typedef DiagonalizedStrainTypes<3, 3, 2, float>  D333fTypes;
+
+#ifdef SOFA_FLOAT
+template<> inline const char* D331dTypes::Name() { return "D331d"; }
+template<> inline const char* D331fTypes::Name() { return "D331"; }
+template<> inline const char* D221dTypes::Name() { return "D221d"; }
+template<> inline const char* D221fTypes::Name() { return "D221"; }
+template<> inline const char* D332dTypes::Name() { return "D332d"; }
+template<> inline const char* D332fTypes::Name() { return "D332"; }
+template<> inline const char* D333dTypes::Name() { return "D333d"; }
+template<> inline const char* D333fTypes::Name() { return "D333"; }
+#else
+template<> inline const char* D331dTypes::Name() { return "D331"; }
+template<> inline const char* D331fTypes::Name() { return "D331f"; }
+template<> inline const char* D221dTypes::Name() { return "D221"; }
+template<> inline const char* D221fTypes::Name() { return "D221f"; }
+template<> inline const char* D332dTypes::Name() { return "D332"; }
+template<> inline const char* D332fTypes::Name() { return "D332f"; }
+template<> inline const char* D333dTypes::Name() { return "D333"; }
+template<> inline const char* D333fTypes::Name() { return "D333f"; }
+#endif
+
+#ifdef SOFA_FLOAT
+typedef D331fTypes D331Types;
+typedef D221fTypes D221Types;
+typedef D332fTypes D332Types;
+typedef D333fTypes D333Types;
+#else
+typedef D331dTypes D331Types;
+typedef D221dTypes D221Types;
+typedef D332dTypes D332Types;
+typedef D333dTypes D333Types;
+#endif
+
+template<> struct DataTypeInfo< D331fTypes::Deriv > : public FixedArrayTypeInfo< D331fTypes::Deriv, D331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D331dTypes::Deriv > : public FixedArrayTypeInfo< D331dTypes::Deriv, D331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D221fTypes::Deriv > : public FixedArrayTypeInfo< D221fTypes::Deriv, D221fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D221<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D221dTypes::Deriv > : public FixedArrayTypeInfo< D221dTypes::Deriv, D221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D221<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D332fTypes::Deriv > : public FixedArrayTypeInfo< D332fTypes::Deriv, D332fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D332<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D332dTypes::Deriv > : public FixedArrayTypeInfo< D332dTypes::Deriv, D332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D333fTypes::Deriv > : public FixedArrayTypeInfo< D333fTypes::Deriv, D333fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D333<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< D333dTypes::Deriv > : public FixedArrayTypeInfo< D333dTypes::Deriv, D333dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "D333<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::D331fTypes::Coord > { static const char* name() { return "D331fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D331dTypes::Coord > { static const char* name() { return "D331dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D221fTypes::Coord > { static const char* name() { return "D221fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D221dTypes::Coord > { static const char* name() { return "D221dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D332fTypes::Coord > { static const char* name() { return "D332fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D332dTypes::Coord > { static const char* name() { return "D332dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D333fTypes::Coord > { static const char* name() { return "D333fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::D333dTypes::Coord > { static const char* name() { return "D333dTypes::CoordOrDeriv"; } };
+
+/// \endcond
+
+// ==========================================================================
 // Specialization for Strain defined using Invariants of right Cauchy Green deformation tensor
 
-typedef BaseStrainTypes<3, 3, 0, double> I331dTypes;
-typedef BaseStrainTypes<3, 3, 0, float>  I331fTypes;
-typedef BaseStrainTypes<3, 3, 1, double> I332dTypes;
-typedef BaseStrainTypes<3, 3, 1, float>  I332fTypes;
-typedef BaseStrainTypes<3, 3, 2, double> I333dTypes;
-typedef BaseStrainTypes<3, 3, 2, float>  I333fTypes;
+
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='I' >
+class InvariantStrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real,_name>
+{
+public:
+    static const char* Name();
+};
+
+typedef InvariantStrainTypes<3, 3, 0, double> I331dTypes;
+typedef InvariantStrainTypes<3, 3, 0, float>  I331fTypes;
+typedef InvariantStrainTypes<3, 3, 1, double> I332dTypes;
+typedef InvariantStrainTypes<3, 3, 1, float>  I332fTypes;
+typedef InvariantStrainTypes<3, 3, 2, double> I333dTypes;
+typedef InvariantStrainTypes<3, 3, 2, float>  I333fTypes;
 
 #ifdef SOFA_FLOAT
 template<> inline const char* I331dTypes::Name() { return "I331d"; }
@@ -334,6 +419,7 @@ template<> struct DataTypeName< defaulttype::I333dTypes::Coord > { static const 
 /// \endcond
 
 
+
 // ==========================================================================
 // Helpers
 
@@ -343,7 +429,7 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> Strai
 {
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
     typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    StrainVec s;
+    StrainVec s(NOINIT);
     unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++)
         for( unsigned int k=0; k<material_dimensions-j; k++ )
@@ -358,7 +444,7 @@ template<typename Real>
 static inline Mat<3,3, Real> StrainVoigtToMat( const Vec<6, Real>& s )
 {
     static const unsigned int material_dimensions=3;
-    Mat<material_dimensions,material_dimensions, Real> f;
+    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
 
     /*unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++){
@@ -382,7 +468,7 @@ template<typename Real>
 static inline Mat<2,2, Real> StrainVoigtToMat( const Vec<3, Real>& s )
 {
     static const unsigned int material_dimensions=2;
-    Mat<material_dimensions,material_dimensions, Real> f;
+    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
 
     /*unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++){
@@ -406,7 +492,7 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> Stres
 {
     static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
     typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    StrainVec s;
+    StrainVec s(NOINIT);
     unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++)
         for( unsigned int k=0; k<material_dimensions-j; k++ )
@@ -420,7 +506,7 @@ template<typename Real>
 static inline Mat<3,3, Real> StressVoigtToMat( const Vec<6, Real>& s )
 {
     static const unsigned int material_dimensions=3;
-    Mat<material_dimensions,material_dimensions, Real> f;
+    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
     /*unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++){
         for( unsigned int k=0; k<material_dimensions-j; k++ )
@@ -440,7 +526,7 @@ template<typename Real>
 static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
 {
     static const unsigned int material_dimensions=2;
-    Mat<material_dimensions,material_dimensions, Real> f;
+    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
     /*unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++){
         for( unsigned int k=0; k<material_dimensions-j; k++ )
@@ -452,6 +538,8 @@ static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
     return f;
 }
 
+
+// TODO: ADD  Mat*VoigtVec operators
 
 
 /// \return 0.5 * ( A + At )

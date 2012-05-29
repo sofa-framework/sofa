@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,49 +16,60 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HookeFORCEFIELD_CPP
+#ifndef SOFA_COMPONENT_MAPPING_DiagonalStrainMAPPING_H
+#define SOFA_COMPONENT_MAPPING_DiagonalStrainMAPPING_H
 
 #include "../initFlexible.h"
-#include "../material/HookeForceField.h"
-#include "../types/StrainTypes.h"
-#include <sofa/core/ObjectFactory.h>
+#include "../strainMapping/BaseStrainMapping.h"
+#include "../strainMapping/DiagonalStrainJacobianBlock.h"
+
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
 namespace component
 {
-namespace forcefield
+namespace mapping
 {
 
-SOFA_DECL_CLASS(HookeForceField);
+using helper::vector;
 
-using namespace defaulttype;
+/** Deformation Gradient to Diagonalized Lagrangian Strain mapping.
+  Is equivalent to SVD corotational and is more efficient for explicit integration.
+*/
 
-// Register in the Factory
-int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homogeneous materials")
+template <class TIn, class TOut>
+class SOFA_Flexible_API DiagonalStrainMapping : public BaseStrainMapping<defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> >
+{
+public:
+    typedef defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> BlockType;
+    typedef BaseStrainMapping<BlockType > Inherit;
 
-        .add< HookeForceField< E331Types > >(true)
-        .add< HookeForceField< E221Types > >()
-//.add< HookeForceField< E332Types > >()
-//.add< HookeForceField< E333Types > >()
-        .add< HookeForceField< D331Types > >()
-        .add< HookeForceField< D221Types > >()
-        ;
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
 
-template class SOFA_Flexible_API HookeForceField< E221Types >;
-template class SOFA_Flexible_API HookeForceField< E331Types >;
-//template class SOFA_Flexible_API HookeForceField< E332Types >;
-//template class SOFA_Flexible_API HookeForceField< E333Types >;
-template class SOFA_Flexible_API HookeForceField< D331Types >;
-template class SOFA_Flexible_API HookeForceField< D221Types >;
 
-}
-}
-}
 
+protected:
+
+    DiagonalStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
+        : Inherit ( from, to )
+    {
+    }
+
+    virtual ~DiagonalStrainMapping() { }
+
+
+};
+
+
+} // namespace mapping
+} // namespace component
+} // namespace sofa
+
+#endif // SOFA_COMPONENT_MAPPING_DiagonalStrainMAPPING_H
