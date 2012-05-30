@@ -150,7 +150,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     m_topology = 0;
 
-    material.setDisplayed(false);
+    //material.setDisplayed(false);
     addAlias(&fileMesh, "filename");
 
     m_vertices2		.setGroup("Vector");

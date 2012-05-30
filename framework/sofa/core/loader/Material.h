@@ -80,24 +80,25 @@ public:
         out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
         out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
         out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
+        /*
+              if (m.useTexture)
+              {
+                  out << "Texture linked to the material : " << m.textureFilename << " ";
+              }
+              else
+              {
+                  out << "No texture linked to the material ";
+              }
 
-        if (m.useTexture)
-        {
-            out << "Texture linked to the material : " << m.textureFilename << " ";
-        }
-        else
-        {
-            out << "No texture linked to the material ";
-        }
-
-        if (m.useBumpMapping)
-        {
-            out << "Bump texture linked to the material : " << m.bumpTextureFilename << " ";
-        }
-        else
-        {
-            out << "No bump texture linked to the material ";
-        }
+              if (m.useBumpMapping)
+              {
+                  out << "Bump texture linked to the material : " << m.bumpTextureFilename << " ";
+              }
+              else
+              {
+                  out << "No bump texture linked to the material ";
+              }
+        */
         return out;
     }
     inline friend std::istream& operator >> (std::istream& in, Material &m )

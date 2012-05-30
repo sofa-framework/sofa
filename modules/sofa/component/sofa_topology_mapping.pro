@@ -20,7 +20,8 @@ HEADERS += initTopologyMapping.h \
            topology/SimpleTesselatedTetraTopologicalMapping.h \
            topology/Tetra2TriangleTopologicalMapping.h \
            topology/Triangle2EdgeTopologicalMapping.h \
-           topology/IdentityTopologicalMapping.h
+           topology/IdentityTopologicalMapping.h \
+           topology/SubsetTopologicalMapping.h
 
 
 SOURCES += initTopologyMapping.cpp \
@@ -36,7 +37,8 @@ SOURCES += initTopologyMapping.cpp \
            topology/SimpleTesselatedTetraTopologicalMapping.cpp \
            topology/Tetra2TriangleTopologicalMapping.cpp \
            topology/Triangle2EdgeTopologicalMapping.cpp \
-           topology/IdentityTopologicalMapping.cpp
+           topology/IdentityTopologicalMapping.cpp \
+           topology/SubsetTopologicalMapping.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
