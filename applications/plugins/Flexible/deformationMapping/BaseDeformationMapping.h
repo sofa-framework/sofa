@@ -160,7 +160,7 @@ public:
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
             maskTo = &stateTo->forceMask;
 
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
         helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_position0);
 
@@ -380,23 +380,6 @@ public:
 
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
-
-    // map spatial positions when needed (not contained in output type)
-    //    void applyPositions(VecCoord& dOut)
-    //    {
-
-    //        const InVecCoord&  in = dIn.getValue();
-
-    //        for(unsigned int i=0;i<jacobian.size();i++)
-    //        {
-    //            out[i]=OutCoord();
-    //            for(unsigned int j=0;j<jacobian[i].size();j++)
-    //            {
-    //                unsigned int index=this->f_index.getValue()[i][j];
-    //                jacobian[i][j].addapply(out[i],in[index]);
-    //            }
-    //        }
-    //    }
 
     void draw(const core::visual::VisualParams* vparams)
     {

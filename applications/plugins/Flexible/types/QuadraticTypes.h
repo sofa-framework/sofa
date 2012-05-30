@@ -222,6 +222,8 @@ public:
         static const unsigned int total_size = VSize;
         typedef Real value_type;
 
+        static unsigned int size() { return VSize; }
+
         /// seen as a vector
         Vec<VSize,Real>& getVec() { return v; }
         const Vec<VSize,Real>& getVec() const { return v; }
@@ -548,13 +550,21 @@ typedef Quadratic3Types QuadraticTypes;
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
+template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3fTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3fTypes::Coord, sofa::defaulttype::Quadratic3fTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3fTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3fTypes::Real>::name() << ">"; return o.str(); }
+};
 template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3fTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3fTypes::Deriv, sofa::defaulttype::Quadratic3fTypes::Deriv::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "QuadraticCoordOrDeriv<" << sofa::defaulttype::Quadratic3fTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3fTypes::Real>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3fTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3fTypes::Real>::name() << ">"; return o.str(); }
+};
+template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord, sofa::defaulttype::Quadratic3dTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
 };
 template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv, sofa::defaulttype::Quadratic3dTypes::Deriv::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "QuadraticCoordOrDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
 };
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES

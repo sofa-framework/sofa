@@ -122,7 +122,7 @@ public:
     {
         unsigned int nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
+        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
     }
 
     void computeShapeFunction(const vector<Coord>& childPosition, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw)
@@ -148,16 +148,16 @@ public:
         Hessian sum_ddw;
 
         // Compute norm
-        for (unsigned int j = 0; j < nbRef && w[j]>0.; j++) sum_w += w[j];
+        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
         if(dw)
         {
-            for (unsigned int j = 0; j < nbRef && w[j]>0.; j++) sum_dw += (*dw)[j];
-            if(ddw) for (unsigned int j = 0; j < nbRef && w[j]>0.; j++) sum_ddw += (*ddw)[j];
+            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
+            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
         }
 
         // Normalize
         if(sum_w)
-            for (unsigned int j = 0; j < nbRef && w[j]>0.; j++)
+            for (unsigned int j = 0; j < nbRef; j++)
             {
                 Real wn=w[j]/sum_w;
                 if(dw)
