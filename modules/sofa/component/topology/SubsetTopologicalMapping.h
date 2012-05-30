@@ -77,7 +77,8 @@ public:
      */
     virtual void updateTopologicalMappingTopDown();
 
-    virtual bool isTheOutputTopologySubdividingTheInputOne() { return false; }
+    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
+    virtual unsigned int getGlobIndex(unsigned int ind);
     virtual unsigned int getFromIndex(unsigned int ind);
 
     template<class T>
