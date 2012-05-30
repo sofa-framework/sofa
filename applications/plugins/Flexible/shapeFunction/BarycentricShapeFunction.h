@@ -47,7 +47,7 @@ Barycentric shape functions are the barycentric coordinates of points inside cel
   */
 
 template <class ShapeFunctionTypes_>
-class BarycentricShapeFunction : public virtual BaseShapeFunction<ShapeFunctionTypes_>
+class BarycentricShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
@@ -243,8 +243,11 @@ public:
     {
         Inherit::init();
 
-        this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
-        if(!this->parentTopology) { serr<<"MeshTopology not found"<<sendl; return; }
+        if( !parentTopology )
+        {
+            this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
+            if(!this->parentTopology) { serr<<"MeshTopology not found"<<sendl; return; }
+        }
 
         helper::ReadAccessor<Data<vector<Coord> > > parent(this->f_position);
         if(!parent.size()) { serr<<"Parent nodes not found"<<sendl; return; }
@@ -330,7 +333,8 @@ public:
 
 protected:
     BarycentricShapeFunction()
-        :Inherit()
+        : Inherit()
+        , parentTopology( NULL )
     {
     }
 

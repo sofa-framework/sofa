@@ -56,7 +56,7 @@ there are computed from an image (typically a rasterized object)
   */
 
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class VoronoiShapeFunction : public virtual BaseShapeFunction<ShapeFunctionTypes_>
+class VoronoiShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(VoronoiShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));

@@ -43,7 +43,7 @@ http://en.wikipedia.org/wiki/Inverse_distance_weighting
   */
 
 template <class ShapeFunctionTypes_>
-class ShepardShapeFunction : public virtual BaseShapeFunction<ShapeFunctionTypes_>
+class ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));

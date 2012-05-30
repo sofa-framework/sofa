@@ -82,8 +82,11 @@ public:
     //@{
     virtual void init()
     {
-        if(!(this->mstate)) this->mstate = dynamic_cast<mstateType*>(this->getContext()->getMechanicalState());
-        if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
+        if(!(this->mstate))
+        {
+            this->mstate = dynamic_cast<mstateType*>(this->getContext()->getMechanicalState());
+            if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
+        }
 
         // init material
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();

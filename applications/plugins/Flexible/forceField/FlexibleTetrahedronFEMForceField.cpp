@@ -22,12 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HookeFORCEFIELD_CPP
+#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP
 
 #include "../initFlexible.h"
-#include "HookeForceField.h"
-#include "../types/StrainTypes.h"
+#include "FlexibleTetrahedronFEMForceField.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -36,29 +37,22 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(HookeForceField);
+using namespace sofa::defaulttype;
 
-using namespace defaulttype;
+
+SOFA_DECL_CLASS(FlexibleTetrahedronFEMForceField)
 
 // Register in the Factory
-int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homogeneous materials")
+int FlexibleTetrahedronFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
 
-        .add< HookeForceField< E331Types > >(true)
-        .add< HookeForceField< E221Types > >()
-//.add< HookeForceField< E332Types > >()
-//.add< HookeForceField< E333Types > >()
-        .add< HookeForceField< D331Types > >()
-        .add< HookeForceField< D221Types > >()
+
+        .add< FlexibleTetrahedronFEMForceField< Vec3Types > >(true)
         ;
 
-template class SOFA_Flexible_API HookeForceField< E221Types >;
-template class SOFA_Flexible_API HookeForceField< E331Types >;
-//template class SOFA_Flexible_API HookeForceField< E332Types >;
-//template class SOFA_Flexible_API HookeForceField< E333Types >;
-template class SOFA_Flexible_API HookeForceField< D331Types >;
-template class SOFA_Flexible_API HookeForceField< D221Types >;
+template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField< Vec3Types >;
 
 }
 }
 }
+
 

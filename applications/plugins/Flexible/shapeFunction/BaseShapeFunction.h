@@ -89,24 +89,25 @@ public:
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const BaseShapeFunction<ShapeFunctionTypes>* = NULL) { return ShapeFunctionTypes::Name(); }
 
+    BaseMechanicalState* _state;
 
     virtual void init()
     {
         if(!f_position.isSet())
             // material positions are not given, so we compute them based on the current spatial positions
         {
-            BaseMechanicalState* state = NULL;
-            this->getContext()->get(state,core::objectmodel::BaseContext::Local);
-            if(!state) { serr<<"state not found"<< sendl; return; }
+            if( !_state ) this->getContext()->get(_state,core::objectmodel::BaseContext::Local);
+
+            if(!_state) { serr<<"state not found"<< sendl; return; }
             else
             {
                 helper::WriteAccessor<Data<vector<Coord> > > pos(this->f_position);
-                pos.resize(state->getSize());
+                pos.resize(_state->getSize());
                 for(unsigned int i=0; i<pos.size(); ++i)
                 {
-                    StdVectorTypes<Coord,Coord>::set( pos[i], state->getPX(i),state->getPY(i),state->getPZ(i) );
-//                    pos[i]=Coord(state->getPX(i),state->getPY(i),state->getPZ(i));
-//                std::cout<<"pts: "<<state->getPX(0)<<", "<<state->getPY(0)<<", "<<state->getPZ(0);
+                    StdVectorTypes<Coord,Coord>::set( pos[i], _state->getPX(i),_state->getPY(i),_state->getPZ(i) );
+//                    pos[i]=Coord(_state->getPX(i),_state->getPY(i),_state->getPZ(i));
+//                std::cout<<"pts: "<<_state->getPX(0)<<", "<<_state->getPY(0)<<", "<<_state->getPZ(0);
                 }
             }
         }
@@ -179,6 +180,7 @@ protected:
     BaseShapeFunction()
         : f_nbRef(initData(&f_nbRef,(unsigned int)4,"nbRef", "maximum number of parents per child"))
         , f_position(initData(&f_position,"position", "position of parent nodes"))
+        , _state( NULL )
     {
     }
 
