@@ -34,7 +34,7 @@
 
 #include "mycuda.h"
 
-#define SOFA_GPU_DEBUG_STACK_TRACE
+#define SOFA_GPU_DEBUG_STACK_TRACE 10
 
 #ifdef SOFA_GPU_DEBUG_STACK_TRACE
 #include <stdexcept>
@@ -60,9 +60,11 @@ private:
         char** symbols = backtrace_symbols (traces, size);
 
         std::string stacktrace;
+        int nbdisp = 0;
+        bool startSofa = false;
         for (size_t i = 0; i < size; i++)
         {
-            stacktrace += symbols[i];
+//            stacktrace += symbols[i];
 
             // On a typiquemenet des chaines de cette sorte: ./a.out(_Z1ev+0x180) [0x401704]
             // On recherche les caracteres ( et +
@@ -71,10 +73,8 @@ private:
 
             for (char *j=symbols[i]; *j; ++j)
             {
-                if (*j=='(')
-                    begin = j;
-                else if (*j=='+')
-                    end = j;
+                if (*j=='(') begin = j;
+                else if (*j=='+') end = j;
             }
 
             // si ( et + ont ete trouves
@@ -94,17 +94,28 @@ private:
                     free(ret);
                     ret = NULL;
                 }
-
-                // demangling failed, just pretend it's a C function with no args
-                else
+                else     // demangling failed, just pretend it's a C function with no args
                 {
                     fct_name = begin;
-                    fct_name += "()";
+                    fct_name += "::()";
                 }
-                stacktrace += ' ';
-                stacktrace += fct_name;
+
+                if (!startSofa && std::string::npos != fct_name.find(std::string("displayStack")))
+                {
+                    startSofa = true; // wait to see displayStack() before printing the stack
+                }
+                else if (startSofa && std::string::npos != fct_name.find(std::string("::")))
+                {
+                    stacktrace += fct_name;
+                    stacktrace += '\n';
+                    nbdisp++;
+                    if (nbdisp>=SOFA_GPU_DEBUG_STACK_TRACE)
+                    {
+                        free (symbols);
+                        return stacktrace;
+                    }
+                }
             }
-            stacktrace += '\n';
         }
         free (symbols);
         return stacktrace;

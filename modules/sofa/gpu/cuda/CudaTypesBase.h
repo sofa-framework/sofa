@@ -103,7 +103,8 @@ public :
     void clear()
     {
         //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
-        v.memsetHost();
+//		  v.memsetHost();
+        v.clear();
     }
 
     void set(int i, SReal val)
@@ -120,8 +121,10 @@ public :
     template<typename Real2,typename Real3>
     void peq(const CudaBaseVector<Real2>& a, Real3 f)
     {
-        for(unsigned i=0; i<v.size(); ++i)
-            v[i] += (Real)(a.v[i]*f);
+        CudaMatrixUtilsKernels<Real>::vector_vector_peq(v.size(),
+                f,
+                a.deviceRead(),
+                this->deviceWrite());
     }
 
     void operator=(const CudaBaseVector<Real> & e)
@@ -129,14 +132,14 @@ public :
         v = e.v;
     }
 
-    const void* deviceRead() const
+    const void* deviceRead(int off=0) const
     {
-        return v.deviceRead();
+        return v.deviceReadAt(off);
     }
 
-    void * deviceWrite()
+    void * deviceWrite(int off=0)
     {
-        return v.deviceWrite();
+        return v.deviceWriteAt(off);
     }
 
     void invalidateDevice()
@@ -144,14 +147,14 @@ public :
         v.invalidateDevice();
     }
 
-    const T* hostRead() const
+    const T* hostRead(int off=0) const
     {
-        return v.hostRead();
+        return v.hostReadAt(off);
     }
 
-    T * hostWrite()
+    T * hostWrite(int off=0)
     {
-        return v.hostWrite();
+        return v.hostWriteAt(off);
     }
 
     static const char* Name(); /* {
@@ -213,34 +216,6 @@ public :
     void eq(CudaBaseMatrix & mat)
     {
         m = mat.m;
-    }
-
-    template<class Real2>
-    void mul(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const
-    {
-        for (unsigned i=0; i<m.getSizeY(); ++i)
-        {
-            Real r = 0;
-            for (unsigned j=0; j<m.getSizeX(); ++j)
-            {
-                r += m[i][j] * b[j];
-            }
-            res[i] = r;
-        }
-    }
-
-    template<class Real2>
-    void mulT(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const
-    {
-        for (unsigned i=0; i<m.getSizeX(); ++i)
-        {
-            Real r = 0;
-            for (unsigned j=0; j<m.getSizeY(); ++j)
-            {
-                r += m[j][i] * b[j];
-            }
-            res[i] = r;
-        }
     }
 
     unsigned int rowSize() const
@@ -308,30 +283,55 @@ public :
     CudaBaseVector<Real> operator*(const CudaBaseVector<Real> & v) const
     {
         CudaBaseVector<Real> res;
-        res.fastResize(rowSize());
-        CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
-                m.deviceRead(),
-                m.getPitchDevice(),
-                v.getCudaVector().deviceRead(),
-                res.getCudaVector().deviceWrite());
+        mult(res,v);
         return res;
     }
 
-//        void mul(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r) {
-//            CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
-//                                        m.deviceRead(),
-//                                        m.getPitchDevice(),
-//                                        r.getCudaVector().deviceRead(),
-//                                        v.getCudaVector().deviceWrite());
+    void mul(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r)
+    {
+        CudaMatrixUtilsKernels<Real>::matrix_vector_product(rowSize(),
+                colSize(),
+                m.deviceRead(),
+                m.getPitchDevice(),
+                1.0,
+                r.getCudaVector().deviceRead(),
+                0.0,
+                v.getCudaVector().deviceWrite());
+    }
+
+    void mulT(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r)
+    {
+        CudaMatrixUtilsKernels<Real>::matrixtr_vector_product(rowSize(),
+                colSize(),
+                m.deviceRead(),
+                m.getPitchDevice(),
+                1.0,
+                r.getCudaVector().deviceRead(),
+                0.0,
+                v.getCudaVector().deviceWrite());
+    }
+
+//        template<class Real2>
+//        void mul(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const {
+//            for (unsigned i=0;i<m.getSizeY();++i) {
+//                Real r = 0;
+//                for (unsigned j=0;j<m.getSizeX();++j) {
+//                    r += m[i][j] * b[j];
+//                }
+//                res[i] = r;
+//            }
 //        }
 
-//		void mulT(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r) {
-//            CudaMatrixUtilsKernels<Real>::matrixT_vector_product(rowSize(),
-//								        m.deviceRead(),
-//								        m.getPitchDevice(),
-//								        r.getCudaVector().deviceRead(),
-//								        v.getCudaVector().deviceWrite());
-//		}
+//        template<class Real2>
+//        void mulT(CudaBaseVector<Real2>& res,const CudaBaseVector<Real2>& b) const {
+//            for (unsigned i=0;i<m.getSizeX();++i) {
+//                Real r = 0;
+//                for (unsigned j=0;j<m.getSizeY();++j) {
+//                    r += m[j][i] * b[j];
+//                }
+//                res[i] = r;
+//            }
+//        }
 
     void operator= ( const CudaBaseMatrix<T>& mat )
     {
@@ -493,18 +493,14 @@ protected :
     void buildFromCudaSparseMatrix(JMatrix * J)
     {
         // rebuild a CRS matrix from a CSR matrix
-        // this should be replaced by :
-        //colptr = J->getColptr().size();
-        //rowind = J->getRowind().size();
-        //values = J->getValues().size();
-        // and the operator = should be able to copy vector<float> <-> vector<double>
+        colptr = J->getColptr();
+        rowind = J->getRowind();
 
-        colptr.resize(J->getColptr().size());
-        rowind.resize(J->getRowind().size());
         values.resize(J->getValues().size());
-        for (unsigned i=0; i<J->getColptr().size(); i++) colptr[i] = J->getColptr()[i];
-        for (unsigned i=0; i<J->getRowind().size(); i++) rowind[i] = J->getRowind()[i];
         for (unsigned i=0; i<J->getValues().size(); i++) values[i] = J->getValues()[i];
+        // this should be replaced by : values = J->getValues();
+        // for that the operator= must be able to convert vector<float> <-> vector<double>
+
         nnz = J->getNnz();
         colsize = J->colSize();
         rowsize = J->rowSize();
