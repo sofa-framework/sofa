@@ -52,7 +52,7 @@ namespace shapefunction
 using namespace core::behavior;
 /**
 Voronoi shape functions are natural neighbor interpolants
-there are computed based from an image (typically a rasterized object)
+there are computed from an image (typically a rasterized object)
   */
 
 template <class ShapeFunctionTypes_,class ImageTypes_>
@@ -180,6 +180,9 @@ public:
                                 }
 
                             }
+
+        // normalize
+        this->normalize(w,dw,ddw);
     }
 
 
@@ -348,19 +351,19 @@ protected:
         Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
         bool border;
 
-        cimg_for_insideXYZ(voronoiPt,x,y,z,1)
+        cimg_forXYZ(voronoiPt,x,y,z)
         if(voronoiPt(x,y,z)==index)
         {
             unsigned int node=voronoi(x,y,z);
             if(!data.count(node)) data[node]=NaturalNeighborData();
             data[node].vol+=pixelvol;
             border=false;
-            if(voronoiPt(x-1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
-            if(voronoiPt(x+1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
-            if(voronoiPt(x,y-1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
-            if(voronoiPt(x,y+1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
-            if(voronoiPt(x,y,z-1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
-            if(voronoiPt(x,y,z+1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
+            if(x!=0)                    if(voronoiPt(x-1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
+            if(x!=voronoiPt.width()-1)  if(voronoiPt(x+1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
+            if(y!=0)                    if(voronoiPt(x,y-1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
+            if(y!=voronoiPt.height()-1) if(voronoiPt(x,y+1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
+            if(z!=0)                    if(voronoiPt(x,y,z-1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
+            if(z!=voronoiPt.depth()-1)  if(voronoiPt(x,y,z+1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
             if(distancesPt(x,y,z)+distances(x,y,z)<data[node].dist) data[node].dist=distancesPt(x,y,z)+distances(x,y,z);
         }
         return data;

@@ -92,6 +92,8 @@ public:
     /** @name  Options */
     //@{
     Data<unsigned int> targetNumber;
+    Data<bool> useDijkstra;
+    Data<unsigned int> iterations;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -117,6 +119,8 @@ protected:
         , f_transform(initData(&f_transform,TransformType(),"transform",""))
         , outputImage(initData(&outputImage,DistTypes(),"outputImage",""))
         , targetNumber(initData(&targetNumber,(unsigned int)0,"targetNumber","target number of samples"))
+        , useDijkstra(initData(&useDijkstra,true,"useDijkstra","Use Dijkstra for geodesic distance computation (use fastmarching otherwise)"))
+        , iterations(initData(&iterations,(unsigned int)100,"iterations","maximum number of Lloyd iterations"))
     {
     }
 
@@ -125,17 +129,18 @@ protected:
 
     }
 
-    typedef std::set<unsigned int> indList;
-    typedef std::map<indList, unsigned int> indMap;
+    typedef std::set<unsigned int> indList;  ///< list of parent indices
 
-    struct regionData
+    struct regionData  ///< data related to each voronoi region
     {
-        unsigned int nb;
-        Coord c;
-        Real err;
-        indList indices;
-        vector<vector<Real> > coeff;
-        regionData(indList ind):nb(1),c(Coord()),err(0),indices(ind) {}
+        unsigned int nb;    // nb of voxels in the region
+        unsigned int voronoiIndex;    // value corresponding to the value in the voronoi image
+        Coord c;            // centroid
+        indList indices;    // indices of parents of that region
+        vector<vector<Real> > coeff;    // coeffs of weigh tfit
+        Real err;           // errror of weight fit
+        vector<Real> vol; // volume (and moments) of this region
+        regionData(indList ind,unsigned int i):nb(1),voronoiIndex(i),c(Coord()),indices(ind),err(0) {}
     };
 
     virtual void update()
@@ -148,9 +153,10 @@ protected:
         raTransform transform(this->f_transform);
         const CImg<DistT>& weights = rweights->getCImg(0);  // suppose time=0
         const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
+
         imCoord dim = rweights->getDimensions();
-        const int nbref=dim[3]; dim[3]=dim[4]=1;
-        const Real dv =  transform->getScale()[0] * transform->getScale()[1] * transform->getScale()[2];
+        //const int nbref=dim[3];
+        dim[3]=dim[4]=1; // remove nbchannels from dimensions (to allocate single channel images later)
 
         // get output data
         waPositions pos(this->f_position);
@@ -161,24 +167,282 @@ protected:
         CImg<DistT>& outimg = wout->getCImg(0);
         outimg.fill((DistT)(-1));
 
-        // identify regions with similar repartitions
-        indMap List;
-        vector<regionData> regions;
+        pos.clear();
+
+        // init voronoi
+        CImg<unsigned int> voronoi(dim[0],dim[1],dim[2],1,0);
+
+        if(this->f_order.getValue()==1) // midpoint integration : put samples uniformly and weight them by their volume
+        {
+            // identify regions with similar repartitions
+            vector<regionData> regions;
+            Cluster_SimilarIndices(regions,voronoi);
+
+            // init soft regions (=more than one parent) where uniform sampling will be done
+            for(unsigned int i=0; i<regions.size(); i++)
+            {
+                if(regions[i].indices.size()>1)
+                {
+                    cimg_forXYZ(voronoi,x,y,z)
+                    if(voronoi(x,y,z)==regions[i].voronoiIndex)
+                    {
+                        outimg(x,y,z)=cimg::type<DistT>::max();
+                        voronoi(x,y,z)=0;
+                    }
+                    regions.erase (regions.begin()+i); i--;  //  erase region (soft regions will be generated after uniform sampling)
+                }
+            }
+
+
+            // get fixed pos (user points in soft regions)
+            SeqPositions fpos;
+            vector<unsigned int> fpos_voronoiIndex;
+
+            for(unsigned int i=0; i<pos.size(); i++)
+            {
+                Coord p = transform->toImage(pos[i]);
+                for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
+                if(indices.containsXYZC(p[0],p[1],p[2]))
+                {
+                    indList l;
+                    cimg_forC(indices,v) if(indices(p[0],p[1],p[2],v)) l.insert(indices(p[0],p[1],p[2],v));
+                    if(l.size()>1) { fpos.push_back(pos[i]); fpos_voronoiIndex.push_back(i+1); }
+                }
+            }
+
+            // target nb of points
+            unsigned int nbrigid = regions.size();
+            unsigned int nb = (fpos.size()+nbrigid>targetNumber.getValue())?fpos.size()+nbrigid:targetNumber.getValue();
+            unsigned int nbsoft = nb-nbrigid;
+            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: Number of rigid/soft regions : "<<nbrigid<<"/"<<nbsoft<< std::endl;
+
+            // init seeds for uniform sampling
+            std::set<std::pair<DistT,sofa::defaulttype::Vec<3,int> > > trial;
+
+            // farthest point sampling using geodesic distances
+            SeqPositions newpos;
+            vector<unsigned int> newpos_voronoiIndex;
+
+            for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<DistT>(trial,outimg,voronoi, transform.ref(), fpos[i],fpos_voronoiIndex[i]);
+            while(newpos.size()+fpos.size()<nbsoft)
+            {
+                DistT dmax=0;  Coord pmax;
+                cimg_forXYZ(outimg,x,y,z) if(outimg(x,y,z)>dmax) { dmax=outimg(x,y,z); pmax =Coord(x,y,z); }
+                if(dmax)
+                {
+                    newpos.push_back(transform->fromImage(pmax));
+                    newpos_voronoiIndex.push_back(fpos.size()+nbrigid+newpos.size()+1);
+                    AddSeedPoint<DistT>(trial,outimg,voronoi, transform.ref(), newpos.back(),newpos_voronoiIndex.back());
+                    if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,outimg, voronoi, this->f_transform.getValue().getScale());
+                    else fastMarching<DistT,DistT>(trial,outimg, voronoi, this->f_transform.getValue().getScale());
+                }
+                else break;
+            }
+
+            // Loyd
+            unsigned int it=0;
+            bool converged =(it>=iterations.getValue())?true:false;
+            while(!converged)
+            {
+                if(Lloyd<DistT,DistT>(newpos,newpos_voronoiIndex,outimg,voronoi,this->f_transform.getValue(),NULL))
+                {
+                    cimg_foroff(outimg,off) if(outimg[off]!=-1) outimg[off]=cimg::type<DistT>::max();
+                    for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<DistT>(trial,outimg,voronoi, this->f_transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<DistT>(trial,outimg,voronoi, this->f_transform.getValue(), newpos[i],newpos_voronoiIndex[i]);
+                    if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,outimg, voronoi, this->f_transform.getValue().getScale());
+                    else fastMarching<DistT,DistT>(trial,outimg, voronoi, this->f_transform.getValue().getScale());
+                    it++; if(it>=iterations.getValue()) converged=true;
+                }
+                else converged=true;
+            }
+
+            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: Completed in "<< it <<" Lloyd iterations"<<std::endl;
+
+            // create soft regions and update teir data
+            for(unsigned int i=0; i<fpos.size(); i++)
+            {
+                Coord p = transform->toImage(fpos[i]);
+                for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
+                if(indices.containsXYZC(p[0],p[1],p[2]))
+                {
+                    indList l; cimg_forC(indices,v) if(indices(p[0],p[1],p[2],v)) l.insert(indices(p[0],p[1],p[2],v));
+                    regionData reg(l,fpos_voronoiIndex[i]);
+                    reg.c=fpos[i];
+                    regions.push_back(reg);
+                }
+            }
+            for(unsigned int i=0; i<newpos.size(); i++)
+            {
+                Coord p = transform->toImage(newpos[i]);
+                for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
+                if(indices.containsXYZC(p[0],p[1],p[2]))
+                {
+                    indList l; cimg_forC(indices,v) if(indices(p[0],p[1],p[2],v)) l.insert(indices(p[0],p[1],p[2],v));
+                    regionData reg(l,newpos_voronoiIndex[i]);
+                    reg.c=newpos[i];
+                    regions.push_back(reg);
+                }
+            }
+
+            // fit weights
+            for(unsigned int i=0; i<regions.size(); i++)
+            {
+                regions[i].nb=0;
+                cimg_forXYZ(voronoi,x,y,z)  if(voronoi(x,y,z) == regions[i].voronoiIndex) regions[i].nb++;
+
+                computeVolumes(regions[i],voronoi);
+                fitWeights(regions[i],voronoi);
+                /*
+
+                                typedef std::map<unsigned int, Real > wiMap; wiMap wi;
+                                for(indList::iterator it=regions[i].indices.begin();it!=regions[i].indices.end();it++) wi[*it]=0;
+
+                                cimg_forXYZ(voronoi,x,y,z)
+                                        if(voronoi(x,y,z)==regions[i].voronoiIndex)
+                                {
+                                    outimg(x,y,z)=0;
+                                    unsigned int j=0;
+
+                                    cimg_forC(indices,v) if(indices(x,y,z,v))
+                                    {
+                                        typename wiMap::iterator wIt=wi.find(indices(x,y,z,v));
+                                        if(wIt!=wi.end()) wIt->second=(Real)weights(x,y,z,v);
+                                    }
+
+                                    Coord pi=regions[i].c - transform->fromImage(Coord(x,y,z));
+
+                                    j=0;
+                                    for(typename wiMap::iterator wIt=wi.begin();wIt!=wi.end();wIt++)
+                                        outimg(x,y,z)+=defaulttype::getPolynomialFit_Error(regions[i].coeff[j++],wIt->second,pi);
+                                }
+                */
+            }
+            // create samples
+            pos.resize ( regions.size() );
+            vol.resize ( regions.size() );
+
+            for(unsigned int i=0; i<regions.size(); i++)
+            {
+                pos[i]=regions[i].c;
+                vol[i].assign(regions[i].vol.begin(),regions[i].vol.end());
+            }
+
+        }
+        else
+        {
+
+
+            if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
+            {
+                serr<<"GAUSSLEGENDRE quadrature not yet implemented"<<sendl;
+            }
+            else if(this->f_method.getValue().getSelectedId() == NEWTONCOTES)
+            {
+                serr<<"NEWTONCOTES quadrature not yet implemented"<<sendl;
+            }
+            else if(this->f_method.getValue().getSelectedId() == ELASTON)
+            {
+                // identify regions with similar repartitions
+                vector<regionData> regions;
+                Cluster_SimilarIndices(regions,voronoi);
+
+                // add point in the center of each region, and compute region data (volumes and weights)
+
+                for(unsigned int i=pos.size(); i<regions.size(); i++)
+                {
+                    computeVolumes(regions[i],voronoi);
+                    fitWeights(regions[i],voronoi);
+
+
+                    typedef std::map<unsigned int, Real > wiMap; wiMap wi;
+                    for(indList::iterator it=regions[i].indices.begin(); it!=regions[i].indices.end(); it++) wi[*it]=0;
+
+                    cimg_forXYZ(voronoi,x,y,z)
+                    if(voronoi(x,y,z)==regions[i].voronoiIndex)
+                    {
+                        outimg(x,y,z)=0;
+                        unsigned int j=0;
+
+                        cimg_forC(indices,v) if(indices(x,y,z,v))
+                        {
+                            typename wiMap::iterator wIt=wi.find(indices(x,y,z,v));
+                            if(wIt!=wi.end()) wIt->second=(Real)weights(x,y,z,v);
+                        }
+
+                        Coord pi=regions[i].c - transform->fromImage(Coord(x,y,z));
+
+                        j=0;
+                        for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
+                            outimg(x,y,z)+=defaulttype::getPolynomialFit_Error(regions[i].coeff[j++],wIt->second,pi);
+                    }
+
+                }
+
+                const unsigned int initialPosSize=pos.size();
+                pos.resize ( (regions.size()>targetNumber.getValue())?regions.size():targetNumber.getValue() );
+                vol.resize ( pos.size() );
+
+                for(unsigned int i=initialPosSize; i<regions.size(); i++)
+                {
+                    pos[i]=regions[i].c;
+                    vol[i].assign(regions[i].vol.begin(),regions[i].vol.end());
+                }
+
+
+
+            }
+
+        }
+
+
+
+        cimg_forXYZ(outimg,x,y,z)
+        if(outimg(x,y,z)==-1)
+            outimg(x,y,z)=0;
+
+
+        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"GaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
+    }
+
+
+    virtual void draw(const core::visual::VisualParams* vparams)
+    {
+        Inherit::draw(vparams);
+    }
+
+
+protected:
+
+    /// Identify regions sharing similar parents
+    /// returns a list of region containing the parents, the number of voxels and center; and fill the voronoi image
+    void Cluster_SimilarIndices(vector<regionData>& regions, CImg<unsigned int>& voronoi)
+    {
+        // get tranform and images at time t
+        raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
+        raTransform transform(this->f_transform);
+        const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
+
+        // get output data
+        raPositions pos(this->f_position);
 
         // add initial points from user
         const unsigned int initialPosSize=pos.size();
+
+        // map to find repartitions-> region index
+        typedef std::map<indList, unsigned int> indMap;
+        indMap List;
 
         for(unsigned int i=0; i<initialPosSize; i++)
         {
             Coord p = transform->toImage(pos[i]);
             for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
-            if(indices(p[0],p[1],p[2]))
+            if(indices.containsXYZC(p[0],p[1],p[2]))
             {
                 indList l;
-                cimg_forC(indices,v) l.insert(indices(p[0],p[1],p[2],v));
+                cimg_forC(indices,v) if(indices(p[0],p[1],p[2],v)) l.insert(indices(p[0],p[1],p[2],v));
                 List[l]=i;
-                regions.push_back(regionData(l));
-                outimg(p[0],p[1],p[2])=(DistT)i;
+                regions.push_back(regionData(l,i+1));
+                voronoi(p[0],p[1],p[2])=regions.back().voronoiIndex;
             }
         }
 
@@ -189,103 +453,92 @@ protected:
             indList l;
             cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v));
             indMap::iterator it=List.find(l);
-            unsigned int sampleindex;
-            if(it==List.end()) { sampleindex=List.size(); List[l]=sampleindex;  regions.push_back(regionData(l));}
-            else { sampleindex=it->second; regions[sampleindex].nb++;}
-            outimg(x,y,z)=(DistT)sampleindex;
+            unsigned int index;
+            if(it==List.end()) { index=List.size(); List[l]=index;  regions.push_back(regionData(l,index+1));}
+            else { index=it->second; regions[index].nb++;}
+
+            regions[index].c+=transform->fromImage(Coord(x,y,z));
+            voronoi(x,y,z)=regions[index].voronoiIndex;
         }
 
-
-        if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
+        // average to get centroid (may not be inside the region if not convex)
+        for(unsigned int i=0; i<regions.size(); i++)
         {
-            serr<<"GAUSSLEGENDRE quadrature not yet implemented"<<sendl;
+            regions[i].c/=(Real)regions[i].nb;
         }
-        else if(this->f_method.getValue().getSelectedId() == NEWTONCOTES)
-        {
-            serr<<"NEWTONCOTES quadrature not yet implemented"<<sendl;
-        }
-        else if(this->f_method.getValue().getSelectedId() == ELASTON)
-        {
-            // add point in the center of each region, and compute region data (volumes and weights)
-            pos.resize ( (List.size()>targetNumber.getValue())?List.size():targetNumber.getValue() );
-            vol.resize ( pos.size() );
-
-            int dimBasis=(this->f_order.getValue()+1)*(this->f_order.getValue()+2)*(this->f_order.getValue()+3)/6; // dimension of polynomial basis in 3d
-
-            for(unsigned int i=initialPosSize; i<List.size(); i++)
-            {
-                int nb=regions[i].nb;
-                pos[i]=Coord(0,0,0);
-                vol[i]=vector<Real>(dimBasis,(Real)0);
-
-                vector<Coord> pi(nb);
-                typedef std::map<unsigned int, vector<Real> > wiMap;
-                wiMap wi;
-                for(indList::iterator it=regions[i].indices.begin(); it!=regions[i].indices.end(); it++) wi[*it]=vector<Real>(nb,(Real)0);
-
-                unsigned int count=0;
-                cimg_forXYZ(outimg,x,y,z)
-                if(outimg(x,y,z)==i)
-                {
-                    // store weights relative to each index of the region
-                    for(int k=0; k<nbref; k++)
-                    {
-                        typename wiMap::iterator wIt;
-                        wIt=wi.find(indices(x,y,z,k));
-                        if(wIt!=wi.end()) wIt->second[count]=(Real)weights(x,y,z,k);
-                    }
-                    // store voxel positions
-                    pi[count]=transform->fromImage(Coord(x,y,z));
-                    pos[i]+=pi[count];
-                    count++;
-                }
-                // compute region center
-                pos[i]/=(Real)nb;
-
-                // compute relative positions and volume integral
-                for(int j=0; j<nb; j++)
-                {
-                    pi[j]-=pos[i]; pi[j]*=(Real)(-1);
-                    vector<Real> basis; defaulttype::getCompleteBasis(basis,pi[j],this->f_order.getValue());
-                    for(int k=0; k<dimBasis; k++) vol[i][k]+=basis[k]*dv;
-                }
-
-                // fit weights
-                for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
-                {
-                    vector<Real> coeff;
-                    defaulttype::PolynomialFit(coeff,wIt->second,pi,2);
-                    std::cout<<"weight fitting error on sample "<<i<<" ("<<wIt->first<<") = "<<defaulttype::getPolynomialFit_Error(coeff,wIt->second,pi)<< std::endl;
-                    regions[i].coeff.push_back(coeff);
-
-                }
-
-                count=0;
-                cimg_forXYZ(outimg,x,y,z)
-                if(outimg(x,y,z)==i)
-                {
-                    outimg(x,y,z)=0;
-                    unsigned int j=0;
-                    for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
-                        outimg(x,y,z)+=defaulttype::getPolynomialFit_Error(regions[i].coeff[j++],wIt->second[count],pi[count]);
-                    count++;
-                }
-            }
-
-        }
-
-
-        cimg_forXYZ(outimg,x,y,z)
-        if(outimg(x,y,z)==-1)
-            outimg(x,y,z)=0;
-
-        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"ImageGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
     }
 
-
-    virtual void draw(const core::visual::VisualParams* vparams)
+    /// compute volumes in the region based on its center
+    void computeVolumes(regionData& region, const CImg<unsigned int>& voronoi)
     {
-        Inherit::draw(vparams);
+        raTransform transform(this->f_transform);
+
+        int dimBasis=(this->f_order.getValue()+1)*(this->f_order.getValue()+2)*(this->f_order.getValue()+3)/6; // dimension of polynomial basis in 3d
+        const Real dv =  this->f_transform.getValue().getScale()[0] * this->f_transform.getValue().getScale()[1] * this->f_transform.getValue().getScale()[2];
+
+        region.vol.resize(dimBasis);
+        region.vol.fill((Real)0);
+
+        vector<Real> basis;
+        basis.resize(dimBasis);
+
+        cimg_forXYZ(voronoi,x,y,z)
+        if(voronoi(x,y,z)==region.voronoiIndex)
+        {
+            Coord prel = region.c - transform->fromImage(Coord(x,y,z));
+            defaulttype::getCompleteBasis(basis,prel,this->f_order.getValue());
+            for(int k=0; k<dimBasis; k++) region.vol[k]+=basis[k]*dv;
+        }
+    }
+
+    /// compute polynomial approximation of the weights in the region
+    void fitWeights(regionData& region, const CImg<unsigned int>& voronoi, const unsigned int order=2)
+    {
+        // get tranform and images at time t
+        raDist rweights(this->f_w);             if(!rweights->getCImgList().size())  { serr<<"Weights not found"<<sendl; return; }
+        raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
+        raTransform transform(this->f_transform);
+        const CImg<DistT>& weights = rweights->getCImg(0);  // suppose time=0
+        const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
+
+        waDist wout(this->outputImage);
+        CImg<DistT>& outimg = wout->getCImg(0);
+
+        int nb=region.nb;
+
+        // list of relative coords
+        vector<Coord> pi(nb);
+
+        // list of weights (one for each parent)
+        typedef std::map<unsigned int, vector<Real> > wiMap;
+        wiMap wi;
+        for(indList::iterator it=region.indices.begin(); it!=region.indices.end(); it++) wi[*it]=vector<Real>(nb,(Real)0);
+
+        // get them from images
+        unsigned int count=0;
+        cimg_forXYZ(voronoi,x,y,z)
+        if(voronoi(x,y,z)==region.voronoiIndex)
+        {
+            cimg_forC(indices,v) if(indices(x,y,z,v))
+            {
+                typename wiMap::iterator wIt=wi.find(indices(x,y,z,v));
+                if(wIt!=wi.end()) wIt->second[count]=(Real)weights(x,y,z,v);
+            }
+            pi[count]=region.c - transform->fromImage(Coord(x,y,z));
+            count++;
+        }
+
+        // fit weights
+        region.coeff.clear();
+        region.err = 0;
+        for(typename wiMap::iterator wIt=wi.begin(); wIt!=wi.end(); wIt++)
+        {
+            vector<Real> coeff(1,1); // defaulttype::PolynomialFit(coeff,wIt->second,pi,order);
+            Real err = defaulttype::getPolynomialFit_Error(coeff,wIt->second,pi);
+            region.coeff.push_back(coeff);
+            region.err+=err;
+            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: weight fitting error on sample "<<region.voronoiIndex<<" ("<<wIt->first<<") = "<<err<< std::endl;
+        }
     }
 
 

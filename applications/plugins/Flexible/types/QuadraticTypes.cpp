@@ -31,6 +31,7 @@
 #include <sofa/component/container/MechanicalObject.inl>
 
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/simulation/common/Node.h>
 
@@ -57,16 +58,8 @@ void FixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vp
             points.push_back(x[i].getCenter());
     else
     {
-        if( x.size() < indices.size() )
-        {
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[indices[i]].getCenter());
-        }
-        else
-        {
-            for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                points.push_back(x[*it].getCenter());
-        }
+        if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ )  points.push_back(x[indices[i]].getCenter());
+        else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)  points.push_back(x[*it].getCenter());
     }
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
@@ -75,19 +68,44 @@ void FixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vp
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
+//template <>
+//void PartialFixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
+//{
+//    const SetIndexArray & indices = f_indices.getValue();
+//    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+//    std::vector< Vector3 > points;
+
+//    const VecCoord& x = *mstate->getX();
+//    if( f_fixAll.getValue()==true )
+//        for (unsigned i=0; i<x.size(); i++ )
+//            points.push_back(x[i].getCenter());
+//    else
+//    {
+//        if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+//        else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+//    }
+
+//    if( _drawSize.getValue() == 0) // old classical drawing by points
+//        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+//    else
+//        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+//}
+
+
 // ==========================================================================
 // Instantiation
 
 SOFA_DECL_CLASS ( QuadraticFixedConstraint )
-
-using namespace sofa::defaulttype;
-
 int QuadraticFixedConstraintClass = core::RegisterObject ( "Attach given particles to their initial positions" )
-
-        .add< FixedConstraint<Quadratic3Types> >()
+        .add< FixedConstraint<defaulttype::Quadratic3Types> >()
         ;
-
 template class SOFA_Flexible_API FixedConstraint<Quadratic3Types>;
+
+//SOFA_DECL_CLASS ( QuadraticPartialFixedConstraint )
+//int QuadraticPartialFixedConstraintClass = core::RegisterObject ( "Attach given particles to their initial positions" )
+//.add< PartialFixedConstraint<defaulttype::Quadratic3Types> >()
+//;
+//template class SOFA_Flexible_API PartialFixedConstraint<Quadratic3Types>;
 
 } // namespace projectiveconstraintset
 } // namespace component
