@@ -132,7 +132,10 @@ public:
             if (RotationMatrix<Real> * result = dynamic_cast<RotationMatrix<Real> * >(bresult))
             {
                 Real tmp[9];
-                for (unsigned i=0; i<data.size(); i+=9)
+                unsigned datSz = data.size() < m->data.size() ? data.size() : m->data.size();
+                unsigned minSz = datSz < result->data.size() ? datSz : result->data.size();
+
+                for (unsigned i=0; i<minSz; i+=9)
                 {
                     tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
                     tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
@@ -150,7 +153,40 @@ public:
                     result->data[i+3] = tmp[3]; result->data[i+4] = tmp[4]; result->data[i+5] = tmp[5];
                     result->data[i+6] = tmp[6]; result->data[i+7] = tmp[7]; result->data[i+8] = tmp[8];
                 }
-                if (data.size() != m->data.size() || data.size() != result->data.size() ) std::cerr << "Copier la fin des rotations" << std::endl;
+
+                if (minSz < result->data.size())
+                {
+                    if (datSz<data.size())
+                    {
+                        for (unsigned i=minSz; i<data.size(); i+=9)
+                        {
+                            result->data[i+0] = data[i+0]; result->data[i+1] = data[i+1]; result->data[i+2] = data[i+2];
+                            result->data[i+3] = data[i+3]; result->data[i+4] = data[i+4]; result->data[i+5] = data[i+5];
+                            result->data[i+6] = data[i+6]; result->data[i+7] = data[i+7]; result->data[i+8] = data[i+8];
+                        }
+                        minSz = data.size();
+                    }
+                    else if (datSz<m->data.size())
+                    {
+                        for (unsigned i=datSz; i<m->data.size(); i+=9)
+                        {
+                            result->data[i+0] = m->data[i+0]; result->data[i+1] = m->data[i+1]; result->data[i+2] = m->data[i+2];
+                            result->data[i+3] = m->data[i+3]; result->data[i+4] = m->data[i+4]; result->data[i+5] = m->data[i+5];
+                            result->data[i+6] = m->data[i+6]; result->data[i+7] = m->data[i+7]; result->data[i+8] = m->data[i+8];
+                        }
+                        minSz = m->data.size();
+                    }
+                }
+
+                if (minSz < result->data.size())
+                {
+                    for (unsigned i=datSz; i<result->data.size(); i+=9)
+                    {
+                        result->data[i+0] = 1; result->data[i+1] = 0; result->data[i+2] = 0;
+                        result->data[i+3] = 0; result->data[i+4] = 1; result->data[i+5] = 0;
+                        result->data[i+6] = 0; result->data[i+7] = 0; result->data[i+8] = 1;
+                    }
+                }
 
                 return;
             }

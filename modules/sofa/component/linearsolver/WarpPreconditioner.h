@@ -150,6 +150,7 @@ public:
     Data<bool> f_verbose;
     Data <std::string> solverName;
     Data<unsigned> f_useRotationFinder;
+    Data<bool> f_enable;
     Data<double> f_draw_rotations_scale;
 
 protected:

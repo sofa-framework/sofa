@@ -62,6 +62,7 @@ WarpPreconditioner<DataTypes>::WarpPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    , f_enable(initData(&f_enable, true, "enable", "Use the preconditioner" ) )
     , f_draw_rotations_scale(initData(&f_draw_rotations_scale, 0.0, "draw_rotations_scale", "Scale to display rotations" ) )
 {
 
@@ -110,6 +111,8 @@ void WarpPreconditioner<DataTypes>::bwdInit()
     indexwork = 0;
 
     tmpVecId = new GraphScatteredVector(NULL,core::VecDerivId::null());
+
+    indRotationFinder = f_useRotationFinder.getValue()<rotationFinders.size() ? f_useRotationFinder.getValue() : -1;
 }
 
 template<class DataTypes>
@@ -121,9 +124,6 @@ unsigned WarpPreconditioner<DataTypes>::getSystemDimention()
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
-    indRotationFinder = f_useRotationFinder.getValue()<rotationFinders.size() ? f_useRotationFinder.getValue() : -1;
-    if (indRotationFinder<0) return;
-
     realSolver->setSystemMBKMatrix(mparams);
 
     if (first)
@@ -160,6 +160,8 @@ void WarpPreconditioner<DataTypes>::updateSystemMatrix()
 {
     realSolver->updateSystemMatrix();
 
+    indRotationFinder = f_useRotationFinder.getValue()<rotationFinders.size() ? f_useRotationFinder.getValue() : -1;
+
     if (indRotationFinder>=0)
     {
         currentSystemSize = getSystemDimention();
@@ -189,7 +191,7 @@ void WarpPreconditioner<DataTypes>::setSystemRHVector(core::MultiVecDerivId v)
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::solveSystem()
 {
-    if (indRotationFinder>=0)
+    if (f_enable.getValue() && (indRotationFinder>=0))
     {
         //copy : systemRHVId->tmpVector2
         executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), systemRHVId, &tmpVector1) );
@@ -198,14 +200,11 @@ void WarpPreconditioner<DataTypes>::solveSystem()
 
         //copy : tmpVector1->systemRHVId
         executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), *tmpVecId, &tmpVector2) );
-    }
 
-    realSolver->setSystemRHVector(*tmpVecId);
-    realSolver->setSystemLHVector(systemLHVId);
-    realSolver->solveSystem();
+        realSolver->setSystemRHVector(*tmpVecId);
+        realSolver->setSystemLHVector(systemLHVId);
+        realSolver->solveSystem();
 
-    if (indRotationFinder>=0)
-    {
         //copy : systemLHVId->tmpVector1
         executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), systemLHVId, &tmpVector1) );
 
@@ -213,6 +212,12 @@ void WarpPreconditioner<DataTypes>::solveSystem()
 
         //copy : tmpVector2->systemLHVId
         executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), systemLHVId, &tmpVector2) );
+    }
+    else
+    {
+        realSolver->setSystemRHVector(systemRHVId);
+        realSolver->setSystemLHVector(systemLHVId);
+        realSolver->solveSystem();
     }
 }
 
