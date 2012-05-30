@@ -56,6 +56,7 @@ declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 
 declare(sofasimulation, modules/sofa/simulation/common, sofacore tinyxml)
 declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
+declare(sofagraph,      modules/sofa/simulation/graph,  sofasimulation)
 declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
 declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacomponentcollision)
 
@@ -111,7 +112,7 @@ declare(sofa_misc_collision, modules/sofa/component/sofa_misc_collision.pro, sof
 declare(sofa_misc_collision_dev, modules/sofa/component/sofa_misc_collision_dev.pro, sofa_mesh_collision sofa_misc_collision sofa_volumetric_data sofabgl)
 declare(sofa_misc_solver, modules/sofa/component/sofa_misc_solver.pro, sofatree)
 declare(sofa_misc_solver_dev, modules/sofa/component/sofa_misc_solver_dev.pro, sofatree)
-declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping)
+declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping sofagraph)
 
 declare(sofa_misc_dev, modules/sofa/component/sofa_misc_dev.pro, sofa_base_collision sofa_misc_topology sofa_boundary_condition sofa_deformable sofa_advanced_fem  sofa_constraint)
 
@@ -258,6 +259,9 @@ enable(sofacore)
 
 enable(sofasimulation)
 enable(sofatree)
+contains (DEFINES, SOFA_DEV) {
+	enable(sofagraph)
+} # END !SOFA_DEV
 
 enable(sofa_component_base)
 enable(sofa_component_common)
