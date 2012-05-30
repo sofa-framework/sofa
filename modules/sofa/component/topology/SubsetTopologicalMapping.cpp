@@ -309,6 +309,18 @@ void SubsetTopologicalMapping::init()
 
 unsigned int SubsetTopologicalMapping::getFromIndex(unsigned int ind)
 {
+    SetIndex& pD2S = getDst2Src(core::topology::POINT);
+    SetIndex& eD2S = getDst2Src(core::topology::EDGE);
+    SetIndex& tD2S = getDst2Src(core::topology::TRIANGLE);
+    SetIndex& qD2S = getDst2Src(core::topology::QUAD);
+    SetIndex& teD2S = getDst2Src(core::topology::TETRAHEDRON);
+    SetIndex& heD2S = getDst2Src(core::topology::HEXAHEDRON);
+    if (!heD2S.empty()) return heD2S[ind];
+    if (!teD2S.empty()) return teD2S[ind];
+    if (!qD2S.empty()) return qD2S[ind];
+    if (!tD2S.empty()) return tD2S[ind];
+    if (!eD2S.empty()) return eD2S[ind];
+    if (!pD2S.empty()) return pD2S[ind];
     return ind;
 }
 
