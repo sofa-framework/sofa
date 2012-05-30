@@ -162,16 +162,18 @@ public:
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_position0);
+        //helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_position0);
+
+        VecCoord pos0;
 
 
-        engine::BaseGaussPointSampler* sampler=NULL;
-        this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
-        if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
+
+        if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
+        if(_sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
         {
-            unsigned int nbp=sampler->getNbSamples();
+            unsigned int nbp =_sampler->getNbSamples();
             this->toModel->resize(nbp);
-            pos0.resize(nbp);  for(unsigned int i=0; i<nbp; i++) pos0[i]=sampler->getSample(i);
+            pos0.resize(nbp);  for(unsigned int i=0; i<nbp; i++) pos0[i]=_sampler->getSample(i);
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
         }
         else  // retrieve initial positions from children dofs (vec types)
@@ -180,15 +182,15 @@ public:
         }
 
         // init shape function
-        this->getContext()->get(ShapeFunction,core::objectmodel::BaseContext::SearchUp);
-        if ( !ShapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
+        if( !_shapeFunction ) this->getContext()->get(_shapeFunction,core::objectmodel::BaseContext::SearchUp);
+        if ( !_shapeFunction ) serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
         else
         {
             vector<mCoord> mpos0;
             mpos0.resize(pos0.size());
             for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
-            ShapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
             this->f_index.endEdit();        this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 
@@ -408,15 +410,26 @@ public:
 
 
 
+    SparseMatrix& getJacobianBlocks() { return jacobian; }
+
+
+    engine::BaseGaussPointSampler* _sampler;
+    BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
+    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    Data<vector<VReal> >       f_w;
+    Data<vector<VGradient> >   f_dw;
+    Data<vector<VHessian> >    f_ddw;
+
 protected:
     BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
-        , ShapeFunction(NULL)
+        , _sampler(NULL)
+        , _shapeFunction(NULL)
         , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
         , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
         , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
-        , f_position0 ( initData ( &f_position0,"restPosition","initial spatial positions of children" ) )
+        //, f_position0 ( initData ( &f_position0,"restPosition","initial spatial positions of children" ) )
         , maskFrom(NULL)
         , maskTo(NULL)
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
@@ -427,13 +440,9 @@ protected:
 
     virtual ~BaseDeformationMapping()     { }
 
-    BaseShapeFunction* ShapeFunction;        ///< where the weights are computed
-    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    Data<vector<VReal> >       f_w;
-    Data<vector<VGradient> >   f_dw;
-    Data<vector<VHessian> >    f_ddw;
 
-    Data<VecCoord >    f_position0; ///< initial spatial positions of children
+
+    //Data<VecCoord >    f_position0; ///< initial spatial positions of children
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 
@@ -490,6 +499,8 @@ protected:
         }
         K.endEdit();
     }
+
+
 };
 
 

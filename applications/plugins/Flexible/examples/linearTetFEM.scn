@@ -46,6 +46,13 @@
 	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
 	    </Node>
+	    
+	    <!--<Node 	name="I"   >
+		    <MechanicalObject  template="I331" name="I"  />
+		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" deviatoric="true"/>
+		    <VolumePreservationForceField  template="I331" k="1000"/> 
+		</Node>-->
+		
         </Node>
 
 	<Node 	name="mass"   >

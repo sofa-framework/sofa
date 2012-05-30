@@ -73,8 +73,11 @@ public:
     {
         Inherited::init();
 
-        this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchParents);
-        if(!this->parentTopology) serr<<"MeshTopology not found"<<sendl;
+        if( !parentTopology )
+        {
+            this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
+            if(!this->parentTopology) serr<<"MeshTopology not found"<<sendl;
+        }
 
         addInput(&f_inPosition);
         setDirtyValue();
@@ -85,6 +88,7 @@ public:
 protected:
     TopologyGaussPointSampler()    :   Inherited()
         , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
+        , parentTopology( 0 )
     {
     }
 
@@ -218,9 +222,9 @@ protected:
 
 
 // returns integrated volumes and moments across an element
-    inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
+    inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& /*p4*/, const unsigned int order)
     {
-        Coord u=p2-p1,v=p3-p1,w=p4-p1;
+        Coord u=p2-p1,v=p3-p1/*,w=p4-p1*/;
         Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=std::max(std::max(fabs(u[i]),fabs(v[i])),fabs(v[i]));
         Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
         Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];

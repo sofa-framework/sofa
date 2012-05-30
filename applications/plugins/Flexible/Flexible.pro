@@ -32,6 +32,8 @@ SOURCES = initFlexible.cpp\
     material/HookeForceField.cpp \
     material/MooneyRivlinForceField.cpp \
     material/VolumePreservationForceField.cpp \
+    forceField/FlexibleTetrahedronFEMForceField.cpp \
+
 
 HEADERS = initFlexible.h \
     BaseJacobian.h \
@@ -89,6 +91,8 @@ HEADERS = initFlexible.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
+    forceField/FlexibleTetrahedronFEMForceField.h \
+
 
 contains(DEFINES, SOFA_HAVE_IMAGE) {
 
