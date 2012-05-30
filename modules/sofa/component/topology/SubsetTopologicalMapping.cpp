@@ -309,6 +309,11 @@ void SubsetTopologicalMapping::init()
 
 unsigned int SubsetTopologicalMapping::getFromIndex(unsigned int ind)
 {
+    return ind;
+}
+
+unsigned int SubsetTopologicalMapping::getGlobIndex(unsigned int ind)
+{
     SetIndex& pD2S = getDst2Src(core::topology::POINT);
     SetIndex& eD2S = getDst2Src(core::topology::EDGE);
     SetIndex& tD2S = getDst2Src(core::topology::TRIANGLE);
