@@ -62,7 +62,7 @@
 //#define CAPTURE_PERIOD 5
 
 //#define NOVISUAL
-//#define NOMSG
+#define NOMSG
 
 namespace sofa
 {
