@@ -134,13 +134,11 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     const unsigned nquads = _topology->getNbQuads();
     const unsigned newsize = ntris+2*nquads;
 
-    //int revision = _topology->getRevision();
-    //if (newsize==(unsigned)size)
-    //{
-    //Mesh revision is deprecated in BaseMeshTopology
-    //if(revision == meshRevision)
-    //return;
-    //}
+    int revision = _topology->getRevision();
+    if (newsize==(unsigned)size && revision == meshRevision)
+        return;
+    meshRevision = revision;
+
     needsUpdate=true;
 
     resize(newsize);
@@ -191,7 +189,6 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     }
     updateFlags();
     updateNormals();
-    //meshRevision = revision;
 }
 
 template<class DataTypes>

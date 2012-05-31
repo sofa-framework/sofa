@@ -260,7 +260,7 @@ void EdgeSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
         m_container->m_edgesAroundVertex.resize( m_container->getNbPoints() );
 }
 
-void EdgeSetTopologyModifier::removePointsProcess(sofa::helper::vector<unsigned int> &indices,
+void EdgeSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
     // Note: edges connected to the points being removed are not removed here (this situation should not occur)

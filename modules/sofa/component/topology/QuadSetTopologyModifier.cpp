@@ -361,7 +361,7 @@ void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
         m_container->m_quadsAroundEdge.resize( m_container->m_quadsAroundEdge.size() + edges.size() );
 }
 
-void QuadSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
+void QuadSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
     if(m_container->hasQuads())

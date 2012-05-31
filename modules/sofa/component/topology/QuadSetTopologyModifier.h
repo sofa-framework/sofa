@@ -159,7 +159,7 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices,
+    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
             const bool removeDOF = true);
 
     /** \brief Reorder this topology.

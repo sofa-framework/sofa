@@ -4,26 +4,39 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection />
     <Node name="FullTopology">
+        <MeshObjLoader name="loader" filename="mesh/sphere_05.obj" />
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <TriangleSetTopologyContainer name="Container1" fileTopology="mesh/sphere_05.obj" />
+        <TriangleSetTopologyContainer name="Container1" src="@loader" />
         <TriangleSetTopologyModifier />
         <TriangleSetTopologyAlgorithms />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" />
         <MechanicalObject name="dofs" />
-        <BoxROI name="roi1" box="-50 -50 -50 50 50 -25" />
+        <BoxROI name="roi1" box="-55 -55 -55 55 55 -25" />
         <FixedConstraint name="FixedConstraint" indices="@roi1.indices" />
-        <BoxROI name="roi2" box="-50 -50 0 50 50 50" />
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TriangularFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.4" />
-        <Node name="SubsetTopology">
-            <TriangleSetTopologyContainer name="Container2" position="@../Container1.position" triangles="@../roi2.trianglesInROI" />
+        <Node name="SubsetTopology1">
+            <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 25 55 55 55" />
+            <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
             <TriangleSetTopologyModifier />
-            <SubsetTopologicalMapping object1="Container1" object2="Container2"  />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" />
+            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" />
             <MechanicalObject />
             <IdentityMapping />
-            <TriangleModel />
+            <TriangleModel color="1 0 0 1" group="1" printLog="1" />
+        </Node>
+        <Node name="SubsetTopology2">
+            <BoxROI name="subsetROI" position="@../loader.position" triangles="@../loader.triangles" computeEdges="0" computeTetrahedra="0" box="-55 -55 -55 55 55 25" />
+            <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
+            <TriangleSetTopologyModifier />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" />
+            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" />
+            <MechanicalObject />
+            <IdentityMapping />
+            <TriangleModel group="1" printLog="1" />
         </Node>
     </Node>
 </Node>

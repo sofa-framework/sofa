@@ -61,11 +61,12 @@ protected:
 public:
 
     Data<bool> samePoints;
-
-    SetIndex mapS2D[6];
-    SetIndex mapD2S[6];
-    SetIndex& getSrc2Dst(core::topology::TopologyObjectType t) { return mapS2D[(int)t]; }
-    SetIndex& getDst2Src(core::topology::TopologyObjectType t) { return mapD2S[(int)t]; }
+    Data<SetIndex> pointS2D, pointD2S;
+    Data<SetIndex> edgeS2D, edgeD2S;
+    Data<SetIndex> triangleS2D, triangleD2S;
+    Data<SetIndex> quadS2D, quadD2S;
+    Data<SetIndex> tetrahedronS2D, tetrahedronD2S;
+    Data<SetIndex> hexahedronS2D, hexahedronD2S;
 
     virtual void init();
 
