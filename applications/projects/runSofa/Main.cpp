@@ -33,9 +33,9 @@
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
 
+#include <sofa/simulation/graph/DAGSimulation.h>
 #ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
@@ -159,19 +159,20 @@ int main(int argc, char** argv)
 
     if(gui!="batch") glutInit(&argc,argv);
 
-#ifdef SOFA_DEV
-    if (simulationType == "bgl")
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    else if (simulationType == "dag")
+    if (simulationType == "dag")
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     else
-#endif
-#ifdef SOFA_SMP
-        if (simulationType == "smp")
-            sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+#ifdef SOFA_DEV
+        if (simulationType == "bgl")
+            sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
         else
 #endif
-            sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#ifdef SOFA_SMP
+            if (simulationType == "smp")
+                sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+            else
+#endif
+                sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::component::init();
 #ifdef SOFA_DEV
