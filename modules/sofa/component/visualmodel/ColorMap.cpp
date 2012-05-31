@@ -115,7 +115,7 @@ ColorMap::ColorMap(const std::string& name)
 
 ColorMap* ColorMap::getDefault()
 {
-    static ColorMap defaultColorMap("name");
+    static ColorMap defaultColorMap("default");
     return &defaultColorMap;
 }
 

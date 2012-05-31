@@ -96,7 +96,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 {
     unsigned int nTriangles = m_container->getNbTriangles();
 
-    // Test if the topology will still fullfil the conditions if this triangles is added.
+    // Test if the topology will still fulfill the conditions if this triangles is added.
     if (addTrianglesPreconditions(triangles))
     {
         /// effectively add triangles in the topology container
@@ -119,7 +119,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fullfil. " << std::endl;
+        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fulfilled. " << std::endl;
     }
 }
 
@@ -130,7 +130,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
 {
     unsigned int nTriangles = m_container->getNbTriangles();
 
-    // Test if the topology will still fullfil the conditions if this triangles is added.
+    // Test if the topology will still fulfill the conditions if this triangles is added.
     if (addTrianglesPreconditions(triangles))
     {
         /// actually add triangles in the topology container
@@ -153,7 +153,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fullfil. " << std::endl;
+        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fulfilled. " << std::endl;
     }
 }
 
@@ -316,7 +316,7 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
     }
 
 
-    if (removeTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are removed.
+    if (removeTrianglesPreconditions(triangles)) // Test if the topology will still fulfill the conditions if these triangles are removed.
     {
         /// add the topological changes in the queue
         removeTrianglesWarning(triangles);
@@ -329,7 +329,7 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fullfil. " << std::endl;
+        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fulfilled. " << std::endl;
     }
 
 }

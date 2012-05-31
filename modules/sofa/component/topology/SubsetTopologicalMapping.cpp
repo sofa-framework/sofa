@@ -71,8 +71,13 @@ int SubsetTopologicalMappingClass = core::RegisterObject("This class is a specif
 
 SubsetTopologicalMapping::SubsetTopologicalMapping()
     : samePoints(initData(&samePoints,false,"samePoints", "True if the same set of points is used in both topologies"))
+    , handleEdges(initData(&handleEdges,false,"handleEdges", "True if edges events and mapping should be handled"))
+    , handleTriangles(initData(&handleTriangles,false,"handleTriangles", "True if triangles events and mapping should be handled"))
+    , handleQuads(initData(&handleQuads,false,"handleQuads", "True if quads events and mapping should be handled"))
+    , handleTetrahedra(initData(&handleTetrahedra,false,"handleTetrahedra", "True if tetrahedra events and mapping should be handled"))
+    , handleHexahedra(initData(&handleHexahedra,false,"handleHexahedra", "True if hexahedra events and mapping should be handled"))
     , pointS2D(initData(&pointS2D,"pointS2D", "Internal source -> destination topology points map"))
-    , pointD2S(initData(&pointD2S,"pointD2S", "Internal destination -> source topology points map"))
+    , pointD2S(initData(&pointD2S,"pointD2S", "Internal destination -> source topology points map (link to SubsetMapping::indices to handle the mechanical-side of the mapping"))
     , edgeS2D(initData(&edgeS2D,"edgeS2D", "Internal source -> destination topology edges map"))
     , edgeD2S(initData(&edgeD2S,"edgeD2S", "Internal destination -> source topology edges map"))
     , triangleS2D(initData(&triangleS2D,"triangleS2D", "Internal source -> destination topology triangles map"))
@@ -124,7 +129,7 @@ void SubsetTopologicalMapping::init()
     if (fromModel && toModel)
     {
         const Index npS = (Index)fromModel->getNbPoints();
-        const Index npD = (Index)toModel->getNbPoints();
+        const Index npD = (Index)  toModel->getNbPoints();
         helper::WriteAccessor<Data<SetIndex> > pS2D(pointS2D);
         helper::WriteAccessor<Data<SetIndex> > pD2S(pointD2S);
         helper::WriteAccessor<Data<SetIndex> > eS2D(edgeS2D);
@@ -138,24 +143,39 @@ void SubsetTopologicalMapping::init()
         helper::WriteAccessor<Data<SetIndex> > heS2D(hexahedronS2D);
         helper::WriteAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
         const Index neS = (Index)fromModel->getNbEdges();
-        const Index neD = (Index)toModel->getNbEdges();
+        const Index neD = (Index)  toModel->getNbEdges();
         const Index ntS = (Index)fromModel->getNbTriangles();
-        const Index ntD = (Index)toModel->getNbTriangles();
+        const Index ntD = (Index)  toModel->getNbTriangles();
         const Index nqS = (Index)fromModel->getNbQuads();
-        const Index nqD = (Index)toModel->getNbQuads();
+        const Index nqD = (Index)  toModel->getNbQuads();
         const Index nteS = (Index)fromModel->getNbTetrahedra();
-        const Index nteD = (Index)toModel->getNbTetrahedra();
+        const Index nteD = (Index)  toModel->getNbTetrahedra();
         const Index nheS = (Index)fromModel->getNbHexahedra();
-        const Index nheD = (Index)toModel->getNbHexahedra();
+        const Index nheD = (Index)  toModel->getNbHexahedra();
         if (!samePoints.getValue())
         {
             pS2D.resize(npS); pD2S.resize(npD);
         }
-        eS2D.resize(neS); eD2S.resize(neD);
-        tS2D.resize(ntS); tD2S.resize(ntD);
-        qS2D.resize(nqS); qD2S.resize(nqD);
-        teS2D.resize(nteS); teD2S.resize(nteD);
-        heS2D.resize(nheS); heD2S.resize(nheD);
+        if (handleEdges.getValue())
+        {
+            eS2D.resize(neS); eD2S.resize(neD);
+        }
+        if (handleTriangles.getValue())
+        {
+            tS2D.resize(ntS); tD2S.resize(ntD);
+        }
+        if (handleQuads.getValue())
+        {
+            qS2D.resize(nqS); qD2S.resize(nqD);
+        }
+        if (handleTetrahedra.getValue())
+        {
+            teS2D.resize(nteS); teD2S.resize(nteD);
+        }
+        if (handleHexahedra.getValue())
+        {
+            heS2D.resize(nheS); heD2S.resize(nheD);
+        }
         if (!samePoints.getValue())
         {
             if (fromModel->hasPos() && toModel->hasPos())
@@ -197,7 +217,7 @@ void SubsetTopologicalMapping::init()
                 return;
             }
         }
-        if (neS > 0 && neD > 0)
+        if (handleEdges.getValue() && neS > 0 && neD > 0)
         {
             std::map<core::topology::Topology::Edge,Index> emapS;
             for (Index es = 0; es < neS; ++es)
@@ -222,7 +242,7 @@ void SubsetTopologicalMapping::init()
                 }
             }
         }
-        if (ntS > 0 && ntD > 0)
+        if (handleTriangles.getValue() && ntS > 0 && ntD > 0)
         {
             std::map<core::topology::Topology::Triangle,Index> tmapS;
             for (Index ts = 0; ts < ntS; ++ts)
@@ -247,7 +267,7 @@ void SubsetTopologicalMapping::init()
                 }
             }
         }
-        if (nqS > 0 && nqD > 0)
+        if (handleQuads.getValue() && nqS > 0 && nqD > 0)
         {
             std::map<core::topology::Topology::Quad,Index> qmapS;
             for (Index qs = 0; qs < nqS; ++qs)
@@ -272,7 +292,7 @@ void SubsetTopologicalMapping::init()
                 }
             }
         }
-        if (nteS > 0 && nteD > 0)
+        if (handleTetrahedra.getValue() && nteS > 0 && nteD > 0)
         {
             std::map<core::topology::Topology::Tetrahedron,Index> temapS;
             for (Index tes = 0; tes < nteS; ++tes)
@@ -297,7 +317,7 @@ void SubsetTopologicalMapping::init()
                 }
             }
         }
-        if (nheS > 0 && nheD > 0)
+        if (handleHexahedra.getValue() && nheS > 0 && nheD > 0)
         {
             std::map<core::topology::Topology::Hexahedron,Index> hemapS;
             for (Index hes = 0; hes < nheS; ++hes)
@@ -322,6 +342,19 @@ void SubsetTopologicalMapping::init()
                 }
             }
         }
+        if (!samePoints.getValue())
+            sout << " P: "<<fromModel->getNbPoints() << "->" << toModel->getNbPoints() << "/" << (fromModel->getNbPoints() - toModel->getNbPoints());
+        if (handleEdges.getValue())
+            sout << " E: "<<fromModel->getNbEdges() << "->" << toModel->getNbEdges() << "/" << (fromModel->getNbEdges() - toModel->getNbEdges());
+        if (handleTriangles.getValue())
+            sout << " T: "<<fromModel->getNbTriangles() << "->" << toModel->getNbTriangles() << "/" << (fromModel->getNbTriangles() - toModel->getNbTriangles());
+        if (handleQuads.getValue())
+            sout << " Q: "<<fromModel->getNbQuads() << "->" << toModel->getNbQuads() << "/" << (fromModel->getNbQuads() - toModel->getNbQuads());
+        if (handleTetrahedra.getValue())
+            sout << " TE: "<<fromModel->getNbTetrahedra() << "->" << toModel->getNbTetrahedra() << "/" << (fromModel->getNbTetrahedra() - toModel->getNbTetrahedra());
+        if (handleHexahedra.getValue())
+            sout << " HE: "<<fromModel->getNbHexahedra() << "->" << toModel->getNbHexahedra() << "/" << (fromModel->getNbHexahedra() - toModel->getNbHexahedra());
+        sout << sendl;
     }
 }
 
@@ -332,18 +365,36 @@ unsigned int SubsetTopologicalMapping::getFromIndex(unsigned int ind)
 
 unsigned int SubsetTopologicalMapping::getGlobIndex(unsigned int ind)
 {
-    helper::ReadAccessor<Data<SetIndex> > pD2S(pointD2S);
-    helper::ReadAccessor<Data<SetIndex> > eD2S(edgeD2S);
-    helper::ReadAccessor<Data<SetIndex> > tD2S(triangleD2S);
-    helper::ReadAccessor<Data<SetIndex> > qD2S(quadD2S);
-    helper::ReadAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
-    helper::ReadAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
-    if (!heD2S.empty()) return heD2S[ind];
-    if (!teD2S.empty()) return teD2S[ind];
-    if (!qD2S.empty()) return qD2S[ind];
-    if (!tD2S.empty()) return tD2S[ind];
-    if (!eD2S.empty()) return eD2S[ind];
-    if (!pD2S.empty()) return pD2S[ind];
+    if (handleHexahedra.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
+        if (!heD2S.empty()) return heD2S[ind];
+    }
+    if (handleTetrahedra.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
+        if (!teD2S.empty()) return teD2S[ind];
+    }
+    if (handleQuads.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > qD2S(quadD2S);
+        if (!qD2S.empty()) return qD2S[ind];
+    }
+    if (handleTriangles.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > tD2S(triangleD2S);
+        if (!tD2S.empty()) return tD2S[ind];
+    }
+    if (handleEdges.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > eD2S(edgeD2S);
+        if (!eD2S.empty()) return eD2S[ind];
+    }
+    if (!samePoints.getValue())
+    {
+        helper::ReadAccessor<Data<SetIndex> > pD2S(pointD2S);
+        if (!pD2S.empty()) return pD2S[ind];
+    }
     return ind;
 }
 
@@ -359,9 +410,9 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
     PointSetTopologyModifier *toPointMod = NULL;
     EdgeSetTopologyModifier *toEdgeMod = NULL;
     TriangleSetTopologyModifier *toTriangleMod = NULL;
-    //QuadSetTopologyModifier *toQuadMod = NULL;
-    //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
-    //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+    QuadSetTopologyModifier *toQuadMod = NULL;
+    TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+    HexahedronSetTopologyModifier *toHexahedronMod = NULL;
 
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
@@ -376,13 +427,13 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
     helper::WriteAccessor<Data<SetIndex> > eD2S(edgeD2S);
     helper::WriteAccessor<Data<SetIndex> > tS2D(triangleS2D);
     helper::WriteAccessor<Data<SetIndex> > tD2S(triangleD2S);
-    //helper::WriteAccessor<Data<SetIndex> > qS2D(quadS2D);
-    //helper::WriteAccessor<Data<SetIndex> > qD2S(quadD2S);
-    //helper::WriteAccessor<Data<SetIndex> > teS2D(tetrahedronS2D);
-    //helper::WriteAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
-    //helper::WriteAccessor<Data<SetIndex> > heS2D(hexahedronS2D);
-    //helper::WriteAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
-
+    helper::WriteAccessor<Data<SetIndex> > qS2D(quadS2D);
+    helper::WriteAccessor<Data<SetIndex> > qD2S(quadD2S);
+    helper::WriteAccessor<Data<SetIndex> > teS2D(tetrahedronS2D);
+    helper::WriteAccessor<Data<SetIndex> > teD2S(tetrahedronD2S);
+    helper::WriteAccessor<Data<SetIndex> > heS2D(hexahedronS2D);
+    helper::WriteAccessor<Data<SetIndex> > heD2S(hexahedronD2S);
+    int count = 0;
     while( itBegin != itEnd )
     {
         const TopologyChange* topoChange = *itBegin;
@@ -393,17 +444,62 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::ENDING_EVENT:
         {
-            std::cout << "ENDING_EVENT" << std::endl;
+            sout << "[" << count << "]ENDING_EVENT" << sendl;
             toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
             toPointMod->propagateTopologicalChanges();
+            if (!samePoints.getValue())
+            {
+                if (pS2D.size() != (unsigned)fromModel->getNbPoints()) serr << "Invalid pointS2D size : " << pS2D.size() << " != " << fromModel->getNbPoints() << sendl;
+                if (pD2S.size() != (unsigned)  toModel->getNbPoints()) serr << "Invalid pointD2S size : " << pD2S.size() << " != " <<   toModel->getNbPoints() << sendl;
+            }
+            if (handleEdges.getValue())
+            {
+                if (eS2D.size() != (unsigned)fromModel->getNbEdges()) serr << "Invalid edgeS2D size : " << eS2D.size() << " != " << fromModel->getNbEdges() << sendl;
+                if (eD2S.size() != (unsigned)  toModel->getNbEdges()) serr << "Invalid edgeD2S size : " << eD2S.size() << " != " <<   toModel->getNbEdges() << sendl;
+            }
+            if (handleTriangles.getValue())
+            {
+                if (tS2D.size() != (unsigned)fromModel->getNbTriangles()) serr << "Invalid triangleS2D size : " << tS2D.size() << " != " << fromModel->getNbTriangles() << sendl;
+                if (tD2S.size() != (unsigned)  toModel->getNbTriangles()) serr << "Invalid triangleD2S size : " << tD2S.size() << " != " <<   toModel->getNbTriangles() << sendl;
+            }
+            if (handleQuads.getValue())
+            {
+                if (qS2D.size() != (unsigned)fromModel->getNbQuads()) serr << "Invalid quadS2D size : " << qS2D.size() << " != " << fromModel->getNbQuads() << sendl;
+                if (qD2S.size() != (unsigned)  toModel->getNbQuads()) serr << "Invalid quadD2S size : " << qD2S.size() << " != " <<   toModel->getNbQuads() << sendl;
+            }
+            if (handleTetrahedra.getValue())
+            {
+                if (teS2D.size() != (unsigned)fromModel->getNbTetrahedra()) serr << "Invalid tetrahedronS2D size : " << teS2D.size() << " != " << fromModel->getNbTetrahedra() << sendl;
+                if (teD2S.size() != (unsigned)  toModel->getNbTetrahedra()) serr << "Invalid tetrahedronD2S size : " << teD2S.size() << " != " <<   toModel->getNbTetrahedra() << sendl;
+            }
+            if (handleHexahedra.getValue())
+            {
+                if (heS2D.size() != (unsigned)fromModel->getNbHexahedra()) serr << "Invalid hexahedronS2D size : " << heS2D.size() << " != " << fromModel->getNbHexahedra() << sendl;
+                if (heD2S.size() != (unsigned)  toModel->getNbHexahedra()) serr << "Invalid hexahedronD2S size : " << heD2S.size() << " != " <<   toModel->getNbHexahedra() << sendl;
+            }
+            if (!samePoints.getValue())
+                sout << " P: "<<fromModel->getNbPoints() << "->" << toModel->getNbPoints() << "/" << (fromModel->getNbPoints() - toModel->getNbPoints());
+            if (handleEdges.getValue())
+                sout << " E: "<<fromModel->getNbEdges() << "->" << toModel->getNbEdges() << "/" << (fromModel->getNbEdges() - toModel->getNbEdges());
+            if (handleTriangles.getValue())
+                sout << " T: "<<fromModel->getNbTriangles() << "->" << toModel->getNbTriangles() << "/" << (fromModel->getNbTriangles() - toModel->getNbTriangles());
+            if (handleQuads.getValue())
+                sout << " Q: "<<fromModel->getNbQuads() << "->" << toModel->getNbQuads() << "/" << (fromModel->getNbQuads() - toModel->getNbQuads());
+            if (handleTetrahedra.getValue())
+                sout << " TE: "<<fromModel->getNbTetrahedra() << "->" << toModel->getNbTetrahedra() << "/" << (fromModel->getNbTetrahedra() - toModel->getNbTetrahedra());
+            if (handleHexahedra.getValue())
+                sout << " HE: "<<fromModel->getNbHexahedra() << "->" << toModel->getNbHexahedra() << "/" << (fromModel->getNbHexahedra() - toModel->getNbHexahedra());
+            sout << sendl;
             break;
         }
 
         case core::topology::POINTSADDED:
         {
             const PointsAdded * pAdd = static_cast< const PointsAdded * >( topoChange );
-            std::cout << "POINTSADDED : " << pAdd->getNbAddedVertices() << std::endl;
+            unsigned int pS0 = (samePoints.getValue() ? toModel->getNbPoints() : pS2D.size());
+            unsigned int nSadd = pAdd->getNbAddedVertices();
+            sout << "[" << count << "]POINTSADDED : " << nSadd << " : " << pS0 << " - " << (pS0 + nSadd-1) << sendl;
             if (samePoints.getValue())
             {
                 toPointMod->addPointsProcess(pAdd->getNbAddedVertices());
@@ -414,15 +510,15 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 helper::vector< helper::vector<Index> > ancestors;
                 helper::vector< helper::vector<double> > coefs;
-                unsigned int nadd = 0;
-                unsigned int pS0 = pS2D.size();
+                unsigned int nDadd = 0;
                 unsigned int pD0 = pD2S.size();
-                pS2D.resize(pS0+nadd);
+                pS2D.resize(pS0+nSadd);
                 ancestors.reserve(pAdd->ancestorsList.size());
                 coefs.reserve(pAdd->coefs.size());
-                for (Index pi = 0; pi < pAdd->getNbAddedVertices(); ++pi)
+                for (Index pi = 0; pi < nSadd; ++pi)
                 {
-                    pS2D[pS0+pi] = core::topology::Topology::InvalidID;
+                    Index ps = pS0+pi;
+                    pS2D[ps] = core::topology::Topology::InvalidID;
                     bool inDst = true;
                     if (!pAdd->ancestorsList.empty())
                         for (unsigned int i=0; i<pAdd->ancestorsList[pi].size() && inDst; ++i)
@@ -432,27 +528,29 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                                 inDst = false;
                         }
                     if (!inDst) continue;
-
-                    pS2D[pS0+pi] = pD0+nadd;
-                    pD2S[pD0+nadd] = pS0+pi;
+                    Index pd = pD0+nDadd;
+                    pD2S.resize(pd+1);
+                    pS2D[ps] = pd;
+                    pD2S[pd] = ps;
 
                     if (!pAdd->ancestorsList.empty())
                     {
-                        ancestors.resize(nadd+1);
-                        coefs.resize(nadd+1);
+                        ancestors.resize(nDadd+1);
+                        coefs.resize(nDadd+1);
                         for (unsigned int i=0; i<pAdd->ancestorsList[pi].size(); ++i)
                         {
                             if (pAdd->coefs[pi][i] == 0.0) continue;
-                            ancestors[nadd].push_back(pS2D[pAdd->ancestorsList[pi][i]]);
-                            coefs[nadd].push_back(pAdd->coefs[pi][i]);
+                            ancestors[nDadd].push_back(pS2D[pAdd->ancestorsList[pi][i]]);
+                            coefs[nDadd].push_back(pAdd->coefs[pi][i]);
                         }
                     }
-                    ++nadd;
+                    ++nDadd;
                 }
-                if (nadd > 0)
+                if (nDadd > 0)
                 {
-                    toPointMod->addPointsProcess(nadd);
-                    toPointMod->addPointsWarning(nadd, ancestors, coefs, true);
+                    sout << "    -> POINTSADDED : " << nDadd << " : " << pD0 << " - " << (pD0 + nDadd-1) << sendl;
+                    toPointMod->addPointsProcess(nDadd);
+                    toPointMod->addPointsWarning(nDadd, ancestors, coefs, true);
                     toPointMod->propagateTopologicalChanges();
                 }
             }
@@ -464,7 +562,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             sofa::helper::vector<unsigned int> tab = pRem->getArray();
             if (samePoints.getValue())
             {
-                std::cout << "POINTSREMOVED : " << tab.size() << " : " << tab << std::endl;
+                sout << "[" << count << "]POINTSREMOVED : " << tab.size() << " : " << tab << sendl;
                 toPointMod->removePointsWarning(tab, true);
                 toPointMod->propagateTopologicalChanges();
                 toPointMod->removePointsProcess(tab, true);
@@ -481,7 +579,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                         continue;
                     tab2.push_back(pd);
                 }
-                std::cout << "POINTSREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << std::endl;
+                sout << "[" << count << "]POINTSREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
                 // apply removals in pS2D
                 {
                     unsigned int last = pS2D.size() -1;
@@ -532,7 +630,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             const sofa::helper::vector<unsigned int> &inv_tab = pRenumber->getinv_IndexArray();
             if (samePoints.getValue())
             {
-                std::cout << "POINTSRENUMBERING : " << tab.size() << " : " << tab << std::endl;
+                sout << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " : " << tab << sendl;
                 toPointMod->renumberPointsWarning(tab, inv_tab, true);
                 toPointMod->propagateTopologicalChanges();
                 toPointMod->renumberPointsProcess(tab, inv_tab, true);
@@ -552,7 +650,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                     tab2[pd] = pd2;
                     inv_tab2[pd2] = pd;
                 }
-                std::cout << "POINTSRENUMBERING : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << std::endl;
+                sout << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
                 toPointMod->renumberPointsWarning(tab2, inv_tab2, true);
                 toPointMod->propagateTopologicalChanges();
                 toPointMod->renumberPointsProcess(tab2, inv_tab2, true);
@@ -578,10 +676,11 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::EDGESADDED:
         {
+            if (!handleEdges.getValue()) break;
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( topoChange );
-            std::cout << "EDGESADDED : " << eAdd->getNbAddedEdges() << std::endl;
+            sout << "[" << count << "]EDGESADDED : " << eAdd->getNbAddedEdges() << " : " << eAdd->edgeIndexArray << " : " << eAdd->edgeArray << sendl;
             //toEdgeMod->addEdgesProcess(eAdd->edgeArray);
             //toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
             //toEdgeMod->propagateTopologicalChanges();
@@ -589,17 +688,19 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             helper::vector< Index > edgeIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
-            unsigned int nadd = 0;
+            unsigned int nSadd = eAdd->getNbAddedEdges();
+            unsigned int nDadd = 0;
             unsigned int eS0 = eS2D.size();
             unsigned int eD0 = eD2S.size();
-            eS2D.resize(eS0+nadd);
+            eS2D.resize(eS0+nSadd);
             edgeArray.reserve(eAdd->edgeArray.size());
             edgeIndexArray.reserve(eAdd->edgeIndexArray.size());
             ancestors.reserve(eAdd->ancestorsList.size());
             coefs.reserve(eAdd->coefs.size());
-            for (Index ei = 0; ei < eAdd->getNbAddedEdges(); ++ei)
+            for (Index ei = 0; ei < nSadd; ++ei)
             {
-                eS2D[eS0+ei] = core::topology::Topology::InvalidID;
+                Index es = eAdd->edgeIndexArray[ei];
+                eS2D[es] = core::topology::Topology::InvalidID;
                 bool inDst = true;
                 Edge data = apply_map(eAdd->edgeArray[ei], pS2D);
                 for (unsigned int i=0; i<data.size() && inDst; ++i)
@@ -613,27 +714,30 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
+                Index ed = eD0+nDadd;
                 edgeArray.push_back(data);
-                edgeIndexArray.push_back(eD0+nadd);
-                eS2D[eS0+ei] = eD0+nadd;
-                eD2S[eD0+nadd] = eS0+ei;
+                edgeIndexArray.push_back(ed);
+                eD2S.resize(ed+1);
+                eS2D[es] = ed;
+                eD2S[ed] = es;
                 if (!eAdd->ancestorsList.empty())
                 {
-                    ancestors.resize(nadd+1);
-                    coefs.resize(nadd+1);
+                    ancestors.resize(nDadd+1);
+                    coefs.resize(nDadd+1);
                     for (unsigned int i=0; i<eAdd->ancestorsList[ei].size(); ++i)
                     {
                         if (eAdd->coefs[ei][i] == 0.0) continue;
-                        ancestors[nadd].push_back(eS2D[eAdd->ancestorsList[ei][i]]);
-                        coefs[nadd].push_back(eAdd->coefs[ei][i]);
+                        ancestors[nDadd].push_back(eS2D[eAdd->ancestorsList[ei][i]]);
+                        coefs[nDadd].push_back(eAdd->coefs[ei][i]);
                     }
                 }
-                ++nadd;
+                ++nDadd;
             }
-            if (nadd > 0)
+            if (nDadd > 0)
             {
+                sout << "    -> EDGESADDED : " << nDadd << " : " << edgeIndexArray << " : " << edgeArray << sendl;
                 toEdgeMod->addEdgesProcess(edgeArray);
-                toEdgeMod->addEdgesWarning(nadd, edgeArray, edgeIndexArray, ancestors, coefs);
+                toEdgeMod->addEdgesWarning(nDadd, edgeArray, edgeIndexArray, ancestors, coefs);
                 toEdgeMod->propagateTopologicalChanges();
             }
             break;
@@ -641,6 +745,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::EDGESREMOVED:
         {
+            if (!handleEdges.getValue()) break;
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
@@ -658,7 +763,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                     continue;
                 tab2.push_back(ed);
             }
-            std::cout << "EDGESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << std::endl;
+            sout << "[" << count << "]EDGESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
             // apply removals in eS2D
             {
                 unsigned int last = eS2D.size() -1;
@@ -705,10 +810,26 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::TRIANGLESADDED:
         {
+            if (!handleTriangles.getValue()) break;
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( topoChange );
-            std::cout << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() << std::endl;
+            sout << "[" << count << "]TRIANGLESADDED : " << tAdd->getNbAddedTriangles() << " : " << tAdd->triangleIndexArray << " : " << tAdd->triangleArray << sendl;
+            if (!tAdd->ancestorsList.empty())
+            {
+                int count = 0;
+                double sum = 0.0;
+                sout << "   ";
+                for (unsigned int i = 0; i < tAdd->ancestorsList.size(); ++i)
+                {
+                    sout << "    " << tAdd->ancestorsList[i];
+                    count += tAdd->ancestorsList[i].size();
+                    for (unsigned int j=0; j<tAdd->ancestorsList[i].size(); ++j)
+                        sum += tAdd->coefs[i][j];
+                }
+                sout << sendl;
+                sout << "     " << tAdd->ancestorsList.size() << " ancestor lists specified, " << count << " ancestors total, " << sum/tAdd->ancestorsList.size() << " avg coefs sum" << sendl;
+            }
             //toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
             //toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
             //toTriangleMod->propagateTopologicalChanges();
@@ -716,17 +837,19 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             helper::vector< Index > triangleIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
-            unsigned int nadd = 0;
+            unsigned int nSadd = tAdd->getNbAddedTriangles();
+            unsigned int nDadd = 0;
             unsigned int tS0 = tS2D.size();
             unsigned int tD0 = tD2S.size();
-            tS2D.resize(tS0+nadd);
+            tS2D.resize(tS0+nSadd);
             triangleArray.reserve(tAdd->triangleArray.size());
             triangleIndexArray.reserve(tAdd->triangleIndexArray.size());
             ancestors.reserve(tAdd->ancestorsList.size());
             coefs.reserve(tAdd->coefs.size());
-            for (Index ti = 0; ti < tAdd->getNbAddedTriangles(); ++ti)
+            for (Index ti = 0; ti < nSadd; ++ti)
             {
-                tS2D[tS0+ti] = core::topology::Topology::InvalidID;
+                Index ts = tAdd->triangleIndexArray[ti];
+                tS2D[ts] = core::topology::Topology::InvalidID;
                 bool inDst = true;
                 Triangle data = apply_map(tAdd->triangleArray[ti], pS2D);
                 for (unsigned int i=0; i<data.size() && inDst; ++i)
@@ -740,27 +863,30 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
+                Index td = tD0+nDadd;
                 triangleArray.push_back(data);
-                triangleIndexArray.push_back(tD0+nadd);
-                tS2D[tS0+ti] = tD0+nadd;
-                tD2S[tD0+nadd] = tS0+ti;
+                triangleIndexArray.push_back(td);
+                tD2S.resize(td+1);
+                tS2D[ts] = td;
+                tD2S[td] = ts;
                 if (!tAdd->ancestorsList.empty())
                 {
-                    ancestors.resize(nadd+1);
-                    coefs.resize(nadd+1);
+                    ancestors.resize(nDadd+1);
+                    coefs.resize(nDadd+1);
                     for (unsigned int i=0; i<tAdd->ancestorsList[ti].size(); ++i)
                     {
                         if (tAdd->coefs[ti][i] == 0.0) continue;
-                        ancestors[nadd].push_back(tS2D[tAdd->ancestorsList[ti][i]]);
-                        coefs[nadd].push_back(tAdd->coefs[ti][i]);
+                        ancestors[nDadd].push_back(tS2D[tAdd->ancestorsList[ti][i]]);
+                        coefs[nDadd].push_back(tAdd->coefs[ti][i]);
                     }
                 }
-                ++nadd;
+                ++nDadd;
             }
-            if (nadd > 0)
+            if (nDadd > 0)
             {
+                sout << "    -> TRIANGLESADDED : " << nDadd  << " : " << triangleIndexArray << " : " << triangleArray << sendl;
                 toTriangleMod->addTrianglesProcess(triangleArray);
-                toTriangleMod->addTrianglesWarning(nadd, triangleArray, triangleIndexArray, ancestors, coefs);
+                toTriangleMod->addTrianglesWarning(nDadd, triangleArray, triangleIndexArray, ancestors, coefs);
                 toTriangleMod->propagateTopologicalChanges();
             }
             break;
@@ -768,6 +894,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::TRIANGLESREMOVED:
         {
+            if (!handleTriangles.getValue()) break;
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
@@ -785,7 +912,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                     continue;
                 tab2.push_back(td);
             }
-            std::cout << "TRIANGLESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << std::endl;
+            sout << "[" << count << "]TRIANGLESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
             // apply removals in tS2D
             {
                 unsigned int last = tS2D.size() -1;
@@ -807,7 +934,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 toTriangleMod->removeTrianglesWarning(tab2);
                 toTriangleMod->propagateTopologicalChanges();
-                toTriangleMod->removeTrianglesProcess(tab2, false);
+                toTriangleMod->removeTrianglesProcess(tab2, !handleEdges.getValue());
                 // apply removals in tD2S
                 {
                     unsigned int last = tD2S.size() -1;
@@ -833,7 +960,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             serr << "Unknown topological change " << changeType << sendl;
             break;
         };
-
+        ++count;
         ++itBegin;
     }
     toPointMod->propagateTopologicalChanges();

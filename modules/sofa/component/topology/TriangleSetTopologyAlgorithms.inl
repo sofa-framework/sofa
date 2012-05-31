@@ -1008,9 +1008,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         triangles_barycoefs.resize (triangles_barycoefs.size()+2);
 
                         triangles_ancestors[triangles_ancestors.size()-2].push_back (triId);
-                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (0.5); //that is the question... ??
+                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (1.0);
                         triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
-                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (0.5);
+                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (1.0);
                         found = true;
 
                         break;
@@ -1062,7 +1062,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 for (unsigned int j = 0; j<3; j++)
                 {
                     triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDSecond);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/3); // ??
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1.0);
                 }
 
                 new_triangles.push_back (Triangle ( theTriangleSecond[0], theTriangleSecond[1], new_edge_points[i+1]));
@@ -1114,9 +1114,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         triangles_barycoefs.resize (triangles_barycoefs.size()+2);
 
                         triangles_ancestors[triangles_ancestors.size()-2].push_back (triId);
-                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (0.5); //that is the question... ??
+                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (1.0);
                         triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
-                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (0.5);
+                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (1.0);
 
                         break;
                     }
@@ -1169,7 +1169,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         for (unsigned int k = 0; k<3; k++)
                         {
                             triangles_ancestors[triangles_ancestors.size()-k-1].push_back (triId);
-                            triangles_barycoefs[triangles_barycoefs.size()-k-1].push_back (1/3); // ??
+                            triangles_barycoefs[triangles_barycoefs.size()-k-1].push_back (1.0);
                         }
                         break;
                     }
@@ -1249,7 +1249,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 for (unsigned int j = 0; j<4; j++)
                 {
                     triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDSecond);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/4); // ??
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1.0);
                 }
 
 
@@ -1296,7 +1296,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 for (unsigned int j = 0; j<3; j++)
                 {
                     triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/3); // ??
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1.0);
                 }
 
                 new_triangles.push_back (Triangle ( p1, theTriangleFirst[0], theTriangleFirst[1]));
@@ -1334,7 +1334,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 for (unsigned int j = 0; j<4; j++)
                 {
                     triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/4); // ??
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1.0);
                 }
 
                 //	  std::cout << "triangle1: " << p1 <<" - " << theTriangleFirst[edgeInTriangle] << " - " << theTriangleFirst[(edgeInTriangle+1)%3] << std::endl;
@@ -1544,7 +1544,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 for (unsigned int j = 0; j<5; j++)
                 {
                     triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/5); // ??
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1.0);
                 }
 
                 removed_triangles.push_back(triangleIDFirst);

@@ -34,7 +34,6 @@
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/component/linearsolver/BlocMatrixWriter.h>
-#include <sofa/component/visualmodel/ColorMap.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -95,6 +94,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , f_restScale(initData(&f_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
     , showStressValue(initData(&showStressValue,true,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , showStressColorMap(initData(&showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
     , drawPrevMaxStress((Real)-1.0)
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &triangleInfo);
@@ -570,7 +570,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         if (drawPrevMaxStress > maxStress)
             maxStress = drawPrevMaxStress; //(Real)(maxStress * 0.01 + drawPrevMaxStress * 0.99);
         drawPrevMaxStress = maxStress;
-        visualmodel::ColorMap::evaluator<Real> evalColor = visualmodel::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
+        visualmodel::ColorMap::evaluator<Real> evalColor = showStressColorMap.getValue().getEvaluator(minStress, maxStress);
         if (showStressValue)
         {
             std::vector< Vector3 > points;

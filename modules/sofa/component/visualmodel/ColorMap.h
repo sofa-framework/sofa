@@ -57,7 +57,7 @@ public:
     class evaluator
     {
     public:
-        evaluator(ColorMap* map, Real vmin, Real vmax)
+        evaluator(const ColorMap* map, Real vmin, Real vmax)
             : map(map), vmin(vmin), vmax(vmax), vscale((vmax == vmin) ? (Real)0 : (map->entries.size()-1)/(vmax-vmin)) {}
 
         Color operator()(Real r)
@@ -73,16 +73,36 @@ public:
             return c1+(c2-c1)*(e-i);
         }
     protected:
-        ColorMap* map;
+        const ColorMap* map;
         const Real vmin;
         const Real vmax;
         const Real vscale;
     };
 
     template<class Real>
-    evaluator<Real> getEvaluator(Real vmin, Real vmax)
+    evaluator<Real> getEvaluator(Real vmin, Real vmax) const
     {
-        return evaluator<Real>(this, vmin, vmax);
+        if (!entries.empty())
+            return evaluator<Real>(this, vmin, vmax);
+        else
+            return evaluator<Real>(getDefault(), vmin, vmax);
+    }
+
+    inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
+    {
+        if (m.name.empty()) out << "\"\"";
+        else out << m.name;
+        out << " ";
+        out << m.entries;
+        return out;
+    }
+
+    inline friend std::istream& operator >> (std::istream& in, ColorMap& m )
+    {
+        in >> m.name;
+        if (m.name == "\"\"") m.name = "";
+        in >> m.entries;
+        return in;
     }
 };
 
