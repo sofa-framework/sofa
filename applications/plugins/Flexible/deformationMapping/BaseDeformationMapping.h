@@ -130,6 +130,7 @@ public:
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
+    typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
@@ -190,8 +191,8 @@ public:
             mpos0.resize(pos0.size());
             for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
-            _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
-            this->f_index.endEdit();        this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
+            _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            this->f_index.endEdit();     this->f_M.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 
         // init jacobians
@@ -203,7 +204,7 @@ public:
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                jacobian[i][j].init( in[index],pos0[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
+                jacobian[i][j].init( in[index],pos0[i],f_M.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
 
@@ -419,6 +420,7 @@ public:
     Data<vector<VReal> >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
+    Data<VMaterialToSpatial>    f_M;
 
 protected:
     BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
@@ -429,6 +431,7 @@ protected:
         , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
         , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
+        , f_M ( initData ( &f_M,"M","Transformations from material to 3d space (linear for now..)" ) )
         //, f_position0 ( initData ( &f_position0,"restPosition","initial spatial positions of children" ) )
         , maskFrom(NULL)
         , maskTo(NULL)

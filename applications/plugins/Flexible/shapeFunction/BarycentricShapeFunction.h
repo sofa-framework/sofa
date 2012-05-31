@@ -66,11 +66,16 @@ public:
 
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
-    typedef Mat<material_dimensions,material_dimensions,Real> BasesType;
+    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
+    enum {spatial_dimensions=Inherit::spatial_dimensions};
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> BasesType;
     sofa::helper::vector<BasesType> bases;
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
+        M=MaterialToSpatial();
+        for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
+
         // resize input
         unsigned int nbRef=this->f_nbRef.getValue();
         ref.resize(nbRef); ref.fill(0);
@@ -110,6 +115,14 @@ public:
                 if ( index!=-1 ) // addPointInLine
                 {
                     ref[0]=edges[index][0]; ref[1]=edges[index][1];
+                    // local frame
+                    Coord u[3];
+                    u[0] = parent[edges[index][1]]-parent[edges[index][0]]; u[0].normalize();
+                    u[1] = Coord(1,0,0); if(dot(u[0],u[1])==1.) u[1] = Coord(0,1,0); if(dot(u[0],u[1])==1.) u[1] = Coord(0,0,1);
+                    u[2] = cross(u[0],u[1]); u[2].normalize();
+                    u[1]=cross(u[2],u[0]);
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    // weights
                     w[0]=(Real)1.-coefs[0]; w[1]=coefs[0];
                     if(dw) {  (*dw)[0]=-bases[index][0]; (*dw)[1]=bases[index][0]; }
                 }
@@ -133,6 +146,14 @@ public:
                 if ( index!=-1 && index<c0 ) // addPointInTriangle
                 {
                     ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
+                    // local frame
+                    Coord u[3];
+                    u[0] = parent[triangles[index][1]]-parent[triangles[index][0]]; u[0].normalize();
+                    u[1] = parent[triangles[index][2]]-parent[triangles[index][0]];
+                    u[2] = cross(u[0],u[1]); u[2].normalize();
+                    u[1]=cross(u[2],u[0]);
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    // weights
                     w[0]=(Real)1.-coefs[0]-coefs[1];                     w[1]=coefs[0];               w[2]=coefs[1];
                     if(dw) {  (*dw)[0]=-bases[index][0]-bases[index][1]; (*dw)[1]=bases[index][0];    (*dw)[2]=bases[index][1]; }
                 }
@@ -143,6 +164,14 @@ public:
                     Gradient dfx=bases[index-c0][0],dfy=bases[index-c0][1];
                     Gradient dgx=-dfx,dgy=-dfy;
                     for ( unsigned int i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
+                    // local frame
+                    Coord u[3];
+                    u[0] = parent[quads[index-c0][1]]-parent[quads[index-c0][0]]; u[0].normalize();
+                    u[1] = parent[quads[index-c0][3]]-parent[quads[index-c0][0]];
+                    u[2] = cross(u[0],u[1]); u[2].normalize();
+                    u[1]=cross(u[2],u[0]);
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    // weights
                     w[0]=gx*gy; w[1]=fx*gy; w[2]=fx*fy; w[3]=gx*fy;
                     if(dw)
                     {
@@ -232,8 +261,8 @@ public:
     inline Hessian covs(const Gradient& v1, const Gradient& v2)
     {
         Hessian res;
-        for ( unsigned int i = 0; i < material_dimensions; ++i)
-            for ( unsigned int j = i; j < material_dimensions; ++j)
+        for ( int i = 0; i < Hessian::nbLines; ++i)
+            for ( int j = i; j < Hessian::nbCols; ++j)
                 res(i,j) = res(j,i) = v1[i] * v2[j] + v2[i] * v1[j];
         return res;
     }
@@ -284,7 +313,7 @@ public:
                     BasesType m,mt;
                     m[0] = parent[triangles[t][1]]-parent[triangles[t][0]];
                     m[1] = parent[triangles[t][2]]-parent[triangles[t][0]];
-//                    m[2] = cross ( m[0],m[1] );
+                    m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[t].invert ( mt );
 //                    cerr<<"BarycentricShapeFunctio::init(), parent[triangles[t][1]]-parent[triangles[t][0]] = " << parent[triangles[t][1]]-parent[triangles[t][0]] << endl;
@@ -297,7 +326,7 @@ public:
                     BasesType m,mt;
                     m[0] = parent[quads[c][1]]-parent[quads[c][0]];
                     m[1] = parent[quads[c][3]]-parent[quads[c][0]];
-//                    m[2] = cross ( m[0],m[1] );
+                    m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[c0+c].invert ( mt );
                 }

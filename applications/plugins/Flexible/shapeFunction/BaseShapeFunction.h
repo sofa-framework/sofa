@@ -49,6 +49,7 @@ using defaulttype::Mat;
 using defaulttype::MatSym;
 using helper::vector;
 
+
 /** Compute interpolation weights and their derivatives.
   Interpolation is defined across a material space as \f$ x_j = \sum_i w_{ij} x_i \f$, where the x are material coordinates (3 dimensions for a volumetris solid, 2 for a surface, 1 for a line, independently of the dimension of the space they are moving in).
   Shape function \f$ w_{ij}(x_j) \f$ encodes the influence of a parent node at \f$ x_i \f$ an a child node at \f$ x_j \f$.
@@ -58,6 +59,7 @@ using helper::vector;
   When \f$ w_i(x_j)=0, i!=j \f$ and  \f$ w_i(x_i)=1 \f$, shape functions are called interpolating. Otherwise they are called approximating.
   In first order finite elements, the shape functions are the barycentric coordinates.
   */
+
 template <class TShapeFunctionTypes>
 class BaseShapeFunction : public virtual core::objectmodel::BaseObject
 {
@@ -67,17 +69,20 @@ public:
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
     enum {material_dimensions=ShapeFunctionTypes::material_dimensions};
+    static const unsigned int spatial_dimensions=3;
 
     /** @name types */
     //@{
     typedef vector<unsigned int> VRef;
     typedef vector<Real> VReal;
-    typedef Vec<material_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef Vec<spatial_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
     typedef vector<Coord> VCoord;
-    typedef Vec<material_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
+    typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
     typedef vector<Gradient> VGradient;
-    typedef Mat<material_dimensions,material_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
     typedef vector<Hessian> VHessian;
+    typedef Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
+    typedef vector<MaterialToSpatial> VMaterialToSpatial;
     //@}
 
     /** @name data */
@@ -116,28 +121,28 @@ public:
 
     /// compute shape function values (and their first and second derivatives) at a given child position
     /// this is the main function to be reimplemented
-    virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
+    virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
 
     /// wrappers
-    void computeShapeFunction(const vector<Coord>& childPosition, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)
     {
         unsigned int nb=childPosition.size();
-        ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
+        M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
+        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
     }
 
-    void computeShapeFunction(const vector<Coord>& childPosition, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw)
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw)
     {
         unsigned int nb=childPosition.size();
-        ref.resize(nb);        w.resize(nb);   dw.resize(nb);
-        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i]);
+        M.resize(nb);     ref.resize(nb);        w.resize(nb);   dw.resize(nb);
+        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i]);
     }
 
-    void computeShapeFunction(const vector<Coord>& childPosition, vector<VRef>& ref, vector<VReal>& w)
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w)
     {
         unsigned int nb=childPosition.size();
-        ref.resize(nb);        w.resize(nb);
-        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],ref[i],w[i]);
+        M.resize(nb); ref.resize(nb);        w.resize(nb);
+        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],M[i],ref[i],w[i]);
     }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
@@ -164,7 +169,7 @@ public:
                 if(dw)
                 {
                     Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(unsigned int o=0; o<material_dimensions; o++) for(unsigned int p=0; p<material_dimensions; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
                     (*dw)[j]=dwn;
                 }
                 w[j]=wn;

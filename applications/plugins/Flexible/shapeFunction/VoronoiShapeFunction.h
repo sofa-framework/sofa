@@ -74,6 +74,8 @@ public:
 
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
+    enum {spatial_dimensions=Inherit::spatial_dimensions};
+    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     //@}
 
     /** @name  Image data */
@@ -113,8 +115,9 @@ public:
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const VoronoiShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
+
         // resize input
         unsigned int nbRef=this->f_nbRef.getValue();
         ref.resize(nbRef); ref.fill(0);
@@ -124,6 +127,11 @@ public:
 
         // get transform
         raTransform inT(this->transform);
+
+        // material to world transformation = image orienation
+        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(inT->getRotation() * (Real)M_PI / (Real)180.0);
+        Mat<3,3,Real> R; q.toMatrix(R);
+        for ( unsigned int i = 0; i < spatial_dimensions; i++ )  for ( unsigned int j = 0; j < material_dimensions; j++ ) M[i][j]=R[i][j];
 
         // get precomputed indices and weights
         raInd indData(this->f_index);

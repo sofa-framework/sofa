@@ -77,48 +77,48 @@ void TriangleDeformationMapping<TIn, TOut>::init()
         inverseRestEdges.resize( triangles.size() );
 
         // look for the shape function, to get the material coordinates
-        ShapeFunction* shapeFunction=NULL;
-        this->getContext()->get(shapeFunction,core::objectmodel::BaseContext::SearchUp);
+        /*      ShapeFunction* shapeFunction=NULL;
+              this->getContext()->get(shapeFunction,core::objectmodel::BaseContext::SearchUp);
 
-        if( shapeFunction!=NULL && shapeFunction->f_position.getValue().size() == pos.size() ) // if material coordinates are available
+              if( shapeFunction!=NULL && shapeFunction->f_position.getValue().size() == pos.size() ) // if material coordinates are available
+              {
+                  helper::ReadAccessor<Data<VMCoord> > mcoords(shapeFunction->f_position);
+        //            cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), found material coordinates : " << mcoords << endl ;
+                  for(unsigned i=0; i<triangles.size(); i++ )
+                  {
+                      MMat m;
+                      m[0] = mcoords[triangles[i][1]] - mcoords[triangles[i][0]];   // edge01
+                      m[1] = mcoords[triangles[i][2]] - mcoords[triangles[i][0]];   // edge02
+                      m.transpose();
+                      bool inverted = invertMatrix(inverseRestEdges[i], m);
+
+                      if( !inverted  ){
+                          cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
+                      }
+        //                else {
+        //                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), edge matrix: " << endl << m << endl;
+        //                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix: " << endl << inverseRestEdges[i] << endl;
+        //                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), product: " << endl << m * inverseRestEdges[i] << endl;
+        //                }
+                  }
+              }
+              else*/
+        for(unsigned i=0; i<triangles.size(); i++ ) // otherwise use the world coordinates to create a local parametrization
         {
-            helper::ReadAccessor<Data<VMCoord> > mcoords(shapeFunction->f_position);
-//            cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), found material coordinates : " << mcoords << endl ;
-            for(unsigned i=0; i<triangles.size(); i++ )
-            {
-                MMat m;
-                m[0] = mcoords[triangles[i][1]] - mcoords[triangles[i][0]];   // edge01
-                m[1] = mcoords[triangles[i][2]] - mcoords[triangles[i][0]];   // edge02
-                m.transpose();
-                bool inverted = invertMatrix(inverseRestEdges[i], m);
+            MMat m;
+            InDeriv edge01 = pos[triangles[i][1]] - pos[triangles[i][0]];
+            m[0] = MCoord( edge01.norm(), 0. );                      // first axis aligned with first edge
+            InDeriv edge02 = pos[triangles[i][2]] - pos[triangles[i][0]];
+            InDeriv normal = cross(edge01,edge02);
+            InDeriv v = cross(normal,edge01);                        // second axis orthogonal to the first, in the plane of the triangle
+            m[1] = MCoord( edge01*edge02/edge01.norm(), v*edge02 );  // second edge in the local orthonormal frame
 
-                if( !inverted  )
-                {
-                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
-                }
-//                else {
-//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), edge matrix: " << endl << m << endl;
-//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix: " << endl << inverseRestEdges[i] << endl;
-//                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), product: " << endl << m * inverseRestEdges[i] << endl;
-//                }
+            if( ! invertMatrix(inverseRestEdges[i], m) )
+            {
+                cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
             }
+            //            else cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix " << endl << m << endl;
         }
-        else for(unsigned i=0; i<triangles.size(); i++ ) // otherwise use the world coordinates to create a local parametrization
-            {
-                MMat m;
-                InDeriv edge01 = pos[triangles[i][1]] - pos[triangles[i][0]];
-                m[0] = MCoord( edge01.norm(), 0. );                      // first axis aligned with first edge
-                InDeriv edge02 = pos[triangles[i][2]] - pos[triangles[i][0]];
-                InDeriv normal = cross(edge01,edge02);
-                InDeriv v = cross(normal,edge01);                        // second axis orthogonal to the first, in the plane of the triangle
-                m[1] = MCoord( edge01*edge02/edge01.norm(), v*edge02 );  // second edge in the local orthonormal frame
-
-                if( ! invertMatrix(inverseRestEdges[i], m) )
-                {
-                    cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
-                }
-                //            else cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), inverted matrix " << endl << m << endl;
-            }
     }
 
     baseMatrices.resize( 1 );

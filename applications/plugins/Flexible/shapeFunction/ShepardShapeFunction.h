@@ -56,6 +56,8 @@ public:
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
+    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
+    typedef typename Inherit::Hessian Hessian;
 
     Data<Real> power;
 
@@ -64,11 +66,14 @@ public:
         Inherit::init();
     }
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
         helper::ReadAccessor<Data<vector<Coord> > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
         Real pw=power.getValue();
+
+        M=MaterialToSpatial();
+        for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
 
         // get the nbRef closest parents
         ref.resize(nbRef); ref.fill(0);
@@ -111,8 +116,8 @@ public:
                         // ddw = - pw.I/d(x,x_i)^(power+2) + pw.(pw+2).(x-x_i).(x-x_i)^T/d(x,x_i)^(power+4)
                         Real u4=u2*u2;
                         Real w4= (u4) ? (pw * (pw+2.) * w[j] / u4) : 0.;
-                        for(unsigned int k=0; k<this->material_dimensions; k++) (*ddw)[j](k,k)= - w2;
-                        for(unsigned int k=0; k<this->material_dimensions; k++) for(unsigned int m=0; m<this->material_dimensions; m++) (*ddw)[j](k,m)+=u[k]*u[m]*w4;
+                        for(int k=0; k<Hessian::nbLines; k++) (*ddw)[j](k,k)= - w2;
+                        for(int k=0; k<Hessian::nbLines; k++) for(int m=0; m<Hessian::nbCols; m++) (*ddw)[j](k,m)+=u[k]*u[m]*w4;
                     }
                 }
             }

@@ -105,7 +105,7 @@
     
     <Node name="Corotational 2D" >
 <EulerImplicitSolver /><CGLinearSolver  />
-    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="0 45 45 " scale="5 5 0" />
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="3 0 -6" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BarycentricShapeFunction template="ShapeFunction2d"  />
