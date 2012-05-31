@@ -111,6 +111,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
@@ -127,7 +128,7 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         C=(OutPos-InPos)*Pt;
@@ -186,6 +187,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
@@ -202,7 +204,7 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         C=(OutPos-InPos)*Pt;
@@ -260,32 +262,35 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,mdim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
 
+    typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+
+    typedef Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
-        - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
+        - \f$ F = grad p . M = (t+p0-t0).grad w.M + w.M  \f$
     where :
         - t0 is t in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w \f$
+        - \f$ d F = dt.grad w.M \f$
       */
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  (p0-t0).grad w + w.I   =  constant term
-    Gradient Ft;  ///< =   grad w     =  d F/dt
+    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
+    mGradient Ft;  ///< =   grad w.M     =  d F/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=dw;
+        Ft=M.transposed()*dw;
         C.getF()=covMN(OutPos-InPos,Ft);
-        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
+        C.getF()+=M*w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -340,31 +345,34 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,mdim,Real> Hessian;
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+
+    typedef Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
-        - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
+        - \f$ F = grad p.M = (t+p0-t0).grad w.M + w.M  \f$
     where :
         - t0 is t in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w \f$
+        - \f$ d F = dt.grad w.M \f$
       */
 
     static const bool constantJ=true;
 
     OutCoord C;       ///< =  (p0-t0).grad w + w.I   =  constant term
-    Gradient Ft;  ///< =   grad w     =  d F/dt
+    mGradient Ft;  ///< =   grad w     =  d F/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=dw;
+        Ft=M.transposed()*dw;
         C.getF()=covMN(OutPos-InPos,Ft);
-        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
+        C.getF()+=M*w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -419,38 +427,40 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,mdim,Real> Hessian;
-    typedef Mat<mdim,mdim,Real> HessianT;
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
+    typedef Vec<mdim,Real> mGradient;
+    typedef Mat<dim,mdim,Real> mHessian;
     /**
     Mapping:
-        - \f$ F = grad p = (t+p0-t0).grad w + w.I  \f$
-        - \f$ (grad F)_k = (t+p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]  \f$ the second term can be removed because \f$ \sum_i grad w_i =0\f$
+        - \f$ F = grad p.M = (t+p0-t0).grad w.M + w.M  \f$
+        - \f$ (grad F)_k = ( (t+p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w] ).M \f$ the second term can be removed because \f$ \sum_i grad w_i =0\f$
     where :
         - t0 is t in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - grad denotes spatial derivatives
         - _k denotes component/column k
     Jacobian:
-        - \f$ d F = dt.grad w \f$
-        - \f$ d (grad F)_k = dt.(grad2 w)_k^T \f$
+        - \f$ d F = dt.grad w.M \f$
+        - \f$ d (grad F)_k = dt.(grad2 w)_k^T.M \f$
       */
 
     static const bool constantJ=true;
 
     OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I,  (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]   =  constant term
     Real Pt;           ///< =   w     =  dp/dt
-    Gradient Ft;  ///< =   grad w     =  d F/dt
-    HessianT dFt;  ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
+    mGradient Ft;  ///< =   grad w.M     =  d F/dt
+    mHessian dFt;  ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Ft=dw;
+        Ft=M.transposed()*dw;
         C.getF()=covMN(OutPos-InPos,Ft);
-        for(unsigned int i=0; i<mdim; i++) C.getF()[i][i]+=w; // to do: anisotropy
-        dFt=ddw.transposed();
+        C.getF()+=M*w;
+        dFt=ddw.transposed()*M;
         for (unsigned int k = 0; k < dim; ++k)
         {
             C.getGradientF(k)=covMN(OutPos-InPos,dFt[k]);
@@ -526,6 +536,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -543,7 +554,7 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
@@ -606,6 +617,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -623,7 +635,7 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
         Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
@@ -683,33 +695,36 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,dim,Real> Hessian;
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+
+    typedef Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
-        - \f$ F = grad p = (t+A.q0).grad w + w.A.A0^{-1}  \f$
+        - \f$ F = grad p.M = (t+A.q0).grad w.M + w.A.A0^{-1}.M  \f$
     where :
         - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
         - q0 is the local position of p0.
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w + dA.( q0.grad w + w.A0^{-1} )\f$
+        - \f$ d F = dt.grad w.M + dA.( q0.grad w + w.A0^{-1} ).M\f$
     */
 
     static const bool constantJ=true;
 
-    Gradient Ft;       ///< =   grad w     =  d F/dt
-    OutCoord PFa;      ///< =   q0.grad w + w.A0^{-1}   =  dF/dA
+    mGradient Ft;       ///< =   grad w.M     =  d F/dt
+    OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ft=dw;
+        Ft=M.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
-        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * w; // to do: anisotropy
+        PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -771,15 +786,18 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<mdim,Real> Gradient;
-    typedef Mat<mdim,dim,Real> Hessian;
-    typedef Mat<dim,mdim,Real> HessianT;
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+
+    typedef Vec<mdim,Real> mGradient;
+    typedef Mat<dim,mdim,Real> mHessian;
 
     /**
     Mapping:
-        - \f$ F = grad p = (t+A.q0).grad w + w.A.A0^{-1}  \f$
-        - \f$ (grad F)_k = (t+A.q0).(grad2 w)_k^T + A.[(grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]  \f$
+        - \f$ F = grad p.M = (t+A.q0).grad w.M + w.A.A0^{-1}.M  \f$
+        - \f$ (grad F)_k = [ (t+A.q0).(grad2 w)_k^T + A.[(grad w)_k.A0^{-1} +  A0^{-1}_k.grad w] ].M \f$
     where :
         - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
@@ -787,28 +805,29 @@ public:
         - grad denotes spatial derivatives
         - _k denotes component/column k
     Jacobian:
-        - \f$ d F = dt.grad w + dA.( q0.grad w + w.A0^{-1} )\f$
-        - \f$ d (grad F)_k = dt.(grad2 w)_k^T + dA.[q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w] \f$
+        - \f$ d F = [dt.grad w + dA.( q0.grad w + w.A0^{-1} )].M \f$
+        - \f$ d (grad F)_k = [dt.(grad2 w)_k^T + dA.[q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w] ].M \f$
     */
 
     static const bool constantJ=true;
 
-    Gradient Ft;       ///< =   grad w     =  d F/dt
-    HessianT dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
+    mGradient Ft;       ///< =   grad w     =  d F/dt
+    mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
     OutCoord PFdFa;      ///< =   q0.grad w + w.A0^{-1}, [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Ft=dw;
-        dFt=ddw.transposed();
+        Ft=M.transposed()*dw;
+        dFt=ddw.transposed()*M;
 
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
-        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * w; // to do: anisotropy
+        PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
 
         Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
         Mat<dim,dim> AOinvT = AOinv.transposed();
-        for (unsigned int k = 0; k < dim; ++k) PFdFa.getGradientF(k) = covMN( vectorInLocalCoordinates, dFt[k]) + AOinv * dw[k] + covMN(AOinvT[k],dw);
+        Mat<dim,mdim> AOinvM; for (unsigned int k = 0; k < dim; ++k) AOinvM[k]=M.transposed()*AOinv[k];
+        for (unsigned int k = 0; k < dim; ++k) PFdFa.getGradientF(k) = covMN( vectorInLocalCoordinates, dFt[k]) + AOinvM * dw[k] + covMN(AOinvT[k],Ft);
     }
 
     void addapply( OutCoord& result, const InCoord& data )

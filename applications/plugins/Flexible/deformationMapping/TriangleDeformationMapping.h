@@ -87,8 +87,8 @@ public:
 
     typedef core::behavior::ShapeFunctionTypes<2,Real> ShapeFunctionType;             // 2d shape function
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
-    typedef typename ShapeFunction::Coord MCoord;                                     ///< material coordinates
-    typedef typename ShapeFunction::VCoord VMCoord;                                   ///< vector of material coordinates
+    typedef defaulttype::Vec<2,Real> MCoord;                                     ///< material coordinates
+    typedef vector<MCoord> VMCoord;                                   ///< vector of material coordinates
     typedef defaulttype::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
     typedef vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
 
