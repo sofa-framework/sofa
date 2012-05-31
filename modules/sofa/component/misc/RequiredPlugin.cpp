@@ -49,8 +49,23 @@ RequiredPlugin::RequiredPlugin()
 
 void RequiredPlugin::loadPlugin()
 {
-    sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName.getFullPath());
-    sofa::helper::system::PluginManager::getInstance().init();
+#ifdef WIN32
+    pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".dll"));
+#else
+    pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".so"));
+#endif
+    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName.getFullPath()))
+    {
+        sofa::helper::system::PluginManager::getInstance().init();
+    }
+    else
+    {
+        pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".dylib"));
+        if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName.getFullPath()))
+        {
+            sofa::helper::system::PluginManager::getInstance().init();
+        }
+    }
 }
 
 }
