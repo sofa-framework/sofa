@@ -430,7 +430,7 @@ void TetrahedronSetTopologyModifier::addTrianglesProcess(const sofa::helper::vec
         m_container->m_tetrahedraAroundTriangle.resize( m_container->getNumberOfTriangles() );
 }
 
-void TetrahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
+void TetrahedronSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
     if(m_container->hasTetrahedra())

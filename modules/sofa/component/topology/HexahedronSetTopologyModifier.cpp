@@ -519,7 +519,7 @@ void HexahedronSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< 
         m_container->m_hexahedraAroundQuad.resize( m_container->getNumberOfQuads() );
 }
 
-void HexahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
+void HexahedronSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
     if(m_container->hasHexahedra())

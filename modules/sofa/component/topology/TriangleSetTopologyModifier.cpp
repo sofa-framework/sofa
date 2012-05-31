@@ -513,7 +513,7 @@ void TriangleSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector
 
 
 
-void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
+void TriangleSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
 
