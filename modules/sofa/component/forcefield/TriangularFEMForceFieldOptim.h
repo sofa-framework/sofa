@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -301,6 +302,8 @@ public:
     /// Display parameters
     Data<bool> showStressValue;
     Data<bool> showStressVector;
+    Data<visualmodel::ColorMap> showStressColorMap;
+
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
     TFEMFFOTriangleStateHandler* triangleStateHandler;

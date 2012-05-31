@@ -61,6 +61,11 @@ protected:
 public:
 
     Data<bool> samePoints;
+    Data<bool> handleEdges;
+    Data<bool> handleTriangles;
+    Data<bool> handleQuads;
+    Data<bool> handleTetrahedra;
+    Data<bool> handleHexahedra;
     Data<SetIndex> pointS2D, pointD2S;
     Data<SetIndex> edgeS2D, edgeD2S;
     Data<SetIndex> triangleS2D, triangleD2S;
