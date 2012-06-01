@@ -17,13 +17,8 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  />
-
+	 <FlexibleTetrahedronFEMForceField  template="Vec3d" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" />	
 	    
-	    <FlexibleTetrahedronFEMForceField  template="Vec3d" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" />	
-	    
-		
-
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />

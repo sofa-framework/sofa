@@ -23,12 +23,16 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class SOFA_Flexible_API FlexibleTetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_Flexible_API FlexibleTetrahedronFEMForceField : virtual public core::behavior::ForceField<DataTypes>, virtual public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3>
 {
 public:
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
-    SOFA_CLASS(SOFA_TEMPLATE(FlexibleTetrahedronFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
+
+    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleTetrahedronFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
+
+    virtual std::string getTemplateName() const { return Inherit::getTemplateName(); }
+    static std::string templateName( const FlexibleTetrahedronFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
 
     /** @name  Input types    */
     //@{
@@ -41,7 +45,6 @@ public:
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
     typedef core::behavior::MechanicalState<DataTypes> MStateType;
     //@}
-
 
 
 
@@ -61,13 +64,10 @@ public:
         if( !topo ) { serr<<"No MeshTopology found"<<sendl; return; }
 
 
-
-        //TODO add this node into the graph
 /// ShapeFunction
-        ShapeFunction* shapeFunction = static_cast< ShapeFunction* >( _baseShapeFunction.get() );
-        shapeFunction->_state = this->mstate;
-        shapeFunction->parentTopology = topo;
-        shapeFunction->init();
+        ShapeFunction::_state = this->mstate;
+        ShapeFunction::parentTopology = topo;
+        ShapeFunction::init();
 
 
 /// GaussPointSampler
@@ -84,10 +84,8 @@ public:
         _baseDeformationMapping = core::objectmodel::New< DeformationMapping >( this->mstate, deformationDofs );
         DeformationMapping* deformationMapping = static_cast< DeformationMapping* >( _baseDeformationMapping.get() );
         deformationMapping->_sampler = gaussPointSampler;
-        deformationMapping->_shapeFunction = shapeFunction;
-        deformationMapping->init();
-        deformationDofs->resize(0); // save memory
-
+        deformationMapping->_shapeFunction = this;
+        deformationMapping->init( false );
 
         unsigned size = gaussPointSampler->getNbSamples();
 
@@ -294,7 +292,7 @@ protected:
 
     core::BaseMapping::SPtr _baseDeformationMapping;
     BaseMechanicalState::SPtr _baseDeformationDofs;
-    shapefunction::BaseShapeFunction<core::behavior::ShapeFunction3>::SPtr _baseShapeFunction;
+    //shapefunction::BaseShapeFunction<core::behavior::ShapeFunction3>::SPtr _baseShapeFunction;
     engine::BaseGaussPointSampler::SPtr _baseGaussPointSampler;
 
     Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
@@ -311,7 +309,7 @@ protected:
     {
         _baseDeformationDofs = core::objectmodel::New< DeformationDofs >();
         _baseGaussPointSampler = core::objectmodel::New< GaussPointSampler >();
-        _baseShapeFunction = core::objectmodel::New< ShapeFunction >();
+        //_baseShapeFunction = core::objectmodel::New< ShapeFunction >();
 
     }
 

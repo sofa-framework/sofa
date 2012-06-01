@@ -334,9 +334,9 @@ public:
     typedef Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
 
     /**
-    Mapping:   \f$ E = U.F.Vt\f$
+    Mapping:   \f$ E = Ut.F.V\f$
     where:  U/V are the spatial and material rotation parts of F and E is diagonal
-    Jacobian:    \f$  dE = U.dF.Vt \f$ Note that dE is not diagonal
+    Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
     */
 
     static const bool constantJ = false;
@@ -421,9 +421,9 @@ public:
 
 
     /**
-    Mapping:   \f$ E = U.F.Vt\f$
+    Mapping:   \f$ E = Ut.F.V\f$
     where:  U/V are the spatial and material rotation parts of F and E is diagonal
-    Jacobian:    \f$  dE = U.dF.Vt \f$ Note that dE is not diagonal
+    Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
     */
 
     static const bool constantJ = false;
