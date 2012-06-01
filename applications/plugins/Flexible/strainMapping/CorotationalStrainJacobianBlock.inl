@@ -60,6 +60,21 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 
 
+/// \return 0.5 * ( A + At )
+template<int N, class Real>
+static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N,Real>& A )
+{
+    defaulttype::Mat<N,N,Real> B;
+    for( int i=0 ; i<N ; i++ )
+    {
+        B[i][i] = A[i][i];
+        for( int j=i+1 ; j<N ; j++ )
+            B[i][j] = B[j][i] = (Real)0.5 * ( A[i][j] + A[j][i] );
+    }
+    return B;
+}
+
+
 /// 3D->3D
 template<typename Real>
 void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
@@ -67,7 +82,7 @@ void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
     helper::Decompose<Real>::QRDecomposition_stable( f, r );
 
     Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
-    s = symetrize( T ); // s = ( T + Tt ) * 0.5
+    s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 }
 
 /// 3D->2D
@@ -87,7 +102,7 @@ void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
     r[2][0] = edgex[2]; r[2][1] = edgey[2];
 
     Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
-    s = symetrize( T ); // s = ( T + Tt ) * 0.5
+    s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 }
 
 
@@ -103,7 +118,7 @@ void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
         Mat<3,3,Real> U, V; // the two rotations
         Vec<3,Real> F_diagonal; // diagonalized strain
 
-        Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+        Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos - right Cauchy Green deformation tensor
 
         helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
 
@@ -287,7 +302,7 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
     Mat<2,2,Real> V;
     Vec<2,Real> F_diagonal; // diagonalized strain
 
-    Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+    Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos - right Cauchy Green deformation tensor
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal );
 
@@ -362,7 +377,7 @@ public:
 
     void addapply_small( OutCoord& result, const InCoord& data )
     {
-        StrainMat strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+        StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
         R.identity();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
@@ -591,7 +606,7 @@ public:
     void addapply_small( OutCoord& result, const InCoord& data )
     {
         // order 0
-        StrainMat strainmat = symetrize( data.getF() ); // strainmat = ( F + Ft ) * 0.5
+        StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
         R.identity();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
@@ -601,7 +616,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
 
@@ -618,7 +633,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
 
@@ -635,7 +650,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
 
@@ -652,7 +667,7 @@ public:
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
             StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( symetrize( T ) ); // (T+Tt)*0.5
+            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
 

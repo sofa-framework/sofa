@@ -152,9 +152,8 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
-    /** @name Mapping functions */
-    //@{
-    virtual void init()
+
+    virtual void init( bool resizeOut )
     {
         if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
             maskFrom = &stateFrom->forceMask;
@@ -167,19 +166,20 @@ public:
 
         VecCoord pos0;
 
-
+        unsigned int size;
 
         if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
         if(_sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
         {
-            unsigned int nbp =_sampler->getNbSamples();
-            this->toModel->resize(nbp);
-            pos0.resize(nbp);  for(unsigned int i=0; i<nbp; i++) pos0[i]=_sampler->getSample(i);
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+            size =_sampler->getNbSamples();
+            if( resizeOut ) this->toModel->resize(size);
+            pos0.resize(size);  for(unsigned int i=0; i<size; i++) pos0[i]=_sampler->getSample(i);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
         }
         else  // retrieve initial positions from children dofs (vec types)
         {
-            pos0.resize(out.size());  for(unsigned int i=0; i<out.size(); i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
+            size = out.size();
+            pos0.resize(size);  for(unsigned int i=0; i<size; i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
         }
 
         // init shape function
@@ -196,8 +196,8 @@ public:
         }
 
         // init jacobians
-        jacobian.resize(out.size());
-        for(unsigned int i=0; i<out.size(); i++ )
+        jacobian.resize(size);
+        for(unsigned int i=0; i<size; i++ )
         {
             unsigned int nbref=this->f_index.getValue()[i].size();
             jacobian[i].resize(nbref);
@@ -213,7 +213,17 @@ public:
 
         reinit();
 
-        Inherit::init();
+        if( resizeOut ) Inherit::init();
+
+    }
+
+
+    /** @name Mapping functions */
+    //@{
+
+    virtual void init()
+    {
+        init( true );
     }
 
     virtual void reinit()
@@ -458,8 +468,8 @@ protected:
     void updateJ()
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        eigenJacobian.resizeBlocks(out.size(),in.size());
+        //helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+        eigenJacobian.resizeBlocks(jacobian.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
             // Put all the blocks of the row in an array, then send the array to the matrix

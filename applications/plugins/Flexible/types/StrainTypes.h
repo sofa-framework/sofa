@@ -542,19 +542,7 @@ static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
 // TODO: ADD  Mat*VoigtVec operators
 
 
-/// \return 0.5 * ( A + At )
-template<int N, class Real>
-static defaulttype::Mat<N,N,Real> symetrize( const defaulttype::Mat<N,N,Real>& A )
-{
-    defaulttype::Mat<N,N,Real> B;
-    for( int i=0 ; i<N ; i++ )
-    {
-        B[i][i] = A[i][i];
-        for( int j=i+1 ; j<N ; j++ )
-            B[i][j] = B[j][i] = (Real)0.5 * ( A[i][j] + A[j][i] );
-    }
-    return B;
-}
+
 
 
 
