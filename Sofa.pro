@@ -13,7 +13,8 @@ message( "PRE-CONFIG: " $${CONFIG})
 # Enable plugins in addition of the standard Sofa libraries
 ########################################################################
 
-usePlugin(PluginExample) 
+usePlugin(PluginExample)
+
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) { usePlugin(Compliant) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) { usePlugin(Flexible) }
@@ -65,11 +66,11 @@ contains (DEFINES, SOFA_HAVE_QTOGREVIEWER) {
 
 } # END !SOFA_RELEASE
 
-contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV 
+contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
 	contains (DEFINES, SOFA_HAVE_VULCAIN) {
                 usePlugin(vulcain)
-	}
+        }
 
         contains (DEFINES, SOFA_HAVE_ldidetection) {
                 usePlugin(ldidetection)
@@ -87,7 +88,7 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(BeamAdapter)
 	}
 
-	contains (DEFINES, SOFA_HAVE_SHELL) {
+        contains (DEFINES, SOFA_HAVE_SHELL) {
                 usePlugin(shells)
 	}
 
@@ -118,6 +119,9 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains (DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING) {
 		usePlugin(PhysicalFieldModeling)
 	}
+        contains (DEFINES, SOFA_HAVE_EmptyPlugin2) {
+                usePlugin(EmptyPlugin2)
+        }
 
 	contains (DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
 

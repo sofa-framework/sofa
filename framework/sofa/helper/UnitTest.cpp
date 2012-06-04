@@ -23,6 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "UnitTest.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -31,6 +34,7 @@ namespace helper
 {
 
 bool UnitTest::verbose=false;
+sofa::helper::vector<std::string> UnitTest::skippedTestMessages;
 
 UnitTest::UnitTest( std::string testName )
 {
@@ -51,6 +55,23 @@ bool UnitTest::fails()
             std::cerr << "FAIL: " << name << std::endl << std::endl;
     }
     return !s;
+}
+
+void UnitTest::log( const std::string& msg )
+{
+    skippedTestMessages.push_back(this->name + ": " + msg);
+}
+
+void UnitTest::printLogs()
+{
+    if( skippedTestMessages.size()>0 )
+    {
+        cerr<<"============================================" << endl;
+        cerr<<"UnitTest log messages: " << endl;
+        for( unsigned i=0; i<skippedTestMessages.size(); i++ )
+            cerr<< skippedTestMessages[i] <<endl;
+        cerr<<"============================================" << endl;
+    }
 }
 
 

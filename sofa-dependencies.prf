@@ -149,7 +149,7 @@ declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda sofagpuopencl)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 #--- Projects ---#
-declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component_dev)
+declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component sofa_component_dev)
 declare(generateDoc,      applications/projects/generateDoc,      sofa_component sofagpucuda)
 declare(GenerateRigid,    applications/projects/GenerateRigid,    sofa_component sofagpucuda)
 declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
@@ -206,6 +206,11 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
     declare(Flexible, applications/plugins/Flexible, sofaguiqt sofa_eigen2_solver   )
     enable(Flexible)
+}
+
+contains(DEFINES, SOFA_PROJECT_runUnitTests) {
+declare(runUnitTests, applications/projects/runUnitTests, sofa_eigen2_solver sofa_component )
+enable(runUnitTests)
 }
 
 
@@ -395,6 +400,8 @@ contains(DEFINES, SOFA_GPU_OPENCL) {
     enable(sofagpuopencl)
     enable(sofaOPENCL)
 }
+
+
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains(DEFINES, SOFA_HAVE_VDD) {

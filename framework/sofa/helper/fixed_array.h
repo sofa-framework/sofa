@@ -62,6 +62,7 @@
 #include <iterator>
 #include <algorithm>
 #include <math.h>
+#include <cassert>
 
 
 namespace sofa
@@ -228,10 +229,16 @@ public:
     // operator[]
     reference operator[](size_type i)
     {
+#ifndef NDEBUG
+        assert(i<N && "index in fixed_array must be smaller than size");
+#endif
         return elems[i];
     }
     const_reference operator[](size_type i) const
     {
+#ifndef NDEBUG
+        assert(i<N && "index in fixed_array must be smaller than size");
+#endif
         return elems[i];
     }
 
