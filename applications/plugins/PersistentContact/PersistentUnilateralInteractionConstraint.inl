@@ -303,10 +303,10 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
 
 
 template<class DataTypes>
-bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
+bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId) const
 {
-    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
-    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+    typename sofa::helper::vector< Contact >::const_iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::const_iterator itEnd = this->contacts.end();
 
     while (it != itEnd)
     {
@@ -317,17 +317,22 @@ bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contac
     }
 
     if (it != itEnd)
-        return (contactStates[it->id] == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
-    else
-        return false;
+    {
+        std::map< int, ContactState >::const_iterator contactStateIt = contactStates.find(it->id);
+
+        if (contactStateIt != contactStates.end())
+            return (contactStateIt->second == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
+    }
+
+    return false;
 }
 
 
 template<class DataTypes>
-bool PersistentUnilateralInteractionConstraint<DataTypes>::isSliding(int _contactId)
+bool PersistentUnilateralInteractionConstraint<DataTypes>::isSliding(int _contactId) const
 {
-    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
-    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+    typename sofa::helper::vector< Contact >::const_iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::const_iterator itEnd = this->contacts.end();
 
     while (it != itEnd)
     {
@@ -338,9 +343,14 @@ bool PersistentUnilateralInteractionConstraint<DataTypes>::isSliding(int _contac
     }
 
     if (it != itEnd)
-        return (contactStates[it->id] == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING);
-    else
-        return false;
+    {
+        std::map< int, ContactState >::const_iterator contactStateIt = contactStates.find(it->id);
+
+        if (contactStateIt != contactStates.end())
+            return (contactStateIt->second == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING);
+    }
+
+    return false;
 }
 
 
@@ -377,10 +387,10 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::setContactForce(int i
 }
 
 template<class DataTypes>
-typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getContactForce(int _contactId)
+typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getContactForce(int _contactId) const
 {
-    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
-    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+    typename sofa::helper::vector< Contact >::const_iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::const_iterator itEnd = this->contacts.end();
 
     while (it != itEnd)
     {
@@ -392,9 +402,11 @@ typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentU
 
     if (it != itEnd)
     {
-        if (contactForces.find(it->id) != contactForces.end())
+        std::map< int, Deriv >::const_iterator contactForcesIt = contactForces.find(it->id);
+
+        if (contactForcesIt != contactForces.end())
         {
-            return contactForces[it->id];
+            return contactForcesIt->second;
         }
     }
 
@@ -438,12 +450,12 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::clearInitForces()
 }
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates()
+void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates() const
 {
     std::cout << "-------------->debugContactStates\n";
 
-    typename std::map< int, ContactState >::iterator it = contactStates.begin();
-    typename std::map< int, ContactState >::iterator itEnd = contactStates.end();
+    typename std::map< int, ContactState >::const_iterator it = contactStates.begin();
+    typename std::map< int, ContactState >::const_iterator itEnd = contactStates.end();
 
     std::string s;
 
@@ -472,6 +484,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    return;
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);

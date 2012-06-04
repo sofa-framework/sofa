@@ -27,6 +27,8 @@
 
 #include <sofa/component/collision/FrictionContact.h>
 
+#include <sofa/core/collision/DetectionOutput.h>
+
 #include "PersistentContactMapping.h"
 
 #define DEBUG_INACTIVE_CONTACTS
@@ -80,12 +82,12 @@ struct ContactInfo
     int64_t m_detectionOutputId;
     int m_contactId;
 
-    core::CollisionElementIterator getFirstPrimitive()
+    core::CollisionElementIterator getFirstPrimitive() const
     {
         return m_elem.first;
     }
 
-    core::CollisionElementIterator getSecondPrimitive()
+    core::CollisionElementIterator getSecondPrimitive() const
     {
         return m_elem.second;
     }
@@ -169,15 +171,22 @@ protected:
     /// Removes duplicate contacts.
     void filterDuplicatedDetectionOutputs(TOutputVector &input, DetectionOutputVector &output);
 
-    void keepStickyContacts(DetectionOutputVector &output);
+    bool haveSameId(const core::collision::DetectionOutput &input_do, const core::collision::DetectionOutput &output_do);
+
+    bool areNear(const core::collision::DetectionOutput &input_do, const core::collision::DetectionOutput &output_do);
+
+    void keepStickyContacts(const DetectionOutputVector &output);
+
+    /// Reset constraint stored forces, contact states...
+    void resetConstraintStoredData();
 
     /// Checks if the DetectionOutput is corresponding to a sticked contact
     /// according to the previous contact resolution.
-    bool isSticked(sofa::core::collision::DetectionOutput*);
+    bool isSticked(sofa::core::collision::DetectionOutput*) const;
 
     /// Checks if the DetectionOutput is corresponding to a sliding contact
     /// according to the previous contact resolution.
-    bool isSliding(sofa::core::collision::DetectionOutput*);
+    bool isSliding(sofa::core::collision::DetectionOutput*) const;
 
     bool use_mapper_for_state1;
     bool use_mapper_for_state2;
@@ -190,9 +199,6 @@ protected:
 
     sofa::component::mapping::PersistentContactMapping *map1;
     sofa::component::mapping::PersistentContactMapping *map2;
-
-    sofa::core::BaseMapping *base_map1;
-    sofa::core::BaseMapping *base_map2;
 
     std::vector< Vector3 > barycentricValues1;
     std::vector< Vector3 > barycentricValues2;

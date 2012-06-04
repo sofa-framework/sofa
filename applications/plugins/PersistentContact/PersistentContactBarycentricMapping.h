@@ -39,6 +39,140 @@ namespace component
 namespace mapping
 {
 
+template<class TIn, class TOut>
+class PersistentContactBarycentricMapper  : public virtual core::objectmodel::BaseObject // TopologyBarycentricMapper<TIn, TOut>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut), core::objectmodel::BaseObject);
+
+    typedef TIn In;
+    typedef In InDataTypes;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+
+    /**
+     * @brief Add a new contact point in the mapper associated to a persistent contact barycentric mapping.
+     */
+    virtual int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) = 0;
+
+    /**
+     * @brief Add a previously existed contact point in the mapper associated to a persistent contact barycentric mapping.
+     */
+    virtual int keepContactPointFromInputMapping(const int /*index*/) {return 0;};
+
+    /**
+     * @brief Stores a copy of the barycentric data.
+     */
+    virtual void storeBarycentricData() {};
+};
+
+
+
+template<class TIn, class TOut>
+class PersistentContactBarycentricMapperMeshTopology : public BarycentricMapperMeshTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+{
+public:
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+
+    typedef TIn In;
+    typedef TOut Out;
+    typedef In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
+    typedef typename InDataTypes::Real Real;
+
+    PersistentContactBarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
+            topology::PointSetTopologyContainer* toTopology,
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
+        : BarycentricMapperMeshTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+    {
+    }
+
+    virtual ~PersistentContactBarycentricMapperMeshTopology()
+    {
+    }
+
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+};
+
+
+
+template<class TIn, class TOut>
+class PersistentContactBarycentricMapperSparseGridTopology : public BarycentricMapperSparseGridTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+{
+public:
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+
+    typedef TIn In;
+    typedef TOut Out;
+    typedef In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
+    typedef typename InDataTypes::Real Real;
+
+    typedef BarycentricMapperSparseGridTopology< TIn , TOut> Inherit;
+    typedef typename Inherit::CubeData CubeData;
+
+    PersistentContactBarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
+            topology::PointSetTopologyContainer* toTopology,
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
+        : BarycentricMapperSparseGridTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+    {
+    }
+
+    virtual ~PersistentContactBarycentricMapperSparseGridTopology()
+    {
+    }
+
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+
+    int keepContactPointFromInputMapping(const int /*index*/);
+
+    void storeBarycentricData();
+
+protected:
+    sofa::helper::vector< CubeData > m_storedMap;
+};
+
+
+
+template<class TIn, class TOut>
+class PersistentContactBarycentricMapperTetrahedronSetTopology : public BarycentricMapperTetrahedronSetTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+{
+public:
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+
+    typedef TIn In;
+    typedef TOut Out;
+    typedef In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
+    typedef typename InDataTypes::Real Real;
+
+    PersistentContactBarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
+            topology::PointSetTopologyContainer* toTopology,
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
+        : BarycentricMapperTetrahedronSetTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+    {
+    }
+
+    virtual ~PersistentContactBarycentricMapperTetrahedronSetTopology()
+    {
+    }
+
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+};
+
+
+
 template <class TIn, class TOut>
 class PersistentContactBarycentricMapping : public BarycentricMapping<TIn, TOut>, public PersistentContactMapping
 {
@@ -63,12 +197,17 @@ public:
 
     typedef core::topology::BaseMeshTopology BaseMeshTopology;
 
-    typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
-    typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
+    typedef PersistentContactBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
 
     PersistentContactBarycentricMapping()
-        : Inherit()
+        : m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , Inherit()
+    {
+    }
+
+    PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
+        : m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , Inherit(from, to)
     {
     }
 
@@ -82,7 +221,20 @@ public:
 
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
+    int keepContactPointFromInputMapping(const int);
+
+    void applyPositionAndFreePosition();
+
+    void handleEvent(sofa::core::objectmodel::Event*);
+
+protected:
     bool m_init;
+
+    void createPersistentMapperFromTopology(BaseMeshTopology *topology);
+
+    void storeBarycentricData();
+
+    SingleLink<PersistentContactBarycentricMapping<In, Out>, Mapper, BaseLink::FLAG_STRONGLINK> m_persistentMapper;
 };
 
 

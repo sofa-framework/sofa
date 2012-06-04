@@ -69,10 +69,10 @@ public:
         return 0;
     }
 
-    /// Apply linearized position.
-    virtual void applyLinearizedPosition()
+    /// Apply position and freeposition.
+    virtual void applyPositionAndFreePosition()
     {
-
+        std::cout << "applyPositionAndFreePosition is not implemented for this mapping" << std::endl;
     }
 
     Data< std::string > m_nameOfInputMap;
