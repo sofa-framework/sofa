@@ -127,7 +127,7 @@ bool MatrixTest<Real,RN,CN>::succeeds()
         this->msg<<" res = " << v2 << endl;
         success=false;
     }
-    log("Skipping test of CRSMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) as it crashes.");
+    log("Skipping test of CRSMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) as it crashes. Uncomment it in MatrixTest.inl to reproduce the crash.");
 //    cerr<<"now A2………"<<endl;
 //    A2.opMulV(&v2,&V);
 //    if( !areEqual(vref,v2) ){

@@ -2,7 +2,7 @@ load(sofa/pre)
 
 
 TEMPLATE = app
-TARGET = UnitTests
+TARGET = runUnitTests
 
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
@@ -23,6 +23,7 @@ unix {
 
 SOURCES = runUnitTests.cpp \
     MatrixTest.cpp
+
 HEADERS = \
     MatrixTest.h \
     MatrixTest.inl \
