@@ -360,7 +360,7 @@ template<> struct DataTypeName< defaulttype::D333dTypes::Coord > { static const 
 
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='I' >
-class InvariantStrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions * (1+_material_dimensions) / 2,_order,_Real,_name>
+class InvariantStrainTypes: public BaseStrainTypes<_spatial_dimensions,/*_material_dimensions * (1+_material_dimensions) / 2*/ 3,_order,_Real,_name>
 {
 public:
     static const char* Name();
@@ -419,6 +419,88 @@ template<> struct DataTypeName< defaulttype::I333dTypes::Coord > { static const 
 /// \endcond
 
 
+
+
+// ==========================================================================
+// Specialization for Strain defined using the principal streches
+
+
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='U' >
+class PrincipalStrechesStrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real,_name>
+{
+public:
+    static const char* Name();
+
+    static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
+    typedef Vec<material_dimensions, _Real> MaterialCoord;
+    typedef vector<MaterialCoord> VecMaterialCoord;
+    typedef Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
+};
+
+typedef PrincipalStrechesStrainTypes<3, 3, 0, double> U331dTypes;
+typedef PrincipalStrechesStrainTypes<3, 3, 0, float>  U331fTypes;
+typedef PrincipalStrechesStrainTypes<3, 3, 1, double> U332dTypes;
+typedef PrincipalStrechesStrainTypes<3, 3, 1, float>  U332fTypes;
+typedef PrincipalStrechesStrainTypes<3, 3, 2, double> U333dTypes;
+typedef PrincipalStrechesStrainTypes<3, 3, 2, float>  U333fTypes;
+typedef PrincipalStrechesStrainTypes<2, 2, 0, double> U221dTypes;
+typedef PrincipalStrechesStrainTypes<2, 2, 0, float>  U221fTypes;
+
+#ifdef SOFA_FLOAT
+template<> inline const char* U331dTypes::Name() { return "U331d"; }
+template<> inline const char* U331fTypes::Name() { return "U331"; }
+template<> inline const char* U332dTypes::Name() { return "U332d"; }
+template<> inline const char* U332fTypes::Name() { return "U332"; }
+template<> inline const char* U333dTypes::Name() { return "U333d"; }
+template<> inline const char* U333fTypes::Name() { return "U333"; }
+template<> inline const char* U221dTypes::Name() { return "U221d"; }
+template<> inline const char* U221fTypes::Name() { return "U221"; }
+#else
+template<> inline const char* U331dTypes::Name() { return "U331"; }
+template<> inline const char* U331fTypes::Name() { return "U331f"; }
+template<> inline const char* U332dTypes::Name() { return "U332"; }
+template<> inline const char* U332fTypes::Name() { return "U332f"; }
+template<> inline const char* U333dTypes::Name() { return "U333"; }
+template<> inline const char* U333fTypes::Name() { return "U333f"; }
+template<> inline const char* U221dTypes::Name() { return "U221"; }
+template<> inline const char* U221fTypes::Name() { return "U221f"; }
+#endif
+
+#ifdef SOFA_FLOAT
+typedef U331fTypes U331Types;
+typedef U221fTypes U221Types;
+typedef U332fTypes U332Types;
+typedef U333fTypes U333Types;
+#else
+typedef U331dTypes U331Types;
+typedef U221dTypes U221Types;
+typedef U332dTypes U332Types;
+typedef U333dTypes U333Types;
+#endif
+
+template<> struct DataTypeInfo< U331fTypes::Deriv > : public FixedArrayTypeInfo< U331fTypes::Deriv, U331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U331dTypes::Deriv > : public FixedArrayTypeInfo< U331dTypes::Deriv, U331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U332fTypes::Deriv > : public FixedArrayTypeInfo< U332fTypes::Deriv, U332fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U332<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U332dTypes::Deriv > : public FixedArrayTypeInfo< U332dTypes::Deriv, U332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U333fTypes::Deriv > : public FixedArrayTypeInfo< U333fTypes::Deriv, U333fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U333<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U333dTypes::Deriv > : public FixedArrayTypeInfo< U333dTypes::Deriv, U333dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U333<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U221fTypes::Deriv > : public FixedArrayTypeInfo< U221fTypes::Deriv, U221fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U221<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U221dTypes::Deriv > : public FixedArrayTypeInfo< U221dTypes::Deriv, U221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U221<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::U331fTypes::Coord > { static const char* name() { return "U331fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U331dTypes::Coord > { static const char* name() { return "U331dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U332fTypes::Coord > { static const char* name() { return "U332fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U332dTypes::Coord > { static const char* name() { return "U332dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U333fTypes::Coord > { static const char* name() { return "U333fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U333dTypes::Coord > { static const char* name() { return "U333dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U221fTypes::Coord > { static const char* name() { return "U221fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::U221dTypes::Coord > { static const char* name() { return "U221dTypes::CoordOrDeriv"; } };
+
+/// \endcond
 
 // ==========================================================================
 // Helpers

@@ -56,7 +56,7 @@
 	  
 	    
 
-  <Node name="DiagonialStrain 3D"  >
+  <Node name="PrincipalStreches 3D"  >
 	  <EulerImplicitSolver /><CGLinearSolver  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
@@ -73,9 +73,9 @@
     	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
 	     <Node 	name="Strain"   >
-		<MechanicalObject  template="D331" name="E"  />
-	    	<DiagonalStrainMapping template="Mapping&lt;F331,D331&gt;" assembleJ="false" />
-                <HookeForceField  template="D331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0.2" assembleK="false" assembleB="false"/>
+		<MechanicalObject  template="U331" name="E"  />
+	    	<PrincipalStrechesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" />
+                <HookeForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0.2" assembleK="false" assembleB="false"/>
 	    </Node>
 		
         </Node>
@@ -135,7 +135,7 @@
 </Node>
 
 
-    <Node name="Diagonal 2D" >
+    <Node name="PrincipalStreches 2D" >
 <EulerImplicitSolver /><CGLinearSolver  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
@@ -151,9 +151,9 @@
    	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
 	
         <Node name="StrainNode">
-            <MechanicalObject template="D221"  name="VoigtStrainDOF" />
-	    <DiagonalStrainMapping template="Mapping&lt;F321,D221&gt;" assembleJ="false" />
-            <HookeForceField template="D221" youngModulus="10" poissonRatio="0.2" />
+            <MechanicalObject template="U221"  name="VoigtStrainDOF" />
+	    <PrincipalStrechesMapping template="Mapping&lt;F321,U221&gt;" assembleJ="false" />
+            <HookeForceField template="U221" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 
 	

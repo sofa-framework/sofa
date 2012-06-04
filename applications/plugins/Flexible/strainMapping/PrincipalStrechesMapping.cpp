@@ -22,69 +22,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_StrainTYPES_CPP
+#define SOFA_COMPONENT_MAPPING_PrincipalStrechesMAPPING_CPP
 
 #include "../initFlexible.h"
-#include "../types/StrainTypes.h"
+#include "PrincipalStrechesMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/MechanicalObject.inl>
+#include "../types/DeformationGradientTypes.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
 namespace component
 {
-namespace container
+namespace mapping
 {
 
-// ==========================================================================
-// Instanciation
+SOFA_DECL_CLASS(PrincipalStrechesMapping);
 
-SOFA_DECL_CLASS ( StrainMechanicalObject )
+using namespace defaulttype;
 
-using namespace sofa::defaulttype;
+// Register in the Factory
+int PrincipalStrechesMappingClass = core::RegisterObject("Map Deformation Gradients to Principal Streches")
 
-int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-
-        .add< MechanicalObject<E331Types> >()
-        .add< MechanicalObject<E221Types> >()
-        .add< MechanicalObject<E332Types> >()
-        .add< MechanicalObject<E333Types> >()
-
-        .add< MechanicalObject<D331Types> >()
-        .add< MechanicalObject<D221Types> >()
-        .add< MechanicalObject<D332Types> >()
-        .add< MechanicalObject<D333Types> >()
-
-        .add< MechanicalObject<I331Types> >()
-        .add< MechanicalObject<I332Types> >()
-        .add< MechanicalObject<I333Types> >()
-
-        .add< MechanicalObject<U331Types> >()
-        .add< MechanicalObject<U221Types> >()
-        .add< MechanicalObject<U332Types> >()
-        .add< MechanicalObject<U333Types> >()
+        .add< PrincipalStrechesMapping< F331Types, U331Types > >(true)
+        .add< PrincipalStrechesMapping< F321Types, U221Types > >()
         ;
 
-template class SOFA_Flexible_API MechanicalObject<E331Types>;
-template class SOFA_Flexible_API MechanicalObject<E221Types>;
-template class SOFA_Flexible_API MechanicalObject<E332Types>;
-template class SOFA_Flexible_API MechanicalObject<E333Types>;
+template class SOFA_Flexible_API PrincipalStrechesMapping< F331Types, U331Types >;
+template class SOFA_Flexible_API PrincipalStrechesMapping< F321Types, U221Types >;
 
-template class SOFA_Flexible_API MechanicalObject<D331Types>;
-template class SOFA_Flexible_API MechanicalObject<D221Types>;
-template class SOFA_Flexible_API MechanicalObject<D332Types>;
-template class SOFA_Flexible_API MechanicalObject<D333Types>;
-
-template class SOFA_Flexible_API MechanicalObject<I331Types>;
-template class SOFA_Flexible_API MechanicalObject<I332Types>;
-template class SOFA_Flexible_API MechanicalObject<I333Types>;
-
-template class SOFA_Flexible_API MechanicalObject<U331Types>;
-template class SOFA_Flexible_API MechanicalObject<U221Types>;
-template class SOFA_Flexible_API MechanicalObject<U332Types>;
-template class SOFA_Flexible_API MechanicalObject<U333Types>;
-
-} // namespace container
+} // namespace mapping
 } // namespace component
 } // namespace sofa
+
