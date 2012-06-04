@@ -99,6 +99,8 @@ public:
 
     void applyLinearizedPosition();
 
+    void applyPositionAndFreePosition();
+
     void applyJT(const core::ConstraintParams *cparams  /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
     {
         m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();

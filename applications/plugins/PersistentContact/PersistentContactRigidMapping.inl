@@ -73,6 +73,8 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 template <class TIn, class TOut>
 int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
+//	std::cout << "PersistentContactRigidMapping::addContactPointFromInputMapping()\n";
+
     if (this->f_printLog.getValue())
     {
         std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
@@ -253,6 +255,17 @@ void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
 
     newPos_d->endEdit();
 }
+
+
+template <class TIn, class TOut>
+void PersistentContactRigidMapping<TIn, TOut>::applyPositionAndFreePosition()
+{
+    applyLinearizedPosition();
+    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::velocity(), sofa::core::ConstVecDerivId::velocity());
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::freeVelocity(), sofa::core::ConstVecDerivId::freeVelocity());
+}
+
 
 } // namespace mapping
 

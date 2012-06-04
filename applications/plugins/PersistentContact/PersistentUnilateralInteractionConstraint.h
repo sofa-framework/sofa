@@ -151,15 +151,15 @@ public:
     /// @name Contact State API
     /// @{
 
-    bool isSticked(int id);
+    bool isSticked(int id) const;
 
-    bool isSliding(int id);
+    bool isSliding(int id) const;
 
     void setContactState(int id, ContactState s);
 
     void clearContactStates();
 
-    void debugContactStates();
+    void debugContactStates() const;
 
     // @}
 
@@ -168,7 +168,7 @@ public:
 
     void setContactForce(int id, Deriv f);
 
-    Deriv getContactForce(int id);
+    Deriv getContactForce(int id) const;
 
     void clearContactForces();
 
