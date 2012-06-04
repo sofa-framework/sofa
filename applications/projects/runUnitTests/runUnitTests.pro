@@ -2,7 +2,7 @@ load(sofa/pre)
 
 
 TEMPLATE = app
-TARGET = Compliant_test
+TARGET = UnitTests
 
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
@@ -21,14 +21,13 @@ unix {
    LIBS += -ldl
 }
 
-SOURCES = Compliant_test.cpp
-
-#    MatrixTest.cpp
-#HEADERS = \
-#    MatrixTest.h \
-#    MatrixTest.inl \
-#    EigenBaseSparseMatrixNew.h \
-#    EigenSparseMatrixNew.h \
+SOURCES = runUnitTests.cpp \
+    MatrixTest.cpp
+HEADERS = \
+    MatrixTest.h \
+    MatrixTest.inl \
+    EigenBaseSparseMatrixNew.h \
+    EigenSparseMatrixNew.h \
 
 #unix: QMAKE_LIBDIR += $$SOFA_GPU_CUDA_DIR
 

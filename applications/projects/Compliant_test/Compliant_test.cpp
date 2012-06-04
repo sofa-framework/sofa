@@ -31,6 +31,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
+#include "MatrixTest.h"
 
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/bgl/BglSimulation.h>
@@ -266,6 +267,7 @@ simulation::Node::SPtr createScene()
 
     return root;
 }
+
 
 
 int main(int argc, char** argv)

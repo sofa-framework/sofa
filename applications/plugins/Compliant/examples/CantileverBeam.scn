@@ -3,7 +3,8 @@
     <Node name="Cube grid" >
 <!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 <!--        <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="25" precision="1e-6" />-->
-        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />
+<!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
+         <EulerSolver printLog="0" />
 
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="2 2 2" min="0 0 0" max="1 1 1"  />

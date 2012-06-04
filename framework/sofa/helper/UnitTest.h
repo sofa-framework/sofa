@@ -29,6 +29,7 @@
 #include <sstream>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -38,13 +39,19 @@ namespace helper
 
 /** Base class for testing functions.
   To implement a new test, derive this class and implement the succeeds() method.
-  Messages can be issued using the serr stream. They will be displayed or not, along with the name of the test, depending on the value of the verbose static member.
+  Messages can be issued using the msg stream. They will be displayed or not, along with the name of the test, depending on the value of the verbose static member.
+  Another output, using function log( const std::string& msg ), can be used to output important log messages independently of the verbose state.
   */
 struct UnitTest
 {
-    static bool verbose;  ///< Condition for printing test name, comments and results of the test.
+    static bool verbose;  ///< Condition for printing test names, comments and results of the tests.
     std::string name;     ///< Test name. Can be a long string explaining what the test checks.
     std::ostringstream  msg;  ///< Output stream used to issue messages during the tests. Displayed or discarded, depending on the value of variable verbose.
+
+protected:
+    static sofa::helper::vector<std::string> skippedTestMessages; ///< List of messages describing each skipped test.
+
+public:
 
     /// The test name can be a long string explaining what the test checks.
     UnitTest( std::string testName );
@@ -55,6 +62,12 @@ struct UnitTest
 
     /// Perform the test and return true in case of success.
     virtual bool succeeds()=0;
+
+    /// Append a log message to report an important fact such as a skipped test, for delayed fix
+    void log( const std::string& msg );
+
+    /// Print the list of log messages, if any. If empty list, print nothing
+    static void printLogs();
 
 
     /** @name Helpers
