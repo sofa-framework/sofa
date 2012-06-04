@@ -244,6 +244,9 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
         {
             if (*it == *remove_it)
             {
+                (*it)->removeResponse();
+                (*it)->cleanup();
+                it->reset();
                 contacts.erase(it);
                 break;
             }
@@ -261,6 +264,10 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
             {
                 ContactMap::iterator erase_it = map_it;
                 ++map_it;
+
+                erase_it->second->removeResponse();
+                erase_it->second->cleanup();
+                erase_it->second.reset();
                 contactMap.erase(erase_it);
             }
             else
@@ -271,7 +278,6 @@ void DefaultContactManager::removeContacts(const ContactVector &c)
 
         ++remove_it;
     }
-
 }
 
 void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact)
