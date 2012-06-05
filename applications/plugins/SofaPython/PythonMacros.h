@@ -29,6 +29,8 @@
 #include <boost/intrusive_ptr.hpp>
 
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
 
 
