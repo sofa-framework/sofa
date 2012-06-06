@@ -41,14 +41,17 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
+// Spread the instanciations over multiple files for more efficient and lightweight compilation
 
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
+// instanciations involving both CudaVec3f1Types and Vec3fTypes
 
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
-#ifndef SOFA_FLOAT
-template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
+
+
+#ifndef SOFA_DOUBLE
+template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
 #endif
+
 } // namespace mapping
 
 } // namespace component
@@ -64,25 +67,13 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaBarycentricMapping)
+SOFA_DECL_CLASS(CudaBarycentricMapping_3f1_f)
 
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+int BarycentricMappingCudaClass_3f1_f = core::RegisterObject("Supports GPU-side computations using CUDA")
+#ifndef SOFA_DOUBLE
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
 #endif
-
-// what about the following guys ? They were not instanciated.
-
-//#ifdef SOFA_GPU_CUDA_DOUBLE
-//.add< BarycentricMapping< CudaVec3fTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, CudaVec3fTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, Vec3fTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, Vec3dTypes> >()
-//.add< BarycentricMapping< Vec3fTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< Vec3dTypes, CudaVec3dTypes> >()
-//#endif
         ;
 
 } // namespace cuda

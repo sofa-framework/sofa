@@ -44,11 +44,12 @@ using namespace sofa::gpu::cuda;
 
 // Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
 
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
-#ifndef SOFA_FLOAT
-template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
+// Instantiations involving both CudaVec3fTypes and Vec3fTypes
+#ifndef SOFA_DOUBLE
+template class BarycentricMapping< Vec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, Vec3fTypes>;
 #endif
+
 } // namespace mapping
 
 } // namespace component
@@ -64,12 +65,12 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-SOFA_DECL_CLASS(CudaBarycentricMapping)
+SOFA_DECL_CLASS(CudaBarycentricMapping_f)
 
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-        .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+int BarycentricMappingCudaClass_f = core::RegisterObject("Supports GPU-side computations using CUDA")
+#ifndef SOFA_DOUBLE
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3fTypes> >()
 #endif
 
 // what about the following guys ? They were not instanciated.
