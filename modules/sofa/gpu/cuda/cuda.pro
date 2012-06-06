@@ -109,6 +109,12 @@ SOURCES += mycuda.cpp \
            CudaEllipsoidForceField.cpp \
            CudaIdentityMapping.cpp \
            CudaBarycentricMapping.cpp \
+           CudaBarycentricMapping-f.cpp \
+           CudaBarycentricMapping-3f.cpp \
+           CudaBarycentricMapping-3f1.cpp \
+           CudaBarycentricMapping-3f1-3f.cpp \
+           CudaBarycentricMapping-3f1-f.cpp \
+           CudaBarycentricMapping-3f1-d.cpp \
            CudaBarycentricMappingRigid.cpp \
            CudaRigidMapping.cpp \
            CudaSubsetMapping.cpp \

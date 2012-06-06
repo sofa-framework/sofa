@@ -41,14 +41,27 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
+template class BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes>;
+template class BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes>;
 
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
 
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
 #ifndef SOFA_FLOAT
 template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
+template class BarycentricMapping< Vec3dTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
 #endif
+#ifndef SOFA_DOUBLE
+template class BarycentricMapping< Vec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, Vec3fTypes>;
+template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
+#endif
+
 } // namespace mapping
 
 } // namespace component
@@ -67,22 +80,35 @@ using namespace sofa::component::mapping;
 SOFA_DECL_CLASS(CudaBarycentricMapping)
 
 int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes> >()
 #ifndef SOFA_FLOAT
         .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
         .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+        .add< BarycentricMapping< Vec3dTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3dTypes> >()
 #endif
-
-// what about the following guys ? They were not instanciated.
-
-//#ifdef SOFA_GPU_CUDA_DOUBLE
-//.add< BarycentricMapping< CudaVec3fTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, CudaVec3fTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, Vec3fTypes> >()
-//.add< BarycentricMapping< CudaVec3dTypes, Vec3dTypes> >()
-//.add< BarycentricMapping< Vec3fTypes, CudaVec3dTypes> >()
-//.add< BarycentricMapping< Vec3dTypes, CudaVec3dTypes> >()
-//#endif
+#ifndef SOFA_DOUBLE
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3fTypes> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
+#endif
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, Vec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, Vec3dTypes> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< Vec3dTypes, CudaVec3dTypes> >()
+//.add< BarycentricMapping< CudaVec3d1Types, ExtVec3fTypes> >()
+//.add< BarycentricMapping< CudaVec3dTypes, ExtVec3fTypes> >()
+#endif
         ;
 
 } // namespace cuda
