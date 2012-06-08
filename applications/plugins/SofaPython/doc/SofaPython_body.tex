@@ -1,16 +1,20 @@
 \
 \section{Requirements}
 
+\subsection{Python framework}
+
+\subsection{SOFA settings} 
+
 SOFA Packages: 
 The following must be enabled in sofa-local.prf
 \begin{itemize}
-\item Any special things that need to be enabled
+\item SOFA\_HAS\_PYTHON
 \end{itemize}
 
 SOFA Plugins:
 The following must be loaded in your SOFA instance
 \begin{itemize}
-\item Any plugins that must be loaded
+\item SofaPython
 \end{itemize}
 
 \section{Scene Settings}
@@ -57,6 +61,4 @@ Output data is generally not defined in the component, but is linked to by other
 path/to/an/example/file.scn
 
 
-
-\section{"PythonScriptController" component}
 

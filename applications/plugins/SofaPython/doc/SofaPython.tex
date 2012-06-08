@@ -1,5 +1,8 @@
 \documentclass{article}
 
+\input{macros_docu}
+
+
 \newenvironment{componentoption}[1]%
 {\textbf{#1}\newline}
 {\newline}
@@ -8,25 +11,35 @@
 \newcommand{\defaultvalue}[1] {\newline \textit{Default Value - } #1}
 \newcommand{\valuetype}[1] {\newline \textit{Value Type - } \textbf{#1}}
 
+\usepackage{graphicx}
+\usepackage{qtree}
+
 \begin{document}
 \raggedright
 
 \title{SofaPython plugin}
 \author{Bruno Carrez}
 
+
+
 \maketitle
 
 \begin{abstract}
-The goal of this plugin is to provide python integration into Sofa. 
+The goal of this plugin is to provide python integration into \sofa. 
 
-Therefore, it is possible to add new features in Sofa without modifying Sofa codebase. Moreover, python scripts are stored in the same place as the corresponding scene, for a cleaner integration of scene-specific code without polluting the rest of Sofa codebase.
+Therefore, it is possible to add new features in \sofa without modifying \sofa codebase. Moreover, python scripts are stored in the same place as the corresponding scene, for a cleaner integration of scene-specific code without polluting the rest of \sofa codebase.
 
-This plugin provides a « Sofa » module available from python scripts, to interact with Sofa. 
+This plugin provides a \textcode{Sofa} module available from python scripts, to interact with \sofa. 
 \end{abstract}
 
+\begin{center}
+\includegraphics{SofaPython.eps}
+\end{center}
 
-\include{SofaPython_body}
+%\include{SofaPython_body}
 
+
+\include{SofaPython_Components}
 \include{SofaPython_API}
 \include{SofaPython_PythonScriptController}
 

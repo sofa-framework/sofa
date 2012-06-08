@@ -1,0 +1,35 @@
+\
+
+\section{Sofa "PythonScriptController" component}
+
+\subsection{Example scene}
+\begin{code_bash}
+runSofa applications/plugins/SofaPython/examples/ExampleController.scn
+\end{code_bash}
+
+\subsection{Component data}
+\begin{itemize}
+\item \textcode{filename} is the name of the .py script file.
+\end{itemize}
+
+\subsection{Python script entry points}
+
+\begin{itemize}
+\item \textcode{onKeyPressed(c)}
+\item \textcode{onKeyReleased(c)}
+\item \textcode{onLoaded(node)}
+\item \textcode{onMouseButtonLeft(mouseX,mouseY,isPressed)}
+\item \textcode{onMouseButtonRight(mouseX,mouseY,isPressed)}
+\item \textcode{onMouseButtonMiddle(mouseX,mouseY,isPressed)}
+\item \textcode{onMouseWheel(mouseX,mouseY,wheelDelta)}
+\item \textcode{onGUIEvent(strControlID,valueName,strValue)}
+\item \textcode{onBeginAnimationStep(deltaTime)}
+\item \textcode{onEndAnimationStep(deltaTime)}
+\item \textcode{createGraph(node)}
+\item \textcode{initGraph(node)}
+\item \textcode{storeResetState()}
+\item \textcode{reset()}
+\item \textcode{cleanup()}
+\end{itemize}
+
+
