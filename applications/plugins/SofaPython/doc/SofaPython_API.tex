@@ -1,0 +1,149 @@
+\
+
+\section{\sofa \ Python API}
+
+\subsection{The \textcode{Sofa} module}
+
+The core of this plugin is the \textcode{Sofa} Python module available to python scripts from within the SofaPython components (they are not available outside Sofa environment, in the command-line \textcode{python} binary for example).
+
+Therefore, each python script to be imbedded in \sofa should include the following line if it wants to interact with the \sofa framework:
+
+\begin{code_python}
+import Sofa
+\end{code_python}
+
+This module provides a wide range of methods and types, bound to essential \sofa \ framework features.
+
+These can be used from python within scripts loaded by the components provided by this plugin.
+
+%Module methods
+\subsection{Module methods}
+
+SofaPython provides several module methods, either for general purpose (use of factory, for example) or as convenient helper functions (node functions used directly with the tree root node).
+
+\begin{itemize}
+\item \textcode{createObject(BaseContext, BaseObjectDescription)}
+\item \textcode{getObject(context,path)}
+\item \textcode{getChildNode(node,path)}
+\item \textcode{sendGUIMessage(msgType,msgValue)} 
+\end{itemize}
+
+%Class Hierarchy
+\subsection{Types hierarchy}
+
+The class hierarchy in the \textcode{Sofa} module is quite different from the C++ \sofa \ class hierarchy. Not all \sofa \ classes are bound in Python, and some levels in the hierarchy are skipped.
+
+Despite the ability of Python to support multi-heritage, this feature has not been implemented in the \textcode{Sofa} module, for code simplicity.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\Tree [.Base [.BaseContext [.Context [.BaseNode [.Node GNode  ] ] ]  ] 
+			[ .BaseObject BaseState ] ]
+\Tree [.BaseObjectDescription ]
+\Tree [.Vec3 ]
+\Tree [.Data ]
+\caption{Sofa python types hierarchy}
+\label{default}
+\end{center}
+\end{figure}
+
+\newpage
+
+%Sofa.BaseObjectDescription
+\subsubsection{Sofa.BaseObjectDescription}
+Used to create objects with the Method \textcode{Sofa.createObject} :
+\begin{code_python}
+ desc = Sofa.BaseObjectDescription('particle','MechanicalObject')
+ particle = Sofa.createObject(node,desc)
+\end{code_python}
+
+Methods :
+\begin{itemize}
+\item \textcode{setAttributes}
+\item \textcode{getAttributes}
+\end{itemize}
+Constructor : 
+\begin{itemize}
+\item \textcode{BaseObjectDescription(name,type)}
+
+\end{itemize}
+Attributes :
+\begin{itemize}
+\item \textcode{name}
+\end{itemize}
+
+%Sofa.Vec3
+\subsubsection{Sofa.Vec3}
+Attributes :
+\begin{itemize}
+\item \textcode{x} 
+\item \textcode{y}
+\item \textcode{z}
+\end{itemize}
+
+%BASE
+\subsubsection{Sofa.Base}
+
+\subsubsection{Sofa.BaseObject}
+\subsubsection{Sofa.BaseState}
+Methods :
+\begin{itemize}
+\item resize(size)
+\end{itemize}
+\subsubsection{Sofa.BaseContext}
+\subsubsection{Sofa.Context}
+\subsubsection{Sofa.Node}
+\subsubsection{Sofa.Gnode}
+
+%DATA
+\subsubsection{Sofa.Data}
+Attributes :
+\begin{itemize}
+\item value
+\item name
+\end{itemize}
+Methods :
+\begin{itemize}
+\item getValue(index)
+\item setValue(index,value)
+\end{itemize}
+
+\subsubsection{Data members: the most important thing in \sofa Python API}
+
+The most important class is \textcode{Sofa.Base}, and its associated method \textcode{findData}.
+ALMOST EVERYTHING in \sofa is stored in Datas, and with the only \textcode{Sofa.Base.findData} method, almost everything is possible.
+Through the \textcode{Sofa.Data class} (returned by \textcode{Sofa.Base.findData(name)} ) it is possible to read or write almost any object value, thus interact with the simulation in real-time.
+
+This way, even if a specific component isn't bound to python, it's possible to access it by its \textcode{Sofa.Base} heritage.
+
+\textcode{Data.value} attribute has a versatile behavior, depending on the Data type.
+
+On read, \textcode{Data.value} can return either an integer, a float, a string, or even a list of one of these 3 types.
+On write, you have to set EXACTLY the proper type, or you can set a string (same format as in the *.scn xml files).
+
+Examples:
+
+\begin{code_python}
+print str(node.findData('gravity').value
+\end{code_python}
+will output the text conversion of a list of 3 floats :
+\begin{code_bash}
+[0.0, -9.81, 0.0]
+\end{code_bash}
+
+You can set it in two ways ; the native version :
+\begin{code_python}
+node.findData('gravity').value = [0.0, -9.81, 0.0]
+\end{code_python}
+or by the text version:
+\begin{code_python}
+node.findData('gravity').value = '0.0  -9.81 0.0'
+\end{code_python}
+
+Use of any other type will result in an error.
+The following won't work for example :
+\begin{code_python}
+node.findData('gravity').value = 9.81
+\end{code_python}
+
