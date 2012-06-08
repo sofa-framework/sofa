@@ -49,6 +49,7 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
+    , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
     , faceType(MeshObjLoader::TRIANGLE)
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
     , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
@@ -56,7 +57,6 @@ MeshObjLoader::MeshObjLoader()
     , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
     , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
-    , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
 //  , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than one texcoord normal pair is attached to a vertex." ) )
 {
     faceList.setGroup("OBJ");

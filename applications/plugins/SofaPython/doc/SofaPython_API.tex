@@ -84,17 +84,56 @@ Attributes :
 
 %BASE
 \subsubsection{Sofa.Base}
+Methods :
+\begin{itemize}
+\item \textcode{findData(name)} returns a \textcode{Sofa.Data} object (if it exists)
+\end{itemize}
+Attributes:
+\begin{itemize}
+\item \textcode{name} 
+\end{itemize}
 
 \subsubsection{Sofa.BaseObject}
+(empty)
+
 \subsubsection{Sofa.BaseState}
 Methods :
 \begin{itemize}
-\item resize(size)
+\item \textcode{resize(size)}
 \end{itemize}
+
 \subsubsection{Sofa.BaseContext}
+Methods :
+\begin{itemize}
+\item \textcode{getRootContext()} 
+\item \textcode{getTime()} 
+\item \textcode{getDt()} 
+\item \textcode{getGravity()} returns a \textcode{Sofa.vec3} object
+\item \textcode{setGravity(Vec3)} 
+\end{itemize}
+Attributes:
+\begin{itemize}
+\item \textcode{active}  (boolean)
+\item \textcode{animate}  (boolean)
+\end{itemize}
+
+
 \subsubsection{Sofa.Context}
+(empty)
 \subsubsection{Sofa.Node}
+(empty)
 \subsubsection{Sofa.Gnode}
+Methods :
+\begin{itemize}
+\item \textcode{createChild(childName)} 
+\item \textcode{addChild(childNode)} 
+\item \textcode{removeChild(childNode)} 
+\item \textcode{moveChild(childNode)} 
+\item \textcode{addObject(object)} objets created with \textcode{Sofa.createObject} method  (see example scene)
+\item \textcode{removeObject(object)} 
+\item \textcode{detachFromGraph()} 
+\end{itemize}
+
 
 %DATA
 \subsubsection{Sofa.Data}
