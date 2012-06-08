@@ -195,7 +195,7 @@ public:
                 {
                     for(int i=0; i<3; i++)
                     {
-                        diag->getVector()[e*9 + j*3 + i] = R[j][i];
+                        diag->getVector()[e*9 + j*3 + i] = (float)R[j][i];
                     }
                 }
             }

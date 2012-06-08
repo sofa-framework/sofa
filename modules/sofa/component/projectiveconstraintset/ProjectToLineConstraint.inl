@@ -276,13 +276,13 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 // Matrix Integration interface
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix */*mat*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
     serr << "applyConstraint is not implemented " << sendl;
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector */*vect*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
     serr<<"ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
 }

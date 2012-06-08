@@ -376,7 +376,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
 
         // node0
         (*linearInterpolIndices)[pointIndex].push_back(tetrahedra[tetraIndex][0]);
-        Real value = 1.-baryCoords[0]-baryCoords[1]-baryCoords[2];
+        Real value = (Real)1.-(Real)(baryCoords[0]-baryCoords[1]-baryCoords[2]);
         (*linearInterpolValues)[pointIndex].push_back(value);
 
         // node1

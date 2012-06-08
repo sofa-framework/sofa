@@ -410,9 +410,9 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
     PointSetTopologyModifier *toPointMod = NULL;
     EdgeSetTopologyModifier *toEdgeMod = NULL;
     TriangleSetTopologyModifier *toTriangleMod = NULL;
-    QuadSetTopologyModifier *toQuadMod = NULL;
-    TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
-    HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+    //QuadSetTopologyModifier *toQuadMod = NULL;
+    //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+    //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
 
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
