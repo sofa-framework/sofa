@@ -457,7 +457,7 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, d
     Q[0][1] = -M[1][0];
     Q[1][0] = -M[0][1];
     Q[1][1] =  M[0][0];
-    Q = M + ( determinant( M ) < 0 ? -1 : 1 ) * Q;
+    Q = M + ( determinant( M ) < 0 ? (Real)-1.0 : (Real)1.0 ) * Q;
 }
 
 
@@ -609,12 +609,12 @@ bool Decompose<Real>::PositiveRank(Mat<3,3,Real>& M, Real& maxEntry, Vec<3,Real>
 template<class Real>
 void Decompose<Real>::GenerateComplementBasis(Vec<3,Real>& vec0, Vec<3,Real>& vec1, const Vec<3,Real>& vec2)
 {
-    float invLength;
+    Real invLength;
 
     if (helper::rabs(vec2[0]) >= helper::rabs(vec2[1]))
     {
         // vec2.x or vec2.z is the largest magnitude component, swap them
-        invLength = 1.0f/helper::rsqrt(vec2[0]*vec2[0] + vec2[2]*vec2[2]);
+        invLength = (Real)(1.0/helper::rsqrt(vec2[0]*vec2[0] + vec2[2]*vec2[2]));
         vec0[0] = -vec2[2]*invLength;
         vec0[1] = 0.0f;
         vec0[2] = +vec2[0]*invLength;
@@ -625,7 +625,7 @@ void Decompose<Real>::GenerateComplementBasis(Vec<3,Real>& vec0, Vec<3,Real>& ve
     else
     {
         // vec2.y or vec2.z is the largest magnitude component, swap them
-        invLength = 1.0f/helper::rsqrt(vec2[1]*vec2[1] + vec2[2]*vec2[2]);
+        invLength = (Real)(1.0/helper::rsqrt(vec2[1]*vec2[1] + vec2[2]*vec2[2]));
         vec0[0] = 0.0f;
         vec0[1] = +vec2[2]*invLength;
         vec0[2] = -vec2[1]*invLength;

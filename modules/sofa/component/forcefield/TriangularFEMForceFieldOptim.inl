@@ -612,7 +612,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
                 Real s2 = stresses2[i];
                 Vector3 center = (a+b+c)/3;
                 Vector3 n = cross(b-a,c-a);
-                Real fact = helper::rsqrt(n.norm())*(Real)0.5;
+                Real fact = (Real)helper::rsqrt(n.norm())*(Real)0.5;
                 int g1 = (s1 < 0) ? 1 : 0;
                 int g2 = (s2 < 0) ? 1 : 0;
                 d1 *= fact*helper::rsqrt(helper::rabs(s1)/maxStress);
