@@ -1575,6 +1575,52 @@ template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* 
 
 /// \endcond
 
+
+
+/** @name Helpers
+ *  Helper Functions to more easily create tests and check the results.
+ */
+//@{
+
+/** Velocity of a rigid body at a given point, based on its angular velocity and its linear velocity at another point.
+  \param omega angular velocity
+  \param v known linear velocity
+  \param pv point where the linear velocity is known
+  \param p point where we compute the velocity
+  */
+template <class Vec3>
+static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, const Vec3& p ) { return v + cross( omega, p-pv ); }
+
+/// Apply the given translation and rotation to each entry of vector v
+template<class V1, class Vec, class Rot>
+static void displace( V1& v, Vec translation, Rot rotation )
+{
+    for(std::size_t i=0; i<v.size(); i++)
+        v[i] = translation + rotation.rotate(v[i]);
+}
+
+/// Apply the given translation and rotation to each entry of vector v
+template<class V1, class Rot>
+static void rotate( V1& v, Rot rotation )
+{
+    for(std::size_t i=0; i<v.size(); i++)
+        v[i] = rotation.rotate(v[i]);
+}
+
+/// Apply a rigid transformation (translation, Euler angles) to the given points and their associated velocities.
+template<class V1, class V2>
+static void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
+{
+    typedef defaulttype::Vec<3,SReal> Vec3;
+    typedef helper::Quater<SReal> Quat;
+    Vec3 translation(tx,ty,tz);
+    Quat rotation = Quat::createQuaterFromEuler(Vec3(rx,ry,rz));
+    displace(points,translation,rotation);
+    rotate(velocities,rotation);
+}
+//@}
+
+
 }
 
 } // namespace sofa

@@ -33,46 +33,30 @@ namespace sofa
 namespace helper
 {
 
-bool UnitTest::verbose=false;
-sofa::helper::vector<std::string> UnitTest::skippedTestMessages;
 
-UnitTest::UnitTest( std::string testName )
+UnitTest::UnitTest( std::string testName, VerbosityLevel verb )
 {
     name = testName;
+    verbose = verb;
 }
 
-/// Runs the test and return true in case of failure. Optionally print begin and end messages, depending on the verbose variable
-bool UnitTest::fails()
+bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigned& ntests, unsigned& nerr)
 {
-    if(verbose) std::cerr << "BEGIN " << name << std::endl;
-    bool s = succeeds();
-    if(verbose || !s)
+    ntests++;
+    if( !testSucceeded ) nerr++;
+    if( testSucceeded )
     {
-        std::cerr << msg.str();
-        if( s )
-            std::cerr << "SUCCESS: " << name << std::endl << std::endl;
-        else
-            std::cerr << "FAIL: " << name << std::endl << std::endl;
+        sout()  << "---- SUCCESS: " << testDescription << endl;
     }
-    return !s;
-}
-
-void UnitTest::log( const std::string& msg )
-{
-    skippedTestMessages.push_back(this->name + ": " + msg);
-}
-
-void UnitTest::printLogs()
-{
-    if( skippedTestMessages.size()>0 )
+    else
     {
-        cerr<<"============================================" << endl;
-        cerr<<"UnitTest log messages: " << endl;
-        for( unsigned i=0; i<skippedTestMessages.size(); i++ )
-            cerr<< skippedTestMessages[i] <<endl;
-        cerr<<"============================================" << endl;
+        serr() <<  "==== FAILURE: " << testDescription << endl;
     }
+    return testSucceeded;
 }
+
+
+
 
 
 } // namespace helper

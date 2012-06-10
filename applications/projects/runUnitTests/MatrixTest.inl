@@ -56,16 +56,50 @@ bool areEqual( const defaulttype::BaseVector& m1, const defaulttype::BaseVector&
 
 
 template<typename Real, int RN, int CN>
-MatrixTest<Real,RN,CN>::MatrixTest()
-    :UnitTest("Operations on matrices")
+MatrixTest<Real,RN,CN>::MatrixTest(std::string name, sofa::helper::UnitTest::VerbosityLevel vlevel)
+    :UnitTest(name, vlevel)
 {}
 
 
+/** Check that EigenMatrix update works as well as direct init. Return true if the test succeeds.*/
 template<typename Real, int RN, int CN>
-bool MatrixTest<Real,RN,CN>::succeeds()
+bool MatrixTest<Real,RN,CN>::checkEigenMatrixUpdate()
 {
-    bool success = true;
+    // fill two matrices with the same values, one directly, one it two passes, then compare their values
+    EigenMatrix a,b;
+    unsigned nrows = 5, ncols=3;
+    a.resize(nrows,ncols);
+    b.resize(nrows,ncols);
+    for( unsigned j=0; j<ncols; j++)
+    {
+        for( unsigned i=0; i<nrows; i++)
+        {
+            double valij = i*ncols+j;
+            a.set(i,j,valij);
+            if( i==j )
+                b.set(i,j,valij);
+            else if( (i+j)%2==0 )
+                b.set(i,j,-2);
+        }
+    }
+    a.compress();
+    b.compress();
+    // second pass for b. Some values are set with the right value, some with the wrong value, some are not set
+    for( unsigned j=0; j<ncols; j++)
+    {
+        for( unsigned i=0; i<nrows; i++)
+        {
+            double valij = i*ncols+j;
+            b.set(i,j,valij);
+        }
+    }
+    b.compress();
+    return areEqual(a,b);
+}
 
+template<typename Real, int RN, int CN>
+void MatrixTest<Real,RN,CN>::runTests( unsigned& numTests, unsigned& numWarnings, unsigned& numErrors )
+{
     unsigned nrows = 5, ncols=3;
     CRSMatrix A1,A2;
     FullMatrix B;
@@ -80,9 +114,10 @@ bool MatrixTest<Real,RN,CN>::succeeds()
     V.resize(ncols);
 
     // =========== Read-write access to matrix entries
-    for( unsigned i=0; i<nrows; i++)
+    // fill the matrices in column-wise order, and compare them
+    for( unsigned j=0; j<ncols; j++)
     {
-        for( unsigned j=0; j<ncols; j++)
+        for( unsigned i=0; i<nrows; i++)
         {
             double valij = i*ncols+j;
             A1.set(i,j,valij);
@@ -96,15 +131,12 @@ bool MatrixTest<Real,RN,CN>::succeeds()
         }
     }
     A1.compress(); A2.compress(); D.compress();
-    if( !areEqual(A1,A2) ) success=false;
-    if( !areEqual(A1,B) ) success=false;
-    if( !areEqual(A1,C) ) success=false;
-    if( !areEqual(A1,D) )
-    {
-        this->msg<< "MatrixTest fails, A1= " << endl << A1 << endl;
-        this->msg<< "          D= " << endl << D << endl;
-        success=false;
-    }
+    checkIf(areEqual(A1,A2),"A1==A2",numTests,numErrors);
+    checkIf(areEqual(A1,B), "A1==B", numTests,numErrors);
+    checkIf(areEqual(A1,C), "A1==C", numTests,numErrors);
+    checkIf(areEqual(A1,D), "A1==D", numTests,numErrors);
+    checkIf( checkEigenMatrixUpdate(), "EigenMatrix update", numTests,numErrors);
+
 
     // =========== matrix-vector products: opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v)
     FullVector vref(nrows),v2(nrows);
@@ -112,38 +144,16 @@ bool MatrixTest<Real,RN,CN>::succeeds()
     B.opMulV(&vref,&V);
 //    cerr<<"MatrixTest: vref = " << vref << endl;
     C.opMulV(&v2,&V);
-    if( !areEqual(vref,v2) )
-    {
-        this->msg<<"C.opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) failed"<< endl;
-        this->msg<<" ref = " << vref << endl;
-        this->msg<<" res = " << v2 << endl;
-        success=false;
-    }
+    checkIf(areEqual(vref,v2),"matrix-vector product C*v", numTests,numErrors);
     D.opMulV(&v2,&V);
-    if( !areEqual(vref,v2) )
-    {
-        this->msg<<"D.opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) failed"<< endl;
-        this->msg<<" ref = " << vref << endl;
-        this->msg<<" res = " << v2 << endl;
-        success=false;
-    }
-    log("Skipping test of CRSMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) as it crashes. Uncomment it in MatrixTest.inl to reproduce the crash.");
-//    cerr<<"now A2………"<<endl;
+    checkIf(areEqual(vref,v2),"matrix-vector product D*v", numTests,numErrors);
+    serr()<<"Skipping test of CRSMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) as it crashes. Uncomment it in MatrixTest.inl to reproduce the crash."<<endl;
+    numWarnings++;
 //    A2.opMulV(&v2,&V);
-//    if( !areEqual(vref,v2) ){
-//        this->msg<<"A2.opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) failed"<< endl;
-//        this->msg<<" ref = " << vref << endl;
-//        this->msg<<" res = " << v2 << endl;
-//        success=false;
-//    }
-//    cerr<<"now A1………"<<endl;
+//   detectErrors( areEqual(vref,v2),"matrix-vector product A2*v",  numTests,numErrors);
 //    A1.opMulV(&vref,&V);
+//   detectErrors( areEqual(vref,v2),"matrix-vector product A1*v",  numTests,numErrors);
 
-
-
-
-
-    return success;
 }
 
 
