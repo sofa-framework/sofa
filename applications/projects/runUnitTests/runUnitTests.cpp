@@ -29,26 +29,28 @@ using std::cerr;
 using std::endl;
 
 /// perform unit tests on matrices and return the number of failures
-extern int performMatrixTests();
+extern void performMatrixTests(sofa::helper::UnitTest::VerbosityLevel, unsigned& numTests, unsigned& numWarnings, unsigned& numErrors);
 
 int main(int argc, char** argv)
 {
-    bool verbose = false;
+//    int verbose = UnitTest::ALL_MESSAGES;
+//    int verbose = UnitTest::SILENT;
+    int verbose = UnitTest::WARNINGS_ONLY;
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    .option(&UnitTest::verbose,'v',"verbose","print execution logs")
+    .option(&verbose,'v',"verbose","print execution logs")
     (argc,argv);
+    sofa::helper::UnitTest::VerbosityLevel verbosityLevel = verbose==UnitTest::SILENT ? UnitTest::SILENT : verbose==UnitTest::WARNINGS_ONLY ? UnitTest::WARNINGS_ONLY : UnitTest::ALL_MESSAGES;
 
-    UnitTest::verbose = verbose;
-    int numFailedTests = 0;
+    unsigned numFailedTests = 0;
+    unsigned numTests = 0;
+    unsigned numWarnings = 0;
 
     if(verbose) cerr << "Begin test suite" << endl;
 
-    numFailedTests += performMatrixTests();
+    performMatrixTests( verbosityLevel, numTests,numWarnings,numFailedTests );
 
-    if( numFailedTests==0 && verbose ) cerr<<"All tests succeeded" << endl;
-    if( numFailedTests!=0  )  cerr<< numFailedTests << " tests failed ! " << endl;
+    cerr<< numTests << " tests performed,  " << numWarnings << " warnings, " << numFailedTests << " failed." << endl;
 
-    UnitTest::printLogs();
 
     return numFailedTests;
 }

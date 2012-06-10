@@ -25,16 +25,12 @@
 #include "MatrixTest.inl"
 
 
-int performMatrixTests()
+void performMatrixTests(sofa::helper::UnitTest::VerbosityLevel verbose, unsigned& numTests, unsigned& numWarnings, unsigned& numErrors)
 {
-    int result = 0;
+    sofa::helper::MatrixTest<double,2,2> matTestD22("matTestD22",verbose);
+    matTestD22.runTests(numTests,numWarnings,numErrors);
 
-    sofa::helper::MatrixTest<double,2,2> matTestD22;
-    result += matTestD22.fails();
-
-    sofa::helper::MatrixTest<float,2,3> matTestF23;
-    result += matTestD22.fails();
-
-    return result;
+    sofa::helper::MatrixTest<float,2,3> matTestF23("matTestF23",verbose);
+    matTestF23.runTests(numTests,numWarnings,numErrors);
 }
 

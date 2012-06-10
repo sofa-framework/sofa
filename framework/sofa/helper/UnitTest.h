@@ -37,38 +37,52 @@ namespace sofa
 namespace helper
 {
 
-/** Base class for testing functions.
-  To implement a new test, derive this class and implement the succeeds() method.
-  Messages can be issued using the msg stream. They will be displayed or not, along with the name of the test, depending on the value of the verbose static member.
-  Another output, using function log( const std::string& msg ), can be used to output important log messages independently of the verbose state.
-  */
-struct UnitTest
-{
-    static bool verbose;  ///< Condition for printing test names, comments and results of the tests.
-    std::string name;     ///< Test name. Can be a long string explaining what the test checks.
-    std::ostringstream  msg;  ///< Output stream used to issue messages during the tests. Displayed or discarded, depending on the value of variable verbose.
 
-protected:
-    static sofa::helper::vector<std::string> skippedTestMessages; ///< List of messages describing each skipped test.
+/** Base class for performing series of unit tests and issuing test reports.
+
+  There are three types of reports: the total number of unit tests, the number of warnings, and the number of errors.
+  Warnings can be used as alternative to errors.
+
+  Log and warning/error messages can be output using output streams given by  sout() and serr(), respectively.
+  The messages are displayed or not, depending on the verbosity level.
+
+  To implement a new test, derive this class and implement method void runTests( unsigned& numTests, unsigned& numWarnings, unsigned& numErrors ).
+  */
+class UnitTest
+{
 
 public:
+    typedef enum {SILENT,WARNINGS_ONLY,ALL_MESSAGES} VerbosityLevel;
 
-    /// The test name can be a long string explaining what the test checks.
-    UnitTest( std::string testName );
+    UnitTest( std::string shortTestName, VerbosityLevel verb );
     virtual ~UnitTest() {}
 
-    /// Runs the test and return true in case of failure. Optionally print begin and end messages, depending on the verbose variable
-    bool fails();
+    /** Run a series of unit tests.
+      Increment @param numTests with the number of unit tests performed.
+      Increment @param numWarnings with the number of warnings issued.
+      Increment @param numErrors with the number of errors detected.
+      For each unit test, method checkIf(bool testSucceeded, std::string testDescription, unsigned& numTests, unsigned& numErrors)
+        can be used to automatically increment numTests and numErrors, as well as issuing log and error messages.
+    */
+    virtual void runTests( unsigned& numTests, unsigned& numWarnings, unsigned& numErrors )=0;
 
-    /// Perform the test and return true in case of success.
-    virtual bool succeeds()=0;
+protected:
+    /** Helper to register the result of unit test.
+      @param testSucceeded is the result of the test, true if successfull
+      @param testDescription is the description of the test, printed depending on the test result and verbosity level
+      @param numTests is incremented by 1
+      @param numErrors is incremented if testSucceeded is false
+      */
+    bool checkIf( bool testSucceeded, std::string testDescription, unsigned& numTests, unsigned& numErrors );
 
-    /// Append a log message to report an important fact such as a skipped test, for delayed fix
-    void log( const std::string& msg );
+    /// Basic output stream, displayed only if the verbosity level is ALL_MESSAGES
+    virtual std::ostream& sout() { std::ostream& s = verbosityLevel()>WARNINGS_ONLY ? std::cerr: skippedMsgs; s<<getName()<<": "; return s;}
 
-    /// Print the list of log messages, if any. If empty list, print nothing
-    static void printLogs();
+    /// Error and warning output stream, skipped only if the verbosity level is SILENT
+    virtual std::ostream& serr() { std::ostream& s = verbosityLevel()>SILENT ? std::cerr: skippedMsgs;  s<<getName()<<": "; return s;}
 
+    VerbosityLevel verbosityLevel() { return verbose; }
+    const std::string& getName() const { return name; }
 
     /** @name Helpers
      *  Helper Functions to more easily create tests and check the results.
@@ -77,45 +91,12 @@ public:
     /// A very small value. Can be used to check if an error is small enough.
     virtual double epsilon() const { return 1.0e-10; }
 
-    /** Velocity of a rigid body at a given point, based on its angular velocity and its linear velocity at another point.
-      \param omega angular velocity
-      \param v known linear velocity
-      \param pv point where the linear velocity is known
-      \param p point where we compute the velocity
-      */
-    template <class Vec3>
-    static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, const Vec3& p ) { return v + cross( omega, p-pv ); }
-
-    /// Apply the given translation and rotation to each entry of vector v
-    template<class V1, class Vec, class Rot>
-    static void displace( V1& v, Vec translation, Rot rotation )
-    {
-        for(std::size_t i=0; i<v.size(); i++)
-            v[i] = translation + rotation.rotate(v[i]);
-    }
-
-    /// Apply the given translation and rotation to each entry of vector v
-    template<class V1, class Rot>
-    static void rotate( V1& v, Rot rotation )
-    {
-        for(std::size_t i=0; i<v.size(); i++)
-            v[i] = rotation.rotate(v[i]);
-    }
-
-    /// Apply a rigid transformation (translation, Euler angles) to the given points and their associated velocities.
-    template<class V1, class V2>
-    static void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
-    {
-        typedef defaulttype::Vec<3,SReal> Vec3;
-        typedef helper::Quater<SReal> Quat;
-        Vec3 translation(tx,ty,tz);
-        Quat rotation = Quat::createQuaterFromEuler(Vec3(rx,ry,rz));
-        displace(points,translation,rotation);
-        rotate(velocities,rotation);
-    }
-
-
     //@}
+
+private:
+    VerbosityLevel verbose;  ///< Condition for printing test names, comments and results of the tests.
+    std::string name;     ///< Test name, preferably short. Detailed test descriptions can be given to the detectErrors method.
+    std::ostringstream  skippedMsgs;  ///< Contains all the skipped messages, depending on the verbosity level.
 
 };
 
