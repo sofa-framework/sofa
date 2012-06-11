@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_PrincipalStrechesMAPPING_H
-#define SOFA_COMPONENT_MAPPING_PrincipalStrechesMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_CPP
 
 #include "../initFlexible.h"
-#include "../strainMapping/BaseStrainMapping.h"
-#include "../strainMapping/PrincipalStrechesJacobianBlock.h"
+#include "PrincipalStretchesMapping.h"
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/OptionsGroup.h>
+#include "../types/DeformationGradientTypes.h"
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
@@ -38,37 +38,21 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
+SOFA_DECL_CLASS(PrincipalStretchesMapping);
 
-/** Deformation Gradient to Principal Streches (ie Diagonalized Lagrangian Strain) mapping.
-*/
+using namespace defaulttype;
 
-template <class TIn, class TOut>
-class SOFA_Flexible_API PrincipalStrechesMapping : public BaseStrainMapping<defaulttype::PrincipalStrechesJacobianBlock<TIn,TOut> >
-{
-public:
-    typedef defaulttype::PrincipalStrechesJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseStrainMapping<BlockType > Inherit;
+// Register in the Factory
+int PrincipalStretchesMappingClass = core::RegisterObject("Map Deformation Gradients to Principal Stretches")
 
-    SOFA_CLASS(SOFA_TEMPLATE2(PrincipalStrechesMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
+        .add< PrincipalStretchesMapping< F331Types, U331Types > >(true)
+        .add< PrincipalStretchesMapping< F321Types, U221Types > >()
+        ;
 
-
-
-protected:
-
-    PrincipalStrechesMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
-        : Inherit ( from, to )
-    {
-    }
-
-    virtual ~PrincipalStrechesMapping() { }
-
-
-};
-
+template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, U331Types >;
+template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, U221Types >;
 
 } // namespace mapping
 } // namespace component
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_PrincipalStrechesMAPPING_H

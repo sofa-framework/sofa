@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_PrincipalStrechesMAPPING_CPP
+#ifndef SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_H
 
 #include "../initFlexible.h"
-#include "PrincipalStrechesMapping.h"
-#include <sofa/core/ObjectFactory.h>
+#include "../strainMapping/BaseStrainMapping.h"
+#include "../strainMapping/PrincipalStretchesJacobianBlock.h"
 
-#include "../types/DeformationGradientTypes.h"
-#include "../types/StrainTypes.h"
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -38,21 +38,36 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PrincipalStrechesMapping);
+using helper::vector;
 
-using namespace defaulttype;
+/** Deformation Gradient to Principal Stretches (ie Diagonalized Lagrangian Strain) mapping.
+*/
 
-// Register in the Factory
-int PrincipalStrechesMappingClass = core::RegisterObject("Map Deformation Gradients to Principal Streches")
+template <class TIn, class TOut>
+class SOFA_Flexible_API PrincipalStretchesMapping : public BaseStrainMapping<defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> >
+{
+public:
+    typedef defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> BlockType;
+    typedef BaseStrainMapping<BlockType > Inherit;
 
-        .add< PrincipalStrechesMapping< F331Types, U331Types > >(true)
-        .add< PrincipalStrechesMapping< F321Types, U221Types > >()
-        ;
+    SOFA_CLASS(SOFA_TEMPLATE2(PrincipalStretchesMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
 
-template class SOFA_Flexible_API PrincipalStrechesMapping< F331Types, U331Types >;
-template class SOFA_Flexible_API PrincipalStrechesMapping< F321Types, U221Types >;
+
+
+protected:
+
+    PrincipalStretchesMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
+        : Inherit ( from, to )
+    {
+    }
+
+    virtual ~PrincipalStretchesMapping() { }
+
+};
+
 
 } // namespace mapping
 } // namespace component
 } // namespace sofa
 
+#endif // SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_H

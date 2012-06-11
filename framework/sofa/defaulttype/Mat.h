@@ -420,10 +420,9 @@ public:
     }
 
 
-    /// Multiplication with a diagonal Matrix represented as a vector (possible for square matrices only)
-    Mat<L,C,real> multDiagonal(const Col& d) const
+    /// Multiplication with a diagonal Matrix CxC represented as a vector of size C
+    Mat<L,C,real> multDiagonal(const Line& d) const
     {
-        BOOST_STATIC_ASSERT(L==C);
         Mat<L,C,real> r(NOINIT);
         for(int i=0; i<L; i++)
             for(int j=0; j<C; j++)
@@ -668,6 +667,24 @@ inline real determinant(const Mat<2,2,real>& m)
 {
     return m(0,0)*m(1,1)
             - m(1,0)*m(0,1);
+}
+
+/// trace of a square matrix
+template<int N, class real>
+inline real trace(const Mat<N,N,real>& m)
+{
+    real t = m[0][0];
+    for( int i=1 ; i<N ; ++i ) t += m[i][i];
+    return t;
+}
+
+/// diagonal of a square matrix
+template<int N, class real>
+inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
+{
+    Vec<N,real> v;
+    for( int i=0 ; i<N ; ++i ) v[i] = m[i][i];
+    return v;
 }
 
 #define MIN_DETERMINANT  1.0e-100

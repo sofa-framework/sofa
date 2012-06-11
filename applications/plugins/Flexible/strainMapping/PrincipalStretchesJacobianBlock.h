@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_DiagonalStrainJacobianBlock_H
-#define FLEXIBLE_DiagonalStrainJacobianBlock_H
+#ifndef FLEXIBLE_PrincipalStretchesJacobianBlock_H
+#define FLEXIBLE_PrincipalStretchesJacobianBlock_H
 
 #include "../BaseJacobian.h"
 #include <sofa/defaulttype/Vec.h>
@@ -44,9 +44,9 @@ namespace defaulttype
 
 
 
-/** Template class used to implement one jacobian block for DiagonalStrainMapping */
+/** Template class used to implement one jacobian block for PrincipalStretchesMapping */
 template<class TIn, class TOut>
-class DiagonalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut>
+class PrincipalStretchesJacobianBlock : public BaseJacobianBlock< TIn,TOut >
 {
 public:
 
@@ -75,14 +75,16 @@ public:
     /**
     Mapping:   \f$ E = Ut.F.V\f$
     where:  U/V are the spatial and material rotation parts of F and E is diagonal
-    Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
+    Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is still diagonal (no anisotropy possible)
     */
 
     static const bool constantJ = false;
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation
-    Vec<material_dimensions,Real> _S;
+    StrainVec _S; ///< Principal stretches + 1
+
+    MatBlock _J;
 
     bool _degenerated;
 
@@ -92,34 +94,45 @@ public:
 
         for( int i=0 ; i<material_dimensions ; ++i )
             result.getStrain()[i] += _S[i] - 1;
+
+        computeJ(); // TODO compute J only if implicit
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
+        for( int i=0 ; i<spatial_dimensions ; ++i )
+            for( int j=0 ; j<material_dimensions ; ++j )
+                for( int k=0 ; k<material_dimensions ; ++k )
+                    result.getStrain()[k] += _J[k][i*material_dimensions+j] * data.getF()[i][j];
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getF() += _U * StressVoigtToMat( data.getStrain() ).multTransposed( _V );
+        for( int i=0 ; i<spatial_dimensions ; ++i )
+            for( int j=0 ; j<material_dimensions ; ++j )
+                for( int k=0 ; k<material_dimensions ; ++k )
+                    result.getF()[i][j] += _J[k][i*material_dimensions+j] * data.getStrain()[k];
     }
 
-    // TODO how?????
+    void computeJ()
+    {
+        for( int i=0 ; i<spatial_dimensions ; ++i )
+            for( int j=0 ; j<material_dimensions ; ++j )
+                for( int k=0 ; k<material_dimensions ; ++k )
+                    _J[k][i*material_dimensions+j] = _U[i][k]*_V[j][k];
+    }
+
     MatBlock getJ()
     {
-        MatBlock B = MatBlock();
-        //typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-        //EigenMap eB(&B[0][0]);
-        //eB = assembleJ( U.multTransposed( V ) );
-        return B;
+        return _J;
     }
 
-
     // TODO
-    KBlock getK(const OutDeriv& /*childForce*/)
+    KBlock getK( const OutDeriv& /*childForce*/ )
     {
         return KBlock();
     }
+
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
         if( _degenerated ) return;
@@ -127,8 +140,8 @@ public:
         SpatialMaterialMat dU;
         MaterialMaterialMat dV;
         helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
-        df.getF() += dU * StressVoigtToMat( childForce.getStrain() ) * _V * kfactor;
-        df.getF() += _U * StressVoigtToMat( childForce.getStrain() ) * dV * kfactor;
+        df.getF() += dU.multDiagonal( childForce.getStrain() ) * _V * kfactor;
+        df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
     }
 };
 
@@ -140,4 +153,4 @@ public:
 
 
 
-#endif // FLEXIBLE_DiagonalStrainJacobianBlock_H
+#endif // FLEXIBLE_PrincipalStretchesJacobianBlock_H

@@ -26,17 +26,19 @@
 
 	     <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
-                <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0.2" assembleK="false" assembleB="false"/>
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd" geometricStiffness="true"/>
+                <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>
 	    </Node>
 		
         </Node>
+	
+	<UniformMass totalMass="250" />
 
-	<Node 	name="mass"   >
+	<!--<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
 	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
-        </Node>
+        </Node>-->
 
 	<Node name="collision"  >
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
@@ -74,17 +76,19 @@
 
 	     <Node 	name="Strain"   >
 		<MechanicalObject  template="U331" name="E"  />
-	    	<PrincipalStrechesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" />
-                <HookeForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0.2" assembleK="false" assembleB="false"/>
+	    	<PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" />
+                <HookeForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>
 	    </Node>
 		
         </Node>
+	
+	<UniformMass totalMass="250" />
 
-	<Node 	name="mass"   >
+	<!--<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
 	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
-        </Node>
+        </Node>-->
 
 	<Node name="collision"  >
 	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
@@ -152,7 +156,7 @@
 	
         <Node name="StrainNode">
             <MechanicalObject template="U221"  name="VoigtStrainDOF" />
-	    <PrincipalStrechesMapping template="Mapping&lt;F321,U221&gt;" assembleJ="false" />
+	    <PrincipalStretchesMapping template="Mapping&lt;F321,U221&gt;" assembleJ="false" />
             <HookeForceField template="U221" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 

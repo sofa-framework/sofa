@@ -27,13 +27,14 @@ SOURCES = initFlexible.cpp\
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \
     strainMapping/DiagonalStrainMapping.cpp \
-    strainMapping/PrincipalStrechesMapping.cpp \
+    strainMapping/PrincipalStretchesMapping.cpp \
     strainMapping/InvariantMapping.cpp \
     strainMapping/PlasticStrainMapping.cpp \
     material/HookeForceField.cpp \
     material/MooneyRivlinForceField.cpp \
+    #material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
-    forceField/FlexibleTetrahedronFEMForceField.cpp \
+    #forceField/FlexibleTetrahedronFEMForceField.cpp \
 
 
 HEADERS = initFlexible.h \
@@ -76,8 +77,8 @@ HEADERS = initFlexible.h \
     strainMapping/CorotationalStrainJacobianBlock.inl \
     strainMapping/DiagonalStrainMapping.h \
     strainMapping/DiagonalStrainJacobianBlock.h \
-    strainMapping/PrincipalStrechesMapping.h \
-    strainMapping/PrincipalStrechesJacobianBlock.h \
+    strainMapping/PrincipalStretchesMapping.h \
+    strainMapping/PrincipalStretchesJacobianBlock.h \
     strainMapping/InvariantMapping.h \
     strainMapping/InvariantJacobianBlock.h \
     strainMapping/InvariantJacobianBlock.inl \
@@ -91,10 +92,12 @@ HEADERS = initFlexible.h \
     material/MooneyRivlinForceField.h \
     material/MooneyRivlinMaterialBlock.h \
     material/MooneyRivlinMaterialBlock.inl \
+    #material/OgdenForceField.h \
+    #material/OgdenMaterialBlock.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
-    forceField/FlexibleTetrahedronFEMForceField.h \
+    #forceField/FlexibleTetrahedronFEMForceField.h \
 
 
 contains(DEFINES, SOFA_HAVE_IMAGE) {

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.3"  >
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
-    <EulerImplicitSolver />
-    <CGLinearSolver  />
+<!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
 
      <Node 	name="FEM"   >
+    <EulerImplicitSolver /> <CGLinearSolver  />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	      <Mesh name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
@@ -27,6 +27,7 @@
     </Node>
 
     <Node 	name="Flexible"   >
+    <EulerImplicitSolver /> <CGLinearSolver  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -77,7 +78,11 @@
 
 
 
+
+    
+
    <Node 	name="FEM_stVenant"   >
+    <EulerImplicitSolver /> <CGLinearSolver  />
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
 	    <Mesh name="mesh" src="@loader" />
 	    <MechanicalObject template="Vec3d" name="parent" />
@@ -91,13 +96,14 @@
 	    <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1" translation="0 0 5"/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1" translation="0 0 5"/>
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
 
 
     <Node 	name="Flexible_stVenant"   >
+    <EulerImplicitSolver /> <CGLinearSolver  />
 	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
         <Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>

@@ -37,6 +37,11 @@
 #include <sofa/helper/MatEigen.h>
 
 
+// TODO
+// - use code from E331 in E332
+// - find a way to store data needed to compute dJ
+
+
 namespace sofa
 {
 
@@ -77,12 +82,14 @@ static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N
 
 /// 3D->3D
 template<typename Real>
-void computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
+bool computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 {
-    helper::Decompose<Real>::QRDecomposition_stable( f, r );
+    bool degenerated = helper::Decompose<Real>::QRDecomposition_stable( f, r );
 
     Mat<3,3,Real> T = r.multTranspose( f ); // T = rt * f
     s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
+
+    return degenerated;
 }
 
 /// 3D->2D
@@ -108,227 +115,28 @@ void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 
 /// 3D->3D
 template<typename Real>
-void computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
+bool computeSVD( const Mat<3,3,Real> &F, Mat<3,3,Real> &r, Mat<3,3,Real> &s, Mat<3,3,Real> &U, Vec<3,Real>& F_diag, Mat<3,3,Real> &V )
 {
-    //if( determinant(F) < 0 ) // inverted element -> SVD decomposition + handle degenerate cases
-    {
+    bool degenerated = helper::Decompose<Real>::SVD_stable( F, U, F_diag, V );
 
-        // using "invertible FEM" article notations
+    // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
+    r = U.multTransposed( V ); // r = U * Vt
+    s = r.multTranspose( F ); // s = rt * F
+    //s = V.multDiagonal( F_diag ).multTransposed( V ); // s = V * F_diag * Vt
 
-        Mat<3,3,Real> U, V; // the two rotations
-        Vec<3,Real> F_diagonal; // diagonalized strain
-
-        Mat<3,3,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos - right Cauchy Green deformation tensor
-
-        helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal ); // eigen problem to obtain an orthogonal matrix V and diagonalized F
-
-
-        // if V is a reflexion -> made it a rotation by negating a column
-        if( determinant(V) < 0 )
-            for( int i=0 ; i<3; ++i )
-                V[i][0] = -V[i][0];
-
-        // compute the diagonalized strain
-        for( int i = 0 ; i<3; ++i )
-        {
-            if( F_diagonal[i] < 1e-6 ) // numerical issues
-                F_diagonal[i] = 0;
-            else
-                F_diagonal[i] = helper::rsqrt( F_diagonal[i] );
-        }
-
-        // sort F_diagonal from small to large
-        Vec<3,unsigned> Forder;
-        if( F_diagonal[0]<F_diagonal[1] )
-        {
-            if( F_diagonal[0]<F_diagonal[2] )
-            {
-                Forder[0] = 0;
-                if( F_diagonal[1]<F_diagonal[2] )
-                {
-                    Forder[1] = 1;
-                    Forder[2] = 2;
-                }
-                else
-                {
-                    Forder[1] = 2;
-                    Forder[2] = 1;
-                }
-            }
-            else
-            {
-                Forder[0] = 2;
-                Forder[1] = 0;
-                Forder[2] = 1;
-            }
-        }
-        else
-        {
-            if( F_diagonal[1]<F_diagonal[2] )
-            {
-                Forder[0] = 1;
-                if( F_diagonal[0]<F_diagonal[2] )
-                {
-                    Forder[1] = 0;
-                    Forder[2] = 2;
-                }
-                else
-                {
-                    Forder[1] = 2;
-                    Forder[2] = 0;
-                }
-            }
-            else
-            {
-                Forder[0] = 2;
-                Forder[1] = 1;
-                Forder[2] = 0;
-            }
-        }
-
-
-        // the numbers of strain values too close to 0 indicates the kind of degenerescence
-        int degeneratedF;
-        for( degeneratedF=0 ; degeneratedF<3 && F_diagonal[ Forder[degeneratedF] ] < (Real)1e-6 ; ++degeneratedF ) ;
-
-
-        // Warning: after the switch F_diagonal is no longer valid (it can be is its own inverse)
-        //Vec<3,Real> F_diagonalOld = F_diagonal; // diagonalized strain
-        switch( degeneratedF )
-        {
-        case 0: // no null value -> inverted but not degenerate
-        {
-            F_diagonal[0] = (Real)1.0/F_diagonal[0];
-            F_diagonal[1] = (Real)1.0/F_diagonal[1];
-            F_diagonal[2] = (Real)1.0/F_diagonal[2];
-            U = F * V.multDiagonal( F_diagonal );
-            break;
-        }
-        case 1: // 1 null value -> collapsed to a plane -> keeps the 2 valid edges and construct the third
-        {
-            F_diagonal[Forder[0]] = (Real)1.0;
-            F_diagonal[Forder[1]] = (Real)1.0/F_diagonal[Forder[1]];
-            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
-            U = F * V.multDiagonal( F_diagonal );
-
-            Vec<3,Real> c = cross( Vec<3,Real>(U[0][Forder[1]],U[1][Forder[1]],U[2][Forder[1]]), Vec<3,Real>(U[0][Forder[2]],U[1][Forder[2]],U[2][Forder[2]]) );
-            U[0][Forder[0]] = c[0];
-            U[1][Forder[0]] = c[1];
-            U[2][Forder[0]] = c[2];
-            break;
-        }
-        case 2: // 2 null values -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
-        {
-            F_diagonal[Forder[0]] = (Real)1.0;
-            F_diagonal[Forder[1]] = (Real)1.0;
-            F_diagonal[Forder[2]] = (Real)1.0/F_diagonal[Forder[2]];
-            U = F * V.multDiagonal( F_diagonal );
-
-            // TODO: check if there is a more efficient way to do this
-
-            Vec<3,Real> edge0, edge1, edge2( U[0][Forder[2]], U[1][Forder[2]], U[2][Forder[2]] );
-
-            // check the main direction of edge2 to try to take a not too close arbritary vector
-            Real abs0 = helper::rabs( edge2[0] );
-            Real abs1 = helper::rabs( edge2[1] );
-            Real abs2 = helper::rabs( edge2[2] );
-            if( abs0 > abs1 )
-            {
-                if( abs0 > abs2 )
-                {
-                    edge0[0] = 0; edge0[1] = 1; edge0[2] = 0;
-                }
-                else
-                {
-                    edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
-                }
-            }
-            else
-            {
-                if( abs1 > abs2 )
-                {
-                    edge0[0] = 0; edge0[1] = 0; edge0[2] = 1;
-                }
-                else
-                {
-                    edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
-                }
-            }
-
-            edge1 = cross( edge2, edge0 );
-            edge1.normalize();
-            edge0 = cross( edge1, edge2 );
-
-            U[0][Forder[0]] = edge0[0];
-            U[1][Forder[0]] = edge0[1];
-            U[2][Forder[0]] = edge0[2];
-
-            U[0][Forder[1]] = edge1[0];
-            U[1][Forder[1]] = edge1[1];
-            U[2][Forder[1]] = edge1[2];
-
-            break;
-        }
-        case 3: // 3 null values -> collapsed to a point -> build any orthogonal frame
-            U.identity();
-            break;
-        }
-
-        // un-inverting the element -> made U a rotation by negating a column
-        if( determinant(U) < 0 ) // should always be true since we are handling the case det(F)<0, but it is not (due to numerical considerations?)
-        {
-            U[0][Forder[0]] *= -1;
-            U[1][Forder[0]] *= -1;
-            U[2][Forder[0]] *= -1;
-        }
-
-        // the world rotation of the element based on the two rotations computed by the SVD (world and material space)
-        r = U.multTransposed( V ); // r = U * Vt
-        s = r.multTranspose( F ); // s = rt * F
-        //s = V.multDiagonal( F_diagonalOld ).multTransposed( V ); // s = V * F_diag * Vt
-    }
-    //else // not inverted -> classical polar
-    {
-        //    helper::Decompose<Real>::polarDecomposition( F, r, s );
-    }
+    return degenerated;
 }
 
 
 /// 3D->2D
 template<typename Real>
-void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
+void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s, Mat<3,2,Real> &U, Vec<2,Real>& F_diag, Mat<2,2,Real> &V )
 {
-    Mat<3,2,Real> U;
-    Mat<2,2,Real> V;
-    Vec<2,Real> F_diagonal; // diagonalized strain
-
-    Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos - right Cauchy Green deformation tensor
-
-    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, F_diagonal );
-
-    // if V is a reflexion -> made it a rotation by negating a column
-    if( determinant(V) < 0 )
-        for( int i=0 ; i<2; ++i )
-            V[i][0] = -V[i][0];
-
-    // compute the diagonalized strain and take the inverse
-    for( int i = 0 ; i<2; ++i )
-    {
-        if( F_diagonal[i] < 1e-6 ) // numerical issues
-            F_diagonal[i] = 1;
-        else
-            F_diagonal[i] = (Real)1.0 / helper::rsqrt( F_diagonal[i] );
-    }
-
-    // TODO check for degenerate cases (collapsed to a point, to an edge)
-    // note that inversion is not defined for a 2d element in a 3d world
-
-    U = F * V.multDiagonal( F_diagonal );
+    helper::Decompose<Real>::SVD_stable( F, U, F_diag, V );
 
     r = U.multTransposed( V ); // r = U * Vt
     s = r.multTranspose( F ); // s = rt * F
 }
-
 
 
 
@@ -371,44 +179,121 @@ public:
 
     static const bool constantJ=false;
 
-    Affine R;   ///< =  store rotational part of deformation gradient to compute J
+    Affine _R;   ///< =  store rotational part of deformation gradient to compute J
+
+    // stuff only needed to compute the geometric stiffness and different for each decomposition method -> use pointers and create variables only when needed
+    // TODO deal with it by using only one struct pointer?
+    bool *_degenerated; // for qr & svd dJ
+    Affine *_invTriS; // for qr dJ
+    Affine *_G; // for polar dJ
+    Affine *_U, *_V; Vec<3,Real> *_Fdiag; // for svd dJ
+
+    CorotationalStrainJacobianBlock()
+        : Inherit()
+        , _degenerated( NULL )
+        , _invTriS( NULL )
+        , _G( NULL )
+        , _U( NULL )
+        , _V( NULL )
+        , _Fdiag( NULL )
+    {
+    }
+
+
+    void init_small()
+    {
+        if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
+        if( _G ) { delete _G; _G=NULL; }
+        if( _U ) { delete _U; _U=NULL; }
+        if( _V ) { delete _V; _V=NULL; }
+        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+    }
+    void init_qr( bool geometricStiffness )
+    {
+        if( _G ) { delete _G; _G=NULL; }
+        if( _U ) { delete _U; _U=NULL; }
+        if( _V ) { delete _V; _V=NULL; }
+        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+
+        if( geometricStiffness )
+        {
+            if( !_degenerated ) _degenerated = new bool();
+            if( !_invTriS ) _invTriS = new Affine();
+        }
+        else
+        {
+            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+            if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
+        }
+    }
+    void init_polar( bool geometricStiffness )
+    {
+        if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
+        if( _U ) { delete _U; _U=NULL; }
+        if( _V ) { delete _V; _V=NULL; }
+        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+
+        if( geometricStiffness )
+        {
+            if( !_G )_G = new Affine();
+        }
+        else
+        {
+            if( _G ) { delete _G; _G=NULL; }
+        }
+    }
+    void init_svd()
+    {
+        if( !_degenerated ) _degenerated = new bool();
+        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
+        if( _G ) { delete _G; _G=NULL; }
+        if( !_U ) _U = new Affine();
+        if( !_V ) _V = new Affine();
+        if( !_Fdiag ) _Fdiag = new Vec<3,Real>();
+    }
+
+
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
-
     void addapply_small( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
-        R.identity();
+        _R.identity();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
     }
-
     void addapply_qr( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        computeQR( data.getF(), R, strainmat );
+        *_degenerated = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R );
+        Mat<3,3,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
+        _invTriS->invert(T);
+        strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
     }
-
     void addapply_polar( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        helper::Decompose<Real>::polarDecomposition( data.getF(), R, strainmat );
+        helper::Decompose<Real>::polarDecomposition( data.getF(), _R, strainmat );
+
+        if( _G ) helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_G );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
-    }
 
+    }
     void addapply_svd( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        computeSVD( data.getF(), R, strainmat );
+        *_degenerated = computeSVD( data.getF(), _R, strainmat, *_U, *_Fdiag, *_V );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -416,12 +301,12 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getF() += R*StressVoigtToMat( data.getStrain() );
+        result.getF() += _R*StressVoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
@@ -429,18 +314,42 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        eB = assembleJ(R);
+        eB = assembleJ(_R);
         return B;
     }
 
 
-    // requires derivative of R. Not Yet implemented..
+    // requires derivative of _R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
+        // VERY UNSTABLE
+        if( *_degenerated ) return;
+
+        Affine dR;
+        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_invTriS, dx.getF(), dR );
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+    }
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        //QUITE UNSTABLE
+        Affine dR;
+        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_G, _R, dx.getF(), dR );
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+    }
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        // QUITE STABLE
+        if( *_degenerated ) return;  // inverted or too flat -> no geometric stiffness for robustness
+
+        Affine dR;
+        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_U, *_Fdiag, *_V, dx.getF(), dR ); // using SVD decomposition method
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
 };
 
@@ -478,13 +387,40 @@ public:
 
     /**
     Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
-    where:  R/D are the rotational/skew symmetric parts of F=RD
+    where:  _R/D are the rotational/skew symmetric parts of F=RD
     Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
     */
 
     static const bool constantJ=false;
 
-    Affine R;   ///< =  store rotational part of deformation gradient to compute J
+    Affine _R;   ///< =  store rotational part of deformation gradient to compute J
+
+    Affine *_U; Mat<material_dimensions,material_dimensions,Real> *_V; Vec<2,Real> *_Fdiag; // for svd dJ
+
+
+    CorotationalStrainJacobianBlock()
+        : Inherit()
+        , _U( NULL )
+        , _V( NULL )
+        , _Fdiag( NULL )
+    {
+    }
+
+    void init_small()
+    {
+        if( _U ) { delete _U; _U=NULL; }
+        if( _V ) { delete _V; _V=NULL; }
+        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+    }
+    void init_qr( bool /*geometricStiffness*/ ) { init_small(); }
+    void init_polar( bool /*geometricStiffness*/ ) { init_svd(); }
+    void init_svd()
+    {
+        if( !_U ) _U = new Affine();
+        if( !_V ) _V = new Mat<material_dimensions,material_dimensions,Real>();
+        if( !_Fdiag ) _Fdiag = new Vec<2,Real>();
+    }
+
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
 
@@ -500,7 +436,7 @@ public:
     {
         StrainMat strainmat;
 
-        computeQR( data.getF(), R, strainmat );
+        computeQR( data.getF(), _R, strainmat );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -516,7 +452,7 @@ public:
     {
         StrainMat strainmat;
 
-        computeSVD( data.getF(), R, strainmat );
+        computeSVD( data.getF(), _R, strainmat, *_U, *_Fdiag, *_V );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -524,12 +460,12 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getF() += R*StressVoigtToMat( data.getStrain() );
+        result.getF() += _R*StressVoigtToMat( data.getStrain() );
     }
 
     MatBlock getJ()
@@ -537,18 +473,30 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        eB = assembleJ(R);
+        eB = assembleJ(_R);
         return B;
     }
 
 
-    // requires derivative of R. Not Yet implemented..
+    // requires derivative of _R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
     {
+    }
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        addDForce_svd( df, dx, childForce, kfactor );
+    }
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        // QUITE STABLE
+        Affine dR;
+        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_U, *_Fdiag, *_V, dx.getF(), dR );
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
 };
 
@@ -590,7 +538,7 @@ public:
         - \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
         - \f$ E_k = [R^T F_k + F_k^T R ]/2  \f$
     where:
-        - R/D are the rotational/skew symmetric parts of F=RD
+        - _R/D are the rotational/skew symmetric parts of F=RD
         - _k denotes derivative with respect to spatial dimension k
     Jacobian:
         - \f$  dE = [R^T dF + dF^T R ]/2 \f$
@@ -599,7 +547,15 @@ public:
 
     static const bool constantJ=false;
 
-    Affine R;   ///< =  store rotational part of deformation gradient to compute J
+    Affine _R;   ///< =  store rotational part of deformation gradient to compute J
+
+
+
+    void init_small() {}
+    void init_qr( bool /*geometricStiffness*/ ) {}
+    void init_polar( bool /*geometricStiffness*/ ) {}
+    void init_svd() {}
+
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
 
@@ -607,7 +563,7 @@ public:
     {
         // order 0
         StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
-        R.identity();
+        _R.identity();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -615,7 +571,7 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
             result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
@@ -624,7 +580,7 @@ public:
     {
         // order 0
         StrainMat strainmat;
-        computeQR( data.getF(), R, strainmat );
+        computeQR( data.getF(), _R, strainmat );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -632,7 +588,7 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
             result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
@@ -641,7 +597,7 @@ public:
     {
         // order 0
         StrainMat strainmat;
-        helper::Decompose<Real>::polarDecomposition(data.getF(), R, strainmat);
+        helper::Decompose<Real>::polarDecomposition(data.getF(), _R, strainmat);
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -649,7 +605,7 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
             result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
@@ -657,8 +613,8 @@ public:
     void addapply_svd( OutCoord& result, const InCoord& data )
     {
         // order 0
-        StrainMat strainmat;
-        computeSVD( data.getF(), R, strainmat );
+        StrainMat strainmat; Affine U, V; Vec<material_dimensions,Real> Fdiag;
+        computeSVD( data.getF(), _R, strainmat, U, Fdiag, V );
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -666,7 +622,7 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T = R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
             result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }
@@ -674,22 +630,22 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         // order 0
-        result.getStrain() += StrainMatToVoigt( R.multTranspose( data.getF() ) );
+        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            result.getStrainGradient(k) += StrainMatToVoigt( R.multTranspose( data.getGradientF(k) ) );
+            result.getStrainGradient(k) += StrainMatToVoigt( _R.multTranspose( data.getGradientF(k) ) );
         }
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
         // order 0
-        result.getF() += R*StressVoigtToMat( data.getStrain() );
+        result.getF() += _R*StressVoigtToMat( data.getStrain() );
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            result.getGradientF(k) += R*StressVoigtToMat( data.getStrainGradient(k) );
+            result.getGradientF(k) += _R*StressVoigtToMat( data.getStrainGradient(k) );
         }
     }
 
@@ -700,7 +656,7 @@ public:
         EigenMap eB(&B[0][0]);
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
-        JBlock J = assembleJ(R);
+        JBlock J = assembleJ(_R);
         eB.template block(0,0,strain_size,frame_size) = J;
         // order 1
         unsigned int offsetE=strain_size;
@@ -712,12 +668,19 @@ public:
         return B;
     }
 
-    // requires derivative of R. Not Yet implemented..
+    // requires derivative of _R. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    {
+    }
+    void addDForce_polar( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    {
+    }
+    void addDForce_svd( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
     {
     }
 };
