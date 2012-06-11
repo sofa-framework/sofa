@@ -25,11 +25,9 @@
 #ifndef FLEXIBLE_MooneyRivlinMaterialBlock_INL
 #define FLEXIBLE_MooneyRivlinMaterialBlock_INL
 
-#include "../material/MooneyRivlinMaterialBlock.h"
+#include "MooneyRivlinMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include "../types/StrainTypes.h"
-
 #include "../types/StrainTypes.h"
 
 namespace sofa
@@ -52,7 +50,7 @@ namespace defaulttype
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  F331
+////  I331
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class _Real>
@@ -73,7 +71,7 @@ public:
       *
       * classic Mooney rivlin
       *     - W = vol* [ C1 ( I1 - 3)  + C2 ( I2 - 3) ]
-      *     - f = - 2 [ vol*C1*sqrt(I1) , vol*C2*sqrt(I12) , 0 ]
+      *     - f = - 2 [ vol*C1*sqrt(I1) , vol*C2*sqrt(I2) , 0 ]
       *     - df =  - 2 [ vol*C1 , vol*C2 , 0 ]
       */
 

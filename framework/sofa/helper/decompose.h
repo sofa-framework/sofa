@@ -66,11 +66,15 @@ public:
     /** QR decomposition stable to null columns.
       * Result is still undefined if two columns are parallel.
       * In the clean case (not degenerated), there are only two additional 'if(x<e)' but no additional computations.
+      * \returns true in a degenerated configuration
       */
-    static void QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
+    static bool QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
 
-
-
+    /** QR decomposition (M=QR) rotation gradient dQ  (invR = R^-1)
+      * Formula given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf
+      * Note that dR is also easy to compute.
+      */
+    static void QRDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>&Q, const defaulttype::Mat<3,3,Real>&invR, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
 
 
 
@@ -101,13 +105,47 @@ public:
      */
     static void polarDecomposition( const defaulttype::Mat<2,2,Real>& M, defaulttype::Mat<2,2,Real>& Q );
 
+    /** Stable Polar Decomposition of 3x3 matrix based on a stable SVD using Q=UVt where M=UsV
+      * \returns true iff the stabilization processed an inverted rotation or a degenerate case
+     */
+    static bool polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q, defaulttype::Mat<3,3,Real> &S );
+    static bool polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q );
+
+    /** Stable Polar Decomposition of 3x2 matrix based on a SVD using Q=UVt where M=UsV
+     */
+    static void polarDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &Q, defaulttype::Mat<2,2,Real> &S );
 
 
+    /** Polar decomposition gradient, preliminary step: computation of invG = ((tr(S)*I-S)*Qt)^-1
+     *  Inspired by Jernej Barbic, Yili Zhao, "Real-time Large-deformation Substructuring" SIGGRAPH 2011
+     *  Note that second derivatives are also given in this paper
+     *  Another way to compute the first derivatives are given in Yi-Chao Chen, Lewis Wheeler, "Derivatives of the stretch and rotation tensors", Journal of elasticity in 1993
+     */
+    static void polarDecompositionGradient_G( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, defaulttype::Mat<3,3,Real>& invG );
 
+    /** Polar decomposition rotation gradient, computes the rotation gradient dQ of a given polar decomposition
+     *  First, invG needs to be computed with function polarDecompositionGradient_G
+     */
+    static void polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>& invG, const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+
+    /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition
+     *  qQ needs to be computed with function polarDecompositionGradient_dQ
+     */
+    static void polarDecompositionGradient_dS( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, const defaulttype::Mat<3,3,Real>& dQ, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dS );
+
+    /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
+      * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
+     */
+    static bool polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const defaulttype::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+
+    /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
+      * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
+     */
+    static void polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ );
 
 
     /** @}
-      * @name SVD
+      * @name Eigen Decomposition
       * @{
       */
 
@@ -134,7 +172,47 @@ public:
     /** @} */
 
 
+    /** @}
+      * @name SVD
+      * @{
+      */
 
+    /** SVD F = U*F_diagonal*V based on the Eigensystem decomposition of FtF
+      * all eigenvalues are positive
+      * Warning U & V are not guarantee to be rotations (they can be reflexions), eigenvalues are not sorted
+      */
+    static void SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
+
+    /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
+      * \returns true iff the stabilization processed an inverted rotation or a degenerate case
+      * U & V are rotations
+      * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
+      */
+    static bool SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
+
+    /** SVD F = U*F_diagonal*V based on the Eigensystem decomposition of FtF
+      * all eigenvalues are positive
+      * Warning U & V are not guarantee to be rotations (they can be reflexions), eigenvalues are not sorted
+      */
+    static void SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
+
+    /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
+      * \returns true in a degenerate case
+      * U & V are rotations
+      * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
+      */
+    static bool SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
+    /** @} */
+
+    /** SVD rotation gradients, computes the rotation gradients dU & dV
+      * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
+     */
+    static void SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV );
+
+    /** SVD rotation gradients, computes the rotation gradients dU & dV
+      * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
+     */
+    static void SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV );
 
 private:
 
@@ -190,7 +268,15 @@ private:
       */
     static void do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q);
 
+    /** @internal useful for polarDecompositionGradient
+      * \returns M such as Mu = cross( v, u ), note that M is antisymmetric
+      */
+    static defaulttype::Mat<3,3,Real> skewMat( const defaulttype::Vec<3,Real>& v );
 
+    /** @internal useful for polarDecompositionGradient
+      * Returns the "skew part" v of a matrix such as skewMat(v) = 0.5*(M-Mt)
+      */
+    static defaulttype::Vec<3,Real> skewVec( const defaulttype::Mat<3,3,Real>& M );
 
 
     /// @internal useful for eigenDecomposition

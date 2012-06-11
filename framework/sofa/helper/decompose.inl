@@ -64,8 +64,10 @@ void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defa
 
 
 template<class Real>
-void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
+bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
 {
+    bool degenerated;
+
     Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
     Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
     Vec<3,Real> edgez;
@@ -75,6 +77,7 @@ void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
     if( nx < zeroTolerance() )
     {
+        degenerated = true;
         if( ny < zeroTolerance() )
         {
             edgez.set( M[0][2], M[1][2], M[2][2] );
@@ -84,7 +87,7 @@ void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
             {
                 //std::cerr<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
                 R.identity();
-                return;
+                return degenerated;
             }
             else // collapsed to edgez
             {
@@ -182,6 +185,7 @@ void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
         if( ny < zeroTolerance() )
         {
+            degenerated = true;
 
             edgez.set( M[0][2], M[1][2], M[2][2] );
             Real nz = edgez.norm2();
@@ -232,6 +236,8 @@ void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
         }
         else // edgex & edgey are ok (either not collapsed or collapsed to face (edgex,edgey) )
         {
+            degenerated = false;
+
             edgez = cross( edgex, edgey );
             edgez.normalize();
             edgey = cross( edgez, edgex );
@@ -241,8 +247,34 @@ void Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
     R[0][0] = edgex[0]; R[0][1] = edgey[0]; R[0][2] = edgez[0];
     R[1][0] = edgex[1]; R[1][1] = edgey[1]; R[1][2] = edgez[1];
     R[2][0] = edgex[2]; R[2][1] = edgey[2]; R[2][2] = edgez[2];
+
+    return degenerated;
 }
 
+
+
+//dQ = Q ( lower(QT*dM*R−1) − lower(QT*dM*R−1)^T )
+//dR =   ( upper(QT*dM*R−1) + lower(QT*dM*R−1)^T ) R
+// lower -> strictly lower
+template<class Real>
+void Decompose<Real>::QRDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>&Q, const defaulttype::Mat<3,3,Real>&invR, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
+{
+    // tmp = QT*dM*R^−1
+    defaulttype::Mat<3,3,Real> tmp = Q.multTranspose( dM * invR );
+
+    // L = lower(tmp) - (lower(tmp))^T
+    defaulttype::Mat<3,3,Real> L;
+
+    for( int i=0 ; i<3 ; ++i )
+    {
+        for( int j=0 ; j<i ; ++j ) // strictly lower
+            L[i][j] = tmp[i][j];
+        for( int j=i+1 ; j<3 ; ++j ) // strictly lower transposed
+            L[i][j] = -tmp[j][i];
+    }
+
+    dQ = Q * L;
+}
 
 
 //////////// Polar Decomposition
@@ -460,6 +492,141 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, d
     Q = M + ( determinant( M ) < 0 ? (Real)-1.0 : (Real)1.0 ) * Q;
 }
 
+
+
+
+template<class Real>
+bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q, defaulttype::Mat<3,3,Real> &S )
+{
+    bool degenerated = polarDecomposition_stable( M, Q );
+    S = Q.multTranspose( M ); // S = Qt * M
+    //S = V.multDiagonal( Sdiag ).multTransposed( V ); // S = V * Sdiag * Vt
+
+    return degenerated;
+}
+
+template<class Real>
+bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q )
+{
+    defaulttype::Mat<3,3,Real> U, V;
+    defaulttype::Vec<3,Real> Sdiag;
+    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+
+    Q = U.multTransposed( V ); // Q = U * Vt
+
+    return degenerated;
+}
+
+
+template<class Real>
+void Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &Q, defaulttype::Mat<2,2,Real> &S )
+{
+    defaulttype::Mat<3,2,Real> U;
+    defaulttype::Mat<2,2,Real> V;
+    defaulttype::Vec<2,Real> Sdiag;
+    helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+
+    Q = U.multTransposed( V );
+    S = Q.multTranspose( M );
+}
+
+
+
+template<class Real>
+defaulttype::Mat<3,3,Real> Decompose<Real>::skewMat( const defaulttype::Vec<3,Real>& v )
+{
+    defaulttype::Mat<3,3,Real> M;
+    M[0][1] = -v[2]; M[1][0] = -M[0][1];
+    M[0][2] =  v[1]; M[2][0] = -M[0][2];
+    M[1][2] = -v[0]; M[2][1] = -M[1][2];
+    return M;
+}
+
+template<class Real>
+defaulttype::Vec<3,Real> Decompose<Real>::skewVec( const defaulttype::Mat<3,3,Real>& M )
+{
+    defaulttype::Vec<3,Real> v;
+    v[0] = 0.5 * ( M[2][1] - M[1][2] );
+    v[1] = 0.5 * ( M[0][2] - M[2][0] );
+    v[2] = 0.5 * ( M[1][0] - M[0][1] );
+    return v;
+}
+
+template<class Real>
+void Decompose<Real>::polarDecompositionGradient_G( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, defaulttype::Mat<3,3,Real>& invG )
+{
+    // invG = ((tr(S)*I-S)*Qt)^-1
+
+    invG = -S;
+    Real trace = defaulttype::trace( S );
+    invG[0][0] += trace;
+    invG[1][1] += trace;
+    invG[2][2] += trace;
+
+    defaulttype::Mat<3,3,Real> G;
+    G = invG.multTransposed( Q );
+
+    invG.invert( G );
+}
+
+
+template<class Real>
+void Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>& invG, const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
+{
+    // omega = invG * (2 * skew(Q^T * dM))
+
+    defaulttype::Mat<3,3,Real> tmp;
+
+    tmp = Q.multTranspose( dM );
+    defaulttype::Vec<3,Real> omega = skewVec( tmp ) * 2;
+    omega = invG * omega;
+
+    dQ = skewMat( omega ) * Q;
+}
+
+
+template<class Real>
+void Decompose<Real>::polarDecompositionGradient_dS( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, const defaulttype::Mat<3,3,Real>& dQ, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dS )
+{
+    dS = Q.multTranspose( dM - dQ * S ); // dS = Qt * ( dM - dQ * S )
+}
+
+
+template<class Real>
+bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const defaulttype::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
+{
+    defaulttype::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    defaulttype::Mat<3,3,Real> omega;
+
+    for( int i=0 ; i<3 ; ++i )
+    {
+        int j = (i+1)%3;
+        if( /*helper::rabs*/( Sdiag[i]+Sdiag[j] ) < zeroTolerance() ) // 2 negative eigen-values should not be possible so abs should not be necessary
+            //omega[i][j] = 1;
+            return false;
+        else
+        {
+            omega[i][j] = ( UtdMV[i][j] - UtdMV[j][i] ) / ( Sdiag[i] + Sdiag[j] );
+            omega[j][i] = -omega[i][j];
+        }
+    }
+
+    dQ = U * omega * V;
+
+    return true;
+}
+
+template<class Real>
+void Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ )
+{
+    defaulttype::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    defaulttype::Mat<2,2,Real> omega;
+
+    omega[0][1] = ( UtdMV[0][1] - UtdMV[1][0] ) / ( Sdiag[0] + Sdiag[1] );
+    omega[1][0] = -omega[0][1];
+
+    dQ = U * omega * V;
+}
 
 ///////////////////////////////
 
@@ -977,9 +1144,7 @@ void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaultty
     }
 }
 
-/** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
-  * Derived from Wild Magic Library
-  */
+
 template<class Real>
 void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
 {
@@ -1030,8 +1195,6 @@ void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,R
 
 
 
-
-
 template<class Real>
 void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
 {
@@ -1050,8 +1213,348 @@ void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,R
     QLAlgorithm( diag, subDiag, V );
 }
 
+
+
+//////////////////////////////////
+
+
+
+template<class Real>
+void Decompose<Real>::SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V )
+{
+    defaulttype::Mat<3,3,Real> FtF = F.multTranspose( F );
+
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S ); // eigen problem to obtain an orthogonal matrix V and diagonal S
+    // at that point S = S^2
+
+    defaulttype::Vec<3,Real> S_1;
+    for( int i = 0 ; i<3; ++i )
+    {
+        if( S[i] < zeroTolerance() ) // numerical issues
+        {
+            S[i] = (Real)0;
+            S_1[i] = (Real)1;
+        }
+        else
+        {
+            S[i] = helper::rsqrt( S[i] );
+            S_1[i] = (Real)1. / S[i];
+        }
+    }
+
+    U = F * V.multDiagonal( S_1 );
+}
+
+
+template<class Real>
+bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V )
+{
+    defaulttype::Mat<3,3,Real> FtF = F.multTranspose( F );
+
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S ); // eigen problem to obtain an orthogonal matrix V and diagonal S
+    // at that point S = S^2
+
+    // if V is a reflexion -> made it a rotation by negating a column
+    if( determinant(V) < (Real)0 )
+        for( int i=0 ; i<3; ++i )
+            V[i][0] = -V[i][0];
+
+    // the numbers of strain values too close to 0 indicates the kind of degenerescence
+    int degenerated = 0;
+
+    defaulttype::Vec<3,Real> S_1;
+
+    for( int i = 0 ; i<3; ++i )
+    {
+        if( S[i] < zeroTolerance() ) // numerical issues
+        {
+            degenerated++;
+            S[i] = (Real)0;
+            S_1[i] = (Real)1;
+        }
+        else
+        {
+            S[i] = helper::rsqrt( S[i] );
+            S_1[i] = (Real)1. / S[i];
+        }
+    }
+
+
+    // sort eigenvalues from small to large
+    Vec<3,unsigned> Sorder;
+    if( S[0]<S[1] )
+    {
+        if( S[0]<S[2] )
+        {
+            Sorder[0] = 0;
+            if( S[1]<S[2] )
+            {
+                Sorder[1] = 1;
+                Sorder[2] = 2;
+            }
+            else
+            {
+                Sorder[1] = 2;
+                Sorder[2] = 1;
+            }
+        }
+        else
+        {
+            Sorder[0] = 2;
+            Sorder[1] = 0;
+            Sorder[2] = 1;
+        }
+    }
+    else
+    {
+        if( S[1]<S[2] )
+        {
+            Sorder[0] = 1;
+            if( S[0]<S[2] )
+            {
+                Sorder[1] = 0;
+                Sorder[2] = 2;
+            }
+            else
+            {
+                Sorder[1] = 2;
+                Sorder[2] = 0;
+            }
+        }
+        else
+        {
+            Sorder[0] = 2;
+            Sorder[1] = 1;
+            Sorder[2] = 0;
+        }
+    }
+
+
+    switch( degenerated )
+    {
+    case 0: // no null value -> eventually inverted but not degenerate
+        U = F * V.multDiagonal( S_1 );
+        break;
+    case 1: // 1 null value -> collapsed to a plane -> keeps the 2 valid edges and construct the third
+    {
+        U = F * V.multDiagonal( S_1 );
+
+        Vec<3,Real> c = cross( Vec<3,Real>(U[0][Sorder[1]],U[1][Sorder[1]],U[2][Sorder[1]]), Vec<3,Real>(U[0][Sorder[2]],U[1][Sorder[2]],U[2][Sorder[2]]) );
+        U[0][Sorder[0]] = c[0];
+        U[1][Sorder[0]] = c[1];
+        U[2][Sorder[0]] = c[2];
+        break;
+    }
+    case 2: // 2 null values -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
+    {
+        U = F * V.multDiagonal( S_1 );
+
+        // TODO: check if there is a more efficient way to do this
+
+        Vec<3,Real> edge0, edge1, edge2( U[0][Sorder[2]], U[1][Sorder[2]], U[2][Sorder[2]] );
+
+        // check the main direction of edge2 to try to take a not too close arbritary vector
+        Real abs0 = helper::rabs( edge2[0] );
+        Real abs1 = helper::rabs( edge2[1] );
+        Real abs2 = helper::rabs( edge2[2] );
+        if( abs0 > abs1 )
+        {
+            if( abs0 > abs2 )
+            {
+                edge0[0] = 0; edge0[1] = 1; edge0[2] = 0;
+            }
+            else
+            {
+                edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+            }
+        }
+        else
+        {
+            if( abs1 > abs2 )
+            {
+                edge0[0] = 0; edge0[1] = 0; edge0[2] = 1;
+            }
+            else
+            {
+                edge0[0] = 1; edge0[1] = 0; edge0[2] = 0;
+            }
+        }
+
+        edge1 = cross( edge2, edge0 );
+        edge1.normalize();
+        edge0 = cross( edge1, edge2 );
+
+        U[0][Sorder[0]] = edge0[0];
+        U[1][Sorder[0]] = edge0[1];
+        U[2][Sorder[0]] = edge0[2];
+
+        U[0][Sorder[1]] = edge1[0];
+        U[1][Sorder[1]] = edge1[1];
+        U[2][Sorder[1]] = edge1[2];
+
+        break;
+    }
+    case 3: // 3 null values -> collapsed to a point -> build any orthogonal frame
+        U.identity();
+        break;
+    }
+
+    bool inverted = ( determinant(U) < (Real)0 );
+
+    // un-inverting the element -> made U a rotation by negating a column
+    if( inverted )
+    {
+        U[0][Sorder[0]] *= (Real)-1;
+        U[1][Sorder[0]] *= (Real)-1;
+        U[2][Sorder[0]] *= (Real)-1;
+
+        S[Sorder[0]] *= (Real)-1;
+    }
+
+    return degenerated || inverted || determinant( F ) < zeroTolerance(); // negative = inverted, too close to zero = degenerated
+}
+
+
+template<class Real>
+void Decompose<Real>::SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+{
+    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
+
+    // compute the diagonalized strain and take the inverse
+    defaulttype::Vec<2,Real> S_1;
+    for( int i = 0 ; i<2; ++i )
+    {
+        if( S[i] < zeroTolerance() ) // numerical issues
+        {
+            S[i] = (Real)0;
+            S_1[i] = (Real)1;
+        }
+        else
+        {
+            S[i] = helper::rsqrt( S[i] );
+            S_1[i] = (Real)1.0 / S[i];
+        }
+    }
+
+    U = F * V.multDiagonal( S_1 );
+}
+
+
+template<class Real>
+bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+{
+    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+
+    helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
+
+    // if V is a reflexion -> made it a rotation by negating a column
+    if( determinant(V) < (Real)0 )
+        for( int i=0 ; i<2; ++i )
+            V[i][0] = -V[i][0];
+
+    // compute the diagonalized strain and take the inverse
+    defaulttype::Vec<2,Real> S_1;
+    for( int i = 0 ; i<2; ++i )
+    {
+        if( S[i] < zeroTolerance() ) // numerical issues
+        {
+            S[i] = (Real)0;
+            S_1[i] = (Real)1;
+        }
+        else
+        {
+            S[i] = helper::rsqrt( S[i] );
+            S_1[i] = (Real)1.0 / S[i];
+        }
+    }
+
+    // TODO check for degenerate cases (collapsed to a point, to an edge)
+    // note that inversion is not defined for a 2d element in a 3d world
+
+    U = F * V.multDiagonal( S_1 );
+
+    return false;
+}
+
+
+template<class Real>
+void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV )
+{
+    defaulttype::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    defaulttype::Mat<3,3,Real> omegaU, omegaV;
+
+    for( int i=0 ; i<3 ; ++i )
+    {
+        int j=(i+1)%3;
+        defaulttype::Mat<2,2,Real> A, invA;
+        A[0][0] = A[1][1] = S[j];
+        A[0][1] = A[1][0] = S[i];
+        defaulttype::Vec<2,Real> v( UtdMV[i][j], -UtdMV[j][i] ), w;
+
+        if( helper::rabs( S[i]-S[j] ) > zeroTolerance() )
+        {
+            invA.invert( A );
+            w = invA * v;
+        }
+        else
+        {
+            // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
+            defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+            AtA[0][0] += (Real)1;
+            AtA[1][1] += (Real)1;
+            invA.invert( AtA );
+            w = invA.multTransposed( A ) * v;
+        }
+
+        omegaU[i][j] = w[0]; omegaU[j][i] = -w[0];
+        omegaV[i][j] = w[1]; omegaV[j][i] = -w[1];
+    }
+
+    dU = U * omegaU;
+    dV = omegaV * V;
+}
+
+
+template<class Real>
+void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV )
+{
+    defaulttype::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    defaulttype::Mat<2,2,Real> omegaU;
+    defaulttype::Mat<2,2,Real> omegaV;
+
+    defaulttype::Mat<2,2,Real> A, invA;
+    A[0][0] = A[1][1] = S[1];
+    A[0][1] = A[1][0] = S[0];
+    defaulttype::Vec<2,Real> v( UtdMV[0][1], -UtdMV[1][0] ), w;
+
+    if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
+    {
+        invA.invert( A );
+        w = invA * v;
+    }
+    else
+    {
+        // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
+        defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+        AtA[0][0] += (Real)1;
+        AtA[1][1] += (Real)1;
+        invA.invert( AtA );
+        w = invA.multTransposed( A ) * v;
+    }
+
+    omegaU[0][1] = w[0]; omegaU[1][0] = -w[0];
+    omegaV[0][1] = w[1]; omegaV[1][0] = -w[1];
+
+    dU = U * omegaU;
+    dV = omegaV * V;
+}
+
+
 } // namespace helper
 
 } // namespace sofa
 
 #endif // SOFA_HELPER_POLARDECOMPOSE_INL
+

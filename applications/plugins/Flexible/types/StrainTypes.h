@@ -281,7 +281,7 @@ template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const 
 
 
 // ==========================================================================
-// Specialization for diagonalized strain
+// Specialization for diagonalized strain (3 principal stretches + additional terms to store anisotropy)
 
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='D' >
@@ -422,11 +422,11 @@ template<> struct DataTypeName< defaulttype::I333dTypes::Coord > { static const 
 
 
 // ==========================================================================
-// Specialization for Strain defined using the principal streches
+// Specialization for Strain defined using the principal stretches
 
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='U' >
-class PrincipalStrechesStrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real,_name>
+class PrincipalStretchesStrainTypes: public BaseStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real,_name>
 {
 public:
     static const char* Name();
@@ -437,14 +437,14 @@ public:
     typedef Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
 };
 
-typedef PrincipalStrechesStrainTypes<3, 3, 0, double> U331dTypes;
-typedef PrincipalStrechesStrainTypes<3, 3, 0, float>  U331fTypes;
-typedef PrincipalStrechesStrainTypes<3, 3, 1, double> U332dTypes;
-typedef PrincipalStrechesStrainTypes<3, 3, 1, float>  U332fTypes;
-typedef PrincipalStrechesStrainTypes<3, 3, 2, double> U333dTypes;
-typedef PrincipalStrechesStrainTypes<3, 3, 2, float>  U333fTypes;
-typedef PrincipalStrechesStrainTypes<2, 2, 0, double> U221dTypes;
-typedef PrincipalStrechesStrainTypes<2, 2, 0, float>  U221fTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 0, double> U331dTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 0, float>  U331fTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 1, double> U332dTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 1, float>  U332fTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 2, double> U333dTypes;
+typedef PrincipalStretchesStrainTypes<3, 3, 2, float>  U333fTypes;
+typedef PrincipalStretchesStrainTypes<2, 2, 0, double> U221dTypes;
+typedef PrincipalStretchesStrainTypes<2, 2, 0, float>  U221fTypes;
 
 #ifdef SOFA_FLOAT
 template<> inline const char* U331dTypes::Name() { return "U331d"; }

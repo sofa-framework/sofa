@@ -58,16 +58,56 @@ public:
     Data<helper::OptionsGroup> f_method;
     //@}
 
+
+    Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
+
     virtual void reinit()
     {
         Inherit::reinit();
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+        case SMALL:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                this->jacobian[i].init_small();
+            }
+            break;
+        }
+        case QR:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                this->jacobian[i].init_qr( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
+        case POLAR:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                this->jacobian[i].init_polar( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
+        case SVD:
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                this->jacobian[i].init_svd();
+            }
+            break;
+        }
+        }
     }
 
 
 protected:
     CorotationalStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
-        , f_method( initData( &f_method, "method", "Decomposition method" ))
+        , f_method( initData( &f_method, "method", "Decomposition method" ) )
+        , f_geometricStiffness( initData( &f_geometricStiffness, false, "geometricStiffness", "Should geometricStiffness be considered?" ) )
     {
         helper::OptionsGroup Options;
         Options.setNbItems( NB_DecompositionMethod );
@@ -129,6 +169,60 @@ protected:
         dOut.endEdit();
 
         /*if(!BlockType::constantJ)*/ if(this->assembleJ.getValue()) this->updateJ();
+    }
+
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    {
+        if( !f_geometricStiffness.getValue() ) return;
+        if(BlockType::constantJ) return;
+
+        Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        const Data<typename Inherit::InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
+        const Data<typename Inherit::OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
+
+        helper::WriteAccessor<Data<typename Inherit::InVecDeriv> > parentForce (parentForceData);
+        helper::ReadAccessor<Data<typename Inherit::InVecDeriv> > parentDisplacement (parentDisplacementData);
+        helper::ReadAccessor<Data<typename Inherit::OutVecDeriv> > childForce (childForceData);
+
+        if(this->assembleK.getValue())
+        {
+            updateK(childForce.ref());
+            this->K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+        }
+        else
+        {
+            switch( f_method.getValue().getSelectedId() )
+            {
+            case SMALL:
+            {
+                break;
+            }
+            case QR:
+            {
+                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                {
+                    this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                }
+                break;
+            }
+            case POLAR:
+            {
+                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                {
+                    this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                }
+                break;
+            }
+            case SVD:
+            {
+                for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                {
+                    this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                }
+                break;
+            }
+            }
+        }
     }
 
 };

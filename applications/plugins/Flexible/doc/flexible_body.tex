@@ -221,8 +221,31 @@ The energy conjugate SPK stress vector is $\stress = [\stress_{xx} , \stress_{yy
 
 \subsection{Corotational strain}
 
-The rigid displacement $\mat{R}$ is first extracted from the deformation gradient using, for instance, polar or QR decomposition.
+The rigid displacement $\mat{R}$ is first extracted from the deformation gradient using, for instance, SVD, polar or QR decomposition.
 Then, supposing that the non-rigid deformation $\mat{R}^T \defograd$ is small enough, we can apply the Cauchy strain formulation:  $\mat{E} = [\mat{R}^T \defograd + \defograd^T \mat{R} ) /2 - \mat{I} $.
+
+
+The geometric stiffness contribution does not seem necessary because it does not visually change the behaviour but can compromise the stability.
+\begin{itemize}
+\item analytical QR decomposition jacobians given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf (UNSTABLE)
+\item Polar decomposition gradients inspired by Jernej Barbic, Yili Zhao, "Real-time Large-deformation Substructuring" SIGGRAPH 2011 (UNSTABLE)
+\item SVD gradients given in Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10 (QUITE STABLE)
+\end{itemize}
+
+\subsection{Principal stretches}
+
+The principles streches $\mat{U}$ are directly extracted from the deformation gradient using a SVD, where the principal streches can be deduce from the eigen-values.
+Note that the corresponding stress is also represented by 3 values, so isotropic materials are not applicable.
+
+The geometric stiffness contribution is important.
+\begin{itemize}
+\item SVD gradients given in T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000 (STABLE)
+\end{itemize}
+
+\subsection{Diagonal strain}
+
+The diagonal strain $\mat{D}$ is the principles streches + additional terms to allow anisotropic materials. 
+
 
 \subsection{Invariants of deformation tensor}
 
