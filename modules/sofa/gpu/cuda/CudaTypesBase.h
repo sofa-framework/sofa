@@ -394,7 +394,7 @@ public :
     {
         colsize = nbCol;
         rowsize = nbRow;
-        colptr.resize(rowsize);
+        colptr.resize(rowsize+1);
     }
 
     unsigned int rowSize() const

@@ -158,7 +158,6 @@ public:
     DMassPointHandler* pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
-    Data< bool > f_update_mass;
 
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;

@@ -315,7 +315,6 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
     , pointHandler(NULL)
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
-    , f_update_mass( initData(&f_update_mass, true,"update_mass", "Update the mass according to the topological modifications") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
@@ -575,8 +574,6 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
-    if (! f_update_mass.getValue()) return;
-
     // add the functions to handle topology changes.
     pointHandler = new DMassPointHandler(this, &f_mass);
     f_mass.createTopologicalEngine(_topology, pointHandler);
