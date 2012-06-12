@@ -54,6 +54,7 @@ using defaulttype::Vec;
  * Samplers provide:
  * - Sample positions according to integration method of order @param order
  * - Weighted volume associated to each sample (for elastons, this is a vector of volume moments)
+ * - sample region (can be used in shape function component to provide an averaged version of the shape function)
  */
 
 
