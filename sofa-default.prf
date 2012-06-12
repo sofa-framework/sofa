@@ -359,6 +359,7 @@ win32{
 # DEFINES += SOFA_HAVE_PLUGIN_FEM
 # DEFINES += SOFA_HAVE_PLUGIN_Flexible   # Experimental unification of FEM and meshless deformable solids
 # DEFINES += SOFA_HAVE_PLUGIN_Compliant  # Alternative formulation of the dynamics. Requires the Flexible plugin.
+# DEFINES += SOFA_HAVE_PLUGIN_CompliantDev  # Alternative formulation of the dynamics (private part). Requires the Compliant plugin.
 # DEFINES += SOFA_HAVE_PLUGIN_ModelHierarchies # Experiments on layered and adaptive models
 
 
