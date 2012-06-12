@@ -112,9 +112,11 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
 
     HEADERS +=  quadrature/ImageGaussPointSampler.h \
                 shapeFunction/VoronoiShapeFunction.h \
+                shapeFunction/DiffusionShapeFunction.h \
 
     SOURCES += quadrature/ImageGaussPointSampler.cpp \
                shapeFunction/VoronoiShapeFunction.cpp \
+               shapeFunction/DiffusionShapeFunction.cpp \
     }
 
 README_FILE = Flexible.txt

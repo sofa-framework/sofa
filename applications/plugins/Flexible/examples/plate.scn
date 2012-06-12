@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+  <ImageContainer name="image" filename="mesh/plate.bmp" transform="0 0 0 0 0 0 0.01 0.01 0.1 0 1 0" drawBB="true"/>
+  <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="8" showEdges="true" printLog="true"/> 
+
+  <ImageFilter name="extruder" src="@image" filter="20" param="0 0 -0.2 64 64 20 0.02 0.02 0.02 1"/>
+
+  <ImageFilter name="resampler" src="@image" filter="20" param="0 0 -0.08 32 32 4 0.04 0.04 0.05 0"/>
+  <MarchingCubesEngine name="mc1"  image="@resampler.outputImage" transform="@resampler.outputTransform"  isoValue="1" subdiv="-100 -100 -100" showMesh="false"/>
+  <MarchingCubesEngine name="mc2"  image="@resampler.outputImage" transform="@resampler.outputTransform"  isoValue="30" subdiv="-100 -100 -100" showMesh="false"/>		
+
+
+    <EulerImplicitSolver />
+    <CGLinearSolver  />
+
+
+ <Node 	name="Flexible"   >
+		
+    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" src="@../sampler"/>
+
+    <UniformMass mass="1" />
+    <FixedConstraint indices="0" />
+
+    <VoronoiShapeFunction name="SF" image="@../extruder.outputImage" transform="@../extruder.outputTransform" useDijkstra="true" method="0" bias="true"/>
+   	 
+<!-- <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" />  -->
+
+    <Node 	name="behavior"   >
+
+	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="true" targetNumber="100"/>
+	    
+	<!--<ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 10"/>  -->
+<!--	<ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 10"/>       -->
+ 
+
+	<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+    	<LinearMapping template="Mapping&lt;NewAffine,F331&gt;" assembleJ="false"/>
+
+
+	<Node 	name="E"   >
+	    <MechanicalObject  template="E331" name="E"  />
+	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
+	    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="100"/>
+	</Node>
+
+    </Node>
+
+	    <Node 	name="collision"   >
+		<Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
+		<MechanicalObject  template="Vec3d" name="pts" src="@mesh" useMask="0" />
+		<Triangle />
+	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
+	    </Node>
+
+	    <Node 	name="visual"   >
+		<VisualStyle displayFlags="showWireframe  " />
+		<Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
+		<VisualModel template="ExtVec3f" name="Visual" color="1 0.8 0.8 "/>
+	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
+	    </Node>
+	    <Node 	name="inclusion"   >
+		<Mesh name="mesh" position="@../../mc2.position"  triangles="@../../mc2.triangles"/>
+		<VisualModel template="ExtVec3f" name="Visual" color="0.5 0.8 0.8 "/>
+	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
+	    </Node>
+
+    </Node>
+</Node>

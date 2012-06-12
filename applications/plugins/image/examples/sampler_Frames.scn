@@ -12,7 +12,7 @@
   <ImageViewer template="ImageD" name="viewer" image="@sampler.distances" transform="@sampler.transform" />
 
 
-  <MarchingCubesEngine template="ImageD" name="engine" image="@sampler.distances" transform="@sampler.transform"  isoValue="1.5" subdiv="50 50 50" showMesh="true"/>
+  <MarchingCubesEngine template="ImageD" name="engine" image="@sampler.distances" transform="@sampler.transform"  isoValue="1.5" subdiv="50 50 1" showMesh="true"/>
 
 
   <Node name="simu"  >

@@ -1,174 +1,87 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0 " dt="1"  >
-    <VisualStyle displayFlags="showWireframe  " />
+<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <VisualStyle displayFlags="showVisual  " />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-  <MeshObjLoader name="mesh" filename="mesh/beam.obj" triangulate="1"/>
-
-<!--
     <EulerImplicitSolver />
+    <CGLinearSolver iterations="100"/>
 
--->
-    <StaticSolver />
-    <CGLinearSolver iterations="200"/>
+     <Node 	name="FEM"   >
+	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	      <Mesh name="mesh" src="@loader" />
+	      <MechanicalObject template="Vec3d" name="parent" />
 
-<!--
-  <Node name="FEM"  >
-        <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
-	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+             <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+             <FixedConstraint indices="@FixedROI.indices" />
 
-	<ImageSampler template="ImageUC" name="sampler" src="@image" param="1" showEdges="false" printLog="false"/>
-        <Mesh name="mesh" src="@sampler" />
-	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
+	     <UniformMass totalMass="250" />
 
-        <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" position="@mesh.position" name="FixedROI"/>
-        <FixedConstraint indices="@FixedROI.indices" />
+	<!--  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  --> 
+ <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
-	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
-  	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
-
-
-	<UniformMass totalMass="1" />
-
-	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
-
-	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/beam.obj"  color="1 .4 0.5 1" />
-	     <BarycentricMapping input="@.." output="@." />
-	</Node>
-  </Node>
--->
-
-  <Node name="BeamFEM">
-       <MechanicalObject template="Vec3d" name="Triangles"   />
-       <RegularGrid 
-                   n="5 5 21"
-                   min="-0.2 -0.2  -1"
-                   max=" 0.2  0.2   1"/> 
-       <TriangleSetTopologyModifier name="Modifier" />
-       <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-       <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-       <TriangleModel name="CollisionModel" />
-
-      	<TetrahedronFEMForceField method="polar"  youngModulus="1000"  poissonRatio="0"  />
-
-        <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" />
-        <FixedConstraint indices="@[-1].indices" />
-
-       <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  drawBoxes="0" /> 
-       <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -0.5 0"/> 
-
-       <Node 	name="VisualNode">
-            <OglModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default1"  object1="../../Triangles"  object2="../Visual" />
-       </Node>
-  </Node>
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    </Node>
+    </Node>
 
 
 
     <Node 	name="Flexible"   >
-            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.03" padSize="1" rotateImage="true" />
+
+	  <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
+            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
 <!-- param = DESIRED NUMBER OF FRAMES -->
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="10" fixedPosition="0 0 -1" printLog="false"/> 
+<!-- fixedPosition = USER POSITIONS OF FRAMES -->
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="10" fixedPosition="" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" src="@merged" />
- 	<!-- <ImageExporter template="ImageUC" name="writer" src="@image" filename="test.nfo" exportAtBegin="true" />-->
+	    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
 
-<!--
-<MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 0 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"  position="0 0 -1 [1 0 0, 0 1 0, 0 0 2] 0 0 1 [1 0 0, 0 1 0, 0 0 2] 0 0 3 [1 0 0, 0 1 0, 0 0 2]" />
--->
+   
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
 
-	    <FixedConstraint indices="0" /> 
+	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
 
-	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="2" nbRef="4"/>
-<!--    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/>  -->
+    <!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->
 	    <Node 	name="behavior"   >
 
 <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="false" targetNumber="200"/>
-	 <!--      <ImageViewer template="ImageD" name="viewer" image="@sampler.outputImage" transform="@sampler.transform" plane="6 6 30"/> -->
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="true" targetNumber="100"/>
+
+<!--	       <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 -1 -1"/> -->
+<!--	       <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 -1 -1"/> -->
 		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
 	    	<LinearMapping template="Mapping&lt;NewAffine,F331&gt;" assembleJ="false"/>
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
-		    <HookeForceField  template="E331" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
+		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
+		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 		</Node>
 
 	    </Node>
 
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
-	     <UniformMass totalMass="1" />
+	     <UniformMass totalMass="250" />
 	     <LinearMapping template="Mapping&lt;NewAffine,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
 	    <Node 	name="collision"   >
-		<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
+		<MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
 		<Mesh name="mesh" src="@MeshLoader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-<!--
-        <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" position="@mesh.position" name="FixedROI"/>
-        <FixedConstraint template="Vec3d" indices="@FixedROI.indices" />
--->
-		<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
-		<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -0.5 0"/> 
-
 	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8 "/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
 
-<!--
-  <Node name="frame" >
-		<GridMaterial name="gridmaterial" template="Material3" 
-				imageFile="test.raw" 
-				labelToStiffnessPairs="	1 1000"  
-				labelToDensityPairs="1 0.01"  
-				labelToPoissonRatioPairs="1 0"
-				distanceType="Geodesic"
-				biasDistances="true"
-				showVoxelData="None" 
-				/>
-
-		<MechanicalObject name="DOFs" template="Affine" showObject="true" position="0 0 -1 [1 0 0,0 1 0,0 0 1] -0.02 -0.08 -0.79 [1 0 0,0 1 0,0 0 1] 0.01 -0.08 0.89 [1 0 0,0 1 0,0 0 1] -0.08 0.04 0.17 [1 0 0,0 1 0,0 0 1] 0.04 -0.08 -0.46 [1 0 0,0 1 0,0 0 1] 0.1 -0.02 0.35 [1 0 0,0 1 0,0 0 1] -0.02 0.1 0.74 [1 0 0,0 1 0,0 0 1] -0.05 0.1 -0.55 [1 0 0,0 1 0,0 0 1] -0.05 -0.11 -0.13 [1 0 0,0 1 0,0 0 1] 0.04 0.1 -0.13 [1 0 0,0 1 0,0 0 1] -0.08 -0.08 0.53 [1 0 0,0 1 0,0 0 1]"/>
-		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="1"/>
-	        <FixedConstraint indices="0" /> 
-
-		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="PointSet" template="DeformationGradient331" useMask="0"  showObject="0" showObjectScale="0.5"/>
- 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" 
-				input="@../DOFs"  output="@PointSet"  
-				targetFrameNumber="10"
-				targetSampleNumber="200"
-				/>
-			<CorotationalForceField template="DeformationGradient331"  printLog="0"/>  
-		</Node>
-
-		<Node name="Visual" >
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
-		</Node>
-
-		<Node name="Collision">
-			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
-      			<Mesh name="mesh" src="@MeshLoader"  /> 
-      			<MechanicalObject  name="PointSet"/>
-      			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" showStrain="false"/>
-
-			<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
-			<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -0.5 0"/> 
-
-		</Node>
-  </Node>
--->
 </Node>

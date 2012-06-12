@@ -246,17 +246,24 @@ protected:
         case RESIZE:
             if(updateImage || updateTransform)
             {
-                unsigned int dimx=in->getDimensions()[0]; if(p.size())   dimx=(unsigned int)p[0];
-                unsigned int dimy=in->getDimensions()[1]; if(p.size()>1) dimy=(unsigned int)p[1];
-                unsigned int dimz=in->getDimensions()[2]; if(p.size()>2) dimz=(unsigned int)p[2];
+                unsigned int dim[3]= {in->getDimensions()[0],in->getDimensions()[1],in->getDimensions()[2]};
+                if(p.size())   dim[0]=(unsigned int)p[0];
+                if(p.size()>1) dim[1]=(unsigned int)p[1];
+                if(p.size()>2) dim[2]=(unsigned int)p[2];
                 unsigned int interpolation=1; if(p.size()>3) interpolation=(unsigned int)p[3];
-                if(updateImage) cimglist_for(img,l) img(l).resize(dimx,dimy,dimz,-100,interpolation);
+                if(updateImage) cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],-100,interpolation);
                 if(updateTransform)
                     if(interpolation)
                     {
-                        if(dimx!=1) outT->getScale()[0]*=((Real)in->getDimensions()[0]-1.0)/((Real)dimx-1.0);
-                        if(dimy!=1) outT->getScale()[1]*=((Real)in->getDimensions()[1]-1.0)/((Real)dimy-1.0);
-                        if(dimz!=1) outT->getScale()[2]*=((Real)in->getDimensions()[2]-1.0)/((Real)dimz-1.0);
+                        for(unsigned int k=0; k<3; k++)
+                        {
+                            if(dim[k]!=1 && in->getDimensions()[k]!=1) outT->getScale()[k]*=((Real)in->getDimensions()[k]-1.0)/((Real)dim[k]-1.0); // keep same origin
+                            else // dim =1 -> keep same thickness and translate origin
+                            {
+                                outT->getTranslation()[k]+=(((Real)in->getDimensions()[k])/((Real)dim[k])-1.0)*0.5*outT->getScale()[k];
+                                outT->getScale()[k]*=((Real)in->getDimensions()[k])/((Real)dim[k]);
+                            }
+                        }
                         outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
                     }
             }
@@ -417,7 +424,7 @@ protected:
                     cimg_forXYZ(img(l),x,y,z)
                     {
                         Coord p=inT->toImage(outT->fromImage(Coord(x,y,z)));
-                        if(p[0]<0 || p[1]<0 || p[2]<0 || p[0]>=imgIn(l).width() || p[1]>=imgIn(l).height() || p[2]>=imgIn(l).depth())
+                        if(p[0]<-0.5 || p[1]<-0.5 || p[2]<-0.5 || p[0]>imgIn(l).width()-0.5 || p[1]>imgIn(l).height()-0.5 || p[2]>imgIn(l).depth()-0.5)
                             for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
                         else
                         {
