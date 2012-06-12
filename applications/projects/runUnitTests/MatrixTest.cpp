@@ -30,7 +30,7 @@ void performMatrixTests(sofa::helper::UnitTest::VerbosityLevel verbose, unsigned
     sofa::helper::MatrixTest<double,2,2> matTestD22("matTestD22",verbose);
     matTestD22.runTests(numTests,numWarnings,numErrors);
 
-    sofa::helper::MatrixTest<float,2,3> matTestF23("matTestF23",verbose);
+    sofa::helper::MatrixTest<float,2,3> matTestF23("matTestF23",verbose,4,6);
     matTestF23.runTests(numTests,numWarnings,numErrors);
 }
 

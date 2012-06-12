@@ -55,6 +55,10 @@ bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigne
     return testSucceeded;
 }
 
+void UnitTest::initClass()
+{
+    srand( time(NULL) ); // initialize the random number generator using the current time
+}
 
 
 

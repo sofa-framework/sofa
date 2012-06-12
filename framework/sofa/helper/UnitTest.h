@@ -27,6 +27,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <limits>
+#include <cstdlib>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/vector.h>
@@ -84,12 +86,41 @@ protected:
     VerbosityLevel verbosityLevel() { return verbose; }
     const std::string& getName() const { return name; }
 
+    /// General-purpose initializations, such as the random number generator.
+    static void initClass();
+
     /** @name Helpers
      *  Helper Functions to more easily create tests and check the results.
      */
     //@{
     /// A very small value. Can be used to check if an error is small enough.
     virtual double epsilon() const { return 1.0e-10; }
+
+    /// random double in [0,1[. It is recommended to use initClass() to initialize the random number generator before using this method.
+    static double drand() { return (double)rand() / RAND_MAX; }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<typename Matrix1, typename Matrix2>
+    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) return false;
+        for( unsigned i=0; i<m1.rowSize(); i++ )
+            for( unsigned j=0; j<m1.colSize(); j++ )
+                if( fabs(m1.element(i,j)-m2.element(i,j))>tolerance  ) return false;
+        return true;
+    }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template< typename Vector1, typename Vector2>
+    static bool vectorsAreEqual( const Vector1& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if( m1.size()!=m2.size() ) return false;
+        for( unsigned i=0; i<m1.size(); i++ )
+            if( fabs(m1.element(i)-m2.element(i))>tolerance  ) return false;
+        return true;
+    }
+
+
 
     //@}
 
