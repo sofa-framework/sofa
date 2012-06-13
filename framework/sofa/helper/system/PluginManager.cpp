@@ -130,14 +130,14 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
     {
         // no path and extension -> automatically add suffix and OS-specific extension
 #ifdef SOFA_LIBSUFFIX
-        pluginPath += sofa_tostring(SOFA_LIBSUFFIX)
+        pluginPath += sofa_tostring(SOFA_LIBSUFFIX);
 #endif
 #if defined (WIN32)
-                pluginPath = pluginPath + std::string(".dll");
+        pluginPath = pluginPath + std::string(".dll");
 #elif defined (__APPLE__)
-                pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
+        pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
 #else
-                pluginPath = std::string("lib") + pluginPath + std::string(".so");
+        pluginPath = std::string("lib") + pluginPath + std::string(".so");
 #endif
     }
 
@@ -183,14 +183,14 @@ bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)
         {
             // no path and extension -> automatically add suffix and OS-specific extension
 #ifdef SOFA_LIBSUFFIX
-            pluginPath += sofa_tostring(SOFA_LIBSUFFIX)
+            pluginPath += sofa_tostring(SOFA_LIBSUFFIX);
 #endif
 #if defined (WIN32)
-                    pluginPath = pluginPath + std::string(".dll");
+            pluginPath = pluginPath + std::string(".dll");
 #elif defined (__APPLE__)
-                    pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
+            pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
 #else
-                    pluginPath = std::string("lib") + pluginPath + std::string(".so");
+            pluginPath = std::string("lib") + pluginPath + std::string(".so");
 #endif
         }
         PluginRepository.findFile(pluginPath,"",errlog);
