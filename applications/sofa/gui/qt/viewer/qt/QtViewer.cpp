@@ -103,13 +103,13 @@ QGLFormat QtViewer::setupGLFormat()
 {
     QGLFormat f = QGLFormat::defaultFormat();
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
-    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+    //std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700
     int vmajor = 3, vminor = 2;
     //int vmajor = 4, vminor = 2;
-    std::cout << "QtViewer: Trying to open an OpenGL " << vmajor << "." << vminor << " compatibility profile context" << std::endl;
+    //std::cout << "QtViewer: Trying to open an OpenGL " << vmajor << "." << vminor << " compatibility profile context" << std::endl;
     f.setVersion(vmajor,vminor);
     f.setProfile(QGLFormat::CompatibilityProfile);
 #endif
@@ -312,7 +312,7 @@ void QtViewer::initializeGL(void)
 
         _beginTime = CTime::getTime();
 
-        printf("GL initialized\n");
+        //printf("GL initialized\n");
     }
 
 

@@ -138,8 +138,8 @@ public:
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();
-    bool loadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
-    bool unloadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
+    bool loadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
+    bool unloadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
 
     void initRecentlyOpened();
     void init();
@@ -155,6 +155,8 @@ public:
     PluginMap& getPluginMap()  { return m_pluginMap; }
 
 
+    void readFromIniFile();
+    void writeToIniFile();
 
 private:
     PluginManager() {}
@@ -163,8 +165,6 @@ private:
     DynamicLibrary* loadLibrary(const std::string& path,  std::ostream* errlog=&std::cerr);
     std::ostream& writeToStream( std::ostream& ) const;
     std::istream& readFromStream( std::istream& );
-    void readFromIniFile();
-    void writeToIniFile();
 private:
     PluginMap m_pluginMap;
 };

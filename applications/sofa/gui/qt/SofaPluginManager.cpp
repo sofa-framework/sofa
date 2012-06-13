@@ -142,7 +142,7 @@ void SofaPluginManager::addLibrary()
 
         Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
         item->setSelectable(true);
-
+        sofa::helper::system::PluginManager::getInstance().writeToIniFile();
         emit( libraryAdded() );
     }
     else
@@ -172,6 +172,7 @@ void SofaPluginManager::removeLibrary()
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         listPlugins->removeItem(curItem);
+        sofa::helper::system::PluginManager::getInstance().writeToIniFile();
         emit( libraryRemoved() );
         description->clear();
         listComponents->clear();

@@ -45,26 +45,24 @@ int RequiredPluginClass = core::RegisterObject("Load required plugin")
 RequiredPlugin::RequiredPlugin()
     : pluginName( initData(&pluginName, "pluginName", "plugin name"))
 {
+    this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
+}
+
+void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+    if (!pluginName.getValue().empty())
+        loadPlugin();
 }
 
 void RequiredPlugin::loadPlugin()
 {
-#ifdef WIN32
-    pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".dll"));
-#else
-    pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".so"));
-#endif
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName.getFullPath()))
+    std::string pluginPath = pluginName.getValue();
+    sout << "Loading " << pluginPath << sendl;
+    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath))
     {
+        sout << "Loaded " << pluginPath << sendl;
         sofa::helper::system::PluginManager::getInstance().init();
-    }
-    else
-    {
-        pluginName.setValue(strcat((char*) pluginName.getFullPath().c_str(),".dylib"));
-        if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName.getFullPath()))
-        {
-            sofa::helper::system::PluginManager::getInstance().init();
-        }
     }
 }
 

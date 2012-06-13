@@ -52,34 +52,16 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::DataFileName pluginName;
+    sofa::core::objectmodel::Data<std::string> pluginName;
 protected:
     RequiredPlugin();
     virtual ~RequiredPlugin() {}
+
 public:
+
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg);
+
     void loadPlugin();
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        obj = new T;
-        if (arg) obj->parse(arg);
-        dynamic_cast<RequiredPlugin*>(obj)->loadPlugin();
-        delete obj;
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
 };
 

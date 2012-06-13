@@ -74,8 +74,9 @@ PluginManager & PluginManager::getInstance()
 
 PluginManager::~PluginManager()
 {
-
-    writeToIniFile();
+    // BUGFIX: writeToIniFile should not be called here as it will erase the file in case it was not loaded
+    // Instead we write the file each time a change have been made in the GUI and should be saved
+    //writeToIniFile();
 }
 
 void PluginManager::readFromIniFile()
@@ -122,9 +123,24 @@ void PluginManager::writeToIniFile()
     outstream.close();
 }
 
-bool PluginManager::loadPlugin(const std::string& path, std::ostream* errlog)
+bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
 {
-    std::string pluginPath(path);
+    if (sofa::helper::system::SetDirectory::GetParentDir(pluginPath.c_str()).empty() &&
+        sofa::helper::system::SetDirectory::GetExtension(pluginPath.c_str()).empty())
+    {
+        // no path and extension -> automatically add suffix and OS-specific extension
+#ifdef SOFA_LIBSUFFIX
+        pluginPath += sofa_tostring(SOFA_LIBSUFFIX)
+#endif
+#if defined (WIN32)
+                pluginPath = pluginPath + std::string(".dll");
+#elif defined (__APPLE__)
+                pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
+#else
+                pluginPath = std::string("lib") + pluginPath + std::string(".so");
+#endif
+    }
+
     if( !PluginRepository.findFile(pluginPath,"",errlog) )
     {
         return false;
@@ -156,13 +172,33 @@ bool PluginManager::loadPlugin(const std::string& path, std::ostream* errlog)
     return true;
 }
 
-bool PluginManager::unloadPlugin(const std::string &path, std::ostream *errlog)
+bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)
 {
     PluginMap::iterator iter;
-    iter = m_pluginMap.find(path);
+    iter = m_pluginMap.find(pluginPath);
     if( iter == m_pluginMap.end() )
     {
-        (*errlog) << "Plugin " << path << "not in PluginManager" << std::endl;
+        if (sofa::helper::system::SetDirectory::GetParentDir(pluginPath.c_str()).empty() &&
+            sofa::helper::system::SetDirectory::GetExtension(pluginPath.c_str()).empty())
+        {
+            // no path and extension -> automatically add suffix and OS-specific extension
+#ifdef SOFA_LIBSUFFIX
+            pluginPath += sofa_tostring(SOFA_LIBSUFFIX)
+#endif
+#if defined (WIN32)
+                    pluginPath = pluginPath + std::string(".dll");
+#elif defined (__APPLE__)
+                    pluginPath = std::string("lib") + pluginPath + std::string(".dylib");
+#else
+                    pluginPath = std::string("lib") + pluginPath + std::string(".so");
+#endif
+        }
+        PluginRepository.findFile(pluginPath,"",errlog);
+        iter = m_pluginMap.find(pluginPath);
+    }
+    if( iter == m_pluginMap.end() )
+    {
+        (*errlog) << "Plugin " << pluginPath << "not in PluginManager" << std::endl;
         return false;
     }
     else
@@ -208,10 +244,7 @@ void PluginManager::init()
     }
 }
 
-
-
 }
-
 
 }
 
