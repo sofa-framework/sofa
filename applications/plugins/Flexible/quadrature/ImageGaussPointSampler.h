@@ -102,6 +102,12 @@ public:
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const ImageGaussPointSampler<ImageTypes_>* = NULL) { return ImageTypes_::Name(); }
 
+    virtual const unsigned int* getRegion()
+    {
+        raInd rreg(this->f_region);
+        const CImg<IndT>& regimg = rreg->getCImg(0);
+        return &regimg(0);
+    }
 
     virtual void init()
     {
@@ -239,7 +245,7 @@ protected:
                 if(dmax)
                 {
                     newpos.push_back(transform->fromImage(pmax));
-                    newpos_voronoiIndex.push_back(fpos.size()+nbrigid+newpos.size()+1);
+                    newpos_voronoiIndex.push_back(fpos.size()+nbrigid+newpos.size());
                     AddSeedPoint<DistT>(trial,dist,regimg, transform.ref(), newpos.back(),newpos_voronoiIndex.back());
                     if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
                     else fastMarching<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
@@ -299,7 +305,7 @@ protected:
                 computeVolumes(regions[i],0);
                 fitWeights(regions[i],1,true);
                 err+=regions[i].err;
-                //if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: weight fitting error on sample "<<regions[i].voronoiIndex<<" = "<<regions[i].err<< std::endl;
+                //if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: weight fitting error on sample "<<i<<" = "<<regions[i].err<< std::endl;
             }
             if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: total error = "<<err<<std::endl;
         }

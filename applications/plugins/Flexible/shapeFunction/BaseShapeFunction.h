@@ -119,11 +119,15 @@ public:
 
     }
 
-    /// compute shape function values (and their first and second derivatives) at a given child position
-    /// this is the main function to be reimplemented
+    /// interpolate shape function values (and their first and second derivatives) at a given child position
+    /// this function is typically used for collision and visual points
     virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
 
-    /// wrappers
+    /// average shape function values (and their first and second derivatives) at child positions given their associated regions
+    /// this function is typically used for Gauss points
+    virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* region)=0;
+
+    /// wrapper
     void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)
     {
         unsigned int nb=childPosition.size();
@@ -131,19 +135,6 @@ public:
         for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
     }
 
-    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw)
-    {
-        unsigned int nb=childPosition.size();
-        M.resize(nb);     ref.resize(nb);        w.resize(nb);   dw.resize(nb);
-        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i]);
-    }
-
-    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w)
-    {
-        unsigned int nb=childPosition.size();
-        M.resize(nb); ref.resize(nb);        w.resize(nb);
-        for(unsigned i=0; i<nb; i++) computeShapeFunction(childPosition[i],M[i],ref[i],w[i]);
-    }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
     void normalize(VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
@@ -176,10 +167,6 @@ public:
             }
     }
 
-    /// wrappers
-    void normalize(vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)    {        for(unsigned i=0; i<w.size(); i++) normalize(w[i],&dw[i],&ddw[i]);    }
-    void normalize(vector<VReal>& w, vector<VGradient>& dw)    {        for(unsigned i=0; i<w.size(); i++) normalize(w[i],&dw[i]);    }
-    void normalize(vector<VReal>& w)    {        for(unsigned i=0; i<w.size(); i++) normalize(w[i]);    }
 
 protected:
     BaseShapeFunction()
