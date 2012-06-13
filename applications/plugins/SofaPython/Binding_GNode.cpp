@@ -35,7 +35,7 @@ extern "C" PyObject * GNode_createChild(PyObject *self, PyObject * args)
     char *nodeName;
     if (!PyArg_ParseTuple(args, "s",&nodeName))
         return 0;
-    return SP_BUILD_PYSPTR(obj->createChild(nodeName));
+    return SP_BUILD_PYSPTR(obj->createChild(nodeName).get());
 }
 
 extern "C" PyObject * GNode_addChild(PyObject *self, PyObject * args)
