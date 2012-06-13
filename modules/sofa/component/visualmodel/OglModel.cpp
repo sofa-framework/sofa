@@ -605,9 +605,6 @@ bool OglModel::loadTextures()
     bool result = true;
     textures.clear();
 
-    //for output
-    std::string str;
-
     //count the total number of activated textures
     std::vector<unsigned int> activatedTextures;
     for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
@@ -626,9 +623,8 @@ bool OglModel::loadTextures()
 
             if (!sofa::helper::system::DataRepository.findFile(textureFile))
             {
-                if (i!=activatedTextures.begin()) std::cout << "\n" << std::flush;
-                std::cerr   << "ERROR(OglModel(" << this->getName() << "):Texture \"" << this->materials.getValue()[*i].textureFilename << "\" not found"
-                        << " in material " << this->materials.getValue()[*i].name <<  std::endl;
+                serr   << "ERROR: Texture \"" << this->materials.getValue()[*i].textureFilename << "\" not found"
+                        << " in material " << this->materials.getValue()[*i].name <<  sendl;
                 result = false;
                 continue;
             }
@@ -637,29 +633,17 @@ bool OglModel::loadTextures()
         helper::io::Image *img = helper::io::Image::Create(textureFile);
         if (!img)
         {
-            std::cerr << "ERROR(OglModel(" << this->getName() << "): couldn't create an image from file " << this->materials.getValue()[*i].textureFilename << std::endl;
+            serr << "ERROR: couldn't create an image from file " << this->materials.getValue()[*i].textureFilename << sendl;
             result = false;
             continue;
         }
         helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
         materialTextureIdMap.insert(std::pair<int, int>(*i,textures.size()));
         textures.push_back( text );
-
-        /****OUTPUT****/
-        //clear the previous line
-        std::cout << std::string(str.length(), '\b');
-
-        str.clear();
-
-        std::stringstream out; out << textures.size() << "/" << activatedTextures.size() << " textures loaded for OglModel " << this->getName();
-        str += out.str();
-
-        std::cout << str << std::flush;
     }
-    std::cout << std::endl;
 
     if (textures.size() != activatedTextures.size())
-        std::cerr << "ERROR(OglModel(" << this->getName()<< ")) " << (activatedTextures.size() - textures.size()) << " textures couldn't be loaded" <<  std::endl;
+        serr << "ERROR: " << (activatedTextures.size() - textures.size()) << " textures couldn't be loaded" <<  sendl;
 
 
 

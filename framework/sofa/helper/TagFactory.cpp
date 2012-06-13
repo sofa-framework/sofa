@@ -33,6 +33,8 @@ namespace helper
 TagFactory::TagFactory()
 {
     tagsList.push_back(std::string("0")); // ID 0 == "0" or empty string
+    // Add standard tags
+    tagsList.push_back(std::string("Visual"));
 }
 
 /*SOFA_HELPER_API*/ unsigned int TagFactory::getID(std::string name)
