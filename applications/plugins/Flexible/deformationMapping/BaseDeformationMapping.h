@@ -190,8 +190,10 @@ public:
             vector<mCoord> mpos0;
             mpos0.resize(pos0.size());
             for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
-
-            _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            if(_sampler)   // get weights associated to gauss point regions
+                _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),_sampler->getRegion());
+            else            // interpolate weights at sample positions
+                _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
             this->f_index.endEdit();     this->f_M.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 

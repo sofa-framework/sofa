@@ -55,6 +55,7 @@ public:
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
+    typedef typename Inherit::VCoord VCoord;
     enum {material_dimensions=Inherit::material_dimensions};
     typedef typename Inherit::VReal VReal;
     typedef typename Inherit::VGradient VGradient;
@@ -67,9 +68,15 @@ public:
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
+    typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
     typedef Mat<spatial_dimensions,spatial_dimensions,Real> BasesType;
     sofa::helper::vector<BasesType> bases;
+
+    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* /*region*/)
+    {
+        Inherit::computeShapeFunction(childPosition,M,ref,w,dw,ddw);        // weight averaging over a region not supported -> get interpolated values
+    }
 
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {

@@ -122,6 +122,12 @@ public:
     unsigned int getNbSamples() {return this->f_position.getValue().size(); }
     const Coord& getSample(unsigned int index) {return this->f_position.getValue()[index]; }
 
+    /** get region associated to each sample (for shape function averaging).
+        Format is specific to each sampler (eg. voronoi image, cell index, etc.)
+    */
+    virtual const unsigned int* getRegion()=0;
+
+
 protected:
 
     virtual void draw(const core::visual::VisualParams* vparams)

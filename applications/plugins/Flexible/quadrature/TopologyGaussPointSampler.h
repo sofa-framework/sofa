@@ -71,6 +71,7 @@ public:
     //@{
     typedef helper::WriteAccessor<Data< vector<unsigned int> > > waRegion;
     Data< vector<unsigned int> > f_region;
+    virtual const unsigned int* getRegion() {return &f_region.getValue()[0]; }
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }

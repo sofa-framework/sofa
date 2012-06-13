@@ -25,7 +25,7 @@
     <UniformMass mass="1" />
     <FixedConstraint indices="0" />
 
-    <VoronoiShapeFunction name="SF" image="@../extruder.outputImage" transform="@../extruder.outputTransform" useDijkstra="true" method="0" bias="true"/>
+    <VoronoiShapeFunction name="SF" image="@../extruder.outputImage" transform="@../extruder.outputTransform" nbRef="5" useDijkstra="true" method="0" bias="true" printLog="true" />
    	 
 <!-- <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" />  -->
 
