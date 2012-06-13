@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "UnitTest.h"
+#include <time.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
