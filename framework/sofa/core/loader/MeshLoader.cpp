@@ -68,7 +68,6 @@ MeshLoader::MeshLoader() : BaseLoader()
     rotation.setAutoLink(false);
     scale.setAutoLink(false);
 
-    //TODO: check if necessary!
     positions.setPersistent(false);
     edges.setPersistent(false);
     triangles.setPersistent(false);

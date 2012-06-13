@@ -64,6 +64,22 @@ MeshObjLoader::MeshObjLoader()
     texCoordsList.setGroup("OBJ");
     normalsIndexList.setGroup("OBJ");
     normalsList.setGroup("OBJ");
+    //BUGFIX: data loaded from OBJ file should not be saved to XML
+    faceList.setPersistent(false);
+    texIndexList.setPersistent(false);
+    texCoordsList.setPersistent(false);
+    normalsIndexList.setPersistent(false);
+    normalsList.setPersistent(false);
+    texCoords.setPersistent(false);
+    positions.setPersistent(false);
+    normals.setPersistent(false);
+    edges.setPersistent(false);
+    triangles.setPersistent(false);
+    quads.setPersistent(false);
+    edgesGroups.setPersistent(false);
+    trianglesGroups.setPersistent(false);
+    quadsGroups.setPersistent(false);
+
 }
 
 
@@ -136,6 +152,20 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     helper::vector<Edge >& my_edges = *(edges.beginEdit());
     helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
     helper::vector<Quad >& my_quads = *(quads.beginEdit());
+
+    //BUGFIX: clear pre-existing data before loading the file
+    my_positions.clear();
+    my_texCoords.clear();
+    my_normals.clear();
+    my_faceList.clear();
+    my_normalsList.clear();
+    my_texturesList.clear();
+    my_edges.clear();
+    my_triangles.clear();
+    my_quads.clear();
+    edgesGroups.beginEdit()->clear(); edgesGroups.endEdit();
+    trianglesGroups.beginEdit()->clear(); trianglesGroups.endEdit();
+    quadsGroups.beginEdit()->clear(); quadsGroups.endEdit();
 
     int vtn[3];
     Vec3d result;
