@@ -17,7 +17,9 @@ using namespace sofa::core;
 #include "Binding_BaseContext.h"
 #include "Binding_Context.h"
 #include "Binding_Node.h"
-#include "Binding_GNode.h"using namespace sofa::core
+#include "Binding_GNode.h"
+
+using namespace sofa::core;
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible

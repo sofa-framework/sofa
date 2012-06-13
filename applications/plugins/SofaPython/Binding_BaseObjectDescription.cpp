@@ -86,7 +86,7 @@ extern "C" PyObject * BaseObjectDescription_setAttribute(PyObject *self, PyObjec
 // =============================================================================
 // (de)allocator
 // =============================================================================
-PyObject * BaseObjectDescription_PyNew(PyTypeObject */*type*/, PyObject *args, PyObject */*kwds*/)
+PyObject * BaseObjectDescription_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*kwds*/)
 {
     char *name;
     char *type;

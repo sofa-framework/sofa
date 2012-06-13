@@ -23,11 +23,9 @@ unix:!macx {
 
 win32 {
 	#python
-    #	INCLUDEPATH *= "C:\Python27\include"
-        LIBS *= -L"C:\Python27\libs" -lpython27
+    INCLUDEPATH *= "C:\Python27\include"
+    LIBS *= -L"C:\Python27\libs" -lpython27
 }
-
-
 
 SOURCES = initSofaPython.cpp \
     ScriptController.cpp \

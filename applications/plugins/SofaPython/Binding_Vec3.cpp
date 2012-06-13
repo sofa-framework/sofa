@@ -95,7 +95,7 @@ extern "C" int Vec3_setAttr_z(PyObject *self, PyObject * args, void*)
 // =============================================================================
 // (de)allocator
 // =============================================================================
-PyObject * Vec3_PyNew(PyTypeObject */*type*/, PyObject *args, PyObject */*kwds*/)
+PyObject * Vec3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*kwds*/)
 {
     Vec3 *obj = new Vec3();
     double x,y,z;
