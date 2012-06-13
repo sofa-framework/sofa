@@ -475,9 +475,9 @@ void OmniDriver::draw()
     }
 }
 
-void OmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent */*kpe*/) {}
+void OmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent * /*kpe*/) {}
 
-void OmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent */*kre*/) {}
+void OmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * /*kre*/) {}
 
 void OmniDriver::handleEvent(core::objectmodel::Event *event)
 {
@@ -493,7 +493,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 #ifdef SOFA_HAVE_BOOST
             boost::thread::yield();
 #else
-            usleep(0);
+            sofa::helper::system::thread::CTime::sleep(0);
 #endif
         }
 
