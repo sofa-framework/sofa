@@ -37,6 +37,11 @@ win32 {
 	TARGET_MACHINE = $$system(echo %TARGET_MACHINE%)
 	contains(TARGET_MACHINE, x64) {
 		QMAKE_LFLAGS *= /MACHINE:X64
+		win32-msvc* {
+			# disable warnings about 64 bits -> 32 bits integer conversions
+			QMAKE_CXXFLAGS_DEBUG += -wd4267
+			QMAKE_CXXFLAGS_RELEASE += -wd4267
+		}
 	}
 }
 

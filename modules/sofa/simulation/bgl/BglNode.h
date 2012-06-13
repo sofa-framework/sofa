@@ -77,7 +77,7 @@ protected:
 
 public:
     //Pure Virtual method from Node
-    virtual Node* createChild(const std::string& nodeName);
+    virtual Node::SPtr createChild(const std::string& nodeName);
 
     /// Add a child node
     void addChild(core::objectmodel::BaseNode::SPtr node);

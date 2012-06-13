@@ -112,7 +112,7 @@ protected:
     virtual ~Node();
 public:
     /// Create, add, then return the new child of this Node
-    virtual Node* createChild(const std::string& nodeName)=0;
+    virtual Node::SPtr createChild(const std::string& nodeName)=0;
 
     /// @name High-level interface
     /// @{

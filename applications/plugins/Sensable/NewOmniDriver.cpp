@@ -25,6 +25,14 @@
 
 #include "NewOmniDriver.h"
 
+#include <sofa/core/ObjectFactory.h>
+//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
+
 #include <sofa/helper/system/thread/CTime.h>
 #ifdef SOFA_HAVE_BOOST
 #include <boost/thread.hpp>
@@ -44,6 +52,33 @@ namespace component
 
 namespace controller
 {
+
+const char* NewOmniDriver::visualNodeNames[NVISUALNODE] =
+{
+    "stylus",
+    "joint 2",
+    "joint 1",
+    "arm 2",
+    "arm 1",
+    "joint 0",
+    "base",
+    "axe X",
+    "axe Y",
+    "axe Z"
+};
+const char* NewOmniDriver::visualNodeFiles[NVISUALNODE] =
+{
+    "mesh/stylusO.obj",
+    "mesh/articulation5O.obj",
+    "mesh/articulation4O.obj",
+    "mesh/articulation3O.obj",
+    "mesh/articulation2O.obj",
+    "mesh/articulation1O.obj",
+    "mesh/BASEO.obj",
+    "mesh/axeX.obj",
+    "mesh/axeY.obj",
+    "mesh/axeZ.obj"
+};
 
 using namespace sofa::defaulttype;
 
@@ -384,7 +419,6 @@ NewOmniDriver::NewOmniDriver()
     noDevice = false;
     firstInit=true;
     firstDevice = true;
-    pi=3.1415926535897932384626433832795;
 }
 
 //destructeur
@@ -414,12 +448,12 @@ void NewOmniDriver::setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
     data.forceFeedback = ff;
 };
 
-//execut� 1 fois au d�marrage de runsofa, initialisation de toutes les variables sauf celle en lien avec l'haptique
+//executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void NewOmniDriver::init()
 {
     if(firstDevice)
     {
-        simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext());
+        simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext()->getRootContext());
         context->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
         cout<<"OmniDriver detectes:"<<endl;
         for(unsigned int i=0; i<autreOmniDriver.size(); i++)
@@ -447,7 +481,7 @@ void NewOmniDriver::init()
     initDeviceBool=false;
 
     VecCoord& posD =(*posDevice.beginEdit());
-    posD.resize(11);
+    posD.resize(NVISUALNODE+1);
     posDevice.endEdit();
 
     initVisu=false;
@@ -457,7 +491,7 @@ void NewOmniDriver::init()
     frame=false;
     visuCreation=false;
 
-    for(int i=0; i<10; i++)
+    for(int i=0; i<NVISUALNODE; i++)
     {
         visualNode[i].visu = NULL;
         visualNode[i].mapping = NULL;
@@ -466,46 +500,15 @@ void NewOmniDriver::init()
     parent = dynamic_cast<simulation::Node*>(this->getContext());
 
     sofa::simulation::tree::GNode *parentRoot = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+    if (parentRoot->parent())
+        parentRoot = parentRoot->parent();
 
     nodePrincipal= parentRoot->createChild("omniVisu "+deviceName.getValue());
-
-    // nodePrincipal = sofa::simulation::getSimulation()->createNewGraph();
-
-
-
-    //if (parentRoot->getParent()) {
-    parentRoot->getParent()->addChild(nodePrincipal);
-    //} else {
-    //    parentRoot->addChild(nodePrincipal);
-    //}
+    parentRoot->addChild(nodePrincipal);
     nodePrincipal->updateContext();
 
     DOFs=NULL;
 
-    //if(DOFs==NULL)
-    //{
-    //	nodeDOF = sofa::simulation::getSimulation()->newNode("nodeDOF");
-
-    //	DOFs = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
-    //	nodeDOF->addObject(DOFs);
-    //	DOFs->name.setValue("DOFs");
-
-    //	VecCoord& posS =*(DOFs->x.beginEdit());
-    //	posS.resize(1);
-    //	posS[0].getCenter()=Vec3d(0.0,0.0,0.0);
-    //	posS[0].getOrientation()=sofa::helper::Quater<float>::Quater(0.0,0.0,0.0,1.0);
-    //	DOFs->x.endEdit();
-
-    //	VecCoord& posS2 =*(DOFs->xfree.beginEdit());
-    //	posS2.resize(2);
-    //	posS2[0].getCenter()=Vec3d(0.0,0.0,0.0);
-    //	posS2[0].getOrientation()=sofa::helper::Quater<float>::Quater(0.0,0.0,0.0,1.0);
-    //	DOFs->xfree.endEdit();
-
-    //	DOFs->init();
-    //}
-    //nodePrincipal->addChild(nodeDOF);
-    //nodeDOF->updateContext();
     firstInit=false;
 
     if(!initVisu)
@@ -521,7 +524,7 @@ void NewOmniDriver::init()
             rigidDOF->name.setValue("rigidDOF");
 
             VecCoord& posDOF =*(rigidDOF->x.beginEdit());
-            posDOF.resize(11);
+            posDOF.resize(NVISUALNODE+1);
             rigidDOF->x.endEdit();
 
             rigidDOF->init();
@@ -529,61 +532,29 @@ void NewOmniDriver::init()
             nodePrincipal->updateContext();
         }
 
-
-        visualNode[0].node = nodePrincipal->createChild("stylet");
-        visualNode[1].node = nodePrincipal->createChild("articulation 2");
-        visualNode[2].node = nodePrincipal->createChild("articulation 1");
-        visualNode[3].node = nodePrincipal->createChild("arm 2");
-        visualNode[4].node = nodePrincipal->createChild("arm 1");
-        visualNode[5].node = nodePrincipal->createChild("base");
-        visualNode[6].node = nodePrincipal->createChild("socle");
-        visualNode[7].node = nodePrincipal->createChild("axe X");
-        visualNode[8].node = nodePrincipal->createChild("axe Y");
-        visualNode[9].node = nodePrincipal->createChild("axe Z");
-
-        for(int i=0; i<10; i++)
+        for(int i=0; i<NVISUALNODE; i++)
         {
-            if(i>6)
-                nodePrincipal->addChild(visualNode[i].node);
+            visualNode[i].node = nodePrincipal->createChild(visualNodeNames[i]);
+            //if(i>=VN_X)
+            nodePrincipal->addChild(visualNode[i].node);
 
             if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
             {
 
                 // create the visual model and add it to the graph //
                 visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-
+                visualNode[i].node->addObject(visualNode[i].visu);
                 visualNode[i].visu->name.setValue("VisualParticles");
-                if(i==0)
-                {
-                    visualNode[i].visu->fileMesh.setValue("mesh/stylusO.obj");
-                }
-                if(i==1)
-                    visualNode[i].visu->fileMesh.setValue("mesh/articulation5O.obj");
-                if(i==2)
-                    visualNode[i].visu->fileMesh.setValue("mesh/articulation4O.obj");
-                if(i==3)
-                    visualNode[i].visu->fileMesh.setValue("mesh/articulation3O.obj");
-                if(i==4)
-                    visualNode[i].visu->fileMesh.setValue("mesh/articulation2O.obj");
-                if(i==5)
-                    visualNode[i].visu->fileMesh.setValue("mesh/articulation1O.obj");
-                if(i==6)
-                    visualNode[i].visu->fileMesh.setValue("mesh/BASEO.obj");
-                if(i==7)
-                    visualNode[i].visu->fileMesh.setValue("mesh/axeX.obj");
-                if(i==8)
-                    visualNode[i].visu->fileMesh.setValue("mesh/axeY.obj");
-                if(i==9)
-                    visualNode[i].visu->fileMesh.setValue("mesh/axeZ.obj");
+                visualNode[i].visu->fileMesh.setValue(visualNodeFiles[i]);
+
                 visualNode[i].visu->init();
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
-                visualNode[i].node->addObject(visualNode[i].visu);
 
                 // create the visual mapping and at it to the graph //
                 visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
-                visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
                 visualNode[i].node->addObject(visualNode[i].mapping);
+                visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
                 visualNode[i].mapping->f_mapForces.setValue(false);
@@ -593,26 +564,26 @@ void NewOmniDriver::init()
                 visualNode[i].mapping->index.setValue(i+1);
                 visualNode[i].mapping->init();
             }
+            if(i<VN_X)
+                nodePrincipal->removeChild(visualNode[i].node);
         }
 
-        visualNode[7].visu->setColor(1.0,0.0,0.0,0);
-        visualNode[8].visu->setColor(0.0,1.0,0.0,0);
-        visualNode[9].visu->setColor(0.0,0.0,1.0,0);
+        visualNode[VN_X].visu->setColor(1.0,0.0,0.0,0);
+        visualNode[VN_Y].visu->setColor(0.0,1.0,0.0,0);
+        visualNode[VN_Z].visu->setColor(0.0,0.0,1.0,0);
 
         nodePrincipal->updateContext();
 
-        for(int i=0; i<10; i++)
+        for(int i=0; i<NVISUALNODE; i++)
         {
             visualNode[i].node->updateContext();
         }
 
-
-        for(int j=0; j<8; j++)
+        for(int j=0; j<=VN_X; j++)
         {
             sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
-                for(int p=0; p<3; p++)
-                    scaleMapping[i].at(p)*=(float)(1.0*scale.getValue()/100.0);
+                scaleMapping[i] *= (float)(1.0*scale.getValue()/100.0);
             visualNode[j].mapping->points.endEdit();
         }
 
@@ -702,10 +673,7 @@ void NewOmniDriver::reinit()
     std::cout<<"NewOmniDriver::reinit() done" <<std::endl;
 }
 
-//recupere les coordonn�es de l'interface dans le composant omnidriver pour les mettre dans le conposant mechanical object
-//TODO: copier directement lesdonn�es dans le mechanical object dans la fonction on animated event
-//adapte l'echelle des composant
-//?? qu'est ce qui apelle ctte fonction?
+// setup omni device visualization
 void NewOmniDriver::draw()
 {
     //cout << "NewOmniDriver::draw is called" << endl;
@@ -714,7 +682,7 @@ void NewOmniDriver::draw()
     {
         if(!visuActif && omniVisu.getValue())
         {
-            for(int i=0; i<7; i++)
+            for(int i=0; i<VN_X; i++)
             {
                 nodePrincipal->addChild(visualNode[i].node);
                 visualNode[i].node->updateContext();
@@ -724,14 +692,14 @@ void NewOmniDriver::draw()
         }
         VecCoord& posD =(*posDevice.beginEdit());
         VecCoord& posDOF =*(rigidDOF->x.beginEdit());
-        posD.resize(11);
-        posDOF.resize(11);
-        for(int i=0; i<11; i++)
+        posD.resize(NVISUALNODE+1);
+        posDOF.resize(NVISUALNODE+1);
+        for(int i=0; i<NVISUALNODE+1; i++)
         {
             posDOF[i].getCenter() = posD[i].getCenter();
             posDOF[i].getOrientation() = posD[i].getOrientation();
         }
-        //for(int i=0;i<10;i++)
+        //for(int i=0;i<NVISUALNODE;i++)
         //{
         //	if(omniVisu.getValue() || i>6)
         //	{
@@ -747,14 +715,11 @@ void NewOmniDriver::draw()
         if(changeScale)
         {
             float rapport=((float)data.scale)/oldScale;
-            for(int j = 0; j<10 ; j++)
+            for(int j = 0; j<NVISUALNODE ; j++)
             {
                 sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
-                {
-                    for(int p=0; p<3; p++)
-                        scaleMapping[i].at(p)*=rapport;
-                }
+                    scaleMapping[i]*=rapport;
                 visualNode[j].mapping->points.endEdit();
                 oldScale=(float)data.scale;
             }
@@ -764,7 +729,7 @@ void NewOmniDriver::draw()
     //delete omnivisual
     if(initVisu && visuActif && !omniVisu.getValue())
     {
-        for(int i=0; i<7; i++)
+        for(int i=0; i<VN_X; i++)
         {
             nodePrincipal->removeChild(visualNode[i].node);
         }
@@ -773,7 +738,6 @@ void NewOmniDriver::draw()
 
 }
 
-//evenement touche clavier appuiy�e
 void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
     //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<endl;
@@ -833,14 +797,14 @@ void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             Quat& orientB =(*orientationBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             orientB*=quarter_transform;
             orientationBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             Quat& orientB =(*orientationBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),pi/50);
+            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),M_PI/50);
             orientB*=quarter_transform;
             orientationBase.endEdit();
         }
@@ -861,22 +825,21 @@ void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
     {
         if(!axesActif)
         {
-            visualNode[7].visu->setColor(1.0,0.0,0.0,1);
-            visualNode[8].visu->setColor(0.0,1.0,0.0,1);
-            visualNode[9].visu->setColor(0.0,0.0,1.0,1);
+            visualNode[VN_X].visu->setColor(1.0,0.0,0.0,1);
+            visualNode[VN_Y].visu->setColor(0.0,1.0,0.0,1);
+            visualNode[VN_Z].visu->setColor(0.0,0.0,1.0,1);
             axesActif=true;
         }
         else
         {
-            visualNode[7].visu->setColor(1.0,0.0,0.0,0);
-            visualNode[8].visu->setColor(0.0,1.0,0.0,0);
-            visualNode[9].visu->setColor(0.0,0.0,1.0,0);
+            visualNode[VN_X].visu->setColor(1.0,0.0,0.0,0);
+            visualNode[VN_Y].visu->setColor(0.0,1.0,0.0,0);
+            visualNode[VN_Z].visu->setColor(0.0,0.0,1.0,0);
             axesActif=false;
         }
     }
 }
 
-//evenement touche clavier relach�e
 void NewOmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 {
     if (kre->getKey()=='X' || kre->getKey()=='x' )
@@ -930,12 +893,12 @@ void NewOmniDriver::onAnimateBeginEvent()
         positionBase.endEdit();
 
         VecCoord& posD =(*posDevice.beginEdit());
-        //posD.resize(11);
+        //posD.resize(NVISUALNODE+1);
 
         SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
         SolidTypes<double>::Transform tampon = data.world_H_baseOmni;
 
-        sofa::helper::Quater<float> q;
+        sofa::helper::Quater<double> q;
 #if 1
         //get position base
         posD[0].getCenter() =  tampon.getOrigin();
@@ -943,49 +906,42 @@ void NewOmniDriver::onAnimateBeginEvent()
 
         //get position stylus
         tampon*=baseOmni_H_endOmni;
-        posD[1].getCenter() =  tampon.getOrigin();
-        posD[1].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
-        //get pos articulation 2
-        sofa::helper::Quater<float> quarter2(Vec3d(0.0,0.0,1.0),angle2[2]);
+        //get pos joint 2
+        sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),angle2[2]);
         SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
         tampon*=transform_segr2;
-        posD[2].getCenter() =  tampon.getOrigin();
-        posD[2].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
-        //get pos articulation 1
-        sofa::helper::Quater<float> quarter3(Vec3d(1.0,0.0,0.0),angle2[1]);
+        //get pos joint 1
+        sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),angle2[1]);
         SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
         tampon*=transform_segr3;
-        posD[3].getCenter() =  tampon.getOrigin();
-        posD[3].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos arm 2
-        sofa::helper::Quater<float> quarter4(Vec3d(0.0,1.0,0.0),-angle2[0]);
+        sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-angle2[0]);
         SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
         tampon*=transform_segr4;
-        posD[4].getCenter() =  tampon.getOrigin();
-        posD[4].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
         //get pos arm 1
-        sofa::helper::Quater<float> quarter5(Vec3d(1.0,0.0,0.0),-(float)(pi/2)+angle1[2]-angle1[1]);
+        sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+angle1[2]-angle1[1]);
         SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*data.scale/100,0.0),quarter5);
         tampon*=transform_segr5;
-        posD[5].getCenter() =  tampon.getOrigin();
-        posD[5].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
-        //get pos articulation 0
-        sofa::helper::Quater<float> quarter6(Vec3d(1.0,0.0,0.0),angle1[1]);
+        //get pos joint 0
+        sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),angle1[1]);
         SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*data.scale/100,0.0),quarter6);
         tampon*=transform_segr6;
-        posD[6].getCenter() =  tampon.getOrigin();
-        posD[6].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos base
-        sofa::helper::Quater<float> quarter7(Vec3d(0.0,0.0,1.0),angle1[0]);
+        sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),angle1[0]);
         SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
         tampon*=transform_segr7;
-        posD[7].getCenter() =  tampon.getOrigin();
-        posD[7].getOrientation() =  tampon.getOrientation();
+        posD[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
 #else
         q.clear();
         SolidTypes<double>::Transform transform_segr[6];
@@ -1007,12 +963,12 @@ void NewOmniDriver::onAnimateBeginEvent()
 #endif
         //get pos of axes
 
-        posD[8].getCenter() =  data.world_H_baseOmni.getOrigin();
-        posD[9].getCenter() =  data.world_H_baseOmni.getOrigin();
-        posD[10].getCenter() =  data.world_H_baseOmni.getOrigin();
-        posD[8].getOrientation() =  (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(0.0,0.0,1.0),(float)-pi/2);
-        posD[9].getOrientation() =  (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(1.0,0.0,0.0),0);
-        posD[10].getOrientation() = (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(1.0,0.0,0.0),(float)pi/2);
+        posD[1+VN_X].getCenter() =  data.world_H_baseOmni.getOrigin();
+        posD[1+VN_Y].getCenter() =  data.world_H_baseOmni.getOrigin();
+        posD[1+VN_Z].getCenter() =  data.world_H_baseOmni.getOrigin();
+        posD[1+VN_X].getOrientation() =  (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(0.0,0.0,1.0),-M_PI/2);
+        posD[1+VN_Y].getOrientation() =  (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(1.0,0.0,0.0),0);
+        posD[1+VN_Z].getOrientation() = (data.world_H_baseOmni).getOrientation()*q.axisToQuat(Vec3d(1.0,0.0,0.0),-M_PI/2);
 
         posDevice.endEdit();
 

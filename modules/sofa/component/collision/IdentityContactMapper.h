@@ -70,7 +70,7 @@ public:
     typedef component::container::MechanicalObject<typename IdentityContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::IdentityMapping< InDataTypes, typename IdentityContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
-    MMapping* mapping;
+    typename MMapping::SPtr mapping;
 
     IdentityContactMapper()
         : model(NULL), mapping(NULL)
@@ -99,8 +99,8 @@ public:
     {
         if (mapping!=NULL)
         {
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            ((core::BaseMapping*)mapping)->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -108,7 +108,7 @@ public:
     {
         if (mapping!=NULL)
         {
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 };

@@ -48,9 +48,9 @@ DAGNode::~DAGNode()
 {}
 
 /// Create, add, then return the new child of this Node
-Node* DAGNode::createChild(const std::string& nodeName)
+Node::SPtr DAGNode::createChild(const std::string& nodeName)
 {
-    DAGNode* newchild = new DAGNode(nodeName);
+    DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return newchild;
 }

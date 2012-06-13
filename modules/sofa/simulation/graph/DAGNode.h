@@ -54,7 +54,7 @@ protected:
 
 public:
     //Pure Virtual method from Node
-    virtual Node* createChild(const std::string& nodeName);
+    virtual Node::SPtr createChild(const std::string& nodeName);
 
     //Pure Virtual method from BaseNode
     /// Add a child node
