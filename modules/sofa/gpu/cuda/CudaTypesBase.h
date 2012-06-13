@@ -481,6 +481,11 @@ public :
         return nnz;
     }
 
+    void setNnz()
+    {
+        nnz = colptr[rowsize];
+    }
+
     static const char* Name();
 
 protected :
