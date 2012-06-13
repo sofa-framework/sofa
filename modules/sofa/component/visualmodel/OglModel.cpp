@@ -738,7 +738,7 @@ void OglModel::initVisual()
     }
 
 //#ifdef GL_ARB_tessellation_shader
-    canUsePatches = glewIsSupported("GL_ARB_tessellation_shader");
+    canUsePatches = (glewIsSupported("GL_ARB_tessellation_shader")!=0);
 //#endif
 
     if (primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)

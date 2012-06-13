@@ -911,7 +911,7 @@ void NewOmniDriver::onAnimateBeginEvent()
 #ifdef SOFA_HAVE_BOOST
             boost::thread::yield();
 #else
-            usleep(0);
+            sofa::helper::system::thread::CTime::sleep(0);
 #endif
         }
     }

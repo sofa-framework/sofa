@@ -26,10 +26,10 @@
 #define SOFA_COMPONENT_ODESOLVER_NEWOMNISOLVER_H
 
 //Sensable include
-#include "HD/hd.h"
-#include "HDU/hdu.h"
-#include "HDU/hduError.h"
-#include "HDU/hduVector.h"
+#include <HD/hd.h>
+#include <HDU/hdu.h>
+#include <HDU/hduError.h>
+#include <HDU/hduVector.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
