@@ -45,9 +45,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/container/MechanicalObject.h>
 
-//truc du .cpp
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
 //force feedback
 //#include <sofa/component/controller/ForceFeedback.h>
@@ -55,16 +52,10 @@
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/NullForceFeedbackT.h>
 
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 #include <sofa/simulation/common/Node.h>
 #include <cstring>
 
 #include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <math.h>
@@ -101,14 +92,6 @@ typedef struct
 
 typedef struct
 {
-    simulation::Node *node;
-    sofa::component::visualmodel::OglModel::SPtr visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
-
-} VisualComponent;
-
-typedef struct
-{
     LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
     simulation::Node::SPtr *context;
 
@@ -140,11 +123,18 @@ class NewOmniDriver : public Controller
 
 public:
     SOFA_CLASS(NewOmniDriver, Controller);
-    typedef RigidTypes::VecCoord Coord;
+    typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
     typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> MMechanicalObject;
 
 
+
+    struct VisualComponent
+    {
+        simulation::Node::SPtr node;
+        sofa::component::visualmodel::OglModel::SPtr visu;
+        sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+    };
 
 
 
@@ -197,9 +187,24 @@ public:
 
     //variable pour affichage graphique
     simulation::Node *parent;
-    VisualComponent visualNode[10];
-    simulation::Node *nodePrincipal;
-    simulation::Node *nodeDOF;
+    enum
+    {
+        VN_stylus = 0,
+        VN_joint2 = 1,
+        VN_joint1 = 2,
+        VN_arm2   = 3,
+        VN_arm1   = 4,
+        VN_joint0 = 5,
+        VN_base   = 6,
+        VN_X      = 7,
+        VN_Y      = 8,
+        VN_Z      = 9,
+        NVISUALNODE = 10
+    };
+    VisualComponent visualNode[NVISUALNODE];
+    static const char* visualNodeNames[NVISUALNODE];
+    static const char* visualNodeFiles[NVISUALNODE];
+    simulation::Node::SPtr nodePrincipal;
     MMechanicalObject::SPtr rigidDOF;
     bool changeScale;
     bool firstInit;
@@ -212,7 +217,6 @@ public:
     bool modZ;
     bool modS;
     bool axesActif;
-    double pi;
     HDfloat angle1[3];
     HDfloat angle2[3];
     bool firstDevice;

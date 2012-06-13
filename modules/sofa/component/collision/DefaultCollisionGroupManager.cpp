@@ -63,7 +63,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         Contact* contact = cit->get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
-        simulation::Node* group = NULL;
+        simulation::Node::SPtr group = NULL;
         if (group1==NULL || group2==NULL)
         {
         }
@@ -99,7 +99,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
                     group->moveChild((simulation::Node*)group1);
                     group->moveChild((simulation::Node*)group2);
-                    groupSet.insert(group);
+                    groupSet.insert(group.get());
                 }
                 else if (group1IsColl)
                 {

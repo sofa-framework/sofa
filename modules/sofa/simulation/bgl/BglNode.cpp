@@ -193,9 +193,9 @@ void BglNode::removeParent(BglNode *node)
 }
 
 /// Create, add, then return the new child of this Node
-Node* BglNode::createChild(const std::string& nodeName)
+Node::SPtr BglNode::createChild(const std::string& nodeName)
 {
-    BglNode* newchild = new BglNode(nodeName);
+    BglNode::SPtr newchild = sofa::core::objectmodel::New<BglNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return newchild;
 }

@@ -48,9 +48,9 @@ GNode::~GNode()
 {}
 
 /// Create, add, then return the new child of this Node
-Node* GNode::createChild(const std::string& nodeName)
+Node::SPtr GNode::createChild(const std::string& nodeName)
 {
-    GNode* newchild = new GNode(nodeName);
+    GNode::SPtr newchild = sofa::core::objectmodel::New<GNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
     return newchild;
 }

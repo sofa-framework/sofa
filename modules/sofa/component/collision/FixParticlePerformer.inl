@@ -60,8 +60,8 @@ void FixParticlePerformer<DataTypes>::start()
     }
 
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
-    simulation::Node* nodeFixation = nodeCollision->createChild("FixationPoint");
-    fixations.push_back( nodeFixation );
+    simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
+    fixations.push_back( nodeFixation.get() );
 
     //Create the Container of points
     typename MouseContainer::SPtr mstateFixation = sofa::core::objectmodel::New< MouseContainer >();
