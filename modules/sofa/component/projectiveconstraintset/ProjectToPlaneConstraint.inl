@@ -180,19 +180,19 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
     f_normal.setValue(n);
 
     // create the matrix blocks corresponding to the projection to the plane: I-nn^t or to the identity
-    vector<Block> bProjection(1), bIdentity(1);
+    Block bProjection, bIdentity;
     for(unsigned i=0; i<bsize; i++)
         for(unsigned j=0; j<bsize; j++)
         {
             if(i==j)
             {
-                bIdentity[0][i][j]   = 1;
-                bProjection[0][i][j] = 1 - n[i]*n[j];
+                bIdentity[i][j]   = 1;
+                bProjection[i][j] = 1 - n[i]*n[j];
             }
             else
             {
-                bIdentity[0][i][j]   = 0;
-                bProjection[0][i][j] =    - n[i]*n[j];
+                bIdentity[i][j]   = 0;
+                bProjection[i][j] =    - n[i]*n[j];
             }
         }
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit() bIdentity[0] = " << endl << bIdentity[0] << endl;
@@ -210,19 +210,19 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
     // fill the jacobian is ascending order
     Indices::const_iterator it= tmp.begin();
     unsigned i=0;
-    vector<unsigned> ind(1);
     for(Indices::const_iterator it= tmp.begin(); i<numBlocks; i++ )
     {
-        ind[0]=i;
+        jacobian.beginBlockRow(i);
         if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
-            jacobian.appendBlockRow(i,ind,bProjection); // only one block to create
+            jacobian.createBlock(i,bProjection); // only one block to create
             it++;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
-            jacobian.appendBlockRow(i,ind,bIdentity); // only one block to create
+            jacobian.createBlock(i,bIdentity); // only one block to create
         }
+        jacobian.endBlockRow();
     }
     jacobian.endEdit();
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
@@ -235,7 +235,7 @@ void ProjectToPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
     assert(E);
-    E->eigenMatrix = J.eigenMatrix * E->eigenMatrix * J.eigenMatrix;
+    E->compressedMatrix = J.compressedMatrix * E->compressedMatrix * J.compressedMatrix;
 }
 
 

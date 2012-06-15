@@ -474,18 +474,20 @@ protected:
         eigenJacobian.resizeBlocks(jacobian.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-            // Put all the blocks of the row in an array, then send the array to the matrix
-            // Not very efficient: MatBlock creations could be avoided.
-            vector<MatBlock> blocks;
-            vector<unsigned> columns;
+//            vector<MatBlock> blocks;
+//            vector<unsigned> columns;
+            eigenJacobian.beginBlockRow(i);
             for(unsigned int j=0; j<jacobian[i].size(); j++)
             {
-                columns.push_back( this->f_index.getValue()[i][j] );
-                blocks.push_back( jacobian[i][j].getJ() );
+//                columns.push_back( this->f_index.getValue()[i][j] );
+//                blocks.push_back( jacobian[i][j].getJ() );
+                eigenJacobian.createBlock( this->f_index.getValue()[i][j], jacobian[i][j].getJ());
             }
-            eigenJacobian.appendBlockRow( i, columns, blocks );
+//            eigenJacobian.appendBlockRow( i, columns, blocks );
+            eigenJacobian.endBlockRow();
         }
-        eigenJacobian.endEdit();
+//        eigenJacobian.endEdit();
+        eigenJacobian.compress();
     }
 
     Data<bool> assembleK;
@@ -506,13 +508,17 @@ protected:
         }
         for(unsigned int i=0; i<in.size(); i++)
         {
-            vector<KBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( diagonalBlocks[i] );
-            K.appendBlockRow( i, columns, blocks );
+//            vector<KBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( diagonalBlocks[i] );
+//            K.appendBlockRow( i, columns, blocks );
+            K.beginBlockRow(i);
+            K.createBlock(i,diagonalBlocks[i]);
+            K.endBlockRow();
         }
-        K.endEdit();
+//        K.endEdit();
+        K.compress();
     }
 
 

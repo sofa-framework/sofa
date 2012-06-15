@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
+#include "EigenBaseSparseMatrix.h"
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
@@ -44,17 +44,15 @@ namespace linearsolver
 {
 using helper::vector;
 
-//#define EigenSparseMatrix_CHECK
-//#define EigenSparseMatrix_VERBOSE
 
+/** Variant of EigenBaseSparseMatrix, capable of block-view access.
+  The blocks correspond to matrix blocks of the size of the DataTypes Deriv.
 
-/** Container of an Eigen::SparseMatrix<Real, RowMajor> matrix, able to perform computations on InDataTypes::VecDeriv and OutDataTypes::VecDeriv vectors.
-  The vectors are converted to/from Eigen format during the computations.
+  There are two ways of filling the matrix:
+  - Random block access is provided by method wBlock. Use compress() after the last insertion.
+  - Block rows can be efficiently appended using methods beginBlockRow, createBlock, endBlockRow. Use compress() after the last insertion. The rows must be created in increasing index order.
 
-  WARNING: Random write is not possible. For efficiency, the filling must be performed per row, column in increasing order.
-Method beginRow(int index) must be called before any entry can be appended to row i.
-Then set(i,j,value) must be used in for increasing j. There is no need to explicitly end a row.
-When all the entries are written, method endEdit() must be applied to finalize the matrix.
+  The two ways of filling the matrix can not be used at the same time.
   */
 template<class InDataTypes, class OutDataTypes>
 class EigenSparseMatrix : public EigenBaseSparseMatrix<typename InDataTypes::Real>
@@ -62,7 +60,7 @@ class EigenSparseMatrix : public EigenBaseSparseMatrix<typename InDataTypes::Rea
 public:
     typedef EigenBaseSparseMatrix<typename InDataTypes::Real> Inherit;
     typedef typename InDataTypes::Real Real;
-    typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Matrix;
+    typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
 
     typedef typename InDataTypes::Deriv InDeriv;
@@ -72,58 +70,45 @@ public:
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
     typedef defaulttype::Mat<Nout,Nin,Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
+protected:
+    typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
+    typedef std::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
+    BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
+
+public:
 
     EigenSparseMatrix(int nbRow=0, int nbCol=0):Inherit(nbRow,nbCol) {}
-
 
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {
-        this->eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
+        this->compressedMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
 
-    bool canCast( const InVecDeriv& v ) const
+    /// Finalize the matrix after a series of insertions. Add the values from the temporary list to the compressed matrix, and clears the list.
+    virtual void compress()
     {
-        //        cerr<<"canCast, size = " << v.size() << endl;
-        //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
-        //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
-        //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
-        //        cerr<<"canCast,  diff = " << diff << endl;
-        if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
-            return true;
-        else return false;
+        Inherit::compress();
 
+        if( incomingBlocks.empty() ) return;
+        compress_incomingBlocks();
+        //        cerr<<"compress, before incoming blocks " << this->eigenMatrix << endl;
+        //        cerr<<"compress, incoming blocks " << this->compressedIncoming << endl;
+        this->compressedMatrix += this->compressedIncoming;
+        //        cerr<<"compress, final value " << this->eigenMatrix << endl;
+        this->compressedMatrix.finalize();
     }
 
-    //    bool canCast( const OutVecDeriv& v ) const
-    //    {
-    //        if(  (v.size()-1)*sizeof(OutDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
-    //            return true;
-    //        else return false;
-    //    }
-
-    /** Insert a new row of blocks in the matrix. The rows must be inserted in increasing order. bRow is the row number. brow and bcolumns are block indices.
-      Insert one row of scalars after another.
-      @deprecated Use beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ), endBlockRow() instead
+    /** Return write access to an incoming block.
+    Note that this does not give access to the compressed matrix.
+    The block belongs to a temporary list which will be added to the compressed matrix using method compress().
     */
-    void appendBlockRow(  unsigned bRow, const vector<unsigned>& bColumns, const vector<Block>& blocks )
+    Block& wBlock( int i, int j )
     {
-        vector<unsigned> p = helper::sortedPermutation(bColumns); // indices in ascending column order
-
-        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
-        {
-            beginRow(r+ bRow*Nout);
-            for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
-            {
-                const Block& b = blocks[p[i]];
-                for( unsigned c=0; c<Nin; c++ )
-                {
-                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
-                }
-            }
-        }
+        return incomingBlocks[i][j];
     }
+
 
     /** Prepare the insertion of a new row of blocks in the matrix.
        Then create blocks using createBlock( unsigned column,  const Block& b ).
@@ -163,21 +148,14 @@ public:
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                    if( b[r][c]!=0.0 )
+                        this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
                 }
             }
         }
     }
 
-private:
-    //@{
-    /** Auxiliary variables for methods beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ) and endBlockRow() */
-    unsigned bRow;
-    vector<unsigned> bColumns;
-    vector<Block> blocks;
-    //@}
 
-public:
     /// compute result = A * data
     void mult( OutVecDeriv& result, const InVecDeriv& data ) const
     {
@@ -186,7 +164,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r = this->eigenMatrix * d;
+            r = this->compressedMatrix * d;
         }
         else
         {
@@ -199,7 +177,7 @@ public:
                     aux1[Nin* i+j] = data[i][j];
             }
             // compute the product
-            aux2 = this->eigenMatrix * aux1;
+            aux2 = this->compressedMatrix * aux1;
             // convert the result back to the Sofa type
             for(unsigned i=0; i<result.size(); i++)
             {
@@ -208,6 +186,8 @@ public:
             }
         }
     }
+
+
 
     /// compute result = A * data
     void mult( Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data ) const
@@ -220,7 +200,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r = this->eigenMatrix * d;
+            r = this->compressedMatrix * d;
             //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
@@ -236,7 +216,7 @@ public:
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -253,7 +233,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r += this->eigenMatrix * d;
+            r += this->compressedMatrix * d;
             return;
         }
 
@@ -265,7 +245,7 @@ public:
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -285,7 +265,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
             Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
-            r += this->eigenMatrix * d;
+            r += this->compressedMatrix * d;
             return;
         }
 
@@ -297,7 +277,7 @@ public:
                 aux1[Nin* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -317,7 +297,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
             Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
-            r += this->eigenMatrix * d * fact;
+            r += this->compressedMatrix * d * fact;
             return;
         }
 
@@ -329,7 +309,7 @@ public:
                 aux1[Nin* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -346,7 +326,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
             Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
-            r += this->eigenMatrix.transpose() * d;
+            r += this->compressedMatrix.transpose() * d;
             return;
         }
 
@@ -358,7 +338,7 @@ public:
                 aux1[Nout* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix.transpose() * aux1;
+        aux2 = this->compressedMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -378,7 +358,7 @@ public:
         {
             const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nout);
             Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nin);
-            r += this->eigenMatrix.transpose() * d;
+            r += this->compressedMatrix.transpose() * d;
             return;
         }
 
@@ -391,7 +371,7 @@ public:
                 aux1[Nout* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix.transpose() * aux1;
+        aux2 = this->compressedMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -402,6 +382,65 @@ public:
 
 
     static const char* Name();
+
+private:
+    //@{
+    /** Auxiliary variables for methods beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ) and endBlockRow() */
+    unsigned bRow;
+    vector<unsigned> bColumns;
+    vector<Block> blocks;
+    //@}
+
+    bool canCast( const InVecDeriv& v ) const
+    {
+        //        cerr<<"canCast, size = " << v.size() << endl;
+        //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
+        //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
+        //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
+        //        cerr<<"canCast,  diff = " << diff << endl;
+        if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real)) // contiguous
+            return true;
+        else return false;
+
+    }
+
+    /// Converts the incoming matrix to compreddedIncoming and clears the incoming matrix.
+    void compress_incomingBlocks()
+    {
+        this->compressedIncoming.setZero();
+        this->compressedIncoming.resize( this->compressedMatrix.rows(), this->compressedMatrix.cols() );
+        if( incomingBlocks.empty() ) return;
+
+        int rowStarted = 0;
+        for( typename BlockMatMap::const_iterator blockRow=incomingBlocks.begin(),rend=incomingBlocks.end(); blockRow!=rend; blockRow++ )
+        {
+            int blRow = (*blockRow).first;
+
+            while( rowStarted<blRow*Nout )   // make sure all the rows are started, even the empty ones
+            {
+                this->compressedIncoming.startVec(rowStarted);
+                rowStarted++;
+            }
+
+            for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
+            {
+                if(r+ blRow*Nout >= this->rowSize() ) break;
+//                cerr<<"compress_incomingBlock():: startVec " << rowStarted << endl;
+                this->compressedIncoming.startVec(rowStarted++);
+                for( typename BlockRowMap::const_iterator c=(*blockRow).second.begin(),cend=(*blockRow).second.end(); c!=cend; c++ )
+                {
+                    int blCol = (*c).first;
+                    const Block& b = (*c).second;
+                    for( unsigned c=0; c<Nin; c++ ) if( c+ blCol*Nin < this->colSize() )
+                        {
+                            this->compressedIncoming.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];
+                        }
+                }
+            }
+        }
+        this->compressedIncoming.finalize();
+        incomingBlocks.clear();
+    }
 
 
 };
@@ -425,7 +464,7 @@ public:
     typedef typename InDataTypes::Real InReal;
     typedef defaulttype::ExtVec3fTypes OutDataTypes;
     typedef typename OutDataTypes::Real OutReal;
-    typedef Eigen::DynamicSparseMatrix<InReal> Matrix;
+    typedef Eigen::DynamicSparseMatrix<InReal> CompressedMatrix;
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigen;
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  InVectorEigen;
     typedef Eigen::Matrix<OutReal,Eigen::Dynamic,1>  OutVectorEigen;
@@ -438,6 +477,12 @@ public:
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
     typedef defaulttype::Mat<Nout,Nin,InReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
+protected:
+    typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
+    typedef std::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
+    BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
+
+public:
 
     EigenSparseMatrix(int nRow=0, int nCol=0):Inherit(nRow,nCol) {}
 
@@ -445,26 +490,61 @@ public:
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {
-        this->eigenMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
+        this->compressedMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
-    bool canCast( const InVecDeriv& v ) const
+
+    /// Finalize the matrix after a series of insertions. Add the values from the temporary list to the compressed matrix, and clears the list.
+    virtual void compress()
     {
-        //        cerr<<"canCast, size = " << v.size() << endl;
-        //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
-        //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
-        //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
-        //        cerr<<"canCast,  diff = " << diff << endl;
-        if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(InReal)) // contiguous
-            return true;
-        else return false;
+        Inherit::compress();
 
+        if( incomingBlocks.empty() ) return;
+        compress_incomingBlocks();
+        //        cerr<<"compress, before incoming blocks " << this->eigenMatrix << endl;
+        //        cerr<<"compress, incoming blocks " << this->compressedIncoming << endl;
+        this->compressedMatrix += this->compressedIncoming;
+        //        cerr<<"compress, final value " << this->eigenMatrix << endl;
+        this->compressedMatrix.finalize();
     }
 
-    /** Insert a new row of blocks in the matrix. The rows must be inserted in increasing order. bRow is the row number. brow and bcolumns are block indices.
-      Insert one row of scalars after another
+    /** Return write access to an incoming block.
+    Note that this does not give access to the compressed matrix.
+    The block belongs to a temporary list which will be added to the compressed matrix using method compress().
     */
-    void appendBlockRow(  unsigned bRow, const vector<unsigned>& bColumns, const vector<Block>& blocks )
+    Block& wBlock( int i, int j )
+    {
+        return incomingBlocks[i][j];
+    }
+
+
+    /** Prepare the insertion of a new row of blocks in the matrix.
+       Then create blocks using createBlock( unsigned column,  const Block& b ).
+        Then finally use endBlockRow() to validate the row insertion.
+        @sa createBlock( unsigned column,  const Block& b )
+        @sa endBlockRow()
+        */
+    void beginBlockRow(unsigned row)
+    {
+        bRow = row;
+        bColumns.clear();
+        blocks.clear();
+    }
+
+    /** Create a block in the current row, previously initialized using beginBlockRow(unsigned row).
+        The blocks need not be created in column order. The blocks are not actually created in the matrix until method endBlockRow() is called.
+        */
+    void createBlock( unsigned column,  const Block& b )
+    {
+        blocks.push_back(b);
+        bColumns.push_back(column);
+    }
+
+    /** Finalize the creation of the current block row.
+      @sa beginBlockRow(unsigned row)
+      @sa createBlock( unsigned column,  const Block& b )
+      */
+    void endBlockRow()
     {
         vector<unsigned> p = helper::sortedPermutation(bColumns); // indices in ascending column order
 
@@ -476,7 +556,8 @@ public:
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    this->set( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                    if( b[r][c]!=0.0 )
+                        this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
                 }
             }
         }
@@ -495,7 +576,7 @@ public:
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -530,7 +611,7 @@ public:
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -550,7 +631,7 @@ public:
                 aux1[Nin* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix * aux1;
+        aux2 = this->compressedMatrix * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -579,7 +660,7 @@ public:
                 aux1[Nout* i+j] = data[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix.transpose() * aux1;
+        aux2 = this->compressedMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<result.size(); i++)
         {
@@ -611,7 +692,7 @@ public:
                 aux1[Nout* i+j] = dat[i][j];
         }
         // compute the product
-        aux2 = this->eigenMatrix.transpose() * aux1;
+        aux2 = this->compressedMatrix.transpose() * aux1;
         // convert the result back to the Sofa type
         for(unsigned i=0; i<res.size(); i++)
         {
@@ -622,6 +703,64 @@ public:
 
 
     //    static const char* Name();
+private:
+    //@{
+    /** Auxiliary variables for methods beginBlockRow(unsigned row), createBlock( unsigned column,  const Block& b ) and endBlockRow() */
+    unsigned bRow;
+    vector<unsigned> bColumns;
+    vector<Block> blocks;
+    //@}
+
+    bool canCast( const InVecDeriv& v ) const
+    {
+        //        cerr<<"canCast, size = " << v.size() << endl;
+        //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
+        //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
+        //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
+        //        cerr<<"canCast,  diff = " << diff << endl;
+        if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(InReal)) // contiguous
+            return true;
+        else return false;
+
+    }
+
+    /// Converts the incoming matrix to compreddedIncoming and clears the incoming matrix.
+    void compress_incomingBlocks()
+    {
+        this->compressedIncoming.setZero();
+        this->compressedIncoming.resize( this->compressedMatrix.rows(), this->compressedMatrix.cols() );
+        if( incomingBlocks.empty() ) return;
+
+        int rowStarted = 0;
+        for( typename BlockMatMap::const_iterator blockRow=incomingBlocks.begin(),rend=incomingBlocks.end(); blockRow!=rend; blockRow++ )
+        {
+            int blRow = (*blockRow).first;
+
+            while( rowStarted<blRow*Nout )   // make sure all the rows are started, even the empty ones
+            {
+                this->compressedIncoming.startVec(rowStarted);
+                rowStarted++;
+            }
+
+            for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
+            {
+                if(r+ blRow*Nout >= this->rowSize() ) break;
+//                cerr<<"compress_incomingBlock():: startVec " << rowStarted << endl;
+                this->compressedIncoming.startVec(rowStarted++);
+                for( typename BlockRowMap::const_iterator c=(*blockRow).second.begin(),cend=(*blockRow).second.end(); c!=cend; c++ )
+                {
+                    int blCol = (*c).first;
+                    const Block& b = (*c).second;
+                    for( unsigned c=0; c<Nin; c++ ) if( c+ blCol*Nin < this->colSize() )
+                        {
+                            this->compressedIncoming.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];
+                        }
+                }
+            }
+        }
+        this->compressedIncoming.finalize();
+        incomingBlocks.clear();
+    }
 
 
 };

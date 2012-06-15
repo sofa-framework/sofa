@@ -98,7 +98,7 @@ private:
 protected:
     // Equation system: input data
     const SMatrix& M() const { return _matM; }
-    const SMatrix& P() const { return _projMatrix.eigenMatrix; }
+    const SMatrix& P() const { return _projMatrix.compressedMatrix; }
     const SMatrix& J() const { return _matJ; }
     const SMatrix& C() const { return _matC; }
     const VectorSofa& vecF() const { return _vecF; }

@@ -47,11 +47,11 @@ bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigne
     if( !testSucceeded ) nerr++;
     if( testSucceeded )
     {
-        sout()  << "---- SUCCESS: " << testDescription << endl;
+        sout()  << "---- SUCCESS of : " << testDescription << endl;
     }
     else
     {
-        serr() <<  "==== FAILURE: " << testDescription << endl;
+        serr() <<  "==== FAILURE of : " << testDescription << endl;
     }
     return testSucceeded;
 }

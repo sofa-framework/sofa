@@ -119,7 +119,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
     _matM.resize(assembly.sizeM,assembly.sizeM);
     _matK.resize(assembly.sizeM,assembly.sizeM);
-    _projMatrix.eigenMatrix = createIdentityMatrix(assembly.sizeM);
+    _projMatrix.compressedMatrix = createIdentityMatrix(assembly.sizeM);
     _matC.resize(assembly.sizeC,assembly.sizeC);
     _matJ.resize(assembly.sizeC,assembly.sizeM);
     _vecF.resize(assembly.sizeM);
@@ -460,12 +460,12 @@ const ComplianceSolver::SMatrix& ComplianceSolver::PMinvP()
 {
     if( _PMinvP_isDirty ) // update it
     {
-        if( !inverseDiagonalMatrix( _PMinvP_Matrix.eigenMatrix, _matM ) )
+        if( !inverseDiagonalMatrix( _PMinvP_Matrix.compressedMatrix, _matM ) )
             assert(false);
-        _PMinvP_Matrix.eigenMatrix = P().transpose() * _PMinvP_Matrix.eigenMatrix * P();
+        _PMinvP_Matrix.compressedMatrix = P().transpose() * _PMinvP_Matrix.compressedMatrix * P();
         _PMinvP_isDirty = false;
     }
-    return _PMinvP_Matrix.eigenMatrix;
+    return _PMinvP_Matrix.compressedMatrix;
 }
 
 
@@ -502,7 +502,7 @@ const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMa
 {
     const linearsolver::EigenBaseSparseMatrix<SReal>* sm = dynamic_cast<const linearsolver::EigenBaseSparseMatrix<SReal>*>(m);
     assert(sm);
-    return sm->eigenMatrix;
+    return sm->compressedMatrix;
 }
 
 
