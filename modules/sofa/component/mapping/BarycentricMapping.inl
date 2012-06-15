@@ -1131,11 +1131,14 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             }
             else
             {
-                const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
-                Out::setCPos(out[i+i0] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
-                        + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
-                        + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
-                        + in[quad[2]] * ( ( fx ) * ( fy ) ) );
+                if (quads.size())
+                {
+                    const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                    Out::setCPos(out[i+i0] , in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
+                            + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
+                            + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
+                            + in[quad[2]] * ( ( fx ) * ( fy ) ) );
+                }
             }
         }
     }
