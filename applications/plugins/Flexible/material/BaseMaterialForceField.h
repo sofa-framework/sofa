@@ -213,17 +213,17 @@ protected:
         C.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-            //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-            // Put all the blocks of the row in an array, then send the array to the matrix
-            // Not very efficient: MatBlock creations could be avoided.
-            vector<MatBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( material[i].getC() );
-            C.appendBlockRow( i, columns, blocks );
+//            vector<MatBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( material[i].getC() );
+//            C.appendBlockRow( i, columns, blocks );
+            C.beginBlockRow(i);
+            C.createBlock(i,material[i].getC());
+            C.endBlockRow();
         }
-        C.endEdit();
+//        C.endEdit();
+        C.compress();
     }
 
     Data<bool> assembleK;
@@ -237,17 +237,17 @@ protected:
         K.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-            //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-            // Put all the blocks of the row in an array, then send the array to the matrix
-            // Not very efficient: MatBlock creations could be avoided.
-            vector<MatBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( material[i].getK() );
-            K.appendBlockRow( i, columns, blocks );
+//            vector<MatBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( material[i].getK() );
+//            K.appendBlockRow( i, columns, blocks );
+            K.beginBlockRow(i);
+            K.createBlock(i,material[i].getK());
+            K.endBlockRow();
         }
-        K.endEdit();
+//        K.endEdit();
+        K.compress();
     }
 
 
@@ -262,17 +262,17 @@ protected:
         B.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-            //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-            // Put all the blocks of the row in an array, then send the array to the matrix
-            // Not very efficient: MatBlock creations could be avoided.
-            vector<MatBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( material[i].getB() );
-            B.appendBlockRow( i, columns, blocks );
+//            vector<MatBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( material[i].getB() );
+//            B.appendBlockRow( i, columns, blocks );
+            B.beginBlockRow(i);
+            B.createBlock(i,material[i].getB());
+            B.endBlockRow();
         }
-        B.endEdit();
+//        B.endEdit();
+        B.compress();
     }
 
     Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness

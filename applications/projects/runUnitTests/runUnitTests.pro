@@ -19,16 +19,15 @@ macx {
 
 unix {
    LIBS += -ldl
+LIBS *= -lboost_unit_test_framework
+
 }
 
 SOURCES = runUnitTests.cpp \
     MatrixTest.cpp
 
 HEADERS = \
-    MatrixTest.h \
-    MatrixTest.inl \
-    EigenBaseSparseMatrixNew.h \
-    EigenSparseMatrixNew.h \
+    MatrixTest.inl
 
 #unix: QMAKE_LIBDIR += $$SOFA_GPU_CUDA_DIR
 

@@ -268,17 +268,17 @@ protected:
         eigenJacobian.resizeBlocks(out.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-            //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-            // Put all the blocks of the row in an array, then send the array to the matrix
-            // Not very efficient: MatBlock creations could be avoided.
-            vector<MatBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( jacobian[i].getJ() );
-            eigenJacobian.appendBlockRow( i, columns, blocks );
+//            vector<MatBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( jacobian[i].getJ() );
+//            eigenJacobian.appendBlockRow( i, columns, blocks );
+            eigenJacobian.beginBlockRow(i);
+            eigenJacobian.createBlock(i,jacobian[i].getJ());
+            eigenJacobian.endBlockRow();
         }
-        eigenJacobian.endEdit();
+//        eigenJacobian.endEdit();
+        eigenJacobian.compress();
     }
 
     Data<bool> assembleK;
@@ -290,13 +290,16 @@ protected:
         K.resizeBlocks(in.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-            vector<KBlock> blocks;
-            vector<unsigned> columns;
-            columns.push_back( i );
-            blocks.push_back( jacobian[i].getK(childForce[i]) );
-            K.appendBlockRow( i, columns, blocks );
+//            vector<KBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( jacobian[i].getK(childForce[i]) );
+//            K.appendBlockRow( i, columns, blocks );
+            K.beginBlockRow(i);
+            K.createBlock(i,jacobian[i].getK(childForce[i]));
         }
-        K.endEdit();
+//        K.endEdit();
+        K.compress();
     }
     virtual const vector<defaulttype::BaseMatrix*>* getKs()
     {

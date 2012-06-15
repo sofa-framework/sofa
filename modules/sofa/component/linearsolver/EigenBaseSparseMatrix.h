@@ -32,6 +32,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
+#include <map>
 #ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 #include <unsupported/Eigen/CholmodSupport>
 #endif
@@ -52,12 +53,24 @@ using helper::vector;
 //#define EigenBaseSparseMatrix_VERBOSE
 
 
-/** Container of an Eigen::SparseMatrix<Real, RowMajor> matrix.
+/** Sparse matrix based on the Eigen library.
 
-  WARNING: Random write is not possible. For efficiency, the filling must be performed per row, column in increasing order.
+An Eigen::SparseMatrix<Real, RowMajor> matrix is used to store the data in Compressed Row Storage mode.
+This matrix can not be accessed randomly. Two access modes are implemented.
+
+The first access mode consists in inserting entries in increasing row, increasing column order.
 Method beginRow(int index) must be called before any entry can be appended to row i.
-Then set(i,j,value) must be used in for increasing j. There is no need to explicitly end a row.
-When all the entries are written, method endEdit() must be applied to finalize the matrix.
+Then insertBack(i,j,value) must be used in for increasing j. There is no need to explicitly end a row.
+Finally, method compress() must be called after the last entry has been inserted.
+This is the most efficient access mode.
+
+The second access mode is randow access, but you access an auxiliary matrix.
+Method add is used to add a value at a given location.
+Method compress() is then used to transfer this data to the compressed matrix.
+There is no way to replace an entry, you can only add.
+
+Rows, columns, or the full matrix can be set to zero using the clear* methods.
+
   */
 template<class TReal>
 class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
@@ -65,13 +78,21 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 public:
 
     typedef TReal Real;
-    typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Matrix;
+    typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
     typedef EigenBaseSparseMatrix<TReal> ThisMatrix;
 
-    Matrix eigenMatrix;    ///< the data
+protected:
+    // the auxiliary matrix used for random access
+    typedef std::map<int,TReal> RowMap;   ///< Map which represents one row of the matrix. The index represents the column index of an entry.
+    typedef std::map<int,RowMap> MatMap;  ///< Map which represents a matrix. The index represents the index of a row.
+    MatMap incoming;                      ///< To store data before it is compressed in optimized format.
+    CompressedMatrix compressedIncoming;            ///< auxiliary matrix to store the compressed version of the incoming matrix
+
+public:
 
 
+    CompressedMatrix compressedMatrix;    ///< the compressed matrix
 
     EigenBaseSparseMatrix(int nbRow=0, int nbCol=0)
     {
@@ -85,21 +106,21 @@ public:
     {
         resize(m.rowSize(),nbCol);
 
-        const Matrix& im = m.eigenMatrix;
+        const CompressedMatrix& im = m.compressedMatrix;
         for(int i=0; i<im.rows(); i++)
         {
-            eigenMatrix.startVec(i);
-            for(typename Matrix::InnerIterator j(im,i); j; ++j)
-                eigenMatrix.insertBack(i,shift+j.col())= j.value();
+            compressedMatrix.startVec(i);
+            for(typename CompressedMatrix::InnerIterator j(im,i); j; ++j)
+                compressedMatrix.insertBack(i,shift+j.col())= j.value();
         }
-        eigenMatrix.finalize();
+        compressedMatrix.finalize();
     }
 
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
     void resize(int nbRow, int nbCol)
     {
-        eigenMatrix.resize(nbRow,nbCol);
+        compressedMatrix.resize(nbRow,nbCol);
     }
 
 
@@ -107,53 +128,146 @@ public:
     /// number of rows
     unsigned int rowSize(void) const
     {
-        return eigenMatrix.rows();
+        return compressedMatrix.rows();
     }
 
     /// number of columns
     unsigned int colSize(void) const
     {
-        return eigenMatrix.cols();
+        return compressedMatrix.cols();
     }
 
     SReal element(int i, int j) const
     {
-        return eigenMatrix.coeff(i,j);
+        return compressedMatrix.coeff(i,j);
+    }
+
+    void add(int i, int j, double v)
+    {
+        if( v!=0.0 )
+            incoming[i][j]+=v;
+        //        cerr<<"EigenBaseSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
+    }
+
+    /// Converts the incoming matrix to compressedIncoming and clears the incoming matrix.
+    void compress_incoming()
+    {
+        compressedIncoming.setZero();
+        compressedIncoming.resize( compressedMatrix.rows(),compressedMatrix.cols() );
+        if( incoming.empty() ) return;
+
+        for( typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end(); r!=rend; r++ )
+        {
+            int row = (*r).first;
+            compressedIncoming.startVec(row);
+            for( typename RowMap::const_iterator c=(*r).second.begin(),cend=(*r).second.end(); c!=cend; c++ )
+            {
+                int col = (*c).first;
+                Real val = (*c).second;
+                compressedIncoming.insertBack(row,col) = val;
+            }
+        }
+        compressedIncoming.finalize();
+        incoming.clear();
+    }
+
+    /// Add the values from the scheduled list, and clears the schedule list. @sa set(int i, int j, double v).
+    void compress()
+    {
+        if( incoming.empty() ) return;
+        compress_incoming();
+        compressedMatrix += compressedIncoming;
     }
 
     /// must be called before inserting any element in the given row
     void beginRow( int i )
     {
-        eigenMatrix.startVec(i);
+        compressedMatrix.startVec(i);
     }
 
     /// This is efficient only if done in storing order: line, row
-    void set(int i, int j, double v)
+    void insertBack(int i, int j, double v)
     {
         if( v!=0.0 )
-            eigenMatrix.insertBack(i,j) = (Real)v;
+            compressedMatrix.insertBack(i,j) = (Real)v;
         //        cerr<<"EigenBaseSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
     }
 
-    void add(int /*i*/, int /*j*/, double /*v*/)
+    /** Schedule the replacement of the current value at row i and column j with value v. The replacement is effective only after method compress() is applied.
+      If this method is used several times before compress() is applied, only the last value is used. @sa compress()
+    */
+    void set(int /*i*/, int /*j*/, double /*v*/)
     {
-        cerr<<"EigenBaseSparseMatrix::add(int i, int j, double v) is not implemented !"<<endl;
+        cerr<<"EigenBaseSparseMatrix::set" << endl;
+        assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
     }
 
-    void endEdit()
-    {
-        eigenMatrix.finalize();
-    }
+//    /// Clears the matrix, sets the values from the scheduled list, and clears the replacement schedule list. @sa set(int i, int j, double v).
+//    virtual void compressReplace()
+//    {
+//        if( incoming.empty() ) return;
 
-    void clear(int i, int j)
-    {
-        eigenMatrix.coeffRef(i,j) = (Real)0;
-    }
+//        Matrix cpy = eigenMatrix;
+//        eigenMatrix.resize(eigenMatrix.rows(),eigenMatrix.cols());
+
+//        typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end();
+//        for(int i=0; i<cpy.rows(); i++)
+//        {
+//            eigenMatrix.startVec(i);
+//            while( r!=rend && (*r).first<i) r++; // find incoming values in the current row
+//            if( r!=rend && (*r).first==i )
+//            {
+//                // there are incoming values in the current row, so interleave
+//                typename Matrix::InnerIterator j(cpy,i);         // iterator on the previous matrix value
+//                typename RowMap::const_iterator jj = (*r).second.begin(); // iterator on the incoming line
+//                while( j && jj!=(*r).second.end() )
+//                {
+//                    if( j.col()<(*jj).first )   // value already present
+//                    {
+//                        eigenMatrix.insertBack(i,j.col())= j.value();
+//                        ++j;
+//                    }
+//                    else    // incoming entry is inserted, or replace the current one
+//                    {
+//                        eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
+//                        if(j.col()==(*jj).first) // replacement
+//                            ++j;
+//                        else
+//                            jj++;
+//                    }
+//                }
+//                // interleaving is over. One of the two lists may be not finished yet.
+//                for(;j;++j)
+//                    eigenMatrix.insertBack(i,j.col())= j.value();
+//                for(;jj!=(*r).second.end();jj++)
+//                    eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
+//            }
+//            else // no new values to insert, just copy the previous values
+//            {
+//                for(typename Matrix::InnerIterator j(cpy,i); j; ++j)
+//                    eigenMatrix.insertBack(i,j.col())= j.value();
+//            }
+//        }
+//        eigenMatrix.finalize();
+//        incoming.clear();
+//    }
+
+
+//    void endEdit(){
+////        compress();
+//        compressedMatrix.finalize();
+//    }
+
+//    void clear(int i, int j)
+//    {
+//        compressedMatrix.coeffRef(i,j) = (Real)0;
+//    }
 
     /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
     void clearRow(int i)
     {
-        for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+        compress();
+        for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
         {
             if(it.index()==i) // diagonal entry
                 it.valueRef()=(Real)1.0e-100;
@@ -164,8 +278,9 @@ public:
     /// Set all the entries of rows imin to imax-1 to 0.
     void clearRows(int imin, int imax)
     {
+        compress();
         for(int i=imin; i<imax; i++)
-            for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+            for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
             {
                 it.valueRef() = 0;
             }
@@ -174,8 +289,9 @@ public:
     ///< Set all the entries of a column to 0, except the diagonal set to an extremely small number.. Not efficient !
     void clearCol(int col)
     {
-        for(int i=0; i<eigenMatrix.rows(); i++ )
-            for (typename Matrix::InnerIterator it(eigenMatrix,i); it; ++it)
+        compress();
+        for(int i=0; i<compressedMatrix.rows(); i++ )
+            for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
             {
                 if( it.col()==col)
                 {
@@ -190,8 +306,9 @@ public:
     ///< Clears the all the entries of column imin to column imax-1. Not efficient !
     void clearCols(int imin, int imax)
     {
-        for(int i=0; i<eigenMatrix.rows(); i++ )
-            for (typename Matrix::InnerIterator it(eigenMatrix,i); it && it.col()<imax; ++it)
+        compress();
+        for(int i=0; i<compressedMatrix.rows(); i++ )
+            for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it && it.col()<imax; ++it)
             {
                 if( imin<=it.col() )
                     it.valueRef() = 0;
@@ -218,12 +335,14 @@ public:
     {
         resize(0,0);
         resize(rowSize(),colSize());
+        incoming.clear();
     }
 
     /// Matrix-vector product
     void mult( VectorEigen& result, const VectorEigen& data )
     {
-        result = eigenMatrix * data;
+        compress();
+        result = compressedMatrix * data;
     }
 
 
@@ -256,7 +375,8 @@ public:
     /// Try to compute the LDLT decomposition, and return true if success. The matrix is unchanged.
     bool ldltDecompose()
     {
-        sparseLDLT.compute(eigenMatrix);
+        compress();
+        sparseLDLT.compute(compressedMatrix);
         if( !sparseLDLT.succeeded() )
         {
             std::cerr<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
@@ -280,11 +400,12 @@ public:
     {
     public:
 
-        MatrixAccessor( ThisMatrix* m=0 ) { setMatrix(m); }
+        MatrixAccessor( ThisMatrix* m=0 ) {setMatrix(m); }
         virtual ~MatrixAccessor() {}
 
         void setMatrix( ThisMatrix* m )
         {
+            m->compress();
             matrix = m;
             matRef.matrix = m;
         }
@@ -316,6 +437,18 @@ public:
 
     /// Get a view of this matrix as a MultiMatrix
     MatrixAccessor getAccessor() { return MatrixAccessor(this); }
+
+
+//    /// Multiply the matrix by vector v and put the result in vector result
+//    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+//    {
+//        result->resize(this->rowSize());
+//        // map the vectors and perform the product on the maps
+//        Eigen::Map<VectorEigen> vm( &((*v)[0]), v->size() );
+//        Eigen::Map<VectorEigen> rm( &((*result)[0]), result->size() );
+//        rm = eigenMatrix * vm;
+//    }
+
 
 
 };
