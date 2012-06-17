@@ -199,9 +199,11 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
     declare(Compliant, applications/plugins/Compliant/Compliant_lib, sofaguiqt sofa_eigen2_solver   )
-    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, sofa_eigen2_solver Compliant Flexible sofa_component sofaobjectcreator sofaguimain )
+    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, sofa_eigen2_solver Compliant Flexible sofa_component sofaobjectcreator  )
+    declare(Compliant_run, applications/plugins/Compliant/Compliant_run, sofa_eigen2_solver Compliant Flexible sofa_component sofaobjectcreator sofaguimain )
     enable(Compliant)
     enable(Compliant_test)
+    enable(Compliant_run)
 }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
     declare(Flexible, applications/plugins/Flexible, sofaguiqt sofa_eigen2_solver   )
