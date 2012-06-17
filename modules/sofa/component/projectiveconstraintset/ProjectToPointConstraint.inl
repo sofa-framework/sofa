@@ -212,7 +212,7 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
             jacobian.set( blockSize*i+j, blockSize*i+j, 1);
         }
     }
-    jacobian.endEdit();
+    jacobian.compress();
 
 }
 

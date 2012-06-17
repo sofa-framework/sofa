@@ -43,11 +43,11 @@ void DiagonalCompliance<DataTypes>::reinit()
         for(unsigned int j = 0; j < m; ++j)
         {
             matC.beginRow(row);
-            matC.set(row, row, diagonal.getValue()[i][j]);
+            matC.insertBack(row, row, diagonal.getValue()[i][j]);
             ++row;
         }
     }
-    matC.endEdit();
+    matC.compress();
 }
 
 //template<class DataTypes>

@@ -101,13 +101,13 @@ void LogRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
             {
                 index_type col = d * Nin + j;
 
-                jacobian.set( row, col, chunk(i, j) );
+                jacobian.insertBack( row, col, chunk(i, j) );
 
             }
         }
     }
 
-    jacobian.endEdit();
+    jacobian.compress();
 }
 
 template <class TIn, class TOut>

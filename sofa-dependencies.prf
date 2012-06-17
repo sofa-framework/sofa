@@ -198,8 +198,8 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
 }
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
-    declare(Compliant, applications/plugins/Compliant, sofaguiqt sofa_eigen2_solver   )
-    declare(Compliant_test, applications/projects/Compliant_test, sofa_eigen2_solver Compliant Flexible sofa_component sofaobjectcreator sofaguimain )
+    declare(Compliant, applications/plugins/Compliant/Compliant_lib, sofaguiqt sofa_eigen2_solver   )
+    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, sofa_eigen2_solver Compliant Flexible sofa_component sofaobjectcreator sofaguimain )
     enable(Compliant)
     enable(Compliant_test)
 }
@@ -211,6 +211,13 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
 contains(DEFINES, SOFA_PROJECT_runUnitTests) {
 declare(runUnitTests, applications/projects/runUnitTests, sofa_eigen2_solver sofa_component )
 enable(runUnitTests)
+}
+
+contains(DEFINES, SOFA_HAVE_EmptyPlugin2) {
+declare(EmptyPlugin2, applications/projects/EmptyPlugin2/EmptyPlugin2Lib, sofaguiqt )
+enable(EmptyPlugin2)
+declare(EmptyPlugin2_test, applications/projects/EmptyPlugin2Test, sofaguiqt EmptyPlugin2 )
+enable(EmptyPlugin2_test)
 }
 
 
@@ -227,7 +234,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains(DEFINES, SOFA_EXTLIBS_METIS) {
 		enable(metis)
 	}
-	contains(DEFINES, SOFA_EXTLIBS_TAUCS) {
+    contains(DEFINES, SOFA_EXTLIBS_TAUCS) {
 		enable(taucs)
 	}
 	contains(DEFINES, SOFA_EXTLIBS_TAUCS_MT) {

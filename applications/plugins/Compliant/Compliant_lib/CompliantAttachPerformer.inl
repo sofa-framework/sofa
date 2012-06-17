@@ -36,8 +36,8 @@ using std::endl;
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 using sofa::component::topology::EdgeSetTopologyContainer;
-#include <plugins/Compliant/UniformCompliance.h>
-#include <plugins/Compliant/ComplianceSolver.h>
+#include "UniformCompliance.h"
+#include "ComplianceSolver.h"
 using sofa::component::odesolver::ComplianceSolver;
 #include <sofa/simulation/common/InitVisitor.h>
 

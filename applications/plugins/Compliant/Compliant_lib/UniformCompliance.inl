@@ -39,9 +39,9 @@ void UniformCompliance<DataTypes>::reinit()
     for(unsigned i=0; i<state->getMatrixSize(); i++)
     {
         matC.beginRow(i);
-        matC.set(i,i,c);
+        matC.insertBack(i,i,c);
     }
-    matC.endEdit();
+    matC.compress();
 }
 
 //template<class DataTypes>
@@ -113,12 +113,13 @@ void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, Data
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& _df,  const DataVecDeriv& _dx)
 {
+    Real kfactor = mparams->kFactor();
+
     if( isCompliance.getValue())
         return;
 
     helper::ReadAccessor< DataVecDeriv >  dx(_dx);
     helper::WriteAccessor< DataVecDeriv > df(_df);
-    Real kfactor = mparams->kFactor();
 
     Real stiffness = -kfactor/compliance.getValue();
 

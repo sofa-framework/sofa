@@ -153,7 +153,7 @@ public:
     /// @name Experimental assembly API
     /// @{
 
-    /// Returns pointers to Jacobian mmatrices associated with parent states, consistently with  getFrom().
+    /// Returns pointers to Jacobian matrices associated with parent states, consistently with  getFrom().
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
 
     /// Return pointers to the geometric stiffness matrices. This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.

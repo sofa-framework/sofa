@@ -130,11 +130,11 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
             {
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    jacobian.set( i*Nout+j, links[i][1]*Nin+k, gap[k] );
+                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    jacobian.set( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
+                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
             }
         }
@@ -144,17 +144,17 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
             {
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    jacobian.set( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
+                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    jacobian.set( i*Nout+j, links[i][1]*Nin+k, gap[k] );
+                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
             }
         }
     }
 
-    jacobian.endEdit();
+    jacobian.compress();
     //      cerr<<"ExtensionMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
 
 }

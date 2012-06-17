@@ -147,11 +147,11 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     {
         core::behavior::BaseMechanicalState* s = (*i).first;
 //        if(verbose.getValue()){
-//            cerr<<"ComplianceSolver::solve, state = " << s->getName() << endl;
+        cerr<<"ComplianceSolver::solve, matrix global assembly, state = " << s->getName() << endl;
 //            cerr<<"  M = " << s2mjc[s].M << endl;
 //            cerr<<"  K = " << s2mjc[s].K << endl;
-//            cerr<<"  J = " << s2mjc[s].J << endl;
-//            cerr<<"  c_offset = " << s2mjc[s].c_offset << endl;
+        cerr<<"  J = " << s2mjc[s].J << endl;
+        cerr<<"  c_offset = " << s2mjc[s].c_offset << "---------------------" << endl;
 //            cerr<<"  C = " << s2mjc[s].C << endl;
 //        }
         if( s2mjc[s].M.rows()>0 )
@@ -164,10 +164,10 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
             _matC += C0.transpose() * s2mjc[s].C * C0;
 //            cerr<<"  C0 = " << C0 << endl;
 //            cerr<<"  J = " << s2mjc[s].J << endl;
-//            cerr<<"  matJ before = " << _matJ << endl;
-//            cerr<<"  matJ += " << dJ << endl;
+            cerr<<"  matJ before = " << _matJ << endl;
+            cerr<<"  matJ += " << SMatrix(C0.transpose() * s2mjc[s].J) << endl;
             _matJ += SMatrix(C0.transpose() * s2mjc[s].J);        // J vertically shifted, aligned with the compliance matrix
-//            cerr<<"  matJ after = " << _matJ << endl;
+            cerr<<"  matJ after = " << _matJ << endl;
         }
     }
     _matK = P() * _matK * P();  /// Filter the matrix. @todo this is not enough to guarantee that the projected DOFs are isolated. M should be set diagonal.
@@ -269,8 +269,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             {
                 if(node->forceField[i]->getComplianceMatrix(mparams))
                 {
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, compliance " << node->forceField[i]->getName() << ", sizeC before = " << sizeC << endl;
                     s2mjc[node->mechanicalState].c_offset = sizeC;
                     sizeC += node->mechanicalState->getMatrixSize();
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, compliance " << node->forceField[i]->getName() << ", sizeC after = " << sizeC << endl;
                 }
                 else      // stiffness does not contribute to matrix size, since the stiffness matrix is added to the mass matrix of the state.
                 {
@@ -373,7 +375,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             sofa::helper::AdvancedTimer::stepEnd( "local M");
         }
 
-        // ==== compliance
+        // ==== compliance and stiffness
         for(unsigned i=0; i<node->forceField.size(); i++ )
         {
             BaseForceField* ffield = node->forceField[i];
@@ -382,7 +384,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             {
                 sofa::helper::AdvancedTimer::stepBegin( "local C and right-hand term");
                 //                cerr<<"MatrixAssemblyVisitor::processNodeTopDown, forcefield " << ffield->getName() << "has compliance" << endl;
-                SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset );
+//                SMatrix compOffset = createShiftMatrix( node->mechanicalState->getMatrixSize(), sizeC, c_offset );
 
                 // compute scaling of C, based on time step, damping and implicit coefficients
                 SReal alpha = cparams.implicitVelocity(); // implicit velocity factor in the integration scheme
@@ -524,7 +526,7 @@ bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
     return true;
 }
 
-void ComplianceSolver::inverseMatrix(SMatrix& Minv, const SMatrix& M)
+void ComplianceSolver::inverseMatrix(SMatrix& /*Minv*/, const SMatrix& /*M*/)
 {
     cerr<<"ComplianceSolver::inverseMatrix NOT IMPLEMENTED !!!!"<< endl;
 }

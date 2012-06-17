@@ -143,12 +143,12 @@ void DisplacementMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mpar
             for(uint j = 0; j < Nin; ++j)
             {
                 uint col = d * Nin + j;
-                jacobian.set(row, col, chunk(i, j));
+                jacobian.insertBack(row, col, chunk(i, j));
             }
         }
     }
 
-    jacobian.endEdit();
+    jacobian.compress();
 }
 
 template <class TIn, class TOut>

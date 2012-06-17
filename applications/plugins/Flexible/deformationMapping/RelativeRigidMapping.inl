@@ -121,13 +121,13 @@ void RelativeRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mpa
                 for(index_type j = 0; j < Nin; ++j)
                 {
                     index_type col = Nin * c->first + j;
-                    jacobian.set( row, col, c->second(i, j) );
+                    jacobian.insertBack( row, col, c->second(i, j) );
                 }
             }
         }
     }
 
-    jacobian.endEdit();
+    jacobian.compress();
 
 }
 
