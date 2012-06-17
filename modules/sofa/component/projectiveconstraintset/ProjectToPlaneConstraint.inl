@@ -224,7 +224,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
         }
         jacobian.endBlockRow();
     }
-    jacobian.endEdit();
+    jacobian.compress();
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 }

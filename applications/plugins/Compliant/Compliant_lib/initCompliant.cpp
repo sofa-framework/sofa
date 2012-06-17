@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initCompliant.h"
-#include <plugins/Compliant/CompliantAttachPerformer.h>
+#include "CompliantAttachPerformer.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 

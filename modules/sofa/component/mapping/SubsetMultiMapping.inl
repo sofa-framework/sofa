@@ -82,7 +82,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
     // finalize the jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
-        baseMatrices[i]->endEdit();
+        baseMatrices[i]->compress();
     }
 #endif
 }

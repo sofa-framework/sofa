@@ -80,10 +80,9 @@ public:
     virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
     /// Clears all the values in rows imin to imax-1 and columns imin to imax-1
     virtual void clearRowsCols(int imin, int imax) { clearRows(imin,imax); clearCols(imin,imax); }
-    /** Make the final data setup, such as compression. This must be called once after all the data is entered, and makes the matrix read-only.
-      For most concrete types, this method does nothing and the matrix remains editable, however.
+    /** Make the final data setup after adding entries. For most concrete types, this method does nothing.
       */
-    virtual void endEdit() {}
+    virtual void compress() {}
 
     /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
     /// @{

@@ -141,7 +141,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     {
         InDeriv gap = in[indices[i]] - targetPositions[i];
         Real gapNorm = gap.norm();
-//        cerr<<"DistanceMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
+        cerr<<"DistanceMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
         if( gapNorm>1.e-10 )
@@ -159,17 +159,17 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         {
             for(unsigned k=0; k<Nin; k++ )
             {
-                jacobian.set( i*Nout+j, indices[i]*Nin+k, gap[k] );
+                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
 
     }
-//    cerr<<"DistanceMapping<TIn, TOut>::apply, in = " << in << endl;
+    cerr<<"DistanceMapping<TIn, TOut>::apply, in = " << in << endl;
 //    cerr<<"DistanceMapping<TIn, TOut>::apply, target positions = " << positions << endl;
-//    cerr<<"DistanceMapping<TIn, TOut>::apply, out = " << out << endl;
+    cerr<<"DistanceMapping<TIn, TOut>::apply, out = " << out << endl;
 
-    jacobian.endEdit();
-    //      cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+    jacobian.compress();
+    cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
 
 }
 

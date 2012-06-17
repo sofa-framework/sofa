@@ -75,6 +75,7 @@ public:
         serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
     }
 
+
 };
 
 } // namespace behavior

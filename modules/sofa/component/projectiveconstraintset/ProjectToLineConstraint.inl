@@ -223,7 +223,7 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
         }
         jacobian.endBlockRow();   // only one block to create
     }
-    jacobian.endEdit();
+    jacobian.compress();
 //    cerr<<"ProjectToLineConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 }

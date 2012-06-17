@@ -221,7 +221,7 @@ public:
         }
     }
 
-    void compress()
+    virtual void compress()
     {
         if (compressed && btemp.empty()) return;
         if (!btemp.empty())
