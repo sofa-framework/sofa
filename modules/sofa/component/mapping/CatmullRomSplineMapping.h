@@ -119,17 +119,17 @@ using sofa::defaulttype::ExtVec3fTypes;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CatmullRomSplineMAPPING_CPP)

@@ -14,6 +14,9 @@ HEADERS += initMiscCollision.h \
            collision/TetrahedronDiscreteIntersection.h \
            collision/SpatialGridPointModel.h \
            collision/TetrahedronModel.h \
+           collision/BglCollisionGroupManager.h \
+           collision/BarycentricStickContact.h \
+           collision/BarycentricStickContact.inl \
 
 SOURCES += initMiscCollision.cpp \
 		   collision/FrictionContact_DistanceGrid.cpp \
@@ -28,7 +31,8 @@ SOURCES += initMiscCollision.cpp \
            collision/TetrahedronBarycentricPenalityContact.cpp \
            collision/TetrahedronRayContact.cpp \
            collision/TetrahedronFrictionContact.cpp \
-
+           collision/BglCollisionGroupManager.cpp \
+           collision/BarycentricStickContact.cpp \
 
 contains(DEFINES,SOFA_SMP){
 HEADERS += collision/ParallelCollisionPipeline.h

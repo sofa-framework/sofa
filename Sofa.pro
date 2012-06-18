@@ -17,42 +17,43 @@ usePlugin(PluginExample)
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            { usePlugin(Flexible) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant)           { usePlugin(Compliant) }
-contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)        { usePlugin(CompliantDev) }
 contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable) }
 contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmulation) }
 contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython) }
-contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)            { usePlugin(AsynchroHaptics) }
-contains(DEFINES, SOFA_HAVE_OPTITRACK)                  { usePlugin(OptiTrackNatNet) }
 
 !contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
+    contains(DEFINES, SOFA_HAVE_OPTITRACK)                  { usePlugin(OptiTrackNatNet) }
     contains(DEFINES, SOFA_HAVE_VRPN)                   { usePlugin(SofaVRPNClient) }
     contains(DEFINES, SOFA_HAVE_ARTRACK)                { usePlugin(ARTrack) }
     contains(DEFINES, SOFA_HAVE_XITACT)                 { usePlugin(Xitact) }
     contains(DEFINES, SOFA_HAVE_HAPTION)                { usePlugin(Haption) }
     contains(DEFINES, SOFA_HAVE_QTOGREVIEWER)           { usePlugin(QtOgreViewer) }
+    contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES)     { usePlugin(ManifoldTopologies) }
+    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame) }
+    contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader) }
+    contains(DEFINES, SOFA_HAVE_VOXELIZER)              { usePlugin(Voxelizer) }
+    contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin) }
+    contains(DEFINES, SOFA_HAVE_IMAGE)                  { usePlugin(image) }
+    contains(DEFINES, SOFA_HAVE_PERSISTENTCONTACT)      { usePlugin(PersistentContact) }
 } # END !SOFA_RELEASE
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+    contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)        { usePlugin(AsynchroHaptics) }
+    contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)    { usePlugin(CompliantDev) }
     contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain) }
     contains(DEFINES, SOFA_HAVE_ldidetection)           { usePlugin(ldidetection) }
     contains(DEFINES, SOFA_HAVE_LEM)                    { usePlugin(lem) }
     contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER)  { usePlugin(TriangularMeshRefiner) }
     contains(DEFINES, SOFA_HAVE_BEAMADAPTER)            { usePlugin(BeamAdapter) }
     contains(DEFINES, SOFA_HAVE_SHELL)                  { usePlugin(shells) }
-    contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin) }
-    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame) }
     contains(DEFINES, SOFA_HAVE_optixdetection)         { usePlugin(optixdetection) }
-    contains(DEFINES, SOFA_HAVE_IMAGE)                  { usePlugin(image) }
     contains(DEFINES, SOFA_HAVE_REGISTRATION)           { usePlugin(Registration) }
     contains(DEFINES, SOFA_HAVE_OPENCV)                 { usePlugin(OpenCVPlugin) }
     contains(DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING)  { usePlugin(PhysicalFieldModeling) }
     contains(DEFINES, SOFA_HAVE_EmptyPlugin2)           { usePlugin(EmptyPlugin2) }
     contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
         contains(DEFINES, SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER) { usePlugin(TriangularMeshBasedHexasCutter) }
-        contains(DEFINES, SOFA_HAVE_VOXELIZER)                      { usePlugin(Voxelizer) }
 	} # END SOFA_GPU_CUDA
-    contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader) }
-    contains(DEFINES, SOFA_HAVE_PERSISTENTCONTACT)      { usePlugin(PersistentContact) }
     contains(DEFINES, SOFA_HAVE_ASCLEPIOS)              { usePlugin(sofa-asclepios) }
     contains(DEFINES, SOFA_HAVE_ELECTROPHYSIOLOGY)      { usePlugin(Electrophysiology) }
     contains(DEFINES, SOFA_HAVE_PLUGIN_FEM)             { usePlugin(FEM) }
@@ -61,7 +62,6 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(StableFluidBehaviorPlugin)
 		usePlugin(StableFluidModelPlugin)
 	}
-    contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) { usePlugin(ManifoldTopologies) }
 } # END SOFA_DEV
 
 

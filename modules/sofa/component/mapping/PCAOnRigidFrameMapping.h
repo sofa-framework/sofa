@@ -297,12 +297,12 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
-//extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
+//extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, Vec3fTypes >;
-//extern template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, Vec3fTypes >;
+//extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, ExtVec3fTypes >;
 #endif
 #endif
 
