@@ -20,6 +20,7 @@ HEADERS += initUserInteraction.h \
            collision/InteractionPerformer.h \
            collision/SuturePointPerformer.h \
            collision/SuturePointPerformer.inl \
+           collision/GraspingManager.h \
            controller/ArticulatedHierarchyController.h \
            controller/ArticulatedHierarchyBVHController.h \
            controller/Controller.h \
@@ -51,6 +52,7 @@ SOURCES += initUserInteraction.cpp \
            collision/FixParticlePerformer.cpp \
            collision/InteractionPerformer.cpp \
            collision/SuturePointPerformer.cpp \
+           collision/GraspingManager.cpp \
            controller/ArticulatedHierarchyController.cpp \
            controller/ArticulatedHierarchyBVHController.cpp \
            controller/Controller.cpp \
@@ -73,8 +75,3 @@ DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 #exists(component-local.cfg): include(component-local.cfg)
 
 load(sofa/post)
- 
-
-
-
-

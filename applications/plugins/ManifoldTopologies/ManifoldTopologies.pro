@@ -19,9 +19,7 @@ HEADERS = ManifoldEdgeSetGeometryAlgorithms.h \
           ManifoldTriangleSetTopologyAlgorithms.inl \
           ManifoldTetrahedronSetTopologyContainer.h \
           ManifoldTopologyObject_double.h \
-          ManifoldTopologyObject_float.h \
-          FluidSolidInteractionForceField.h \
-          FluidSolidInteractionForceField.inl
+          ManifoldTopologyObject_float.h
 
 SOURCES = initManifoldTopologies.cpp \
           ManifoldEdgeSetGeometryAlgorithms.cpp \
@@ -31,9 +29,7 @@ SOURCES = initManifoldTopologies.cpp \
           ManifoldTriangleSetTopologyContainer.cpp \
           ManifoldTriangleSetTopologyModifier.cpp \
           ManifoldTriangleSetTopologyAlgorithms.cpp \
-          ManifoldTetrahedronSetTopologyContainer.cpp \
-          FluidSolidInteractionForceField.cpp
-
+          ManifoldTetrahedronSetTopologyContainer.cpp
 
 README_FILE = ManifoldTopologies.txt
 

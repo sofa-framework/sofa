@@ -54,6 +54,7 @@ SOFA_LINK_CLASS(Ray)
 SOFA_LINK_CLASS(RayDiscreteIntersection)
 SOFA_LINK_CLASS(RayNewProximityIntersection)
 SOFA_LINK_CLASS(NodeToggleController)
+SOFA_LINK_CLASS(GraspingManager)
 
 
 } // namespace component

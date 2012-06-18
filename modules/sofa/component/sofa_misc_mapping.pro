@@ -33,7 +33,13 @@ HEADERS += initMiscMapping.h \
            mapping/TubularMapping.inl \
            mapping/VoidMapping.h \
            mapping/BarycentricMappingRigid.h \
-           mapping/BarycentricMappingRigid.inl
+           mapping/BarycentricMappingRigid.inl \
+           mapping/DeformableOnRigidFrameMapping.h \
+           mapping/DeformableOnRigidFrameMapping.inl \
+           mapping/PCAOnRigidFrameMapping.h \
+           mapping/PCAOnRigidFrameMapping.inl \
+           mapping/CatmullRomSplineMapping.h \
+           mapping/CatmullRomSplineMapping.inl
 
 SOURCES += initMiscMapping.cpp \
            mapping/BeamLinearMapping.cpp \
@@ -46,7 +52,10 @@ SOURCES += initMiscMapping.cpp \
            mapping/SubsetMultiMapping.cpp \
            mapping/TubularMapping.cpp \
            mapping/VoidMapping.cpp \
-           mapping/BarycentricMappingRigid.cpp
+           mapping/BarycentricMappingRigid.cpp \
+           mapping/DeformableOnRigidFrameMapping.cpp \
+           mapping/PCAOnRigidFrameMapping.cpp \
+           mapping/CatmullRomSplineMapping.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

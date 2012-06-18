@@ -261,10 +261,10 @@ using sofa::defaulttype::ExtVec3fTypes;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
 #endif
 #endif
 

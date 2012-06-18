@@ -18,6 +18,8 @@ DEPENDPATH += $$ROOT_SRC_DIR/framework
 HEADERS += helper.h \
     ArgumentParser.h \
     BackTrace.h \
+    DualQuat.inl \
+    DualQuat.h \
     fixed_array.h \
     Factory.h \
     Factory.inl \
@@ -106,6 +108,7 @@ HEADERS += helper.h \
 
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
+    DualQuat.cpp \
     Factory.cpp \
     gl/Axis.cpp \
     gl/Capture.cpp \
@@ -159,14 +162,6 @@ contains(DEFINES,SOFA_HAVE_GLEW) {
         gl/GLSLShader.h
     SOURCES += gl/FrameBufferObject.cpp \
         gl/GLSLShader.cpp
-}
-contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
-    HEADERS += \
-    	DualQuat.inl \
-        DualQuat.h 
-
-    SOURCES += \
-    	DualQuat.cpp 
 }
 
 contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
