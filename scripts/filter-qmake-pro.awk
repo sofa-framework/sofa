@@ -74,6 +74,14 @@ blk_filtered>0 && /^[ \t#]*usePlugin/ {
   next;
 }
 
+blk_filtered>0 && /^[ \t#]*contains\(DEFINES,[^)]*\)[ \t#]*{[ \t#]*usePlugin/ {
+  name=$0;
+  gsub(/.*\(/,"",name); gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/\).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
+  #print "#DEV PLUGIN <<<",name,">>>";
+  print plugins "/" name > "/dev/stderr";
+  next;
+}
+
 blk_filtered>0 {
     #print "# " $0
     # look for a filename
