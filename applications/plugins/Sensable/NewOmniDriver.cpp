@@ -29,6 +29,9 @@
 //#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
@@ -417,6 +420,9 @@ NewOmniDriver::NewOmniDriver()
     , openSpeedTool(initData(&openSpeedTool,0.1,"openSpeedTool","openSpeedTool value"))
     , closeSpeedTool(initData(&closeSpeedTool,0.1,"closeSpeedTool","closeSpeedTool value"))
     , useScheduler(initData(&useScheduler,false,"useScheduler","Enable use of OpenHaptics Scheduler methods to synchronize haptics thread"))
+    , setRestShape(initData(&setRestShape, false, "setRestShape", "True to control the rest position instead of the current position directly"))
+    , applyMappings(initData(&applyMappings, true, "applyMappings", "True to enable applying the mappings after setting the position"))
+
 {
     this->f_listening.setValue(true);
     data.forceFeedback = NULL;
@@ -979,12 +985,23 @@ void NewOmniDriver::onAnimateBeginEvent()
 
         if(DOFs!=NULL)
         {
-            VecCoord& posS =*(DOFs->x0.beginEdit());
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::position());
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+            unsigned int index = deviceIndex.getValue();
 
-            posS[deviceIndex.getValue()].getCenter()=world_H_virtualTool.getOrigin();
-            posS[deviceIndex.getValue()].getOrientation()=world_H_virtualTool.getOrientation();
-
-            DOFs->x0.endEdit();
+            x    [index].getCenter()=world_H_virtualTool.getOrigin();
+            xfree[index].getCenter()=world_H_virtualTool.getOrigin();
+            x    [index].getOrientation()=world_H_virtualTool.getOrientation();
+            xfree[index].getOrientation()=world_H_virtualTool.getOrientation();
+        }
+        if (applyMappings.getValue())
+        {
+            sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+            if (node)
+            {
+                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+            }
         }
         //button state
         Vec1d& openT = (*openTool.beginEdit());
