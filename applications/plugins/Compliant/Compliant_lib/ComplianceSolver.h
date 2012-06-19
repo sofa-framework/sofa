@@ -59,8 +59,10 @@ where \f$ P \f$ is the projection matrix corresponding to the projective constra
 */
 class SOFA_Compliant_API ComplianceSolver  : public sofa::core::behavior::OdeSolver
 {
+
 public:
     SOFA_CLASS(ComplianceSolver, sofa::core::behavior::OdeSolver);
+    virtual void init();
 
 
     /** Set up the matrices and vectors of the equation system, call solveEquation() to solve the system, then applies the results
@@ -73,6 +75,7 @@ protected:
     ComplianceSolver();
     virtual ~ComplianceSolver() {}
 
+public:
     typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
     typedef linearsolver::EigenVector<SReal>            VectorSofa;
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>     VectorEigen;
@@ -95,24 +98,32 @@ private:
     bool _PMinvP_isDirty;  ///< true if _PMinvP_Matrix is not up to date
     VectorSofa _vecV;      ///< velocties, used in the computation of the right-hand term of the implicit equation
 
-protected:
+public:
     // Equation system: input data
     const SMatrix& M() const { return _matM; }
     const SMatrix& P() const { return _projMatrix.compressedMatrix; }
     const SMatrix& J() const { return _matJ; }
     const SMatrix& C() const { return _matC; }
     const VectorSofa& vecF() const { return _vecF; }
-    const VectorEigen& f()               { return _vecF.getVectorEigen(); }
     const VectorEigen& f() const { return _vecF.getVectorEigen(); }
     const VectorSofa& vecPhi() const { return _vecPhi; }
     const VectorEigen& phi() const { return _vecPhi.getVectorEigen(); }
     const SMatrix& PMinvP();
+    // Equation system: output data
+    const VectorSofa& vecDv() const { return _vecDv; }
+    const VectorEigen& dv() const { return _vecDv.getVectorEigen(); }
+    const VectorSofa& vecLambda() const { return _vecLambda; }
+    const VectorEigen& lambda() const { return _vecLambda.getVectorEigen(); }
+
+public:  //  Strangely enough, we have to set this public for the test suite, because g++ does not use the const version in the public section. ????. A better solution would be to make the test fixture a friend of this class, but I have not been able to make it work.
+    VectorEigen& f()               { return _vecF.getVectorEigen(); }
     // Equation system: output data
     VectorSofa& vecDv() { return _vecDv; }
     VectorEigen& dv() { return _vecDv.getVectorEigen(); }
     VectorSofa& vecLambda() { return _vecLambda; }
     VectorEigen& lambda() { return _vecLambda.getVectorEigen(); }
 
+protected:
     /** Solve the equation system:
 
     \f$
@@ -258,6 +269,7 @@ protected:
         }
     }
     ///@}  // end group matrix-vector product
+
 
 
 };

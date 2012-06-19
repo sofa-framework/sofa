@@ -3,6 +3,7 @@
 
 
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -52,7 +53,7 @@ rights</a><br>
 
 This plugin introduces a constraint-based approach and a matrix assembly method. Details are given in  in <a href="compliant.pdf">compliant.pdf</a>. The remainder of this section briefly explains the constraint-based approach and the integration scheme. See also the <a href="code/html/index.html">code
 documentation</a>, which <a href="index.html#Code_documentation_">you can
-generate</a> using doxygen.<br>
+generate</a> using doxygen. There is also an embryo of test suite documented in the code documentation.<br>
 <br>
 Hard constraints
 are solved using a classical Delassus operator \( J M^{-1} J^T \),
@@ -277,7 +278,11 @@ The system is singular due to matrix $\P $, however we can use $ \P
 
 <ul>
 
-  <li>the C++ code is in the root directory</li>
+  <li>the C++ code of the library is in directory <span style="font-weight: bold;">Compliant_lib/</span></li>
+  <li>the tests suite is in  directory <span style="font-weight: bold;">Compliant_test/</span></li>
+  <li>a standalone application to create and run a simulation is in directory <span style="font-weight: bold;">Compliant_run/</span>. This is useful to test cases based on MultiMappings, since these are not completely supported yet by the <span style="font-style: italic;">.scn</span> file format.<br>
+  </li>
+
   <li>the documentation starts in <span style="text-decoration: underline;">doc/index.html</span> and it is
 linked to the <a href="code/html/index.html">code documentation</a><br>
   </li>

@@ -18,18 +18,12 @@ macx {
 }
 
 unix {
-   LIBS += -ldl
+#   LIBS += -ldl
+LIBS *= -lboost_unit_test_framework
+
 }
 
 SOURCES = Compliant_test.cpp
 
-#    MatrixTest.cpp
-#HEADERS = \
-#    MatrixTest.h \
-#    MatrixTest.inl \
-#    EigenBaseSparseMatrixNew.h \
-#    EigenSparseMatrixNew.h \
-
-#unix: QMAKE_LIBDIR += $$SOFA_GPU_CUDA_DIR
 
 load(sofa/post)
