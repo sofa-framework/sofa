@@ -58,7 +58,6 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 
 using namespace sofa;
 
-//#ifdef SOFA_NEW_CGAL_MESH
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
 using namespace CGAL::parameters;
 #endif

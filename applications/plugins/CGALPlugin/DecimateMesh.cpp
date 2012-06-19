@@ -30,7 +30,7 @@
  */
 #define CGALPLUGIN_DECIMETEMESH_CPP
 
-#include <cgal_config.h>
+#include <initCGALPlugin.h>
 #include "DecimateMesh.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
