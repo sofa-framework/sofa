@@ -182,6 +182,8 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         for (int u=0; u<4; u++)
             autreOmniDriver[i]->data.servoDeviceData.quat[u] = rot[u];
 
+        //std::cout << pos << "    " << rot << std::endl;
+
         SolidTypes<double>::Transform baseOmni_H_endOmni(pos* autreOmniDriver[i]->data.scale, rot);
         SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
 
@@ -311,6 +313,7 @@ HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * /*pUserData*/)
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(pUserData);
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
+        //std::cout << "COPY " << (int)autreOmniDriver[i]->data.deviceData.ready << " " << (int)autreOmniDriver[i]->data.servoDeviceData.ready << std::endl;
         memcpy(&autreOmniDriver[i]->data.deviceData, &autreOmniDriver[i]->data.servoDeviceData, sizeof(DeviceData));
         autreOmniDriver[i]->data.servoDeviceData.nupdates = 0;
         autreOmniDriver[i]->data.servoDeviceData.ready = true;
@@ -413,12 +416,14 @@ NewOmniDriver::NewOmniDriver()
     , minTool(initData(&minTool,0.0,"minTool","minTool value"))
     , openSpeedTool(initData(&openSpeedTool,0.1,"openSpeedTool","openSpeedTool value"))
     , closeSpeedTool(initData(&closeSpeedTool,0.1,"closeSpeedTool","closeSpeedTool value"))
+    , useScheduler(initData(&useScheduler,false,"useScheduler","Enable use of OpenHaptics Scheduler methods to synchronize haptics thread"))
 {
     this->f_listening.setValue(true);
     data.forceFeedback = NULL;
     noDevice = false;
     firstInit=true;
     firstDevice = true;
+    addAlias(&omniVisu,"drawDevice");
 }
 
 //destructeur
@@ -455,10 +460,10 @@ void NewOmniDriver::init()
     {
         simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext()->getRootContext());
         context->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
-        cout<<"OmniDriver detectes:"<<endl;
+        sout<<"Detected NewOmniDriver:"<<sendl;
         for(unsigned int i=0; i<autreOmniDriver.size(); i++)
         {
-            cout<<"newOmniDriver component "<<i<<" = "<<autreOmniDriver[i]->getName()<<autreOmniDriver[i]->deviceName.getValue()<<endl;
+            sout<<"  device "<<i<<" = "<<autreOmniDriver[i]->getName()<<autreOmniDriver[i]->deviceName.getValue()<<sendl;
             autreOmniDriver[i]->deviceIndex.setValue(i);
             hHDVector.push_back(HD_INVALID_HANDLE);
             autreOmniDriver[i]->firstDevice=false;
@@ -469,7 +474,7 @@ void NewOmniDriver::init()
         firstDevice=true;
     }
 
-    std::cout << deviceName.getValue()+" [NewOmni] init" << endl;
+    sout << deviceName.getValue()+" init" << sendl;
 
 
     modX=false;
@@ -504,7 +509,6 @@ void NewOmniDriver::init()
         parentRoot = parentRoot->parent();
 
     nodePrincipal= parentRoot->createChild("omniVisu "+deviceName.getValue());
-    parentRoot->addChild(nodePrincipal);
     nodePrincipal->updateContext();
 
     DOFs=NULL;
@@ -535,8 +539,6 @@ void NewOmniDriver::init()
         for(int i=0; i<NVISUALNODE; i++)
         {
             visualNode[i].node = nodePrincipal->createChild(visualNodeNames[i]);
-            //if(i>=VN_X)
-            nodePrincipal->addChild(visualNode[i].node);
 
             if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
             {
@@ -604,7 +606,7 @@ void NewOmniDriver::init()
 //recupere dans la scene l'effort a donner a l'interface
 void NewOmniDriver::bwdInit()
 {
-    std::cout<<"NewOmniDriver::bwdInit() is called"<<std::endl;
+    sout<<"NewOmniDriver::bwdInit()"<<sendl;
 
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject< LCPForceFeedback<Rigid3dTypes> >();
@@ -616,7 +618,7 @@ void NewOmniDriver::bwdInit()
     if(firstDevice && initDevice()==-1)
     {
         noDevice=true;
-        std::cout<<"WARNING NO DEVICE"<<std::endl;
+        serr<<"NO DEVICE"<<sendl;
     }
 
     if(firstDevice)
@@ -625,13 +627,12 @@ void NewOmniDriver::bwdInit()
 
         if (DOFs==NULL)
         {
-            std::cout<<" no Meca Object found"<<std::endl;
+            serr<<" no MechanicalObject found"<<sendl;
         }
         else
         {
-            VecCoord& posT = *(DOFs->x0.beginEdit());
-            posT.resize(autreOmniDriver.size());
-            DOFs->x0.endEdit();
+            if (DOFs->getSize() < autreOmniDriver.size())
+                DOFs->resize(autreOmniDriver.size());
             for(unsigned int i=1; i<autreOmniDriver.size(); i++)
                 autreOmniDriver[i]->DOFs=DOFs;
         }
@@ -867,15 +868,19 @@ void NewOmniDriver::onAnimateBeginEvent()
     // copy data->servoDeviceData to gDeviceData
     if(firstDevice)
     {
-        //hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
-        doUpdate.inc(); // set to 1
-        while(doUpdate)
+        if (useScheduler.getValue())
+            hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
+        else
         {
+            doUpdate.inc(); // set to 1
+            while(doUpdate)
+            {
 #ifdef SOFA_HAVE_BOOST
-            boost::thread::yield();
+                boost::thread::yield();
 #else
-            sofa::helper::system::thread::CTime::sleep(0);
+                sofa::helper::system::thread::CTime::sleep(0);
 #endif
+            }
         }
     }
     if (data.deviceData.ready)
