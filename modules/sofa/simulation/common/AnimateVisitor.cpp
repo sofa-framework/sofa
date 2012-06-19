@@ -29,6 +29,8 @@
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/common/IntegrateBeginEvent.h>
+#include <sofa/simulation/common/IntegrateEndEvent.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -156,7 +158,13 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         double nextTime = node->getTime() + dt;
 
 
-        MechanicalBeginIntegrationVisitor beginVisitor(params /* PARAMS FIRST */, dt);
+        {
+            IntegrateBeginEvent evBegin;
+            PropagateEventVisitor eventPropagation( this->params /* PARAMS FIRST */, &evBegin);
+            eventPropagation.execute(node);
+        }
+
+        MechanicalBeginIntegrationVisitor beginVisitor(this->params /* PARAMS FIRST */, dt);
         node->execute(&beginVisitor);
 
         sofa::core::MechanicalParams m_mparams(*this->params);
@@ -185,8 +193,15 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 #endif
                 true).execute( node );
 
-        MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
+        MechanicalEndIntegrationVisitor endVisitor(this->params /* PARAMS FIRST */, dt);
         node->execute(&endVisitor);
+
+        {
+            IntegrateEndEvent evBegin;
+            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evBegin);
+            eventPropagation.execute(node);
+        }
+
         return RESULT_PRUNE;
     }
     /*

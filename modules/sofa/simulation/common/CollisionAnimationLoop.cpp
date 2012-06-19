@@ -29,6 +29,8 @@
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/common/IntegrateBeginEvent.h>
+#include <sofa/simulation/common/IntegrateEndEvent.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -74,9 +76,22 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 
 void CollisionAnimationLoop::integrate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
+
+    {
+        IntegrateBeginEvent evBegin;
+        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        eventPropagation.execute(getContext());
+    }
+
     MechanicalIntegrationVisitor act( params /* PARAMS FIRST */, dt );
     act.setTags(this->getTags());
     act.execute( getContext() );
+
+    {
+        IntegrateEndEvent evBegin;
+        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        eventPropagation.execute(getContext());
+    }
 }
 
 const CollisionAnimationLoop::Solvers& CollisionAnimationLoop::getSolverSequence()
