@@ -121,7 +121,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
 
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(userData);
-    //OmniData* data = static_cast<OmniData*>(userData);
+    //NewOmniData* data = static_cast<NewOmniData*>(userData);
     //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
 
     RigidTypes::VecCoord positionDevs;
@@ -309,15 +309,15 @@ void exitHandler()
 //TODO: ou plutot remplir le PosD ici et gicler data->deviceData qui servirait plus a rien
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * /*pUserData*/)
 {
-    //OmniData *data = static_cast<OmniData*>(pUserData);
-    //memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
+    //NewOmniData *data = static_cast<OmniData*>(pUserData);
+    //memcpy(&data->deviceData, &data->servoDeviceData, sizeof(NewDeviceData));
     //data->servoDeviceData.nupdates = 0;
     //data->servoDeviceData.ready = true;
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(pUserData);
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
         //std::cout << "COPY " << (int)autreOmniDriver[i]->data.deviceData.ready << " " << (int)autreOmniDriver[i]->data.servoDeviceData.ready << std::endl;
-        memcpy(&autreOmniDriver[i]->data.deviceData, &autreOmniDriver[i]->data.servoDeviceData, sizeof(DeviceData));
+        memcpy(&autreOmniDriver[i]->data.deviceData, &autreOmniDriver[i]->data.servoDeviceData, sizeof(NewDeviceData));
         autreOmniDriver[i]->data.servoDeviceData.nupdates = 0;
         autreOmniDriver[i]->data.servoDeviceData.ready = true;
     }

@@ -300,7 +300,6 @@ int OmniDriver::initDevice(OmniData& data)
     data.servoDeviceData.quat[3] = 1;
 
     HDErrorInfo error;
-
     // Initialize the device, must be done before attempting to call any hd functions.
     if (hHD == HD_INVALID_HANDLE)
     {
@@ -384,7 +383,7 @@ void OmniDriver::init()
     using core::behavior::MechanicalState;
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
-    else std::cout << "[Omni] init" << endl;
+    else sout << "[Omni] init" << sendl;
 
     if(mState->getSize()<toolCount.getValue())
         mState->resize(toolCount.getValue());
@@ -392,7 +391,7 @@ void OmniDriver::init()
 
 void OmniDriver::bwdInit()
 {
-    std::cout<<"OmniDriver::bwdInit() is called"<<std::endl;
+    sout<<"OmniDriver::bwdInit()"<<sendl;
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
     // depending on toolCount, search either the first force feedback, or the feedback with indice "0"
@@ -400,15 +399,13 @@ void OmniDriver::bwdInit()
 
     vector<ForceFeedback*> ffs;
     groot->getTreeObjects<ForceFeedback>(&ffs);
-    std::cout << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found"<<std::endl;
+    sout << ffs.size()<<" ForceFeedback objects found"<<sendl;
     setForceFeedbacks(ffs);
-
     setDataValue();
-
     if(initDevice(data)==-1)
     {
         noDevice=true;
-        std::cout<<"WARNING NO DEVICE"<<std::endl;
+        serr<<"NO DEVICE"<<sendl;
     }
 }
 
@@ -429,7 +426,7 @@ void OmniDriver::setDataValue()
 
 void OmniDriver::reset()
 {
-    std::cout<<"OmniDriver::reset() is called" <<std::endl;
+    sout<<"OmniDriver::reset()" <<sendl;
     this->reinit();
 }
 
@@ -586,7 +583,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
 
         }
-        else std::cout<<"data not ready"<<std::endl;
+        else sout<<"data not ready"<<sendl;
 
 
     }
@@ -597,7 +594,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         if (kpe->getKey()=='Z' ||kpe->getKey()=='z' )
         {
             moveOmniBase = !moveOmniBase;
-            std::cout<<"key z detected "<<std::endl;
+            sout<<"key z detected "<<sendl;
             omniVisu.setValue(moveOmniBase);
 
             if(moveOmniBase)
@@ -636,7 +633,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         // emulated haptic buttons B=btn1, N=btn2
         if (kpe->getKey()=='H' || kpe->getKey()=='h')
         {
-            std::cout << "emulated button 1 pressed" << std::endl;
+            sout << "emulated button 1 pressed" << sendl;
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
@@ -646,7 +643,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         }
         if (kpe->getKey()=='J' || kpe->getKey()=='j')
         {
-            std::cout << "emulated button 2 pressed" << std::endl;
+            sout << "emulated button 2 pressed" << sendl;
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
@@ -664,7 +661,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
         if (kre->getKey()=='H' || kre->getKey()=='h'
             || kre->getKey()=='J' || kre->getKey()=='j')
         {
-            std::cout << "emulated button released" << std::endl;
+            sout << "emulated button released" << sendl;
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);

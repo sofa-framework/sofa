@@ -77,7 +77,7 @@ using namespace sofa::defaulttype;
 using core::objectmodel::Data;
 
 /** Holds data retrieved from HDAPI. */
-typedef struct
+struct NewDeviceData
 {
     HHD id;
     int nupdates;
@@ -88,9 +88,9 @@ typedef struct
     Quat quat;
     bool ready;
     bool stop;
-} DeviceData;
+};
 
-typedef struct
+struct NewOmniData
 {
     LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
     simulation::Node::SPtr *context;
@@ -103,17 +103,17 @@ typedef struct
     bool permanent_feedback;
 
     // API OMNI //
-    DeviceData servoDeviceData;  // for the haptic loop
-    DeviceData deviceData;		 // for the simulation loop
+    NewDeviceData servoDeviceData;  // for the haptic loop
+    NewDeviceData deviceData;		 // for the simulation loop
 
     double currentForce[3];
 
-} OmniData;
+};
 
-typedef struct
+struct AllNewOmniData
 {
-    vector<OmniData> omniData;
-} allOmniData;
+    vector<NewOmniData> omniData;
+} ;
 
 /**
 * Omni driver
@@ -164,8 +164,8 @@ public:
 
     bool initVisu;
 
-    OmniData data;
-    allOmniData allData;
+    NewOmniData data;
+    AllNewOmniData allData;
 
     NewOmniDriver();
     virtual ~NewOmniDriver();
