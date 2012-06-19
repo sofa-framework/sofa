@@ -376,7 +376,7 @@ public:
         }
         // order 2
         for(unsigned int k=0; k<spatial_dimensions; k++)
-            for(unsigned int j=0; j<spatial_dimensions; j++)
+            for(unsigned int j=k; j<spatial_dimensions; j++)
             {
                 eB.template block(offsetE,(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
                 if(j!=k) eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];

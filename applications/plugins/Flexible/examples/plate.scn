@@ -31,20 +31,20 @@
 
     <Node 	name="behavior"   >
 
-	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="true" targetNumber="100"/>
+	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="true" printLog="true" targetNumber="20"/>
 	    
 	<!--<ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 10"/>  -->
 <!--	<ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 10"/>       -->
  
 
-	<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;NewAffine,F331&gt;" assembleJ="false"/>
+	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+    	<LinearMapping template="Mapping&lt;NewAffine,F332&gt;" assembleJ="false"/>
 
 
 	<Node 	name="E"   >
-	    <MechanicalObject  template="E331" name="E"  />
-	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"/>
-	    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="100"/>
+	    <MechanicalObject  template="E332" name="E"  />
+	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false"/>
+	    <HookeForceField  template="E332" name="ff" youngModulus="1000" poissonRatio="0" viscosity="100"/>
 	</Node>
 
     </Node>

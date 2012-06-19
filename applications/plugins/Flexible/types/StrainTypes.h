@@ -115,6 +115,9 @@ public:
         StrainVec& getStrainHessian(int i,int j) { return v.getHessian()(i,j); }
         const StrainVec& getStrainHessian(int i,int j) const { return v.getHessian()(i,j); }
 
+        StrainVec& getStrainHessian(int i) { return v.getHessian().elems[i]; }
+        const StrainVec& getStrainHessian(int i) const { return v.getHessian().elems[i]; }
+
 
         Deriv operator +(const Deriv& a) const { return Deriv(getVec()+a.getVec()); }
         void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
