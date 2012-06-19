@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\newenvironment{componentoption}[1]%
+{\textbf{#1}\newline}
+{\newline}
+
+\newcommand{\aliases}[1] {\newline \textit{Aliases - } #1}
+\newcommand{\defaultvalue}[1] {\newline \textit{Default Value - } #1}
+\newcommand{\valuetype}[1] {\newline \textit{Value Type - } \textbf{#1}}
+
+\begin{document}
+\raggedright
+
+\title{SofaHAPI}
+\author{SOFA}
+
+\maketitle
+
+\begin{abstract}
+Replace this with your plugin documentation. You may want to use the following structure.
+
+The source is split in two so that this plugin documentation can be a stand-alone document as well as included in a more general documentation.
+\end{abstract}
+
+\include{SofaHAPI_body}
+
+
+
+\end{document}
