@@ -277,7 +277,7 @@ void SofaHAPIHapticsDevice::draw(const sofa::core::visual::VisualParams* vparams
             Transform baseDevice_H_endDeviceF((pos+force)*data.scale, quat);
             Transform world_H_virtualToolF = data.world_H_baseDevice * baseDevice_H_endDevice * data.endDevice_H_virtualTool;
             Vec3d wposF = world_H_virtualToolF.getOrigin();
-            vparams->drawTool()->drawArrow(wpos, wposF, 0.1, sofa::defaulttype::Vec<4,float>(1,0,0,1));
+            vparams->drawTool()->drawArrow(wpos, wposF, 0.1f, sofa::defaulttype::Vec<4,float>(1,0,0,1));
         }
 
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
