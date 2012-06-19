@@ -1,0 +1,19 @@
+
+************************************
+*           SofaHAPI.txt           *
+************************************
+
+
+
+AUTHOR :
+ - Jeremie Allard
+
+
+
+
+LICENCE :
+ - GPL
+
+
+
+OTHER COMMENTS :

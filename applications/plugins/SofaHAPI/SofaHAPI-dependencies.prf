@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+	declare(SofaHAPI, applications/plugins/SofaHAPI, sofa_component_general sofa_haptics)
+	
+	enable(SofaHAPI)
+}
