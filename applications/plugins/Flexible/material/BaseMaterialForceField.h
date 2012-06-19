@@ -78,15 +78,9 @@ public:
     //@}
 
 
-    /** @name forceField functions */
-    //@{
-    virtual void init()
+    virtual void resize()
     {
-        if(!(this->mstate))
-        {
-            this->mstate = dynamic_cast<mstateType*>(this->getContext()->getMechanicalState());
-            if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-        }
+        if(this->f_printLog.getValue()) std::cout<<"Material::resize()"<<std::endl;
 
         // init material
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();
@@ -99,6 +93,20 @@ public:
         else for(unsigned int i=0; i<material.size(); i++) material[i].volume=&sampler->f_volume.getValue()[i];
 
         reinit();
+    }
+
+
+    /** @name forceField functions */
+    //@{
+    virtual void init()
+    {
+        if(!(this->mstate))
+        {
+            this->mstate = dynamic_cast<mstateType*>(this->getContext()->getMechanicalState());
+            if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
+        }
+
+        resize();
 
         Inherit::init();
     }
@@ -115,6 +123,8 @@ public:
 
     virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
+        if(this->mstate->getSize()!=(int)material.size()) resize();
+
         if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints in writeConstraints
 
         VecDeriv&  f = *_f.beginEdit();

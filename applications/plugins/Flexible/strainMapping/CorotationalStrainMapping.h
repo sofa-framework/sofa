@@ -123,6 +123,10 @@ protected:
 
     virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
+        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
+        if(inpos.size()!=outpos.size()) this->resizeOut();
+
         typename Inherit::OutVecCoord& out = *dOut.beginEdit();
         const typename Inherit::InVecCoord&  in  =  dIn.getValue();
 

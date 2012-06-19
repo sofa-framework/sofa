@@ -63,13 +63,10 @@ public:
     Data<Real> _youngModulus;
     Data<Real> _poissonRatio;
     Data<Real> _viscosity;
-    Real _lambda;  ///< Lamé first coef
-    Real _mu2;     ///< Lamé second coef * 2
     //@}
 
     virtual void reinit()
     {
-
         for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), this->_viscosity.getValue() );
         Inherit::reinit();
     }
@@ -110,12 +107,6 @@ protected:
 
     virtual ~HookeForceField()     {    }
 
-
-    static void getLame(const Real &youngModulus,const Real &poissonRatio,Real &lambda,Real &mu)
-    {
-        lambda= youngModulus*poissonRatio/((1-2*poissonRatio)*(1+poissonRatio));
-        mu = youngModulus/(2*(1+poissonRatio));
-    }
 
 };
 
