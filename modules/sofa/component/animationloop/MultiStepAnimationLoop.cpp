@@ -87,13 +87,14 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS
         for (int i = 0; i < ninteg; ++i)
         {
             // Then integrate the time step
-            sout << "integration" << sendl;
+            sout << "integration at time = " << startTime+i*stepDt << sendl;
             integrate(params, stepDt);
+
+            this->gnode->setTime ( startTime + (i+1)*stepDt );
+            this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         }
     }
 
-    this->gnode->setTime ( startTime + dt );
-    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );

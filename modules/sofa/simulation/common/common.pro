@@ -39,6 +39,8 @@ HEADERS += common.h \
            ExportOBJVisitor.h \
            FindByTypeVisitor.h \
            InitVisitor.h \  
+           IntegrateBeginEvent.h \
+           IntegrateEndEvent.h \
            LocalStorage.h \
            MechanicalComputeEnergyVisitor.h \
            MechanicalMatrixVisitor.h \
