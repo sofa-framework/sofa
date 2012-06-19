@@ -156,6 +156,7 @@ public:
     Data<double> minTool;
     Data<double> openSpeedTool;
     Data<double> closeSpeedTool;
+    Data<bool> useScheduler;
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
 
