@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+<Node 	name="Root" gravity="0 0 -0.1 " dt="1"  >
     
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -22,16 +22,15 @@
 		
     <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" src="@../sampler"/>
 
-    <UniformMass mass="1" />
     <FixedConstraint indices="0" />
 
     <VoronoiShapeFunction name="SF" image="@../extruder.outputImage" transform="@../extruder.outputTransform" nbRef="5" useDijkstra="true" method="0" bias="true" printLog="true" />
    	 
-<!-- <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" />  -->
+ <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" />  
 
     <Node 	name="behavior"   >
 
-	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="true" printLog="true" targetNumber="20"/>
+	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="true" printLog="false" targetNumber="10"/>
 	    
 	<!--<ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 10"/>  -->
 <!--	<ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 10"/>       -->
@@ -52,6 +51,7 @@
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
 		<MechanicalObject  template="Vec3d" name="pts" src="@mesh" useMask="0" />
+    		<UniformMass totalMass="10" />
 		<Triangle />
 	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
 	    </Node>

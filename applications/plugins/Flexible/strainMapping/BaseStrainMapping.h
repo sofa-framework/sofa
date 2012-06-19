@@ -99,6 +99,18 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
+
+    virtual void resizeOut()
+    {
+        if(this->f_printLog.getValue()) std::cout<<"strainMapping::resizeOut()"<<std::endl;
+
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        this->toModel->resize(in.size());
+        jacobian.resize(in.size());
+
+        reinit();
+    }
+
     /** @name Mapping functions */
     //@{
     virtual void init()
@@ -108,13 +120,7 @@ public:
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
             maskTo = &stateTo->forceMask;
 
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-
-        // resize out
-        this->toModel->resize(in.size());
-
         // init jacobians
-        jacobian.resize(in.size());
         baseMatrices.resize( 1 ); // just a wrapping for getJs()
         baseMatrices[0] = &eigenJacobian;
 
@@ -122,7 +128,7 @@ public:
         stiffnessBaseMatrices.resize(1);
         stiffnessBaseMatrices[0] = &K;
 
-        reinit();
+        resizeOut();
         Inherit::init();
     }
 
@@ -135,6 +141,10 @@ public:
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
+        helper::ReadAccessor<Data<InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
+        if(inpos.size()!=outpos.size()) this->resizeOut();
+
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 

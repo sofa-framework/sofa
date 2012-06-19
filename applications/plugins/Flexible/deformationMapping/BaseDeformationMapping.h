@@ -153,12 +153,9 @@ public:
     //@}
 
 
-    virtual void init( bool resizeOut )
+    virtual void resizeOut()
     {
-        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
-            maskFrom = &stateFrom->forceMask;
-        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
-            maskTo = &stateTo->forceMask;
+        if(this->f_printLog.getValue()) std::cout<<"deformationMapping::resizeOut()"<<std::endl;
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -172,7 +169,7 @@ public:
         if(_sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
         {
             size =_sampler->getNbSamples();
-            if( resizeOut ) this->toModel->resize(size);
+            this->toModel->resize(size);
             pos0.resize(size);  for(unsigned int i=0; i<size; i++) pos0[i]=_sampler->getSample(i);
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
         }
@@ -210,13 +207,7 @@ public:
             }
         }
 
-        baseMatrices.resize( 1 ); // just a wrapping for getJs()
-        baseMatrices[0] = &eigenJacobian;
-
         reinit();
-
-        if( resizeOut ) Inherit::init();
-
     }
 
 
@@ -225,7 +216,18 @@ public:
 
     virtual void init()
     {
-        init( true );
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+            maskFrom = &stateFrom->forceMask;
+        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
+            maskTo = &stateTo->forceMask;
+
+
+        baseMatrices.resize( 1 ); // just a wrapping for getJs()
+        baseMatrices[0] = &eigenJacobian;
+
+        resizeOut();
+
+        Inherit::init();
     }
 
     virtual void reinit()
@@ -237,6 +239,9 @@ public:
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
+        helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
+        if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
+
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
