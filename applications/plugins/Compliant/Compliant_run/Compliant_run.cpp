@@ -160,25 +160,25 @@ simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoi
     }
     extensionMapping->f_restLengths.setValue( restLengths );
 
-//    {
-//        //-------- fix a particle
-//        Node::SPtr fixNode = string_node->createChild("fixNode");
-//        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-//        fixNode->addObject(extensions);
+    //    {
+    //        //-------- fix a particle
+    //        Node::SPtr fixNode = string_node->createChild("fixNode");
+    //        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+    //        fixNode->addObject(extensions);
 
-//        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
-//        distanceMapping->setModels(DOF.get(),extensions.get());
-//        fixNode->addObject( distanceMapping );
-//        distanceMapping->setName("fix_distanceMapping");
-//        distanceMapping->setModels( DOF.get(), extensions.get() );
-//        distanceMapping->createTarget( numParticles-1, endPoint, 0.0 );
+    //        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
+    //        distanceMapping->setModels(DOF.get(),extensions.get());
+    //        fixNode->addObject( distanceMapping );
+    //        distanceMapping->setName("fix_distanceMapping");
+    //        distanceMapping->setModels( DOF.get(), extensions.get() );
+    //        distanceMapping->createTarget( numParticles-1, endPoint, 0.0 );
 
-//        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-//        fixNode->addObject(compliance);
-//        compliance->setName("fix_compliance");
-//        compliance->compliance.setValue(complianceValue);
-//        compliance->dampingRatio.setValue(dampingRatio);
-//    }
+    //        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+    //        fixNode->addObject(compliance);
+    //        compliance->setName("fix_compliance");
+    //        compliance->compliance.setValue(complianceValue);
+    //        compliance->dampingRatio.setValue(dampingRatio);
+    //    }
 
     return string_node;
 
@@ -213,56 +213,58 @@ simulation::Node::SPtr createScene()
     complianceSolver->verbose.setValue(verbose);
 
 
-    // first string
-    unsigned n1 = 3;
+    // ========  first string
+    unsigned n1 = 2;
     Node::SPtr  string1 = createString( simulatedScene, Vec3(0,0,0), Vec3(1,0,0), n1, 1.0*n1, complianceValue, dampingRatio );
 
 
-//        FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
-//        string1->addObject( fixed1 );
+    FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
+    string1->addObject( fixed1 );
 
-    //    // second string
-    //    unsigned n2 = 2;
-    //    Node::SPtr  string2 = createString( simulatedScene, Vec3(3,0,0), Vec3(2,0,0), n2, 2.0, complianceValue, dampingRatio );
-    //    FixedConstraint3::SPtr fixed2 = New<FixedConstraint3>();
-    //    string2->addObject( fixed2 );
-
-    //    // Node with multiple parents to create an interaction using a MultiMapping
-    //    Node::SPtr commonChild = string1->createChild("commonChild");
-    //    string2->addChild(commonChild);
-
-    //    MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
-    //    commonChild->addObject(mappedDOF);
-
-    //    SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
-    //    multimapping->setName("InteractionMultiMapping");
-    //    multimapping->addInputModel( string1->getMechanicalState() );
-    //    multimapping->addInputModel( string2->getMechanicalState() );
-    //    multimapping->addOutputModel( mappedDOF.get() );
-    //    multimapping->addPoint( string1->getMechanicalState(), n1-1 );
-    //    multimapping->addPoint( string2->getMechanicalState(), n2-1 );
-    //    commonChild->addObject(multimapping);
-
-    //    // Node to handle the extension of the interaction link
-    //    Node::SPtr extension_node = commonChild->createChild("InteractionExtensionNode");
-
-    //    MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-    //    extension_node->addObject(extensions);
-
-    //    EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
-    //    extension_node->addObject(edgeSet);
-    //    edgeSet->addEdge(0,1);
-
-    //    ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
-    //    extensionMapping->setModels(mappedDOF.get(),extensions.get());
-    //    extension_node->addObject( extensionMapping );
-    //    extensionMapping->setName("InteractionExtension_mapping");
+    // ========  second string
+    unsigned n2 = 2;
+    Node::SPtr  string2 = createString( simulatedScene, Vec3(3,0,0), Vec3(2,0,0), n2, 2.0, complianceValue, dampingRatio );
+    FixedConstraint3::SPtr fixed2 = New<FixedConstraint3>();
+    string2->addObject( fixed2 );
 
 
-    //    UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-    //    extension_node->addObject(compliance);
-    //    compliance->compliance.setValue(complianceValue);
-    //    compliance->dampingRatio.setValue(dampingRatio);
+    // ========  Node with multiple parents to create an interaction using a MultiMapping
+    Node::SPtr commonChild = string1->createChild("commonChild");
+    string2->addChild(commonChild);
+
+    MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
+    commonChild->addObject(mappedDOF);
+
+    SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
+    multimapping->setName("InteractionMultiMapping");
+    multimapping->addInputModel( string1->getMechanicalState() );
+    multimapping->addInputModel( string2->getMechanicalState() );
+    multimapping->addOutputModel( mappedDOF.get() );
+    multimapping->addPoint( string1->getMechanicalState(), n1-1 );
+    multimapping->addPoint( string2->getMechanicalState(), n2-1 );
+    commonChild->addObject(multimapping);
+
+    // Node to handle the extension of the interaction link
+    Node::SPtr extension_node = commonChild->createChild("InteractionExtensionNode");
+
+    MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+    extension_node->addObject(extensions);
+
+    EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
+    extension_node->addObject(edgeSet);
+    edgeSet->addEdge(0,1);
+
+    ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
+    extensionMapping->setModels(mappedDOF.get(),extensions.get());
+    extension_node->addObject( extensionMapping );
+    extensionMapping->setName("InteractionExtension_mapping");
+
+
+    UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+    extension_node->addObject(compliance);
+    compliance->compliance.setName("connectionCompliance");
+    compliance->compliance.setValue(complianceValue);
+    compliance->dampingRatio.setValue(dampingRatio);
 
     return root;
 }

@@ -40,6 +40,8 @@
 
   See sofa::component::odesolver::ComplianceSolver and sofa::core::behavior::BaseCompliance for more detail.
 
+  A test suite is available, see page \ref Page_CompliantTestSuite
+
   */
 
 namespace sofa

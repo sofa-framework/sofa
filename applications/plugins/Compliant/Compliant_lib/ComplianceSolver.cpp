@@ -37,6 +37,11 @@ ComplianceSolver::ComplianceSolver()
 {
 }
 
+void ComplianceSolver::init()
+{
+    cerr<<"ComplianceSolver::init()" << endl;
+}
+
 
 void ComplianceSolver::solveEquation()
 {
@@ -344,7 +349,13 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                 if( Jc0.rows()==0 )
                     Jc0 = SMatrix(Jcp * Jp0);
                 else
+                {
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, Jc0 = " << Jc0 << endl;
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, Jp0 = " << Jp0 << endl;
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown, Jcp = " << Jcp << endl;
+                    cerr<<"MatrixAssemblyVisitor::processNodeTopDown,  adding Jcp * Jp0: " << SMatrix(Jcp * Jp0) << endl;
                     Jc0 += SMatrix(Jcp * Jp0);
+                }
 
                 // Geometric stiffness
                 if( pKs!=NULL && (*pKs)[i]!=NULL )
