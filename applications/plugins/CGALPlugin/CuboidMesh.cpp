@@ -30,7 +30,7 @@
  */
 #define CGALPLUGIN_CUBOIDMESH_CPP
 
-#include <cgal_config.h>
+#include <initCGALPlugin.h>
 #include "CuboidMesh.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
