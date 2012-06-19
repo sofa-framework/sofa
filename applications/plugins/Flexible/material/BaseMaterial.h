@@ -52,7 +52,7 @@ public:
     const volumeIntegralType* volume;
 
     // compute U(x)
-    virtual Real getPotentialEnergy(const Coord& x) const  =0;
+    virtual Real getPotentialEnergy(const Coord& x)=0;
     // compute $ f=-dU/dx + f(v) $
     virtual void addForce( Deriv& f , const Coord& x , const Deriv& v)=0;
     // compute $ df += kFactor K dx + bFactor B dx $

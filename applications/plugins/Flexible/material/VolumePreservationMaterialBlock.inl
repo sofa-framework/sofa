@@ -84,7 +84,7 @@ public:
 
 
 
-    Real getPotentialEnergy( const Coord& ) const { return 0; }
+    Real getPotentialEnergy( const Coord& ) { return 0; }
 
     Real getPotentialEnergy_method0(const Coord& x) const
     {

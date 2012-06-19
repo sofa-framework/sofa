@@ -86,7 +86,7 @@ public:
         C2Vol2=C2*vol*(Real)2.;
     }
 
-    Real getPotentialEnergy(const Coord& x) const
+    Real getPotentialEnergy(const Coord& x)
     {
         return C1Vol2*(Real)0.5*(x.getStrain()[0]*x.getStrain()[0]-(Real)3.) + C2Vol2*(Real)0.5*(x.getStrain()[1]*x.getStrain()[1]-(Real)3.);
     }

@@ -27,8 +27,8 @@
 
 #include "../initFlexible.h"
 #include "../material/BaseMaterialForceField.h"
-//#include "../material/HookeMaterialBlock.inl"
-#include "../material/HookeMaterialBlock.h"
+#include "../material/HookeMaterialBlock.inl"
+//#include "../material/HookeMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -69,11 +69,8 @@ public:
 
     virtual void reinit()
     {
-        // convert to lame coef
-        _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
-        _mu2 = _youngModulus.getValue()/(1+_poissonRatio.getValue());
 
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), _lambda, _mu2, this->_viscosity.getValue() );
+        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), this->_viscosity.getValue() );
         Inherit::reinit();
     }
 
