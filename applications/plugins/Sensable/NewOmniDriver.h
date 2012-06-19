@@ -157,6 +157,8 @@ public:
     Data<double> openSpeedTool;
     Data<double> closeSpeedTool;
     Data<bool> useScheduler;
+    Data<bool> setRestShape;
+    Data<bool> applyMappings;
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
 
