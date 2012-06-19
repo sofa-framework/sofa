@@ -3,6 +3,12 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = sofa_misc_mapping
 
+# with gcc 4.5.2, PCAOnRigidFrameMapping generates an Internal Compiler Error when using the highest optimization level
+QMAKE_CFLAGS_RELEASE   -= -O3
+QMAKE_CXXFLAGS_RELEASE -= -O3
+QMAKE_CFLAGS_RELEASE   += -O2
+QMAKE_CXXFLAGS_RELEASE += -O2
+
 DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
 
