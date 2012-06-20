@@ -1,4 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<includes>
+ <include location="local" impldecl="in declaration">SofaGUIQt.h</include>
+</includes>
+<exportmacro>SOFA_SOFAGUIQT_API</exportmacro>
 <class>GUI</class>
 <widget class="QMainWindow">
     <property name="name">
