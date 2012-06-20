@@ -286,6 +286,7 @@ template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const 
 
 // ==========================================================================
 // Specialization for diagonalized strain (3 principal stretches + additional terms to store anisotropy)
+// It is basically the same as the regular StrainTypes 'E' but where we know that all non-diagonal term of the Strain Vector (DiagonalizedStrainTypes::Coord) are null.
 
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='D' >
@@ -628,9 +629,19 @@ static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
 // TODO: ADD  Mat*VoigtVec operators
 
 
-
-
-
+/// \return 0.5 * ( A + At )
+template<int N, class Real>
+static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N,Real>& A )
+{
+    defaulttype::Mat<N,N,Real> B;
+    for( int i=0 ; i<N ; i++ )
+    {
+        B[i][i] = A[i][i];
+        for( int j=i+1 ; j<N ; j++ )
+            B[i][j] = B[j][i] = (Real)0.5 * ( A[i][j] + A[j][i] );
+    }
+    return B;
+}
 
 
 } // namespace defaulttype

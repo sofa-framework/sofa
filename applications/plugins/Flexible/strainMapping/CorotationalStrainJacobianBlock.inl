@@ -52,32 +52,12 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
-#define F221(type)  DefGradientTypes<2,2,0,type>
 #define F321(type)  DefGradientTypes<3,2,0,type>
-#define F331(type)  DefGradientTypes<3,3,0,type>
-#define F332(type)  DefGradientTypes<3,3,1,type>
 #define E221(type)  StrainTypes<2,2,0,type>
-#define E331(type)  StrainTypes<3,3,0,type>
-#define E332(type)  StrainTypes<3,3,1,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
-
-
-/// \return 0.5 * ( A + At )
-template<int N, class Real>
-static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N,Real>& A )
-{
-    defaulttype::Mat<N,N,Real> B;
-    for( int i=0 ; i<N ; i++ )
-    {
-        B[i][i] = A[i][i];
-        for( int j=i+1 ; j<N ; j++ )
-            B[i][j] = B[j][i] = (Real)0.5 * ( A[i][j] + A[j][i] );
-    }
-    return B;
-}
 
 
 /// 3D->3D
@@ -140,18 +120,20 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s, Mat
 
 
 
+
 //////////////////////////////////////////////////////////////////////////////////
-////  F331 -> E331
+////  CorotationalStrainJacobianBlock
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class InReal,class OutReal>
-class CorotationalStrainJacobianBlock< F331(InReal) , E331(OutReal) > :
-    public  BaseJacobianBlock< F331(InReal) , E331(OutReal) >
+/** Template class used to implement one jacobian block for CorotationalStrainMapping */
+template<class TIn, class TOut>
+class CorotationalStrainJacobianBlock :
+    public  BaseJacobianBlock< TIn, TOut >
 {
 public:
 
-    typedef F331(InReal) In;
-    typedef E331(OutReal) Out;
+    typedef TIn In;
+    typedef TOut Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
     typedef typename Inherit::InCoord InCoord;
@@ -167,17 +149,25 @@ public:
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
+    enum { order = Out::order };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
     typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
 
     /**
-    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
-    where:  R/D are the rotational/skew symmetric parts of F=RD
-    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
-    */
+    Mapping:
+        - \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+        - \f$ E_k = [R^T F_k + F_k^T R ]/2  \f$
+    where:
+        - _R/D are the rotational/skew symmetric parts of F=RD
+        - _k denotes derivative with respect to spatial dimension k
+    Jacobian:
+        - \f$  dE = [R^T dF + dF^T R ]/2 \f$
+        - \f$  dE_k = [R^T dF_k + dF_k^T R ]/2 \f$
+      */
 
-    static const bool constantJ=false;
+
+    static const bool constantJ = false;
 
     Affine _R;   ///< =  store rotational part of deformation gradient to compute J
 
@@ -253,8 +243,7 @@ public:
         StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
         _R.identity();
 
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
+        addapply_common( result, data, strainmat );
     }
     void addapply_qr( OutCoord& result, const InCoord& data )
     {
@@ -272,8 +261,7 @@ public:
             computeQR( data.getF(), _R, strainmat );
         }
 
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
+        addapply_common( result, data, strainmat );
     }
     void addapply_polar( OutCoord& result, const InCoord& data )
     {
@@ -287,9 +275,7 @@ public:
             *_degenerated = determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
         }
 
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
-
+        addapply_common( result, data, strainmat );
     }
     void addapply_svd( OutCoord& result, const InCoord& data )
     {
@@ -297,18 +283,55 @@ public:
 
         *_degenerated = computeSVD( data.getF(), _R, strainmat, *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2 ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
 
+        addapply_common( result, data, strainmat );
+    }
+
+    void addapply_common( OutCoord& result, const InCoord& data, StrainMat& strainmat )
+    {
+        // order 0
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+                result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
+            }
+        }
     }
+
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
+        // order 0
         result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getStrainGradient(k) += StrainMatToVoigt( _R.multTranspose( data.getGradientF(k) ) );
+            }
+        }
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
+        // order 0
         result.getF() += _R*StressVoigtToMat( data.getStrain() );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getGradientF(k) += _R*StressVoigtToMat( data.getStrainGradient(k) );
+            }
+        }
     }
 
     MatBlock getJ()
@@ -316,7 +339,23 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        eB = assembleJ(_R);
+
+        // order 0
+        typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
+        JBlock J = assembleJ( _R );
+        eB.template block(0,0,strain_size,frame_size) = J;
+
+        if( order > 0 )
+        {
+            // order 1
+            unsigned int offsetE=strain_size;
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
+                offsetE+=strain_size;
+            }
+        }
+
         return B;
     }
 
@@ -335,7 +374,20 @@ public:
 
         Affine dR;
         helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_dJ_Mat1, dx.getF(), dR );
+
+        // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+
+        if( order > 0 )
+        {
+            // order 1
+            /*for(unsigned int k=0;k<spatial_dimensions;k++)
+            {
+                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+                helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_dJ_Mat1, dx.getF(), dR );
+                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+            }*/
+        }
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
@@ -343,15 +395,41 @@ public:
 
         Affine dR;
         helper::Decompose<Real>::polarDecompositionGradient_dQ( *_dJ_Mat1, _R, dx.getF(), dR );
+
+        // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+
+        if( order > 0 )
+        {
+            // order 1
+            /*for(unsigned int k=0;k<spatial_dimensions;k++)
+            {
+                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+                helper::Decompose<Real>::polarDecompositionGradient_dQ( *_dJ_Mat1, _R, dx.getF(), dR );
+                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+            }*/
+        }
     }
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
         if( *_degenerated ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
         Affine dR;
-        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR ); // using SVD decomposition method
+        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR );
+
+        // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
+
+        if( order > 0 )
+        {
+            // order 1
+            /*for(unsigned int k=0;k<spatial_dimensions;k++)
+            {
+                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+                helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2,  dx.getGradientF(k), dR );
+                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+            }*/
+        }
     }
 };
 
@@ -503,189 +581,6 @@ public:
 };
 
 
-
-//////////////////////////////////////////////////////////////////////////////////
-////  F332 -> E332
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class InReal,class OutReal>
-class CorotationalStrainJacobianBlock< F332(InReal) , E332(OutReal) > :
-    public  BaseJacobianBlock< F332(InReal) , E332(OutReal) >
-{
-public:
-
-    typedef F332(InReal) In;
-    typedef E332(OutReal) Out;
-
-    typedef BaseJacobianBlock<In,Out> Inherit;
-    typedef typename Inherit::InCoord InCoord;
-    typedef typename Inherit::InDeriv InDeriv;
-    typedef typename Inherit::OutCoord OutCoord;
-    typedef typename Inherit::OutDeriv OutDeriv;
-    typedef typename Inherit::MatBlock MatBlock;
-    typedef typename Inherit::KBlock KBlock;
-    typedef typename Inherit::Real Real;
-
-    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
-    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
-    enum { material_dimensions = In::material_dimensions };
-    enum { spatial_dimensions = In::spatial_dimensions };
-    enum { strain_size = Out::strain_size };
-    enum { frame_size = spatial_dimensions*material_dimensions };
-
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
-
-    /**
-    Mapping:
-        - \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
-        - \f$ E_k = [R^T F_k + F_k^T R ]/2  \f$
-    where:
-        - _R/D are the rotational/skew symmetric parts of F=RD
-        - _k denotes derivative with respect to spatial dimension k
-    Jacobian:
-        - \f$  dE = [R^T dF + dF^T R ]/2 \f$
-        - \f$  dE_k = [R^T dF_k + dF_k^T R ]/2 \f$
-      */
-
-    static const bool constantJ=false;
-
-    Affine _R;   ///< =  store rotational part of deformation gradient to compute J
-
-
-
-    void init_small() {}
-    void init_qr( bool /*geometricStiffness*/ ) {}
-    void init_polar( bool /*geometricStiffness*/ ) {}
-    void init_svd() {}
-
-
-    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
-
-    void addapply_small( OutCoord& result, const InCoord& data )
-    {
-        // order 0
-        StrainMat strainmat = cauchyStrainTensor( data.getF() ); // strainmat = ( F + Ft ) * 0.5
-        _R.identity();
-
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
-
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            StrainMat T = data.getGradientF( k ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
-        }
-    }
-
-    void addapply_qr( OutCoord& result, const InCoord& data )
-    {
-        // order 0
-        StrainMat strainmat;
-        computeQR( data.getF(), _R, strainmat );
-
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
-
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
-        }
-    }
-
-    void addapply_polar( OutCoord& result, const InCoord& data )
-    {
-        // order 0
-        StrainMat strainmat;
-        helper::Decompose<Real>::polarDecomposition(data.getF(), _R, strainmat);
-
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
-
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
-        }
-    }
-
-    void addapply_svd( OutCoord& result, const InCoord& data )
-    {
-        // order 0
-        StrainMat strainmat; Affine U, V; Vec<material_dimensions,Real> Fdiag;
-        computeSVD( data.getF(), _R, strainmat, U, Fdiag, V );
-
-        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
-        result.getStrain() += StrainMatToVoigt( strainmat );
-
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
-            result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
-        }
-    }
-
-    void addmult( OutDeriv& result,const InDeriv& data )
-    {
-        // order 0
-        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            result.getStrainGradient(k) += StrainMatToVoigt( _R.multTranspose( data.getGradientF(k) ) );
-        }
-    }
-
-    void addMultTranspose( InDeriv& result, const OutDeriv& data )
-    {
-        // order 0
-        result.getF() += _R*StressVoigtToMat( data.getStrain() );
-        // order 1
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            result.getGradientF(k) += _R*StressVoigtToMat( data.getStrainGradient(k) );
-        }
-    }
-
-    MatBlock getJ()
-    {
-        MatBlock B = MatBlock();
-        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-        EigenMap eB(&B[0][0]);
-        // order 0
-        typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
-        JBlock J = assembleJ(_R);
-        eB.template block(0,0,strain_size,frame_size) = J;
-        // order 1
-        unsigned int offsetE=strain_size;
-        for(unsigned int k=0; k<spatial_dimensions; k++)
-        {
-            eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
-            offsetE+=strain_size;
-        }
-        return B;
-    }
-
-    // requires derivative of _R. Not Yet implemented..
-    KBlock getK(const OutDeriv& /*childForce*/)
-    {
-        return KBlock();
-    }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
-    {
-    }
-    void addDForce_polar( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
-    {
-    }
-    void addDForce_svd( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
-    {
-    }
-};
 
 
 } // namespace defaulttype

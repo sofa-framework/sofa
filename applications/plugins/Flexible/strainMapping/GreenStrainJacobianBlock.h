@@ -34,8 +34,8 @@ namespace defaulttype
 {
 
 /** Template class used to implement one jacobian block for GreenStrainMapping */
-template<class TIn, class TOut>
-class GreenStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+//template<class TIn, class TOut>
+//class GreenStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
 
 } // namespace defaulttype
 } // namespace sofa

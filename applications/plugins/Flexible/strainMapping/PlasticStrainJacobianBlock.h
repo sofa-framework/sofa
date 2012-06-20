@@ -39,13 +39,6 @@ namespace defaulttype
 {
 
 
-
-#define E221(type)  StrainTypes<2,2,0,type>
-#define E331(type)  StrainTypes<3,3,0,type>
-#define E332(type)  StrainTypes<3,3,1,type>
-
-
-
 /** Template class used to implement one jacobian block for PlasticStrainMapping */
 template<class TStrain>
 class PlasticStrainJacobianBlock : public BaseJacobianBlock<TStrain,TStrain>
