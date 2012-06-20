@@ -226,7 +226,7 @@ contains(CONFIGDEBUG, profile) {
 	}
 	
 	isEmpty(UI_DIR) {
-		UI_DIR = UI
+#		UI_DIR = UI
 	}
 } else {
 	isEmpty(OBJECTS_DIR): OBJECTS_DIR = .
