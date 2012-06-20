@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_POLARDECOMPOSE_H
-#define SOFA_HELPER_POLARDECOMPOSE_H
+#ifndef SOFA_HELPER_DECOMPOSE_H
+#define SOFA_HELPER_DECOMPOSE_H
 
 
 #include <sofa/helper/helper.h>
@@ -214,13 +214,15 @@ public:
      */
     static void SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV );
 
-private:
 
 
 
     /// threshold for zero comparison (1e-6 for float and 1e-8 for double)
     static Real zeroTolerance();
 
+
+
+private:
 
 
 
@@ -308,4 +310,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_DECOMPOSE_H

@@ -40,7 +40,8 @@ namespace mapping
 
 using helper::vector;
 
-/** Deformation Gradient to Principal Stretches (ie Diagonalized Lagrangian Strain) mapping.
+/** Deformation Gradient to Principal Stretches mapping.
+  @warning this is more precisely (principal stretches - Id) i.e the diagonalized lagrangian strain
 */
 
 template <class TIn, class TOut>

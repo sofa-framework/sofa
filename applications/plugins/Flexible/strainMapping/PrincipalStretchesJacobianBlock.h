@@ -82,7 +82,7 @@ public:
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation
-    StrainVec _S; ///< Principal stretches + 1
+    StrainVec _S; ///< Principal stretches
 
     MatBlock _J;
 
@@ -93,9 +93,9 @@ public:
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, _S, _V );
 
         for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += _S[i] - 1;
+            result.getStrain()[i] += _S[i] - (Real)1;
 
-        computeJ(); // TODO compute J only if implicit
+        computeJ();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )

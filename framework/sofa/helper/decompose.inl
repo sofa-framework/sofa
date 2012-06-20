@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_POLARDECOMPOSE_INL
-#define SOFA_HELPER_POLARDECOMPOSE_INL
+#ifndef SOFA_HELPER_DECOMPOSE_INL
+#define SOFA_HELPER_DECOMPOSE_INL
 
 #include "decompose.h"
 
@@ -260,7 +260,7 @@ template<class Real>
 void Decompose<Real>::QRDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>&Q, const defaulttype::Mat<3,3,Real>&invR, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
 {
     // tmp = QT*dM*R^−1
-    defaulttype::Mat<3,3,Real> tmp = Q.multTranspose( dM * invR );
+    dQ = Q.multTranspose( dM * invR );
 
     // L = lower(tmp) - (lower(tmp))^T
     defaulttype::Mat<3,3,Real> L;
@@ -268,9 +268,9 @@ void Decompose<Real>::QRDecompositionGradient_dQ( const defaulttype::Mat<3,3,Rea
     for( int i=0 ; i<3 ; ++i )
     {
         for( int j=0 ; j<i ; ++j ) // strictly lower
-            L[i][j] = tmp[i][j];
+            L[i][j] = dQ[i][j];
         for( int j=i+1 ; j<3 ; ++j ) // strictly lower transposed
-            L[i][j] = -tmp[j][i];
+            L[i][j] = -dQ[j][i];
     }
 
     dQ = Q * L;
@@ -546,9 +546,9 @@ template<class Real>
 defaulttype::Vec<3,Real> Decompose<Real>::skewVec( const defaulttype::Mat<3,3,Real>& M )
 {
     defaulttype::Vec<3,Real> v;
-    v[0] = 0.5 * ( M[2][1] - M[1][2] );
-    v[1] = 0.5 * ( M[0][2] - M[2][0] );
-    v[2] = 0.5 * ( M[1][0] - M[0][1] );
+    v[0] = (Real)0.5 * ( M[2][1] - M[1][2] );
+    v[1] = (Real)0.5 * ( M[0][2] - M[2][0] );
+    v[2] = (Real)0.5 * ( M[1][0] - M[0][1] );
     return v;
 }
 
@@ -563,10 +563,9 @@ void Decompose<Real>::polarDecompositionGradient_G( const defaulttype::Mat<3,3,R
     invG[1][1] += trace;
     invG[2][2] += trace;
 
-    defaulttype::Mat<3,3,Real> G;
-    G = invG.multTransposed( Q );
+    invG = invG.multTransposed( Q );
 
-    invG.invert( G );
+    invG.invert( invG );
 }
 
 
@@ -575,10 +574,8 @@ void Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,
 {
     // omega = invG * (2 * skew(Q^T * dM))
 
-    defaulttype::Mat<3,3,Real> tmp;
-
-    tmp = Q.multTranspose( dM );
-    defaulttype::Vec<3,Real> omega = skewVec( tmp ) * 2;
+    dQ = Q.multTranspose( dM );
+    defaulttype::Vec<3,Real> omega = skewVec( dQ ) * 2;
     omega = invG * omega;
 
     dQ = skewMat( omega ) * Q;
@@ -601,14 +598,18 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const defaulttype::
     for( int i=0 ; i<3 ; ++i )
     {
         int j = (i+1)%3;
-        if( /*helper::rabs*/( Sdiag[i]+Sdiag[j] ) < zeroTolerance() ) // 2 negative eigen-values should not be possible so abs should not be necessary
-            //omega[i][j] = 1;
+
+        Real A = Sdiag[i] + Sdiag[j];
+        if( /*helper::rabs*/( A ) < zeroTolerance() ) // only the smallest eigen-value should be negative so abs should not be necessary
+        {
+            //omega[i][j] = (Real)0;
             return false;
+        }
         else
         {
-            omega[i][j] = ( UtdMV[i][j] - UtdMV[j][i] ) / ( Sdiag[i] + Sdiag[j] );
-            omega[j][i] = -omega[i][j];
+            omega[i][j] = ( UtdMV[i][j] - UtdMV[j][i] ) / A;
         }
+        omega[j][i] = -omega[i][j];
     }
 
     dQ = U * omega * V;
@@ -1411,7 +1412,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaultty
         S[Sorder[0]] *= (Real)-1;
     }
 
-    return degenerated || inverted || determinant( F ) < zeroTolerance(); // negative = inverted, too close to zero = degenerated
+    return degenerated || inverted;
 }
 
 
@@ -1556,5 +1557,5 @@ void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, con
 
 } // namespace sofa
 
-#endif // SOFA_HELPER_POLARDECOMPOSE_INL
+#endif // SOFA_HELPER_DECOMPOSE_INL
 
