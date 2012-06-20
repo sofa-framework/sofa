@@ -332,7 +332,6 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     {
         std::vector<Vector3> points;
         Vector3 point;
-        glColor4f(1.0f, 0.35f, 0.35f, 1.0f);
         if (f_fixAll.getValue() == true)
         {
             for (unsigned i = 0; i < x.size(); i++)
