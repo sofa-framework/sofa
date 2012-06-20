@@ -50,6 +50,7 @@ public:
         sofa::core::ObjectFactory::AddAlias("OglModel", "OgreVisualModel", true, &classOglModel);
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OgreVisualModel", true, &classVisualModel);
         vparams->drawTool() = &drawToolOGRE;
+//    vparams->setSupported(sofa::core::visual::API_OGRE); // ?
     }
 
     void unload()

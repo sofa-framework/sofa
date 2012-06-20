@@ -1146,6 +1146,14 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
+    {
+        this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
+                "Cannot display this component debug info beacause of using GL render instructions"<<
+                this->sendl;
+        return;
+    }
+
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;

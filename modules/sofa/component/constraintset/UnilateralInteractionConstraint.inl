@@ -352,6 +352,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
 {
 //	return; // TEMP
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
+    if (!vparams->isSupported(sofa::core::visual::API_OpenGL)) return;
 
     glDisable(GL_LIGHTING);
 
