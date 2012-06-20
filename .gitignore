@@ -33,6 +33,11 @@ bin/
 # Ignorer tous les fichiers et dossiers du repertoire lib/
 lib/
 
+# Related to cmake
+CMakeFiles/*
+CMakeCache.txt
+sofaDefines.cfg
+
 Makefile
 applications/Makefile
 applications/plugins/Makefile
