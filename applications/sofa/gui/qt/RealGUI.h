@@ -165,7 +165,8 @@ public:
     ~RealGUI();
 
     virtual void createViewers(const char* viewerName);
-    virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/) {}
+    virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/)
+    {std::cerr<<"sofa::gui::qt::RealGUI::registerViewer() does nothing here"<<std::endl;}
     virtual void initViewer();
     virtual void removeViewer();
 

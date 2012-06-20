@@ -48,6 +48,14 @@ namespace sofa
 namespace gui
 {
 
+namespace qt    // The SofaViewer class should become an abstract viewer without qt depend...
+{
+namespace viewer
+{
+class SofaViewer;
+}
+}
+
 class SOFA_SOFAGUI_API SofaGUI
 {
 
@@ -79,6 +87,7 @@ public:
     virtual void setRecordPath(const std::string & /*path*/) {};
     virtual void setGnuplotPath(const std::string & /*path*/) {};
 
+    virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/) {}
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {};
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}
