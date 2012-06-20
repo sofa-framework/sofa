@@ -286,6 +286,10 @@ protected:
 
     void loadSimulation(bool one_step=false);
 
+    virtual int exitApplication(unsigned int _retcode = 0) {return _retcode;}
+    /// create a viewer by default, otherwise you have to manage your own viewer
+    bool mCreateViewersOpt;
+
     void startDumpVisitor();
     void stopDumpVisitor();
 

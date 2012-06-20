@@ -223,11 +223,19 @@ void RealGUI::InitApplication( RealGUI* _gui)
 
 int RealGUI::mainLoop()
 {
-    if (windowFilePath().isNull()) return application->exec();
-    const std::string &filename=windowFilePath().ascii();
-    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
-    if (extension == "simu") fileOpenSimu(filename);
-    return application->exec();
+    int retcode;
+    if (windowFilePath().isNull())
+    {
+        retcode = application->exec();
+    }
+    else
+    {
+        const std::string &filename=windowFilePath().ascii();
+        const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+        if (extension == "simu") fileOpenSimu(filename);
+        retcode = application->exec();
+    }
+    return exitApplication(retcode);
 }
 
 void RealGUI::redraw()
@@ -268,11 +276,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 {
 
     // parse the options
-    bool createViewersOpt = true;
+    mCreateViewersOpt = true;
     for (unsigned int i=0; i<options.size(); ++i)
     {
-        if (options[i] == "noViewers") createViewersOpt = false;
-        std::cerr<<"=========================== No Viewers ====================="<<std::endl;
+        if (options[i] == "noViewers")
+        {
+            mCreateViewersOpt = false;
+            std::cerr<<"=========================== No Viewers ====================="<<std::endl;
+        }
     }
 
 #ifdef SOFA_GUI_INTERACTION
@@ -361,7 +372,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     TabStats->layout()->add(statWidget);
 
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    if (createViewersOpt) createViewers(viewername);
+    if (mCreateViewersOpt) createViewers(viewername);
 
     currentTabChanged ( tabs->currentPage() );
 
@@ -390,7 +401,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     imageLayout->addWidget(new QLabel(QString("Image "),image));
 
     backgroundImage = new QLineEdit(image,"backgroundImage");
-    if (createViewersOpt)
+    if (mCreateViewersOpt)
         backgroundImage->setText( QString(viewer->getBackgroundImage().c_str()) );
     else
         backgroundImage->setText( QString() ); //by default if we havn't yet a viewer
@@ -459,7 +470,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
-    if (recorder && createViewersOpt)
+    if (recorder && mCreateViewersOpt)
         connect( recorder, SIGNAL( NewTime() ), viewer->getQWidget(), SLOT( update() ) );
 #endif
     timerStep = new QTimer(this);
@@ -469,7 +480,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
 #ifdef SOFA_GUI_INTERACTION
     m_interactionActived = false;
-    if(createViewersOpt)
+    if(mCreateViewersOpt)
         viewer->getQWidget()->installEventFilter(this);
 #endif
 }
@@ -493,6 +504,7 @@ void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
 
 RealGUI::~RealGUI()
 {
+    viewer->setScene(NULL); // has been deleted
 #ifdef SOFA_PML
     if ( pmlreader )
     {
@@ -532,8 +544,12 @@ void RealGUI::removeViewer()
 {
     if(viewer->isThreaded())
         viewer->stopViewerThread();
-    delete viewer;
-    viewer = NULL;
+
+    if(mCreateViewersOpt)
+    {
+        delete viewer;
+        viewer = NULL;
+    }
 }
 
 //createViewers
