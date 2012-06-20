@@ -88,6 +88,7 @@ public:
     virtual void setGnuplotPath(const std::string & /*path*/) {};
 
     virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/) {}
+    virtual void initViewer() {}
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {};
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}
