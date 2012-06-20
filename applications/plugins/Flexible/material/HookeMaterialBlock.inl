@@ -199,10 +199,11 @@ public:
     enum { order = T::order };
     typedef typename T::StrainVec StrainVec;
 
-    static const bool constantK=true;
-
+    typedef Eigen::Map<Eigen::Matrix<Real,T::deriv_total_size,T::deriv_total_size,Eigen::RowMajor> > EigenMap;
 
     HookeMaterialFactors<spatial_dimensions,strain_size,Real,order> factors;
+
+    static const bool constantK=true;
 
     //@{
     /** Constants for the stiffness matrix */
@@ -270,13 +271,19 @@ public:
                 {
                     applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainGradient(i),x.getStrainGradient(j),mu,lamd,factors.order2()[count]);
                     if(i!=j) applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainGradient(j),x.getStrainGradient(i),mu,lamd,factors.order2()[count]);
-                    applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrain(),x.getStrainHessian(i,j),mu,lamd,factors.order2()[count]);
-                    applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i,j),x.getStrain(),mu,lamd,factors.order2()[count]);
                     count++;
                 }
 
             if( order > 1 )
             {
+                count = 0;
+                for(unsigned int i=0; i<spatial_dimensions; i++)
+                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                    {
+                        applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrain(),x.getStrainHessian(i,j),mu,lamd,factors.order2()[count]);
+                        applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i,j),x.getStrain(),mu,lamd,factors.order2()[count]);
+                        count++;
+                    }
                 // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
@@ -312,13 +319,20 @@ public:
                     {
                         applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainGradient(i),v.getStrainGradient(j),viscosity,0,factors.order2()[count]);
                         if(i!=j) applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainGradient(j),v.getStrainGradient(i),viscosity,0,factors.order2()[count]);
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrain(),v.getStrainHessian(i,j),viscosity,0,factors.order2()[count]);
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i,j),v.getStrain(),viscosity,0,factors.order2()[count]);
                         count++;
                     }
 
                 if( order > 1 )
                 {
+                    count =0;
+                    for(unsigned int i=0; i<spatial_dimensions; i++)
+                        for(unsigned int j=i; j<spatial_dimensions; j++)
+                        {
+                            applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrain(),v.getStrainHessian(i,j),viscosity,0,factors.order2()[count]);
+                            applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i,j),v.getStrain(),viscosity,0,factors.order2()[count]);
+                            count++;
+                        }
+
                     // order 3
                     for(unsigned int i=0; i<spatial_dimensions; i++)
                         for(unsigned int j=0; j<strain_size; j++)
@@ -355,12 +369,18 @@ public:
                 {
                     applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainGradient(i),dx.getStrainGradient(j),mu,lamd,factors.order2()[count]*kfactor);
                     if(i!=j) applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainGradient(j),dx.getStrainGradient(i),mu,lamd,factors.order2()[count]*kfactor);
-                    applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrain(),dx.getStrainHessian(i,j),mu,lamd,factors.order2()[count]*kfactor);
-                    applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i,j),dx.getStrain(),mu,lamd,factors.order2()[count]*kfactor);
                     count++;
                 }
             if( order > 1 )
             {
+                count = 0;
+                for(unsigned int i=0; i<spatial_dimensions; i++)
+                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                    {
+                        applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrain(),dx.getStrainHessian(i,j),mu,lamd,factors.order2()[count]*kfactor);
+                        applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i,j),dx.getStrain(),mu,lamd,factors.order2()[count]*kfactor);
+                        count++;
+                    }
                 // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
@@ -396,13 +416,19 @@ public:
                     {
                         applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainGradient(i),dx.getStrainGradient(j),viscosity,0,factors.order2()[count]*bfactor);
                         if(i!=j) applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainGradient(j),dx.getStrainGradient(i),viscosity,0,factors.order2()[count]*bfactor);
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrain(),dx.getStrainHessian(i,j),viscosity,0,factors.order2()[count]*bfactor);
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i,j),dx.getStrain(),viscosity,0,factors.order2()[count]*bfactor);
                         count++;
                     }
 
                 if( order > 1 )
                 {
+                    count = 0;
+                    for(unsigned int i=0; i<spatial_dimensions; i++)
+                        for(unsigned int j=i; j<spatial_dimensions; j++)
+                        {
+                            applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrain(),dx.getStrainHessian(i,j),viscosity,0,factors.order2()[count]*bfactor);
+                            applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i,j),dx.getStrain(),viscosity,0,factors.order2()[count]*bfactor);
+                            count++;
+                        }
                     // order 3
                     for(unsigned int i=0; i<spatial_dimensions; i++)
                         for(unsigned int j=0; j<strain_size; j++)
@@ -427,7 +453,6 @@ public:
     MatBlock getK()
     {
         MatBlock K = MatBlock();
-        typedef Eigen::Map<Eigen::Matrix<Real,T::deriv_total_size,T::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eK(&K[0][0]);
         // order 0
         eK.template block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.vol());
@@ -449,8 +474,14 @@ public:
 
             if( order > 1 )
             {
-                // order 3
                 unsigned int offset = (spatial_dimensions+1)*strain_size;
+                for(unsigned int j=0; j<strain_size; j++)
+                {
+                    eK.template block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
+                    eK.template block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
+                }
+
+                // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
@@ -472,14 +503,18 @@ public:
     MatBlock getC()
     {
         MatBlock C ;
-        C.invert(getK());
+        if( order > 0 ) C.invert(getK());
+        else
+        {
+            EigenMap eC(&C[0][0]);
+            eC.template block(0,0,strain_size,strain_size) = assembleC_Isotropic<Real,material_dimensions,strain_size>(youngModulus,poissonRatio,factors.vol());
+        }
         return C;
     }
 
     MatBlock getB()
     {
         MatBlock B = MatBlock();
-        typedef Eigen::Map<Eigen::Matrix<Real,T::deriv_total_size,T::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
         // order 0
         eB.template block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.vol());
@@ -501,8 +536,14 @@ public:
 
             if( order > 1 )
             {
-                // order 3
                 unsigned int offset = (spatial_dimensions+1)*strain_size;
+                for(unsigned int j=0; j<strain_size; j++)
+                {
+                    eB.template block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
+                    eB.template block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
+                }
+
+                // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
