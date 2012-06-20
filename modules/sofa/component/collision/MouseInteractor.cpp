@@ -117,7 +117,10 @@ void BaseMouseInteractor::updatePosition( double )
 void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 {
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
-    for (; it!=it_end; ++it) (*it)->draw(vparams);
+    for (; it!=it_end; ++it)
+        (*it)->draw(vparams);
+
+    if( !vparams->isSupported(sofa::core::visual::API_OpenGL) ) return;
 
     if (lastPicked.body)
     {
