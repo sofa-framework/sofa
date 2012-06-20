@@ -45,7 +45,7 @@ public:
     VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance())
         :vparams(vparams)
     {}
-    virtual ~VisualModelPolicy() {};
+    virtual ~VisualModelPolicy() {}
     virtual void load() = 0;
     virtual void unload() = 0;
 protected:
@@ -66,6 +66,7 @@ public:
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
                 &classVisualModel);
         vparams->drawTool() = &drawTool;
+        vparams->setSupported(sofa::core::visual::API_OpenGL);
     }
     void unload()
     {
