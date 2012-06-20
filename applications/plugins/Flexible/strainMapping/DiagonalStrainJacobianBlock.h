@@ -43,7 +43,6 @@ namespace defaulttype
 {
 
 
-
 /** Template class used to implement one jacobian block for DiagonalStrainMapping */
 template<class TIn, class TOut>
 class DiagonalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut>
@@ -67,6 +66,7 @@ public:
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
+    enum { order = Out::order };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
     typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
@@ -90,21 +90,51 @@ public:
     {
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, _S, _V );
 
+        // order 0
         for( int i=0 ; i<material_dimensions ; ++i )
             result.getStrain()[i] += _S[i] - 1;
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( _U.multTranspose( data.getGradientF( k ) * _V ) ) );
+            }
+        }
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
+        //order 0
         result.getStrain() += StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getStrainGradient(k) += StrainMatToVoigt( _U.multTranspose( data.getGradientF(k) * _V ) );
+            }
+        }
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
+        // order 0
         result.getF() += _U * StressVoigtToMat( data.getStrain() ).multTransposed( _V );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getGradientF(k) += _U * StressVoigtToMat( data.getStrainGradient(k) ).multTransposed( _V );
+            }
+        }
     }
 
-    // TODO how?????
+    // TODO requires to write U.dp.V as a matrix-vector product J.dp
     MatBlock getJ()
     {
         MatBlock B = MatBlock();
@@ -115,7 +145,7 @@ public:
     }
 
 
-    // TODO
+    // TODO requires dU/dp & dV/dp and to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) a matrix-vector product K.dp
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
@@ -129,6 +159,12 @@ public:
         helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
         df.getF() += dU * StressVoigtToMat( childForce.getStrain() ) * _V * kfactor;
         df.getF() += _U * StressVoigtToMat( childForce.getStrain() ) * dV * kfactor;
+
+        if( order > 0 )
+        {
+            // order 1
+            // TODO
+        }
     }
 };
 

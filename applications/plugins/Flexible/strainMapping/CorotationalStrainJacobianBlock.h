@@ -34,9 +34,9 @@ namespace defaulttype
 {
 
 
-/** Template class used to implement one jacobian block for CorotationalStrainMapping */
-template<class TIn, class TOut>
-class CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+///** Template class used to implement one jacobian block for CorotationalStrainMapping */
+//template<class TIn, class TOut>
+//lass CorotationalStrainJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
 
 } // namespace defaulttype
 } // namespace sofa

@@ -14,8 +14,8 @@
   <MarchingCubesEngine name="mc2"  image="@resampler.outputImage" transform="@resampler.outputTransform"  isoValue="30" subdiv="-100 -100 -100" showMesh="false"/>		
 
 
-    <EulerImplicitSolver />
-    <CGLinearSolver  />
+    <EulerImplicitSolver />   <CGLinearSolver  />
+
 
 
  <Node 	name="Flexible"   >
@@ -43,15 +43,18 @@
 	<Node 	name="E"   >
 	    <MechanicalObject  template="E332" name="E"  />
 	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false"/>
+<!-- 	    <DiagonalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false"/> -->
 	    <HookeForceField  template="E332" name="ff" youngModulus="1000" poissonRatio="0" viscosity="100"/>
 	</Node>
+	
 
+	
     </Node>
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
 		<MechanicalObject  template="Vec3d" name="pts" src="@mesh" useMask="0" />
-    		<UniformMass totalMass="10" />
+		<UniformMass totalMass="10" />
 		<Triangle />
 	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
 	    </Node>

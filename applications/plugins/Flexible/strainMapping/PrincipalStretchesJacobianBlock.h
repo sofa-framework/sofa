@@ -67,6 +67,7 @@ public:
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
+    enum { order = Out::order };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
     typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
@@ -92,14 +93,16 @@ public:
     {
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, _S, _V );
 
+        // order 0
         for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += _S[i] - (Real)1;
+            result.getStrain()[i] += _S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
 
         computeJ();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
+        // order 0
         for( int i=0 ; i<spatial_dimensions ; ++i )
             for( int j=0 ; j<material_dimensions ; ++j )
                 for( int k=0 ; k<material_dimensions ; ++k )
@@ -108,6 +111,7 @@ public:
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
+        // order 0
         for( int i=0 ; i<spatial_dimensions ; ++i )
             for( int j=0 ; j<material_dimensions ; ++j )
                 for( int k=0 ; k<material_dimensions ; ++k )
@@ -127,7 +131,7 @@ public:
         return _J;
     }
 
-    // TODO
+    // TODO requires dU/dp & dV/dp and to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) a matrix-vector product K.dp
     KBlock getK( const OutDeriv& /*childForce*/ )
     {
         return KBlock();
@@ -140,6 +144,8 @@ public:
         SpatialMaterialMat dU;
         MaterialMaterialMat dV;
         helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
+
+        // order 0
         df.getF() += dU.multDiagonal( childForce.getStrain() ) * _V * kfactor;
         df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
     }

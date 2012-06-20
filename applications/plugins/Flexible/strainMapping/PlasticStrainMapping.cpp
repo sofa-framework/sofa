@@ -48,12 +48,21 @@ int PlasticStrainMappingClass = core::RegisterObject("Map a total strain to an e
         .add< PlasticStrainMapping< E331Types > >(true)
         .add< PlasticStrainMapping< E221Types > >()
         .add< PlasticStrainMapping< E332Types > >()
-        .add< PlasticStrainMapping< E333Types > >();
+        .add< PlasticStrainMapping< E333Types > >()
+
+        .add< PlasticStrainMapping< D331Types > >()
+        .add< PlasticStrainMapping< D221Types > >()
+        .add< PlasticStrainMapping< D332Types > >()
+        ;
 
 template class SOFA_Flexible_API PlasticStrainMapping< E331Types >;
 template class SOFA_Flexible_API PlasticStrainMapping< E221Types >;
 template class SOFA_Flexible_API PlasticStrainMapping< E332Types >;
 template class SOFA_Flexible_API PlasticStrainMapping< E333Types >;
+
+template class SOFA_Flexible_API PlasticStrainMapping< D331Types >;
+template class SOFA_Flexible_API PlasticStrainMapping< D221Types >;
+template class SOFA_Flexible_API PlasticStrainMapping< D332Types >;
 
 } // namespace mapping
 } // namespace component

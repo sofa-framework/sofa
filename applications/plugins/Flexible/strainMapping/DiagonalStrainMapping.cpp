@@ -43,14 +43,24 @@ SOFA_DECL_CLASS(DiagonalStrainMapping);
 using namespace defaulttype;
 
 // Register in the Factory
-int DiagonalStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Diagonalized Strain (small local deformations based on SVD).")
+int DiagonalStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Diagonalized Strain (small local deformations diagonalized with a SVD).")
 
         .add< DiagonalStrainMapping< F331Types, D331Types > >(true)
         .add< DiagonalStrainMapping< F321Types, D221Types > >()
+        .add< DiagonalStrainMapping< F332Types, D332Types > >()
+
+        .add< DiagonalStrainMapping< F331Types, E331Types > >()
+        .add< DiagonalStrainMapping< F321Types, E221Types > >()
+        .add< DiagonalStrainMapping< F332Types, E332Types > >()
         ;
 
 template class SOFA_Flexible_API DiagonalStrainMapping< F331Types, D331Types >;
 template class SOFA_Flexible_API DiagonalStrainMapping< F321Types, D221Types >;
+template class SOFA_Flexible_API DiagonalStrainMapping< F332Types, D332Types >;
+
+template class SOFA_Flexible_API DiagonalStrainMapping< F331Types, E331Types >;
+template class SOFA_Flexible_API DiagonalStrainMapping< F321Types, E221Types >;
+template class SOFA_Flexible_API DiagonalStrainMapping< F332Types, E332Types >;
 
 } // namespace mapping
 } // namespace component
