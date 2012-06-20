@@ -215,25 +215,25 @@ public:
 
 
 public slots:
-    void NewRootNode(sofa::simulation::Node* root, const char* path);
-    void ActivateNode(sofa::simulation::Node* , bool );
-    void Update();
+    virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
+    virtual void ActivateNode(sofa::simulation::Node* , bool );
+    virtual void Update();
     virtual void fileSaveAs(sofa::simulation::Node *node);
-    void LockAnimation(bool);
-    void fileRecentlyOpened(int id);
-    void playpauseGUI(bool value);
+    virtual void LockAnimation(bool);
+    virtual void fileRecentlyOpened(int id);
+    virtual void playpauseGUI(bool value);
 //#ifdef SOFA_GUI_INTERACTION
-    void interactionGUI(bool value);
+    virtual void interactionGUI(bool value);
 //#endif
-    void step();
-    void setDt(double);
-    void setDt(const QString&);
-    void resetScene();
-    void screenshot();
-    void showhideElements();
-    void updateViewerParameters();
-    void updateBackgroundColour();
-    void updateBackgroundImage();
+    virtual void step();
+    virtual void setDt(double);
+    virtual void setDt(const QString&);
+    virtual void resetScene();
+    virtual void screenshot();
+    virtual void showhideElements();
+    virtual void updateViewerParameters();
+    virtual void updateBackgroundColour();
+    virtual void updateBackgroundImage();
 
 // Propagate signal to call viewer method in case of it is not a widget
 // Maybe, have to create a SofaGuiViewerMediator class to provide this
@@ -243,26 +243,26 @@ public slots:
     virtual void setSizeH ( int _valH ) {viewer->setSizeH(_valH);   }
 
 #ifdef SOFA_QT4
-    void changeHtmlPage( const QUrl&);
+    virtual void changeHtmlPage( const QUrl&);
 #else
-    void changeHtmlPage( const QString&);
+    virtual void changeHtmlPage( const QString&);
 #endif
-    void Clear();
+    virtual void Clear();
     //Used in Context Menu
     //refresh the visualization window
-    void redraw();
-    void exportOBJ(sofa::simulation::Node* node, bool exportMTL=true);
-    void dumpState(bool);
-    void displayComputationTime(bool);
-    void setExportGnuplot(bool);
-    void setExportVisitor(bool);
-    void currentTabChanged(QWidget*);
+    virtual void redraw();
+    virtual void exportOBJ(sofa::simulation::Node* node, bool exportMTL=true);
+    virtual void dumpState(bool);
+    virtual void displayComputationTime(bool);
+    virtual void setExportGnuplot(bool);
+    virtual void setExportVisitor(bool);
+    virtual void currentTabChanged(QWidget*);
 protected slots:
     /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list.
     /// Note: When the app start, we registred GUI and static create/init it with a guiName;
     /// during the app, if you change viewer you keep the same GUI.
     virtual void changeViewer();
-    void updateViewerList();
+    virtual void updateViewerList();
 
 signals:
     void reload();
