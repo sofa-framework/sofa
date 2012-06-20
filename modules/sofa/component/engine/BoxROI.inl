@@ -382,15 +382,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 
     const VecCoord* x0 = &f_X0.getValue();
-    glColor3f(1.0f, 0.4f, 0.4f);
+    sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
+
 
     ///draw the boxes
     if( p_drawBoxes.getValue())
     {
-        glDisable(GL_LIGHTING);
-        if (_drawSize.getValue())
-            glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_LINES);
+        vparams->drawTool()->setLightingEnabled(false);
+        float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
+        std::vector<sofa::defaulttype::Vector3> vertices;
         const helper::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
@@ -401,60 +401,55 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             const Real& Ymax=b[4];
             const Real& Zmin=b[2];
             const Real& Zmax=b[5];
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmax);
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
+            vparams->drawTool()->drawLines(vertices, linesWidth , color );
         }
-        glEnd();
-        glLineWidth(1);
     }
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
-        if (_drawSize.isSet())
-            glPointSize((GLfloat)_drawSize.getValue());
-        else
-            glPointSize(5.0);
-        glDisable(GL_LIGHTING);
-        glBegin(GL_POINTS);
+        float pointsWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
+        vparams->drawTool()->setLightingEnabled(false);
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            helper::gl::glVertexT(p);
+            vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
         }
-        glEnd();
-        glPointSize(1);
+        vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
     }
 
     ///draw edges in ROI
     if( p_drawEdges.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_LINES);
+        vparams->drawTool()->setLightingEnabled(false);
+        float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
@@ -462,18 +457,17 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             }
         }
-        glEnd();
-        glLineWidth(1);
+        vparams->drawTool()->drawLines(vertices, linesWidth, color);
     }
 
     ///draw triangles in ROI
     if( p_drawTriangles.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_TRIANGLES);
+        vparams->drawTool()->setLightingEnabled(false);
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
@@ -481,18 +475,18 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             }
         }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices, color);
     }
 
     ///draw tetrahedra in ROI
     if( p_drawTetrahedra.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_LINES);
+        vparams->drawTool()->setLightingEnabled(false);
+        float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
@@ -500,22 +494,21 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
                 p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             }
 
             CPos p = DataTypes::getCPos((*x0)[t[0]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             p = DataTypes::getCPos((*x0)[t[2]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             p = DataTypes::getCPos((*x0)[t[1]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
             p = DataTypes::getCPos((*x0)[t[3]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back( sofa::defaulttype::Vector3(p.ptr()[0], p.ptr()[1], p.ptr()[2]) );
         }
-        glEnd();
-        glLineWidth(1);
+        vparams->drawTool()->drawLines(vertices, linesWidth, color);
     }
 }
 
