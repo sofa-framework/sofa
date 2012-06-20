@@ -24,6 +24,9 @@ sofa-default.cfg
 # Ignorer tous les fichiers orig
 *.orig
 
+# Ignorer tous les fichiers temporaires liés à l'édition
+*~
+
 # Ignorer tous les fichiers et dossiers du repertoire bin/
 bin/
 
@@ -61,6 +64,7 @@ applications/projects/meshconv/Makefile
 applications/projects/meshconv/OBJ/
 applications/projects/runSofa/Makefile
 applications/projects/runSofa/OBJ/
+applications/projects/sofaBatch/OBJ/
 applications/projects/sofaConfiguration/Makefile
 applications/projects/sofaConfiguration/exec/Makefile
 applications/projects/sofaConfiguration/exec/OBJ/
