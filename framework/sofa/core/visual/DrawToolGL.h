@@ -96,6 +96,8 @@ public:
     virtual void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
 
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+            const Vector3 &normal);
+    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal, const Vec4f &c);
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal,

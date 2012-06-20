@@ -446,6 +446,17 @@ void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vecto
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+        const Vector3 &normal)
+{
+    glNormalT(normal);
+    glVertexNv<3>(p1.ptr());
+    glVertexNv<3>(p2.ptr());
+    glVertexNv<3>(p3.ptr());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 {
     glPushMatrix();
