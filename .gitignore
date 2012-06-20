@@ -13,8 +13,9 @@
 #*.[oa]
 
 
-
 ########## GITIGNORE SOFA-DEV ##############
+# ignore vim journal files
+.*.swp
 
 # Ignorer les fichiers de configuration (charge à chaque utilisateur de le modifier)
 share/config/plugins.cfg
