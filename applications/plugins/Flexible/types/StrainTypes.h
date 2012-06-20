@@ -73,6 +73,7 @@ public:
     enum { VSize = Basis::total_size };  ///< number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
+    enum { order = _order };
 
     typedef vector<Real> VecReal;
 

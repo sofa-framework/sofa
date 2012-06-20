@@ -183,77 +183,68 @@ public:
 
     // stuff only needed to compute the geometric stiffness and different for each decomposition method -> use pointers and create variables only when needed
     // TODO deal with it by using only one struct pointer?
-    bool *_degenerated; // for qr & svd dJ
-    Affine *_invTriS; // for qr dJ
-    Affine *_G; // for polar dJ
-    Affine *_U, *_V; Vec<3,Real> *_Fdiag; // for svd dJ
+    bool *_degenerated;
+    Affine *_dJ_Mat1; // R^-1 for QR, inv(G) for polar, U for SVD
+    Affine *_dJ_Mat2; // V for SVD
+    Vec<material_dimensions,Real> *_dJ_Vec; // diagonal S for SVD
+
 
     CorotationalStrainJacobianBlock()
         : Inherit()
         , _degenerated( NULL )
-        , _invTriS( NULL )
-        , _G( NULL )
-        , _U( NULL )
-        , _V( NULL )
-        , _Fdiag( NULL )
+        , _dJ_Mat1( NULL )
+        , _dJ_Mat2( NULL )
+        , _dJ_Vec( NULL )
     {
     }
 
 
     void init_small()
     {
+        if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
+        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
+        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
         if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
-        if( _G ) { delete _G; _G=NULL; }
-        if( _U ) { delete _U; _U=NULL; }
-        if( _V ) { delete _V; _V=NULL; }
-        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
     }
     void init_qr( bool geometricStiffness )
     {
-        if( _G ) { delete _G; _G=NULL; }
-        if( _U ) { delete _U; _U=NULL; }
-        if( _V ) { delete _V; _V=NULL; }
-        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
+        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
 
         if( geometricStiffness )
         {
-            if( !_degenerated ) _degenerated = new bool();
-            if( !_invTriS ) _invTriS = new Affine();
+            if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
+            if( !_degenerated ) _degenerated = new bool;
         }
         else
         {
+            if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
             if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-            if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
         }
     }
     void init_polar( bool geometricStiffness )
     {
-        if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
-        if( _U ) { delete _U; _U=NULL; }
-        if( _V ) { delete _V; _V=NULL; }
-        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
+        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
+        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
 
         if( geometricStiffness )
         {
-            if( !_G )_G = new Affine();
+            if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
+            if( !_degenerated ) _degenerated = new bool;
         }
         else
         {
-            if( _G ) { delete _G; _G=NULL; }
+            if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
+            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
         }
     }
     void init_svd()
     {
-        if( !_degenerated ) _degenerated = new bool();
-        if( _invTriS ) { delete _invTriS; _invTriS=NULL; }
-        if( _G ) { delete _G; _G=NULL; }
-        if( !_U ) _U = new Affine();
-        if( !_V ) _V = new Affine();
-        if( !_Fdiag ) _Fdiag = new Vec<3,Real>();
+        if( !_degenerated ) _degenerated = new bool;
+        if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
+        if( !_dJ_Mat2 ) _dJ_Mat2 = new Affine();
+        if( !_dJ_Vec ) _dJ_Vec = new Vec<3,Real>();
     }
-
 
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
@@ -269,10 +260,17 @@ public:
     {
         StrainMat strainmat;
 
-        *_degenerated = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R );
-        Mat<3,3,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
-        _invTriS->invert(T);
-        strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
+        if( _dJ_Mat1 )
+        {
+            *_degenerated = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            Mat<3,3,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
+            _dJ_Mat1->invert(T);
+            strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
+        }
+        else
+        {
+            computeQR( data.getF(), _R, strainmat );
+        }
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -283,7 +281,11 @@ public:
 
         helper::Decompose<Real>::polarDecomposition( data.getF(), _R, strainmat );
 
-        if( _G ) helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_G );
+        if( _dJ_Mat1 )
+        {
+            helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_dJ_Mat1 );
+            *_degenerated = determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+        }
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -293,7 +295,7 @@ public:
     {
         StrainMat strainmat;
 
-        *_degenerated = computeSVD( data.getF(), _R, strainmat, *_U, *_Fdiag, *_V );
+        *_degenerated = computeSVD( data.getF(), _R, strainmat, *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2 ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -319,7 +321,7 @@ public:
     }
 
 
-    // requires derivative of _R. Not Yet implemented..
+    // requires dJ/dp. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
@@ -332,23 +334,23 @@ public:
         if( *_degenerated ) return;
 
         Affine dR;
-        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_invTriS, dx.getF(), dR );
+        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_dJ_Mat1, dx.getF(), dR );
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        //QUITE UNSTABLE
+        if( *_degenerated ) return;
+
         Affine dR;
-        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_G, _R, dx.getF(), dR );
+        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_dJ_Mat1, _R, dx.getF(), dR );
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        // QUITE STABLE
         if( *_degenerated ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
         Affine dR;
-        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_U, *_Fdiag, *_V, dx.getF(), dR ); // using SVD decomposition method
+        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR ); // using SVD decomposition method
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
 };
@@ -478,7 +480,7 @@ public:
     }
 
 
-    // requires derivative of _R. Not Yet implemented..
+    // requires dJ/dp. Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
@@ -571,7 +573,7 @@ public:
         // order 1
         for(unsigned int k=0; k<spatial_dimensions; k++)
         {
-            StrainMat T = _R.multTranspose( data.getGradientF( k ) ); // T = Rt * g
+            StrainMat T = data.getGradientF( k ); // T = Rt * g
             result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( T ) ); // (T+Tt)*0.5
         }
     }

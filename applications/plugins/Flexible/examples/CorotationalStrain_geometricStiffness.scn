@@ -24,7 +24,7 @@
 	    <Node name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
 	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd" geometricStiffness="false"/>
-	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0" assembleK="false" assembleB="false"/>	    
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0.1" assembleK="false" assembleB="false"/>	    
 	    </Node>
 	    
 		
@@ -72,7 +72,7 @@
 	    <Node name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
 	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd" geometricStiffness="true"/>
-	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0" assembleK="false" assembleB="false"/>	    
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0.1" assembleK="false" assembleB="false"/>	    
 	    </Node>
 	    
 		
@@ -120,7 +120,7 @@
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
 	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd"/>
-            <HookeForceField template="E221" youngModulus="2000" poissonRatio="0.2" />
+            <HookeForceField template="E221" youngModulus="2000" poissonRatio="0.2" viscosity="0.1" />
 	  </Node>
 	 
 	
@@ -152,7 +152,7 @@
         <Node name="StrainNode">
             <MechanicalObject template="E221"  name="VoigtStrainDOF" />
 	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd" geometricStiffness="true"/>
-            <HookeForceField template="E221" youngModulus="2000" poissonRatio="0.2" />
+            <HookeForceField template="E221" youngModulus="2000" poissonRatio="0.2" viscosity="0.1" />
 	  </Node>
 	 
 	

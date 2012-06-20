@@ -41,7 +41,7 @@ namespace mapping
 using helper::vector;
 
 /** Deformation Gradient to Diagonalized Lagrangian Strain mapping.
-  Is equivalent to SVD corotational and is more efficient for explicit integration.
+    The strain is equivalent to ( principal stretches - Id ). The non-diagonal terms are useful in the Stress to handle anisotropic materials.
 */
 
 template <class TIn, class TOut>

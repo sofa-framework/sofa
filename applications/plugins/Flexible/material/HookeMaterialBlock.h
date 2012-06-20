@@ -37,12 +37,6 @@ namespace defaulttype
 {
 
 
-/**
-Template class used to implement one material block for Hooke Material
-*/
-template<class T>
-class HookeMaterialBlock : public BaseMaterialBlock<T> {};
-
 }
 }
 
