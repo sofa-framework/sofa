@@ -106,8 +106,10 @@ int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal leng
     return i;
 }
 
-void RayModel::draw(const core::visual::VisualParams* ,int index)
+void RayModel::draw(const core::visual::VisualParams* vparams,int index)
 {
+    if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
+
     Ray r(this, index);
     const Vector3& p1 = r.origin();
     const Vector3 p2 = p1 + r.direction()*r.l();
@@ -119,6 +121,8 @@ void RayModel::draw(const core::visual::VisualParams* ,int index)
 
 void RayModel::draw(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
+
     if (vparams->displayFlags().getShowCollisionModels())
     {
         glDisable(GL_LIGHTING);
