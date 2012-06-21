@@ -21,6 +21,7 @@ SOURCES = initFlexible.cpp\
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
     deformationMapping/LogRigidMapping.cpp \
+    deformationMapping/JointRigidMapping.cpp \
     deformationMapping/RelativeRigidMapping.cpp \
     deformationMapping/TriangleDeformationMapping.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
