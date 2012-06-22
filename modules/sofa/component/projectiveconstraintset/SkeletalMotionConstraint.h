@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace sofa
 {
@@ -75,7 +77,7 @@ struct SkeletonJoint
     int									mParentIndex;
 
     // each channel represents a transformation matrix which is the node local transformation at a given frame in the animation
-    std::vector<RigidCoord<3, Real>>	mChannels;
+    std::vector<RigidCoord<3, Real> >	mChannels;
 
     // times corresponding to each animation channel, the channel mChannels[i] must be played at the time contained in mTimes[i]
     std::vector<double>					mTimes;
@@ -100,6 +102,18 @@ class SkeletalMotionConstraint : public ProjectiveConstraintSet<TDataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(ProjectiveConstraintSet, TDataTypes));
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
 
 protected:
     SkeletalMotionConstraint();
