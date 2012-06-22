@@ -36,7 +36,8 @@ namespace component
 namespace shapefunction
 {
 
-using namespace core::behavior;
+using core::behavior::BaseShapeFunction;
+using defaulttype::Mat;
 /**
 Shepard shape function (=inverse distance weights) is defined as w_i(x)=1/d(x,x_i)^power followed by normalization
 http://en.wikipedia.org/wiki/Inverse_distance_weighting

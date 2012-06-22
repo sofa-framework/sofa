@@ -41,7 +41,8 @@ namespace component
 namespace shapefunction
 {
 
-using namespace core::behavior;
+using core::behavior::BaseShapeFunction;
+using defaulttype::Mat;
 /**
 Barycentric shape functions are the barycentric coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra)
   */

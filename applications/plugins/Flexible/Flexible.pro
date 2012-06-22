@@ -72,7 +72,6 @@ HEADERS = initFlexible.h \
     strainMapping/BaseStrainMapping.h \
     strainMapping/GreenStrainMapping.h \
     strainMapping/GreenStrainJacobianBlock.h \
-    strainMapping/GreenStrainJacobianBlock.inl \
     strainMapping/CorotationalStrainMapping.h \
     strainMapping/CorotationalStrainJacobianBlock.h \
     strainMapping/CorotationalStrainJacobianBlock.inl \

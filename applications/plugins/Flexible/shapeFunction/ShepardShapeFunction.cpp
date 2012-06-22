@@ -35,6 +35,8 @@ namespace component
 namespace shapefunction
 {
 
+using namespace core::behavior;
+
 SOFA_DECL_CLASS(ShepardShapeFunction)
 
 // Register in the Factory

@@ -58,7 +58,6 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Vector3;
 using defaulttype::Mat;
-using namespace helper;
 using namespace cimg_library;
 
 /**

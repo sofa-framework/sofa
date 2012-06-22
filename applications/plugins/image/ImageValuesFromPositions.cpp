@@ -22,34 +22,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_VoronoiShapeFunction_CPP
+#define SOFA_IMAGE_ImageValuesFromPositions_CPP
 
-#include "../initFlexible.h"
-#include "../shapeFunction/VoronoiShapeFunction.h"
+#include "ImageValuesFromPositions.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
+
 namespace component
 {
-namespace shapefunction
+
+namespace engine
 {
 
 using namespace defaulttype;
-using namespace core::behavior;
 
-SOFA_DECL_CLASS(VoronoiShapeFunction)
+SOFA_DECL_CLASS(ImageValuesFromPositions)
 
-// Register in the Factory
-int VoronoiShapeFunctionClass = core::RegisterObject("Computes natural neighbor shape functions in images")
-
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageUC> >(true)
-        .add< VoronoiShapeFunction<ShapeFunction3,ImageD> >()
+int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities at sample locations")
+        .add<ImageValuesFromPositions<ImageD> >(true)
+        .add<ImageValuesFromPositions<ImageUC> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageValuesFromPositions<ImageC> >()
+        .add<ImageValuesFromPositions<ImageI> >()
+        .add<ImageValuesFromPositions<ImageUI> >()
+        .add<ImageValuesFromPositions<ImageS> >()
+        .add<ImageValuesFromPositions<ImageUS> >()
+        .add<ImageValuesFromPositions<ImageL> >()
+        .add<ImageValuesFromPositions<ImageUL> >()
+        .add<ImageValuesFromPositions<ImageF> >()
+        .add<ImageValuesFromPositions<ImageB> >()
+#endif
         ;
 
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageUC>;
-template class SOFA_Flexible_API VoronoiShapeFunction<ShapeFunction3,ImageD>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageD>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUC>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageC>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageI>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUI>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageS>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUS>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageL>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUL>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageF>;
+template class SOFA_IMAGE_API ImageValuesFromPositions<ImageB>;
+#endif
 
-}
-}
-}
+} //
+} // namespace component
+
+} // namespace sofa
+
