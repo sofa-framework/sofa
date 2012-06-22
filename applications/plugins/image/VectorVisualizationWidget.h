@@ -23,7 +23,6 @@ namespace gui
 namespace qt
 {
 
-using namespace helper;
 
 /**
 * Abstract, non templated widget that allows us to use and declare signals, while subclass contains template information

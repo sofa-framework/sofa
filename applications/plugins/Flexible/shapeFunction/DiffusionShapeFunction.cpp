@@ -36,6 +36,7 @@ namespace shapefunction
 {
 
 using namespace defaulttype;
+using namespace core::behavior;
 
 SOFA_DECL_CLASS(DiffusionShapeFunction)
 
@@ -43,9 +44,11 @@ SOFA_DECL_CLASS(DiffusionShapeFunction)
 int DiffusionShapeFunctionClass = core::RegisterObject("Computes shape functions based on diffusion in images")
 
         .add< DiffusionShapeFunction<ShapeFunction3,ImageUC> >(true)
+        .add< DiffusionShapeFunction<ShapeFunction3,ImageD> >()
         ;
 
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction3,ImageUC>;
+template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction3,ImageD>;
 
 }
 }

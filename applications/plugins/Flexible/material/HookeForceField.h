@@ -60,14 +60,22 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<Real> _youngModulus;
-    Data<Real> _poissonRatio;
-    Data<Real> _viscosity;
+    Data<vector<Real> > _youngModulus;
+    Data<vector<Real> > _poissonRatio;
+    Data<vector<Real> > _viscosity;
     //@}
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), this->_viscosity.getValue() );
+        Real youngModulus=0,poissonRatio=0,viscosity=0;
+        for(unsigned int i=0; i<this->material.size(); i++)
+        {
+            if(i<_youngModulus.getValue().size()) youngModulus=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) youngModulus=_youngModulus.getValue()[0];
+            if(i<_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[0];
+            if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
+
+            this->material[i].init( youngModulus, poissonRatio, viscosity );
+        }
         Inherit::reinit();
     }
 
@@ -91,18 +99,18 @@ public:
     /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
     virtual SReal getDampingRatio()
     {
-        return this->_viscosity.getValue()/this->_youngModulus.getValue(); // somehow arbitrary. todo: check this.
+        return this->_viscosity.getValue()[0]/this->_youngModulus.getValue()[0]; // somehow arbitrary. todo: check this.
     }
 
 
 protected:
     HookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","Poisson Ratio"))
-        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
+        , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
+        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0.45),"poissonRatio","Poisson Ratio"))
+        , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        _poissonRatio.setWidget("poissonRatio");
+        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeForceField()     {    }

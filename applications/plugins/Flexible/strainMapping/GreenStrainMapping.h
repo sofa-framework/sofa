@@ -27,7 +27,7 @@
 
 #include "../initFlexible.h"
 #include "../strainMapping/BaseStrainMapping.h"
-#include "../strainMapping/GreenStrainJacobianBlock.inl"
+#include "../strainMapping/GreenStrainJacobianBlock.h"
 
 
 namespace sofa

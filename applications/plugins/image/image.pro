@@ -33,6 +33,8 @@ HEADERS += \
 	ImageContainer.h \
    	ImageViewer.h \
 	ImageFilter.h \
+        TransferFunction.h \
+        ImageValuesFromPositions.h \
         MergeImages.h \
         ImageAccumulator.h \
         DepthMapToMeshEngine.h \
@@ -53,6 +55,8 @@ SOURCES += \
 	ImageContainer.cpp \
 	ImageViewer.cpp \
 	ImageFilter.cpp \
+        TransferFunction.cpp \
+        ImageValuesFromPositions.cpp \
         MergeImages.cpp \
         ImageAccumulator.cpp \
         DepthMapToMeshEngine.cpp \

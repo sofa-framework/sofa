@@ -28,7 +28,7 @@
 
 	<UniformMass totalMass="1" />
 
-	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0.4" method="polar" updateStiffnessMatrix="false" />
+	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/beam.obj"  color="1 .4 0.5 1" />
@@ -68,7 +68,7 @@
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E333" name="E"  /> 
 		    <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false" method="polar" />
-		    <HookeForceField  template="E333" name="ff" youngModulus="1000.0" poissonRatio="0.4" viscosity="100" assembleK="false" assembleB="false"/>
+		    <HookeForceField  template="E333" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="100" assembleK="false" assembleB="false"/>
 		</Node>
 
 	    </Node>

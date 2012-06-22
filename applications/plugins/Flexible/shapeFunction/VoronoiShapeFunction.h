@@ -49,7 +49,9 @@ namespace component
 namespace shapefunction
 {
 
-using namespace core::behavior;
+using core::behavior::BaseShapeFunction;
+using defaulttype::Mat;
+using defaulttype::Vec;
 /**
 Voronoi shape functions are natural neighbor interpolants
 there are computed from an image (typically a rasterized object)

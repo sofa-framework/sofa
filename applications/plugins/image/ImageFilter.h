@@ -56,6 +56,7 @@
 #define HESSIAN 18
 #define NORMALIZE 19
 #define RESAMPLE 20
+#define SELECTCHANNEL 21
 
 
 namespace sofa
@@ -68,7 +69,6 @@ namespace engine
 {
 
 using helper::vector;
-using namespace helper;
 using namespace cimg_library;
 
 /**
@@ -128,7 +128,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(21	,"0 - None"
+        helper::OptionsGroup filterOptions(22	,"0 - None"
                 ,"1 - Blur ( sigma )"
                 ,"2 - Blur Median ( n )"
                 ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -149,6 +149,7 @@ public:
                 ,"18 - Hessian (axis1 , axis2) "
                 ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
                 ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
+                ,"21 - SelectChannels ( c0, c1 )"
                                           );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -437,7 +438,14 @@ protected:
 
             }
             break;
-
+        case SELECTCHANNEL:
+            if(updateImage)
+            {
+                unsigned int c0=0;    if(p.size())   c0=(unsigned int)p[0];
+                unsigned int c1=c0;    if(p.size()>1)   c1=(unsigned int)p[1];
+                cimglist_for(img,l) {img(l)=in->getCImg(l).get_channels(c0,c1);  }
+            }
+            break;
         default:
             break;
         }

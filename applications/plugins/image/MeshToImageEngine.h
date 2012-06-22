@@ -52,7 +52,6 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace helper;
 using namespace cimg_library;
 
 /**

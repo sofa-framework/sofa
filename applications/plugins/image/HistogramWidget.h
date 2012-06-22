@@ -60,7 +60,8 @@ namespace gui
 namespace qt
 {
 
-using namespace helper;
+using namespace cimg_library;
+using defaulttype::Vec;
 
 //-----------------------------------------------------------------------------------------------//
 //  data widget -> generate qimage from Data<histogram> and show info (min,max,mouse position)
