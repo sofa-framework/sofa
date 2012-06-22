@@ -166,10 +166,10 @@ exists($${INSTALLED_FEATURES_FILE}.prf) {
   }
 }
 
-CONFIG(release, debug|release) {
-	CONFIGDEBUG = release
-} else {
+CONFIG(debug, debug|release) {
 	CONFIGDEBUG = debug
+} else {
+	CONFIGDEBUG = release
 }
 
 contains(QMAKE_CXXFLAGS, -pg) {
@@ -194,6 +194,8 @@ build_pass {
 
 VERSION_NUM = 1_0
 
+build_pass { # BUGFIX: do not set suffixes when not building actual makefiles (such as when generating the root visual studio solution)
+
 win32 {
 	LIBSUFFIX = _$${VERSION_NUM}
 }
@@ -205,6 +207,8 @@ contains(CONFIGDEBUG, debug) {
 
 contains(CONFIGDEBUG, profile) {
 	APPSUFFIX = $${APPSUFFIX}p
+}
+
 }
 
 ########################################################################
