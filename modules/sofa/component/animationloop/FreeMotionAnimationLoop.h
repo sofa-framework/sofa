@@ -70,7 +70,7 @@ public:
 
     Data<bool> m_solveVelocityConstraintFirst;
 
-private :
+protected :
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;
     component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
