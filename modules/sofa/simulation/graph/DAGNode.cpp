@@ -309,18 +309,35 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
         p.push_back(parent());
     return p;
 }
-
+/*
 /// Get parent node (or NULL if no hierarchy or for root node)
 core::objectmodel::BaseNode* DAGNode::getParent()
 {
-    return parent();
+	return parent();
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
 const core::objectmodel::BaseNode* DAGNode::getParent() const
 {
-    return parent();
+	return parent();
 }
+*/
+
+/// Test if the given node is a parent of this node.
+bool DAGNode::hasParent(const BaseNode* node) const
+{
+    Parents p = getParents();
+    return (p.end() != std::find(p.begin(), p.end(), node));
+}
+
+/// Test if the given context is a parent of this context.
+bool DAGNode::hasParent(const BaseContext* context) const
+{
+    if (context == NULL) return getParents().empty();
+    else return parent()->getContext() == context;
+}
+
+
 
 /// Test if the given context is an ancestor of this context.
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
@@ -377,7 +394,7 @@ std::string DAGNode::getPathName() const
 
 void DAGNode::initVisualContext()
 {
-    if (getParent() != NULL)
+    if (!getParents().empty())
     {
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
     }
@@ -385,11 +402,11 @@ void DAGNode::initVisualContext()
 
 void DAGNode::updateContext()
 {
-    if ( getParent() != NULL )
+    if ( !getParents().empty() )
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< parent()->getContext() << std::endl;
         }
         copyContext(*parent());
     }
@@ -398,11 +415,11 @@ void DAGNode::updateContext()
 
 void DAGNode::updateSimulationContext()
 {
-    if ( getParent() != NULL )
+    if ( !getParents().empty() )
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< parent()->getContext() << std::endl;
         }
         copySimulationContext(*parent());
     }
