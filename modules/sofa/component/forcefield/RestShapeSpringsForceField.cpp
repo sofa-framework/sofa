@@ -191,39 +191,85 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields())
-        return;  /// \todo put this in the parent class
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=external_points.getValue();
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
-
-//  if(ext_indices.size() == indices.size())
-
-    for (unsigned int i=0; i<indices.size(); i++)
+    if (vparams->displayFlags().getShowForceFields())
+        //return;  /// \todo put this in the parent class
     {
-        const unsigned int index = indices[i];
+        const VecIndex& indices = points.getValue();
+        const VecIndex& ext_indices=external_points.getValue();
 
-        glDisable(GL_LIGHTING);
-        glLineWidth(4.0);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
+        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
 
-        glVertex3dv(&p[index].getCenter().elems[0]);
+        //  if(ext_indices.size() == indices.size())
 
-        if(useRestMState)
+        for (unsigned int i=0; i<indices.size(); i++)
         {
-            const unsigned int ext_index = ext_indices[i];
-            glVertex3dv(&p0[ext_index].getCenter().elems[0]);
+            const unsigned int index = indices[i];
+
+            glDisable(GL_LIGHTING);
+            glLineWidth(4.0);
+            glBegin(GL_LINES);
+            glColor3f(0,1,0);
+
+            glVertex3dv(&p[index].getCenter().elems[0]);
+
+            if(useRestMState)
+            {
+
+                const unsigned int ext_index = ext_indices[i];
+                glVertex3dv(&p0[ext_index].getCenter().elems[0]);
+            }
+            else
+            {
+
+                glVertex3dv(&p0[index].getCenter().elems[0]);
+            }
+            glEnd();
         }
-        else
-        {
-            glVertex3dv(&p0[index].getCenter().elems[0]);
-        }
-        glEnd();
     }
+    if(drawSpring.getValue())
+    {
+        const VecIndex& indices = points.getValue();
+        const VecIndex& ext_indices=external_points.getValue();
+
+        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
+
+
+        std::vector< Vector3 > points;
+        //  if(ext_indices.size() == indices.size())
+
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            const unsigned int index = indices[i];
+
+
+
+            points.push_back(p[index].getCenter());
+            //glVertex3dv(&p[index].getCenter().elems[0]);
+
+            if(useRestMState)
+            {
+
+
+                const unsigned int ext_index = ext_indices[i];
+                //glVertex3dv(&p0[ext_index].getCenter().elems[0]);
+                points.push_back(p0[ext_index].getCenter());
+            }
+            else
+            {
+
+                //glVertex3dv(&p0[index].getCenter().elems[0]);
+                points.push_back(p0[index].getCenter());
+            }
+            //glEnd();
+
+            vparams->drawTool()->drawLines(points,5,springColor.getValue());
+        }
+    }
+
 }
 
 

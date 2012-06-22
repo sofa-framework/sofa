@@ -54,6 +54,8 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , recompute_indices(initData(&recompute_indices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
+    , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
+    , springColor(initData(&springColor,"springColor","spring color"))
     , restMState(NULL)
 //	, pp_0(NULL)
 {

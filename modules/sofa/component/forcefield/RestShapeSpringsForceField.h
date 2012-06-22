@@ -84,6 +84,8 @@ public:
     Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
+    Data< bool > drawSpring;
+    Data< sofa::defaulttype::Vec4f > springColor;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
 
