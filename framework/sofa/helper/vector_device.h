@@ -820,7 +820,7 @@ protected:
                 else if (i < clearSize)
                 {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << i << std::endl);
-                    hostPointer[i] = 0;
+                    MemoryManager::memsetHost(((T*)hostPointer)+i,0,sizeof(T));
                 }
                 break;
             }
