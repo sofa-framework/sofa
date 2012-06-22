@@ -78,24 +78,11 @@ public:
     /// Get a list of parent node
     virtual Parents getParents() const;
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    core::objectmodel::BaseNode* getParent();
-
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    const core::objectmodel::BaseNode* getParent() const;
-
     /// Test if the given node is a parent of this node.
-    bool hasParent(const BaseNode* node) const
-    {
-        return getParent() == node;
-    }
+    bool hasParent(const BaseNode* node) const;
 
     /// Test if the given context is a parent of this context.
-    bool hasParent(const BaseContext* context) const
-    {
-        if (context == NULL) return getParent() == NULL;
-        else return getParent()->getContext() == context;
-    }
+    bool hasParent(const BaseContext* context) const;
 
     /// Test if the given context is an ancestor of this context.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
