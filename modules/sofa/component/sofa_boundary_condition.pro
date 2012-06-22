@@ -57,7 +57,9 @@ HEADERS += initBoundaryCondition.h \
            projectiveconstraintset/PointConstraint.h \
            projectiveconstraintset/PointConstraint.inl \
            projectiveconstraintset/PositionBasedDynamicsConstraint.h \
-           projectiveconstraintset/PositionBasedDynamicsConstraint.inl
+           projectiveconstraintset/PositionBasedDynamicsConstraint.inl \
+		   projectiveconstraintset/SkeletalMotionConstraint.h \
+           projectiveconstraintset/SkeletalMotionConstraint.inl
 
 
 SOURCES += initBoundaryCondition.cpp \
@@ -86,7 +88,8 @@ SOURCES += initBoundaryCondition.cpp \
            projectiveconstraintset/PartialFixedConstraint.cpp \
            projectiveconstraintset/PartialLinearMovementConstraint.cpp \
            projectiveconstraintset/PointConstraint.cpp \
-           projectiveconstraintset/PositionBasedDynamicsConstraint.cpp
+           projectiveconstraintset/PositionBasedDynamicsConstraint.cpp \
+		   projectiveconstraintset/SkeletalMotionConstraint.cpp
            
 		   
 contains(DEFINES,SOFA_HAVE_EIGEN2){

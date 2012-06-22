@@ -105,10 +105,13 @@ protected:
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
 #endif
 
-    Data<unsigned int> nbRef; // Number of primitives influencing each point.
+    Data< vector<unsigned int> > nbRef; // Number of primitives influencing each point.
     Data< vector<SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
     Data< vector<SVector<InReal> > > weight;
     void updateWeights();
+
+public:
+    void setWeights(const vector<SVector<InReal> >& weights, const vector<SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs);
 
 public:
     Data<unsigned int> showFromIndex;

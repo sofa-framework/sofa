@@ -47,7 +47,7 @@ HEADERS += \
 	behavior/BaseProjectiveConstraintSet.h \
 	behavior/BaseVectorOperations.h \
 	behavior/BaseRotationFinder.h \
-        behavior/RotationMatrix.h \
+	behavior/RotationMatrix.h \
 	behavior/Constraint.h \
 	behavior/Constraint.inl \
 	behavior/ConstraintCorrection.h \
@@ -89,7 +89,7 @@ HEADERS += \
 	collision/Intersection.inl \
 	collision/NarrowPhaseDetection.h \
 	collision/Pipeline.h \
-        collision/IntersectorFactory.h \
+	collision/IntersectorFactory.h \
 	topology/BaseMeshTopology.h \
 	topology/BaseTopology.h \
 	topology/BaseTopologyObject.h \
@@ -106,6 +106,7 @@ HEADERS += \
 	loader/MeshLoader.h \
 	loader/PrimitiveGroup.h \
 	loader/VoxelLoader.h \
+	loader/SceneLoader.h \
 	Mapping.h \
 	Mapping.inl \
 	MultiMapping.h \
@@ -149,7 +150,7 @@ HEADERS += \
 	SofaLibrary.h \
 	CategoryLibrary.h \
 	ComponentLibrary.h \
-    objectmodel/GUIEvent.h
+	objectmodel/GUIEvent.h
 
 SOURCES += \
 	objectmodel/Base.cpp \
@@ -199,7 +200,7 @@ SOURCES += \
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
 	topology/TopologyHandler.cpp \
-        topology/TopologyElementHandler.cpp \
+	topology/TopologyElementHandler.cpp \
 	behavior/BaseConstraint.cpp \
 	behavior/BaseForceField.cpp \
 	behavior/BaseLMConstraint.cpp \
@@ -217,7 +218,8 @@ SOURCES += \
 	behavior/MixedInteractionConstraint.cpp \
 	behavior/ProjectiveConstraintSet.cpp \
 	loader/MeshLoader.cpp \
-  loader/VoxelLoader.cpp \
+	loader/VoxelLoader.cpp \
+	loader/SceneLoader.cpp \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp \
 	visual/VisualParams.cpp \

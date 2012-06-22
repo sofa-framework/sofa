@@ -65,13 +65,16 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
 #ifdef SOFA_DEV
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
 #endif
-    , nbRef ( initData ( &nbRef, ( unsigned ) 4,"nbRef","Number of primitives influencing each point." ) )
+    , nbRef ( initData ( &nbRef, "nbRef","Number of primitives influencing each point." ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child." ) )
     , weight ( initData ( &weight,"weight","influence weights of the Dofs." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show influence." ) )
 {
+    vector<unsigned int> defaultNbRef;
+    defaultNbRef.push_back((unsigned ) 4);
 
+    nbRef.setValue(defaultNbRef);
 }
 
 
@@ -91,6 +94,7 @@ void SkinningMapping<TIn, TOut>::init()
 
     if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->toModel.get( )) )
         maskTo = &stateTo->forceMask;
+
     unsigned int numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);
@@ -112,7 +116,7 @@ void SkinningMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::reinit()
 {
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref = nbRef.getValue()[0];
 
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
@@ -120,9 +124,14 @@ void SkinningMapping<TIn, TOut>::reinit()
     WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( this->f_index );
 
+    std::cerr << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size() << std::endl;
+
     // normalize weights
     for (unsigned int i=0; i<xto.size(); i++ )
     {
+        if(nbRef.getValue().size() == m_weights.size())
+            nbref = nbRef.getValue()[i];
+
         InReal w=0;  for (unsigned int j=0; j<nbref; j++ ) w+=m_weights[i][j];
         if(w!=0) for (unsigned int j=0; j<nbref; j++ ) m_weights[i][j]/=w;
     }
@@ -137,6 +146,9 @@ void SkinningMapping<TIn, TOut>::reinit()
         f_Pt.resize(out.size());
         for(unsigned int i=0; i<out.size(); i++ )
         {
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
             Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
             f_T0[i].resize(nbref);
             f_TE[i].resize(nbref);
@@ -161,6 +173,9 @@ void SkinningMapping<TIn, TOut>::reinit()
 
         for(unsigned int i=0; i<out.size(); i++ )
         {
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
             Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
             f_localPos[i].resize(nbref);
             f_rotatedPos[i].resize(nbref);
@@ -178,6 +193,12 @@ void SkinningMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::updateWeights ()
 {
+    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
+    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
+    std::cout << "UPDATE WEIGHTS" << std::endl;
+    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
+    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
+
     ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
     WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
@@ -185,7 +206,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 
     index.resize( xto.size() );
     m_weights.resize ( xto.size() );
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref=nbRef.getValue()[0];
 
     // compute 1/d^2 weights with Euclidean distance
     for (unsigned int i=0; i<xto.size(); i++ )
@@ -226,12 +247,18 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 
 }
 
-
+template <class TIn, class TOut>
+void SkinningMapping<TIn, TOut>::setWeights(const vector<SVector<InReal> >& weights, const vector<SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs)
+{
+    f_index = indices;
+    weight = weights;
+    nbRef = nbrefs;
+}
 
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
@@ -241,6 +268,9 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
             out[i] = OutCoord ();
+
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
 
             DQCoord q;		// frame current position in DQ form
             DQCoord b;      // linearly blended dual quaternions : b= sum_i w_i q_i*q0_i^-1
@@ -285,6 +315,10 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
             out[i] = OutCoord ();
+
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
             for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
             {
                 f_rotatedPos[i][j]=in[index[i][j]].rotate(f_localPos[i][j]);
@@ -298,7 +332,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
@@ -309,6 +343,9 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
         {
             for ( unsigned int i=0; i<out.size(); i++ )
             {
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 out[i] = OutDeriv();
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
@@ -321,6 +358,9 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
         {
             for ( unsigned int i=0; i<out.size(); i++ )
             {
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 out[i] = OutDeriv();
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
@@ -342,6 +382,10 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
             {
                 unsigned int i= ( unsigned int ) ( *it );
                 out[i] = OutDeriv();
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
@@ -355,6 +399,10 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
             {
                 unsigned int i= ( unsigned int ) ( *it );
                 out[i] = OutDeriv();
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
@@ -367,7 +415,7 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
@@ -379,6 +427,9 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
         {
             for ( unsigned int i=0; i<in.size(); i++ )
             {
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
@@ -391,6 +442,9 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
         {
             for ( unsigned int i=0; i<in.size(); i++ )
             {
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
@@ -411,6 +465,10 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 const int i= ( int ) ( *it );
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
@@ -425,6 +483,10 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 const int i= ( int ) ( *it );
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
+
                 for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
                 {
                     getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
@@ -441,7 +503,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
 {
-    unsigned int nbref=nbRef.getValue();
+    unsigned int nbref=nbRef.getValue()[0];
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
@@ -455,6 +517,9 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
             {
                 unsigned int childIndex = childParticle.index();
                 const OutDeriv& childJacobianVec = childParticle.val();
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[childIndex];
 
                 for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
                 {
@@ -476,6 +541,9 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
                 unsigned int childIndex = childParticle.index();
                 const OutDeriv& childJacobianVec = childParticle.val();
 
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[childIndex];
+
                 for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
                 {
                     InDeriv parentJacobianVec;
@@ -494,7 +562,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    const unsigned int nbref = this->nbRef.getValue();
+    unsigned int nbref = this->nbRef.getValue()[0];
 
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
@@ -511,6 +579,9 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
                 glColor4d ( m_weights[i][m],m_weights[i][m],0,1 );
@@ -539,6 +610,9 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                     const unsigned int& indexPoint = triangles[i][j];
                     double color = 0;
 
+                    if(nbRef.getValue().size() == m_weights.size())
+                        nbref = nbRef.getValue()[indexPoint];
+
                     for ( unsigned int m=0 ; m<nbref && m_weights[indexPoint][m]>0.; m++ )
                         if(index[indexPoint][m]==showFromIndex.getValue())
                             color = (m_weights[indexPoint][m] - minValue) / (maxValue - minValue);
@@ -556,6 +630,9 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             for ( unsigned int i = 0; i < xto.size(); i++)
             {
                 double color = 0;
+
+                if(nbRef.getValue().size() == m_weights.size())
+                    nbref = nbRef.getValue()[i];
 
                 for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
                     if(index[i][m]==showFromIndex.getValue())
