@@ -81,12 +81,12 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
     Real cT = (Real) this->getContext()->getTime();
     finished = false;
 
-    for(int i = 0; i < skeletonJoints.size(); ++i)
+    for(unsigned int i = 0; i < skeletonJoints.size(); ++i)
     {
         if(skeletonJoints[i].mChannels.empty() || skeletonJoints[i].mChannels.size() != skeletonJoints[i].mTimes.size())
             continue;
 
-        for(int j = 0; j < skeletonJoints[i].mTimes.size(); ++j)
+        for(unsigned int j = 0; j < skeletonJoints[i].mTimes.size(); ++j)
         {
             Real keyTime = skeletonJoints[i].mTimes[j];
             if(keyTime <= cT)
@@ -149,7 +149,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
         if(finished && nextT != prevT)
         {
             //set the motion to the Dofs
-            for(int i = 0; i < dx.size(); ++i)
+            for(unsigned int i = 0; i < dx.size(); ++i)
             {
                 SkeletonJoint<DataTypes>& skeletonJoint = skeletonJoints[skeletonBones[i].mSkeletonJointIndex];
 
@@ -170,7 +170,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
         }
         else
         {
-            for(int i = 0; i < dx.size(); ++i)
+            for(unsigned int i = 0; i < dx.size(); ++i)
                 dx[i] = Deriv();
         }
     }
@@ -271,7 +271,7 @@ void SkeletalMotionConstraint<DataTypes>::setSkeletalMotion(const std::vector<Sk
 
 // Matrix Integration interface
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
@@ -289,7 +289,7 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
@@ -309,7 +309,7 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = *this->mstate->getX();
 
     sofa::helper::vector<Vector3> points;
     sofa::helper::vector<Vector3> linesX;
@@ -322,13 +322,13 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     // draw joints (not bones we draw them differently later)
     {
-        for(int i = 0; i < skeletonJoints.size(); ++i)
+        for(unsigned int i = 0; i < skeletonJoints.size(); ++i)
         {
             RigidCoord< 3, Real> jointWorldRigid = skeletonJoints[i].mWorldRigid;
 
-            int j;
+            unsigned int j;
             for(j = 0; j < skeletonBones.size(); ++j)
-                if(i == skeletonBones[j].mSkeletonJointIndex)
+                if((int)i == skeletonBones[j].mSkeletonJointIndex)
                     break;
 
             if(skeletonBones.size() != j)
@@ -362,7 +362,7 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     // draw bones now
     {
-        for(int i = 0; i < skeletonBones.size(); ++i)
+        for(unsigned int i = 0; i < skeletonBones.size(); ++i)
         {
             RigidCoord< 3, Real> boneWorldRigid = skeletonJoints[skeletonBones[i].mSkeletonJointIndex].mWorldRigid;
 
