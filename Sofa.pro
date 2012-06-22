@@ -91,6 +91,7 @@ else:unix {
   message( "|  Platform: Linux/Unix")
 }
 
+build_pass {
 contains (CONFIGDEBUG, debug) {
 	contains( CONFIGSTATIC, static) {
 		message( "|  Mode: DEBUG with static compilation")
@@ -116,6 +117,10 @@ contains (CONFIGDEBUG, release) {
 			}
     }
   }
+}
+}
+else {
+				message( "|  Mode : PROJECT")
 }
 
 
