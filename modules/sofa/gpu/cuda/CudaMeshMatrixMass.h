@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
 
 #include "CudaTypes.h"
-#include "CudaTypesBase.h"
 #include <sofa/component/mass/MeshMatrixMass.h>
 
 namespace sofa

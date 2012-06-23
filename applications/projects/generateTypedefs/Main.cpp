@@ -478,7 +478,6 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 #include <sofa/defaulttype/Mat.h>\n\n\
 \n\
 #ifdef SOFA_GPU_CUDA\n\
-#include <sofa/gpu/cuda/CudaTypesBase.h>\n\
 #include <sofa/gpu/cuda/CudaTypes.h>\n\
 #endif\n\
 #ifdef SOFA_GPU_OPENCL\n\

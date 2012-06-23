@@ -3,6 +3,7 @@
 opt_force=0
 opt_release=0
 opt_clean=0
+opt_nochg=0
 
 RMCMD=${RMCMD:-svn rm --force}
 
@@ -20,6 +21,9 @@ do
             ;;
         --clean )
             opt_clean=1
+            ;;
+        --nochg )
+            opt_nochg=1
             ;;
     esac
     shift
@@ -58,19 +62,19 @@ function qmake_remove_project {
 	let npro+=1
     for g in $($SCRIPTS/files-from-qmake-pro.awk < $pro); do
 	    if [ -d "$g" ]; then
-		    echo "Remove directory $g"
+		    echo "Remove directory $g in ${PWD:${#DIR0}}"
 		    let nrmdir+=1
-		    $RMCMD $g || echo "Failed to remove directory $g";
+		    $RMCMD $g || echo "Failed to remove directory $g in ${PWD:${#DIR0}}";
 	    elif [ -f "$g" ]; then
             if [ "${g: -4}" == ".pro" ]; then
                 qmake_remove_project "$g"
             else
-		        echo "Remove file $g"
+		        echo "Remove file $g in ${PWD:${#DIR0}}"
 		        let nrmfile+=1
-		        $RMCMD $g || echo "Failed to remove file $g";
+		        $RMCMD $g || echo "Failed to remove file $g in ${PWD:${#DIR0}}";
             fi
 	    else
-		    echo "$g already removed."
+		    echo "$g in ${PWD:${#DIR0}} already removed."
 	    fi
 	done
     # note that we can't use dir and pro variables here, as then might have been erased by recursion
@@ -82,17 +86,36 @@ function qmake_remove_project {
 
 function qmake_process_dir {
     cd "$1"
-    echo "Entering $PWD"
+    #echo "Entering $PWD"
     for f in *.pro *.pri *.cfg *.prf; do
-	    echo "Processing qmake project file $f"
+	    echo "Processing qmake project file $f in ${PWD:${#DIR0}}"
 	    let npro+=1
-	    cp -pf $f $f.bak
-	    $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_DEV < $f.bak > $f 2> $f.dev
+        if [ $opt_nochg -gt 0 ]; then
+	        $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_DEV < $f > $f.nodev 2> $f.dev
+            if [ $(wc -w < "$f".nodev) -eq 0 -a $(wc -w < "$f") -gt 0 ]; then
+		        echo "Remove file $f in ${PWD:${#DIR0}}"
+		        let nrmfile+=1
+		        $RMCMD $f || (echo "Failed to remove file $f in ${PWD:${#DIR0}}"; mv -f $f.bak $f; exit 1)
+            fi
+            rm -f $f.nodev
+        else
+	        cp -pf $f $f.bak
+	        $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_DEV < $f.bak > $f 2> $f.dev
+            if [ $(wc -w < "$f") -eq 0 -a $(wc -w < "$f".bak) -gt 0 ]; then
+		        echo "Remove file $f in ${PWD:${#DIR0}}"
+		        let nrmfile+=1
+		        $RMCMD $f || (echo "Failed to remove file $f in ${PWD:${#DIR0}}"; mv -f $f.bak $f; exit 1)
+            fi
+        fi
         if [ $opt_release -gt 0 ]; then
 	        $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_RELEASE < $f > $f.release 2> $f.unstable
             if [ $(wc -l < "$f".release) -ne $(wc -l < "$f") ]; then
-                echo "Project file $f filtered for release"
-                mv -f $f.release $f
+                echo "Project file $f in ${PWD:${#DIR0}} filtered for release"
+                if [ $opt_nochg -gt 0 ]; then
+                    rm -f $f.release
+                else
+                    mv -f $f.release $f
+                fi
             else
                 rm -f $f.release
             fi
@@ -105,51 +128,51 @@ function qmake_process_dir {
 #        cp -pf $f $f.nodev
 	    for g in $(cat $f.dev); do
 	        if [ -d "$g" ]; then
-		        echo "Remove directory $g"
+		        echo "Remove directory $g in ${PWD:${#DIR0}}"
 		        let nrmdir+=1
-		        $RMCMD $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		        $RMCMD $g || (echo "Failed to remove directory $g in ${PWD:${#DIR0}}"; mv -f $f.bak $f ; exit 1)
 	        elif [ -f "$g" ]; then
                 if [ "${g: -4}" == ".pro" ]; then
                     qmake_remove_project "$g"
                 else
-		            echo "Remove file $g"
+		            echo "Remove file $g in ${PWD:${#DIR0}}"
 		            let nrmfile+=1
-		            $RMCMD $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
+		            $RMCMD $g || (echo "Failed to remove file $g in ${PWD:${#DIR0}}"; mv -f $f.bak $f ; exit 1)
                 fi
 	        else
-		        echo "$g already removed."
+		        echo "$g in ${PWD:${#DIR0}} already removed."
 	        fi
 	    done
 	    rm -f $f.dev
     done
 
     for f in *; do
-	if [ -d "$f" ]; then
-	    qmake_process_dir "$f"
-	fi
+	    if [ -d "$f" ]; then
+	        qmake_process_dir "$f"
+	    fi
     done
 
-    for f in *.pro *.pri *.cfg *.prf; do
-        if [ "$f" == "sofa-dependencies.prf" ]; then
-	        echo "Post-processing qmake project file $f"
-            cp -pf $f $f.tmp
-            $SCRIPTS/post-filter-qmake-prf.awk -v features="$DIR0"/features pass=1 $f.tmp pass=2 $f.tmp > $f
-            rm -f $f.tmp
-        fi
-        if [ $(wc -w < "$f") -eq 0 -a $(wc -w < "$f".bak) -gt 0 ]; then
-		    echo "Remove file $f"
-		    let nrmfile+=1
-		    $RMCMD $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
-        elif [ $(wc -l < $f.bak) -gt $(wc -l < $f) ]; then
-	        nl=$(($(wc -l < $f.bak)-$(wc -l < $f)))
-	        let nrmline+=$nl
-	        echo $nl "lines removed in project file" $f
-        fi
-        if [ $opt_clean -gt 0 ]; then
-	        rm -f $f.bak
-        fi
-    done
-    echo "Leaving  $PWD"
+    if [ $opt_nochg -eq 0 ]; then
+        for f in *.pro *.pri *.cfg *.prf; do
+            if [ "$f" == "sofa-dependencies.prf" ]; then
+	            echo "Post-processing qmake project file $f in ${PWD:${#DIR0}}"
+                cp -pf $f $f.tmp
+                $SCRIPTS/post-filter-qmake-prf.awk -v features="$DIR0"/features pass=1 $f.tmp pass=2 $f.tmp > $f
+                rm -f $f.tmp
+            fi
+            if [ -f "$f".bak ]; then
+                if [ $(wc -l < $f.bak) -gt $(wc -l < $f) ]; then
+	                nl=$(($(wc -l < $f.bak)-$(wc -l < $f)))
+	                let nrmline+=$nl
+	                echo $nl "lines removed in project file $f in ${PWD:${#DIR0}}"
+                fi
+                if [ $opt_clean -gt 0 ]; then
+	                rm -f $f.bak
+                fi
+            fi
+        done
+    fi
+    #echo "Leaving  $PWD"
     cd ..
 }
 
@@ -162,37 +185,39 @@ echo
 
 function private_process_dir {
     cd "$1"
-    echo "Entering $PWD"
+    #echo "Entering $PWD"
     if [ -f "private.txt" ]; then
 	echo "Processing private.txt"
 	let npriv+=1
 	for g in $(grep -v '^#' "private.txt"); do
 	    if [ -d "$g" ]; then
-		echo "Remove directory $g"
+		echo "Remove directory $g in ${PWD:${#DIR0}}"
 		let nrmdir+=1
-		$RMCMD $g || (echo "Failed to remove directory $g"; exit 1)
+		$RMCMD $g || (echo "Failed to remove directory $g in ${PWD:${#DIR0}}"; exit 1)
 	    elif [ -f "$g" ]; then
-		echo "Remove file $g"
+		echo "Remove file $g in ${PWD:${#DIR0}}"
 		let nrmfile+=1
-		$RMCMD $g || (echo "Failed to remove file $g"; exit 1)
+		$RMCMD $g || (echo "Failed to remove file $g in ${PWD:${#DIR0}}"; exit 1)
 	    else
-		echo "$g already removed."
+		echo "$g in ${PWD:${#DIR0}} already removed."
 	    fi
 	done
 	echo "Remove file private.txt"
 	let nrmfile+=1
-	$RMCMD private.txt || (echo "Failed to remove file $f"; exit 1)
+	$RMCMD private.txt || (echo "Failed to remove file private.txt in ${PWD:${#DIR0}}"; exit 1)
     fi
     for f in *; do
 	if [ -d "$f" ]; then
 	    private_process_dir "$f"
 	fi
     done
-    echo "Leaving  $PWD"
+    #echo "Leaving  $PWD"
     cd ..
 }
 
 private_process_dir "$DIR0"
+
+if [ $opt_nochg -eq 0 ]; then
 
 echo
 echo "STEP 3: Filter source code files"
@@ -200,7 +225,7 @@ echo
 
 function code_process_dir {
     cd "$1"
-    echo "Entering $PWD"
+    #echo "Entering $PWD"
     for f in *.h *.hpp *.hxx *.inl *.cuh *.cpp *.cxx *.c *.cu; do
 	let nsrc+=1
 	if grep -q 'SOFA_DEV' $f; then
@@ -208,7 +233,7 @@ function code_process_dir {
 	if [ $(wc -c < $f) != $(wc -c < $f.new) ]; then
 	    nl=$(($(wc -l < $f)-$(wc -l < $f.new)))
 	    let nrmline+=$nl
-	    echo $nl "lines removed in source file" $f
+	    echo $nl "lines removed in source file $f in ${PWD:${#DIR0}}"
         if [ $opt_clean -eq 0 ]; then
 	        cp -pf $f $f.bak
         else
@@ -224,11 +249,13 @@ function code_process_dir {
 	    code_process_dir "$f"
 	fi
     done
-    echo "Leaving  $PWD"
+    #echo "Leaving  $PWD"
     cd ..
 }
 
+
 code_process_dir "$DIR0"
+fi
 
 echo
 echo "Filtering complete."

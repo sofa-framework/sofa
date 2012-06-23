@@ -29,10 +29,6 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/CompareState.h>
-
 #include <sofa/simulation/graph/DAGSimulation.h>
 #ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
@@ -177,16 +173,6 @@ int main(int argc, char** argv)
     sofa::component::init();
 #ifdef SOFA_DEV
     sofa::component::initDev();
-#endif
-#ifdef SOFA_GPU_CUDA
-#ifdef WIN32
-#ifdef NDEBUG
-    std::string name("sofagpucuda_1_0.dll");
-#else
-    std::string name("sofagpucuda_1_0d.dll");
-#endif
-    sofa::helper::system::DynamicLibrary::load(name);
-#endif
 #endif
     sofa::simulation::xml::initXml();
 

@@ -49,10 +49,8 @@
 #include <sofa/simulation/common/xml/initXml.h>
 
 #ifdef SOFA_DEV
+#include <sofa/component/initDev.h>
 #include <sofa/gpu/cuda/initCudaDev.h>
-#include <sofa/component/initMiscMappingDev.h>
-#include <sofa/component/initAdvancedFEM.h>
-#include <sofa/component/initAdvancedInteraction.h>
 #endif
 
 
@@ -69,6 +67,8 @@ using namespace sofa::gpu::cuda;
 int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
+
+    sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
     //glutInit(&argc,argv);
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
@@ -187,13 +187,11 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
     sofa::component::init();
-    sofa::component::initAdvancedInteraction();
 
 #ifdef SOFA_DEV
+    sofa::component::initDev();
     // load cuda_dev library
     sofa::gpu::cuda::initCudaDev();
-    sofa::component::initMiscMappingDev();
-    sofa::component::initAdvancedFEM();
 #endif
 
     sofa::simulation::xml::initXml();

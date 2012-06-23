@@ -34,6 +34,8 @@
 
 #include "mycuda.h"
 
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
+
 #define SOFA_GPU_DEBUG_STACK_TRACE 10
 
 #ifdef SOFA_GPU_DEBUG_STACK_TRACE
@@ -122,6 +124,7 @@ private:
     }
 };
 #endif
+#endif
 
 namespace sofa
 {
@@ -200,6 +203,7 @@ const char* mygetenv(const char* name)
 
 void displayStack(const char * name)
 {
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
 #ifdef SOFA_GPU_DEBUG_STACK_TRACE
     try
     {
@@ -209,6 +213,7 @@ void displayStack(const char * name)
     {
         std::cerr << exc.what();
     };
+#endif
 #endif
 }
 

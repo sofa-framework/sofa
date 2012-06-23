@@ -37,7 +37,6 @@ namespace cuda
 {
 
 using namespace sofa::gpu::cuda;
-using namespace sofa::component::linearsolver;
 
 extern "C"
 {

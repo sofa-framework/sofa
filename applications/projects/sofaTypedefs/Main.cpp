@@ -50,7 +50,6 @@ const std::string defaultIncludes(
 #include <sofa/defaulttype/Mat.h>\n\n\
 \n\
 #ifdef SOFA_GPU_CUDA\n\
-#include <sofa/gpu/cuda/CudaTypesBase.h>\n\
 #include <sofa/gpu/cuda/CudaTypes.h>\n\
 #endif\n\
 #ifdef SOFA_GPU_OPENCL\n\

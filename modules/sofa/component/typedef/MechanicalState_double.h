@@ -38,7 +38,6 @@
 
 
 #ifdef SOFA_GPU_CUDA
-#include <sofa/gpu/cuda/CudaTypesBase.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 #endif
 #ifdef SOFA_GPU_OPENCL
