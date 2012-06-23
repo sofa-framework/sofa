@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_H
 
 #include "CudaTypes.h"
-#include "CudaTypesBase.h"
 #include <sofa/component/mass/DiagonalMass.h>
 
 namespace sofa
@@ -37,7 +36,6 @@ namespace mass
 {
 
 using namespace sofa::gpu::cuda;
-using namespace sofa::component::linearsolver;
 
 template<>
 class DiagonalMassInternalData<CudaVec3Types,float>

@@ -21,9 +21,10 @@ win32 {
 
 HEADERS += mycuda.h \
            gpucuda.h \
-           CudaTypes.h \
-	   CudaTypesBase.h \
            CudaCommon.h \
+           CudaTypes.h \
+           CudaBaseVector.h \
+           CudaMatrix.h \
            CudaMath.h \
            CudaMath.inl \
 	   CudaMathRigid.h \
@@ -133,6 +134,7 @@ SOURCES += mycuda.cpp \
 	   CudaMeshMatrixMass.cpp
 
 CUDA_SOURCES += mycuda.cu \
+           CudaBaseVector.cu \
            CudaScan.cu \
            CudaSort.cu \
            CudaMechanicalObject.cu \
