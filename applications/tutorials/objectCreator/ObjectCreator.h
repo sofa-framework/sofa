@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_OBJECTCREATOR_H
-#define SOFA_OBJECTCREATOR_H
+#ifndef SOFA_SIMPLEOBJECTCREATOR_H
+#define SOFA_SIMPLEOBJECTCREATOR_H
 
 #include <string>
 #include <sofa/simulation/common/Node.h>
@@ -36,7 +36,10 @@
 namespace sofa
 {
 
-class ObjectCreator
+/// BUGFIX: this ObjectCreator class was renamed to SimpleObjectCreator,
+/// in order to remove ambiguity with sofa::core::ObjectCreator
+
+class SimpleObjectCreator
 {
 public:
     static simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string &responseType=std::string("default"));

@@ -129,9 +129,8 @@ void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const ve
 
 }
 
-
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
+void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename SubsetMultiMapping<TIn, TOut>::OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
     OutVecDeriv& out = *outDeriv[0];
     out.resize(indexPairs.size());
@@ -142,11 +141,13 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< OutVecDeriv*>& 
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& ) {}
+void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
+{
+}
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
+void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
     const InVecDeriv& cder = *childDeriv[0];
     for(unsigned i=0; i<indexPairs.size(); i++)

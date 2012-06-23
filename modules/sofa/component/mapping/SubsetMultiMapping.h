@@ -109,7 +109,7 @@ protected :
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_MAPPING)
 
 using namespace sofa::defaulttype;
 

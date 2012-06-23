@@ -512,13 +512,13 @@ defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
  between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
  negate()). */
 template<class Real>
-void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFlip)
+void Quater<Real>::slerp(const Quater& a, const Quater& b, Real t, bool allowFlip)
 {
-    float cosAngle =  (float)(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]);
+    Real cosAngle =  (Real)(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]);
 
-    float c1, c2;
+    Real c1, c2;
     // Linear interpolation for close orientations
-    if ((1.0f - fabs(cosAngle)) < 0.01)
+    if ((1.0 - fabs(cosAngle)) < 0.01)
     {
         c1 = 1.0f - t;
         c2 = t;
@@ -526,10 +526,10 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFl
     else
     {
         // Spherical interpolation
-        float angle    = acos(fabs(cosAngle));
-        float sinAngle = sin(angle);
-        c1 = sin(angle * (1.0f - t)) / sinAngle;
-        c2 = sin(angle * t) / sinAngle;
+        Real angle    = (Real)acos((Real)fabs((Real)cosAngle));
+        Real sinAngle = (Real)sin((Real)angle);
+        c1 = (Real)sin(angle * (1.0f - t)) / sinAngle;
+        c2 = (Real)sin(angle * t) / sinAngle;
     }
 
     // Use the shortest path

@@ -58,7 +58,7 @@ bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigne
 
 void UnitTest::initClass()
 {
-    srand( time(NULL) ); // initialize the random number generator using the current time
+    srand( (unsigned int)time(NULL) ); // initialize the random number generator using the current time
 }
 
 
