@@ -88,7 +88,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 
         for(unsigned int j = 0; j < skeletonJoints[i].mTimes.size(); ++j)
         {
-            Real keyTime = skeletonJoints[i].mTimes[j];
+            Real keyTime = (Real) skeletonJoints[i].mTimes[j];
             if(keyTime <= cT)
             {
                 prevT = keyTime;
@@ -123,7 +123,7 @@ void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::Mechanica
         if(finished && nextT != prevT)
         {
             //set the motion to the Dofs
-            for(int i = 0; i < dx.size(); ++i)
+            for(unsigned int i = 0; i < dx.size(); ++i)
                 dx[i] = Deriv();
         }
     }
@@ -200,18 +200,18 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     {
         Real dt = (cT - prevT) / (nextT - prevT);
 
-        for(int i = 0; i < skeletonJoints.size(); ++i)
+        for(unsigned int i = 0; i < skeletonJoints.size(); ++i)
         {
             if(skeletonJoints[i].mChannels.empty())
                 continue;
 
             skeletonJoints[i].mLocalRigid.getCenter() = skeletonJoints[i].mPreviousMotion.getCenter() + (skeletonJoints[i].mNextMotion.getCenter() - skeletonJoints[i].mPreviousMotion.getCenter()) * dt;
-            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), dt, true);
+            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), (float)dt, true);
         }
     }
     else
     {
-        for(int i = 0; i < skeletonJoints.size(); ++i)
+        for(unsigned int i = 0; i < skeletonJoints.size(); ++i)
         {
             if(skeletonJoints[i].mChannels.empty())
                 continue;
@@ -244,7 +244,7 @@ template <class DataTypes>
 template <class MyCoord>
 void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
-    for(int i = 0; i < skeletonJoints.size(); ++i)
+    for(unsigned int i = 0; i < skeletonJoints.size(); ++i)
     {
         RigidCoord< 3, Real> worldRigid = skeletonJoints[i].mLocalRigid;
 
@@ -258,7 +258,7 @@ void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_i
         skeletonJoints[i].mWorldRigid = worldRigid;
     }
 
-    for(int i = 0; i < skeletonBones.size(); ++i)
+    for(unsigned int i = 0; i < skeletonBones.size(); ++i)
         x[i] = skeletonJoints[skeletonBones[i].mSkeletonJointIndex].mWorldRigid;
 }
 
@@ -338,21 +338,21 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.1, 0.0, 0.0));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0, 0.1, 0.0));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0, 0.0, 0.1));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (0.75, 0.75, 1.0, 1));
-        vparams->drawTool()->drawLines(linesX, 2, Vec<4, float> (0.75, 0.0, 0.0, 1));
-        vparams->drawTool()->drawLines(linesY, 2, Vec<4, float> (0.0, 0.75, 0.0, 1));
-        vparams->drawTool()->drawLines(linesZ, 2, Vec<4, float> (0.0, 0.0, 0.75, 1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (0.75f, 0.75f, 1.0f , 1));
+        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (0.75f, 0.0f , 0.0f , 1));
+        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f , 0.75f, 0.0f , 1));
+        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f , 0.0f , 0.75f, 1));
     }
 
     points.clear();
@@ -370,21 +370,21 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.1, 0.0, 0.0));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0, 0.1, 0.0));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0, 0.0, 0.1));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0, 0.5, 0.5, 1));
-        vparams->drawTool()->drawLines(linesX, 2, Vec<4, float> (1.0, 0.0, 0.0, 1));
-        vparams->drawTool()->drawLines(linesY, 2, Vec<4, float> (0.0, 1.0, 0.0, 1));
-        vparams->drawTool()->drawLines(linesZ, 2, Vec<4, float> (0.0, 0.0, 1.0, 1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f, 0.5f, 0.5f, 1));
+        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (1.0f, 0.0f, 0.0f, 1));
+        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f, 1.0f, 0.0f, 1));
+        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f, 0.0f, 1.0f, 1));
     }
 }
 

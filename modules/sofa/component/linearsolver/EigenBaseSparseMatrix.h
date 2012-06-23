@@ -145,7 +145,7 @@ public:
     void add(int i, int j, double v)
     {
         if( v!=0.0 )
-            incoming[i][j]+=v;
+            incoming[i][j]+=(Real)v;
         //        cerr<<"EigenBaseSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
     }
 
