@@ -93,7 +93,7 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(JOINPOINTS_CPP_)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_ENGINE)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API JoinPoints<sofa::defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

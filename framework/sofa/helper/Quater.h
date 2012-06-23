@@ -178,7 +178,7 @@ public:
      When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
      between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
      negate()). */
-    void slerp(const Quater& a, const Quater& b, float t, bool allowFlip=true);
+    void slerp(const Quater& a, const Quater& b, Real t, bool allowFlip=true);
 
     // A useful function, builds a rotation matrix in Matrix based on
     // given quaternion.

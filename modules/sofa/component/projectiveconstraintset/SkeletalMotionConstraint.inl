@@ -206,7 +206,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
                 continue;
 
             skeletonJoints[i].mLocalRigid.getCenter() = skeletonJoints[i].mPreviousMotion.getCenter() + (skeletonJoints[i].mNextMotion.getCenter() - skeletonJoints[i].mPreviousMotion.getCenter()) * dt;
-            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), (float)dt, true);
+            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), dt, true);
         }
     }
     else
