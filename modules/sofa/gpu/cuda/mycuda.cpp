@@ -201,10 +201,9 @@ const char* mygetenv(const char* name)
     return getenv(name);
 }
 
+#if defined(SOFA_GPU_DEBUG_STACK_TRACE) && defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
 void displayStack(const char * name)
 {
-#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
-#ifdef SOFA_GPU_DEBUG_STACK_TRACE
     try
     {
         throw (rtstack(name));
@@ -213,9 +212,12 @@ void displayStack(const char * name)
     {
         std::cerr << exc.what();
     };
-#endif
-#endif
 }
+#else
+void displayStack(const char * /*name*/)
+{
+}
+#endif
 
 
 } // namespace cuda
