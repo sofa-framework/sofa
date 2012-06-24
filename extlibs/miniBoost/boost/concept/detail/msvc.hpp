@@ -22,7 +22,7 @@ struct check
     virtual void failed(Model* x)
     {
         x->~Model();
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1500)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
         ignore_unused_variable_warning(x);
 #endif
     }

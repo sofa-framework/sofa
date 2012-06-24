@@ -185,14 +185,14 @@ template<> inline const char* CudaBaseVectord::Name() { return "CudaBaseVectord"
 
 extern "C"
 {
-    void copy_vectorf(int dim,const void * a, void * b);
+    extern void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    void copy_vectord(int dim,const void * a, void * b);
+    extern void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
 #endif
 
-    void vector_vector_peqf(int dim,float f,const void * a,void * b);
+    extern void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    void vector_vector_peqd(int dim,double f,const void * a,void * b);
+    extern void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
 #endif
 }
 

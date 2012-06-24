@@ -119,7 +119,7 @@ isEmpty(OBJMOC) {
 }
 
 equals(IS_APPLICATION, true) {
-    win32*|win64*{
+    win32 {
         CONFIG += console
     }
 }
@@ -305,3 +305,4 @@ equals(ROOT_PATH, .) {
 
 #message( "INCLUDEPATH: " $${INCLUDEPATH})
 #message( "DEPENDPATH: " $${DEPENDPATH})
+#message( "LIBDIR: " $${QMAKE_LIBDIR})

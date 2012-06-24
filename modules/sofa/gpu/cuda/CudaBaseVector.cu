@@ -40,14 +40,14 @@ using namespace sofa::gpu::cuda;
 
 extern "C"
 {
-    void copy_vectorf(int dim,const void * a, void * b);
+    void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    void copy_vectord(int dim,const void * a, void * b);
+    void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
 #endif
 
-    void vector_vector_peqf(int dim,float f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    void vector_vector_peqd(int dim,double f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
 #endif
 }
 
@@ -59,7 +59,7 @@ __global__ void Cuda_CopyVector_kernel(int dim, const real * a, real * b)
     b[ti] = a[ti];
 }
 
-void copy_vectorf(int dim,const void * a, void * b)
+void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
@@ -68,7 +68,7 @@ void copy_vectorf(int dim,const void * a, void * b)
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-void copy_vectord(int dim,const void * a, void * b)
+void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
@@ -85,7 +85,7 @@ __global__ void Cuda_vector_vector_peq_kernel(int dim,real f, const real * a, re
     b[ti] += a[ti]*f;
 }
 
-void vector_vector_peqf(int dim,float f,const void * a,void * b)
+void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
@@ -94,7 +94,7 @@ void vector_vector_peqf(int dim,float f,const void * a,void * b)
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-void vector_vector_peqd(int dim,double f,const void * a,void * b)
+void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
