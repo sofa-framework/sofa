@@ -7,6 +7,8 @@
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
 #include <set>
+#include <Eigen/Dense>
+typedef Eigen::MatrixXd DenseMatrix;
 
 namespace sofa
 {
@@ -88,40 +90,49 @@ private:
     SMatrix _matK;         ///< Stiffness matrix
     SMatrix _matJ;         ///< concatenation of the constraint Jacobians, in the KKT system
     SMatrix _matC;         ///< compliance matrix used to regularize the system, in the bottom-right of the KKT system
-    VectorSofa _vecF;      ///< top of the right-hand term: forces
-    VectorSofa _vecPhi;    ///< bottom of the right-hand term: desired constraint corrections
-    VectorSofa _vecDv;     ///< top of the solution: velocity change
-    VectorSofa _vecLambda; ///< bottom of the solution: Lagrange multipliers
+    VectorEigen _vecF;      ///< top of the right-hand term: forces
+    VectorEigen _vecPhi;    ///< bottom of the right-hand term: desired constraint corrections
+    VectorEigen _vecDv;     ///< top of the solution: velocity change
+    VectorEigen _vecLambda; ///< bottom of the solution: Lagrange multipliers
     linearsolver::EigenBaseSparseMatrix<SReal> _projMatrix;
     linearsolver::EigenBaseSparseMatrix<SReal> _PMinvP_Matrix;  ///< PMinvP
 
     bool _PMinvP_isDirty;  ///< true if _PMinvP_Matrix is not up to date
-    VectorSofa _vecV;      ///< velocties, used in the computation of the right-hand term of the implicit equation
+    VectorEigen _vecV;      ///< velocties, used in the computation of the right-hand term of the implicit equation
 
 public:
-    // Equation system: input data
+    // Equation system
+    /// Top-left block of the equation matrix: mass, possibly combined with stiffness and damping
     const SMatrix& M() const { return _matM; }
-    const SMatrix& P() const { return _projMatrix.compressedMatrix; }
+    /// Jacobian of the (rigid or compliant) constraints, bottom-left block of the equation matrix, and opposite of the top-right block
     const SMatrix& J() const { return _matJ; }
+    /// Bottom-right of the equation matrix. Compliance of the constraints, null for hard constraints.
     const SMatrix& C() const { return _matC; }
-    const VectorSofa& vecF() const { return _vecF; }
-    const VectorEigen& f() const { return _vecF.getVectorEigen(); }
-    const VectorSofa& vecPhi() const { return _vecPhi; }
-    const VectorEigen& phi() const { return _vecPhi.getVectorEigen(); }
+    /// Projection matrix to implement simple imposed displacements
+    const SMatrix& P() const { return _projMatrix.compressedMatrix; }
+    /// Projected M
     const SMatrix& PMinvP();
-    // Equation system: output data
-    const VectorSofa& vecDv() const { return _vecDv; }
-    const VectorEigen& dv() const { return _vecDv.getVectorEigen(); }
-    const VectorSofa& vecLambda() const { return _vecLambda; }
-    const VectorEigen& lambda() const { return _vecLambda.getVectorEigen(); }
 
-public:  //  Strangely enough, we have to set this public for the test suite, because g++ does not use the const version in the public section. ????. A better solution would be to make the test fixture a friend of this class, but I have not been able to make it work.
-    VectorEigen& f()               { return _vecF.getVectorEigen(); }
-    // Equation system: output data
-    VectorSofa& vecDv() { return _vecDv; }
-    VectorEigen& dv() { return _vecDv.getVectorEigen(); }
-    VectorSofa& vecLambda() { return _vecLambda; }
-    VectorEigen& lambda() { return _vecLambda.getVectorEigen(); }
+    /// Upper part of the right-hand term of the dynamics equation
+    const VectorEigen& f() const { return _vecF; }
+    /// Lower part of the right-hand term of the dynamics equation
+    const VectorEigen& phi() const { return _vecPhi; }
+    /// Upper part of the unknown of the dynamics equation
+    const VectorEigen& dv() const { return _vecDv; }
+    /// Lower part of the unknown of the dynamics equation
+    const VectorEigen& lambda() const { return _vecLambda; }
+
+    // this redundant interface is required for the test fixture because strangely enough, it sees dv() and lambda() as protected instead of public, even for read access
+    /// Upper part of the unknown of the dynamics equation
+    const VectorEigen& getDv() const { return _vecDv; }
+    /// Lower part of the unknown of the dynamics equation
+    const VectorEigen& getLambda() const { return _vecLambda; }
+
+protected:
+    /// Upper part of the unknown of the dynamics equation: write access for the derived classes
+    VectorEigen& dv() { return _vecDv; }
+    /// Lower part of the unknown of the dynamics equation: write access for the derived classes
+    VectorEigen& lambda() { return _vecLambda; }
 
 protected:
     /** Solve the equation system:
@@ -207,7 +218,7 @@ protected:
       This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
       or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
       */
-    struct StateMatrices
+    struct LocalMatrices
     {
         SMatrix M;         ///< local mass matrix
         SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
@@ -215,9 +226,20 @@ protected:
         SMatrix K;         ///< local stiffness matrix, if any
         unsigned m_offset; ///< start index in the assembled mass matrix
         unsigned c_offset; ///< start index in the assembled compliance matrix
+
+        friend std::ostream& operator << (std::ostream& out, const LocalMatrices& sm )
+        {
+            out << "m_offset = " << sm.m_offset << ", c_offset = "<< sm.c_offset << endl;
+            if(sm.M.rows()>0) out << "M=" << endl << DenseMatrix(sm.M) << endl;
+            if(sm.J.rows()>0) out << "J=" << endl << DenseMatrix(sm.J) << endl;
+            if(sm.C.rows()>0) out << "C=" << endl << DenseMatrix(sm.C) << endl;
+            if(sm.K.rows()>0) out << "K=" << endl << DenseMatrix(sm.K) << endl;
+            return out;
+        }
     };
-    typedef std::map<core::behavior::BaseMechanicalState*,StateMatrices> State_MJC;
-    State_MJC s2mjc; ///< The container of a local matrices and the jacobians of the local DOF wrt global DOF.
+    typedef std::map<core::behavior::BaseMechanicalState*,LocalMatrices> State_2_LocalMatrices;
+    State_2_LocalMatrices localMatrices;         ///< The local matrices associated to each state
+    void writeLocalMatrices() const;             ///< debug helper
 
 
     /** @name Global matrix-vector product */
@@ -261,7 +283,7 @@ protected:
     /// Compute the product of the non-assembled implicit matrix with a vector, using local M as implicit matrix
     void multM(VectorEigen& Mx, const VectorEigen& x)
     {
-        for( State_MJC::iterator i=s2mjc.begin(), iend=s2mjc.end(); i!=iend; i++ )
+        for( State_2_LocalMatrices::iterator i=localMatrices.begin(), iend=localMatrices.end(); i!=iend; i++ )
         {
             const SMatrix& J = (*i).second.J;
             const SMatrix& M = (*i).second.M;

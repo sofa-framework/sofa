@@ -1,18 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-
-
-
-
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
-  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Compliant plugin</title>
 
   
   
   <script type="text/x-mathjax-config">
       MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
     </script>
+  
   <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
@@ -20,7 +17,8 @@ MathJax.Hub.Config({
   </script>
   
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script></head><body>
+    </script>
+</head><body>
 <h1 style="text-align: center;">Compliant</h1>
 
 <table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
@@ -38,34 +36,40 @@ MathJax.Hub.Config({
 
 <br>
 
-<a href="#Introduction">Introduction</a><br>
-
-<a href="#Examples">Examples</a><br>
-
-<a href="#Project_structure">Project structure</a><br>
-
-<a href="#Intellectual_property_and_rights">Intellectual property and
-rights</a><br>
+<br>
 
 <br>
 
-<h2><a name="Introduction"></a>Introduction</h2>
+This plugin introduces a constraint-based approach and a matrix
+assembly method. <br>
 
-This plugin introduces a constraint-based approach and a matrix assembly method. Details are given in  in <a href="compliant.pdf">compliant.pdf</a>. The remainder of this section briefly explains the constraint-based approach and the integration scheme. See also the <a href="code/html/index.html">code
-documentation</a>, which <a href="index.html#Code_documentation_">you can
-generate</a> using doxygen. There is also an embryo of test suite documented in the code documentation.<br>
+<ul>
+
+  <li><a href="#Introduction">Design</a></li>
+  <li><a href="#Limitations">Limitations</a></li>
+  <li><a href="index.html#Examples">Examples</a></li>
+  <li><a href="index.html#Project_structure">Plugin structure and
+installation</a></li>
+  <li><a href="index.html#Intellectual_property_and_rights">Intellectual
+property and
+rights</a></li>
+</ul>
+
 <br>
-Hard constraints
-are solved using a classical Delassus operator \( J M^{-1} J^T \),
-while soft constraints
-are handled by adding compliance to the same operator: \( J M^{-1} J^T
-+ C \).&nbsp; The integration scheme is inspired from <span style="font-style: italic;">Servin,
-Lacoursière, Melin, <a href="http://www.ep.liu.se/ecp/019/005/ecp01905.pdf">Interactive
-Simulation of Elastic Deformable Materials</a></span>&nbsp;
-, where
-elastic forces are a generalization of rigid constraints. The following
-is a derivation of our variant of the method. More detail on the
-derivation of this equation in <a href="compliant.pdf">compliant.pdf</a>.<br>
+
+<h2><a name="Introduction"></a>Design</h2>
+
+This plugin introduces a constraint-based approach and a matrix
+assembly method. Details are given&nbsp; in <a href="compliant.pdf">compliant.pdf</a>
+in this directory.
+<br>
+
+See also the <a href="code/html/index.html">code
+documentation</a>, which <a href="index.html#Code_documentation_">you
+can
+generate</a> using doxygen. There is also an embryo of <span style="font-weight: bold;">test suite</span>
+documented in the code documentation.<br>
+
 $<br>
 
 \newcommand{\vect}[1]{\mathbf{#1}}<br>
@@ -135,133 +139,17 @@ $<br>
 \newcommand{\dampingratio}{d}<br>
 
 $<br>
-<h3>Constraint forces</h3>
-This approach unifies soft and hard constraints. Hard constraints are
-usually implemented using Lagrange multipliers $\lambda$ in the
-following equation:<br>
-\begin{equation} \label{eq acc hard}<br>
-\left( \begin{array}{cc}<br>
-\M &amp; -\Jt \\<br>
-&nbsp;\J &amp;&nbsp; \end{array}\right)<br>
-\left( \begin{array}{c}<br>
-\acc \\ \lam<br>
-\end{array}\right) = \left( \begin{array}{c}<br>
-\forcext&nbsp; \\<br>
--\violation<br>
-\end{array}\right) <br>
-\end{equation}<br>
-where $\M$ is the mass matrix, $\J$ is the Jacobian matrix of the
-constraint(s), $\acc$ is the acceleration, $\forcext$ is the net
-external force applied to the system, $\lam$ is the constraint force
-and $\violation$ is the constraint violation.<br>
-$\lam$ and $\violation$ are vectors with as many entries as scalar
-constraints. The equation system is typically solved using a Schur
-complement to compute the constraint forces:<br>
-\begin{equation}\label{eq schur rigid}<br>
-\J \Minv \Jt \lam = -\violation - \J \Minv \forcext<br>
-\end{equation}<br>
-and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.<br>
-<br>
-<br>
-In the generalized approach, the constraint forces are considered proportional to the constraint violations:<br>
-\begin{equation}\label{eq generalized constraint}<br>
-\lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)<br>
-\end{equation}<br>
-where $\cmp$ is the compliance of the constraints and $\dampingratio$ its damping ratio.<br>
-Combined with a time discretization scheme, this leads to an equation
-system similar to \eqref{eq schur rigid} as shown is the next section.<br>
-<h3>Time integration</h3>
-Our implicit scheme is:<br>
-\begin{eqnarray}<br>
-&nbsp;\vnext &amp;=&amp; \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\<br>
-&nbsp; \xnext &amp;=&amp; \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)<br>
-\end{eqnarray}<br>
-where index $n$ denotes current values while index $n+1$ denotes next
-values, $\alpha$ is the implicit velocity factor, and $\beta$ is the
-implicit position factor. Let<br>
-\begin{eqnarray}<br>
-&nbsp;\dv = \vnext -&nbsp;&nbsp;&nbsp; \vcur&nbsp; &amp;=&amp; h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\<br>
-\dx = \xnext -&nbsp; \xcur&nbsp;&nbsp;&nbsp; &amp;=&amp; h (v + \beta&nbsp; \dv)<br>
-\end{eqnarray}<br>
-be the velocity and position changes across the time step.<br>
-<br>
-The constraint violation $\violation$ and its Jacobian $\J$ are:<br>
-\begin{equation}<br>
 
-&nbsp;\J = \frac{\partial \vect \violation}{\partial \pos} \\<br>
+<h2><a name="Limitations"></a>Limitations</h2>
 
-\end{equation}<br>
-
-
-\begin{equation}<br>
-&nbsp;
-\violnext \simeq \violcur + \J \Delta x = \violcur + h&nbsp;&nbsp;
-\dviolation + \J h \beta \Delta \vel&nbsp; \label{eq violnext}\\<br>
-
-\end{equation}<br>
-
-
-\begin{equation}<br>
-
-
-\dviolnext \simeq \violnext + \J \Delta v \label{eq dviolnext}<br>
-
-\end{equation}<br>
-
-<br>
-The corresponding forces are:<br>
-\begin{equation}<br>
-&nbsp;\force = \forcext + \Jt \lam <br>
-&nbsp;\end{equation}<br>
-
-\begin{equation}<br>
-
-\lam_i = -\frac{1}{c_i} (&nbsp; \violation_i + d \dviolation_i ) \label{eq lambda}<br>
-\end{equation}<br>
-where the subscript $i$ denotes a scalar constraint.<br>
-<br>
-The average constraint forces are computed&nbsp; using equations \ref{eq lambda}, \ref{eq violnext} and \ref{eq dviolnext}:<br>
-\begin{eqnarray*}<br>
-&nbsp;\avlam_i &amp;=&amp; \alpha \lnext + (1-\alpha) \lcur \\<br>
-&amp;=&amp; -\frac{1}{c_i} ( \alpha \violation + \alpha h
-\dviolation&nbsp; + \alpha h \beta \J \dv + \alpha d \dviolation +
-\alpha d \J \dv + (1-\alpha)\violation + (1-\alpha) d \dviolation&nbsp;
-) \\<br>
-&amp;=&amp; -\frac{1}{c_i} ( \violation + d\dviolation + \alpha h \dviolation + \alpha(h\beta+d)\J \dv )<br>
-\end{eqnarray*}<br>
-We can rewrite the previous equation as:<br>
-\begin{equation}<br>
-&nbsp;\J \dv + \frac{1}{\alpha(h\beta+d)}\C\avlam = - \frac{1}{\alpha(h\beta+d)} (\violation + (d+\alpha h)\dviolation)<br>
-\end{equation}<br>
-where values without indices denote current values.<br>
-The complete equation system is:<br>
-\begin{equation}<br>
-&nbsp;\left( \begin{array}{cc}<br>
-\frac{1}{h}\P\M &amp; -\P\Jt \\<br>
-\J &amp; \frac{1}{l} \C \end{array}\right)<br>
-\left( \begin{array}{c}<br>
-\dv \\ \avlam<br>
-\end{array}\right) = \left( \begin{array}{c}<br>
-\P\forcext&nbsp; \\<br>
-- \frac{1}{l} (\violation +(d+\alpha h) \dviolation)<br>
-\end{array}\right) <br>
-\end{equation}<br>
-where $ l=\alpha(h \beta + d) $<br>
-The system is singular due to matrix $\P $, however we can use $ \P
-\Minv\P $ as inverse mass matrix to compute a Schur complement:<br>
-\[ \begin{array}{ccc}<br>
-\left( h\J\P\Minv\P\Jt + \frac{1}{l}\C \right) \avlam &amp;=&amp;
--\frac{1}{l} \left(\violation + (\dampingratio+h\alpha)\dviolation
-\right) - h\J \Minv \forcext \\<br>
-\dv &amp;=&amp; h\P\Minv(\forcext +\Jt \avlam ) \\<br>
-\dx &amp;=&amp; h( \vel + \beta \dv )<br>
-\end{array} \]<br><br><br>
-
-<br>
-
-<br>
-
-<br>
+Currently, the Schur complement $\J\Minv\Jt + \C$ can not be computed
+for a non-diagonal mass and stiffness matrix $\M$. Consequently, it can
+not handle the usual mouse interactor based on a stiff spring. However,
+it is possible to use a constraint-based mouse interactor. To
+automatically use it, insert the following object near the root in your
+.scn file description:<br>
+<code>
+&lt;CompliantAttachButtonSetting button="Left"/&gt;</code>
 
 <h2><a name="Examples"></a>Examples</h2>
 
@@ -274,18 +162,41 @@ The system is singular due to matrix $\P $, however we can use $ \P
 
 .<br>
 
-<h2><a name="Project_structure"></a>Project structure</h2>
+<h2><a name="Project_structure"></a>Plugin structure and installation</h2>
+
+Directory structure:<br>
 
 <ul>
 
   <li>the C++ code of the library is in directory <span style="font-weight: bold;">Compliant_lib/</span></li>
-  <li>the tests suite is in  directory <span style="font-weight: bold;">Compliant_test/</span></li>
-  <li>a standalone application to create and run a simulation is in directory <span style="font-weight: bold;">Compliant_run/</span>. This is useful to test cases based on MultiMappings, since these are not completely supported yet by the <span style="font-style: italic;">.scn</span> file format.<br>
+  <li>the tests suite is in directory <span style="font-weight: bold;">Compliant_test/</span></li>
+  <li>a standalone application to create and run a simulation is in
+directory <span style="font-weight: bold;">Compliant_run/</span>. This
+is useful to test cases based on MultiMappings, since these are not
+completely supported yet by the <span style="font-style: italic;">.scn</span>
+file format.<br>
   </li>
-
   <li>the documentation starts in <span style="text-decoration: underline;">doc/index.html</span> and it is
-linked to the <a href="code/html/index.html">code documentation</a><br>
-  </li>
+linked to the <a href="code/html/index.html">code documentation</a></li>
+</ul>
+
+Installation:<br>
+
+<ul>
+
+  <li>The test suite requires the installation of the Boost.Test
+library. Installatations instructions can be found on the web, e.g.:</li>
+  <ul>
+    <li>for linux: <a href="http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/">http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/</a>
+    </li>
+    <li>for windows: <a href="http://www.beroux.com/english/articles/boost_unit_testing/">http://www.beroux.com/english/articles/boost_unit_testing/</a></li>
+  </ul>
+  <li>Uncheck <span style="font-family: monospace;">DEFINES +=
+SOFA_HAVE_PLUGIN_Compliant</span> in your sofa-local.prf file</li>
+  <li>Generate the code documentation using <a href="http://www.stack.nl/%7Edimitri/doxygen/">doxygen</a>. In Unix
+systems, simply type <span style="font-family: monospace;">doxygen
+Doxyfile</span> in the <span style="font-family: monospace;">doc/</span>
+directory.</li>
 </ul>
 
 <br>
