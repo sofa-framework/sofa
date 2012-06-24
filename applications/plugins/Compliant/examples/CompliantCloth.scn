@@ -3,10 +3,10 @@
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <CompliantAttachButtonSetting button="Left" />
 <Node 	name="complianceSolverScene" >
-<!--    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>-->
+    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>
 <!--    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="true" maxIterations="20" precision="1e-3" />-->
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" />
-    <GridMeshCreator name="loader" filename="nofile" resolution="30 30" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+<!--    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" />-->
+    <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
@@ -15,7 +15,7 @@
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
         <ExtensionMapping  />
-        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-7" dampingRatio="0.0"  isCompliance="0" />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-7" dampingRatio="0.0"  isCompliance="1" />
     </Node>
 </Node>
 </Node>
