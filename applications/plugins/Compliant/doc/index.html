@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>Compliant plugin</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
+  
 
   
   
@@ -17,8 +18,7 @@ MathJax.Hub.Config({
   </script>
   
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
-</head><body>
+    </script></head><body>
 <h1 style="text-align: center;">Compliant</h1>
 
 <table style="text-align: left; width: 373px; height: 246px; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="2">
@@ -197,7 +197,12 @@ SOFA_HAVE_PLUGIN_Compliant</span> in your sofa-local.prf file</li>
 systems, simply type <span style="font-family: monospace;">doxygen
 Doxyfile</span> in the <span style="font-family: monospace;">doc/</span>
 directory.</li>
+</ul>Troubleshooting:<br>
+<ul>
+  <li>The run and test executables require plugins <span style="font-style: italic;">Compliant</span> and <span style="font-style: italic;">Flexible</span>. For some reason, the order they are declared in the dependency file <span style="font-style: italic;">Sofa-dependencies.prf</span> matters. I had to put Flexible before Compliant otherwise I got a strange run-time crash on not-really-valid component pointers. (FF, linux, 06/2012)<br>
+  </li>
 </ul>
+
 
 <br>
 
@@ -210,7 +215,7 @@ property and rights</h2>
     <tr>
       <td style="vertical-align: top;">Authors<br>
       </td>
-      <td style="vertical-align: top;">François Faure and...<br>
+      <td style="vertical-align: top;">François Faure, Maxime Tournier, &#8230;<br>
       </td>
     </tr>
     <tr>
@@ -222,10 +227,9 @@ property and rights</h2>
     <tr>
       <td style="vertical-align: top;">License<br>
       </td>
-      <td style="vertical-align: top;">Your can distribute this plugin
+      <td style="vertical-align: top;">This plugin is distributed
 under
-the same license as the core of SOFA, or any other license of your
-choice.<br>
+the same license as the core of SOFA.<br>
       </td>
     </tr>
     <tr>

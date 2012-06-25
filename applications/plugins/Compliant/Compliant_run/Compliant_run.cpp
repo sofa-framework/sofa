@@ -83,18 +83,9 @@ typedef component::odesolver::ComplianceSolver ComplianceSolver;
 
 
 
-bool        startAnim = false;
-bool        printFactory = false;
-bool        loadRecent = false;
-bool        temporaryFile = false;
-int	nbIterations = 0;
-bool verbose=true;
-
-//std::string gui = "";
+bool startAnim = true;
+bool verbose = false;
 std::string simulationType = "bgl";
-std::vector<std::string> plugins;
-
-
 SReal complianceValue = 0.1;
 SReal dampingRatio = 0.1;
 Vec3 gravity(0,-1,0);
@@ -279,16 +270,9 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
-
-
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&startAnim,'a',"start","start the animation loop")
-    .option(&printFactory,'p',"factory","print factory logs")
-    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
-    .option(&plugins,'l',"load","load given plugins")
-    .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
@@ -315,55 +299,24 @@ int main(int argc, char** argv)
     sofa::helper::system::DynamicLibrary::load(name);
 #endif
 #endif
-    sofa::simulation::xml::initXml();
 
-
-    for (unsigned int i=0; i<plugins.size(); i++)
-        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
-
-    sofa::helper::system::PluginManager::getInstance().init();
-
-
-    if (int err = sofa::gui::GUIManager::Init(argv[0],""))
-        return err;
-
-    if (int err=sofa::gui::GUIManager::createGUI(NULL))
-        return err;
-
-    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
+    if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
+    if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
     sofa::gui::GUIManager::SetDimension(800,600);
-
-
 
     //=================================================
     sofa::simulation::Node::SPtr groot = createScene();
     //=================================================
 
-
-
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot);
 
-    if (startAnim)
-        groot->setAnimate(true);
-
-    if (printFactory)
-    {
-        std::cout << "////////// FACTORY //////////" << std::endl;
-        sofa::helper::printFactoryLog();
-        std::cout << "//////// END FACTORY ////////" << std::endl;
-    }
 
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot))
         return err;
 
-    groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
-
-    if (groot!=NULL)
-        sofa::simulation::getSimulation()->unload(groot);
-
-
+    sofa::simulation::getSimulation()->unload(groot);
     sofa::gui::GUIManager::closeGUI();
 
     return 0;
