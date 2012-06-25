@@ -32,10 +32,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/BackTrace.h>
 
-#ifdef SOFA_HAVE_BOOST
-#include <boost/thread.hpp>
-#endif
-
 namespace SofaHAPI
 {
 
@@ -121,12 +117,10 @@ ForceFeedback* SofaHAPIForceFeedbackEffect::getForceFeedback()
     return forceFeedback.get();
 }
 
-#ifdef SOFA_DEV
 int SofaHAPIForceFeedbackEffect::getIndice()
 {
     return getForceFeedback()->indice.getValue();
 }
-#endif
 
 int SofaHAPIForceFeedbackEffectClass = sofa::core::RegisterObject("Implement HAPIForceEffect using a Sofa ForceFeedback component")
         .add< SofaHAPIForceFeedbackEffect >()

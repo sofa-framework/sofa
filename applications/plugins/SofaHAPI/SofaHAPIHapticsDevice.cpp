@@ -27,9 +27,7 @@
 #include "conv.h"
 
 #include <sofa/core/ObjectFactory.h>
-#ifdef SOFA_DEV
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#endif
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
@@ -39,18 +37,12 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/BackTrace.h>
 
-#ifdef SOFA_HAVE_BOOST
-#include <boost/thread.hpp>
-#endif
-
 #include <sstream>
 
 namespace SofaHAPI
 {
 
-#ifdef SOFA_DEV
 using sofa::core::objectmodel::HapticDeviceEvent;
-#endif
 
 
 bool SofaHAPIHapticsDevice::initDevice()
@@ -105,14 +97,10 @@ SofaHAPIHapticsDevice::SofaHAPIHapticsDevice()
     , positionTool(initData(&positionTool, Vec3d(0,0,0), "positionTool","Position of the tool in the device end effector frame"))
     , orientationTool(initData(&orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the device end effector frame"))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
-#ifdef SOFA_DEV
     , toolSelector(initData(&toolSelector, false, "toolSelector", "Switch tools with 2nd button"))
     , toolCount(initData(&toolCount, 1, "toolCount", "Number of tools to switch between"))
-#endif
     , toolIndex(initData(&toolIndex, 0, "toolIndex", "Current tool index"))
-#ifdef SOFA_DEV
     , toolTransitionSpringStiffness(initData(&toolTransitionSpringStiffness, 0.0, "toolTransitionSpringStiffness", "Stiffness of haptic springs when switching instruments (0 to disable)"))
-#endif
     , driverName(initData(&driverName, std::string("Any"), "driverName", "Name of the HAPI device driver"))
     , drawDevice(initData(&drawDevice, false, "drawDevice", "Visualize the position of the interface in the virtual scene"))
     , feedbackEffects(initLink("feedbackEffects", "Force feedback effects list"))
@@ -180,11 +168,7 @@ void SofaHAPIHapticsDevice::setForceFeedbacks(vector<ForceFeedback*> ffs)
         SofaHAPIForceFeedbackEffect::SPtr ffe = sofa::core::objectmodel::New<SofaHAPIForceFeedbackEffect>();
         ffe->setForceFeedback(ffs[i]);
         std::ostringstream name;
-#ifdef SOFA_DEV
         name << "Tool"<<ffs[i]->indice.getValue() <<"-" << ffs[i]->getName();
-#else
-        name << "Tool" <<"-" << ffs[i]->getName();
-#endif
         ffe->setName(name.str());
         ForceFeedbackEffect* e = ffe->getEffect();
         e->setTransform(data);
@@ -200,10 +184,8 @@ void SofaHAPIHapticsDevice::init()
     if (!mState) serr << "SofaHAPIHapticsDevice has no binding MechanicalState" << sendl;
     else sout << "[Device] init" << sendl;
 
-#ifdef SOFA_DEV
     if(mState && mState->getSize()<toolCount.getValue())
         mState->resize(toolCount.getValue());
-#endif
 }
 
 void SofaHAPIHapticsDevice::bwdInit()
@@ -286,14 +268,12 @@ void SofaHAPIHapticsDevice::draw(const sofa::core::visual::VisualParams* vparams
 
 void SofaHAPIHapticsDevice::sendHapticDeviceEvent()
 {
-#ifdef SOFA_DEV
     HapticDeviceEvent event(
         toolIndex.getValue(),
         lastToolPosition.getOrigin(),
         lastToolPosition.getOrientation(),
         lastButtonState);
     getContext()->getRootContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-#endif
 }
 
 void SofaHAPIHapticsDevice::setToolFeedback(int indice, bool enable, bool transfer)
@@ -303,9 +283,7 @@ void SofaHAPIHapticsDevice::setToolFeedback(int indice, bool enable, bool transf
     for (unsigned int i=0; i < feedbackEffects.size(); ++i)
     {
         SofaHAPIForceFeedbackEffect::SPtr ffe = feedbackEffects[i];
-#ifdef SOFA_DEV
         if (ffe->getIndice() != indice) continue;
-#endif
         if (enable)
         {
             if (ffe->getForceFeedback())
@@ -356,7 +334,6 @@ void SofaHAPIHapticsDevice::onBeginAnimationStep(const double /*dt*/)
 
     int buttonState = fakeButtonState | device->getButtonStatus();
 
-#ifdef SOFA_DEV
     int buttonChanged = buttonState ^ lastButtonState;
     // special case: btn2 is mapped to tool selection if "toolSelector" is used
     if (toolSelector.getValue() && (buttonChanged & HapticDeviceEvent::Button2Mask))
@@ -394,7 +371,6 @@ void SofaHAPIHapticsDevice::onBeginAnimationStep(const double /*dt*/)
             isToolControlled = true;
         }
     }
-#endif
     sofa::helper::AdvancedTimer::stepNext("Button", "Event");
 
     if (buttonState != lastButtonState)
@@ -412,9 +388,7 @@ void SofaHAPIHapticsDevice::onBeginAnimationStep(const double /*dt*/)
         for (unsigned int i=0; i < feedbackEffects.size(); ++i)
         {
             SofaHAPIForceFeedbackEffect::SPtr ffe = feedbackEffects[i];
-#ifdef SOFA_DEV
             if (ffe->getIndice() != currentToolIndex) continue;
-#endif
             if (ffe->getForceFeedback())
                 ffe->getForceFeedback()->setReferencePosition(world_H_virtualTool);
         }
