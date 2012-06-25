@@ -101,4 +101,5 @@ SOFA_LINK_CLASS(MooneyRivlinForceField)
 SOFA_LINK_CLASS(VolumePreservationForceField)
 SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
+SOFA_LINK_CLASS(FrameMapping)
 
