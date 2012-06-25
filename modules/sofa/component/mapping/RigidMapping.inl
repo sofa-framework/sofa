@@ -262,9 +262,10 @@ void RigidMapping<TIn, TOut>::init()
         this->load(fileRigidMapping.getFullPath().c_str());
 
 
+#ifdef SOFA_HAVE_EIGEN2
     eigenJacobians.resize( 1 );
     eigenJacobians[0] = &eigenJacobian;
-
+#endif
 
     this->reinit();
 
@@ -345,7 +346,9 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
     const VecCoord& pts = this->getPoints();
 
     updateJ = true;
+#ifdef SOFA_HAVE_EIGEN2
     eigenJacobian.resizeBlocks(out.size(),in.size());
+#endif
 
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
@@ -856,6 +859,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     dOut.endEdit();
 }
 
+#ifdef SOFA_HAVE_EIGEN2
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
@@ -867,6 +871,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 //    cerr<<"RigidMapping<TIn, TOut>::getJs(), J copied = " << eigenJacobian << endl;
     return &eigenJacobians;
 }
+#endif
 
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()

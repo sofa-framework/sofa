@@ -29,7 +29,9 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#ifdef SOFA_HAVE_EIGEN2
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
 #include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -93,7 +95,9 @@ public:
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+#ifdef SOFA_HAVE_EIGEN2
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
+#endif
 
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
@@ -138,7 +142,9 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
+#ifdef SOFA_HAVE_EIGEN2
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+#endif
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -157,8 +163,10 @@ protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
 
+#ifdef SOFA_HAVE_EIGEN2
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
     helper::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
+#endif
 };
 
 template <int N, class Real>

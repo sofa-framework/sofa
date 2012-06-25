@@ -53,9 +53,10 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     Inherit::init();
     this->toModels[0]->resize(indexPairs.size());
-    unsigned Nin = TIn::deriv_total_size, Nout = Nin;
 
 #ifdef SOFA_HAVE_EIGEN2
+    unsigned Nin = TIn::deriv_total_size, Nout = Nin;
+
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
 
