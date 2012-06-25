@@ -1,12 +1,11 @@
 load(sofa/pre)
 
-
 TEMPLATE = app
 TARGET = Compliant_test
-
+CONFIG += console
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
-CONFIG += console
+SOURCES = Compliant_test.cpp
 
 macx {
         CONFIG += app_bundle
@@ -18,12 +17,11 @@ macx {
 }
 
 unix {
-#   LIBS += -ldl
-LIBS *= -lboost_unit_test_framework
+    LIBS += -ldl
+    LIBS *= -lboost_unit_test_framework
 
 }
 
-SOURCES = Compliant_test.cpp
 
 
 load(sofa/post)

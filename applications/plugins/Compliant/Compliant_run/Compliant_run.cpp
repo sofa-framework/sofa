@@ -91,12 +91,14 @@ int	nbIterations = 0;
 bool verbose=true;
 
 //std::string gui = "";
-std::string simulationType = "tree";
+std::string simulationType = "bgl";
 std::vector<std::string> plugins;
 
 
-SReal complianceValue = 0;
-SReal dampingRatio = 0;
+SReal complianceValue = 0.1;
+SReal dampingRatio = 0.1;
+Vec3 gravity(0,-1,0);
+SReal dt = 0.01;
 
 /// Create a string
 simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
@@ -191,9 +193,9 @@ simulation::Node::SPtr createScene()
 {
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,0,0) );
+    root->setGravity( Coord3(0,-1,0) );
     root->setAnimate(false);
-    root->setDt(0.001);
+    root->setDt(0.01);
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
 
 

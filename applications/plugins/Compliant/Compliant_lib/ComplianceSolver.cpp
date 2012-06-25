@@ -75,8 +75,8 @@ void ComplianceSolver::solveEquation()
         if( verbose.getValue() )
         {
             cerr<<"ComplianceSolver::solveEquation, constraint forces = " << lambda.transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation, net forces = " << _vecF << endl;
-            cerr<<"ComplianceSolver::solveEquation, vecDv = " << _vecDv << endl;
+            cerr<<"ComplianceSolver::solveEquation, net forces = " << _vecF.transpose() << endl;
+            cerr<<"ComplianceSolver::solveEquation, vecDv = " << _vecDv.transpose() << endl;
         }
     }
     else   // unconstrained dynamics, solve M.dv = f
@@ -129,6 +129,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
     // ==== Resize global matrices and vectors
     _PMinvP_isDirty = true;
+    localMatrices.clear();
     MatrixAssemblyVisitor assembly(&cparams,this);
     this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE)); // first the size
     //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
@@ -216,7 +217,7 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     if( verbose.getValue() )
     {
         cerr<<"ComplianceSolver::solve, implicit matrix = " << endl << _matM << endl;
-        cerr<<"ComplianceSolver::solve, right-hand term = " << _vecF << endl;
+        cerr<<"ComplianceSolver::solve, right-hand term = " << _vecF.transpose() << endl;
     }
 
     sofa::helper::AdvancedTimer::stepEnd("implicit equation: scaling and sum of matrices, update right-hand term ");
