@@ -22,6 +22,7 @@ contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmul
 contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython) }
 
 !contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
+    contains(DEFINES, SOFA_HAVE_HAPI)                   { usePlugin(SofaHAPI) }
     contains(DEFINES, SOFA_HAVE_OPTITRACK)              { usePlugin(OptiTrackNatNet) }
     contains(DEFINES, SOFA_HAVE_VRPN)                   { usePlugin(SofaVRPNClient) }
     contains(DEFINES, SOFA_HAVE_ARTRACK)                { usePlugin(ARTrack) }

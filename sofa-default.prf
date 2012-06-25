@@ -295,6 +295,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use Xitact IHP and ITP tools
 # DEFINES += SOFA_HAVE_XITACT
 
+# Uncomment if you want to use HAPI (from http://www.h3dapi.org)
+# DEFINES += SOFA_HAVE_HAPI
+
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to use ViSTA Device Drivers
