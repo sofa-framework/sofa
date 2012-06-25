@@ -30,6 +30,8 @@
 #include "../material/VolumePreservationMaterialBlock.inl"
 
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -59,25 +61,39 @@ public:
     /** @name  Material parameters */
     //@{
     Data<OptionsGroup> f_method;
-    Data<Real> f_k;
+    Data<vector<Real> > f_k;
     //@}
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_k.getValue());
+        Real k=0;
+        for(unsigned int i=0; i<this->material.size(); i++)
+        {
+            if(i<f_k.getValue().size()) k=f_k.getValue()[i]; else if(f_k.getValue().size()) k=f_k.getValue()[0];
+            this->material[i].init( k );
+        }
         Inherit::reinit();
+    }
+
+    void handleEvent(sofa::core::objectmodel::Event *event)
+    {
+        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        {
+            if(f_k.isDirty()) reinit();
+        }
     }
 
 protected:
     VolumePreservationForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , f_method ( initData ( &f_method,"method","energy form" ) )
-        , f_k(initData(&f_k,(Real)0,"k","bulk modulus: weight ln(J)^2/2 term in energy "))
+        , f_k(initData(&f_k,vector<Real>((int)1,(Real)0),"k","bulk modulus: weight ln(J)^2/2 term in energy "))
     {
         helper::OptionsGroup Options(2	,"0 - k.ln(J)^2/2"
                 ,"1 - k.(J-1)^2/2" );
         Options.setSelectedItem(1);
         f_method.setValue(Options);
+        this->f_listening.setValue(true);
     }
 
     virtual ~VolumePreservationForceField() {}

@@ -413,7 +413,7 @@ public:
                     if(w<0) w=0; else if(w>(DistT)1.) w=(DistT)1.;
                     // insert in weights
                     unsigned int j=0;
-                    while(j!=nbref && weights(x,y,z,j)>w) j++;
+                    while(j!=nbref && weights(x,y,z,j)>=w) j++;
                     if(j!=nbref)
                     {
                         if(j!=nbref-1) for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); }
