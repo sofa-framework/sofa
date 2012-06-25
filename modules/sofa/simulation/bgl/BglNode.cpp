@@ -97,70 +97,70 @@ unsigned int BglNode::getUniqueId()
 
 bool BglNode::addObject(core::objectmodel::BaseObject::SPtr sobj)
 {
-    using sofa::core::objectmodel::Tag;
-    core::objectmodel::BaseObject* obj = sobj.get();
-    sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj);
-    if (mm && mm->isMechanical() )
-    {
-        if( mm->getMechFrom().size()==0) cerr<<"BglNode::addObject, mapping with empty getFrom() !!" << endl;
-        if( mm->getMechTo().size()==0)   cerr<<"BglNode::addObject, mapping with empty getTo() !!" << endl;
-//        sofa::core::behavior::BaseMechanicalState
-//                *msFrom=mm->getMechFrom()[0],
-//                *msTo  =mm->getMechTo()[0];
+//    using sofa::core::objectmodel::Tag;
+//    core::objectmodel::BaseObject* obj = sobj.get();
+//    sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj);
+//    if (mm && mm->isMechanical() )
+//    {
+//        if( mm->getMechFrom().size()==0) cerr<<"BglNode::addObject, mapping with empty getFrom() !!" << endl;
+//        if( mm->getMechTo().size()==0)   cerr<<"BglNode::addObject, mapping with empty getTo() !!" << endl;
+////        sofa::core::behavior::BaseMechanicalState
+////                *msFrom=mm->getMechFrom()[0],
+////                *msTo  =mm->getMechTo()[0];
 
-//        if (msFrom && msTo)
+////        if (msFrom && msTo)
+////        {
+////            Node *from=(Node*)msFrom->getContext();
+////            Node *to=(Node*)  msTo  ->getContext();
+////            BglGraphManager::getInstance()->addInteraction( from, to, mm);
+////        }
+
+//        Node *to=(Node*) mm->getMechTo()[0]->getContext(); // we currently assume that no mapping has more than one output
+//        for( unsigned i=0; i<mm->getMechFrom().size(); i++)
 //        {
-//            Node *from=(Node*)msFrom->getContext();
-//            Node *to=(Node*)  msTo  ->getContext();
+//            Node *from=(Node*) mm->getMechFrom()[i]->getContext();
 //            BglGraphManager::getInstance()->addInteraction( from, to, mm);
 //        }
+//    }
+//    else if (sofa::core::behavior::BaseInteractionForceField* iff = dynamic_cast<sofa::core::behavior::BaseInteractionForceField*>(obj))
+//    {
+//        sofa::core::behavior::BaseMechanicalState
+//                *ms1=iff->getMechModel1(),
+//                *ms2=iff->getMechModel2();
 
-        Node *to=(Node*) mm->getMechTo()[0]->getContext(); // we currently assume that no mapping has more than one output
-        for( unsigned i=0; i<mm->getMechFrom().size(); i++)
-        {
-            Node *from=(Node*) mm->getMechFrom()[i]->getContext();
-            BglGraphManager::getInstance()->addInteraction( from, to, mm);
-        }
-    }
-    else if (sofa::core::behavior::BaseInteractionForceField* iff = dynamic_cast<sofa::core::behavior::BaseInteractionForceField*>(obj))
-    {
-        sofa::core::behavior::BaseMechanicalState
-        *ms1=iff->getMechModel1(),
-         *ms2=iff->getMechModel2();
+//        if (ms1 && ms2)
+//        {
+//            Node *m1=(Node*)ms1->getContext();
+//            Node *m2=(Node*)ms2->getContext();
+//            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
+//        }
+//    }
+//    else if (sofa::core::behavior::BaseInteractionProjectiveConstraintSet* ic = dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*>(obj))
+//    {
+//        sofa::core::behavior::BaseMechanicalState
+//                *ms1=ic->getMechModel1(),
+//                *ms2=ic->getMechModel2();
 
-        if (ms1 && ms2)
-        {
-            Node *m1=(Node*)ms1->getContext();
-            Node *m2=(Node*)ms2->getContext();
-            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
-        }
-    }
-    else if (sofa::core::behavior::BaseInteractionProjectiveConstraintSet* ic = dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*>(obj))
-    {
-        sofa::core::behavior::BaseMechanicalState
-        *ms1=ic->getMechModel1(),
-         *ms2=ic->getMechModel2();
+//        if (ms1 && ms2)
+//        {
+//            Node *m1=(Node*)ms1->getContext();
+//            Node *m2=(Node*)ms2->getContext();
+//            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
+//        }
+//    }
+//    else if (sofa::core::behavior::BaseInteractionConstraint* ic = dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*>(obj))
+//    {
+//        sofa::core::behavior::BaseMechanicalState
+//                *ms1=ic->getMechModel1(),
+//                *ms2=ic->getMechModel2();
 
-        if (ms1 && ms2)
-        {
-            Node *m1=(Node*)ms1->getContext();
-            Node *m2=(Node*)ms2->getContext();
-            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
-        }
-    }
-    else if (sofa::core::behavior::BaseInteractionConstraint* ic = dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*>(obj))
-    {
-        sofa::core::behavior::BaseMechanicalState
-        *ms1=ic->getMechModel1(),
-         *ms2=ic->getMechModel2();
-
-        if (ms1 && ms2)
-        {
-            Node *m1=(Node*)ms1->getContext();
-            Node *m2=(Node*)ms2->getContext();
-            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
-        }
-    }
+//        if (ms1 && ms2)
+//        {
+//            Node *m1=(Node*)ms1->getContext();
+//            Node *m2=(Node*)ms2->getContext();
+//            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
+//        }
+//    }
     return Node::addObject(sobj);
 }
 
@@ -335,6 +335,7 @@ void BglNode::doExecuteVisitor( Visitor* visit )
 #else
     BglGraphManager::getInstance()->depthFirstVisit(this, *visit, SearchDown);
 #endif
+
 }
 
 

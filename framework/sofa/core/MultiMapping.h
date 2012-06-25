@@ -250,7 +250,7 @@ public:
     /// @deprecated
     virtual void applyJT( const helper::vector< InMatrixDeriv* >& /*outConst*/ , const helper::vector< const OutMatrixDeriv* >& /*inConst*/ )
     {
-        serr << "This mapping does not support constraints since MultiMapping::applyJT( const helper::vector< InMatrixDeriv* >& , const helper::vector< const OutMatrixDeriv* >& ) is not overloaded." << sendl;
+//        serr << "This mapping does not support constraints since MultiMapping::applyJT( const helper::vector< InMatrixDeriv* >& , const helper::vector< const OutMatrixDeriv* >& ) is not overloaded." << sendl;
     }
 #endif //SOFA_DEPRECATE_OLD_API
 

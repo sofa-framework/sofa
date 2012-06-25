@@ -82,7 +82,7 @@ public:
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 protected:
-    virtual ~MechanicalState() { }
+    virtual ~MechanicalState() {}
 public:
     /// Return the current free-motion position vector.
     /// @deprecated use readVecCoord(ConstVecCoordId::freePosition()) instead.

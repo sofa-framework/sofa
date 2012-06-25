@@ -38,6 +38,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
+using std::cout;
 
 /** Set up a context for unit tests of sparse matrices.
   Used as fixture in Boost.Test suite.
@@ -75,7 +76,7 @@ struct TestSparseMatrices
     CRSMatrix crs1,crs2;
     FullMatrix fullMat;
     MapMatrix mapMat;
-    EigenBlockMatrix eiBlock1,eiBlock2;
+    EigenBlockMatrix eiBlock1,eiBlock2,eiBlock3;
     EigenBaseMatrix eiBase;
 
     // The vectors used in the tests
@@ -93,6 +94,7 @@ struct TestSparseMatrices
         mapMat.resize(NROWS,NCOLS);
         eiBlock1.resize(NROWS,NCOLS);
         eiBlock2.resize(NROWS,NCOLS);
+        eiBlock3.resize(NROWS,NCOLS);
         eiBase.resize(NROWS,NCOLS);
         for( unsigned j=0; j<NCOLS; j++)
         {
@@ -112,6 +114,7 @@ struct TestSparseMatrices
             }
         }
         crs1.compress(); crs2.compress(); eiBlock1.compress(); eiBlock2.compress(); eiBase.compress();
+        eiBlock3.copyFrom(crs1);
 
         // resize and fill the vectors
         fullVec_ncols.resize(NCOLS);
@@ -214,6 +217,15 @@ struct TestSparseMatrices
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, mb = " << mb << endl;
         return matricesAreEqual(ma,mb);
+    }
+
+    bool checkEigenMatrixBlockFromCompressedRowSparseMatrix()
+    {
+//        if( !matricesAreEqual(crs1,eiBlock3)){
+//            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, crs1 = " << crs1 << endl;
+//            cout<<"heckEigenMatrixBlockFromCompressedRowSparseMatrix, eiBlock3 = " << eiBlock3 << endl;
+//        }
+        return matricesAreEqual(crs1,eiBlock3);
     }
 
 

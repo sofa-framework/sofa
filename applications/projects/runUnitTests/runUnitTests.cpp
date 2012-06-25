@@ -4,6 +4,7 @@
   The main() function is in an external library. Installatations instructions can be found on the web, e.g.:
   - for linux: http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/
   - for windows: http://www.beroux.com/english/articles/boost_unit_testing/
+
   A good introduction can be found in: http://www.ibm.com/developerworks/aix/library/au-ctools1_boost/
 
   The test suite includes:

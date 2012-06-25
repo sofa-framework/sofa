@@ -11,6 +11,7 @@ HEADERS += initEigen2Solver.h \
            linearsolver/EigenSparseMatrix.h \
            linearsolver/EigenSparseSquareMatrix.h \
            linearsolver/EigenVector.h \
+           linearsolver/EigenVectorWrapper.h \
            linearsolver/SVDLinearSolver.h
 
 

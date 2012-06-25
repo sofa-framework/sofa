@@ -95,7 +95,7 @@ protected :
     {
     }
 
-    virtual ~SubsetMultiMapping() {};
+    virtual ~SubsetMultiMapping();
 
 
     /// Pointer to the current topology

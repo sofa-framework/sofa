@@ -99,6 +99,17 @@ public:
         resize(nbRow,nbCol);
     }
 
+    void setIdentity()
+    {
+        clear();
+        for( unsigned i=0; i<rowSize(); i++ )
+        {
+            if( i==colSize() ) break;
+            add(i,i,1.0);
+        }
+        compress();
+    }
+
     /** Clear and resize this to (m.rows,nbCol) and initialize it with the given matrix, columns shifted of the given value: this(i,j+shift) = m(i,j).
       @precond nbCol >= m.cols + shift
       */
@@ -333,8 +344,9 @@ public:
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear()
     {
+        int r=rowSize(), c=colSize();
         resize(0,0);
-        resize(rowSize(),colSize());
+        resize(r,c);
         incoming.clear();
     }
 

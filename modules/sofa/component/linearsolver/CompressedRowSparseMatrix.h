@@ -700,7 +700,7 @@ public:
         }
 #endif
         int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
-        ((Matrix*)this)->compress();
+        ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
         return traits::v(bloc(i, j), bi, bj);
     }
 

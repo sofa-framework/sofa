@@ -349,39 +349,39 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
     if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
     {
-//				std::cout << "==========================     VERIFICATION REGISTERED IN LOCAL DATA ========================" <<std::endl << std::endl;
-//
-//				for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
-//				{
-//					std::cout << "                Mechanical State (Real) : "<< it->first->getName() <<" registered in list" <<std::endl;
-//				}
-//
-//				for (std::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
-//				{
-//					std::cout << "                Mechanical State (mapped) : "<< it->first->getName() <<" registered in list" <<std::endl;
-//				}
-//
-//				for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
-//				{
-//					std::cout << "                Mechanical State ( all ) : "<< it->first->getName() <<" registered in list" <<std::endl;
-//				}
-//
-//				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
-//				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
-//
-//				while(itBegin != itEnd)
-//				{
-//					std::cout << "                 Interaction: "
-//		                      << itBegin->first.first->getName() <<" -- "<< itBegin->first.second->getName()<<std::endl;
-//
-//					++itBegin;
-//				}
-//
-//				const int lastMappingId = mappingList.size() - 1;
-//				for(int id=lastMappingId;id>=0;--id)
-//				{
-//					std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
-//				}
+        //				std::cout << "==========================     VERIFICATION REGISTERED IN LOCAL DATA ========================" <<std::endl << std::endl;
+        //
+        //				for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
+        //				{
+        //					std::cout << "                Mechanical State (Real) : "<< it->first->getName() <<" registered in list" <<std::endl;
+        //				}
+        //
+        //				for (std::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+        //				{
+        //					std::cout << "                Mechanical State (mapped) : "<< it->first->getName() <<" registered in list" <<std::endl;
+        //				}
+        //
+        //				for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
+        //				{
+        //					std::cout << "                Mechanical State ( all ) : "<< it->first->getName() <<" registered in list" <<std::endl;
+        //				}
+        //
+        //				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
+        //				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+        //
+        //				while(itBegin != itEnd)
+        //				{
+        //					std::cout << "                 Interaction: "
+        //		                      << itBegin->first.first->getName() <<" -- "<< itBegin->first.second->getName()<<std::endl;
+        //
+        //					++itBegin;
+        //				}
+        //
+        //				const int lastMappingId = mappingList.size() - 1;
+        //				for(int id=lastMappingId;id>=0;--id)
+        //				{
+        //					std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
+        //				}
         std::cout <<std::endl<< "=======================     CONTRIBUTION CONTRIBUTION CONTRIBUTION     ======================" <<std::endl << std::endl;
     }
 
@@ -459,10 +459,10 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                                 /*
                                 if( MULTIMATRIX_VERBOSE)  // index debug
                                 {
-                                	std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
-                                			<<" Jt("<<i1<<","<<k2<<")  * "
-                                			<<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
-                                			<<" J("<<k2<<","<<j1<<")"<<std::endl;
+                                std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
+                                <<" Jt("<<i1<<","<<k2<<")  * "
+                                <<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
+                                <<" J("<<k2<<","<<j1<<")"<<std::endl;
                                 }
                                 */
                             }
@@ -553,9 +553,9 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                             /*
                             if( MULTIMATRIX_VERBOSE)  // index debug
                             {
-                            	std::cout<<"I12("<<offR_I_12 + _i<<","<<offC_I_12 +  _j<<")  +="
-                            			<<" Jt("<<_k<<","<<_i<<")  * "
-                            			<<"I32("<<offR_I_32 + _k<<","<< offC_I_32+_j<<")"<<std::endl;
+                            std::cout<<"I12("<<offR_I_12 + _i<<","<<offC_I_12 +  _j<<")  +="
+                            <<" Jt("<<_k<<","<<_i<<")  * "
+                            <<"I32("<<offR_I_32 + _k<<","<< offC_I_32+_j<<")"<<std::endl;
                             }
                             */
                         }
@@ -609,9 +609,9 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
                             /*
                             if( MULTIMATRIX_VERBOSE)  // index debug
                             {
-                            	std::cout<<"I21("<<offR_I_21 + _i<<","<<offC_I_21 + _j<<")  +="
-                            			<<"I23("<<offR_I_23 + _i<<","<< offC_I_23+_k<<") * "
-                            			<<" Jt("<<_k<<","<<_k<<")"<<std::endl;
+                            std::cout<<"I21("<<offR_I_21 + _i<<","<<offC_I_21 + _j<<")  +="
+                            <<"I23("<<offR_I_23 + _i<<","<< offC_I_23+_k<<") * "
+                            <<" Jt("<<_k<<","<<_k<<")"<<std::endl;
                             }
                             */
                         }

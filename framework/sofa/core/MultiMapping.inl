@@ -45,7 +45,7 @@ template < class In, class Out >
 void MultiMapping<In,Out>::addInputModel(BaseState* fromModel, const std::string& path)
 {
     State<In>* from = dynamic_cast<State<In>*>(fromModel);
-    assert(from);
+    assert(from && "MultiMapping needs a State of the appropriate type to add as input model");
     this->fromModels.add(from, path);
 }
 

@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -92,6 +93,8 @@ public:
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+    typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
+
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
@@ -123,7 +126,6 @@ public:
     /// Compute the local coordinates based on the current output coordinates.
     virtual void reinit();
 
-
     virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecCoord>& out, const Data<InVecCoord>& in);
 
     virtual void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecDeriv>& out, const Data<InVecDeriv>& in);
@@ -134,9 +136,11 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
-    const sofa::defaulttype::BaseMatrix* getJ();
+    virtual const sofa::defaulttype::BaseMatrix* getJ();
 
-    void draw(const core::visual::VisualParams* vparams);
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void draw(const core::visual::VisualParams* vparams);
 
     void clear(int reserve = 0);
 
@@ -152,6 +156,9 @@ protected:
 
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
+
+    SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
+    helper::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
 };
 
 template <int N, class Real>
