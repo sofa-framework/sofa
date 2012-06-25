@@ -207,7 +207,6 @@ SOFA_DECL_CLASS ( AffineMechanicalObject )
 using namespace sofa::defaulttype;
 
 int AffineMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-
         .add< MechanicalObject<Affine3Types> >()
         ;
 

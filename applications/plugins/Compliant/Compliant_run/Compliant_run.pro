@@ -7,7 +7,6 @@ DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 SOURCES = Compliant_run.cpp
 
-
 macx {
         CONFIG += app_bundle
 	RC_FILE = runSOFA.icns
@@ -18,7 +17,7 @@ macx {
 }
 
 unix {
-   LIBS += -ldl
+    LIBS += -ldl
 }
 
 load(sofa/post)
