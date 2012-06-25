@@ -32,6 +32,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 
 namespace sofa
@@ -79,6 +81,14 @@ public:
         Inherit::reinit();
     }
 
+    void handleEvent(sofa::core::objectmodel::Event *event)
+    {
+        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        {
+            if(_youngModulus.isDirty() || _poissonRatio.isDirty() || _viscosity.isDirty()) reinit();
+        }
+    }
+
     /// Set the constraint value
     virtual void writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId constraintId )
     {
@@ -111,6 +121,7 @@ protected:
         , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
+        this->f_listening.setValue(true);
     }
 
     virtual ~HookeForceField()     {    }

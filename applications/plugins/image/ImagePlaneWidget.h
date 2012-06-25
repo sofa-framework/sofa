@@ -345,10 +345,11 @@ public:
         CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
 
         if(plane)
-            for( int y=0; y<this->image.height(); y++)
-                for( int x=0; x<this->image.width(); x++)
-                    if(plane.spectrum()<3) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,0),plane(x,y,0,0)));
-                    else this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,2)));
+        {
+            if(plane.spectrum()==1) { for( int y=0; y<this->image.height(); y++) for( int x=0; x<this->image.width(); x++) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,0),plane(x,y,0,0))); }
+            else if(plane.spectrum()==2) { for( int y=0; y<this->image.height(); y++) for( int x=0; x<this->image.width(); x++) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,0))); }
+            else  { for( int y=0; y<this->image.height(); y++) for( int x=0; x<this->image.width(); x++) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,2))); }
+        }
 
         CImg<unsigned char> slicedModels; 	if(this->visumodels) slicedModels = this->imageplane->get_slicedModels(this->index,this->axis);
 

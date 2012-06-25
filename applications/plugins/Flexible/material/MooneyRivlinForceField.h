@@ -29,6 +29,9 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MooneyRivlinMaterialBlock.inl"
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+
 namespace sofa
 {
 namespace component
@@ -55,23 +58,38 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<Real> f_C1;
-    Data<Real> f_C2;
+    Data<vector<Real> > f_C1;
+    Data<vector<Real> > f_C2;
     //@}
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->material.size(); i++) this->material[i].init(this->f_C1.getValue(),this->f_C2.getValue());
+        Real C1=0,C2=0;
+        for(unsigned int i=0; i<this->material.size(); i++)
+        {
+            if(i<f_C1.getValue().size()) C1=f_C1.getValue()[i]; else if(f_C1.getValue().size()) C1=f_C1.getValue()[0];
+            if(i<f_C2.getValue().size()) C2=f_C2.getValue()[i]; else if(f_C2.getValue().size()) C2=f_C2.getValue()[0];
+            this->material[i].init( C1, C2 );
+        }
         Inherit::reinit();
+    }
+
+    void handleEvent(sofa::core::objectmodel::Event *event)
+    {
+        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        {
+            if(f_C1.isDirty() || f_C2.isDirty()) reinit();
+        }
     }
 
 protected:
     MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C1(initData(&f_C1,(Real)1000,"C1","weight of (~I1-3) term in energy"))
-        , f_C2(initData(&f_C2,(Real)1000,"C2","weight of (~I2-3) term in energy"))
+        , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
+        , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
+        this->f_listening.setValue(true);
     }
 
     virtual ~MooneyRivlinForceField()     {    }
