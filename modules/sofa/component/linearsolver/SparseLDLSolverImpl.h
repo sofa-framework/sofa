@@ -28,9 +28,11 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 
+#ifdef SOFA_HAVE_METIS
 extern "C" {
 #include <metis.h>
 }
+#endif
 
 namespace sofa
 {
@@ -82,6 +84,7 @@ protected :
 
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
     {
+#ifdef SOFA_HAVE_METIS
         int  num_flag     = 0;
         int  options_flag = 0;
 
@@ -102,6 +105,13 @@ protected :
         xadj[n] = M_colptr[n] - n;
 
         METIS_NodeND(&n, &xadj[0],&adj[0], &num_flag, &options_flag, perm,invperm);
+#else
+        for (int i=0; i<n; i++)
+        {
+            perm[i] = i;
+            invperm[i] = i;
+        }
+#endif
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm)
