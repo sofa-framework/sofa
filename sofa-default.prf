@@ -375,6 +375,9 @@ CONFIG -= lex yacc qt link_prl app_bundle
 
 win32{
 # CONFIG += debug_and_release
+## Debug symbols even in release mode:
+# QMAKE_CXXFLAGS_RELEASE += /Zi 
+# QMAKE_LFLAGS_RELEASE += /DEBUG
 }
 unix{
 CONFIG -= debug release
