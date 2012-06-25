@@ -63,7 +63,7 @@ declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacompone
 declare(sofa_base_topology, modules/sofa/component/sofa_base_topology.pro, sofatree eigen)
 declare(sofa_base_linear_solver, modules/sofa/component/sofa_base_linear_solver.pro, sofatree)
 declare(sofa_base_mechanics, modules/sofa/component/sofa_base_mechanics.pro, sofa_base_topology sofa_base_linear_solver)
-declare(sofa_rigid, modules/sofa/component/sofa_rigid.pro, sofa_base_mechanics)
+declare(sofa_rigid, modules/sofa/component/sofa_rigid.pro, sofa_base_mechanics sofa_eigen2_solver )
 declare(sofa_sph_fluid, modules/sofa/component/sofa_sph_fluid.pro, sofa_base_mechanics)
 declare(sofa_base_collision, modules/sofa/component/sofa_base_collision.pro, sofa_base_mechanics sofa_rigid miniFlowVR sofa_sph_fluid)
 declare(sofa_base_animation_loop, modules/sofa/component/sofa_base_animation_loop.pro, sofatree sofagraph)
@@ -208,6 +208,11 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
     declare(Flexible, applications/plugins/Flexible, sofaguiqt sofa_eigen2_solver   )
     enable(Flexible)
+}
+
+contains(DEFINES, SOFA_HAVE_FRAME) {
+    declare(frame, applications/plugins/frame, sofaguiqt sofa_sparse_solver sofa_eigen2_solver   )
+    enable(frame)
 }
 
 contains(DEFINES, SOFA_PROJECT_runUnitTests) {

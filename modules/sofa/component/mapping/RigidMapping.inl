@@ -44,6 +44,7 @@
 
 #include <string.h>
 #include <iostream>
+#include <cassert>
 
 namespace sofa
 {
@@ -260,6 +261,11 @@ void RigidMapping<TIn, TOut>::init()
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
 
+
+    eigenJacobians.resize( 1 );
+    eigenJacobians[0] = &eigenJacobian;
+
+
     this->reinit();
 
     this->Inherit::init();
@@ -339,6 +345,7 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
     const VecCoord& pts = this->getPoints();
 
     updateJ = true;
+    eigenJacobian.resizeBlocks(out.size(),in.size());
 
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
@@ -850,6 +857,18 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 }
 
 template <class TIn, class TOut>
+const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
+{
+    const MatrixType* crsJacobian = dynamic_cast<const MatrixType*>(getJ());
+//    cerr<<"RigidMapping<TIn, TOut>::getJs(), J = " << *crsJacobian << endl;
+    assert(crsJacobian);
+    eigenJacobian.copyFrom( *crsJacobian );
+//    eigenJacobian.setIdentity();
+//    cerr<<"RigidMapping<TIn, TOut>::getJs(), J copied = " << eigenJacobian << endl;
+    return &eigenJacobians;
+}
+
+template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 {
     const VecCoord& out = *this->toModel->getX();
@@ -935,6 +954,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
             }
         }
     }
+    matrixJ->compress();
     return matrixJ.get();
 }
 
@@ -972,6 +992,7 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
+//    cerr<<"RigidMapping<TIn, TOut>::setJMatrixBlock, outIdx = " << outIdx << ", inIdx = " << inIdx << endl;
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }

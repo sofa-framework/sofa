@@ -75,7 +75,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
         {
 //            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
             jacobians[ indexPairs[i].first ]->beginRow(Nout*i+k);
-            jacobians[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second +k, (SReal)1. );
+            jacobians[ indexPairs[i].first ]->insertBack( Nout*i+k, Nin*indexPairs[i].second +k, (SReal)1. );
         }
     }
 
@@ -85,6 +85,15 @@ void SubsetMultiMapping<TIn, TOut>::init()
         baseMatrices[i]->compress();
     }
 #endif
+}
+
+template <class TIn, class TOut>
+SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
+{
+    for(unsigned i=0; i<baseMatrices.size(); i++ )
+    {
+        delete baseMatrices[i];
+    }
 }
 
 #ifdef SOFA_HAVE_EIGEN2

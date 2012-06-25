@@ -13,6 +13,7 @@ BOOST_AUTO_TEST_CASE( set_eiBlock2 ) { BOOST_CHECK( matricesAreEqual(fullMat,eiB
 BOOST_AUTO_TEST_CASE( set_eiBase ) { BOOST_CHECK( matricesAreEqual(fullMat,eiBase)); }
 BOOST_AUTO_TEST_CASE( eigenMatrix_update ) { BOOST_CHECK( checkEigenMatrixUpdate() ); }
 BOOST_AUTO_TEST_CASE( eigenMatrix_block_row_filling ) { BOOST_CHECK( checkEigenMatrixBlockRowFilling() ); }
+BOOST_AUTO_TEST_CASE( eigenMatrixBlockFromCompressedRowSparseMatrix ) { BOOST_CHECK( checkEigenMatrixBlockFromCompressedRowSparseMatrix() ); }
 
 
 // ==============================

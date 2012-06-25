@@ -22,7 +22,7 @@ contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmul
 contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython) }
 
 !contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
-    contains(DEFINES, SOFA_HAVE_OPTITRACK)                  { usePlugin(OptiTrackNatNet) }
+    contains(DEFINES, SOFA_HAVE_OPTITRACK)              { usePlugin(OptiTrackNatNet) }
     contains(DEFINES, SOFA_HAVE_VRPN)                   { usePlugin(SofaVRPNClient) }
     contains(DEFINES, SOFA_HAVE_ARTRACK)                { usePlugin(ARTrack) }
     contains(DEFINES, SOFA_HAVE_XITACT)                 { usePlugin(Xitact) }
@@ -50,7 +50,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
     contains(DEFINES, SOFA_HAVE_REGISTRATION)           { usePlugin(Registration) }
     contains(DEFINES, SOFA_HAVE_OPENCV)                 { usePlugin(OpenCVPlugin) }
     contains(DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING)  { usePlugin(PhysicalFieldModeling) }
-    contains(DEFINES, SOFA_HAVE_EmptyPlugin2)           { usePlugin(EmptyPlugin2) }
+#    contains(DEFINES, SOFA_HAVE_EmptyPlugin2)           { usePlugin(EmptyPlugin2) }
     contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
         contains(DEFINES, SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER) { usePlugin(TriangularMeshBasedHexasCutter) }
 	} # END SOFA_GPU_CUDA
