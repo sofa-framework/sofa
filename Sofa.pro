@@ -1,4 +1,4 @@
-load(sofa/pre)
+ load(sofa/pre)
 
 TEMPLATE = subdirs
 

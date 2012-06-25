@@ -30,10 +30,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 
-//#include <sofa/component/init.h>
-//#ifdef SOFA_DEV
-//#include <sofa/component/initDev.h>
-//#endif
+#include <sofa/component/init.h>
+#ifdef SOFA_DEV
+#include <sofa/component/initDev.h>
+#endif
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
@@ -46,6 +46,24 @@
 #include <plugins/Compliant/Compliant_lib/UniformCompliance.h>
 #include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
+
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/CompareState.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/gui/GUIManager.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
+#include <sofa/helper/system/atomic.h>
+
 
 #include <Eigen/Dense>
 using std::cout;
@@ -138,10 +156,9 @@ protected:
         extension_node->addObject(edgeSet);
 
         ExtensionMapping31::SPtr extensionMapping = New<ExtensionMapping31>();
-        extensionMapping->setModels(DOF.get(),extensions.get());
-        extension_node->addObject( extensionMapping );
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
+        extension_node->addObject( extensionMapping );
 
         UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
         extension_node->addObject(compliance);
@@ -167,25 +184,6 @@ protected:
         }
         extensionMapping->f_restLengths.setValue( restLengths );
 
-        //    {
-        //        //-------- fix a particle
-        //        Node::SPtr fixNode = string_node->createChild("fixNode");
-        //        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
-        //        fixNode->addObject(extensions);
-
-        //        DistanceMapping31::SPtr distanceMapping = New<DistanceMapping31>();
-        //        distanceMapping->setModels(DOF.get(),extensions.get());
-        //        fixNode->addObject( distanceMapping );
-        //        distanceMapping->setName("fix_distanceMapping");
-        //        distanceMapping->setModels( DOF.get(), extensions.get() );
-        //        distanceMapping->createTarget( numParticles-1, endPoint, 0.0 );
-
-        //        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
-        //        fixNode->addObject(compliance);
-        //        compliance->setName("fix_compliance");
-        //        compliance->compliance.setValue(complianceValue);
-        //        compliance->dampingRatio.setValue(dampingRatio);
-        //    }
 
         return string_node;
 
@@ -309,10 +307,33 @@ protected:
 public:
     CompliantTestFixture()
     {
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-        simulation = sofa::simulation::getSimulation();
+//        sofa::helper::BackTrace::autodump();
+//        sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+
+        sofa::component::init();
+//    #ifdef SOFA_DEV
+//        sofa::component::initDev();
+//    #endif
+//        sofa::simulation::xml::initXml();
+
+//        std::vector<std::string> plugins;
+//        plugins.push_back(std::string("Flexible"));
+//        for (unsigned int i=0;i<plugins.size();i++)
+//            sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+
+//        sofa::helper::system::PluginManager::getInstance().init();
+
+
+//        if (int err = sofa::gui::GUIManager::Init("argv[0]","batch") )
+//                cerr<<"sofa::gui::GUIManager::Init failed " << endl;
+
+//        if (int err=sofa::gui::GUIManager::createGUI(NULL))
+//            cerr<<"sofa::gui::GUIManager::createGUI failed " << endl;
+
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::bgl::BglSimulation());
         root = simulation->createNewGraph("root");
         root->setName("Scene root");
+
     }
 
     ~CompliantTestFixture()
@@ -1051,9 +1072,12 @@ namespace ut = boost::unit_test;
 
 BOOST_FIXTURE_TEST_SUITE( ts1, CompliantTestFixture );
 
-BOOST_AUTO_TEST_CASE( test_CompliantSolver )
+BOOST_AUTO_TEST_CASE( test_CompliantSolver_assembly )
 {
     ut::unit_test_log.set_stream( std::cerr );
+
+
+
 
     unsigned numParticles=3;
     BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles");

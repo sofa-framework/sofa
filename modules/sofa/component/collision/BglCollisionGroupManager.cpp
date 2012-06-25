@@ -48,7 +48,7 @@ using core::collision::Contact;
 
 SOFA_DECL_CLASS(BglCollisionGroupManager);
 
-int BglCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
+int BglCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering the colliding objects in the same group, for consistent time integration")
         .add< BglCollisionGroupManager >()
         ;
 

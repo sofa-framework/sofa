@@ -18,6 +18,7 @@ macx {
 
 unix {
     LIBS += -ldl
+#    LIBS += -lFlexible -lCompliant
 }
 
 load(sofa/post)
