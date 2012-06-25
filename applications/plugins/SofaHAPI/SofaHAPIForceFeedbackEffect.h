@@ -91,9 +91,7 @@ public:
 
     void setForceFeedback(ForceFeedback* ffb);
     ForceFeedback* getForceFeedback();
-#ifdef SOFA_DEV
     int getIndice();
-#endif
 
     ForceFeedbackEffect* getEffect();
 

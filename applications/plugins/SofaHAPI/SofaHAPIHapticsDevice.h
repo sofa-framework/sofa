@@ -70,14 +70,10 @@ public:
     Data<Vec3d> positionTool;
     Data<Quat> orientationTool;
     Data<bool> permanent;
-#ifdef SOFA_DEV
     Data<bool> toolSelector;
     Data<int> toolCount;
-#endif
     Data<int> toolIndex;
-#ifdef SOFA_DEV
     Data<double> toolTransitionSpringStiffness;
-#endif
     Data<std::string> driverName;
     Data<bool> drawDevice;
 
