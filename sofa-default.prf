@@ -394,6 +394,24 @@ CONFIG += release
 # QMAKE_LFLAGS_DEBUG *= -pg
 # QMAKE_LFLAGS_RELEASE *= -pg
 
+# Change to use different version of the compiler
+QMAKE_CC         = gcc
+QMAKE_CXX        = g++
+QMAKE_LINK       = g++
+QMAKE_LINK_SHLIB = g++
+
+CC_VERSION = $$system($${QMAKE_CC} --version  | awk "' NR==1 { print $3 } '")
+
+## Under gcc 4.6, the release optimisation causes error:
+## we need to disable new partial inlining optimization.
+CC_IS_4_6 = $$find(CC_VERSION, "^4.2")
+count(CC_IS_4_6, 1): QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
+## If is not enough (still erreur section type conflict...): uncomment also to compile successfully 
+#QMAKE_CXXFLAGS_RELEASE -= -O2
+#QMAKE_CXXFLAGS_RELEASE += -O1
+
+
+
 # Make sure undefined symbols are reported as error when linking each dynamic libraries instead of the first program using them
 unix:!macx: QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
 
@@ -403,18 +421,6 @@ unix:!macx: QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
 # QMAKE_CFLAGS_RELEASE   *= -O3 -march=native -mtune=native -fno-math-errno -funroll-loops -mfpmath=387
 # QMAKE_CXXFLAGS_RELEASE *= -O3 -march=native -mtune=native -fno-math-errno -funroll-loops -mfpmath=387
 # With earlier version, native must be replaced by your specific processor architecture
-
-## Under gcc 4.6, the release optimisation causes error: uncomment to compile successfully 
-#QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
-## If is not enough (still erreur section type conflict...): uncomment also to compile successfully 
-#QMAKE_CXXFLAGS_RELEASE -= -O2
-#QMAKE_CXXFLAGS_RELEASE += -O1
-
-# Change to use different version of the compiler
-QMAKE_CC         = gcc
-QMAKE_CXX        = g++
-QMAKE_LINK       = g++
-QMAKE_LINK_SHLIB = g++
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want your compilation to stop at the first error 
