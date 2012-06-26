@@ -62,6 +62,7 @@ public:
       Undefined result if one of the vectors is null, or if the two vectors are parallel.
       */
     static void QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
+    static void QRDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &R );
 
     /** QR decomposition stable to null columns.
       * Result is still undefined if two columns are parallel.
@@ -69,12 +70,15 @@ public:
       * \returns true in a degenerated configuration
       */
     static bool QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R );
+    static bool QRDecomposition_stable( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &R );
 
     /** QR decomposition (M=QR) rotation gradient dQ  (invR = R^-1)
       * Formula given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf
       * Note that dR is also easy to compute.
       */
-    static void QRDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>&Q, const defaulttype::Mat<3,3,Real>&invR, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+    template<int spatial_dimension, int material_dimension>
+    static void QRDecompositionGradient_dQ( const defaulttype::Mat<spatial_dimension,material_dimension,Real>&Q, const defaulttype::Mat<material_dimension,material_dimension,Real>&invR, const defaulttype::Mat<spatial_dimension,material_dimension,Real>& dM, defaulttype::Mat<spatial_dimension,material_dimension,Real>& dQ );
+
 
 
 
@@ -137,11 +141,13 @@ public:
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
      */
     static bool polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const defaulttype::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+    static bool polarDecomposition_stable_Gradient_dQOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &Sdiag, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dQOverdM );
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
      */
-    static void polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ );
+    static bool polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ );
+    static bool polarDecompositionGradient_dQOverdM( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, defaulttype::Mat<6,6,Real>& dQOverdM );
 
 
     /** @}
@@ -208,11 +214,13 @@ public:
       * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
      */
     static void SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV );
+    static void SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM );
 
     /** SVD rotation gradients, computes the rotation gradients dU & dV
       * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
      */
     static void SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV );
+    static void SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM );
 
 
 

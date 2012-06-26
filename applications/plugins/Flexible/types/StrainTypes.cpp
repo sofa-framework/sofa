@@ -57,13 +57,11 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
         .add< MechanicalObject<D333Types> >()
 
         .add< MechanicalObject<I331Types> >()
-        .add< MechanicalObject<I332Types> >()
-        .add< MechanicalObject<I333Types> >()
+//.add< MechanicalObject<I332Types> >()
+//.add< MechanicalObject<I333Types> >()
 
         .add< MechanicalObject<U331Types> >()
         .add< MechanicalObject<U221Types> >()
-        .add< MechanicalObject<U332Types> >()
-        .add< MechanicalObject<U333Types> >()
         ;
 
 template class SOFA_Flexible_API MechanicalObject<E331Types>;
@@ -77,13 +75,11 @@ template class SOFA_Flexible_API MechanicalObject<D332Types>;
 template class SOFA_Flexible_API MechanicalObject<D333Types>;
 
 template class SOFA_Flexible_API MechanicalObject<I331Types>;
-template class SOFA_Flexible_API MechanicalObject<I332Types>;
-template class SOFA_Flexible_API MechanicalObject<I333Types>;
+//template class SOFA_Flexible_API MechanicalObject<I332Types>;
+//template class SOFA_Flexible_API MechanicalObject<I333Types>;
 
 template class SOFA_Flexible_API MechanicalObject<U331Types>;
 template class SOFA_Flexible_API MechanicalObject<U221Types>;
-template class SOFA_Flexible_API MechanicalObject<U332Types>;
-template class SOFA_Flexible_API MechanicalObject<U333Types>;
 
 } // namespace container
 } // namespace component

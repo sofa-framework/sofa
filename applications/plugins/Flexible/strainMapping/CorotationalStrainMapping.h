@@ -95,7 +95,7 @@ public:
         {
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
-                this->jacobian[i].init_svd();
+                this->jacobian[i].init_svd( f_geometricStiffness.getValue() );
             }
             break;
         }

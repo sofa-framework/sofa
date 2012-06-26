@@ -44,7 +44,7 @@ namespace defaulttype
 
 
 
-/** Template class used to implement one jacobian block for PrincipalStretchesMapping */
+/** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
 template<class TIn, class TOut>
 class PrincipalStretchesJacobianBlock : public BaseJacobianBlock< TIn,TOut >
 {
@@ -67,7 +67,6 @@ public:
     enum { material_dimensions = In::material_dimensions };
     enum { spatial_dimensions = In::spatial_dimensions };
     enum { strain_size = Out::strain_size };
-    enum { order = Out::order };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
     typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
@@ -77,32 +76,37 @@ public:
     Mapping:   \f$ E = Ut.F.V\f$
     where:  U/V are the spatial and material rotation parts of F and E is diagonal
     Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is still diagonal (no anisotropy possible)
+    Note that superior orders should not be possible because the gradients E_k are not necessary diagonal -> DiagonalStrain (including non-diagonal terms) can be used instead
     */
 
     static const bool constantJ = false;
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation
-    StrainVec _S; ///< Principal stretches
+
 
     MatBlock _J;
+
+    Mat<frame_size,frame_size,Real> _dUOverdF;
+    Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
 
     bool _degenerated;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, _S, _V );
+        StrainVec S; // principal stretches
+        _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
 
-        // order 0
         for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += _S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
+            result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
+
+        helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
 
         computeJ();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        // order 0
         for( int i=0 ; i<spatial_dimensions ; ++i )
             for( int j=0 ; j<material_dimensions ; ++j )
                 for( int k=0 ; k<material_dimensions ; ++k )
@@ -111,11 +115,11 @@ public:
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        // order 0
         for( int i=0 ; i<spatial_dimensions ; ++i )
             for( int j=0 ; j<material_dimensions ; ++j )
                 for( int k=0 ; k<material_dimensions ; ++k )
                     result.getF()[i][j] += _J[k][i*material_dimensions+j] * data.getStrain()[k];
+
     }
 
     void computeJ()
@@ -131,7 +135,7 @@ public:
         return _J;
     }
 
-    // TODO requires dU/dp & dV/dp and to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) a matrix-vector product K.dp
+    // TODO requires to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) as a matrix-vector product K.dp
     KBlock getK( const OutDeriv& /*childForce*/ )
     {
         return KBlock();
@@ -143,9 +147,18 @@ public:
 
         SpatialMaterialMat dU;
         MaterialMaterialMat dV;
-        helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
 
-        // order 0
+        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                {
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+
+                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+                }
+
         df.getF() += dU.multDiagonal( childForce.getStrain() ) * _V * kfactor;
         df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
     }

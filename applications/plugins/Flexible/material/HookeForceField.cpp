@@ -54,7 +54,6 @@ int HookeForceFieldClass = core::RegisterObject("Hooke's Law for isotropic homog
 
         .add< HookeForceField< U331Types > >()
         .add< HookeForceField< U221Types > >()
-//.add< HookeForceField< U332Types > >()
         ;
 
 template class SOFA_Flexible_API HookeForceField< E221Types >;
@@ -68,7 +67,6 @@ template class SOFA_Flexible_API HookeForceField< D332Types >;
 
 template class SOFA_Flexible_API HookeForceField< U331Types >;
 template class SOFA_Flexible_API HookeForceField< U221Types >;
-//template class SOFA_Flexible_API HookeForceField< U332Types >;
 
 }
 }
