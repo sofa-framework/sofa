@@ -1,4 +1,4 @@
-#include "SofaPhysicsSimulation.h"
+#include "SofaPhysicsAPI.h"
 #include "SofaPhysicsSimulation_impl.h"
 
 #include <sofa/helper/system/gl.h>
@@ -33,7 +33,7 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
     delete impl;
 }
 
-bool SofaPhysicsSimulation::load(std::string filename)
+bool SofaPhysicsSimulation::load(const char* filename)
 {
     return impl->load(filename);
 }
@@ -63,7 +63,7 @@ void SofaPhysicsSimulation::resetView()
     impl->resetView();
 }
 
-void SofaPhysicsSimulation::sendValue(std::string name, double value)
+void SofaPhysicsSimulation::sendValue(const char* name, double value)
 {
     impl->sendValue(name, value);
 }
@@ -71,6 +71,16 @@ void SofaPhysicsSimulation::sendValue(std::string name, double value)
 void SofaPhysicsSimulation::drawGL()
 {
     impl->drawGL();
+}
+
+unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
+{
+    return impl->getNbOutputMeshes();
+}
+
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
+{
+    return impl->getOutputMeshes();
 }
 
 bool SofaPhysicsSimulation::isAnimated() const
@@ -98,7 +108,7 @@ double SofaPhysicsSimulation::getCurrentFPS() const
     return impl->getCurrentFPS();
 }
 
-const std::string& SofaPhysicsSimulation::getSceneFileName() const
+const char* SofaPhysicsSimulation::getSceneFileName() const
 {
     return impl->getSceneFileName();
 }
@@ -152,10 +162,16 @@ SofaPhysicsSimulation::Impl::Impl()
 
 SofaPhysicsSimulation::Impl::~Impl()
 {
+    /*for (std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*>::const_iterator it = outputMeshMap.begin(), itend = outputMeshMap.end(); ++it)
+    {
+        if (it->second) delete it->second;
+    }
+    outputMeshMap.clear();*/
 }
 
-bool SofaPhysicsSimulation::Impl::load(std::string filename)
+bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
 {
+    std::string filename = cfilename;
     std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
 
     //bool wasAnimated = isAnimated();
@@ -167,6 +183,7 @@ bool SofaPhysicsSimulation::Impl::load(std::string filename)
         sceneFileName = filename;
         std::cout << "INIT" << std::endl;
         m_Simulation->init(m_RootNode.get());
+        updateOutputMeshes();
     }
     else
         success = false;
@@ -180,14 +197,14 @@ bool SofaPhysicsSimulation::Impl::load(std::string filename)
 }
 
 
-void SofaPhysicsSimulation::Impl::sendValue(std::string name, double value)
+void SofaPhysicsSimulation::Impl::sendValue(const char* name, double value)
 {
     // send a GUIEvent to the tree
     if (m_RootNode!=0)
     {
         std::ostringstream oss;
         oss << value;
-        sofa::core::objectmodel::GUIEvent event("",name.c_str(),oss.str().c_str());
+        sofa::core::objectmodel::GUIEvent event("",name,oss.str().c_str());
         m_RootNode->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     }
     this->update();
@@ -295,7 +312,13 @@ void SofaPhysicsSimulation::Impl::beginStep()
 
 void SofaPhysicsSimulation::Impl::endStep()
 {
-    this->update();
+    update();
+    updateCurrentFPS();
+    updateOutputMeshes();
+}
+
+void SofaPhysicsSimulation::Impl::updateCurrentFPS()
+{
     if (frameCounter==0)
     {
         sofa::helper::system::thread::ctime_t t = sofa::helper::system::thread::CTime::getRefTime();
@@ -314,6 +337,45 @@ void SofaPhysicsSimulation::Impl::endStep()
     }
     ++frameCounter;
 }
+
+void SofaPhysicsSimulation::Impl::updateOutputMeshes()
+{
+    sofa::simulation::Node* groot = getScene();
+    if (!groot)
+    {
+        sofaOutputMeshes.clear();
+        outputMeshes.clear();
+        return;
+    }
+    sofaOutputMeshes.clear();
+    groot->get<SofaOutputMesh>(&sofaOutputMeshes, BaseContext::SearchDown);
+    outputMeshes.resize(sofaOutputMeshes.size());
+    for (unsigned int i=0; i<sofaOutputMeshes.size(); ++i)
+    {
+        SofaOutputMesh* sMesh = sofaOutputMeshes[i];
+        SofaPhysicsOutputMesh*& oMesh = outputMeshMap[sMesh];
+        if (oMesh == NULL)
+        {
+            oMesh = new SofaPhysicsOutputMesh;
+            oMesh->impl->setObject(sMesh);
+        }
+        outputMeshes[i] = oMesh;
+    }
+}
+
+unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshes()
+{
+    return outputMeshes.size();
+}
+
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
+{
+    if (outputMeshes.empty())
+        return NULL;
+    else
+        return &(outputMeshes[0]);
+}
+
 
 void SofaPhysicsSimulation::Impl::drawGL()
 {

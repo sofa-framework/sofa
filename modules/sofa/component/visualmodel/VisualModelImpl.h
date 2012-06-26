@@ -185,7 +185,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-protected:
+//protected:
 
     typedef ExtVec3fTypes DataTypes;
     typedef DataTypes::Real Real;

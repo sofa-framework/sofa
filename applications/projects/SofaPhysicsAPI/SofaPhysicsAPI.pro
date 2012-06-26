@@ -6,11 +6,13 @@ TARGET = SofaPhysicsAPI
 
 SOURCES += main.cpp \
     SofaPhysicsSimulation.cpp \
+    SofaPhysicsOutputMesh.cpp \
     fakegui.cpp
 
 HEADERS += \
-    SofaPhysicsSimulation.h \
+    SofaPhysicsAPI.h \
     SofaPhysicsSimulation_impl.h \
+    SofaPhysicsOutputMesh_impl.h \
     fakegui.h
 
 #macx {

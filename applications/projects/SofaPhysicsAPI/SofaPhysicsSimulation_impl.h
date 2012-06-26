@@ -1,7 +1,8 @@
 #ifndef SOFAPHYSICSSIMULATION_IMPL_H
 #define SOFAPHYSICSSIMULATION_IMPL_H
 
-#include "SofaPhysicsSimulation.h"
+#include "SofaPhysicsAPI.h"
+#include "SofaPhysicsOutputMesh_impl.h"
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -9,20 +10,25 @@
 #include <sofa/component/visualmodel/InteractiveCamera.h>
 #include <sofa/helper/gl/Texture.h>
 
+#include <map>
+
 class SofaPhysicsSimulation::Impl
 {
 public:
     Impl();
     ~Impl();
 
-    bool load(std::string filename);
+    bool load(const char* filename);
     void start();
     void stop();
     void step();
     void reset();
     void resetView();
-    void sendValue(std::string name, double value);
+    void sendValue(const char* name, double value);
     void drawGL();
+
+    unsigned int getNbOutputMeshes();
+    SofaPhysicsOutputMesh** getOutputMeshes();
 
     bool isAnimated() const;
     void setAnimated(bool val);
@@ -31,12 +37,19 @@ public:
     void   setTimeStep(double dt);
     double getCurrentFPS() const;
 
+    typedef SofaPhysicsOutputMesh::Impl::SofaOutputMesh SofaOutputMesh;
+
 protected:
 
     sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+
+    std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
+    std::vector<SofaOutputMesh*> sofaOutputMeshes;
+    std::vector<SofaPhysicsOutputMesh*> outputMeshes;
+
     sofa::helper::gl::Texture *texLogo;
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
@@ -52,16 +65,18 @@ protected:
     int frameCounter;
     double currentFPS;
 
+    void update();
+    void updateOutputMeshes();
+    void updateCurrentFPS();
     void beginStep();
     void endStep();
-    void update();
     void calcProjection();
 
 public:
 
-    const std::string& getSceneFileName() const
+    const char* getSceneFileName() const
     {
-        return sceneFileName;
+        return sceneFileName.c_str();
     }
     sofa::simulation::Simulation* getSimulation() const
     {
@@ -74,4 +89,4 @@ public:
 
 };
 
-#endif
+#endif // SOFAPHYSICSSIMULATION_IMPL_H
