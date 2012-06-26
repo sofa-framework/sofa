@@ -405,10 +405,10 @@ unix:!macx: QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
 # With earlier version, native must be replaced by your specific processor architecture
 
 ## Under gcc 4.6, the release optimisation causes error: uncomment to compile successfully 
-# QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
+QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
 ## If is not enough (still erreur section type conflict...): uncomment also to compile successfully 
-QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -O1
+#QMAKE_CXXFLAGS_RELEASE -= -O2
+#QMAKE_CXXFLAGS_RELEASE += -O1
 
 # Change to use different version of the compiler
 QMAKE_CC         = gcc
