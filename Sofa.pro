@@ -13,6 +13,8 @@ message( "PRE-CONFIG: " $${CONFIG})
 # Enable plugins in addition of the standard Sofa libraries
 ########################################################################
 
+useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
+
 usePlugin(PluginExample)
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            { usePlugin(Flexible) }
