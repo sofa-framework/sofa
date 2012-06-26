@@ -71,8 +71,9 @@ win32 {
 	CONFIG(debug, debug|release) : VCCONFIGDIR = Debug
 	else :                         VCCONFIGDIR = Release
 	
-	win32-msvc2005 : VCCONFIGDIR = $${VCCONFIGDIR}VC8
-	else :           VCCONFIGDIR = $${VCCONFIGDIR}VC9
+	     win32-msvc2005 : VCCONFIGDIR = $${VCCONFIGDIR}VC8
+	else:win32-msvc2008 : VCCONFIGDIR = $${VCCONFIGDIR}VC9
+    else                : VCCONFIGDIR = $${VCCONFIGDIR}VC10
 
 	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
 }
