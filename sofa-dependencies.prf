@@ -228,8 +228,6 @@ declare(EmptyPlugin2_test, applications/projects/EmptyPlugin2Test, sofaguiqt Emp
 enable(EmptyPlugin2_test)
 }
 
-
-
 ######################################################################
 # Enable artifacts
 ######################################################################
@@ -434,7 +432,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 			enable(cudpp)
 		}
       		enable(sofagpucuda_dev)
-# This project should be enable in sofa_dependencies-local.prf
+# This project should be enable in sofa-dependencies-local.prf
 #		enable(sofaCUDA_Bench)
 	}
 
