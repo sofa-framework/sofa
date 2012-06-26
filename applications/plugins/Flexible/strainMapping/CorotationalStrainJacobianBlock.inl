@@ -32,14 +32,9 @@
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
-#include <sofa/helper/decompose.h>
+#include <sofa/helper/decompose.inl>
 
 #include <sofa/helper/MatEigen.h>
-
-
-// TODO
-// - use code from E331 in E332
-// - find a way to store data needed to compute dJ
 
 
 namespace sofa
@@ -76,17 +71,7 @@ bool computeQR( const Mat<3,3,Real> &f, Mat<3,3,Real> &r, Mat<3,3,Real> &s )
 template<typename Real>
 void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
 {
-    Vec<3,Real> edgex( f[0][0], f[1][0], f[2][0] );
-    Vec<3,Real> edgey( f[0][1], f[1][1], f[2][1] );
-
-    edgex.normalize();
-    Vec<3,Real> edgez = cross( edgex, edgey );
-    edgez.normalize();
-    edgey = cross( edgez, edgex );
-
-    r[0][0] = edgex[0]; r[0][1] = edgey[0];
-    r[1][0] = edgex[1]; r[1][1] = edgey[1];
-    r[2][0] = edgex[2]; r[2][1] = edgey[2];
+    helper::Decompose<Real>::QRDecomposition_stable( f, r );
 
     Mat<2,2,Real> T = r.multTranspose( f ); // T = rt * f
     s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
@@ -118,6 +103,84 @@ void computeSVD( const Mat<3,2,Real> &F, Mat<3,2,Real> &r, Mat<2,2,Real> &s, Mat
     s = r.multTranspose( F ); // s = rt * F
 }
 
+
+////////////////////////////////////////////////////////
+
+
+/// stuff needed to compute the geometric stiffness and that is different for each decomposition method -> use pointers and create variables only when needed
+template<int material_dimension,int frame_size, class Real>
+class CorotationalStrainJacobianBlockGeometricStiffnessData
+{
+    bool *_degenerated; ///< is the deformation gradient too flat or inverted?
+    Mat<material_dimension,material_dimension,Real> *_matrix; ///< R^-1 for QR, G^-1 for polar
+    Mat<frame_size,frame_size,Real> *_dROverdF; ///< dR/dF for SVD
+
+public:
+    CorotationalStrainJacobianBlockGeometricStiffnessData()
+        : _degenerated(NULL)
+        , _matrix(NULL)
+        , _dROverdF(NULL)
+    {}
+
+    void init_small()
+    {
+        if( _matrix ) { delete _matrix; _matrix=NULL; }
+        if( _dROverdF ) { delete _dROverdF; _dROverdF=NULL; }
+        if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+    }
+    void init_qr( bool geometricStiffness )
+    {
+        if( _dROverdF ) { delete _dROverdF; _dROverdF=NULL; }
+
+        if( geometricStiffness )
+        {
+            if( !_matrix ) _matrix = new Mat<material_dimension,material_dimension,Real>();
+            if( !_degenerated ) _degenerated = new bool;
+        }
+        else
+        {
+            if( _matrix ) { delete _matrix; _matrix=NULL; }
+            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+        }
+    }
+    void init_polar( bool geometricStiffness )
+    {
+        if( _dROverdF ) { delete _dROverdF; _dROverdF=NULL; }
+
+        if( geometricStiffness )
+        {
+            if( !_matrix ) _matrix = new Mat<material_dimension,material_dimension,Real>();
+            if( !_degenerated ) _degenerated = new bool;
+        }
+        else
+        {
+            if( _matrix ) { delete _matrix; _matrix=NULL; }
+            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+        }
+    }
+    void init_svd( bool geometricStiffness )
+    {
+        if( _matrix ) { delete _matrix; _matrix=NULL; }
+
+        if( geometricStiffness )
+        {
+            if( !_dROverdF ) _dROverdF = new Mat<frame_size,frame_size,Real>();
+            if( !_degenerated ) _degenerated = new bool;
+        }
+        else
+        {
+            if( _dROverdF ) { delete _dROverdF; _dROverdF=NULL; }
+            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
+        }
+    }
+
+
+    inline bool& degenerated() const { return *_degenerated; }
+    inline Mat<material_dimension,material_dimension,Real>* invT() const { return _matrix; } ///< for qr method
+    inline Mat<material_dimension,material_dimension,Real>* invG() const { return _matrix; } ///< for polar method
+    inline Mat<frame_size,frame_size,Real>* dROverdF() const { return _dROverdF; } ///< for SVD method
+
+};
 
 
 
@@ -171,70 +234,20 @@ public:
 
     Affine _R;   ///< =  store rotational part of deformation gradient to compute J
 
-    // stuff only needed to compute the geometric stiffness and different for each decomposition method -> use pointers and create variables only when needed
-    // TODO deal with it by using only one struct pointer?
-    bool *_degenerated;
-    Affine *_dJ_Mat1; // R^-1 for QR, inv(G) for polar, U for SVD
-    Affine *_dJ_Mat2; // V for SVD
-    Vec<material_dimensions,Real> *_dJ_Vec; // diagonal S for SVD
+
+
+    CorotationalStrainJacobianBlockGeometricStiffnessData<material_dimensions,frame_size,Real> _geometricStiffnessData; ///< store stuff dedicated to geometric stiffness
 
 
     CorotationalStrainJacobianBlock()
         : Inherit()
-        , _degenerated( NULL )
-        , _dJ_Mat1( NULL )
-        , _dJ_Mat2( NULL )
-        , _dJ_Vec( NULL )
     {
     }
 
-
-    void init_small()
-    {
-        if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
-        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
-        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
-        if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-    }
-    void init_qr( bool geometricStiffness )
-    {
-        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
-        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
-
-        if( geometricStiffness )
-        {
-            if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
-            if( !_degenerated ) _degenerated = new bool;
-        }
-        else
-        {
-            if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
-            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-        }
-    }
-    void init_polar( bool geometricStiffness )
-    {
-        if( _dJ_Mat2 ) { delete _dJ_Mat2; _dJ_Mat2=NULL; }
-        if( _dJ_Vec ) { delete _dJ_Vec; _dJ_Vec=NULL; }
-
-        if( geometricStiffness )
-        {
-            if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
-            if( !_degenerated ) _degenerated = new bool;
-        }
-        else
-        {
-            if( _dJ_Mat1 ) { delete _dJ_Mat1; _dJ_Mat1=NULL; }
-            if( _degenerated ) { delete _degenerated; _degenerated=NULL; }
-        }
-    }
-    void init_svd()
-    {
-        if( !_degenerated ) _degenerated = new bool;
-        if( !_dJ_Mat1 ) _dJ_Mat1 = new Affine();
-        if( !_dJ_Mat2 ) _dJ_Mat2 = new Affine();
-        if( !_dJ_Vec ) _dJ_Vec = new Vec<3,Real>();
-    }
+    void init_small() { _geometricStiffnessData.init_small(); }
+    void init_qr( bool geometricStiffness ) { _geometricStiffnessData.init_qr( geometricStiffness ); }
+    void init_polar( bool geometricStiffness ) { _geometricStiffnessData.init_polar( geometricStiffness ); }
+    void init_svd( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
 
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
@@ -249,11 +262,11 @@ public:
     {
         StrainMat strainmat;
 
-        if( _dJ_Mat1 )
+        if( _geometricStiffnessData.invT() )
         {
-            *_degenerated = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            _geometricStiffnessData.degenerated() = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
             Mat<3,3,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
-            _dJ_Mat1->invert(T);
+            _geometricStiffnessData.invT()->invert( T );
             strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
         }
         else
@@ -269,10 +282,10 @@ public:
 
         helper::Decompose<Real>::polarDecomposition( data.getF(), _R, strainmat );
 
-        if( _dJ_Mat1 )
+        if( _geometricStiffnessData.invG() )
         {
-            helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_dJ_Mat1 );
-            *_degenerated = determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_geometricStiffnessData.invG() );
+            _geometricStiffnessData.degenerated() = determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
         }
 
         addapply_common( result, data, strainmat );
@@ -281,7 +294,17 @@ public:
     {
         StrainMat strainmat;
 
-        *_degenerated = computeSVD( data.getF(), _R, strainmat, *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2 ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+
+        //_geometricStiffnessData.degenerated() = computeSVD( data.getF(), _R, strainmat, U, S, V ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+
+        if( _geometricStiffnessData.dROverdF() )
+        {
+            Affine U, V; Vec<material_dimensions,Real> S;
+            _geometricStiffnessData.degenerated() = computeSVD( data.getF(), _R, strainmat, U, S, V )
+                    || !helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( U, S, V, *_geometricStiffnessData.dROverdF() )
+                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+        }
+        else helper::Decompose<Real>::polarDecomposition_stable( data.getF(), _R, strainmat );
 
         addapply_common( result, data, strainmat );
     }
@@ -370,10 +393,10 @@ public:
     void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
         // VERY UNSTABLE
-        if( *_degenerated ) return;
+        if( _geometricStiffnessData.degenerated() ) return;
 
         Affine dR;
-        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_dJ_Mat1, dx.getF(), dR );
+        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_geometricStiffnessData.invT(), dx.getF(), dR );
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
@@ -391,10 +414,10 @@ public:
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        if( *_degenerated ) return;
+        if( _geometricStiffnessData.degenerated() ) return;
 
         Affine dR;
-        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_dJ_Mat1, _R, dx.getF(), dR );
+        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_geometricStiffnessData.invG(), _R, dx.getF(), dR );
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
@@ -412,10 +435,18 @@ public:
     }
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        if( *_degenerated ) return;  // inverted or too flat -> no geometric stiffness for robustness
+        if( _geometricStiffnessData.degenerated() ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
         Affine dR;
-        helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR );
+        //if( !helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2, dx.getF(), dR ) ) return;
+
+        const Mat<frame_size,frame_size,Real> &dROverdF = *_geometricStiffnessData.dROverdF();
+        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
+                        dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+
 
         // order 0
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
@@ -423,11 +454,14 @@ public:
         if( order > 0 )
         {
             // order 1
-            /*for(unsigned int k=0;k<spatial_dimensions;k++)
+            /*for( unsigned int g=0 ; g<spatial_dimensions ; g++ )
             {
-                df.getGradientF(k) += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
-                helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( *_dJ_Mat1, *_dJ_Vec, *_dJ_Mat2,  dx.getGradientF(k), dR );
-                df.getF() += dR * StressVoigtToMat( childForce.getStrainGradient(k) ) * kfactor;
+                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
+                for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
+                    dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+                df.getGradientF(g) += dR * StressVoigtToMat( childForce.getStrainGradient(g) ) * kfactor;
             }*/
         }
     }
@@ -475,31 +509,17 @@ public:
 
     Affine _R;   ///< =  store rotational part of deformation gradient to compute J
 
-    Affine *_U; Mat<material_dimensions,material_dimensions,Real> *_V; Vec<2,Real> *_Fdiag; // for svd dJ
-
+    CorotationalStrainJacobianBlockGeometricStiffnessData<material_dimensions,frame_size,Real> _geometricStiffnessData; ///< store stuff dedicated to geometric stiffness
 
     CorotationalStrainJacobianBlock()
         : Inherit()
-        , _U( NULL )
-        , _V( NULL )
-        , _Fdiag( NULL )
     {
     }
 
-    void init_small()
-    {
-        if( _U ) { delete _U; _U=NULL; }
-        if( _V ) { delete _V; _V=NULL; }
-        if( _Fdiag ) { delete _Fdiag; _Fdiag=NULL; }
-    }
-    void init_qr( bool /*geometricStiffness*/ ) { init_small(); }
-    void init_polar( bool /*geometricStiffness*/ ) { init_svd(); }
-    void init_svd()
-    {
-        if( !_U ) _U = new Affine();
-        if( !_V ) _V = new Mat<material_dimensions,material_dimensions,Real>();
-        if( !_Fdiag ) _Fdiag = new Vec<2,Real>();
-    }
+    void init_small() { _geometricStiffnessData.init_small(); }
+    void init_qr( bool geometricStiffness ) { _geometricStiffnessData.init_qr( geometricStiffness ); }
+    void init_polar( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
+    void init_svd( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
 
 
     void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
@@ -518,6 +538,21 @@ public:
 
         computeQR( data.getF(), _R, strainmat );
 
+
+        if( _geometricStiffnessData.invT() )
+        {
+            _geometricStiffnessData.degenerated() = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R )
+                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            Mat<2,2,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
+            _geometricStiffnessData.invT()->invert( T );
+            strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
+        }
+        else
+        {
+            computeQR( data.getF(), _R, strainmat );
+        }
+
+
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
     }
@@ -528,11 +563,23 @@ public:
         addapply_svd( result, data );
     }
 
+
+
     void addapply_svd( OutCoord& result, const InCoord& data )
     {
         StrainMat strainmat;
 
-        computeSVD( data.getF(), _R, strainmat, *_U, *_Fdiag, *_V );
+        if( _geometricStiffnessData.dROverdF() )
+        {
+            Affine U; Mat<material_dimensions,material_dimensions,Real> V; Vec<2,Real> Fdiag;
+            computeSVD( data.getF(), _R, strainmat, U, Fdiag, V );
+            _geometricStiffnessData.degenerated() = !helper::Decompose<Real>::polarDecompositionGradient_dQOverdM( U, Fdiag, V, *_geometricStiffnessData.dROverdF() )
+                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+        }
+        else
+        {
+            helper::Decompose<Real>::polarDecomposition( data.getF(), _R, strainmat );
+        }
 
         for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
         result.getStrain() += StrainMatToVoigt( strainmat );
@@ -564,8 +611,13 @@ public:
         return KBlock();
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */)
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
+        if( _geometricStiffnessData.degenerated() ) return;
+
+        Affine dR;
+        helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_geometricStiffnessData.invT(), dx.getF(), dR );
+        df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
     void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
@@ -573,9 +625,18 @@ public:
     }
     void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
-        // QUITE STABLE
+        if( _geometricStiffnessData.degenerated() ) return;
+
         Affine dR;
-        helper::Decompose<Real>::polarDecompositionGradient_dQ( *_U, *_Fdiag, *_V, dx.getF(), dR );
+        //if( !helper::Decompose<Real>::polarDecompositionGradient_dQ( U, Fdiag, V, dx.getF(), dR ) ) return;
+
+        const Mat<frame_size,frame_size,Real> &dROverdF = *_geometricStiffnessData.dROverdF();
+        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dR
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dR
+                        dR[i][j] += dROverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * kfactor;
     }
 };

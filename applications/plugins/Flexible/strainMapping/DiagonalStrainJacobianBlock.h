@@ -74,25 +74,33 @@ public:
 
     /**
     Mapping:   \f$ E = Ut.F.V\f$
+               \f$ E_k = Ut.F_k.V\f$
     where:  U/V are the spatial and material rotation parts of F and E is diagonal
-    Jacobian:    \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
+    Jacobian:  \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
+               \f$  dE_k = Ut.dF_k.V \f$
     */
 
     static const bool constantJ = false;
 
     SpatialMaterialMat _U;  ///< Spatial Rotation
     MaterialMaterialMat _V; ///< Material Rotation
-    Vec<material_dimensions,Real> _S;
+
+    Mat<frame_size,frame_size,Real> _dUOverdF;
+    Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
 
     bool _degenerated;
 
+
     void addapply( OutCoord& result, const InCoord& data )
     {
-        _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, _S, _V );
+        Vec<material_dimensions,Real> S; // principal stretches
+        _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
 
         // order 0
         for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += _S[i] - 1;
+            result.getStrain()[i] += S[i] - 1;
+
+        helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
 
         if( order > 0 )
         {
@@ -107,7 +115,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         //order 0
-        result.getStrain() += StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
+        result.getStrain() = StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
 
         if( order > 0 )
         {
@@ -134,29 +142,39 @@ public:
         }
     }
 
-    // TODO requires to write U.dp.V as a matrix-vector product J.dp
+    // TODO requires to write (Ut.dp.V) as a matrix-vector product J.dp
     MatBlock getJ()
     {
-        MatBlock B = MatBlock();
-        //typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-        //EigenMap eB(&B[0][0]);
-        //eB = assembleJ( U.multTransposed( V ) );
-        return B;
+        return MatBlock();
     }
 
 
-    // TODO requires dU/dp & dV/dp and to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) a matrix-vector product K.dp
+    // TODO requires to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) as a matrix-vector product K.dp
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();
     }
+
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
     {
         if( _degenerated ) return;
 
         SpatialMaterialMat dU;
         MaterialMaterialMat dV;
-        helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
+
+        // order 0
+        //helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
+        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                {
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+
+                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+                }
+
         df.getF() += dU * StressVoigtToMat( childForce.getStrain() ) * _V * kfactor;
         df.getF() += _U * StressVoigtToMat( childForce.getStrain() ) * dV * kfactor;
 
@@ -164,6 +182,22 @@ public:
         {
             // order 1
             // TODO
+            /*for(unsigned int g=0;g<spatial_dimensions;g++)
+            {
+                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                {
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+
+                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+                }
+
+                df.getGradientF(g) += dU * StressVoigtToMat( childForce.getStrainGradient(g) ) * _V * kfactor;
+                df.getGradientF(g) += _U * StressVoigtToMat( childForce.getStrainGradient(g) ) * dV * kfactor;
+            }*/
         }
     }
 };

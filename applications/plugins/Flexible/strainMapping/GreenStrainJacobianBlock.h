@@ -66,10 +66,10 @@ public:
 
     /**
     Mapping:
-        - \f$ E = [F^T.F - I ]/2  \f$
-        - \f$ E_k = [(F_k^T.F + F^T.F_k ]/2  \f$
-        - \f$ E_jk = E_kj = [(F_k^T.F_j + F_j^T.F_k ]/2  \f$
-        - \f$ E_kk = [(F_k^T.F_k ]/2  \f$
+        - \f$ E = [ F^T.F - I ]/2  \f$
+        - \f$ E_k = [ F_k^T.F + F^T.F_k ]/2  \f$
+        - \f$ E_jk = E_kj = [ F_k^T.F_j + F_j^T.F_k ]/2  \f$
+        - \f$ E_kk = [ F_k^T.F_k ]/2  \f$
     where:
         - _k denotes derivative with respect to spatial dimension k
     Jacobian:
