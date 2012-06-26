@@ -400,12 +400,12 @@ QMAKE_CXX        = g++
 QMAKE_LINK       = g++
 QMAKE_LINK_SHLIB = g++
 
-CC_VERSION = $$system($${QMAKE_CC} --version  | awk "' NR==1 { print $3 } '")
+CXX_VERSION = $$system($${QMAKE_CXX} --version  | awk "' NR==1 { print $3 } '")
 
 ## Under gcc 4.6, the release optimisation causes error:
 ## we need to disable new partial inlining optimization.
-CC_IS_4_6 = $$find(CC_VERSION, "^4.2")
-count(CC_IS_4_6, 1): QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
+CXX_IS_4_6 = $$find(CXX_VERSION, "^4.6")
+count(CXX_IS_4_6, 1): QMAKE_CXXFLAGS_RELEASE += -fno-partial-inlining
 ## If is not enough (still erreur section type conflict...): uncomment also to compile successfully 
 #QMAKE_CXXFLAGS_RELEASE -= -O2
 #QMAKE_CXXFLAGS_RELEASE += -O1
