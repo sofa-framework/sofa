@@ -88,7 +88,7 @@ Node::SPtr  createRegularGrid(Node::SPtr  parent, double x, double y, double z)
     const Deriv3 translation(x,y,z);
 
     //Node VISUAL
-    Node::SPtr  VisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(node,dof,"mesh/ball.obj", "red", translation);
+    Node::SPtr  VisualNode = sofa::SimpleObjectCreator::CreateVisualNodeVec3(node,dof,"mesh/ball.obj", "red", translation);
 
     //node->setShowBehaviorModels(true);
     return node;
@@ -109,13 +109,13 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    Node::SPtr  root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
+    Node::SPtr  root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
     sofa::component::visualmodel::VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
     root->addObject(visualStyle);
     visualStyle->displayFlags.setValue( sofa::core::visual::DisplayFlags().setShowForceFields().setShowBehaviorModels());
 
-    Node::SPtr  solverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"Solver");
+    Node::SPtr  solverNode = sofa::SimpleObjectCreator::CreateEulerSolverNode(root,"Solver");
 
     Node::SPtr  grid1 = createRegularGrid(solverNode,-1.5,0,0);
     Node::SPtr  grid2 = createRegularGrid(solverNode,1.5,0,0);
