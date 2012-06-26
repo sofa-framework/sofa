@@ -105,7 +105,7 @@ int main( int argc, char** argv )
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    Node::SPtr root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
+    Node::SPtr root = sofa::SimpleObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
 
 //  VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
@@ -120,7 +120,7 @@ int main( int argc, char** argv )
 
     if (!implicit) scheme="Explicit";
 
-    Node::SPtr SolverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
+    Node::SPtr SolverNode = sofa::SimpleObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
 
     Node::SPtr  cube1 = createCube(SolverNode, 0,0,0   );
     Node::SPtr  cube2 = createCube(SolverNode,  10,0,0  );

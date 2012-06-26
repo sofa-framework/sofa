@@ -645,10 +645,10 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333dTypes
 
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331fTypes>;
@@ -660,10 +660,10 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333fTypes
 
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331fTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332fTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333fTypes>;
 #endif
 #endif
 
