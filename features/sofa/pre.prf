@@ -200,8 +200,12 @@ build_pass {
 
 VERSION_NUM = 1_0
 
-build_pass { # BUGFIX: do not set suffixes when not building actual makefiles (such as when generating the root visual studio solution)
-
+win32:!build_pass {
+# BUGFIX: do not set suffixes when not building actual makefiles (such as when generating the root visual studio solution)
+LIBSUFFIX=
+APPSUFFIX=
+}
+else {
 win32 {
 	LIBSUFFIX = _$${VERSION_NUM}
 }
