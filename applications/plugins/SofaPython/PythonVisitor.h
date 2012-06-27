@@ -22,32 +22,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/Node.h>
-using namespace sofa::simulation;
-#include <sofa/core/ExecParams.h>
-using namespace sofa::core;
+#ifndef PYTHONVISITOR_H
+#define PYTHONVISITOR_H
 
-#include "Binding_Node.h"
-#include "Binding_Context.h"
-#include "PythonVisitor.h"
+#include <sofa/simulation/common/Visitor.h>
+#include <Python.h>
 
-extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
+namespace sofa
 {
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
-    printf("Node_executeVisitor called in node %s\n",node->getName().c_str());
 
-    PyObject* pyVisitor;
-    if (!PyArg_ParseTuple(args, "O",&pyVisitor))
-        return 0;
-    PythonVisitor visitor(ExecParams::defaultInstance(),pyVisitor);
-    node->executeVisitor(&visitor);
-
-    return Py_BuildValue("i",0);
-}
+namespace simulation
+{
 
 
-SP_CLASS_METHODS_BEGIN(Node)
-SP_CLASS_METHOD(Node,executeVisitor)
-SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(Node,Node,Context)
+class PythonVisitor : public Visitor
+{
+public:
+    PythonVisitor(const core::ExecParams* params, PyObject *pyVisitor);
+
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
+
+protected:
+    PyObject *m_PyVisitor;
+};
+
+
+} // namespace simulation
+
+} // namespace sofa
+
+#endif // PYTHONVISITOR_H

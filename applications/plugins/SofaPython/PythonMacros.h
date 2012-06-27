@@ -308,9 +308,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
-
 #define SP_CALL(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
 #define SP_CALL_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
-
 
 #endif // PYTHONMACROS_H
