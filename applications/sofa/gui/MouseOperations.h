@@ -124,6 +124,14 @@ protected:
 };
 
 
+class SOFA_SOFAGUI_API ConstraintAttachOperation : public sofa::gui::AttachOperation
+{
+public:
+    static std::string getDescription() { return "Attach an object to the mouse using a bilateral interaction constraint"; }
+protected:
+    virtual std::string defaultPerformerType() { return "ConstraintAttachBody"; }
+};
+
 class SOFA_SOFAGUI_API FixOperation : public Operation
 {
 public:

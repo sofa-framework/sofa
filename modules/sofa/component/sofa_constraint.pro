@@ -38,6 +38,8 @@ HEADERS += initConstraint.h \
            constraintset/StopperConstraint.inl \
            constraintset/SlidingConstraint.h \
            constraintset/SlidingConstraint.inl \
+           collision/ConstraintAttachBodyPerformer.h \
+           collision/ConstraintAttachBodyPerformer.inl
 
 
 SOURCES += initConstraint.cpp \
@@ -57,6 +59,7 @@ SOURCES += initConstraint.cpp \
            animationloop/ConstraintAnimationLoop.cpp \
            constraintset/StopperConstraint.cpp \
            constraintset/SlidingConstraint.cpp \
+           collision/ConstraintAttachBodyPerformer.cpp
 
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
