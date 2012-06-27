@@ -621,23 +621,23 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 }
 
-                /*	case core::topology::EDGESADDED:
-                		{
-                			const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
-                			to_tstm->addEdgesProcess(ea->edgeArray);
-                			to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
-                			break;
-                		}
+                case core::topology::EDGESADDED:
+                {
+                    const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
+                    to_tstm->addEdgesProcess(ea->edgeArray);
+                    to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
+                    break;
+                }
 
-                	case core::topology::POINTSADDED:
-                		{
+                case core::topology::POINTSADDED:
+                {
 
-                			int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-                			to_tstm->addPointsProcess(nbAddedPoints);
-                			to_tstm->addPointsWarning(nbAddedPoints, true);
+                    int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+                    to_tstm->addPointsProcess(nbAddedPoints);
+                    to_tstm->addPointsWarning(nbAddedPoints, true);
 
-                			break;
-                		}*/
+                    break;
+                }
 
                 case core::topology::POINTSREMOVED:
                 {
