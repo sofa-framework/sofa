@@ -67,6 +67,10 @@ public:
     /// Control the timestep of the simulation (requires a
     /// simulation to be loaded)
     void   setTimeStep(double dt);
+
+    /// Return the current simulated time
+    double getTime() const;
+
     /// Return the current computation speed (averaged over
     /// the last 100 steps)
     double getCurrentFPS() const;
