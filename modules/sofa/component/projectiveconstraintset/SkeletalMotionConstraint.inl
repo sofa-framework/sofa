@@ -206,7 +206,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
                 continue;
 
             skeletonJoints[i].mLocalRigid.getCenter() = skeletonJoints[i].mPreviousMotion.getCenter() + (skeletonJoints[i].mNextMotion.getCenter() - skeletonJoints[i].mPreviousMotion.getCenter()) * dt;
-            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), dt, true);
+            skeletonJoints[i].mLocalRigid.getOrientation().slerp(skeletonJoints[i].mPreviousMotion.getOrientation(), skeletonJoints[i].mNextMotion.getOrientation(), (float) dt, true);
         }
     }
     else
@@ -309,8 +309,6 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    //const VecCoord& x = *this->mstate->getX();
-
     sofa::helper::vector<Vector3> points;
     sofa::helper::vector<Vector3> linesX;
     sofa::helper::vector<Vector3> linesY;
@@ -381,10 +379,10 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             line = point + DataTypes::getCRot(boneWorldRigid).rotate(Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f, 0.5f, 0.5f, 1));
-        vparams->drawTool()->drawLines (linesX,  2, Vec<4, float> (1.0f, 0.0f, 0.0f, 1));
-        vparams->drawTool()->drawLines (linesY,  2, Vec<4, float> (0.0f, 1.0f, 0.0f, 1));
-        vparams->drawTool()->drawLines (linesZ,  2, Vec<4, float> (0.0f, 0.0f, 1.0f, 1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1.0f, 0.5f, 0.5f, 1.0f));
+        vparams->drawTool()->drawLines (linesX, 2 , Vec<4, float> (1.0f, 0.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesY, 2 , Vec<4, float> (0.0f, 1.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesZ, 2 , Vec<4, float> (0.0f, 0.0f, 1.0f, 1.0f));
     }
 }
 

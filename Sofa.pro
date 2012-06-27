@@ -17,6 +17,7 @@ useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
 
 usePlugin(PluginExample)
 
+contains(DEFINES, SOFA_HAVE_PLUGIN_Collada)             { usePlugin(ColladaSceneLoader) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            { usePlugin(Flexible) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant)           { usePlugin(Compliant) }
 contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable) }
