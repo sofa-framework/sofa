@@ -39,6 +39,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
@@ -55,6 +56,8 @@ int main(int argc, char** argv)
 {
 
     sofa::helper::BackTrace::autodump();
+
+    sofa::gui::initMain();
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string gui = sofa::gui::SofaGUI::GetGUIName();

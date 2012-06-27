@@ -33,6 +33,7 @@
 #include <sofa/component/visualmodel/VisualStyle.h>
 // gui
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
@@ -48,6 +49,7 @@ using sofa::core::VecId;
 
 int main(int, char** argv)
 {
+    sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene
     double endPos = 1.;

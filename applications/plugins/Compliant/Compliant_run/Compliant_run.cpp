@@ -38,6 +38,7 @@
 #include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/init.h>
@@ -300,6 +301,7 @@ int main(int argc, char** argv)
 #endif
 #endif
 
+    sofa::gui::initMain();
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
     sofa::gui::GUIManager::SetDimension(800,600);

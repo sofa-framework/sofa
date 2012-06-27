@@ -33,6 +33,7 @@
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
@@ -237,6 +238,7 @@ int main(int argc, char** argv)
 #endif
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
+    sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node

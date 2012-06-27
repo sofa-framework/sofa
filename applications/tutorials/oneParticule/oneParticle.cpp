@@ -32,6 +32,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/accessor.h>
@@ -56,6 +57,7 @@ int main(int argc, char** argv)
     glutInit(&argc,argv);
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
+    sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node

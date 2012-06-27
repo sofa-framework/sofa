@@ -36,6 +36,7 @@
 
 
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/collision/MinProximityIntersection.h>
@@ -198,6 +199,7 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
+    sofa::gui::initMain();
 
     std::string simulationType="tree";
     unsigned int sizeHouseOfCards=4;
