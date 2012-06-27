@@ -48,6 +48,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -87,6 +88,8 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+
+    sofa::gui::initMain();
 
     std::string fileName ;
     bool        startAnim = false;

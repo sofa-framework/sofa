@@ -24,13 +24,6 @@
 ******************************************************************************/
 
 #include "GUIManager.h"
-#include "SofaGUI.h"
-#include "BatchGUI.h"
-#include "qt/RealGUI.h"
-#include "glut/SimpleGUI.h"
-#ifdef SOFA_HAVE_BOOST
-#include "glut/MultithreadGUI.h"
-#endif
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -46,35 +39,11 @@ std::list<GUIManager::GUICreator> GUIManager::guiCreators;
 std::vector<std::string> GUIManager::guiOptions;
 const char* GUIManager::valid_guiname = NULL;
 
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
-
-#ifdef SOFA_GUI_GLUT
-
-int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
-
-#ifdef SOFA_HAVE_BOOST
-int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
-#endif
-#endif
-
-#ifdef SOFA_GUI_QGLVIEWER
-
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 3 );
-#endif
-
-#ifdef SOFA_GUI_QTVIEWER
-
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
-#endif
-
 
 SofaGUI* GUIManager::getGUI()
 {
     return currentGUI;
 }
-
-
-
 
 void GUIManager::AddGUIOption(const char* option)
 {

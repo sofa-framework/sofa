@@ -22,15 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "main.h"
-#include "GUIManager.h"
-#include "SofaGUI.h"
-#include "BatchGUI.h"
-#include "qt/RealGUI.h"
-#include "glut/SimpleGUI.h"
-#ifdef SOFA_HAVE_BOOST
-#include "glut/MultithreadGUI.h"
+#ifndef SOFA_GUI_MAIN_H
+#define SOFA_GUI_MAIN_H
+
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_GUIMAIN
+#	define SOFA_GUIMAIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_GUIMAIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
 
 namespace sofa
 {
@@ -38,37 +40,9 @@ namespace sofa
 namespace gui
 {
 
-void initMain()
-{
-    static bool first = true;
-    if (first)
-    {
+void SOFA_GUIMAIN_API initMain();
+class SofaGUI;
 
-        first = false;
-    }
 }
-
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
-
-#ifdef SOFA_GUI_GLUT
-
-int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
-
-#ifdef SOFA_HAVE_BOOST
-int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
+}
 #endif
-#endif
-
-#ifdef SOFA_GUI_QGLVIEWER
-
-int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 3 );
-#endif
-
-#ifdef SOFA_GUI_QTVIEWER
-
-int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
-#endif
-
-} // namespace gui
-
-} // namespace sofa
