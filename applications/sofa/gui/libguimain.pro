@@ -9,12 +9,12 @@ QT += qt3support
 
 INCLUDEPATH += $$BUILD_DIR/qt/$$UI_DIR # HACK: GUI.h is generated in other .pro
 DEPENDPATH += $$BUILD_DIR/qt/$$UI_DIR # HACK: GUI.h is generated in other .pro
-DEFINES += SOFA_BUILD_GUIMANAGER
+DEFINES += SOFA_BUILD_GUIMAIN
 
 SOURCES = \
-	GUIManager.cpp
+	Main.cpp
 
 HEADERS = \
-	GUIManager.h
+	Main.h
 
 load(sofa/post)

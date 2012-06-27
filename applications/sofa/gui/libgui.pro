@@ -14,7 +14,8 @@ SOURCES = \
 	FilesRecentlyOpenedManager.cpp \
 	MouseOperations.cpp \
 	PickHandler.cpp \
-	SofaGUI.cpp
+	SofaGUI.cpp \
+	GUIManager.cpp
 
 HEADERS = \
 	BatchGUI.h \
@@ -23,6 +24,7 @@ HEADERS = \
 	OperationFactory.h \
 	PickHandler.h \
 	FilesRecentlyOpenedManager.h \
-	SofaGUI.h
+	SofaGUI.h \
+	GUIManager.h
 
 load(sofa/post)

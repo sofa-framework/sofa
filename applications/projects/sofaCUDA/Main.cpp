@@ -42,6 +42,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>
 #ifdef SOFA_SMP
 #include <athapascan-1>
@@ -69,6 +70,8 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+
+    sofa::gui::initMain();
 
     //glutInit(&argc,argv);
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
