@@ -124,10 +124,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LogRigidMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API LogRigidMapping< Rigid3dTypes, Vec6dTypes >;
+extern template class SOFA_Flexible_API LogRigidMapping< Rigid3dTypes, Vec6dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API LogRigidMapping< Rigid3fTypes, Vec6fTypes >;
+extern template class SOFA_Flexible_API LogRigidMapping< Rigid3fTypes, Vec6fTypes >;
 #endif
 
 #endif
