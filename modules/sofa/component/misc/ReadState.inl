@@ -117,6 +117,8 @@ void ReadState::reset()
         }
     }
     nextTime = 0;
+    lastTime = 0;
+    loopTime = 0;
 }
 
 void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
@@ -233,15 +235,11 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            //<TO REMOVE>
-            //mmodel->readX(str);
             mmodel->readVec(core::VecId::position(), str);
             updated = true;
         }
         else if (cmd == "V=")
         {
-            //<TO REMOVE>
-            //mmodel->readV(str);
             mmodel->readVec(core::VecId::velocity(), str);
             updated = true;
         }

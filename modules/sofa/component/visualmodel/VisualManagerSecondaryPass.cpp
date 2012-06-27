@@ -274,15 +274,17 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
 
         }
     }
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void VisualManagerSecondaryPass::unbindInput()
 {
-    for(int j=nbFbo; j<nbFbo; ++j)
+    for(int j=0; j<nbFbo; ++j)
     {
         glActiveTexture(GL_TEXTURE0+j);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    glActiveTexture(GL_TEXTURE0);
 }
 
 

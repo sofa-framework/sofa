@@ -257,7 +257,7 @@ void Texture::update()
     }
 
     glBindTexture(target, id);
-
+    glPixelStorei(GL_PACK_ALIGNMENT,1);
     switch (textureType)
     {
     case io::Image::TEXTURE_2D:
@@ -307,6 +307,7 @@ void Texture::update()
 
     default:;
     }
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
 
 }
 

@@ -155,6 +155,20 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
+
+        // cleanup OpenGL state
+        for (int i=0; i<4; ++i)
+        {
+            glActiveTexture(GL_TEXTURE0+i);
+            glDisable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        glDisable(GL_LIGHTING);
+        glUseProgramObjectARB(0);
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBufferARB(GL_ARRAY_BUFFER, 0);
+        //glViewport(vparams->viewport()[0],vparams->viewport()[1],vparams->viewport()[2],vparams->viewport()[3]);
     }
 }
 
