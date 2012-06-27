@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  printLog="1"  dt="0.02"  >
+	<VisualStyle name="displayFlags"  displayFlags="showVisual hideBehaviorModels showForceFields showInteractionForceFields showCollision showMapping hideOptions" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+	<EulerSolver name="eulerSolver6" />
+	<SceneColladaLoader name="sceneColladaLoader"  filename="scene.dae" />
+</Node>

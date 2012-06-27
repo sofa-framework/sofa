@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Plugin example</title></head><body>
+<h1>Plugin Example</h1>
+<br>
+This plugin is a simple example of plugin. It aims to help you understand:<br>
+<ul>
+  <li>how to create <a href="#Components">custom components</a></li>
+  
+  <li>how to <a href="#Create_your_own_plugin">create your own plugin</a></li>
+  <li>how to <a href="#Add_rename_remove_classes">add, rename, remove component classes</a></li>
+  <li>how to <a href="#Document_the_code_using_Doxygen">create code documentation</a><br>
+  </li>
+
+</ul>
+You may use it as a starting point to create your own plugin, and replace this page with your documentation.<br>
+<br>
+<h3><a name="Components"></a>Components</h3>
+<ul>
+  <li><span style="font-weight: bold;">MyBehaviorModel </span>is one of
+the simple possible components. It contains two attributes and does
+basically nothing (Tode: make it do something).<span style="font-weight: bold;"></span></li>
+  <li><span style="font-weight: bold;">MyProjectiveConstraintSet </span>is templated
+on the type of degrees of fredom it processes. Note that the generic
+implementations are defined in a .inl file, registered as a header in
+the .pro file. The .cpp contains the instantiations of the class on
+different types, which generate binary code.<span style="font-weight: bold;"></span></li>
+  <li><span style="font-weight: bold;">My</span><span style="font-weight: bold;">Mapping</span><span style="font-weight: bold;">PendulumInPlane</span> is a real example of mapping. It shows examples of how to access the state vectors in the member methods.<span style="font-weight: bold;"></span></li>
+  <li><span style="font-weight: bold;">MyData</span><span style="font-weight: bold;">Widget</span><span style="font-weight: bold;">Unsigned</span> shows how to create a custom data widget in the Qt GUI.<br>
+  </li>
+</ul>
+
+<br>
+<h3><a name="Create_your_own_plugin"></a>Create your own plugin</h3>Suppose you want to create a plugin called YourPlugin. The easiest way is to apply the following steps:<br>
+<ol>
+  <li>copy and rename the PluginExample example directory to YourPlugin<br>
+</li>
+  <li>rename PluginExample.pro to YourPlugin.pro, and PluginExample.txt to YourPlugin.txt</li>
+  <li>replace PluginExample with YourPlugin in the following files: <br>
+    <ul>
+      <li>YourPlugin.pro</li>
+      <li>YourPlugin.txt</li>
+      <li>initPlugin.h</li>
+      <li>initPlugin.cpp</li>
+    </ul>
+  </li>
+  <li>compile the plugin<br>
+    <ul>
+      <li>Linux</li>
+      <ul>
+        <li>The simplest way is to use Qt Creator. An example of execution parameters is given <a href="QtCreatorConfigExample.png">here</a>.</li>
+      </ul>
+      <li>Windows, mac: TODO</li>
+    </ul>
+  </li>
+  <li>run the plugin. <br>
+    <ul>
+      <li>Do not forget to load it in Sofa (in the Qt GUI, use Edit &gt; Plugin Manager &gt; add&#8230;)</li>
+      <li>You can adapt the example scene : <a href="PluginExampleTest.scn">PluginExampleTest.scn</a> <span style="text-decoration: underline;"></span><br>
+      </li>
+    </ul>
+  </li>
+</ol>
+<br>
+<h3><a name="Add_rename_remove_classes"></a>Add, rename, remove component classes</h3>
+
+<h4>To add a class</h4>
+<ol>
+  <li>create the .h and .cpp files (as well as a .inl if the class is template)<br>
+  </li>
+  <li>add them to the project in the .pro file</li>
+  <li>declare the class in the initPlugin.cpp file<br>
+  </li>
+</ol>
+<h4>To rename a class</h4>
+<ul>
+  <li>change the file names, the project file and the initPlugin.cpp file</li>
+  <li>alternatively, the Unix shell script changeClassName.sh allows you to easily change a class Name:<br>
+./changeClassName.sh OldClassName NewClassName <br>
+This script replaces string OldClassName with string NewClassName in
+all files (including .pro), and in the file names, of the current
+directory.<br>
+It can also be used to rename the plugin.</li>
+</ul>
+<h4>To remove a class</h4>
+<ul>
+  <li>do not forget to remove it from the project file and the initPlugin file.</li>
+</ul>
+<h3><br>
+</h3>
+<h3><a name="Document_the_code_using_Doxygen"></a>Document the code using Doxygen</h3><a href="http://www.stack.nl/%7Edimitri/doxygen/">
+Doxygen</a> can automatically create <a href="html/index.html">code documentation</a>. Run doxygen using the above <a href="../Doxyfile">Doxyfile</a> if the previous link was broken.<br>
+<br>
+<br>
+
+<br>
+</body></html>
