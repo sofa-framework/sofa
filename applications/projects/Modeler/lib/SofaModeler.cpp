@@ -30,6 +30,7 @@
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 
@@ -334,6 +335,9 @@ void SofaModeler::updateViewerList()
         (*it)->removeFrom(runSofaGUI);
     }
     listActionGUI.clear();
+
+    //Register all GUIs
+    sofa::gui::initMain();
 
     //Set the different available GUI
     std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();

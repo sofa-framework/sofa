@@ -60,6 +60,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -324,6 +325,7 @@ public:
 //        sofa::helper::system::PluginManager::getInstance().init();
 
 
+//        sofa::gui::initMain();
 //        if (int err = sofa::gui::GUIManager::Init("argv[0]","batch") )
 //                cerr<<"sofa::gui::GUIManager::Init failed " << endl;
 
