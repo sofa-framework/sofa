@@ -50,72 +50,6 @@ struct raii_log
 };
 
 
-// kkt system functor
-struct MinresSolver::kkt
-{
-
-    const mat& M;
-    const mat& J;
-    const mat& P;
-    const mat& C;
-
-    const int m, n;
-
-    mutable vec storage, Mx, Px, JPx, JTlambda, PTJTlambda, Clambda;
-
-    kkt(const mat& M,
-        const mat& J,
-        const mat& P,
-        const mat& C)
-        : M(M),
-          J(J),
-          P(P),
-          C(C),
-          m( M.rows() ),
-          n( J.rows() ),
-          storage( vec::Zero(m + n ) )
-    {
-
-    }
-
-    const vec& operator()(const vec& x) const
-    {
-
-        // let's avoid allocs and use omp
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            Mx.noalias() = M * x.head(m);
-
-            #pragma omp section
-            {
-                Px.noalias() = P * x.head(m);
-                JPx.noalias() = J * Px;
-            }
-
-            #pragma omp section
-            {
-                JTlambda.noalias() = J.transpose() * x.tail(n);
-                PTJTlambda.noalias() = P.transpose() * JTlambda; // TODO is this optimized ? is P symmetric ?
-            }
-            #pragma omp section
-            Clambda.noalias() = C * x.tail(n);
-        }
-
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            storage.head(m).noalias() = Mx - PTJTlambda;
-
-            #pragma omp section
-            storage.tail(n).noalias() = -JPx - Clambda;
-        }
-
-        return storage;
-    }
-
-};
-
 
 
 // schur system functor
@@ -200,6 +134,80 @@ void MinresSolver::warm(vec& x) const
         x = last;
     }
 }
+
+
+
+
+// kkt system functor
+struct MinresSolver::kkt
+{
+
+    const mat& M;
+    const mat& J;
+    const mat& P;
+    const mat& C;
+
+    const int m, n;
+
+    mutable vec storage, Mx, Px, JPx, JTlambda, PTJTlambda, Clambda;
+
+    kkt(const mat& M,
+        const mat& J,
+        const mat& P,
+        const mat& C)
+        : M(M),
+          J(J),
+          P(P),
+          C(C),
+          m( M.rows() ),
+          n( J.rows() ),
+          storage( vec::Zero(m + n ) )
+    {
+
+    }
+
+    const vec& operator()(const vec& x) const
+    {
+
+        // let's avoid allocs and use omp
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            Mx.noalias() = M * x.head(m);
+
+            #pragma omp section
+            {
+                Px.noalias() = P * x.head(m);
+                JPx.noalias() = J * Px;
+            }
+
+            #pragma omp section
+            {
+                JTlambda.noalias() = J.transpose() * x.tail(n);
+                PTJTlambda.noalias() = P.transpose() * JTlambda; // TODO is this optimized ? is P symmetric ?
+            }
+            #pragma omp section
+            Clambda.noalias() = C * x.tail(n);
+        }
+
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            storage.head(m).noalias() = Mx - PTJTlambda;
+
+            #pragma omp section
+            storage.tail(n).noalias() = -JPx - Clambda;
+        }
+
+        return storage;
+    }
+
+};
+
+
+
+
+
 
 void MinresSolver::solve_kkt(krylov::params& p )
 {
