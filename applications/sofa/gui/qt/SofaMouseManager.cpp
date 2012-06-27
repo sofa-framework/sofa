@@ -59,6 +59,7 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Incise").add< QInciseOperation  >();
     RegisterOperation("Remove").add< QTopologyOperation  >();
     RegisterOperation("Suture").add< QAddSutureOperation >();
+    RegisterOperation("ConstraintAttach").add< ConstraintAttachOperation >();
 }
 
 SofaMouseManager::~SofaMouseManager()
