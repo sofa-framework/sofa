@@ -218,3 +218,5 @@ Makefile*
 moc_*.cpp
 *~
 /share/config/sofaplugins_release.ini
+/share/config/sofaplugins_debug.ini
+/share/config/lastUsedGUI.ini
