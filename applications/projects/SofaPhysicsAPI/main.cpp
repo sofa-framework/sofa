@@ -20,7 +20,7 @@ static void glut_idle();
 
 int main(int argc, char *argv[])
 {
-    const char* defaultScene="";
+    const char* defaultScene="Demos/caduceus.scn";
     if (argc > 1)
     {
         defaultScene = argv[1];
@@ -181,6 +181,15 @@ static void glut_reshape(int w, int h)
 
 static void glut_keyboard(unsigned char k, int x, int y)
 {
+    switch (k)
+    {
+    case ' ':
+        mainSimulation->setAnimated(!mainSimulation->isAnimated());
+        break;
+    case '0':
+        mainSimulation->reset();
+        break;
+    }
 }
 
 static void glut_mouse(int button, int state, int x, int y)
