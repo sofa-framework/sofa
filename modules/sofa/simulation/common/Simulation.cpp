@@ -256,6 +256,14 @@ void Simulation::reset ( Node* root )
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
+    // start by resetting the time
+    const core::behavior::BaseAnimationLoop *animLoop = root->getAnimationLoop();
+    if (animLoop)
+        root->setTime(animLoop->getResetTime());
+    else
+        root->setTime(0.);
+    UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
+
     root->execute<CleanupVisitor>(params);
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);

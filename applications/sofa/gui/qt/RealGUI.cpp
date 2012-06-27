@@ -1660,19 +1660,9 @@ void RealGUI::resetScene()
     // Reset the scene
     if (root)
     {
-        const core::behavior::BaseAnimationLoop *animLoop = root->getAnimationLoop();
-
-        if (animLoop != 0)
-        {
-            root->setTime(animLoop->getResetTime());
-        }
-        else
-            root->setTime(0.);
-
-        eventNewTime();
         simulation::getSimulation()->reset ( root );
 
-        UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
+        eventNewTime();
 
         emit newStep();
     }
