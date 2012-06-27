@@ -1,5 +1,5 @@
 includeOnce($$_FILE_) {
-	declare(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI, sofa_component sofa_component_dev sofagpucuda sofagpucuda_dev sofagui sofaguimain glut)
+	declare(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI, sofa_component sofagui glut)
 
 	enable(SofaPhysicsAPI)
 }

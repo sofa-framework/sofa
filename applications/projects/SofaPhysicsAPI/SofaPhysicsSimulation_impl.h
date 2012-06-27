@@ -35,6 +35,7 @@ public:
 
     double getTimeStep() const;
     void   setTimeStep(double dt);
+    double getTime() const;
     double getCurrentFPS() const;
 
     typedef SofaPhysicsOutputMesh::Impl::SofaOutputMesh SofaOutputMesh;

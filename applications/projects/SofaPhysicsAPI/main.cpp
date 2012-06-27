@@ -20,7 +20,7 @@ static void glut_idle();
 
 int main(int argc, char *argv[])
 {
-    const char* defaultScene="Demos/caduceus.scn";
+    const char* defaultScene="xml/newEye.scn";
     if (argc > 1)
     {
         defaultScene = argv[1];
@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 static void glut_create()
 {
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
+    glutInitWindowSize(720,720);
     glutCreateWindow ( ":: SOFA ::" );
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -70,6 +71,7 @@ static void glut_create()
 
 static int glut_width = 0;
 static int glut_height = 0;
+static bool rendering_multiviews = false;
 
 static void glut_display()
 {
@@ -81,7 +83,8 @@ static void glut_display()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     if (mainSimulation)
     {
-        glViewport(0, glut_height - glut_height/2, glut_width/2, glut_height/2);
+        if (rendering_multiviews)
+            glViewport(0, glut_height - glut_height/2, glut_width/2, glut_height/2);
         mainSimulation->drawGL();
 
         unsigned int nbMeshes = mainSimulation->getNbOutputMeshes();
@@ -90,6 +93,7 @@ static void glut_display()
         // first compute bbox
         float bbmin[3] = { 0.0f, 0.0f, 0.0f };
         float bbmax[3] = { 0.0f, 0.0f, 0.0f };
+        float bbcenter[3] = { 0.0f, 0.0f, 0.0f };
         unsigned int totalpoints = 0;
         for (unsigned int i=0; i<nbMeshes; ++i)
         {
@@ -113,6 +117,8 @@ static void glut_display()
                 }
             totalpoints += nbv;
         }
+        for (unsigned int c=0; c<3; ++c)
+            bbcenter[c] = (bbmin[c]+bbmax[c])*0.5f;
         static int counter = 0;
         if (!(counter%1000))
         {
@@ -128,47 +134,63 @@ static void glut_display()
         }
         ++counter;
 
-        glViewport(0, 0, glut_width, glut_height);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        // Then display the points
-        glBegin(GL_POINTS);
-        for (unsigned int i=0; i<nbMeshes; ++i)
+        if (rendering_multiviews)
         {
-            SofaPhysicsOutputMesh* m = meshes[i];
-            unsigned int nbv = m->getNbVertices();
-            if (!nbv) continue;
-            const Real* vpos = m->getVPositions();
-            if (!vpos) continue;
+            glViewport(0, 0, glut_width, glut_height);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_LIGHTING);
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
 
-            //int colorindex = 1+((int)(m->getName()[0])%7);
-            int colorindex = 1+((int)(i)%7);
-            glColor3f((float)(colorindex&1), (float)((colorindex>>1)&1), (float)((colorindex>>2)&1));
+            // compute the scales applied on each axis, by keeping the smallest per-pixel one
+            float xwpixelscale = (glut_width*0.5f)/(bbmax[0]-bbmin[0]);
+            float ywpixelscale = (glut_width*0.5f)/(bbmax[1]-bbmin[1]);
+            float yhpixelscale = (glut_height*0.5f)/(bbmax[1]-bbmin[1]);
+            float zhpixelscale = (glut_height*0.5f)/(bbmax[2]-bbmin[2]);
 
-            for (unsigned int v=0; v<nbv; ++v)
+            float pixelscale = xwpixelscale;
+            if (ywpixelscale<pixelscale) pixelscale = ywpixelscale;
+            if (yhpixelscale<pixelscale) pixelscale = yhpixelscale;
+            if (zhpixelscale<pixelscale) pixelscale = zhpixelscale;
+
+            float wscale = pixelscale/(glut_width*0.5f);
+            float hscale = pixelscale/(glut_height*0.5f);
+
+            // Then display the points
+            glBegin(GL_POINTS);
+            for (unsigned int i=0; i<nbMeshes; ++i)
             {
-                Real vx = (vpos[v*3+0] - bbmin[0]) / (bbmax[0] - bbmin[0]);
-                Real vy = (vpos[v*3+1] - bbmin[1]) / (bbmax[1] - bbmin[1]);
-                Real vz = (vpos[v*3+2] - bbmin[2]) / (bbmax[2] - bbmin[2]);
-                glVertex2f( vx, vy);
-                glVertex2f( vx,-vz);
-                glVertex2f(-vy,-vz);
-            }
-        }
-        glEnd();
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-        glEnable(GL_DEPTH_TEST);
+                SofaPhysicsOutputMesh* m = meshes[i];
+                unsigned int nbv = m->getNbVertices();
+                if (!nbv) continue;
+                const Real* vpos = m->getVPositions();
+                if (!vpos) continue;
 
+                //int colorindex = 1+((int)(m->getName()[0])%7);
+                int colorindex = 1+((int)(i)%7);
+                glColor3f((float)(colorindex&1), (float)((colorindex>>1)&1), (float)((colorindex>>2)&1));
+
+                for (unsigned int v=0; v<nbv; ++v)
+                {
+                    Real vx = (vpos[v*3+0] - bbcenter[0]);
+                    Real vy = (vpos[v*3+1] - bbcenter[1]);
+                    Real vz = (vpos[v*3+2] - bbcenter[2]);
+                    glVertex2f( 0.5f+vx*wscale, 0.5f+vy*hscale);
+                    glVertex2f( 0.5f+vx*wscale,-0.5f+vz*hscale);
+                    glVertex2f(-0.5f+vy*wscale,-0.5f+vz*hscale);
+                }
+            }
+            glEnd();
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glEnable(GL_DEPTH_TEST);
+        }
     }
     glutSwapBuffers();
 }
@@ -177,10 +199,12 @@ static void glut_reshape(int w, int h)
 {
     glut_width = w;
     glut_height = h;
+    glutPostRedisplay();
 }
 
-static void glut_keyboard(unsigned char k, int x, int y)
+static void glut_keyboard(unsigned char k, int /*x*/, int /*y*/)
 {
+    printf("keyboard %d -> %c\n",(int)k,(char)k);
     switch (k)
     {
     case ' ':
@@ -189,19 +213,33 @@ static void glut_keyboard(unsigned char k, int x, int y)
     case '0':
         mainSimulation->reset();
         break;
+    case '1':
+        mainSimulation->step();
+        printf("simulation time = %6f\n", mainSimulation->getTime());
+        break;
+    case 13:
+        rendering_multiviews = !rendering_multiviews;
+        printf("rendering mode: %s\n", (rendering_multiviews ? "multiviews" : "singleview"));
+        break;
+    case 27:
+        printf("exit\n");
+        exit(0);
+        break;
     }
+    glutPostRedisplay();
 }
 
-static void glut_mouse(int button, int state, int x, int y)
+static void glut_mouse(int /*button*/, int /*state*/, int /*x*/, int /*y*/)
 {
 }
 
-static void glut_motion(int x, int y)
+static void glut_motion(int /*x*/, int /*y*/)
 {
 }
 
-static void glut_special(int k, int x, int y)
+static void glut_special(int k, int /*x*/, int /*y*/)
 {
+    printf("special %d\n",(int)k);
 }
 
 static void glut_idle()

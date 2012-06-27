@@ -14,9 +14,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/init.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 
 #include "fakegui.h"
 
@@ -103,6 +100,11 @@ void SofaPhysicsSimulation::setTimeStep(double dt)
     impl->setTimeStep(dt);
 }
 
+double SofaPhysicsSimulation::getTime() const
+{
+    return impl->getTime();
+}
+
 double SofaPhysicsSimulation::getCurrentFPS() const
 {
     return impl->getCurrentFPS();
@@ -145,9 +147,6 @@ SofaPhysicsSimulation::Impl::Impl()
     sofa::simulation::setSimulation(m_Simulation);
 
     sofa::component::init();
-#ifdef SOFA_DEV
-    sofa::component::initDev();
-#endif //SOFA_DEV
     sofa::simulation::xml::initXml();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
@@ -162,11 +161,11 @@ SofaPhysicsSimulation::Impl::Impl()
 
 SofaPhysicsSimulation::Impl::~Impl()
 {
-    /*for (std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*>::const_iterator it = outputMeshMap.begin(), itend = outputMeshMap.end(); ++it)
+    for (std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*>::const_iterator it = outputMeshMap.begin(), itend = outputMeshMap.end(); it != itend; ++it)
     {
         if (it->second) delete it->second;
     }
-    outputMeshMap.clear();*/
+    outputMeshMap.clear();
 }
 
 bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
@@ -237,6 +236,14 @@ void SofaPhysicsSimulation::Impl::setTimeStep(double dt)
     {
         getScene()->getContext()->setDt(dt);
     }
+}
+
+double SofaPhysicsSimulation::Impl::getTime() const
+{
+    if (getScene())
+        return getScene()->getContext()->getTime();
+    else
+        return 0.0;
 }
 
 double SofaPhysicsSimulation::Impl::getCurrentFPS() const
@@ -629,7 +636,7 @@ void SofaPhysicsSimulation::Impl::calcProjection()
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
-        float ratio = vparams->zFar() / (vparams->zNear() * 20);
+        double ratio = vparams->zFar() / (vparams->zNear() * 20);
         Vector3 tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
