@@ -2,6 +2,7 @@
 #include <sofa/helper/system/glut.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 SofaPhysicsSimulation* mainSimulation = NULL;
 
