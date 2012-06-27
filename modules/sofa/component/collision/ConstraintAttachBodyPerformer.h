@@ -57,7 +57,7 @@ public:
 struct BodyPicked;
 
 template <class DataTypes>
-class ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -122,15 +122,15 @@ protected:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
-extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
+//#ifndef SOFA_DOUBLE
+//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
+//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
 
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
-extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
-#endif
+//#endif
+//#ifndef SOFA_FLOAT
+extern template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
+//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
+//#endif
 #endif
 
 
