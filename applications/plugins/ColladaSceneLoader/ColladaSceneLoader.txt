@@ -1,0 +1,19 @@
+
+************************************
+*         ColladaSceneLoader.txt        *
+************************************
+
+
+
+AUTHOR :
+ - Olivier CARRE
+
+
+
+
+LICENCE :
+ - None
+
+
+
+OTHER COMMENTS :
