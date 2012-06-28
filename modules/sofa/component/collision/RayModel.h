@@ -139,6 +139,12 @@ inline void Ray::setOrigin(const Vector3& newOrigin)
     helper::WriteAccessor<Data<helper::vector<Vector3> > > xData =
         *model->getMechanicalState()->write(core::VecCoordId::position());
     xData.wref()[index] = newOrigin;
+
+    helper::WriteAccessor<Data<helper::vector<Vector3> > > xDataFree =
+        *model->getMechanicalState()->write(core::VecCoordId::freePosition());
+    Vec3Types::VecCoord& freePos = xDataFree.wref();
+    freePos.resize(model->getMechanicalState()->getSize());
+    freePos[index] = newOrigin;
 }
 
 inline void Ray::setDirection(const Vector3& newDirection)

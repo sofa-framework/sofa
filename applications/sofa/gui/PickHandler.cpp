@@ -299,6 +299,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
     simulation::MechanicalPropagatePositionVisitor(sofa::core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
+    simulation::MechanicalPropagatePositionVisitor(sofa::core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
