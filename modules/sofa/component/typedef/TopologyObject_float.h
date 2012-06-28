@@ -37,12 +37,6 @@
 #include <sofa/defaulttype/Mat.h>
 
 
-#ifdef SOFA_GPU_CUDA
-#include <sofa/gpu/cuda/CudaTypes.h>
-#endif
-#ifdef SOFA_GPU_OPENCL
-#include <sofa/gpu/opencl/OpenCLTypes.h>
-#endif
 
 
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>

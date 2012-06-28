@@ -211,12 +211,45 @@ ObjectFactory* ObjectFactory::getInstance()
 void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
 {
     result.clear();
-    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for(ClassEntryList::iterator it = classEntries.begin(), itEnd = classEntries.end();
+        it != itEnd; ++it)
     {
-        ClassEntry* entry = it->second;
-        if (entry->className != it->first) continue;
+        ClassEntry* entry = *it;
         result.push_back(entry);
     }
+}
+
+void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry*>& result, std::string target)
+{
+    result.clear();
+    for(ClassEntryList::iterator it = classEntries.begin(), itEnd = classEntries.end();
+        it != itEnd; ++it)
+    {
+        ClassEntry* entry = *it;
+        bool inTarget = false;
+        for (CreatorList::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
+        {
+            Creator* c = itc->second;
+            if (target == c->getTarget())
+                inTarget = true;
+        }
+        if (inTarget)
+            result.push_back(entry);
+    }
+}
+
+std::string ObjectFactory::listClassesFromTarget(std::string target, std::string separator)
+{
+    std::vector<ClassEntry*> entries;
+    getEntriesFromTarget(entries, target);
+    std::ostringstream oss;
+    for (unsigned int i=0; i<entries.size(); ++i)
+    {
+        if (i) oss << separator;
+        oss << entries[i]->className;
+    }
+    std::string result = oss.str();
+    return result;
 }
 
 void ObjectFactory::dump(std::ostream& out)

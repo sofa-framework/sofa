@@ -1,0 +1,19 @@
+
+************************************
+*         SofaCUDA.txt        *
+************************************
+
+
+
+AUTHOR :
+ - The SOFA Team
+
+
+
+
+LICENCE :
+ - LGPL
+
+
+
+OTHER COMMENTS :

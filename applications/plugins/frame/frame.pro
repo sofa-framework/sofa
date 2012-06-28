@@ -73,16 +73,16 @@ SOURCES += \
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
 contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
-
-INCLUDEPATH += /usr/local/cuda/include/
-DEPENDPATH += /usr/local/cuda/include/
-
-HEADERS += \
-           HexaRemover.h \
-           HexaRemover.inl
-
-SOURCES += \
-           HexaRemover.cpp
-}
+#
+#INCLUDEPATH += /usr/local/cuda/include/
+#DEPENDPATH += /usr/local/cuda/include/
+#
+#HEADERS += \
+#           HexaRemover.h \
+#           HexaRemover.inl
+#
+#SOURCES += \
+#           HexaRemover.cpp
+} # END SOFA_GPU_CUDA
 
 load(sofa/post)

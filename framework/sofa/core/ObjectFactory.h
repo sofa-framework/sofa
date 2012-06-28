@@ -166,6 +166,12 @@ public:
     /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry*>& result);
 
+    /// Fill the given vector with the registered classes from a given target
+    void getEntriesFromTarget(std::vector<ClassEntry*>& result, std::string target);
+
+    /// Return the list of classes from a given target
+    std::string listClassesFromTarget(std::string target, std::string separator = ", ");
+
     /// Add an alias name for an already registered class
     ///
     /// \param name     name of the new alias
@@ -329,38 +335,7 @@ public:
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename, std::auto_ptr<ObjectFactory::Creator> creator);
-    /*
-        /// Test whether T* converts to U*,
-        /// that is, if T is derived from U
-        /// taken from Modern C++ Design
-        template <class T, class U>
-        class SOFA_CORE_API Conversion
-        {
-            typedef char Small;
-            class Big {char dummy[2];};
-            static Small Test(U*);
-            static Big Test(...);
-            static T* MakeT();
-        public:
-            enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
-            static int Exists() { return exists; }
-        };
 
-        /// Test whether T* converts to U*,
-        /// that is, if T is derived from U
-        template<class RealClass, class BaseClass>
-        bool implements()
-        {
-            bool res = Conversion<RealClass, BaseClass>::exists;
-            //RealClass* p1=NULL;
-            //BaseClass* p2=NULL;
-            //if (res)
-            //    sout << "class "<<RealClass::typeName(p1)<<" implements "<<BaseClass::typeName(p2)<<sendl;
-            //else
-            //    sout << "class "<<RealClass::typeName(p1)<<" does not implement "<<BaseClass::typeName(p2)<<sendl;
-            return res;
-        }
-    */
     /// Add a template instanciation of this class.
     ///
     /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
@@ -374,50 +349,6 @@ public:
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
-        // This is the only place where we can test which base classes are implemented by this particular object, without having to create any instance
-        // Unfortunately, we have to enumerate all classes we are interested in...
-        /*
-                if (implements<RealObject,objectmodel::ContextObject>())
-                    entry.baseClasses.insert("ContextObject");
-                if (implements<RealObject,VisualModel>())
-                    entry.baseClasses.insert("VisualModel");
-                if (implements<RealObject,BehaviorModel>())
-                    entry.baseClasses.insert("BehaviorModel");
-                if (implements<RealObject,CollisionModel>())
-                    entry.baseClasses.insert("CollisionModel");
-                if (implements<RealObject,core::behavior::BaseMechanicalState>())
-                    entry.baseClasses.insert("MechanicalState");
-                if (implements<RealObject,core::behavior::BaseForceField>())
-                    entry.baseClasses.insert("ForceField");
-                if (implements<RealObject,core::behavior::InteractionForceField>())
-                    entry.baseClasses.insert("InteractionForceField");
-                if (implements<RealObject,core::behavior::BaseLMConstraint>())
-                    entry.baseClasses.insert("Constraint");
-                if (implements<RealObject,core::behavior::BaseConstraint>())
-                    entry.baseClasses.insert("Constraint");
-                if (implements<RealObject,core::BaseMapping>())
-                    entry.baseClasses.insert("Mapping");
-                if (implements<RealObject,core::behavior::BaseMechanicalMapping>())
-        	  entry.baseClasses.insert("MechanicalMapping");
-        	if (implements<RealObject,core::topology::TopologicalMapping>())
-        	  entry.baseClasses.insert("TopologicalMapping");
-                if (implements<RealObject,core::behavior::BaseMass>())
-                    entry.baseClasses.insert("Mass");
-                if (implements<RealObject,core::behavior::OdeSolver>())
-        	  entry.baseClasses.insert("OdeSolver");
-        	if (implements<RealObject,core::behavior::LinearSolver>())
-        	  entry.baseClasses.insert("LinearSolver");
-                if (implements<RealObject,core::behavior::BaseAnimationLoop>())
-                    entry.baseClasses.insert("BaseAnimationLoop");
-                if (implements<RealObject,core::topology::Topology>())
-        	  entry.baseClasses.insert("Topology");
-                if (implements<RealObject,core::topology::BaseTopologyObject>())
-        	  entry.baseClasses.insert("TopologyObject");
-        	if (implements<RealObject,core::behavior::BaseController>())
-        	  entry.baseClasses.insert("Controller");
-        	if (implements<RealObject,core::loader::BaseLoader>())
-        	  entry.baseClasses.insert("Loader");
-        */
         addBaseClasses(RealObject::GetClass());
 
         return addCreator(classname, templatename, std::auto_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
