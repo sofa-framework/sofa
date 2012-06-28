@@ -181,8 +181,8 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     helper::ReadAccessor<Data <VecCoord> > x1 = *mstate1->read(core::VecCoordId::position());
     helper::ReadAccessor<Data <VecCoord> > x2 = *mstate2->read(core::VecCoordId::position());
 
-    Vec3d point1 = x1[0];
-    Vec3d point2 = x2[index];
+    Vec3d point1;
+    Vec3d point2;
 
     using constraintset::BilateralInteractionConstraint;
 
@@ -190,7 +190,9 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< Vec3Types >* >(m_constraint.get());
     bconstraint->setName("Constraint-Mouse-Contact");
 
-    bconstraint->addContact(point2-point1, Vec3d(0,0,0), Vec3d(0,0,0), 0, 0, index, Vec3d(0,0,0), Vec3d(0,0,0), 0, 0);
+    Vec3d normal = point1-point2;
+
+    bconstraint->addContact(normal, point1, point2, (point2-point1).norm(), 0, index, point2, point1);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
