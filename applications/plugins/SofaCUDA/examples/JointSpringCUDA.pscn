@@ -4,6 +4,7 @@ $nbLinks = 5000;
 
 
 <Node dt="0.001"
+    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	gravity="0 -9.81 0"
 	multiThreadSimulation="0"
 	name="root"

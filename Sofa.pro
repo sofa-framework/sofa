@@ -33,7 +33,7 @@ contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython) 
     contains(DEFINES, SOFA_HAVE_HAPTION)                { usePlugin(Haption) }
     contains(DEFINES, SOFA_HAVE_QTOGREVIEWER)           { usePlugin(QtOgreViewer) }
     contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES)     { usePlugin(ManifoldTopologies) }
-    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame) }
+#    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame) }
     contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader) }
     contains(DEFINES, SOFA_HAVE_VOXELIZER)              { usePlugin(Voxelizer) }
     contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin) }

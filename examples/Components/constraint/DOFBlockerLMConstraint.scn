@@ -1,4 +1,5 @@
 <Node name="Root" gravity="0 0 0" dt="0.001">
+    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
     <VisualStyle displayFlags="showForceFields showBoundingCollisionModels" />
     <CudaRasterizer template="Vec3d" name="default2" printLog="0" tags="LDI" listening="1" sceneBBox="0 0 0 0 0 0 " pixelSize="0.1" maxLayers="8" drawIntersection="0" zsortBits="8" responseType="3" responseStiffness="10000" />
     <EulerImplicitSolver name="default26" printLog="0" />

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "../myopencl.h"
-#include "../../cuda/mycuda.h"
+//#include "../../cuda/mycuda.h"
 
 class ShowVector
 {
@@ -82,15 +82,16 @@ public:
 
         delete[] tab;
     }
+    /*
+    	template <class T> void addCudaVector(const void * dp,int size)
+    	{
+    		T * tab = new T[size];
+    		sofa::gpu::cuda::mycudaMemcpyDeviceToHost(tab,dp,size*sizeof(T),0);
+    		addVector<T>(tab,size);
 
-    template <class T> void addCudaVector(const void * dp,int size)
-    {
-        T * tab = new T[size];
-        sofa::gpu::cuda::mycudaMemcpyDeviceToHost(tab,dp,size*sizeof(T),0);
-        addVector<T>(tab,size);
-
-        delete[] tab;
-    }
+    		delete[] tab;
+    	}
+    */
 };
 
 #endif // SHOWVECTOR_H

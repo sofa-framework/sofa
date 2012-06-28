@@ -1,7 +1,5 @@
 includeOnce($$_FILE_) 
 {
-#	declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel sofagpucuda)
-        declare(sofaframe, applications/plugins/frame, sofaguiqt sofagpucuda_dev)
-
+	declare(sofaframe, applications/plugins/frame, sofaguiqt sofa_sparse_solver sofa_eigen2_solver)
 	enable(sofaframe)
 }

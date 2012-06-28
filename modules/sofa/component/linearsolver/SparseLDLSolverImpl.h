@@ -201,7 +201,7 @@ protected :
             }
             if (D[k] == 0.0)
             {
-                std::cerr << "CudaSparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
+                std::cerr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
                 return;
             }
         }
