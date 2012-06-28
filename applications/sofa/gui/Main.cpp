@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "main.h"
+#include "Main.h"
 #include "GUIManager.h"
 #include "SofaGUI.h"
 #include "BatchGUI.h"
