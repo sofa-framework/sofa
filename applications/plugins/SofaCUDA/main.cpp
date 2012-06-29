@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/gpucuda.h>
 #include <sofa/gpu/cuda/mycuda.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
