@@ -400,7 +400,9 @@ defineReplace(computeTransitiveDependencies) {
 			!contains(analysed, $$dep) {
 				
 				!equals(dep, $$eval($${dep}.name)) {
-					error(computeTransitiveDependencies: undeclared artifact $$dep)
+                    message(Declared artifacts: $$artifacts_registry)
+					error(computeTransitiveDependencies: undeclared artifact $$dep required by $$name)
+
 				}
 				
 				equals($${dep}.enabled, true) {
@@ -495,7 +497,10 @@ defineTest(loadDependencies) {
 	}
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
-		!equals(dep, $$name): error(undeclared dependency $$dep)
+		!equals(dep, $$name) {
+             message("Declared artifacts: " $$artifacts_registry)
+             error(undeclared dependency $$dep required by $$target)
+        }
 		project = $$eval($${dep}.project)
 		isFeatureFile(project) {
 			requireLib($$name, $$project)
