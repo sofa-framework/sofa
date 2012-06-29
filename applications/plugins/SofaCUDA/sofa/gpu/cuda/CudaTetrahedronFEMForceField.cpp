@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
 #include "CudaTetrahedronFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 

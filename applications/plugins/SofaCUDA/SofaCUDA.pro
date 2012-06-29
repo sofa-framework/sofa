@@ -3,7 +3,6 @@
 load(sofa/pre)
 defineAsPlugin(SofaCUDA)
 
-TEMPLATE = lib
 TARGET = SofaCUDA
 
 DEFINES += SOFA_BUILD_GPU_CUDA
