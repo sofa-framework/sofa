@@ -300,6 +300,65 @@ unix {
       system(echo "export PATH=$${DOLLAR}CUDA_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh)
     }
   }
+
+  # export activated libraries as graphviz file
+  system(echo "digraph G {" > Sofa-build.dot)
+  clear(clusters)
+  for(artifact, artifacts_registry) {
+    cluster = $$section($${artifact}.project, "/", 0, 1)
+    cnode = $$cluster
+    cnode = $$replace(cnode, /, _)
+    cnode = $$replace(cnode, -, _)
+    cnode = $$replace(cnode, \\..*, )
+    clusters *= $$cnode
+    eval(cluster_$${cnode}.name = $$cluster)
+    eval(cluster_$${cnode}.artifacts *= $$artifact)
+  }
+  for(cnode, clusters) {
+    cluster = $$eval(cluster_$${cnode}.name)
+    cartifacts = $$eval(cluster_$${cnode}.artifacts)
+    count(cartifacts,1) {
+      artifact = $$cartifacts
+      message( $$cluster " / " $$artifact)
+      anode = $$artifact
+	  anode = $$replace(anode, -, _)
+      equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
+        system(echo "'    $$anode [style=filled,color=green,label=\"$$artifact\"];'" >> Sofa-build.dot)
+      } else {
+        system(echo "'    $$anode [style=filled,color=gray,label=\"$$artifact\"];'" >> Sofa-build.dot)
+      }
+    } else {
+      message($$cluster : $$cartifacts)
+      system(echo "   subgraph cluster_$$cnode {" >> Sofa-build.dot)
+#    }
+    for(artifact, cartifacts) {
+      message( $$cluster " / " $$artifact)
+      anode = $$artifact
+	  anode = $$replace(anode, -, _)
+      equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
+        system(echo "'    $$anode [style=filled,color=green,label=\"$$artifact\"];'" >> Sofa-build.dot)
+      } else {
+        system(echo "'    $$anode [style=filled,color=gray,label=\"$$artifact\"];'" >> Sofa-build.dot)
+      }
+    }
+#    !count(cartifacts,1) {
+      system(echo "'    label=\"$$cluster\";'" >> Sofa-build.dot)
+      system(echo "'    color=blue;'" >> Sofa-build.dot)
+      system(echo "  }" >> Sofa-build.dot)
+    }
+  }
+  for(artifact, artifacts_registry) {
+    anode = $$artifact
+    anode = $$replace(anode, -, _)
+    deps = $$eval($${artifact}.deps) # Retrieve the dependencies of the current artifact
+    for(dep, deps) {
+      dnode = $$dep
+      dnode = $$replace(dnode, -, _)
+      system(echo "'  $$dnode -> $$anode;'" >> Sofa-build.dot)
+    }
+  }
+  system(echo "}" >> Sofa-build.dot)
+#  system(dot -Tpng -oSofa-build.png Sofa-build.dot)
 }
 
 load(sofa/post)
