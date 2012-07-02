@@ -56,6 +56,8 @@ class SofaVisitor(object):
 
 # called once the script is loaded
 def onLoaded(node):
+ global rootNode
+ rootNode = node.getRoot()
  print 'Controller script loaded from node %s'+node.findData('name').value
  return 0
 
@@ -84,9 +86,11 @@ def initGraph(node):
 
 # called on each animation step
 def onBeginAnimationStep(dt):
+ print 'onBeginAnimationStep '+str(dt)
  return 0
  
 def onEndAnimationStep(dt):
+ print 'onEndAnimationStep '+str(dt)
  return 0
  
 # called when necessary by Sofa framework... 
@@ -125,6 +129,9 @@ def onMouseButtonLeft(x,y,pressed):
  
 def onMouseButtonRight(x,y,pressed):
  print 'onMouseButtonRight x='+str(x)+' y='+str(y)+' pressed='+str(pressed)
+ 
+ if pressed:
+  rootNode.simulationStep(0.42)
  return 0
  
 def onMouseButtonMiddle(x,y,pressed):
