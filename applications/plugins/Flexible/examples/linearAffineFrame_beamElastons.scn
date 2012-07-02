@@ -81,6 +81,13 @@
 	     	<LinearMapping template="Mapping&lt;NewAffine,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
+<!--
+	<Node 	name="frameMapping"   >
+                <MechanicalObject template="NewAffine" name="child" useMask="0" showObject="true" position="0 0 0.5 [0 1 0, 1 0 0, 0 0 1]" showObjectScale="0.4"/> 
+	     	<LinearMapping template="MechanicalMapping&lt;NewAffine,NewAffine&gt;" assembleJ="false"/>
+        </Node>
+-->
+
 	    <Node 	name="collision"   >
 		<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 		<Mesh name="mesh" src="@MeshLoader" /> 

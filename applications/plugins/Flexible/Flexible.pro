@@ -114,6 +114,7 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
                    $$SOFA_INSTALL_INC_DIR/applications/plugins/image
 
     HEADERS +=  quadrature/ImageGaussPointSampler.h \
+                shapeFunction/BaseImageShapeFunction.h \
                 shapeFunction/VoronoiShapeFunction.h \
                 shapeFunction/DiffusionShapeFunction.h \
 

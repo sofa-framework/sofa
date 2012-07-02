@@ -30,6 +30,9 @@
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include "../types/AffineTypes.h"
+#include "../types/QuadraticTypes.h"
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/vector.h>
@@ -72,7 +75,26 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
 };
 
+template<int TDim, class TReal>
+class OutDataTypesInfo<defaulttype::StdAffineTypes<TDim, TReal> >
+{
+public:
+    enum {material_dimensions = TDim};
+};
 
+template<int TDim, class TReal>
+class OutDataTypesInfo<defaulttype::StdRigidTypes<TDim, TReal> >
+{
+public:
+    enum {material_dimensions = TDim};
+};
+
+template<int TDim, class TReal>
+class OutDataTypesInfo<defaulttype::StdQuadraticTypes<TDim, TReal> >
+{
+public:
+    enum {material_dimensions = TDim};
+};
 
 namespace component
 {
@@ -203,7 +225,7 @@ public:
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                jacobian[i][j].init( in[index],pos0[i],f_M.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
+                jacobian[i][j].init( in[index],out[i],pos0[i],f_M.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
 
