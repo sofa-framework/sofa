@@ -194,6 +194,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
         int parentIndex = 0;
         int index = 1;
 
+        int meshId = 0;
+
         // processing each node of the scene graph
         while(!nodes.empty())
         {
@@ -232,13 +234,13 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                 int componentIndex = 0;
 
                 // for each mesh in the node
-                for(unsigned int j = 0; j < currentAiNode->mNumMeshes; ++j)
+                for(unsigned int j = 0; j < currentAiNode->mNumMeshes; ++j, ++meshId)
                 {
                     GNode::SPtr meshGNode = sofa::core::objectmodel::New<GNode>();
                     currentGNode->addChild(meshGNode);
 
                     std::stringstream meshNameStream;
-                    meshNameStream << "mesh " << (int)j;
+                    meshNameStream << "mesh " << (int)meshId;
                     meshGNode->setName(meshNameStream.str());
 
                     aiMesh* currentAiMesh = currentAiScene->mMeshes[currentAiNode->mMeshes[j]];
@@ -405,7 +407,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         meshGNode->addChild(visuGNode);
 
                         std::stringstream visuNameStream;
-                        visuNameStream << "visu " << (int)j;
+                        visuNameStream << "visu " << (int)meshId;
                         visuGNode->setName(visuNameStream.str());
                     }
                     else
@@ -527,6 +529,14 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         if(meshName.empty())
                             nameStream << componentIndex++;
                         currentOglModel->setName(nameStream.str());
+
+                        if(0 != currentAiMesh->mNumVertices)
+                        {
+                            ResizableExtVector<Vec3f> normals;
+                            normals.resize(currentAiMesh->mNumVertices);
+                            memcpy(&normals[0], currentAiMesh->mNormals, currentAiMesh->mNumVertices * sizeof(aiVector3D));
+                            currentOglModel->setVnormals(&normals);
+                        }
 
                         // filling up position array (by default : done by an IdentityMapping, but necessary if we use a SkinningMapping)
                         //if(currentAiMesh->HasBones())
@@ -689,6 +699,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
             }
         }
     }
+
+    removeEmptyNodes();
 
     return true;
 }
@@ -902,6 +914,57 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     }
 
     return true;
+}
+
+void SceneColladaLoader::removeEmptyNodes()
+{
+    // remove intermediary or empty nodes
+    {
+        std::stack<std::pair<GNode::SPtr, int> > nodes;
+
+        nodes.push(std::pair<GNode::SPtr, int>(subSceneRoot, 0));
+        while(!nodes.empty())
+        {
+            GNode::SPtr& node = nodes.top().first;
+            int& index = nodes.top().second;
+
+            if(node->getChildren().size() <= index)
+            {
+                nodes.pop();
+
+                if(nodes.empty())
+                    break;
+
+                GNode::SPtr& parentNode = nodes.top().first;
+                int& parentIndex = nodes.top().second;
+
+                // remove the node if it has no objects
+                if(node->object.empty())
+                {
+                    if(0 != node->getChildren().size())
+                    {
+                        // links its child nodes directly to its parent node before remove the current intermediary node
+                        while(!node->getChildren().empty())
+                        {
+                            GNode::SPtr childNode = static_cast<GNode*>(node->getChildren()[0]);
+                            parentNode->moveChild(childNode);
+                        }
+                    }
+
+                    parentNode->removeChild(node);
+                }
+                else
+                {
+                    ++parentIndex;
+                }
+            }
+            else
+            {
+                GNode::SPtr child = static_cast<GNode*>(node->getChildren()[index]);
+                nodes.push(std::pair<GNode::SPtr, int>(child, 0));
+            }
+        }
+    }
 }
 
 } // namespace loader
