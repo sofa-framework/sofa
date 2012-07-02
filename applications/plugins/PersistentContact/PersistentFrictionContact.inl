@@ -96,8 +96,8 @@ PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::~PersistentFrictio
 {
     if (this->f_printLog.getValue())
     {
-        std::cout << " PersistentFrictionContact destructed between  mstate1 named " << model1->getName()
-                << " and mtate2 named " << model2->getName() << std::endl;
+        std::cout << " PersistentFrictionContact destructed between  mstate1 named " << this->model1->getName()
+                << " and mtate2 named " << this->model2->getName() << std::endl;
     }
 }
 

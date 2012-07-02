@@ -200,14 +200,14 @@ public:
     typedef PersistentContactBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
 
     PersistentContactBarycentricMapping()
-        : m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
-        , Inherit()
+        : Inherit()
+        ,  m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
     {
     }
 
     PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
-        : m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
-        , Inherit(from, to)
+        : Inherit(from, to)
+        , m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
     {
     }
 

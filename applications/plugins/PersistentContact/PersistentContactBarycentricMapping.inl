@@ -43,7 +43,7 @@ namespace mapping
 template <class In, class Out>
 int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
-    updateJ = true;
+    this->updateJ = true;
     int retValue = 0;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
@@ -90,13 +90,13 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
                 coef = ( V12 ) *Vector3 ( _pos - in[edges[e][0]] ) / lengthEdge;
                 if ( coef >= 0 && coef <= 1 )
                 {
-                    retValue = addPointInLine ( e,&coef );
+                    retValue = this->addPointInLine ( e,&coef );
                     break;
                 }
             }
             //If no good coefficient has been found, we add to the last element
             if ( e == edges.size() )
-                retValue = addPointInLine ( edges.size()-1,&coef );
+                retValue = this->addPointInLine ( edges.size()-1,&coef );
         }
         else
         {
@@ -148,9 +148,9 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
             }
 
             if ( index < c0 )
-                retValue = addPointInTriangle ( index, coefs.ptr() );
+                retValue = this->addPointInTriangle ( index, coefs.ptr() );
             else
-                retValue = addPointInQuad ( index-c0, coefs.ptr() );
+                retValue = this->addPointInQuad ( index-c0, coefs.ptr() );
         }
     }
     else
@@ -218,9 +218,9 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
         }
 
         if ( index < c0 )
-            retValue = addPointInTetra ( index, coefs.ptr() );
+            retValue = this->addPointInTetra ( index, coefs.ptr() );
         else
-            retValue = addPointInCube ( index-c0, coefs.ptr() );
+            retValue = this->addPointInCube ( index-c0, coefs.ptr() );
     }
 
     return retValue;
@@ -230,7 +230,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 template <class In, class Out>
 int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
-    updateJ = true;
+    this->updateJ = true;
 
 #ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
@@ -343,9 +343,9 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
         }
     }
 
-    addPointInTetra (index, coefs.ptr() );
+    this->addPointInTetra (index, coefs.ptr() );
 
-    return map.getValue().size() - 1;
+    return this->map.getValue().size() - 1;
 }
 
 
