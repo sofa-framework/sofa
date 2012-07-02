@@ -433,6 +433,13 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
     return e;
 }
 
+// does nothing by default, need to be specialized in .cpp
+template <class DataTypes, class MassType>
+Vec6d DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+{
+    return Vec6d();
+}
+
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {

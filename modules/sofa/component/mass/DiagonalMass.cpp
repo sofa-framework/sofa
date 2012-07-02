@@ -198,6 +198,51 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPar
 }
 
 
+template <>
+Vec6d DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Deriv linearMomentum = v[i] * masses[i];
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Deriv angularMomentum = cross( x[i], linearMomentum );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+template <>
+Vec6d DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Rigid3dTypes::Vec3 linearMomentum = v[i].getLinear() * masses[i].mass;
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Rigid3dTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( masses[i].inertiaMassMatrix * v[i].getAngular() );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+
 #endif
 #ifndef SOFA_DOUBLE
 template <>
@@ -335,6 +380,50 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPar
     }
 }
 
+
+template <>
+Vec6d DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Deriv linearMomentum = v[i] * masses[i];
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Deriv angularMomentum = cross( x[i], linearMomentum );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+template <>
+Vec6d DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Rigid3fTypes::Vec3 linearMomentum = v[i].getLinear() * masses[i].mass;
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Rigid3fTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( masses[i].inertiaMassMatrix * v[i].getAngular() );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
 
 
 #endif

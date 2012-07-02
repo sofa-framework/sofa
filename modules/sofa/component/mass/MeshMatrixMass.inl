@@ -1049,6 +1049,14 @@ double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mech
 }
 
 
+// does nothing by default, need to be specialized in .cpp
+template <class DataTypes, class MassType>
+Vec6d MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+{
+    return Vec6d();
+}
+
+
 
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)

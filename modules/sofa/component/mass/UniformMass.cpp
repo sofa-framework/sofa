@@ -366,6 +366,69 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
         }
 }
 
+template <> SOFA_BASE_MECHANICS_API
+Vec6d UniformMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = v.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    const MassType& m = mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=ibegin ; i<iend ; i++ )
+    {
+        Deriv linearMomentum = m*v[i];
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Deriv angularMomentum = cross( x[i], linearMomentum );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+template <> SOFA_BASE_MECHANICS_API
+Vec6d UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = v.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    Real m = mass.getValue().mass;
+    const Rigid3dMass::Mat3x3& I = mass.getValue().inertiaMassMatrix;
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=ibegin ; i<iend ; i++ )
+    {
+        Rigid3dTypes::Vec3 linearMomentum = m*v[i].getLinear();
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Rigid3dTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( I * v[i].getAngular() );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -647,6 +710,71 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *res
                 resVect->add(offset + i * derivDim + j, mFact * m * g[j]);
         }
 }
+
+
+template <> SOFA_BASE_MECHANICS_API
+Vec6d UniformMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = v.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    const MassType& m = mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=ibegin ; i<iend ; i++ )
+    {
+        Deriv linearMomentum = m*v[i];
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Deriv angularMomentum = cross( x[i], linearMomentum );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+template <> SOFA_BASE_MECHANICS_API
+Vec6d UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = v.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    Real m = mass.getValue().mass;
+    const Rigid3fMass::Mat3x3& I = mass.getValue().inertiaMassMatrix;
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=ibegin ; i<iend ; i++ )
+    {
+        Rigid3fTypes::Vec3 linearMomentum = m*v[i].getLinear();
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+
+        Rigid3fTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( I * v[i].getAngular() );
+        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
 
 #endif
 

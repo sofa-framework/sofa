@@ -29,6 +29,10 @@
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
 
+#include <sofa/gui/qt/QTransformationWidget.h>
+#include <sofa/gui/qt/QEnergyStatWidget.h>
+#include <sofa/gui/qt/QMomentumStatWidget.h>
+
 #include <iostream>
 #ifdef SOFA_QT4
 #include <QPushButton>
@@ -74,7 +78,8 @@ ModifyObject::ModifyObject(
      warningTab(NULL),
      logWarningEdit(NULL),
      transformation(NULL),
-     energy(NULL)
+     energy(NULL),
+     momentum(NULL)
 {
     setCaption(name);
 }
@@ -269,6 +274,16 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             {
                 energy = new QEnergyStatWidget(dialogTab, real_node);
                 dialogTab->addTab(energy,QString("Energy Stats"));
+            }
+        }
+
+        //Momentum Widget
+        if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
+        {
+            if (dialogFlags_.REINIT_FLAG && (!real_node->mass.empty() ) )
+            {
+                momentum = new QMomentumStatWidget(dialogTab, real_node);
+                dialogTab->addTab(momentum,QString("Momentum Stats"));
             }
         }
 
@@ -518,6 +533,13 @@ void ModifyObject::updateTables()
         energy->step();
         if (dialogTab->currentPage() == energy) energy->updateVisualization();
     }
+
+    if (momentum)
+    {
+        momentum->step();
+        if (dialogTab->currentPage() == momentum) momentum->updateVisualization();
+    }
+
     if(node)
     {
         updateConsole();

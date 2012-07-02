@@ -33,8 +33,6 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
-#include <sofa/gui/qt/QTransformationWidget.h>
-#include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #ifdef SOFA_QT4
@@ -71,6 +69,7 @@
 #include <qlayout.h>
 #endif
 
+
 namespace sofa
 {
 
@@ -79,6 +78,10 @@ namespace gui
 
 namespace qt
 {
+
+class QTransformationWidget;
+class QEnergyStatWidget;
+class QMomentumStatWidget;
 
 
 #ifndef SOFA_QT4
@@ -206,6 +209,8 @@ protected:
     QTransformationWidget* transformation;
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
+    //Momentum widget: plot the linear & angular momentum
+    QMomentumStatWidget* momentum;
     //Visual Flags
 
 };
