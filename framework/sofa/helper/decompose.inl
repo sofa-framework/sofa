@@ -620,6 +620,15 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, d
     Q[1][0] = -M[0][1];
     Q[1][1] =  M[0][0];
     Q = M + ( determinant( M ) < 0 ? (Real)-1.0 : (Real)1.0 ) * Q;
+
+    for (unsigned int i=0; i<2; i++)
+    {
+        Real normColi = sqrt(Q[0][i]*Q[0][i] +  Q[1][i] * Q[1][i] );
+        Q[0][i] *= (1/normColi);
+        Q[1][i] *= (1/normColi);
+    }
+
+
 }
 
 
