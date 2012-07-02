@@ -22,14 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QENERGYSTATWIDGET_H
-#define SOFA_GUI_QT_QENERGYSTATWIDGET_H
+#ifndef SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
+#define SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
 
 #include "QGraphStatWidget.h"
 
-#include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
-
 
 namespace sofa
 {
@@ -38,42 +36,35 @@ namespace gui
 namespace qt
 {
 
-class QEnergyStatWidget : public QGraphStatWidget
+class QMomentumStatWidget : public QGraphStatWidget
 {
 
     Q_OBJECT
 
 public:
 
-    QEnergyStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Energy", 3 )
+    QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6 )
     {
-        setCurve( 0, "Kinetic", Qt::red );
-        setCurve( 1, "Potential", Qt::green );
-        setCurve( 2, "Mechanical", Qt::blue );
+        setCurve( 0, "Linear X", Qt::red );
+        setCurve( 1, "Linear Y", Qt::green );
+        setCurve( 2, "Linear Z", Qt::blue );
+        setCurve( 3, "Angular X", Qt::cyan );
+        setCurve( 4, "Angular Y", Qt::magenta );
+        setCurve( 5, "Angular Z", Qt::yellow );
     }
 
-    void step()
+    virtual void step()
     {
-        //Add Time
-        QGraphStatWidget::step();
+        QGraphStatWidget::step(); // time history
 
-        //Add Kinetic Energy
+        // Add Momentum
         if( _node->mass )
-            _YHistory[0].push_back( _node->mass->getKineticEnergy() );
-        else
-            _YHistory[0].push_back(0);
-
-        //Add Potential Energy
-        double potentialEnergy=0;
-        typedef sofa::simulation::Node::Sequence<core::behavior::BaseForceField> SeqFF;
-        for( SeqFF::iterator it = _node->forceField.begin() ; it != _node->forceField.end() ; ++it )
         {
-            potentialEnergy += (*it)->getPotentialEnergy();
+            defaulttype::Vec6d momenta = _node->mass->getMomentum();
+            for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
         }
-        _YHistory[1].push_back( potentialEnergy );
-
-        //Add Mechanical Energy
-        _YHistory[2].push_back( _YHistory[0].back() + _YHistory[1].back() );
+        else
+            for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back(0);
     }
 
 };
@@ -83,5 +74,5 @@ public:
 } // gui
 } //sofa
 
-#endif // SOFA_GUI_QT_QDATADESCRIPTIONWIDGET_H
+#endif // SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
 

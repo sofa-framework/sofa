@@ -134,6 +134,14 @@ double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechanic
     return 0;
 }
 
+// does nothing by default, need to be specialized in .cpp
+template <class DataTypes, class MassType>
+Vec6d MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+{
+    serr<<"void MatrixMass<DataTypes, MassType>::getMomentum not yet implemented"<<sendl;
+    return Vec6d();
+}
+
 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)

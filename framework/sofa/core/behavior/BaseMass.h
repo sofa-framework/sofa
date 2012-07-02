@@ -83,6 +83,9 @@ public:
     /// Mgx
     virtual double getPotentialEnergy(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
 
+    /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
+    virtual defaulttype::Vec6d getMomentum(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
+
     /// @}
 
     /// @name Matrix operations

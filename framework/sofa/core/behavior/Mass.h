@@ -141,6 +141,17 @@ public:
     /// @deprecated
     virtual double getPotentialEnergy( const VecCoord& x       ) const;
 
+
+    ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
+    /// linearMomentum = Mv, angularMomentum_particle = cross(x,linearMomentum), angularMomentum_body = cross(x,linearMomentum)+Iw
+    ///
+    /// This method retrieves the positions and velocity vectors and call the internal
+    /// getMomentum(const MechanicalParams* /* PARAMS FIRST */, const VecCoord&, const VecDeriv&) method implemented by the component.
+    virtual defaulttype::Vec6d getMomentum( const MechanicalParams* mparams ) const;
+    virtual defaulttype::Vec6d getMomentum( const MechanicalParams*  /* PARAMS FIRST */, const DataVecCoord& , const DataVecDeriv&  ) const;
+
+
+
     /// @}
 
     /// @name Matrix operations

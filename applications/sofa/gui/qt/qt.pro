@@ -72,8 +72,10 @@ HEADERS += viewer/VisualModelPolicy.h \
 	PickHandlerCallBacks.h \
 	QDataDescriptionWidget.h \
 	QDisplayLinkWidget.h \     
-	QDisplayDataWidget.h \     
+	QDisplayDataWidget.h \
+	QGraphStatWidget.h \
 	QEnergyStatWidget.h \              
+	QMomentumStatWidget.h \ 
 	QTabulationModifyObject.h \
 	QTransformationWidget.h \
 	QMouseOperations.h \
@@ -107,7 +109,6 @@ SOURCES += viewer/SofaViewer.cpp \
 	PickHandlerCallBacks.cpp \
 	QDisplayLinkWidget.cpp \
 	QDisplayDataWidget.cpp \
-	QEnergyStatWidget.cpp \       
 	QMouseOperations.cpp \               
 	QTabulationModifyObject.cpp \
 	QTransformationWidget.cpp \

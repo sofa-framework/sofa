@@ -215,6 +215,23 @@ double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
     return 0.0;
 }
 
+
+template<class DataTypes>
+defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+{
+    if (this->mstate)
+        return getMomentum(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
+    return defaulttype::Vec6d();
+}
+
+template<class DataTypes>
+defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
+{
+    serr << "ERROR("<<getClassName()<<"): getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented." << sendl;
+    return defaulttype::Vec6d();
+}
+
+
 template<class DataTypes>
 void Mass<DataTypes>::addKToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {

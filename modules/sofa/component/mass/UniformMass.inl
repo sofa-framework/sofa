@@ -390,6 +390,13 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
     return e;
 }
 
+// does nothing by default, need to be specialized in .cpp
+template <class DataTypes, class MassType>
+Vec6d UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+{
+    return Vec6d();
+}
+
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
