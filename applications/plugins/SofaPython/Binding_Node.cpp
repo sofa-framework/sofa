@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
@@ -34,7 +35,6 @@ using namespace sofa::core;
 extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
-    printf("Node_executeVisitor called in node %s\n",node->getName().c_str());
 
     PyObject* pyVisitor;
     if (!PyArg_ParseTuple(args, "O",&pyVisitor))
@@ -45,9 +45,35 @@ extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
+extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    // BaseNode is not binded in SofaPython, so getRoot is binded in Node instead of BaseNode
+    return SP_BUILD_PYSPTR(node->getRoot());
+}
+
+// step the simulation
+extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    double dt;
+    if (!PyArg_ParseTuple(args, "d",&dt))
+        return 0;
+
+    printf("Node_simulationStep node=%s dt=%f\n",node->getName().c_str(),(float)dt);
+
+    getSimulation()->animate ( node, (SReal)dt );
+//    simulation::getSimulation()->updateVisual( root );
+
+
+    return Py_BuildValue("i",0);
+}
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
+SP_CLASS_METHOD(Node,getRoot)
+SP_CLASS_METHOD(Node,simulationStep)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)
