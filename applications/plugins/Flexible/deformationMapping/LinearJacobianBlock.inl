@@ -128,10 +128,10 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
-        C=(OutPos-InPos)*Pt;
+        C=(SPos-InPos)*Pt;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -204,10 +204,10 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
-        C=(OutPos-InPos)*Pt;
+        C=(SPos-InPos)*Pt;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -286,10 +286,10 @@ public:
     OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
         Ft=M.transposed()*dw;
-        C.getF()=covMN(OutPos-InPos,Ft);
+        C.getF()=covMN(SPos-InPos,Ft);
         C.getF()+=M*w;
     }
 
@@ -368,10 +368,10 @@ public:
     OutCoord C;       ///< =  (p0-t0).grad w + w.I   =  constant term
     mGradient Ft;  ///< =   grad w     =  d F/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
         Ft=M.transposed()*dw;
-        C.getF()=covMN(OutPos-InPos,Ft);
+        C.getF()=covMN(SPos-InPos,Ft);
         C.getF()+=M*w;
     }
 
@@ -455,15 +455,15 @@ public:
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
     mHessian dFt;  ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
         Ft=M.transposed()*dw;
-        C.getF()=covMN(OutPos-InPos,Ft);
+        C.getF()=covMN(SPos-InPos,Ft);
         C.getF()+=M*w;
         dFt=ddw.transposed()*M;
         for (unsigned int k = 0; k < dim; ++k)
         {
-            C.getGradientF(k)=covMN(OutPos-InPos,dFt[k]);
+            C.getGradientF(k)=covMN(SPos-InPos,dFt[k]);
             //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[i][i]+=Ft[k]; // to do: anisotropy
             //            for(unsigned int i=0;i<mdim;i++) C.getGradientF(k)[k][i]+=Ft[i]; // to do: anisotropy
         }
@@ -554,10 +554,10 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
-        Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
+        Pa=In::inverse(InPos).pointToParent(SPos)*Pt;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -635,10 +635,10 @@ public:
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
         Pt=w;
-        Pa=In::inverse(InPos).pointToParent(OutPos)*Pt;
+        Pa=In::inverse(InPos).pointToParent(SPos)*Pt;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -719,11 +719,11 @@ public:
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
         Ft=M.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
-        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
+        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
         PFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
     }
 
@@ -815,13 +815,13 @@ public:
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
     OutCoord PFdFa;      ///< =   q0.grad w + w.A0^{-1}, [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
-    void init( const InCoord& InPos, const SpatialCoord& OutPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
         Ft=M.transposed()*dw;
         dFt=ddw.transposed()*M;
 
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
-        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(OutPos);  // q0
+        SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
         PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * M * w;
 
         Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
@@ -868,6 +868,98 @@ public:
         }
         return J;
     }
+
+    // no geometric striffness (constant J)
+    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Affine3 -> Affine3 = F331 with dw=0
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class LinearJacobianBlock< Affine3(InReal) , Affine3(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , Affine3(OutReal) >
+{
+public:
+    typedef Affine3(InReal) In;
+    typedef Affine3(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    enum { dim = Out::spatial_dimensions };
+
+    typedef Vec<dim,Real> Gradient;
+    typedef Mat<dim,dim,Real> Hessian;
+    typedef Vec<dim, Real> SpatialCoord;
+    typedef Mat<dim,dim,Real> MaterialToSpatial;
+
+    /**
+    Mapping:
+        - \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
+        - \f$ F = w.A.A0^{-1}.F0  \f$
+    where :
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
+        - p0,F0 is the position of p,F in the reference configuration.
+        - q0 is the local position of p0.
+    Jacobian:
+        - \f$ dp = w.dt + w.dA.q0\f$
+        - \f$ d F = w.dA.A0^{-1}.F0\f$
+    */
+
+    static const bool constantJ=true;
+
+    Real Pt;      ///< =   w         =  dp/dt
+    OutCoord Pa;      ///< =   w.q0      =  dp/dA  , w.A0^{-1}.F0   =  dF/dA
+
+    void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
+    {
+        Pt=w;
+        InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
+        Pa.getCenter()=inverseInitialTransform.pointToParent(OutPos.getCenter())*w;
+        Pa.getAffine()=inverseInitialTransform.getAffine()*OutPos.getAffine()*w;
+    }
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        result.getCenter() +=  data.getCenter() * Pt + data.getAffine() * Pa.getCenter();
+        result.getAffine() +=  data.getAffine() * Pa.getAffine() ;
+        for (unsigned int j = 0; j < dim; ++j) result.getAffine()[j][j] -= Pt; // this term cancels the initial identity affine matrix
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getVCenter() += data.getVCenter() * Pt + data.getVAffine() * Pa.getCenter();
+        result.getVAffine() += data.getVAffine() * Pa.getAffine();
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result.getVCenter() += data.getVCenter() * Pt ;
+        for (unsigned int j = 0; j < dim; ++j) result.getVAffine()[j] += Pa.getCenter() * (data.getVCenter())[j] + Pa.getAffine() * (data.getVAffine()[j]);
+    }
+
+    MatBlock getJ()
+    {
+        MatBlock J = MatBlock();
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j)
+            {
+                J(j,i+(j+1)*dim)=Pa.getCenter()[i];
+                for(unsigned int l=0; l<dim; ++l)   J(j+(l+1)*dim,i+dim+(l+1)*dim)=Pa.getAffine()[i][j];
+            }
+        return J;
+    }
+
 
     // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}

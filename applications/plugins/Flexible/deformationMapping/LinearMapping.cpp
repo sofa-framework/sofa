@@ -58,6 +58,7 @@ int LinearMappingClass = core::RegisterObject("Map child positions as a linear c
         .add< LinearMapping< Affine3Types, ExtVec3fTypes > >()
         .add< LinearMapping< Affine3Types, F331Types > >()
         .add< LinearMapping< Affine3Types, F332Types > >()
+        .add< LinearMapping< Affine3Types, Affine3Types > >()
         ;
 
 template class SOFA_Flexible_API LinearMapping< Vec3Types, Vec3Types >;
@@ -70,6 +71,7 @@ template class SOFA_Flexible_API LinearMapping< Affine3Types, Vec3Types >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3fTypes >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, F331Types >;
 template class SOFA_Flexible_API LinearMapping< Affine3Types, F332Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, Affine3Types >;
 
 
 } // namespace mapping
