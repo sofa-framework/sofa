@@ -13,7 +13,7 @@ SOURCES = PersistentContactMapping.cpp \
 		  PersistentUnilateralInteractionConstraint.cpp \
 		  PersistentContactBarycentricMapping.cpp \
 		  PersistentContactRigidMapping.cpp \
-	      initPersistentContact.cpp
+                  initPersistentContact.cpp
 
 HEADERS = PersistentContact.h \
 		  PersistentContactMapping.h \

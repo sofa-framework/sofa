@@ -102,9 +102,12 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename Inherited::PersistentID PersistentID;
     typedef typename Inherited::Contact Contact;
-#ifdef SOFA_DEV
+#ifdef SOFA_DEV // ??
     typedef typename PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
+    typedef typename std::map< int, ContactState > ContactStateMap;
+    typedef typename ContactStateMap::const_iterator contactStateIterator;
 #endif
+
 
     PersistentUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)

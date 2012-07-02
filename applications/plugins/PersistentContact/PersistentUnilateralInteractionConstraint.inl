@@ -318,7 +318,7 @@ bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contac
 
     if (it != itEnd)
     {
-        std::map< int, ContactState >::const_iterator contactStateIt = contactStates.find(it->id);
+        contactStateIterator contactStateIt = contactStates.find(it->id);
 
         if (contactStateIt != contactStates.end())
             return (contactStateIt->second == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
@@ -344,7 +344,7 @@ bool PersistentUnilateralInteractionConstraint<DataTypes>::isSliding(int _contac
 
     if (it != itEnd)
     {
-        std::map< int, ContactState >::const_iterator contactStateIt = contactStates.find(it->id);
+        contactStateIterator contactStateIt = contactStates.find(it->id);
 
         if (contactStateIt != contactStates.end())
             return (contactStateIt->second == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING);
@@ -402,7 +402,7 @@ typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentU
 
     if (it != itEnd)
     {
-        std::map< int, Deriv >::const_iterator contactForcesIt = contactForces.find(it->id);
+        typename std::map< int, Deriv >::const_iterator contactForcesIt = contactForces.find(it->id);
 
         if (contactForcesIt != contactForces.end())
         {
