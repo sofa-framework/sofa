@@ -20,7 +20,7 @@
 		
 	    <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="1" fixedPosition="2.4 0.45 0 1.5 2.5 0" /> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/> 
+	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/> 
 	    <FixedConstraint indices="0" />
 
     <VoronoiShapeFunction name="SF" template="ShapeFunction3d,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
@@ -34,7 +34,7 @@
 	   <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
  
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;NewAffine,F332&gt;" assembleJ="false"/>
+    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
 
 	<Node 	name="E"   >
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
@@ -50,12 +50,12 @@
 			<Mesh src="@MeshLoader" /> 
 			<MechanicalObject  name="PointSet" useMask="0"/>
 			<UniformMass totalMass="1000" />		
-			<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
+			<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
 		</Node>
 
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/steak.obj" texturename="mesh/steak.png" normals="0" color="1 .8 .3 1" />
-			<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
+			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 		</Node>
     </Node>
 </Node>

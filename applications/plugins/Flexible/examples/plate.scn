@@ -25,7 +25,7 @@
  <Node 	name="Flexible"   >
 		
     <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="8" showEdges="true" printLog="true"/> 
-    <MechanicalObject template="NewAffine" name="parent" useMask="0" showObject="true" src="@sampler"/>
+    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@sampler"/>
 
     <FixedConstraint indices="0" />
 
@@ -42,7 +42,7 @@
  
 
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;NewAffine,F332&gt;" assembleJ="false"/>
+    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
 
 
 	<Node 	name="E"   >
@@ -63,19 +63,19 @@
 		<MechanicalObject  template="Vec3d" name="pts" src="@mesh" useMask="0" />
 		<UniformMass totalMass="10" />
 		<Triangle />
-	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,Vec3d&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<VisualStyle displayFlags="showWireframe  " />
 		<Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
 		<VisualModel template="ExtVec3f" name="Visual" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 	    </Node>
 	    <Node 	name="inclusion"   >
 		<Mesh name="mesh" position="@../../mc2.position"  triangles="@../../mc2.triangles"/>
 		<VisualModel template="ExtVec3f" name="Visual" color="0.5 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;NewAffine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 	    </Node>
 
     </Node>

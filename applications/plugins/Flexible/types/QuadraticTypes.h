@@ -532,11 +532,11 @@ typedef QuadraticMass<3, float> Quadratic3fMass;
 
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
 #ifdef SOFA_FLOAT
-template<> inline const char* Quadratic3dTypes::Name() { return "NewQuadratic3d"; }
-template<> inline const char* Quadratic3fTypes::Name() { return "NewQuadratic"; }
+template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic3d"; }
+template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic"; }
 #else
-template<> inline const char* Quadratic3dTypes::Name() { return "NewQuadratic"; }
-template<> inline const char* Quadratic3fTypes::Name() { return "NewQuadratic3f"; }
+template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
+template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic3f"; }
 #endif
 
 #ifdef SOFA_FLOAT
@@ -569,10 +569,10 @@ template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : p
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "NewQuadratic3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "NewQuadratic3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "NewQuadratic3fMass"; } };
-template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "NewQuadratic3dMass"; } };
+template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "Quadratic3fTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
+template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
 
 /// \endcond
 } // namespace defaulttype

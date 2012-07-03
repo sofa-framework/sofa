@@ -943,7 +943,16 @@ struct DataTypeInfo< DeformationGradient331dTypes::Deriv > : public FixedArrayTy
     static std::string name() { std::ostringstream o; o << "DeformationGradient331<" << DataTypeName<double>::name() << ">"; return o.str(); }
 };
 
-
+template<>
+struct DataTypeInfo< DeformationGradient331fTypes::Coord > : public FixedArrayTypeInfo< DeformationGradient331fTypes::Coord, DeformationGradient331fTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "DeformationGradient331<" << DataTypeName<float>::name() << ">"; return o.str(); }
+};
+template<>
+struct DataTypeInfo< DeformationGradient331dTypes::Coord > : public FixedArrayTypeInfo< DeformationGradient331dTypes::Coord, DeformationGradient331dTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "DeformationGradient331<" << DataTypeName<double>::name() << ">"; return o.str(); }
+};
 
 
 // The next line hides all those methods from the doxygen documentation
@@ -1011,6 +1020,16 @@ struct DataTypeInfo< DeformationGradient332dTypes::Deriv > : public FixedArrayTy
     static std::string name() { std::ostringstream o; o << "DeformationGradient332<" << DataTypeName<double>::name() << ">"; return o.str(); }
 };
 
+template<>
+struct DataTypeInfo< DeformationGradient332fTypes::Coord > : public FixedArrayTypeInfo< DeformationGradient332fTypes::Coord, DeformationGradient332fTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "DeformationGradient332<" << DataTypeName<float>::name() << ">"; return o.str(); }
+};
+template<>
+struct DataTypeInfo< DeformationGradient332dTypes::Coord > : public FixedArrayTypeInfo< DeformationGradient332dTypes::Coord, DeformationGradient332dTypes::Coord::total_size >
+{
+    static std::string name() { std::ostringstream o; o << "DeformationGradient332<" << DataTypeName<double>::name() << ">"; return o.str(); }
+};
 
 
 
