@@ -450,11 +450,11 @@ typedef AffineMass<3, float> Affine3fMass;
 
 /// Note: Many scenes use Affine as template for 3D double-precision rigid type. Changing it to Affine3d would break backward compatibility.
 #ifdef SOFA_FLOAT
-template<> inline const char* Affine3dTypes::Name() { return "NewAffine3d"; }
-template<> inline const char* Affine3fTypes::Name() { return "NewAffine"; }
+template<> inline const char* Affine3dTypes::Name() { return "Affine3d"; }
+template<> inline const char* Affine3fTypes::Name() { return "Affine"; }
 #else
-template<> inline const char* Affine3dTypes::Name() { return "NewAffine"; }
-template<> inline const char* Affine3fTypes::Name() { return "NewAffine3f"; }
+template<> inline const char* Affine3dTypes::Name() { return "Affine"; }
+template<> inline const char* Affine3fTypes::Name() { return "Affine3f"; }
 #endif
 
 #ifdef SOFA_FLOAT
@@ -490,10 +490,10 @@ template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : publ
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName< defaulttype::Affine3fTypes::Coord > { static const char* name() { return "NewAffine3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "NewAffine3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "NewAffine3fMass"; } };
-template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "NewAffine3dMass"; } };
+template<> struct DataTypeName< defaulttype::Affine3fTypes::Coord > { static const char* name() { return "Affine3fTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "Affine3dTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
+template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
 
 /// \endcond
 
