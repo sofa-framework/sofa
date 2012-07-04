@@ -184,8 +184,10 @@ typedef DefGradientTypes<3, 3, 0, double> F331dTypes;
 typedef DefGradientTypes<3, 3, 0, float>  F331fTypes;
 typedef DefGradientTypes<3, 3, 1, double> F332dTypes;
 typedef DefGradientTypes<3, 3, 1, float>  F332fTypes;
-typedef DefGradientTypes<3, 2, 0, double> F321dTypes; // for triangle deformations
-typedef DefGradientTypes<3, 2, 0, float>  F321fTypes; // for triangle deformations
+typedef DefGradientTypes<3, 2, 0, double> F321dTypes; // for planar deformations
+typedef DefGradientTypes<3, 2, 0, float>  F321fTypes; // for planar deformations
+typedef DefGradientTypes<3, 1, 0, double> F311dTypes; // for linear deformations
+typedef DefGradientTypes<3, 1, 0, float>  F311fTypes; // for linear deformations
 
 
 #ifdef SOFA_FLOAT
@@ -193,7 +195,10 @@ template<> inline const char* F331dTypes::Name() { return "F331d"; }
 template<> inline const char* F331fTypes::Name() { return "F331"; }
 template<> inline const char* F332dTypes::Name() { return "F332d"; }
 template<> inline const char* F332fTypes::Name() { return "F332"; }
+template<> inline const char* F321dTypes::Name() { return "F321d"; }
 template<> inline const char* F321fTypes::Name() { return "F321"; }
+template<> inline const char* F311dTypes::Name() { return "F311d"; }
+template<> inline const char* F311fTypes::Name() { return "F311"; }
 #else
 template<> inline const char* F331dTypes::Name() { return "F331"; }
 template<> inline const char* F331fTypes::Name() { return "F331f"; }
@@ -201,16 +206,20 @@ template<> inline const char* F332dTypes::Name() { return "F332"; }
 template<> inline const char* F332fTypes::Name() { return "F332f"; }
 template<> inline const char* F321dTypes::Name() { return "F321"; }
 template<> inline const char* F321fTypes::Name() { return "F321f"; }
+template<> inline const char* F311dTypes::Name() { return "F311"; }
+template<> inline const char* F311fTypes::Name() { return "F311f"; }
 #endif
 
 #ifdef SOFA_FLOAT
 typedef F331fTypes F331Types;
 typedef F332fTypes F332Types;
 typedef F321fTypes F321Types;
+typedef F311fTypes F311Types;
 #else
 typedef F331dTypes F331Types;
 typedef F332dTypes F332Types;
 typedef F321dTypes F321Types;
+typedef F311dTypes F311Types;
 #endif
 
 template<> struct DataTypeInfo< F331fTypes::Deriv > : public FixedArrayTypeInfo< F331fTypes::Deriv, F331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
@@ -219,6 +228,8 @@ template<> struct DataTypeInfo< F332fTypes::Deriv > : public FixedArrayTypeInfo<
 template<> struct DataTypeInfo< F332dTypes::Deriv > : public FixedArrayTypeInfo< F332dTypes::Deriv, F332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< F321dTypes::Deriv > : public FixedArrayTypeInfo< F321dTypes::Deriv, F321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F321<" << DataTypeName<double>::name() << ">"; return o.str(); } };
 template<> struct DataTypeInfo< F321fTypes::Deriv > : public FixedArrayTypeInfo< F321fTypes::Deriv, F321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F321<" << DataTypeName<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< F311dTypes::Deriv > : public FixedArrayTypeInfo< F311dTypes::Deriv, F311dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F311<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< F311fTypes::Deriv > : public FixedArrayTypeInfo< F311fTypes::Deriv, F311fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "F311<" << DataTypeName<float>::name() << ">"; return o.str(); } };
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
@@ -229,6 +240,8 @@ template<> struct DataTypeName< defaulttype::F332fTypes::Coord > { static const 
 template<> struct DataTypeName< defaulttype::F332dTypes::Coord > { static const char* name() { return "F332dTypes::CoordOrDeriv"; } };
 template<> struct DataTypeName< defaulttype::F321dTypes::Coord > { static const char* name() { return "F321dTypes::CoordOrDeriv"; } };
 template<> struct DataTypeName< defaulttype::F321fTypes::Coord > { static const char* name() { return "F321fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::F311dTypes::Coord > { static const char* name() { return "F311dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::F311fTypes::Coord > { static const char* name() { return "F311fTypes::CoordOrDeriv"; } };
 
 /// \endcond
 
@@ -253,14 +266,20 @@ extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331dTypes>;
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332dTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F321dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F321dTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F311dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F311dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F331fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F331fTypes>;
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F332fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F332fTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F321fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F321fTypes>;
+extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::F311fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::F311fTypes>;
 #endif
 #endif
 

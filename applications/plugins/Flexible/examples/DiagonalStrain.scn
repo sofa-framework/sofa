@@ -164,9 +164,9 @@
    	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
 	
         <Node name="StrainNode">
-            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="svd"/>
-            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.2" />
+            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+	    <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" method="svd"/>
+            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 
 	
@@ -196,9 +196,9 @@
    	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
 	
         <Node name="StrainNode">
-            <MechanicalObject template="D221"  name="VoigtStrainDOF" />
-	    <DiagonalStrainMapping template="Mapping&lt;F321,D221&gt;" assembleJ="false" />
-            <HookeForceField template="D221" youngModulus="10" poissonRatio="0.2" />
+            <MechanicalObject template="D321"  name="VoigtStrainDOF" />
+	    <DiagonalStrainMapping template="Mapping&lt;F321,D321&gt;" assembleJ="false" />
+            <HookeForceField template="D321" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 
 	
@@ -228,9 +228,9 @@
    	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
 	
         <Node name="StrainNode">
-            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-	    <DiagonalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" />
-            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.2" />
+            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+	    <DiagonalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" />
+            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 
 	

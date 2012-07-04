@@ -35,13 +35,13 @@
         <TriangleDeformationMapping  scaleView="0.03" />
 -->
         <Node name="StrainNode">
-            <MechanicalObject template="E221"  name="triangleVoigtStrainDOF" />
-            <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
-<!--            <HookeForceField template="E221" youngModulus="1000" poissonRatio="0.45" />-->
+            <MechanicalObject template="E321"  name="triangleVoigtStrainDOF" />
+            <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+<!--            <HookeForceField template="E321" youngModulus="1000" poissonRatio="0.45" />-->
             <Node>
-                <MechanicalObject template="E221"  name="nodeVoigtStrainDOF" />
-                <TriangleStrainAverageMapping template="Mapping&lt;E221,E221&gt;" />
-                <HookeForceField template="E221" youngModulus="1000" poissonRatio="0.4" />
+                <MechanicalObject template="E321"  name="nodeVoigtStrainDOF" />
+                <TriangleStrainAverageMapping template="Mapping&lt;E321,E321&gt;" />
+                <HookeForceField template="E321" youngModulus="1000" poissonRatio="0.4" />
             </Node>
         </Node>
     </Node>

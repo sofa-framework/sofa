@@ -46,12 +46,14 @@ using namespace defaulttype;
 int GreenStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Green Lagrangian Strain (large deformations).")
 
         .add< GreenStrainMapping< F331Types, E331Types > >(true)
-        .add< GreenStrainMapping< F321Types, E221Types > >()
+        .add< GreenStrainMapping< F321Types, E321Types > >()
+        .add< GreenStrainMapping< F311Types, E311Types > >()
         .add< GreenStrainMapping< F332Types, E332Types > >()
         .add< GreenStrainMapping< F332Types, E333Types > >();
 
 template class SOFA_Flexible_API GreenStrainMapping< F331Types, E331Types >;
-template class SOFA_Flexible_API GreenStrainMapping< F321Types, E221Types >;
+template class SOFA_Flexible_API GreenStrainMapping< F321Types, E321Types >;
+template class SOFA_Flexible_API GreenStrainMapping< F311Types, E311Types >;
 template class SOFA_Flexible_API GreenStrainMapping< F332Types, E332Types >;
 template class SOFA_Flexible_API GreenStrainMapping< F332Types, E333Types >;
 

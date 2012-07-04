@@ -34,9 +34,9 @@
         <TriangleDeformationMapping  scaleView="0.03" />
 -->
         <Node name="StrainNode">
-            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-	    <GreenStrainMapping template="Mapping&lt;F321,E221&gt;" />
-            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
+            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+	    <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
 
@@ -72,9 +72,9 @@
 <!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
 	
         <Node name="StrainNode">
-            <MechanicalObject template="E221"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F321,E221&gt;" assembleJ="false" method="qr"/>
-            <HookeForceField template="E221" youngModulus="10" poissonRatio="0.4" />
+            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+	    <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" method="qr"/>
+            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
 

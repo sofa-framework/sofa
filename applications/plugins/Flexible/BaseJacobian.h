@@ -140,6 +140,19 @@ protected:
         return J;
     }
 
+    template<typename Real>
+    static Eigen::Matrix<Real,1,3,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,1,Real>& f) // 3D->1D
+    {
+        static const unsigned int spatial_dimensions = 3;
+        static const unsigned int material_dimensions = 1;
+        static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2;
+        typedef Eigen::Matrix<Real,strain_size,spatial_dimensions*material_dimensions,Eigen::RowMajor> JBlock;
+        JBlock J=JBlock::Zero();
+        for( unsigned int k=0; k<spatial_dimensions; k++ )
+            for(unsigned int j=0; j<material_dimensions; j++)
+                J(j,j+material_dimensions*k)=f[k][j];
+        return J;
+    }
 };
 
 

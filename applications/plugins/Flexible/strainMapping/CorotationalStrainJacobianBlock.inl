@@ -48,7 +48,7 @@ namespace defaulttype
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define F321(type)  DefGradientTypes<3,2,0,type>
-#define E221(type)  StrainTypes<2,2,0,type>
+#define E321(type)  StrainTypes<3,2,0,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -470,16 +470,16 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////
-//////  F321 -> E221
+//////  F321 -> E321
 ////////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class CorotationalStrainJacobianBlock< F321(InReal) , E221(OutReal) > :
-    public  BaseJacobianBlock< F321(InReal) , E221(OutReal) >
+class CorotationalStrainJacobianBlock< F321(InReal) , E321(OutReal) > :
+    public  BaseJacobianBlock< F321(InReal) , E321(OutReal) >
 {
 public:
     typedef F321(InReal) In;
-    typedef E221(OutReal) Out;
+    typedef E321(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
     typedef typename Inherit::InCoord InCoord;
