@@ -1,0 +1,8 @@
+# Blender v2.56 (sub 0) OBJ File: 'untitled.blend'
+# www.blender.org
+o Plane_Plane.004
+v -1.000000 -0.468230 -13.362806
+v -1.000000 -0.468231 -2.127368
+#v 2.041047 -0.468231 -0.676593
+f 1 2
+#f 3 2

@@ -1,0 +1,84 @@
+<Node name="33410L">
+
+	<EulerImplicit rayleighMass="0.01" rayleighStiffness="0.001"/>
+	<CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
+	
+	<Node name="Trocar">
+		<MechanicalObject name="MO" template="Rigid" position="30 0 -7 0 0 0 1"/>
+		<RestShapeSpringsForceField points="0" stiffness="1e4" angularStiffness="1e9"/>
+		<UncoupledConstraintCorrection compliance="1e-4  1e-9 0 0 1e-9 0 1e-9"/>	
+
+		<Node name="Articulations Description">
+			<MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0.3 0.3" rest_position="0 0 0 0 0 0"/>
+			<RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1e7 1e7 1e6 1e3 1e7 1e7"/>
+			<UncoupledConstraintCorrection compliance="1e-7 1e-7 1e-6 1e-3 1e-7 1e-7"/>
+			
+			<GrasperController doubleGrasper="true"/>
+
+			<Node name="Tool Description">
+				<MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1"/>
+				
+				<Node name="First Grasper Line CM">
+					<MeshObjLoader name="ml" filename="Mors1_CM_line.obj" />
+					<Mesh src="@ml"/>
+					<MechanicalObject src="@ml" name="CM" rx="180"/>
+					<Line name="FGL Line" proximity="1.5" group="110"/>
+					<Point name="FGL Point" proximity="1.5" group="110"/>
+					<RigidMapping name="mapping1" input="@../GrasperDOFs" output="@CM" index="3"/>
+				</Node>
+				
+				<Node name="PersistentFrictionResponse1">
+					<MechanicalObject  name="grasp2cp1"/>
+					<PersistentContactRigidMapping name="constraintMapping1" nameOfInputMap="mapping1" input="@.." output="@."/>
+				</Node>
+				
+				<Node name="Second Grasper Line CM">
+					<MeshObjLoader name="ml" filename="Mors2_CM_line.obj" />
+					<Mesh src="@ml"/>
+					<MechanicalObject src="@ml" name="CM" rx="180"/>
+					<Line name="SGL Line" proximity="1.5" group="110"/>
+					<Point name="SGL Point" proximity="1.5" group="110"/>
+					<RigidMapping name="mapping2" input="@../GrasperDOFs" output="@CM" index="4"/>
+				</Node>
+				
+				<Node name="PersistentFrictionResponse2">
+					<MechanicalObject  name="grasp2cp2"/>
+					<PersistentContactRigidMapping name="constraintMapping2" nameOfInputMap="mapping2" input="@.." output="@."/>
+				</Node>
+				
+				<ArticulatedSystemMapping name="Articulated System Mapping" input1="@../Articulations" input2="@../../MO" output="@GrasperDOFs"/>
+			</Node>
+			
+			<ArticulatedHierarchyContainer/>
+
+			<Node name="articulationCenters">
+				<Node name="articulationCenter0">
+					<ArticulationCenter parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="0 0 0"/>
+					<Node name="Pitch and Yaw">
+						<Articulation translation="0" rotation="1" rotationAxis="0 -1 0" articulationIndex="0"/>
+						<Articulation translation="0" rotation="1" rotationAxis="-1 0 0" articulationIndex="1"/>
+					</Node>
+				</Node>
+				<Node name="articulationCenter1">
+					<ArticulationCenter parentIndex="1" childIndex="2" posOnParent="0 0 0" posOnChild="0 0 0"/>
+					<Node name="Insertion et rotation">
+						<Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="2"/>
+						<Articulation translation="1" rotation="0" rotationAxis="0 0 -1" articulationIndex="3"/>
+					</Node>
+				</Node>
+				<Node name="articulationCenter1_1">
+					<ArticulationCenter parentIndex="2" childIndex="3" posOnParent="0 0 16.3" posOnChild="0 0 16.3"/>
+					<Node name="articulations">
+						<Articulation translation="0" rotation="1" rotationAxis="-1 0 0" articulationIndex="4"/>
+					</Node>
+				</Node>
+				<Node name="articulationCenter1_2">
+					<ArticulationCenter parentIndex="2" childIndex="4" posOnParent="0 0 16.3" posOnChild="0 0 16.3"/>
+					<Node name="articulations">
+						<Articulation translation="0" rotation="1" rotationAxis="1 0 0" articulationIndex="5"/>
+					</Node>
+				</Node>
+			</Node>
+		</Node>
+	</Node>
+</Node>
