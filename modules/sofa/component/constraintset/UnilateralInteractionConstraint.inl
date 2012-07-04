@@ -314,9 +314,16 @@ template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     if(contactsStatus)
+    {
         delete[] contactsStatus;
-    contactsStatus = new bool[contacts.size()];
-    memset(contactsStatus, 0, sizeof(bool)*contacts.size());
+        contactsStatus = NULL;
+    }
+
+    if (contacts.size() > 0)
+    {
+        contactsStatus = new bool[contacts.size()];
+        memset(contactsStatus, 0, sizeof(bool)*contacts.size());
+    }
 
     for(unsigned int i=0; i<contacts.size(); i++)
     {
