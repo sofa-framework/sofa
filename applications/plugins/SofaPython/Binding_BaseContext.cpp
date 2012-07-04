@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/ObjectFactory.h>
+using namespace sofa::core;
 #include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
 
@@ -65,7 +67,46 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
     return SP_BUILD_PYSPTR(obj->getRootContext());
 }
 
+// object factory
+extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args)
+{
+    BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyDesc;
+    if (!PyArg_ParseTuple(args, "O",&pyDesc))
+        return 0;
+    BaseObjectDescription *desc=(((PyPtr<BaseObjectDescription>*)pyDesc)->object);
 
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,desc);//.get();
+    if (obj==0)
+    {
+        printf("<PYTHON> ERROR createObject '%s' of type '%s' in node '%s'\n",
+                desc->getName().c_str(),
+                desc->getAttribute("type",""),
+                context->getName().c_str());
+        PyErr_BadArgument();
+        return 0;
+    }
+
+    return SP_BUILD_PYSPTR(obj.get());
+}
+
+
+extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
+{
+    BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+    char *path;
+    if (!PyArg_ParseTuple(args, "s",&path))
+        return 0;
+    if (!context || !path)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    BaseObject::SPtr sptr;
+    context->get<BaseObject>(sptr,path);
+
+    return SP_BUILD_PYSPTR(sptr.get());
+}
 
 SP_CLASS_METHODS_BEGIN(BaseContext)
 SP_CLASS_METHOD(BaseContext,getRootContext)
