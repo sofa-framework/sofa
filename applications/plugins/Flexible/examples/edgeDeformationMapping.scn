@@ -5,12 +5,12 @@
 
     <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
-   <Node 	name="GreenLagrange" >
+   <Node 	name="GreenStrain" >
 
     <Mesh name="mesh" position="0 0 0  1 0 0  2 0 0  3 0 0  4 0 0  5 0 0  6 0 0  7 0 0" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
     <MechanicalObject template="Vec3d" name="DOFs" src="@mesh" />
     <UniformMass  name="mass" totalMass="1"/>
-    <FixedConstraint name="FixedConstraint" indices="0 1" />
+    <FixedConstraint name="FixedConstraint" indices="0" />
 
     <BarycentricShapeFunction template="ShapeFunction1d"  />
 
@@ -20,8 +20,8 @@
   	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;" assembleJ="false"/>
         <Node name="StrainNode">
             <MechanicalObject template="E311"  name="VoigtStrainDOF" />
-	    <GreenStrainMapping template="Mapping&lt;F311,E311&gt;" />
-            <HookeForceField template="E311" youngModulus="10" poissonRatio="0.4" />
+	    <GreenStrainMapping template="Mapping&lt;F311,E311&gt;" /> 
+            <HookeForceField template="E311" youngModulus="1" poissonRatio="0" />
         </Node>
     </Node>
 
@@ -37,12 +37,42 @@
 
 
 
+   <Node 	name="Corotational" >
+
+    <Mesh name="mesh" position="0 0 0  1 0 0  2 0 0  3 0 0  4 0 0  5 0 0  6 0 0  7 0 0" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
+    <MechanicalObject template="Vec3d" name="DOFs" src="@mesh" translation="0 2 0"/>
+    <UniformMass  name="mass" totalMass="1"/>
+    <FixedConstraint name="FixedConstraint" indices="0" />
+
+    <BarycentricShapeFunction template="ShapeFunction1d"  />
+
+    <Node name="deformationNode" >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+        <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
+  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;" assembleJ="false"/>
+        <Node name="StrainNode">
+            <MechanicalObject template="E311"  name="VoigtStrainDOF" />
+	    <CorotationalStrainMapping template="Mapping&lt;F311,E311&gt;" geometricStiffness="true"/>
+            <HookeForceField template="E311" youngModulus="1" poissonRatio="0" />
+        </Node>
+    </Node>
+
+
+	<Node name="Collision">
+            <EdgeSetTopologyContainer />
+            <EdgeSetTopologyModifier />
+            <MechanicalObject template="Vec3d" name="splineMapped" />
+            <CatmullRomSplineMapping input="@../DOFs" output="@splineMapped" SplittingLevel="3" />
+	    <Line />
+        </Node>
+    </Node>
+
     <Node name="beamsprings">
         <Mesh name="mesh"  position="0 0 0  1 0 0  2 0 0  3 0 0  4 0 0  5 0 0  6 0 0  7 0 0"  lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
-    	<MechanicalObject template="Vec3d" name="DOFs" src="@mesh" translation="0 1 0"/>
+    	<MechanicalObject template="Vec3d" name="DOFs" src="@mesh" translation="0 5 0"/>
     	<UniformMass  name="mass" totalMass="1"/>
-    	<FixedConstraint name="FixedConstraint" indices="0 1" />
-        <MeshSpringForceField name="Springs" stiffness="10" damping="0" />
+    	<FixedConstraint name="FixedConstraint" indices="0" />
+        <MeshSpringForceField name="Springs" stiffness="1" damping="0" />
         <!-- <LineBendingSprings name="BS" stiffness="100" damping="0" /> -->
         <Node name="Collision">
             <EdgeSetTopologyContainer />
