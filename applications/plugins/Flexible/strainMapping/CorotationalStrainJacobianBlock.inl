@@ -48,7 +48,9 @@ namespace defaulttype
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define F321(type)  DefGradientTypes<3,2,0,type>
+#define F311(type)  DefGradientTypes<3,1,0,type>
 #define E321(type)  StrainTypes<3,2,0,type>
+#define E311(type)  StrainTypes<3,1,0,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -77,6 +79,17 @@ void computeQR( const Mat<3,2,Real> &f, Mat<3,2,Real> &r, Mat<2,2,Real> &s )
     s = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
 }
 
+
+/// 3D->1D
+template<typename Real>
+void computeQR( const Mat<3,1,Real> &f, Mat<3,1,Real> &r, Mat<1,1,Real> &s )
+{
+    Real nrm = sqrt(f(0,0)*f(0,0)+f(1,0)*f(1,0)+f(2,0)*f(2,0));
+    r(0,0)=f(0,0)/nrm;
+    r(1,0)=f(1,0)/nrm;
+    r(2,0)=f(2,0)/nrm;
+    s(0,0) = nrm;
+}
 
 /// 3D->3D
 template<typename Real>
@@ -536,7 +549,7 @@ public:
     {
         StrainMat strainmat;
 
-        computeQR( data.getF(), _R, strainmat );
+        //computeQR( data.getF(), _R, strainmat );
 
 
         if( _geometricStiffnessData.invT() )
@@ -642,6 +655,134 @@ public:
 };
 
 
+
+////////////////////////////////////////////////////////////////////////////////////
+//////  F311 -> E311
+////////////////////////////////////////////////////////////////////////////////////
+
+template<class InReal,class OutReal>
+class CorotationalStrainJacobianBlock< F311(InReal) , E311(OutReal) > :
+    public  BaseJacobianBlock< F311(InReal) , E311(OutReal) >
+{
+public:
+    typedef F311(InReal) In;
+    typedef E311(OutReal) Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+    typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain
+    enum { material_dimensions = In::material_dimensions };
+    enum { spatial_dimensions = In::spatial_dimensions };
+    enum { strain_size = Out::strain_size };
+    enum { frame_size = spatial_dimensions*material_dimensions };
+
+    typedef Mat<spatial_dimensions,material_dimensions,Real> Affine;  ///< Matrix representing a linear spatial transformation
+
+    /**
+    Mapping:   \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
+    where:  _R/D are the rotational/skew symmetric parts of F=RD
+    Jacobian:    \f$  dE = [R^T dF + dF^T R ]/2 \f$
+    */
+
+    static const bool constantJ=false;
+
+    Affine _R;   ///< =  store unit vector to compute J
+    Real nrm;   ///< =  store norm of deformation gradient to compute dJ
+
+    CorotationalStrainJacobianBlockGeometricStiffnessData<material_dimensions,frame_size,Real> _geometricStiffnessData; ///< store stuff dedicated to geometric stiffness
+
+    CorotationalStrainJacobianBlock()
+        : Inherit()
+    {
+    }
+
+    void init_small() { _geometricStiffnessData.init_small(); }
+    void init_qr( bool geometricStiffness ) { _geometricStiffnessData.init_qr( geometricStiffness ); }
+    void init_polar( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
+    void init_svd( bool geometricStiffness ) { _geometricStiffnessData.init_svd( geometricStiffness ); }
+
+
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_small( OutCoord& result, const InCoord& data )
+    {
+        // is a pure Cauchy tensor possible for a 1D element in a 3D world?
+        // TODO
+
+        addapply_qr( result, data );
+    }
+
+    void addapply_qr( OutCoord& result, const InCoord& data )
+    {
+        StrainMat strainmat;
+
+        computeQR( data.getF(), _R, strainmat );
+        this->nrm=strainmat(0,0);
+
+        for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=(Real)1.;
+        result.getStrain() += StrainMatToVoigt( strainmat );
+    }
+
+    void addapply_polar( OutCoord& result, const InCoord& data )
+    {
+        addapply_qr( result, data );
+    }
+
+    void addapply_svd( OutCoord& result, const InCoord& data )
+    {
+        addapply_qr( result, data );
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        result.getStrain() += StrainMatToVoigt( _R.multTranspose( data.getF() ) );
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        result.getF() += _R*StressVoigtToMat( data.getStrain() );
+    }
+
+    // J = u^T where u is the unit vector stored in R
+    MatBlock getJ()
+    {
+        MatBlock B = MatBlock();
+        typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+        EigenMap eB(&B[0][0]);
+        eB = assembleJ(_R);
+        return B;
+    }
+
+
+    // Geometric stiffness : dJ/dF=(I-uu^T)/nrm where nrm is the norm of F
+    KBlock getK(const OutDeriv& /*childForce*/)
+    {
+        //TODO
+        return KBlock();
+    }
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        df.getF()+=(dx.getF() - _R*_R.transposed()*dx.getF()) *kfactor*childForce.getStrain()[0]/this->nrm;
+    }
+
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        addDForce_qr( df, dx, childForce, kfactor );
+    }
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        addDForce_qr( df, dx, childForce, kfactor );
+    }
+};
 
 
 } // namespace defaulttype
