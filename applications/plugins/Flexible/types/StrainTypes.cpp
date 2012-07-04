@@ -47,12 +47,13 @@ using namespace sofa::defaulttype;
 int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
 
         .add< MechanicalObject<E331Types> >()
-        .add< MechanicalObject<E221Types> >()
+        .add< MechanicalObject<E321Types> >()
+        .add< MechanicalObject<E311Types> >()
         .add< MechanicalObject<E332Types> >()
         .add< MechanicalObject<E333Types> >()
 
         .add< MechanicalObject<D331Types> >()
-        .add< MechanicalObject<D221Types> >()
+        .add< MechanicalObject<D321Types> >()
         .add< MechanicalObject<D332Types> >()
         .add< MechanicalObject<D333Types> >()
 
@@ -61,16 +62,17 @@ int StrainMechanicalObjectClass = core::RegisterObject ( "mechanical state vecto
 //.add< MechanicalObject<I333Types> >()
 
         .add< MechanicalObject<U331Types> >()
-        .add< MechanicalObject<U221Types> >()
+        .add< MechanicalObject<U321Types> >()
         ;
 
 template class SOFA_Flexible_API MechanicalObject<E331Types>;
-template class SOFA_Flexible_API MechanicalObject<E221Types>;
+template class SOFA_Flexible_API MechanicalObject<E321Types>;
+template class SOFA_Flexible_API MechanicalObject<E311Types>;
 template class SOFA_Flexible_API MechanicalObject<E332Types>;
 template class SOFA_Flexible_API MechanicalObject<E333Types>;
 
 template class SOFA_Flexible_API MechanicalObject<D331Types>;
-template class SOFA_Flexible_API MechanicalObject<D221Types>;
+template class SOFA_Flexible_API MechanicalObject<D321Types>;
 template class SOFA_Flexible_API MechanicalObject<D332Types>;
 template class SOFA_Flexible_API MechanicalObject<D333Types>;
 
@@ -79,7 +81,7 @@ template class SOFA_Flexible_API MechanicalObject<I331Types>;
 //template class SOFA_Flexible_API MechanicalObject<I333Types>;
 
 template class SOFA_Flexible_API MechanicalObject<U331Types>;
-template class SOFA_Flexible_API MechanicalObject<U221Types>;
+template class SOFA_Flexible_API MechanicalObject<U321Types>;
 
 } // namespace container
 } // namespace component

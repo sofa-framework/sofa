@@ -188,19 +188,25 @@ struct ShapeFunctionTypes
     static const char* Name();
 };
 
+typedef ShapeFunctionTypes<1,float>  ShapeFunction1f;
+typedef ShapeFunctionTypes<1,double> ShapeFunction1d;
 typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
 typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
 typedef ShapeFunctionTypes<3,float>  ShapeFunction3f;
 typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
 
 #ifdef SOFA_FLOAT
+typedef ShapeFunction1f ShapeFunction1;
 typedef ShapeFunction2f ShapeFunction2;
 typedef ShapeFunction3f ShapeFunction3;
 #else
+typedef ShapeFunction1d ShapeFunction1;
 typedef ShapeFunction2d ShapeFunction2;
 typedef ShapeFunction3d ShapeFunction3;
 #endif
 
+template<> inline const char* ShapeFunction1d::Name() { return "ShapeFunction1d"; }
+template<> inline const char* ShapeFunction1f::Name() { return "ShapeFunction1f"; }
 template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
 template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
 template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }

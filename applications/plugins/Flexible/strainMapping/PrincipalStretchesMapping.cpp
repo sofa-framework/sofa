@@ -46,11 +46,11 @@ using namespace defaulttype;
 int PrincipalStretchesMappingClass = core::RegisterObject("Map Deformation Gradients to Principal Stretches")
 
         .add< PrincipalStretchesMapping< F331Types, U331Types > >(true)
-        .add< PrincipalStretchesMapping< F321Types, U221Types > >()
+        .add< PrincipalStretchesMapping< F321Types, U321Types > >()
         ;
 
 template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, U331Types >;
-template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, U221Types >;
+template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, U321Types >;
 
 } // namespace mapping
 } // namespace component
