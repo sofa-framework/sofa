@@ -5,6 +5,6 @@
 	<BruteForceDetection name="Detection" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
 	<DefaultContactManager name="Response"  response="default" />
-	<EulerSolver name="eulerSolver6" />
-	<SceneColladaLoader name="sceneColladaLoader"  filename="scene.dae" />
+	<EulerSolver name="eulerSolver0" />
+	<SceneColladaLoader name="sceneColladaLoader"  filename="example.dae" />
 </Node>

@@ -134,6 +134,9 @@ public:
 protected:
 
     bool readDAE (std::ifstream &file, const char* filename);
+
+private:
+
     bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, std::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, std::vector<SkeletonBone>& skeletonBones) const;
     void removeEmptyNodes();
 

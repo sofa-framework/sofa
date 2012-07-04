@@ -104,9 +104,11 @@ void SceneColladaLoader::init()
         }
 
         // placing root node of the loaded sub scene
-        /*std::string subSceneName(name.getValue());
-        subSceneName += " sub scene";
-        subSceneRoot->setName(subSceneName);*/
+        std::string subSceneName(name.getValue());
+        if(!subSceneName.empty())
+            subSceneName += "_";
+        subSceneName += "scene";
+        subSceneRoot->setName(subSceneName);
         parentNode->addChild(subSceneRoot);
 
         // find how many siblings scene loaders there are upward the current one
