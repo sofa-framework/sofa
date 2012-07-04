@@ -70,10 +70,42 @@ extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
+extern "C" PyObject * Node_getChildNode(PyObject * self, PyObject * args)
+{
+    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    char *path;
+    if (!PyArg_ParseTuple(args, "s",&path))
+        return 0;
+    if (!node || !path)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+
+    const objectmodel::BaseNode::Children& children = node->getChildren();
+    Node *childNode = 0;
+    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
+    // on caste directement en Node.
+    for (unsigned int i=0; i<children.size(); ++i)
+        if (children[i]->getName() == path)
+        {
+            childNode = dynamic_cast<Node*>(children[i]);
+            break;
+        }
+    if (!childNode)
+    {
+        printf("<PYTHON> Error: Node.getChildNode(%s) not found.\n",path);
+        return 0;
+    }
+    return SP_BUILD_PYSPTR(childNode);
+}
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
 SP_CLASS_METHOD(Node,simulationStep)
+SP_CLASS_METHOD(Node,getChildNode)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

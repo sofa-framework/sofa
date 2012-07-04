@@ -88,20 +88,6 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * args)
     return SP_BUILD_PYSPTR(sptr.get());
 }
 
-/*
-BaseNode::SPtr getChildNode(objectmodel::BaseNode* node,const std::string& path)
-{
-    const objectmodel::BaseNode::Children& children = node->getChildren();
-    BaseNode::SPtr sptr;
-    for (unsigned int i=0;i<children.size();++i)
-        if (children[i]->getName() == path)
-        {
-            sptr = children[i];
-            break;
-        }
-    return sptr;
-}
-*/
 extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyBaseNode;

@@ -23,7 +23,7 @@ SofaPython provides several module methods, either for general purpose (use of f
 
 \begin{itemize}
 \item \textcode{createObject(BaseContext, BaseObjectDescription)}
-\item \textcode{getObject(context,path)}
+\item \textcode{getObject(BaseContext,path)}
 \item \textcode{getChildNode(node,path)}
 \item \textcode{sendGUIMessage(msgType,msgValue)} 
 \end{itemize}
@@ -110,6 +110,8 @@ Methods :
 \item \textcode{getDt()} 
 \item \textcode{getGravity()} returns a \textcode{Sofa.vec3} object
 \item \textcode{setGravity(Vec3)} 
+\item \textcode{createObject(BaseObjectDescription)}
+\item \textcode{getObject(path)}
 \end{itemize}
 Attributes:
 \begin{itemize}
@@ -123,6 +125,7 @@ Attributes:
 \subsubsection{Sofa.Node}
 \begin{itemize}
 \item \textcode{getRoot()} returns the root node of the graph (if any) 
+\item \textcode{getChildNode(path)} returns a child node, given its path (if any) 
 \item \textcode{executeVisitor(visitor)} 
 \item \textcode{simulationStep(dt)} executes ONE step of simulation, using dt (in seconds, float) as delta time. 
 \end{itemize}
