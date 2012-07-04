@@ -259,7 +259,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
         centers[c] = ( in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]] ) *0.125;
     }
 
-    Vector3 coefs;
+    Real coefs[3];
     int index = -1;
     double distance = 1e10;
 
@@ -271,13 +271,13 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
             d = (pos - centers[c]).norm2();
         if (d < distance)
         {
-            coefs = v;
+            coefs[0] = v[0]; coefs[1] = v[1]; coefs[2] = v[2]; // conversion Real / double
             distance = d;
             index = c;
         }
     }
 
-    return this->addPointInCube(index, coefs.ptr());
+    return this->addPointInCube(index, coefs);
 }
 
 
@@ -287,7 +287,8 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::keepContactPoi
     if ((const unsigned int)index < m_storedMap.size())
     {
         CubeData &c_data = m_storedMap[index];
-        return this->addPointInCube(c_data.in_index, c_data.baryCoords);
+        //SReal *SRBaryCoord = dynamic_cast<SReal *> (c_data.baryCoords);
+        return this->addPointInCube(c_data.in_index,c_data.baryCoords );
     }
 
     serr << "Warning! PersistentContactBarycentricMapperSparseGridTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
