@@ -1,0 +1,93 @@
+<Node name="root"  dt="0.002" gravity="0 0 -9810">
+
+	<VisualStyle displayFlags="hideVisual showCollisionModels" />
+	
+	<GenericConstraintSolver tolerance="1e-6" printLog="0" maxIterations="200"/>
+	<FreeMotionAnimationLoop/>
+	
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<LocalMinDistance name="Proximity" alarmDistance="3" contactDistance="0" coneFactor="0.5" angleCone="0.002"/>
+
+	<RuleBasedContactManager name="Response" response="FrictionContact" rules="	1 3 FrictionContact
+																				11 5 FrictionContact?mu=0.9
+																				110 5 PersistentFrictionContact?mu=0.9"/>
+	
+	
+	<Node name="Torus">
+		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<SparseTAUCSLLtSolver name="taucs"/>
+		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
+		<MechanicalObject name="MichelleM0" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
+		<UniformMass totalmass="3.0"/>
+		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
+		<LinearSolverConstraintCorrection  solverName="taucs"/>
+		
+		<Node name="Tetra">
+			<TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier"/>
+            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
+			
+            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container"/>
+			<MechanicalObject name="TetraMO"/>
+			<IdentityMapping/>
+			<ConstantForceField forces="0 0 0"/>
+			
+			<Node name="Surf2"> 
+				<MeshObjLoader name="meshLoader" filename="torus_cm2.obj"/>
+				<Mesh src="@meshLoader"/>
+				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
+				<Triangle color="1 0 0 0.3" contactStiffness="0.1" group="5"/>
+				<Line color="1 0 0 1" group="5"/>
+				<Point color="1 0 0 1" group="5"/>
+				<BarycentricMapping name="TOR1_CMMAP" input="@.." output="@."/>
+			</Node>
+		</Node>
+	</Node>
+	
+	<Node name="Torus2">
+		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<SparseTAUCSLLtSolver name="taucs"/>
+		
+		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
+		<MechanicalObject name="MichelleM0" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
+		<UniformMass totalmass="3.0"/>
+		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
+		<LinearSolverConstraintCorrection  solverName="taucs"/>
+		
+		<Node name="Tetra">
+			<TetrahedronSetTopologyContainer name="Container"/>
+            <TetrahedronSetTopologyModifier name="Modifier"/>
+            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
+			
+            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container"/>
+			
+			<MechanicalObject name="TetraMO"/>
+			<ConstantForceField forces="0 0 0"/>
+			<IdentityMapping/>
+			
+			<Node name="Surf2"> 
+				<MeshObjLoader name="meshLoader" filename="torus_cm2.obj"/>
+				<Mesh src="@meshLoader"/>
+				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
+				<Triangle color="0 1 0 0.3" contactStiffness="0.1" group="5"/>
+				<Line color="0 1 0 1" group="5"/>
+				<Point color="0 1 0 1" group="5"/>
+				<BarycentricMapping name="TOR2_CMMAP" input="@.." output="@."/>
+			</Node>
+			
+			<Node name="SurfPers">
+				<MechanicalObject name="Torus2_CP"/>
+				<PersistentContactBarycentricMapping printLog="false" name="TOR2_PERMAP" input="@../TetraMO" output="@Torus2_CP" nameOfInputMap="TOR2_CMMAP"/>
+			</Node>
+			
+		</Node>
+	</Node>
+	
+	<include href="instrument.xml"/>
+	
+	<include href="instrument2.xml"/>
+	
+</Node>
