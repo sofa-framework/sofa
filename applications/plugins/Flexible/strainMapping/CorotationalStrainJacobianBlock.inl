@@ -763,10 +763,12 @@ public:
 
 
     // Geometric stiffness : dJ/dF=(I-uu^T)/nrm where nrm is the norm of F
-    KBlock getK(const OutDeriv& /*childForce*/)
+    KBlock getK(const OutDeriv& childForce)
     {
-        //TODO
-        return KBlock();
+        KBlock K = _R*_R.transposed()*(-1.);
+        for(unsigned int j=0; j<spatial_dimensions; j++) K(j,j)+=(Real)1.;
+        K*=childForce.getStrain()[0]/this->nrm;
+        return K;
     }
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
     void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )

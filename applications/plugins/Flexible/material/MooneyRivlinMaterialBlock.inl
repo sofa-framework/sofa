@@ -40,8 +40,8 @@ namespace defaulttype
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define I331(type)  InvariantStrainTypes<3,3,0,type>
-#define I332(type)  InvariantStrainTypes<3,3,1,type>
-#define I333(type)  InvariantStrainTypes<3,3,2,type>
+//#define I332(type)  InvariantStrainTypes<3,3,1,type>
+//#define I333(type)  InvariantStrainTypes<3,3,2,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -75,6 +75,8 @@ public:
       *     - df =  - 2 [ vol*C1 , vol*C2 , 0 ]
       */
 
+    static const bool constantK=true;
+
     Real C1Vol2;  ///<  first coef * volume * 2
     Real C2Vol2;  ///<  second coef * volume * 2
 
@@ -105,22 +107,23 @@ public:
 
     MatBlock getK()
     {
-        MatBlock K;
+        MatBlock K = MatBlock();
         K[0][0]=-C1Vol2;
-        K[1][2]=-C2Vol2;
+        K[1][1]=-C2Vol2;
         return K;
     }
 
     MatBlock getC()
     {
-        MatBlock C;
+        MatBlock C= MatBlock();
+        C[0][0]=1./C1Vol2;
+        C[1][1]=1./C2Vol2;
         return C;
     }
 
     MatBlock getB()
     {
-        MatBlock B;
-        return B;
+        return MatBlock();
     }
 };
 

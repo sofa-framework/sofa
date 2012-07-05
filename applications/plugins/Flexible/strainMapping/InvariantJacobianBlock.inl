@@ -42,10 +42,10 @@ namespace defaulttype
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define F331(type)  DefGradientTypes<3,3,0,type>
-#define F332(type)  DefGradientTypes<3,3,1,type>
+//#define F332(type)  DefGradientTypes<3,3,1,type>
 #define I331(type)  InvariantStrainTypes<3,3,0,type>
-#define I332(type)  InvariantStrainTypes<3,3,1,type>
-#define I333(type)  InvariantStrainTypes<3,3,2,type>
+//#define I332(type)  InvariantStrainTypes<3,3,1,type>
+//#define I333(type)  InvariantStrainTypes<3,3,2,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
@@ -281,29 +281,29 @@ public:
         MatBlock B = MatBlock();
         if(deviatoric)
         {
-            for(unsigned int j=0; j<frame_size; j++)      B(0,j+spatial_dimensions) +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
-            for(unsigned int j=0; j<frame_size; j++)      B(1,j+spatial_dimensions) +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
+            for(unsigned int j=0; j<frame_size; j++)      B(0,j) +=  *(&dsrI1[0][0]+j)*Jm13 - *(&dJ[0][0]+j)*Jm43;
+            for(unsigned int j=0; j<frame_size; j++)      B(1,j) +=  *(&dsrI2[0][0]+j)*Jm23 - *(&dJ[0][0]+j)*Jm53;
         }
         else
         {
-            for(unsigned int j=0; j<frame_size; j++)      B(0,j+spatial_dimensions) +=  *(&dsrI1[0][0]+j);
-            for(unsigned int j=0; j<frame_size; j++)      B(1,j+spatial_dimensions) +=  *(&dsrI2[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B(0,j) +=  *(&dsrI1[0][0]+j);
+            for(unsigned int j=0; j<frame_size; j++)      B(1,j) +=  *(&dsrI2[0][0]+j);
         }
-        for(unsigned int j=0; j<frame_size; j++)      B(2,j+spatial_dimensions) +=  *(&dJ[0][0]+j);
+        for(unsigned int j=0; j<frame_size; j++)      B(2,j) +=  *(&dJ[0][0]+j);
         return B;
     }
 
     KBlock getK(const OutDeriv& childForce)
     {
         KBlock K = KBlock();
-        Hessian H=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
+        K=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
 
-        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
-        EigenMap eK(&K[0][0]);
-        typedef Eigen::Map<Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> > EigenHMap;
-        EigenHMap eH(&H[0][0]);
+//        typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
+//        EigenMap eK(&K[0][0]);
+//        typedef Eigen::Map<Eigen::Matrix<Real,frame_size,frame_size,Eigen::RowMajor> > EigenHMap;
+//        EigenHMap eH(&H[0][0]);
 
-        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += eH;
+//        eK.template block(spatial_dimensions,spatial_dimensions,frame_size,frame_size) += eH;
 
         return K;
     }

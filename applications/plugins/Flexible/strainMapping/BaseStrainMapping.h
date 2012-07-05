@@ -255,8 +255,8 @@ protected:
         : Inherit ( from, to )
         , maskFrom(NULL)
         , maskTo(NULL)
-        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
-        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
+        , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized matrix/vector multiplications" ) )
+        , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized matrix/vector multiplications" ) )
     {
 
     }
@@ -307,6 +307,7 @@ protected:
 //            K.appendBlockRow( i, columns, blocks );
             K.beginBlockRow(i);
             K.createBlock(i,jacobian[i].getK(childForce[i]));
+            K.endBlockRow();
         }
 //        K.endEdit();
         K.compress();

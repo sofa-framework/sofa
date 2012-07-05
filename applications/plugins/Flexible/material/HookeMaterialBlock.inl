@@ -76,10 +76,10 @@ static Eigen::Matrix<Real,size,size,Eigen::RowMajor> assembleC_Isotropic(const R
     typedef Eigen::Matrix<Real,size,size,Eigen::RowMajor> block;
     block C=block::Zero();
     if(!vol) return C;
-    Real volOverE = vol/youngM;
-    for(unsigned int i=0; i<dim; i++)  C(i,i)-=volOverE;
-    for(unsigned int i=dim; i<size; i++) C(i,i)-= 2 * volOverE * (1+poissonR);
-    for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<i; j++) C(i,j) = C(j,i) = volOverE * poissonR;
+    Real invvolE = 1./(vol*youngM);
+    for(unsigned int i=0; i<dim; i++)  C(i,i)-=invvolE;
+    for(unsigned int i=dim; i<size; i++) C(i,i)-= 2 * invvolE * (1+poissonR);
+    for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<i; j++) C(i,j) = C(j,i) = invvolE * poissonR;
     return C;
 }
 
@@ -502,12 +502,13 @@ public:
 
     MatBlock getC()
     {
+        // TO DO: check why C need to be multiplied by -1
         MatBlock C ;
-        if( order > 0 ) C.invert(getK());
+        if( order > 0 ) C.invert(-getK());
         else
         {
             EigenMap eC(&C[0][0]);
-            eC.template block(0,0,strain_size,strain_size) = assembleC_Isotropic<Real,material_dimensions,strain_size>(youngModulus,poissonRatio,factors.vol());
+            eC.template block(0,0,strain_size,strain_size) = -assembleC_Isotropic<Real,material_dimensions,strain_size>(youngModulus,poissonRatio,factors.vol());
         }
         return C;
     }

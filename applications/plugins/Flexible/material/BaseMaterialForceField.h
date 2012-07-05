@@ -194,7 +194,28 @@ public:
     }
     //@}
 
+    /// Set the constraint value
+    virtual void writeConstraintValue(const core::MechanicalParams* params, core::MultiVecDerivId constraintId )
+    {
+        if( ! this->isCompliance.getValue() ) return; // if not seen as a compliance, then apply  forces in addForce
 
+        helper::ReadAccessor< typename Inherit::DataVecCoord > x = params->readX(this->mstate);
+        helper::ReadAccessor< typename Inherit::DataVecDeriv > v = params->readV(this->mstate);
+        helper::WriteAccessor<typename Inherit::DataVecDeriv > c = *constraintId[this->mstate.get(params)].write();
+        Real alpha = params->implicitVelocity();
+        Real beta  = params->implicitPosition();
+        Real h     = params->dt();
+        Real d     = this->getDampingRatio();
+
+        for(unsigned i=0; i<c.size(); i++)
+            c[i] = -( x[i] + v[i] * (d + alpha*h) ) * (1./ (alpha * (h*beta +d)));
+    }
+
+    /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
+    virtual SReal getDampingRatio()
+    {
+        return 0;
+    }
 
 protected:
 
