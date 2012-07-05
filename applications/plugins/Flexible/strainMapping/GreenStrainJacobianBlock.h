@@ -219,11 +219,12 @@ public:
         KBlock K = KBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eK(&K[0][0]);
+
         // order 0
         StrainMat sigma=StressVoigtToMat( childForce.getStrain() );
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
-        for(unsigned int j=0; j<spatial_dimensions*spatial_dimensions; j++)
+        for(unsigned int j=0; j<spatial_dimensions; j++)
             eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
 
         if( order > 0 )

@@ -41,8 +41,8 @@ namespace defaulttype
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define I331(type)  InvariantStrainTypes<3,3,0,type>
-#define I332(type)  InvariantStrainTypes<3,3,1,type>
-#define I333(type)  InvariantStrainTypes<3,3,2,type>
+//#define I332(type)  InvariantStrainTypes<3,3,1,type>
+//#define I333(type)  InvariantStrainTypes<3,3,2,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  F331
@@ -72,8 +72,10 @@ public:
       *     - df =  [ 0 , 0 , - k*vol*dJ ]
       */
 
+    static const bool constantK=false;
+
     Real KVol;  ///< bulk  * volume
-    Real J; ///< store J for stiffness
+    Real dfdJ; ///< store stiffness
 
     void init( const Real &k )
     {
@@ -82,67 +84,58 @@ public:
         KVol=k*vol;
     }
 
-
-
     Real getPotentialEnergy( const Coord& ) { return 0; }
 
     Real getPotentialEnergy_method0(const Coord& x) const
     {
-        return KVol*log(x.getStrain()[2])*log(x.getStrain()[2])*(Real)0.5;
+        Real J=x.getStrain()[2];
+        return KVol*log(J)*log(J)*(Real)0.5;
     }
 
     Real getPotentialEnergy_method1(const Coord& x) const
     {
-        return KVol*(x.getStrain()[2]-(Real)1.)*(x.getStrain()[2]-(Real)1.)*(Real)0.5;
+        Real J=x.getStrain()[2];
+        return KVol*(J-(Real)1.)*(J-(Real)1.)*(Real)0.5;
     }
-
-
 
     void addForce( Deriv& , const Coord& , const Deriv& ) {};
 
     void addForce_method0( Deriv& f , const Coord& x , const Deriv& /*v*/)
     {
-        J=x.getStrain()[2];
+        Real J=x.getStrain()[2];
         f.getStrain()[2]-=KVol*log(J)/J;
+        dfdJ=KVol*(log(J)-(Real)1.)/(J*J);
     }
 
     void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)
     {
-        J=x.getStrain()[2];
-        f.getStrain()[2]-=KVol*(J-1);
+        Real J=x.getStrain()[2];
+        f.getStrain()[2]-=KVol*(J-(Real)1.);
+        dfdJ=-KVol;
     }
 
-
-
-    void addDForce( Deriv& , const Deriv& , const double& , const double&  ) {}
-
-    void addDForce_method0( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
     {
-        df.getStrain()[2]+=KVol*(log(J)-(Real)1.)/(J*J)*dx.getStrain()[2]*kfactor;
+        df.getStrain()[2]+=dfdJ*dx.getStrain()[2]*kfactor;
     }
-
-    void addDForce_method1( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
-    {
-        df.getStrain()[2]-=KVol*dx.getStrain()[2]*kfactor;
-    }
-
 
     MatBlock getK()
     {
-        MatBlock K;
+        MatBlock K = MatBlock();
+        K(2,2)=dfdJ;
         return K;
     }
 
     MatBlock getC()
     {
-        MatBlock C;
+        MatBlock C = MatBlock();
+        C(2,2)=-1./dfdJ;
         return C;
     }
 
     MatBlock getB()
     {
-        MatBlock B;
-        return B;
+        return MatBlock();
     }
 };
 

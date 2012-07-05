@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="0.3"  >
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.2"  >
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     
-    <EulerImplicitSolver />
-    <CGLinearSolver  />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
+ <!--       <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="20" precision="1e-6" />-->
+<!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
+
 
     <Node 	name="Flexible"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
@@ -22,9 +24,9 @@
 
 		<Node 	name="I"   >
 		    <MechanicalObject  template="I331" name="I"  />
-		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" deviatoric="true"/>
-		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100" /> 
-		    <VolumePreservationForceField  template="I331" k="1000"/> 
+		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" assembleK="false" deviatoric="true"/>
+		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100"  assembleK="false"  assembleC="false"/> 
+		    <VolumePreservationForceField  template="I331" k="1000" assembleK="false"  assembleC="false"/> 
 		</Node>
 	    </Node>
 
@@ -36,9 +38,10 @@
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
-	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assembleJ="false"/>
 	    </Node>
     </Node>
+
 
     <Node 	name="FEM"   >
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />

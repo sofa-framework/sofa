@@ -136,45 +136,6 @@ protected:
         }
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, typename Inherit::DataVecDeriv&   _df , const typename Inherit::DataVecDeriv&   _dx )
-    {
-        if(this->assembleK.getValue())
-        {
-            this->K.addMult(_df,_dx,mparams->kFactor());
-            if(this->assembleB.getValue())   this->B.addMult(_df,_dx,mparams->bFactor());
-        }
-        else
-        {
-            typename Inherit::VecDeriv&  df = *_df.beginEdit();
-            const typename Inherit::VecDeriv&  dx = _dx.getValue();
-
-            switch( f_method.getValue().getSelectedId() )
-            {
-            case 0:
-            {
-                for( unsigned int i=0 ; i<this->material.size() ; i++ )
-                {
-                    this->material[i].addDForce_method0(df[i],dx[i],mparams->kFactor(),mparams->bFactor());
-                }
-                break;
-            }
-            case 1:
-            {
-                for( unsigned int i=0 ; i<this->material.size() ; i++ )
-                {
-                    this->material[i].addDForce_method1(df[i],dx[i],mparams->kFactor(),mparams->bFactor());
-                }
-                break;
-            }
-            }
-
-            _df.endEdit();
-        }
-    }
-
-
-
-
 
 };
 

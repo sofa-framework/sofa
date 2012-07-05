@@ -82,6 +82,7 @@ public:
         }
     }
 
+
 protected:
     MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
