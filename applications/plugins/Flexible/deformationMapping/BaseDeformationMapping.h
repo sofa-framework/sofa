@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
+#include "../types/DeformationGradientTypes.h"
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/vector.h>
@@ -59,6 +60,7 @@ class OutDataTypesInfo
 {
 public:
     enum {material_dimensions = OutDataTypes::material_dimensions};
+    static const bool positionMapped=false; ///< tells if spatial positions are included in OutDataTypes (false for deformation gradients)
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -66,6 +68,7 @@ class OutDataTypesInfo<defaulttype::StdVectorTypes<TCoord, TDeriv, TReal> >
 {
 public:
     enum {material_dimensions = TCoord::spatial_dimensions};
+    static const bool positionMapped=true;
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -73,6 +76,7 @@ class OutDataTypesInfo<defaulttype::ExtVectorTypes<TCoord, TDeriv, TReal> >
 {
 public:
     enum {material_dimensions = TCoord::spatial_dimensions};
+    static const bool positionMapped=true;
 };
 
 template<int TDim, class TReal>
@@ -80,6 +84,7 @@ class OutDataTypesInfo<defaulttype::StdAffineTypes<TDim, TReal> >
 {
 public:
     enum {material_dimensions = TDim};
+    static const bool positionMapped=true;
 };
 
 template<int TDim, class TReal>
@@ -87,6 +92,7 @@ class OutDataTypesInfo<defaulttype::StdRigidTypes<TDim, TReal> >
 {
 public:
     enum {material_dimensions = TDim};
+    static const bool positionMapped=true;
 };
 
 template<int TDim, class TReal>
@@ -94,7 +100,37 @@ class OutDataTypesInfo<defaulttype::StdQuadraticTypes<TDim, TReal> >
 {
 public:
     enum {material_dimensions = TDim};
+    static const bool positionMapped=true;
 };
+
+
+
+///< drawing function for deformation gradients (handled by mapping since spatial positions are not included in state)
+template< class OutDataTypes>
+class DrawOut
+{
+public:
+    typedef defaulttype::Vec<OutDataTypes::spatial_dimensions,typename OutDataTypes::Real> sCoord ;
+    static void draw(const core::visual::VisualParams* , const sCoord& , const typename OutDataTypes::Coord&, const float&, const defaulttype::Vec<4,float>&) {}
+};
+
+
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
+class DrawOut<defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> >
+{
+public:
+    typedef defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> OutDataTypes;
+    typedef defaulttype::Vec<OutDataTypes::spatial_dimensions,typename OutDataTypes::Real> sCoord ;
+    static void draw(const core::visual::VisualParams* vparams, const sCoord& p, const typename OutDataTypes::Coord& x, const float& scale, const defaulttype::Vec<4,float>& colour)
+    {
+        for(int i=0; i<_material_dimensions; i++)
+        {
+            sCoord u=x.getF().transposed()(i)*0.5*scale;
+            vparams->drawTool()->drawCylinder(p-u,p+u,0.02*scale,colour,4);
+        }
+    }
+};
+
 
 namespace component
 {
@@ -152,11 +188,12 @@ public:
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
+    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< deformation gradient type
     typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
-    /** @name  Shape Function types    */
+    /** @name  Coord types    */
     //@{
     typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
@@ -181,9 +218,11 @@ public:
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        //helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_position0);
 
-        VecCoord pos0;
+        helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+        this->mapPosition0Needed=true; // need to update mapped spatial positions if needed for visualization
+
+        //VecCoord pos0;
 
         unsigned int size;
 
@@ -279,6 +318,8 @@ public:
         dOut.endEdit();
 
         if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
+
+        this->mapPosition0Needed=true; // need to update mapped spatial positions if needed for visualization
     }
 
 
@@ -423,27 +464,48 @@ public:
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() { return &baseMatrices; }
 
+
     void draw(const core::visual::VisualParams* vparams)
     {
-        if (!vparams->displayFlags().getShowMechanicalMappings()) return;
+        if (!vparams->displayFlags().getShowMechanicalMappings() && !showObjectScale.getValue()) return;
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
         helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
 
-        vector< defaulttype::Vec3d > edge;     edge.resize(2);
-        Vec<4,float> col;
+        if(this->mapPosition0Needed && !OutDataTypesInfo<Out>::positionMapped) {mapPosition0(); this->mapPosition0Needed=false; }
 
-        for(unsigned i=0; i<ref.size(); i++ )
-            for(unsigned j=0; j<ref[i].size(); j++ )
-                if(w[i][j])
-                {
-                    In::get(edge[0][0],edge[0][1],edge[0][2],in[ref[i][j]]);
-                    Out::get(edge[1][0],edge[1][1],edge[1][2],out[i]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
-                    vparams->drawTool()->drawLines ( edge, 1, col );
-                }
+        if (vparams->displayFlags().getShowMechanicalMappings())
+        {
+            vector< defaulttype::Vec3d > edge;     edge.resize(2);
+            Vec<4,float> col;
+
+            for(unsigned i=0; i<ref.size(); i++ )
+            {
+                if(OutDataTypesInfo<Out>::positionMapped) Out::get(edge[1][0],edge[1][1],edge[1][2],out[i]);
+                else edge[1]=f_pos[i];
+                for(unsigned j=0; j<ref[i].size(); j++ )
+                    if(w[i][j])
+                    {
+                        In::get(edge[0][0],edge[0][1],edge[0][2],in[ref[i][j]]);
+                        sofa::helper::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
+                        vparams->drawTool()->drawLines ( edge, 1, col );
+                    }
+            }
+        }
+        if (showObjectScale.getValue())
+        {
+            if(!OutDataTypesInfo<Out>::positionMapped) // when out does not contain positions (e.g. deformation gradients), drawing is handled by the mapper (instead of mechanical object)
+            {
+//                glPushAttrib ( GL_LIGHTING_BIT );
+//                glDisable ( GL_LIGHTING );
+                float scale=showObjectScale.getValue();
+                Vec<4,float> col( 1.0, 1.0, 0.0, 1.0 );
+                for(unsigned i=0; i<ref.size(); i++ ) DrawOut<Out>::draw(vparams,f_pos[i],out[i],scale, col);
+//                glPopAttrib();
+            }
+        }
     }
 
     //@}
@@ -471,20 +533,26 @@ protected:
         , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
         , f_M ( initData ( &f_M,"M","Transformations from material to 3d space (linear for now..)" ) )
-        //, f_position0 ( initData ( &f_position0,"restPosition","initial spatial positions of children" ) )
+        , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
+        , mapPosition0Needed(true)
         , maskFrom(NULL)
         , maskTo(NULL)
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
+        , showObjectScale(initData(&showObjectScale, (float)0.0, "showObjectScale", "Scale for deformation gradient display"))
     {
-
+        if(OutDataTypesInfo<Out>::positionMapped)
+        {
+            showObjectScale.setDisplayed(false);
+        }
     }
 
     virtual ~BaseDeformationMapping()     { }
 
-
-
-    //Data<VecCoord >    f_position0; ///< initial spatial positions of children
+    Data<VecCoord >    f_pos0; ///< initial spatial positions of children
+    virtual void mapPosition0()=0;   ///< map initial spatial positions stored in f_pos0 to f_pos (used to display deformation gradients)
+    VecCoord f_pos;
+    bool mapPosition0Needed;  // used to speed up drawing
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 
@@ -501,19 +569,19 @@ protected:
         eigenJacobian.resizeBlocks(jacobian.size(),in.size());
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
+            //            vector<MatBlock> blocks;
+            //            vector<unsigned> columns;
             eigenJacobian.beginBlockRow(i);
             for(unsigned int j=0; j<jacobian[i].size(); j++)
             {
-//                columns.push_back( this->f_index.getValue()[i][j] );
-//                blocks.push_back( jacobian[i][j].getJ() );
+                //                columns.push_back( this->f_index.getValue()[i][j] );
+                //                blocks.push_back( jacobian[i][j].getJ() );
                 eigenJacobian.createBlock( this->f_index.getValue()[i][j], jacobian[i][j].getJ());
             }
-//            eigenJacobian.appendBlockRow( i, columns, blocks );
+            //            eigenJacobian.appendBlockRow( i, columns, blocks );
             eigenJacobian.endBlockRow();
         }
-//        eigenJacobian.endEdit();
+        //        eigenJacobian.endEdit();
         eigenJacobian.compress();
     }
 
@@ -535,19 +603,20 @@ protected:
         }
         for(unsigned int i=0; i<in.size(); i++)
         {
-//            vector<KBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( diagonalBlocks[i] );
-//            K.appendBlockRow( i, columns, blocks );
+            //            vector<KBlock> blocks;
+            //            vector<unsigned> columns;
+            //            columns.push_back( i );
+            //            blocks.push_back( diagonalBlocks[i] );
+            //            K.appendBlockRow( i, columns, blocks );
             K.beginBlockRow(i);
             K.createBlock(i,diagonalBlocks[i]);
             K.endBlockRow();
         }
-//        K.endEdit();
+        //        K.endEdit();
         K.compress();
     }
 
+    Data< float > showObjectScale;
 
 };
 
