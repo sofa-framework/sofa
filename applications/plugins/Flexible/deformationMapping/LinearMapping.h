@@ -49,11 +49,15 @@ class SOFA_Flexible_API LinearMapping : public BaseDeformationMapping<defaulttyp
 public:
     typedef defaulttype::LinearJacobianBlock<TIn,TOut> BlockType;
     typedef BaseDeformationMapping<BlockType> Inherit;
+    typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VecCoord VecCoord;
     typedef typename Inherit::InVecCoord InVecCoord;
+    typedef typename Inherit::OutVecCoord OutVecCoord;
 
     typedef defaulttype::LinearJacobianBlock<TIn,defaulttype::Vec3Types> PointMapperType;
+    typedef defaulttype::DefGradientTypes<Inherit::spatial_dimensions, Inherit::material_dimensions, 0, Real> FType;
+    typedef defaulttype::LinearJacobianBlock<TIn,FType> DeformationGradientMapperType;
 
     SOFA_CLASS(SOFA_TEMPLATE2(LinearMapping,TIn,TOut), SOFA_TEMPLATE(BaseDeformationMapping,BlockType ));
 
@@ -65,19 +69,18 @@ protected:
 
     virtual ~LinearMapping()     { }
 
-    virtual void mapPosition0()
+    virtual void mapPositions()
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<VecCoord> > pos0 (this->f_pos0);
 
-        // empty vectors (not used in init)
+        PointMapperType mapper;
+
+        // empty variables (not used in init)
         typename PointMapperType::OutCoord op(defaulttype::NOINIT);
         typename PointMapperType::MaterialToSpatial M(defaulttype::NOINIT);
-        typename PointMapperType::Gradient dw(defaulttype::NOINIT);
-        typename PointMapperType::Hessian ddw(defaulttype::NOINIT);
 
-        PointMapperType mapper;
         this->f_pos.resize(pos0.size());
         for(unsigned int i=0; i<pos0.size(); i++ )
         {
@@ -85,9 +88,34 @@ protected:
             for(unsigned int j=0; j<this->f_index.getValue()[i].size(); j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                mapper.init( in0[index],op,pos0[i],M,this->f_w.getValue()[i][j],dw,ddw);
+                mapper.init( in0[index],op,pos0[i],M,this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
                 mapper.addapply(this->f_pos[i],in[index]);
             }
+        }
+    }
+
+    virtual void mapDeformationGradients()
+    {
+        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+
+        DeformationGradientMapperType mapper;
+
+        // empty variables (not used in init)
+        typename DeformationGradientMapperType::OutCoord op;
+
+        this->f_F.resize(pos0.size());
+        for(unsigned int i=0; i<pos0.size(); i++ )
+        {
+            typename DeformationGradientMapperType::OutCoord F;
+            for(unsigned int j=0; j<this->f_index.getValue()[i].size(); j++ )
+            {
+                unsigned int index=this->f_index.getValue()[i][j];
+                mapper.init( in0[index],op,pos0[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
+                mapper.addapply(F,in[index]);
+            }
+            this->f_F[i]=F.getF();
         }
     }
 

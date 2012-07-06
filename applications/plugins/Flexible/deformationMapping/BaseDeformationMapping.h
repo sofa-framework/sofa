@@ -27,27 +27,27 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
+#include <sofa/core/Mapping.inl>
 #include <sofa/component/component.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/Color.h>
-#include <sofa/helper/vector.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/component/topology/TopologyData.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <iostream>
 #include <sofa/helper/gl/Color.h>
-#include <sofa/helper/vector.h>
-#include <sofa/core/Mapping.inl>
+#include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
@@ -59,8 +59,18 @@ template< class OutDataTypes>
 class OutDataTypesInfo
 {
 public:
-    enum {material_dimensions = OutDataTypes::material_dimensions};
-    static const bool positionMapped=false; ///< tells if spatial positions are included in OutDataTypes (false for deformation gradients)
+    enum {material_dimensions = OutDataTypes::spatial_dimensions};
+    static const bool positionMapped=true; ///< tells if spatial positions are included in output state
+    static const bool FMapped=false;        ///< tells if deformation gradients are included in output state
+};
+
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
+class OutDataTypesInfo<defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> >
+{
+public:
+    enum {material_dimensions = _material_dimensions};
+    static const bool positionMapped=false;
+    static const bool FMapped=true;
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -69,6 +79,7 @@ class OutDataTypesInfo<defaulttype::StdVectorTypes<TCoord, TDeriv, TReal> >
 public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
+    static const bool FMapped=false;
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -77,60 +88,32 @@ class OutDataTypesInfo<defaulttype::ExtVectorTypes<TCoord, TDeriv, TReal> >
 public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
+    static const bool FMapped=false;
 };
 
-template<int TDim, class TReal>
-class OutDataTypesInfo<defaulttype::StdAffineTypes<TDim, TReal> >
+
+template< class DataType, class Frame>
+class Fwrapper
 {
 public:
-    enum {material_dimensions = TDim};
-    static const bool positionMapped=true;
+    static void getF(Frame&,const typename DataType::Coord&) {}
 };
-
-template<int TDim, class TReal>
-class OutDataTypesInfo<defaulttype::StdRigidTypes<TDim, TReal> >
-{
-public:
-    enum {material_dimensions = TDim};
-    static const bool positionMapped=true;
-};
-
-template<int TDim, class TReal>
-class OutDataTypesInfo<defaulttype::StdQuadraticTypes<TDim, TReal> >
-{
-public:
-    enum {material_dimensions = TDim};
-    static const bool positionMapped=true;
-};
-
-
-
-///< drawing function for deformation gradients (handled by mapping since spatial positions are not included in state)
-template< class OutDataTypes>
-class DrawOut
-{
-public:
-    typedef defaulttype::Vec<OutDataTypes::spatial_dimensions,typename OutDataTypes::Real> sCoord ;
-    static void draw(const core::visual::VisualParams* , const sCoord& , const typename OutDataTypes::Coord&, const float&, const defaulttype::Vec<4,float>&) {}
-};
-
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-class DrawOut<defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> >
+class Fwrapper< defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> , defaulttype::Mat<_spatial_dimensions,_material_dimensions,_Real> >
 {
 public:
-    typedef defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> OutDataTypes;
-    typedef defaulttype::Vec<OutDataTypes::spatial_dimensions,typename OutDataTypes::Real> sCoord ;
-    static void draw(const core::visual::VisualParams* vparams, const sCoord& p, const typename OutDataTypes::Coord& x, const float& scale, const defaulttype::Vec<4,float>& colour)
-    {
-        for(int i=0; i<_material_dimensions; i++)
-        {
-            sCoord u=x.getF().transposed()(i)*0.5*scale;
-            vparams->drawTool()->drawCylinder(p-u,p+u,0.02*scale,colour,4);
-        }
-    }
+    typedef defaulttype::Mat<_spatial_dimensions,_material_dimensions,_Real> Frame;
+    typedef typename defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real>::Coord Coord;
+    static void getF(Frame& F,const Coord& x) {F=x.getF();}
 };
 
+
+namespace defaulttype
+{
+template<class real>
+inline real determinant(const Mat<1,1,real>& m) { return m(0,0);}
+}
 
 namespace component
 {
@@ -188,7 +171,7 @@ public:
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< deformation gradient type
+    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
     typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
@@ -220,7 +203,7 @@ public:
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
         helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
-        this->mapPosition0Needed=true; // need to update mapped spatial positions if needed for visualization
+        this->missingInformationDirty=true; // need to update mapped spatial positions if needed for visualization
 
         //VecCoord pos0;
 
@@ -249,10 +232,10 @@ public:
             mpos0.resize(pos0.size());
             for(unsigned int i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
             if(_sampler)   // get weights associated to gauss point regions
-                _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),_sampler->getRegion());
+                _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),_sampler->getRegion());
             else            // interpolate weights at sample positions
-                _shapeFunction->computeShapeFunction(mpos0,*this->f_M.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
-            this->f_index.endEdit();     this->f_M.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
+                _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+            this->f_index.endEdit();     this->f_F0.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
         }
 
         // init jacobians
@@ -264,7 +247,7 @@ public:
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                jacobian[i][j].init( in[index],out[i],pos0[i],f_M.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
+                jacobian[i][j].init( in[index],out[i],pos0[i],f_F0.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
             }
         }
 
@@ -281,6 +264,16 @@ public:
             maskFrom = &stateFrom->forceMask;
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
             maskTo = &stateTo->forceMask;
+
+        component::visualmodel::VisualModelImpl *visual;
+        this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
+        if(visual) {this->extTriangles = &visual->getTriangles(); this->extvertPosIdx = &visual->m_vertPosIdx.getValue(); this->triangles=0; }
+        else
+        {
+            core::topology::BaseMeshTopology *topo;
+            this->getContext()->get( topo, core::objectmodel::BaseContext::Local);
+            if(topo) {this->triangles = &topo->getTriangles();  this->extTriangles=0; }
+        }
 
 
         baseMatrices.resize( 1 ); // just a wrapping for getJs()
@@ -319,7 +312,7 @@ public:
 
         if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
 
-        this->mapPosition0Needed=true; // need to update mapped spatial positions if needed for visualization
+        this->missingInformationDirty=true; // need to update spatial positions of defo grads if needed for visualization
     }
 
 
@@ -467,21 +460,26 @@ public:
 
     void draw(const core::visual::VisualParams* vparams)
     {
-        if (!vparams->displayFlags().getShowMechanicalMappings() && !showObjectScale.getValue()) return;
+        if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
         helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
 
-        if(this->mapPosition0Needed && !OutDataTypesInfo<Out>::positionMapped) {mapPosition0(); this->mapPosition0Needed=false; }
+        if(this->missingInformationDirty)
+        {
+            if(!OutDataTypesInfo<Out>::positionMapped) mapPositions();
+            if(!OutDataTypesInfo<Out>::FMapped) if(showDeformationGradientScale.getValue() || showColorOnTopology.getValue().getSelectedId()!=0) mapDeformationGradients();
+            this->missingInformationDirty=false;
+        }
 
         if (vparams->displayFlags().getShowMechanicalMappings())
         {
             vector< defaulttype::Vec3d > edge;     edge.resize(2);
             Vec<4,float> col;
 
-            for(unsigned i=0; i<ref.size(); i++ )
+            for(unsigned i=0; i<out.size(); i++ )
             {
                 if(OutDataTypesInfo<Out>::positionMapped) Out::get(edge[1][0],edge[1][1],edge[1][2],out[i]);
                 else edge[1]=f_pos[i];
@@ -494,17 +492,77 @@ public:
                     }
             }
         }
-        if (showObjectScale.getValue())
+        if (showDeformationGradientScale.getValue())
         {
-            if(!OutDataTypesInfo<Out>::positionMapped) // when out does not contain positions (e.g. deformation gradients), drawing is handled by the mapper (instead of mechanical object)
+            //                glPushAttrib ( GL_LIGHTING_BIT );
+            //                glDisable ( GL_LIGHTING );
+            float scale=showDeformationGradientScale.getValue();
+            Vec<4,float> col( 0.8, 0.8, 0.0, 1.0 );
+            MaterialToSpatial F;
+            Coord p;
+            for(unsigned i=0; i<out.size(); i++ )
             {
-//                glPushAttrib ( GL_LIGHTING_BIT );
-//                glDisable ( GL_LIGHTING );
-                float scale=showObjectScale.getValue();
-                Vec<4,float> col( 1.0, 1.0, 0.0, 1.0 );
-                for(unsigned i=0; i<ref.size(); i++ ) DrawOut<Out>::draw(vparams,f_pos[i],out[i],scale, col);
-//                glPopAttrib();
+                if(OutDataTypesInfo<Out>::FMapped) Fwrapper<Out,MaterialToSpatial>::getF(F,out[i]); else F=f_F[i];
+                if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
+
+                for(int j=0; j<material_dimensions; j++)
+                {
+                    Coord u=F.transposed()(j)*0.5*scale;
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.02*scale,col,3);
+                }
             }
+            //                glPopAttrib();
+        }
+
+        if(showColorOnTopology.getValue().getSelectedId() && (this->extTriangles || this->triangles))
+        {
+            std::vector< Real > val(out.size());
+            MaterialToSpatial F;
+            for(unsigned i=0; i<out.size(); i++ )
+            {
+                if(OutDataTypesInfo<Out>::FMapped) Fwrapper<Out,MaterialToSpatial>::getF(F,out[i]); else F=f_F[i];
+
+                if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
+                else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
+
+                //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
+                val[i]*=240 * this->showColorScale.getValue();
+                val[i]+=120;
+                if (val[i]<0) val[i]=0;
+                if (val[i]>240) val[i]=240;
+            }
+
+            int nb =0;
+            if(triangles) nb+=triangles->size();
+            if(extTriangles) nb+=extTriangles->size();
+
+            std::vector< defaulttype::Vector3 > points(3*nb),normals;
+            std::vector< Vec<4,float> > colors(3*nb);
+            unsigned int count=0;
+
+            if(triangles)
+                for ( unsigned int i = 0; i < triangles->size(); i++)
+                    for ( unsigned int j = 0; j < 3; j++)
+                    {
+                        const unsigned int index = (*triangles)[i][j];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                        count++;
+                    }
+            if(extTriangles)
+                for ( unsigned int i = 0; i < extTriangles->size(); i++)
+                    for ( unsigned int j = 0; j < 3; j++)
+                    {
+                        unsigned int index = (*extTriangles)[i][j];
+                        if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                        count++;
+                    }
+            glPushAttrib( GL_LIGHTING_BIT );
+            glDisable( GL_LIGHTING);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
+            glPopAttrib();
         }
     }
 
@@ -521,7 +579,7 @@ public:
     Data<vector<VReal> >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
-    Data<VMaterialToSpatial>    f_M;
+    Data<VMaterialToSpatial>    f_F0;
 
 protected:
     BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
@@ -532,27 +590,37 @@ protected:
         , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
         , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
         , f_ddw ( initData ( &f_ddw,"weightHessians","weight Hessians" ) )
-        , f_M ( initData ( &f_M,"M","Transformations from material to 3d space (linear for now..)" ) )
+        , f_F0 ( initData ( &f_F0,"M","Transformations from material to 3d space (linear for now..)" ) )
         , f_pos0 ( initData ( &f_pos0,"restPosition","initial spatial positions of children" ) )
-        , mapPosition0Needed(true)
+        , missingInformationDirty(true)
         , maskFrom(NULL)
         , maskTo(NULL)
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized Jacobian/vector multiplications" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized Jacobian/vector multiplications" ) )
-        , showObjectScale(initData(&showObjectScale, (float)0.0, "showObjectScale", "Scale for deformation gradient display"))
+        , triangles(0)
+        , extTriangles(0)
+        , extvertPosIdx(0)
+        , showDeformationGradientScale(initData(&showDeformationGradientScale, (float)0.0, "showDeformationGradientScale", "Scale for deformation gradient display"))
+        , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
+        , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
     {
-        if(OutDataTypesInfo<Out>::positionMapped)
-        {
-            showObjectScale.setDisplayed(false);
-        }
+        helper::OptionsGroup methodOptions(3,"0 - None"
+                ,"1 - trace(F^T.F)-3"
+                ,"2 - sqrt(det(F^T.F))-1"
+                                          );
+        methodOptions.setSelectedItem(0);
+        showColorOnTopology.setValue(methodOptions);
+
     }
 
     virtual ~BaseDeformationMapping()     { }
 
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
-    virtual void mapPosition0()=0;   ///< map initial spatial positions stored in f_pos0 to f_pos (used to display deformation gradients)
+    virtual void mapPositions()=0;              ///< map initial spatial positions stored in f_pos0 to f_pos (used for visualization)
+    virtual void mapDeformationGradients()=0;   ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     VecCoord f_pos;
-    bool mapPosition0Needed;  // used to speed up drawing
+    VMaterialToSpatial f_F;
+    bool missingInformationDirty;  ///< tells if pos or F need to be updated (to speed up visualization)
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 
@@ -616,7 +684,12 @@ protected:
         K.compress();
     }
 
-    Data< float > showObjectScale;
+    const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
+    const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
+    const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+    Data< float > showDeformationGradientScale;
+    Data< helper::OptionsGroup > showColorOnTopology;
+    Data< float > showColorScale;
 
 };
 
