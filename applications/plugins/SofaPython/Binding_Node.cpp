@@ -70,7 +70,7 @@ extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * Node_getChildNode(PyObject * self, PyObject * args)
+extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
 {
     // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
@@ -101,11 +101,55 @@ extern "C" PyObject * Node_getChildNode(PyObject * self, PyObject * args)
     return SP_BUILD_PYSPTR(childNode);
 }
 
+extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
+{
+    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    const objectmodel::BaseNode::Children& children = node->getChildren();
+    if (!children.size())
+    {
+        // no children!!!!
+        return 0;
+    }
+    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
+    // on caste directement en Node.
+    PyObject *list = PyList_New(children.size());
+
+    for (unsigned int i=0; i<children.size(); ++i)
+        PyList_SetItem(list,i,SP_BUILD_PYSPTR(children[i]));
+
+    return list;
+}
+
+extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
+{
+    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    const objectmodel::BaseNode::Children& parents = node->getParents();
+    if (!parents.size())
+    {
+        // no parents!!!!
+        return 0;
+    }
+    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
+    // on caste directement en Node.
+    PyObject *list = PyList_New(parents.size());
+
+    for (unsigned int i=0; i<parents.size(); ++i)
+        PyList_SetItem(list,i,SP_BUILD_PYSPTR(parents[i]));
+
+    return list;
+}
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
 SP_CLASS_METHOD(Node,simulationStep)
-SP_CLASS_METHOD(Node,getChildNode)
+SP_CLASS_METHOD(Node,getChild)
+SP_CLASS_METHOD(Node,getChildren)
+SP_CLASS_METHOD(Node,getParents)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)
