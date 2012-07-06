@@ -125,7 +125,9 @@ Attributes:
 \subsubsection{Sofa.Node}
 \begin{itemize}
 \item \textcode{getRoot()} returns the root node of the graph (if any) 
-\item \textcode{getChildNode(path)} returns a child node, given its path (if any) 
+\item \textcode{getChild(path)} returns a child node, given its path (if any) 
+\item \textcode{getChildren()} returns the list of children 
+\item \textcode{getParents()} returns the list of parents
 \item \textcode{executeVisitor(visitor)} 
 \item \textcode{simulationStep(dt)} executes ONE step of simulation, using dt (in seconds, float) as delta time. 
 \end{itemize}
