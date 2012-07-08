@@ -454,8 +454,8 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=(useRestMState ? external_points.getValue() : points.getValue());
+    const VecIndex& indices = m_indices;
+    const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
 
     for (unsigned int i=0; i<indices.size(); i++)
