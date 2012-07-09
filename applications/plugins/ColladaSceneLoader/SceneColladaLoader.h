@@ -53,7 +53,7 @@ using namespace sofa::simulation::tree;
 using namespace sofa::component::projectiveconstraintset;
 
 /*
-	current limitations : one bone animation per scene
+	current limitation : one animation per scene
 */
 class SOFA_COLLADASCENELOADER_API SceneColladaLoader : public sofa::core::loader::SceneLoader
 {
@@ -62,7 +62,7 @@ public:
 
     struct NodeInfo;
 
-    // describing a link allowing us to build
+    // describing a link between Assimp Node and Sofa GNode allowing us to build a node hierarchy
     struct NodeInfo
     {
         int					mChildIndex;		// index of the current child node to process
@@ -104,6 +104,7 @@ public:
         }
     };
 
+    // describing a link between a Node and an Assimp Mesh
     struct MeshInfo
     {
         aiMesh*		mAiMesh;	// mesh being processed
@@ -137,7 +138,10 @@ protected:
 
 private:
 
-    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, std::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, std::vector<SkeletonBone>& skeletonBones) const;
+    // build the joints and bones array used in the SkeletalMotionConstraint
+    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const;
+
+    // clean the scene graph of its empty and useless intermediary nodes
     void removeEmptyNodes();
 
 public:
@@ -145,9 +149,9 @@ public:
     virtual std::string type() { return "The format of this scene is Collada (.dae)."; }
 
 private:
-    GNode::SPtr subSceneRoot;
+    GNode::SPtr subSceneRoot;		// the GNode containing the whole Collada loaded scene
 
-    Assimp::Importer importer;
+    Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 
 };
 

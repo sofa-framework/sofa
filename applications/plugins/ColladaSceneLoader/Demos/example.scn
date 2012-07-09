@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	 name="Root"  printLog="1"  dt="0.02"  >
+<Node 	 name="Root"  printLog="1"  dt="0.02"  time="0"  >
 	<VisualStyle name="displayFlags"  displayFlags="showVisual hideBehaviorModels showForceFields showInteractionForceFields showCollision showMapping hideOptions" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />

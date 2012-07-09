@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/helper/SVector.h>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 
@@ -43,58 +44,12 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
 using namespace sofa::defaulttype;
 
-// a skeleton bone, here used only for animation, use a SkinningMapping if you want to skin a mesh
-// and if you want to do so, use the same index in the mechanical object mapped with the SkinningMapping
-// than in the skeletonBones array of the SkeletalMotionConstraint defined below
-struct SkeletonBone
-{
-    SkeletonBone()
-        : mSkeletonJointIndex(-1)
-    {
-
-    }
-
-    // the corresponding skeleton joint
-    int									mSkeletonJointIndex;
-};
-
-// a skeleton joint which may be animated and which participates in the skeletal animation chain (it does not always correspond to a bone but it is always useful in order to compute the skeleton bones world transformation)
+// a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated (it does not always correspond to a bone but it is always useful to compute the bones world transformation)
 template <class DataTypes>
 struct SkeletonJoint;
 
-template <class DataTypes>
-struct SkeletonJoint
-{
-    typedef typename DataTypes::Real Real;
-
-    SkeletonJoint()
-        : mParentIndex(-1)
-    {
-
-    }
-
-    // parent animated node
-    int									mParentIndex;
-
-    // each channel represents a transformation matrix which is the node local transformation at a given frame in the animation
-    std::vector<RigidCoord<3, Real> >	mChannels;
-
-    // times corresponding to each animation channel, the channel mChannels[i] must be played at the time contained in mTimes[i]
-    std::vector<double>					mTimes;
-
-    // previous node motion
-    RigidCoord<3, Real>					mPreviousMotion;
-
-    // next node motion
-    RigidCoord<3, Real>					mNextMotion;
-
-    // this rigid represent the animated node at a specific time relatively to its parent, it may be an interpolation between two channels
-    // we need to store the current rigid in order to compute the final world position of its rigid children
-    RigidCoord<3, Real>					mLocalRigid;
-
-    // mCurrentRigid in the world coordinate
-    RigidCoord<3, Real>					mWorldRigid;
-};
+// an index linking a dof representing a bone with a skeleton joint
+typedef int SkeletonBone;
 
 // impose a specific motion (translation and rotation) for each DOFs of a MechanicalObject
 template <class TDataTypes>
@@ -140,7 +95,7 @@ public:
     template<class MyCoord>
     void localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
 
-    void setSkeletalMotion(const std::vector<SkeletonJoint<TDataTypes> >& skeletonJoints, const std::vector<SkeletonBone>& skeletonBones);
+    void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
 
 protected:
     template <class DataDeriv>
@@ -151,17 +106,119 @@ protected:
 
 private:
     // every nodes needed in the animation chain
-    std::vector<SkeletonJoint<TDataTypes> >		skeletonJoints;
+    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints;
 
-    // mesh skeletonBones that will need to be updated according to the animated nodes, we use them to fill the mechanical object
-    std::vector<SkeletonBone>					skeletonBones;
+    // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
+    Data<helper::SVector<SkeletonBone> >				skeletonBones;
 
     /// the key times surrounding the current simulation time (for interpolation)
-    Real										prevT, nextT;
+    Real												prevT, nextT;
 
     /// to know if we found the key times
-    bool										finished;
+    bool												finished;
 
+};
+
+template <class DataTypes>
+struct SkeletonJoint
+{
+    friend SkeletalMotionConstraint<DataTypes>;
+
+    typedef typename DataTypes::Coord Coord;
+
+    SkeletonJoint()
+        : mParentIndex(-1)
+        , mChannels()
+        , mTimes()
+    {
+
+    }
+
+    virtual ~SkeletonJoint()
+    {
+
+    }
+
+    inline friend std::ostream& operator << (std::ostream& out, const SkeletonJoint& skeletonJoint)
+    {
+        out << "Parent"			<< " " << skeletonJoint.mParentIndex		<< " ";
+        out << "Channels"		<< " " << skeletonJoint.mChannels.size()	<< " " << skeletonJoint.mChannels	<< " ";
+        out << "Times"			<< " " << skeletonJoint.mTimes.size()		<< " " << skeletonJoint.mTimes		<< " ";
+        out << "PreviousMotion"	<< " " << skeletonJoint.mPreviousMotion		<< " ";
+        out << "NextMotion"		<< " " << skeletonJoint.mNextMotion			<< " ";
+        out << "LocalRigid"		<< " " << skeletonJoint.mLocalRigid;
+
+        return out;
+    }
+
+    inline friend std::istream& operator >> (std::istream& in, SkeletonJoint& skeletonJoint)
+    {
+        std::string tmp;
+
+        in >> tmp >> skeletonJoint.mParentIndex;
+
+        size_t numChannel;
+        in >> tmp >> numChannel;
+        skeletonJoint.mChannels.resize(numChannel);
+        Coord channel;
+        for(size_t i = 0; i < numChannel; ++i)
+        {
+            in >> channel;
+            skeletonJoint.mChannels[i] = channel;
+        }
+
+        size_t numTime;
+        in >> tmp >> numTime;
+        skeletonJoint.mTimes.resize(numTime);
+        double time;
+        for(size_t i = 0; i < numTime; ++i)
+        {
+            in >> time;
+            skeletonJoint.mTimes[i] = time;
+        }
+
+        in >> tmp >> skeletonJoint.mPreviousMotion;
+        in >> tmp >> skeletonJoint.mNextMotion;
+        in >> tmp >> skeletonJoint.mLocalRigid;
+
+        return in;
+    }
+
+    // parent joint, set to -1 if root, you must set this value
+    int									mParentIndex;
+
+    // set the joint rest position, you must set this value
+    void setRestPosition(const Coord& restPosition)
+    {
+        mPreviousMotion = restPosition;
+        mNextMotion = restPosition;
+        mLocalRigid = restPosition;
+    }
+
+    // following data are useful for animation only, you must fill those vectors if this joint is animated
+
+    // each channel represents a local transformation at a given time in the animation
+    helper::vector<Coord>				mChannels;
+
+    // times corresponding to each animation channel, the channel mChannels[i] must be played at the time contained in mTimes[i]
+    helper::vector<double>				mTimes;
+
+private:
+
+    // following data are used internally to compute the final joint transformation at a specific time using interpolation
+
+    // previous joint motion
+    Coord								mPreviousMotion;
+
+    // next joint motion
+    Coord								mNextMotion;
+
+    // this rigid represent the animated node at a specific time relatively to its parent, it may be an interpolation between two channels
+    // we need to store the current rigid in order to compute the final world position of its rigid children
+    Coord								mLocalRigid;
+
+    // mCurrentRigid in the world coordinate
+    Coord								mWorldRigid;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_CPP)

@@ -136,7 +136,21 @@ When you launch runSofa with this scene, a new node will be added which contains
 SceneColladaLoader plus the string "_scene". On the right picture, the loader generated two child nodes call "mesh 0" which contains a mesh without skinning (the sphere), and 
 "mesh 1" which contains a mesh with skinning and bones animation directly from the collada file.
 The SkeletalMotionConstraint automatically interpolates between animation frames, play with the animation time step to slown down or speed up the animation.
-<br>
+<br />
+<br />
+As you can see on the other example below, the woman's hair does not fit her head very well because its coordinates system belongs to a dummy object not supported for the moment.
+<br />
+<br />
+<table>
+<tr align="center">
+	<td><img src="skinning_example_3_0.png" name="Scene with two meshes" width="1200" height="" /></td>
+</tr>
+<tr align="center">
+	<td>A skinned and bones animated mesh representing a woman</td>
+</tr>
+</table>
+<br />
+<br />
 <h2><a name="Intellectual_property_and_rights"></a>Intellectual property and rights</h2>
 <table style="text-align: left; width: 824px; height: 392px;" border="1" cellpadding="2" cellspacing="2">
   <tbody>
