@@ -250,93 +250,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     // generating a name
                     std::string meshName(currentAiMesh->mName.data, currentAiMesh->mName.length);
 
-                    // generating a MeshTopology and filling up its properties
-                    /*MeshTopology::SPtr currentMeshTopology = sofa::core::objectmodel::New<MeshTopology>();
-                    {
-                    	// adding the generated MeshTopology to its parent GNode
-                    	meshGNode->addObject(currentMeshTopology);
-
-                    	std::stringstream nameStream(meshName);
-                    	if(meshName.empty())
-                    		nameStream << componentIndex++;
-                    	currentMeshTopology->setName(nameStream.str());
-
-                    	// filling up position array
-                    	currentMeshTopology->seqPoints.setParent(&currentMechanicalObject->x);
-
-                    	// filling up triangle array
-                    	vector<Triangle> triangles;
-                    	unsigned int numTriangles = 0;
-                    	for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                    		if(3 == currentAiMesh->mFaces[k].mNumIndices)
-                    			++numTriangles;
-
-                    	if(0 != numTriangles)
-                    	{
-                    		triangles.resize(numTriangles);
-
-                    		unsigned int triangleOffset = 0;
-                    		for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                    		{
-                    			if(3 != currentAiMesh->mFaces[k].mNumIndices)
-                    				continue;
-
-                    			memcpy(&triangles[0] + triangleOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Triangle));
-                    			++triangleOffset;
-                    		}
-
-                    		{
-                    			vector<Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
-                    			seqTriangles.reserve(triangles.size());
-
-                    			for(unsigned int k = 0; k < triangles.size(); ++k)
-                    				seqTriangles.push_back(triangles[k]);
-                    		}
-                    	}
-
-                    	// filling up quad array
-                    	vector<Quad> quads;
-                    	unsigned int numQuads = 0;
-                    	for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                    		if(4 == currentAiMesh->mFaces[k].mNumIndices)
-                    			++numQuads;
-
-                    	if(0 != numQuads)
-                    	{
-                    		quads.resize(numQuads);
-
-                    		unsigned int quadOffset = 0;
-                    		for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                    		{
-                    			if(4 != currentAiMesh->mFaces[k].mNumIndices)
-                    				continue;
-
-                    			memcpy(&quads[0] + quadOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Quad));
-                    			++quadOffset;
-                    		}
-
-                    		{
-                    			vector<Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
-                    			seqQuads.reserve(quads.size());
-
-                    			for(unsigned int k = 0; k < quads.size(); ++k)
-                    				seqQuads.push_back(quads[k]);
-                    		}
-                    	}
-                    }*/
-
-                    // generating a UniformMass and filling up its properties
-// 					UniformMass<Rigid3fTypes, Rigid3fMass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3fTypes, Rigid3fMass> >();
-// 					{
-// 					// adding the generated UniformMass to its parent GNode
-// 					meshGNode->addObject(currentUniformMass);
-//
-// 					std::stringstream nameStream(meshName);
-// 					if(meshName.empty())
-// 					nameStream << componentIndex++;
-// 					currentUniformMass->setName(nameStream.str());
-// 					}
-
+                    // node used for visualization
                     GNode::SPtr visuGNode;
 
                     // generating a MechanicalObject and a SkinningMapping if the mesh contains bones and filling up theirs properties
@@ -385,6 +299,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                             }
                         }
 
+                        // generating a SkeletalMotionConstraint and filling up its properties
                         SkeletalMotionConstraint<Rigid3fTypes>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3fTypes> >();
                         {
                             // adding the generated SkeletalMotionConstraint to its parent GNode
@@ -399,8 +314,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                             if(parentNode)
                                 parentAiNode = parentNode->mAiNode;
 
-                            std::vector<SkeletonJoint<Rigid3fTypes> > skeletonJoints;
-                            std::vector<SkeletonBone> skeletonBones;
+                            helper::vector<SkeletonJoint<Rigid3fTypes> > skeletonJoints;
+                            helper::vector<SkeletonBone> skeletonBones;
                             fillSkeletalInfo(currentAiScene, parentAiNode, currentAiNode, currentTransformation, currentAiMesh, skeletonJoints, skeletonBones);
                             currentSkeletalMotionConstraint->setSkeletalMotion(skeletonJoints, skeletonBones);
                         }
@@ -447,6 +362,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         }
                     }
 
+                    // generating a MeshTopology and filling up its properties
                     MeshTopology::SPtr currentMeshTopology = sofa::core::objectmodel::New<MeshTopology>();
                     {
                         // adding the generated MeshTopology to its parent GNode
@@ -707,7 +623,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
     return true;
 }
 
-bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, std::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, std::vector<SkeletonBone>& skeletonBones) const
+bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3fTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const
 {
     //std::cout << "fillSkeletalInfo : begin" << std::endl;
 
@@ -767,6 +683,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
 
             int numKey = std::max(channel->mNumPositionKeys, channel->mNumRotationKeys);
             //int numKey = std::max(channel->mNumScalingKeys , std::max(channel->mNumPositionKeys, channel->mNumRotationKeys));
+
             skeletonJoint.mTimes.resize(numKey);
             skeletonJoint.mChannels.resize(numKey);
             for(int l = 0; l < numKey; ++l)
@@ -834,7 +751,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
         }
 
-        skeletonBones[i].mSkeletonJointIndex = aiNodeToSkeletonJointIndexIterator->second;
+        skeletonBones[i] = aiNodeToSkeletonJointIndexIterator->second;
     }
 
     // register every SkeletonJoint and their parents and fill up theirs properties
@@ -902,9 +819,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                     currentSkeletonJoint.mChannels[i] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[i]);
             }
 
-            currentSkeletonJoint.mPreviousMotion = localRigid;
-            currentSkeletonJoint.mNextMotion = localRigid;
-            currentSkeletonJoint.mLocalRigid = localRigid;
+            currentSkeletonJoint.setRestPosition(localRigid);
 
             if(-1 != previousSkeletonJointIndex)
                 skeletonJoints[previousSkeletonJointIndex].mParentIndex = aiNodeToSkeletonJointIndexIterator->second;
