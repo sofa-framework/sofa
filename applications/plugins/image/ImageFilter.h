@@ -69,6 +69,7 @@ namespace engine
 {
 
 using helper::vector;
+using namespace helper;
 using namespace cimg_library;
 
 /**

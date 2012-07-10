@@ -60,6 +60,7 @@ namespace gui
 namespace qt
 {
 
+using namespace helper;
 using namespace cimg_library;
 using defaulttype::Vec;
 
