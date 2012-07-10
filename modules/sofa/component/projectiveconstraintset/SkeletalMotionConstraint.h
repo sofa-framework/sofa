@@ -122,7 +122,7 @@ private:
 template <class DataTypes>
 struct SkeletonJoint
 {
-    friend typename class SkeletalMotionConstraint<DataTypes>;
+    friend typename SkeletalMotionConstraint<DataTypes>;
 
     typedef typename DataTypes::Coord Coord;
 
