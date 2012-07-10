@@ -53,6 +53,7 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
 using namespace cimg_library;
+using namespace helper;
 
 /**
  * This class rasterizes a mesh into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
