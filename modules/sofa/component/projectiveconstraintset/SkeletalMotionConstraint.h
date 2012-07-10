@@ -44,11 +44,11 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
 using namespace sofa::defaulttype;
 
-// a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated (it does not always correspond to a bone but it is always useful to compute the bones world transformation)
+// a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated
 template <class DataTypes>
 struct SkeletonJoint;
 
-// an index linking a dof representing a bone with a skeleton joint
+// joints index to export in the MechanicalObject (in order to use them for skinning for instance)
 typedef int SkeletonBone;
 
 // impose a specific motion (translation and rotation) for each DOFs of a MechanicalObject
@@ -122,7 +122,7 @@ private:
 template <class DataTypes>
 struct SkeletonJoint
 {
-    friend SkeletalMotionConstraint<DataTypes>;
+    friend typename class SkeletalMotionConstraint<DataTypes>;
 
     typedef typename DataTypes::Coord Coord;
 
