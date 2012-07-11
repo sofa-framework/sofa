@@ -122,14 +122,7 @@ private:
 template <class DataTypes>
 struct SkeletonJoint
 {
-    typedef SkeletalMotionConstraint<DataTypes> SkeletalMotionConstraintTyped;
-
-// Seems related to... http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1791.pdf
-#ifdef __GNUC__
     friend class SkeletalMotionConstraint<DataTypes>;
-#else
-    friend SkeletalMotionConstraintTyped;
-#endif // __GNUC__
 
     typedef typename DataTypes::Coord Coord;
 
