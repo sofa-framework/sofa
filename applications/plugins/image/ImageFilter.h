@@ -57,6 +57,7 @@
 #define NORMALIZE 19
 #define RESAMPLE 20
 #define SELECTCHANNEL 21
+#define SKELETON 22
 
 
 namespace sofa
@@ -129,7 +130,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(22	,"0 - None"
+        helper::OptionsGroup filterOptions(23	,"0 - None"
                 ,"1 - Blur ( sigma )"
                 ,"2 - Blur Median ( n )"
                 ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -151,6 +152,7 @@ public:
                 ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
                 ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
                 ,"21 - SelectChannels ( c0, c1 )"
+                ,"22 - Skeleton from distance map"
                                           );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -184,8 +186,9 @@ protected:
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
 
+        const CImgList<Ti>& inimg = in->getCImgList();
         CImgList<To>& img = out->getCImgList();
-        if(updateImage) img.assign(in->getCImgList());	// copy
+        if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) outT->operator=(inT);	// copy
 
         switch(this->filter.getValue().getSelectedId())
@@ -194,14 +197,14 @@ protected:
             if(updateImage)
             {
                 float sigma=0; if(p.size()) sigma=(float)p[0];
-                cimglist_for(img,l) img(l).blur(sigma);
+                cimglist_for(img,l) img(l)=inimg(l).get_blur(sigma);
             }
             break;
         case BLURMEDIAN:
             if(updateImage)
             {
                 unsigned int n=0; if(p.size()) n=(unsigned int)p[0];
-                cimglist_for(img,l) img(l).blur_median (n);
+                cimglist_for(img,l) img(l)=inimg(l).get_blur_median (n);
             }
             break;
         case BLURBILATERAL:
@@ -209,14 +212,14 @@ protected:
             {
                 float sigma_s=0;  if(p.size()) sigma_s=(float)p[0];
                 float sigma_r=0; if(p.size()>1) sigma_r=(float)p[1];
-                cimglist_for(img,l) img(l).blur_bilateral (sigma_s,sigma_r);
+                cimglist_for(img,l) img(l)=inimg(l).get_blur_bilateral (sigma_s,sigma_r);
             }
             break;
         case BLURANISOTROPIC:
             if(updateImage)
             {
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
-                cimglist_for(img,l) img(l).blur_anisotropic (amplitude);
+                cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
             }
             break;
         case DERICHE:
@@ -225,7 +228,7 @@ protected:
                 float sigma=0;  if(p.size()) sigma=(float)p[0];
                 unsigned int order=0; if(p.size()>1) order=(unsigned int)p[1];
                 char axis='x';  if(p.size()>2) { if((int)p[2]==1) axis='y'; else if((int)p[2]==2) axis='z'; }
-                cimglist_for(img,l) img(l).deriche (sigma,order,axis);
+                cimglist_for(img,l) img(l)=inimg(l).get_deriche (sigma,order,axis);
             }
             break;
         case CROP:
@@ -237,7 +240,7 @@ protected:
                 unsigned int xmax=in->getDimensions()[0]-1; if(p.size()>3) xmax=(unsigned int)p[3];
                 unsigned int ymax=in->getDimensions()[1]-1; if(p.size()>4) ymax=(unsigned int)p[4];
                 unsigned int zmax=in->getDimensions()[2]-1; if(p.size()>5) zmax=(unsigned int)p[5];
-                if(updateImage) cimglist_for(img,l) img(l).crop(xmin,ymin,zmin,0,xmax,ymax,zmax,in->getDimensions()[3]-1);
+                if(updateImage) cimglist_for(img,l) img(l)=inimg(l).get_crop(xmin,ymin,zmin,0,xmax,ymax,zmax,in->getDimensions()[3]-1);
                 if(updateTransform)
                 {
                     outT->getTranslation()=outT->fromImage( Coord((Real)xmin,(Real)ymin,(Real)zmin) );
@@ -253,7 +256,7 @@ protected:
                 if(p.size()>1) dim[1]=(unsigned int)p[1];
                 if(p.size()>2) dim[2]=(unsigned int)p[2];
                 unsigned int interpolation=1; if(p.size()>3) interpolation=(unsigned int)p[3];
-                if(updateImage) cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],-100,interpolation);
+                if(updateImage) cimglist_for(img,l) img(l)=inimg(l).get_resize(dim[0],dim[1],dim[2],-100,interpolation);
                 if(updateTransform)
                     if(interpolation)
                     {
@@ -285,14 +288,14 @@ protected:
             if(updateImage)
             {
                 unsigned int size=0; if(p.size()) size=(unsigned int)p[0];
-                cimglist_for(img,l) img(l).dilate (size);
+                cimglist_for(img,l) img(l)=inimg(l).get_dilate (size);
             }
             break;
         case ERODE:
             if(updateImage)
             {
                 unsigned int size=0; if(p.size()) size=(unsigned int)p[0];
-                cimglist_for(img,l) img(l).erode (size);
+                cimglist_for(img,l) img(l)=inimg(l).get_erode (size);
             }
             break;
         case NOISE:
@@ -300,34 +303,34 @@ protected:
             {
                 float sigma=0;  if(p.size()) sigma=(float)p[0];
                 unsigned int noisetype=0; if(p.size()>1) noisetype=(unsigned int)p[1];
-                cimglist_for(img,l) img(l).noise (sigma,noisetype);
+                cimglist_for(img,l) img(l)=inimg(l).get_noise (sigma,noisetype);
             }
             break;
         case QUANTIZE:
             if(updateImage)
             {
                 unsigned int nblevels=0; if(p.size()) nblevels=(unsigned int)p[0];
-                cimglist_for(img,l) img(l).quantize (nblevels);
+                cimglist_for(img,l) img(l)=inimg(l).get_quantize (nblevels);
             }
             break;
         case THRESHOLD:
             if(updateImage)
             {
                 To value=0; if(p.size()) value=(To)p[0];
-                cimglist_for(img,l) img(l).threshold (value);
+                cimglist_for(img,l) img(l)=inimg(l).get_threshold (value);
             }
             break;
         case LAPLACIAN:
             if(updateImage)
             {
-                cimglist_for(img,l) img(l).laplacian ();
+                cimglist_for(img,l) img(l)=inimg(l).get_laplacian ();
             }
             break;
         case STENSOR:
             if(updateImage)
             {
                 unsigned int scheme=1; if(p.size()) scheme=(unsigned int)p[0];
-                cimglist_for(img,l) img(l).structure_tensors (scheme);
+                cimglist_for(img,l) img(l)=inimg(l).get_structure_tensors (scheme);
             }
             break;
         case DISTANCE:
@@ -338,7 +341,7 @@ protected:
                 float sizex=(float)inT->getScale()[0]*scale;
                 float sizey=(float)inT->getScale()[1]*scale;
                 float sizez=(float)inT->getScale()[2]*scale;
-                cimglist_for(img,l) {img(l).distance ( value , sizex , sizey , sizez);  }
+                cimglist_for(img,l) {img(l)=inimg(l).get_distance ( value , sizex , sizey , sizez);  }
             }
             break;
         case GRADIENT:
@@ -350,12 +353,11 @@ protected:
                 cimglist_for(img,l)
                 {
                     To *ptrd = img(l)._data;
-                    const CImg<Ti>& inputImg=in->getCImg(l);
                     // Central finite differences.
-                    if(axis=='x') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)      *(ptrd++) = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
-                    else if(axis=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To) *(ptrd++) = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
-                    else if(axis=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To) *(ptrd++) = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
-                    else  cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)
+                    if(axis=='x') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)      *(ptrd++) = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
+                    else if(axis=='y') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To) *(ptrd++) = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
+                    else if(axis=='z') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To) *(ptrd++) = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
+                    else  cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)
                     {
                         To ix = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
                         To iy = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
@@ -375,14 +377,13 @@ protected:
                 cimglist_for(img,l)
                 {
                     To *ptrd = img(l)._data;
-                    const CImg<Ti>& inputImg=in->getCImg(l);
                     // Central finite differences.
-                    if(axis1=='x' && axis2=='x') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ipcc + Incc - 2*Iccc)              /(To)(inT->getScale()[0]*inT->getScale()[0]);
-                    else if(axis1=='x' && axis2=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ippc + Innc - Ipnc - Inpc)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[1]);
-                    else if(axis1=='x' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ipcp + Incn - Ipcn - Incp)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[2]);
-                    else if(axis1=='y' && axis2=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Icpc + Icnc - 2*Iccc)              /(To)(inT->getScale()[1]*inT->getScale()[1]);
-                    else if(axis1=='y' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Icpp + Icnn - Icpn - Icnp)*(To)0.25/(To)(inT->getScale()[1]*inT->getScale()[2]);
-                    else if(axis1=='z' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Iccn + Iccp - 2*Iccc)              /(To)(inT->getScale()[2]*inT->getScale()[2]);
+                    if(axis1=='x' && axis2=='x') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Ipcc + Incc - 2*Iccc)              /(To)(inT->getScale()[0]*inT->getScale()[0]);
+                    else if(axis1=='x' && axis2=='y') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Ippc + Innc - Ipnc - Inpc)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[1]);
+                    else if(axis1=='x' && axis2=='z') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Ipcp + Incn - Ipcn - Incp)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[2]);
+                    else if(axis1=='y' && axis2=='y') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Icpc + Icnc - 2*Iccc)              /(To)(inT->getScale()[1]*inT->getScale()[1]);
+                    else if(axis1=='y' && axis2=='z') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Icpp + Icnn - Icpn - Icnp)*(To)0.25/(To)(inT->getScale()[1]*inT->getScale()[2]);
+                    else if(axis1=='z' && axis2=='z') cimg_forC(inimg(l),c) cimg_for3x3x3(inimg(l),x,y,z,c,I,To)  *(ptrd++) = (Iccn + Iccp - 2*Iccc)              /(To)(inT->getScale()[2]*inT->getScale()[2]);
                 }
             }
             break;
@@ -394,7 +395,7 @@ protected:
                 To o2=cimg::type<To>::max();    if(p.size()>1) o2=(To)p[1];
                 Ti i1=cimg::type<Ti>::min();    if(p.size()>2) i1=(Ti)p[2];
                 Ti i2=cimg::type<Ti>::max();    if(p.size()>3) i2=(Ti)p[3];
-                cimglist_for(img,l) {img(l).cut(i1 , i2).normalize( o1   , o2);  }
+                cimglist_for(img,l) {img(l)=inimg(l).get_cut(i1 , i2).get_normalize( o1   , o2);  }
             }
             break;
         case RESAMPLE:
@@ -417,7 +418,6 @@ protected:
                 outT->getScale() = scale;
                 outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
 
-                const CImgList<Ti>& imgIn = in->getCImgList();
                 unsigned int nbc=in->getDimensions()[3];
                 Ti OutValue=(Ti)0.;
                 cimglist_for(img,l)
@@ -426,13 +426,13 @@ protected:
                     cimg_forXYZ(img(l),x,y,z)
                     {
                         Coord p=inT->toImage(outT->fromImage(Coord(x,y,z)));
-                        if(p[0]<-0.5 || p[1]<-0.5 || p[2]<-0.5 || p[0]>imgIn(l).width()-0.5 || p[1]>imgIn(l).height()-0.5 || p[2]>imgIn(l).depth()-0.5)
+                        if(p[0]<-0.5 || p[1]<-0.5 || p[2]<-0.5 || p[0]>inimg(l).width()-0.5 || p[1]>inimg(l).height()-0.5 || p[2]>inimg(l).depth()-0.5)
                             for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
                         else
                         {
-                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).atXYZ(round((double)p[0]),round((double)p[1]),round((double)p[2]),k);
-                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
-                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) imgIn(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg::type<Ti>::min(),cimg::type<Ti>::max());
+                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(round((double)p[0]),round((double)p[1]),round((double)p[2]),k);
+                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg::type<Ti>::min(),cimg::type<Ti>::max());
                         }
                     }
                 }
@@ -444,9 +444,31 @@ protected:
             {
                 unsigned int c0=0;    if(p.size())   c0=(unsigned int)p[0];
                 unsigned int c1=c0;    if(p.size()>1)   c1=(unsigned int)p[1];
-                cimglist_for(img,l) {img(l)=in->getCImg(l).get_channels(c0,c1);  }
+                cimglist_for(img,l) {img(l)=inimg(l).get_channels(c0,c1);  }
             }
             break;
+
+        case SKELETON:
+            if(updateImage)
+            {
+                bool curve=true;            //if(p.size())   curve=(bool)p[0];
+                float thresh = -0.3f;       //if(p.size()>1)   thresh=(float)p[1];
+                float dlt1 = 2, dlt2 = 1;         //if(p.size()>2)   dlt2=(float)p[2];
+
+                cimglist_for(img,l)
+                {
+                    const CImgList<Real> grad = inimg(l).get_gradient("xyz");
+                    CImg<Real> flux = inimg(l).get_flux(grad,1,1);
+                    if (dlt2) // correction proposed by Torsello 03
+                    {
+                        CImg<Real> logdensity = inimg(l).get_logdensity(inimg(l),grad,flux,dlt1);
+                        flux = inimg(l).get_corrected_flux(logdensity,grad,flux,dlt2);
+                    }
+                    img(l) = inimg(l).get_skeleton(flux,inimg(l),curve,thresh);
+                }
+            }
+            break;
+
         default:
             break;
         }

@@ -240,6 +240,7 @@ public:
             raImage rimage(this->image);			// used here to propagate changes across linked data
             waHisto whisto(this->histo);
             whisto->update();
+            wplane->setClamp(whisto->getClamp());
         }
 
         if(wplane->isImagePlaneDirty() || transform.isDirty() || imagedirty)
