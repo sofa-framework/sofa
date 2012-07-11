@@ -541,8 +541,10 @@ public:
 
         T vmin,vmax;
         histogram = img->get_histogram(vmin,vmax,dimx,mergeChannels);
-        if(clamp[1]>vmax)  clamp[1]=vmax;
-        if(clamp[0]<vmin)  clamp[0]=vmin;
+        //if(clamp[1]<vmin || clamp[1]>vmax)
+        clamp[1]=vmax;
+        //if(clamp[0]<vmin || clamp[0]>vmax)
+        clamp[0]=vmin;
 
         offsetVal = (double)vmin;
         scaleVal = (double)(vmax-vmin)/(double)(dimx-1);
