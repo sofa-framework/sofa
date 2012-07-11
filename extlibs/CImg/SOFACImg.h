@@ -25,6 +25,8 @@
 
 // this file contains CImg extensions for SOFA
 
+#include <queue>
+#define cimg_plugin "skeleton.h"
 #include "CImg.h"
 
 #include <iostream>
