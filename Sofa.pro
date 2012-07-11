@@ -66,6 +66,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(StableFluidBehaviorPlugin)
 		usePlugin(StableFluidModelPlugin)
 	}
+    contains(DEFINES, SOFA_HAVE_SOFAEVE)                { usePlugin(SofaEVE) }
 } # END SOFA_DEV
 
 
