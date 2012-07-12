@@ -62,6 +62,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
     contains(DEFINES, SOFA_HAVE_ELECTROPHYSIOLOGY)      { usePlugin(Electrophysiology) }
     contains(DEFINES, SOFA_HAVE_PLUGIN_FEM)             { usePlugin(FEM) }
     contains(DEFINES, SOFA_HAVE_SOHUSIM)                { usePlugin(Sohusim) }
+    contains(DEFINES, SOFA_HAVE_SOFAEVE)                { usePlugin(SofaEVE) }
     contains(DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 		usePlugin(StableFluidBehaviorPlugin)
 		usePlugin(StableFluidModelPlugin)

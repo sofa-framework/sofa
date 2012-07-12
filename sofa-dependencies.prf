@@ -420,9 +420,9 @@ contains(DEFINES, SOFA_GPU_OPENCL) {
 }
 
 
-contains(DEFINES, SOFA_HAVE_SOFAEVE) {
-	enable(SofaEVE)
-}
+#contains(DEFINES, SOFA_HAVE_SOFAEVE) {
+#	usePlugin(SofaEVE)
+#}
 
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
