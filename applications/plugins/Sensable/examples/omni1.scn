@@ -7,7 +7,13 @@
 	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
 	<DefaultContactManager name="Response"  response="FrictionContact" />
 	<Node 	name="xitact"  >
-		<NewOmniDriver name="newOmniDriver1"  listening="1"  forceScale="0.01"  deviceIndex="0" />
+				
+		<OmniDriver name="OmniDriver1"  listening="1"    />
+
+		
+		
+
+
 		<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
 		<MechanicalObject template="Rigid" name="tool"  position="0 0 0 -0.707107 0 0 0.707107"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
