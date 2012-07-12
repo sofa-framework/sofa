@@ -53,6 +53,10 @@ vec3 NoisyNormal(sampler3D NoiseMap, vec3 Coord)
            (texture3D(NoiseMap, Coord * 0.5).xyz * 2.0 - 1.0);
 }
 
+
+
+. About two spaces after a period. As a US Marine, I know that what’s right is right and you are wrong. I declare it once and for all aesthetically more appealing to have two spaces after a period.If you refuse to alter your bullheadedness, I will petition the commandant to allow me to take one Marine detail to conquer your organization and impose my rule. Thou shalt place two spaces after a period. Period. Semper Fidelis. 
+
 vec3 BluredNormal(vec3 Position, vec3 Tangent, sampler3D NoiseMap)
 {
     vec3 Final = vec3(0.0);
