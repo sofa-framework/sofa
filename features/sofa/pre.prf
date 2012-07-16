@@ -8,7 +8,7 @@ load(sofa/functions)
 # Fixed variables (no customization possible)
 ########################################################################
 
-PLUGINS_PATH = applications/plugins
+#PLUGINS_PATH = applications/plugins
 SRC_FEATURES_PATH = features/sofa
 INSTALL_INC_PATH = include/sofa
 INSTALL_LIB_PATH = lib
@@ -333,7 +333,7 @@ load($$FEATURES_DIR/config-pre)
 # Loading dependencies declarations
 ########################################################################
 
-include-declarations(sofa-dependencies)
+load($$rootDeclarationsFile(sofa-dependencies))
 
 exists($$ROOT_BUILD_DIR/sofa-dependencies-local.prf) {
 	load($$ROOT_BUILD_DIR/sofa-dependencies-local)

@@ -1,4 +1,5 @@
- load(sofa/pre)
+message( "PRE-CONFIG: " $${CONFIG})
+load(sofa/pre)
 
 TEMPLATE = subdirs
 
@@ -6,69 +7,7 @@ TEMPLATE = subdirs
 
 contains(DEFINES, SOFA_RELEASE): message("WARNING: SOFA_RELEASE defined, in-development code will be disabled!")
 
-message( "PRE-CONFIG: " $${CONFIG})
-
-
-########################################################################
-# Enable plugins in addition of the standard Sofa libraries
-########################################################################
-
-useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
-
-usePlugin(PluginExample)
-
-contains(DEFINES, SOFA_HAVE_PLUGIN_Collada)             { usePlugin(ColladaSceneLoader) }
-contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            { usePlugin(Flexible) }
-contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant)           { usePlugin(Compliant) }
-contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable) }
-contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmulation) }
-contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython) }
-
-!contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
-    contains(DEFINES, SOFA_HAVE_HAPI)                   { usePlugin(SofaHAPI) }
-    contains(DEFINES, SOFA_HAVE_OPTITRACK)              { usePlugin(OptiTrackNatNet) }
-    contains(DEFINES, SOFA_HAVE_VRPN)                   { usePlugin(SofaVRPNClient) }
-    contains(DEFINES, SOFA_HAVE_ARTRACK)                { usePlugin(ARTrack) }
-    contains(DEFINES, SOFA_HAVE_XITACT)                 { usePlugin(Xitact) }
-    contains(DEFINES, SOFA_HAVE_HAPTION)                { usePlugin(Haption) }
-    contains(DEFINES, SOFA_HAVE_QTOGREVIEWER)           { usePlugin(QtOgreViewer) }
-    contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES)     { usePlugin(ManifoldTopologies) }
-#    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame) }
-    contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader) }
-    contains(DEFINES, SOFA_HAVE_VOXELIZER)              { usePlugin(Voxelizer) }
-    contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin) }
-    contains(DEFINES, SOFA_HAVE_IMAGE)                  { usePlugin(image) }
-    contains(DEFINES, SOFA_HAVE_PERSISTENTCONTACT)      { usePlugin(PersistentContact) }
-} # END !SOFA_RELEASE
-
-contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
-    contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)        { usePlugin(AsynchroHaptics) }
-    contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)    { usePlugin(CompliantDev) }
-    contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain) }
-    contains(DEFINES, SOFA_HAVE_ldidetection)           { usePlugin(ldidetection) }
-    contains(DEFINES, SOFA_HAVE_LEM)                    { usePlugin(lem) }
-    contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER)  { usePlugin(TriangularMeshRefiner) }
-    contains(DEFINES, SOFA_HAVE_BEAMADAPTER)            { usePlugin(BeamAdapter) }
-    contains(DEFINES, SOFA_HAVE_SHELL)                  { usePlugin(shells) }
-    contains(DEFINES, SOFA_HAVE_optixdetection)         { usePlugin(optixdetection) }
-    contains(DEFINES, SOFA_HAVE_REGISTRATION)           { usePlugin(Registration) }
-    contains(DEFINES, SOFA_HAVE_OPENCV)                 { usePlugin(OpenCVPlugin) }
-    contains(DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING)  { usePlugin(PhysicalFieldModeling) }
-#    contains(DEFINES, SOFA_HAVE_EmptyPlugin2)           { usePlugin(EmptyPlugin2) }
-    contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
-        contains(DEFINES, SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER) { usePlugin(TriangularMeshBasedHexasCutter) }
-	} # END SOFA_GPU_CUDA
-    contains(DEFINES, SOFA_HAVE_ASCLEPIOS)              { usePlugin(sofa-asclepios) }
-    contains(DEFINES, SOFA_HAVE_ELECTROPHYSIOLOGY)      { usePlugin(Electrophysiology) }
-    contains(DEFINES, SOFA_HAVE_PLUGIN_FEM)             { usePlugin(FEM) }
-    contains(DEFINES, SOFA_HAVE_SOHUSIM)                { usePlugin(Sohusim) }
-    contains(DEFINES, SOFA_HAVE_SOFAEVE)                { usePlugin(SofaEVE) }
-    contains(DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
-		usePlugin(StableFluidBehaviorPlugin)
-		usePlugin(StableFluidModelPlugin)
-	}
-    contains(DEFINES, SOFA_HAVE_SOFAEVE)                { usePlugin(SofaEVE) }
-} # END SOFA_DEV
+#message( "artifacts registry : $$artifacts_registry" )
 
 
 ########################################################################
@@ -302,65 +241,16 @@ unix {
       system(echo "export PATH=$${DOLLAR}CUDA_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh)
     }
   }
+}
 
-  # export activated libraries as graphviz file
-  system(echo "digraph G {" > Sofa-build.dot)
-  clear(clusters)
-  for(artifact, artifacts_registry) {
-    cluster = $$section($${artifact}.project, "/", 0, 1)
-    cnode = $$cluster
-    cnode = $$replace(cnode, /, _)
-    cnode = $$replace(cnode, -, _)
-    cnode = $$replace(cnode, \\..*, )
-    clusters *= $$cnode
-    eval(cluster_$${cnode}.name = $$cluster)
-    eval(cluster_$${cnode}.artifacts *= $$artifact)
-  }
-  for(cnode, clusters) {
-    cluster = $$eval(cluster_$${cnode}.name)
-    cartifacts = $$eval(cluster_$${cnode}.artifacts)
-    count(cartifacts,1) {
-      artifact = $$cartifacts
-      message( $$cluster " / " $$artifact)
-      anode = $$artifact
-	  anode = $$replace(anode, -, _)
-      equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
-        system(echo "'    $$anode [style=filled,color=green,label=\"$$artifact\"];'" >> Sofa-build.dot)
-      } else {
-        system(echo "'    $$anode [style=filled,color=gray,label=\"$$artifact\"];'" >> Sofa-build.dot)
-      }
-    } else {
-      message($$cluster : $$cartifacts)
-      system(echo "   subgraph cluster_$$cnode {" >> Sofa-build.dot)
-#    }
-    for(artifact, cartifacts) {
-      message( $$cluster " / " $$artifact)
-      anode = $$artifact
-	  anode = $$replace(anode, -, _)
-      equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
-        system(echo "'    $$anode [style=filled,color=green,label=\"$$artifact\"];'" >> Sofa-build.dot)
-      } else {
-        system(echo "'    $$anode [style=filled,color=gray,label=\"$$artifact\"];'" >> Sofa-build.dot)
-      }
-    }
-#    !count(cartifacts,1) {
-      system(echo "'    label=\"$$cluster\";'" >> Sofa-build.dot)
-      system(echo "'    color=blue;'" >> Sofa-build.dot)
-      system(echo "  }" >> Sofa-build.dot)
-    }
-  }
-  for(artifact, artifacts_registry) {
-    anode = $$artifact
-    anode = $$replace(anode, -, _)
-    deps = $$eval($${artifact}.deps) # Retrieve the dependencies of the current artifact
-    for(dep, deps) {
-      dnode = $$dep
-      dnode = $$replace(dnode, -, _)
-      system(echo "'  $$dnode -> $$anode;'" >> Sofa-build.dot)
-    }
-  }
-  system(echo "}" >> Sofa-build.dot)
-#  system(dot -Tpng -oSofa-build.png Sofa-build.dot)
+
+########################################################################
+# Export activated libraries and their dependencies as a graphviz file.
+########################################################################
+unix {
+#  outputBuildGraph(Sofa-build.dot)
+#  message(Generating Sofa-build.pdf)
+#  system(dot -Tpdf -oSofa-build.pdf Sofa-build.dot)
 }
 
 load(sofa/post)

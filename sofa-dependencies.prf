@@ -1,5 +1,4 @@
 includeOnce($$_FILE_) {
-
 declare(blas,  blas.prf)
 declare(boost,  boost.prf)
 declare(cgal,   cgal.prf)
@@ -50,6 +49,8 @@ declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng boo
 declare(sofadefaulttype, framework/sofa/defaulttype, sofahelper)
 declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 
+addToBuildGroup(sofa/framework, sofahelper sofadefaulttype sofacore)
+
 ######################################################################
 # Modules
 ######################################################################
@@ -58,7 +59,9 @@ declare(sofasimulation, modules/sofa/simulation/common, sofacore tinyxml)
 declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
 declare(sofagraph,      modules/sofa/simulation/graph,  sofasimulation)
 declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
-declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacomponentcollision)
+declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofasimulation)
+
+addToBuildGroup(sofa/simulation, sofasimulation sofatree sofagraph sofabgl sofapml)
 
 declare(sofa_base_topology, modules/sofa/component/sofa_base_topology.pro, sofatree eigen)
 declare(sofa_base_linear_solver, modules/sofa/component/sofa_base_linear_solver.pro, sofatree)
@@ -118,17 +121,31 @@ declare(sofa_misc_dev, modules/sofa/component/sofa_misc_dev.pro, sofa_base_colli
 
 declare(sofa_component_base, modules/sofa/component/sofa_component_base.pro, sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)
 
+addToBuildGroup(sofa/modules/base, sofa_component_base sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)
+
 declare(sofa_component_common, modules/sofa/component/sofa_component_common.pro, sofa_loader sofa_deformable sofa_simple_fem sofa_object_interaction sofa_explicit_ode_solver sofa_implicit_ode_solver sofa_eigen2_solver sofa_mesh_collision)
+
+addToBuildGroup(sofa/modules/common, sofa_component_common sofa_loader sofa_deformable sofa_simple_fem sofa_object_interaction sofa_explicit_ode_solver sofa_implicit_ode_solver sofa_eigen2_solver sofa_mesh_collision)
 
 declare(sofa_component_general, modules/sofa/component/sofa_component_general.pro, sofa_validation sofa_exporter sofa_engine sofa_graph_component sofa_topology_mapping sofa_boundary_condition sofa_user_interaction sofa_constraint sofa_haptics sofa_dense_solver sofa_sparse_solver sofa_preconditioner sofa_opengl_visual)
 
+addToBuildGroup(sofa/modules/general, sofa_component_general sofa_validation sofa_exporter sofa_engine sofa_graph_component sofa_topology_mapping sofa_boundary_condition sofa_user_interaction sofa_constraint sofa_haptics sofa_dense_solver sofa_sparse_solver sofa_preconditioner sofa_opengl_visual)
+
 declare(sofa_component_advanced, modules/sofa/component/sofa_component_advanced.pro, sofa_eulerian_fluid sofa_sph_fluid sofa_volumetric_data sofa_non_uniform_fem sofa_eigen2_solver)
+
+addToBuildGroup(sofa/modules/advanced, sofa_component_advanced sofa_eulerian_fluid sofa_sph_fluid sofa_volumetric_data sofa_non_uniform_fem sofa_eigen2_solver)
 
 declare(sofa_component_advanced_dev, modules/sofa/component/sofa_component_advanced_dev.pro, sofa_non_uniform_fem_dev sofa_advanced_fem sofa_mjed_fem sofa_advanced_constraint sofa_taucs_solver)
 
+addToBuildGroup(sofa-dev/modules/advanced, sofa_component_advanced_dev sofa_non_uniform_fem_dev sofa_advanced_fem sofa_mjed_fem sofa_advanced_constraint sofa_taucs_solver)
+
 declare(sofa_component_misc, modules/sofa/component/sofa_component_misc.pro, sofa_misc_topology sofa_misc_mapping sofa_misc_forcefield sofa_misc_fem sofa_misc_engine sofa_misc_collision sofa_misc_solver sofa_misc)
 
+addToBuildGroup(sofa/modules/misc, sofa_component_misc sofa_misc_topology sofa_misc_mapping sofa_misc_forcefield sofa_misc_fem sofa_misc_engine sofa_misc_collision sofa_misc_solver sofa_misc)
+
 declare(sofa_component_misc_dev, modules/sofa/component/sofa_component_misc_dev.pro, sofa_advanced_interaction sofa_misc_topology_dev sofa_misc_mapping_dev sofa_misc_forcefield_dev sofa_misc_fem_dev sofa_misc_collision_dev sofa_misc_solver_dev sofa_misc_dev)
+
+addToBuildGroup(sofa-dev/modules/misc, sofa_component_misc_dev sofa_advanced_interaction sofa_misc_topology_dev sofa_misc_mapping_dev sofa_misc_forcefield_dev sofa_misc_fem_dev sofa_misc_collision_dev sofa_misc_solver_dev sofa_misc_dev)
 
 declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_component_base sofa_component_common sofa_component_general sofa_component_advanced sofa_component_misc)
 
@@ -409,11 +426,6 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 
 
 
-contains(DEFINES, SOFA_GPU_CUDA) {
-#	enable(sofagpucuda)
-#	enable(sofaCUDA)
-}
-
 contains(DEFINES, SOFA_GPU_OPENCL) {
     enable(sofagpuopencl)
     enable(sofaOPENCL)
@@ -470,4 +482,71 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 } # END !SOFA_RELEASE
 
 
+######################################################################
+# Plugins
+######################################################################
+
+usePlugin(PluginExample, applications/plugins/PluginExample)
+
+contains(DEFINES, SOFA_GPU_CUDA) {
+   usePlugin(SofaCUDA, applications/plugins/SofaCUDA)
+}
+
+contains(DEFINES, SOFA_HAVE_PLUGIN_Collada)             { usePlugin(ColladaSceneLoader, applications/plugins/ColladaSceneLoader) }
+contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible)            { usePlugin(Flexible, applications/plugins/Flexible) }
+contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant)           { usePlugin(Compliant, applications/plugins/Compliant) }
+contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable, applications/plugins/Sensable) }
+contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmulation, applications/plugins/SensableEmulation) }
+contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, applications/plugins/SofaPython) }
+
+!contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
+    contains(DEFINES, SOFA_HAVE_HAPI)                   { usePlugin(SofaHAPI, applications/plugins/SofaHAPI) }
+    contains(DEFINES, SOFA_HAVE_OPTITRACK)              { usePlugin(OptiTrackNatNet, applications/plugins/OptiTrackNatNet) }
+    contains(DEFINES, SOFA_HAVE_VRPN)                   { usePlugin(SofaVRPNClient, applications/plugins/SofaVRPNClient) }
+    contains(DEFINES, SOFA_HAVE_ARTRACK)                { usePlugin(ARTrack, applications/plugins/ARTrack) }
+    contains(DEFINES, SOFA_HAVE_XITACT)                 { usePlugin(Xitact, applications/plugins/Xitact) }
+    contains(DEFINES, SOFA_HAVE_HAPTION)                { usePlugin(Haption, applications/plugins/Haption) }
+    contains(DEFINES, SOFA_HAVE_QTOGREVIEWER)           { usePlugin(QtOgreViewer, applications/plugins/QtOgreViewer) }
+    contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES)     { usePlugin(ManifoldTopologies, applications/plugins/ManifoldTopologies) }
+#    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame, applications/plugins/frame) }
+    contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader, applications/plugins/MeshSTEPLoader) }
+    contains(DEFINES, SOFA_HAVE_VOXELIZER)              { usePlugin(Voxelizer, applications/plugins/Voxelizer) }
+    contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin, applications/plugins/CGALPlugin) }
+    contains(DEFINES, SOFA_HAVE_IMAGE)                  { usePlugin(image, applications/plugins/image) }
+    contains(DEFINES, SOFA_HAVE_PERSISTENTCONTACT)      { usePlugin(PersistentContact, applications/plugins/PersistentContact) }
+} # END !SOFA_RELEASE
+
+contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+    contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)        { usePlugin(AsynchroHaptics, applications/plugins/AsynchroHaptics) }
+    contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)    { usePlugin(CompliantDev, applications/plugins/CompliantDev) }
+    contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain, applications/plugins/vulcain) }
+    contains(DEFINES, SOFA_HAVE_ldidetection)           { usePlugin(ldidetection, applications/plugins/ldidetection) }
+    contains(DEFINES, SOFA_HAVE_LEM)                    { usePlugin(lem, applications/plugins/lem) }
+    contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER)  { usePlugin(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner) }
+    contains(DEFINES, SOFA_HAVE_BEAMADAPTER)            { usePlugin(BeamAdapter, applications/plugins/BeamAdapter) }
+    contains(DEFINES, SOFA_HAVE_SHELL)                  { usePlugin(shells, applications/plugins/shells) }
+    contains(DEFINES, SOFA_HAVE_optixdetection)         { usePlugin(optixdetection, applications/plugins/optixdetection) }
+    contains(DEFINES, SOFA_HAVE_REGISTRATION)           { usePlugin(Registration, applications/plugins/Registration) }
+    contains(DEFINES, SOFA_HAVE_OPENCV)                 { usePlugin(OpenCVPlugin, applications/plugins/OpenCVPlugin) }
+    contains(DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING)  { usePlugin(PhysicalFieldModeling, applications/plugins/PhysicalFieldModeling) }
+#    contains(DEFINES, SOFA_HAVE_EmptyPlugin2)           { usePlugin(EmptyPlugin2, applications/plugins/EmptyPlugin2) }
+    contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
+        contains(DEFINES, SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER) { usePlugin(TriangularMeshBasedHexasCutter, applications/plugins/TriangularMeshBasedHexasCutter) }
+	} # END SOFA_GPU_CUDA
+    contains(DEFINES, SOFA_HAVE_ASCLEPIOS)              { usePlugin(sofa-asclepios, applications/plugins/sofa-asclepios) }
+    contains(DEFINES, SOFA_HAVE_ELECTROPHYSIOLOGY)      { usePlugin(Electrophysiology, applications/plugins/Electrophysiology) }
+    contains(DEFINES, SOFA_HAVE_PLUGIN_FEM)             { usePlugin(FEM, applications/plugins/FEM) }
+    contains(DEFINES, SOFA_HAVE_SOHUSIM)                { usePlugin(Sohusim, applications/plugins/Sohusim) }
+    contains(DEFINES, SOFA_HAVE_SOFAEVE)                { usePlugin(SofaEVE, applications/plugins/SofaEVE) }
+    contains(DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
+		usePlugin(StableFluidBehaviorPlugin, applications/plugins/StableFluidBehaviorPlugin)
+		usePlugin(StableFluidModelPlugin, applications/plugins/StableFluidModelPlugin)
+	}
+} # END SOFA_DEV
+
+######################################################################
+# Projects
+######################################################################
+
+useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
 }

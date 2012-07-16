@@ -6,10 +6,8 @@
 !isEmpty(PLUGIN_NAME): load($$FEATURES_DIR/plugin)
 
 !contains(TEMPLATE, subdirs) : !contains(TEMPLATE, vcsubdirs) {
-	loadDependencies($$TARGET, transitive)
+	loadDependencies($$TARGET)
 }
-
-BUILD_SYSTEM_FILES = $$files($$SRC_FEATURES_DIR/*.prf)
 
 ########################################################################
 # Setup some descriptive variables
@@ -139,6 +137,7 @@ load($$FEATURES_DIR/config-post)
 # If the build system features files exist in the source dir, we install them.
 equals(ROOT_PATH, .) : exists($$SRC_FEATURES_DIR) {
 	
+    BUILD_SYSTEM_FILES = $$files($$SRC_FEATURES_DIR/*.prf)
 	INSTALLS += buildsystem
 
 	buildsystem.files = \
@@ -157,6 +156,7 @@ contains(TEMPLATE, subdirs) {
 }
 
 contains(TEMPLATE, lib) {
+#message(INSTALLS)
 	INSTALLS += target features headers
 
 	QMAKE_EXTRA_TARGETS += uninstall_headers
@@ -208,6 +208,7 @@ contains(TEMPLATE, app) {
 # Definition of make dist
 ########################################################################
 
+#message(FULLDIST)
 # "dist" target already exists in qmake but behaves incorrectly
 # We have to create another target
 QMAKE_EXTRA_TARGETS += fulldist
@@ -257,6 +258,7 @@ equals(ROOT_PATH, .) {
 #		make install.
 ########################################################################
 
+#message(MAINTAINER-CLEAN)
 QMAKE_EXTRA_TARGETS += maintainer-clean
 
 contains(TEMPLATE, subdirs) {
@@ -302,7 +304,7 @@ equals(ROOT_PATH, .) {
 }
 
 } # !equals(IS_SLN, true)
-
+#message(Done)
 #message( "INCLUDEPATH: " $${INCLUDEPATH})
 #message( "DEPENDPATH: " $${DEPENDPATH})
 #message( "LIBDIR: " $${QMAKE_LIBDIR})

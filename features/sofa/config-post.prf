@@ -126,6 +126,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		INCLUDEPATH += '"'$$quote($${CUDA_INC_PATH})'"'
 	}
 	unix {
+#message(>CUDA)
 		# auto-detect CUDA path
 		CUDA_DIR = $${system(which nvcc | sed 's,/bin/*nvcc$,,')}
 		INCLUDEPATH += $${CUDA_DIR}/include
@@ -169,5 +170,6 @@ contains (DEFINES, SOFA_GPU_CUDA) {
                 cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler  -fPIC,$${join(QMAKE_NVCCFLAGS,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 #		macx: cuda.commands += --host-compilation 'C'
+#message(<CUDA)
 	}
 }

@@ -1,5 +1,2 @@
-includeOnce($$_FILE_) {
-	declare(SofaCUDA, applications/plugins/SofaCUDA, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
-	
-	enable(SofaCUDA)
-}
+declare(SofaCUDA, applications/plugins/SofaCUDA, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
+enable(SofaCUDA)

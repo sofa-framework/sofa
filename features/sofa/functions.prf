@@ -40,37 +40,18 @@ defineTest(addCommand) {
 defineTest(includeOnce) {
 	projectFile = $$basename(1)
 	projectName = $$replace(projectFile, \\., _)
+	projectName = $$replace(projectName, -, _)
 
-	defined = $$eval($${projectFile}.defined)
-	path = $$eval($${projectFile}.path)
+	defined = $$eval($${projectName}.defined)
+	path = $$eval($${projectName}.path)
 
 	equals(defined, true) : equals(path, $$_PRO_FILE_) {
 		return(false)
 	} else {
-		eval($${projectFile}.defined = true)
-		eval($${projectFile}.path = $$_PRO_FILE_)
-		export($${projectFile}.defined)
-		export($${projectFile}.path)
-		return(true)
-	}
-}
-
-defineTest(isProjectFile) {
-	path = $$eval($$1)
-	match = $$find(path, ^.+\\.pro$)
-	isEmpty(match) {
-		return(false)
-	} else {
-		return(true)
-	}
-}
-
-defineTest(isFeatureFile) {
-	path = $$eval($$1)
-	match = $$find(path, ^.+\\.prf$)
-	isEmpty(match) {
-		return(false)
-	} else {
+		eval($${projectName}.defined = true)
+		eval($${projectName}.path = $$1)
+		export($${projectName}.defined)
+		export($${projectName}.path)
 		return(true)
 	}
 }
@@ -96,14 +77,22 @@ defineReplace(toWindowsPath) {
 	return($$path)
 }
 
-defineTest(addSubdirs) {
-	for(subdirs, 1) {
+##
+# This function activates the compilation of the specified artifact if available.
+# If it is not available for compilation it looks for an installed version, and
+# will complains if the artifact is missing.
+#
+defineTest(addInstallableSubdir) {
+	artifact = $$1
+	dir  = $$2
+	deps = $$3
+	for(subdirs, dir) {
 		entries = $$files($$subdirs)
 		for(entry, entries) {
 			name = $$replace(entry, [/\\\\\\.], _)
 			SUBDIRS += $$name
 			
-			isProjectFile(entry) {
+			hasFlag($${artifact},file) {
 				eval  ($${name}.file = $$entry)
 				export($${name}.file)
 			} else {
@@ -111,76 +100,12 @@ defineTest(addSubdirs) {
 				export($${name}.subdir)
 			}
 
-			for(dep, 2) {
-				eval ($${name}.depends += $$replace(dep, [/\\\\\\.], _))
-			}
+			eval ($${name}.depends = $$replace(deps, [/\\\\\\.], _))
 			export($${name}.depends)
 		}
 	}
 	
 	export(SUBDIRS)
-}
-
-##
-# This functions tests whether a module is installed.
-# A module is considered installed if a feature file having the specified name
-# exists in the feature directory (which also contain this sofa/pre.prf file).
-#
-defineTest(isInstalled) {
-	name = $$1
-	exists($$FEATURES_DIR/$${name}.prf) {
-		return (true)
-	}	else {
-		return (false)
-	} 
-}
-
-defineTest(isExternal) {
-	name = $$1
-	isFeatureFile($${name}.project) {
-		return(true)
-	} else {
-		return(false)
-	}
-}
-
-##
-# This function tests whether sources of the specified module are available.
-# Sources are considered available if a project file having the specified name
-# exists.
-#
-defineTest(isSourceAvailable) {
-	project  = $$1
-	isFeatureFile(project) | isProjectFile(project) {
-		test_path = $$ROOT_SRC_DIR/$$project
-	} else {
-		dir = $$project 
-		proname = $$basename(project).pro
-		test_path = $$ROOT_SRC_DIR/$$dir/$$proname
-	}
-	exists($$test_path) {
-		return (true)
-	}	else {
-		return (false)
-	}
-}
-
-##
-# This function activates the compilation of the specified artifact if available.
-# If it is not available for compilation it looks for an installed version, and
-# will complains if the artifact is missing.
-#
-defineTest(addInstallableSubdir) {
-	name = $$1
-	dir  = $$2
-	deps = $$3
-	isSourceAvailable($$dir) {
-		addSubdirs($$dir, $$deps)
-	} else {
-		!isInstalled($$name) {
-			error(addInstallableSubdir: Cannot find $$name library)
-		}
-	}
 }
 
 ##
@@ -205,11 +130,11 @@ defineTest(requireLib) {
 	#message(Using system lib $$name)
 
 	featureNoExt = $$replace(feature, ^(.+)\\.prf$, \\1)
-	isSourceAvailable($$feature) {
+	hasFlag($$name,src) {
 		dir = $$dirname(feature)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$featureNoExt
 	} else {
-		!isInstalled($$name) {
+		!hasFlag($$name,installed) {
 			error(requireLib: Cannot feature file for $$name)
 		}
 		MY_FEATUREFILE = $$FEATURES_DIR/$$basename(featureNoExt)
@@ -249,19 +174,19 @@ defineTest(requireExtLib) {
 	OLD_INCLUDEPATH = $$INCLUDEPATH
 	OLD_LIBS = $$LIBS
 
-	isProjectFile(project) | isFeatureFile(project) {
+	hasFlag($$name,file) {
 		dir = $$dirname(project)
 	} else {
 		dir = $$project
 	}
 
-	isSourceAvailable($$project) {
+	hasFlag($$name,src) {
 		#message(Using shipped version of $$name in $$dir)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
 		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
 		MY_LIBRARYPATH = -L$$LIB_DESTDIR
 	} else {
-		!isInstalled($$name) {
+		!hasFlag($$name,installed) {
 			error(requireExtLib: Cannot find $$name library)
 		}
 		#message(Using installed version of $$name)
@@ -304,7 +229,7 @@ defineTest(requireSofaLib) {
 
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
 
-	isSourceAvailable($$project) {
+	hasFlag($$name,src) {
 		#message(Using shipped version of Sofa library: $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		DEPENDPATH *= $$ROOT_SRC_DIR/$$sourcedir
@@ -344,83 +269,99 @@ defineTest(declare) {
 
 	eval($${artifact}.name = $$artifact)
 	eval($${artifact}.project = $$project)
-	eval($${artifact}.deps = $$dependencies)
 	eval($${artifact}.enabled = false)
+	eval($${artifact}.deps = $$dependencies)
+
 	artifacts_registry += $$artifact
+
+#    message( "Registering $$artifact -> $$artifacts_registry" )
 
 	export($${artifact}.name)
 	export($${artifact}.project)
-	export($${artifact}.deps)
 	export($${artifact}.enabled)
+	export($${artifact}.deps)
 	export(artifacts_registry)
 }
 
-defineTest(include-declarations) {
+defineTest(computeFlags) {
+	artifact = $$1
+	!isEmpty($${artifact}.flags): return (false)
+	isEmpty($${artifact}.name): return (false)
+    project = $$eval($${artifact}.project)
+    clear(flags)
+	# set flags
+	match = $$find(project, ^.+\\.prf$)
+	!isEmpty(match): flags *= file prf
+	match = $$find(project, ^.+\\.pro$)
+	!isEmpty(match): flags *= file pro
+	exists($$FEATURES_DIR/$${artifact}.prf): flags *= installed
+
+	contains(flags, file) {
+		test_path = $$ROOT_SRC_DIR/$$project
+	} else {
+		flags *= dir
+		dir = $$project 
+		proname = $$basename(project).pro
+		test_path = $$ROOT_SRC_DIR/$$project/$$basename(project).pro
+	}
+	exists($$test_path): {
+		flags *= src
+	}
+	eval($${artifact}.flags = $$flags)
+	export($${artifact}.flags)
+#    message(FLAGS $$artifact: $$flags)
+	return (true)
+}
+
+
+defineTest(hasFlag) {
+	artifact = $$1
+    flag = $$2
+    computeFlags($$artifact)
+    contains($${artifact}.flags,$$flag): return (true)
+    else: return (false)
+}
+
+
+defineReplace(rootDeclarationsFile) {
 	name = $$1
-	directory = $$2
 
 	exists($$FEATURES_DIR/$${name}.prf) {
-		load($$FEATURES_DIR/$$name)
+		return ($$FEATURES_DIR/$$name)
 	}
 	else : exists($$ROOT_SRC_DIR/$${name}.prf) {
-		load($$ROOT_SRC_DIR/$$name)
+		return ($$ROOT_SRC_DIR/$$name)
 	}
-	else : !isEmpty(directory) : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
-		load($$ROOT_SRC_DIR/$$directory/$$name)
+	else : error(root-declarations: cannot find $$name (FEATURES_DIR=$$FEATURES_DIR, ROOT_SRC_DIR=$$ROOT_SRC_DIR))
+}
+
+defineReplace(subDeclarationsFile) {
+	name = $$1
+	directory = $$2
+    from = $$3
+
+	exists($$FEATURES_DIR/$${name}.prf) {
+		return ($$FEATURES_DIR/$$name)
 	}
-	else : !isEmpty(directory) : exists($$directory/$${name}.prf) {
-		load($$directory/$$name)
+	else : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
+		return ($$ROOT_SRC_DIR/$$directory/$$name)
 	}
-	else : error(include-declarations: cannot find $$name (dir=$$directory, FEATURES_DIR=$$FEATURES_DIR, ROOT_SRC_DIR=$$ROOT_SRC_DIR))
+	else : exists($$directory/$${name}.prf) {
+		return ($$directory/$$name)
+	}
+	else : error(sub-declarations: cannot find $$name used by $$from (dir=$$directory, FEATURES_DIR=$$FEATURES_DIR, ROOT_SRC_DIR=$$ROOT_SRC_DIR))
 }
 
 ##
-# This function returns the list of dependencies (including transitive ones) for
-# the specified artifact.
-#
-# Parameters:
-#		name	the name of the artifact
-#
-defineReplace(computeTransitiveDependencies) {
-	name = $$1
-
-	# Transitive dependencies involves recursivity but recursive functions does
-	# not work in qmake so we implement recursivity using a (pseudo) queue.
-	# Usually we loop until the queue is empty but while loops are not
-	# supported either so we use an iterative approach with 2 lists instead of a
-	# queue, and 2 nested for loops instead of a while loop.
-	# Maximum recursivity has to be arbitrarily defined, here we set it to 100.
-	queue = $$name
-	for(depth, 1..100) {
-	#	message( -> $$queue )
-	  isEmpty(queue): break() # Stop looping when there is no more dependencies
-	  # Loop on the current queue. A new queue will be filled for the next iteration.
-		for(dep, queue) {
-			# Ignore already analysed dependencies (to break circular dependencies)
-			!contains(analysed, $$dep) {
-				
-				!equals(dep, $$eval($${dep}.name)) {
-                    message(Declared artifacts: $$artifacts_registry)
-					error(computeTransitiveDependencies: undeclared artifact $$dep required by $$name)
-
-				}
-				
-				equals($${dep}.enabled, true) {
-					deps = $$eval($${dep}.deps) # Retrieve the dependencies of the current artifact
-					newqueue *= $$deps			# Fill the next queue with these dependencies
-					tdeps *= $$deps				# Add them to the list of transitive dependencies
-					analysed *= $$dep			# Add the current artifact to the list of analysed ones
-				} else {
-				#	message( $$dep skipped )
-				}
-			}
-		}
-		# Switch queues
-		queue = $$newqueue
-		newqueue = 
-	}
-	
-	return($$tdeps)
+# This function set the group name of a given artifact
+# This group can be used to sort artifacts into meaningfull categories
+defineTest(addToBuildGroup) {
+  group = $$1
+  artifacts = $$2
+  for(name, artifacts) {
+    eval($${name}.group = $$group)
+    export($${name}.group)
+  }
 }
 
 ##
@@ -433,18 +374,55 @@ defineTest(enable) {
 	name = $$1
 	eval($${name}.enabled = true)
 	export($${name}.enabled)
+    # optimization: enabled deps and transitive dependencies are now computed immediately when enabling a project
+    enabled_artifacts += $$name
+    export(enabled_artifacts)
+    # get the list of dependencies
+    deps = $$eval($${name}.deps)
+    # and the list of enabled transitive output artifacts
+    tdeps_out = $$eval($${name}.tdeps_out)
+    # filter the list of dependencies into disabled and enabled artifacts
+    disabled_deps = $$deps
+    disabled_deps -= $$enabled_artifacts
+    enabled_deps = $$deps
+    enabled_deps -= $$disabled_deps
+    # save the list of enabled dependencies
+    eval($${name}.enabled_deps = $$enabled_deps)
+    export($${name}.enabled_deps)
+    # compute the list of enabled transitive input artifacts
+    # by merging the transitive input artifacts of our immediate dependencies
+    tdeps_in = $$enabled_deps
+    for(dep,enabled_deps) {
+        tdeps_in *= $$eval($${dep}.tdeps_in)
+    }
+    # save the list of enabled transitive input artifacts
+    eval($${name}.tdeps_in = $$tdeps_in)
+    export($${name}.tdeps_in)
+    # update the list of enabled transitive input artifacts of
+    # all artifacts depending on us
+    for(dep,tdeps_out) {
+        eval($${dep}.tdeps_in *= $$name $$tdeps_in)
+        export($${dep}.tdeps_in)
+    }
+    # update the list of enabled transitive output artifacts of
+    # all artifacts we depend on, even the currently disabled ones
+    for(dep,deps) {
+        eval($${dep}.tdeps_out *= $$name $$tdeps_out)
+        export($${dep}.tdeps_out)
+    }
 }
 
 ##
-# This function disables the compilation of the specified artifact.
+# This function returns the list of dependencies (including transitive ones) for
+# the specified artifact.
 #
 # Parameters:
-#		name	the name of the artifact (use "declare" first)
+#		name	the name of the artifact
 #
-defineTest(disable) {
+defineReplace(getEnabledTransitiveDependencies) {
 	name = $$1
-	eval($${name}.enabled = false)
-	export($${name}.enabled)
+    tdeps_in = $$eval($${name}.tdeps_in)
+    return ($$tdeps_in)
 }
 
 ##
@@ -455,24 +433,23 @@ defineTest(disable) {
 #		none
 #
 defineTest(buildEnabledArtifacts) {
-	for(artifact, artifacts_registry) {
-		equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
+	for(artifact, enabled_artifacts) {
+		hasFlag($$artifact, src):!hasFlag($$artifact, prf) {
+			eval($${artifact}.srcdir = \$\$$${artifact}.project)
+		}
+	}
+	for(artifact, enabled_artifacts) {
+		project = $$eval($${artifact}.project)
+		hasFlag($$artifact, src) {
 			clear(deps_dirs)
-			clear(tdeps)
-			tdeps = $$computeTransitiveDependencies($$artifact)
-
-			#message(enabling $$artifact with the following dependencies:)
+			tdeps = $$getEnabledTransitiveDependencies($$artifact)
+#           message(enabling $$artifact with the following dependencies:)
 			for(dep, tdeps) {
-				equals($${dep}.enabled, true) {
-					#message($$escape_expand(\\t)$$dep)
-					dep_project = $$eval($${dep}.project)
-					!isFeatureFile(dep_project) : isSourceAvailable($$dep_project) {
-						deps_dirs += $$dep_project
-					}
-				}
+#				message($$escape_expand(\\t)$$dep)
+				deps_dirs *= $$eval($${dep}.srcdir)
 			}
+#            message(enabling $$artifact with the following dependencies: $$deps_dirs)
 
-			project = $$eval($${artifact}.project)
 			addInstallableSubdir($$artifact, $$project, $$deps_dirs) 
 		}
 	}
@@ -489,20 +466,16 @@ defineTest(buildEnabledArtifacts) {
 #
 defineTest(loadDependencies) {
 	target = $$1
-	rec = $$2
-	isEqual(rec, transitive) {
-		dependencies = $$computeTransitiveDependencies($$target)
-	} else {
-		dependencies = $$eval($${target}.deps)
-	}
+#    message(loadDependencies $$1)
+	dependencies = $$getEnabledTransitiveDependencies($$target)
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
 		!equals(dep, $$name) {
              message("Declared artifacts: " $$artifacts_registry)
-             error(undeclared dependency $$dep required by $$target)
+             message(undeclared dependency $$dep required by $$target)
         }
 		project = $$eval($${dep}.project)
-		isFeatureFile(project) {
+		hasFlag($$name,prf) {
 			requireLib($$name, $$project)
 		} else {
 			equals($${dep}.enabled, true) {
@@ -515,37 +488,22 @@ defineTest(loadDependencies) {
 			}
 		}
 	}
-}
-
-##
-# This function should be used in dependency files to declare that the current
-# artifact depends on the specified list of plugins
-#
-defineTest(dependOnPlugins) {
-	pluginDependencies = $$1
-	export(pluginDependencies)
+#    message(loadDependencies $$1 END)
 }
 
 ##
 # This function imports all the declarations necessary to use or build the specified plugin.
 #
 defineTest(usePlugin) {
-	queue = $$1
-	for(depth, 1..100) {
-		isEmpty(queue): break()
-
-		for(plugin, queue) {
-			!contains(analysed, $$plugin) {
-				include-declarations($${plugin}-dependencies, $$PLUGINS_PATH/$$plugin)
-				newqueue *= $$pluginDependencies
-				clear(pluginDependencies)
-				analysed *= plugin
-			}
-		}
-		queue = $$newqueue
-		clear(newqueue)
-	}
-	export(pluginDependencies)
+#    message(usePlugin $$1 $$2)
+	plugin = $$1
+    path = $$2
+    isEmpty(path) : path = applications/plugins/$$plugin
+    isEmpty($${plugin}.name) {
+        load($$subDeclarationsFile($${plugin}-dependencies, $$path, $$plugin))
+        eval($${plugin}.type = plugin)
+        export($${plugin}.type)
+    }
 }
 
 ##
@@ -554,26 +512,9 @@ defineTest(usePlugin) {
 defineTest(useApp) {
     project = $$1
     path = $$2
-    include-declarations($${project}-dependencies, $$path)
-    queue *= $$pluginDependencies
-    clear(pluginDependencies)
-    analysed *= project
-
-	for(depth, 1..100) {
-		isEmpty(queue): break()
-
-		for(plugin, queue) {
-			!contains(analysed, $$plugin) {
-				include-declarations($${plugin}-dependencies, $$PLUGINS_PATH/$$plugin)
-				newqueue *= $$pluginDependencies
-				clear(pluginDependencies)
-				analysed *= plugin
-			}
-		}
-		queue = $$newqueue
-		clear(newqueue)
-	}
-	export(pluginDependencies)
+    load($$subDeclarationsFile($${project}-dependencies, $$path, $$project))
+	eval($${project}.type = app)
+	export($${project}.type)
 }
 
 ##
@@ -598,4 +539,85 @@ defineTest(defineAsApp) {
 	useApp($$APP_NAME, $$_PRO_FILE_PWD_)
 	export(TEMPLATE)
 	export(APP_NAME)
+}
+
+##
+# This function export activated libraries and their
+# dependencies as a graphviz file.
+#
+defineTest(outputBuildGraph) {
+  outfile = $$1
+  isEmpty(outfile) : outfile = Sofa-build.dot
+
+  message(Generating $$outfile)
+
+  system(echo "'digraph G {'" > $$outfile)
+  system(echo "'node [fontsize=48];'" >> $$outfile)
+
+  clear(clusters)
+  for(artifact, artifacts_registry) {
+    cluster = $$eval($${artifact}.group)
+    isEmpty(cluster) {
+      cluster = $$section($${artifact}.project, "/", 0, 1)
+      cluster = $$replace(cluster, extlibs/.*, extlibs)
+      equals($${artifact}.project, $$cluster): !equals(artifact, sofatests): cluster = system
+    }
+    cnode = $$cluster
+    cnode = $$replace(cnode, /, _)
+    cnode = $$replace(cnode, -, _)
+    cnode = $$replace(cnode, \\..*, )
+    clusters *= $$cnode
+    eval(cluster_$${cnode}.name = $$cluster)
+    eval(cluster_$${cnode}.artifacts *= $$artifact)
+  }
+  for(cnode, clusters) {
+    cluster = $$eval(cluster_$${cnode}.name)
+    cartifacts = $$eval(cluster_$${cnode}.artifacts)
+    message($$cluster : $$cartifacts)
+    system(echo "   subgraph cluster_$$cnode {" >> $$outfile)
+    for(artifact, cartifacts) {
+      anode = $$artifact
+	  anode = $$replace(anode, -, _)
+      ashape = rectangle
+      acolor = orange
+      equals($${artifact}.type, plugin) {
+        ashape = hexagon
+        acolor = gold
+      }
+      equals($${artifact}.type, app) {
+        ashape = ellipse
+        acolor = green
+      }
+      equals($${artifact}.enabled, true) {
+        !hasFlag($$artifact,src): acolor = cyan
+      }
+      else {
+        !hasFlag($$artifact,src):!hasFlag($$artifact,prf): acolor = red
+        else: acolor = gray
+      }
+      
+      system(echo "'    $$anode [label=\"$$artifact\",style=filled,color=$$acolor,shape=$$ashape];'" >> $$outfile)
+    }
+    system(echo "'    label=\"$$cluster\";'" >> $$outfile)
+    system(echo "'    style=filled; color=blue; fillcolor=lightcyan; fontsize=48; penwidth=4; shape=box3d'" >> $$outfile)
+    system(echo "  }" >> $$outfile)
+  }
+  for(artifact, artifacts_registry) {
+    anode = $$artifact
+    anode = $$replace(anode, -, _)
+    deps = $$eval($${artifact}.deps) # Retrieve the dependencies of the current artifact
+    enabled = $$eval($${artifact}.enabled)
+    for(dep, deps) {
+      dnode = $$dep
+      dnode = $$replace(dnode, -, _)
+      denabled = $$eval($${dep}.enabled)
+      equals(enabled,true):equals(denabled,true) {
+      system(echo "'  $$dnode -> $$anode [weight=10,  penwidth=2];'" >> $$outfile)
+      }
+      else {
+      system(echo "'  $$dnode -> $$anode [color=gray];'" >> $$outfile)
+      }
+    }
+  }
+  system(echo "}" >> $$outfile)
 }
