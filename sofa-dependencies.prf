@@ -251,6 +251,32 @@ enable(EmptyPlugin2_test)
 }
 
 ######################################################################
+# Enable system dependencies
+######################################################################
+
+enable(zlib)
+enable(libpng)
+enable(qt)
+enable(qtgui)
+enable(rt)
+contains(DEFINES, SOFA_HAVE_BOOST)        { enable(boost) }
+contains(DEFINES, SOFA_HAVE_BLAS)         { enable(blas) }
+contains(DEFINES, SOFA_HAVE_EIGEN2)       { declare(eigen-unsupported) }
+!contains(DEFINES, SOFA_NO_OPENGL)        { enable(glut) }
+!contains(DEFINES, SOFA_NO_OPENGL)        { enable(glew) }
+contains(DEFINES, SOFA_XML_PARSER_LIBXML) { enable(libxml) }
+contains(DEFINES, SOFA_HAVE_CUDA)         {
+                                            enable(cuda)
+  contains(DEFINES, SOFA_GPU_THRUST)      { enable(thrust) }
+}
+contains(DEFINES, SOFA_HAVE_OPENCL)       { enable(opencl) }
+contains(DEFINES, SOFA_HAVE_CGAL)         { enable(cgal) }
+contains(DEFINES, SOFA_HAVE_CILK)         { enable(cilk) }
+contains(DEFINES, SOFA_HAVE_FLOWVR)       { enable(flowvr) }
+contains(DEFINES, SOFA_HAVE_TAUCS):!contains(DEFINES, SOFA_EXTLIBS_TAUCS) { enable(system-taucs) }
+contains(DEFINES, SOFA_HAVE_METIS):!contains(DEFINES, SOFA_EXTLIBS_METIS) { enable(system-metis) }
+
+######################################################################
 # Enable artifacts
 ######################################################################
 !contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
