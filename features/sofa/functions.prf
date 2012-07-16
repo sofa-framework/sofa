@@ -466,8 +466,8 @@ defineTest(buildEnabledArtifacts) {
 #
 defineTest(loadDependencies) {
 	target = $$1
-#    message(loadDependencies $$1)
 	dependencies = $$getEnabledTransitiveDependencies($$target)
+#    message(loadDependencies $$target : $$dependencies)
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
 		!equals(dep, $$name) {

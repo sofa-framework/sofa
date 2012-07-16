@@ -165,7 +165,7 @@ in G2F gdata;
 //uniform vec3 LightPosition;
 //uniform vec3 DiffuseMaterial;
 //uniform vec3 AmbientMaterial;
-const vec3 LIGHTPOS = vec3( 50., 100., 100. );
+const vec3 LIGHTPOS = vec3( -50., 10., 150. );
 
 float amplify(float d, float scale, float offset)
 {
