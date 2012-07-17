@@ -27,7 +27,7 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
-#ifdef SOFA_DEV
+#if 0 //defined(SOFA_DEV)
 #include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
 #include <sofa/gpu/cuda/CudaRotationMatrix.h>
 #include <sofa/core/behavior/RotationMatrix.h>
@@ -373,7 +373,7 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
     Data& data = m->data;
-#ifdef SOFA_DEV
+#if 0 //defined(SOFA_DEV)
     if (CudaDiagonalMatrix<Real> * diag = dynamic_cast<CudaDiagonalMatrix<Real> * >(mat))
     {
         Kernels::addKToMatrix(
@@ -628,7 +628,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 {
     Data& data = m->data;
 
-#ifdef SOFA_DEV
+#if 0 //defined(SOFA_DEV)
     if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
     {
         data.getRotations(m,diagd->getVector());
@@ -640,7 +640,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         data.getRotations(m,data.vecTmpRotation);
 
 
-#ifdef SOFA_DEV
+#if 0 //defined(SOFA_DEV)
         if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
         {
             for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
