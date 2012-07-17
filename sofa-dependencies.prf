@@ -253,7 +253,9 @@ enable(libpng)
 enable(qt)
 enable(qtgui)
 enable(rt)
-contains(DEFINES, SOFA_HAVE_BOOST)        { enable(boost) }
+# boost.prf is always enabled, but internally switch between a system-provided boost or extlibs/miniBoost depending on the SOFA_HAVE_BOOST flag
+enable(boost) 
+
 contains(DEFINES, SOFA_HAVE_BLAS)         { enable(blas) }
 contains(DEFINES, SOFA_HAVE_EIGEN2)       { declare(eigen-unsupported) }
 !contains(DEFINES, SOFA_NO_OPENGL)        { enable(glut) }
