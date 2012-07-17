@@ -87,10 +87,10 @@ namespace collision
 {
 
 #ifndef SOFA_DOUBLE
-template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
+template class SOFA_Compliant_API  CompliantAttachPerformer<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_ADVANCED_INTERACTION_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
+template class SOFA_Compliant_API  CompliantAttachPerformer<defaulttype::Vec3dTypes>;
 #endif
 
 

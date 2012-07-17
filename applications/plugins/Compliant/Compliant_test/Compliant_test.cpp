@@ -232,7 +232,7 @@ protected:
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
 
         DenseMatrix diff = m1 - m2;
-        bool areEqual = fabs(diff.maxCoeff()<tolerance && fabs(diff.minCoeff()<tolerance));
+        bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
         if( !areEqual )
         {
             cerr<<"matricesAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
@@ -270,7 +270,7 @@ protected:
         }
 
         Vector diff = m1-m2;
-        bool areEqual = fabs(diff.maxCoeff()<tolerance && fabs(diff.minCoeff()<tolerance));
+        bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
         if( !areEqual )
         {
             cerr<<"matricesAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
@@ -1059,6 +1059,9 @@ public:
 
   */
 #define BOOST_TEST_DYN_LINK
+#ifdef WIN32
+#define BOOST_TEST_INCLUDED
+#endif
 #define BOOST_TEST_MODULE example
 #include <boost/test/included/unit_test.hpp>
 #include <boost/test/unit_test_log.hpp>

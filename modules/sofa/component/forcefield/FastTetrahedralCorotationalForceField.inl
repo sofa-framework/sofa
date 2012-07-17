@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/helper/decompose.h>
+#include <sofa/helper/decompose.inl>
 
 namespace sofa
 {

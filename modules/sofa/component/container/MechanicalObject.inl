@@ -2411,7 +2411,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
+inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;

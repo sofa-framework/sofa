@@ -94,7 +94,7 @@ template class SOFA_BASE_MECHANICS_API MechanicalObject<LaparoscopicRigid3Types>
 
 
 #ifndef SOFA_FLOAT
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
@@ -106,7 +106,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     }
 }
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
 {
 
@@ -166,7 +166,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize
 
 }
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
@@ -222,7 +222,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 }
 
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
@@ -296,7 +296,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 #endif
 
 #ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
@@ -309,7 +309,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 }
 
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
 {
     if (dest.type == sofa::core::V_COORD)
@@ -367,7 +367,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
 
 }
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
@@ -428,7 +428,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 //     return false; // ignore 1D DOFs for 3D bbox
 // }
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
@@ -501,7 +501,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
 #endif
 
-template<> SOFA_BASE_MECHANICS_API
+template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;

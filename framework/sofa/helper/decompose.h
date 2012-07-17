@@ -38,7 +38,7 @@ namespace helper
 {
 
 template<class Real>
-class SOFA_HELPER_API Decompose
+class Decompose
 {
 
 public:
