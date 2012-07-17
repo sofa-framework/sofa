@@ -46,7 +46,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 template <>
-void FixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
+inline void FixedConstraint<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
@@ -125,7 +125,7 @@ namespace container
 
 
 template <>
-void MechanicalObject<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
+inline void MechanicalObject<Quadratic3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;

@@ -379,7 +379,7 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = assembleJ( _R );
-        eB.template block(0,0,strain_size,frame_size) = J;
+        eB.block(0,0,strain_size,frame_size) = J;
 
         if( order > 0 )
         {
@@ -387,7 +387,7 @@ public:
             unsigned int offsetE=strain_size;
             for(unsigned int k=0; k<spatial_dimensions; k++)
             {
-                eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
+                eB.block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
                 offsetE+=strain_size;
             }
         }

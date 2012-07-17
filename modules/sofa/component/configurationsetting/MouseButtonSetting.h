@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
 
+#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -39,7 +40,7 @@ namespace component
 namespace configurationsetting
 {
 
-class MouseButtonSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_GRAPH_COMPONENT_API MouseButtonSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);

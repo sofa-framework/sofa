@@ -127,7 +127,7 @@ namespace container
 
 
 template <>
-void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
+inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;

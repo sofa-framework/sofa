@@ -59,7 +59,7 @@ public:
 @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  TriangleStrainAverageMapping : public core::Mapping<TIn, TOut>
+class TriangleStrainAverageMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(TriangleStrainAverageMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -122,11 +122,12 @@ protected:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_CPP)
+
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API TriangleStrainAverageMapping< Vec3dTypes, F321dTypes >;
+extern template class SOFA_Flexible_API TriangleStrainAverageMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::F321dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API TriangleStrainAverageMapping< Vec3fTypes, F321fTypes >;
+extern template class SOFA_Flexible_API TriangleStrainAverageMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::F321fTypes >;
 #endif
 
 #endif

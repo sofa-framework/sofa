@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 #define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 
-#include <sofa/core/Mapping.h>
+#include <sofa/core/Mapping.inl>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
@@ -58,7 +58,7 @@ public:
 @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  TriangleDeformationMapping : public core::Mapping<TIn, TOut>
+class TriangleDeformationMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(TriangleDeformationMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -129,10 +129,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
+extern template class SOFA_Flexible_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
+extern template class SOFA_Flexible_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
 #endif
 
 #endif

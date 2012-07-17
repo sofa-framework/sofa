@@ -35,7 +35,7 @@ unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR
 win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
 
 win32 {
-SOFA_CHOLMOD_PATH = ../../../extlibs/SuiteSparse/cholmod
+SOFA_CHOLMOD_PATH = ../../../../extlibs/SuiteSparse/cholmod
 INCLUDEPATH += $$SOFA_CHOLMOD_PATH/Include
 LIBPATH += $$SOFA_CHOLMOD_PATH/Lib
 LIBS += -lamd
@@ -45,7 +45,7 @@ LIBS += -lcamd
 LIBS += -lcolamd
 LIBS += -lcholmod
 
-win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libblas.dll)\" \"../../../bin/libblas.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/liblapack.dll)\" \"../../../bin/liblapack.dll\"
+QMAKE_POST_LINK = copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libblas.dll)\" \"../../../../bin/libblas.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/liblapack.dll)\" \"../../../../bin/liblapack.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgcc_s_dw2-1.dll)\" \"../../../../bin/libgcc_s_dw2-1.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgfortran-3.dll)\" \"../../../../bin/libgfortran-3.dll\"
 }
 
 load(sofa/post)

@@ -184,7 +184,7 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         JBlock J = assembleJ(F.getF());
-        eB.template block(0,0,strain_size,frame_size) = J;
+        eB.block(0,0,strain_size,frame_size) = J;
 
         if( order > 0 )
         {
@@ -194,8 +194,8 @@ public:
             unsigned int offsetE=strain_size;
             for(unsigned int k=0; k<spatial_dimensions; k++)
             {
-                eB.template block(offsetE,0,strain_size,frame_size) = Jgrad[k];
-                eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
+                eB.block(offsetE,0,strain_size,frame_size) = Jgrad[k];
+                eB.block(offsetE,(k+1)*frame_size,strain_size,frame_size) = J;
                 offsetE+=strain_size;
             }
 
@@ -205,8 +205,8 @@ public:
                 for(unsigned int k=0; k<spatial_dimensions; k++)
                     for(unsigned int j=k; j<spatial_dimensions; j++)
                     {
-                        eB.template block(offsetE,(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
-                        if(j!=k) eB.template block(offsetE,(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];
+                        eB.block(offsetE,(j+1)*frame_size,strain_size,frame_size) = Jgrad[k];
+                        if(j!=k) eB.block(offsetE,(k+1)*frame_size,strain_size,frame_size) = Jgrad[j];
                         offsetE+=strain_size;
                     }
             }
@@ -225,7 +225,7 @@ public:
         typedef Eigen::Map<Eigen::Matrix<Real,material_dimensions,material_dimensions,Eigen::RowMajor> > KBlock;
         KBlock s(&sigma[0][0]);
         for(unsigned int j=0; j<spatial_dimensions; j++)
-            eK.template block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
+            eK.block(j*material_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
 
         if( order > 0 )
         {
@@ -236,8 +236,8 @@ public:
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<spatial_dimensions; j++)
                     {
-                        eK.template block(j*material_dimensions+i*material_dimensions*spatial_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
-                        eK.template block(j*material_dimensions,j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                        eK.block(j*material_dimensions+i*material_dimensions*spatial_dimensions,j*material_dimensions,material_dimensions,material_dimensions) += s;
+                        eK.block(j*material_dimensions,j*material_dimensions+i*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
                     }
             }
             if( order > 1 )
@@ -249,8 +249,8 @@ public:
                         sigma=StressVoigtToMat( childForce.getStrainHessian(k,l) );
                         for(unsigned int j=0; j<spatial_dimensions; j++)
                         {
-                            eK.template block(j*material_dimensions+k*material_dimensions*spatial_dimensions,j*material_dimensions+l*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
-                            if(k!=l) eK.template block(j*material_dimensions+l*material_dimensions*spatial_dimensions,j*material_dimensions+k*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                            eK.block(j*material_dimensions+k*material_dimensions*spatial_dimensions,j*material_dimensions+l*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
+                            if(k!=l) eK.block(j*material_dimensions+l*material_dimensions*spatial_dimensions,j*material_dimensions+k*material_dimensions*spatial_dimensions,material_dimensions,material_dimensions) += s;
                         }
                     }
             }

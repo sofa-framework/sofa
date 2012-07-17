@@ -853,19 +853,19 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const defaulttype::Ma
 
 
 template<class Real>
-Real Decompose<Real>::zeroTolerance()
+inline Real Decompose<Real>::zeroTolerance()
 {
     return (Real)1e-6;
 }
 
 template<>
-float Decompose<float>::zeroTolerance()
+inline float Decompose<float>::zeroTolerance()
 {
     return 1e-6f;
 }
 
 template<>
-double Decompose<double>::zeroTolerance()
+inline double Decompose<double>::zeroTolerance()
 {
     return 1e-8;
 }

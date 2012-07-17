@@ -130,4 +130,10 @@ README_FILE = Flexible.txt
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Include
+	DEFINES += EIGEN_DONT_ALIGN
+}
+
 load(sofa/post)

@@ -28,6 +28,8 @@
 #include "../initFlexible.h"
 #include "../deformationMapping/BaseDeformationMapping.h"
 #include "../deformationMapping/LinearJacobianBlock.inl"
+#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/core/State.inl>
 
 namespace sofa
 {
@@ -44,7 +46,7 @@ using helper::vector;
 
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API LinearMapping : public BaseDeformationMapping<defaulttype::LinearJacobianBlock<TIn,TOut> >
+class LinearMapping : public BaseDeformationMapping<defaulttype::LinearJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::LinearJacobianBlock<TIn,TOut> BlockType;

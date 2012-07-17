@@ -185,7 +185,7 @@ struct SE3
     }
 
 
-    static const real epsilon = 1e-16;
+    static const real epsilon() {return 1e-16;}
 
 
 
@@ -204,7 +204,7 @@ struct SE3
         real w = std::min<real>(1.0, q.w());
         real theta = std::acos( w );
 
-        if( std::abs(theta) < epsilon )
+        if( std::abs(theta) < epsilon() )
         {
             return q.vec();
         }
@@ -225,14 +225,14 @@ struct SE3
         mat33 res = mat33::Identity() + hat( log_q );
 
         real theta = log_q.norm();
-        if( theta < epsilon ) return res;
+        if( theta < epsilon() ) return res;
 
         vec3 n = log_q.normalized();
 
         real cos = std::cos(theta);
         real sinc = boost::math::sinc_pi(theta);
 
-        assert( std::abs( sinc ) > epsilon );
+        assert( std::abs( sinc ) > epsilon() );
 
         real alpha = cos / sinc - 1.0;
         // real alpha = theta / std::tan(theta) - 1.0;

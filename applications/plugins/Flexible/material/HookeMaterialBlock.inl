@@ -455,20 +455,20 @@ public:
         MatBlock K = MatBlock();
         EigenMap eK(&K[0][0]);
         // order 0
-        eK.template block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.vol());
+        eK.block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.vol());
 
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.template block(strain_size*(i+1),0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order1()[i]);
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.template block(0,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order1()[i]);
+            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.block(strain_size*(i+1),0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order1()[i]);
+            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.block(0,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order1()[i]);
             // order 2
             unsigned int count = 0;
             for(unsigned int i=0; i<spatial_dimensions; i++)
                 for(unsigned int j=i; j<spatial_dimensions; j++)
                 {
-                    eK.template block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[count]);
-                    if(i!=j) eK.template block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[count]);
+                    eK.block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[count]);
+                    if(i!=j) eK.block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[count]);
                     count++;
                 }
 
@@ -477,23 +477,23 @@ public:
                 unsigned int offset = (spatial_dimensions+1)*strain_size;
                 for(unsigned int j=0; j<strain_size; j++)
                 {
-                    eK.template block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
-                    eK.template block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
+                    eK.block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
+                    eK.block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order2()[j]);
                 }
 
                 // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
-                        eK.template block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order3()(i,j));
-                        eK.template block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order3()(i,j));
+                        eK.block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order3()(i,j));
+                        eK.block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order3()(i,j));
                     }
                 // order 4
                 for(unsigned int i=0; i<strain_size; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
-                        eK.template block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
-                        eK.template block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
+                        eK.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
+                        eK.block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
                     }
             }
         }
@@ -508,7 +508,7 @@ public:
         else
         {
             EigenMap eC(&C[0][0]);
-            eC.template block(0,0,strain_size,strain_size) = -assembleC_Isotropic<Real,material_dimensions,strain_size>(youngModulus,poissonRatio,factors.vol());
+            eC.block(0,0,strain_size,strain_size) = -assembleC_Isotropic<Real,material_dimensions,strain_size>(youngModulus,poissonRatio,factors.vol());
         }
         return C;
     }
@@ -518,20 +518,20 @@ public:
         MatBlock B = MatBlock();
         EigenMap eB(&B[0][0]);
         // order 0
-        eB.template block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.vol());
+        eB.block(0,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.vol());
 
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.template block(strain_size*(i+1),0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order1()[i]);
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.template block(0,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order1()[i]);
+            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.block(strain_size*(i+1),0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order1()[i]);
+            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.block(0,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order1()[i]);
             // order 2
             unsigned int count = 0;
             for(unsigned int i=0; i<spatial_dimensions; i++)
                 for(unsigned int j=i; j<spatial_dimensions; j++)
                 {
-                    eB.template block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[count]);
-                    if(i!=j) eB.template block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[count]);
+                    eB.block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[count]);
+                    if(i!=j) eB.block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[count]);
                     count++;
                 }
 
@@ -540,23 +540,23 @@ public:
                 unsigned int offset = (spatial_dimensions+1)*strain_size;
                 for(unsigned int j=0; j<strain_size; j++)
                 {
-                    eB.template block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
-                    eB.template block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
+                    eB.block(0,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
+                    eB.block(offset+strain_size*j,0,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order2()[j]);
                 }
 
                 // order 3
                 for(unsigned int i=0; i<spatial_dimensions; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
-                        eB.template block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order3()(i,j));
-                        eB.template block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order3()(i,j));
+                        eB.block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order3()(i,j));
+                        eB.block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order3()(i,j));
                     }
                 // order 4
                 for(unsigned int i=0; i<strain_size; i++)
                     for(unsigned int j=0; j<strain_size; j++)
                     {
-                        eB.template block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
-                        eB.template block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
+                        eB.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
+                        eB.block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
                     }
             }
         }

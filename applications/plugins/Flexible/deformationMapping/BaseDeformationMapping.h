@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 
 #include "../initFlexible.h"
-#include <sofa/core/Mapping.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/component/component.h>
 #include <sofa/helper/vector.h>
@@ -134,7 +133,7 @@ public:
 */
 
 template <class JacobianBlockType>
-class SOFA_Flexible_API BaseDeformationMapping : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>
+class BaseDeformationMapping : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>
 {
 public:
     typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;

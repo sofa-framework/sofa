@@ -81,7 +81,7 @@ protected:
     DisplayFlags backupFlags;
 };
 
-helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node );
+SOFA_BASE_VISUAL_API helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node );
 
 
 } // visual

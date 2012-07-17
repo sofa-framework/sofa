@@ -181,7 +181,7 @@ public:
 
 
 
-    static const Real MIN_DETERMINANT=0.001; ///< J is clamped to avoid undefined deviatoric expressions
+    static const Real MIN_DETERMINANT() {return 0.001;} ///< J is clamped to avoid undefined deviatoric expressions
 
     static const bool constantJ=false;
     bool deviatoric;
@@ -201,7 +201,7 @@ public:
         Frame F=data.getF();
         Real detF=getDeterminantGradient(dJ, F);
 
-        if ( detF<=MIN_DETERMINANT) detF = MIN_DETERMINANT;   // CLAMP J
+        if ( detF<=MIN_DETERMINANT()) detF = MIN_DETERMINANT();   // CLAMP J
 
         StrainMat C=F.multTranspose( F );
 

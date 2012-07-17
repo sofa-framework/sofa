@@ -36,10 +36,10 @@ namespace core
 {
 using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
-template class SOFA_CORE_API Mapping< E321fTypes, E321dTypes >;
+template class SOFA_Flexible_API Mapping< E321fTypes, E321dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_CORE_API Mapping< E321fTypes, E321fTypes >;
+template class SOFA_Flexible_API Mapping< E321fTypes, E321fTypes >;
 #endif
 }
 
