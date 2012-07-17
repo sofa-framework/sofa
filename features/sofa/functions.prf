@@ -226,8 +226,45 @@ defineTest(requireSofaLib) {
 	project = $$2
 	isEmpty(name)   : error(missing name parameter in requireSofaLib)
 	isEmpty(project): error(missing project parameter in requireSofaLib)
-
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
+#	message(requireSofaLib $$name $$project $$sourcedir)
+
+	hasFlag($$name,src) {
+		#message(Using shipped version of Sofa library: $$name)
+		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
+		DEPENDPATH *= $$ROOT_SRC_DIR/$$sourcedir
+		LIBS *= -L$$LIB_DESTDIR
+	} else {
+		#message(Using installed version of Sofa library: $$name)
+		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
+		DEPENDPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
+		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
+	}
+	LIBS *= -l$$name$$LIBSUFFIX
+
+	export(INCLUDEPATH)
+	export(DEPENDPATH)
+	export(LIBS)
+}
+
+##
+# This function configures the current artifact build parameters to compile and
+# link using the specified SOFA plugin.
+# It can work either when sources are available in the same source tree as the
+# client artifact, or when just the installed version is available.
+#
+# Parameters:
+#		name	the name of the library
+#		dir		the subdirectory from include tree root and/or source tree root
+#
+defineTest(requirePlugin) {
+	name = $$1
+	project = $$2
+    message(requirePlugin $$name $$project)
+	isEmpty(name)   : error(missing name parameter in requirePlugin)
+	isEmpty(project): error(missing project parameter in requirePlugin)
+
+	sourcedir = $$project
 
 	hasFlag($$name,src) {
 		#message(Using shipped version of Sofa library: $$name)
@@ -380,7 +417,11 @@ defineTest(enable) {
     # get the list of dependencies
     deps = $$eval($${name}.deps)
     # and the list of enabled transitive output artifacts
-    tdeps_out = $$eval($${name}.tdeps_out)
+    deps_out = $$eval($${name}.tdeps_out)
+    tdeps_out = $$deps_out
+    for(dep,deps_out) {
+      tdeps_out *= $$eval($${dep}.tdeps_out)
+    }
     # filter the list of dependencies into disabled and enabled artifacts
     disabled_deps = $$deps
     disabled_deps -= $$enabled_artifacts
@@ -395,9 +436,11 @@ defineTest(enable) {
     for(dep,enabled_deps) {
         tdeps_in *= $$eval($${dep}.tdeps_in)
     }
-    # save the list of enabled transitive input artifacts
+    # save the list of enabled transitive input and output artifacts
     eval($${name}.tdeps_in = $$tdeps_in)
     export($${name}.tdeps_in)
+    eval($${name}.tdeps_out = $$tdeps_out)
+    export($${name}.tdeps_out)
     # update the list of enabled transitive input artifacts of
     # all artifacts depending on us
     for(dep,tdeps_out) {
@@ -405,8 +448,14 @@ defineTest(enable) {
         export($${dep}.tdeps_in)
     }
     # update the list of enabled transitive output artifacts of
-    # all artifacts we depend on, even the currently disabled ones
-    for(dep,deps) {
+    # all artifacts we depend on
+    for(dep,tdeps_in) {
+        eval($${dep}.tdeps_out *= $$name $$tdeps_out)
+        export($${dep}.tdeps_out)
+    }
+    # update the list of enabled transitive output artifacts of
+    # currently disabled ones dependencies
+    for(dep,disabled_deps) {
         eval($${dep}.tdeps_out *= $$name $$tdeps_out)
         export($${dep}.tdeps_out)
     }
@@ -467,7 +516,7 @@ defineTest(buildEnabledArtifacts) {
 defineTest(loadDependencies) {
 	target = $$1
 	dependencies = $$getEnabledTransitiveDependencies($$target)
-#    message(loadDependencies $$target : $$dependencies)
+#	message(loadDependencies $$target : $$dependencies)
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
 		!equals(dep, $$name) {
@@ -477,14 +526,14 @@ defineTest(loadDependencies) {
 		project = $$eval($${dep}.project)
 		hasFlag($$name,prf) {
 			requireLib($$name, $$project)
+		} else:	equals($${dep}.type,plugin) {
+			requirePlugin($$name, $$project)
 		} else {
-			equals($${dep}.enabled, true) {
-				extsrc = $$find(project, ^extlibs/.+$)
-				isEmpty(extsrc) {
-					requireSofaLib($$name, $$project)
-				} else {
-					requireExtLib($$name, $$project)
-				}
+			extsrc = $$find(project, ^extlibs/.+$)
+			isEmpty(extsrc) {
+				requireSofaLib($$name, $$project)
+			} else {
+				requireExtLib($$name, $$project)
 			}
 		}
 	}
