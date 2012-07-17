@@ -151,10 +151,6 @@ declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_componen
 
 declare(sofa_component_dev, modules/sofa/component/sofa_component_dev.pro, sofa_component_advanced_dev sofa_component_misc_dev)
 
-#declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
-
-#declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_preconditioner sofa_advanced_interaction sofa_misc_dev eigen csparse taucs taucs_mt system-taucs)
-
 declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction opencl eigen csparse taucs taucs_mt system-taucs)
 
 ######################################################################
@@ -174,8 +170,6 @@ declare(sofaTypedefs,	  applications/projects/sofaTypedefs,	  sofacore sofa_comp
 declare(meshconv,         applications/projects/meshconv,         sofa_component)
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain sofa_component sofa_component_dev)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component sofa_component_dev)
-#declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda sofagpucuda_dev sofa_component_dev)
-#declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofa_component_dev sofa_base_linear_solver sofagpucuda sofagpucuda_dev)
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
 
 #declare(sofaPython,      applications/projects/sofaPython,       sofaguimain sofa_component_dev)
@@ -478,9 +472,6 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		contains(DEFINES, SOFA_GPU_CUDPP) {
 			enable(cudpp)
 		}
-#      		enable(sofagpucuda_dev)
-# This project should be enable in sofa-dependencies-local.prf
-#		enable(sofaCUDA_Bench)
 	}
 
 } # END SOFA_DEV
@@ -543,6 +534,7 @@ contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, 
 } # END !SOFA_RELEASE
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+    contains(DEFINES, SOFA_GPU_CUDA)                    { usePlugin(SofaCUDADev, applications/plugins/SofaCUDADev) }
     contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)        { usePlugin(AsynchroHaptics, applications/plugins/AsynchroHaptics) }
     contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)    { usePlugin(CompliantDev, applications/plugins/CompliantDev) }
     contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain, applications/plugins/vulcain) }
