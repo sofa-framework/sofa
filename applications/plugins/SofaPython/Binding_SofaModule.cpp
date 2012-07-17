@@ -61,9 +61,8 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args)
         return 0;
     }
 
-    // on tente toujours de retourner le type le plus haut niveau possible (héritage)
-    if (dynamic_cast<BaseState*>(obj.get()))
-        return SP_BUILD_PYSPTR(dynamic_cast<BaseState*>(obj.get()));
+    obj->init();
+
 
     // par défaut, ce sera toujours au minimum un BaseObject...
     return SP_BUILD_PYSPTR(obj.get());

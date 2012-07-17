@@ -99,6 +99,9 @@ extern "C" PyObject * GNode_addObject(PyObject *self, PyObject * args)
         return 0;
     }
     node->addObject(object);
+
+    object->init();
+
     return Py_BuildValue("i",0);
 }
 

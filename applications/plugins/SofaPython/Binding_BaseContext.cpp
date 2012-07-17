@@ -86,6 +86,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
+    obj->init();
 
     return SP_BUILD_PYSPTR(obj.get());
 }
