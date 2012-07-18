@@ -31,6 +31,8 @@ using namespace sofa::core::objectmodel;
 #include "Binding_Base.h"
 #include "Binding_Vec3.h"
 
+#include <sofa/simulation/common/Node.h>
+using namespace sofa::simulation;
 
 
 extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
@@ -86,7 +88,12 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
-    obj->init();
+
+    Node *node = dynamic_cast<Node*>(context);
+    if (node)
+        node->init(sofa::core::ExecParams::defaultInstance());
+    else
+        obj->init();
 
     return SP_BUILD_PYSPTR(obj.get());
 }

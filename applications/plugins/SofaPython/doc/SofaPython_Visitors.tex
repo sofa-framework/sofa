@@ -1,0 +1,56 @@
+\
+\section{Visitors}
+
+\subsection{Example visitor implementation in Python}
+
+Following is a very simple visitor implementation in a python script:
+(it is provided in the \textcode{examples/Visitor.scn} sample scene of the plugin)
+
+\begin{code_python}
+class SofaVisitor(object):
+ def __init__(self,name):
+  print 'SofaVisitor constructor name='+name
+  self.name = name
+  
+ def processNodeTopDown(self,node):
+  print 'SofaVisitor "'+self.name+'" processNodeTopDown node='+node.findData('name').value
+  return True
+ 
+ def processNodeBottomUp(self,node):
+  print 'SofaVisitor "'+self.name+'" processNodeBottomUp node='+node.findData('name').value
+
+\end{code_python}
+
+Your visitor class MUST implement the two methods \textcode{processNodeTopDown} and \textcode{processNodeBottomUp}. 
+
+In this example it is only meant to go through the graph in both directions, listing all node names.
+
+The scene graph is the following nodes tree:
+
+\begin{figure}[htbp]
+\begin{center}
+\Tree [.God [.Adam Abel  ] 
+			Eve ]
+\caption{Scene graph of the Visitor sample.}
+\label{default}
+\end{center}
+\end{figure}
+
+The Visitor is executed on the "God" node:
+\begin{code_python}
+ v = SofaVisitor('PythonVisitor')
+ node.executeVisitor(v)
+\end{code_python}
+
+and the console output result is:
+
+\textcode{
+SofaVisitor constructor name=PythonVisitor
+SofaVisitor "PythonVisitor" processNodeTopDown node=god
+SofaVisitor "PythonVisitor" processNodeTopDown node=Adam
+SofaVisitor "PythonVisitor" processNodeTopDown node=Abel
+SofaVisitor "PythonVisitor" processNodeBottomUp node=Abel
+SofaVisitor "PythonVisitor" processNodeBottomUp node=Adam
+SofaVisitor "PythonVisitor" processNodeTopDown node=Eve
+SofaVisitor "PythonVisitor" processNodeBottomUp node=Eve
+SofaVisitor "PythonVisitor" processNodeBottomUp node=god}

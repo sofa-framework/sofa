@@ -100,7 +100,8 @@ extern "C" PyObject * GNode_addObject(PyObject *self, PyObject * args)
     }
     node->addObject(object);
 
-    object->init();
+    //object->init();
+    node->init(sofa::core::ExecParams::defaultInstance());
 
     return Py_BuildValue("i",0);
 }
@@ -118,6 +119,8 @@ extern "C" PyObject * GNode_removeObject(PyObject *self, PyObject * args)
         return 0;
     }
     node->removeObject(object);
+    node->init(sofa::core::ExecParams::defaultInstance());
+
     return Py_BuildValue("i",0);
 }
 
