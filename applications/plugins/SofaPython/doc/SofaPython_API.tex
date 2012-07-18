@@ -19,12 +19,9 @@ These can be used from python within scripts loaded by the components provided b
 %Module methods
 \subsection{Module methods}
 
-SofaPython provides several module methods, either for general purpose (use of factory, for example) or as convenient helper functions (node functions used directly with the tree root node).
+SofaPython provides several module methods, for general purpose (not linked to a particular node or component, for example).
 
 \begin{itemize}
-\item \textcode{createObject(BaseContext, BaseObjectDescription)}
-\item \textcode{getObject(BaseContext,path)}
-\item \textcode{getChildNode(node,path)}
 \item \textcode{sendGUIMessage(msgType,msgValue)} 
 \end{itemize}
 
@@ -128,7 +125,7 @@ Attributes:
 \item \textcode{getChild(path)} returns a child node, given its path (if any) 
 \item \textcode{getChildren()} returns the list of children 
 \item \textcode{getParents()} returns the list of parents
-\item \textcode{executeVisitor(visitor)} 
+\item \textcode{executeVisitor(visitor)} executes a python visitor from this node. See "Visitors" section for more infos.
 \item \textcode{simulationStep(dt)} executes ONE step of simulation, using dt (in seconds, float) as delta time. 
 \end{itemize}
 \subsubsection{Sofa.Gnode}

@@ -77,7 +77,7 @@ def createGraph(node):
 def initGraph(node):
  print 'initGraph called (python side)'
  
- v = SofaVisitor('testVisitor')
+ v = SofaVisitor('PythonVisitor')
  node.executeVisitor(v)
  
  return 0
