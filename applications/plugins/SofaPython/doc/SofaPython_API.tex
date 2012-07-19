@@ -35,7 +35,7 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 
 \begin{figure}[htbp]
 \begin{center}
-\Tree [.Base [.BaseContext [.Context [.BaseNode [.Node GNode  ] ] ]  ] 
+\Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ]  ] 
 			[ .BaseObject BaseState ] ]
 \Tree [.BaseObjectDescription ]
 \Tree [.Vec3 ]
@@ -121,22 +121,18 @@ Attributes:
 (empty)
 \subsubsection{Sofa.Node}
 \begin{itemize}
+\item \textcode{createChild(childName)} 
 \item \textcode{getRoot()} returns the root node of the graph (if any) 
 \item \textcode{getChild(path)} returns a child node, given its path (if any) 
 \item \textcode{getChildren()} returns the list of children 
 \item \textcode{getParents()} returns the list of parents
 \item \textcode{executeVisitor(visitor)} executes a python visitor from this node. See "Visitors" section for more infos.
 \item \textcode{simulationStep(dt)} executes ONE step of simulation, using dt (in seconds, float) as delta time. 
-\end{itemize}
-\subsubsection{Sofa.Gnode}
-Methods :
-\begin{itemize}
-\item \textcode{createChild(childName)} 
+\item \textcode{addObject(object)} 
+\item \textcode{removeObject(object)} 
 \item \textcode{addChild(childNode)} 
 \item \textcode{removeChild(childNode)} 
 \item \textcode{moveChild(childNode)} 
-\item \textcode{addObject(object)} objets created with \textcode{Sofa.createObject} method  (see example scene)
-\item \textcode{removeObject(object)} 
 \item \textcode{detachFromGraph()} 
 \end{itemize}
 
@@ -192,6 +188,8 @@ Some attributes (like showAll) are hierarchicaly above others: setting them to \
 \label{default}
 \end{center}
 \end{figure}
+
+
 
 Simple example of use:
 \begin{code_python}

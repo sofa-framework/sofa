@@ -28,7 +28,7 @@
 
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
-#include "Binding_GNode.h"
+#include "Binding_Node.h"
 
 namespace sofa
 {
@@ -116,17 +116,17 @@ void PythonScriptController::loadScript()
 using namespace simulation::tree;
 using namespace sofa::core::objectmodel;
 
-void PythonScriptController::script_onLoaded(GNode *node)
+void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
     SP_CALL(m_Func_onLoaded, "(O)", SP_BUILD_PYSPTR(node))
 }
 
-void PythonScriptController::script_createGraph(GNode *node)
+void PythonScriptController::script_createGraph(sofa::simulation::Node *node)
 {
     SP_CALL(m_Func_createGraph, "(O)", SP_BUILD_PYSPTR(node))
 }
 
-void PythonScriptController::script_initGraph(GNode *node)
+void PythonScriptController::script_initGraph(sofa::simulation::Node *node)
 {
     SP_CALL(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(node))
 }

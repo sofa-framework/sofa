@@ -17,7 +17,6 @@ using namespace sofa::core;
 #include "Binding_BaseContext.h"
 #include "Binding_Context.h"
 #include "Binding_Node.h"
-#include "Binding_GNode.h"
 
 using namespace sofa::core;
 
@@ -27,8 +26,6 @@ using namespace sofa::core;
 // Ceci afin de permettre l'utilisation de fonctions des sous-classes de Base
 PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
-    if (dynamic_cast<GNode*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GNode));
     if (dynamic_cast<Node*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
     if (dynamic_cast<Context*>(obj))

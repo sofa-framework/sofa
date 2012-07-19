@@ -58,15 +58,15 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     // load & bind script
     loadScript();
     // call script notifications...
-    script_onLoaded( dynamic_cast<simulation::tree::GNode*>(getContext()) );
-    script_createGraph( dynamic_cast<simulation::tree::GNode*>(getContext()) );
+    script_onLoaded( dynamic_cast<simulation::Node*>(getContext()) );
+    script_createGraph( dynamic_cast<simulation::Node*>(getContext()) );
 }
 
 void ScriptController::init()
 {
     Controller::init();
     // init the script
-    script_initGraph( dynamic_cast<simulation::tree::GNode*>(getContext()) );
+    script_initGraph( dynamic_cast<simulation::Node*>(getContext()) );
 }
 
 void ScriptController::storeResetState()
