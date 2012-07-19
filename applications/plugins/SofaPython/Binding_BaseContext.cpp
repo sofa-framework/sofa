@@ -122,6 +122,8 @@ SP_CLASS_METHOD(BaseContext,getTime)
 SP_CLASS_METHOD(BaseContext,getDt)
 SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
+SP_CLASS_METHOD(BaseContext,createObject)
+SP_CLASS_METHOD(BaseContext,getObject)
 SP_CLASS_METHODS_END
 
 

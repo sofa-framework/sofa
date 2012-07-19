@@ -69,7 +69,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * /*args*/
     return SP_BUILD_PYSPTR(obj.get());
     */
     // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.creatObject(BaseContext,BaseObjectDescription) is deprecated.\nPlease use BaseContext.createObject(BaseObjectDescription) instead.");
+    printf("<PYTHON> ERROR: Sofa.creatObject(BaseContext,BaseObjectDescription) is deprecated.\nPlease use BaseContext.createObject(BaseObjectDescription) instead.\n");
     PyErr_BadArgument();
     return 0;
 }
@@ -94,7 +94,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
         return SP_BUILD_PYSPTR(sptr.get());
     */
     // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.");
+    printf("<PYTHON> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.\n");
     PyErr_BadArgument();
     return 0;
 
@@ -132,7 +132,7 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
     return SP_BUILD_PYSPTR(childNode);
     */
     // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.");
+    printf("<PYTHON> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.\n");
     PyErr_BadArgument();
     return 0;
 }

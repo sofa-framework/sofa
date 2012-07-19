@@ -22,43 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseData.h>
-using namespace sofa::core::objectmodel;
-#include <sofa/core/visual/DisplayFlags.h>
-using namespace sofa::core::visual;
+#ifndef BINDING_DISPLAYFLAGSDATA_H
+#define BINDING_DISPLAYFLAGSDATA_H
 
-#include "Binding_Base.h"
-#include "Binding_Data.h"
-#include "Binding_DisplayFlagsData.h"
+#include "PythonMacros.h"
 
-extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
-{
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
-    char *dataName;
-    if (!PyArg_ParseTuple(args, "s",&dataName))
-        return 0;
-    BaseData * data = obj->findData(dataName);
-    if (!data)
-    {
-        PyErr_BadArgument();
-        return 0;
-    }
-    if (dynamic_cast<Data<DisplayFlags>*>(data))
-        return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,data,false);
-    return SP_BUILD_PYPTR(Data,BaseData,data,false);
-}
+SP_DECLARE_CLASS_TYPE(DisplayFlagsData)
 
-
-SP_CLASS_METHODS_BEGIN(Base)
-SP_CLASS_METHOD(Base,findData)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_DATA_ATTRIBUTE(Base,name)
-
-SP_CLASS_ATTRS_BEGIN(Base)
-SP_CLASS_ATTR(Base,name)
-SP_CLASS_ATTRS_END
-
-SP_CLASS_TYPE_BASE_SPTR_ATTR(Base,Base)
+#endif // BINDING_DISPLAYFLAGSDATA_H

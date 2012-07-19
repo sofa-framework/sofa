@@ -39,7 +39,7 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 			[ .BaseObject BaseState ] ]
 \Tree [.BaseObjectDescription ]
 \Tree [.Vec3 ]
-\Tree [.Data ]
+\Tree [.Data DisplayFlagsData ]
 \caption{Sofa python types hierarchy}
 \label{default}
 \end{center}
@@ -153,6 +153,52 @@ Methods :
 \item getValue(index)
 \item setValue(index,value)
 \end{itemize}
+
+%DATA
+\subsubsection{Sofa.DisplayFlagsData}
+
+This class is always used in a "VisualStyle' object in the root node; see example below. It is used to control what should be displayed.
+
+Attributes :
+\begin{itemize}
+\item showAll
+\item showVisual
+\item showVisualModels
+\item showBehavior
+\item showBehaviorModels
+\item showForceFields
+\item showInteractionForceFields
+\item showCollision
+\item showCollisionModels
+\item showBoundingCollisionModels
+\item showMapping
+\item showMappings
+\item showMechanicalMappings
+\item showOptions
+\item showWireFrame
+\item showNormals
+\end{itemize}
+Unlike in C++ code, all these attributes are boolean values for simplicity.
+Some attributes (like showAll) are hierarchicaly above others: setting them to \textcode{True} or \textcode{False} will set children attributes also; reading them will return \textcode{True} if their real C++ state is true or neutral.
+
+\begin{figure}[htbp]
+\begin{center}
+\Tree [.All [.Visual VisualModels  ] 
+			[ .Behavior BehaviorModels ForceFields Interactions ]
+			[ .Collision CollisionModels BoundingCollisionModels ]
+			[ .Mapping Mappings MechanicalMappings ]
+			[ .Options Wireframe Normals ] ]
+\caption{display flags hierarchy}
+\label{default}
+\end{center}
+\end{figure}
+
+Simple example of use:
+\begin{code_python}
+ style = node.getRoot().createObject(Sofa.BaseObjectDescription('style','VisualStyle'))
+ style.findData('displayFlags').showBehaviorModels = True
+\end{code_python}
+
 
 \subsubsection{Data members: the most important thing in \sofa Python API}
 
