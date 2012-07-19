@@ -44,7 +44,8 @@ SOURCES = initSofaPython.cpp \
     Binding_BaseObject.cpp \
     Binding_BaseState.cpp \
     PythonMacros.cpp \
-    PythonVisitor.cpp
+    PythonVisitor.cpp \
+    Binding_DisplayFlagsData.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -63,7 +64,8 @@ HEADERS = initSofaPython.h \
     Binding_Data.h \
     Binding_BaseObject.h \
     Binding_BaseState.h \
-    PythonVisitor.h
+    PythonVisitor.h \
+    Binding_DisplayFlagsData.h
 
 README_FILE = SofaPython.txt
 

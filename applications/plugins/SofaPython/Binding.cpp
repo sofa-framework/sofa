@@ -26,6 +26,7 @@
 #include "Binding_SofaModule.h"
 
 #include "Binding_Data.h"
+#include "Binding_DisplayFlagsData.h"
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
@@ -48,8 +49,8 @@ void bindSofaPythonModule()
     //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
 
     SofaPythonModule = SP_INIT_MODULE(Sofa)
-
             SP_ADD_CLASS(SofaPythonModule,Data)
+            SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
             SP_ADD_CLASS(SofaPythonModule,Vec3)
             SP_ADD_CLASS(SofaPythonModule,BaseObjectDescription)
 
@@ -114,8 +115,6 @@ void (Base::*setName1)(const std::string&) = &Base::setName;
 /*
 BOOST_PYTHON_MODULE( Sofa )
 {
-    def ("getObject", getObject);//, return_value_policy<reference_existing_object>());
-    def ("getChildNode", getChildNode);//, return_value_policy<reference_existing_object>());
 
     // TODO: double héritage BaseMechanicalState & State<sofa::defaulttype::Vec3Types>
     class_ <MechanicalState<sofa::defaulttype::Vec3Types> , MechanicalState<sofa::defaulttype::Vec3Types>::SPtr, bases<BaseObject>, boost::noncopyable>("MechanicalState", no_init)
@@ -180,9 +179,9 @@ BOOST_PYTHON_MODULE( Sofa )
             .add_property("showMechanicalMappings",
                           &DisplayFlags::getShowMechanicalMappings,
                           make_function(&DisplayFlags::setShowMechanicalMappings,return_value_policy<reference_existing_object>()))
-            .add_property("showOptions",
-                          &DisplayFlags::getShowOptions,
-                          make_function(&DisplayFlags::setShowOptions,return_value_policy<reference_existing_object>()))
+//            .add_property("showOptions",
+//                          &DisplayFlags::getShowOptions,
+//                          make_function(&DisplayFlags::setShowOptions,return_value_policy<reference_existing_object>()))
             .add_property("showWireFrame",
                           &DisplayFlags::getShowWireFrame,
                           make_function(&DisplayFlags::setShowWireFrame,return_value_policy<reference_existing_object>()))
