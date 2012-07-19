@@ -28,7 +28,7 @@
 #include <sofa/component/controller/Controller.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -125,9 +125,9 @@ protected:
 
     virtual void loadScript() = 0;      // load & bind functions
 
-    virtual void script_onLoaded(sofa::simulation::tree::GNode* node) = 0;   // called once, immediately after the script is loaded
-    virtual void script_createGraph(sofa::simulation::tree::GNode* node) = 0;       // called when the script must create its graph
-    virtual void script_initGraph(sofa::simulation::tree::GNode* node) = 0;         // called when the script must init its graph, once all the graph has been create
+    virtual void script_onLoaded(sofa::simulation::Node* node) = 0;   // called once, immediately after the script is loaded
+    virtual void script_createGraph(sofa::simulation::Node* node) = 0;       // called when the script must create its graph
+    virtual void script_initGraph(sofa::simulation::Node* node) = 0;         // called when the script must init its graph, once all the graph has been create
 
     virtual void script_storeResetState() = 0;
     virtual void script_reset() = 0;

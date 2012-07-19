@@ -37,7 +37,6 @@ SOURCES = initSofaPython.cpp \
     Binding_Context.cpp \
     Binding_BaseContext.cpp \
     Binding_Node.cpp \
-    Binding_GNode.cpp \
     Binding_Vec3.cpp \
     Binding_BaseObjectDescription.cpp \
     Binding_Data.cpp \
@@ -56,7 +55,6 @@ HEADERS = initSofaPython.h \
     Binding_Base.h \
     Binding_SofaModule.h \
     Binding_Node.h \
-    Binding_GNode.h \
     Binding_Context.h \
     Binding_BaseContext.h \
     Binding_Vec3.h \

@@ -33,7 +33,6 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Context.h"
 #include "Binding_Node.h"
-#include "Binding_GNode.h"
 #include "Binding_Vec3.h"
 #include "Binding_BaseObjectDescription.h"
 
@@ -58,7 +57,6 @@ void bindSofaPythonModule()
             SP_ADD_CLASS(SofaPythonModule,BaseContext)
             SP_ADD_CLASS(SofaPythonModule,Context)
             SP_ADD_CLASS(SofaPythonModule,Node)
-            SP_ADD_CLASS(SofaPythonModule,GNode)
             SP_ADD_CLASS(SofaPythonModule,BaseObject)
             SP_ADD_CLASS(SofaPythonModule,BaseState)
             /*

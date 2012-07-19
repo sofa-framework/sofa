@@ -143,6 +143,108 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
+extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
+{
+    Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    char *nodeName;
+    if (!PyArg_ParseTuple(args, "s",&nodeName))
+        return 0;
+    return SP_BUILD_PYSPTR(obj->createChild(nodeName).get());
+}
+
+extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseObject* object=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!object)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    node->addObject(object);
+
+    //object->init();
+    node->init(sofa::core::ExecParams::defaultInstance());
+
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseObject* object=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!object)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    node->removeObject(object);
+    node->init(sofa::core::ExecParams::defaultInstance());
+
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
+{
+    Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseNode* child=dynamic_cast<BaseNode*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!child)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    obj->addChild(child);
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
+{
+    Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseNode* child=dynamic_cast<BaseNode*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!child)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    obj->removeChild(child);
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
+{
+    Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyChild;
+    if (!PyArg_ParseTuple(args, "O",&pyChild))
+        return 0;
+    BaseNode* child=dynamic_cast<BaseNode*>(((PySPtr<Base>*)pyChild)->object.get());
+    if (!child)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    obj->moveChild(child);
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * Node_detachFromGraph(PyObject *self, PyObject * /*args*/)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    node->detachFromGraph();
+    return Py_BuildValue("i",0);
+}
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
@@ -150,6 +252,13 @@ SP_CLASS_METHOD(Node,simulationStep)
 SP_CLASS_METHOD(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
+SP_CLASS_METHOD(Node,createChild)
+SP_CLASS_METHOD(Node,addObject)
+SP_CLASS_METHOD(Node,removeObject)
+SP_CLASS_METHOD(Node,addChild)
+SP_CLASS_METHOD(Node,removeChild)
+SP_CLASS_METHOD(Node,moveChild)
+SP_CLASS_METHOD(Node,detachFromGraph)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)
