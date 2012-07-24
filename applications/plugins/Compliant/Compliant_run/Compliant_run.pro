@@ -18,6 +18,8 @@ unix {
 	RC_FILE = sofa.rc
     LIBS += -ldl
 #    LIBS += -lFlexible -lCompliant
+    INCLUDEPATH += /usr/include/suitesparse/
+
 }
 
 win32 {

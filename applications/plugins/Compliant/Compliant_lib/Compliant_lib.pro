@@ -45,7 +45,17 @@ LIBS += -lcamd
 LIBS += -lcolamd
 LIBS += -lcholmod
 
-QMAKE_POST_LINK = copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libblas.dll)\" \"../../../../bin/libblas.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/liblapack.dll)\" \"../../../../bin/liblapack.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgcc_s_dw2-1.dll)\" \"../../../../bin/libgcc_s_dw2-1.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgfortran-3.dll)\" \"../../../../bin/libgfortran-3.dll\"
+QMAKE_PO
+ST_LINK = copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libblas.dll)\" \"../../../../bin/libblas.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/liblapack.dll)\" \"../../../../bin/liblapack.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgcc_s_dw2-1.dll)\" \"../../../../bin/libgcc_s_dw2-1.dll\" && copy \"$$toWindowsPath($$SOFA_CHOLMOD_PATH/Lib/libgfortran-3.dll)\" \"../../../../bin/libgfortran-3.dll\"
+}
+unix {
+INCLUDEPATH += /usr/include/suitesparse/
+LIBS += -lamd
+LIBS += -llapack
+LIBS += -lblas
+LIBS += -lcamd
+LIBS += -lcolamd
+LIBS += -lcholmod
 }
 
 load(sofa/post)

@@ -17,7 +17,7 @@ macx {
 unix {
     LIBS += -ldl
     LIBS *= -lboost_unit_test_framework
-
+    INCLUDEPATH += /usr/include/suitesparse/
 }
 
 win32 {
