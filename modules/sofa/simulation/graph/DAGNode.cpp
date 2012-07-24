@@ -38,7 +38,7 @@ namespace graph
 
 DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
-    , l_parent(initLink("parent", "Parent node in the graph"))
+    , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
     if( parent )
         parent->addChild((Node*)this);
@@ -59,14 +59,14 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
     child.add(node);
-    node->l_parent.add(this);
+    node->l_parents.add(this);
 }
 
 /// Remove a child
 void DAGNode::doRemoveChild(DAGNode::SPtr node)
 {
     child.remove(node);
-    node->l_parent.remove(this);
+    node->l_parents.remove(this);
 }
 
 
@@ -92,15 +92,20 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 {
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_dynamic_cast<DAGNode>(node);
     if (!dagnode) return;
-    DAGNode* prev = dagnode->parent();
-    if (prev==NULL)
+
+    core::objectmodel::BaseNode::Parents  nodeParents = dagnode->getParents();
+    if (nodeParents.empty())
     {
         addChild(node);
     }
     else
     {
-        notifyMoveChild(dagnode,prev);
-        prev->doRemoveChild(dagnode);
+        for (core::objectmodel::BaseNode::Parents::iterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
+        {
+            DAGNode *prev = dynamic_cast<DAGNode*>(*it);
+            notifyMoveChild(dagnode,prev);
+            prev->doRemoveChild(dagnode);
+        }
         doAddChild(dagnode);
     }
 }
@@ -110,8 +115,13 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 void DAGNode::detachFromGraph()
 {
     DAGNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
-    if (parent())
-        parent()->removeChild(this);
+    //Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
+    //for (;it!=it_end;++it) (*it)->removeChild(this);
+    LinkParents::Container parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++)
+    {
+        parents[i]->removeChild(this);
+    }
 }
 
 /// Generic object access, possibly searching up or down from the current context
@@ -121,7 +131,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 {
     if (dir == SearchRoot)
     {
-        if (parent() != NULL) return parent()->getObject(class_info, tags, dir);
+        if (!getParents().empty()) return getRootContext()->getObject(class_info, tags, dir);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
@@ -161,8 +171,13 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             break;
         case SearchParents:
         case SearchUp:
-            if (parent()) result = parent()->getObject(class_info, tags, SearchUp);
-            break;
+        {
+            Parents parents = getParents();
+            if (!parents.empty())
+                for (Parents::iterator it = parents.begin(); it<parents.end() && !result; it++)
+                    result = dynamic_cast<Node*>(*it)->getObject(class_info, tags, SearchUp);
+        }
+        break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
@@ -186,12 +201,15 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 {
     if (path.empty())
     {
+        // local object
         return Node::getObject(class_info, Local);
     }
     else if (path[0] == '/')
     {
-        if (parent()) return parent()->getObject(class_info, path);
-        else return getObject(class_info,std::string(path,1));
+        // absolute path; let's start from root
+        Parents parents = getParents();
+        if (parents.empty()) return getObject(class_info,std::string(path,1));
+        else return getRootContext()->getObject(class_info,path);
     }
     else if (std::string(path,0,2)==std::string("./"))
     {
@@ -202,10 +220,21 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (std::string(path,0,3)==std::string("../"))
     {
+        // tricky case:
+        // let's test EACH parent and return the first object found (if any)
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        if (parent()) return parent()->getObject(class_info,newpath);
+        Parents parents = getParents();
+        if (!parents.empty())
+        {
+            for (Parents::iterator it = parents.begin(); it!=parents.end(); it++)
+            {
+                void* obj = dynamic_cast<Node*>(*it)->getObject(class_info,newpath);
+                if (obj) return obj;
+            }
+            return 0;   // not found in any parent node at all
+        }
         else return getObject(class_info,newpath);
     }
     else
@@ -258,14 +287,10 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 {
     if (dir == SearchRoot)
     {
-        if (parent() != NULL)
+        if (!getParents().empty())
         {
-            if (parent()->isActive())
-            {
-                parent()->getObjects(class_info, container, tags, dir);
-                return;
-            }
-            else return;
+            getRootContext()->getObjects(class_info, container, tags, dir);
+            return;
         }
         else dir = SearchDown; // we are the root, search down from here.
     }
@@ -285,8 +310,14 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
             break;
         case SearchParents:
         case SearchUp:
-            if (parent()) parent()->getObjects(class_info, container, tags, SearchUp);
-            break;
+        {
+            // WORK IN PROGRESS
+            // TODO: manage diamond setups to avoid multiple getObjects() calls on a Node...
+            Parents parents = getParents();
+            for (Parents::iterator it = parents.begin(); it!=parents.end(); it++)
+                dynamic_cast<Node*>(*it)->getObjects(class_info, container, tags, SearchUp);
+        }
+        break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
@@ -305,23 +336,15 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
-    if (parent())
-        p.push_back(parent());
+
+    LinkParents::Container parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++)
+    {
+        p.push_back(parents[i]);
+    }
+
     return p;
 }
-/*
-/// Get parent node (or NULL if no hierarchy or for root node)
-core::objectmodel::BaseNode* DAGNode::getParent()
-{
-	return parent();
-}
-
-/// Get parent node (or NULL if no hierarchy or for root node)
-const core::objectmodel::BaseNode* DAGNode::getParent() const
-{
-	return parent();
-}
-*/
 
 /// Test if the given node is a parent of this node.
 bool DAGNode::hasParent(const BaseNode* node) const
@@ -334,7 +357,12 @@ bool DAGNode::hasParent(const BaseNode* node) const
 bool DAGNode::hasParent(const BaseContext* context) const
 {
     if (context == NULL) return getParents().empty();
-    else return parent()->getContext() == context;
+
+    LinkParents::Container parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++)
+        if (context == parents[i]->getContext()) return true;
+    return false;
+
 }
 
 
@@ -343,12 +371,11 @@ bool DAGNode::hasParent(const BaseContext* context) const
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
 bool DAGNode::hasAncestor(const BaseContext* context) const
 {
-    DAGNode* p = parent();
-    while (p)
-    {
-        if (p==context) return true;
-        p = p->parent();
-    }
+    LinkParents::Container parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++)
+        if (context == parents[i]->getContext()
+            || parents[i]->hasAncestor(context))
+            return true;
     return false;
 }
 
@@ -356,6 +383,16 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 {
+    // TODO
+    // construire un sous-graphe de parcours du graphe et un "itérateur" pour cette liste
+    // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
+    // on ne passe à un enfant que si tous ses parents ont été visités
+    // un enfant n'est pruné que si tous ses parents le sont
+    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément
+
+
+
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     action->setNode(this);
     action->printInfo(getContext(), true);
@@ -379,10 +416,12 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
 std::string DAGNode::getPathName() const
 {
     std::string str;
-
-    if (parent() != NULL)
+    Parents parents = getParents();
+    if (!parents.empty())
     {
-        str = parent()->getPathName();
+        // for the full path name, we arbitrarily take the first parent of the list...
+        // no smarter choice without breaking the "Node" heritage
+        str = parents[0]->getPathName();
         str += '/';
         str += getName();
     }
@@ -406,9 +445,11 @@ void DAGNode::updateContext()
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< parent()->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< getParents()[0]->getContext() << std::endl;
         }
-        copyContext(*parent());
+        // TODO
+        // ahem.... not sure here... which parent should I copy my context from exactly ?
+        copyContext(*dynamic_cast<Context*>(getParents()[0]));
     }
     simulation::Node::updateContext();
 }
@@ -419,9 +460,11 @@ void DAGNode::updateSimulationContext()
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< parent()->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< getParents()[0]->getContext() << std::endl;
         }
-        copySimulationContext(*parent());
+        // TODO
+        // ahem.... not sure here... which parent should I copy my simulation context from exactly ?
+        copySimulationContext(*dynamic_cast<Context*>(getParents()[0]));
     }
     simulation::Node::updateSimulationContext();
 }
