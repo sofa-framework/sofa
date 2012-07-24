@@ -84,7 +84,7 @@ HEADERS += common.h \
 		   xml/BaseMultiMappingElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
-           xml/XML.h 
+           xml/XML.h   
 
 SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \

@@ -27,8 +27,8 @@
 
 #include <sofa/simulation/graph/graph.h>
 #include <sofa/simulation/common/Node.h>
-
-
+#include <sofa/core/objectmodel/Link.h>
+using namespace sofa::core::objectmodel;
 
 namespace sofa
 {
@@ -46,6 +46,10 @@ class SOFA_SIMULATION_GRAPH_API DAGNode : public simulation::Node
 public:
     typedef Node::DisplayFlags DisplayFlags;
     SOFA_CLASS(DAGNode, simulation::Node);
+
+    typedef MultiLink<DAGNode,DAGNode,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
+    typedef LinkParents::const_iterator ParentIterator;
+
 
 protected:
     DAGNode( const std::string& name="", DAGNode* parent=NULL  );
@@ -136,11 +140,9 @@ public:
         return obj;
     }
 
-    DAGNode* parent() const { return l_parent.get(); }
-
 protected:
 
-    SingleLink<DAGNode,DAGNode,BaseLink::FLAG_DOUBLELINK> l_parent;
+    LinkParents l_parents;
 
     virtual void doAddChild(DAGNode::SPtr node);
     void doRemoveChild(DAGNode::SPtr node);
