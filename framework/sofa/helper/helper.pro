@@ -104,7 +104,10 @@ HEADERS += helper.h \
     Polynomial_LD.h \
     Polynomial_LD.inl \
     UnitTest.h \
-    SortedPermutation.h
+    SortedPermutation.h \
+    kdTree.inl \
+    kdTree.h
+
 
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
