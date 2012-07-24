@@ -341,7 +341,15 @@ protected:
                 float sizex=(float)inT->getScale()[0]*scale;
                 float sizey=(float)inT->getScale()[1]*scale;
                 float sizez=(float)inT->getScale()[2]*scale;
-                cimglist_for(img,l) {img(l)=inimg(l).get_distance ( value , sizex , sizey , sizez);  }
+                CImg<float> metric_distance(2,2,2,1,0.);
+                metric_distance(1,0,0)=sizex;
+                metric_distance(0,1,0)=sizey;
+                metric_distance(0,0,1)=sizez;
+                metric_distance(1,1,0)=sqrt(sizex*sizex+sizey*sizey);
+                metric_distance(1,0,1)=sqrt(sizex*sizex+sizez*sizez);
+                metric_distance(0,1,1)=sqrt(sizey*sizey+sizez*sizez);
+                metric_distance(1,1,1)=sqrt(sizex*sizex+sizey*sizey+sizez*sizez);
+                cimglist_for(img,l) {img(l)=inimg(l).get_distance ( value , metric_distance);  }
             }
             break;
         case GRADIENT:

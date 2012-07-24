@@ -68,17 +68,17 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
     fileStream << "DimSize = "; for(unsigned int i=0;i<nbdims;i++) fileStream << dim[i] << " "; fileStream << std::endl;
 
     fileStream << "ElementType = ";
-    if(cimg::type<T>::id()==3U) fileStream << "MET_CHAR" << std::endl;
-    else if(cimg::type<T>::id()==11U) fileStream << "MET_DOUBLE" << std::endl;
-    else if(cimg::type<T>::id()==12U) fileStream << "MET_FLOAT" << std::endl;
-    else if(cimg::type<T>::id()==8U) fileStream << "MET_INT" << std::endl;
-    else if(cimg::type<T>::id()==10U) fileStream << "MET_LONG" << std::endl;
-    else if(cimg::type<T>::id()==6U) fileStream << "MET_SHORT" << std::endl;
-    else if(cimg::type<T>::id()==2U) fileStream << "MET_UCHAR" << std::endl;
-    else if(cimg::type<T>::id()==7U) fileStream << "MET_UINT" << std::endl;
-    else if(cimg::type<T>::id()==9U) fileStream << "MET_ULONG" << std::endl;
-    else if(cimg::type<T>::id()==5U) fileStream << "MET_USHORT" << std::endl;
-    else if(cimg::type<T>::id()==1U) fileStream << "MET_BOOL" << std::endl;
+    if(!strcmp(cimg::type<T>::string(),"char")) fileStream << "MET_CHAR" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"double")) fileStream << "MET_DOUBLE" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"float")) fileStream << "MET_FLOAT" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"int")) fileStream << "MET_INT" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"long")) fileStream << "MET_LONG" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"short")) fileStream << "MET_SHORT" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"unsigned char")) fileStream << "MET_UCHAR" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"unsigned int")) fileStream << "MET_UINT" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"unsigned long")) fileStream << "MET_ULONG" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"unsigned short")) fileStream << "MET_USHORT" << std::endl;
+    else if(!strcmp(cimg::type<T>::string(),"bool")) fileStream << "MET_BOOL" << std::endl;
     else fileStream << "MET_UNKNOWN" << std::endl;
 
     if(scale) { fileStream << "ElementSpacing = "; for(unsigned int i=0;i<3;i++) if(i<nbdims) fileStream << scale[i] << " "; if(nbdims==4) fileStream << scaleT; fileStream << std::endl; }
@@ -111,8 +111,8 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     if (!fileStream.is_open())	{	std::cout << "Can not open " << headerFilename << std::endl;	return ret; }
 
     std::string str,str2,imageFilename;
-    unsigned int inputType=cimg::type<T>::id(),nbchannels=1,nbdims=4,dim[] = {1,1,1,1}; // 3 spatial dimas + time
-
+    unsigned int nbchannels=1,nbdims=4,dim[] = {1,1,1,1}; // 3 spatial dimas + time
+    std::string inputType(cimg::type<T>::string());
     while(!fileStream.eof())
     {
         fileStream >> str;
@@ -174,19 +174,19 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             fileStream >> str2; // '='
             fileStream >> str2;
 
-            if(!str2.compare("MET_CHAR")) inputType=3U;
-            else if(!str2.compare("MET_DOUBLE")) inputType=11U;
-            else if(!str2.compare("MET_FLOAT")) inputType=12U;
-            else if(!str2.compare("MET_INT")) inputType=8U;
-            else if(!str2.compare("MET_LONG")) inputType=10U;
-            else if(!str2.compare("MET_SHORT")) inputType=6U;
-            else if(!str2.compare("MET_UCHAR")) inputType=2U;
-            else if(!str2.compare("MET_UINT")) inputType=7U;
-            else if(!str2.compare("MET_ULONG")) inputType=9U;
-            else if(!str2.compare("MET_USHORT")) inputType=5U;
-            else if(!str2.compare("MET_BOOL")) inputType=1U;
+            if(!str2.compare("MET_CHAR"))           inputType=std::string("char");
+            else if(!str2.compare("MET_DOUBLE"))    inputType=std::string("double");
+            else if(!str2.compare("MET_FLOAT"))     inputType=std::string("float");
+            else if(!str2.compare("MET_INT"))       inputType=std::string("int");
+            else if(!str2.compare("MET_LONG"))      inputType=std::string("long");
+            else if(!str2.compare("MET_SHORT"))     inputType=std::string("short");
+            else if(!str2.compare("MET_UCHAR"))     inputType=std::string("unsigned char");
+            else if(!str2.compare("MET_UINT"))      inputType=std::string("unsigned int");
+            else if(!str2.compare("MET_ULONG"))     inputType=std::string("unsigned long");
+            else if(!str2.compare("MET_USHORT"))    inputType=std::string("unsigned short");
+            else if(!str2.compare("MET_BOOL"))      inputType=std::string("bool");
 
-            if(inputType!=cimg::type<T>::id())  std::cout<<"MetaImageReader: Image type ( "<< str2 <<" ) is converted to Sofa Image type ( "<< cimg::type<T>::string() <<" )"<<std::endl;
+            if(inputType!=std::string(cimg::type<T>::string()))  std::cout<<"MetaImageReader: Image type ( "<< str2 <<" ) is converted to Sofa Image type ( "<< cimg::type<T>::string() <<" )"<<std::endl;
         }
     }
     fileStream.close();
@@ -209,13 +209,13 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     std::FILE *const nfile = std::fopen(imageFilename.c_str(),"rb");
     if(!nfile) return ret;
 
-    if(inputType==cimg::type<T>::id())
+    if(inputType==std::string(cimg::type<T>::string()))
     {
         cimglist_for(ret,l)  cimg::fread(ret(l)._data,nb,nfile);
     }
     else
     {
-        if(inputType==3U)
+        if(inputType==std::string("char"))
         {
             char *const buffer = new char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -223,7 +223,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==11U)
+        else if(inputType==std::string("double"))
         {
             double *const buffer = new double[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -231,7 +231,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==12U)
+        else if(inputType==std::string("float"))
         {
             float *const buffer = new float[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -239,7 +239,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==8U)
+        else if(inputType==std::string("int"))
         {
             int *const buffer = new int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -247,7 +247,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==10U)
+        else if(inputType==std::string("long"))
         {
             long *const buffer = new long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -255,7 +255,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==6U)
+        else if(inputType==std::string("short"))
         {
             short *const buffer = new short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -263,7 +263,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==2U)
+        else if(inputType==std::string("unsigned char"))
         {
             unsigned char *const buffer = new unsigned char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -271,7 +271,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==7U)
+        else if(inputType==std::string("unsigned int"))
         {
             unsigned int *const buffer = new unsigned int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -279,7 +279,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==9U)
+        else if(inputType==std::string("unsigned long"))
         {
             unsigned long *const buffer = new unsigned long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -287,7 +287,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==5U)
+        else if(inputType==std::string("unsigned short"))
         {
             unsigned short *const buffer = new unsigned short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
@@ -295,7 +295,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
             delete[] buffer;
         }
-        else if(inputType==1U)
+        else if(inputType==std::string("bool"))
         {
             bool *const buffer = new bool[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
