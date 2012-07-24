@@ -53,6 +53,7 @@ HEADERS = initFlexible.h \
     shapeFunction/ShepardShapeFunction.h \
     shapeFunction/BarycentricShapeFunction.h \
     deformationMapping/BaseDeformationMapping.h \
+    deformationMapping/BaseDeformationMapping.inl \
     deformationMapping/DistanceMapping.h \
     deformationMapping/DistanceMapping.inl \
     deformationMapping/DisplacementMapping.h \
@@ -117,10 +118,12 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
                 shapeFunction/BaseImageShapeFunction.h \
                 shapeFunction/VoronoiShapeFunction.h \
                 shapeFunction/DiffusionShapeFunction.h \
+                deformationMapping/ImageDeformation.h \
 
     SOURCES += quadrature/ImageGaussPointSampler.cpp \
                shapeFunction/VoronoiShapeFunction.cpp \
                shapeFunction/DiffusionShapeFunction.cpp \
+               deformationMapping/ImageDeformation.cpp \
     }
 
 README_FILE = Flexible.txt
@@ -134,6 +137,9 @@ win32 {
 	QMAKE_CXXFLAGS += /bigobj
 	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Include
 	DEFINES += EIGEN_DONT_ALIGN
+}
+unix {
+    INCLUDEPATH += /usr/include/suitesparse/
 }
 
 load(sofa/post)

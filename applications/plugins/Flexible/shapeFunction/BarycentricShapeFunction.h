@@ -105,7 +105,7 @@ public:
 
         // compute barycentric weights by projection in cell basis
         int index = -1;
-        Real distance = 1;
+        double distance = 1;
         Coord coefs;
 
         if ( tetrahedra.empty() && cubes.empty() )
@@ -262,7 +262,7 @@ public:
 
         }
 
-        if ( distance>0 ) sout<<"point "<<childPosition<<" outside"<<sendl;
+        //   if ( distance>0 ) sout<<"point "<<childPosition<<" outside"<<sendl;
     }
 
     // computes v1.v2^T + v2.v1^T
