@@ -51,7 +51,7 @@ public:
 };
 
 
-/** Maps point positions to line extensions.
+/** Maps point positions to line extensions, in meters.
   Type TOut corresponds to a scalar value.
 
 @author Francois Faure
