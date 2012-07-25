@@ -30,6 +30,8 @@
 #include <sofa/core/objectmodel/Link.h>
 using namespace sofa::core::objectmodel;
 
+#include "DAGSubGraphNode.h"
+
 namespace sofa
 {
 
@@ -154,6 +156,9 @@ protected:
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;
 
+
+    /// creates a subset of the graph, starting from this node
+    DAGSubGraphNode* createSubGraphDownward(DAGSubGraphNode *parent);
 
 };
 

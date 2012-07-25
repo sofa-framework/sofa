@@ -174,7 +174,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         {
             Parents parents = getParents();
             if (!parents.empty())
-                for (Parents::iterator it = parents.begin(); it<parents.end() && !result; it++)
+                for (Parents::iterator it = parents.begin(); it!=parents.end() && !result; it++)
                     result = dynamic_cast<Node*>(*it)->getObject(class_info, tags, SearchUp);
         }
         break;
@@ -390,25 +390,9 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
     // un enfant n'est pruné que si tous ses parents le sont
     // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément
 
-
-
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    action->setNode(this);
-    action->printInfo(getContext(), true);
-#endif
-    if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
-    {
-        for(unsigned int i = 0; i<child.size(); ++i)
-        {
-            child[i]->executeVisitor(action);
-        }
-    }
-
-    action->processNodeBottomUp(this);
-#ifdef SOFA_DUMP_VISITOR_INFO
-    action->printInfo(getContext(), false);
-#endif
+    DAGSubGraphNode* subGraph = createSubGraphDownward(NULL);
+    subGraph->executeVisitor(action);
+    delete subGraph;
 }
 
 
@@ -468,6 +452,28 @@ void DAGNode::updateSimulationContext()
     }
     simulation::Node::updateSimulationContext();
 }
+
+/// build a subgraph of DAGSubGraphNode objects
+DAGSubGraphNode* DAGNode::createSubGraphDownward(DAGSubGraphNode *parent)
+{
+//    std::cout << "DAGNode::createSubGraphDownward " << getName() << std::endl;
+
+    DAGSubGraphNode *node = new DAGSubGraphNode(this);
+    if (parent) parent->addChild(node);
+    for (ChildIterator it = child.begin(); it!=child.end(); it++)
+    {
+        DAGSubGraphNode *childSubGraphNode = node->getRoot()->findNode(dynamic_cast<DAGNode*>(it->get()),DAGSubGraphNode::downward);
+        // create child, or multi-map it ?
+        if (!childSubGraphNode)
+            dynamic_cast<DAGNode*>(it->get())->createSubGraphDownward(node);
+        else
+            node->addChild(childSubGraphNode);
+    }
+    return node;
+
+}
+
+
 
 SOFA_DECL_CLASS(DAGNode)
 

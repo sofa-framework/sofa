@@ -9,14 +9,14 @@ TARGET = sofagraph
 
 HEADERS += graph.h \
            DAGNode.h \
-           DAGNodeVisitor.h \
 		   DAGNodeMultiMappingElement.h \
            DAGSimulation.h \
+    DAGSubGraphNode.h
 
 SOURCES += DAGNode.cpp \   
-           DAGNodeVisitor.cpp \
            DAGNodeMultiMappingElement.cpp \
 		   DAGSimulation.cpp \
+    DAGSubGraphNode.cpp
 		   
 
 DEFINES += SOFA_BUILD_SIMULATION_GRAPH

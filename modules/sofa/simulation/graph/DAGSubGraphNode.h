@@ -22,42 +22,72 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: GNodeVisitor
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2008
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#include "DAGNodeVisitor.h"
+
+#ifndef DAGSUBGRAPHNODE_H
+#define DAGSUBGRAPHNODE_H
+
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
-
 namespace simulation
 {
-
-
 namespace graph
 {
 
-DAGNodeVisitor::DAGNodeVisitor(const sofa::core::ExecParams* params)
-    : sofa::simulation::Visitor(params)
+class DAGNode;
+
+/**
+   Implements a subset of the graph; each DAGSubGraphNode points to a DAGNode
+   @author The SOFA team </www.sofa-framework.org>
+ */
+
+class DAGSubGraphNode
 {
-}
+public:
+    DAGSubGraphNode(DAGNode *node);
+    ~DAGSubGraphNode();
+
+    enum Direction
+    {
+        downward,
+        upward
+    };
+
+    /// a subgraph has only ONE root
+    DAGSubGraphNode *getRoot();
+
+    /// is this node in the sub-graph?
+    DAGSubGraphNode* findNode(DAGNode *node,Direction direction);
+
+    /// adds a child
+    void addChild(DAGSubGraphNode* node);
+
+    /// visitor execution
+    void executeVisitor(simulation::Visitor* action);
+
+private:
+    DAGNode *_node;
+
+    enum
+    {
+        NOT_VISITED,
+        VISITED,
+        PRUNED
+    } visitedStatus;
+
+    std::list<DAGSubGraphNode*> parents;
+    std::list<DAGSubGraphNode*> children;
+    typedef std::list<DAGSubGraphNode*>::iterator NodesIterator;
 
 
-DAGNodeVisitor::~DAGNodeVisitor()
-{
-}
+};
+
+} // namespace graph
+
+} // namespace simulation
+
+} // namespace sofa
 
 
-}
-
-}
-
-}
+#endif // DAGSUBGRAPHNODE_H
