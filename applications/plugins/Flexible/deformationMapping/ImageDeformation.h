@@ -54,6 +54,7 @@ namespace engine
 {
 
 using helper::vector;
+using helper::round;
 using defaulttype::Vec;
 using namespace cimg_library;
 
