@@ -107,11 +107,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
-    if (!children.size())
-    {
-        // no children!!!!
-        return 0;
-    }
+
     // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
     // on caste directement en Node.
     PyObject *list = PyList_New(children.size());
@@ -128,11 +124,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
 
     const objectmodel::BaseNode::Children& parents = node->getParents();
-    if (!parents.size())
-    {
-        // no parents!!!!
-        return 0;
-    }
+
     // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
     // on caste directement en Node.
     PyObject *list = PyList_New(parents.size());
