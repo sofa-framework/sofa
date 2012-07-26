@@ -89,13 +89,31 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::reinit()
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::initCalcF()
 {
-    vars.r = this->vradius.getValue();
-    vars.center = this->center.getValue();
     vars.stiffness = this->stiffness.getValue();
     vars.stiffabs =  helper::rabs(vars.stiffness);
     vars.damping = this->damping.getValue();
-    for (int j=0; j<N; j++) vars.inv_r2[j] = 1/(vars.r[j]*vars.r[j]);
-
+    helper::ReadAccessor< DataVecCoord1 > vr = this->vradius;
+    helper::ReadAccessor< DataVecCoord1 > vcenter = this->center;
+    vars.nelems = (vr.size() > vcenter.size()) ? vr.size() : vcenter.size();
+    vars.vr.resize(vars.nelems);
+    vars.vcenter.resize(vars.nelems);
+    vars.vinv_r2.resize(vars.nelems);
+    for (unsigned int e=0; e<vars.nelems; ++e)
+    {
+        Coord1 r;
+        if (e < vr.size()) r = vr[e];
+        else if (!vr.empty()) r = vr[vr.size()-1];
+        else
+        {
+            for (int j=0; j<N; j++) r[j] = 1.0f;
+        }
+        Coord1 center;
+        if (e < vcenter.size()) center = vcenter[e];
+        else if (!vcenter.empty()) center = vcenter[vcenter.size()-1];
+        vars.vr[e] = r;
+        vars.vcenter[e] = center;
+        for (int j=0; j<N; j++) vars.vinv_r2[e][j] = 1/(vars.vr[e][j]*vars.vr[e][j]);
+    }
     //printf("\n **********************");
     //printf("\n vars.inv_r2 = %f %f %f", vars.inv_r2[0], vars.inv_r2[1], vars.inv_r2[2]);
 }
@@ -103,12 +121,28 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::initCalcF()
 template<class DataTypes1, class DataTypes2>
 bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1& p1, const Deriv1& v1, Deriv1 &f1, Mat& dfdx)
 {
-    Coord1 dp = p1 - vars.center;
-    Real1 norm2 = 0;
-    for (int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*vars.inv_r2[j];
-    //Real1 d = (norm2-1)*s2;
-    if ((norm2-1)*vars.stiffness<0)
+    Coord1 bdp;
+    Real1 bnorm2 = -1;
+    int be = -1;
+    for (unsigned int e=0; e<vars.nelems; ++e)
     {
+        Coord1 dp = p1 - vars.vcenter[e];
+        Real1 norm2 = 0;
+        for (int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*vars.vinv_r2[e][j];
+        if (be == -1 || norm2 < bnorm2)
+        {
+            bnorm2 = norm2;
+            be = e;
+            bdp = dp;
+        }
+    }
+    //Real1 d = (norm2-1)*s2;
+    if ((bnorm2-1)*vars.stiffness<0)
+    {
+        int e = be;
+        Coord1 dp = bdp;
+        Real1 norm2 = bnorm2;
+
         //printf("\n norm2 = %f", norm2);
         //printf("\n dp = %f %f %f   p1 = %f %f %f   vars.center = %f %f %f", dp[0], dp[1], dp[2],
         //	p1.x(),p1.y(), p1.z(), vars.center.x(), vars.center.y(), vars.center.z());
@@ -116,7 +150,7 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
         Real1 norm = helper::rsqrt(norm2);
         Real1 v = norm-1;
         Deriv1 grad;
-        for (int j=0; j<N; j++) grad[j] = dp[j]*vars.inv_r2[j];
+        for (int j=0; j<N; j++) grad[j] = dp[j]*vars.vinv_r2[e][j];
         Real1 gnorm2 = grad.norm2();
         Real1 gnorm = helper::rsqrt(gnorm2);
         //grad /= gnorm; //.normalize();
@@ -130,8 +164,8 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
         for (int ci = 0; ci < N; ++ci)
         {
             for (int cj = 0; cj < N; ++cj)
-                dfdx[ci][cj] = grad[ci]*grad[cj] * (fact1 + fact3*vars.inv_r2[cj]);
-            dfdx[ci][ci] += fact2*vars.inv_r2[ci];
+                dfdx[ci][cj] = grad[ci]*grad[cj] * (fact1 + fact3*vars.vinv_r2[e][cj]);
+            dfdx[ci][ci] += fact2*vars.vinv_r2[e][ci];
         }
         return true;
     }
@@ -187,6 +221,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
             c.m = dfdx;
 
             Vec3d contactForce =  Cq.rotate(f1Xform);
+            c.force = contactForce;
             f1[i]+=contactForce;
             f2.getVCenter() -= contactForce;
             c.bras_levier = p1[i] - Cx;
@@ -332,62 +367,62 @@ double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnerg
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!bDraw.getValue()) return;
-
-    Real1 cx1=0, cy1=0, cz1=0;
     Real1 cx2=0, cy2=0, cz2=0;
-    DataTypes1::get(cx1, cy1, cz1, vars.center );
-
-    //cx1 -=vars.pos6D.getCenter()[0];
-    //cy1 -=vars.pos6D.getCenter()[1];
-    //cz1 -=vars.pos6D.getCenter()[2];
 
     cx2=vars.pos6D.getCenter()[0];
     cy2=vars.pos6D.getCenter()[1];
     cz2=vars.pos6D.getCenter()[2];
 
-
-    Real1 rx=1, ry=1, rz=1;
-    DataTypes1::get(rx, ry, rz, vradius.getValue());
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
-
-
-    Quat q=vars.pos6D.getOrientation();
-#ifdef SOFA_FLOAT
-    GLfloat R[4][4];
-#else
-    GLdouble R[4][4];
-#endif
-    Quat q1=q.inverse();
-    q1.buildRotationMatrix(R);
-
-    glPushMatrix();
-    helper::gl::glTranslate(cx2, cy2, cz2);
-    helper::gl::glMultMatrix( &(R[0][0]) );
-    helper::gl::glTranslate(cx1, cy1, cz1);
-    helper::gl::glScale(rx, ry, (stiffness.getValue()>0?rz:-rz));
-    glutSolidSphere(1,32,16);
-    //glTranslated(-cx2, -cy2, -cz2);
-
-    glPopMatrix();
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-
-    const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
-    for (unsigned int i=0; i<contacts.size(); i++)
+    for (unsigned int e=0; e<vars.nelems; ++e)
     {
-        glPointSize(10);
-        glColor4f (1,0.5,0.5,1);
-        glBegin (GL_POINTS);
-        glVertex3d(contacts[i].pos[0],contacts[i].pos[1],contacts[i].pos[2] );
+
+        Real1 cx1=0, cy1=0, cz1=0;
+        DataTypes1::get(cx1, cy1, cz1, vars.vcenter[e] );
+
+        Real1 rx=1, ry=1, rz=1;
+        DataTypes1::get(rx, ry, rz, vars.vr[e]);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+        glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
+
+        Quat q=vars.pos6D.getOrientation();
+#ifdef SOFA_FLOAT
+        GLfloat R[4][4];
+#else
+        GLdouble R[4][4];
+#endif
+        Quat q1=q.inverse();
+        q1.buildRotationMatrix(R);
+
+        glPushMatrix();
+        helper::gl::glTranslate(cx2, cy2, cz2);
+        helper::gl::glMultMatrix( &(R[0][0]) );
+        helper::gl::glTranslate(cx1, cy1, cz1);
+        helper::gl::glScale(rx, ry, (stiffness.getValue()>0?rz:-rz));
+        glutSolidSphere(1,32,16);
+        //glTranslated(-cx2, -cy2, -cz2);
+
+        glPopMatrix();
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_COLOR_MATERIAL);
+
+        const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
+        const double fscale = 1.0;
+        glColor4f (1,0.5f,0.5f,1);
+        glBegin (GL_LINES);
+        for (unsigned int i=0; i<contacts.size(); i++)
+        {
+            glVertex3d(contacts[i].pos[0],contacts[i].pos[1],contacts[i].pos[2] );
+            glVertex3d(contacts[i].pos[0]+contacts[i].force[0]*fscale,
+                    contacts[i].pos[1]+contacts[i].force[1]*fscale,
+                    contacts[i].pos[2]+contacts[i].force[2]*fscale );
+        }
         glEnd();
     }
-
 }
 
 
