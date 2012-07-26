@@ -67,11 +67,33 @@ namespace interactionforcefield
 
 
 template<class DataTypes1, class DataTypes2>
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::init()
+{
+    Inherit1::init();
+    vars.pos6D = this->mstate2->read(core::VecCoordId::position())->getValue()[object2_dof_index.getValue()];
+    if(object2_invert.getValue())
+        vars.pos6D = DataTypes2::inverse(vars.pos6D);
+    initCalcF();
+}
+
+template<class DataTypes1, class DataTypes2>
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::reinit()
+{
+    Inherit1::reinit();
+    vars.pos6D = this->mstate2->read(core::VecCoordId::position())->getValue()[object2_dof_index.getValue()];
+    if(object2_invert.getValue())
+        vars.pos6D = DataTypes2::inverse(vars.pos6D);
+    initCalcF();
+}
+
+template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::initCalcF()
 {
     vars.r = this->vradius.getValue();
+    vars.center = this->center.getValue();
     vars.stiffness = this->stiffness.getValue();
     vars.stiffabs =  helper::rabs(vars.stiffness);
+    vars.damping = this->damping.getValue();
     for (int j=0; j<N; j++) vars.inv_r2[j] = 1/(vars.r[j]*vars.r[j]);
 
     //printf("\n **********************");
@@ -99,7 +121,7 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
         Real1 gnorm = helper::rsqrt(gnorm2);
         //grad /= gnorm; //.normalize();
         Real1 forceIntensity = -vars.stiffabs*v/gnorm;
-        Real1 dampingIntensity = this->damping.getValue()*helper::rabs(v);
+        Real1 dampingIntensity = vars.damping*helper::rabs(v);
         Deriv1 force = grad*forceIntensity - v1*dampingIntensity;
         f1=force;
         Real1 fact1 = -vars.stiffabs / (norm * gnorm);
@@ -124,45 +146,26 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
     const DataVecDeriv1& datav1, const DataVecDeriv2& datav2)
 {
     helper::WriteAccessor< DataVecDeriv1 > f1 = dataf1;
-    helper::WriteAccessor< DataVecDeriv2 > f2 = dataf2;
+    Deriv2 f2;
 
     helper::ReadAccessor< DataVecCoord1 >  p1 = datax1;
     helper::ReadAccessor< DataVecCoord2 >  p2 = datax2;
     helper::ReadAccessor< DataVecDeriv1 >  v1 = datav1;
     helper::ReadAccessor< DataVecDeriv2 >  v2 = datav2;
 
-
-    // debug;
-    X1 = datax1.getValue();
-    X2 = datax2.getValue();
-
     vars.pos6D = p2[object2_dof_index.getValue()];
+    if(object2_invert.getValue())
+        vars.pos6D = DataTypes2::inverse(vars.pos6D);
+
     Quat Cq = vars.pos6D.getOrientation();
     Vec3d Cx = (Coord1) vars.pos6D.getCenter();
+    //std::cout << "Cx= " << Cx << "    Cq= " << Cq << std::endl;
     Deriv2 V6D = v2[object2_dof_index.getValue()];
     Vec3d Cv = (Vec3d) getVCenter(V6D);
     Cv.clear();
 
-    ///on le garde pour addDForce///
-    _orientation = Cq;
-    //_orientation.clear();
-    //Cq.clear();
-    ////////////////////////////////
-
-
-    if(_update_pos_relative)
-    {
-        //_update_pos_relative = false;
-        //Vec3d OC = (Vec3d) center.getValue() - Cx;
-        //OC = Cq.inverseRotate(OC);
-        vars.center = (Vec3d) center.getValue(); // position locale du point
-        //printf("\n OC : %f %f %f",OC.x(),OC.y(),OC.z());
-        Cv.clear();
-    }
-
     initCalcF();
 
-    //const Real1 s2 = (stiff < 0 ? - stiff*stiff : stiff*stiff );
     sofa::helper::vector<Contact>* contacts = this->contacts.beginEdit();
     contacts->clear();
     f1.resize(p1.size());
@@ -174,7 +177,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
         Deriv1 f1Xform;
         f1Xform.clear();
         Mat dfdx;
-        if (calcF(p1Xform, v1Xform, f1Xform, dfdx) && !_update_pos_relative)
+        if (calcF(p1Xform, v1Xform, f1Xform, dfdx))
         {
             //printf("\n p1[%d] : %f %f %f p1Xform[%d] : %f %f %f",i, p1[i].x(), p1[i].y(), p1[i].z(),i, p1Xform.x(),p1Xform.y(),p1Xform.z());
 
@@ -185,39 +188,38 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
 
             Vec3d contactForce =  Cq.rotate(f1Xform);
             f1[i]+=contactForce;
-            getVCenter(f2[object2_dof_index.getValue()]) -= contactForce;
+            f2.getVCenter() -= contactForce;
             c.bras_levier = p1[i] - Cx;
-            //f2[object2_dof_index.getValue()].getVOrientation() -= c.bras_levier.cross(contactForce);
+            //f2.getVOrientation() -= c.bras_levier.cross(contactForce);
             contacts->push_back(c);
             /*
             printf("\n contactForce : %f %f %f, bras_Levier : %f %f %f, f2 = %f %f %f - %f %f %f",
             	contactForce.x(), contactForce.y(), contactForce.z(),
             	c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
-            	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
-            	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
+            	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+            	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
              */
 
         }
     }
     /*
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
-    	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
+    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
     /*
     printf("\n verify addForce2 : ");
     addForce2(f1, f2, p1, p2, v1, v2);
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
-    	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
+    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
 
-
-    if(_update_pos_relative)
+    if (object2_forces.getValue())
     {
-        getVCenter(f2[object2_dof_index.getValue()]).clear();
-        getVOrientation(f2[object2_dof_index.getValue()]).clear();
-        _update_pos_relative = false;
+        helper::WriteAccessor< DataVecDeriv2 > wf2 = dataf2;
+        wf2.resize(p2.size());
+        wf2[object2_dof_index.getValue()] += f2;
     }
     this->contacts.endEdit();
 }
@@ -232,9 +234,15 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
     helper::ReadAccessor< DataVecCoord2 >  p2 = datap2;
     helper::ReadAccessor< DataVecDeriv1 >  v1 = datav1;
 
+    Coord2 C = p2[object2_dof_index.getValue()];
 
-    Quat Cq = p2[object2_dof_index.getValue()].getOrientation();
-    Vec3d Cx = (Coord1) p2[object2_dof_index.getValue()].getCenter();
+    if(object2_invert.getValue())
+    {
+        C = DataTypes2::inverse(C);
+    }
+
+    Quat Cq = C.getOrientation();
+    Vec3d Cx = (Vec3d) C.getCenter();
 
     f1.clear();
     f2.clear();
@@ -270,17 +278,24 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
 
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
-    const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
+    const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
     const DataVecDeriv1& datadx1, const DataVecDeriv2& datadx2)
 
 {
+    const double kFactor     = mparams->kFactor();
     helper::WriteAccessor< DataVecDeriv1 > df1 = datadf1;
-    helper::WriteAccessor< DataVecDeriv2 > df2 = datadf2;
+    Deriv2 df2;
     helper::ReadAccessor< DataVecDeriv1 >  dx1 = datadx1;
     helper::ReadAccessor< DataVecDeriv2 >  dx2 = datadx2;
+    Deriv2 dx2i;
+    if (object2_forces.getValue())
+    {
+        dx2i = dx2[object2_dof_index.getValue()];
+    }
+
+    const Quat Cq = vars.pos6D.getOrientation();
 
     df1.resize(dx1.size());
-    df2.resize(dx2.size());
     const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
     //printf("\n");
     for (unsigned int i=0; i<contacts.size(); i++)
@@ -288,15 +303,22 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
         const Contact& c = contacts[i];
         assert((unsigned)c.index<dx1.size());
         Vec3d du;
-        du = (Vec3d) dx1[c.index] - (Vec3d) getVCenter(dx2[object2_dof_index.getValue()]); //- c.bras_levier.cross(dx2[object2_dof_index.getValue()].getVOrientation());
-        Deriv1 dforce = c.m * _orientation.inverseRotate(du);
-        Vec3d DF = _orientation.rotate(dforce);
+        du = (Vec3d) dx1[c.index] - (Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
+        Deriv1 dforce = c.m * Cq.inverseRotate(du);
+        dforce *= kFactor;
+        Deriv1 DF = Cq.rotate(dforce);
         df1[c.index] += DF;
-        getVCenter(df2[object2_dof_index.getValue()])  -= DF;
-        //df2[object2_dof_index.getValue()].getVOrientation()  -= c.bras_levier.cross(DF);
+        df2.getVCenter()  -= DF;
+        //df2.getVOrientation()  -= c.bras_levier.cross(DF);
         //printf(" bras_levier[%d] = %f %f %f  - ", i, c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z());
     }
 
+    if (object2_forces.getValue())
+    {
+        helper::WriteAccessor< DataVecDeriv2 > wdf2 = datadf2;
+        wdf2.resize(dx2.size());
+        wdf2[object2_dof_index.getValue()] += df2;
+    }
 
 }
 

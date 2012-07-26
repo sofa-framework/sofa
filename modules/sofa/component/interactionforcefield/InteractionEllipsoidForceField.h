@@ -124,6 +124,9 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
     Data<int> object2_dof_index;
+    Data<bool> object2_forces;
+    Data<bool> object2_invert;
+
 protected:
     InteractionEllipsoidForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
@@ -134,11 +137,9 @@ protected:
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
         , object2_dof_index(initData(&object2_dof_index, (int)0, "object2_dof_index", "Dof index of object 2 where the forcefield is attached"))
+        , object2_forces(initData(&object2_forces, true, "object2_forces", "enable/disable propagation of forces to object 2"))
+        , object2_invert(initData(&object2_invert, false, "object2_invert", "inverse transform from object 2 (use when object 1 is in local coordinates within a frame defined by object 2)"))
     {
-        _update_pos_relative = true;
-        vars.center =center.getValue();
-// 		printf("\n vars.center : %f %f %f",vars.center.x(),vars.center.y(),vars.center.z());
-        _orientation.clear();
     }
 public:
     void setStiffness(Real1 stiff)
@@ -163,7 +164,8 @@ public:
     virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2)const;
     ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
 
-    void reinit() {_update_pos_relative = true;}
+    void init();
+    void reinit();
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -174,14 +176,10 @@ protected:
         Coord1 r;
         Real1 stiffness;
         Real1 stiffabs;
+        Real1 damping;
         Coord1 inv_r2;
         Coord2 pos6D;
     } vars;
-
-    bool _update_pos_relative;
-    VecCoord1 X1;
-    VecCoord2 X2;
-    Quat _orientation;
 };
 
 } // namespace interactionforcefield
