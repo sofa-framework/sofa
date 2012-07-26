@@ -115,6 +115,26 @@ const char* SofaPhysicsSimulation::getSceneFileName() const
     return impl->getSceneFileName();
 }
 
+unsigned int SofaPhysicsSimulation::getNbDataMonitors()
+{
+    return impl->getNbDataMonitors();
+}
+
+SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
+{
+    return impl->getDataMonitors();
+}
+
+unsigned int SofaPhysicsSimulation::getNbDataControllers()
+{
+    return impl->getNbDataControllers();
+}
+
+SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
+{
+    return impl->getDataControllers();
+}
+
 ////////////////////////////////////////
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -383,6 +403,59 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
         return &(outputMeshes[0]);
 }
 
+unsigned int SofaPhysicsSimulation::Impl::getNbDataMonitors()
+{
+    return dataMonitors.size();
+}
+
+SofaPhysicsDataMonitor** SofaPhysicsSimulation::Impl::getDataMonitors()
+{
+    if (dataMonitors.empty())
+    {
+        sofa::simulation::Node* groot = getScene();
+        if (!groot)
+        {
+            return NULL;
+        }
+        groot->get<SofaDataMonitor>(&sofaDataMonitors, BaseContext::SearchDown);
+        dataMonitors.resize(sofaDataMonitors.size());
+        for (unsigned int i=0; i<sofaDataMonitors.size(); ++i)
+        {
+            SofaDataMonitor* sData = sofaDataMonitors[i];
+            SofaPhysicsDataMonitor* oData = new SofaPhysicsDataMonitor;
+            oData->impl->setObject(sData);
+            dataMonitors[i] = oData;
+        }
+    }
+    return &(dataMonitors[0]);
+}
+
+unsigned int SofaPhysicsSimulation::Impl::getNbDataControllers()
+{
+    return dataControllers.size();
+}
+
+SofaPhysicsDataController** SofaPhysicsSimulation::Impl::getDataControllers()
+{
+    if (dataControllers.empty())
+    {
+        sofa::simulation::Node* groot = getScene();
+        if (!groot)
+        {
+            return NULL;
+        }
+        groot->get<SofaDataController>(&sofaDataControllers, BaseContext::SearchDown);
+        dataControllers.resize(sofaDataControllers.size());
+        for (unsigned int i=0; i<sofaDataControllers.size(); ++i)
+        {
+            SofaDataController* sData = sofaDataControllers[i];
+            SofaPhysicsDataController* oData = new SofaPhysicsDataController;
+            oData->impl->setObject(sData);
+            dataControllers[i] = oData;
+        }
+    }
+    return &(dataControllers[0]);
+}
 
 void SofaPhysicsSimulation::Impl::drawGL()
 {

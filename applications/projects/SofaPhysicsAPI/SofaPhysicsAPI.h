@@ -3,6 +3,8 @@
 
 class SofaPhysicsSimulation;
 class SofaPhysicsOutputMesh;
+class SofaPhysicsDataMonitor;
+class SofaPhysicsDataController;
 
 typedef unsigned int Index; ///< Type used for topology indices
 typedef float Real;         ///< Type used for coordinates
@@ -75,6 +77,18 @@ public:
     /// the last 100 steps)
     double getCurrentFPS() const;
 
+    /// Return the number of currently active data monitors
+    unsigned int getNbDataMonitors();
+
+    /// Return an array of pointers to active data monitors
+    SofaPhysicsDataMonitor** getDataMonitors();
+
+    /// Return the number of currently active data controllers
+    unsigned int getNbDataControllers();
+
+    /// Return an array of pointers to active data controllers
+    SofaPhysicsDataController** getDataControllers();
+
     /// Internal implementation sub-class
     class Impl;
     /// Internal implementation sub-class
@@ -109,6 +123,46 @@ public:
     unsigned int getNbQuads(); ///< number of quads
     const Index* getQuads();   ///< quads topology (4 indices / quad)
     int getQuadsRevision();    ///< changes each time quads data is updated
+
+    /// Internal implementation sub-class
+    class Impl;
+    /// Internal implementation sub-class
+    Impl* impl;
+};
+
+/// Class for data monitoring
+class SofaPhysicsDataMonitor
+{
+public:
+
+    SofaPhysicsDataMonitor();
+    ~SofaPhysicsDataMonitor();
+
+    const char* getName(); ///< (non-unique) name of this object
+    ID          getID();   ///< unique ID of this object
+
+    /// Get the value of the associated variable
+    const char* getValue();
+
+    /// Internal implementation sub-class
+    class Impl;
+    /// Internal implementation sub-class
+    Impl* impl;
+};
+
+/// Class for data control
+class SofaPhysicsDataController
+{
+public:
+
+    SofaPhysicsDataController();
+    ~SofaPhysicsDataController();
+
+    const char* getName(); ///< (non-unique) name of this object
+    ID          getID();   ///< unique ID of this object
+
+    /// Set the value of the associated variable
+    void setValue(const char* v);
 
     /// Internal implementation sub-class
     class Impl;

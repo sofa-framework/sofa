@@ -3,6 +3,8 @@
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
+#include "SofaPhysicsDataMonitor_impl.h"
+#include "SofaPhysicsDataController_impl.h"
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -38,7 +40,15 @@ public:
     double getTime() const;
     double getCurrentFPS() const;
 
+    unsigned int getNbDataMonitors();
+    SofaPhysicsDataMonitor** getDataMonitors();
+
+    unsigned int getNbDataControllers();
+    SofaPhysicsDataController** getDataControllers();
+
     typedef SofaPhysicsOutputMesh::Impl::SofaOutputMesh SofaOutputMesh;
+    typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
+    typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
 
 protected:
 
@@ -50,6 +60,12 @@ protected:
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
+
+    std::vector<SofaDataMonitor*> sofaDataMonitors;
+    std::vector<SofaPhysicsDataMonitor*> dataMonitors;
+
+    std::vector<SofaDataController*> sofaDataControllers;
+    std::vector<SofaPhysicsDataController*> dataControllers;
 
     sofa::helper::gl::Texture *texLogo;
     double lastProjectionMatrix[16];
