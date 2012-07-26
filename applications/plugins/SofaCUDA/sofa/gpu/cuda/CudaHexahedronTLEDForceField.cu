@@ -1332,7 +1332,7 @@ void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, f
     mycudaMemcpyHostToDevice(FCrds_gpu, FCrds, 2*sizeNodesInt*valence);
     cudaBindTexture(0, texFCrds, FCrds_gpu, channelDesc);
 
-    myprintf("GPU initialised for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU initialised for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 
 }
 
@@ -1378,7 +1378,7 @@ void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv)
         cudaBindTexture(0, texDv2, Dv2_gpu, channelDesc);
     }
 
-    myprintf("GPU initialised for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU initialised for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
@@ -1396,7 +1396,7 @@ void InitGPU_Aniso(float* A)
     cudaMemcpy((void*)A_gpu, (void*)A, 4*sizeElsFloat, cudaMemcpyHostToDevice);
     cudaBindTexture(0, texA, A_gpu, channelDesc);
 
-    myprintf("GPU initialised for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU initialised for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
@@ -1422,7 +1422,7 @@ void ClearGPU_TLED(void)
 
     mycudaFree(Disp);
 
-    myprintf("GPU memory cleaned for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU memory cleaned for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
@@ -1435,7 +1435,7 @@ void ClearGPU_Visco(void)
     mycudaFree(Dv1_gpu);
     mycudaFree(Dv2_gpu);
 
-    myprintf("GPU memory cleaned for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU memory cleaned for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
@@ -1445,7 +1445,7 @@ void ClearGPU_Aniso(void)
 {
     mycudaFree(A_gpu);
 
-    myprintf("GPU memory cleaned for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
+    mycudaPrintf("GPU memory cleaned for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
