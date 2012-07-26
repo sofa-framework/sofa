@@ -53,6 +53,7 @@ public:
         downward,
         upward
     };
+    typedef std::list<DAGSubGraphNode*> Nodes;
 
     /// a subgraph has only ONE root
     DAGSubGraphNode *getRoot();
@@ -64,7 +65,8 @@ public:
     void addChild(DAGSubGraphNode* node);
 
     /// visitor execution
-    void executeVisitor(simulation::Visitor* action);
+    void executeVisitorTopDown(simulation::Visitor* action,Nodes* executedNodes);
+    void executeVisitorBottomUp(simulation::Visitor* action);
 
 private:
     DAGNode *_node;
@@ -76,9 +78,8 @@ private:
         PRUNED
     } visitedStatus;
 
-    std::list<DAGSubGraphNode*> parents;
-    std::list<DAGSubGraphNode*> children;
-    typedef std::list<DAGSubGraphNode*>::iterator NodesIterator;
+    Nodes parents;
+    Nodes children;
 
 
 };

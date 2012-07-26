@@ -44,7 +44,7 @@ DAGSubGraphNode* DAGSubGraphNode::getRoot()
     if (parents.empty()) return this;
 
     DAGSubGraphNode *root = NULL;
-    for (NodesIterator it=parents.begin(); it!=parents.end() && !root; it++)
+    for (Nodes::iterator it=parents.begin(); it!=parents.end() && !root; it++)
         root = (*it)->getRoot();
 
     // TODO check if root is NULL (impossible in theory)
@@ -58,10 +58,10 @@ DAGSubGraphNode* DAGSubGraphNode::findNode(DAGNode *node,Direction direction)
 
     DAGSubGraphNode *found = NULL;
     if (direction==downward)
-        for (NodesIterator it=children.begin(); it!=children.end() && !found; it++)
+        for (Nodes::iterator it=children.begin(); it!=children.end() && !found; it++)
             found = (*it)->findNode(node,downward);
     else if (direction==upward)
-        for (NodesIterator it=parents.begin(); it!=parents.end() && !found; it++)
+        for (Nodes::iterator it=parents.begin(); it!=parents.end() && !found; it++)
             found = (*it)->findNode(node,upward);
 
     return found;
@@ -75,7 +75,7 @@ void DAGSubGraphNode::addChild(DAGSubGraphNode* node)
 }
 
 /// Execute a recursive action starting from this node
-void DAGSubGraphNode::executeVisitor(simulation::Visitor* action)
+void DAGSubGraphNode::executeVisitorTopDown(simulation::Visitor* action,Nodes* executedNodes)
 {
 //    std::cout << "DAGSubGraphNode::executeVisitor " << _node->getName() << std::endl;
 
@@ -91,7 +91,7 @@ void DAGSubGraphNode::executeVisitor(simulation::Visitor* action)
     // un enfant n'est pruné que si tous ses parents le sont
     // on ne passe à un enfant que si tous ses parents ont été visités
     bool allParentsPruned = true;
-    for (NodesIterator it=parents.begin(); it!=parents.end(); it++)
+    for (Nodes::iterator it=parents.begin(); it!=parents.end(); it++)
     {
         if ((*it)->visitedStatus == NOT_VISITED)
         {
@@ -108,13 +108,14 @@ void DAGSubGraphNode::executeVisitor(simulation::Visitor* action)
         visitedStatus = PRUNED;
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
-        for (NodesIterator it=children.begin(); it!=children.end(); it++)
-            (*it)->executeVisitor(action);
+        for (Nodes::iterator it=children.begin(); it!=children.end(); it++)
+            (*it)->executeVisitorTopDown(action,executedNodes);
     }
     else
     {
         // execute the visitor on this node!
         visitedStatus = VISITED;
+        executedNodes->push_back(this);
         if(action->processNodeTopDown(_node) == simulation::Visitor::RESULT_PRUNE)
         {
 //            std::cout << "...pruned (on its own)" << std::endl;
@@ -124,12 +125,16 @@ void DAGSubGraphNode::executeVisitor(simulation::Visitor* action)
 
 
         // ... and continue the recursion !
-        for (NodesIterator it=children.begin(); it!=children.end(); it++)
-            (*it)->executeVisitor(action);
+        for (Nodes::iterator it=children.begin(); it!=children.end(); it++)
+            (*it)->executeVisitorTopDown(action,executedNodes);
 
-        action->processNodeBottomUp(_node);
     }
 
+}
+
+void DAGSubGraphNode::executeVisitorBottomUp(simulation::Visitor* action)
+{
+    action->processNodeBottomUp(_node);
 }
 
 } // namespace graph
