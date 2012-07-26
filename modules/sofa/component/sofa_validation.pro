@@ -20,7 +20,9 @@ HEADERS += initValidation.h \
            misc/EvalPointsDistance.h \
            misc/EvalPointsDistance.inl \
            misc/EvalSurfaceDistance.h \
-           misc/EvalSurfaceDistance.inl
+           misc/EvalSurfaceDistance.inl \
+           misc/DataMonitor.h \
+           misc/DataController.h \
 
 SOURCES += initValidation.cpp \
            misc/CompareState.cpp \
@@ -31,7 +33,9 @@ SOURCES += initValidation.cpp \
            misc/ExtraMonitor.cpp \
            misc/Monitor.cpp \
            misc/EvalPointsDistance.cpp \
-           misc/EvalSurfaceDistance.cpp
+           misc/EvalSurfaceDistance.cpp \
+           misc/DataMonitor.cpp \
+           misc/DataController.cpp \
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
