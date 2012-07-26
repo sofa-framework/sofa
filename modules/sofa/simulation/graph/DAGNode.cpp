@@ -391,7 +391,14 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action)
     // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément
 
     DAGSubGraphNode* subGraph = createSubGraphDownward(NULL);
-    subGraph->executeVisitor(action);
+    DAGSubGraphNode::Nodes visitedNodes;
+    subGraph->executeVisitorTopDown(action,&visitedNodes);
+    while (!visitedNodes.empty())
+    {
+        visitedNodes.back()->executeVisitorBottomUp(action);
+        visitedNodes.pop_back();
+    }
+
     delete subGraph;
 }
 
