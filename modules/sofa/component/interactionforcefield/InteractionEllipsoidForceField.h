@@ -86,7 +86,7 @@ protected:
     {
     public:
         int index;
-        Deriv1 pos;
+        Deriv1 pos,force;
         Vec<3,SReal> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
@@ -117,8 +117,8 @@ protected:
 
 public:
 
-    Data<Coord1> center;
-    Data<Coord1> vradius;
+    Data<VecCoord1> center;
+    Data<VecCoord1> vradius;
     Data<Real1> stiffness;
     Data<Real1> damping;
     Data<defaulttype::Vec3f> color;
@@ -172,12 +172,13 @@ public:
 protected:
     struct TempVars
     {
-        Coord1 center; // center in the local frame ;
-        Coord1 r;
+        unsigned int nelems;
+        VecCoord1 vcenter; // center in the local frame ;
+        VecCoord1 vr;
         Real1 stiffness;
         Real1 stiffabs;
         Real1 damping;
-        Coord1 inv_r2;
+        VecCoord1 vinv_r2;
         Coord2 pos6D;
     } vars;
 };

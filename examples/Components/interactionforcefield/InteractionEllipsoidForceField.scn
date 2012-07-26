@@ -1,6 +1,6 @@
 <!-- Mechanical InteractionEllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
-    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" />
@@ -21,7 +21,7 @@
         <BoxConstraint box="10 7 12 12 7 12" />
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="20" damping="0" />
-        <InteractionEllipsoidForceField object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0" vradius="6 2 6" object2_forces="false" object2_invert="false" />
+        <InteractionEllipsoidForceField object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />
         <!--EllipsoidForceField stiffness="1000" damping="1" center="0 5 3" vradius="6 2 6" /-->
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
