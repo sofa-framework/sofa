@@ -183,9 +183,10 @@ int deviceCount = 0;
 
 int mycudaInit(int device)
 {
+    if (cudaInitCalled) return 1;
     cudaInitCalled = true;
     cudaCheck(cudaGetDeviceCount(&deviceCount),"cudaGetDeviceCount");
-    myprintf("CUDA: %d device(s) found.\n", deviceCount);
+    mycudaPrintf("CUDA: %d device(s) found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)
     {
         cudaDeviceProp dev
@@ -200,16 +201,16 @@ int mycudaInit(int device)
         //dev.minor=0;
         cudaCheck(cudaGetDeviceProperties(&dev,i),"cudaGetDeviceProperties");
 #if CUDA_VERSION >= 2010
-        myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
         if (dev.kernelExecTimeoutEnabled)
-            myprintf(", timeout enabled", dev.kernelExecTimeoutEnabled);
-        myprintf("\n");
+            mycudaPrintf(", timeout enabled", dev.kernelExecTimeoutEnabled);
+        mycudaPrintf("\n");
 #elif CUDA_VERSION >= 2000
-        myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
 #else //if CUDA_VERSION >= 1000
-        myprintf("CUDA:  %d : \"%s\", %d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
+        mycudaPrintf("CUDA:  %d : \"%s\", %d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
 //#else
-//		myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
+//		mycudaPrintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
 #endif
     }
     if (device==-1)
@@ -219,14 +220,14 @@ int mycudaInit(int device)
     }
     if (device >= deviceCount)
     {
-        myprintf("CUDA: Device %d not found.\n", device);
+        mycudaPrintf("CUDA: Device %d not found.\n", device);
         return 0;
     }
     else
     {
         cudaDeviceProp& dev = mycudaDeviceProp;
         cudaCheck(cudaGetDeviceProperties(&dev,device));
-        myprintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
+        mycudaPrintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
         cudaCheck(cudaSetDevice(device));
         mycudaPrivateInit(device);
 
@@ -246,36 +247,36 @@ int mycudaGetMultiProcessorCount()
 void mycudaMalloc(void **devPtr, size_t size,int /*d*/)
 {
     if (!cudaInitCalled) mycudaInit();
-    if (mycudaVerboseLevel>=LOG_INFO) myprintf("CUDA: malloc(%d).\n",size);
+    if (mycudaVerboseLevel>=LOG_INFO) mycudaPrintf("CUDA: malloc(%d).\n",size);
     cudaCheck(cudaMalloc(devPtr, size),"cudaMalloc");
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
 }
 
 void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height)
 {
     if (!cudaInitCalled) mycudaInit();
-    if (mycudaVerboseLevel>=LOG_INFO) myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
+    if (mycudaVerboseLevel>=LOG_INFO) mycudaPrintf("CUDA: mallocPitch(%d,%d).\n",width,height);
     cudaCheck(cudaMallocPitch(devPtr, pitch, width, height),"cudaMalloc2D");
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
 }
 
 void mycudaFree(void *devPtr,int /*d*/)
 {
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: free(0x%x).\n",devPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: free(0x%x).\n",devPtr);
     cudaCheck(cudaFree(devPtr),"cudaFree");
 }
 
 void mycudaMallocHost(void **hostPtr, size_t size)
 {
     if (!cudaInitCalled) mycudaInit();
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocHost(%d).\n",size);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: mallocHost(%d).\n",size);
     cudaCheck(cudaMallocHost(hostPtr, size),"cudaMallocHost");
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
 }
 
 void mycudaFreeHost(void *hostPtr)
 {
-    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: freeHost(0x%x).\n",hostPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) mycudaPrintf("CUDA: freeHost(0x%x).\n",hostPtr);
     cudaCheck(cudaFreeHost(hostPtr),"cudaFreeHost");
 }
 
@@ -283,7 +284,7 @@ void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count,int /*d*/
 {
     //count = (count+3)&(size_t)-4;
     if (!cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice"))
-        myprintf("in mycudaMemcpyHostToDevice(0x%x, 0x%x, %d)\n",dst,src,count);
+        mycudaPrintf("in mycudaMemcpyHostToDevice(0x%x, 0x%x, %d)\n",dst,src,count);
 
     if (mycudaVerboseLevel>=LOG_STACK_TRACE) displayStack("mycudaMemcpyHostToDevice");
 }
@@ -343,7 +344,7 @@ void mycudaCheckError(const char* src)
 void mycudaGLRegisterBufferObject(int id)
 {
     if (!cudaInitCalled) mycudaInit();
-    myprintf("mycudaGLRegisterBufferObject %d\n",id);
+    mycudaPrintf("mycudaGLRegisterBufferObject %d\n",id);
     cudaCheck(cudaGLRegisterBufferObject((GLuint)id),"cudaGLRegisterBufferObject");
 }
 
@@ -379,7 +380,7 @@ __global__ void cuda_debug_kernel()
 
 void cuda_void_kernel()
 {
-    myprintf("WARNING : cuda_void_kernel should only be used for debug\n");
+    mycudaPrintf("WARNING : cuda_void_kernel should only be used for debug\n");
 
     dim3 threads(1,1);
     dim3 grid(1,1);
@@ -396,7 +397,7 @@ cublasHandle_t getCublasCtx()
         cublasStatus_t status = cublasCreate(&cublashandle);
         if (status != CUBLAS_STATUS_SUCCESS)
         {
-            myprintf("cublas Handle init failed\n");
+            mycudaPrintf("cublas Handle init failed\n");
         }
     }
     return cublashandle;
@@ -410,7 +411,7 @@ cusparseHandle_t getCusparseCtx()
         cusparseStatus_t status = cusparseCreate(&cusparsehandle);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
-            myprintf("cusparse Handle init failed\n");
+            mycudaPrintf("cusparse Handle init failed\n");
         }
     }
     return cusparsehandle;
@@ -424,7 +425,7 @@ cusparseMatDescr_t getCusparseMatDescr()
         static cusparseStatus_t status = cusparseCreateMatDescr(&descra);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
-            myprintf("Matrix descriptor init failed\n");
+            mycudaPrintf("Matrix descriptor init failed\n");
         }
         else
         {

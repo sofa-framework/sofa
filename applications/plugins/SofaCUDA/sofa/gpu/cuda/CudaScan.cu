@@ -91,7 +91,7 @@ bool CudaScanSOFAAvailable(unsigned int size, ScanType type)
 //                sofaScanMaxElements = (1<<18);
         sofaScanMaxElements = ((sofaScanMaxElements + 255) & ~255);
 
-        myprintf("CudaScan: Using SOFA Scan for %d elements.\n", sofaScanMaxElements);
+        mycudaPrintf("CudaScan: Using SOFA Scan for %d elements.\n", sofaScanMaxElements);
         int tmpsize = CudaScan_TempStorage(sofaScanMaxElements);
         mycudaMalloc(&sofaScanTmpDev, tmpsize*sizeof(unsigned int));
     }
@@ -308,7 +308,7 @@ bool CudaScanCUDPPAvailable(unsigned int size, ScanType type)
 //                cudppHandleScanMaxElements[plan] = (1<<18);
         cudppHandleScanMaxElements[plan] = ((cudppHandleScanMaxElements[plan] + 255) & ~255);
 
-        myprintf("CudaScan: Creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
+        mycudaPrintf("CudaScan: Creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
         CUDPPConfiguration config;
         config.algorithm = CUDPP_SCAN;
         config.op = CUDPP_ADD;
@@ -317,7 +317,7 @@ bool CudaScanCUDPPAvailable(unsigned int size, ScanType type)
 
         if (cudppPlan(&cudppHandleScan[plan], config, cudppHandleScanMaxElements[plan], 1, 0) != CUDPP_SUCCESS)
         {
-            myprintf("CudaScan: ERROR creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
+            mycudaPrintf("CudaScan: ERROR creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
             cudppHandleScanMaxElements[plan] = 0;
             cudppDestroyPlan(cudppHandleScan[plan]);
             cudppScanFailed = true;
@@ -352,7 +352,7 @@ bool CudaScanTHRUSTAvailable(unsigned int size, bool /*withData*/)
 //                thrustScanMaxElements = (1<<18);
         thrustScanMaxElements = ((thrustScanMaxElements + 255) & ~255);
 
-        myprintf("CudaScan: Using THRUST to scan up to %d elements.\n", thrustScanMaxElements);
+        mycudaPrintf("CudaScan: Using THRUST to scan up to %d elements.\n", thrustScanMaxElements);
     }
     return true;
 }

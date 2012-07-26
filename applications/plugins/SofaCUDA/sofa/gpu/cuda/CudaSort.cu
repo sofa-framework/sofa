@@ -86,7 +86,7 @@ bool CudaSortCUDPPAvailable(unsigned int numElements, bool withData)
 //                cudppHandleSortMaxElements[plan] = (1<<18);
         cudppHandleSortMaxElements[plan] = ((cudppHandleSortMaxElements[plan] + 255) & ~255);
 
-        myprintf("CudaSort: Creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
+        mycudaPrintf("CudaSort: Creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
         CUDPPConfiguration config;
         config.algorithm = CUDPP_SORT_RADIX;
         config.op = CUDPP_ADD;
@@ -94,7 +94,7 @@ bool CudaSortCUDPPAvailable(unsigned int numElements, bool withData)
         config.options = withData ? CUDPP_OPTION_KEY_VALUE_PAIRS : CUDPP_OPTION_KEYS_ONLY;
         if (cudppPlan(&cudppHandleSort[plan], config, cudppHandleSortMaxElements[plan], 1, 0) != CUDPP_SUCCESS)
         {
-            myprintf("CudaSort: ERROR creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
+            mycudaPrintf("CudaSort: ERROR creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
             cudppHandleSortMaxElements[plan] = 0;
             cudppDestroyPlan(cudppHandleSort[plan]);
             cudppFailed = true;
@@ -130,7 +130,7 @@ bool CudaSortTHRUSTAvailable(unsigned int numElements, bool /*withData*/)
 //                thrustSortMaxElements = (1<<18);
         thrustSortMaxElements = ((thrustSortMaxElements + 255) & ~255);
 
-        myprintf("CudaSort: Using THRUST to sort up to %d elements.\n", thrustSortMaxElements);
+        mycudaPrintf("CudaSort: Using THRUST to sort up to %d elements.\n", thrustSortMaxElements);
     }
     return true;
 }

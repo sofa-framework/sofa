@@ -236,7 +236,7 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
 
 void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults)
 {
-    sofa::gpu::cuda::myprintf("sizeof(GPUTest)=%d\nsizeof(GPUContact)=%d\nsizeof(matrix3<float>)=%d\n",sizeof(GPUTest),sizeof(GPUContact),sizeof(matrix3<float>));
+    sofa::gpu::cuda::mycudaPrintf("sizeof(GPUTest)=%d\nsizeof(GPUContact)=%d\nsizeof(matrix3<float>)=%d\n",sizeof(GPUTest),sizeof(GPUContact),sizeof(matrix3<float>));
     const GPUTest* gputests = (const GPUTest*)tests;
     // round up to 16
     //maxPoints = (maxPoints+15)&-16;

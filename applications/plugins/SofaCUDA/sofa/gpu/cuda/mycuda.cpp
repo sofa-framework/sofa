@@ -187,7 +187,7 @@ void mycudaLogError(const char* err, const char* src)
     exit(1);
 }
 
-int myprintf(const char* fmt, ...)
+int mycudaPrintf(const char* fmt, ...)
 {
     va_list args;
     va_start( args, fmt );

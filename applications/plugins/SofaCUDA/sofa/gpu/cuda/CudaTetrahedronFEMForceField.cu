@@ -1261,7 +1261,7 @@ inline void TetrahedronFEMForceFieldCuda3t_addForce_launch2(int pt,unsigned int 
     case 4 : {TetrahedronFEMForceFieldCuda3t_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addForce4_kernel<real,BSIZE>");} return;
     case 8 : {TetrahedronFEMForceFieldCuda3t_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addForce8_kernel<real,BSIZE>");} return;
     }
-    myprintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
+    mycudaPrintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
 }
 
 template<typename real>
@@ -1274,7 +1274,7 @@ inline void TetrahedronFEMForceFieldCuda3t_addForce_launch1(int bsize,int pt,uns
     case 128 : TetrahedronFEMForceFieldCuda3t_addForce_launch2<real,128>(pt,nbVertex, nbElemPerVertex, eforce, velems, f); return;
     case 256 : TetrahedronFEMForceFieldCuda3t_addForce_launch2<real,256>(pt,nbVertex, nbElemPerVertex, eforce, velems, f); return;
     }
-    myprintf("Error : gatherBsize should be 32 or 64 or 128 or 256, current value is %d\n",bsize);
+    mycudaPrintf("Error : gatherBsize should be 32 or 64 or 128 or 256, current value is %d\n",bsize);
 }
 
 template<typename real, int BSIZE>
@@ -1289,7 +1289,7 @@ inline void TetrahedronFEMForceFieldCuda3t1_addForce_launch2(int pt,unsigned int
 //       case 4 : {TetrahedronFEMForceFieldCuda3t1_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t1_addForce4_kernel<real,BSIZE>");} return;
 //       case 8 : {TetrahedronFEMForceFieldCuda3t1_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t1_addForce8_kernel<real,BSIZE>");} return;
     }
-    myprintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
+    mycudaPrintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
 }
 
 template<typename real>
@@ -1303,7 +1303,7 @@ inline void TetrahedronFEMForceFieldCuda3t1_addForce_launch1(int bsize,int pt,un
     case 128 : TetrahedronFEMForceFieldCuda3t1_addForce_launch2<real,128>(pt,nbVertex, nbElemPerVertex, eforce, velems, f); return;
     case 256 : TetrahedronFEMForceFieldCuda3t1_addForce_launch2<real,256>(pt,nbVertex, nbElemPerVertex, eforce, velems, f); return;
     }
-    myprintf("Error : gatherBsize should be 32 or 64 or 128 or 256, current value is %d\n",bsize);
+    mycudaPrintf("Error : gatherBsize should be 32 or 64 or 128 or 256, current value is %d\n",bsize);
 }
 
 void TetrahedronFEMForceFieldCuda3f_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
