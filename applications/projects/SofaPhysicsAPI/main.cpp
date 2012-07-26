@@ -88,6 +88,23 @@ static void glut_display()
             glViewport(0, glut_height - glut_height/2, glut_width/2, glut_height/2);
         mainSimulation->drawGL();
 
+        unsigned int nbDataControllers = mainSimulation->getNbDataControllers();
+        SofaPhysicsDataController** dataControllers = mainSimulation->getDataControllers();
+        for (unsigned int i=0; i<nbDataControllers; ++i)
+        {
+            SofaPhysicsDataController* m = dataControllers[i];
+            m->setValue("30");
+            printf("DataController[%i]\n applied", i);
+        }
+
+        unsigned int nbDataMonitors = mainSimulation->getNbDataMonitors();
+        SofaPhysicsDataMonitor** dataMonitors = mainSimulation->getDataMonitors();
+        for (unsigned int i=0; i<nbDataMonitors; ++i)
+        {
+            SofaPhysicsDataMonitor* m = dataMonitors[i];
+            printf("DataMonitor[%i] = %s\n", i, m->getValue());
+        }
+
         unsigned int nbMeshes = mainSimulation->getNbOutputMeshes();
         SofaPhysicsOutputMesh** meshes = mainSimulation->getOutputMeshes();
 
