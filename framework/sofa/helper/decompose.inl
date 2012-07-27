@@ -1759,7 +1759,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaultty
     }
     }
 
-    return degenerated;
+    return (bool)degenerated;
 }
 
 
