@@ -36,15 +36,8 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 
-
-
 #include <iostream>
-using std::cerr;
-using std::endl;
 #include <limits>
-
-
-
 
 
 namespace sofa
@@ -464,7 +457,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 {
     BodyPicked result;
     // Look for particles hit by this ray
-//  cerr<<"PickHandler::findCollisionUsingBruteForce" << endl;
+//  std::cerr<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
     simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, origin, direction, maxLength, 0 );
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
 
