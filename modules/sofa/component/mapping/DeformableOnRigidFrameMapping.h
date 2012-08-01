@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 
 #include <sofa/core/Multi2Mapping.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/component.h>
 
@@ -102,8 +101,6 @@ public:
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
     Data<unsigned int> index;
-    sofa::core::objectmodel::DataFileName fileDeformableOnRigidFrameMapping;
-    Data< bool > useX0;
     Data< bool > indexFromEnd;
     Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
@@ -115,6 +112,12 @@ public:
     int addPoint ( const OutCoord& c, int indexFrom );
 
     void init();
+
+    /// Return true if the destination model has the same topology as the source model.
+    ///
+    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// input and output DOFs (mostly identity or data-conversion mappings).
+    virtual bool sameTopology() const { return true; }
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
@@ -192,7 +195,7 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/)
     {
-        serr<<"Warning ! DeformableOnRigidFrameMapping::applyDJT not implemented"<<sendl;
+        //serr<<"Warning ! DeformableOnRigidFrameMapping::applyDJT not implemented"<<sendl;
     }
 
 
@@ -248,9 +251,6 @@ protected:
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;
 
-    class Loader;
-    void load ( const char* filename );  /// SUPRESS ? ///
-    //const VecCoord& getPoints();         /// SUPRESS ? ///
     InRootCoord rootX;
 };
 

@@ -178,6 +178,7 @@ float amplify(float d, float scale, float offset)
 void main()
 {
     vec3 N = normalize(gdata.normal);
+    //gl_FragColor = vec4(N, 1.0); return;
     vec3 L = normalize(LIGHTPOS - gdata.position);
     float df = max(0,dot(N, L));
     vec3 color = gl_FrontLightProduct[0].diffuse.rgb * (0.2+0.8*df);

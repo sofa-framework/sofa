@@ -92,14 +92,14 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
         if (path.size() > 0)
         {
-            std::cout << "RestShapeSpringsForceField : " << external_rest_shape.getValue() << "not found\n";
+            serr << "RestShapeSpringsForceField : " << external_rest_shape.getValue() << " not found" << sendl;
         }
     }
     else
     {
         useRestMState = true;
 
-        // std::cout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << std::endl;
+        // sout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << sendl;
     }
 
     this->k = stiffness.getValue();
@@ -164,9 +164,9 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
+    sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     f1.resize(p1.size());
 
@@ -232,8 +232,8 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
     // 	const VecIndex& indices = points.getValue();
     // 	const VecReal& k = stiffness.getValue();
 
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
+    sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
+    sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
     double kFactor = mparams->kFactor();
 
     if (k.size()!= m_indices.size() )

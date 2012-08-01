@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real Real;
     typedef helper::vector< unsigned int > VecIndex;
     typedef helper::vector< Real >	 VecReal;
 
