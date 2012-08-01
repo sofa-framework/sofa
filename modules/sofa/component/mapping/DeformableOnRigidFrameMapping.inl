@@ -31,11 +31,6 @@
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/io/SphereLoader.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/gl/template.h>
-
 #include <sofa/simulation/common/Simulation.h>
 
 #include <string.h>
@@ -64,32 +59,12 @@ using namespace sofa::defaulttype;
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
     : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
-    , fileDeformableOnRigidFrameMapping ( initData ( &fileDeformableOnRigidFrameMapping,"fileDeformableOnRigidFrameMapping","Filename" ) )
-    , useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") )
     , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
 {
-    this->addAlias(&fileDeformableOnRigidFrameMapping,"filename");
-
     maskFrom = NULL;
     maskTo = NULL;
-}
-
-template <class TIn, class TInRoot, class TOut>
-class DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
-{
-public:
-
-    DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>* dest;
-    Loader(DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>* dest) : dest(dest) {}
-
-};
-
-template <class TIn, class TInRoot, class TOut>
-void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::load(const char * /*filename*/)
-{
-
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -137,6 +112,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 
     m_fromModel = this->getFromModels1()[0];
     m_toModel = this->getToModels()[0];
+    m_toModel->resize(m_fromModel->getSize());
 
     //Root
     if(!this->getFromModels2().empty())
@@ -184,6 +160,12 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
 {
     //Find the rigid center[s] and its displacement
     //Apply the displacement to all the located points
+
+    //Root
+    if(!m_fromRootModel && !this->getFromModels2().empty())
+    {
+        m_fromRootModel = this->getFromModels2()[0];
+    }
 
     //std::cout<<"+++++++++ apply is called"<<std::endl;
 
@@ -376,12 +358,12 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
         //std::cout<<" in.size() = "<<in.size()<<"  rotatedPoint.size()" <<rotatedPoints.size()<<std::endl;
 
 
-        if (in.size() != rotatedPoints.size())
+        if (in.size() > rotatedPoints.size())
         {
             bool log = this->f_printLog.getValue();
             //std::cout<<"+++++++++++ LOG +++++++++ "<<log<<std::endl;
             //this->f_printLog.setValue(true);
-            //serr<<"Warning: applyJT was called before any apply"<<sendl;
+            serr<<"Warning: applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")"<<sendl;
             //this->propagateX();
             //	if (m_fromModel!=NULL && m_toModel->getX()!=NULL && m_fromModel->getX()!=NULL)
             const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());

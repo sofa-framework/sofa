@@ -49,10 +49,10 @@ SOFA_DECL_CLASS(RestShapeSpringsForceField)
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
+    sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
+    sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     //std::cout<<"addForce with p_0 ="<<p_0<<" getX0"<<(*this->mstate->getX0())<<std::endl;
 
@@ -125,8 +125,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
+    sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
+    sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
 
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
@@ -199,8 +199,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
         const VecIndex& indices = points.getValue();
         const VecIndex& ext_indices=external_points.getValue();
 
-        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
-        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
+        sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
         //  if(ext_indices.size() == indices.size())
 
@@ -234,8 +234,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
         const VecIndex& indices = points.getValue();
         const VecIndex& ext_indices=external_points.getValue();
 
-        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
-        sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
+        sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
 
         std::vector< Vector3 > points;
@@ -280,10 +280,10 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
+    sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
+    sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     f1.resize(p1.size());
 
@@ -322,8 +322,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
+    sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
+    sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
     double kFactor = mparams->kFactor();
 
     const VecReal& k = stiffness.getValue();
@@ -383,8 +383,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
     const VecIndex& indices = points.getValue();
     const VecIndex& ext_indices=external_points.getValue();
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
 //  if(ext_indices.size() == indices.size())
 
@@ -450,9 +450,9 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
     if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
+    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);

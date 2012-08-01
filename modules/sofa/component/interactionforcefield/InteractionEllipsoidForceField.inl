@@ -398,8 +398,11 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         q1.buildRotationMatrix(R);
 
         glPushMatrix();
-        helper::gl::glTranslate(cx2, cy2, cz2);
-        helper::gl::glMultMatrix( &(R[0][0]) );
+        if(!object2_invert.getValue())
+        {
+            helper::gl::glTranslate(cx2, cy2, cz2);
+            helper::gl::glMultMatrix( &(R[0][0]) );
+        }
         helper::gl::glTranslate(cx1, cy1, cz1);
         helper::gl::glScale(rx, ry, (stiffness.getValue()>0?rz:-rz));
         glutSolidSphere(1,32,16);
