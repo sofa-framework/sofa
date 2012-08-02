@@ -86,9 +86,11 @@ public:
     Data< Real > m_B;                   ///< IN: Bulk modulus (resistance to uniform compression)
     Data< Real > m_gamma;               ///< IN: Bulk modulus (resistance to uniform compression)
     Data< Real > m_injectedVolume;      ///< IN: Injected (or extracted) volume since the start of the simulation
+    Data< Real > m_maxInjectionRate;    ///< IN: Maximum injection rate (volume per second)
 
     Data< Real > m_initialVolume;       ///< OUT: Initial volume, as computed from the surface rest position
-    Data< Real > m_v0;                  ///< OUT: Rest volume (as computed from initialVolume + injectedVolume)
+    Data< Real > m_currentInjectedVolume; ///< OUT: Current injected (or extracted) volume (taking into account maxInjectionRate)
+    Data< Real > m_v0;                  ///< OUT: Rest volume (as computed from initialVolume + currentInjectedVolume)
     Data< Real > m_currentVolume;       ///< OUT: Current volume, as computed from the last surface position
     Data< Real > m_currentPressure;     ///< OUT: Current pressure, as computed from the last surface position
     Data< Real > m_currentStiffness;    ///< OUT: dP/dV at current volume and pressure
@@ -99,6 +101,10 @@ public:
     Data< Real > m_currentSurfaceArea;  ///< OUT: Current surface area, as computed from the last surface position
 
     virtual void init();
+    virtual void storeResetState();
+    virtual void reset();
+    virtual void handleEvent(core::objectmodel::Event *event);
+
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
@@ -113,6 +119,8 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     int lastTopologyRevision;
+    Real reset_injectedVolume;
+    Real reset_currentInjectedVolume;
 
     // volume gradients: normals array, scaled by area covered by each point
     VecDeriv gradV;

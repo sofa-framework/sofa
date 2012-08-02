@@ -27,6 +27,7 @@
 
 #include <sofa/component/forcefield/TaitSurfacePressureForceField.h>
 #include <sofa/component/linearsolver/BlocMatrixWriter.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
@@ -54,8 +55,10 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_B(initData(&m_B, (Real)0.0, "B", "IN: Bulk modulus (resistance to uniform compression)")),
     m_gamma(initData(&m_gamma, (Real)0.0, "gamma", "IN: Bulk modulus (resistance to uniform compression)")),
     m_injectedVolume(initData(&m_injectedVolume, (Real)0.0, "injectedVolume", "IN: Injected (or extracted) volume since the start of the simulation")),
+    m_maxInjectionRate(initData(&m_maxInjectionRate, (Real)1000.0, "maxInjectionRate", "IN: Maximum injection rate (volume per second)")),
 
     m_initialVolume(initData(&m_initialVolume, (Real)0.0, "initialVolume", "OUT: Initial volume, as computed from the surface rest position")),
+    m_currentInjectedVolume(initData(&m_currentInjectedVolume, (Real)0.0, "currentInjectedVolume", "OUT: Current injected (or extracted) volume (taking into account maxInjectionRate)")),
     m_v0(initData(&m_v0, (Real)0.0, "v0", "OUT: Rest volume (as computed from initialVolume + injectedVolume)")),
     m_currentVolume(initData(&m_currentVolume, (Real)0.0, "currentVolume", "OUT: Current volume, as computed from the last surface position")),
     m_currentPressure(initData(&m_currentPressure, (Real)0.0, "currentPressure", "OUT: Current pressure, as computed from the last surface position")),
@@ -70,8 +73,11 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_B.setGroup("Controls");
     m_gamma.setGroup("Controls");
     m_injectedVolume.setGroup("Controls");
+    m_maxInjectionRate.setGroup("Controls");
     m_initialVolume.setGroup("Results");
     m_initialVolume.setReadOnly(true);
+    m_currentInjectedVolume.setGroup("Results");
+    //m_currentInjectedVolume.setReadOnly(true);
     m_v0.setGroup("Results");
     m_v0.setReadOnly(true);
     m_currentVolume.setGroup("Results");
@@ -87,6 +93,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_initialSurfaceArea.setReadOnly(true);
     m_currentSurfaceArea.setGroup("Stats");
     m_currentSurfaceArea.setReadOnly(true);
+    this->f_listening.setValue(true);
 }
 
 template <class DataTypes>
@@ -98,11 +105,10 @@ TaitSurfacePressureForceField<DataTypes>::~TaitSurfacePressureForceField()
 template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::init()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    Inherit1::init();
     m_topology = this->getContext()->getMeshTopology();
 
-    if (m_topology)
-        updateFromTopology();
+    updateFromTopology();
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
     m_currentVolume.endEdit();
     m_currentSurfaceArea.endEdit();
@@ -115,9 +121,50 @@ void TaitSurfacePressureForceField<DataTypes>::init()
 }
 
 template <class DataTypes>
+void TaitSurfacePressureForceField<DataTypes>::storeResetState()
+{
+    Inherit1::storeResetState();
+    reset_injectedVolume = m_injectedVolume.getValue();
+    reset_currentInjectedVolume = m_currentInjectedVolume.getValue();
+}
+
+template <class DataTypes>
+void TaitSurfacePressureForceField<DataTypes>::reset()
+{
+    Inherit1::reset();
+    m_injectedVolume.setValue(reset_injectedVolume);
+    m_currentInjectedVolume.setValue(reset_currentInjectedVolume);
+    updateFromTopology();
+}
+
+template <class DataTypes>
+void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    {
+        double dt = (static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt();
+        Real inj = m_injectedVolume.getValue();
+        Real curInj = m_currentInjectedVolume.getValue();
+        if (inj != curInj)
+        {
+            Real maxInj = (Real)(m_maxInjectionRate.getValue()*dt);
+            if (fabs(inj-curInj) <= maxInj)
+                curInj = inj;
+            else if (inj < curInj)
+                curInj -= maxInj;
+            else if (inj > curInj)
+                curInj += maxInj;
+            sout << "Current Injected Volume = " << curInj << sendl;
+            m_currentInjectedVolume.setValue(curInj);
+            updateFromTopology();
+        }
+    }
+}
+
+template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
 {
-    if ( lastTopologyRevision != m_topology->getRevision())
+    if (m_topology && lastTopologyRevision != m_topology->getRevision())
     {
         if (lastTopologyRevision >= 0)
             serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
@@ -127,7 +174,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
         m_initialVolume.endEdit();
         m_initialSurfaceArea.endEdit();
     }
-    m_v0.setValue(m_initialVolume.getValue() + m_injectedVolume.getValue());
+    m_v0.setValue(m_initialVolume.getValue() + m_currentInjectedVolume.getValue());
 }
 
 template <class DataTypes>
@@ -152,8 +199,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureTriangles()
 template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
-    if (m_topology)
-        updateFromTopology();
+    updateFromTopology();
 
     helper::WriteAccessor<DataVecDeriv> f = d_f;
     helper::ReadAccessor<DataVecCoord> x = d_x;

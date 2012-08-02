@@ -394,12 +394,12 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 #else
         GLdouble R[4][4];
 #endif
-        Quat q1=q.inverse();
-        q1.buildRotationMatrix(R);
 
         glPushMatrix();
         if(!object2_invert.getValue())
         {
+            Quat q1=q.inverse();
+            q1.buildRotationMatrix(R);
             helper::gl::glTranslate(cx2, cy2, cz2);
             helper::gl::glMultMatrix( &(R[0][0]) );
         }
@@ -413,8 +413,16 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         glDisable(GL_LIGHTING);
         glDisable(GL_COLOR_MATERIAL);
 
+        if(object2_invert.getValue())
+        {
+            glPushMatrix();
+            q.buildRotationMatrix(R);
+            helper::gl::glMultMatrix( &(R[0][0]) );
+            helper::gl::glTranslate(-cx2, -cy2, -cz2);
+        }
+
         const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
-        const double fscale = 1.0;
+        const double fscale = 1000.0f/this->stiffness.getValue();
         glColor4f (1,0.5f,0.5f,1);
         glBegin (GL_LINES);
         for (unsigned int i=0; i<contacts.size(); i++)
@@ -425,6 +433,10 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
                     contacts[i].pos[2]+contacts[i].force[2]*fscale );
         }
         glEnd();
+        if(object2_invert.getValue())
+        {
+            glPopMatrix();
+        }
     }
 }
 
