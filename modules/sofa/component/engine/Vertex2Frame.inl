@@ -51,6 +51,8 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     , frames( initData (&frames, "frames", "Frames at output") )
     , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
+    , rotation( initData (&rotation, 0, "rotation", "Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.") )
+    , rotationAngle( initData (&rotationAngle, 0.0, "rotationAngle", "Angle rotation") )
 {
 }
 
@@ -60,6 +62,8 @@ void Vertex2Frame<DataTypes>::init()
     addInput(&vertices);
     addInput(&texCoords);
     addInput(&normals);
+    addInput(&rotation);
+    addInput(&rotationAngle);
 
     addOutput(&frames);
 
@@ -92,7 +96,7 @@ void Vertex2Frame<DataTypes>::update()
 
     for (unsigned int i=0 ; i<nbVertices ; i++)
     {
-        Quat q;
+        Quat q, q2;
         Vector3 zAxis = (!invertNormals.getValue()) ? fNormals[i] : -fNormals[i];
         zAxis.normalize();
         Vector3 xAxis;
@@ -105,7 +109,26 @@ void Vertex2Frame<DataTypes>::update()
         yAxis = zAxis.cross(xAxis);
         yAxis.normalize();
 
-        fFrames[i].getOrientation() = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+        // compute frame rotation
+        Vector3 rotationAxis;
+        switch(rotation.getValue())
+        {
+        case 0 :
+            rotationAxis = xAxis;
+            break;
+        case 1 :
+            rotationAxis = yAxis;
+            break;
+        case 2 :
+            rotationAxis = zAxis;
+            break;
+        default:
+            break;
+        }
+        q2 = q2.axisToQuat(rotationAxis, (rotationAngle.getValue()*M_PI)/180);
+        // frame rotation computed
+
+        fFrames[i].getOrientation() = q2*q.createQuaterFromFrame(xAxis, yAxis, zAxis);
         fFrames[i].getCenter() = fVertices[i];
     }
 

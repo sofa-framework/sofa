@@ -85,6 +85,9 @@ protected:
 
     Data<VecCoord> frames;
     Data<bool> invertNormals;
+
+    Data<int> rotation;
+    Data<double> rotationAngle;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
