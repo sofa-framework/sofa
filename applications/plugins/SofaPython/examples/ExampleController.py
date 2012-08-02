@@ -34,13 +34,13 @@ def testNodes(node):
 def oneParticleSample(node):
  node.findData('name').value='oneParticleSample'
  node.findData('gravity').value=[0.0, -9.81, 0.0]
- solver = Sofa.createObject(node,Sofa.BaseObjectDescription('solver','EulerSolver'))
+ solver = node.createObject(Sofa.BaseObjectDescription('solver','EulerSolver'))
  solver.findData('printLog').value = 'false'
  node.addObject(solver);
  particule_node = node.createChild('particle_node')
- particle = Sofa.createObject(particule_node,Sofa.BaseObjectDescription('particle','MechanicalObject'))
+ particle = particule_node.createObject(Sofa.BaseObjectDescription('particle','MechanicalObject'))
  particle.resize(1)
- mass = Sofa.createObject(particule_node,Sofa.BaseObjectDescription('mass','UniformMass'))
+ mass = particule_node.createObject(Sofa.BaseObjectDescription('mass','UniformMass'))
  mass.findData('mass').value=1.0
 # style = Sofa.createObject(node,Sofa.BaseObjectDescription('style','VisualStyle'))
 # flags = style.findData('displayFlags').beginEdit(None)
