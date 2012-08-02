@@ -1,5 +1,4 @@
 import Sofa
-import datetime
 
 ############################################################################################
 # this is a PythonScriptController example script
