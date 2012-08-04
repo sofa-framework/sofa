@@ -35,10 +35,12 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QLabel>
+#include <QCheckBox>
 #else
 #include <qcombobox.h>
 #include <qspinbox.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 #endif
 namespace sofa
 {
@@ -47,19 +49,37 @@ namespace gui
 namespace qt
 {
 
+class CaptureOptionsWidget : public QWidget
+{
+    Q_OBJECT
+public:
+
+    CaptureOptionsWidget( QWidget * parent = 0);
+
+    QSpinBox* framerateSpinBox;
+    QCheckBox* realtimeCheckBox;
+    QSpinBox* frameskipSpinBox;
+};
+
 class MovieOptionsWidget : public QWidget
 {
     Q_OBJECT
 public:
     //Codec = <extension, description>
-    typedef std::pair<std::string, std::string> Codec;
+    struct Codec
+    {
+        std::string extension;
+        std::string codec;
+        std::string description;
+        Codec(std::string e, std::string c, std::string d) : extension(e), codec(c), description(d) {}
+        Codec(std::string e, std::string d) : extension(e), codec(), description(d) {}
+    };
 
 
     MovieOptionsWidget( QWidget * parent = 0);
 
     QComboBox* codecComboBox;
     QSpinBox* bitrateSpinBox;
-    QSpinBox* framerateSpinBox;
 
     std::vector< Codec > listCodecs;
 };
@@ -80,8 +100,11 @@ public:
 
     void updateContent();
     std::string getCodecExtension();
+    std::string getCodecName();
     unsigned int getFramerate();
     unsigned int getBitrate();
+    bool realtime();
+    unsigned int getFrameskip();
     RecordingType getRecordingType() { return currentRecordingType; }
 
     //helper function
@@ -94,6 +117,7 @@ public slots:
 protected:
     RecordingType currentRecordingType;
 
+    CaptureOptionsWidget* captureOptionsWidget;
     MovieOptionsWidget* movieOptionsWidget;
     QWidget* screenshotsOptionsWidget;
 };

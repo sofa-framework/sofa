@@ -93,7 +93,7 @@ void SofaViewer::setSceneFileName(const std::string &f)
 void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
 {
     std::string file =
-        filename ? sofa::helper::system::SetDirectory::GetFileName(
+        filename ? sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(
                 filename) : std::string();
     std::string screenshotPrefix =
         sofa::helper::system::SetDirectory::GetParentDir(
@@ -294,12 +294,10 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             {
 #ifdef SOFA_HAVE_FFMPEG
                 SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
-                unsigned int framerate = videoManager->getFramerate(); //img.s-1
-                unsigned int freq = ceil(1000/framerate); //ms
                 unsigned int bitrate = videoManager->getBitrate();
+                unsigned int framerate = videoManager->getFramerate(); //img.s-1
                 std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
-                videoRecorder.init( videoFilename, framerate, bitrate);
-                captureTimer.start(freq);
+                videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
 #endif
 
                 break;
@@ -307,17 +305,28 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             default :
                 break;
             }
+            if (SofaVideoRecorderManager::getInstance()->realtime())
+            {
+                unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
+                std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
+                unsigned int interv = ceil(1000/framerate); //ms
+                captureTimer.start(interv);
+            }
 
         }
         else
         {
+            if(captureTimer.isActive())
+            {
+                std::cout << "Stopping capture timer" << std::endl;
+                captureTimer.stop();
+            }
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
             {
             case SofaVideoRecorderManager::SCREENSHOTS :
                 break;
             case SofaVideoRecorderManager::MOVIE :
             {
-                captureTimer.stop();
 #ifdef SOFA_HAVE_FFMPEG
                 videoRecorder.finishVideo();
 #endif //SOFA_HAVE_FFMPEG
@@ -553,22 +562,37 @@ void SofaViewer::captureEvent()
 {
     if (_video)
     {
-        switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+        bool skip = false;
+        unsigned int frameskip = SofaVideoRecorderManager::getInstance()->getFrameskip();
+        if (frameskip)
         {
-        case SofaVideoRecorderManager::SCREENSHOTS :
-            if(!captureTimer.isActive())
-                screenshot(capture.findFilename(), 1);
-            break;
-        case SofaVideoRecorderManager::MOVIE :
-            if(captureTimer.isActive())
+            unsigned int skipcounter = 0;
+            if (skipcounter < frameskip)
             {
+                skip = true;
+                ++skipcounter;
+            }
+            else
+            {
+                skip = false;
+                skipcounter = 0;
+            }
+        }
+        if (!skip)
+        {
+            switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+            {
+            case SofaVideoRecorderManager::SCREENSHOTS :
+                screenshot(capture.findFilename(), 1);
+                break;
+            case SofaVideoRecorderManager::MOVIE :
 #ifdef SOFA_HAVE_FFMPEG
                 videoRecorder.addFrame();
 #endif //SOFA_HAVE_FFMPEG
+                break;
+            default :
+                break;
             }
-            break;
-        default :
-            break;
         }
     }
 }

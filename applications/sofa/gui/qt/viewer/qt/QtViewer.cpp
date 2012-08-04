@@ -56,9 +56,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 
-// define this if you want video and OBJ capture to be only done once per N iteration
-//#define CAPTURE_PERIOD 5
-
 namespace sofa
 {
 
@@ -997,15 +994,8 @@ void QtViewer::paintGL()
     // draw the scene
     DrawScene();
 
-    if (_video)
-    {
-#ifdef CAPTURE_PERIOD
-        static int counter = 0;
-        if ((counter++ % CAPTURE_PERIOD)==0)
-#endif
-        }
-
-    SofaViewer::captureEvent();
+    if(!captureTimer.isActive())
+        SofaViewer::captureEvent();
 
     if (_waitForRender)
         _waitForRender = false;
