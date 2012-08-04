@@ -1,10 +1,10 @@
 includeOnce($$_FILE_) {
-declare(blas,  blas.prf)
+declare(blas,   blas.prf)
 declare(boost,  boost.prf)
 declare(cgal,   cgal.prf)
 declare(cilk,   cilk.prf)
 declare(cuda,   cuda.prf)
-declare(opencl,  opencl.prf)
+declare(opencl, opencl.prf)
 declare(flowvr, flowvr.prf)
 declare(glut,   glut.prf)
 declare(glew,   glew.prf)
@@ -13,11 +13,12 @@ declare(libxml, libxml.prf)
 declare(qt,     qt.prf)
 declare(qtgui,  qtgui.prf, qt)
 declare(zlib,   zlib.prf)
-declare(thrust,   thrust.prf, cuda)
-declare(rt,   rt.prf)
+declare(thrust, thrust.prf, cuda)
+declare(rt,     rt.prf)
 declare(system-metis,  system-metis.prf)
 declare(system-taucs,  system-taucs.prf)
 declare(eigen-unsupported,  eigen-unsupported.prf)
+declare(ffmpeg, ffmpeg.prf)
 
 ######################################################################
 # Extlibs
@@ -45,7 +46,7 @@ declare(vrpn_server,        extlibs/VRPN/vrpn_server.pro, vrpn_quat vrpn_atmelli
 # Framework
 ######################################################################
 
-declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng boost)
+declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng boost ffmpeg)
 declare(sofadefaulttype, framework/sofa/defaulttype, sofahelper)
 declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 
@@ -271,6 +272,7 @@ contains(DEFINES, SOFA_HAVE_CILK)         { enable(cilk) }
 contains(DEFINES, SOFA_HAVE_FLOWVR)       { enable(flowvr) }
 contains(DEFINES, SOFA_HAVE_TAUCS):!contains(DEFINES, SOFA_EXTLIBS_TAUCS) { enable(system-taucs) }
 contains(DEFINES, SOFA_HAVE_METIS):!contains(DEFINES, SOFA_EXTLIBS_METIS) { enable(system-metis) }
+contains(DEFINES, SOFA_HAVE_FFMPEG):!contains(DEFINES, SOFA_EXTLIBS_FFMPEG) { enable(ffmpeg) }
 
 ######################################################################
 # Enable artifacts

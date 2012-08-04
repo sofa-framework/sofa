@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>486</width>
+            <width>600</width>
             <height>400</height>
         </rect>
     </property>
@@ -53,7 +53,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>List of Screenshots (slowest, best quality)</string>
+                    <string>List of Screenshots</string>
                 </property>
                 <property name="checked">
                     <bool>true</bool>
@@ -72,7 +72,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Movie (depends on chosen codec)</string>
+                    <string>Movie file encoded with FFMPEG</string>
                 </property>
             </widget>
         </widget>

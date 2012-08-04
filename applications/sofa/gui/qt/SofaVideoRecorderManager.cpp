@@ -41,12 +41,47 @@ namespace gui
 namespace qt
 {
 
+CaptureOptionsWidget::CaptureOptionsWidget( QWidget * parent)
+    : QWidget(parent)
+{
+
+    QVBoxLayout *layout=new QVBoxLayout(this);
+
+    QHBoxLayout *HLayoutFramerate = new QHBoxLayout();
+    QLabel *labelFramerate=new QLabel(QString("Framerate (in img/s): "), this);
+    framerateSpinBox = new QSpinBox(this);
+    framerateSpinBox->setMinValue(1);
+    framerateSpinBox->setMaxValue(120);
+    framerateSpinBox->setValue(60);
+    HLayoutFramerate->addWidget (labelFramerate);
+    HLayoutFramerate->addWidget (framerateSpinBox);
+
+    realtimeCheckBox = new QCheckBox(QString("Real-Time recording"), this);
+
+    QHBoxLayout *HLayoutFrameskip = new QHBoxLayout();
+    QLabel *labelFrameskip=new QLabel(QString("Skip frames before capture (fast replay): "), this);
+    frameskipSpinBox = new QSpinBox(this);
+    frameskipSpinBox->setMinValue(0);
+    frameskipSpinBox->setMaxValue(100);
+    frameskipSpinBox->setValue(0);
+    HLayoutFrameskip->addWidget (labelFrameskip);
+    HLayoutFrameskip->addWidget (frameskipSpinBox);
+
+    layout->addLayout(HLayoutFramerate);
+    layout->addWidget(realtimeCheckBox);
+    layout->addLayout(HLayoutFrameskip);
+
+    //this->addLayout(layout);
+}
+
 MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     : QWidget(parent)
 {
     //Build codec list
-    listCodecs.push_back(Codec("mpeg", "Mpeg1 (readable everywhere, not efficient at all)"));
-    listCodecs.push_back(Codec("mp4", "Mpeg4 (Best ratio bitrate/visual quality)"));
+    listCodecs.push_back(Codec("mpeg", "Mpeg1 (Bad quality but readable everywhere)"));
+    listCodecs.push_back(Codec("mp4", "MP4/Mpeg4 (Good ratio visual quality/bitrate, good compatibility)"));
+    listCodecs.push_back(Codec("mp4","h264", "MP4/H264 (Best ratio visual quality/bitrate, requires libx264)"));
+    listCodecs.push_back(Codec("avi","lossless", "Lossless (No loss of information, best for post-processing and re-encodings)"));
 
     QVBoxLayout *layout=new QVBoxLayout(this);
 
@@ -54,7 +89,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     QLabel *labelCodec=new QLabel(QString("Codec: "), this);
     codecComboBox = new QComboBox(this);
     for(unsigned int i=0; i<listCodecs.size(); i++)
-        codecComboBox->insertItem(QString(listCodecs[i].second.c_str()));
+        codecComboBox->insertItem(QString(listCodecs[i].description.c_str()));
+    codecComboBox->setCurrentIndex(2);
     HLayoutCodec->addWidget (labelCodec);
     HLayoutCodec->addWidget (codecComboBox);
 
@@ -67,18 +103,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
 
-    QHBoxLayout *HLayoutFramerate = new QHBoxLayout();
-    QLabel *labelFramerate=new QLabel(QString("Framerate (in img/s): "), this);
-    framerateSpinBox = new QSpinBox(this);
-    framerateSpinBox->setMinValue(1);
-    framerateSpinBox->setMaxValue(120);
-    framerateSpinBox->setValue(60);
-    HLayoutFramerate->addWidget (labelFramerate);
-    HLayoutFramerate->addWidget (framerateSpinBox);
-
     layout->addLayout(HLayoutCodec);
     layout->addLayout(HLayoutBitrate);
-    layout->addLayout(HLayoutFramerate);
 
     //this->addLayout(layout);
 }
@@ -93,49 +119,54 @@ SofaVideoRecorderManager::SofaVideoRecorderManager()
     MovieRecordingTypeRadioButton->setHidden(true);
 #endif
 
+    captureOptionsWidget = new CaptureOptionsWidget(this);
     movieOptionsWidget = new MovieOptionsWidget(this);
 
     //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
     movieOptionsWidget->setHidden(!currentRecordingType == MOVIE);
 
+    internalAddWidget(VideoRecorderOptionGroupBox, captureOptionsWidget);
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
 }
 
 
 std::string SofaVideoRecorderManager::getCodecExtension()
 {
-    if(movieOptionsWidget)
-    {
-        unsigned int index = movieOptionsWidget->codecComboBox->currentItem();
-        return movieOptionsWidget->listCodecs[index].first;
-    }
-    return std::string();
+    unsigned int index = movieOptionsWidget->codecComboBox->currentItem();
+    return movieOptionsWidget->listCodecs[index].extension;
+}
+
+std::string SofaVideoRecorderManager::getCodecName()
+{
+    unsigned int index = movieOptionsWidget->codecComboBox->currentItem();
+    return movieOptionsWidget->listCodecs[index].codec;
 }
 
 unsigned int SofaVideoRecorderManager::getFramerate()
 {
-    if(movieOptionsWidget)
-    {
-        return movieOptionsWidget->framerateSpinBox->value();
-    }
-
-    return 0;
+    return captureOptionsWidget->framerateSpinBox->value();
 }
 
 unsigned int SofaVideoRecorderManager::getBitrate()
 {
-    if(movieOptionsWidget)
-    {
-        return movieOptionsWidget->bitrateSpinBox->value()*1024;
-    }
-
-    return 0;
+    return movieOptionsWidget->bitrateSpinBox->value()*1024;
 }
+
+bool SofaVideoRecorderManager::realtime()
+{
+    return captureOptionsWidget->realtimeCheckBox->isChecked();
+}
+
+unsigned int SofaVideoRecorderManager::getFrameskip()
+{
+    return captureOptionsWidget->frameskipSpinBox->value();
+}
+
 
 void SofaVideoRecorderManager::updateContent()
 {
     //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
-    movieOptionsWidget->setHidden(!currentRecordingType == MOVIE);
+    movieOptionsWidget->setHidden(currentRecordingType != MOVIE);
 }
 
 void SofaVideoRecorderManager::onChangeRecordingType()

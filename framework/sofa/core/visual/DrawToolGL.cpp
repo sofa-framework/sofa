@@ -328,14 +328,14 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
 
         /* point on disk 1 */
         Vector3 w(p1);
-        w += tmp*radius1;
+        w += tmp*fabs(radius1);
         points.push_back(w);
         pointsCloseCylinder1.push_back(w);
         normalsCloseCylinder1.push_back(dir);
 
         /* point on disk 2 */
         w=p2;
-        w += tmp*radius2;
+        w += tmp*fabs(radius2);
         points.push_back(w);
         pointsCloseCylinder2.push_back(w);
         normalsCloseCylinder2.push_back(-dir);

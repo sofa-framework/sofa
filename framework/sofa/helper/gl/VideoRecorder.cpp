@@ -51,6 +51,8 @@ VideoRecorder::VideoRecorder()
     , pFormatContext(NULL), pCodecContext(NULL), pCodec(NULL)
     , p_framerate(25), p_bitrate(400000)
 {
+    img_convert_ctx = NULL;
+
     if (!VideoRecorder::FFMPEG_INITIALIZED)
     {
         av_register_all();
@@ -59,7 +61,13 @@ VideoRecorder::VideoRecorder()
     }
 }
 
-AVFrame *VideoRecorder::alloc_picture(int pix_fmt, int width, int height)
+VideoRecorder::~VideoRecorder()
+{
+    if (pFormatContext)
+        finishVideo();
+}
+
+AVFrame *VideoRecorder::alloc_picture(PixelFormat pix_fmt, int width, int height)
 {
     AVFrame *picture;
     uint8_t *picture_buf;
@@ -69,7 +77,7 @@ AVFrame *VideoRecorder::alloc_picture(int pix_fmt, int width, int height)
     if (!picture)
         return NULL;
     size = avpicture_get_size(pix_fmt, width, height);
-    picture_buf = (uint8_t *) av_malloc(size);
+    picture_buf = (uint8_t *) av_malloc(size*2);
     if (!picture_buf)
     {
         av_free(picture);
@@ -80,7 +88,7 @@ AVFrame *VideoRecorder::alloc_picture(int pix_fmt, int width, int height)
     return picture;
 }
 
-AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, int codec_id)
+AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id, const std::string& codec)
 {
     AVCodecContext *c;
     AVStream *st;
@@ -90,7 +98,7 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, int codec_id)
         return NULL;
 
     c = st->codec;
-    c->codec_id = (CodecID) codec_id;
+    c->codec_id = codec_id;
     c->codec_type = CODEC_TYPE_VIDEO;
 
     /* put sample parameters */
@@ -102,8 +110,8 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, int codec_id)
        of which frame timestamps are represented. for fixed-fps content,
        timebase should be 1/framerate and timestamp increments should be
        identically 1. */
-    c->time_base.den = p_framerate;
     c->time_base.num = 1;
+    c->time_base.den = p_framerate;
     c->gop_size = 12; /* emit one intra frame every twelve frames at most */
     c->pix_fmt = STREAM_PIX_FMT;
     if (c->codec_id == CODEC_ID_MPEG2VIDEO)
@@ -121,6 +129,99 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, int codec_id)
     // some formats want stream headers to be separate
     if(oc->oformat->flags & AVFMT_GLOBALHEADER)
         c->flags |= CODEC_FLAG_GLOBAL_HEADER;
+
+
+    // override the codec or its parameters if requested
+    if (!codec.empty())
+    {
+        if (codec == std::string("h264"))
+        {
+            c->codec_id = CODEC_ID_H264;
+            // libx264-medium.ffpreset
+            c->me_range = 16;
+            c->max_qdiff = 4;
+            c->qmin = 10;
+            c->qmax = 51;
+            c->qcompress = 0.6;
+            c->max_b_frames= 3;
+            c->me_cmp |= FF_CMP_CHROMA;
+            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
+                    X264_PART_P8X8 | X264_PART_B8X8;
+            c->me_method = ME_HEX;
+
+            //c->gop_size = 250;
+            c->keyint_min = 10;
+
+            c->scenechange_threshold = 40;
+            c->i_quant_factor = 0.71;
+            c->b_frame_strategy = 1;
+            c->directpred = 1;
+            c->trellis = 1;
+            c->flags2 = CODEC_FLAG2_BPYRAMID | CODEC_FLAG2_MIXED_REFS |
+                    CODEC_FLAG2_WPRED | CODEC_FLAG2_8X8DCT | CODEC_FLAG2_FASTPSKIP;
+            c->weighted_p_pred = 2;
+        }
+        else if (codec == std::string("mpeg4"))
+        {
+            c->codec_id = CODEC_ID_MPEG4;
+        }
+        else if (codec == std::string("mjpeg"))
+        {
+            c->codec_id = CODEC_ID_MJPEG;
+        }
+        else if (codec == std::string("lossless"))
+        {
+            c->codec_id = CODEC_ID_H264;
+            // libx264-fast.ffpreset with qp=0
+            c->me_range = 16;
+            c->max_qdiff = 4;
+            c->qmin = 0; //10;
+            c->qmax = 0; //51;
+            c->qcompress = 0.6;
+            c->max_b_frames= 3;
+            c->me_cmp |= FF_CMP_CHROMA;
+            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
+                    X264_PART_P8X8 | X264_PART_B8X8;
+            c->me_method = ME_HEX;
+
+            //c->gop_size = 250;
+            c->keyint_min = 10;
+
+            c->scenechange_threshold = 40;
+            c->i_quant_factor = 0.71;
+            c->b_frame_strategy = 1;
+            c->directpred = 1;
+            c->trellis = 1;
+            c->flags2 = CODEC_FLAG2_BPYRAMID | CODEC_FLAG2_MIXED_REFS |
+                    CODEC_FLAG2_WPRED | CODEC_FLAG2_8X8DCT | CODEC_FLAG2_FASTPSKIP;
+            c->weighted_p_pred = 2;
+
+            c->cqp = 0;
+
+            /*
+                        c->me_range = 16;
+                        c->max_qdiff = 4;
+                        c->qmin = 10;
+                        c->qmax = 51;
+                        c->qcompress = 0.6;
+                        //c->max_b_frames= 3;
+                        c->me_cmp |= FF_CMP_CHROMA;
+                        c->partitions |= X264_PART_I4X4 | X264_PART_P8X8;
+                        c->partitions &= ~( X264_PART_I8X8 | X264_PART_I4X4 | X264_PART_B8X8 );
+                        c->me_method = ME_HEX;
+
+                        c->gop_size = 250;
+                        c->keyint_min = 25;
+
+                        c->scenechange_threshold = 40;
+                        c->i_quant_factor = 0.71;
+                        c->b_frame_strategy = 1;
+                        c->directpred = 1;
+                        c->flags2 |= CODEC_FLAG2_FASTPSKIP;
+                        c->weighted_p_pred = 0;
+            */
+        }
+    }
 
     return st;
 }
@@ -184,48 +285,70 @@ bool VideoRecorder::open_video(AVFormatContext *oc, AVStream *st)
     return true;
 }
 
-void VideoRecorder::fill_image(AVFrame *pict, int frame_index, int width, int height)
+void VideoRecorder::fill_image(AVFrame *pict, int /*frame_index*/, int width, int height)
 {
-    int i;
-
-    io::ImageBMP img;
-
-    img.init(pWidth, pHeight, 1, 1, io::Image::UNORM8, io::Image::RGB);
     glReadBuffer(GL_FRONT);
+    // Read bits from color buffer
+    uint8_t *avbuf = pict->data[0];
+    unsigned int lsize = pict->linesize[0];
+    uint8_t *glbuf = avbuf+lsize*height;
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, img.getPixels());
-
-    i = frame_index;
-
-    if (SOFA_GL_PIX_FMT == PIX_FMT_RGB24)
+    glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+    glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, glbuf);
+    for(int y=0; y<height; y++)
     {
-        for(int y=0; y<height; y++)
-        {
-            memcpy(&pict->data[0][y * pict->linesize[0]], img.getPixels()+(height-y)*width*3, width*3);
-        }
-
+        memcpy(avbuf+(y*lsize), glbuf+((height-1-y)*width*3), width*3);
     }
-
 }
 
 
+bool VideoRecorder::write_delayed_video_frame(AVFormatContext *oc, AVStream *st)
+{
+    if (oc->oformat->flags & AVFMT_RAWPICTURE)
+        return true;
+
+    int out_size = 1, ret = 0;
+    AVCodecContext *c;
+
+    c = st->codec;
+
+    while (out_size > 0)
+    {
+        out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, NULL);
+        if (out_size > 0)
+        {
+            AVPacket pkt;
+            av_init_packet(&pkt);
+
+            pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
+            if(c->coded_frame->key_frame)
+                pkt.flags |= PKT_FLAG_KEY;
+            pkt.stream_index= st->index;
+            pkt.data= videoOutbuf;
+            pkt.size= out_size;
+
+            /* write the compressed frame in the media file */
+            ret = av_interleaved_write_frame(oc, &pkt);
+        }
+    }
+    if (ret != 0)
+    {
+        std::cerr << "Error while writing video frame"<<std::endl;
+        return false;
+    }
+
+    return true;
+}
 bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
 {
     int sws_flags = SWS_BICUBIC;
 
     int out_size, ret;
     AVCodecContext *c;
-    struct SwsContext *img_convert_ctx = NULL;
 
     c = st->codec;
-    /* TODO ...
-        if (pFrameCount >= STREAM_NB_FRAMES)
-        {
-            // no more frame to compress. The codec has a latency of a few
-            //   frames if using B frames, so we get the last frames by
-            //   passing the same picture again
-        }
-        else*/
     {
         if (c->pix_fmt != SOFA_GL_PIX_FMT)
         {
@@ -233,6 +356,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
             //   to the codec pixel format if needed
             if (img_convert_ctx == NULL)
             {
+                std::cout << "Initialize image conversion context"<<std::endl;
                 img_convert_ctx = sws_getContext(c->width, c->height,
                         SOFA_GL_PIX_FMT,
                         c->width, c->height,
@@ -274,14 +398,14 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
     else
     {
         /* encode the image */
+        pPicture->pts = pFrameCount;
         out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, pPicture);
         /* if zero size, it means the image was buffered */
         if (out_size > 0)
         {
             AVPacket pkt;
             av_init_packet(&pkt);
-
-            //WTF? if (c->coded_frame->pts != AV_NOPTS_VALUE)
+            //std::cout << "PTS: " << c->coded_frame->pts << std::endl;
             pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)
                 pkt.flags |= PKT_FLAG_KEY;
@@ -318,13 +442,23 @@ void VideoRecorder::close_video(AVFormatContext * /*oc */, AVStream *st)
         av_free(pTempPicture);
     }
     av_free((uint8_t*)videoOutbuf);
+    if (img_convert_ctx)
+    {
+        sws_freeContext(img_convert_ctx);
+        img_convert_ctx = NULL;
+    }
 
 }
 
 ///// Public methods
 
-bool VideoRecorder::init(const std::string& filename, unsigned int framerate, unsigned int bitrate )
+
+bool VideoRecorder::init(const std::string& filename, unsigned int framerate, unsigned int bitrate, const std::string& codec )
 {
+    std::cout << "START recording to " << filename << " ( ";
+    if (!codec.empty()) std::cout << codec << ", ";
+    std::cout << framerate << " FPS, " << bitrate << " b/s";
+    std::cout << " )" << std::endl;
     //std::string filename = findFilename();
     p_filename = filename;
     p_framerate = framerate;
@@ -335,12 +469,28 @@ bool VideoRecorder::init(const std::string& filename, unsigned int framerate, un
     pWidth = viewport[2];
     pHeight= viewport[3];
 
+    pFrameCount = 0;
+
+    if (img_convert_ctx)
+    {
+        sws_freeContext(img_convert_ctx);
+        img_convert_ctx = NULL;
+    }
+
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,64,0)
+    pFormat = av_guess_format(NULL, filename.c_str(), NULL);
+#else
     pFormat = guess_format(NULL, filename.c_str(), NULL);
+#endif
 
     if (!pFormat)
     {
         std::cerr << "Could not deduce output format from file extension: using MPEG" << std::endl;
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,64,0)
+        pFormat = av_guess_format("mpeg", NULL, NULL);
+#else
         pFormat = guess_format("mpeg", NULL, NULL);
+#endif
     }
     if (!pFormat)
     {
@@ -359,13 +509,13 @@ bool VideoRecorder::init(const std::string& filename, unsigned int framerate, un
     pFormatContext->oformat = pFormat;
     snprintf(pFormatContext->filename, sizeof(pFormatContext->filename), "%s", filename.c_str());
 
-    // add the audio and video streams using the default format codecs
-    // and initialize the codecs
+    // add the audio and video streams and initialize the codecs
     pVideoStream = NULL;
+
 
     if (pFormat->video_codec != CODEC_ID_NONE)
     {
-        pVideoStream = add_video_stream(pFormatContext, pFormat->video_codec);
+        pVideoStream = add_video_stream(pFormatContext, pFormat->video_codec, codec);
     }
 
     // set the output parameters (must be done even if no parameters)
@@ -405,6 +555,7 @@ void VideoRecorder::addFrame()
 
 void VideoRecorder::finishVideo()
 {
+    write_delayed_video_frame(pFormatContext, pVideoStream);
     // write the trailer, if any.  the trailer must be written
     // before you close the CodecContexts open when you wrote the
     // header; otherwise write_trailer may try to use memory that
@@ -433,6 +584,7 @@ void VideoRecorder::finishVideo()
 
     // free the stream
     av_free(pFormatContext);
+    pFormatContext = NULL;
 
     std::cout << p_filename << " written" << std::endl;
 }
