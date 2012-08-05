@@ -593,6 +593,7 @@ void QtViewer::DrawLogo()
     glLoadIdentity();
     glOrtho(-0.5, _W, -0.5, _H, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glLoadIdentity();
 
     if (texLogo)
@@ -618,6 +619,7 @@ void QtViewer::DrawLogo()
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
 }
 
 
@@ -652,6 +654,10 @@ void QtViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 // -------------------------------------------------------------------
 void QtViewer::DisplayOBJs()
 {
+
+    if (_background == 0)
+        DrawLogo();
+
     if (!groot)
         return;
     Enable<GL_LIGHTING> light;
@@ -761,9 +767,6 @@ void QtViewer::DrawScene(void)
 
     calcProjection();
 
-    if (_background == 0)
-        DrawLogo();
-
     glLoadIdentity();
 
 
@@ -776,80 +779,79 @@ void QtViewer::DrawScene(void)
     vparams->setModelViewMatrix(lastModelviewMatrix);
     vparams->setProjectionMatrix(lastProjectionMatrix);
 
-    //for(int i=0 ; i<16 ;i++)
-    //	std::cout << lastModelviewMatrix[i] << " ";
-//
-//	std::cout << std::endl;
-
-    //Vec position() const { return inverseCoordinatesOf(Vec(0.0,0.0,0.0)); };
-
-    //std::cout << "P " << currentCamera->getPosition() << std::endl;
-
-
-    if(currentCamera)
-    {
-        //	std::cout << currentCamera->getPosition() << " " << currentCamera->getOrientation() << std::endl;
-        //	std::cout << currentCamera->getZNear() << " " << currentCamera->getZFar() << std::endl;
-    }
-
     if (_renderingMode == GL_RENDER)
     {
         //STEREO MODE
         if(_stereoEnabled)
         {
-            //calcProjection();
-
-            //window()->showNormal();
-            glEnable(GL_STENCIL_TEST);
-            MakeStencilMask();
-
             //1st pass
-            glStencilFunc(GL_EQUAL, 0x1, 0x1);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(0,0,_W/2,_H);
+                glViewport(0, 0, _W/2, _H);
+                glScissor(0, 0, _W/2, _H);
+                glEnable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                glEnable(GL_STENCIL_TEST);
+                MakeStencilMask();
+                glStencilFunc(GL_EQUAL, 0x1, 0x1);
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            }
+
             DisplayOBJs();
 
             //2nd pass
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(_W/2,0,_W/2,_H);
+                glViewport(_W/2, 0, _W/2, _H);
+                glScissor(_W/2, 0, _W/2, _H);
+            }
+            else
+            {
+                glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            }
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             //glLoadIdentity();
             //translate slighty the camera
-            vparams->sceneTransform().translation[0] += _stereoShift;
-            vparams->sceneTransform().Apply();
-            glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            //vparams->sceneTransform().translation[0] += _stereoShift;
+
+            //defaulttype::Vector3 translate = currentCamera->cameraToWorldTransform(defaulttype::Vector3(_stereoShift,0,0));
+            //glTranslated(translate[0], translate[1], translate[2]);
+
+            glLoadIdentity();
+            double distance = currentCamera ? currentCamera->getDistance() : 10*_stereoShift;
+            double angle = atan2(_stereoShift,distance)*180.0/M_PI;
+            glTranslated(0,0,-distance);
+            glRotated(angle,0,1,0);
+            glTranslated(0,0,distance);
+            glMultMatrixd(mat);
+
             DisplayOBJs();
             glMatrixMode(GL_MODELVIEW);
             glPopMatrix();
-            glDisable(GL_STENCIL_TEST);
 
-            vparams->sceneTransform().translation[0] -= _stereoShift;
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);
+                glViewport(0, 0, _W, _H);
+                glScissor(0, 0, _W, _H);
+                glDisable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                glDisable(GL_STENCIL_TEST);
+            }
+
+            //vparams->sceneTransform().translation[0] -= _stereoShift;
         }
         else
         {
-            //SPLIT MODE
-            if (_binocularModeEnabled)
-            {
-                glMatrixMode(GL_PROJECTION);
-                glPushMatrix();
-                glViewport(0, 0, _W/2, _H);
-                glPopMatrix();
-                glMatrixMode(GL_MODELVIEW);
-                DisplayOBJs();
-
-                glMatrixMode(GL_PROJECTION);
-                glPushMatrix();
-                glViewport(_W/2, 0, _W, _H);
-                glPopMatrix();
-                glMatrixMode(GL_MODELVIEW);
-                DisplayOBJs();
-            }
-            //NORMAL MODE
-            else
-            {
-                //calcProjection(0,0, _W, _H);
-                //window()->showNormal();
-                DisplayOBJs();
-            }
+            DisplayOBJs();
         }
 
         DisplayMenu(); // always needs to be the last object being drawn
@@ -1134,7 +1136,6 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
         default:
         {
             SofaViewer::keyPressEvent(e);
-            e->ignore();
         }
         update();
         }
@@ -1479,23 +1480,6 @@ void QtViewer::resetView()
     if (!sceneFileName.empty())
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
-        /*std::ifstream in(viewFileName.c_str());
-          if (!in.fail())
-          {
-          in >> position[0];
-          in >> position[1];
-          in >> position[2];
-          in >> orientation[0];
-          in >> orientation[1];
-          in >> orientation[2];
-          in >> orientation[3];
-          orientation.normalize();
-
-          in.close();
-          fileRead = true;
-
-          setView(position, orientation);
-          }*/
         fileRead = currentCamera->importParametersFromFile(viewFileName);
     }
 
@@ -1538,21 +1522,6 @@ void QtViewer::saveView()
     if (!sceneFileName.empty())
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
-        /*std::ofstream out(viewFileName.c_str());
-          if (!out.fail())
-          {
-          const Vec3d& camPosition = currentCamera->getPosition();
-          const Quat& camOrientation = currentCamera->getOrientation();
-
-          out << camPosition[0] << " "
-          << camPosition[1] << " "
-          << camPosition[2] << "\n";
-          out << camOrientation[0] << " "
-          << camOrientation[1] << " "
-          << camOrientation[2] << " "
-          << camOrientation[3] << "\n";
-          out.close();
-          }*/
         if(currentCamera->exportParametersInFile(viewFileName))
             std::cout << "View parameters saved in " << viewFileName << std::endl;
         else
@@ -1583,7 +1552,6 @@ QString QtViewer::helpString()
 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
 <li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br></li>\
-<li><b>Ctrl + L</b>: TO DRAW SHADOWS<br></li>\
 <li><b>O</b>: TO EXPORT TO .OBJ<br>\
 The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
 <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\

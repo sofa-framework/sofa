@@ -260,7 +260,6 @@ private:
     void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK
 
-protected:
     //virtual bool event ( QEvent * e );
 
     virtual void keyPressEvent ( QKeyEvent * e );
