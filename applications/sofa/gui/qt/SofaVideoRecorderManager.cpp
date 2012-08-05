@@ -99,7 +99,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     bitrateSpinBox = new QSpinBox(this);
     bitrateSpinBox->setMinValue(100);
     bitrateSpinBox->setMaxValue(40960);
-    bitrateSpinBox->setValue(800);
+    bitrateSpinBox->setValue(5000);
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
 
@@ -111,22 +111,18 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
 
 SofaVideoRecorderManager::SofaVideoRecorderManager()
 {
-    //create option widgets
-    //movie option widget
-    //movieOptionsWidget = new QWidget(this);
-
-#ifndef SOFA_HAVE_FFMPEG
-    MovieRecordingTypeRadioButton->setHidden(true);
-#endif
-
     captureOptionsWidget = new CaptureOptionsWidget(this);
     movieOptionsWidget = new MovieOptionsWidget(this);
 
-    //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
-    movieOptionsWidget->setHidden(!currentRecordingType == MOVIE);
-
     internalAddWidget(VideoRecorderOptionGroupBox, captureOptionsWidget);
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
+
+#ifdef SOFA_HAVE_FFMPEG
+    MovieRecordingTypeRadioButton->setChecked(true);
+#else
+    MovieRecordingTypeRadioButton->setHidden(true);
+#endif
+    onChangeRecordingType();
 }
 
 
@@ -165,7 +161,6 @@ unsigned int SofaVideoRecorderManager::getFrameskip()
 
 void SofaVideoRecorderManager::updateContent()
 {
-    //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
     movieOptionsWidget->setHidden(currentRecordingType != MOVIE);
 }
 
