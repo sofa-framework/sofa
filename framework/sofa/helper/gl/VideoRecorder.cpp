@@ -405,7 +405,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
         {
             AVPacket pkt;
             av_init_packet(&pkt);
-            //std::cout << "PTS: " << c->coded_frame->pts << std::endl;
+            std::cout << "Encoded Video Frame: " << c->coded_frame->pts << std::endl;
             pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)
                 pkt.flags |= PKT_FLAG_KEY;
