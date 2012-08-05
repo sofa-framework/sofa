@@ -613,7 +613,24 @@ void QtGLViewer::DrawLogo()
 // -------------------------------------------------------------------
 void QtGLViewer::DisplayOBJs()
 {
+
+
+    if (_background==0)
+        DrawLogo();
+
     if (!groot) return;
+
+    // 		// Initialize lighting
+    glPushMatrix();
+    glLoadIdentity();
+    glLightfv(GL_LIGHT0, GL_POSITION, _lightPosition);
+    glPopMatrix();
+    Enable<GL_LIGHT0> light0;
+    //
+    glColor3f(0.5f, 0.5f, 0.6f);
+    // 			DrawXZPlane(-4.0, -20.0, 20.0, -20.0, 20.0, 1.0);
+    // 			DrawAxis(0.0, 0.0, 0.0, 10.0);
+
 
     if (!groot->f_bbox.getValue().isValid()) viewAll();
 
@@ -729,9 +746,6 @@ void QtGLViewer::DrawScene(void)
     vparams->zFar() = camera()->zFar();
     vparams->zNear() = camera()->zNear();
 
-    if (_background==0)
-        DrawLogo();
-
     camera()->getModelViewMatrix( lastModelviewMatrix );
     vparams->setModelViewMatrix( lastModelviewMatrix );
     vparams->setProjectionMatrix( lastProjectionMatrix );
@@ -748,34 +762,45 @@ void QtGLViewer::DrawScene(void)
 
     if (_renderingMode == GL_RENDER)
     {
-        // 		// Initialize lighting
-        glPushMatrix();
-        glLoadIdentity();
-        glLightfv(GL_LIGHT0, GL_POSITION, _lightPosition);
-        glPopMatrix();
-        Enable<GL_LIGHT0> light0;
-        //
-        glColor3f(0.5f, 0.5f, 0.6f);
-        // 			DrawXZPlane(-4.0, -20.0, 20.0, -20.0, 20.0, 1.0);
-        // 			DrawAxis(0.0, 0.0, 0.0, 10.0);
 
         if(_stereoEnabled)
         {
-            glEnable(GL_STENCIL_TEST);
-            MakeStencilMask();
 
             //1st pass
-            glStencilFunc(GL_EQUAL, 0x1, 0x1);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(0,0,_W/2,_H);
+                glViewport(0, 0, _W/2, _H);
+                glScissor(0, 0, _W/2, _H);
+                glEnable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                glEnable(GL_STENCIL_TEST);
+                MakeStencilMask();
+                glStencilFunc(GL_EQUAL, 0x1, 0x1);
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            }
+
             DisplayOBJs();
 
             //2nd pass
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(_W/2,0,_W/2,_H);
+                glViewport(_W/2, 0, _W/2, _H);
+                glScissor(_W/2, 0, _W/2, _H);
+            }
+            else
+            {
+                glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            }
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
 
             //translate slighty the camera
-            //visualParameters.sceneTransform.translation[0] += stereoShift;
             qglviewer::Vec newPos, pos = camera()->position();
             newPos = camera()->cameraCoordinatesOf(pos);
             newPos.x += _stereoShift;
@@ -785,9 +810,6 @@ void QtGLViewer::DrawScene(void)
             camera()->getModelViewMatrix(lastModelviewMatrix);
             glMultMatrixd(lastModelviewMatrix);
 
-
-            glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
             DisplayOBJs();
 
             glMatrixMode(GL_MODELVIEW);
@@ -800,33 +822,21 @@ void QtGLViewer::DrawScene(void)
 
             glDisable(GL_STENCIL_TEST);
 
-
-            //visualParameters.sceneTransform.translation[0] -= stereoShift;
+            if (_binocularModeEnabled)
+            {
+                vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);
+                glViewport(0, 0, _W, _H);
+                glScissor(0, 0, _W, _H);
+                glDisable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                glDisable(GL_STENCIL_TEST);
+            }
         }
         else
         {
-            //SPLIT MODE
-            if (_binocularModeEnabled)
-            {
-                glMatrixMode(GL_PROJECTION);
-                glPushMatrix();
-                glViewport(0, 0, _W/2, _H);
-                glPopMatrix();
-                glMatrixMode(GL_MODELVIEW);
-                DisplayOBJs();
-
-                glMatrixMode(GL_PROJECTION);
-                glPushMatrix();
-                glViewport(_W/2, 0, _W, _H);
-                glPopMatrix();
-                glMatrixMode(GL_MODELVIEW);
-                DisplayOBJs();
-            }
-            //NORMAL MODE
-            else
-            {
-                DisplayOBJs();
-            }
+            DisplayOBJs();
         }
 
         DisplayMenu();		// always needs to be the last object being drawn
@@ -989,7 +999,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         {
             SofaViewer::keyPressEvent(e);
             QGLViewer::keyPressEvent(e);
-            e->ignore();
         }
         }
     }
@@ -1200,7 +1209,6 @@ void QtGLViewer::setSizeH( int size )
     updateGL();
 
 }
-
 
 QString QtGLViewer::helpString()
 {

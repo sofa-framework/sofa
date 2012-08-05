@@ -178,7 +178,7 @@ public:
 
     //Configuration methods
     virtual void setViewerResolution(int w, int h);
-    virtual void setFullScreen();
+    virtual void setFullScreen(bool enable = true);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
     virtual void setDumpState(bool);
@@ -300,6 +300,7 @@ protected:
     bool m_exportGnuplot;
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
+    bool m_fullScreen;
 
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;

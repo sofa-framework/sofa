@@ -183,24 +183,24 @@ public:
     virtual void resizeW(int)=0;
     virtual void resizeH(int)=0;
 
-protected:
-
     // ---------------------- Here are the Keyboard controls   ----------------------
-    void keyPressEvent(QKeyEvent * e);
-    void keyReleaseEvent(QKeyEvent * e);
+    virtual void keyPressEvent(QKeyEvent * e);
+    virtual void keyReleaseEvent(QKeyEvent * e);
     bool isControlPressed() const;
     // ---------------------- Here are the Mouse controls   ----------------------
-    void wheelEvent(QWheelEvent *e);
-    void mouseMoveEvent ( QMouseEvent *e );
-    void mousePressEvent ( QMouseEvent * e);
-    void mouseReleaseEvent ( QMouseEvent * e);
-    void mouseEvent(QMouseEvent *e);
+    virtual void wheelEvent(QWheelEvent *e);
+    virtual void mouseMoveEvent ( QMouseEvent *e );
+    virtual void mousePressEvent ( QMouseEvent * e);
+    virtual void mouseReleaseEvent ( QMouseEvent * e);
+    virtual bool mouseEvent(QMouseEvent *e);
 
     // ---------------------- RayCasting PickHandler  ----------------------
     virtual void moveRayPickInteractor(int, int)
     {
     }
     ;
+
+protected:
 
     sofa::simulation::Node::SPtr groot;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
@@ -215,6 +215,7 @@ protected:
     bool m_isControlPressed;
     bool _video;
     bool _axis;
+    bool _fullScreen;
     int _background;
     bool initTexturesDone;
 

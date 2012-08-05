@@ -537,7 +537,9 @@ void RealGUI::init()
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
+
     gnuplot_directory = "";
+    m_fullScreen = false;
 }
 
 void RealGUI::removeViewer()
@@ -1075,27 +1077,62 @@ void RealGUI::setViewerResolution ( int w, int h )
     }
 }
 
-void RealGUI::setFullScreen ()
+void RealGUI::setFullScreen (bool enable)
 {
+    if (enable == m_fullScreen) return;
 
+    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
 #ifdef SOFA_QT4
     QList<int> list;
+    static QList<int> savedsizes;
 #else
     QValueList<int> list;
+    static QValueList<int> savedsizes;
 #endif
-    list.push_back ( 0 );
-    list.push_back ( this->width() );
-    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-    splitter_ptr->setSizes ( list );
+    if (enable)
+    {
+        savedsizes = splitter_ptr->sizes();
+        optionTabs->hide();
+        optionTabs->setParent(static_cast<QWidget*>(splitter_ptr->parent()));
+    }
+    else if (m_fullScreen)
+    {
+        splitter_ptr->insertWidget(0,optionTabs);
+        optionTabs->show();
+        splitter_ptr->setSizes ( savedsizes );
+    }
 
-    showFullScreen();
+    if (enable)
+    {
+        std::cout << "Set Full Screen Mode" << std::endl;
+        showFullScreen();
+        m_fullScreen = true;
+    }
+    else
+    {
+        std::cout << "Set Windowed Mode" << std::endl;
+        showNormal();
+        m_fullScreen = false;
+    }
 
+    if (enable)
+    {
+        menuBar()->hide();
+        statusBar()->hide();
 #ifndef SOFA_GUI_QT_NO_RECORDER
-    if (recorder) recorder->parentWidget()->hide();
-    statusBar()->addWidget( recorder->getFPSLabel());
-    statusBar()->addWidget( recorder->getTimeLabel());
+        if (recorder) recorder->parentWidget()->hide();
+        //statusBar()->addWidget( recorder->getFPSLabel());
+        //statusBar()->addWidget( recorder->getTimeLabel());
 #endif
-
+    }
+    else
+    {
+        menuBar()->show();
+        statusBar()->show();
+#ifndef SOFA_GUI_QT_NO_RECORDER
+        recorder->parentWidget()->show();
+#endif
+    }
 }
 
 void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
@@ -1816,6 +1853,22 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         _animationOBJcounter = 0;
         break;
     }
+    case Qt::Key_Space:
+    {
+        playpauseGUI(!startButton->isOn());
+        break;
+    }
+    case Qt::Key_Backspace:
+    {
+        resetScene();
+        break;
+    }
+    case Qt::Key_F11:
+        // --- fullscreen mode
+    {
+        setFullScreen(!m_fullScreen);
+        break;
+    }
     case Qt::Key_Escape:
     {
         emit(quit());
@@ -1823,7 +1876,10 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
-        e->ignore();
+        if (viewer)
+        {
+            viewer->keyPressEvent(e);
+        }
         break;
     }
     }

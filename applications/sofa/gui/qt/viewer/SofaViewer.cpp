@@ -46,6 +46,9 @@ SofaViewer::SofaViewer()
     , texLogo(NULL)
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
+    , _stereoEnabled(false)
+    , _binocularModeEnabled(false)
+    , _stereoShift(1.0)
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
 }
@@ -295,7 +298,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
 #ifdef SOFA_HAVE_FFMPEG
                 SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
                 unsigned int bitrate = videoManager->getBitrate();
-                unsigned int framerate = videoManager->getFramerate(); //img.s-1
+                unsigned int framerate = videoManager->getFramerate();
                 std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
                 videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
 #endif
@@ -309,7 +312,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             {
                 unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
                 std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
-                unsigned int interv = ceil(1000/framerate); //ms
+                unsigned int interv = (1000+framerate-1)/framerate;
                 captureTimer.start(interv);
             }
 
@@ -352,26 +355,31 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         // --- enable stereo mode
     {
         _stereoEnabled = !_stereoEnabled;
-        std::cout << "Stereoscopic View Enabled" << std::endl;
+        std::cout << "Stereoscopic View " << (_stereoEnabled ? "Enabled" : "Disabled") << std::endl;
         break;
     }
     case Qt::Key_F2:
         // --- reduce shift distance
     {
         _stereoShift -= 0.1;
+        std::cout << "Stereo separation = " << _stereoShift << std::endl;
         break;
     }
     case Qt::Key_F3:
         // --- increase shift distance
     {
         _stereoShift += 0.1;
+        std::cout << "Stereo separation = " << _stereoShift << std::endl;
         break;
     }
     case Qt::Key_F5:
         // --- enable binocular mode
     {
-        std::cout << "Binocular View Enabled" << std::endl;
-        _binocularModeEnabled = !_binocularModeEnabled;
+        if (_stereoEnabled)
+        {
+            _binocularModeEnabled = !_binocularModeEnabled;
+            std::cout << "Binocular View " << (_binocularModeEnabled ? "Enabled" : "Disabled") << std::endl;
+        }
         break;
     }
     case Qt::Key_Control:
@@ -493,7 +501,7 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 #endif
 }
 
-void SofaViewer::mouseEvent(QMouseEvent *e)
+bool SofaViewer::mouseEvent(QMouseEvent *e)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
@@ -555,7 +563,7 @@ void SofaViewer::mouseEvent(QMouseEvent *e)
     {
         pick.activateRay(viewport[2],viewport[3], groot.get());
     }
-
+    return true;
 }
 
 void SofaViewer::captureEvent()
