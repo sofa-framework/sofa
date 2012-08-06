@@ -74,8 +74,6 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaTriangleModel.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.inl \
-           sofa/gpu/cuda/CudaSpatialGridContainer.h \
-           sofa/gpu/cuda/CudaSpatialGridContainer.inl \
            sofa/gpu/cuda/CudaVisualModel.h \
            sofa/gpu/cuda/CudaVisualModel.inl \
            sofa/gpu/cuda/CudaTetrahedralVisualModel.h \
@@ -160,5 +158,24 @@ CUDA_SOURCES += sofa/gpu/cuda/mycuda.cu \
            sofa/gpu/cuda/CudaVisualModel.cu \
            sofa/gpu/cuda/CudaParticleSource.cu \
            sofa/gpu/cuda/CudaMeshMatrixMass.cu
+
+
+HEADERS += \
+                sofa/gpu/cuda/CudaSpatialGridContainer.h \
+                sofa/gpu/cuda/CudaSpatialGridContainer.inl \
+                sofa/gpu/cuda/CudaSPHFluidForceField.h \
+                sofa/gpu/cuda/CudaSPHFluidForceField.inl
+SOURCES += \
+                sofa/gpu/cuda/CudaSpatialGridContainer.cpp \
+                sofa/gpu/cuda/CudaSPHFluidForceField.cpp
+CUDA_SOURCES += \
+                sofa/gpu/cuda/CudaSpatialGridContainer.cu \
+                sofa/gpu/cuda/CudaSPHFluidForceField.cu
+
+HEADERS += \
+                sofa/gpu/cuda/CudaParticlesRepulsionForceField.h \
+                sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
+SOURCES +=      sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
+CUDA_SOURCES += sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
 
 load(sofa/post)
