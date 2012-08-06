@@ -100,6 +100,9 @@ public:
     Data< Real > m_initialSurfaceArea;  ///< OUT: Initial surface area, as computed from the surface rest position
     Data< Real > m_currentSurfaceArea;  ///< OUT: Current surface area, as computed from the last surface position
 
+    Data< Real > m_drawForceScale;  ///< DEBUG: scale used to render force vectors
+    Data< defaulttype::Vec4f > m_drawForceColor;  ///< DEBUG: color used to render force vectors
+
     virtual void init();
     virtual void storeResetState();
     virtual void reset();
