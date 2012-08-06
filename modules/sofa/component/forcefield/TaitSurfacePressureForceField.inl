@@ -66,6 +66,8 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_pressureTriangles(initData(&m_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)")),
     m_initialSurfaceArea(initData(&m_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
     m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
+    m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
+    m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_topology(NULL),
     lastTopologyRevision(-1)
 {
@@ -412,15 +414,14 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     using defaulttype::Vector3;
     using defaulttype::Vec3i;
-    using defaulttype::Vec4f;
 
     std::vector< defaulttype::Vector3 > points;
     std::vector< Vec3i > indices;
     std::vector< defaulttype::Vector3 > normals;
-
+    if (m_drawForceScale.getValue() != (Real)0.0)
     {
         points.clear();
-        const Real fscale = m_currentPressure.getValue()/(Real)600;
+        const Real fscale = m_currentPressure.getValue()*m_drawForceScale.getValue();
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
@@ -432,7 +433,7 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
             points.push_back(center);
             points.push_back(center+n);
         }
-        vparams->drawTool()->drawLines(points, 1, Vec4f(0,0,1,1));
+        vparams->drawTool()->drawLines(points, 1, m_drawForceColor.getValue());
     }
 
     if (vparams->displayFlags().getShowWireFrame())

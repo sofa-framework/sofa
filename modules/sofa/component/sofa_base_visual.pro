@@ -11,6 +11,7 @@ HEADERS += initBaseVisual.h \
            visualmodel/RecordedCamera.h \
            visualmodel/VisualModelImpl.h \
 		   visualmodel/VisualStyle.h \
+		   visualmodel/VisualTransform.h \
 		   visualmodel/ColorMap.h
 
 SOURCES += initBaseVisual.cpp \
@@ -19,6 +20,7 @@ SOURCES += initBaseVisual.cpp \
            visualmodel/RecordedCamera.cpp \
            visualmodel/VisualModelImpl.cpp \
 		   visualmodel/VisualStyle.cpp \
+		   visualmodel/VisualTransform.cpp \
 		   visualmodel/ColorMap.cpp
 
 
