@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 
 #include <map>
 

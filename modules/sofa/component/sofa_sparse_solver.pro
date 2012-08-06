@@ -10,18 +10,15 @@ HEADERS += initSparseSolver.h \
            linearsolver/PrecomputedLinearSolver.inl \
            linearsolver/SparseCholeskySolver.h \
            linearsolver/SparseLUSolver.h \
-	   linearsolver/SparseLDLSolverImpl.h \
+           linearsolver/SparseLDLSolverImpl.h \
            linearsolver/SparseLDLSolver.h \
-           linearsolver/SparseLDLSolver.inl \
-           linearsolver/SparseXXTSolver.h \
-           linearsolver/SparseXXTSolver.inl
+           linearsolver/SparseLDLSolver.inl
 
 SOURCES += initSparseSolver.cpp \
            linearsolver/PrecomputedLinearSolver.cpp \
            linearsolver/SparseCholeskySolver.cpp \
            linearsolver/SparseLUSolver.cpp \
-	   linearsolver/SparseLDLSolver.cpp \	   
-           linearsolver/SparseXXTSolver.cpp
+           linearsolver/SparseLDLSolver.cpp
 
 
 # Make sure there are no cross-dependencies

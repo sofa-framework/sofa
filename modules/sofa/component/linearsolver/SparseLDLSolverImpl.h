@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 
 #ifdef SOFA_HAVE_METIS
 extern "C" {
@@ -43,40 +43,18 @@ namespace component
 namespace linearsolver
 {
 
-template<class TMatrix, class TVector>
-class SparseLDLSolverImpl : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+template<class TMatrix, class TVector, class TThreadManager>
+class SparseLDLSolverImpl : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolverImpl,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
-    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
-
-#ifdef SOFA_HAVE_BOOST
-    typedef typename Inherit::JMatrixType JMatrixType;
-    typedef typename Inherit::ResMatrixType ResMatrixType;
-#endif
+    SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> Inherit;
 
 public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef TThreadManager ThreadManager;
     typedef typename TMatrix::Real Real;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SparseLDLSolverImpl<TMatrix,TVector>* = NULL)
-    {
-        return TMatrix::Name();
-    }
 
 protected :
 
@@ -201,7 +179,7 @@ protected :
             }
             if (D[k] == 0.0)
             {
-                std::cerr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
+                serr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << sendl;
                 return;
             }
         }

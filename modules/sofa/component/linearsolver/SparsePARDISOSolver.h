@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparsePARDISOSolver_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -49,15 +49,15 @@ namespace linearsolver
 
 /// Direct linear solvers implemented with the PARDISO library
 template<class TMatrix, class TVector>
-class SparsePARDISOSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+class SparsePARDISOSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparsePARDISOSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparsePARDISOSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     //Data< helper::vector<std::string> > f_options;
     Data<int> f_symmetric;

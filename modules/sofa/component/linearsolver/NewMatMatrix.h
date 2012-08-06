@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 #include "NewMatVector.h"
 
 namespace sofa
@@ -472,6 +473,10 @@ template<>
 class MatrixLinearSolverInternalData< component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >
 {
 public:
+    typedef NewMatVector::Real Real;
+    typedef SparseMatrix<Real> JMatrixType;
+    typedef defaulttype::BaseMatrix ResMatrixType;
+
     Data<int> bandWidth;
     MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
         : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))
@@ -488,6 +493,10 @@ template<>
 class MatrixLinearSolverInternalData< component::linearsolver::TNewMatMatrix<NEWMAT::BandMatrix> , component::linearsolver::NewMatVector >
 {
 public:
+    typedef NewMatVector::Real Real;
+    typedef SparseMatrix<Real> JMatrixType;
+    typedef defaulttype::BaseMatrix ResMatrixType;
+
     Data<int> bandWidth;
     MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
         : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))

@@ -538,7 +538,10 @@ contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, 
 } # END !SOFA_RELEASE
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+    contains(DEFINES, SOFA_HAVE_CSPARSE)                { usePlugin(SofaAsyncSolvers, applications/plugins/SofaAsyncSolvers) }
     contains(DEFINES, SOFA_GPU_CUDA)                    { usePlugin(SofaCUDADev, applications/plugins/SofaCUDADev) }
+    contains(DEFINES, SOFA_GPU_CUDA)                    { usePlugin(SofaCUDASolvers, applications/plugins/SofaCUDASolvers) }
+    contains(DEFINES, SOFA_GPU_CUDA)                    { usePlugin(SofaCUDALDI, applications/plugins/SofaCUDALDI) }
     contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS)        { usePlugin(AsynchroHaptics, applications/plugins/AsynchroHaptics) }
     contains(DEFINES, SOFA_HAVE_PLUGIN_CompliantDev)    { usePlugin(CompliantDev, applications/plugins/CompliantDev) }
     contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain, applications/plugins/vulcain) }

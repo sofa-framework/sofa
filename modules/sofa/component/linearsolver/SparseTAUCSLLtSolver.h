@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSETAUCSLLTSOLVER_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -58,15 +58,15 @@ namespace linearsolver
 
 /// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
-class SOFA_TAUCS_SOLVER_API SparseTAUCSLLtSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+class SOFA_TAUCS_SOLVER_API SparseTAUCSLLtSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSLLtSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSLLtSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     Data<bool> f_verbose;
     Data<double> f_dropTol;

@@ -48,7 +48,7 @@ namespace linearsolver
 class MatrixInvertData {};
 
 template<class Matrix, class Vector>
-class SOFA_EXPORT_DYNAMIC_LIBRARY BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver
+class BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver);
@@ -60,22 +60,39 @@ public:
     virtual Matrix * getSystemMatrix() = 0;
 };
 
+/// Empty class used for default solver implementation without multi-threading support
+class NoThreadManager
+{
+public:
+    static std::string Name() { return ""; }
+};
 
 template<class Matrix, class Vector>
 class MatrixLinearSolverInternalData
 {
 public:
+    typedef typename Vector::Real Real;
+    typedef SparseMatrix<Real> JMatrixType;
+    typedef defaulttype::BaseMatrix ResMatrixType;
+
     MatrixLinearSolverInternalData(core::objectmodel::BaseObject*)
     {}
 };
 
+template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
+class MatrixLinearSolver;
+
 template<class Matrix, class Vector>
-class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public BaseMatrixLinearSolver<Matrix, Vector>
+class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 
-    typedef  std::list<int> ListIndex;
+    typedef NoThreadManager ThreadManager;
+    typedef std::list<int> ListIndex;
+    typedef typename Vector::Real Real;
+    typedef typename MatrixLinearSolverInternalData<Matrix,Vector>::JMatrixType JMatrixType;
+    typedef typename MatrixLinearSolverInternalData<Matrix,Vector>::ResMatrixType ResMatrixType;
 
     Data<bool> multiGroup;
 
@@ -167,9 +184,9 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const MatrixLinearSolver<Matrix,Vector>* = NULL)
+    static std::string templateName(const MatrixLinearSolver<Matrix,Vector,ThreadManager>* = NULL)
     {
-        return Matrix::Name();
+        return Matrix::Name()+ThreadManager::Name();
     }
 
 
@@ -601,95 +618,53 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
 }
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resetSystem();
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resizeSystem(int);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(int);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemRHVector(core::MultiVecDerivId v);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemLHVector(core::MultiVecDerivId v);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem();
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::solveSystem();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createPersistentVector();
+GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deletePersistentVector(GraphScatteredVector* v);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::deletePersistentVector(GraphScatteredVector* v);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createMatrix();
+GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createMatrix();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::deleteMatrix(GraphScatteredMatrix* v);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemBaseMatrix();
+defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemRHBaseVector();
+defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector();
-
-#ifdef SOFA_SMP
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::resetSystem();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::resizeSystem(int);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemRHVector(core::MultiVecDerivId v);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemLHVector(core::MultiVecDerivId v);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::solveSystem();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-ParallelGraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::createPersistentVector();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::deletePersistentVector(ParallelGraphScatteredVector* v);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::createMatrix();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemBaseMatrix();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemRHBaseVector();
-
-template<> SOFA_BASE_LINEAR_SOLVER_API
-defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemLHBaseVector();
-#endif
-
+defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector();
 
 template<>
-class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::TempVectorContainer
+class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::TempVectorContainer
 {
 public:
-    MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* parent;
+    MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>* parent;
     simulation::common::VectorOperations vops;
     simulation::common::MechanicalOperations mops;
     GraphScatteredMatrix* matrix;
-    TempVectorContainer(MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* p, const core::ExecParams* params, GraphScatteredMatrix& M, GraphScatteredVector& x, GraphScatteredVector& b)
+    TempVectorContainer(MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>* p, const core::ExecParams* params, GraphScatteredMatrix& M, GraphScatteredVector& x, GraphScatteredVector& b)
         : parent(p), vops(params, p->getContext()), mops(M.mparams.setExecParams(params), p->getContext()), matrix(&M)
     {
         x.setOps( &vops );
@@ -701,7 +676,7 @@ public:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
-extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
+extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>;
 #endif
 
 } // namespace linearsolver
