@@ -179,14 +179,14 @@ public:
         v->execute( this->getContext() );
     }
 
+    static std::string templateName(const MatrixLinearSolver<Matrix,Vector,ThreadManager>* = NULL)
+    {
+        return ThreadManager::Name()+Matrix::Name();
+    }
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
-    }
-
-    static std::string templateName(const MatrixLinearSolver<Matrix,Vector,ThreadManager>* = NULL)
-    {
-        return Matrix::Name()+ThreadManager::Name();
     }
 
 
