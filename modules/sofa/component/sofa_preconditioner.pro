@@ -12,6 +12,7 @@ HEADERS += initPreconditioner.h \
            linearsolver/BlockJacobiPreconditioner.h \
            linearsolver/BlockJacobiPreconditioner.inl \
            linearsolver/SSORPreconditioner.h \
+           linearsolver/SSORPreconditioner.inl \
            linearsolver/WarpPreconditioner.h \
            linearsolver/WarpPreconditioner.inl \
            linearsolver/PrecomputedWarpPreconditioner.h \

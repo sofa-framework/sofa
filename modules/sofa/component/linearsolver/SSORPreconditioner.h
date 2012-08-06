@@ -31,7 +31,6 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 
 #include <math.h>
 
@@ -49,19 +48,17 @@ namespace linearsolver
 /// If the matrix is decomposed as $A = D + L + L^T$, this solver computes
 //       $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b$
 //  , or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$
-
-
-
-template<class TMatrix, class TVector>
-class SSORPreconditioner : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+template<class TMatrix, class TVector, class TThreadManager = NoThreadManager>
+class SSORPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SSORPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE3(SSORPreconditioner,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef TThreadManager ThreadManager;
     typedef SReal Real;
-    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
     Data<bool> f_verbose;
     Data<double> f_omega;

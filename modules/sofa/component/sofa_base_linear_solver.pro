@@ -26,8 +26,6 @@ HEADERS += initBaseLinearSolver.h \
            linearsolver/GraphScatteredTypes.h \
            linearsolver/DefaultMultiMatrixAccessor.h \
            linearsolver/MatrixLinearSolver.h \
-           linearsolver/ParallelMatrixLinearSolver.h \
-           linearsolver/ParallelMatrixLinearSolver.inl \
            linearsolver/MatrixExpr.h \
            linearsolver/matrix_bloc_traits.h \
            linearsolver/BlocMatrixWriter.h

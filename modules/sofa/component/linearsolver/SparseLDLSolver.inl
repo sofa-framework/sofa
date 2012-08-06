@@ -55,11 +55,11 @@ using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
-template<class TMatrix, class TVector>
-SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver() {}
+template<class TMatrix, class TVector, class TThreadManager>
+SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver() {}
 
-template<class TMatrix, class TVector>
-void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+template<class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
     SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
 
@@ -91,8 +91,8 @@ void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
     for (int i=0; i<data->n; i++) z[i] = B[data->invperm[i]];
 }
 
-template<class TMatrix, class TVector>
-void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
+template<class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
     //remplir A avec M

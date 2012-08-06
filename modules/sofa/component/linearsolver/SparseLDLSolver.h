@@ -46,16 +46,17 @@ namespace linearsolver
 {
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
-class SparseLDLSolver : public sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector>
+template<class TMatrix, class TVector, class TThreadManager = NoThreadManager>
+class SparseLDLSolver : public sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector, TThreadManager>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::SparseLDLSolverImpl,TMatrix,TVector));
-    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::SparseLDLSolverImpl,TMatrix,TVector,TThreadManager));
+    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
 
 public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef TThreadManager ThreadManager;
     typedef typename Matrix::Real Real;
 
     SparseLDLSolver();

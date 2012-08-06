@@ -47,7 +47,6 @@ SOFA_LINK_CLASS(PrecomputedLinearSolver)
 SOFA_LINK_CLASS(SparseCholeskySolver)
 SOFA_LINK_CLASS(SparseLUSolver)
 SOFA_LINK_CLASS(SparseLDLSolver)
-SOFA_LINK_CLASS(SparseXXTSolver)
 #endif
 
 

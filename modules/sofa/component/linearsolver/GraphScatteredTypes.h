@@ -61,6 +61,7 @@ public:
 class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredMatrix
 {
 public:
+    typedef SReal Real;
     //simulation::SolverImpl* parent;
     //double mFact, bFact, kFact;
     core::MechanicalParams mparams;
@@ -113,6 +114,7 @@ class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredVector : public sofa::core::beha
 {
 public:
     typedef sofa::core::behavior::MultiVecDeriv Inherit;
+    typedef SReal Real;
     GraphScatteredVector(core::behavior::BaseVectorOperations* p, core::VecDerivId id)
         : Inherit(p, id)
     {
