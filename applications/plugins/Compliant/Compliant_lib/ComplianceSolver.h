@@ -3,7 +3,7 @@
 #include "initCompliant.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+//#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
 #include <set>
