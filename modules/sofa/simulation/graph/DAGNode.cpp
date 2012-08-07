@@ -58,8 +58,10 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 /// Add a child node
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
+//    printf("DAGNode::doAddChild this=%X(%s) child=%X(%s)\n",this,getName().c_str(),node.get(),node->getName().c_str());
     child.add(node);
     node->l_parents.add(this);
+    node->l_parents.updateLinks(); // to fix load-time unresolved links
 }
 
 /// Remove a child
@@ -73,6 +75,7 @@ void DAGNode::doRemoveChild(DAGNode::SPtr node)
 /// Add a child node
 void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
 {
+//    printf("DAGNode::addChild this=%s child=%s\n",getName().c_str(),node->getName().c_str());
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_dynamic_cast<DAGNode>(node);
     notifyAddChild(dagnode);
     doAddChild(dagnode);
@@ -340,7 +343,13 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
     LinkParents::Container parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {
-        p.push_back(parents[i]);
+        if (parents[i])
+        {
+            p.push_back(parents[i]);
+//            printf("DAGNode::getParents() \"%s\"=%X parents[%d]=%X\"%s\"\n",getName().c_str(),this,i,(void*)parents[i],parents[i]->getName().c_str());
+        }
+//        else
+//            printf("DAGNode::getParents() \"%s\"=%X parents[%d]=%X\n",getName().c_str(),this,i,(void*)parents[i]);
     }
 
     return p;

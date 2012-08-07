@@ -32,6 +32,8 @@ using namespace sofa::core::objectmodel;
 
 #include "DAGSubGraphNode.h"
 
+
+
 namespace sofa
 {
 
@@ -39,6 +41,8 @@ namespace simulation
 {
 namespace graph
 {
+
+
 
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children DAGNode objects.
