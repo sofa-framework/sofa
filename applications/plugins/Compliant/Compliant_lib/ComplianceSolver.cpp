@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+//#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
@@ -396,11 +396,13 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
             sofa::helper::AdvancedTimer::stepBegin( "local M");
 
             // todo: better way to fill the mass matrix
-            typedef linearsolver::EigenSparseSquareMatrix<SReal> Sqmat;
+//            typedef linearsolver::EigenSparseSquareMatrix<SReal> Sqmat;
+            typedef linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
             Sqmat sqmat(node->mechanicalState->getMatrixSize(),node->mechanicalState->getMatrixSize());
             linearsolver::SingleMatrixAccessor accessor( &sqmat );
             node->mass->addMToMatrix( mparams, &accessor );
-            localM = sqmat.eigenMatrix;
+            sqmat.compress();
+            localM = sqmat.compressedMatrix;
 
             sofa::helper::AdvancedTimer::stepEnd( "local M");
         }

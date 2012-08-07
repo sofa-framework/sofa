@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
+//#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 
 #include <iostream>

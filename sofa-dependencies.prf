@@ -228,10 +228,10 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
     enable(Compliant_test)
     enable(Compliant_run)
 }
-contains(DEFINES, SOFA_HAVE_FRAME) {
-    declare(frame, applications/plugins/frame, sofaguiqt sofa_sparse_solver sofa_eigen2_solver   )
-    enable(frame)
-}
+#contains(DEFINES, SOFA_HAVE_FRAME) {
+#    declare(frame, applications/plugins/frame, sofaguiqt sofa_sparse_solver sofa_eigen2_solver   )
+#    enable(frame)
+#}
 
 contains(DEFINES, SOFA_PROJECT_runUnitTests) {
 declare(runUnitTests, applications/projects/runUnitTests, sofa_eigen2_solver sofa_component )
@@ -529,7 +529,7 @@ contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, 
     contains(DEFINES, SOFA_HAVE_HAPTION)                { usePlugin(Haption, applications/plugins/Haption) }
     contains(DEFINES, SOFA_HAVE_QTOGREVIEWER)           { usePlugin(QtOgreViewer, applications/plugins/QtOgreViewer) }
     contains(DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES)     { usePlugin(ManifoldTopologies, applications/plugins/ManifoldTopologies) }
-#    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame, applications/plugins/frame) }
+    contains(DEFINES, SOFA_HAVE_FRAME)                  { usePlugin(frame, applications/plugins/frame) }
     contains(DEFINES, SOFA_HAVE_STEPLOADER)             {  usePlugin(MeshSTEPLoader, applications/plugins/MeshSTEPLoader) }
     contains(DEFINES, SOFA_HAVE_VOXELIZER)              { usePlugin(Voxelizer, applications/plugins/Voxelizer) }
     contains(DEFINES, SOFA_HAVE_CGAL)                   { usePlugin(CGALPlugin, applications/plugins/CGALPlugin) }
