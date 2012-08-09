@@ -2079,6 +2079,33 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PAR
             }
         }
     }
+    else if(ops.size()==2 //used in the ExplicitBDF solver only (Electrophysiology)
+            && ops[0].second.size()==1
+            && ops[0].second[0].second == 1.0
+            && ops[1].second.size()==3
+           )
+    {
+        helper::ReadAccessor< Data<VecCoord> > v11( params, *this->read(ConstVecCoordId(ops[0].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v21( params, *this->read(ConstVecCoordId(ops[1].second[0].first.getId(this))) );
+        helper::ReadAccessor< Data<VecCoord> > v22( params, *this->read(ConstVecCoordId(ops[1].second[1].first.getId(this))) );
+        helper::ReadAccessor< Data<VecDeriv> > v23( params, *this->read(ConstVecDerivId(ops[1].second[2].first.getId(this))) );
+
+        helper::WriteAccessor< Data<VecCoord> > previousPos( params, *this->write(VecCoordId(ops[0].first.getId(this))) );
+        helper::WriteAccessor< Data<VecCoord> > newPos( params, *this->write(VecCoordId(ops[1].first.getId(this))) );
+
+        const unsigned int n = v11.size();
+        const Real f_1 = (Real)(ops[1].second[0].second);
+        const Real f_2 = (Real)(ops[1].second[1].second);
+        const Real f_3 = (Real)(ops[1].second[2].second);
+
+        for (unsigned int i=0; i<n; ++i)
+        {
+            previousPos[i] = v11[i];
+            newPos[i]  = v21[i]*f_1;
+            newPos[i] += v22[i]*f_2;
+            newPos[i] += v23[i]*f_3;
+        }
+    }
     else // no optimization for now for other cases
         Inherited::vMultiOp(params, ops);
 }
