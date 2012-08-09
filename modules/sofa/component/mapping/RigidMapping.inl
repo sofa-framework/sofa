@@ -67,8 +67,11 @@ class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
 public:
 
     RigidMapping<TIn, TOut>* dest;
+    helper::WriteAccessor<Data<VecCoord> > points;
+
     Loader(RigidMapping<TIn, TOut>* dest) :
-        dest(dest)
+        dest(dest),
+        points(dest->points)
     {
     }
     virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
@@ -76,13 +79,13 @@ public:
     {
         Coord c;
         Out::set(c, px, py, pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
     {
         Coord c;
         Out::set(c, px, py, pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
@@ -90,6 +93,7 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::load(const char *filename)
 {
     points.beginEdit()->resize(0);
+    points.endEdit();
 
     if (strlen(filename) > 4
         && !strcmp(filename + strlen(filename) - 4, ".xs3"))
@@ -109,10 +113,12 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh != NULL)
         {
-            points.beginEdit()->resize(mesh->getVertices().size());
+            helper::WriteAccessor<Data<VecCoord> > points = this->points;
+
+            points.resize(mesh->getVertices().size());
             for (unsigned int i = 0; i < mesh->getVertices().size(); i++)
             {
-                Out::set((*points.beginEdit())[i],
+                Out::set(points[i],
                         mesh->getVertices()[i][0],
                         mesh->getVertices()[i][1],
                         mesh->getVertices()[i][2]);
@@ -147,16 +153,18 @@ RigidMapping<TIn, TOut>::RigidMapping()
 template <class TIn, class TOut>
 int RigidMapping<TIn, TOut>::addPoint(const Coord& c)
 {
-    int i = points.getValue().size();
-    points.beginEdit()->push_back(c);
+    helper::WriteAccessor<Data<VecCoord> > points = this->points;
+    int i = points.size();
+    points.push_back(c);
     return i;
 }
 
 template <class TIn, class TOut>
 int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 {
-    int i = points.getValue().size();
-    points.beginEdit()->push_back(c);
+    helper::WriteAccessor<Data<VecCoord> > points = this->points;
+    int i = points.size();
+    points.push_back(c);
     if (!pointsPerFrame.getValue().empty())
     {
         pointsPerFrame.beginEdit()->push_back(indexFrom);
@@ -186,13 +194,14 @@ void RigidMapping<TIn, TOut>::reinit()
     {
         //        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
         const VecCoord& xTo = *this->toModel->getX();
-        points.beginEdit()->resize(xTo.size());
+        helper::WriteAccessor<Data<VecCoord> > points = this->points;
+        points.resize(xTo.size());
         unsigned int i = 0;
-        if (globalToLocalCoords.getValue() == true)
+        if (globalToLocalCoords.getValue())
         {
             //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
             const VecCoord& xTo = *this->toModel->getX();
-            points.beginEdit()->resize(xTo.size());
+            points.resize(xTo.size());
             unsigned int i = 0, cpt = 0;
             const InVecCoord& xFrom = *this->fromModel->getX();
             switch (pointsPerFrame.getValue().size())
@@ -200,7 +209,7 @@ void RigidMapping<TIn, TOut>::reinit()
             case 0:
                 for (i = 0; i < xTo.size(); i++)
                 {
-                    (*points.beginEdit())[i] = xFrom[0].inverseRotate(xTo[i]- xFrom[0].getCenter());
+                    points[i] = xFrom[0].inverseRotate(xTo[i]- xFrom[0].getCenter());
                 }
                 break;
             case 1:
@@ -208,7 +217,7 @@ void RigidMapping<TIn, TOut>::reinit()
                 {
                     for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
                     {
-                        (*points.beginEdit())[cpt]
+                        points[cpt]
                             = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
                     }
                 }
@@ -218,7 +227,7 @@ void RigidMapping<TIn, TOut>::reinit()
                 {
                     for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
                     {
-                        (*points.beginEdit())[cpt]
+                        points[cpt]
                             = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
                     }
                 }
@@ -230,7 +239,7 @@ void RigidMapping<TIn, TOut>::reinit()
         {
             for (i = 0; i < xTo.size(); i++)
             {
-                (*points.beginEdit())[i] = xTo[i];
+                points[i] = xTo[i];
             }
             //            cerr<<"globalToLocal is false, points in local coordinates : " << points << endl;
         }
@@ -239,10 +248,6 @@ void RigidMapping<TIn, TOut>::reinit()
     {
         //        cerr << "RigidMapping<TIn, TOut>::init(), points not empty or toModel is null or useX0" << endl;
     }
-    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xfrom " << xFrom << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), xto " << xTo << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::computeLocalCoordinates(), local coordinates: " << points.getValue() << endl;
 }
 
 template <class TIn, class TOut>
@@ -289,9 +294,10 @@ void RigidMapping<TIn, TOut>::disable()
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::clear(int reserve)
 {
-    this->points.beginEdit()->clear();
+    helper::WriteAccessor<Data<VecCoord> > points = this->points;
+    points.clear();
     if (reserve)
-        this->points.beginEdit()->reserve(reserve);
+        points.reserve(reserve);
     this->pointsPerFrame.beginEdit()->clear();
     this->pointsPerFrame.endEdit();
 }
