@@ -42,7 +42,7 @@ namespace linearsolver
 //#define EigenVector_VERBOSE
 
 
-/** Container of an Eigen vector.
+/** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
   */
 template<class InDataTypes>
 class EigenVector : public defaulttype::BaseVector

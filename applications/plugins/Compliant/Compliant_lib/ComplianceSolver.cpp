@@ -3,7 +3,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
-//#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
@@ -58,8 +57,9 @@ void ComplianceSolver::solveEquation()
 {
     if( _matC.rows() != 0 ) // solve constrained dynamics using a Schur complement (J.P.M^{-1}.P.J^T + C).lambda = c - J.M^{-1}.f
     {
-        SMatrix schur( _matJ * PMinvP() * _matJ.transpose() + _matC );
-        SparseLDLT schurDcmp(schur);
+        SMatrix schur = _matJ * PMinvP() * _matJ.transpose();
+        schur += _matC ;
+        Cholesky schurDcmp(schur);
         VectorEigen& lambda = _vecLambda =  _vecPhi - _matJ * ( PMinvP() * _vecF ); // right-hand term
         if( verbose.getValue() )
         {
@@ -69,7 +69,7 @@ void ComplianceSolver::solveEquation()
             cerr<<"ComplianceSolver::solveEquation,  vecPhi  = " <<  _vecPhi.transpose() << endl;
             cerr<<"ComplianceSolver::solveEquation, right-hand term = " << lambda.transpose() << endl;
         }
-        schurDcmp.solveInPlace( lambda );                                              // solve (J.M^{-1}.J^T + C).lambda = c - J.M^{-1}.f
+        lambda = schurDcmp.solve( lambda );
         VectorEigen netForces = _vecF + _matJ.transpose() * lambda ; // f = f_ext + J^T.lambda
         _vecDv = PMinvP() * netForces;                   // v = M^{-1}.f
         if( verbose.getValue() )
@@ -81,11 +81,11 @@ void ComplianceSolver::solveEquation()
     }
     else   // unconstrained dynamics, solve M.dv = f
     {
-        SparseLDLT ldlt;
+        Cholesky ldlt;
         ldlt.compute( _matM );
         {
             dv() = P() * f();
-            ldlt.solveInPlace( dv() );
+            dv() = ldlt.solve( dv() );
             dv() = P() * dv();
         }
 //        else {
@@ -166,19 +166,23 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
         //            cerr<<"  C = " << s2mjc[s].C << endl;
         //        }
         if( localMatrices[s].M.rows()>0 )
-            _matM += localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J;
+        {
+            _matM += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J );
+        }
         if( localMatrices[s].K.rows()>0 )
-            _matK += localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J;
+        {
+            _matK += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J );
+        }
         if( localMatrices[s].C.rows()>0 )
         {
             SMatrix C0 = createShiftMatrix( localMatrices[s].C.rows(), _matC.cols(), localMatrices[s].c_offset );
-            _matC += C0.transpose() * localMatrices[s].C * C0;
+            _matC += SMatrix(C0.transpose() * localMatrices[s].C * C0);
             //            cerr<<"  offset = " << s2mjc[s].c_offset << endl;
             //            cerr<<"  C0 = "  << endl<< DenseMatrix(C0) << endl;
             //            cerr<<"  J = "  << endl << DenseMatrix(s2mjc[s].J) << endl;
             //            cerr<<"  matJ before = " << endl << DenseMatrix(_matJ) << endl;
             //            cerr<<"  matJ += " << endl << DenseMatrix(SMatrix(C0.transpose() * s2mjc[s].J)) << endl;
-            _matJ += SMatrix(C0.transpose() * localMatrices[s].J);        // J vertically shifted, aligned with the compliance matrix
+            _matJ += SMatrix( C0.transpose() * localMatrices[s].J );        // J vertically shifted, aligned with the compliance matrix
             //            cerr<<"  matJ after = " << endl << DenseMatrix(_matJ) << endl;
         }
     }
@@ -533,6 +537,18 @@ ComplianceSolver::SMatrix ComplianceSolver::createIdentityMatrix( unsigned size 
     return m;
 }
 
+ComplianceSolver::SMatrixC ComplianceSolver::createIdentityMatrixC( unsigned size )
+{
+    SMatrixC m(size,size);
+    for(unsigned i=0; i<size; i++ )
+    {
+        m.startVec(i);
+        m.insertBack(i,i) =1;
+    }
+    m.finalize();
+    return m;
+}
+
 
 const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMatrix( const defaulttype::BaseMatrix* m)
 {
@@ -560,10 +576,18 @@ bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
     return true;
 }
 
-void ComplianceSolver::inverseMatrix(SMatrix& /*Minv*/, const SMatrix& /*M*/)
+bool ComplianceSolver::inverseMatrix( SMatrix& Minv, const SMatrix& M )
 {
-    cerr<<"ComplianceSolver::inverseMatrix NOT IMPLEMENTED !!!!"<< endl;
+    cerr<<"ComplianceSolver::inverseMatrix is not yet implemented" << endl;
+    return false;
+//    Cholesky cholesky(M);
+//    if( cholesky.info()!=Eigen::Success ) return false;
+//    SMatrixC id = createIdentityMatrixC(M.rows());
+//    SMatrixC MinvC = cholesky.solve( id ) ;
+//    Minv = MinvC;
+//    return true;
 }
+
 
 
 
