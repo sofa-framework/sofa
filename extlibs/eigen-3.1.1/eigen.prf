@@ -1,0 +1,6 @@
+MY_LIBS = 
+MY_LIBRARYPATH = 
+
+!contains(CONFIGDEBUG, debug) {
+		DEFINES *= EIGEN_NO_DEBUG
+}

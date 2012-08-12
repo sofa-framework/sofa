@@ -3,10 +3,10 @@
 #include "initCompliant.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-//#include <sofa/component/linearsolver/EigenSparseSquareMatrix.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
 #include <set>
+#include <Eigen/SparseCholesky>
 #include <Eigen/Dense>
 typedef Eigen::MatrixXd DenseMatrix;
 
@@ -79,6 +79,7 @@ protected:
 
 public:
     typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
+    typedef Eigen::SparseMatrix<SReal>                  SMatrixC; // Column-major order is returned by some solve methods.
     typedef linearsolver::EigenVector<SReal>            VectorSofa;
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>     VectorEigen;
     typedef core::behavior::BaseMechanicalState         MechanicalState;
@@ -197,8 +198,8 @@ protected:
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
     };
 
-    // sparse LDLT support (requires  SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD compile flag)
-    typedef Eigen::SparseLDLT<Eigen::SparseMatrix<SReal>,Eigen::Cholmod>  SparseLDLT;  // process SparseMatrix, not DynamicSparseMatrix (not implemented in Cholmod)
+//    typedef Eigen::SimplicialCholesky<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix
+    typedef Eigen::SimplicialLLT<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix
 
     /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
     /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
@@ -208,10 +209,13 @@ protected:
     static bool inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m );
 
     /// Compute the inverse of the matrix.
-    static void inverseMatrix( SMatrix& minv, const SMatrix& m );
+    static bool inverseMatrix( SMatrix& minv, const SMatrix& m );
 
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
+
+    /// Return an identity matrix of the given size, column dominant
+    static SMatrixC createIdentityMatrixC( unsigned size );
 
 
     /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.

@@ -30,12 +30,13 @@
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <Eigen/Core>
-#include <Eigen/Sparse>
 #include <map>
-#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
-#include <unsupported/Eigen/CholmodSupport>
-#endif
+#include <Eigen/Sparse>
+//#include <Eigen/Core>
+//#include <Eigen/SparseCholesky>
+//#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+//#include <Eigen/CholmodSupport>
+//#endif
 using std::cerr;
 using std::endl;
 
@@ -378,18 +379,17 @@ public:
 
     static const char* Name();
 
-#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+    // sparse solver support
 protected:
-    // sparse LDLT support
-    typedef Eigen::SparseLDLT<Eigen::SparseMatrix<Real>,Eigen::Cholmod>  SparseLDLT;
-    SparseLDLT sparseLDLT; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
+    typedef Eigen::SimplicialCholesky<Eigen::SparseMatrix<Real> >  SimplicialCholesky;
+    SimplicialCholesky cholesky; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
 public:
     /// Try to compute the LDLT decomposition, and return true if success. The matrix is unchanged.
-    bool ldltDecompose()
+    bool choleskyDecompose()
     {
         compress();
-        sparseLDLT.compute(compressedMatrix);
-        if( !sparseLDLT.succeeded() )
+        cholesky.compute(compressedMatrix);
+        if( !cholesky.succeeded() )
         {
             std::cerr<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
             return false;
@@ -398,13 +398,12 @@ public:
     }
 
     /// Solve Ax=b, where A is this matrix. WARNING: ldltDecompose() must be called first. x and b can be the same vector.
-    void ldltSolve( VectorEigen& x, const VectorEigen& b ) const
+    void choleskySolve( VectorEigen& x, const VectorEigen& b ) const
     {
         x=b;
         // solve the equation
-        sparseLDLT.solveInPlace(x);
+        cholesky.solveInPlace(x);
     }
-#endif
 
 
     /// View this matrix as a MultiMatrix
