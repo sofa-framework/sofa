@@ -433,7 +433,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
-    bool isMaskInUse = maskTo->isInUse();
+    bool isMaskInUse = maskTo && maskTo->isInUse();
     unsigned repartitionCount = pointsPerFrame.getValue().size();
 
     if (repartitionCount > 1 && repartitionCount != in.size())
@@ -471,8 +471,9 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
     }
 
     typedef helper::ParticleMask ParticleMask;
-    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
-    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
+    ParticleMask::InternalStorage::const_iterator it;
+    if (isMaskInUse) it = indices->begin();
 
     for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx)
     {
@@ -482,7 +483,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
         }
 
         for (unsigned iOutput = 0;
-                iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
+                iOutput < outputPerInput && !(isMaskInUse && it == indices->end());
                 ++iOutput, ++outIdx)
         {
             if (isMaskInUse)
@@ -506,8 +507,8 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
     const VecCoord& pts = this->getPoints();
 
-    bool isMaskInUse = maskTo->isInUse();
-    maskFrom->setInUse(isMaskInUse);
+    bool isMaskInUse = maskTo && maskTo->isInUse();
+    if (maskFrom) maskFrom->setInUse(isMaskInUse);
 
     unsigned repartitionCount = pointsPerFrame.getValue().size();
 
@@ -546,8 +547,9 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
     }
 
     typedef helper::ParticleMask ParticleMask;
-    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
-    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
+    ParticleMask::InternalStorage::const_iterator it;
+    if (isMaskInUse) it = indices->begin();
 
     for (unsigned outIdx = outIdxBegin, inIdx = 0; outIdx < outIdxEnd; ++outIdx)
     {
@@ -557,7 +559,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
         }
 
         for (unsigned iInput = 0;
-                iInput < inputPerOutput && !(isMaskInUse && it == indices.end());
+                iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
                 ++iInput, ++inIdx)
         {
             if (isMaskInUse)
@@ -629,8 +631,8 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
 
     const VecCoord& pts = this->getPoints();
 
-    bool isMaskInUse = maskTo->isInUse();
-    maskFrom->setInUse(isMaskInUse);
+    bool isMaskInUse = maskTo && maskTo->isInUse();
+    if (maskFrom) maskFrom->setInUse(isMaskInUse);
 
     unsigned repartitionCount = pointsPerFrame.getValue().size();
 
@@ -663,8 +665,9 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
 
 
     typedef helper::ParticleMask ParticleMask;
-    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
-    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
+    ParticleMask::InternalStorage::const_iterator it;
+    if (isMaskInUse) it = indices->begin();
 
     for (unsigned parentIdx = parentIdxBegin, childIdx = 0; parentIdx < parentIdxEnd; ++parentIdx)
     {
@@ -674,7 +677,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
         }
 
         for (unsigned iInput = 0;
-                iInput < inputPerOutput && !(isMaskInUse && it == indices.end());
+                iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
                 ++iInput, ++childIdx)
         {
             if (isMaskInUse)
