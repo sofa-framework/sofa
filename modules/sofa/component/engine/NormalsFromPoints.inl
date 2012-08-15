@@ -32,8 +32,7 @@
 #include "NormalsFromPoints.h"
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+#include <math.h>
 
 namespace sofa
 {
@@ -55,6 +54,8 @@ NormalsFromPoints<DataTypes>::NormalsFromPoints()
     , quads(initData(&quads,"quads","Quads of the mesh"))
     , normals(initData(&normals,"normals","Computed vertex normals of the mesh"))
     , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
+    , useAngles( initData (&useAngles, false, "useAngles", "Use incident angles to weight faces normal contributions at each vertex") )
+
 {
 }
 
@@ -65,6 +66,8 @@ void NormalsFromPoints<DataTypes>::init()
     addInput(&position);
     addInput(&triangles);
     addInput(&quads);
+    addInput(&invertNormals);
+    addInput(&useAngles);
     addOutput(&normals);
     setDirtyValue();
 }
@@ -84,6 +87,8 @@ void NormalsFromPoints<DataTypes>::update()
     helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > raTriangles = triangles;
     helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > raQuads = quads;
     helper::WriteAccessor<Data< VecCoord > > waNormals = normals;
+    const bool useAngles = this->useAngles.getValue();
+    const bool invertNormals = this->invertNormals.getValue();
 
     waNormals.resize(raPositions.size());
 
@@ -93,12 +98,23 @@ void NormalsFromPoints<DataTypes>::update()
         const Coord  v2 = raPositions[raTriangles[i][1]];
         const Coord  v3 = raPositions[raTriangles[i][2]];
         Coord n = cross(v2-v1, v3-v1);
-
-        n.normalize();
-        waNormals[raTriangles[i][0]] += n;
-        waNormals[raTriangles[i][1]] += n;
-        waNormals[raTriangles[i][2]] += n;
-
+        if (useAngles)
+        {
+            Real nnorm = n.norm();
+            Coord e12 = v2-v1; Real e12norm = e12.norm();
+            Coord e23 = v3-v2; Real e23norm = e23.norm();
+            Coord e31 = v3-v1; Real e31norm = e31.norm();
+            waNormals[raTriangles[i][0]] += n * (acos(-(e31*e12)/(e31norm*e12norm))/nnorm);
+            waNormals[raTriangles[i][1]] += n * (acos(-(e12*e23)/(e12norm*e23norm))/nnorm);
+            waNormals[raTriangles[i][2]] += n * (acos(-(e23*e31)/(e23norm*e31norm))/nnorm);
+        }
+        else
+        {
+            n.normalize();
+            waNormals[raTriangles[i][0]] += n;
+            waNormals[raTriangles[i][1]] += n;
+            waNormals[raTriangles[i][2]] += n;
+        }
     }
     for (unsigned int i = 0; i < raQuads.size() ; i++)
     {
@@ -106,19 +122,36 @@ void NormalsFromPoints<DataTypes>::update()
         const Coord & v2 = raPositions[raQuads[i][1]];
         const Coord & v3 = raPositions[raQuads[i][2]];
         const Coord & v4 = raPositions[raQuads[i][3]];
-        Coord n1 = cross(v2-v1, v4-v1);
-        Coord n2 = cross(v3-v2, v1-v2);
-        Coord n3 = cross(v4-v3, v2-v3);
-        Coord n4 = cross(v1-v4, v3-v4);
-        n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
-        waNormals[raQuads[i][0]] += n1;
-        waNormals[raQuads[i][1]] += n2;
-        waNormals[raQuads[i][2]] += n3;
-        waNormals[raQuads[i][3]] += n4;
+        Coord n1 = cross(v2-v1, v4-v1); Real n1norm = n1norm;
+        Coord n2 = cross(v3-v2, v1-v2); Real n2norm = n2norm;
+        Coord n3 = cross(v4-v3, v2-v3); Real n3norm = n3norm;
+        Coord n4 = cross(v1-v4, v3-v4); Real n4norm = n4norm;
+        if (useAngles)
+        {
+            Coord e12 = v2-v1; Real e12norm = e12.norm();
+            Coord e23 = v3-v2; Real e23norm = e23.norm();
+            Coord e34 = v4-v3; Real e34norm = e34.norm();
+            Coord e41 = v1-v4; Real e41norm = e41.norm();
+            waNormals[raQuads[i][0]] += n1 * (acos(-(e41*e12)/(e41norm*e12norm))/n1norm);
+            waNormals[raQuads[i][1]] += n2 * (acos(-(e12*e23)/(e12norm*e23norm))/n2norm);
+            waNormals[raQuads[i][2]] += n3 * (acos(-(e23*e34)/(e23norm*e34norm))/n3norm);
+            waNormals[raQuads[i][3]] += n4 * (acos(-(e34*e41)/(e34norm*e41norm))/n3norm);
+        }
+        else
+        {
+            waNormals[raQuads[i][0]] += n1 / n1norm;
+            waNormals[raQuads[i][1]] += n2 / n2norm;
+            waNormals[raQuads[i][2]] += n3 / n3norm;
+            waNormals[raQuads[i][3]] += n4 / n4norm;
+        }
     }
 
-    if(invertNormals.getValue())	  for (unsigned int i = 0; i < waNormals.size(); i++)		  waNormals[i]*=-1.;
-    for (unsigned int i = 0; i < waNormals.size(); i++)		  waNormals[i].normalize();
+    if(invertNormals)
+        for (unsigned int i = 0; i < waNormals.size(); i++)
+            waNormals[i]=-waNormals[i];
+
+    for (unsigned int i = 0; i < waNormals.size(); i++)
+        waNormals[i].normalize();
 }
 
 } // namespace engine
