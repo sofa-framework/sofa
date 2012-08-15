@@ -257,8 +257,20 @@ Node* RealGUI::currentSimulation()
 
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& options )
     : viewerName ( viewername ),
+#ifdef SOFA_GUI_INTERACTION
+      interactionButton( NULL ),
+#endif
       viewer ( NULL ),
       simulationGraph(NULL),
+      mCreateViewersOpt(false),
+      m_dumpState(false),
+      m_dumpStateStream(NULL),
+      m_exportGnuplot(false),
+      _animationOBJ(false),
+      _animationOBJcounter(0),
+      m_displayComputationTime(false),
+      m_fullScreen(false),
+
       currentTab ( NULL ),
 #ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(NULL),
@@ -270,9 +282,21 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
       timerStep(NULL),
       backgroundImage(NULL),
       left_stack(NULL),
+      pluginManager_dialog(NULL),
       recentlyOpenedFilesManager("config/Sofa.ini"),
       saveReloadFile(false),
-      displayFlag(NULL)
+      frameCounter(0),
+#ifdef SOFA_GUI_INTERACTION
+      m_interactionActived(false),
+#endif
+      displayFlag(NULL),
+#ifdef SOFA_DUMP_VISITOR_INFO
+      windowTraceVisitor(NULL),
+      handleTraceVisitor(NULL),
+#endif
+      descriptionScene(NULL),
+      htmlPage(NULL),
+      animationState(false)
 {
 
     // parse the options
