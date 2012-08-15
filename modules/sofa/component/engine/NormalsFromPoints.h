@@ -54,6 +54,7 @@ class NormalsFromPoints : public core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(NormalsFromPoints,DataTypes),core::DataEngine);
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -74,6 +75,7 @@ public:
     Data< helper::vector< helper::fixed_array <unsigned int,4> > > quads;
     Data< VecCoord > normals;       ///< result
     Data<bool> invertNormals;
+    Data<bool> useAngles;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
