@@ -190,7 +190,7 @@ signals:
 
 protected:
 
-    void calcProjection();
+    void calcProjection( int width = 0, int height = 0 );
     void initializeGL();
     void paintGL();
     void resizeGL( int w, int h );

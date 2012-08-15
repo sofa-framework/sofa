@@ -47,7 +47,7 @@ SofaViewer::SofaViewer()
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
     , _stereoEnabled(false)
-    , _binocularModeEnabled(false)
+    , _stereoMode(STEREO_AUTO)
     , _stereoShift(1.0)
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
@@ -110,9 +110,6 @@ void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
     sceneFileName = filename ? filename : std::string("default.scn");
     groot = scene;
     initTexturesDone = false;
-    _stereoEnabled = false;
-    _stereoShift = 1.0;
-    _binocularModeEnabled = false;
 
     //Camera initialization
     if (groot)
@@ -375,10 +372,29 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_F5:
         // --- enable binocular mode
     {
-        if (_stereoEnabled)
+        _stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
+        switch (_stereoMode)
         {
-            _binocularModeEnabled = !_binocularModeEnabled;
-            std::cout << "Binocular View " << (_binocularModeEnabled ? "Enabled" : "Disabled") << std::endl;
+        case STEREO_INTERLACED:
+            std::cout << "Stereo mode: Interlaced" << std::endl;
+            break;
+        case STEREO_SIDE_BY_SIDE:
+            std::cout << "Stereo mode: Side by Side" << std::endl; break;
+        case STEREO_SIDE_BY_SIDE_HALF:
+            std::cout << "Stereo mode: Side by Side Half" << std::endl; break;
+        case STEREO_FRAME_PACKING:
+            std::cout << "Stereo mode: Frame Packing" << std::endl; break;
+        case STEREO_TOP_BOTTOM:
+            std::cout << "Stereo mode: Top Bottom" << std::endl; break;
+        case STEREO_TOP_BOTTOM_HALF:
+            std::cout << "Stereo mode: Top Bottom Half" << std::endl; break;
+        case STEREO_AUTO:
+            std::cout << "Stereo mode: Automatic" << std::endl; break;
+        case STEREO_NONE:
+            std::cout << "Stereo mode: None" << std::endl; break;
+        default:
+            std::cout << "Stereo mode: INVALID" << std::endl; break;
+            break;
         }
         break;
     }

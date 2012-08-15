@@ -236,7 +236,19 @@ protected:
 
     //Stereo parameters
     bool _stereoEnabled;
-    bool _binocularModeEnabled;
+    enum StereoMode
+    {
+        STEREO_AUTO = 0,
+        STEREO_INTERLACED,
+        STEREO_FRAME_PACKING,
+        STEREO_SIDE_BY_SIDE,
+        STEREO_TOP_BOTTOM,
+        STEREO_SIDE_BY_SIDE_HALF,
+        STEREO_TOP_BOTTOM_HALF,
+        STEREO_NONE,
+        NB_STEREO_MODES
+    };
+    StereoMode _stereoMode;
     double _stereoShift;
 
 };
