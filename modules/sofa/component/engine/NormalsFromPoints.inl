@@ -122,10 +122,10 @@ void NormalsFromPoints<DataTypes>::update()
         const Coord & v2 = raPositions[raQuads[i][1]];
         const Coord & v3 = raPositions[raQuads[i][2]];
         const Coord & v4 = raPositions[raQuads[i][3]];
-        Coord n1 = cross(v2-v1, v4-v1); Real n1norm = n1norm;
-        Coord n2 = cross(v3-v2, v1-v2); Real n2norm = n2norm;
-        Coord n3 = cross(v4-v3, v2-v3); Real n3norm = n3norm;
-        Coord n4 = cross(v1-v4, v3-v4); Real n4norm = n4norm;
+        Coord n1 = cross(v2-v1, v4-v1); Real n1norm = n1.norm();
+        Coord n2 = cross(v3-v2, v1-v2); Real n2norm = n2.norm();
+        Coord n3 = cross(v4-v3, v2-v3); Real n3norm = n3.norm();
+        Coord n4 = cross(v1-v4, v3-v4); Real n4norm = n4.norm();
         if (useAngles)
         {
             Coord e12 = v2-v1; Real e12norm = e12.norm();
