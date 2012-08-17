@@ -111,9 +111,9 @@ void GraphOptionWidget::openFindFileDialog()
 {
     QLineEdit *fileLineEdit=0;
     QPushButton *button=(QPushButton*)sender();
-    if (button == exportGNUPLOTButton)    fileLineEdit = fileGNUPLOTLineEdit;
+    if (button == findGNUPLOTFile)    fileLineEdit = fileGNUPLOTLineEdit;
 #ifdef SOFA_QT4
-    else if (button == exportImageButton) fileLineEdit = fileImageLineEdit;
+    else if (button == findImageFile) fileLineEdit = fileImageLineEdit;
 #endif
     std::string filename(sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()));
     std::string directory;
