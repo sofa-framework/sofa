@@ -103,7 +103,7 @@ void NormalsFromPoints<DataTypes>::update()
             Real nnorm = n.norm();
             Coord e12 = v2-v1; Real e12norm = e12.norm();
             Coord e23 = v3-v2; Real e23norm = e23.norm();
-            Coord e31 = v3-v1; Real e31norm = e31.norm();
+            Coord e31 = v1-v3; Real e31norm = e31.norm();
             waNormals[raTriangles[i][0]] += n * (acos(-(e31*e12)/(e31norm*e12norm))/nnorm);
             waNormals[raTriangles[i][1]] += n * (acos(-(e12*e23)/(e12norm*e23norm))/nnorm);
             waNormals[raTriangles[i][2]] += n * (acos(-(e23*e31)/(e23norm*e31norm))/nnorm);
