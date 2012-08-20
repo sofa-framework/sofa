@@ -135,7 +135,7 @@ void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::Mechani
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
         rotationFinders[indRotationFinder]->getRotations(rotationWork[indexwork]);
 
-        if (realSolver->isParallelSolver()) indexwork = (indexwork==0) ? 1 : 0;
+        if (realSolver->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
 
         if (!rotationWork[indexwork]) rotationWork[indexwork] = createRotationMatrix();
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
@@ -150,7 +150,7 @@ void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::Mechani
             rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
             rotationFinders[indRotationFinder]->getRotations(rotationWork[indexwork]);
 
-            if (realSolver->isParallelSolver()) indexwork = (indexwork==0) ? 1 : 0;
+            if (realSolver->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
         }
     }
 }
@@ -261,6 +261,13 @@ template<class DataTypes>
 void WarpPreconditioner<DataTypes>::resetSystem()
 {
     if (realSolver) realSolver->resetSystem();
+}
+
+template<class DataTypes>
+bool WarpPreconditioner<DataTypes>::isAsyncSolver()
+{
+    if (realSolver) return realSolver->isAsyncSolver();
+    return false;
 }
 
 template<class DataTypes>

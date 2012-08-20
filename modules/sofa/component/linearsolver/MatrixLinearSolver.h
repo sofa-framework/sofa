@@ -66,6 +66,11 @@ class NoThreadManager
 {
 public:
     static std::string Name() { return ""; }
+
+    static bool isAsyncSolver()
+    {
+        return false;
+    }
 };
 
 template<class Matrix, class Vector>
@@ -155,7 +160,6 @@ public:
         }
     }
 
-
     void prepareVisitor(Visitor* v)
     {
         v->setTags(this->getTags());
@@ -183,6 +187,11 @@ public:
     static std::string templateName(const MatrixLinearSolver<Matrix,Vector,ThreadManager>* = NULL)
     {
         return ThreadManager::Name()+Matrix::Name();
+    }
+
+    virtual bool isAsyncSolver()
+    {
+        return ThreadManager::isAsyncSolver();
     }
 
     virtual std::string getTemplateName() const
