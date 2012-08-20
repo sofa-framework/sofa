@@ -198,6 +198,8 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    virtual bool isAsyncSolver();
+
     TRotationMatrix* createRotationMatrix()
     {
         return new TRotationMatrix;

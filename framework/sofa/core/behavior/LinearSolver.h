@@ -63,7 +63,7 @@ public:
     virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
 
     /// Indicate if the solver update the system in parallel
-    virtual bool isParallelSolver() { return false; }
+    virtual bool isAsyncSolver() { return false; }
 
     /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
     virtual bool hasUpdatedMatrix() { return true; }
