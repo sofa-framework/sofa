@@ -200,7 +200,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
             if (pointMap[i][j] == -1) continue;
-            out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
+            out[pointMap[i][j]] = in[i];
         }
     }
 
