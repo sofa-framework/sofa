@@ -98,8 +98,6 @@ public:
     /// Remove all targets
     void clear();
 
-
-
     virtual void init();
 
     virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);

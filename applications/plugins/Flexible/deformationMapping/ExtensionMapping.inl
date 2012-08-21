@@ -46,6 +46,7 @@ using namespace sofa::defaulttype;
 template <class TIn, class TOut>
 ExtensionMapping<TIn, TOut>::ExtensionMapping()
     : Inherit()
+    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections."))
 {
 }
@@ -72,10 +73,12 @@ void ExtensionMapping<TIn, TOut>::init()
         helper::WriteAccessor< Data<vector<Real> > > restLengths(f_restLengths);
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
         restLengths.resize( links.size() );
-        for(unsigned i=0; i<links.size(); i++ )
-        {
-            restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
-        }
+        if(!(f_computeDistance.getValue()))
+            for(unsigned i=0; i<links.size(); i++ )
+                restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
+        else
+            for(unsigned i=0; i<links.size(); i++ )
+                restLengths[i] = (Real)0.;
     }
 
     baseMatrices.resize( 1 );

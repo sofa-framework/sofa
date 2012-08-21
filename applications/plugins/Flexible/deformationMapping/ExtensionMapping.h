@@ -82,7 +82,8 @@ public:
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
 
 
-    Data< vector< Real > > f_restLengths;  ///< rest length of each link
+    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
+    Data< vector< Real > > f_restLengths;		///< rest length of each link
 
     virtual void init();
 
