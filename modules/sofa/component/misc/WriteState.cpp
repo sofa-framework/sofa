@@ -43,8 +43,6 @@ using namespace defaulttype;
 int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
         .add< WriteState >();
 
-
-
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
@@ -60,7 +58,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
 {
 }
 
-WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _createInMapping, int c)
+WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c)
     :Visitor(params)
     , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
@@ -70,6 +68,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::
 #endif
     , recordX(_recordX)
     , recordV(_recordV)
+    , recordF(_recordF)
     , createInMapping(_createInMapping)
     , counterWriteState(c)
 {
@@ -106,6 +105,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
             gnode->addObject(ws);
             ws->f_writeX.setValue(recordX);
             ws->f_writeV.setValue(recordV);
+            ws->f_writeF.setValue(recordF);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
                 ws->addTag(*it);
 
