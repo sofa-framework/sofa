@@ -48,6 +48,7 @@ WriteState::WriteState()
     , f_writeX( initData(&f_writeX, true, "writeX", "flag enabling output of X vector"))
     , f_writeX0( initData(&f_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
     , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
+    , f_writeF( initData(&f_writeF, false, "writeF", "flag enabling output of F vector"))
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
@@ -95,12 +96,12 @@ void WriteState::init()
     const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
-// 	    std::ifstream infile(filename.c_str());
-// 	    if( infile.is_open() )
-// 	      {
-// 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
-// 	      }
-// 	    else
+        // 	    std::ifstream infile(filename.c_str());
+        // 	    if( infile.is_open() )
+        // 	      {
+        // 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
+        // 	      }
+        // 	    else
 #ifdef SOFA_HAVE_ZLIB
         if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
         {
@@ -270,6 +271,15 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                         //<TO REMOVE>
                         //mmodel->writeV(*outfile);
                         mmodel->writeVec(core::VecId::velocity(), *outfile);
+                        (*outfile) << "\n";
+                    }
+                    //write the F state
+                    if (f_writeF.getValue())
+                    {
+                        (*outfile) << "  F= ";
+                        //<TO REMOVE>
+                        //mmodel->writeV(*outfile);
+                        mmodel->writeVec(core::VecId::force(), *outfile);
                         (*outfile) << "\n";
                     }
                     outfile->flush();

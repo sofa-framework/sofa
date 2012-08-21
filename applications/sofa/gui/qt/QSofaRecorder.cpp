@@ -464,7 +464,7 @@ void QSofaRecorder::addWriteState(const std::string& writeSceneName )
     assert(! writeSceneName.empty());
     assert(root);
     //record X, V, but won't record in the Mapping
-    WriteStateCreator v(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, writeSceneName, true, true, false);
+    WriteStateCreator v(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, writeSceneName, true, true, true, false);
     v.addTag(Tag("AutoRecord"));
     v.execute(root);
     std::cout << "Recording simulation with base name: " << writeSceneName << "\n";

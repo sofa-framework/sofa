@@ -65,6 +65,7 @@ public:
     Data < bool > f_writeX;
     Data < bool > f_writeX0;
     Data < bool > f_writeV;
+    Data < bool > f_writeF;
     Data < double > f_interval;
     Data < helper::vector<double> > f_time;
     Data < double > f_period;
@@ -114,19 +115,20 @@ class SOFA_EXPORTER_API WriteStateCreator: public Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
-    WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _createInMapping, int c=0);
+    WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c=0);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n; }
     void setRecordX(bool b) {recordX=b;}
     void setRecordV(bool b) {recordV=b;}
+    void setRecordF(bool b) {recordF=b;}
     void setCreateInMapping(bool b) { createInMapping=b; }
     void setCounter(int c) { counterWriteState = c; }
     virtual const char* getClassName() const { return "WriteStateCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
-    bool recordX,recordV;
+    bool recordX,recordV,recordF;
     bool createInMapping;
 
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
