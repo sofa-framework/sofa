@@ -152,6 +152,59 @@ protected:
     sofa::defaulttype::Vec3d* _f;
 };
 
+template <int N>
+class BilateralConstraintResolutionNDof : public core::behavior::ConstraintResolution
+{
+public:
+    BilateralConstraintResolutionNDof(sofa::defaulttype::Vec<N, double>* vec=NULL) : _f(vec) { nbLines=N; }
+    virtual void init(int line, double** w, double *force)
+    {
+        sofa::defaulttype::Mat<N,N,double> temp;
+        for(int i=0; i<N; i++)
+            for(int j=0; j<N; j++)
+                temp[i][j] = w[line+i][line+j];
+
+        invertMatrix(invW, temp);
+
+        if(_f)
+        {
+            for(int i=0; i<N; i++)
+                force[line+i] = (*_f)[i];
+        }
+    }
+
+    virtual void initForce(int line, double* force)
+    {
+        if(_f)
+        {
+            for(int i=0; i<N; i++)
+                force[line+i] = (*_f)[i];
+        }
+    }
+
+    virtual void resolution(int line, double** /*w*/, double* d, double* force)
+    {
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<N; j++)
+                force[line+i] -= d[line+j] * invW[i][j];
+        }
+    }
+
+    void store(int line, double* force, bool /*convergence*/)
+    {
+        if(_f)
+        {
+            for(int i=0; i<N; i++)
+                (*_f)[i] = force[line+i];
+        }
+    }
+
+protected:
+    sofa::defaulttype::Mat<N,N,double> invW;
+    sofa::defaulttype::Vec<N, double>* _f;
+};
+
 template<class DataTypes>
 class BilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
