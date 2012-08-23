@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,19 +16,13 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-
-#include <sofa/component/collision/BaseProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CubeModel.h>
+#include "BaseProximityIntersection.h"
 
 namespace sofa
 {
@@ -38,47 +32,14 @@ namespace component
 
 namespace collision
 {
-
-class SOFA_BASE_COLLISION_API NewProximityIntersection : public BaseProximityIntersection
+BaseProximityIntersection::BaseProximityIntersection()
+    : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
 {
-public:
-    SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
-
-    Data<bool> useLineLine;
-protected:
-    NewProximityIntersection();
-public:
-
-    typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
-
-    virtual void init();
-
-    bool testIntersection(Cube& ,Cube&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Sphere&);
-
-    int computeIntersection(Cube&, Cube&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
-
-};
+}
 
 } // namespace collision
 
-} // namespace component
-
-namespace core
-{
-namespace collision
-{
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-#endif
-}
-}
+} // namespace core
 
 } // namespace sofa
-
-#endif

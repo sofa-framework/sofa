@@ -52,8 +52,7 @@ int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (f
         ;
 
 LocalMinDistance::LocalMinDistance()
-    : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    : BaseProximityIntersection()
     , filterIntersection(initData(&filterIntersection, true, "filterIntersection","Activate LMD filter"))
     , angleCone(initData(&angleCone, 0.0, "angleCone","Filtering cone extension angle"))
     , coneFactor(initData(&coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))

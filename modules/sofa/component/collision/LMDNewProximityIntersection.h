@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/component/collision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -43,13 +43,11 @@ namespace component
 namespace collision
 {
 
-class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public DiscreteIntersection
+class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public BaseProximityIntersection
 {
 public:
-    SOFA_CLASS(LMDNewProximityIntersection,DiscreteIntersection);
+    SOFA_CLASS(LMDNewProximityIntersection,BaseProximityIntersection);
 
-    Data<double> alarmDistance;
-    Data<double> contactDistance;
     Data<bool> useLineLine;
 protected:
     LMDNewProximityIntersection();
@@ -58,18 +56,6 @@ public:
 
     /// Returns true if algorithm uses proximity
     virtual bool useProximity() const { return true; }
-
-    /// Returns the alarm distance (must returns 0 if useProximity() is false)
-    double getAlarmDistance() const { return alarmDistance.getValue(); }
-
-    /// Returns the contact distance (must returns 0 if useProximity() is false)
-    double getContactDistance() const { return contactDistance.getValue(); }
-
-    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
-    void setAlarmDistance(double v) { alarmDistance.setValue(v); }
-
-    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
-    void setContactDistance(double v) { contactDistance.setValue(v); }
 
     bool testIntersection(Cube& ,Cube&);
     bool testIntersection(Point&, Point&);

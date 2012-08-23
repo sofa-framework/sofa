@@ -56,10 +56,9 @@ int MinProximityIntersectionClass = core::RegisterObject("A set of methods to co
         ;
 
 MinProximityIntersection::MinProximityIntersection()
-    : useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
+    : BaseProximityIntersection()
+    , useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
     , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
-    , alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
 {
 }
 
@@ -79,9 +78,9 @@ bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 
     const double alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
 
-    for (int i=0; i<3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i]> maxVect1[i] + alarmDist )
+        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
             return false;
     }
 
