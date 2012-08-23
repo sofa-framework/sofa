@@ -106,7 +106,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     std::stringstream ss;
     ss << this->getContext()->getName() << ".comp";
     std::string file=ss.str();
-    sout << "try to open : " << ss.str() << endl;
+    sout << "try to open : " << ss.str() << sendl;
     if (sofa::helper::system::DataRepository.findFile(file))
     {
         std::string invName=sofa::helper::system::DataRepository.getFile(ss.str());
@@ -209,6 +209,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)
     {
+        linearsolvers[i]->setSystemLHVector(sofa::core::MultiVecDerivId::null());
         linearsolvers[i]->addJMInvJt(W, &J, factor);
     }
 }
@@ -312,9 +313,6 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrect
             x[i] = x_free[i] + dxi;
             v[i] = v_free[i] + dvi;
             dx[i] = dxi;
-
-            if (this->f_printLog.getValue())
-                std::cout << "dx[" << i << "] = " << dx[i] << std::endl;
         }
 
         xId[this->mstate].write()->endEdit();
