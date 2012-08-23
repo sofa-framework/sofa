@@ -126,7 +126,7 @@ public:
     };
 
 
-public slots:
+public Q_SLOTS:
     /// Checks that widget has been edited
     /// emit DataOwnerDirty in case the name field has been modified
     void updateDataValue()
@@ -140,7 +140,7 @@ public slots:
             updateVisibility();
             if(hasOwner && baseData->getOwner()->getName() != previousName)
             {
-                emit DataOwnerDirty(true);
+                Q_EMIT DataOwnerDirty(true);
             }
         }
 
@@ -170,9 +170,9 @@ public slots:
     void setWidgetDirty(bool b=true)
     {
         dirty = b;
-        emit WidgetDirty(b);
+        Q_EMIT WidgetDirty(b);
     }
-signals:
+Q_SIGNALS:
     /// Emitted each time setWidgetDirty is called. You can also emit
     /// it if you want to tell the widget value is out of sync with
     /// the underlying data value.
@@ -289,7 +289,7 @@ public:
 
     QPushButtonUpdater( const QString & text, QWidget * parent = 0 ): QPushButton(text,parent) {};
 
-public slots:
+public Q_SLOTS:
     void setDisplayed(bool b);
 };
 
@@ -299,7 +299,7 @@ class QDisplayDataInfoWidget: public QWidget
     Q_OBJECT
 public:
     QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable);
-public slots:
+public Q_SLOTS:
     void linkModification();
     void linkEdited();
     unsigned int getNumLines() const { return numLines_;}
