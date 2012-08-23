@@ -100,10 +100,13 @@ public:
     {
         for (typename SparseMatrix::const_iterator rowIt = sc.m_data.begin(); rowIt !=  sc.m_data.end(); ++rowIt)
         {
-            out << rowIt->first << " : ";
+            out << rowIt->first;
+            out << " ";
+            out << rowIt->second.size();
+            out << " ";
             for (typename RowType::const_iterator colIt = rowIt->second.begin(); colIt !=  rowIt->second.end(); ++colIt)
             {
-                out << colIt->first << " " << colIt->second << ", ";
+                out << colIt->first << " " << colIt->second << "  ";
             }
             out << "\n";
         }
@@ -112,8 +115,30 @@ public:
     }
 
     /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, MapMapSparseMatrix<T>& /*sc*/ )
+    inline friend std::istream& operator >> ( std::istream& in, MapMapSparseMatrix<T>& sc)
     {
+        sc.clear();
+
+        unsigned int c_id;
+        unsigned int c_number;
+        unsigned int c_dofIndex;
+        T c_value;
+
+        while (!(in.rdstate() & std::istream::eofbit))
+        {
+            in >> c_id;
+            in >> c_number;
+
+            RowIterator c_it = sc.writeLine(c_id);
+
+            for (unsigned int i = 0; i < c_number; i++)
+            {
+                in >> c_dofIndex;
+                in >> c_value;
+                c_it.addCol(c_dofIndex, c_value);
+            }
+        }
+
         return in;
     }
 
