@@ -159,6 +159,12 @@ public:
     /// Return the contact distance (must return 0 if useProximity() is false)
     virtual double getContactDistance() const { return 0.0; }
 
+    /// Set the alarm distance (must return 0 if useProximity() is false)
+    virtual void setAlarmDistance(double) { return; }
+
+    /// Set the contact distance (must return 0 if useProximity() is false)
+    virtual void setContactDistance(double) { return; }
+
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
     virtual void beginBroadPhase()
