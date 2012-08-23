@@ -27,14 +27,6 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/component/container/StiffnessContainer.h>
-#include <sofa/component/container/PoissonContainer.h>
-//#include <sofa/component/container/LengthContainer.h>
-//#include <sofa/component/container/RadiusContainer.h>
-#include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/topology/TopologyData.h>
 
 
@@ -43,6 +35,12 @@ namespace sofa
 
 namespace component
 {
+
+namespace container
+{
+class StiffnessContainer;
+class PoissonContainer;
+} // namespace container
 
 namespace forcefield
 {
@@ -202,11 +200,11 @@ protected:
 
 
     const VecElement *_indexedElements;
-    unsigned int maxPoints;
-    int _method; ///< the computation method of the displacements
+//	unsigned int maxPoints;
+//	int _method; ///< the computation method of the displacements
     Data<Real> _poissonRatio;
     Data<Real> _youngModulus;
-    Data<bool> _timoshenko;
+//	Data<bool> _timoshenko;
     Data<Real> _radius;
     Data<Real> _radiusInner;
     Data< VecIndex > _list_segment;

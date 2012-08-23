@@ -64,19 +64,22 @@ public:
         OutCoord c;
         Out::set(c,px,py,pz);
         dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.endEdit();
     }
     virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
     {
         OutCoord c;
         Out::set(c,px,py,pz);
         dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.endEdit();
     }
 };
 
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::load(const char *filename)
 {
-    points.beginEdit()->resize(0);
+    OutVecCoord& pts = *points.beginEdit();
+    pts.resize(0);
 
     if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
     {
@@ -94,14 +97,16 @@ void RigidRigidMapping<TIn, TOut>::load(const char *filename)
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh!=NULL)
         {
-            points.beginEdit()->resize(mesh->getVertices().size());
+            pts.resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
             {
-                Out::set((*points.beginEdit())[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
+                Out::set(pts[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
             }
             delete mesh;
         }
     }
+
+    points.endEdit();
 }
 
 template <class TIn, class TOut>
@@ -122,34 +127,45 @@ void RigidRigidMapping<TIn, TOut>::init()
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         const OutVecCoord& x = *this->toModel->getX();
-        points.beginEdit()->resize(x.size());
+        OutVecCoord& pts = *points.beginEdit();
+
+        pts.resize(x.size());
         unsigned int i=0, cpt=0;
+
         if(globalToLocalCoords.getValue() == true)
         {
             const typename In::VecCoord& xfrom = *this->fromModel->getX();
             switch (repartition.getValue().size())
             {
             case 0 :
-                for (i=0; i<x.size(); i++)
-                    (*points.beginEdit())[i] = x[i] - xfrom[0];
+                for (i = 0; i < x.size(); i++)
+                {
+                    pts[i] = x[i] - xfrom[0];
+                    /*
+                    pts[i].getCenter() = x[i].getCenter() - xfrom[0].getCenter();
+                    pts[i].getOrientation() = quatDiff(x[i].getOrientation(), xfrom[0].getOrientation());
+                    */
+                }
                 break;
             case 1 :
                 for (i=0; i<xfrom.size(); i++)
                     for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = x[cpt] - xfrom[i];
+                        pts[cpt] = x[cpt] - xfrom[i];
                 break;
             default :
                 for (i=0; i<xfrom.size(); i++)
                     for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = x[cpt] - xfrom[i];
+                        pts[cpt] = x[cpt] - xfrom[i];
                 break;
             }
         }
         else
         {
             for (i=0; i<x.size(); i++)
-                (*points.beginEdit())[i] = x[i];
+                pts[i] = x[i];
         }
+
+        points.endEdit();
     }
 
     this->Inherit::init();
@@ -159,6 +175,7 @@ template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::clear()
 {
     (*this->points.beginEdit()).clear();
+    this->points.endEdit();
 }
 
 /*
@@ -167,10 +184,10 @@ void RigidRigidMapping<TIn, TOut>::disable()
 {
 if (!this->points.getValue().empty() && this->toModel!=NULL)
 {
-	VecCoord& x = *this->toModel->getX();
-	x.resize(points.getValue().size());
-	for (unsigned int i=0;i<points.getValue().size();i++)
-		x[i] = points.getValue()[i];
+VecCoord& x = *this->toModel->getX();
+x.resize(points.getValue().size());
+for (unsigned int i=0;i<points.getValue().size();i++)
+x[i] = points.getValue()[i];
 }
 }
 */
@@ -555,18 +572,18 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
             getVOrientation(parentForces[parentIndex]) += omega;
             maskFrom->insertEntry(parentIndex);
 
-//			if (!indexFromEnd.getValue())
-//			{
-//                            getVCenter(parentForces[index.getValue()]) += v;
-//                            getVOrientation(parentForces[index.getValue()]) += omega;
-//                            maskFrom->insertEntry(index.getValue());
-//			}
-//			else
-//			{
-//                            getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
-//                            getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
-//                            maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
-//			}
+            //			if (!indexFromEnd.getValue())
+            //			{
+            //                            getVCenter(parentForces[index.getValue()]) += v;
+            //                            getVOrientation(parentForces[index.getValue()]) += omega;
+            //                            maskFrom->insertEntry(index.getValue());
+            //			}
+            //			else
+            //			{
+            //                            getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
+            //                            getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
+            //                            maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
+            //			}
 
             break;
         case 1 :

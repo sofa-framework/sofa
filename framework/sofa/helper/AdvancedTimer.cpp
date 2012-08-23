@@ -872,7 +872,7 @@ void TimerData::print()
             default:
                 out << "UNKNOWN RECORD TYPE" << (int)r.type;
             }
-            out << "\n";
+            out << std::endl;
             if (r.type == Record::RBEGIN || r.type == Record::RSTEP_BEGIN) ++level;
         }
     }
@@ -910,7 +910,7 @@ void TimerData::print()
                 for(int ii=0; ii<data.level; ii++) out<<".";  // indentation to show the hierarchy level
                 out << steps[s];
             }
-            out << '\n';
+            out << std::endl;
         }
     }
     if (!vals.empty())
@@ -934,7 +934,7 @@ void TimerData::print()
             printVal(out, data.vtotal, nbIter);
             out << '\t';
             out << vals[s];
-            out << '\n';
+            out << std::endl;
         }
     }
 
