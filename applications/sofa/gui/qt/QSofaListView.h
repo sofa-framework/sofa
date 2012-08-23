@@ -38,6 +38,7 @@
 #include <qpushbutton.h>
 #endif
 
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -86,7 +87,7 @@ enum SofaListViewAttribute
     MODELER
 };
 
-class QSofaListView : public Q3ListView
+class SOFA_SOFAGUIQT_API QSofaListView : public Q3ListView
 {
     Q_OBJECT
 public:
@@ -101,11 +102,11 @@ public:
     void Freeze();
     void Unfreeze();
     SofaListViewAttribute getAttribute() const { return attribute_; };
-public slots:
+public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
     void UpdateOpenedDialogs();
-signals:
+Q_SIGNALS:
     void Close();
     void Lock(bool);
     void RequestSaving(sofa::simulation::Node*);
@@ -118,7 +119,7 @@ signals:
     void focusChanged(sofa::core::objectmodel::BaseObject*);
     void focusChanged(sofa::core::objectmodel::BaseNode*);
 
-protected slots:
+protected Q_SLOTS:
     void SaveNode();
     void exportOBJ();
     void collapseNode();

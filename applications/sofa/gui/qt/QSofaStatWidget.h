@@ -24,6 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_GUI_QT_QSOFASTATGRAPH_H
 #define SOFA_GUI_QT_QSOFASTATGRAPH_H
+
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/helper/vector.h>
 
 #ifdef SOFA_QT4
@@ -63,7 +65,8 @@ namespace gui
 {
 namespace qt
 {
-class QSofaStatWidget : public QWidget
+
+class SOFA_SOFAGUIQT_API QSofaStatWidget : public QWidget
 {
     Q_OBJECT
 public:

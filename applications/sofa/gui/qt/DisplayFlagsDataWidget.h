@@ -54,7 +54,7 @@ namespace qt
 {
 
 
-class DisplayFlagWidget : public Q3ListView
+class SOFA_SOFAGUIQT_API DisplayFlagWidget : public Q3ListView
 {
     Q_OBJECT;
 public:
@@ -83,7 +83,7 @@ public:
     bool getFlag(int idx) {return itemShowFlag[idx]->isOn();}
     void setFlag(int idx, bool value) {itemShowFlag[idx]->setOn(value);}
 
-signals:
+Q_SIGNALS:
     void change(int,bool);
     void clicked();
 
@@ -99,7 +99,7 @@ protected:
 };
 
 
-class DisplayFlagsDataWidget : public TDataWidget< sofa::core::visual::DisplayFlags >
+class SOFA_SOFAGUIQT_API DisplayFlagsDataWidget : public TDataWidget< sofa::core::visual::DisplayFlags >
 {
     Q_OBJECT;
 public:
