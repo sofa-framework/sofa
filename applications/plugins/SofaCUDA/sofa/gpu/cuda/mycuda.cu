@@ -155,7 +155,12 @@ cublasHandle_t getCublasCtx()
     return NULL;
 }
 
-cusparseMatDescr_t getCusparseMatDescr()
+cusparseMatDescr_t getCusparseMatGeneralDescr()
+{
+    return NULL;
+}
+
+cusparseMatDescr_t getCusparseMatTriangularDescr()
 {
     return NULL;
 }
@@ -417,23 +422,40 @@ cusparseHandle_t getCusparseCtx()
     return cusparsehandle;
 }
 
-cusparseMatDescr_t getCusparseMatDescr()
+static cusparseMatDescr_t matdesc=NULL;
+
+cusparseMatDescr_t getCusparseMatGeneralDescr()
 {
-    static cusparseMatDescr_t descra=NULL;
-    if (descra==NULL)
+    if (matdesc==NULL)
     {
-        static cusparseStatus_t status = cusparseCreateMatDescr(&descra);
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdesc);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
             mycudaPrintf("Matrix descriptor init failed\n");
         }
-        else
+    }
+
+    cusparseSetMatIndexBase(matdesc, CUSPARSE_INDEX_BASE_ZERO);
+    cusparseSetMatType(matdesc, CUSPARSE_MATRIX_TYPE_GENERAL);
+
+    return matdesc;
+}
+
+cusparseMatDescr_t getCusparseMatTriangularDescr()
+{
+    if (matdesc==NULL)
+    {
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdesc);
+        if (status != CUSPARSE_STATUS_SUCCESS)
         {
-            cusparseSetMatType(descra, CUSPARSE_MATRIX_TYPE_GENERAL);
-            cusparseSetMatIndexBase(descra, CUSPARSE_INDEX_BASE_ZERO);
+            mycudaPrintf("Matrix descriptor init failed\n");
         }
     }
-    return descra;
+
+    cusparseSetMatIndexBase(matdesc, CUSPARSE_INDEX_BASE_ZERO);
+    cusparseSetMatType(matdesc, CUSPARSE_MATRIX_TYPE_TRIANGULAR);
+
+    return matdesc;
 }
 
 #endif //SOFA_GPU_CUBLAS
