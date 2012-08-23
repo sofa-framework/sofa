@@ -85,10 +85,12 @@ public:
     virtual void addForce (const core::MechanicalParams* params /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
     /// Constant force has null variation
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->kFactor();
+        sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = d_df;
+        _f1.resize(d_dx.getValue().size());
     };
 
     /// Constant force has null variation
