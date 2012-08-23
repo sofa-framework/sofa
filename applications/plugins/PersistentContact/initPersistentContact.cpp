@@ -81,17 +81,7 @@ const char* getModuleComponentList()
 
 } // namespace sofa
 
-void initPersistentContact()
-{
-    static bool b = false;
-    if (!b)
-    {
-        b = true;
-    }
-}
-
 SOFA_LINK_CLASS(PersistentContactBarycentricMapping)
-SOFA_LINK_CLASS(PersistentContactMapping)
 SOFA_LINK_CLASS(PersistentContactRigidMapping)
 SOFA_LINK_CLASS(PersistentFrictionContact)
 SOFA_LINK_CLASS(PersistentUnilateralInteractionConstraint)
