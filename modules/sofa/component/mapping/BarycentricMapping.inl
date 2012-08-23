@@ -934,7 +934,15 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
     this->toModel->getContext()->get(toTopoCont);
 
     core::topology::TopologyContainer* fromTopoCont;
-    this->fromModel->getContext()->get(fromTopoCont);
+
+    if (dynamic_cast< core::topology::TopologyContainer* >(topology) != 0)
+    {
+        fromTopoCont = dynamic_cast< core::topology::TopologyContainer* >(topology);
+    }
+    else if (topology == 0)
+    {
+        this->fromModel->getContext()->get(fromTopoCont);
+    }
 
     BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
     BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
@@ -4145,7 +4153,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             else
                             {
                                 const typename MechanicalStateT::VecCoord& xto0 = *(mState->getX0());
-                                index = _fromGeomAlgo->findNearestElementInRestPos ( xto0[j], coefs, distance );
+                                index = _fromGeomAlgo->findNearestElementInRestPos ( Out::getCPos(xto0[j]), coefs, distance );
                                 //_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                                 coefs = _fromGeomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
                             }
