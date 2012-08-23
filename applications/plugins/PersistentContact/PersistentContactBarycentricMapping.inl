@@ -230,6 +230,11 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 template <class In, class Out>
 int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "addContactPointFromInputMapping " << pos << std::endl;
+    }
+
     this->updateJ = true;
 
 #ifdef SOFA_NEW_HEXA
@@ -287,8 +292,8 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::keepContactPoi
     if ((const unsigned int)index < m_storedMap.size())
     {
         CubeData &c_data = m_storedMap[index];
-        //SReal *SRBaryCoord = dynamic_cast<SReal *> (c_data.baryCoords);
-        return this->addPointInCube(c_data.in_index,c_data.baryCoords );
+        //	std::cout << "Keep " << c_data << std::endl;
+        return this->addPointInCube(c_data.in_index, c_data.baryCoords);
     }
 
     serr << "Warning! PersistentContactBarycentricMapperSparseGridTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
@@ -307,6 +312,11 @@ template <class In, class Out>
 int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& pos
         , std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "addContactPointFromInputMapping " << pos << std::endl;
+    }
+
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
     sofa::helper::vector<Matrix3> bases;
@@ -350,6 +360,28 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
 }
 
 
+template <class In, class Out>
+int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::keepContactPointFromInputMapping(const int index)
+{
+    if ((const unsigned int)index < m_storedMap.size())
+    {
+        MappingData &t_data = m_storedMap[index];
+        //	std::cout << "Keep " << t_data << std::endl;
+        return this->addPointInTetra(t_data.in_index, t_data.baryCoords);
+    }
+
+    serr << "Warning! PersistentContactBarycentricMapperTetrahedronSetTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
+    return 0;
+}
+
+
+template <class In, class Out>
+void PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::storeBarycentricData()
+{
+    m_storedMap = this->map.getValue();
+}
+
+
 
 template <class TIn, class TOut>
 void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
@@ -359,6 +391,8 @@ void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
         if (this->mapper)
         {
             this->mapper->clear(0);
+
+            this->mapper->f_printLog.setValue(this->f_printLog.getValue());
         }
 
         this->toModel->resize(0);
@@ -430,7 +464,16 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
     this->toModel->getContext()->get(toTopoCont);
 
     core::topology::TopologyContainer* fromTopoCont;
-    this->fromModel->getContext()->get(fromTopoCont);
+//	this->fromModel->getContext()->get(fromTopoCont);
+
+    if (dynamic_cast< core::topology::TopologyContainer* >(topology) != 0)
+    {
+        fromTopoCont = dynamic_cast< core::topology::TopologyContainer* >(topology);
+    }
+    else if (topology == 0)
+    {
+        this->fromModel->getContext()->get(fromTopoCont);
+    }
 
     BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
     BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
@@ -490,8 +533,8 @@ template <class TIn, class TOut>
 void PersistentContactBarycentricMapping<TIn, TOut>::applyPositionAndFreePosition()
 {
     core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::position(), sofa::core::ConstVecCoordId::position());
-    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::velocity(), sofa::core::ConstVecDerivId::velocity());
+    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::freeVelocity(), sofa::core::ConstVecDerivId::freeVelocity());
 }
 

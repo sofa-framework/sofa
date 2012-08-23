@@ -39,6 +39,4 @@
 #endif
 #endif
 
-SOFA_PERSISTENTCONTACT_API void initPersistentContact();
-
 #endif // SOFA_PLUGIN_PERSISTENTCONTACT_H

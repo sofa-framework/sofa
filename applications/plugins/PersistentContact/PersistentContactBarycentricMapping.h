@@ -156,6 +156,9 @@ public:
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::Real Real;
 
+    typedef BarycentricMapperTetrahedronSetTopology<TIn, TOut> Inherit;
+    typedef typename Inherit::MappingData MappingData;
+
     PersistentContactBarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* toTopology,
             helper::ParticleMask *_maskFrom,
@@ -169,6 +172,14 @@ public:
     }
 
     int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+
+    int keepContactPointFromInputMapping(const int /*index*/);
+
+    void storeBarycentricData();
+
+protected:
+
+    sofa::helper::vector< MappingData > m_storedMap;
 };
 
 
