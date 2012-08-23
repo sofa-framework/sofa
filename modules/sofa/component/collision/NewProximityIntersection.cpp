@@ -52,8 +52,7 @@ int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity In
         ;
 
 NewProximityIntersection::NewProximityIntersection()
-    : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    : BaseProximityIntersection()
     , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
 {
 }

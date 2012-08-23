@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/component/collision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
@@ -39,36 +39,20 @@ namespace component
 namespace collision
 {
 
-class SOFA_BASE_COLLISION_API MinProximityIntersection : public DiscreteIntersection
+class SOFA_BASE_COLLISION_API MinProximityIntersection : public BaseProximityIntersection
 {
 public:
-    SOFA_CLASS(MinProximityIntersection,DiscreteIntersection);
+    SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
     Data<bool> useSphereTriangle;
     Data<bool> usePointPoint;
-    Data<double> alarmDistance;
-    Data<double> contactDistance;
 protected:
     MinProximityIntersection();
 public:
-
     typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
 
     virtual void init();
 
-    /// returns true if algorithm uses proximity
-    virtual bool useProximity() const { return true; }
-
-    /// Return the alarm distance (must return 0 if useMinProximity() is false)
-    double getAlarmDistance() const { return alarmDistance.getValue(); }
-
-    /// Return the contact distance (must return 0 if useMinProximity() is false)
-    double getContactDistance() const { return contactDistance.getValue(); }
-
-    void setAlarmDistance(double v) { alarmDistance.setValue(v); }
-
-    void setContactDistance(double v) { contactDistance.setValue(v); }
-
-    bool testIntersection(Cube& ,Cube&);
+    bool testIntersection(Cube&, Cube&);
     bool testIntersection(Sphere&, Sphere&);
     //bool testIntersection(Ray&, Triangle&);
 

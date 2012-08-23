@@ -19,7 +19,8 @@ HEADERS += initBaseCollision.h \
            collision/DefaultContactManager.h \
            collision/MinProximityIntersection.h \
            collision/NewProximityIntersection.h \
-           collision/NewProximityIntersection.inl
+           collision/NewProximityIntersection.inl \
+    collision/BaseProximityIntersection.h
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
@@ -30,7 +31,8 @@ SOURCES += initBaseCollision.cpp \
            collision/BruteForceDetection.cpp \
            collision/DefaultContactManager.cpp \
            collision/MinProximityIntersection.cpp \
-           collision/NewProximityIntersection.cpp
+           collision/NewProximityIntersection.cpp \
+    collision/BaseProximityIntersection.cpp
 
 
 # Make sure there are no cross-dependencies

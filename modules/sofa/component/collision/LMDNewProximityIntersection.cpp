@@ -74,8 +74,7 @@ int LMDNewProximityIntersectionClass = core::RegisterObject("Filtered optimized 
         ;
 
 LMDNewProximityIntersection::LMDNewProximityIntersection()
-    : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    : BaseProximityIntersection()
     , useLineLine(initData(&useLineLine, true, "useLineLine", "Line-line collision detection enabled"))
 {
 }
