@@ -61,7 +61,9 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
       triangleBaryCoords ( initData ( &triangleBaryCoords, "triangleBaryCoords", "Coordinates for the points of the output topology created from the triangles of the input topology" ) ),
       quadBaryCoords ( initData ( &quadBaryCoords, "quadBaryCoords", "Coordinates for the points of the output topology created from the quads of the input topology" ) ),
       tetraBaryCoords ( initData ( &tetraBaryCoords, "tetraBaryCoords", "Coordinates for the points of the output topology created from the tetra of the input topology" ) ),
-      hexaBaryCoords ( initData ( &hexaBaryCoords, "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) )
+      hexaBaryCoords ( initData ( &hexaBaryCoords, "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) ),
+      copyEdges ( initData ( &copyEdges, false, "copyEdges", "Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)" ) ),
+      copyTriangles ( initData ( &copyTriangles, false, "copyTriangles", "Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)" ) )
 {
     pointBaryCoords.setGroup("BaryCoords");
     edgeBaryCoords.setGroup("BaryCoords");
@@ -78,6 +80,19 @@ void Mesh2PointTopologicalMapping::init()
         if(toModel)
         {
             int toModelLastPointIndex = 0;
+            toModel->clear();
+
+            if (copyEdges.getValue() && pointBaryCoords.getValue().empty())
+            {
+                serr << "copyEdges requires at least one item in pointBaryCoords" << sendl;
+                copyEdges.setValue(false);
+            }
+
+            if (copyTriangles.getValue() && pointBaryCoords.getValue().empty())
+            {
+                serr << "copyTriangles requires at least one item in pointBaryCoords" << sendl;
+                copyTriangles.setValue(false);
+            }
 
             // point to point mapping
             if (!pointBaryCoords.getValue().empty())
@@ -101,7 +116,19 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
                 for (int i=0; i<fromModel->getNbEdges(); i++)
                 {
-                    addInputEdge(i, false);
+                    addInputEdge(i, NULL);
+                }
+            }
+
+            // edge to edge identity mapping
+            if (copyEdges.getValue())
+            {
+                for (int i=0; i<fromModel->getNbEdges(); i++)
+                {
+                    Edge e = fromModel->getEdge(i);
+                    for (unsigned int j=0; j<e.size(); ++j)
+                        e[j] = pointsMappedFrom[POINT][e[j]][0];
+                    toModel->addEdge(e[0],e[1]);
                 }
             }
 
@@ -111,7 +138,19 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
                 for (int i=0; i<fromModel->getNbTriangles(); i++)
                 {
-                    addInputTriangle(i, false);
+                    addInputTriangle(i, NULL);
+                }
+            }
+
+            // triangle to triangle identity mapping
+            if (copyTriangles.getValue())
+            {
+                for (int i=0; i<fromModel->getNbTriangles(); i++)
+                {
+                    Triangle t = fromModel->getTriangle(i);
+                    for (unsigned int j=0; j<t.size(); ++j)
+                        t[j] = pointsMappedFrom[POINT][t[j]][0];
+                    toModel->addTriangle(t[0],t[1],t[2]);
                 }
             }
 
@@ -224,7 +263,7 @@ void Mesh2PointTopologicalMapping::init()
     }
 }
 
-void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, bool bSignal)
+void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[EDGE].size() < i+1)
         pointsMappedFrom[EDGE].resize(i+1);
@@ -236,14 +275,11 @@ void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, bool bSignal)
     Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
     Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
 
-    if (bSignal)
+    if (toPointMod)
     {
-        PointSetTopologyModifier *to_pstm;
-        toModel->getContext()->get(to_pstm);
-
         sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
         sofa::helper::vector< sofa::helper::vector< double       > > coefs;
-        to_pstm->addPointsWarning(edgeBaryCoords.getValue().size(), ancestors, coefs);
+        toPointMod->addPointsWarning(edgeBaryCoords.getValue().size(), ancestors, coefs);
     }
 
     for (unsigned int j=0; j<edgeBaryCoords.getValue().size(); j++)
@@ -260,7 +296,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, bool bSignal)
     }
 }
 
-void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, bool bSignal)
+void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[TRIANGLE].size() < i+1)
         pointsMappedFrom[TRIANGLE].resize(i+1);
@@ -273,14 +309,11 @@ void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, bool bSignal
     Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
     Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
 
-    if (bSignal)
+    if (toPointMod)
     {
-        PointSetTopologyModifier *to_pstm;
-        toModel->getContext()->get(to_pstm);
-
         sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
         sofa::helper::vector< sofa::helper::vector< double       > > coefs;
-        to_pstm->addPointsWarning(triangleBaryCoords.getValue().size(), ancestors, coefs);
+        toPointMod->addPointsWarning(triangleBaryCoords.getValue().size(), ancestors, coefs);
     }
 
     for (unsigned int j=0; j<triangleBaryCoords.getValue().size(); j++)
@@ -307,8 +340,13 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-        PointSetTopologyModifier *to_pstm;
-        toModel->getContext()->get(to_pstm);
+        PointSetTopologyModifier *toPointMod = NULL;
+        EdgeSetTopologyModifier *toEdgeMod = NULL;
+        TriangleSetTopologyModifier *toTriangleMod = NULL;
+        //QuadSetTopologyModifier *toQuadMod = NULL;
+        //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+        //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+        toModel->getContext()->get(toPointMod);
 
         while( changeIt != itEnd )
         {
@@ -346,32 +384,94 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::EDGESADDED:
             {
-                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const EdgesAdded *>( *changeIt ) )->edgeIndexArray;
+                const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( *changeIt );
+                const sofa::helper::vector< unsigned int > &tab = eAdd->edgeIndexArray;
 //				sout << "INPUT ADD EDGES " << tab << sendl;
                 for (unsigned int i=0; i < tab.size(); i++)
-                    addInputEdge(tab[i]);
-                to_pstm->propagateTopologicalChanges();
+                    addInputEdge(tab[i], toPointMod);
+                toPointMod->propagateTopologicalChanges();
+                if (copyEdges.getValue())
+                {
+                    if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
+                    if (toEdgeMod)
+                    {
+                        sout << "EDGESADDED : " << eAdd->getNbAddedEdges() << sendl;
+                        const sofa::helper::vector<Edge>& fromArray = eAdd->edgeArray;
+                        sofa::helper::vector<Edge> toArray;
+                        toArray.resize(fromArray.size());
+                        for (unsigned int i=0; i<fromArray.size(); ++i)
+                            for (unsigned int j=0; j<fromArray[i].size(); ++j)
+                                toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
+                        toEdgeMod->addEdgesProcess(toArray);
+                        toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), toArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
+                        toEdgeMod->propagateTopologicalChanges();
+                    }
+                }
                 break;
             }
             case core::topology::EDGESREMOVED:
             {
-                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
+                const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( *changeIt );
+                const sofa::helper::vector<unsigned int> &tab = eRem->getArray();
+                if (copyEdges.getValue())
+                {
+                    if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
+                    if (toEdgeMod)
+                    {
+                        sout << "EDGESREMOVED : " << eRem->getNbRemovedEdges() << sendl;
+                        sofa::helper::vector<unsigned int> toArray = tab;
+                        toEdgeMod->removeEdgesWarning(toArray);
+                        toEdgeMod->propagateTopologicalChanges();
+                        toEdgeMod->removeEdgesProcess(tab, false);
+                    }
+                }
 //				sout << "INPUT REMOVE EDGES "<<tab << sendl;
                 removeInput(EDGE, tab );
                 break;
             }
             case core::topology::TRIANGLESADDED:
             {
-                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *changeIt ) )->getArray();
+                const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( *changeIt );
+                const sofa::helper::vector<unsigned int> &tab = tAdd->getArray();
 //				sout << "INPUT ADD TRIANGLES " << tab << sendl;
                 for (unsigned int i=0; i < tab.size(); i++)
-                    addInputTriangle(tab[i]);
-                to_pstm->propagateTopologicalChanges();
+                    addInputTriangle(tab[i], toPointMod);
+                toPointMod->propagateTopologicalChanges();
+                if (copyTriangles.getValue())
+                {
+                    if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
+                    if (toTriangleMod)
+                    {
+                        sout << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() << sendl;
+                        const sofa::helper::vector<Triangle>& fromArray = tAdd->triangleArray;
+                        sofa::helper::vector<Triangle> toArray;
+                        toArray.resize(fromArray.size());
+                        for (unsigned int i=0; i<fromArray.size(); ++i)
+                            for (unsigned int j=0; j<fromArray[i].size(); ++j)
+                                toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
+                        toTriangleMod->addTrianglesProcess(toArray);
+                        toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), toArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
+                        toTriangleMod->propagateTopologicalChanges();
+                    }
+                }
                 break;
             }
             case core::topology::TRIANGLESREMOVED:
             {
-                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *changeIt ) )->getArray();
+                const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( *changeIt );
+                const sofa::helper::vector<unsigned int> &tab = tRem->getArray();
+                if (copyTriangles.getValue())
+                {
+                    if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
+                    if (toTriangleMod)
+                    {
+                        sout << "TRIANGLESREMOVED : " << tRem->getNbRemovedTriangles() << sendl;
+                        sofa::helper::vector<unsigned int> toArray = tab;
+                        toTriangleMod->removeTrianglesWarning(toArray);
+                        toTriangleMod->propagateTopologicalChanges();
+                        toTriangleMod->removeTrianglesProcess(tab, false);
+                    }
+                }
 //				sout << "INPUT REMOVE TRIANGLES "<<tab << sendl;
                 removeInput(TRIANGLE, tab );
                 break;
@@ -416,7 +516,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
 //			    sout << "ENDING EVENT" << sendl;
                 pointsToRemove.erase(BaseMeshTopology::InvalidID);
-                if (to_pstm != NULL && !pointsToRemove.empty())
+                if (toPointMod != NULL && !pointsToRemove.empty())
                 {
                     // TODO: This will fail to work if add and
                     // remove changes are combined and removes are
@@ -427,16 +527,16 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     vitems.reserve(pointsToRemove.size());
                     vitems.insert(vitems.end(), pointsToRemove.rbegin(), pointsToRemove.rend());
 
-                    to_pstm->removePointsWarning(vitems, false);
-                    to_pstm->propagateTopologicalChanges();
+                    toPointMod->removePointsWarning(vitems, false);
+                    toPointMod->propagateTopologicalChanges();
 
                     removeOutputPoints(vitems);
 
-                    to_pstm->removePointsProcess(vitems, false);
+                    toPointMod->removePointsProcess(vitems, false);
 
-                    to_pstm->propagateTopologicalChanges();
-                    to_pstm->notifyEndingEvent();
-                    to_pstm->propagateTopologicalChanges();
+                    toPointMod->propagateTopologicalChanges();
+                    toPointMod->notifyEndingEvent();
+                    toPointMod->propagateTopologicalChanges();
 
                     pointsToRemove.clear();
                 }

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
 
 #include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/component/topology/PointSetTopologyModifier.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
@@ -58,7 +59,7 @@ using namespace sofa::core;
  *
 */
 
-class Mesh2PointTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Mesh2PointTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,TopologicalMapping);
@@ -126,6 +127,7 @@ public:
     const vector< std::pair<Element,int> >& getPointSource() const { return pointSource;}
 
 protected:
+
     Data< vector< Vec3d > > pointBaryCoords; ///< Coordinates for the points of the output topology created from the points of the input topology
     Data< vector< Vec3d > > edgeBaryCoords; ///< Coordinates for the points of the output topology created from the edges of the input topology
     Data< vector< Vec3d > > triangleBaryCoords; ///< Coordinates for the points of the output topology created from the triangles of the input topology
@@ -133,14 +135,17 @@ protected:
     Data< vector< Vec3d > > tetraBaryCoords; ///< Coordinates for the points of the output topology created from the tetra of the input topology
     Data< vector< Vec3d > > hexaBaryCoords; ///< Coordinates for the points of the output topology created from the hexa of the input topology
 
+    Data< bool > copyEdges; ///< Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)
+    Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
+
     vector< vector<int> > pointsMappedFrom[NB_ELEMENTS]; ///< Points mapped from the differents elements (see the enum Element declared before)
 
     vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     std::set<unsigned int> pointsToRemove;
 
-    void addInputEdge(unsigned int i, bool bSignal=true);
-    void addInputTriangle(unsigned int i, bool bSignal=true);
+    void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod);
+    void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod);
 
     void swapInput(Element elem, int i1, int i2);
     void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );
@@ -154,4 +159,4 @@ protected:
 } // namespace component
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_TOPOLOGY_TETRA2TRIANGLETOPOLOGICALMAPPING_H
+#endif // SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H

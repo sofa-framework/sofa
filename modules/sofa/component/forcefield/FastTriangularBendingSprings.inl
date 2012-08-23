@@ -482,11 +482,11 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
     const VecDeriv& dx = d_dx.getValue();
     typename MechanicalState::WriteVecDeriv df(d_df);
     const helper::vector<EdgeSpring>& edgeInf = edgeSprings.getValue();
-
+    const Real kFactor = (Real)mparams->kFactor();
     df.resize(dx.size());
     for(unsigned i=0; i<edgeInf.size(); i++ )
     {
-        edgeInf[i].addDForce(df.wref(),dx,(Real)mparams->kFactor());
+        edgeInf[i].addDForce(df.wref(),dx,kFactor);
     }
 }
 
