@@ -422,40 +422,42 @@ cusparseHandle_t getCusparseCtx()
     return cusparsehandle;
 }
 
-static cusparseMatDescr_t matdesc=NULL;
+static cusparseMatDescr_t matdescGen=NULL;
 
 cusparseMatDescr_t getCusparseMatGeneralDescr()
 {
-    if (matdesc==NULL)
+    if (matdescGen==NULL)
     {
-        cusparseStatus_t status = cusparseCreateMatDescr(&matdesc);
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdescGen);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
             mycudaPrintf("Matrix descriptor init failed\n");
         }
+        cusparseSetMatIndexBase(matdescGen, CUSPARSE_INDEX_BASE_ZERO);
+        cusparseSetMatType(matdescGen, CUSPARSE_MATRIX_TYPE_GENERAL);
     }
 
-    cusparseSetMatIndexBase(matdesc, CUSPARSE_INDEX_BASE_ZERO);
-    cusparseSetMatType(matdesc, CUSPARSE_MATRIX_TYPE_GENERAL);
-
-    return matdesc;
+    return matdescGen;
 }
+
+static cusparseMatDescr_t matdescTri=NULL;
 
 cusparseMatDescr_t getCusparseMatTriangularDescr()
 {
-    if (matdesc==NULL)
+    if (matdescTri==NULL)
     {
-        cusparseStatus_t status = cusparseCreateMatDescr(&matdesc);
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdescTri);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
             mycudaPrintf("Matrix descriptor init failed\n");
         }
+        cusparseSetMatType ( matdescTri, CUSPARSE_MATRIX_TYPE_TRIANGULAR );
+        cusparseSetMatIndexBase ( matdescTri, CUSPARSE_INDEX_BASE_ZERO );
+        cusparseSetMatDiagType ( matdescTri, CUSPARSE_DIAG_TYPE_UNIT );
+        cusparseSetMatFillMode ( matdescTri, CUSPARSE_FILL_MODE_UPPER );
     }
 
-    cusparseSetMatIndexBase(matdesc, CUSPARSE_INDEX_BASE_ZERO);
-    cusparseSetMatType(matdesc, CUSPARSE_MATRIX_TYPE_TRIANGULAR);
-
-    return matdesc;
+    return matdescTri;
 }
 
 #endif //SOFA_GPU_CUBLAS
