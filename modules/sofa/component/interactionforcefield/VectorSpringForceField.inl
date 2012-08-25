@@ -147,7 +147,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
     , edgeHandler(NULL)
-
+    , m_useTopology( initData(&m_useTopology, (bool)true, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
 {
 }
 
@@ -160,6 +160,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
     , edgeHandler(NULL)
+    , m_useTopology( initData(&m_useTopology, (bool)true, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
 {
 }
 
@@ -172,7 +173,9 @@ VectorSpringForceField<DataTypes>::~VectorSpringForceField()
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    if (m_useTopology.getValue())
+        _topology = this->getContext()->getMeshTopology();
+
     if(!edgeHandler)
     {
         if(_topology)
@@ -426,7 +429,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    vparams->drawTool()->drawLines(points, 3, Vec<4,float>(0,1,1,1));
+    vparams->drawTool()->drawLines(points, 3, Vec<4,float>(1,0,0,1));
 }
 
 } // namespace interactionforcefield

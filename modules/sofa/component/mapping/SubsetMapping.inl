@@ -218,6 +218,11 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
     if (indices.empty())
         return;
 
+    if (!in.empty())
+    {
+        out.resize(this->fromModel->getSize());
+    }
+
     for(unsigned int i = 0; i < in.size(); ++i)
     {
         out[indices[i]] += in[ i ];

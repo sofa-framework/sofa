@@ -137,6 +137,8 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
 
+    Data<bool> m_useTopology;
+
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
