@@ -73,16 +73,100 @@ public:
     }
 };
 
-template<class Matrix, class Vector>
+template<class TVector>
 class MatrixLinearSolverInternalData
 {
 public:
-    typedef typename Vector::Real Real;
+    typedef typename TVector::Real Real;
     typedef SparseMatrix<Real> JMatrixType;
     typedef defaulttype::BaseMatrix ResMatrixType;
 
-    MatrixLinearSolverInternalData(core::objectmodel::BaseObject*)
-    {}
+    template<typename MReal>
+    JMatrixType * copyJmatrix(SparseMatrix<MReal> * J)
+    {
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        {
+            int l = jit1->first;
+            for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+            {
+                int c = i1->first;
+                MReal val = i1->second;
+                J_local.set(l,c,val);
+            }
+        }
+        return &J_local;
+    }
+
+    JMatrixType * getLocalJ(defaulttype::BaseMatrix * J)
+    {
+        if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
+        {
+            return j;
+        }
+        else if (SparseMatrix<double> * j = dynamic_cast<SparseMatrix<double> *>(J))
+        {
+            return copyJmatrix(j);
+        }
+        else if (SparseMatrix<float> * j = dynamic_cast<SparseMatrix<float> *>(J))
+        {
+            return copyJmatrix(j);
+        }
+        else
+        {
+            J_local.clear();
+            J_local.resize(J->rowSize(),J->colSize());
+
+            for (unsigned j=0; j<J->rowSize(); j++)
+            {
+                for (unsigned i=0; i<J->colSize(); i++)
+                {
+                    J_local.set(j,i,J->element(j,i));
+                }
+            }
+
+            return &J_local;
+        }
+    }
+
+    ResMatrixType * getLocalRes(defaulttype::BaseMatrix * R)
+    {
+        return R;
+    }
+
+    void addLocalRes(defaulttype::BaseMatrix * /*R*/)
+    {
+        return ;
+    }
+
+#ifdef WARPING_SOLVER
+    typedef RotationMatrix<Real> TRotationMatrix;
+
+    //compute J = J * R
+    void opMulJ(TRotationMatrix * R,JMatrixType * J)
+    {
+        for (typename sofa::component::linearsolver::SparseMatrix<Real>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        {
+            int l = jit1->first;
+            for (typename sofa::component::linearsolver::SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+            {
+                int c = i1->first;
+                Real v0 = (Real)i1->second; i1++; if (i1==jit1->second.end()) break;
+                Real v1 = (Real)i1->second; i1++; if (i1==jit1->second.end()) break;
+                Real v2 = (Real)i1->second; i1++;
+                J->set(l,c+0,v0 * R->getVector()[(c+0)*3+0] + v1 * R->getVector()[(c+1)*3+0] + v2 * R->getVector()[(c+2)*3+0] );
+                J->set(l,c+1,v0 * R->getVector()[(c+0)*3+1] + v1 * R->getVector()[(c+1)*3+1] + v2 * R->getVector()[(c+2)*3+1] );
+                J->set(l,c+2,v0 * R->getVector()[(c+0)*3+2] + v1 * R->getVector()[(c+1)*3+2] + v2 * R->getVector()[(c+2)*3+2] );
+            }
+        }
+    }
+#endif
+
+private :
+    JMatrixType J_local;
+//    ResMatrixType res_data;
 };
 
 template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
@@ -97,8 +181,8 @@ public:
     typedef NoThreadManager ThreadManager;
     typedef std::list<int> ListIndex;
     typedef typename Vector::Real Real;
-    typedef typename MatrixLinearSolverInternalData<Matrix,Vector>::JMatrixType JMatrixType;
-    typedef typename MatrixLinearSolverInternalData<Matrix,Vector>::ResMatrixType ResMatrixType;
+    typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
+    typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
 
     Data<bool> multiGroup;
 
@@ -209,104 +293,91 @@ public:
     ///
     /// TODO : put this implementation in MatrixLinearSolver class - fix problems with Scattered Matrix
 
-    template<class RMatrix, class JMatrix>
-    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
+    virtual bool addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result, JMatrixType * J, double fact)
     {
-        const unsigned int Jrows = J.rowSize();
-        const unsigned int Jcols = J.colSize();
-        if (Jcols != currentGroup->systemMatrix->rowSize())
+        for (unsigned row=0; row<J->rowSize(); row++)
         {
-            serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
-            return false;
-        }
-
-        if (!Jrows) return false;
-
-        const typename JMatrix::LineConstIterator jitend = J.end();
-        // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
-        {
-            int row1 = jit1->first;
-            // clear the right hand term:
-            currentGroup->systemRHVector->clear(); // currentGroup->systemMatrix->rowSize()
-            //double acc = 0.0;
-            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
-            {
-                currentGroup->systemRHVector->add(i1->first,i1->second);
-            }
+            // STEP 1 : put each line of matrix Jt in the right hand term of the system
+            for (unsigned i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
             // STEP 2 : solve the system :
             solveSystem();
 
-
             // STEP 3 : project the result using matrix J
-            for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
+            if (SparseMatrix<Real> * j = dynamic_cast<SparseMatrix<Real> * >(J))   // optimization for sparse matrix
             {
-                int row2 = jit2->first;
-                double acc = 0.0;
-                for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
+                const typename SparseMatrix<Real>::LineConstIterator jitend = j->end();
+                for (typename SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
                 {
-                    int col2 = i2->first;
-                    double val2 = i2->second;
-                    acc += val2 * currentGroup->systemLHVector->element(col2);
+                    int row2 = jit->first;
+                    double acc = 0.0;
+                    for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                    {
+                        int col2 = i2->first;
+                        double val2 = i2->second;
+                        acc += val2 * currentGroup->systemLHVector->element(col2);
+                    }
+                    acc *= fact;
+                    result->add(row2,row,acc);
                 }
-                acc *= fact;
-                //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
-                result.add(row2,row1,acc);
-                if (row1!=row2)
-                    result.add(row1,row2,acc);
+            }
+            else
+            {
+                std::cerr << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" << std::endl;
+                return false;
             }
         }
+
         return true;
     }
 
+    virtual bool addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result, JMatrixType * J, double fact)
+    {
+        for (unsigned row=0; row<J->rowSize(); row++)
+        {
+            // STEP 1 : put each line of matrix Jt in the right hand term of the system
+            for (unsigned i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
+            // STEP 2 : solve the system :
+            solveSystem();
 
+            // STEP 3 : project the result using matrix J
+            for (unsigned i=0; i<J->colSize(); i++) result->add(row,i,currentGroup->systemRHVector->element(i) * fact);
+        }
 
+        return true;
+    }
+
+    //// The following functions should not be overload
+    //// only addMInvJtLocal and addJMInvJtLocal can be overload
 
     /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
     {
-        if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
-        {
-            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-        }
-        else if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
-        {
-            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-        }
-        else if (defaulttype::BaseMatrix* r = result)
-        {
-            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
-            {
-                return addJMInvJt(*r,*j,fact);
-            }
-        }
-        return false;
+        if (J->rowSize()==0) return true;
+
+        JMatrixType * j_local = internalData.getLocalJ(J);
+        ResMatrixType * res_local = internalData.getLocalRes(result);
+        bool res = addJMInvJtLocal(currentGroup->systemMatrix,res_local,j_local,fact);
+        internalData.addLocalRes(result);
+        return res;
     }
 
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    {
+        if (J->rowSize()==0) return true;
+
+        JMatrixType * j_local = internalData.getLocalJ(J);
+        ResMatrixType * res_local = internalData.getLocalRes(result);
+        bool res = addMInvJtLocal(currentGroup->systemMatrix,res_local,j_local,fact);
+        internalData.addLocalRes(result);
+        return res;
+    }
+public :
     bool isMultiGroup() const
     {
         return multiGroup.getValue();
@@ -363,7 +434,7 @@ protected:
     Matrix* createMatrix();
     static void deleteMatrix(Matrix* v);
 
-    MatrixLinearSolverInternalData<Matrix,Vector>* data;
+    MatrixLinearSolverInternalData<Vector> internalData;
     MatrixInvertData * invertData;
 
     virtual MatrixInvertData * createInvertData();
@@ -410,7 +481,6 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     , currentGroup(&defaultGroup)
 {
     invertData = NULL;
-    data = new MatrixLinearSolverInternalData<Matrix,Vector>(this);
 }
 
 template<class Matrix, class Vector>
@@ -421,7 +491,6 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
     //if (systemLHVector) deleteVector(systemLHVector);
     if (invertData) delete invertData;
     invertData = NULL;
-    delete data;
 }
 
 template<class Matrix, class Vector>

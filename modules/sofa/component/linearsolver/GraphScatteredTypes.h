@@ -139,6 +139,12 @@ public:
         std::cerr<<"WARNING : add an element is not supported in MultiVector"<<std::endl;
     }
 
+    /// TO IMPLEMENT
+    void set(int /*row*/, SReal /*v*/)
+    {
+        std::cerr<<"WARNING : set an element is not supported in MultiVector"<<std::endl;
+    }
+
     SReal element(int /*i*/)
     {
         std::cerr<<"WARNING : get a single element is not supported in MultiVector"<<std::endl;
