@@ -469,45 +469,25 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(int i, int j, double
 }
 
 
-template<>
-class MatrixLinearSolverInternalData< component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >
-{
-public:
-    typedef NewMatVector::Real Real;
-    typedef SparseMatrix<Real> JMatrixType;
-    typedef defaulttype::BaseMatrix ResMatrixType;
+//template<>
+//class MatrixLinearSolverInternalData< component::linearsolver::NewMatVector >
+//{
+//public:
+//	typedef NewMatVector::Real Real;
+//    typedef SparseMatrix<Real> JMatrixType;
+//    typedef defaulttype::BaseMatrix ResMatrixType;
 
-    Data<int> bandWidth;
-    MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
-        : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))
-    {}
-};
+//    Data<int> bandWidth;
+//    MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
+//    : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))
+//    {}
+//};
 
-template<>
-inline component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>* MatrixLinearSolver< component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >::createMatrix()
-{
-    return new component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>(this->data->bandWidth.getValue());
-}
-
-template<>
-class MatrixLinearSolverInternalData< component::linearsolver::TNewMatMatrix<NEWMAT::BandMatrix> , component::linearsolver::NewMatVector >
-{
-public:
-    typedef NewMatVector::Real Real;
-    typedef SparseMatrix<Real> JMatrixType;
-    typedef defaulttype::BaseMatrix ResMatrixType;
-
-    Data<int> bandWidth;
-    MatrixLinearSolverInternalData(core::objectmodel::BaseObject* o)
-        : bandWidth( o->initData(&bandWidth, 11, "bandWidth", "width of the band on each side of the diagonal (i.e. total values per lines is 2*bandWidth+1)"))
-    {}
-};
-
-template<>
-inline component::linearsolver::TNewMatMatrix<NEWMAT::BandMatrix>* MatrixLinearSolver< component::linearsolver::TNewMatMatrix<NEWMAT::BandMatrix> , component::linearsolver::NewMatVector >::createMatrix()
-{
-    return new component::linearsolver::TNewMatMatrix<NEWMAT::BandMatrix>(this->data->bandWidth.getValue());
-}
+//template<>
+//inline component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>* MatrixLinearSolver< component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >::createMatrix()
+//{
+//    return new component::linearsolver::TNewMatMatrix<NEWMAT::SymmetricBandMatrix>(this->internalData.bandWidth.getValue());
+//}
 
 
 } // namespace linearsolver
