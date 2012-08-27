@@ -129,7 +129,27 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
                 continue;
             }
             core::collision::Contact::SPtr contact = core::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
-            if (contact == NULL) serr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<sendl;
+            if (contact == NULL)
+            {
+                std::string model1class = model1->getClassName();
+                std::string model2class = model2->getClassName();
+                int count = ++errorMsgCount[std::make_pair(responseUsed,std::make_pair(model1class,model2class))];
+                if (count <= 10)
+                {
+                    serr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<sendl;
+                    if (count == 1)
+                    {
+                        serr << "Supported models for contact " << responseUsed << ":" << sendl;
+                        for (core::collision::Contact::Factory::const_iterator it = core::collision::Contact::Factory::getInstance()->begin(), itend = core::collision::Contact::Factory::getInstance()->end(); it != itend; ++it)
+                        {
+                            if (it->first != responseUsed) continue;
+                            serr << "   " << sofa::helper::gettypename(it->second->type()) << sendl;
+                        }
+                        serr << sendl;
+                    }
+                    if (count == 10) serr << "further messages suppressed" << sendl;
+                }
+            }
             else
             {
                 contactMap[std::make_pair(model1, model2)] = contact;

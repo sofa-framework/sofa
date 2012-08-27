@@ -122,6 +122,9 @@ protected:
         storedContactMap[instance].swap(contactMap);
         contactMap.swap(storedContactMap[inst]);
     }
+
+    // count failure messages, so we don't continuously repeat them
+    std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;
 };
 
 } // namespace collision
