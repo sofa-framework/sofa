@@ -1093,7 +1093,14 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = r.matrix;
     Real mFactor = (Real)mparams->mFactor();
+
+    if(mat->colSize() != (_topology->getNbPoints()*N) || mat->rowSize() != (_topology->getNbPoints()*N))
+    {
+        serr<<"Wrong size of the input Matrix: need resize in addMToMatrix function."<<sendl;
+        mat->resize(_topology->getNbPoints()*N,_topology->getNbPoints()*N);
+    }
 
     double massTotal=0.0;
 
