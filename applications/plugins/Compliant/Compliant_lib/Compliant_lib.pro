@@ -15,7 +15,6 @@ SOURCES = \
     DiagonalCompliance.cpp \
     ComplianceSolver.cpp \
     MinresSolver.cpp \
-    CompliantContact.cpp \
 
 HEADERS = \
     initCompliant.h \
