@@ -146,8 +146,8 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
-    , edgeHandler(NULL)
     , m_useTopology( initData(&m_useTopology, (bool)true, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
+    , edgeHandler(NULL)
 {
 }
 
@@ -159,8 +159,8 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
-    , edgeHandler(NULL)
     , m_useTopology( initData(&m_useTopology, (bool)true, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
+    , edgeHandler(NULL)
 {
 }
 
