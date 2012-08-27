@@ -28,6 +28,7 @@
 
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/RayModel.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/simulation/common/Node.h>
 
 
@@ -47,6 +48,9 @@ struct BodyPicked
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    Vector3 baryCoords;
+#endif
     double dist;
     double rayLength;
 };

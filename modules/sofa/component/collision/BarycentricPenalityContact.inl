@@ -186,9 +186,17 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1, r1);
+        index1 = mapper1.addPointB(o->point[0], index1, r1
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                , o->baryCoords[0]
+#endif
+                                  );
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2, r2);
+        index2 = mapper2.addPointB(o->point[1], index2, r2
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                , o->baryCoords[1]
+#endif
+                                  );
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_H
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/collision/DetectionOutput.h>
 //#include <sofa/component/container/MechanicalObject.h>
 
 #include <sofa/helper/Factory.h>
@@ -75,16 +76,28 @@ public:
     //after detecting a point in collide, this point need to be added to the mapping
     //There are two way for adding the point, by its nature of referentiel : global or local.
 
-    //Adding a point of the global referentiel to the mapping
+    /// Adding a point of the global referentiel to the mapping
     virtual int addPoint(const Coord& /*P*/, int /*elementId*/, Real& /*r*/)
     {
         std::cout << "WARNING[BaseContactMapper] addPoint is called but not implemented" << std::endl; return -1;
     }
-    //Adding a point of the local referentiel(barycentric coordinate) to the mapping
+    /// Adding a point of the local referentiel(barycentric coordinate) to the mapping
     //TODO use this functions for barycentric contact mapper
     virtual int addBaryPoint(const Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
     {
         std::cout << "WARNING[BaseContactMapper] addBaryPoint is called but not implemented" << std::endl; return -1;
+    }
+
+    /// Adding a point of the global referentiel to the mapping, also giving the local referentiel
+    /// Note that it cannot have the same name as addPoint otherwise it creates errors when a subclass only implement the version without barycoords
+    virtual int addPointB(const Coord& P, int elementId, Real& r, const Vector3& /*baryP*/)
+    {
+        return addPoint(P, elementId, r);
+    }
+
+    int addPointB(const Coord& P, int elementId, Real& r)
+    {
+        return addPoint(P, elementId, r);
     }
 
 

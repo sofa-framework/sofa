@@ -109,9 +109,17 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1, r1);
+        index1 = mapper1.addPointB(o->point[0], index1, r1
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                , o->baryCoords[0]
+#endif
+                                  );
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2, r2);
+        index2 = mapper2.addPointB(o->point[1], index2, r2
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                , o->baryCoords[1]
+#endif
+                                  );
         double distance = intersectionMethod->getContactDistance() + r1 + r2;
         if (!model1->isSimulated() || !model2->isSimulated()) // create stiffer springs for non-animated models as only half of the force is really applied
             ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
