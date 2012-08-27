@@ -55,6 +55,8 @@ extern "C"
     int MechanicalObjectCudaVec2f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
     void MechanicalObjectCudaVec2f_vMultiOpA1B3(unsigned int size, void* res1, const void* a1, void* res2, const void* a21, float f21, const void* a22, float f22, const void* a23, float f23);
+    void MechanicalObjectCudaVec2f_vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14);
+    void MechanicalObjectCudaVec2f_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31);
 
     void MechanicalObjectCudaVec3f_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res);
@@ -72,6 +74,8 @@ extern "C"
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
     void MechanicalObjectCudaVec3f_vMultiOpA1B3(unsigned int size, void* res1, const void* a1, void* res2, const void* a21, float f21, const void* a22, float f22, const void* a23, float f23);
+    void MechanicalObjectCudaVec3f_vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14);
+    void MechanicalObjectCudaVec3f_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31);
 
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
@@ -154,6 +158,8 @@ extern "C"
     int MechanicalObjectCudaVec2d_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec2d_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
     void MechanicalObjectCudaVec2d_vMultiOpA1B3(unsigned int size, void* res1, const void* a1, void* res2, const void* a21, double f21, const void* a22, double f22, const void* a23, double f23);
+    void MechanicalObjectCudaVec2d_vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14);
+    void MechanicalObjectCudaVec2d_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31);
 
     void MechanicalObjectCudaVec3d_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3d_vClear(unsigned int size, void* res);
@@ -171,6 +177,8 @@ extern "C"
     int MechanicalObjectCudaVec3d_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3d_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
     void MechanicalObjectCudaVec3d_vMultiOpA1B3(unsigned int size, void* res1, const void* a1, void* res2, const void* a21, double f21, const void* a22, double f22, const void* a23, double f23);
+    void MechanicalObjectCudaVec3d_vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14);
+    void MechanicalObjectCudaVec3d_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31);
 
     void MechanicalObjectCudaVec3d1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3d1_vClear(unsigned int size, void* res);
@@ -1527,6 +1535,69 @@ __global__ void MechanicalObjectCudaVec3t_vMultiOpA1B3_kernel(int size, real* re
     }
 }
 
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vOp4_kernel(int size, real* res1, const real* a11, real f11, const real* a12, real f12, const real* a13, real f13, const real* a14, real f14)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] = a11[index] * f11 + a12[index] * f12 + a13[index] * f13 + a14[index] * f14;
+        index += BSIZE;
+        res1[index] = a11[index] * f11 + a12[index] * f12 + a13[index] * f13 + a14[index] * f14;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec3t_vOp4_kernel(int size, real* res1, const real* a11, real f11, const real* a12, real f12, const real* a13, real f13, const real* a14, real f14)
+{
+    int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] = a11[index] * f11 + a12[index] * f12 + a13[index] * f13 + a14[index] * f14;
+        index += BSIZE;
+        res1[index] = a11[index] * f11 + a12[index] * f12 + a13[index] * f13 + a14[index] * f14;
+        index += BSIZE;
+        res1[index] = a11[index] * f11 + a12[index] * f12 + a13[index] * f13 + a14[index] * f14;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vOpMCNAB_kernel(int size, real* res1, const real* a11, const real* a12, real f12, real* res2, const real* a21, real* res3, const real* a31)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] = a11[index] + a12[index] * f12;
+        res2[index] = a21[index];
+        res3[index] = a31[index];
+        index += BSIZE;
+        res1[index] = a11[index] + a12[index] * f12;
+        res2[index] = a21[index];
+        res3[index] = a31[index];
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec3t_vOpMCNAB_kernel(int size, real* res1, const real* a11, const real* a12, real f12, real* res2, const real* a21, real* res3, const real* a31)
+{
+    int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] = a11[index] + a12[index] * f12;
+        res2[index] = a21[index];
+        res3[index] = a31[index];
+        index += BSIZE;
+        res1[index] = a11[index] + a12[index] * f12;
+        res2[index] = a21[index];
+        res3[index] = a31[index];
+        index += BSIZE;
+        res1[index] = a11[index] + a12[index] * f12;
+        res2[index] = a21[index];
+        res3[index] = a31[index];
+    }
+}
+
+
 
 
 
@@ -2111,7 +2182,7 @@ void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2130,7 +2201,7 @@ void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2156,7 +2227,7 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2175,7 +2246,7 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2201,7 +2272,7 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2220,7 +2291,7 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2246,7 +2317,7 @@ void MechanicalObjectCudaVec6f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2265,7 +2336,7 @@ void MechanicalObjectCudaVec6f_vDot(unsigned int size, float* res, const void* a
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2291,7 +2362,7 @@ void MechanicalObjectCudaRigid3f_vDot(unsigned int size, float* res, const void*
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2304,7 +2375,7 @@ void MechanicalObjectCudaRigid3f_vDot(unsigned int size, float* res, const void*
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2321,6 +2392,34 @@ void MechanicalObjectCudaVec3f_vMultiOpA1B3(unsigned int size, void* res1, const
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {MechanicalObjectCudaVec3t_vMultiOpA1B3_kernel<float><<< grid, threads >>>(size, (float*) res1, (const float*) a1, (float*) res2, (const float*) a21, f21, (const float*) a22, f22, (const float*) a23, f23); mycudaDebugError("MechanicalObjectCudaVec3t_vMultiOpA1B3_kernel<float>");}
+}
+
+void MechanicalObjectCudaVec2f_vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOp4_kernel<float><<< grid, threads >>>(size, (float*) res1, (const float*) a11, f11, (const float*) a12, f12, (const float*) a13, f13, (const float*) a14, f14); mycudaDebugError("MechanicalObjectCudaVec2t_vOp4_kernel<float>");}
+}
+
+void MechanicalObjectCudaVec3f_vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec3t_vOp4_kernel<float><<< grid, threads >>>(size, (float*) res1, (const float*) a11, f11, (const float*) a12, f12, (const float*) a13, f13, (const float*) a14, f14); mycudaDebugError("MechanicalObjectCudaVec3t_vOp4_kernel<float>");}
+}
+
+void MechanicalObjectCudaVec2f_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOpMCNAB_kernel<float><<< grid, threads >>>(size, (float*) res1, (const float*) a11, (const float*) a12, f12, (float*) res2, (const float*) a21, (float*) res3, (const float*) a31); mycudaDebugError("MechanicalObjectCudaVec2t_vOpMCNAB_kernel<float>");}
+}
+
+void MechanicalObjectCudaVec3f_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec3t_vOpMCNAB_kernel<float><<< grid, threads >>>(size, (float*) res1, (const float*) a11, (const float*) a12, f12, (float*) res2, (const float*) a21, (float*) res3, (const float*) a31); mycudaDebugError("MechanicalObjectCudaVec3t_vOpMCNAB_kernel<float>");}
 }
 
 
@@ -2905,7 +3004,7 @@ void MechanicalObjectCudaVec2d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -2924,7 +3023,7 @@ void MechanicalObjectCudaVec2d_vDot(unsigned int size, double* res, const void* 
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2950,7 +3049,7 @@ void MechanicalObjectCudaVec3d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -2969,7 +3068,7 @@ void MechanicalObjectCudaVec3d_vDot(unsigned int size, double* res, const void* 
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -2995,7 +3094,7 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3014,7 +3113,7 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -3040,7 +3139,7 @@ void MechanicalObjectCudaVec6d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3059,7 +3158,7 @@ void MechanicalObjectCudaVec6d_vDot(unsigned int size, double* res, const void* 
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -3085,7 +3184,7 @@ void MechanicalObjectCudaRigid3d_vDot(unsigned int size, double* res, const void
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //mycudaPrintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3098,7 +3197,7 @@ void MechanicalObjectCudaRigid3d_vDot(unsigned int size, double* res, const void
             for (int i=0; i<nblocs; i++)
                 r+=rtmp[i];
             *res = r;
-            //mycudaPrintf("dot=%f\n",r);
+            //myprintf("dot=%f\n",r);
         }
     }
 }
@@ -3116,6 +3215,35 @@ void MechanicalObjectCudaVec3d_vMultiOpA1B3(unsigned int size, void* res1, const
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {MechanicalObjectCudaVec3t_vMultiOpA1B3_kernel<double><<< grid, threads >>>(size, (double*) res1, (const double*) a1, (double*) res2, (const double*) a21, f21, (const double*) a22, f22, (const double*) a23, f23); mycudaDebugError("MechanicalObjectCudaVec3t_vMultiOpA1B3_kernel<double>");}
 }
+
+void MechanicalObjectCudaVec2d_vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOp4_kernel<double><<< grid, threads >>>(size, (double*) res1, (const double*) a11, f11, (const double*) a12, f12, (const double*) a13, f13, (const double*) a14, f14); mycudaDebugError("MechanicalObjectCudaVec2t_vOp4_kernel<double>");}
+}
+
+void MechanicalObjectCudaVec3d_vOp4(unsigned int size, void* res1, const void* a11, double f11, const void* a12, double f12, const void* a13, double f13, const void* a14, double f14)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec3t_vOp4_kernel<double><<< grid, threads >>>(size, (double*) res1, (const double*) a11, f11, (const double*) a12, f12, (const double*) a13, f13, (const double*) a14, f14); mycudaDebugError("MechanicalObjectCudaVec3t_vOp4_kernel<double>");}
+}
+
+void MechanicalObjectCudaVec2d_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOpMCNAB_kernel<double><<< grid, threads >>>(size, (double*) res1, (const double*) a11, (const double*) a12, f12, (double*) res2, (const double*) a21, (double*) res3, (const double*) a31); mycudaDebugError("MechanicalObjectCudaVec2t_vOpMCNAB_kernel<double>");}
+}
+
+void MechanicalObjectCudaVec3d_vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, double f12, void* res2, const void* a21, void* res3, const void* a31)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec3t_vOpMCNAB_kernel<double><<< grid, threads >>>(size, (double*) res1, (const double*) a11, (const double*) a12, f12, (double*) res2, (const double*) a21, (double*) res3, (const double*) a31); mycudaDebugError("MechanicalObjectCudaVec3t_vOpMCNAB_kernel<double>");}
+}
+
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
