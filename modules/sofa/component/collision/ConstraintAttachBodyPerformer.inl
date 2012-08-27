@@ -145,7 +145,11 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
         const int idx=picked.indexCollisionElement;
         typename DataTypes::Real r=0.0;
 
-        index = mapper->addPoint(pointPicked, idx, r);
+        index = mapper->addPointB(pointPicked, idx, r
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+                , picked.baryCoords
+#endif
+                                 );
         mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
