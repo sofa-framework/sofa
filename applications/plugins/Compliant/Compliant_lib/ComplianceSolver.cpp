@@ -501,7 +501,9 @@ const ComplianceSolver::SMatrix& ComplianceSolver::PMinvP()
     if( _PMinvP_isDirty ) // update it
     {
         if( !inverseDiagonalMatrix( _PMinvP_Matrix.compressedMatrix, _matM ) )
+        {
             assert(false);
+        }
         _PMinvP_Matrix.compressedMatrix = P().transpose() * _PMinvP_Matrix.compressedMatrix * P();
         _PMinvP_isDirty = false;
     }

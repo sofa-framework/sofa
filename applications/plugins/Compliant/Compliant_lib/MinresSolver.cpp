@@ -234,7 +234,7 @@ void MinresSolver::solve_kkt(krylov::params& p )
 
     last = x;
 
-    dv() = P() * x.head( f().size() );
+    dv().noalias() = P() * x.head( f().size() );
     lambda() = x.tail( phi().size() );
 
 }
