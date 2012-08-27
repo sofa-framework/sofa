@@ -933,7 +933,8 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
     topology::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
 
-    core::topology::TopologyContainer* fromTopoCont;
+    core::topology::TopologyContainer* fromTopoCont = 0;
+//	this->fromModel->getContext()->get(fromTopoCont);
 
     if (dynamic_cast< core::topology::TopologyContainer* >(topology) != 0)
     {
