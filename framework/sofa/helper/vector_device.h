@@ -25,6 +25,7 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
+#include "system/gl.h"
 #include <sofa/helper/vector.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device

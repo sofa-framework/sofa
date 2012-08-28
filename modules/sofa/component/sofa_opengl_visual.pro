@@ -23,10 +23,9 @@ SOURCES += initOpenGLVisual.cpp \
            visualmodel/PointSplatModel.cpp \
            visualmodel/OglRenderingSRGB.cpp \
            visualmodel/ClipPlane.cpp \
-           visualmodel/OglAttribute.cpp \
-		   visualmodel/CompositingVisualLoop.cpp
+           visualmodel/CompositingVisualLoop.cpp
 
-contains(DEFINES,SOFA_HAVE_GLEW) {
+contains(DEFINES,SOFA_HAVE_GLEW) {    # seems to be built without GLEW define since we include glext.h from helper/system/gl.h
 HEADERS += visualmodel/OglAttribute.h \
            visualmodel/OglAttribute.inl \
            visualmodel/OglShader.h \

@@ -22,23 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SYSTEM_GL_H
-#define SOFA_HELPER_SYSTEM_GL_H
+#include "gl.h"
 
-#include <sofa/helper/system/config.h>
+#include <string>
 
-#if defined (SOFA_HAVE_GLEW)
-#include <GL/glew.h>
-#elif defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#define GL_GLEXT_PROTOTYPES // for glext.h : necessary to use glBindBuffer without glew and make GLSLShader file
-#include <GL/gl.h>
-#include <GL/glext.h> // necessary when you havn't glew
-#endif
 
-extern const char* GetGlExtensionsList();
+const char* GetGlExtensionsList()
+{
+    return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+}
 
-extern bool CanUseGlExtension(char* ext);
 
-#endif
+bool CanUseGlExtension(char* ext)
+{
+    std::string Extensions( GetGlExtensionsList() );
+    if( Extensions.find( std::string(ext) ) != std::string::npos )
+        return true;
+    return false;
+}

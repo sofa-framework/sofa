@@ -141,6 +141,7 @@ SOURCES += ArgumentParser.cpp \
     decompose.cpp \
     Quater.cpp \
     RandomGenerator.cpp \
+    system/gl.cpp \
     system/SetDirectory.cpp \
     system/FileRepository.cpp \
     system/thread/CTime.cpp \
@@ -160,12 +161,12 @@ SOURCES += ArgumentParser.cpp \
     Polynomial_LD.cpp\
     UnitTest.cpp
 
-contains(DEFINES,SOFA_HAVE_GLEW) { 
-    HEADERS += gl/FrameBufferObject.h \
+#contains(DEFINES,SOFA_HAVE_GLEW) {    # seems to be built without GLEW since we include glext.h from helper/system/gl.h
+    HEADERS += gl/FrameBufferObject.h \  # FrameBufferObject is used in SOFA even if we disable GLEW (see PickHandler and OglViewport)... have to review?
         gl/GLSLShader.h
     SOURCES += gl/FrameBufferObject.cpp \
         gl/GLSLShader.cpp
-}
+#}
 
 contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     HEADERS += \

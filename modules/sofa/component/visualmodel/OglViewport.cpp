@@ -30,6 +30,7 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/system/glu.h>
 
 namespace sofa
 {

@@ -72,17 +72,21 @@ int SpotLightClass = core::RegisterObject("Spot Light")
 
 using sofa::defaulttype::Vector3;
 
+#ifdef SOFA_HAVE_GLEW
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
 
 const std::string Light::PATH_TO_BLUR_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/blur_texture.vert";
 const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/blur_texture.frag";
+#endif
 
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
+#ifdef SOFA_HAVE_GLEW
     , shadowFBO(true, true, true), blurHFBO(false,false,true), blurVFBO(false,false,true)
     , depthShader(sofa::core::objectmodel::New<OglShader>())
     , blurShader(sofa::core::objectmodel::New<OglShader>())
+#endif
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
@@ -205,6 +209,7 @@ void Light::postDrawShadow()
 
 void Light::blurDepthTexture()
 {
+#ifdef SOFA_HAVE_GLEW
     float vxmax, vymax, vzmax ;
     float vxmin, vymin, vzmin ;
     float txmax,tymax,tzmax;
@@ -268,7 +273,7 @@ void Light::blurDepthTexture()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-
+#endif
 }
 
 void Light::computeShadowMapSize()

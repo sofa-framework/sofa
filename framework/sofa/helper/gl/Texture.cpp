@@ -239,7 +239,7 @@ void Texture::update()
         unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
         if (internalFormatSRGB)
         {
-#if defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
             if (GLEW_EXT_texture_sRGB && GLEW_ARB_framebuffer_sRGB)
                 internalFormat = internalFormatSRGB;
             else
@@ -261,7 +261,7 @@ void Texture::update()
     switch (textureType)
     {
     case io::Image::TEXTURE_2D:
-#if defined(GLEW_VERSION_1_3)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_3)
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
                 glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
@@ -274,8 +274,8 @@ void Texture::update()
         break;
 
     case io::Image::TEXTURE_3D:
-#if defined(GLEW_VERSION_1_2)
-#if defined(GLEW_VERSION_1_3)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_3)
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
                 glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
@@ -289,7 +289,7 @@ void Texture::update()
         break;
 
     case io::Image::TEXTURE_CUBE:
-#if defined(GLEW_VERSION_1_3)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_3)
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned j = 0; j < 6; j++)
                 for (unsigned i = 0; i < mipmaps; i++)
@@ -322,7 +322,7 @@ void Texture::init()
         !isPowerOfTwo(image->getHeight()) ||
         (image->getDepth() != 0 && !isPowerOfTwo(image->getDepth())))
     {
-#if defined(GLEW_VERSION_2_0)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_2_0)
         if (!GLEW_VERSION_2_0)
 #endif
         {
@@ -339,7 +339,7 @@ void Texture::init()
         return;
 
     case io::Image::TEXTURE_3D:
-#if defined(GLEW_VERSION_1_2)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
         if (!GLEW_VERSION_1_2)
 #endif
         {
@@ -350,7 +350,7 @@ void Texture::init()
         break;
 
     case io::Image::TEXTURE_CUBE:
-#if defined(GLEW_VERSION_1_3)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_3)
         if (!GLEW_VERSION_1_3)
 #endif
         {
@@ -368,7 +368,7 @@ void Texture::init()
     case io::Image::UINT32:
         if (image->getChannelFormat() <= io::Image::LA)
         {
-#if defined(GLEW_EXT_texture_integer)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_integer)
             if (!GLEW_EXT_texture_integer)
 #endif
             {
@@ -378,7 +378,7 @@ void Texture::init()
             }
         }
         else
-#if defined(GLEW_VERSION_3_0)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_3_0)
             if (!GLEW_VERSION_3_0)
 #endif
             {
@@ -389,7 +389,7 @@ void Texture::init()
         break;
 
     case io::Image::HALF:
-#if defined(GLEW_VERSION_3_0)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_3_0)
         if (!GLEW_VERSION_3_0)
 #endif
         {
@@ -402,7 +402,7 @@ void Texture::init()
     case io::Image::FLOAT:
         if (image->getChannelFormat() <= io::Image::LA)
         {
-#if defined(GLEW_ARB_texture_float)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_ARB_texture_float)
             if (!GLEW_ARB_texture_float)
 #endif
             {
@@ -412,7 +412,7 @@ void Texture::init()
             }
         }
         else
-#if defined(GLEW_VERSION_3_0)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_3_0)
             if (!GLEW_VERSION_3_0)
 #endif
             {
@@ -427,7 +427,7 @@ void Texture::init()
         {
         case io::Image::L:
         case io::Image::LA:
-#if defined(GLEW_EXT_texture_compression_latc)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_compression_latc)
             if (!GLEW_EXT_texture_compression_latc)
 #endif
             {
@@ -439,7 +439,7 @@ void Texture::init()
 
         case io::Image::R:
         case io::Image::RG:
-#if defined(GLEW_VERSION_3_0)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_3_0)
             if (!GLEW_VERSION_3_0)
 #endif
             {
@@ -451,7 +451,7 @@ void Texture::init()
 
         case io::Image::RGB:
         case io::Image::RGBA:
-#if defined(GLEW_EXT_texture_compression_s3tc)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_compression_s3tc)
             if (!GLEW_EXT_texture_compression_s3tc)
 #endif
             {
@@ -474,7 +474,7 @@ void Texture::init()
     update();
 
 
-#if defined(GLEW_VERSION_1_4)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_4)
     if (GLEW_VERSION_1_4 && generateMipmaps)
         glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
     else
@@ -489,7 +489,7 @@ void Texture::init()
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-#if defined(GLEW_EXT_texture_filter_anisotropic)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_filter_anisotropic)
         if (GLEW_EXT_texture_filter_anisotropic)
         {
             GLint maxAniso;
@@ -515,7 +515,7 @@ void Texture::init()
     }
     else
     {
-#if defined(GLEW_VERSION_1_2)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
         if (GLEW_VERSION_1_2)
         {
             glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -531,14 +531,14 @@ void Texture::init()
         }
     }
 
-#if defined(GLEW_ARB_seamless_cube_map)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_ARB_seamless_cube_map)
     // This is a global state so probably should be moved to a more appropriate location.
     if (textureType == io::Image::TEXTURE_CUBE)
         if (GLEW_ARB_seamless_cube_map)
             glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 #endif
 
-#if defined(GLEW_VERSION_1_2)
+#if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
     if ((generateMipmaps || mipmaps > 1) && GLEW_VERSION_1_2)
     {
         glTexParameterf(target, GL_TEXTURE_MIN_LOD, minLod);

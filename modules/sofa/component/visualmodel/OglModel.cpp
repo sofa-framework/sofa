@@ -65,7 +65,7 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
 #ifndef SOFA_HAVE_GLEW
-    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, (bool) CanUseGlExtension("GL_ARB_vertex_buffer_object"), "useVBO", "Use VBO for rendering"))
 #else
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
 #endif
@@ -118,6 +118,7 @@ OglModel::~OglModel()
         delete textures[i];
     }
 
+#ifdef GL_ARB_vertex_buffer_object
     // NB fjourdes : I don t know why gDEBugger still reports
     // graphics memory leaks after destroying the GLContext
     // even if the vbos destruction is claimed with the following
@@ -135,6 +136,7 @@ OglModel::~OglModel()
     {
         glDeleteBuffersARB(1,&iboQuads);
     }
+#endif
 
 }
 
@@ -274,7 +276,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             serr << "LINES_ADJACENCY primitive type invalid for triangular topologies" << sendl;
             break;
         case 2:
-#ifdef GL_PATCHES
+#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
             if (canUsePatches)
             {
                 prim = GL_PATCHES;
@@ -317,7 +319,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 #endif
             break;
         case 2:
-#ifdef GL_PATCHES
+#if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
             if (canUsePatches)
             {
                 prim = GL_PATCHES;
@@ -705,6 +707,8 @@ void OglModel::initVisual()
 #ifdef SOFA_HAVE_GLEW
     //This test is not enough to detect if we can enable the VBO.
     canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
+#else
+    canUseVBO = CanUseGlExtension("GL_ARB_vertex_buffer_object");
 #endif
 
     if (useVBO.getValue() && !canUseVBO)

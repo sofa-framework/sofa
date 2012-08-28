@@ -169,8 +169,9 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
         _first = false;
 
-
+#ifdef SOFA_HAVE_GLEW
         glewInit();
+#endif
 
 //   	// set up our OpenGL state
 // 	glDisable(GL_DEPTH_TEST);

@@ -41,14 +41,14 @@ namespace gl
 bool GLSLShader::InitGLSL()
 {
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
-    if(!GLEW_ARB_shader_objects)
+    if( !CanUseGlExtension("GL_ARB_shading_language_100") )
     {
         fprintf(stderr, "Error: GL_ARB_shader_objects extension not supported!\n");
         return false;
     }
 
     // Make sure we support the GLSL shading language 1.0
-    if(!GLEW_ARB_shading_language_100)
+    if( !CanUseGlExtension("GL_ARB_shading_language_100") )
     {
         fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
         return false;
@@ -266,7 +266,7 @@ void GLSLShader::InitShaders()
         glAttachObjectARB(m_hProgramObject, it->second);
     }
 
-#ifdef GL_GEOMETRY_SHADER_EXT
+#if defined(GL_EXT_geometry_shader4) && defined(SOFA_HAVE_GLEW)
     if (GetGeometryShaderID())
     {
         if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );

@@ -58,17 +58,17 @@ int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
 
 void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
 {
-#if defined(GLEW_ARB_framebuffer_sRGB)
-    if (GLEW_ARB_framebuffer_sRGB)
-        glEnable(GL_FRAMEBUFFER_SRGB);
+#if defined(GL_FRAMEBUFFER_SRGB)
+//    if (GLEW_ARB_framebuffer_sRGB)
+    glEnable(GL_FRAMEBUFFER_SRGB);
 #endif
 }
 
 void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
 {
-#if defined(GLEW_ARB_framebuffer_sRGB)
-    if (GLEW_ARB_framebuffer_sRGB)
-        glDisable(GL_FRAMEBUFFER_SRGB);
+#if defined(GL_FRAMEBUFFER_SRGB)
+//    if (GLEW_ARB_framebuffer_sRGB)
+    glDisable(GL_FRAMEBUFFER_SRGB);
 #endif
 }
 

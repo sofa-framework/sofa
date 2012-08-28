@@ -32,6 +32,7 @@
 #ifndef SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 #define SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 
+#include <sofa/component/component.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
