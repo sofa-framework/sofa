@@ -49,7 +49,8 @@ enum
     API_OpenGL = 0,
     API_OGRE = 1,
     API_OpenSceneGraph = 2,
-    API_OpenSG = 3
+    API_OpenSG = 3,
+    API_OSC = 4
 };
 
 /// Class gathering parameters used by visual components and by the draw method of each component. Transmitted by visitors
