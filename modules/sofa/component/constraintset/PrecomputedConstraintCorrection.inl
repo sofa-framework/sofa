@@ -863,7 +863,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
-    setConstraintForceInMotionSpace(f_d, lambda);
+    this->setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 

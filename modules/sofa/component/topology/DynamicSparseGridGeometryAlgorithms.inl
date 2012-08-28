@@ -112,7 +112,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
                 it = regular2topo.find( regularGridIndex);
                 if( it != regular2topo.end())
                 {
-                    const Real d = computeElementRestDistanceMeasure(it->second, pos);
+                    const Real d = this->computeElementRestDistanceMeasure(it->second, pos);
 //                std::cout << "Distance : " << d << "\n";
                     if(d<distance)
                     {
@@ -132,9 +132,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }
 
-    distance = computeElementRestDistanceMeasure( index, pos);
+    distance = this->computeElementRestDistanceMeasure( index, pos);
 
-    baryC = computeHexahedronRestBarycentricCoeficients(index, pos);
+    baryC = this->computeHexahedronRestBarycentricCoeficients(index, pos);
 
     return index;
 }

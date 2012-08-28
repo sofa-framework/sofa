@@ -146,10 +146,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
             Coord vertical;
             vertical = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
-            computeRotationLarge( this->_rotations[i], horizontal,vertical);
+            this->computeRotationLarge( this->_rotations[i], horizontal,vertical);
         }
         else
-            computeRotationPolar( this->_rotations[i], nodes);
+            this->computeRotationPolar( this->_rotations[i], nodes);
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
             this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];

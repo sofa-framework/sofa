@@ -810,7 +810,7 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
     {
         StiffnessMatrix JKJt,RJKJtRt;
         computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
-        addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
+        this->addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
 
     //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;

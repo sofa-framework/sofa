@@ -145,7 +145,7 @@ public:
 
         for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
         {
-            beginRow(r+ bRow*Nout);
+            this->beginRow(r+ bRow*Nout);
             for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
             {
                 const Block& b = blocks[p[i]];
@@ -162,7 +162,7 @@ public:
       */
     void copyFrom( const CompressedRowSparseMatrix<Block>& crs )
     {
-        resize( crs.rowSize(), crs.colSize() );
+        this->resize( crs.rowSize(), crs.colSize() );
 //        cerr<<"copyFrom, size " << crs.rowSize() << ", " << crs.colSize()<< ", block rows: " << crs.rowIndex.size() << endl;
 //        cerr<<"copyFrom, crs = " << crs << endl;
 

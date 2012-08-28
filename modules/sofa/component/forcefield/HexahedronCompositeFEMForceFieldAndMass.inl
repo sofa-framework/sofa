@@ -500,7 +500,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //       //given an elementIndice, find the 8 others from the sparse grid
             //       //compute MaterialStiffness
             MaterialStiffness material;
-            computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+            this->computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
 
 
             HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, this->_sparseGrid->getStiffnessCoef( i )); // classical stiffness
@@ -643,7 +643,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // compute the classical mechanical matrices at the finest level
     for(unsigned i=0 ; i < finestChildren.size() ; ++i )
     {
-        computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
+        this->computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
 
         const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
 
@@ -1211,7 +1211,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
-        computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
+        this->computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
         // 		  printMatlab( serr, K );
     }
     else
@@ -1635,7 +1635,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
-        computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
+        this->computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
     }
     else
     {

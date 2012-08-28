@@ -654,7 +654,7 @@ public:
         bool ok = true;
         while (istr >> path)
         {
-            ok &= CheckPath(path, context);
+            ok &= TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>::CheckPath(path, context);
         }
         return ok;
     }

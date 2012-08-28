@@ -2733,8 +2733,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             int index = map1d[i].in_index;
             {
                 const sofa::core::topology::BaseMeshTopology::Line& line = lines[index];
-                addMatrixContrib(matrixJ, out, line[0],  ( 1-fx ));
-                addMatrixContrib(matrixJ, out, line[1],  fx);
+                this->addMatrixContrib(matrixJ, out, line[0],  ( 1-fx ));
+                this->addMatrixContrib(matrixJ, out, line[1],  fx);
             }
         }
     }
@@ -2751,17 +2751,17 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             if ( index<c0 )
             {
                 const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-                addMatrixContrib(matrixJ, out, triangle[0],  ( 1-fx-fy ));
-                addMatrixContrib(matrixJ, out, triangle[1],  fx);
-                addMatrixContrib(matrixJ, out, triangle[2],  fy);
+                this->addMatrixContrib(matrixJ, out, triangle[0],  ( 1-fx-fy ));
+                this->addMatrixContrib(matrixJ, out, triangle[1],  fx);
+                this->addMatrixContrib(matrixJ, out, triangle[2],  fy);
             }
             else
             {
                 const sofa::core::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
-                addMatrixContrib(matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
-                addMatrixContrib(matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
-                addMatrixContrib(matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
-                addMatrixContrib(matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
+                this->addMatrixContrib(matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
+                this->addMatrixContrib(matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
             }
         }
     }
@@ -2779,10 +2779,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             if ( index<c0 )
             {
                 const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
-                addMatrixContrib(matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
-                addMatrixContrib(matrixJ, out, tetra[1],  fx);
-                addMatrixContrib(matrixJ, out, tetra[2],  fy);
-                addMatrixContrib(matrixJ, out, tetra[3],  fz);
+                this->addMatrixContrib(matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
+                this->addMatrixContrib(matrixJ, out, tetra[1],  fx);
+                this->addMatrixContrib(matrixJ, out, tetra[2],  fy);
+                this->addMatrixContrib(matrixJ, out, tetra[3],  fz);
             }
             else
             {
@@ -2791,23 +2791,23 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
 #else
                 const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
 #endif
-                addMatrixContrib(matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-                addMatrixContrib(matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 #ifdef SOFA_NEW_HEXA
-                addMatrixContrib(matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                addMatrixContrib(matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #else
-                addMatrixContrib(matrixJ, out, cube[2],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                addMatrixContrib(matrixJ, out, cube[3],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[2],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[3],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #endif
-                addMatrixContrib(matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-                addMatrixContrib(matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
 #ifdef SOFA_NEW_HEXA
-                addMatrixContrib(matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                addMatrixContrib(matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
 #else
-                addMatrixContrib(matrixJ, out, cube[6],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                addMatrixContrib(matrixJ, out, cube[7],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[6],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(matrixJ, out, cube[7],  ( ( fx ) * ( fy ) * ( fz ) ));
 #endif
             }
         }
@@ -2844,23 +2844,23 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
         const OutReal fx = ( OutReal ) map[i].baryCoords[0];
         const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         const OutReal fz = ( OutReal ) map[i].baryCoords[2];
-        addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 #ifdef SOFA_NEW_HEXA
-        addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #else
-        addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #endif
-        addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
 #ifdef SOFA_NEW_HEXA
-        addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
 #else
-        addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
 #endif
     }
     updateJ = false;
@@ -2892,23 +2892,23 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         const OutReal fx = ( OutReal ) map[i].baryCoords[0];
         const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         const OutReal fz = ( OutReal ) map[i].baryCoords[2];
-        addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 #ifdef SOFA_NEW_HEXA
-        addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #else
-        addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
 #endif
-        addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
 #ifdef SOFA_NEW_HEXA
-        addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
 #else
-        addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
+        this->addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
 #endif
     }
     //matrixJ->compress();
@@ -2943,8 +2943,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
             int index = map.getValue()[outId].in_index;
             const topology::Edge& edge = edges[index];
 
-            addMatrixContrib(matrixJ, outId, edge[0], ( 1-fx));
-            addMatrixContrib(matrixJ, outId, edge[1], (   fx));
+            this->addMatrixContrib(matrixJ, outId, edge[0], ( 1-fx));
+            this->addMatrixContrib(matrixJ, outId, edge[1], (   fx));
         }
     }
     else
@@ -2960,8 +2960,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
             int index = map.getValue()[outId].in_index;
             const topology::Edge& edge = edges[index];
 
-            addMatrixContrib(matrixJ, outId, edge[0], ( 1-fx));
-            addMatrixContrib(matrixJ, outId, edge[1], (   fx));
+            this->addMatrixContrib(matrixJ, outId, edge[0], ( 1-fx));
+            this->addMatrixContrib(matrixJ, outId, edge[1], (   fx));
         }
     }
     //matrixJ->compress();
@@ -2994,9 +2994,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
             int index = map.getValue()[outId].in_index;
             const topology::Triangle& triangle = triangles[index];
 
-            addMatrixContrib(matrixJ, outId, triangle[0], ( 1-fx-fy ));
-            addMatrixContrib(matrixJ, outId, triangle[1],      ( fx ));
-            addMatrixContrib(matrixJ, outId, triangle[2],      ( fy ));
+            this->addMatrixContrib(matrixJ, outId, triangle[0], ( 1-fx-fy ));
+            this->addMatrixContrib(matrixJ, outId, triangle[1],      ( fx ));
+            this->addMatrixContrib(matrixJ, outId, triangle[2],      ( fy ));
         }
     }
     else
@@ -3014,9 +3014,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
             const Real fy = map.getValue()[outId].baryCoords[1];
             int index = map.getValue()[outId].in_index;
             const topology::Triangle& triangle = triangles[index];
-            addMatrixContrib(matrixJ, outId, triangle[0], ( 1-fx-fy ));
-            addMatrixContrib(matrixJ, outId, triangle[1],      ( fx ));
-            addMatrixContrib(matrixJ, outId, triangle[2],      ( fy ));
+            this->addMatrixContrib(matrixJ, outId, triangle[0], ( 1-fx-fy ));
+            this->addMatrixContrib(matrixJ, outId, triangle[1],      ( fx ));
+            this->addMatrixContrib(matrixJ, outId, triangle[2],      ( fy ));
         }
     }
 
@@ -3051,10 +3051,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
             int index = map.getValue()[outId].in_index;
             const topology::Quad& quad = quads[index];
 
-            addMatrixContrib(matrixJ, outId, quad[0], ( ( 1-fx ) * ( 1-fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[1], (   ( fx ) * ( 1-fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[2], (   ( fx ) *   ( fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[0], ( ( 1-fx ) * ( 1-fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[1], (   ( fx ) * ( 1-fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[2], (   ( fx ) *   ( fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
         }
     }
     else
@@ -3073,10 +3073,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
             int index = map.getValue()[outId].in_index;
             const topology::Quad& quad = quads[index];
 
-            addMatrixContrib(matrixJ, outId, quad[0], ( ( 1-fx ) * ( 1-fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[1], (   ( fx ) * ( 1-fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[2], (   ( fx ) *   ( fy ) ));
-            addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[0], ( ( 1-fx ) * ( 1-fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[1], (   ( fx ) * ( 1-fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[2], (   ( fx ) *   ( fy ) ));
+            this->addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
         }
     }
     //matrixJ->compress();
@@ -3111,10 +3111,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
             int index = map.getValue()[outId].in_index;
             const topology::Tetrahedron& tetra = tetrahedra[index];
 
-            addMatrixContrib(matrixJ, outId, tetra[0], ( 1-fx-fy-fz ));
-            addMatrixContrib(matrixJ, outId, tetra[1],         ( fx ));
-            addMatrixContrib(matrixJ, outId, tetra[2],         ( fy ));
-            addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
+            this->addMatrixContrib(matrixJ, outId, tetra[0], ( 1-fx-fy-fz ));
+            this->addMatrixContrib(matrixJ, outId, tetra[1],         ( fx ));
+            this->addMatrixContrib(matrixJ, outId, tetra[2],         ( fy ));
+            this->addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
 
         }
     }
@@ -3134,10 +3134,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
             int index = map.getValue()[outId].in_index;
             const topology::Tetrahedron& tetra = tetrahedra[index];
 
-            addMatrixContrib(matrixJ, outId, tetra[0], ( 1-fx-fy-fz ));
-            addMatrixContrib(matrixJ, outId, tetra[1],         ( fx ));
-            addMatrixContrib(matrixJ, outId, tetra[2],         ( fy ));
-            addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
+            this->addMatrixContrib(matrixJ, outId, tetra[0], ( 1-fx-fy-fz ));
+            this->addMatrixContrib(matrixJ, outId, tetra[1],         ( fx ));
+            this->addMatrixContrib(matrixJ, outId, tetra[2],         ( fy ));
+            this->addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
         }
     }
     //matrixJ->compress();
@@ -3171,14 +3171,14 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
             int index = map.getValue()[outId].in_index;
             const topology::Hexahedron& cube = cubes[index];
 
-            addMatrixContrib(matrixJ, outId, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[1], (   ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[2], (   ( fx ) *   ( fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[3], ( ( 1-fx ) *   ( fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[4], ( ( 1-fx ) * ( 1-fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[5], (   ( fx ) * ( 1-fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[6], (   ( fx ) *   ( fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[1], (   ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[2], (   ( fx ) *   ( fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[3], ( ( 1-fx ) *   ( fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[4], ( ( 1-fx ) * ( 1-fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[5], (   ( fx ) * ( 1-fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[6], (   ( fx ) *   ( fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
         }
     }
     else
@@ -3196,14 +3196,14 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
             int index = map.getValue()[outId].in_index;
             const topology::Hexahedron& cube = cubes[index];
 
-            addMatrixContrib(matrixJ, outId, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[1], (   ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[2], (   ( fx ) *   ( fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[3], ( ( 1-fx ) *   ( fy ) * ( 1-fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[4], ( ( 1-fx ) * ( 1-fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[5], (   ( fx ) * ( 1-fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[6], (   ( fx ) *   ( fy ) *   ( fz ) ));
-            addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[1], (   ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[2], (   ( fx ) *   ( fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[3], ( ( 1-fx ) *   ( fy ) * ( 1-fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[4], ( ( 1-fx ) * ( 1-fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[5], (   ( fx ) * ( 1-fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[6], (   ( fx ) *   ( fy ) *   ( fz ) ));
+            this->addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
         }
     }
     //matrixJ->compress();
