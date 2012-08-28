@@ -37,7 +37,6 @@
 #include <sofa/component/visualmodel/OglAttribute.h>
 #include <sofa/component/visualmodel/OglVariable.h>
 
-
 namespace sofa
 {
 

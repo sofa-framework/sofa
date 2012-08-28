@@ -46,7 +46,7 @@ namespace gl
 {
 
 #ifndef SOFA_HAVE_GLEW
-#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
+//#error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
 #endif
 
 class SOFA_HELPER_API GLSLShader

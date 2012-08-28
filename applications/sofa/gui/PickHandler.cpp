@@ -94,7 +94,7 @@ void PickHandler::allocateSelectionBuffer(int width, int height)
     {
 
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-#ifdef GL_VERSION_3_0
+#if defined(GL_VERSION_3_0) && defined(SOFA_HAVE_GLEW)
         if (GLEW_VERSION_3_0)
         {
             _fboParams.colorInternalformat = GL_RGBA32F;
