@@ -1,15 +1,15 @@
-# Les ligne commençant par '#' sont des commentaires.
+# all lignes begining with '#' are comments.
 
-# Ignorer tous les fichiers nommés foo.txt
+# Ignore foo.txt file
 #foo.txt
 
-# Ignorer tous les fichiers html
+# Ignore all html file
 #*.html
 
-# à l'exception de foo.html qui est maintenu à la main
+# except foo.html whitch is maintain by hand
 #!foo.html
 
-# Ignorer les objets et les archives
+# Ignore all objets and archives
 #*.[oa]
 
 
@@ -17,21 +17,22 @@
 # ignore vim journal files
 .*.swp
 
-# Ignorer les fichiers de configuration (charge à chaque utilisateur de le modifier)
+# Ignore all sofa user specific config files
 share/config/plugins.cfg
-sofa-default.cfg
+sofa-local.cfg
+sofa-local.prf
 
-# Ignorer tous les fichiers orig
+# Ignore all git diff temp files
 *.orig
 
-# Ignorer tous les fichiers temporaires liés à l'édition
+# Ignore all edition temp files
 *~
 
-# Ignorer tous les fichiers et dossiers du repertoire bin/
+# Ignore all files and dirs
 bin/
-
-# Ignorer tous les fichiers et dossiers du repertoire lib/
 lib/
+doc/doxygen.git/
+share/screenshots/
 
 # Related to cmake
 CMakeFiles/*
@@ -207,9 +208,6 @@ share/config/Modeler.ini
 share/config/Sofa.ini
 share/config/Ogre.log
 share/config/plugins.cfg
-share/screenshots/
-sofa-local.cfg
-sofa-local.prf
 Sofa.pro.user
 
 # let's try using wildcards shall we ?
