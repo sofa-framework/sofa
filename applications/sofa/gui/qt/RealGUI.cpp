@@ -528,7 +528,6 @@ void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
 
 RealGUI::~RealGUI()
 {
-    viewer->setScene(NULL); // has been deleted
 #ifdef SOFA_PML
     if ( pmlreader )
     {
@@ -900,6 +899,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         // Unload viewer components before delete the whole scene
         viewer->unloadSceneView();
         simulation::getSimulation()->unload ( viewer->getScene() );
+        viewer->setScene(NULL);
     }
     //Clear the list of modified dialog opened
 
