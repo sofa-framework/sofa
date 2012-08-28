@@ -257,5 +257,6 @@ load(sofa/post)
 
 # print all SOFA DEFINES into a standard file format (mainly used for build with CMake)
 message("Write temporarily the sofa DEFINES in sofaDefines.cfg to let CMake get them")
+system( echo >sofaDefines.cfg )
 win32 { system( for %G in ($${DEFINES}) do echo %G>>sofaDefines.cfg ) }
 unix  { system( for define in $${DEFINES}; do echo $define>>sofaDefines.cfg; done ) }
