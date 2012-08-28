@@ -468,7 +468,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
     Coord vertical;
     vertical = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
     typename HexahedralFEMForceFieldT::Transformation R_0_1;
-    computeRotationLarge(R_0_1, horizontal, vertical);
+    this->computeRotationLarge(R_0_1, horizontal, vertical);
 
     helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
     helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
@@ -498,7 +498,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
         nodes[j] = (*X0)[this->_topology->getHexahedron(i)[j]];
 
     typename HexahedralFEMForceFieldT::Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
-    computeRotationPolar( R_0_1, nodes );
+    this->computeRotationPolar( R_0_1, nodes );
 
 
     helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();

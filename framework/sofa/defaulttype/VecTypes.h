@@ -327,7 +327,7 @@ public:
     ResizableExtVector(const ResizableExtVector& ev)
         :ExtVector<T>(ev)
     {
-        setAllocator(new DefaultAllocator<T>);
+        this->setAllocator(new DefaultAllocator<T>);
     }
 };
 

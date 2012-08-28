@@ -485,7 +485,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
-    setConstraintForceInMotionSpace(f_d, lambda);
+    this->setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 

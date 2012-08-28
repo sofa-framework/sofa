@@ -86,9 +86,9 @@ protected:
           , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
           , topology(NULL)
     {
-        addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
-        addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
-        addAlias(&cubesStiffness,    "stiffness"); addAlias(&cubesDamping,    "damping");
+        this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
+        this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
+        this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
     }
 
     RegularGridSpringForceField()
@@ -101,9 +101,9 @@ protected:
         , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
         , topology(NULL)
     {
-        addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
-        addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
-        addAlias(&cubesStiffness,    "stiffness"); addAlias(&cubesDamping,    "damping");
+        this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
+        this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
+        this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
     }
 public:
     Real getStiffness() const { return linesStiffness.getValue(); }

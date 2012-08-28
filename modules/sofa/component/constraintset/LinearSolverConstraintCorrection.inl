@@ -505,7 +505,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
-    setConstraintForceInMotionSpace(f_d, lambda);
+    this->setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 

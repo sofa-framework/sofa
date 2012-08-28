@@ -708,7 +708,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
 
     bool intersected = false;
 
-    Coord inter = compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
+    Coord inter = this->compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
 
     if (intersected)
     {
@@ -780,7 +780,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (
 
     bool intersected = false;
 
-    Coord inter = compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
+    Coord inter = this->compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
 
     if (intersected)
     {
