@@ -30,6 +30,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -41,6 +42,8 @@
 #include "BaseDeformationMapping.h"
 
 #include <omp.h>
+
+#include <Eigen/Dense>
 
 #define FORWARD_MAPPING 0
 #define BACKWARD_MAPPING 1
@@ -56,6 +59,7 @@ namespace engine
 using helper::vector;
 using helper::round;
 using defaulttype::Vec;
+using defaulttype::Mat;
 using namespace cimg_library;
 
 /**
@@ -86,6 +90,8 @@ public:
     static const int spatial_dimensions=3; // used in point mapper
 
     Data<helper::OptionsGroup> deformationMethod; ///< forward, backward
+    Data<helper::OptionsGroup> interpolation; ///< Nearest,Linear,Cubic
+    Data<bool> weightByVolumeChange;
     Data< Vec<3,unsigned int> > dimensions;
 
     typedef vector<double> ParamTypes;
@@ -103,7 +109,9 @@ public:
     static std::string templateName(const ImageDeformation<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageDeformation()    :   Inherited()
-        , deformationMethod ( initData ( &deformationMethod,"deformationMethod","Deformation method" ) )
+        , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
+        , interpolation ( initData ( &interpolation,"interpolation","" ) )
+        , weightByVolumeChange ( initData ( &weightByVolumeChange,false,"weightByVolumeChange","for images representing densities, weight intensities according to the local volume variation" ) )
         , dimensions ( initData ( &dimensions,Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
         , param ( initData ( &param,"param","Parameters" ) )
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
@@ -119,9 +127,13 @@ public:
         outputImage.setReadOnly(true);
 
         helper::OptionsGroup DefoOptions(2,"1 - Forward deformation (hole filling=true)",
-                "2 - Backward deformation (Nearest|Linear|Cubic interpolation , tolerance=1e-5)");
+                "2 - Backward deformation (tolerance=1e-5)");
         DefoOptions.setSelectedItem(FORWARD_MAPPING);
         deformationMethod.setValue(DefoOptions);
+
+        helper::OptionsGroup interpOptions(3,"Nearest", "Linear", "Cubic");
+        interpOptions.setSelectedItem(1);
+        interpolation.setValue(interpOptions);
     }
 
     virtual ~ImageDeformation() {}
@@ -168,6 +180,8 @@ protected:
         out->setDimensions(outDim);
         CImg<T>& outImg = out->getCImg(0);
 
+        unsigned int interp=this->interpolation.getValue().getSelectedId();
+
         switch(this->deformationMethod.getValue().getSelectedId())
         {
         case FORWARD_MAPPING:
@@ -178,6 +192,8 @@ protected:
 
             if(!holefilling) // paste transformed voxels into output image : fastest but sparse
             {
+                if(weightByVolumeChange.getValue()) {serr<<"weightByVolumeChange not supported!"<<sendl;}
+
                 #pragma omp parallel for
                 for(int z=0; z<img.depth(); z++)
                     for(int y=0; y<img.height(); y++)
@@ -195,8 +211,11 @@ protected:
             }
             else  // paste transformed voxels inside bounding boxes of voxel corners
             {
+                Real tolerance=1e-15; // tolerance for trilinear weights computation
+
                 // create floating point image of transformed voxel corners
                 CImg<Real> flt(dim[0]+1,dim[1]+1,dim[2]+1,3);
+
                 #pragma omp parallel for
                 for(int z=0; z<=img.depth(); z++)
                     for(int y=0; y<=img.height(); y++)
@@ -210,41 +229,47 @@ protected:
                         }
 
                 // paste values
-                CImg<Real> accu(outDim[0],outDim[1],outDim[2],outDim[3]);    accu.fill(0);
-                CImg<unsigned int> count(outDim[0],outDim[1],outDim[2],1);   count.fill(0);
+                Real dv0 = 1; if(weightByVolumeChange.getValue()) dv0 = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2]/(outT->getScale()[0]*outT->getScale()[1]*outT->getScale()[2]);
 
+                #pragma omp parallel for
                 cimg_forXYZ(img,x,y,z)
                 {
-                    Real BB[3][2];
-                    Coord pn;
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x,y,z,d);       if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { BB[d][0]=BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x+1,y,z,d);     if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x,y+1,z,d);     if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x+1,y+1,z,d);   if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x,y,z+1,d);     if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x+1,y,z+1,d);   if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x,y+1,z+1,d);   if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
-                    for(unsigned int d=0; d<3; d++) pn[d]=flt(x+1,y+1,z+1,d); if(!pn[0] && !pn[1] && !pn[2]) continue;    for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[d])  BB[d][0]=pn[d];  if(BB[d][1]<pn[d])  BB[d][1]=pn[d]; }
+                    // get deformed voxel (x,y,z)
+                    Coord pn[8]; for(unsigned int d=0; d<3; d++) { pn[0][d]=flt(x,y,z,d); pn[1][d]=flt(x+1,y,z,d); pn[2][d]=flt(x+1,y,z+1,d); pn[3][d]=flt(x,y,z+1,d); pn[4][d]=flt(x,y+1,z,d); pn[5][d]=flt(x+1,y+1,z,d); pn[6][d]=flt(x+1,y+1,z+1,d); pn[7][d]=flt(x,y+1,z+1,d); }
 
-                    for(unsigned int d=0; d<3; d++) { BB[d][0]=floor(BB[d][0]);  BB[d][1]=ceil(BB[d][1]); }
+                    Real dv = dv0; if(weightByVolumeChange.getValue()) dv /= computeHexaVolume(pn); // local volume change supposing that voxels are cubes
+
+                    // compute bounding box
+                    Real BB[3][2];
+                    bool valid=true;
+                    for(unsigned int i=0; i<8; i++)
+                    {
+                        if(!pn[i][0] && !pn[i][1] && !pn[i][2]) valid=false;
+                        for(unsigned int d=0; d<3; d++) { if(BB[d][0]>pn[i][d] || i==0)  BB[d][0]=pn[i][d];  if(BB[d][1]<pn[i][d] || i==0)  BB[d][1]=pn[i][d]; }
+                    }
+                    if(!valid) continue;
+
+                    // fill
+                    for(unsigned int d=0; d<3; d++) { BB[d][0]=ceil(BB[d][0]);  BB[d][1]=floor(BB[d][1]); }
+                    Coord w;
                     for(int zo=BB[2][0]; zo<=BB[2][1]; zo++)  if(zo>=0) if(zo<outImg.depth())
                                 for(int yo=BB[1][0]; yo<=BB[1][1]; yo++)  if(yo>=0) if(yo<outImg.height())
                                             for(int xo=BB[0][0]; xo<=BB[0][1]; xo++) if(xo>=0) if(xo<outImg.width())
                                                     {
-                                                        cimg_forC(img,c) accu(xo,yo,zo,c) += (Real)img(x,y,z,c);
-                                                        count(xo,yo,zo) ++;
+                                                        Coord p(xo,yo,zo);
+                                                        computeTrilinearWeights(w, pn, p, tolerance);
+
+                                                        if(w[0]>=-tolerance) if(w[0]<=1+tolerance)
+                                                                if(w[1]>=-tolerance) if(w[1]<=1+tolerance)
+                                                                        if(w[2]>=-tolerance) if(w[2]<=1+tolerance)
+                                                                            {
+                                                                                Coord pi(x+w[0]-0.5,y+w[1]-0.5,z+w[2]-0.5);
+                                                                                if(interp==0)        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.atXYZ(round((double)pi[0]),round((double)pi[1]),round((double)pi[2]),c));
+                                                                                else if(interp==2)   cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max()));
+                                                                                else                        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.linear_atXYZ(pi[0],pi[1],pi[2],c,0));
+                                                                            }
                                                     }
                 }
-                #pragma omp parallel for
-                for(int z=0; z<outImg.depth(); z++)
-                    for(int y=0; y<outImg.height(); y++)
-                        for(int x=0; x<outImg.width(); x++)
-                            if(count(x,y,z))
-                                cimg_forC(outImg,c)
-                            {
-                                Real v = (Real) accu(x,y,z,c) / (Real)count(x,y,z);
-                                outImg(x,y,z,c) = (T)v;
-                            }
             }
         }
         break;
@@ -253,10 +278,11 @@ protected:
         {
             outImg.fill(0);
 
-            int interpolation=1;  if(params.size()) interpolation=(int)params[0];
-            Real tolerance=1e-5;  if(params.size()>1) tolerance=(Real)params[1];
+            Real tolerance=1e-5;  if(params.size()) tolerance=(Real)params[0];
             bool usekdtree=1;
             unsigned int nbMaxIt=10;
+
+            if(weightByVolumeChange.getValue()) {serr<<"weightByVolumeChange not supported!"<<sendl;}
 
             if(usekdtree) {Coord p,p0,q; deformationMapping-> getClosestMappedPoint(p, p0, q, usekdtree); } // first, update kd tree to avoid conflict during parallelization
 
@@ -274,8 +300,8 @@ protected:
                             pi = inT->toImage(p0);
                             if(pi[0]>=0) if(pi[1]>=0) if(pi[2]>=0) if(pi[0]<img.width()) if(pi[1]<img.height()) if(pi[2]<img.depth())
                                                 {
-                                                    if(interpolation==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(round((double)pi[0]),round((double)pi[1]),round((double)pi[2]),c);
-                                                    else if(interpolation==2)   cimg_forC(img,c) outImg(x,y,z,c) = img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max());
+                                                    if(interp==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(round((double)pi[0]),round((double)pi[1]),round((double)pi[2]),c);
+                                                    else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max());
                                                     else                        cimg_forC(img,c) outImg(x,y,z,c) = img.linear_atXYZ(pi[0],pi[1],pi[2],c,0);
                                                 }
                         }
@@ -286,6 +312,58 @@ protected:
         default:
             break;
         }
+    }
+
+
+    /// computes w such that x= p0*(1-wx)*(1-wz)*(1-wy) + p1*wx*(1-wz)*(1-wy) + p2*wx*wz*(1-wy) + p3*(1-wx)*wz*(1-wy) + p4*(1-wx)*(1-wz)*wy + p5*wx*(1-wz)*wy + p6*wx*wz*wy + p7*(1-wx)*wz*wy
+    /// using Newton method
+    void computeTrilinearWeights(Coord &w, const Coord p[8], const Coord &x,const Real &tolerance)
+    {
+        w[0]=0.5; w[1]=0.5; w[2]=0.5; // initial guess
+        static const unsigned int MAXIT=20;
+        static const Real MIN_DETERMINANT = 1.0e-100;
+        unsigned int it=0;
+        while( it < MAXIT)
+        {
+            Coord g(1.-w[0],1.-w[1],1.-w[2]);
+            Coord f = p[0]*g[0]*g[2]*g[1] + p[1]*w[0]*g[2]*g[1] + p[2]*w[0]*w[2]*g[1] + p[3]*g[0]*w[2]*g[1] + p[4]*g[0]*g[2]*w[1] + p[5]*w[0]*g[2]*w[1] + p[6]*w[0]*w[2]*w[1] + p[7]*g[0]*w[2]*w[1] - x; // function to minimize
+            if(f.norm2()<tolerance) {  return; }
+
+            Mat<3,3,Real> df;
+            df[0] = - p[0]*g[2]*g[1] + p[1]*g[2]*g[1] + p[2]*w[2]*g[1] - p[3]*w[2]*g[1] - p[4]*g[2]*w[1] + p[5]*g[2]*w[1] + p[6]*w[2]*w[1] - p[7]*w[2]*w[1];
+            df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[2]*w[0]*w[2] - p[3]*g[0]*w[2] + p[4]*g[0]*g[2] + p[5]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
+            df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[2]*w[0]*g[1] + p[3]*g[0]*g[1] - p[4]*g[0]*w[1] - p[5]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
+
+            Real det=determinant(df);
+            if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
+            Mat<3,3,Real> dfinv;
+            dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;
+            dfinv(0,1)= (df(1,2)*df(2,0) - df(2,2)*df(1,0))/det;
+            dfinv(0,2)= (df(1,0)*df(2,1) - df(2,0)*df(1,1))/det;
+            dfinv(1,0)= (df(2,1)*df(0,2) - df(0,1)*df(2,2))/det;
+            dfinv(1,1)= (df(2,2)*df(0,0) - df(0,2)*df(2,0))/det;
+            dfinv(1,2)= (df(2,0)*df(0,1) - df(0,0)*df(2,1))/det;
+            dfinv(2,0)= (df(0,1)*df(1,2) - df(1,1)*df(0,2))/det;
+            dfinv(2,1)= (df(0,2)*df(1,0) - df(1,2)*df(0,0))/det;
+            dfinv(2,2)= (df(0,0)*df(1,1) - df(1,0)*df(0,1))/det;
+
+            w -= dfinv*f;
+            it++;
+        }
+    }
+
+    /// computes the signed volume of an hexahedron
+    /// using hex subdivision into 5 tets -> fast but not exact (no curved quads)
+    Real computeHexaVolume(const Coord p[8])
+    {
+        return computeTetVolume(p[0],p[2],p[7],p[3]) + computeTetVolume(p[0],p[1],p[5],p[2]) + computeTetVolume(p[2],p[5],p[7],p[6]) + computeTetVolume(p[0],p[5],p[7],p[2]) + computeTetVolume(p[0],p[5],p[4],p[7]);
+    }
+
+    /// computes the signed volume of an tetrahedron
+    /// positive volume -> D in the direction of ABxAC
+    Real computeTetVolume(const Coord &a,const Coord &b,const Coord &c,const Coord &d)
+    {
+        return dot(d-a,cross(b-a,c-a))/6.;
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

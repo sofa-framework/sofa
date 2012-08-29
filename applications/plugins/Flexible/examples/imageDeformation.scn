@@ -8,6 +8,7 @@
     <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
     <MeshToImageEngine template="ImageUC" name="r" src="@mesh" voxelSize="0.2" padSize="1" rotateImage="true" />
     <ImageFilter template="ImageUC,ImageD" filter="16"  param="0 200"  name="dist" inputImage="@r.image" inputTransform="@r.transform"/>
+<!--    <ImageFilter template="ImageUC,ImageD" filter="11"  param="0 3"  name="dist" inputImage="@r.image" inputTransform="@r.transform"/>-->
     <ImageContainer template="ImageD" name="image" image="@dist.outputImage" transform="@dist.outputTransform" drawBB="true"/>
     <ImageViewer template="ImageD" name="viewer" src="@image"  plane="5 -1 -1" />
   </Node>
@@ -29,7 +30,7 @@
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
     	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
 
- 	    <ImageDeformation template="ImageD" name="defoIm" src="@../../SourceImage/image" outputTransform="-3 -4 -3 0 0 0 0.2 0.2 0.2 0 1 0" dimensions="30 30 30" deformationMethod="0" param="1" listening="true"/>
+ 	    <ImageDeformation template="ImageD" name="defoIm" src="@../../SourceImage/image" outputTransform="-3 -4 -3 0 0 0 0.2 0.2 0.2 0 1 0" dimensions="30 30 30" deformationMethod="0" interpolation="1" weightByVolumeChange="false" listening="true"/>
 	    <ImageViewer template="ImageD" name="viewer" image="@defoIm.outputImage"  transform="@defoIm.outputTransform"  plane="20 10 15"/>
 
 	    <Node 	name="Strain"   >
