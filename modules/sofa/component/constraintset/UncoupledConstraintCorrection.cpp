@@ -46,6 +46,13 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
+SOFA_CONSTRAINT_API UncoupledConstraintCorrection< defaulttype::Rigid3Types >::UncoupledConstraintCorrection(behavior::MechanicalState<defaulttype::Rigid3Types> *mm)
+    : Inherit(mm)
+    , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
+{
+}
+
+template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
     Inherit::init();
