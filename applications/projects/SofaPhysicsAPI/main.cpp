@@ -147,7 +147,7 @@ static void glut_display()
             for (unsigned int i=0; i<nbMeshes; ++i)
             {
                 SofaPhysicsOutputMesh* m = meshes[i];
-                printf("  mesh %3d: %6d points, name = \"%s\"\n",i,m->getNbVertices(),m->getName());
+                printf("  mesh %3d: %6d points%s%s, name = \"%s\"\n", i, m->getNbVertices(), (m->getVTexCoords() ? " with UVs" : ""), (m->getVNormals() ? " with normals" : ""), m->getName());
             }
         }
         ++counter;
