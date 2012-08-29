@@ -124,6 +124,8 @@ public:
 
     Data< VecReal > compliance;
 
+    Data< Real > defaultCompliance;
+
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
@@ -137,6 +139,9 @@ protected:
      */
     void computeDx(const Data< VecDeriv > &f);
 };
+
+template<>
+UncoupledConstraintCorrection< defaulttype::Rigid3Types >::UncoupledConstraintCorrection(behavior::MechanicalState<defaulttype::Rigid3Types> *mm);
 
 template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init();
