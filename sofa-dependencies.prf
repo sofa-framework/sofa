@@ -162,6 +162,9 @@ declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_component sofa_g
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer sofa_base_visual sofa_exporter sofa_loader sofa_opengl_visual sofa_misc_forcefield)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofagui sofaguiqt sofaguiglut)
+
+addToBuildGroup(sofa/gui, sofagui sofaguiqt sofaguiglut sofaguimain)
+
 #--- Projects ---#
 declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component sofa_component_dev)
 declare(generateDoc,      applications/projects/generateDoc,      sofa_component)

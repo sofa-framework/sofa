@@ -307,6 +307,8 @@ defineTest(declare) {
 	artifact = $$1
 	project = $$2
 	dependencies = $$3
+    project = $$replace(project, ^$$ROOT_SRC_DIR/, )
+
 
 	eval($${artifact}.name = $$artifact)
 	eval($${artifact}.project = $$project)
@@ -626,7 +628,8 @@ defineTest(outputBuildGraph) {
   for(artifact, artifacts_registry) {
     cluster = $$eval($${artifact}.group)
     isEmpty(cluster) {
-      cluster = $$section($${artifact}.project, "/", 0, 1)
+      cdir = $$replace($${artifact}.project, ^$$ROOT_SRC_DIR/, )
+      cluster = $$section(cdir, "/", 0, 1)
       cluster = $$replace(cluster, extlibs/.*, extlibs)
       equals($${artifact}.project, $$cluster): !equals(artifact, sofatests): cluster = system
     }
@@ -666,8 +669,12 @@ defineTest(outputBuildGraph) {
       
       system(echo "'    $$anode [label=\"$$artifact\",style=filled,color=$$acolor,shape=$$ashape];'" >> $$outfile)
     }
+    ccolor = lightcyan
+    !equals(cluster, $$replace(cluster, -dev,)) {
+      ccolor = pink
+    }
     system(echo "'    label=\"$$cluster\";'" >> $$outfile)
-    system(echo "'    style=filled; color=blue; fillcolor=lightcyan; fontsize=48; penwidth=4; shape=box3d'" >> $$outfile)
+    system(echo "'    style=filled; color=blue; fillcolor=$$ccolor; fontsize=48; penwidth=4; shape=box3d'" >> $$outfile)
     system(echo "  }" >> $$outfile)
   }
   for(artifact, artifacts_registry) {

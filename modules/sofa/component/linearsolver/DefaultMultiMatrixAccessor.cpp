@@ -92,9 +92,11 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
-    const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();
+    const sofa::defaulttype::BaseMatrix* jmatrix = NULL;
+    if (mapping->isMechanical() && mapping->areMatricesMapped())
+        jmatrix = mapping->getJ();
 
-    if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
+    if (jmatrix)
     {
 
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);

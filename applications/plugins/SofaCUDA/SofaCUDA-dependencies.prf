@@ -1,2 +1,2 @@
-declare(SofaCUDA, applications/plugins/SofaCUDA, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
+declare(SofaCUDA, $$dirname(_FILE_), sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
 enable(SofaCUDA)
