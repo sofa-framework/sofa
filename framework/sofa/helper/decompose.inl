@@ -627,8 +627,6 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, d
         Q[0][i] *= (1/normColi);
         Q[1][i] *= (1/normColi);
     }
-
-
 }
 
 
@@ -1142,65 +1140,65 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, d
     // Scale the matrix so its entries are in [-1,1].  The scaling is applied
     // only when at least one matrix entry has magnitude larger than 1.
     Mat<3,3,Real> AScaled = A;
-    Real* scaledEntry = (Real*)&AScaled[0];
-    Real maxValue = helper::rabs(scaledEntry[0]);
-    Real absValue = helper::rabs(scaledEntry[1]);
-    if (absValue > maxValue)
+    Real maxValue = helper::rabs( AScaled[0][0] );
+    Real absValue = helper::rabs( AScaled[0][1] );
+    if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs(scaledEntry[2]);
-    if (absValue > maxValue)
+    absValue = helper::rabs( AScaled[0][2] );
+    if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs(scaledEntry[4]);
-    if (absValue > maxValue)
+    absValue = helper::rabs( AScaled[1][1] );
+    if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs(scaledEntry[5]);
-    if (absValue > maxValue)
+    absValue = helper::rabs( AScaled[1][2] );
+    if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs(scaledEntry[8]);
-    if (absValue > maxValue)
+    absValue = helper::rabs(AScaled[2][2]);
+    if( absValue > maxValue )
     {
         maxValue = absValue;
     }
 
-    int i;
-    if (maxValue > (Real)1)
+    int i, j;
+    if( maxValue > (Real)1 )
     {
         Real invMaxValue = ((Real)1)/maxValue;
-        for (i = 0; i < 9; ++i)
-        {
-            scaledEntry[i] *= invMaxValue;
-        }
+        for( i = 0; i < 3; ++i )
+            for( j = 0; j < 3; ++j )
+            {
+                AScaled[i][j] *= invMaxValue;
+            }
     }
 
     // Compute the eigenvalues using double-precision arithmetic.
     double root[3];
-    ComputeRoots(AScaled,root);
+    ComputeRoots (AScaled, root );
     diag[0] = (Real)root[0];
     diag[1] = (Real)root[1];
     diag[2] = (Real)root[2];
 
     Real maxEntry[3];
     Vec<3,Real> maxRow[3];
-    for (i = 0; i < 3; ++i)
+    for( i = 0; i < 3; ++i )
     {
         Mat<3,3,Real> M = AScaled;
         M[0][0] -= diag[i];
         M[1][1] -= diag[i];
         M[2][2] -= diag[i];
-        if (!PositiveRank(M, maxEntry[i], maxRow[i]))
+        if( !PositiveRank( M, maxEntry[i], maxRow[i] ) )
         {
             // Rescale back to the original size.
-            if (maxValue > (Real)1)
+            if( maxValue > (Real)1 )
             {
-                for (int j = 0; j < 3; ++j)
+                for( j = 0; j < 3; ++j )
                 {
                     diag[j] *= maxValue;
                 }
@@ -1213,22 +1211,22 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, d
 
     Real totalMax = maxEntry[0];
     i = 0;
-    if (maxEntry[1] > totalMax)
+    if( maxEntry[1] > totalMax )
     {
         totalMax = maxEntry[1];
         i = 1;
     }
-    if (maxEntry[2] > totalMax)
+    if( maxEntry[2] > totalMax )
     {
         i = 2;
     }
 
-    if (i == 0)
+    if( i == 0 )
     {
         maxRow[0].normalize();
         ComputeVectors(AScaled, maxRow[0], 1, 2, 0, V, diag);
     }
-    else if (i == 1)
+    else if( i == 1 )
     {
         maxRow[1].normalize();
         ComputeVectors(AScaled, maxRow[1], 2, 0, 1, V, diag);
@@ -1240,9 +1238,9 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, d
     }
 
     // Rescale back to the original size.
-    if (maxValue > (Real)1)
+    if( maxValue > (Real)1 )
     {
-        for (i = 0; i < 3; ++i)
+        for( i = 0; i < 3; ++i )
         {
             diag[i] *= maxValue;
         }
