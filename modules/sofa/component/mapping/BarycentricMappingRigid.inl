@@ -28,7 +28,7 @@
 #include <sofa/component/mapping/BarycentricMappingRigid.h>
 #include <sofa/component/mapping/BarycentricMapping.inl>
 
-#include <sofa/helper/decompose.inl>
+#include <sofa/helper/decompose.h>
 
 #ifdef SOFA_IP_TRACES
 #include <sofa/component/mapping/_IP_MapTraceMacros.h>
