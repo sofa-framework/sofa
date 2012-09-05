@@ -403,7 +403,7 @@ QMAKE_CXX        = g++
 QMAKE_LINK       = g++
 QMAKE_LINK_SHLIB = g++
 
-CXX_VERSION = $$system($${QMAKE_CXX} --version  | awk "' NR==1 { print $3 } '")
+CXX_VERSION = $$system($${QMAKE_CXX} -dumpversion)
 
 ## Under gcc 4.6, the release optimisation causes error:
 ## we need to disable new partial inlining optimization.
