@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showVisual hideBehavior hideWireframe" />
+
+  <EulerImplicitSolver />
+  <CGLinearSolver iterations="25"/>
+
+  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.3" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+<!--
+  <ImageViewer template="ImageB" name="viewer" src="@image"  />
+-->
+  <ImageSampler template="ImageB" name="sampler" src="@image" method="1" param="50 0 100 1 1" computeRecursive="true" showGraph="false" printLog="true"/>
+
+  <MechanicalObject  template="Affine" name="reducedDofs" src="@sampler" showObject='true' showObjectScale="0.5" />
+<!--
+  <FixedConstraint template="Affine" indices="0" />  
+-->
+  <Node 	name="full"   >
+
+    <MechanicalObject  template="Affine" name="fullDofs" src="@../sampler" showObject='false' showObjectScale="0.25" />
+    <VoronoiShapeFunction template="ShapeFunction3d,ImageB" name="SF" position="@fullDofs.rest_position" src="@../image" />
+		    
+    <AdaptiveLinearMapping template="MechanicalMapping&lt;Affine,Affine&gt;" graphEdges="@../sampler.graphEdges" showGraph="false" assembleJ="true" />
+
+    <Node 	name="behavior"   >
+	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="1" />
+	<MechanicalObject template="F332" />
+    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="true"/>
+
+	<Node 	name="E"   >
+	    <MechanicalObject  template="E332" /> 
+	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="true" assembleK="true"/>
+	    <HookeForceField  template="E332" youngModulus="100.0" poissonRatio="0" viscosity="0"/> 
+	</Node>
+    </Node>
+
+    <Node 	name="mass"   >
+	<MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj"/>
+	<MechanicalObject  src="@mesh"  />
+	<UniformMass totalMass="250" />
+    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" assembleJ="true"/>
+    </Node>
+
+    <Node 	name="visual"   >
+	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.5 0.8 0.5 0.6"/>
+    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;" assembleJ="true"/>
+    </Node>
+</Node>
+
+</Node>
+

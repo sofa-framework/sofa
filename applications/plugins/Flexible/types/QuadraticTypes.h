@@ -453,82 +453,8 @@ public:
 
 };
 
-// ==========================================================================
-// Mass
-
-/** Mass associated with a quadratic deformable frame */
-template<int _spatial_dimensions,typename _Real>
-class QuadraticMass
-{
-public:
-    typedef _Real Real;
-    Real mass;
-    // operator to cast to const Real
-    operator const Real() const    {        return mass;    }
-
-    typedef Real value_type;
-
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = StdQuadraticTypes<spatial_dimensions,Real>::deriv_total_size;
-
-    typedef Mat<VSize, VSize, Real> MatNN;
-
-    MatNN inertiaMatrix;       // Inertia matrix of the object
-    MatNN invInertiaMatrix;    // inverse of inertiaMatrix
-
-    QuadraticMass ( Real m = 1 )
-    {
-        mass = m;
-        inertiaMatrix.identity();
-        invInertiaMatrix.identity();
-    }
-
-    void operator= ( Real m )
-    {
-        mass = m;
-        recalc();
-    }
-
-    void recalc()
-    {
-        invInertiaMatrix.invert ( inertiaMatrix );
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const QuadraticMass& m )
-    {
-        out << m.mass;
-        out << " " << m.inertiaMatrix;
-        return out;
-    }
-
-    inline friend std::istream& operator >> ( std::istream& in, QuadraticMass& m )
-    {
-        in >> m.mass;
-        in >> m.inertiaMatrix;
-        return in;
-    }
-
-    void operator *= ( Real fact )
-    {
-        mass *= fact;
-        inertiaMatrix *= fact;
-        invInertiaMatrix /= fact;
-    }
-
-    void operator /= ( Real fact )
-    {
-        mass /= fact;
-        inertiaMatrix /= fact;
-        invInertiaMatrix *= fact;
-    }
-};
-
-
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
 typedef StdQuadraticTypes<3, float> Quadratic3fTypes;
-
-typedef QuadraticMass<3, double> Quadratic3dMass;
-typedef QuadraticMass<3, float> Quadratic3fMass;
 
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
 #ifdef SOFA_FLOAT
@@ -541,10 +467,8 @@ template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic3f"; }
 
 #ifdef SOFA_FLOAT
 typedef Quadratic3fTypes Quadratic3Types;
-typedef Quadratic3fMass Quadratic3Mass;
 #else
 typedef Quadratic3dTypes Quadratic3Types;
-typedef Quadratic3dMass Quadratic3Mass;
 #endif
 typedef Quadratic3Types QuadraticTypes;
 
@@ -571,8 +495,6 @@ template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : p
 
 template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "Quadratic3fTypes::Coord"; } };
 template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
-template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
 
 /// \endcond
 } // namespace defaulttype

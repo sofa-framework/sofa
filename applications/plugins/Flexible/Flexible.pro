@@ -37,6 +37,7 @@ SOURCES = initFlexible.cpp\
     material/VolumePreservationForceField.cpp \
 	deformationMapping/FrameMapping.cpp \
     #forceField/FlexibleTetrahedronFEMForceField.cpp \
+    deformationMapping/AdaptiveLinearMapping.cpp \
 
 
 HEADERS = initFlexible.h \
@@ -71,6 +72,7 @@ HEADERS = initFlexible.h \
     deformationMapping/TriangleDeformationMapping.inl \
     deformationMapping/TriangleStrainAverageMapping.h \
     deformationMapping/TriangleStrainAverageMapping.inl \
+    deformationMapping/AdaptiveDeformationMapping.h \
     strainMapping/BaseStrainMapping.h \
     strainMapping/GreenStrainMapping.h \
     strainMapping/GreenStrainJacobianBlock.h \

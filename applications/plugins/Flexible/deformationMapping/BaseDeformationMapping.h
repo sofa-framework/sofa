@@ -50,7 +50,7 @@ namespace sofa
 {
 
 
-/** OutDataTypesInfo: used to provide material_dimensions and tell if position/defo gradients are mapped or not **/
+/** OutDataTypesInfo: used to provide material_dimensions and tells if position/defo gradients are mapped or not **/
 
 template< class OutDataTypes>
 class OutDataTypesInfo
@@ -158,7 +158,9 @@ public:
     typedef core::behavior::ShapeFunctionTypes<material_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
+    typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
+    typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
