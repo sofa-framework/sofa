@@ -39,8 +39,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
-
-
 #define REGULAR 0
 #define LLOYD 1
 
@@ -57,7 +55,7 @@ namespace engine
 using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using namespace cimg_library;
+using cimg_library::CImg;
 
 /**
  * This class samples an object represented by an image
@@ -113,7 +111,7 @@ public:
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
     Data< SeqEdges > edges;
-    Data< SeqEdges > graph;
+    Data< SeqEdges > graphEdges;
 
     typedef typename core::topology::BaseMeshTopology::Hexa Hexa;
     typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
@@ -149,7 +147,7 @@ public:
         , position(initData(&position,SeqPositions(),"position","output positions"))
         , fixedPosition(initData(&fixedPosition,SeqPositions(),"fixedPosition","user defined sample positions"))
         , edges(initData(&edges,SeqEdges(),"edges","edges connecting neighboring nodes"))
-        , graph(initData(&graph,SeqEdges(),"graph","graph where each node is connected to its neighbors when created"))
+        , graphEdges(initData(&graphEdges,SeqEdges(),"graphEdges","oriented graph connecting parent to child nodes"))
         , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
         , distances(initData(&distances,DistTypes(),"distances",""))
         , showSamples(initData(&showSamples,false,"showSamples","show samples"))
@@ -162,7 +160,7 @@ public:
         f_listening.setValue(true);
 
         helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=0)"
+                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1) | N=1"
                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
@@ -175,7 +173,7 @@ public:
         addInput(&fixedPosition);
         addOutput(&position);
         addOutput(&edges);
-        addOutput(&graph);
+        addOutput(&graphEdges);
         addOutput(&hexahedra);
         addOutput(&distances);
         setDirtyValue();
@@ -207,15 +205,21 @@ protected:
             unsigned int nb=0;        if(params.size())       nb=(unsigned int)params[0];
             bool bias=false;          if(params.size()>1)     bias=(bool)params[1];
             unsigned int lloydIt=100; if(params.size()>2)     lloydIt=(unsigned int)params[2];
-            bool Dij=true; if(params.size()>3)     Dij=(bool)params[3];
+            bool Dij=true;            if(params.size()>3)     Dij=(bool)params[3];
+            unsigned int N=1;        //curently does not work// if(params.size()>4)     N=(unsigned int)params[4];
 
             // sampling
-            uniformSampling(nb,bias,lloydIt,Dij);
+            if(!computeRecursive.getValue()) uniformSampling(nb,bias,lloydIt,Dij);
+            else recursiveUniformSampling(nb,bias,lloydIt,Dij,N);
         }
 
-        if(this->f_printLog.getValue()) if(this->position.getValue().size())    std::cout<<"ImageSampler: "<< this->position.getValue().size() <<" generated samples"<<std::endl;
-        if(this->f_printLog.getValue()) if(this->edges.getValue().size())       std::cout<<"ImageSampler: "<< this->edges.getValue().size() <<" generated edges"<<std::endl;
-        if(this->f_printLog.getValue()) if(this->hexahedra.getValue().size())   std::cout<<"ImageSampler: "<< this->hexahedra.getValue().size() <<" generated hexahedra"<<std::endl;
+        if(this->f_printLog.getValue())
+        {
+            if(this->position.getValue().size())    std::cout<<"ImageSampler: "<< this->position.getValue().size() <<" generated samples"<<std::endl;
+            if(this->edges.getValue().size())       std::cout<<"ImageSampler: "<< this->edges.getValue().size() <<" generated edges"<<std::endl;
+            if(this->hexahedra.getValue().size())   std::cout<<"ImageSampler: "<< this->hexahedra.getValue().size() <<" generated hexahedra"<<std::endl;
+            if(this->graphEdges.getValue().size())       std::cout<<"ImageSampler: "<< this->graphEdges.getValue().size() <<" generated dependencies"<<std::endl;
+        }
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
@@ -242,8 +246,9 @@ protected:
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
         raPositions pos(this->position);
+        raPositions fpos(this->fixedPosition);
         raEdges e(this->edges);
-        raEdges g(this->graph);
+        raEdges g(this->graphEdges);
 
         if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->position.getValue(),5.0,defaulttype::Vec4f(0.2,1,0.2,1));
         if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),7.0,defaulttype::Vec4f(1,0.2,0.2,1));
@@ -263,10 +268,12 @@ protected:
             std::vector<defaulttype::Vector3> points;
             points.resize(2*g.size());
             for (unsigned int i=0; i<g.size(); ++i)
-            {
-                points[2*i][0]=pos[g[i][0]][0];            points[2*i][1]=pos[g[i][0]][1];            points[2*i][2]=pos[g[i][0]][2];
-                points[2*i+1][0]=pos[g[i][1]][0];          points[2*i+1][1]=pos[g[i][1]][1];          points[2*i+1][2]=pos[g[i][1]][2];
-            }
+                for (unsigned int j=0; j<2; ++j)
+                {
+                    if(g[i][j]<fpos.size()) {points[2*i+j][0]=fpos[g[i][j]][0];            points[2*i+j][1]=fpos[g[i][j]][1];            points[2*i+j][2]=fpos[g[i][j]][2];}
+                    else {points[2*i+j][0]=pos[g[i][j]-fpos.size()][0];            points[2*i+j][1]=pos[g[i][j]-fpos.size()][1];            points[2*i+j][2]=pos[g[i][j]-fpos.size()][2];}
+
+                }
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
     }
@@ -277,7 +284,7 @@ protected:
     * generated topology: edges + hexahedra
     * @param atcorners : put samples at voxel corners instead of centers ?
     */
-    void regularSampling ( bool atcorners=false )
+    void regularSampling ( const bool atcorners=false )
     {
         // get tranform and image at time t
         raImage in(this->image);
@@ -287,7 +294,7 @@ protected:
         // data access
         waPositions pos(this->position);       pos.clear();
         waEdges e(this->edges);                e.clear();
-        waEdges g(this->graph);                g.clear();
+        waEdges g(this->graphEdges);           g.clear();
         waHexa h(this->hexahedra);             h.clear();
 
         // convert to single channel boolean image
@@ -340,13 +347,12 @@ protected:
 
     /**
     * computes a uniform sample distribution (=point located at the center of their Voronoi cell) based on farthest point sampling + Lloyd (=kmeans) relaxation
-    * generated topology: edges
     * @param nb : target number of samples
     * @param bias : bias distances using the input image ?
     * @param lloydIt : maximum number of Lloyd iterations.
     */
 
-    void uniformSampling ( unsigned int nb=0,  bool bias=false, unsigned int lloydIt=100,bool useDijkstra=false)
+    void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false)
     {
         clock_t timer = clock();
 
@@ -360,7 +366,7 @@ protected:
         raPositions fpos(this->fixedPosition);
         std::vector<Vec<3,Real> >& pos = *this->position.beginEdit();    pos.clear();
         waEdges e(this->edges);                e.clear();
-        waEdges g(this->graph);                g.clear();
+        waEdges g(this->graphEdges);           g.clear();
         waHexa h(this->hexahedra);             h.clear();
 
         // init voronoi and distances
@@ -402,8 +408,9 @@ protected:
 
         while(!converged)
         {
-            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL))
+            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL)) // one lloyd iteration
             {
+                // recompute distance from scratch
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
                 for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
                 for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], pos_voronoiIndex[i]);
@@ -424,6 +431,126 @@ protected:
 
 
 
+
+    /**
+    * same as above except that relaxation is done at each insertion of N samples
+    * a graph is generated relating the new samples to its neighbors at the instant of insertion
+    */
+
+    void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false,  const unsigned int N=1)
+    {
+        clock_t timer = clock();
+
+        // get tranform and image at time t
+        raImage in(this->image);
+        raTransform inT(this->transform);
+        const CImg<T>& inimg = in->getCImg(this->time);
+        const CImg<T>* biasFactor=bias?&inimg:NULL;
+
+        // data access
+        raPositions fpos(this->fixedPosition);
+        std::vector<Vec<3,Real> >& pos = *this->position.beginEdit();    pos.clear();
+        waEdges e(this->edges);                e.clear();
+        waEdges g(this->graphEdges);           g.clear();
+        waHexa h(this->hexahedra);             h.clear();
+
+        // init voronoi and distances
+        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
+        waDist distData(this->distances);
+        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
+
+        // list of seed points
+        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+
+        // fixed points
+        vector<unsigned int> fpos_voronoiIndex;
+        for(unsigned int i=0; i<fpos.size(); i++)
+        {
+            fpos_voronoiIndex.push_back(i+1);
+            AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+        }
+
+        // new points
+        vector<unsigned int> pos_voronoiIndex;
+        while(pos.size()<nb)
+        {
+            std::vector<Vec<3,Real> > newpos;
+            vector<unsigned int> newpos_voronoiIndex;
+
+            // farthest sampling of N points
+            unsigned int currentN = N;
+            if(!pos.size()) currentN = 1; // special case at the beginning: we start by adding just one point
+            else if(pos.size()+N>nb) currentN = nb-pos.size();  // when trying to add more vertices than necessary
+            while(newpos.size()<currentN)
+            {
+                Real dmax=0;  Coord pmax;
+                cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
+                if(!dmax) break;
+
+                newpos_voronoiIndex.push_back(fpos.size()+pos.size()+newpos.size()+1);
+                newpos.push_back(inT->fromImage(pmax));
+                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), newpos.back(),newpos_voronoiIndex.back());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(),biasFactor );
+            }
+
+            // lloyd iterations for the N points
+            unsigned int it=0;
+            bool converged =(it>=lloydIt)?true:false;
+
+            while(!converged)
+            {
+                if(Lloyd<Real,T>(newpos,newpos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL))
+                {
+                    // recompute distance from scratch
+                    cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
+                    for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], pos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), newpos[i], newpos_voronoiIndex[i]);
+                    if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
+                    else fastMarching<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
+                    it++; if(it>=lloydIt) converged=true;
+                }
+                else converged=true;
+            }
+
+            // check neighbors of the new voronoi cell and add graph edges
+            unsigned int nbold = fpos.size()+pos.size();
+            for(unsigned int i=0; i<newpos.size() && pos.size()<nb; i++)
+            {
+                std::set<unsigned int> neighb;
+                CImg_3x3x3(I,unsigned int);
+                cimg_for3x3x3(voronoi,x,y,z,0,I,unsigned int)
+                if(Iccc==newpos_voronoiIndex[i])
+                {
+                    if(Incc && Incc<=nbold) neighb.insert(Incc);
+                    if(Icnc && Icnc<=nbold) neighb.insert(Icnc);
+                    if(Iccn && Iccn<=nbold) neighb.insert(Iccn);
+                    if(Ipcc && Ipcc<=nbold) neighb.insert(Ipcc);
+                    if(Icpc && Icpc<=nbold) neighb.insert(Icpc);
+                    if(Iccp && Iccp<=nbold) neighb.insert(Iccp);
+                }
+                for(typename std::set<unsigned int>::iterator itr=neighb.begin(); itr!=neighb.end(); itr++)
+                {
+                    g.push_back(Edge(*itr-1,newpos_voronoiIndex[i]-1));
+                    //if(*itr>fpos.size()) g.push_back(Edge(*itr-fpos.size()-1,newpos_voronoiIndex[i]-1));
+                }
+                pos.push_back(newpos[i]);
+                pos_voronoiIndex.push_back(newpos_voronoiIndex[i]);
+            }
+
+            if(newpos.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
+        }
+
+        if(this->f_printLog.getValue())
+        {
+            std::cout<<"ImageSampler: Completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s "<<std::endl;
+        }
+
+        this->position.endEdit();
+    }
 
 
 
