@@ -29,6 +29,10 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
+
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
 
@@ -1057,6 +1061,22 @@ public:
     void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
+
+
+#ifdef SOFA_HAVE_EIGEN2
+public:
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+protected:
+    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
+
+    // eigen matrix for use with Compliant plugin
+    eigen_type eigen;
+    vector< defaulttype::BaseMatrix* > js;
+
+public:
+
+#endif
 
     void draw(const core::visual::VisualParams* vparams);
 

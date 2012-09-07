@@ -61,6 +61,7 @@ class EigenSparseMatrix : public EigenBaseSparseMatrix<typename OutDataTypes::Re
 public:
     typedef EigenBaseSparseMatrix<typename OutDataTypes::Real> Inherit;
     typedef typename OutDataTypes::Real Real;
+    // typedef typename InDataTypes::Real Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
 
@@ -70,7 +71,7 @@ public:
     typedef typename OutDataTypes::Deriv OutDeriv;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
-    typedef defaulttype::Mat<Nout,Nin,Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
+    typedef defaulttype::Mat<Nout,Nin, Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
 protected:
     typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
@@ -158,9 +159,15 @@ public:
         }
     }
 
+
+    // max: added template real type to work around the mess between
+    // mapping ::Real types (sometimes it's In::Real, sometimes it's
+    // Out::Real, see e.g. BarycentricMapping/RigidMapping)
+
     /** Set from a CompressedRowSparseMatrix. @pre crs must be compressed
       */
-    void copyFrom( const CompressedRowSparseMatrix<Block>& crs )
+    template<class AnyReal>
+    void copyFrom( const CompressedRowSparseMatrix< defaulttype::Mat<Nout,Nin, AnyReal> >& crs )
     {
         this->resize( crs.rowSize(), crs.colSize() );
 //        cerr<<"copyFrom, size " << crs.rowSize() << ", " << crs.colSize()<< ", block rows: " << crs.rowIndex.size() << endl;
@@ -504,7 +511,7 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
 
 
 
-///** Partia specialization for the case where In and Out have different Real types. Just a quick fix, to be improved.
+///** Partial specialization for the case where In and Out have different Real types. Just a quick fix, to be improved.
 //  */
 template<class InDataTypes>
 class EigenSparseMatrix<InDataTypes,defaulttype::ExtVec3fTypes> : public EigenBaseSparseMatrix<float>
@@ -514,6 +521,7 @@ public:
     typedef defaulttype::ExtVec3fTypes OutDataTypes;
     typedef EigenBaseSparseMatrix<typename OutDataTypes::Real> Inherit;
     typedef typename OutDataTypes::Real Real;
+    // typedef typename InDataTypes::Real Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
 
@@ -523,7 +531,7 @@ public:
     typedef typename OutDataTypes::Deriv OutDeriv;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
-    typedef defaulttype::Mat<Nout,Nin,Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
+    typedef defaulttype::Mat<Nout,Nin, Real> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
 protected:
     typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
@@ -611,9 +619,14 @@ public:
         }
     }
 
+    // max: added template real type to work around the mess between
+    // mapping ::Real types (sometimes it's In::Real, sometimes it's
+    // Out::Real, see e.g. BarycentricMapping/RigidMapping)
+
     /** Set from a CompressedRowSparseMatrix. @pre crs must be compressed
       */
-    void copyFrom( const CompressedRowSparseMatrix<Block>& crs )
+    template<class AnyReal>
+    void copyFrom( const CompressedRowSparseMatrix< defaulttype::Mat<Nout,Nin, AnyReal> >& crs )
     {
         resize( crs.rowSize(), crs.colSize() );
 

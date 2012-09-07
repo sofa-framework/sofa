@@ -33,6 +33,11 @@
 #include <vector>
 #include <memory>
 
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
+
+
 namespace sofa
 {
 
@@ -132,6 +137,20 @@ public:
 protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
+
+#ifdef SOFA_HAVE_EIGEN2
+protected:
+    typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
+    eigen_type eigen;
+
+    typedef vector< defaulttype::BaseMatrix* > js_type;
+    js_type js;
+
+public:
+    const js_type* getJs();
+
+#endif
+
 };
 
 template <int N, int M, class Real>

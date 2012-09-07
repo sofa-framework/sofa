@@ -4264,6 +4264,26 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 }
 
 
+#ifdef SOFA_HAVE_EIGEN2
+
+template<class TIn, class TOut>
+const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
+{
+    // actual type for getJ() result
+    typedef typename Mapper::MatrixType mat_type;
+
+    const mat_type* mat = dynamic_cast<const mat_type*>(getJ());
+    assert( mat );
+
+    eigen.copyFrom( *mat );   // woot
+
+    js.resize( 1 );
+    js[0] = &eigen;
+    return &js;
+}
+
+
+#endif
 
 } // namespace mapping
 
