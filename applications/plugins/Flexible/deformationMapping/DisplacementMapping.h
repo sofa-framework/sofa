@@ -72,9 +72,7 @@ public:
     for rotations/rigids:
     (q0, q1, ... ) -> (q0.inv(r0), q1.inv(r1), ... )
 
-    both tangent/transpose mappings are trivial.
-
-@author Maxime Tournier
+@author maxime.tournier@inria.fr
   */
 
 template <class TIn, class TOut>
