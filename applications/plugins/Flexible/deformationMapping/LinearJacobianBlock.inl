@@ -1220,7 +1220,7 @@ public:
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<dim; ++j)
             {
                 J(j,i+(j+1)*dim)=Pa.getCenter()[i];
-                for(unsigned int l=0; l<dim; ++l)   J(j+(l+1)*dim,i+dim+(l+1)*dim)=Pa.getAffine()[i][j];
+                for(unsigned int l=0; l<dim; ++l)   J(j+(l+1)*dim,i+dim+l*dim)=Pa.getAffine()[i][j];
             }
         return J;
     }

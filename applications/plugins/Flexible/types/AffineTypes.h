@@ -370,83 +370,10 @@ public:
 
 };
 
-// ==========================================================================
-// Mass
-
-
-/** Mass associated with an affine deformable frame */
-template<int _spatial_dimensions,typename _Real>
-class AffineMass
-{
-public:
-    typedef _Real Real;
-    Real mass;
-    // operator to cast to const Real
-    operator const Real() const    {        return mass;    }
-
-    typedef Real value_type;
-
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = StdAffineTypes<spatial_dimensions,Real>::deriv_total_size;
-
-    typedef Mat<VSize, VSize, Real> MatNN;
-
-    MatNN inertiaMatrix;       // Inertia matrix of the object
-    MatNN invInertiaMatrix;    // inverse of inertiaMatrix
-
-    AffineMass ( Real m = 1 )
-    {
-        mass = m;
-        inertiaMatrix.identity();
-        invInertiaMatrix.identity();
-    }
-
-    void operator= ( Real m )
-    {
-        mass = m;
-        recalc();
-    }
-
-    void recalc()
-    {
-        invInertiaMatrix.invert ( inertiaMatrix );
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const AffineMass& m )
-    {
-        out << m.mass;
-        out << " " << m.inertiaMatrix;
-        return out;
-    }
-
-    inline friend std::istream& operator >> ( std::istream& in, AffineMass& m )
-    {
-        in >> m.mass;
-        in >> m.inertiaMatrix;
-        return in;
-    }
-
-    void operator *= ( Real fact )
-    {
-        mass *= fact;
-        inertiaMatrix *= fact;
-        invInertiaMatrix /= fact;
-    }
-
-    void operator /= ( Real fact )
-    {
-        mass /= fact;
-        inertiaMatrix /= fact;
-        invInertiaMatrix *= fact;
-    }
-};
-
 
 typedef StdAffineTypes<3, double> Affine3dTypes;
 typedef StdAffineTypes<3, float> Affine3fTypes;
 
-typedef AffineMass<3, double> Affine3dMass;
-typedef AffineMass<3, float> Affine3fMass;
 
 /// Note: Many scenes use Affine as template for 3D double-precision rigid type. Changing it to Affine3d would break backward compatibility.
 #ifdef SOFA_FLOAT
@@ -459,10 +386,8 @@ template<> inline const char* Affine3fTypes::Name() { return "Affine3f"; }
 
 #ifdef SOFA_FLOAT
 typedef Affine3fTypes Affine3Types;
-typedef Affine3fMass Affine3Mass;
 #else
 typedef Affine3dTypes Affine3Types;
-typedef Affine3dMass Affine3Mass;
 #endif
 typedef Affine3Types AffineTypes;
 
@@ -492,8 +417,6 @@ template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : publ
 
 template<> struct DataTypeName< defaulttype::Affine3fTypes::Coord > { static const char* name() { return "Affine3fTypes::Coord"; } };
 template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "Affine3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
-template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
 
 /// \endcond
 
@@ -501,12 +424,12 @@ template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char*
 } // namespace defaulttype
 
 
+
 // ==========================================================================
 // Mechanical Object
 
 namespace component
 {
-
 namespace container
 {
 
@@ -523,7 +446,6 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3fTy
 #endif
 
 } // namespace container
-
 } // namespace component
 
 
