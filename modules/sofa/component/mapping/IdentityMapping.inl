@@ -347,6 +347,20 @@ struct IdentityMappingMatrixHelper
     }
 };
 
+
+#ifdef SOFA_HAVE_EIGEN2
+
+template <class TIn, class TOut>
+const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
+{
+    eigen.copyFrom( *static_cast<const MatrixType*>(getJ()) );
+    js.resize( 1 );
+    js[0] = &eigen;
+    return &js;
+}
+
+#endif
+
 } // namespace mapping
 
 } // namespace component
