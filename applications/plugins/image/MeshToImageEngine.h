@@ -102,6 +102,12 @@ public:
     Data< SeqTriangles > triangles;
     Data< SeqTriangles > closingTriangles;
 
+    typedef typename core::topology::BaseMeshTopology::Edge Edge;
+    typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
+    typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
+    Data< SeqEdges > edges;
+
     Data< double > value;
     Data< double > closingValue;
 
@@ -119,11 +125,13 @@ public:
         , closingPosition(initData(&closingPosition,SeqPositions(),"closingPosition","ouput closing positions"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","input triangles"))
         , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
+        , edges(initData(&edges,SeqEdges(),"edges","input edges"))
         , value(initData(&value,1.,"value","pixel value inside mesh"))
         , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
     {
         position.setReadOnly(true);
         triangles.setReadOnly(true);
+        edges.setReadOnly(true);
     }
 
     virtual ~MeshToImageEngine()
@@ -134,6 +142,7 @@ public:
     {
         addInput(&position);
         addInput(&triangles);
+        addInput(&edges);
         addOutput(&closingPosition);
         addOutput(&closingTriangles);
         addOutput(&image);
@@ -153,10 +162,11 @@ protected:
 
         raPositions pos(this->position);        unsigned int nbp = pos.size();
         raTriangles tri(this->triangles);       unsigned int nbtri = tri.size();
+        raEdges edg(this->edges);               unsigned int nbedg = edg.size();
         raPositions clpos(this->closingPosition);
         raTriangles cltri(this->closingTriangles);
 
-        if(!nbp || !nbtri) return;
+        if(!nbp || (!nbtri && !nbedg) ) return;
 
 
         //        bool isTransformSet=false;
@@ -230,6 +240,17 @@ protected:
         CImg<T>& im=iml->getCImg();
         T color0=(T)0,color1=(T)this->value.getValue(),color2=(T)this->closingValue.getValue();
         im.fill(color0);
+
+        // draw edges
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing edges.."<<std::endl;
+
+        #pragma omp parallel for
+        for(unsigned int i=0; i<nbedg; i++)
+        {
+            Coord pts[2];
+            for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
+            this->draw_line(im,pts[0],pts[1],color1,this->subdiv.getValue());
+        }
 
         // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing triangles.."<<std::endl;
