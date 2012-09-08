@@ -356,6 +356,8 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # DEFINES += SOFA_HAVE_MANIFOLDTOPOLOGIES
 # Uncomment if you want to use Interventional Radiology module
 # DEFINES += SOFA_HAVE_SOFAEVE
+#DEFINES += SOFA_HAVE_optixdetection
+
 
 } # END SOFA_DEV
 # DEFINES += SOFA_HAVE_QTOGREVIEWER
