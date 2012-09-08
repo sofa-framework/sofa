@@ -59,6 +59,15 @@ contains(CONFIGSTATIC, static) {
   CONFIG *= staticlib
 }
 
+# the following GLU workaround is borrowed from https://github.com/openscad/openscad/pull/119
+unix:!macx {
+!contains ( QMAKE_LIBS_OPENGL, "-lGLU" ) {
+QMAKE_LIBS_OPENGL += -lGLU
+}
+}
+
+
+
 #		--  I m a g e I n t e r f a c e  --
 contains( QT_VERSION, "^4.*" ) {
   FORMS *= ImageInterface.Qt4.ui

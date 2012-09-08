@@ -55,6 +55,8 @@
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif /* SOFA_SMP */
+using std::cerr;
+using std::endl;
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -159,7 +161,10 @@ int main(int argc, char** argv)
     if(gui!="batch") glutInit(&argc,argv);
 
     if (simulationType == "dag")
+    {
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+        cerr<<"runSofa using DAG simulation" << endl;
+    }
     else
 #ifdef SOFA_DEV
         if (simulationType == "bgl")
