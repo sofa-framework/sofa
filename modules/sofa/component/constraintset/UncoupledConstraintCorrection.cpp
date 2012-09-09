@@ -70,8 +70,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         using sofa::simulation::Node;
 
         Node *node = dynamic_cast< Node * >(getContext());
-        const Rigid3Mass *massValue = 0;
-        bool destroyMassValue = false;
+        Rigid3Mass massValue;
 
         //Should use the BaseMatrix API to get the Mass
         //void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)
@@ -81,32 +80,25 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             UniformMass< Rigid3Types, Rigid3Mass > *um = dynamic_cast< UniformMass< Rigid3Types, Rigid3Mass >* > (m);
 
             if (um)
-                massValue = &(um->getMass());
+                massValue = um->getMass();
             else
                 serr << "WARNING : no mass found" << sendl;
         }
         else
         {
-            massValue = new Rigid3Mass();
-            destroyMassValue = true;
-            serr << "\n WARNING : node is not found => massValue could be false in addComplianceInConstraintSpace function" << sendl;
+            serr << "\n WARNING : node is not found => massValue could be incorrect in addComplianceInConstraintSpace function" << sendl;
         }
 
         const double dt2 = dt * dt;
 
-        usedComp.push_back(dt2 / massValue->mass);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[0][0]);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[0][1]);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[0][2]);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[1][1]);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[1][2]);
-        usedComp.push_back(dt2 * massValue->invInertiaMassMatrix[2][2]);
+        usedComp.push_back(dt2 / massValue.mass);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][0]);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][1]);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][2]);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][1]);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][2]);
+        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[2][2]);
         compliance.setValue(usedComp);
-
-        if (destroyMassValue)
-        {
-            delete massValue;
-        }
     }
     else
     {
