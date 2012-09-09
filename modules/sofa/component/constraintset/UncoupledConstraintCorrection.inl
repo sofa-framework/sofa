@@ -52,7 +52,7 @@ template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
-    , defaultCompliance(initData(&defaultCompliance, (Real)0.0, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
+    , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
 {
 }
 
@@ -76,30 +76,19 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     }
 
     const VecReal& comp = compliance.getValue();
-    if (!comp.empty() && x.size() != comp.size())
+    if (x.size() != comp.size() && !comp.empty())
     {
-        if (!defaultCompliance.isSet())
+        if (!defaultCompliance.isSet() && !comp.empty())
             defaultCompliance.setValue(comp[0]); // set default compliance to first one in case it was given in the compliance vector
         if (comp.size() > 1)
             serr << "Warning compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")" << sendl;
+        Real comp0 = (!comp.empty()) ? comp[0] : defaultCompliance.getValue();
+        sout << "Using " << comp0 << " as initial compliance" << sendl;
         VecReal UsedComp;
-        if (comp.size()>0)
+        for (unsigned int i=0; i<x.size(); i++)
         {
-            for (unsigned int i=0; i<x.size(); i++)
-            {
-                //	std::cout << "--> " << comp[0] << std::endl;
-                UsedComp.push_back(comp[0]);
-            }
+            UsedComp.push_back(comp0);
         }
-        else
-        {
-            for (unsigned int i=0; i<x.size(); i++)
-            {
-                Real random_value = (Real)0.00001;
-                UsedComp.push_back(random_value);
-            }
-        }
-
         // Keeps user specified compliance even if the initial MState size is null.
         if (!UsedComp.empty())
         {
@@ -119,7 +108,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
     BaseMeshTopology *topology = this->getContext()->getMeshTopology();
     if (!topology)
         return;
-    if (compliance.getValue().empty())
+    if (defaultCompliance.isSet() && compliance.getValue().empty())
         return; // uniform compliance, no need to update it
 
     std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
@@ -438,6 +427,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     VecDeriv& force = forceData.wref();
     const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal& comp = compliance.getValue();
+    const Real comp0 = defaultCompliance.getValue();
 
     force.resize((*this->mstate->getX()).size());
 
@@ -476,7 +466,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     {
         x[i] = x_free[i];
         v[i] = v_free[i];
-        dx[i] = force[i] * comp[i];
+        dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
         x[i] += dx[i];
         v[i] += dx[i]*invDt;
     }
