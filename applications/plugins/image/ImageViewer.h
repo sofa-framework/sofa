@@ -299,7 +299,7 @@ protected:
                         Coord base = rtransform->fromImage(ip);
                         CImg<T> vect = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0],ip[1],ip[2]);
                         Coord relativeVec((double)vect[0], (double)vect[1], (double)vect[2]);
-                        vparams->drawTool()->drawArrow(base,base+relativeVec*size,size,colour);
+                        vparams->drawTool()->drawArrow(base,base+relativeVec*size,size*relativeVec.norm()/10,colour);
                     }
         }
     }
