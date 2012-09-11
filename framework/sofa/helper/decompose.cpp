@@ -31,8 +31,8 @@ namespace helper
 {
 
 // instanciate the classes
-template class Decompose<double>;
-template class Decompose<float>;
+template class SOFA_HELPER_API Decompose<double>;
+template class SOFA_HELPER_API Decompose<float>;
 
 } // namespace helper
 
