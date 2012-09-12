@@ -41,14 +41,14 @@ namespace gl
 bool GLSLShader::InitGLSL()
 {
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
-    if( !CanUseGlExtension("GL_ARB_shading_language_100") )
+    if( !CanUseGlExtension((char*)"GL_ARB_shading_language_100") )
     {
         fprintf(stderr, "Error: GL_ARB_shader_objects extension not supported!\n");
         return false;
     }
 
     // Make sure we support the GLSL shading language 1.0
-    if( !CanUseGlExtension("GL_ARB_shading_language_100") )
+    if( !CanUseGlExtension((char*)"GL_ARB_shading_language_100") )
     {
         fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
         return false;
