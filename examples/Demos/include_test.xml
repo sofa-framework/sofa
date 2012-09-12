@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Node name="_Merge_" >
+    <Node name="Snake" >
+        <HexahedronFEMForceField name="FEM" youngModulus="3000.0" />
+        <BoxROI name="broi" box="-15 0 -15 15 10 15" />
+        <FixedConstraint name="fix" indices="@broi.indices" />
+        <Node name="VisuBody" >
+          <VisualStyle displayFlags="showWireframe" />
+        </Node>
+        <Node name="VisuEye" activated="false" >
+        </Node>
+    </Node>
+</Node>

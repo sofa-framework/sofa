@@ -106,6 +106,7 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 
 BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
+void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
 
 int numDefault=0;
 
@@ -210,12 +211,9 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
         if (childnode != NULL)
         {
             //  if the current node is an included node, with the special name Group, we only add the objects.
-            if (childnode->isGroupType())
+            switch(childnode->getIncludeNodeType())
             {
-                BaseElement::child_iterator<> it(childnode->begin());
-                for(; it!=childnode->end(); ++it) {node->addChild(it); childnode->removeChild(it);}
-            }
-            else
+            case INCLUDE_NODE_CHILD:
             {
                 if (!node->addChild(childnode))
                 {
@@ -223,11 +221,27 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
                             <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
                     delete childnode;
                 }
+                break;
+            }
+            case INCLUDE_NODE_GROUP:
+            {
+                BaseElement::child_iterator<> it(childnode->begin());
+                for(; it!=childnode->end(); ++it) {node->addChild(it); childnode->removeChild(it);}
+                //delete childnode;
+                break;
+            }
+            case INCLUDE_NODE_MERGE:
+            {
+                recursiveMergeNode(node, childnode);
+                //delete childnode;
+                break;
+            }
             }
         }
     }
     return node;
 }
+
 
 static void dumpNode(BaseElement* node, std::string prefix0="==", std::string prefix="  ")
 {
@@ -363,7 +377,9 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
     BaseElement* result = createNode(newroot, filename.c_str(),resolveElementName, true);
     if (result)
     {
-        if (result->getName() == "Group") result->setGroupType(true);
+        if (result->getName() == "Group") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
+        if (result->getName() == "_Group_") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
+        if (result->getName() == "_Merge_") result->setIncludeNodeType(INCLUDE_NODE_MERGE);
         // Copy attributes
         for (TiXmlAttribute* attr=element->FirstAttribute(); attr != NULL ; attr = attr->Next())
         {
@@ -371,12 +387,10 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
             if (!(strcmp(attr->Name(), "href"))) continue;
             if (!(strcmp(attr->Name(), "name")))
             {
-                if(!(strcmp(attr->Value(),"Group")))
-                    result->setGroupType(true);
-                else
-                    result->setGroupType(false);
-
-                if (!result->isGroupType()) result->setName(attr->Value());
+                result->setName(attr->Value());
+                if (result->getName() == "Group") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
+                if (result->getName() == "_Group_") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
+                if (result->getName() == "_Merge_") result->setIncludeNodeType(INCLUDE_NODE_MERGE);
             }
             else
             {
@@ -401,6 +415,48 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
     return result;
 }
 #endif // SOFA_XML_PARSER_TINYXML
+
+void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
+{
+    // copy all attributes
+    std::vector<std::string> attrs;
+    srcNode->getAttributeList(attrs);
+    for (std::vector<std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it)
+    {
+        std::string aname = *it;
+        if (aname == "name") continue;
+        const char* aval = srcNode->getAttribute(aname);
+        if (!aval) continue;
+        destNode->setAttribute(aname, aval);
+    }
+    BaseElement::child_iterator<> itS(srcNode->begin());
+    for(; itS!=srcNode->end(); ++itS)
+    {
+        BaseElement* srcElem = itS;
+        BaseElement* destElem = NULL;
+        if (!srcElem->getName().empty())
+        {
+            BaseElement::child_iterator<> itD(destNode->begin());
+            for(; itD!=destNode->end(); ++itD)
+            {
+                BaseElement* e = itD;
+                if (e->getType() == srcElem->getType() && e->getName() == srcElem->getName())
+                {
+                    destElem = e;
+                    break;
+                }
+            }
+        }
+        if (destElem)
+            recursiveMergeNode(destElem, srcElem); // match found, merge recursively
+        else
+        {
+            // no match found, move the whole sub-tree
+            destNode->addChild(srcElem);
+            srcNode->removeChild(srcElem);
+        }
+    }
+}
 
 #ifdef SOFA_XML_PARSER_LIBXML
 BaseElement* includeNode  (xmlNodePtr root,const char *basefilename);

@@ -43,7 +43,7 @@ namespace xml
 {
 
 BaseElement::BaseElement(const std::string& name, const std::string& type, BaseElement* newParent)
-    : BaseObjectDescription(name.c_str(), type.c_str()), parent(NULL), groupType(false)
+    : BaseObjectDescription(name.c_str(), type.c_str()), parent(NULL), includeNodeType(INCLUDE_NODE_CHILD)
 {
     if (newParent!=NULL) newParent->addChild(this);
     //attributes["name"]=&this->name;
