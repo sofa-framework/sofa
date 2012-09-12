@@ -3,7 +3,7 @@
   <VisualStyle displayFlags="showVisual" />
 
   <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
-  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.8" padSize="1" rotateImage="true" />
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="1.5" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" />
   <ImageViewer template="ImageB" name="viewer" src="@image"  />
   <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/>
