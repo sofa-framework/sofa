@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<Node name="root">
+  <include href="caduceus.scn" name="_Merge_" />
+  <include href="include_test.xml" />
+</Node>

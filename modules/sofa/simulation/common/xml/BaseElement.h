@@ -44,6 +44,14 @@ namespace simulation
 namespace xml
 {
 
+/// Flags indicating when an element is from an included file that should be treated specifically
+enum IncludeNodeType
+{
+    INCLUDE_NODE_CHILD, ///< indicating a standard node that should be used as child
+    INCLUDE_NODE_GROUP, ///< indicating a node that should be removed, and its content added within the parent node
+    INCLUDE_NODE_MERGE, ///< indicating a node that should be merged with its parent, and any child node with the same name as an existing child should be recursively merged
+};
+
 class SOFA_SIMULATION_COMMON_API BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
@@ -54,7 +62,7 @@ private:
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
-    bool groupType;       //type of Node Element: only its objects have to be taken into account
+    IncludeNodeType includeNodeType;
 protected:
     std::map< std::string, std::string > replaceAttribute;
 public:
@@ -99,11 +107,11 @@ public:
     /// Return true if this element was the root of the file
     bool isFileRoot();
 
-    /// Return true if this element was a special group node from an included file
-    bool isGroupType() {return groupType;}
+    /// Return if the current element ifsa special group node from an included file
+    IncludeNodeType getIncludeNodeType() const { return includeNodeType; }
 
-    /// Specify that the current element if a special group node from an included file
-    void setGroupType(bool b) {groupType=b;}
+    /// Specify that the current element is a special group node from an included file
+    void setIncludeNodeType(IncludeNodeType t) { includeNodeType=t; }
 
     ///// Get all attribute data, read-only
     //const std::map<std::string,std::string*>& getAttributeMap() const;
