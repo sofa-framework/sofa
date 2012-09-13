@@ -33,6 +33,8 @@
 #include "LinkComponent.h"
 #include <sofa/core/SofaLibrary.h>
 
+#include <sofa/gui/qt/ModifyObject.h>
+#include <sofa/gui/qt/QDisplayPropertyWidget.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
@@ -97,6 +99,8 @@ public:
 
     /// Set a menu of Preset available when right clicking on a node
     void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
+
+    void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
 
     /// Return the Root of the simulation
     GNode *getRoot() {return graphRoot.get(); } //getGNode(firstChild());}
@@ -178,6 +182,8 @@ public:
     void saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file);
     /// Open the window to configure a component
     void openModifyObject(Q3ListViewItem *);
+    /// Add the component in the PropertyWidget
+    void addInPropertyWidget(Q3ListViewItem *, bool clear = true);
     /// Delete a componnent
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     /// Construct a node from a BaseElement, by passing the factory
@@ -212,9 +218,11 @@ public slots:
     //Right Click Menu
 #ifdef SOFA_QT4
     void doubleClick(Q3ListViewItem *);
+    void leftClick(Q3ListViewItem *, const QPoint &, int );
     void rightClick(Q3ListViewItem *, const QPoint &, int );
 #else
     void doubleClick(QListViewItem *);
+    void leftClick(Q3ListViewItem *, const QPoint &, int );
     void rightClick(QListViewItem *, const QPoint &, int );
 #endif
     /// Context Menu Operation: collasping all the nodes below the current one
@@ -239,6 +247,8 @@ public slots:
     void saveComponents();
     /// Context Menu Operation: Open the window to configure a component
     void openModifyObject();
+    /// Context Menu Operation: Add the component in the PropertyWidget
+    void addInPropertyWidget();
     /// Context Menu Operation: Deleting a componnent
     void deleteComponent();
 
@@ -289,6 +299,7 @@ protected:
     SofaLibrary *sofaLibrary;
     Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset
+    QDisplayPropertyWidget* propertyWidget; //To modify components data
 
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;

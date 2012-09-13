@@ -31,6 +31,7 @@
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
 #include "SofaTutorialManager.h"
+#include <sofa/gui/qt/QDisplayPropertyWidget.h>
 #include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
 #include <sofa/helper/Factory.h>
@@ -243,6 +244,10 @@ protected:
     /// Current opened Tab
     QWidget *tabGraph;
 
+    // Component Properties
+    QDisplayPropertyWidget* propertyWidget;
+
+    // Miscellaneous
     SofaTutorialManager *tuto;
 
 

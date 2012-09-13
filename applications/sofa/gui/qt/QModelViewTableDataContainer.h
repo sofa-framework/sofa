@@ -33,6 +33,7 @@
 #include <sofa/component/topology/TopologyData.h>
 
 #include "QModelViewTableUpdater.h"
+#include "QDisplayDataWidget.h"
 
 #include <QVBoxLayout>
 #include <QTableView>
@@ -400,18 +401,25 @@ public:
 
         wTableView  = new QTableViewUpdater(parent);
         wTableView->setModel(wTableModel);
+
         widget=parent;
 
-
-
-
         wDisplay->setToggleButton(true);
-        wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
+        QWidget* parentWidget = parent;
+        if(parentWidget)
+            parentWidget = static_cast<QWidget*>(parentWidget->parent());
+        bool propertyWidgetFlagOn = false;
+        QDisplayDataWidget* displayDataWidget = dynamic_cast<QDisplayDataWidget*>(parentWidget);
+        if(displayDataWidget)
+            propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
+
+        if(!propertyWidgetFlagOn)
+            wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
 
-        if (isDisplayed())
+        if(isDisplayed() || propertyWidgetFlagOn)
         {
             processTableModifications(d);
             fillTable(d);
@@ -420,8 +428,6 @@ public:
 
         //TODO: find how to hide the widget
         wTableView->setDisplayed(isDisplayed());
-
-
 
         if (readOnly)
         {
@@ -450,8 +456,16 @@ public:
             parent->connect(wTableView, SIGNAL( clicked(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent,   SLOT(setWidgetDirty()));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
+
+        wDisplay->toggle();
+        if(propertyWidgetFlagOn)
+            wDisplay->setOn(false);
+        else
+            wDisplay->toggle();
+
         return true;
     }
 
@@ -610,7 +624,6 @@ public:
         container_layout->add(wTableView);
         container_layout->add(wDisplay);
     }
-
 };
 
 ////////////////////////////////////////////////////////////////

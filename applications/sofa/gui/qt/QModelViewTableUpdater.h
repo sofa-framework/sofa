@@ -29,6 +29,7 @@
 
 #include "SofaGUIQt.h"
 
+#include <QDebug>
 #include <QSpinBox>
 #include <QTableView>
 #include <QStandardItemModel>
@@ -48,7 +49,9 @@ class QTableViewUpdater : public QTableView
 public:
     QTableViewUpdater (QWidget * parent = 0):
         QTableView(parent)
-    {};
+    {
+        setAutoFillBackground(true);
+    };
 
 public slots:
     void setDisplayed(bool b)
