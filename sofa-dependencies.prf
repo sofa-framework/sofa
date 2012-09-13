@@ -550,7 +550,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
     contains(DEFINES, SOFA_HAVE_VULCAIN)                { usePlugin(vulcain, applications/plugins/vulcain) }
     contains(DEFINES, SOFA_HAVE_ldidetection)           { usePlugin(ldidetection, applications/plugins/ldidetection) }
     contains(DEFINES, SOFA_HAVE_LEM)                    { usePlugin(lem, applications/plugins/lem) }
-    contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER)  { usePlugin(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner) }
+    contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER)  { usePlugin(TriangularMeshRefiner, applications-dev/plugins/TriangularMeshRefiner) }
     contains(DEFINES, SOFA_HAVE_BEAMADAPTER)            { usePlugin(BeamAdapter, applications/plugins/BeamAdapter) }
     contains(DEFINES, SOFA_HAVE_SHELL)                  { usePlugin(shells, applications/plugins/shells) }
     contains(DEFINES, SOFA_HAVE_optixdetection)         { usePlugin(optixdetection, applications/plugins/optixdetection) }
