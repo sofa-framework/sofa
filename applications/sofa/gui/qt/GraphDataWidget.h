@@ -293,10 +293,8 @@ public:
             for (int i=n; i < s; ++i)
             {
                 Curve* c = curve[i];
-                CurveData* cd = cdata[i];
                 c->detach();
-                delete c;
-                delete cd;
+                delete c;	// Curve has ownership of the CurveData
             }
             curve.resize(n);
             cdata.resize(n);
