@@ -241,7 +241,7 @@ bool MaterialDataWidget::createWidgets()
     connect(_specularPicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
     connect(_diffusePicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
 
-
+    readFromData();
 
     return true;
 }
@@ -310,6 +310,9 @@ bool VectorMaterialDataWidget::createWidgets()
 
     connect( _comboBox, SIGNAL(activated(int)  ), this, SLOT( changeMaterial( int) ) );
     connect( _materialDataWidget, SIGNAL( WidgetDirty(bool) ) ,this, SLOT( setWidgetDirty(bool) ) );
+
+    readFromData();
+
     return true;
 }
 

@@ -23,9 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "QDisplayDataWidget.h"
-#include "ModifyObject.h"
 
+#include <QTableWidget>
 
+#include <QPalette>
 #ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -55,19 +56,23 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         BaseData* data,
         const ModifyObjectFlags& flags):Q3GroupBox(parent),
     data_(data),
+    flags_(flags),
     datainfowidget_(NULL),
     datawidget_(NULL),
     numWidgets_(0)
 
 {
-    if(data_ == NULL)
-    {
-        return;
-    }
+    setAutoFillBackground(true);
 
-    setTitle(data_->getName().c_str());
-    setInsideMargin(4);
-    setInsideSpacing(2);
+    if(data_ == NULL)
+        return;
+
+    if(!flags.PROPERTY_WIDGET_FLAG)
+    {
+        setTitle(data_->getName().c_str());
+        setInsideMargin(4);
+        setInsideSpacing(2);
+    }
 
     const std::string label_text = data_->getHelp();
 
@@ -75,7 +80,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     {
         datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG);
         numWidgets_ += datainfowidget_->getNumLines()/3;
-
     }
 
     const std::string valuetype = data_->getValueTypeString();
@@ -90,10 +94,9 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     if( dynamic_cast<core::objectmodel::DataFileName*>(data_) != NULL )
     {
-        /*
-        a bit of a hack for DataFileName widgets.
-        A custom widget is used by default if we run this code from the Modeler
-        */
+        // a bit of a hack for DataFileName widgets.
+        // A custom widget is used by default if we run this code from the Modeler
+
         std::string widgetName=data_->getWidget();
         if( widgetName.empty() && flags.MODELER_FLAG )
         {
@@ -111,14 +114,40 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         assert(datawidget_ != NULL);
     }
 
-    setColumns(datawidget_->numColumnWidget());
+    datawidget_->setContentsMargins(0, 0, 0, 0);
+
     //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
-    numWidgets_+=datawidget_->sizeWidget();
+    numWidgets_ += datawidget_->sizeWidget();
     connect(datawidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
     connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidgetValue() ) );
     connect(this, SIGNAL( DataUpdate() ), datawidget_, SLOT(updateDataValue() ) );
     connect(datawidget_,SIGNAL(DataOwnerDirty(bool)),this,SIGNAL(DataOwnerDirty(bool)) );
 
+    if(flags.PROPERTY_WIDGET_FLAG)
+    {
+        QPushButton *refresh = new QPushButton(QIcon((sofa::helper::system::DataRepository.getFirstPath() + "/textures/refresh.png").c_str()), "", this);
+        refresh->setHidden(true);
+        refresh->setFixedSize(QSize(16, 16));
+
+        ++numWidgets_;
+
+        connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
+        connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
+        connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
+
+        setStyleSheet("QGroupBox{border:0;}");
+        setInsideMargin(0);
+        setInsideSpacing(0);
+        /*setMargin(0);
+        setLineWidth(0);
+        setMidLineWidth(0);*/
+
+        setColumns(numWidgets_ + 1);
+    }
+    else
+    {
+        setColumns(datawidget_->numColumnWidget());
+    }
 }
 
 void QDisplayDataWidget::UpdateData()

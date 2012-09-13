@@ -104,6 +104,7 @@ typedef struct ModifyObjectFlags
     bool REINIT_FLAG;
     bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data
     bool MODELER_FLAG; //if we attempt to create this dialog from the Modeler.
+    bool PROPERTY_WIDGET_FLAG; //if we attempt to create this dialog in the property widget.
 
     ModifyObjectFlags():
         HIDE_FLAG(true),
@@ -111,7 +112,10 @@ typedef struct ModifyObjectFlags
         EMPTY_FLAG(false),
         RESIZABLE_FLAG(false),
         REINIT_FLAG(true),
-        LINKPATH_MODIFIABLE_FLAG(false) {}
+        LINKPATH_MODIFIABLE_FLAG(false),
+        MODELER_FLAG(false),
+        PROPERTY_WIDGET_FLAG(false)
+    {}
 
     void setFlagsForSofa()
     {
@@ -122,6 +126,7 @@ typedef struct ModifyObjectFlags
         REINIT_FLAG = true;
         LINKPATH_MODIFIABLE_FLAG = false;
         MODELER_FLAG = false;
+        PROPERTY_WIDGET_FLAG = false;
     };
 
     void setFlagsForModeler()
@@ -133,6 +138,7 @@ typedef struct ModifyObjectFlags
         REINIT_FLAG = false;
         LINKPATH_MODIFIABLE_FLAG = true;
         MODELER_FLAG = true;
+        PROPERTY_WIDGET_FLAG = false;
     };
 } ModifyObjectFlags;
 

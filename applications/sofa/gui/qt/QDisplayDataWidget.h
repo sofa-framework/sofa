@@ -26,6 +26,8 @@
 #define SOFA_GUI_QT_DISPLAYDATAWIDGET_H
 
 #include "DataWidget.h"
+#include "ModifyObject.h"
+
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
@@ -70,7 +72,9 @@ public:
     QDisplayDataWidget(QWidget* parent,
             core::objectmodel::BaseData* data,
             const ModifyObjectFlags& flags);
-    unsigned int getNumWidgets() const { return numWidgets_;};
+    unsigned int getNumWidgets() const { return numWidgets_;}
+
+    ModifyObjectFlags flag() {return flags_;}
 
 public slots:
     void UpdateData();              //QWidgets ---> BaseData
@@ -82,6 +86,7 @@ signals:
     void DataOwnerDirty(bool);
 protected:
     core::objectmodel::BaseData* data_;
+    ModifyObjectFlags flags_;
     QDisplayDataInfoWidget*  datainfowidget_;
     DataWidget* datawidget_;
     unsigned int numWidgets_;

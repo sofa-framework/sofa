@@ -30,7 +30,6 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
 
 #include <sofa/helper/system/FileRepository.h>
@@ -75,7 +74,7 @@ int numComponent= 0;
 typedef QPopupMenu Q3PopupMenu;
 #endif
 
-GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f):Q3ListView(parent, name, f), graphListener(NULL)
+GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3ListView(parent, name, f), graphListener(NULL)
 {
     graphListener = new GraphListenerQListView(this);
     addColumn("Graph");
@@ -97,9 +96,11 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f):Q3L
 
 #ifdef SOFA_QT4
     connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
+    connect(this, SIGNAL(selectionChanged()),  this, SLOT( addInPropertyWidget()));
     connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
 #else
     connect(this, SIGNAL(doubleClicked ( QListViewItem * )), this, SLOT( doubleClick(QListViewItem *)));
+    connect(this, SIGNAL(clicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( leftClick(QListViewItem *, const QPoint &, int )));
     connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
 #endif
     DialogAdd=NULL;
@@ -431,6 +432,9 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
         dialogModify->createDialog(object);
     }
 
+    if(object)
+        propertyWidget->addComponent(object->getName().c_str(), object, item);
+
     map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
     //If the item clicked is a node, we add it to the list of the element modified
 
@@ -440,6 +444,31 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
     dialogModify->raise();
 }
 
+void GraphModeler::addInPropertyWidget()
+{
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+
+    bool clear = true;
+    for (unsigned int i=0; i<selection.size(); ++i)
+    {
+        addInPropertyWidget(selection[i], clear);
+        clear = false;
+    }
+}
+
+void GraphModeler::addInPropertyWidget(Q3ListViewItem *item, bool clear)
+{
+    if(!item)
+        return;
+
+    Base* object = graphListener->findObject(item);
+    if(object == NULL)
+        return;
+
+    propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+}
+
 void GraphModeler::doubleClick(Q3ListViewItem *item)
 {
     if (!item) return;
@@ -447,6 +476,14 @@ void GraphModeler::doubleClick(Q3ListViewItem *item)
     openModifyObject(item);
 
 }
+
+void GraphModeler::leftClick(Q3ListViewItem *item, const QPoint &point, int index)
+{
+    if (!item) return;
+    item->setOpen ( !item->isOpen() );
+    addInPropertyWidget(item);
+}
+
 void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
 {
     if (!item) return;

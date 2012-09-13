@@ -33,7 +33,6 @@
 #include <sofa/helper/Factory.h>
 
 
-
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
@@ -122,6 +121,7 @@ public:
             datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
         else
             datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
+
         return datawidget_;
     };
 

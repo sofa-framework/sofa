@@ -178,13 +178,6 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
 
-
-    //----------------------------------------------------------------------
-    // Create the Right part of the GUI
-    //----------------------------------------------------------------------
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(this->centralWidget());
-
     //----------------------------------------------------------------------
     //Create the information widget
     infoItem = new QTextBrowser(this->centralWidget());
@@ -197,7 +190,13 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 #else
     connect( infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 #endif
-    mainLayout->addWidget(infoItem);
+    leftPartLayout->addWidget(infoItem);
+
+    //----------------------------------------------------------------------
+    // Create the Right part of the GUI
+    //----------------------------------------------------------------------
+
+    QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
 
     //----------------------------------------------------------------------
     //Create the scene graph visualization
@@ -213,6 +212,11 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 
 #endif
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
+
+    //----------------------------------------------------------------------
+    //Create the properties visualization
+    propertyWidget = new QDisplayPropertyWidget(this->centralWidget());
+    mainLayout->addWidget(propertyWidget);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
@@ -439,6 +443,7 @@ void SofaModeler::createTab()
     currentTabLayout->addWidget(graph,0,0);
 
     graph->setSofaLibrary(library);
+    graph->setPropertyWidget(propertyWidget);
     graph->setPreset(preset);
     fileNew();
 
