@@ -59,7 +59,7 @@ public:
         static const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
-        const char* operator() ()
+        const char* operator() () const
         {
             if (func) return func();
             else return NULL;
@@ -72,7 +72,7 @@ public:
         static const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
-        const char* operator() ()
+        const char* operator() () const
         {
             if (func) return func();
             else return NULL;
@@ -85,7 +85,7 @@ public:
         static const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
-        const char* operator() ()
+        const char* operator() () const
         {
             if (func) return func();
             else return NULL;
@@ -99,7 +99,7 @@ public:
         static  const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
-        const char* operator() ()
+        const char* operator() () const
         {
             if (func) return func();
             else return NULL;
@@ -112,7 +112,7 @@ public:
         static const char* symbol;
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
-        const char* operator() ()
+        const char* operator() () const
         {
             if (func) return func();
             else return NULL;

@@ -101,7 +101,9 @@ public :
     {
         //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
 //		  v.memsetHost();
+        unsigned int size = v.size();
         v.clear();
+        v.resize(size);
     }
 
     void set(int i, SReal val)
@@ -178,6 +180,15 @@ template<> inline const char* CudaBaseVectorf::Name() { return "CudaBaseVectorf"
 template<> inline const char* CudaBaseVectord::Name() { return "CudaBaseVectord"; }
 #endif
 
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_GPU_CUDA)
+
+extern template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
+#endif
+
+#endif
 
 ///////////////
 //  KERNELS  //
