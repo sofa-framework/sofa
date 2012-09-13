@@ -86,6 +86,7 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
 
 SOURCES += main.cpp \
            sofa/gpu/cuda/mycuda.cpp \
+           sofa/gpu/cuda/CudaBaseVector.cpp \
            sofa/gpu/cuda/CudaBoxROI.cpp  \
            sofa/gpu/cuda/CudaSphereROI.cpp  \
            sofa/gpu/cuda/CudaBeamLinearMapping.cpp \
