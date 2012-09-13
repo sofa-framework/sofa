@@ -63,6 +63,8 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+    typedef typename VecCoord::template rebind<VecCoord>::other VecType;
+
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
@@ -84,11 +86,11 @@ public:
 
 protected:
 
-
     class EdgeRestInformation
     {
     public:
         Mat3 DfDx; /// the edge stiffness matrix
+        float vertices[2]; // the vertices of this edge
 
         EdgeRestInformation()
         {
@@ -105,6 +107,8 @@ protected:
             return in;
         }
     };
+    typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
+
 
     sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -124,6 +128,7 @@ protected:
 public:
 
     virtual void init();
+    void initNeighbourhoodPoints();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
@@ -144,11 +149,11 @@ public:
     void updateLameCoefficients();
 
 
-    class TetrahedralTMEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeRestInformation> >
+    class TetrahedralTMEdgeHandler : public TopologyDataHandler<Edge,edgeRestInfoVector >
     {
     public:
         typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : TopologyDataHandler<Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
+        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, EdgeData<edgeRestInfoVector >* _data) : TopologyDataHandler<Edge, edgeRestInfoVector >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ei,
                 const Edge &,
@@ -167,9 +172,15 @@ public:
     };
 
 protected:
-    EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
 
-    EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
+    EdgeData < edgeRestInfoVector > edgeInfo;
+
+//    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
+    EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
+
+    //CUDA Boolean: true if the GPU can handle atomic operations (Cuda version)
+    Data<bool> atomicGPU;
 
     TetrahedralTMEdgeHandler* edgeHandler;
 
