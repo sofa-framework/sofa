@@ -53,6 +53,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
 {
 }
 
@@ -95,8 +96,14 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             compliance.setValue(UsedComp);
         }
     }
+    this->f_printLog.setValue(f_verbose.getValue());
 }
 
+template <class DataTypes>
+void UncoupledConstraintCorrection<DataTypes>::reinit()
+{
+    this->f_printLog.setValue(f_verbose.getValue());
+}
 
 template< class DataTypes >
 void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
@@ -249,12 +256,18 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     {
         int indexCurRowConst = rowIt.index();
 
+        if (f_verbose.getValue())
+            sout << "C[" << indexCurRowConst << "]";
+
         MatrixDerivColConstIterator colItEnd = rowIt.end();
 
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
             unsigned int dof = colIt.index();
             Deriv n = colIt.val();
+
+            if (f_verbose.getValue())
+                sout << " dof[" << dof << "]=" << n;
 
             int indexCurColConst;
 
@@ -289,6 +302,8 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             }
             */
         }
+        if (f_verbose.getValue())
+            sout << sendl;
     }
 
     /*debug : verifie qu'il n'y a pas de 0 sur la diagonale de W

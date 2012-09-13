@@ -72,6 +72,8 @@ protected:
 public:
     virtual void init();
 
+    void reinit();
+
     /// Handle Topological Changes.
     void handleTopologyChange();
 
@@ -125,6 +127,8 @@ public:
     Data< VecReal > compliance;
 
     Data< Real > defaultCompliance;
+
+    Data<bool> f_verbose;
 
 private:
     // new :  for non building the constraint system during solving process //
