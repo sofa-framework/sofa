@@ -56,7 +56,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const Edge &edge, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -72,6 +72,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
         }
 
     }
+    ei.vertices[0] =(float) edge[0];
+    ei.vertices[1] =(float) edge[1];
 }
 
 template< class DataTypes>
@@ -93,7 +95,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
-        helper::vector<EdgeRestInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
@@ -182,7 +184,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
-        helper::vector<EdgeRestInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
@@ -265,6 +267,7 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
     , lambda(0)
     , mu(0)
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , atomicGPU(initData(&atomicGPU, (bool) false, "atomicGPU","True if the GPU can handle atomic operations (CUDA version > 2.0)"))
 {
     edgeHandler = new TetrahedralTMEdgeHandler(this, &edgeInfo);
 }
@@ -293,10 +296,12 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     }
     updateLameCoefficients();
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+
 
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
+
 
     if (_initialPoints.size() == 0)
     {
@@ -324,7 +329,17 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     edgeInfo.endEdit();
+
+    /// FOR CUDA
+    /// Save the neighbourhood for points (in case of CudaTypes, non atomic)
+    if(!atomicGPU.getValue())
+    {
+        this->initNeighbourhoodPoints();
+    }
 }
+
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
@@ -337,7 +352,13 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
     EdgeRestInformation *einfo;
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector cudaEdgeInfo;
+    cudaEdgeInfo.resize(edgeInf.size());
+
+
+    for(unsigned int i=0; i<edgeInf.size(); i++)
+        cudaEdgeInfo[i] = edgeInf[i];
 
     Deriv force;
     Coord dp0,dp1,dp;
@@ -372,7 +393,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 
     EdgeRestInformation *einfo;
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
     Deriv force;
     Coord dp0,dp1,dp;
