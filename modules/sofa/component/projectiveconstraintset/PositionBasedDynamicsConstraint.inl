@@ -129,6 +129,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;
+    Real invdt=1./dt;
 
     velocity.resize(res.size());
 
@@ -137,7 +138,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
     for( unsigned i=0; i<res.size(); i++ )
     {
         res[i] += ( tpos[i] - res[i]) * stiffness.getValue();
-        velocity[i] = (res[i] - old_position[i])/dt;
+        velocity[i] = (res[i] - old_position[i]) * invdt;
         old_position[i] = res[i];
     }
 }

@@ -34,6 +34,8 @@
 #include <sofa/helper/decompose.inl>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
+//#include <omp.h>
+
 using std::cerr;
 using std::endl;
 
@@ -181,11 +183,12 @@ void ShapeMatching<DataTypes>::update()
     for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
     {
         // this could be parallelize or speed up using fast summation technique
+//#pragma omp parallel for
         for (unsigned int i=0 ; i<nbc ; ++i)
         {
             Xcm[i] = Coord();
             T[i].fill(0);
-            for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
+            for (VI::const_iterator it = clust[i].begin() ; it != clust[i].end() ; ++it)
             {
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
                 Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
@@ -193,11 +196,7 @@ void ShapeMatching<DataTypes>::update()
                 Xcm[i] += p*w;
                 T[i] += covNN(p,p0)*w;
             }
-        }
 
-
-        for (unsigned int i=0 ; i<nbc ; ++i)
-        {
             T[i] -= covNN(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
             Xcm[i] /= W[i];
             Mat3x3 R;
@@ -214,9 +213,10 @@ void ShapeMatching<DataTypes>::update()
         for (unsigned int i=0; i<nbp; ++i) targetPos[i]=Coord();
 
         for (unsigned int i=0; i<nbc; ++i)
-            for (it = clust[i].begin(), itEnd = clust[i].end(); it != itEnd ; ++it)
+            for (VI::const_iterator it = clust[i].begin() ; it != clust[i].end() ; ++it)
                 if(*it<nbp)
                     targetPos[*it] += Xcm[i] + T[i] *(restPositions[*it] - Xcm0[i]);
+
         for (unsigned int i=0; i<nbp; ++i)
             if(nbClust[i])
                 targetPos[i] /= (Real)nbClust[i];
@@ -243,20 +243,7 @@ void ShapeMatching<Rigid3fTypes >::update();
 template <class DataTypes>
 void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowForceFields())
-    {
-        /*  const VecCoord& currentPositions = *mstate->getX();
 
-        glPushAttrib( GL_LIGHTING_BIT);
-
-        glDisable(GL_LIGHTING);
-
-        glBegin(GL_LINES);
-
-        glEnd();
-
-        glPopAttrib(); */
-    }
 }
 
 
