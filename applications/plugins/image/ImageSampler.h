@@ -160,7 +160,7 @@ public:
         f_listening.setValue(true);
 
         helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1) | N=1"
+                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"
                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
@@ -197,7 +197,7 @@ protected:
             bool atcorners=false; if(params.size())   atcorners=(bool)params[0];
 
             // sampling
-            if(!computeRecursive.getValue()) regularSampling (atcorners);
+            regularSampling (atcorners, computeRecursive.getValue());
         }
         else if(this->method.getValue().getSelectedId() == LLOYD)
         {
@@ -283,8 +283,9 @@ protected:
     * put regularly spaced samples at each non empty voxel center or corners
     * generated topology: edges + hexahedra
     * @param atcorners : put samples at voxel corners instead of centers ?
+    * if @param buildgraph = true, several resolutions are recursively built; a graph is generated relating each higher resolution node to its parent nodes
     */
-    void regularSampling ( const bool atcorners=false )
+    void regularSampling ( const bool atcorners=false , const bool recursive=false )
     {
         // get tranform and image at time t
         raImage in(this->image);
@@ -324,8 +325,8 @@ protected:
                     if(img(x,y,z))
                     {
                         // pos
-                        if(atcorners) pos[nb]=inT->fromImage(Coord(x+0.5,y+0.5,z+0.5));
-                        else pos[nb]=inT->fromImage(Coord(x,y,z));
+                        if(atcorners) pos[nb]=Coord(x+0.5,y+0.5,z+0.5);
+                        else pos[nb]=Coord(x,y,z);
                         // edges
                         if(x) if(img(x-1,y,z)) e.push_back(Edge(nb-1,nb));
                         if(y) if(img(x,y-1,z)) e.push_back(Edge(pLine(x),nb));
@@ -342,11 +343,121 @@ protected:
             }
             nPlane.swap(pPlane);
         }
+
+        if(recursive)
+        {
+            vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
+            subdivide(indices);
+        }
+
+        for(unsigned int i=0; i<pos.size(); i++) pos[i]=inT->fromImage(pos[i]);
     }
 
 
+    /// subdivide positions indexed in indices in eight sub-lists, add new points in this->position and run recursively
+    void subdivide(vector<unsigned int> &indices)
+    {
+        waPositions pos(this->position);
+        waEdges g(this->graphEdges);
+        unsigned int nb=indices.size();
+
+        // detect leaf
+        if(nb<=(unsigned int)8) return;
+
+        // computes center and bounding box
+        typedef std::pair<Real,unsigned int> distanceToPoint;
+        typedef std::set<distanceToPoint> distanceSet;
+
+        Coord C; Coord BB[2];
+        for(unsigned int dir=0; dir<3; dir++)
+        {
+            distanceSet q;
+            for(unsigned int i=0; i<nb; i++) {unsigned int index=indices[i]; q.insert(distanceToPoint(pos[index][dir],i));}
+            typename distanceSet::iterator it=q.begin();
+            BB[0][dir]=q.begin()->first; BB[1][dir]=q.rbegin()->first;
+            C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) it++;       // mean
+            // for(unsigned int count=0; count<nb/2; count++) it++;   // median
+            Real c=it->first;
+            it--; if(C[dir]-it->first<c-C[dir]) c=it->first;
+            C[dir]=c;
+            //            std::cout<<"dir="<<dir<<":"; for( it=q.begin(); it!=q.end(); it++)  std::cout<<it->first <<" "; std::cout<<std::endl; std::cout<<"C="<<C[dir]<<std::endl;
+        }
+        //        for(unsigned int i=0;i<nb;i++) std::cout<<"("<<pos[indices[i]]<<") ";  std::cout<<std::endl;
+        Coord p;
+        typename vector<Coord>::iterator it;
+        // add corners
+        unsigned int corners[8]= {addPoint(Coord(BB[0][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[1][2]),pos,indices)};
+        // add cell center
+        unsigned int center=addPoint(Coord(C[0],C[1],C[2]),pos,indices);
+        // add face centers
+        unsigned int faces[6]= {addPoint(Coord(BB[0][0],C[1],C[2]),pos,indices),addPoint(Coord(BB[1][0],C[1],C[2]),pos,indices),addPoint(Coord(C[0],BB[0][1],C[2]),pos,indices),addPoint(Coord(C[0],BB[1][1],C[2]),pos,indices),addPoint(Coord(C[0],C[1],BB[0][2]),pos,indices),addPoint(Coord(C[0],C[1],BB[1][2]),pos,indices)};
+        // add edge centers
+        unsigned int edgs[12]= {addPoint(Coord(C[0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(C[0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(C[0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(C[0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],C[1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],C[1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],C[1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],C[1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],C[2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],C[2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],C[2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],C[2]),pos,indices)};
+        // connect
+        bool connect=true;
+        for(unsigned int i=0; i<6; i++) if(center==faces[i]) connect=false; for(unsigned int i=0; i<12; i++) if(center==edgs[i]) connect=false;
+        if(connect) for(unsigned int i=0; i<8; i++) addEdge(Edge(corners[i],center),g);
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[0]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[0],faces[0]),g); addEdge(Edge(corners[2],faces[0]),g); addEdge(Edge(corners[4],faces[0]),g); addEdge(Edge(corners[6],faces[0]),g); }
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[1]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[1],faces[1]),g); addEdge(Edge(corners[3],faces[1]),g); addEdge(Edge(corners[5],faces[1]),g); addEdge(Edge(corners[7],faces[1]),g); }
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[2]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[0],faces[2]),g); addEdge(Edge(corners[1],faces[2]),g); addEdge(Edge(corners[4],faces[2]),g); addEdge(Edge(corners[5],faces[2]),g); }
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[3]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[2],faces[3]),g); addEdge(Edge(corners[3],faces[3]),g); addEdge(Edge(corners[6],faces[3]),g); addEdge(Edge(corners[7],faces[3]),g); }
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[4]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[0],faces[4]),g); addEdge(Edge(corners[1],faces[4]),g); addEdge(Edge(corners[2],faces[4]),g); addEdge(Edge(corners[3],faces[4]),g); }
+        connect=true; for(unsigned int i=0; i<12; i++) if(faces[5]==edgs[i]) connect=false; if(connect) { addEdge(Edge(corners[4],faces[5]),g); addEdge(Edge(corners[5],faces[5]),g); addEdge(Edge(corners[6],faces[5]),g); addEdge(Edge(corners[7],faces[5]),g); }
+        if(edgs[0]!=corners[0] && edgs[0]!=corners[1]) {addEdge(Edge(corners[0],edgs[0]),g); addEdge(Edge(corners[1],edgs[0]),g);}
+        if(edgs[1]!=corners[2] && edgs[1]!=corners[3]) {addEdge(Edge(corners[2],edgs[1]),g); addEdge(Edge(corners[3],edgs[1]),g);}
+        if(edgs[2]!=corners[4] && edgs[2]!=corners[5]) {addEdge(Edge(corners[4],edgs[2]),g); addEdge(Edge(corners[5],edgs[2]),g);}
+        if(edgs[3]!=corners[6] && edgs[3]!=corners[7]) {addEdge(Edge(corners[6],edgs[3]),g); addEdge(Edge(corners[7],edgs[3]),g);}
+        if(edgs[4]!=corners[0] && edgs[4]!=corners[2]) {addEdge(Edge(corners[0],edgs[4]),g); addEdge(Edge(corners[2],edgs[4]),g);}
+        if(edgs[5]!=corners[1] && edgs[5]!=corners[3]) {addEdge(Edge(corners[1],edgs[5]),g); addEdge(Edge(corners[3],edgs[5]),g);}
+        if(edgs[6]!=corners[4] && edgs[6]!=corners[6]) {addEdge(Edge(corners[4],edgs[6]),g); addEdge(Edge(corners[6],edgs[6]),g);}
+        if(edgs[7]!=corners[5] && edgs[7]!=corners[7]) {addEdge(Edge(corners[5],edgs[7]),g); addEdge(Edge(corners[7],edgs[7]),g);}
+        if(edgs[8]!=corners[0] && edgs[8]!=corners[4]) {addEdge(Edge(corners[0],edgs[8]),g); addEdge(Edge(corners[4],edgs[8]),g);}
+        if(edgs[9]!=corners[1] && edgs[9]!=corners[5]) {addEdge(Edge(corners[1],edgs[9]),g); addEdge(Edge(corners[5],edgs[9]),g);}
+        if(edgs[10]!=corners[2] && edgs[10]!=corners[6]) {addEdge(Edge(corners[2],edgs[10]),g); addEdge(Edge(corners[6],edgs[10]),g);}
+        if(edgs[11]!=corners[3] && edgs[11]!=corners[7]) {addEdge(Edge(corners[3],edgs[11]),g); addEdge(Edge(corners[7],edgs[11]),g);}
+
+        // check in which octant lies each point
+        vector<vector<unsigned int> > octant(8); for(unsigned int i=0; i<8; i++)  octant[i].reserve(nb);
+        for(unsigned int i=0; i<indices.size(); i++)
+        {
+            unsigned int index=indices[i];
+            if(pos[index][0]<=C[0] && pos[index][1]<=C[1] && pos[index][2]<=C[2]) octant[0].push_back(index);
+            if(pos[index][0]>=C[0] && pos[index][1]<=C[1] && pos[index][2]<=C[2]) octant[1].push_back(index);
+            if(pos[index][0]<=C[0] && pos[index][1]>=C[1] && pos[index][2]<=C[2]) octant[2].push_back(index);
+            if(pos[index][0]>=C[0] && pos[index][1]>=C[1] && pos[index][2]<=C[2]) octant[3].push_back(index);
+            if(pos[index][0]<=C[0] && pos[index][1]<=C[1] && pos[index][2]>=C[2]) octant[4].push_back(index);
+            if(pos[index][0]>=C[0] && pos[index][1]<=C[1] && pos[index][2]>=C[2]) octant[5].push_back(index);
+            if(pos[index][0]<=C[0] && pos[index][1]>=C[1] && pos[index][2]>=C[2]) octant[6].push_back(index);
+            if(pos[index][0]>=C[0] && pos[index][1]>=C[1] && pos[index][2]>=C[2]) octant[7].push_back(index);
+        }
+        for(unsigned int i=0; i<8; i++)
+        {
+            // std::cout<<i<<" : "<<octant[i]<<std::endl;
+            subdivide(octant[i]);
+        }
+    }
+
+    // add point p in pos if not already there are return its index
+    unsigned int addPoint(const Coord p, waPositions& pos, vector<unsigned int> &indices)
+    {
+        unsigned int ret ;
+        typename vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
+        if(it==pos.end()) {ret=pos.size(); indices.push_back(ret); pos.push_back(p); }
+        else ret=it-pos.begin();
+        return ret;
+    }
+
+    // add edge e in edg if not already there
+    void addEdge(const Edge e, waEdges& edg)
+    {
+        if(e[0]==e[1]) return;
+        typename vector<Edge>::iterator it=edg.begin();
+        while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) it++; // to replace std::find that does not compile here for some reasons..
+        if(it==edg.end()) edg.push_back(e);
+    }
+
     /**
-    * computes a uniform sample distribution (=point located at the center of their Voronoi cell) based on farthest point sampling + Lloyd (=kmeans) relaxation
+    * @brief computes a uniform sample distribution (=point located at the center of their Voronoi cell) based on farthest point sampling + Lloyd (=kmeans) relaxation
     * @param nb : target number of samples
     * @param bias : bias distances using the input image ?
     * @param lloydIt : maximum number of Lloyd iterations.
