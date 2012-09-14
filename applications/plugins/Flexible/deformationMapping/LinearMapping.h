@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
 
 #include "../initFlexible.h"
-#include "../deformationMapping/AdaptiveDeformationMapping.h"
+#include "../deformationMapping/BaseDeformationMapping.inl"
 #include "../deformationMapping/LinearJacobianBlock.inl"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/State.inl>
@@ -123,86 +123,6 @@ protected:
 
 };
 
-
-
-
-template <class TIn, class TOut>
-class AdaptiveLinearMapping : public AdaptiveDeformationMapping<defaulttype::LinearJacobianBlock<TIn,TOut> >
-{
-public:
-    typedef defaulttype::LinearJacobianBlock<TIn,TOut> BlockType;
-    typedef AdaptiveDeformationMapping<BlockType> Inherit;
-    typedef typename Inherit::Real Real;
-    typedef typename Inherit::Coord Coord;
-    typedef typename Inherit::VecCoord VecCoord;
-    typedef typename Inherit::InVecCoord InVecCoord;
-    typedef typename Inherit::OutVecCoord OutVecCoord;
-
-    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
-    typedef typename Inherit::VRef VRef;
-    typedef typename Inherit::VReal VReal;
-    typedef typename Inherit::VGradient VGradient;
-    typedef typename Inherit::VHessian VHessian;
-
-    typedef defaulttype::LinearJacobianBlock<TIn,defaulttype::Vec3Types> PointMapperType;
-    typedef defaulttype::DefGradientTypes<Inherit::spatial_dimensions, Inherit::material_dimensions, 0, Real> FType;
-    typedef defaulttype::LinearJacobianBlock<TIn,FType> DeformationGradientMapperType;
-
-    SOFA_CLASS(SOFA_TEMPLATE2(AdaptiveLinearMapping,TIn,TOut), SOFA_TEMPLATE(AdaptiveDeformationMapping,BlockType ));
-
-protected:
-    AdaptiveLinearMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
-        : Inherit ( from, to )
-    {
-    }
-
-    virtual ~AdaptiveLinearMapping()     { }
-
-
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
-    {
-        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-
-        PointMapperType mapper;
-
-        // empty variables (not used in init)
-        typename PointMapperType::OutCoord o(defaulttype::NOINIT);
-        typename PointMapperType::MaterialToSpatial M0(defaulttype::NOINIT);
-        VGradient dw(1);
-        VHessian ddw(1);
-
-        p=Coord();
-        for(unsigned int j=0; j<ref.size(); j++ )
-        {
-            unsigned int index=ref[j];
-            mapper.init( in0[index],o,p0,M0,w[j],dw[0],ddw[0]);
-            mapper.addapply(p,in[index]);
-        }
-    }
-
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
-    {
-        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-
-        DeformationGradientMapperType mapper;
-
-        // empty variables (not used in init)
-        typename DeformationGradientMapperType::OutCoord o;
-        VHessian ddw(1);
-
-        typename DeformationGradientMapperType::OutCoord Fc;
-        for(unsigned int j=0; j<ref.size(); j++ )
-        {
-            unsigned int index=ref[j];
-            mapper.init( in0[index],o,p0,M,w[j],dw[j],ddw[0]);
-            mapper.addapply(Fc,in[index]);
-        }
-        F=Fc.getF();
-    }
-
-};
 
 
 
