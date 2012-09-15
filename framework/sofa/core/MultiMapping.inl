@@ -37,6 +37,7 @@ template< class In, class Out>
 MultiMapping<In,Out>::MultiMapping()
     : fromModels(initLink("input", "Input Object(s)"))
     , toModels(initLink("output", "Output Object(s)"))
+    , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {
 
 }
@@ -123,12 +124,10 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
-    ///<TO REMOVE>
-    //this->updateMapping();
-    ///???
-    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::position(), ConstVecId::position());
-    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::velocity(), ConstVecId::velocity());
-
+    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecDerivId::velocity(), ConstVecDerivId::velocity());
+    if (f_applyRestPosition.getValue())
+        apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 #ifdef SOFA_SMP
