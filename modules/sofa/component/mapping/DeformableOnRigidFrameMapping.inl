@@ -72,14 +72,14 @@ int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& 
 {
     //int i = points.getValue().size();
     //points.beginEdit()->push_back(c);
-    std::cout<<"addPoint should be supress"<<std::endl;
+    std::cout<<"addPoint should be supressed"<<std::endl;
     return 0;
 }
 
 template <class TIn, class TInRoot, class TOut>
 int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& /*c*/, int /*indexFrom*/)
 {
-    std::cout<<"addPoint should be supress"<<std::endl;
+    std::cout<<"addPoint should be supressed"<<std::endl;
     return 0;
 }
 

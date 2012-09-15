@@ -96,13 +96,12 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             compliance.setValue(UsedComp);
         }
     }
-    this->f_printLog.setValue(f_verbose.getValue());
 }
 
 template <class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::reinit()
 {
-    this->f_printLog.setValue(f_verbose.getValue());
+    Inherit::reinit();
 }
 
 template< class DataTypes >

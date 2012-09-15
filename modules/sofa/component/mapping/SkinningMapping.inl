@@ -124,7 +124,7 @@ void SkinningMapping<TIn, TOut>::reinit()
     WriteAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( this->f_index );
 
-    std::cerr << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size() << std::endl;
+    sout << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size() << sendl;
 
     // normalize weights
     for (unsigned int i=0; i<xto.size(); i++ )
@@ -193,11 +193,7 @@ void SkinningMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::updateWeights ()
 {
-    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
-    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
-    std::cout << "UPDATE WEIGHTS" << std::endl;
-    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
-    std::cout << "!!!!!!!!!!!!!!!" << std::endl;
+    sout << "UPDATE WEIGHTS" << sendl;
 
     ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
