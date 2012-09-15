@@ -73,6 +73,16 @@ public:
     Data<VecIndex> f_indices;
     Data<VecValue> f_out;
     Data<std::string> f_outStr;
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ValuesFromIndices<T>* = NULL)
+    {
+        return sofa::defaulttype::DataTypeName<T>::name();
+    }
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
