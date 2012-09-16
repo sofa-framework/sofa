@@ -82,6 +82,17 @@ void Mesh2PointTopologicalMapping::init()
             int toModelLastPointIndex = 0;
             toModel->clear();
 
+            PointSetTopologyModifier *toPointMod = NULL;
+            toModel->getContext()->get(toPointMod);
+            EdgeSetTopologyModifier *toEdgeMod = NULL;
+            toModel->getContext()->get(toEdgeMod);
+            TriangleSetTopologyModifier *toTriangleMod = NULL;
+            toModel->getContext()->get(toTriangleMod);
+            //QuadSetTopologyModifier *toQuadMod = NULL;
+            //TetrahedronSetTopologyModifier *toTetrahedronMod = NULL;
+            //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
+
+
             if (copyEdges.getValue() && pointBaryCoords.getValue().empty())
             {
                 serr << "copyEdges requires at least one item in pointBaryCoords" << sendl;
@@ -123,12 +134,16 @@ void Mesh2PointTopologicalMapping::init()
             // edge to edge identity mapping
             if (copyEdges.getValue())
             {
+                sout << "Copying " << fromModel->getNbEdges() << " edges" << sendl;
                 for (int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     Edge e = fromModel->getEdge(i);
                     for (unsigned int j=0; j<e.size(); ++j)
                         e[j] = pointsMappedFrom[POINT][e[j]][0];
-                    toModel->addEdge(e[0],e[1]);
+                    if (toEdgeMod)
+                        toEdgeMod->addEdgeProcess(e);
+                    else
+                        toModel->addEdge(e[0],e[1]);
                 }
             }
 
@@ -145,12 +160,16 @@ void Mesh2PointTopologicalMapping::init()
             // triangle to triangle identity mapping
             if (copyTriangles.getValue())
             {
+                sout << "Copying " << fromModel->getNbTriangles() << " triangles" << sendl;
                 for (int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     Triangle t = fromModel->getTriangle(i);
                     for (unsigned int j=0; j<t.size(); ++j)
                         t[j] = pointsMappedFrom[POINT][t[j]][0];
-                    toModel->addTriangle(t[0],t[1],t[2]);
+                    if (toTriangleMod)
+                        toTriangleMod->addTriangleProcess(t);
+                    else
+                        toModel->addTriangle(t[0],t[1],t[2]);
                 }
             }
 
