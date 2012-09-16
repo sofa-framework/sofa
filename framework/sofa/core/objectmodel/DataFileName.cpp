@@ -36,17 +36,43 @@ namespace objectmodel
 
 void DataFileName::updatePath()
 {
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+    DataFileName* parentDataFileName = NULL;
+    if (parentData)
+        parentDataFileName = dynamic_cast<DataFileName*>(parentData.get());
+    if (parentDataFileName)
+    {
+        fullpath = parentDataFileName->getFullPath();
+        if (this->m_owner)
+            this->m_owner->sout << "Updated DataFileName " << this->getName() << " with path " << fullpath << this->m_owner->sendl;
+    }
+    else
+    {
+        fullpath = m_values[currentAspect()].getValue();
+        if (!fullpath.empty())
+            helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+    }
 }
 
 void DataFileNameVector::updatePath()
 {
+    DataFileNameVector* parentDataFileNameVector = NULL;
+    if (parentData)
+    {
+        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
+    }
     fullpath = m_values[currentAspect()].getValue();
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)
-            helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+        {
+            if (parentDataFileNameVector)
+            {
+                fullpath[i] = parentDataFileNameVector->getFullPath(i);
+            }
+            else
+            {
+                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+            }
+        }
 }
 
 } // namespace objectmodel
