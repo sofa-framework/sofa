@@ -51,6 +51,7 @@ MeshObjLoader::MeshObjLoader()
     : MeshLoader()
     , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
     , faceType(MeshObjLoader::TRIANGLE)
+    , materials(initData(&materials,"materials","List of materials") )
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
     , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
     , texCoordsList(initData(&texCoordsList,"texcoordsDefinition", "Texture coordinates definition"))
@@ -83,6 +84,10 @@ MeshObjLoader::MeshObjLoader()
 }
 
 
+MeshObjLoader::~MeshObjLoader()
+{
+
+}
 
 
 bool MeshObjLoader::load()
@@ -169,8 +174,17 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     int vtn[3];
     Vec3d result;
-    int nbf = 0;
-    PrimitiveGroup curGroup;
+    helper::WriteAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
+    {
+        edgesGroups,
+        trianglesGroups,
+        quadsGroups
+    };
+    std::string curGroupName = "Default_Group";
+    std::string curMaterialName;
+    int curMaterialId = -1;
+    int nbFaces[NBFACETYPE] = {0}; // number of edges, triangles, quads
+    int groupF0[NBFACETYPE] = {0}; // first primitives indices in current group for edges, triangles, quads
     std::string line;
     std::string face, tmp;
     while( std::getline(file,line) )
@@ -215,45 +229,42 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         else if (token == "usemtl" || token == "g")
         {
             // end of current group
-            curGroup.nbp = nbf - curGroup.p0;
-            if (curGroup.nbp > 0)
-            {
-                //warning : a group is supposed to be composed with the same type of face ...
-                addGroup(curGroup);
-            }
-            curGroup.p0 = nbf;
-            curGroup.nbp = 0;
+            //curGroup.nbp = nbf - curGroup.p0;
+            for (int ft = 0; ft < NBFACETYPE; ++ft)
+                if (nbFaces[ft] > groupF0[ft])
+                {
+                    my_faceGroups[ft].push_back(PrimitiveGroup(groupF0[ft], nbFaces[ft]-groupF0[ft], curMaterialName, curGroupName, curMaterialId));
+                    groupF0[ft] = nbFaces[ft];
+                }
             if (token == "usemtl")
             {
-                curGroup.materialId = -1;
-                std::string materialName;
-                values >> materialName;
+                values >> curMaterialName;
+                curMaterialId = -1;
                 helper::vector<Material>::iterator it = my_materials.begin();
                 helper::vector<Material>::iterator itEnd = my_materials.end();
-
                 for (; it != itEnd; it++)
                 {
-                    if (it->name == curGroup.materialName)
+                    if (it->name == curMaterialName)
                     {
                         // std::cout << "Using material "<<it->name<<std::endl;
                         (*it).activated = true;
                         if (!material.activated)
                             material = *it;
-                        curGroup.materialId = it - my_materials.begin();
+                        curMaterialId = it - my_materials.begin();
                         break;
                     }
                 }
             }
             else if (token == "g")
             {
-                curGroup.groupName.clear();
+                curGroupName.clear();
                 while (!values.eof())
                 {
                     std::string g;
                     values >> g;
-                    if (!curGroup.groupName.empty())
-                        curGroup.groupName += " ";
-                    curGroup.groupName += g;
+                    if (!curGroupName.empty())
+                        curGroupName += " ";
+                    curGroupName += g;
                 }
             }
         }
@@ -311,24 +322,22 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     addEdge(&my_edges, Edge(nodes[0], nodes[1]));
                 else
                     addEdge(&my_edges, Edge(nodes[1], nodes[0]));
-
+                ++nbFaces[MeshObjLoader::EDGE];
                 faceType = MeshObjLoader::EDGE;
             }
-            else if (nodes.size()==4) // Quad
+            else if (nodes.size()==4 && !this->triangulate.getValue()) // Quad
             {
                 addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
-
+                ++nbFaces[MeshObjLoader::QUAD];
                 faceType = MeshObjLoader::QUAD;
             }
-            else // Triangularize
+            else // Triangulate
             {
                 for (unsigned int j=2; j<nodes.size(); j++)
                     addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
-
+                ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
             }
-
-            ++nbf;
 
         }
         else
@@ -338,11 +347,12 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     }
 
     // end of current group
-    if (curGroup.groupName.empty())
-        curGroup.groupName = "Default_Group";
-
-    curGroup.nbp = nbf - curGroup.p0;
-    if (curGroup.nbp > 0) addGroup(curGroup);
+    for (int ft = 0; ft < NBFACETYPE; ++ft)
+        if (nbFaces[ft] > groupF0[ft])
+        {
+            my_faceGroups[ft].push_back(PrimitiveGroup(groupF0[ft], nbFaces[ft]-groupF0[ft], curMaterialName, curGroupName, curMaterialId));
+            groupF0[ft] = nbFaces[ft];
+        }
 
 
     helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
@@ -377,7 +387,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             unsigned int ni = nIndices[i];
             unsigned int ti = tIndices[i];
             if (i >= vertexCount) continue;
-            if (ti < my_texCoords.size() && vTexCoords[pi] == sofa::defaulttype::Vector2())
+            if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::defaulttype::Vector2() ||
+                    (my_texCoords[ti]-vTexCoords[pi])*sofa::defaulttype::Vector2(-1,1) > 0))
                 vTexCoords[pi] = my_texCoords[ti];
             if (ni < my_normals.size())
                 vNormals[pi] += my_normals[ni];
@@ -388,6 +399,54 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         vNormals[i].normalize();
     }
 
+
+    // create subset lists
+    std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
+    for (int ft = 0; ft < NBFACETYPE; ++ft)
+    {
+        for (unsigned int gi=0; gi<my_faceGroups[ft].size(); ++gi)
+        {
+            PrimitiveGroup g = my_faceGroups[ft][gi];
+            helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];
+            for (int f=g.p0; f<g.p0+g.nbp; ++f)
+                out.push_back(f);
+        }
+    }
+    for (int ft = 0; ft < NBFACETYPE; ++ft)
+    {
+        std::string fname;
+        switch (faceType)
+        {
+        case MeshObjLoader::EDGE:     fname = "edge"; break;
+        case MeshObjLoader::TRIANGLE: fname = "triangle"; break;
+        case MeshObjLoader::QUAD:     fname = "quad"; break;
+        default: break;
+        }
+        for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+        {
+            std::string materialName = it->first;
+            const helper::vector<unsigned>& faces = it->second;
+            if (faces.empty()) continue;
+            std::ostringstream oname;
+            oname << "material_" << materialName << "_" << fname << "Indices";
+            //std::ostringstream ohelp;
+            //ohelp << "list of indices of " << fname << "s that should be rendered with  material " << materialName;
+            //std::string shelp = ohelp.str();
+            Data< helper::vector<unsigned int> >* dOut = new Data< helper::vector<unsigned int> >;
+            dOut->setName(oname.str());
+            //dOut->setHelp(shelp.c_str());
+            dOut->setHelp("list of face indices corresponding to a given material");
+
+            this->addData(dOut);
+            dOut->setGroup("Materials");
+            dOut->setValue(faces);
+            subsets_indices.push_back(dOut);
+        }
+    }
+
+    edgesGroups.endEdit();
+    trianglesGroups.endEdit();
+    quadsGroups.endEdit();
     positions.endEdit();
     edges.endEdit();
     triangles.endEdit();
