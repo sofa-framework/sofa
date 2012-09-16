@@ -44,11 +44,12 @@ using sofa::defaulttype::Vec4f;
 class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
 public:
-    enum FaceType { EDGE, TRIANGLE, QUAD };
+    enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
 
     SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
 protected:
     MeshObjLoader();
+    virtual ~MeshObjLoader();
 public:
     virtual bool load();
 
@@ -84,6 +85,8 @@ public:
     Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
     //Data <helper::vector<sofa::defaulttype::Vector3> > vertices;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
+
+    helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 
