@@ -24,7 +24,7 @@
   </div>
 <h1>tinyxml.h</h1><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
 <a name="l00002"></a>00002 <span class="comment">www.sourceforge.net/projects/tinyxml</span>
-<a name="l00003"></a>00003 <span class="comment">Original code (2.0 and earlier )copyright (c) 2000-2006 Lee Thomason (www.grinninglizard.com)</span>
+<a name="l00003"></a>00003 <span class="comment">Original code by Lee Thomason (www.grinninglizard.com)</span>
 <a name="l00004"></a>00004 <span class="comment"></span>
 <a name="l00005"></a>00005 <span class="comment">This software is provided &#39;as-is&#39;, without any express or implied</span>
 <a name="l00006"></a>00006 <span class="comment">warranty. In no event will the authors be held liable for any</span>
@@ -115,7 +115,7 @@
 <a name="l00091"></a>00091 
 <a name="l00092"></a>00092 <span class="keyword">const</span> <span class="keywordtype">int</span> TIXML_MAJOR_VERSION = 2;
 <a name="l00093"></a>00093 <span class="keyword">const</span> <span class="keywordtype">int</span> TIXML_MINOR_VERSION = 6;
-<a name="l00094"></a>00094 <span class="keyword">const</span> <span class="keywordtype">int</span> TIXML_PATCH_VERSION = 1;
+<a name="l00094"></a>00094 <span class="keyword">const</span> <span class="keywordtype">int</span> TIXML_PATCH_VERSION = 2;
 <a name="l00095"></a>00095 
 <a name="l00096"></a>00096 <span class="comment">/*  Internal structure for tracking location of items </span>
 <a name="l00097"></a>00097 <span class="comment">    in the XML file.</span>
@@ -144,7 +144,7 @@
 <a name="l00144"></a><a class="code" href="classTiXmlVisitor.html#afad71c71ce6473fb9b4b64cd92de4a19">00144</a>     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlVisitor.html#afad71c71ce6473fb9b4b64cd92de4a19" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; <span class="comment">/*declaration*/</span> )   { <span class="keywordflow">return</span> <span class="keyword">true</span>; }
 <a name="l00146"></a><a class="code" href="classTiXmlVisitor.html#a399b8ebca5cd14664974a32d2ce029e5">00146</a>     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlVisitor.html#a399b8ebca5cd14664974a32d2ce029e5" title="Visit a text node.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; <span class="comment">/*text*/</span> )                 { <span class="keywordflow">return</span> <span class="keyword">true</span>; }
 <a name="l00148"></a><a class="code" href="classTiXmlVisitor.html#a53a60e7a528627b31af3161972cc7fa2">00148</a>     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlVisitor.html#a53a60e7a528627b31af3161972cc7fa2" title="Visit a comment node.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; <span class="comment">/*comment*/</span> )           { <span class="keywordflow">return</span> <span class="keyword">true</span>; }
-<a name="l00150"></a><a class="code" href="classTiXmlVisitor.html#a7e284d607d275c51dac1adb58159ce28">00150</a>     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlVisitor.html#a7e284d607d275c51dac1adb58159ce28" title="Visit an unknow node.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; <span class="comment">/*unknown*/</span> )           { <span class="keywordflow">return</span> <span class="keyword">true</span>; }
+<a name="l00150"></a><a class="code" href="classTiXmlVisitor.html#a7e284d607d275c51dac1adb58159ce28">00150</a>     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlVisitor.html#a7e284d607d275c51dac1adb58159ce28" title="Visit an unknown node.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; <span class="comment">/*unknown*/</span> )           { <span class="keywordflow">return</span> <span class="keyword">true</span>; }
 <a name="l00151"></a>00151 };
 <a name="l00152"></a>00152 
 <a name="l00153"></a>00153 <span class="comment">// Only used by Attribute::Query functions</span>
@@ -715,7 +715,7 @@
 <a name="l00950"></a>00950 <span class="preprocessor"></span>
 <a name="l00951"></a>00951     <a class="code" href="classTiXmlElement.html#a01bc3ab372d35da08efcbbe65ad90c60" title="Construct an element.">TiXmlElement</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; );
 <a name="l00952"></a>00952 
-<a name="l00953"></a>00953     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; base );
+<a name="l00953"></a>00953     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; base );
 <a name="l00954"></a>00954 
 <a name="l00955"></a>00955     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>();
 <a name="l00956"></a>00956 
@@ -726,477 +726,478 @@
 <a name="l00976"></a>00976     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlElement.html#ae419a442a9701a62b0c3d8fd1cbdd12d" title="Given an attribute name, Attribute() returns the value for the attribute of that...">Attribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">double</span>* d ) <span class="keyword">const</span>;
 <a name="l00977"></a>00977 
 <a name="l00985"></a>00985     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#aea0bfe471380f281c5945770ddbf52b9" title="QueryIntAttribute examines the attribute - it is an alternative to the Attribute()...">QueryIntAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">int</span>* _value ) <span class="keyword">const</span>;
-<a name="l00987"></a>00987     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#a898d7730ecc341f0bffc7a9dadbf1ce7" title="QueryDoubleAttribute examines the attribute - see QueryIntAttribute().">QueryDoubleAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">double</span>* _value ) <span class="keyword">const</span>;
-<a name="l00989"></a><a class="code" href="classTiXmlElement.html#aa04d3af11601ef5a5f88295203a843be">00989</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#aa04d3af11601ef5a5f88295203a843be" title="QueryFloatAttribute examines the attribute - see QueryIntAttribute().">QueryFloatAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">float</span>* _value )<span class="keyword"> const </span>{
-<a name="l00990"></a>00990         <span class="keywordtype">double</span> d;
-<a name="l00991"></a>00991         <span class="keywordtype">int</span> result = <a class="code" href="classTiXmlElement.html#a898d7730ecc341f0bffc7a9dadbf1ce7" title="QueryDoubleAttribute examines the attribute - see QueryIntAttribute().">QueryDoubleAttribute</a>( name, &amp;d );
-<a name="l00992"></a>00992         <span class="keywordflow">if</span> ( result == TIXML_SUCCESS ) {
-<a name="l00993"></a>00993             *_value = (float)d;
-<a name="l00994"></a>00994         }
-<a name="l00995"></a>00995         <span class="keywordflow">return</span> result;
-<a name="l00996"></a>00996     }
-<a name="l00997"></a>00997 
-<a name="l00998"></a>00998 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01000"></a><a class="code" href="classTiXmlElement.html#a14321ac360efe906ed449d9db3fd9961">01000</a> <span class="preprocessor">    int QueryStringAttribute( const char* name, std::string* _value ) const {</span>
-<a name="l01001"></a>01001 <span class="preprocessor"></span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* cstr = <a class="code" href="classTiXmlElement.html#ae419a442a9701a62b0c3d8fd1cbdd12d" title="Given an attribute name, Attribute() returns the value for the attribute of that...">Attribute</a>( name );
-<a name="l01002"></a>01002         <span class="keywordflow">if</span> ( cstr ) {
-<a name="l01003"></a>01003             *_value = std::string( cstr );
-<a name="l01004"></a>01004             <span class="keywordflow">return</span> TIXML_SUCCESS;
-<a name="l01005"></a>01005         }
-<a name="l01006"></a>01006         <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
-<a name="l01007"></a>01007     }
-<a name="l01008"></a>01008 
-<a name="l01017"></a><a class="code" href="classTiXmlElement.html#ae3b9a03b0a56663a40801c7256683576">01017</a>     <span class="keyword">template</span>&lt; <span class="keyword">typename</span> T &gt; <span class="keywordtype">int</span> QueryValueAttribute( <span class="keyword">const</span> std::string&amp; name, T* outValue )<span class="keyword"> const</span>
-<a name="l01018"></a>01018 <span class="keyword">    </span>{
-<a name="l01019"></a>01019         <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* node = attributeSet.Find( name );
-<a name="l01020"></a>01020         <span class="keywordflow">if</span> ( !node )
-<a name="l01021"></a>01021             <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
-<a name="l01022"></a>01022 
-<a name="l01023"></a>01023         std::stringstream sstream( node-&gt;<a class="code" href="classTiXmlAttribute.html#a87705c3ccf9ee9417beb4f7cbacd4d33" title="Return the value of this attribute.">ValueStr</a>() );
-<a name="l01024"></a>01024         sstream &gt;&gt; *outValue;
-<a name="l01025"></a>01025         <span class="keywordflow">if</span> ( !sstream.fail() )
-<a name="l01026"></a>01026             <span class="keywordflow">return</span> TIXML_SUCCESS;
-<a name="l01027"></a>01027         <span class="keywordflow">return</span> TIXML_WRONG_TYPE;
-<a name="l01028"></a>01028     }
+<a name="l00987"></a>00987     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#ae48df644f890ab86fa19839ac401f00d" title="QueryUnsignedAttribute examines the attribute - see QueryIntAttribute().">QueryUnsignedAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">unsigned</span>* _value ) <span class="keyword">const</span>;
+<a name="l00992"></a>00992     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#af4a1d3f88c28eb0f3115dc39ebd83fff" title="QueryBoolAttribute examines the attribute - see QueryIntAttribute().">QueryBoolAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">bool</span>* _value ) <span class="keyword">const</span>;
+<a name="l00994"></a>00994     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#a898d7730ecc341f0bffc7a9dadbf1ce7" title="QueryDoubleAttribute examines the attribute - see QueryIntAttribute().">QueryDoubleAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">double</span>* _value ) <span class="keyword">const</span>;
+<a name="l00996"></a><a class="code" href="classTiXmlElement.html#aa04d3af11601ef5a5f88295203a843be">00996</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlElement.html#aa04d3af11601ef5a5f88295203a843be" title="QueryFloatAttribute examines the attribute - see QueryIntAttribute().">QueryFloatAttribute</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">float</span>* _value )<span class="keyword"> const </span>{
+<a name="l00997"></a>00997         <span class="keywordtype">double</span> d;
+<a name="l00998"></a>00998         <span class="keywordtype">int</span> result = <a class="code" href="classTiXmlElement.html#a898d7730ecc341f0bffc7a9dadbf1ce7" title="QueryDoubleAttribute examines the attribute - see QueryIntAttribute().">QueryDoubleAttribute</a>( name, &amp;d );
+<a name="l00999"></a>00999         <span class="keywordflow">if</span> ( result == TIXML_SUCCESS ) {
+<a name="l01000"></a>01000             *_value = (float)d;
+<a name="l01001"></a>01001         }
+<a name="l01002"></a>01002         <span class="keywordflow">return</span> result;
+<a name="l01003"></a>01003     }
+<a name="l01004"></a>01004 
+<a name="l01005"></a>01005 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01007"></a><a class="code" href="classTiXmlElement.html#a14321ac360efe906ed449d9db3fd9961">01007</a> <span class="preprocessor">    int QueryStringAttribute( const char* name, std::string* _value ) const {</span>
+<a name="l01008"></a>01008 <span class="preprocessor"></span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* cstr = <a class="code" href="classTiXmlElement.html#ae419a442a9701a62b0c3d8fd1cbdd12d" title="Given an attribute name, Attribute() returns the value for the attribute of that...">Attribute</a>( name );
+<a name="l01009"></a>01009         <span class="keywordflow">if</span> ( cstr ) {
+<a name="l01010"></a>01010             *_value = std::string( cstr );
+<a name="l01011"></a>01011             <span class="keywordflow">return</span> TIXML_SUCCESS;
+<a name="l01012"></a>01012         }
+<a name="l01013"></a>01013         <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
+<a name="l01014"></a>01014     }
+<a name="l01015"></a>01015 
+<a name="l01024"></a><a class="code" href="classTiXmlElement.html#ae3b9a03b0a56663a40801c7256683576">01024</a>     <span class="keyword">template</span>&lt; <span class="keyword">typename</span> T &gt; <span class="keywordtype">int</span> QueryValueAttribute( <span class="keyword">const</span> std::string&amp; name, T* outValue )<span class="keyword"> const</span>
+<a name="l01025"></a>01025 <span class="keyword">    </span>{
+<a name="l01026"></a>01026         <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* node = attributeSet.Find( name );
+<a name="l01027"></a>01027         <span class="keywordflow">if</span> ( !node )
+<a name="l01028"></a>01028             <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
 <a name="l01029"></a>01029 
-<a name="l01030"></a>01030     <span class="keywordtype">int</span> QueryValueAttribute( <span class="keyword">const</span> std::string&amp; name, std::string* outValue )<span class="keyword"> const</span>
-<a name="l01031"></a>01031 <span class="keyword">    </span>{
-<a name="l01032"></a>01032         <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* node = attributeSet.Find( name );
-<a name="l01033"></a>01033         <span class="keywordflow">if</span> ( !node )
-<a name="l01034"></a>01034             <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
-<a name="l01035"></a>01035         *outValue = node-&gt;<a class="code" href="classTiXmlAttribute.html#a87705c3ccf9ee9417beb4f7cbacd4d33" title="Return the value of this attribute.">ValueStr</a>();
-<a name="l01036"></a>01036         <span class="keywordflow">return</span> TIXML_SUCCESS;
-<a name="l01037"></a>01037     }
-<a name="l01038"></a>01038 <span class="preprocessor">    #endif</span>
-<a name="l01039"></a>01039 <span class="preprocessor"></span>
-<a name="l01043"></a>01043     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">char</span> * _value );
-<a name="l01044"></a>01044 
-<a name="l01045"></a>01045 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01046"></a>01046 <span class="preprocessor"></span>    <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name ) <span class="keyword">const</span>;
-<a name="l01047"></a>01047     <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span>* i ) <span class="keyword">const</span>;
-<a name="l01048"></a>01048     <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span>* d ) <span class="keyword">const</span>;
-<a name="l01049"></a>01049     <span class="keywordtype">int</span> QueryIntAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span>* _value ) <span class="keyword">const</span>;
-<a name="l01050"></a>01050     <span class="keywordtype">int</span> QueryDoubleAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span>* _value ) <span class="keyword">const</span>;
+<a name="l01030"></a>01030         std::stringstream sstream( node-&gt;<a class="code" href="classTiXmlAttribute.html#a87705c3ccf9ee9417beb4f7cbacd4d33" title="Return the value of this attribute.">ValueStr</a>() );
+<a name="l01031"></a>01031         sstream &gt;&gt; *outValue;
+<a name="l01032"></a>01032         <span class="keywordflow">if</span> ( !sstream.fail() )
+<a name="l01033"></a>01033             <span class="keywordflow">return</span> TIXML_SUCCESS;
+<a name="l01034"></a>01034         <span class="keywordflow">return</span> TIXML_WRONG_TYPE;
+<a name="l01035"></a>01035     }
+<a name="l01036"></a>01036 
+<a name="l01037"></a>01037     <span class="keywordtype">int</span> QueryValueAttribute( <span class="keyword">const</span> std::string&amp; name, std::string* outValue )<span class="keyword"> const</span>
+<a name="l01038"></a>01038 <span class="keyword">    </span>{
+<a name="l01039"></a>01039         <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* node = attributeSet.Find( name );
+<a name="l01040"></a>01040         <span class="keywordflow">if</span> ( !node )
+<a name="l01041"></a>01041             <span class="keywordflow">return</span> TIXML_NO_ATTRIBUTE;
+<a name="l01042"></a>01042         *outValue = node-&gt;<a class="code" href="classTiXmlAttribute.html#a87705c3ccf9ee9417beb4f7cbacd4d33" title="Return the value of this attribute.">ValueStr</a>();
+<a name="l01043"></a>01043         <span class="keywordflow">return</span> TIXML_SUCCESS;
+<a name="l01044"></a>01044     }
+<a name="l01045"></a>01045 <span class="preprocessor">    #endif</span>
+<a name="l01046"></a>01046 <span class="preprocessor"></span>
+<a name="l01050"></a>01050     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">char</span> * _value );
 <a name="l01051"></a>01051 
-<a name="l01053"></a>01053     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; _value );
-<a name="l01055"></a>01055     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span> _value );
-<a name="l01057"></a>01057     <span class="keywordtype">void</span> SetDoubleAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span> value );
-<a name="l01058"></a>01058 <span class="preprocessor">    #endif</span>
-<a name="l01059"></a>01059 <span class="preprocessor"></span>
-<a name="l01063"></a>01063     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name, <span class="keywordtype">int</span> value );
-<a name="l01064"></a>01064 
-<a name="l01068"></a>01068     <span class="keywordtype">void</span> SetDoubleAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name, <span class="keywordtype">double</span> value );
-<a name="l01069"></a>01069 
-<a name="l01072"></a>01072     <span class="keywordtype">void</span> RemoveAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name );
-<a name="l01073"></a>01073 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01074"></a><a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a">01074</a> <span class="preprocessor"></span>    <span class="keywordtype">void</span> <a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a" title="STL std::string form.">RemoveAttribute</a>( <span class="keyword">const</span> std::string&amp; name ) {   <a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a" title="STL std::string form.">RemoveAttribute</a> (name.c_str ());    }   
-<a name="l01075"></a>01075 <span class="preprocessor">    #endif</span>
-<a name="l01076"></a>01076 <span class="preprocessor"></span>
-<a name="l01077"></a><a class="code" href="classTiXmlElement.html#a516054c9073647d6cb29b6abe9fa0592">01077</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* <a class="code" href="classTiXmlElement.html#a516054c9073647d6cb29b6abe9fa0592" title="Access the first attribute in this element.">FirstAttribute</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> attributeSet.First(); }        
-<a name="l01078"></a>01078     <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* FirstAttribute()                { <span class="keywordflow">return</span> attributeSet.First(); }
-<a name="l01079"></a><a class="code" href="classTiXmlElement.html#a86191b49f9177be132b85b14655f1381">01079</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* <a class="code" href="classTiXmlElement.html#a86191b49f9177be132b85b14655f1381" title="Access the last attribute in this element.">LastAttribute</a>()<span class="keyword">   const   </span>{ <span class="keywordflow">return</span> attributeSet.Last(); }     
-<a name="l01080"></a>01080     <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* LastAttribute()                 { <span class="keywordflow">return</span> attributeSet.Last(); }
-<a name="l01081"></a>01081 
-<a name="l01114"></a>01114     <span class="keyword">const</span> <span class="keywordtype">char</span>* GetText() <span class="keyword">const</span>;
-<a name="l01115"></a>01115 
-<a name="l01117"></a>01117     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* Clone() <span class="keyword">const</span>;
-<a name="l01118"></a>01118     <span class="comment">// Print the Element to a FILE stream.</span>
-<a name="l01119"></a>01119     <span class="keyword">virtual</span> <span class="keywordtype">void</span> Print( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
-<a name="l01120"></a>01120 
-<a name="l01121"></a>01121     <span class="comment">/*  Attribtue parsing starts: next char past &#39;&lt;&#39;</span>
-<a name="l01122"></a>01122 <span class="comment">                         returns: next char past &#39;&gt;&#39;</span>
-<a name="l01123"></a>01123 <span class="comment">    */</span>
-<a name="l01124"></a>01124     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
-<a name="l01125"></a>01125 
-<a name="l01126"></a><a class="code" href="classTiXmlElement.html#ac5b8d0e25fa23fd9acbb6d146082901c">01126</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>*     <a class="code" href="classTiXmlElement.html#ac5b8d0e25fa23fd9acbb6d146082901c" title="Cast to a more defined type. Will return null not of the requested type.">ToElement</a>()<span class="keyword">     const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01127"></a><a class="code" href="classTiXmlElement.html#a9def86337ea7a755eb41cac980f60c7a">01127</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>*           <a class="code" href="classTiXmlElement.html#a9def86337ea7a755eb41cac980f60c7a" title="Cast to a more defined type. Will return null not of the requested type.">ToElement</a>()           { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01128"></a>01128 
-<a name="l01131"></a>01131     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Accept( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01052"></a>01052 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01053"></a>01053 <span class="preprocessor"></span>    <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name ) <span class="keyword">const</span>;
+<a name="l01054"></a>01054     <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span>* i ) <span class="keyword">const</span>;
+<a name="l01055"></a>01055     <span class="keyword">const</span> std::string* Attribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span>* d ) <span class="keyword">const</span>;
+<a name="l01056"></a>01056     <span class="keywordtype">int</span> QueryIntAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span>* _value ) <span class="keyword">const</span>;
+<a name="l01057"></a>01057     <span class="keywordtype">int</span> QueryDoubleAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span>* _value ) <span class="keyword">const</span>;
+<a name="l01058"></a>01058 
+<a name="l01060"></a>01060     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; _value );
+<a name="l01062"></a>01062     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">int</span> _value );
+<a name="l01064"></a>01064     <span class="keywordtype">void</span> SetDoubleAttribute( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span> value );
+<a name="l01065"></a>01065 <span class="preprocessor">    #endif</span>
+<a name="l01066"></a>01066 <span class="preprocessor"></span>
+<a name="l01070"></a>01070     <span class="keywordtype">void</span> SetAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name, <span class="keywordtype">int</span> value );
+<a name="l01071"></a>01071 
+<a name="l01075"></a>01075     <span class="keywordtype">void</span> SetDoubleAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name, <span class="keywordtype">double</span> value );
+<a name="l01076"></a>01076 
+<a name="l01079"></a>01079     <span class="keywordtype">void</span> RemoveAttribute( <span class="keyword">const</span> <span class="keywordtype">char</span> * name );
+<a name="l01080"></a>01080 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01081"></a><a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a">01081</a> <span class="preprocessor"></span>    <span class="keywordtype">void</span> <a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a" title="STL std::string form.">RemoveAttribute</a>( <span class="keyword">const</span> std::string&amp; name ) {   <a class="code" href="classTiXmlElement.html#a1afa6aea716511326a608e4c05df4f3a" title="STL std::string form.">RemoveAttribute</a> (name.c_str ());    }   
+<a name="l01082"></a>01082 <span class="preprocessor">    #endif</span>
+<a name="l01083"></a>01083 <span class="preprocessor"></span>
+<a name="l01084"></a><a class="code" href="classTiXmlElement.html#a516054c9073647d6cb29b6abe9fa0592">01084</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* <a class="code" href="classTiXmlElement.html#a516054c9073647d6cb29b6abe9fa0592" title="Access the first attribute in this element.">FirstAttribute</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> attributeSet.First(); }        
+<a name="l01085"></a>01085     <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* FirstAttribute()                { <span class="keywordflow">return</span> attributeSet.First(); }
+<a name="l01086"></a><a class="code" href="classTiXmlElement.html#a86191b49f9177be132b85b14655f1381">01086</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* <a class="code" href="classTiXmlElement.html#a86191b49f9177be132b85b14655f1381" title="Access the last attribute in this element.">LastAttribute</a>()<span class="keyword">   const   </span>{ <span class="keywordflow">return</span> attributeSet.Last(); }     
+<a name="l01087"></a>01087     <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* LastAttribute()                 { <span class="keywordflow">return</span> attributeSet.Last(); }
+<a name="l01088"></a>01088 
+<a name="l01121"></a>01121     <span class="keyword">const</span> <span class="keywordtype">char</span>* GetText() <span class="keyword">const</span>;
+<a name="l01122"></a>01122 
+<a name="l01124"></a>01124     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* Clone() <span class="keyword">const</span>;
+<a name="l01125"></a>01125     <span class="comment">// Print the Element to a FILE stream.</span>
+<a name="l01126"></a>01126     <span class="keyword">virtual</span> <span class="keywordtype">void</span> Print( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
+<a name="l01127"></a>01127 
+<a name="l01128"></a>01128     <span class="comment">/*  Attribtue parsing starts: next char past &#39;&lt;&#39;</span>
+<a name="l01129"></a>01129 <span class="comment">                         returns: next char past &#39;&gt;&#39;</span>
+<a name="l01130"></a>01130 <span class="comment">    */</span>
+<a name="l01131"></a>01131     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 <a name="l01132"></a>01132 
-<a name="l01133"></a>01133 <span class="keyword">protected</span>:
-<a name="l01134"></a>01134 
-<a name="l01135"></a>01135     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* target ) <span class="keyword">const</span>;
-<a name="l01136"></a>01136     <span class="keywordtype">void</span> ClearThis();   <span class="comment">// like clear, but initializes &#39;this&#39; object as well</span>
-<a name="l01137"></a>01137 
-<a name="l01138"></a>01138     <span class="comment">// Used to be public [internal use]</span>
-<a name="l01139"></a>01139 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01140"></a>01140 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01141"></a>01141 <span class="preprocessor">    #endif</span>
-<a name="l01142"></a>01142 <span class="preprocessor"></span>    <span class="comment">/*  [internal use]</span>
-<a name="l01143"></a>01143 <span class="comment">        Reads the &quot;value&quot; of the element -- another element, or text.</span>
-<a name="l01144"></a>01144 <span class="comment">        This should terminate with the current end tag.</span>
-<a name="l01145"></a>01145 <span class="comment">    */</span>
-<a name="l01146"></a>01146     <span class="keyword">const</span> <span class="keywordtype">char</span>* ReadValue( <span class="keyword">const</span> <span class="keywordtype">char</span>* in, TiXmlParsingData* prevData, TiXmlEncoding encoding );
-<a name="l01147"></a>01147 
-<a name="l01148"></a>01148 <span class="keyword">private</span>:
-<a name="l01149"></a>01149     TiXmlAttributeSet attributeSet;
-<a name="l01150"></a>01150 };
-<a name="l01151"></a>01151 
-<a name="l01152"></a>01152 
-<a name="l01155"></a><a class="code" href="classTiXmlComment.html">01155</a> <span class="keyword">class </span><a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
-<a name="l01156"></a>01156 {
-<a name="l01157"></a>01157 <span class="keyword">public</span>:
-<a name="l01159"></a><a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7">01159</a>     <a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7" title="Constructs an empty comment.">TiXmlComment</a>() : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_COMMENT ) {}
-<a name="l01161"></a><a class="code" href="classTiXmlComment.html#a37e7802ef17bc03ebe5ae79bf0713d47">01161</a>     <a class="code" href="classTiXmlComment.html#a37e7802ef17bc03ebe5ae79bf0713d47" title="Construct a comment from text.">TiXmlComment</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _value ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_COMMENT ) {
-<a name="l01162"></a>01162         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( _value );
-<a name="l01163"></a>01163     }
-<a name="l01164"></a>01164     <a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7" title="Constructs an empty comment.">TiXmlComment</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; );
-<a name="l01165"></a>01165     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; base );
-<a name="l01166"></a>01166 
-<a name="l01167"></a>01167     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>() {}
-<a name="l01168"></a>01168 
-<a name="l01170"></a>01170     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlComment.html#a0d6662bdc52488b9e12b3c7a0453d028" title="Returns a copy of this Comment.">Clone</a>() <span class="keyword">const</span>;
-<a name="l01171"></a>01171     <span class="comment">// Write this Comment to a FILE stream.</span>
-<a name="l01172"></a>01172     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlComment.html#a6b316527aaa8da0370cd68c22a5a0f5f" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
+<a name="l01133"></a><a class="code" href="classTiXmlElement.html#ac5b8d0e25fa23fd9acbb6d146082901c">01133</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>*     <a class="code" href="classTiXmlElement.html#ac5b8d0e25fa23fd9acbb6d146082901c" title="Cast to a more defined type. Will return null not of the requested type.">ToElement</a>()<span class="keyword">     const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01134"></a><a class="code" href="classTiXmlElement.html#a9def86337ea7a755eb41cac980f60c7a">01134</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>*           <a class="code" href="classTiXmlElement.html#a9def86337ea7a755eb41cac980f60c7a" title="Cast to a more defined type. Will return null not of the requested type.">ToElement</a>()           { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01135"></a>01135 
+<a name="l01138"></a>01138     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Accept( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01139"></a>01139 
+<a name="l01140"></a>01140 <span class="keyword">protected</span>:
+<a name="l01141"></a>01141 
+<a name="l01142"></a>01142     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* target ) <span class="keyword">const</span>;
+<a name="l01143"></a>01143     <span class="keywordtype">void</span> ClearThis();   <span class="comment">// like clear, but initializes &#39;this&#39; object as well</span>
+<a name="l01144"></a>01144 
+<a name="l01145"></a>01145     <span class="comment">// Used to be public [internal use]</span>
+<a name="l01146"></a>01146 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01147"></a>01147 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01148"></a>01148 <span class="preprocessor">    #endif</span>
+<a name="l01149"></a>01149 <span class="preprocessor"></span>    <span class="comment">/*  [internal use]</span>
+<a name="l01150"></a>01150 <span class="comment">        Reads the &quot;value&quot; of the element -- another element, or text.</span>
+<a name="l01151"></a>01151 <span class="comment">        This should terminate with the current end tag.</span>
+<a name="l01152"></a>01152 <span class="comment">    */</span>
+<a name="l01153"></a>01153     <span class="keyword">const</span> <span class="keywordtype">char</span>* ReadValue( <span class="keyword">const</span> <span class="keywordtype">char</span>* in, TiXmlParsingData* prevData, TiXmlEncoding encoding );
+<a name="l01154"></a>01154 
+<a name="l01155"></a>01155 <span class="keyword">private</span>:
+<a name="l01156"></a>01156     TiXmlAttributeSet attributeSet;
+<a name="l01157"></a>01157 };
+<a name="l01158"></a>01158 
+<a name="l01159"></a>01159 
+<a name="l01162"></a><a class="code" href="classTiXmlComment.html">01162</a> <span class="keyword">class </span><a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
+<a name="l01163"></a>01163 {
+<a name="l01164"></a>01164 <span class="keyword">public</span>:
+<a name="l01166"></a><a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7">01166</a>     <a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7" title="Constructs an empty comment.">TiXmlComment</a>() : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_COMMENT ) {}
+<a name="l01168"></a><a class="code" href="classTiXmlComment.html#a37e7802ef17bc03ebe5ae79bf0713d47">01168</a>     <a class="code" href="classTiXmlComment.html#a37e7802ef17bc03ebe5ae79bf0713d47" title="Construct a comment from text.">TiXmlComment</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _value ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_COMMENT ) {
+<a name="l01169"></a>01169         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( _value );
+<a name="l01170"></a>01170     }
+<a name="l01171"></a>01171     <a class="code" href="classTiXmlComment.html#aaa3252031d3e8bd3a2bf51a1c61201b7" title="Constructs an empty comment.">TiXmlComment</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; );
+<a name="l01172"></a>01172     <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; base );
 <a name="l01173"></a>01173 
-<a name="l01174"></a>01174     <span class="comment">/*  Attribtue parsing starts: at the ! of the !--</span>
-<a name="l01175"></a>01175 <span class="comment">                         returns: next char past &#39;&gt;&#39;</span>
-<a name="l01176"></a>01176 <span class="comment">    */</span>
-<a name="l01177"></a>01177     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
-<a name="l01178"></a>01178 
-<a name="l01179"></a><a class="code" href="classTiXmlComment.html#a00fb4215c20a2399ea05ac9b9e7e68a0">01179</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>*  <a class="code" href="classTiXmlComment.html#a00fb4215c20a2399ea05ac9b9e7e68a0" title="Cast to a more defined type. Will return null not of the requested type.">ToComment</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01180"></a><a class="code" href="classTiXmlComment.html#acc7c7e07e13c23f17797d642981511df">01180</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>*  <a class="code" href="classTiXmlComment.html#acc7c7e07e13c23f17797d642981511df" title="Cast to a more defined type. Will return null not of the requested type.">ToComment</a>() { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01181"></a>01181 
-<a name="l01184"></a>01184     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlComment.html#af3ac1b99fbbe9ea4fb6e14146156e43e" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01174"></a>01174     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>() {}
+<a name="l01175"></a>01175 
+<a name="l01177"></a>01177     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlComment.html#a0d6662bdc52488b9e12b3c7a0453d028" title="Returns a copy of this Comment.">Clone</a>() <span class="keyword">const</span>;
+<a name="l01178"></a>01178     <span class="comment">// Write this Comment to a FILE stream.</span>
+<a name="l01179"></a>01179     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlComment.html#a6b316527aaa8da0370cd68c22a5a0f5f" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
+<a name="l01180"></a>01180 
+<a name="l01181"></a>01181     <span class="comment">/*  Attribtue parsing starts: at the ! of the !--</span>
+<a name="l01182"></a>01182 <span class="comment">                         returns: next char past &#39;&gt;&#39;</span>
+<a name="l01183"></a>01183 <span class="comment">    */</span>
+<a name="l01184"></a>01184     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 <a name="l01185"></a>01185 
-<a name="l01186"></a>01186 <span class="keyword">protected</span>:
-<a name="l01187"></a>01187     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>* target ) <span class="keyword">const</span>;
+<a name="l01186"></a><a class="code" href="classTiXmlComment.html#a00fb4215c20a2399ea05ac9b9e7e68a0">01186</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>*  <a class="code" href="classTiXmlComment.html#a00fb4215c20a2399ea05ac9b9e7e68a0" title="Cast to a more defined type. Will return null not of the requested type.">ToComment</a>()<span class="keyword"> const  </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01187"></a><a class="code" href="classTiXmlComment.html#acc7c7e07e13c23f17797d642981511df">01187</a>     <span class="keyword">virtual</span>       <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>*  <a class="code" href="classTiXmlComment.html#acc7c7e07e13c23f17797d642981511df" title="Cast to a more defined type. Will return null not of the requested type.">ToComment</a>()        { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
 <a name="l01188"></a>01188 
-<a name="l01189"></a>01189     <span class="comment">// used to be public</span>
-<a name="l01190"></a>01190 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01191"></a>01191 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01192"></a>01192 <span class="preprocessor">    #endif</span>
-<a name="l01193"></a>01193 <span class="preprocessor"></span><span class="comment">//  virtual void StreamOut( TIXML_OSTREAM * out ) const;</span>
-<a name="l01194"></a>01194 
-<a name="l01195"></a>01195 <span class="keyword">private</span>:
-<a name="l01196"></a>01196 
-<a name="l01197"></a>01197 };
-<a name="l01198"></a>01198 
-<a name="l01199"></a>01199 
-<a name="l01205"></a><a class="code" href="classTiXmlText.html">01205</a> <span class="keyword">class </span><a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
-<a name="l01206"></a>01206 {
-<a name="l01207"></a>01207     <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>;
-<a name="l01208"></a>01208 <span class="keyword">public</span>:
-<a name="l01213"></a><a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960">01213</a>     <a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960" title="Constructor for text element.">TiXmlText</a> (<span class="keyword">const</span> <span class="keywordtype">char</span> * initValue ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a> (<a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_TEXT)
-<a name="l01214"></a>01214     {
-<a name="l01215"></a>01215         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( initValue );
-<a name="l01216"></a>01216         cdata = <span class="keyword">false</span>;
-<a name="l01217"></a>01217     }
-<a name="l01218"></a>01218     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>() {}
-<a name="l01219"></a>01219 
-<a name="l01220"></a>01220 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01222"></a><a class="code" href="classTiXmlText.html#a439792f6183a3d3fb6f2bc2b16fa5691">01222</a> <span class="preprocessor">    TiXmlText( const std::string&amp; initValue ) : TiXmlNode (TiXmlNode::TINYXML_TEXT)</span>
-<a name="l01223"></a>01223 <span class="preprocessor"></span>    {
-<a name="l01224"></a>01224         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( initValue );
-<a name="l01225"></a>01225         cdata = <span class="keyword">false</span>;
-<a name="l01226"></a>01226     }
-<a name="l01227"></a>01227 <span class="preprocessor">    #endif</span>
-<a name="l01228"></a>01228 <span class="preprocessor"></span>
-<a name="l01229"></a>01229     <a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960" title="Constructor for text element.">TiXmlText</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; copy ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_TEXT )   { copy.CopyTo( <span class="keyword">this</span> ); }
-<a name="l01230"></a>01230     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; base )                             { base.CopyTo( <span class="keyword">this</span> ); }
-<a name="l01231"></a>01231 
-<a name="l01232"></a>01232     <span class="comment">// Write this text object to a FILE stream.</span>
-<a name="l01233"></a>01233     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlText.html#a0cafbf6f236c7f02d12b2bffc2b7976b" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
-<a name="l01234"></a>01234 
-<a name="l01236"></a><a class="code" href="classTiXmlText.html#ad1a6a6b83fa2271022dd97c072a2b586">01236</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlText.html#ad1a6a6b83fa2271022dd97c072a2b586" title="Queries whether this represents text using a CDATA section.">CDATA</a>()<span class="keyword"> const              </span>{ <span class="keywordflow">return</span> cdata; }
-<a name="l01238"></a><a class="code" href="classTiXmlText.html#acb17ff7c5d09b2c839393445a3de5ea9">01238</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlText.html#acb17ff7c5d09b2c839393445a3de5ea9" title="Turns on or off a CDATA representation of text.">SetCDATA</a>( <span class="keywordtype">bool</span> _cdata )    { cdata = _cdata; }
-<a name="l01239"></a>01239 
-<a name="l01240"></a>01240     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
+<a name="l01191"></a>01191     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlComment.html#af3ac1b99fbbe9ea4fb6e14146156e43e" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01192"></a>01192 
+<a name="l01193"></a>01193 <span class="keyword">protected</span>:
+<a name="l01194"></a>01194     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>* target ) <span class="keyword">const</span>;
+<a name="l01195"></a>01195 
+<a name="l01196"></a>01196     <span class="comment">// used to be public</span>
+<a name="l01197"></a>01197 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01198"></a>01198 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01199"></a>01199 <span class="preprocessor">    #endif</span>
+<a name="l01200"></a>01200 <span class="preprocessor"></span><span class="comment">//  virtual void StreamOut( TIXML_OSTREAM * out ) const;</span>
+<a name="l01201"></a>01201 
+<a name="l01202"></a>01202 <span class="keyword">private</span>:
+<a name="l01203"></a>01203 
+<a name="l01204"></a>01204 };
+<a name="l01205"></a>01205 
+<a name="l01206"></a>01206 
+<a name="l01212"></a><a class="code" href="classTiXmlText.html">01212</a> <span class="keyword">class </span><a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
+<a name="l01213"></a>01213 {
+<a name="l01214"></a>01214     <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>;
+<a name="l01215"></a>01215 <span class="keyword">public</span>:
+<a name="l01220"></a><a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960">01220</a>     <a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960" title="Constructor for text element.">TiXmlText</a> (<span class="keyword">const</span> <span class="keywordtype">char</span> * initValue ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a> (<a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_TEXT)
+<a name="l01221"></a>01221     {
+<a name="l01222"></a>01222         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( initValue );
+<a name="l01223"></a>01223         cdata = <span class="keyword">false</span>;
+<a name="l01224"></a>01224     }
+<a name="l01225"></a>01225     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>() {}
+<a name="l01226"></a>01226 
+<a name="l01227"></a>01227 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01229"></a><a class="code" href="classTiXmlText.html#a439792f6183a3d3fb6f2bc2b16fa5691">01229</a> <span class="preprocessor">    TiXmlText( const std::string&amp; initValue ) : TiXmlNode (TiXmlNode::TINYXML_TEXT)</span>
+<a name="l01230"></a>01230 <span class="preprocessor"></span>    {
+<a name="l01231"></a>01231         <a class="code" href="classTiXmlNode.html#a2a38329ca5d3f28f98ce932b8299ae90" title="Changes the value of the node.">SetValue</a>( initValue );
+<a name="l01232"></a>01232         cdata = <span class="keyword">false</span>;
+<a name="l01233"></a>01233     }
+<a name="l01234"></a>01234 <span class="preprocessor">    #endif</span>
+<a name="l01235"></a>01235 <span class="preprocessor"></span>
+<a name="l01236"></a>01236     <a class="code" href="classTiXmlText.html#af659e77c6b87d684827f35a8f4895960" title="Constructor for text element.">TiXmlText</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; copy ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_TEXT )   { copy.CopyTo( <span class="keyword">this</span> ); }
+<a name="l01237"></a>01237     <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; base )                               { base.CopyTo( <span class="keyword">this</span> ); <span class="keywordflow">return</span> *<span class="keyword">this</span>; }
+<a name="l01238"></a>01238 
+<a name="l01239"></a>01239     <span class="comment">// Write this text object to a FILE stream.</span>
+<a name="l01240"></a>01240     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlText.html#a0cafbf6f236c7f02d12b2bffc2b7976b" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
 <a name="l01241"></a>01241 
-<a name="l01242"></a><a class="code" href="classTiXmlText.html#a895bf34ffad17f7439ab2a52b9651648">01242</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlText.html#a895bf34ffad17f7439ab2a52b9651648" title="Cast to a more defined type. Will return null not of the requested type.">ToText</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01243"></a><a class="code" href="classTiXmlText.html#ae7c3a8fd3e4dbf6c0c4363a943d72f5b">01243</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>*       <a class="code" href="classTiXmlText.html#ae7c3a8fd3e4dbf6c0c4363a943d72f5b" title="Cast to a more defined type. Will return null not of the requested type.">ToText</a>()       { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01244"></a>01244 
-<a name="l01247"></a>01247     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlText.html#a8483d4415ce9de6c4fa8f63d067d5de6" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01243"></a><a class="code" href="classTiXmlText.html#ad1a6a6b83fa2271022dd97c072a2b586">01243</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlText.html#ad1a6a6b83fa2271022dd97c072a2b586" title="Queries whether this represents text using a CDATA section.">CDATA</a>()<span class="keyword"> const              </span>{ <span class="keywordflow">return</span> cdata; }
+<a name="l01245"></a><a class="code" href="classTiXmlText.html#acb17ff7c5d09b2c839393445a3de5ea9">01245</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlText.html#acb17ff7c5d09b2c839393445a3de5ea9" title="Turns on or off a CDATA representation of text.">SetCDATA</a>( <span class="keywordtype">bool</span> _cdata )    { cdata = _cdata; }
+<a name="l01246"></a>01246 
+<a name="l01247"></a>01247     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 <a name="l01248"></a>01248 
-<a name="l01249"></a>01249 <span class="keyword">protected</span> :
-<a name="l01251"></a>01251     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlText.html#a0c411e93a27537369479d034cc82da3b" title="[internal use] Creates a new Element and returns it.">Clone</a>() <span class="keyword">const</span>;
-<a name="l01252"></a>01252     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* target ) <span class="keyword">const</span>;
-<a name="l01253"></a>01253 
-<a name="l01254"></a>01254     <span class="keywordtype">bool</span> Blank() <span class="keyword">const</span>; <span class="comment">// returns true if all white space and new lines</span>
-<a name="l01255"></a>01255     <span class="comment">// [internal use]</span>
-<a name="l01256"></a>01256 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01257"></a>01257 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01258"></a>01258 <span class="preprocessor">    #endif</span>
-<a name="l01259"></a>01259 <span class="preprocessor"></span>
-<a name="l01260"></a>01260 <span class="keyword">private</span>:
-<a name="l01261"></a>01261     <span class="keywordtype">bool</span> cdata;         <span class="comment">// true if this should be input and output as a CDATA style text element</span>
-<a name="l01262"></a>01262 };
-<a name="l01263"></a>01263 
-<a name="l01264"></a>01264 
-<a name="l01278"></a><a class="code" href="classTiXmlDeclaration.html">01278</a> <span class="keyword">class </span><a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
-<a name="l01279"></a>01279 {
-<a name="l01280"></a>01280 <span class="keyword">public</span>:
-<a name="l01282"></a><a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79">01282</a>     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>()   : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_DECLARATION ) {}
-<a name="l01283"></a>01283 
-<a name="l01284"></a>01284 <span class="preprocessor">#ifdef TIXML_USE_STL</span>
-<a name="l01286"></a>01286 <span class="preprocessor">    TiXmlDeclaration(   const std::string&amp; _version,</span>
-<a name="l01287"></a>01287 <span class="preprocessor"></span>                        <span class="keyword">const</span> std::string&amp; _encoding,
-<a name="l01288"></a>01288                         <span class="keyword">const</span> std::string&amp; _standalone );
-<a name="l01289"></a>01289 <span class="preprocessor">#endif</span>
-<a name="l01290"></a>01290 <span class="preprocessor"></span>
-<a name="l01292"></a>01292     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>(   <span class="keyword">const</span> <span class="keywordtype">char</span>* _version,
-<a name="l01293"></a>01293                         <span class="keyword">const</span> <span class="keywordtype">char</span>* _encoding,
-<a name="l01294"></a>01294                         <span class="keyword">const</span> <span class="keywordtype">char</span>* _standalone );
-<a name="l01295"></a>01295 
-<a name="l01296"></a>01296     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; copy );
-<a name="l01297"></a>01297     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; copy );
-<a name="l01298"></a>01298 
-<a name="l01299"></a>01299     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>() {}
-<a name="l01300"></a>01300 
-<a name="l01302"></a><a class="code" href="classTiXmlDeclaration.html#a02ee557b1a4545c3219ed377c103ec76">01302</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a02ee557b1a4545c3219ed377c103ec76" title="Version. Will return an empty string if none was found.">Version</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> version.c_str (); }
-<a name="l01304"></a><a class="code" href="classTiXmlDeclaration.html#a5d974231f9e9a2f0542f15f3a46cdb76">01304</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a5d974231f9e9a2f0542f15f3a46cdb76" title="Encoding. Will return an empty string if none was found.">Encoding</a>()<span class="keyword"> const        </span>{ <span class="keywordflow">return</span> encoding.c_str (); }
-<a name="l01306"></a><a class="code" href="classTiXmlDeclaration.html#a9ff06afc033d7ef730ec7c6825b97ad9">01306</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a9ff06afc033d7ef730ec7c6825b97ad9" title="Is this a standalone document?">Standalone</a>()<span class="keyword"> const      </span>{ <span class="keywordflow">return</span> standalone.c_str (); }
+<a name="l01249"></a><a class="code" href="classTiXmlText.html#a895bf34ffad17f7439ab2a52b9651648">01249</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlText.html#a895bf34ffad17f7439ab2a52b9651648" title="Cast to a more defined type. Will return null not of the requested type.">ToText</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01250"></a><a class="code" href="classTiXmlText.html#ae7c3a8fd3e4dbf6c0c4363a943d72f5b">01250</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>*       <a class="code" href="classTiXmlText.html#ae7c3a8fd3e4dbf6c0c4363a943d72f5b" title="Cast to a more defined type. Will return null not of the requested type.">ToText</a>()       { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01251"></a>01251 
+<a name="l01254"></a>01254     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlText.html#a8483d4415ce9de6c4fa8f63d067d5de6" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01255"></a>01255 
+<a name="l01256"></a>01256 <span class="keyword">protected</span> :
+<a name="l01258"></a>01258     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlText.html#a0c411e93a27537369479d034cc82da3b" title="[internal use] Creates a new Element and returns it.">Clone</a>() <span class="keyword">const</span>;
+<a name="l01259"></a>01259     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* target ) <span class="keyword">const</span>;
+<a name="l01260"></a>01260 
+<a name="l01261"></a>01261     <span class="keywordtype">bool</span> Blank() <span class="keyword">const</span>; <span class="comment">// returns true if all white space and new lines</span>
+<a name="l01262"></a>01262     <span class="comment">// [internal use]</span>
+<a name="l01263"></a>01263 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01264"></a>01264 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01265"></a>01265 <span class="preprocessor">    #endif</span>
+<a name="l01266"></a>01266 <span class="preprocessor"></span>
+<a name="l01267"></a>01267 <span class="keyword">private</span>:
+<a name="l01268"></a>01268     <span class="keywordtype">bool</span> cdata;         <span class="comment">// true if this should be input and output as a CDATA style text element</span>
+<a name="l01269"></a>01269 };
+<a name="l01270"></a>01270 
+<a name="l01271"></a>01271 
+<a name="l01285"></a><a class="code" href="classTiXmlDeclaration.html">01285</a> <span class="keyword">class </span><a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
+<a name="l01286"></a>01286 {
+<a name="l01287"></a>01287 <span class="keyword">public</span>:
+<a name="l01289"></a><a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79">01289</a>     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>()   : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>::TINYXML_DECLARATION ) {}
+<a name="l01290"></a>01290 
+<a name="l01291"></a>01291 <span class="preprocessor">#ifdef TIXML_USE_STL</span>
+<a name="l01293"></a>01293 <span class="preprocessor">    TiXmlDeclaration(   const std::string&amp; _version,</span>
+<a name="l01294"></a>01294 <span class="preprocessor"></span>                        <span class="keyword">const</span> std::string&amp; _encoding,
+<a name="l01295"></a>01295                         <span class="keyword">const</span> std::string&amp; _standalone );
+<a name="l01296"></a>01296 <span class="preprocessor">#endif</span>
+<a name="l01297"></a>01297 <span class="preprocessor"></span>
+<a name="l01299"></a>01299     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>(   <span class="keyword">const</span> <span class="keywordtype">char</span>* _version,
+<a name="l01300"></a>01300                         <span class="keyword">const</span> <span class="keywordtype">char</span>* _encoding,
+<a name="l01301"></a>01301                         <span class="keyword">const</span> <span class="keywordtype">char</span>* _standalone );
+<a name="l01302"></a>01302 
+<a name="l01303"></a>01303     <a class="code" href="classTiXmlDeclaration.html#aa0484d059bea0ea1acb47c9094382d79" title="Construct an empty declaration.">TiXmlDeclaration</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; copy );
+<a name="l01304"></a>01304     <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; copy );
+<a name="l01305"></a>01305 
+<a name="l01306"></a>01306     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>() {}
 <a name="l01307"></a>01307 
-<a name="l01309"></a>01309     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlDeclaration.html#a7cf459186040141cda7a180a6585ce2e" title="Creates a copy of this Declaration and returns it.">Clone</a>() <span class="keyword">const</span>;
-<a name="l01310"></a>01310     <span class="comment">// Print this declaration to a FILE stream.</span>
-<a name="l01311"></a>01311     <span class="keyword">virtual</span> <span class="keywordtype">void</span> Print( FILE* cfile, <span class="keywordtype">int</span> depth, TIXML_STRING* str ) <span class="keyword">const</span>;
-<a name="l01312"></a><a class="code" href="classTiXmlDeclaration.html#abf6303db4bd05b5be554036817ff1cb4">01312</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlDeclaration.html#abf6303db4bd05b5be554036817ff1cb4" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth )<span class="keyword"> const </span>{
-<a name="l01313"></a>01313         Print( cfile, depth, 0 );
-<a name="l01314"></a>01314     }
-<a name="l01315"></a>01315 
-<a name="l01316"></a>01316     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
-<a name="l01317"></a>01317 
-<a name="l01318"></a><a class="code" href="classTiXmlDeclaration.html#a1e085d3fefd1dbf5ccdbff729931a967">01318</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>* <a class="code" href="classTiXmlDeclaration.html#a1e085d3fefd1dbf5ccdbff729931a967" title="Cast to a more defined type. Will return null not of the requested type.">ToDeclaration</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01319"></a><a class="code" href="classTiXmlDeclaration.html#a6bd3d1daddcaeb9543c24bfd090969ce">01319</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>*       <a class="code" href="classTiXmlDeclaration.html#a6bd3d1daddcaeb9543c24bfd090969ce" title="Cast to a more defined type. Will return null not of the requested type.">ToDeclaration</a>()       { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01320"></a>01320 
-<a name="l01323"></a>01323     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDeclaration.html#a22315a535983b86535cdba3458669e3e" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01309"></a><a class="code" href="classTiXmlDeclaration.html#a02ee557b1a4545c3219ed377c103ec76">01309</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a02ee557b1a4545c3219ed377c103ec76" title="Version. Will return an empty string if none was found.">Version</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> version.c_str (); }
+<a name="l01311"></a><a class="code" href="classTiXmlDeclaration.html#a5d974231f9e9a2f0542f15f3a46cdb76">01311</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a5d974231f9e9a2f0542f15f3a46cdb76" title="Encoding. Will return an empty string if none was found.">Encoding</a>()<span class="keyword"> const        </span>{ <span class="keywordflow">return</span> encoding.c_str (); }
+<a name="l01313"></a><a class="code" href="classTiXmlDeclaration.html#a9ff06afc033d7ef730ec7c6825b97ad9">01313</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classTiXmlDeclaration.html#a9ff06afc033d7ef730ec7c6825b97ad9" title="Is this a standalone document?">Standalone</a>()<span class="keyword"> const      </span>{ <span class="keywordflow">return</span> standalone.c_str (); }
+<a name="l01314"></a>01314 
+<a name="l01316"></a>01316     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlDeclaration.html#a7cf459186040141cda7a180a6585ce2e" title="Creates a copy of this Declaration and returns it.">Clone</a>() <span class="keyword">const</span>;
+<a name="l01317"></a>01317     <span class="comment">// Print this declaration to a FILE stream.</span>
+<a name="l01318"></a>01318     <span class="keyword">virtual</span> <span class="keywordtype">void</span> Print( FILE* cfile, <span class="keywordtype">int</span> depth, TIXML_STRING* str ) <span class="keyword">const</span>;
+<a name="l01319"></a><a class="code" href="classTiXmlDeclaration.html#abf6303db4bd05b5be554036817ff1cb4">01319</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlDeclaration.html#abf6303db4bd05b5be554036817ff1cb4" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth )<span class="keyword"> const </span>{
+<a name="l01320"></a>01320         Print( cfile, depth, 0 );
+<a name="l01321"></a>01321     }
+<a name="l01322"></a>01322 
+<a name="l01323"></a>01323     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 <a name="l01324"></a>01324 
-<a name="l01325"></a>01325 <span class="keyword">protected</span>:
-<a name="l01326"></a>01326     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>* target ) <span class="keyword">const</span>;
-<a name="l01327"></a>01327     <span class="comment">// used to be public</span>
-<a name="l01328"></a>01328 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01329"></a>01329 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01330"></a>01330 <span class="preprocessor">    #endif</span>
-<a name="l01331"></a>01331 <span class="preprocessor"></span>
-<a name="l01332"></a>01332 <span class="keyword">private</span>:
-<a name="l01333"></a>01333 
-<a name="l01334"></a>01334     TIXML_STRING version;
-<a name="l01335"></a>01335     TIXML_STRING encoding;
-<a name="l01336"></a>01336     TIXML_STRING standalone;
-<a name="l01337"></a>01337 };
-<a name="l01338"></a>01338 
-<a name="l01339"></a>01339 
-<a name="l01347"></a><a class="code" href="classTiXmlUnknown.html">01347</a> <span class="keyword">class </span><a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
-<a name="l01348"></a>01348 {
-<a name="l01349"></a>01349 <span class="keyword">public</span>:
-<a name="l01350"></a>01350     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>() : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( TiXmlNode::TINYXML_UNKNOWN )    {}
-<a name="l01351"></a>01351     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>() {}
-<a name="l01352"></a>01352 
-<a name="l01353"></a>01353     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; copy ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( TiXmlNode::TINYXML_UNKNOWN )      { copy.CopyTo( <span class="keyword">this</span> ); }
-<a name="l01354"></a>01354     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; copy )                                      { copy.CopyTo( <span class="keyword">this</span> ); }
-<a name="l01355"></a>01355 
-<a name="l01357"></a>01357     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlUnknown.html#a0960bb7428b3f341da46244229604d73" title="Creates a copy of this Unknown and returns it.">Clone</a>() <span class="keyword">const</span>;
-<a name="l01358"></a>01358     <span class="comment">// Print this Unknown to a FILE stream.</span>
-<a name="l01359"></a>01359     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlUnknown.html#a31ba089a40fb5a1869750fce09b0bacb" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
-<a name="l01360"></a>01360 
-<a name="l01361"></a>01361     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
+<a name="l01325"></a><a class="code" href="classTiXmlDeclaration.html#a1e085d3fefd1dbf5ccdbff729931a967">01325</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>* <a class="code" href="classTiXmlDeclaration.html#a1e085d3fefd1dbf5ccdbff729931a967" title="Cast to a more defined type. Will return null not of the requested type.">ToDeclaration</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01326"></a><a class="code" href="classTiXmlDeclaration.html#a6bd3d1daddcaeb9543c24bfd090969ce">01326</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>*       <a class="code" href="classTiXmlDeclaration.html#a6bd3d1daddcaeb9543c24bfd090969ce" title="Cast to a more defined type. Will return null not of the requested type.">ToDeclaration</a>()       { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01327"></a>01327 
+<a name="l01330"></a>01330     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDeclaration.html#a22315a535983b86535cdba3458669e3e" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* visitor ) <span class="keyword">const</span>;
+<a name="l01331"></a>01331 
+<a name="l01332"></a>01332 <span class="keyword">protected</span>:
+<a name="l01333"></a>01333     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>* target ) <span class="keyword">const</span>;
+<a name="l01334"></a>01334     <span class="comment">// used to be public</span>
+<a name="l01335"></a>01335 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01336"></a>01336 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01337"></a>01337 <span class="preprocessor">    #endif</span>
+<a name="l01338"></a>01338 <span class="preprocessor"></span>
+<a name="l01339"></a>01339 <span class="keyword">private</span>:
+<a name="l01340"></a>01340 
+<a name="l01341"></a>01341     TIXML_STRING version;
+<a name="l01342"></a>01342     TIXML_STRING encoding;
+<a name="l01343"></a>01343     TIXML_STRING standalone;
+<a name="l01344"></a>01344 };
+<a name="l01345"></a>01345 
+<a name="l01346"></a>01346 
+<a name="l01354"></a><a class="code" href="classTiXmlUnknown.html">01354</a> <span class="keyword">class </span><a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
+<a name="l01355"></a>01355 {
+<a name="l01356"></a>01356 <span class="keyword">public</span>:
+<a name="l01357"></a>01357     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>() : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( TiXmlNode::TINYXML_UNKNOWN )    {}
+<a name="l01358"></a>01358     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>() {}
+<a name="l01359"></a>01359 
+<a name="l01360"></a>01360     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; copy ) : <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>( TiXmlNode::TINYXML_UNKNOWN )      { copy.CopyTo( <span class="keyword">this</span> ); }
+<a name="l01361"></a>01361     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; copy )                                     { copy.CopyTo( <span class="keyword">this</span> ); <span class="keywordflow">return</span> *<span class="keyword">this</span>; }
 <a name="l01362"></a>01362 
-<a name="l01363"></a><a class="code" href="classTiXmlUnknown.html#ab0313e5fe77987d746ac1a97a254419d">01363</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>*     <a class="code" href="classTiXmlUnknown.html#ab0313e5fe77987d746ac1a97a254419d" title="Cast to a more defined type. Will return null not of the requested type.">ToUnknown</a>()<span class="keyword">     const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01364"></a><a class="code" href="classTiXmlUnknown.html#a67c9fd22940e8c47f706a72cdd2e332c">01364</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>*           <a class="code" href="classTiXmlUnknown.html#a67c9fd22940e8c47f706a72cdd2e332c" title="Cast to a more defined type. Will return null not of the requested type.">ToUnknown</a>()     { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01365"></a>01365 
-<a name="l01368"></a>01368     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlUnknown.html#ad7122e5135581b3c832a1a3217760a93" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01364"></a>01364     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlUnknown.html#a0960bb7428b3f341da46244229604d73" title="Creates a copy of this Unknown and returns it.">Clone</a>() <span class="keyword">const</span>;
+<a name="l01365"></a>01365     <span class="comment">// Print this Unknown to a FILE stream.</span>
+<a name="l01366"></a>01366     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlUnknown.html#a31ba089a40fb5a1869750fce09b0bacb" title="All TinyXml classes can print themselves to a filestream or the string class (TiXmlString...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth ) <span class="keyword">const</span>;
+<a name="l01367"></a>01367 
+<a name="l01368"></a>01368     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* Parse( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 <a name="l01369"></a>01369 
-<a name="l01370"></a>01370 <span class="keyword">protected</span>:
-<a name="l01371"></a>01371     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* target ) <span class="keyword">const</span>;
+<a name="l01370"></a><a class="code" href="classTiXmlUnknown.html#ab0313e5fe77987d746ac1a97a254419d">01370</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>*     <a class="code" href="classTiXmlUnknown.html#ab0313e5fe77987d746ac1a97a254419d" title="Cast to a more defined type. Will return null not of the requested type.">ToUnknown</a>()<span class="keyword">     const   </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01371"></a><a class="code" href="classTiXmlUnknown.html#a67c9fd22940e8c47f706a72cdd2e332c">01371</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>*           <a class="code" href="classTiXmlUnknown.html#a67c9fd22940e8c47f706a72cdd2e332c" title="Cast to a more defined type. Will return null not of the requested type.">ToUnknown</a>()             { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
 <a name="l01372"></a>01372 
-<a name="l01373"></a>01373 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01374"></a>01374 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01375"></a>01375 <span class="preprocessor">    #endif</span>
-<a name="l01376"></a>01376 <span class="preprocessor"></span>
-<a name="l01377"></a>01377 <span class="keyword">private</span>:
-<a name="l01378"></a>01378 
-<a name="l01379"></a>01379 };
-<a name="l01380"></a>01380 
-<a name="l01381"></a>01381 
-<a name="l01386"></a><a class="code" href="classTiXmlDocument.html">01386</a> <span class="keyword">class </span><a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
-<a name="l01387"></a>01387 {
-<a name="l01388"></a>01388 <span class="keyword">public</span>:
-<a name="l01390"></a>01390     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>();
-<a name="l01392"></a>01392     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * documentName );
-<a name="l01393"></a>01393 
-<a name="l01394"></a>01394 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01396"></a>01396 <span class="preprocessor">    TiXmlDocument( const std::string&amp; documentName );</span>
-<a name="l01397"></a>01397 <span class="preprocessor"></span><span class="preprocessor">    #endif</span>
-<a name="l01398"></a>01398 <span class="preprocessor"></span>
-<a name="l01399"></a>01399     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; copy );
-<a name="l01400"></a>01400     <span class="keywordtype">void</span> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; copy );
-<a name="l01401"></a>01401 
-<a name="l01402"></a>01402     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>() {}
-<a name="l01403"></a>01403 
-<a name="l01408"></a>01408     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-<a name="l01410"></a>01410     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>() <span class="keyword">const</span>;
-<a name="l01412"></a>01412     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-<a name="l01414"></a>01414     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * filename ) <span class="keyword">const</span>;
-<a name="l01420"></a>01420     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-<a name="l01422"></a>01422     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( FILE* ) <span class="keyword">const</span>;
-<a name="l01423"></a>01423 
-<a name="l01424"></a>01424 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01425"></a><a class="code" href="classTiXmlDocument.html#a18ae6ed34fed7991ebc220862dfac884">01425</a> <span class="preprocessor"></span>    <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( <span class="keyword">const</span> std::string&amp; filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )           
-<a name="l01426"></a>01426     {
-<a name="l01427"></a>01427         <span class="keywordflow">return</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( filename.c_str(), encoding );
-<a name="l01428"></a>01428     }
-<a name="l01429"></a><a class="code" href="classTiXmlDocument.html#a3d4fae0463f3f03679ba0b7cf6f2df52">01429</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( <span class="keyword">const</span> std::string&amp; filename ) <span class="keyword">const</span>      
-<a name="l01430"></a>01430     {
-<a name="l01431"></a>01431         <span class="keywordflow">return</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( filename.c_str() );
-<a name="l01432"></a>01432     }
-<a name="l01433"></a>01433 <span class="preprocessor">    #endif</span>
-<a name="l01434"></a>01434 <span class="preprocessor"></span>
-<a name="l01439"></a>01439     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlDocument.html#a17ebabe36926ef398e78dec0d0ad0378" title="Parse the given null terminated block of xml data.">Parse</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data = 0, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-<a name="l01440"></a>01440 
-<a name="l01445"></a><a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be">01445</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be" title="Get the root element -- the only top level element -- of the document.">RootElement</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlNode.html#af4fb652f6bd79ae0d5ce7d0f7d3c0fba" title="Convenience function to get through elements.">FirstChildElement</a>(); }
-<a name="l01446"></a>01446     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be" title="Get the root element -- the only top level element -- of the document.">RootElement</a>()                 { <span class="keywordflow">return</span> <a class="code" href="classTiXmlNode.html#af4fb652f6bd79ae0d5ce7d0f7d3c0fba" title="Convenience function to get through elements.">FirstChildElement</a>(); }
+<a name="l01375"></a>01375     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlUnknown.html#ad7122e5135581b3c832a1a3217760a93" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01376"></a>01376 
+<a name="l01377"></a>01377 <span class="keyword">protected</span>:
+<a name="l01378"></a>01378     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* target ) <span class="keyword">const</span>;
+<a name="l01379"></a>01379 
+<a name="l01380"></a>01380 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01381"></a>01381 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01382"></a>01382 <span class="preprocessor">    #endif</span>
+<a name="l01383"></a>01383 <span class="preprocessor"></span>
+<a name="l01384"></a>01384 <span class="keyword">private</span>:
+<a name="l01385"></a>01385 
+<a name="l01386"></a>01386 };
+<a name="l01387"></a>01387 
+<a name="l01388"></a>01388 
+<a name="l01393"></a><a class="code" href="classTiXmlDocument.html">01393</a> <span class="keyword">class </span><a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>
+<a name="l01394"></a>01394 {
+<a name="l01395"></a>01395 <span class="keyword">public</span>:
+<a name="l01397"></a>01397     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>();
+<a name="l01399"></a>01399     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * documentName );
+<a name="l01400"></a>01400 
+<a name="l01401"></a>01401 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01403"></a>01403 <span class="preprocessor">    TiXmlDocument( const std::string&amp; documentName );</span>
+<a name="l01404"></a>01404 <span class="preprocessor"></span><span class="preprocessor">    #endif</span>
+<a name="l01405"></a>01405 <span class="preprocessor"></span>
+<a name="l01406"></a>01406     <a class="code" href="classTiXmlDocument.html#a9f5e84335708fde98400230f9f12659c" title="Create an empty document, that has no name.">TiXmlDocument</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; copy );
+<a name="l01407"></a>01407     <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; copy );
+<a name="l01408"></a>01408 
+<a name="l01409"></a>01409     <span class="keyword">virtual</span> ~<a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>() {}
+<a name="l01410"></a>01410 
+<a name="l01415"></a>01415     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+<a name="l01417"></a>01417     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>() <span class="keyword">const</span>;
+<a name="l01419"></a>01419     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+<a name="l01421"></a>01421     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * filename ) <span class="keyword">const</span>;
+<a name="l01427"></a>01427     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+<a name="l01429"></a>01429     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( FILE* ) <span class="keyword">const</span>;
+<a name="l01430"></a>01430 
+<a name="l01431"></a>01431 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01432"></a><a class="code" href="classTiXmlDocument.html#a18ae6ed34fed7991ebc220862dfac884">01432</a> <span class="preprocessor"></span>    <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( <span class="keyword">const</span> std::string&amp; filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )           
+<a name="l01433"></a>01433     {
+<a name="l01434"></a>01434         <span class="keywordflow">return</span> <a class="code" href="classTiXmlDocument.html#a4c852a889c02cf251117fd1d9fe1845f" title="Load a file using the current document value.">LoadFile</a>( filename.c_str(), encoding );
+<a name="l01435"></a>01435     }
+<a name="l01436"></a><a class="code" href="classTiXmlDocument.html#a3d4fae0463f3f03679ba0b7cf6f2df52">01436</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( <span class="keyword">const</span> std::string&amp; filename ) <span class="keyword">const</span>      
+<a name="l01437"></a>01437     {
+<a name="l01438"></a>01438         <span class="keywordflow">return</span> <a class="code" href="classTiXmlDocument.html#a21c0aeb0d0a720169ad4ac89523ebe93" title="Save a file using the current document value. Returns true if successful.">SaveFile</a>( filename.c_str() );
+<a name="l01439"></a>01439     }
+<a name="l01440"></a>01440 <span class="preprocessor">    #endif</span>
+<a name="l01441"></a>01441 <span class="preprocessor"></span>
+<a name="l01446"></a>01446     <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlDocument.html#a17ebabe36926ef398e78dec0d0ad0378" title="Parse the given null terminated block of xml data.">Parse</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* p, TiXmlParsingData* data = 0, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
 <a name="l01447"></a>01447 
-<a name="l01453"></a><a class="code" href="classTiXmlDocument.html#a6dfc01a6e5d58e56acd537dfd3bdeb29">01453</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a6dfc01a6e5d58e56acd537dfd3bdeb29" title="If an error occurs, Error will be set to true.">Error</a>()<span class="keyword"> const                      </span>{ <span class="keywordflow">return</span> error; }
+<a name="l01452"></a><a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be">01452</a>     <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be" title="Get the root element -- the only top level element -- of the document.">RootElement</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlNode.html#af4fb652f6bd79ae0d5ce7d0f7d3c0fba" title="Convenience function to get through elements.">FirstChildElement</a>(); }
+<a name="l01453"></a>01453     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlDocument.html#ad09d17927f908f40efb406af2fb873be" title="Get the root element -- the only top level element -- of the document.">RootElement</a>()                 { <span class="keywordflow">return</span> <a class="code" href="classTiXmlNode.html#af4fb652f6bd79ae0d5ce7d0f7d3c0fba" title="Convenience function to get through elements.">FirstChildElement</a>(); }
 <a name="l01454"></a>01454 
-<a name="l01456"></a><a class="code" href="classTiXmlDocument.html#a9d0f689f6e09ea494ea547be8d79c25e">01456</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code" href="classTiXmlDocument.html#a9d0f689f6e09ea494ea547be8d79c25e" title="Contains a textual (english) description of the error if one occurs.">ErrorDesc</a>()<span class="keyword"> const  </span>{ <span class="keywordflow">return</span> errorDesc.c_str (); }
-<a name="l01457"></a>01457 
-<a name="l01461"></a><a class="code" href="classTiXmlDocument.html#af96fc2f3f9ec6422782bfe916c9e778f">01461</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#af96fc2f3f9ec6422782bfe916c9e778f" title="Generally, you probably want the error string ( ErrorDesc() ).">ErrorId</a>()<span class="keyword">   const               </span>{ <span class="keywordflow">return</span> errorId; }
-<a name="l01462"></a>01462 
-<a name="l01470"></a><a class="code" href="classTiXmlDocument.html#af30efc75e804aa2e92fb8be3a8cb676e">01470</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#af30efc75e804aa2e92fb8be3a8cb676e" title="Returns the location (if known) of the error.">ErrorRow</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> errorLocation.row+1; }
-<a name="l01471"></a><a class="code" href="classTiXmlDocument.html#aa90bc630ee5203c6109ca5fad3323649">01471</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#aa90bc630ee5203c6109ca5fad3323649" title="The column where the error occured. See ErrorRow().">ErrorCol</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> errorLocation.col+1; } 
-<a name="l01472"></a>01472 
-<a name="l01497"></a><a class="code" href="classTiXmlDocument.html#a51dac56316f89b35bdb7d0d433ba988e">01497</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#a51dac56316f89b35bdb7d0d433ba988e" title="SetTabSize() allows the error reporting functions (ErrorRow() and ErrorCol()) to...">SetTabSize</a>( <span class="keywordtype">int</span> _tabsize )     { tabsize = _tabsize; }
-<a name="l01498"></a>01498 
-<a name="l01499"></a>01499     <span class="keywordtype">int</span> TabSize()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> tabsize; }
-<a name="l01500"></a>01500 
-<a name="l01504"></a><a class="code" href="classTiXmlDocument.html#ac66b8c28db86363315712a3574e87c35">01504</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#ac66b8c28db86363315712a3574e87c35" title="If you have handled the error, it can be reset with this call.">ClearError</a>()                       {   error = <span class="keyword">false</span>; 
-<a name="l01505"></a>01505                                                 errorId = 0; 
-<a name="l01506"></a>01506                                                 errorDesc = <span class="stringliteral">&quot;&quot;</span>; 
-<a name="l01507"></a>01507                                                 errorLocation.row = errorLocation.col = 0; 
-<a name="l01508"></a>01508                                                 <span class="comment">//errorLocation.last = 0; </span>
-<a name="l01509"></a>01509                                             }
-<a name="l01510"></a>01510 
-<a name="l01512"></a><a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510">01512</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>()<span class="keyword"> const                      </span>{ <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>( stdout, 0 ); }
-<a name="l01513"></a>01513 
-<a name="l01514"></a>01514     <span class="comment">/* Write the document to a string using formatted printing (&quot;pretty print&quot;). This</span>
-<a name="l01515"></a>01515 <span class="comment">        will allocate a character array (new char[]) and return it as a pointer. The</span>
-<a name="l01516"></a>01516 <span class="comment">        calling code pust call delete[] on the return char* to avoid a memory leak.</span>
-<a name="l01517"></a>01517 <span class="comment">    */</span>
-<a name="l01518"></a>01518     <span class="comment">//char* PrintToMemory() const; </span>
-<a name="l01519"></a>01519 
-<a name="l01521"></a>01521     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth = 0 ) <span class="keyword">const</span>;
-<a name="l01522"></a>01522     <span class="comment">// [internal use]</span>
-<a name="l01523"></a>01523     <span class="keywordtype">void</span> SetError( <span class="keywordtype">int</span> err, <span class="keyword">const</span> <span class="keywordtype">char</span>* errorLocation, TiXmlParsingData* prevData, TiXmlEncoding encoding );
-<a name="l01524"></a>01524 
-<a name="l01525"></a><a class="code" href="classTiXmlDocument.html#a1dc977bde3e4fe85a8eb9d88a35ef5a4">01525</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>*    <a class="code" href="classTiXmlDocument.html#a1dc977bde3e4fe85a8eb9d88a35ef5a4" title="Cast to a more defined type. Will return null not of the requested type.">ToDocument</a>()<span class="keyword">    const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01526"></a><a class="code" href="classTiXmlDocument.html#a1025d942a1f328fd742d545e37efdd42">01526</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>*          <a class="code" href="classTiXmlDocument.html#a1025d942a1f328fd742d545e37efdd42" title="Cast to a more defined type. Will return null not of the requested type.">ToDocument</a>()          { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
-<a name="l01527"></a>01527 
-<a name="l01530"></a>01530     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#aa545aae325d9752ad64120bc4ecf939a" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01460"></a><a class="code" href="classTiXmlDocument.html#a6dfc01a6e5d58e56acd537dfd3bdeb29">01460</a>     <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#a6dfc01a6e5d58e56acd537dfd3bdeb29" title="If an error occurs, Error will be set to true.">Error</a>()<span class="keyword"> const                      </span>{ <span class="keywordflow">return</span> error; }
+<a name="l01461"></a>01461 
+<a name="l01463"></a><a class="code" href="classTiXmlDocument.html#a9d0f689f6e09ea494ea547be8d79c25e">01463</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code" href="classTiXmlDocument.html#a9d0f689f6e09ea494ea547be8d79c25e" title="Contains a textual (english) description of the error if one occurs.">ErrorDesc</a>()<span class="keyword"> const  </span>{ <span class="keywordflow">return</span> errorDesc.c_str (); }
+<a name="l01464"></a>01464 
+<a name="l01468"></a><a class="code" href="classTiXmlDocument.html#af96fc2f3f9ec6422782bfe916c9e778f">01468</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#af96fc2f3f9ec6422782bfe916c9e778f" title="Generally, you probably want the error string ( ErrorDesc() ).">ErrorId</a>()<span class="keyword">   const               </span>{ <span class="keywordflow">return</span> errorId; }
+<a name="l01469"></a>01469 
+<a name="l01477"></a><a class="code" href="classTiXmlDocument.html#af30efc75e804aa2e92fb8be3a8cb676e">01477</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#af30efc75e804aa2e92fb8be3a8cb676e" title="Returns the location (if known) of the error.">ErrorRow</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> errorLocation.row+1; }
+<a name="l01478"></a><a class="code" href="classTiXmlDocument.html#aa90bc630ee5203c6109ca5fad3323649">01478</a>     <span class="keywordtype">int</span> <a class="code" href="classTiXmlDocument.html#aa90bc630ee5203c6109ca5fad3323649" title="The column where the error occured. See ErrorRow().">ErrorCol</a>()<span class="keyword"> const    </span>{ <span class="keywordflow">return</span> errorLocation.col+1; } 
+<a name="l01479"></a>01479 
+<a name="l01504"></a><a class="code" href="classTiXmlDocument.html#a51dac56316f89b35bdb7d0d433ba988e">01504</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#a51dac56316f89b35bdb7d0d433ba988e" title="SetTabSize() allows the error reporting functions (ErrorRow() and ErrorCol()) to...">SetTabSize</a>( <span class="keywordtype">int</span> _tabsize )     { tabsize = _tabsize; }
+<a name="l01505"></a>01505 
+<a name="l01506"></a>01506     <span class="keywordtype">int</span> TabSize()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> tabsize; }
+<a name="l01507"></a>01507 
+<a name="l01511"></a><a class="code" href="classTiXmlDocument.html#ac66b8c28db86363315712a3574e87c35">01511</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#ac66b8c28db86363315712a3574e87c35" title="If you have handled the error, it can be reset with this call.">ClearError</a>()                       {   error = <span class="keyword">false</span>; 
+<a name="l01512"></a>01512                                                 errorId = 0; 
+<a name="l01513"></a>01513                                                 errorDesc = <span class="stringliteral">&quot;&quot;</span>; 
+<a name="l01514"></a>01514                                                 errorLocation.row = errorLocation.col = 0; 
+<a name="l01515"></a>01515                                                 <span class="comment">//errorLocation.last = 0; </span>
+<a name="l01516"></a>01516                                             }
+<a name="l01517"></a>01517 
+<a name="l01519"></a><a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510">01519</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>()<span class="keyword"> const                      </span>{ <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>( stdout, 0 ); }
+<a name="l01520"></a>01520 
+<a name="l01521"></a>01521     <span class="comment">/* Write the document to a string using formatted printing (&quot;pretty print&quot;). This</span>
+<a name="l01522"></a>01522 <span class="comment">        will allocate a character array (new char[]) and return it as a pointer. The</span>
+<a name="l01523"></a>01523 <span class="comment">        calling code pust call delete[] on the return char* to avoid a memory leak.</span>
+<a name="l01524"></a>01524 <span class="comment">    */</span>
+<a name="l01525"></a>01525     <span class="comment">//char* PrintToMemory() const; </span>
+<a name="l01526"></a>01526 
+<a name="l01528"></a>01528     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classTiXmlDocument.html#af08389ec70ee9b2de7f800e206a18510" title="Write the document to standard out using formatted printing (&amp;quot;pretty print&amp;quot;)...">Print</a>( FILE* cfile, <span class="keywordtype">int</span> depth = 0 ) <span class="keyword">const</span>;
+<a name="l01529"></a>01529     <span class="comment">// [internal use]</span>
+<a name="l01530"></a>01530     <span class="keywordtype">void</span> SetError( <span class="keywordtype">int</span> err, <span class="keyword">const</span> <span class="keywordtype">char</span>* errorLocation, TiXmlParsingData* prevData, TiXmlEncoding encoding );
 <a name="l01531"></a>01531 
-<a name="l01532"></a>01532 <span class="keyword">protected</span> :
-<a name="l01533"></a>01533     <span class="comment">// [internal use]</span>
-<a name="l01534"></a>01534     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlDocument.html#a4968661cab4a1f44a23329c6f8db1907" title="Create an exact duplicate of this node and return it.">Clone</a>() <span class="keyword">const</span>;
-<a name="l01535"></a>01535 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01536"></a>01536 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
-<a name="l01537"></a>01537 <span class="preprocessor">    #endif</span>
-<a name="l01538"></a>01538 <span class="preprocessor"></span>
-<a name="l01539"></a>01539 <span class="keyword">private</span>:
-<a name="l01540"></a>01540     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>* target ) <span class="keyword">const</span>;
-<a name="l01541"></a>01541 
-<a name="l01542"></a>01542     <span class="keywordtype">bool</span> error;
-<a name="l01543"></a>01543     <span class="keywordtype">int</span>  errorId;
-<a name="l01544"></a>01544     TIXML_STRING errorDesc;
-<a name="l01545"></a>01545     <span class="keywordtype">int</span> tabsize;
-<a name="l01546"></a>01546     TiXmlCursor errorLocation;
-<a name="l01547"></a>01547     <span class="keywordtype">bool</span> useMicrosoftBOM;       <span class="comment">// the UTF-8 BOM were found when read. Note this, and try to write.</span>
-<a name="l01548"></a>01548 };
-<a name="l01549"></a>01549 
-<a name="l01550"></a>01550 
-<a name="l01631"></a><a class="code" href="classTiXmlHandle.html">01631</a> <span class="keyword">class </span><a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>
-<a name="l01632"></a>01632 {
-<a name="l01633"></a>01633 <span class="keyword">public</span>:
-<a name="l01635"></a><a class="code" href="classTiXmlHandle.html#aba18fd7bdefb942ecdea4bf4b8e29ec8">01635</a>     <a class="code" href="classTiXmlHandle.html#aba18fd7bdefb942ecdea4bf4b8e29ec8" title="Create a handle from any node (at any depth of the tree.) This can be a null pointer...">TiXmlHandle</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* _node )                 { this-&gt;node = _node; }
-<a name="l01637"></a><a class="code" href="classTiXmlHandle.html#a236d7855e1e56ccc7b980630c48c7fd7">01637</a>     <a class="code" href="classTiXmlHandle.html#a236d7855e1e56ccc7b980630c48c7fd7" title="Copy constructor.">TiXmlHandle</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>&amp; ref )           { this-&gt;node = ref.node; }
-<a name="l01638"></a>01638     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>&amp; ref ) { this-&gt;node = ref.node; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }
-<a name="l01639"></a>01639 
-<a name="l01641"></a>01641     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>() <span class="keyword">const</span>;
-<a name="l01643"></a>01643     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * value ) <span class="keyword">const</span>;
-<a name="l01645"></a>01645     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>() <span class="keyword">const</span>;
-<a name="l01647"></a>01647     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * value ) <span class="keyword">const</span>;
-<a name="l01648"></a>01648 
-<a name="l01652"></a>01652     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
-<a name="l01656"></a>01656     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
-<a name="l01661"></a>01661     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
-<a name="l01666"></a>01666     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
-<a name="l01667"></a>01667 
-<a name="l01668"></a>01668 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01669"></a>01669 <span class="preprocessor"></span>    <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( <span class="keyword">const</span> std::string&amp; _value )<span class="keyword"> const               </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( _value.c_str() ); }
-<a name="l01670"></a>01670     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( <span class="keyword">const</span> std::string&amp; _value )<span class="keyword"> const        </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( _value.c_str() ); }
-<a name="l01671"></a>01671 
-<a name="l01672"></a>01672     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keyword">const</span> std::string&amp; _value, <span class="keywordtype">int</span> index )<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( _value.c_str(), index ); }
-<a name="l01673"></a>01673     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keyword">const</span> std::string&amp; _value, <span class="keywordtype">int</span> index )<span class="keyword"> const  </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( _value.c_str(), index ); }
-<a name="l01674"></a>01674 <span class="preprocessor">    #endif</span>
-<a name="l01675"></a>01675 <span class="preprocessor"></span>
-<a name="l01678"></a><a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3">01678</a>     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3" title="Return the handle as a TiXmlNode.">ToNode</a>()<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> node; } 
-<a name="l01681"></a><a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e">01681</a>     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e" title="Return the handle as a TiXmlElement.">ToElement</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToElement() ) ? node-&gt;ToElement() : 0 ); }
-<a name="l01684"></a><a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586">01684</a>     <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586" title="Return the handle as a TiXmlText.">ToText</a>()<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToText() ) ? node-&gt;ToText() : 0 ); }
-<a name="l01687"></a><a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674">01687</a>     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* <a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674" title="Return the handle as a TiXmlUnknown.">ToUnknown</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToUnknown() ) ? node-&gt;ToUnknown() : 0 ); }
-<a name="l01688"></a>01688 
-<a name="l01692"></a><a class="code" href="classTiXmlHandle.html#ab44b723a8dc9af72838a303c079d0376">01692</a>     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlHandle.html#ab44b723a8dc9af72838a303c079d0376">Node</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3" title="Return the handle as a TiXmlNode.">ToNode</a>(); } 
-<a name="l01696"></a><a class="code" href="classTiXmlHandle.html#acb5fe8388a526289ea65e817a51e05e7">01696</a>     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlHandle.html#acb5fe8388a526289ea65e817a51e05e7">Element</a>()<span class="keyword"> const   </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e" title="Return the handle as a TiXmlElement.">ToElement</a>(); }
-<a name="l01700"></a><a class="code" href="classTiXmlHandle.html#a9fc739c8a18d160006f82572fc143d13">01700</a>     <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlHandle.html#a9fc739c8a18d160006f82572fc143d13">Text</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586" title="Return the handle as a TiXmlText.">ToText</a>(); }
-<a name="l01704"></a><a class="code" href="classTiXmlHandle.html#a49675b74357ba2aae124657a9a1ef465">01704</a>     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* <a class="code" href="classTiXmlHandle.html#a49675b74357ba2aae124657a9a1ef465">Unknown</a>()<span class="keyword"> const   </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674" title="Return the handle as a TiXmlUnknown.">ToUnknown</a>(); }
-<a name="l01705"></a>01705 
-<a name="l01706"></a>01706 <span class="keyword">private</span>:
-<a name="l01707"></a>01707     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* node;
-<a name="l01708"></a>01708 };
-<a name="l01709"></a>01709 
-<a name="l01710"></a>01710 
-<a name="l01730"></a><a class="code" href="classTiXmlPrinter.html">01730</a> <span class="keyword">class </span><a class="code" href="classTiXmlPrinter.html" title="Print to memory functionality.">TiXmlPrinter</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>
-<a name="l01731"></a>01731 {
-<a name="l01732"></a>01732 <span class="keyword">public</span>:
-<a name="l01733"></a>01733     <a class="code" href="classTiXmlPrinter.html" title="Print to memory functionality.">TiXmlPrinter</a>() : depth( 0 ), simpleTextPrint( <span class="keyword">false</span> ),
-<a name="l01734"></a>01734                      buffer(), indent( <span class="stringliteral">&quot;    &quot;</span> ), lineBreak( <span class="stringliteral">&quot;\n&quot;</span> ) {}
-<a name="l01735"></a>01735 
-<a name="l01736"></a>01736     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a799f4f0388570cbb54c0d3c345fef7c1" title="Visit a document.">VisitEnter</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; doc );
-<a name="l01737"></a>01737     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a66b33edd76c538b462f789b797a4fdf2" title="Visit a document.">VisitExit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; doc );
-<a name="l01738"></a>01738 
-<a name="l01739"></a>01739     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a799f4f0388570cbb54c0d3c345fef7c1" title="Visit a document.">VisitEnter</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; element, <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* firstAttribute );
-<a name="l01740"></a>01740     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a66b33edd76c538b462f789b797a4fdf2" title="Visit a document.">VisitExit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; element );
-<a name="l01741"></a>01741 
-<a name="l01742"></a>01742     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; declaration );
-<a name="l01743"></a>01743     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; text );
-<a name="l01744"></a>01744     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; comment );
-<a name="l01745"></a>01745     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; unknown );
-<a name="l01746"></a>01746 
-<a name="l01750"></a><a class="code" href="classTiXmlPrinter.html#a213377a4070c7e625bae59716b089e5e">01750</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#a213377a4070c7e625bae59716b089e5e" title="Set the indent characters for printing.">SetIndent</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _indent )           { indent = _indent ? _indent : <span class="stringliteral">&quot;&quot;</span> ; }
-<a name="l01752"></a><a class="code" href="classTiXmlPrinter.html#abb33ec7d4bad6aaeb57f4304394b133d">01752</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#abb33ec7d4bad6aaeb57f4304394b133d" title="Query the indention string.">Indent</a>()                            { <span class="keywordflow">return</span> indent.c_str(); }
-<a name="l01757"></a><a class="code" href="classTiXmlPrinter.html#a4be1e37e69e3858c59635aa947174fe6">01757</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#a4be1e37e69e3858c59635aa947174fe6" title="Set the line breaking string.">SetLineBreak</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _lineBreak )     { lineBreak = _lineBreak ? _lineBreak : <span class="stringliteral">&quot;&quot;</span>; }
-<a name="l01759"></a><a class="code" href="classTiXmlPrinter.html#a11f1b4804a460b175ec244eb5724d96d">01759</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#a11f1b4804a460b175ec244eb5724d96d" title="Query the current line breaking string.">LineBreak</a>()                         { <span class="keywordflow">return</span> lineBreak.c_str(); }
-<a name="l01760"></a>01760 
-<a name="l01764"></a><a class="code" href="classTiXmlPrinter.html#ab23a90629e374cb1cadca090468bbd19">01764</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#ab23a90629e374cb1cadca090468bbd19" title="Switch over to &amp;quot;stream printing&amp;quot; which is the most dense formatting without...">SetStreamPrinting</a>()                        { indent = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l01765"></a>01765                                                       lineBreak = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l01766"></a>01766                                                     }   
-<a name="l01768"></a><a class="code" href="classTiXmlPrinter.html#a859eede9597d3e0355b77757be48735e">01768</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#a859eede9597d3e0355b77757be48735e" title="Return the result.">CStr</a>()                              { <span class="keywordflow">return</span> buffer.c_str(); }
-<a name="l01770"></a><a class="code" href="classTiXmlPrinter.html#ad01375ae9199bd2f48252eaddce3039d">01770</a>     <span class="keywordtype">size_t</span> <a class="code" href="classTiXmlPrinter.html#ad01375ae9199bd2f48252eaddce3039d" title="Return the length of the result string.">Size</a>()                                   { <span class="keywordflow">return</span> buffer.size(); }
-<a name="l01771"></a>01771 
-<a name="l01772"></a>01772 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
-<a name="l01774"></a><a class="code" href="classTiXmlPrinter.html#a3bd4daf44309b41f5813a833caa0d1c9">01774</a> <span class="preprocessor">    const std::string&amp; Str()                        { return buffer; }</span>
-<a name="l01775"></a>01775 <span class="preprocessor"></span><span class="preprocessor">    #endif</span>
-<a name="l01776"></a>01776 <span class="preprocessor"></span>
-<a name="l01777"></a>01777 <span class="keyword">private</span>:
-<a name="l01778"></a>01778     <span class="keywordtype">void</span> DoIndent() {
-<a name="l01779"></a>01779         <span class="keywordflow">for</span>( <span class="keywordtype">int</span> i=0; i&lt;depth; ++i )
-<a name="l01780"></a>01780             buffer += indent;
-<a name="l01781"></a>01781     }
-<a name="l01782"></a>01782     <span class="keywordtype">void</span> DoLineBreak() {
-<a name="l01783"></a>01783         buffer += lineBreak;
-<a name="l01784"></a>01784     }
-<a name="l01785"></a>01785 
-<a name="l01786"></a>01786     <span class="keywordtype">int</span> depth;
-<a name="l01787"></a>01787     <span class="keywordtype">bool</span> simpleTextPrint;
-<a name="l01788"></a>01788     TIXML_STRING buffer;
-<a name="l01789"></a>01789     TIXML_STRING indent;
-<a name="l01790"></a>01790     TIXML_STRING lineBreak;
-<a name="l01791"></a>01791 };
+<a name="l01532"></a><a class="code" href="classTiXmlDocument.html#a1dc977bde3e4fe85a8eb9d88a35ef5a4">01532</a>     <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>*    <a class="code" href="classTiXmlDocument.html#a1dc977bde3e4fe85a8eb9d88a35ef5a4" title="Cast to a more defined type. Will return null not of the requested type.">ToDocument</a>()<span class="keyword">    const </span>{ <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01533"></a><a class="code" href="classTiXmlDocument.html#a1025d942a1f328fd742d545e37efdd42">01533</a>     <span class="keyword">virtual</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>*          <a class="code" href="classTiXmlDocument.html#a1025d942a1f328fd742d545e37efdd42" title="Cast to a more defined type. Will return null not of the requested type.">ToDocument</a>()          { <span class="keywordflow">return</span> <span class="keyword">this</span>; } 
+<a name="l01534"></a>01534 
+<a name="l01537"></a>01537     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlDocument.html#aa545aae325d9752ad64120bc4ecf939a" title="Walk the XML tree visiting this node and all of its children.">Accept</a>( <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>* content ) <span class="keyword">const</span>;
+<a name="l01538"></a>01538 
+<a name="l01539"></a>01539 <span class="keyword">protected</span> :
+<a name="l01540"></a>01540     <span class="comment">// [internal use]</span>
+<a name="l01541"></a>01541     <span class="keyword">virtual</span> <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlDocument.html#a4968661cab4a1f44a23329c6f8db1907" title="Create an exact duplicate of this node and return it.">Clone</a>() <span class="keyword">const</span>;
+<a name="l01542"></a>01542 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01543"></a>01543 <span class="preprocessor"></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> StreamIn( std::istream * in, TIXML_STRING * tag );
+<a name="l01544"></a>01544 <span class="preprocessor">    #endif</span>
+<a name="l01545"></a>01545 <span class="preprocessor"></span>
+<a name="l01546"></a>01546 <span class="keyword">private</span>:
+<a name="l01547"></a>01547     <span class="keywordtype">void</span> CopyTo( <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>* target ) <span class="keyword">const</span>;
+<a name="l01548"></a>01548 
+<a name="l01549"></a>01549     <span class="keywordtype">bool</span> error;
+<a name="l01550"></a>01550     <span class="keywordtype">int</span>  errorId;
+<a name="l01551"></a>01551     TIXML_STRING errorDesc;
+<a name="l01552"></a>01552     <span class="keywordtype">int</span> tabsize;
+<a name="l01553"></a>01553     TiXmlCursor errorLocation;
+<a name="l01554"></a>01554     <span class="keywordtype">bool</span> useMicrosoftBOM;       <span class="comment">// the UTF-8 BOM were found when read. Note this, and try to write.</span>
+<a name="l01555"></a>01555 };
+<a name="l01556"></a>01556 
+<a name="l01557"></a>01557 
+<a name="l01638"></a><a class="code" href="classTiXmlHandle.html">01638</a> <span class="keyword">class </span><a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>
+<a name="l01639"></a>01639 {
+<a name="l01640"></a>01640 <span class="keyword">public</span>:
+<a name="l01642"></a><a class="code" href="classTiXmlHandle.html#aba18fd7bdefb942ecdea4bf4b8e29ec8">01642</a>     <a class="code" href="classTiXmlHandle.html#aba18fd7bdefb942ecdea4bf4b8e29ec8" title="Create a handle from any node (at any depth of the tree.) This can be a null pointer...">TiXmlHandle</a>( <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* _node )                 { this-&gt;node = _node; }
+<a name="l01644"></a><a class="code" href="classTiXmlHandle.html#a236d7855e1e56ccc7b980630c48c7fd7">01644</a>     <a class="code" href="classTiXmlHandle.html#a236d7855e1e56ccc7b980630c48c7fd7" title="Copy constructor.">TiXmlHandle</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>&amp; ref )           { this-&gt;node = ref.node; }
+<a name="l01645"></a>01645     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> operator=( <span class="keyword">const</span> <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a>&amp; ref ) { <span class="keywordflow">if</span> ( &amp;ref != <span class="keyword">this</span> ) this-&gt;node = ref.node; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }
+<a name="l01646"></a>01646 
+<a name="l01648"></a>01648     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>() <span class="keyword">const</span>;
+<a name="l01650"></a>01650     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * value ) <span class="keyword">const</span>;
+<a name="l01652"></a>01652     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>() <span class="keyword">const</span>;
+<a name="l01654"></a>01654     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( <span class="keyword">const</span> <span class="keywordtype">char</span> * value ) <span class="keyword">const</span>;
+<a name="l01655"></a>01655 
+<a name="l01659"></a>01659     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
+<a name="l01663"></a>01663     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
+<a name="l01668"></a>01668     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
+<a name="l01673"></a>01673     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keywordtype">int</span> index ) <span class="keyword">const</span>;
+<a name="l01674"></a>01674 
+<a name="l01675"></a>01675 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01676"></a>01676 <span class="preprocessor"></span>    <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( <span class="keyword">const</span> std::string&amp; _value )<span class="keyword"> const               </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#acdb1faaf88a700b40ca2c8d9aee21139" title="Return a handle to the first child node.">FirstChild</a>( _value.c_str() ); }
+<a name="l01677"></a>01677     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( <span class="keyword">const</span> std::string&amp; _value )<span class="keyword"> const        </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a24d1112e995e937e4dddb202d4113d4a" title="Return a handle to the first child element.">FirstChildElement</a>( _value.c_str() ); }
+<a name="l01678"></a>01678 
+<a name="l01679"></a>01679     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( <span class="keyword">const</span> std::string&amp; _value, <span class="keywordtype">int</span> index )<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a072492b4be1acdb0db2d03cd8f71ccc4" title="Return a handle to the &amp;quot;index&amp;quot; child with the given name.">Child</a>( _value.c_str(), index ); }
+<a name="l01680"></a>01680     <a class="code" href="classTiXmlHandle.html" title="A TiXmlHandle is a class that wraps a node pointer with null checks; this is an incredibly...">TiXmlHandle</a> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( <span class="keyword">const</span> std::string&amp; _value, <span class="keywordtype">int</span> index )<span class="keyword"> const  </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a979a3f850984a176ee884e394c7eed2d" title="Return a handle to the &amp;quot;index&amp;quot; child element with the given name.">ChildElement</a>( _value.c_str(), index ); }
+<a name="l01681"></a>01681 <span class="preprocessor">    #endif</span>
+<a name="l01682"></a>01682 <span class="preprocessor"></span>
+<a name="l01685"></a><a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3">01685</a>     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3" title="Return the handle as a TiXmlNode.">ToNode</a>()<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> node; } 
+<a name="l01688"></a><a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e">01688</a>     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e" title="Return the handle as a TiXmlElement.">ToElement</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToElement() ) ? node-&gt;ToElement() : 0 ); }
+<a name="l01691"></a><a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586">01691</a>     <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586" title="Return the handle as a TiXmlText.">ToText</a>()<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToText() ) ? node-&gt;ToText() : 0 ); }
+<a name="l01694"></a><a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674">01694</a>     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* <a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674" title="Return the handle as a TiXmlUnknown.">ToUnknown</a>()<span class="keyword"> const     </span>{ <span class="keywordflow">return</span> ( ( node &amp;&amp; node-&gt;ToUnknown() ) ? node-&gt;ToUnknown() : 0 ); }
+<a name="l01695"></a>01695 
+<a name="l01699"></a><a class="code" href="classTiXmlHandle.html#ab44b723a8dc9af72838a303c079d0376">01699</a>     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* <a class="code" href="classTiXmlHandle.html#ab44b723a8dc9af72838a303c079d0376">Node</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#af678e5088e83be67baf76f699756f2c3" title="Return the handle as a TiXmlNode.">ToNode</a>(); } 
+<a name="l01703"></a><a class="code" href="classTiXmlHandle.html#acb5fe8388a526289ea65e817a51e05e7">01703</a>     <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>* <a class="code" href="classTiXmlHandle.html#acb5fe8388a526289ea65e817a51e05e7">Element</a>()<span class="keyword"> const   </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#abc6e7ed383a5fe1e52b0c0004b457b9e" title="Return the handle as a TiXmlElement.">ToElement</a>(); }
+<a name="l01707"></a><a class="code" href="classTiXmlHandle.html#a9fc739c8a18d160006f82572fc143d13">01707</a>     <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>* <a class="code" href="classTiXmlHandle.html#a9fc739c8a18d160006f82572fc143d13">Text</a>()<span class="keyword"> const         </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a4ac53a652296203a5b5e13854d923586" title="Return the handle as a TiXmlText.">ToText</a>(); }
+<a name="l01711"></a><a class="code" href="classTiXmlHandle.html#a49675b74357ba2aae124657a9a1ef465">01711</a>     <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>* <a class="code" href="classTiXmlHandle.html#a49675b74357ba2aae124657a9a1ef465">Unknown</a>()<span class="keyword"> const   </span>{ <span class="keywordflow">return</span> <a class="code" href="classTiXmlHandle.html#a1381c17507a130767b1e23afc93b3674" title="Return the handle as a TiXmlUnknown.">ToUnknown</a>(); }
+<a name="l01712"></a>01712 
+<a name="l01713"></a>01713 <span class="keyword">private</span>:
+<a name="l01714"></a>01714     <a class="code" href="classTiXmlNode.html" title="The parent class for everything in the Document Object Model.">TiXmlNode</a>* node;
+<a name="l01715"></a>01715 };
+<a name="l01716"></a>01716 
+<a name="l01717"></a>01717 
+<a name="l01737"></a><a class="code" href="classTiXmlPrinter.html">01737</a> <span class="keyword">class </span><a class="code" href="classTiXmlPrinter.html" title="Print to memory functionality.">TiXmlPrinter</a> : <span class="keyword">public</span> <a class="code" href="classTiXmlVisitor.html" title="Implements the interface to the &amp;quot;Visitor pattern&amp;quot; (see the Accept() method...">TiXmlVisitor</a>
+<a name="l01738"></a>01738 {
+<a name="l01739"></a>01739 <span class="keyword">public</span>:
+<a name="l01740"></a>01740     <a class="code" href="classTiXmlPrinter.html" title="Print to memory functionality.">TiXmlPrinter</a>() : depth( 0 ), simpleTextPrint( <span class="keyword">false</span> ),
+<a name="l01741"></a>01741                      buffer(), indent( <span class="stringliteral">&quot;    &quot;</span> ), lineBreak( <span class="stringliteral">&quot;\n&quot;</span> ) {}
+<a name="l01742"></a>01742 
+<a name="l01743"></a>01743     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a799f4f0388570cbb54c0d3c345fef7c1" title="Visit a document.">VisitEnter</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; doc );
+<a name="l01744"></a>01744     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a66b33edd76c538b462f789b797a4fdf2" title="Visit a document.">VisitExit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDocument.html" title="Always the top level node.">TiXmlDocument</a>&amp; doc );
+<a name="l01745"></a>01745 
+<a name="l01746"></a>01746     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a799f4f0388570cbb54c0d3c345fef7c1" title="Visit a document.">VisitEnter</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; element, <span class="keyword">const</span> <a class="code" href="classTiXmlAttribute.html" title="An attribute is a name-value pair.">TiXmlAttribute</a>* firstAttribute );
+<a name="l01747"></a>01747     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#a66b33edd76c538b462f789b797a4fdf2" title="Visit a document.">VisitExit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlElement.html" title="The element is a container class.">TiXmlElement</a>&amp; element );
+<a name="l01748"></a>01748 
+<a name="l01749"></a>01749     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlDeclaration.html" title="In correct XML the declaration is the first entry in the file.">TiXmlDeclaration</a>&amp; declaration );
+<a name="l01750"></a>01750     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlText.html" title="XML text.">TiXmlText</a>&amp; text );
+<a name="l01751"></a>01751     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlComment.html" title="An XML comment.">TiXmlComment</a>&amp; comment );
+<a name="l01752"></a>01752     <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classTiXmlPrinter.html#ace1b14d33eede2575c0743e2350f6a38" title="Visit a declaration.">Visit</a>( <span class="keyword">const</span> <a class="code" href="classTiXmlUnknown.html" title="Any tag that tinyXml doesn&amp;#39;t recognize is saved as an unknown.">TiXmlUnknown</a>&amp; unknown );
+<a name="l01753"></a>01753 
+<a name="l01757"></a><a class="code" href="classTiXmlPrinter.html#a213377a4070c7e625bae59716b089e5e">01757</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#a213377a4070c7e625bae59716b089e5e" title="Set the indent characters for printing.">SetIndent</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _indent )           { indent = _indent ? _indent : <span class="stringliteral">&quot;&quot;</span> ; }
+<a name="l01759"></a><a class="code" href="classTiXmlPrinter.html#abb33ec7d4bad6aaeb57f4304394b133d">01759</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#abb33ec7d4bad6aaeb57f4304394b133d" title="Query the indention string.">Indent</a>()                            { <span class="keywordflow">return</span> indent.c_str(); }
+<a name="l01764"></a><a class="code" href="classTiXmlPrinter.html#a4be1e37e69e3858c59635aa947174fe6">01764</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#a4be1e37e69e3858c59635aa947174fe6" title="Set the line breaking string.">SetLineBreak</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* _lineBreak )     { lineBreak = _lineBreak ? _lineBreak : <span class="stringliteral">&quot;&quot;</span>; }
+<a name="l01766"></a><a class="code" href="classTiXmlPrinter.html#a11f1b4804a460b175ec244eb5724d96d">01766</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#a11f1b4804a460b175ec244eb5724d96d" title="Query the current line breaking string.">LineBreak</a>()                         { <span class="keywordflow">return</span> lineBreak.c_str(); }
+<a name="l01767"></a>01767 
+<a name="l01771"></a><a class="code" href="classTiXmlPrinter.html#ab23a90629e374cb1cadca090468bbd19">01771</a>     <span class="keywordtype">void</span> <a class="code" href="classTiXmlPrinter.html#ab23a90629e374cb1cadca090468bbd19" title="Switch over to &amp;quot;stream printing&amp;quot; which is the most dense formatting without...">SetStreamPrinting</a>()                        { indent = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l01772"></a>01772                                                       lineBreak = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l01773"></a>01773                                                     }   
+<a name="l01775"></a><a class="code" href="classTiXmlPrinter.html#a859eede9597d3e0355b77757be48735e">01775</a>     <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classTiXmlPrinter.html#a859eede9597d3e0355b77757be48735e" title="Return the result.">CStr</a>()                              { <span class="keywordflow">return</span> buffer.c_str(); }
+<a name="l01777"></a><a class="code" href="classTiXmlPrinter.html#ad01375ae9199bd2f48252eaddce3039d">01777</a>     <span class="keywordtype">size_t</span> <a class="code" href="classTiXmlPrinter.html#ad01375ae9199bd2f48252eaddce3039d" title="Return the length of the result string.">Size</a>()                                   { <span class="keywordflow">return</span> buffer.size(); }
+<a name="l01778"></a>01778 
+<a name="l01779"></a>01779 <span class="preprocessor">    #ifdef TIXML_USE_STL</span>
+<a name="l01781"></a><a class="code" href="classTiXmlPrinter.html#a3bd4daf44309b41f5813a833caa0d1c9">01781</a> <span class="preprocessor">    const std::string&amp; Str()                        { return buffer; }</span>
+<a name="l01782"></a>01782 <span class="preprocessor"></span><span class="preprocessor">    #endif</span>
+<a name="l01783"></a>01783 <span class="preprocessor"></span>
+<a name="l01784"></a>01784 <span class="keyword">private</span>:
+<a name="l01785"></a>01785     <span class="keywordtype">void</span> DoIndent() {
+<a name="l01786"></a>01786         <span class="keywordflow">for</span>( <span class="keywordtype">int</span> i=0; i&lt;depth; ++i )
+<a name="l01787"></a>01787             buffer += indent;
+<a name="l01788"></a>01788     }
+<a name="l01789"></a>01789     <span class="keywordtype">void</span> DoLineBreak() {
+<a name="l01790"></a>01790         buffer += lineBreak;
+<a name="l01791"></a>01791     }
 <a name="l01792"></a>01792 
-<a name="l01793"></a>01793 
-<a name="l01794"></a>01794 <span class="preprocessor">#ifdef _MSC_VER</span>
-<a name="l01795"></a>01795 <span class="preprocessor"></span><span class="preprocessor">#pragma warning( pop )</span>
-<a name="l01796"></a>01796 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-<a name="l01797"></a>01797 <span class="preprocessor"></span>
-<a name="l01798"></a>01798 <span class="preprocessor">#endif</span>
-<a name="l01799"></a>01799 <span class="preprocessor"></span>
+<a name="l01793"></a>01793     <span class="keywordtype">int</span> depth;
+<a name="l01794"></a>01794     <span class="keywordtype">bool</span> simpleTextPrint;
+<a name="l01795"></a>01795     TIXML_STRING buffer;
+<a name="l01796"></a>01796     TIXML_STRING indent;
+<a name="l01797"></a>01797     TIXML_STRING lineBreak;
+<a name="l01798"></a>01798 };
+<a name="l01799"></a>01799 
+<a name="l01800"></a>01800 
+<a name="l01801"></a>01801 <span class="preprocessor">#ifdef _MSC_VER</span>
+<a name="l01802"></a>01802 <span class="preprocessor"></span><span class="preprocessor">#pragma warning( pop )</span>
+<a name="l01803"></a>01803 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l01804"></a>01804 <span class="preprocessor"></span>
+<a name="l01805"></a>01805 <span class="preprocessor">#endif</span>
 </pre></div></div>
 <hr size="1"/><address style="text-align: right;"><small>Generated by&nbsp;
 <a href="http://www.doxygen.org/index.html">

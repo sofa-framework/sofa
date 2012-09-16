@@ -69,6 +69,17 @@ bool XmlTest( const char* testString, int expected, int found, bool noEcho )
 }
 
 
+void NullLineEndings( char* p )
+{
+	while( p && *p ) {
+		if ( *p == '\n' || *p == '\r' ) {
+			*p = 0;
+			return;
+		}
+		++p;
+	}
+}
+
 //
 // This file demonstrates some basic functionality of TinyXml.
 // Note that the example is very contrived. It presumes you know
@@ -587,20 +598,30 @@ int main()
 
 			FILE* saved  = fopen( "utf8testout.xml", "r" );
 			FILE* verify = fopen( "utf8testverify.xml", "r" );
+
+			//bool firstLineBOM=true;
 			if ( saved && verify )
 			{
 				while ( fgets( verifyBuf, 256, verify ) )
 				{
 					fgets( savedBuf, 256, saved );
-					if ( strcmp( verifyBuf, savedBuf ) )
+					NullLineEndings( verifyBuf );
+					NullLineEndings( savedBuf );
+
+					if ( /*!firstLineBOM && */ strcmp( verifyBuf, savedBuf ) )
 					{
+						printf( "verify:%s<\n", verifyBuf );
+						printf( "saved :%s<\n", savedBuf );
 						okay = 0;
 						break;
 					}
+					//firstLineBOM = false;
 				}
-				fclose( saved );
-				fclose( verify );
 			}
+			if ( saved )
+				fclose( saved );
+			if ( verify )
+				fclose( verify );
 			XmlTest( "UTF-8: Verified multi-language round trip.", 1, okay );
 
 			// On most Western machines, this is an element that contains
@@ -1322,6 +1343,13 @@ int main()
 	}
 
 	{
+		// This one must not result in an infinite loop
+		TiXmlDocument xml;
+		xml.Parse( "<infinite>loop" );
+		XmlTest( "Infinite loop test.", true, true );
+	}
+
+	{
 		// 1709904 - can not repro the crash
 		{
 			TiXmlDocument xml;
@@ -1350,6 +1378,7 @@ int main()
 		xml.Print(stdout);
 	}
 	*/
+
 	#if defined( WIN32 ) && defined( TUNE )
 	_CrtMemCheckpoint( &endMemState );
 	//_CrtMemDumpStatistics( &endMemState );
