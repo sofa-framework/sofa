@@ -62,6 +62,8 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+    , m_rootAngularForceScaleFactor(initData(&m_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
+    , m_rootLinearForceScaleFactor(initData(&m_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
 {
     maskFrom = NULL;
     maskTo = NULL;
@@ -496,7 +498,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     ++colIt;
                 }
 
-                const InRootDeriv result(v, omega);
+                //std::cout << "omega = " << omega.norm() << std::endl;
+                //std::cout << "v = " << v.norm() << std::endl;
+
+                const InRootDeriv result(m_rootLinearForceScaleFactor.getValue() * v, m_rootAngularForceScaleFactor.getValue() * omega);
 
                 if (!indexFromEnd.getValue())
                 {
