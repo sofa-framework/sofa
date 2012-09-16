@@ -105,6 +105,9 @@ public:
     Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
 
+    Data< Real > m_rootAngularForceScaleFactor;
+    Data< Real > m_rootLinearForceScaleFactor;
+
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
