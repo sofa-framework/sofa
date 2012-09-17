@@ -104,17 +104,19 @@ public:
     /// Unload a scene from a Node.
     virtual void unload(Node::SPtr root);
 
-    ///create a new graph(or tree) and return its root node
+    /// create a new graph(or tree) and return its root node
     virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
     /// Get the top root simulation::Node of the Sofa scene
     static sofa::simulation::Node::SPtr GetRoot();
 
-    ///load a scene from memory (typically : an xml into a string)
+    /// load a scene from memory (typically : an xml into a string)
     static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
-    ///load a scene from a file
+
+    /// load a scene from a file
     static Node::SPtr loadFromFile ( const char *filename );
-    ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
+
+    /// generic function to process xml tree (after loading the xml structure from the 2 previous functions)
     static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
 
     static Simulation::SPtr theSimulation;

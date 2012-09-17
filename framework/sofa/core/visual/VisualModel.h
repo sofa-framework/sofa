@@ -69,6 +69,12 @@ public:
     virtual void initVisual() { initTextures(); }
 
     /**
+     *  \brief clear some graphical resources (generaly called before the deleteVisitor).
+     *  \note: for more general usage you can use the cleanup visitor
+     */
+    virtual void clearVisual() { }
+
+    /**
      *  \brief Initialize the textures, or other graphical resources.
      *
      *  @deprecated Use initVisual() instead.

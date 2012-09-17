@@ -146,6 +146,21 @@ public:
     virtual const char* getClassName() const { return "VisualComputeBBoxVisitor"; }
 };
 
+
+class SOFA_SIMULATION_COMMON_API VisualClearVisitor : public VisualVisitor
+{
+public:
+    VisualClearVisitor(core::visual::VisualParams* params) : VisualVisitor(params)
+    {}
+
+    virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
+    {
+        vm->clearVisual();
+    }
+    virtual const char* getClassName() const { return "VisualClearVisitor"; }
+};
+
+
 } // namespace simulation
 
 } // namespace sofa
