@@ -146,8 +146,15 @@ public:
 //-----------------OPTIONS DEFINITIONS------------------------{
 public:
 #ifndef SOFA_QT4
-    void setWindowFilePath(const QString &filePath) { filePath_=filePath;};
-    QString windowFilePath() const { QString filePath = filePath_; return filePath; }
+    void setWindowFilePath(const QString &filePath)
+    {
+        filePath_=filePath;
+    }
+
+    QString windowFilePath() const
+    {
+        QString filePath = filePath_; return filePath;
+    }
 #endif
 
 #ifdef SOFA_GUI_INTERACTION
@@ -261,14 +268,17 @@ public:
     int closeGUI();
 
     virtual void fileOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
 
     virtual void setTitle( std::string windowTitle );
     virtual void fileNew();
-    virtual void fileOpen();
     virtual void fileSave();
-    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);}
+    virtual void fileSaveAs()
+    {
+        fileSaveAs((Node *)NULL);
+    }
     virtual void fileSaveAs(Node* node,const char* filename);
     virtual void fileReload();
     virtual void fileExit();
@@ -293,6 +303,7 @@ public:
     {
         return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
     }
+
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
@@ -307,14 +318,17 @@ public:
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
 
-    void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
+    void dragEnterEvent( QDragEnterEvent* event)
+    {
+        event->accept();
+    }
     void dropEvent(QDropEvent* event);
 
 protected:
     void init();
     void createDisplayFlags(Node::SPtr root);
     void loadHtmlDescription(const char* filename);
-    void loadSimulation(bool one_step=false);
+    void loadSimulation(bool one_step=false);//? where is the implementation ?
     void eventNewStep();
     void eventNewTime();
     void keyPressEvent ( QKeyEvent * e );
@@ -334,7 +348,7 @@ protected:
     }
 
 private:
-    void addViewer();
+    void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor
     void parseOptions(const std::vector<std::string>& options);
@@ -356,7 +370,6 @@ private:
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
-    virtual void Update();
     virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void LockAnimation(bool);
     virtual void fileRecentlyOpened(int id);
@@ -368,6 +381,7 @@ public slots:
     virtual void resetScene();
     virtual void screenshot();
     virtual void showhideElements();
+    virtual void Update();
     virtual void updateViewerParameters();
     virtual void updateBackgroundColour();
     virtual void updateBackgroundImage();
