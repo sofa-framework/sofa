@@ -733,7 +733,7 @@ void QtGLViewer::MakeStencilMask()
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void QtGLViewer::DrawScene(void)
+void QtGLViewer::drawScene(void)
 {
 
     camera()->getProjectionMatrix( lastProjectionMatrix );
@@ -856,7 +856,7 @@ void QtGLViewer::draw()
     glClear(_clearBuffer);
 
     // draw the scene
-    DrawScene();
+    drawScene();
 
     if(!captureTimer.isActive())
         SofaViewer::captureEvent();

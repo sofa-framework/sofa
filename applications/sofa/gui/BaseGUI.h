@@ -81,7 +81,7 @@ public:
     virtual void setFullScreen() {};
     virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
     virtual void setBackgroundImage(const std::string& /*image*/) {};
-    virtual void registerViewer(BaseViewer* viewer) {};
+    virtual void registerViewer(BaseViewer* /*viewer*/) {};
 
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}

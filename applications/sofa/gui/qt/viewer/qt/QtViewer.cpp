@@ -755,7 +755,7 @@ void QtViewer::MakeStencilMask()
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void QtViewer::DrawScene(void)
+void QtViewer::drawScene(void)
 {
     if (!groot) return;
 
@@ -1071,7 +1071,7 @@ void QtViewer::paintGL()
     glClear( _clearBuffer);
 
     // draw the scene
-    DrawScene();
+    drawScene();
 
     if(!captureTimer.isActive())
         SofaViewer::captureEvent();

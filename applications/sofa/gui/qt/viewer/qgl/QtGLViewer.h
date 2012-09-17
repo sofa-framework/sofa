@@ -179,7 +179,7 @@ private:
 protected:
     //virtual bool event ( QEvent * e );
 
-    virtual void	DrawScene();
+    virtual void	drawScene();
     virtual void	DrawLogo(void);
 
 
