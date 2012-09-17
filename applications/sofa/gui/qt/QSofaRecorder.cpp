@@ -119,12 +119,12 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     QToolTip::add(forward       , tr( "Load Final Time" ) );
 
 
-    RealGUI::setPixmap("textures/media-record.png", record);
-    RealGUI::setPixmap("textures/media-seek-backward.png", backward);
-    RealGUI::setPixmap("textures/media-skip-backward.png", stepbackward);
-    RealGUI::setPixmap("textures/media-playback-start.png", playforward);
-    RealGUI::setPixmap("textures/media-skip-forward.png", stepforward);
-    RealGUI::setPixmap("textures/media-seek-forward.png", forward);
+    RealGUI::SetPixmap("textures/media-record.png", record);
+    RealGUI::SetPixmap("textures/media-seek-backward.png", backward);
+    RealGUI::SetPixmap("textures/media-skip-backward.png", stepbackward);
+    RealGUI::SetPixmap("textures/media-playback-start.png", playforward);
+    RealGUI::SetPixmap("textures/media-skip-forward.png", stepforward);
+    RealGUI::SetPixmap("textures/media-seek-forward.png", forward);
 
     record_directory = sofa::helper::system::SetDirectory::GetRelativeFromDir("../../examples/Simulation/",sofa::helper::system::SetDirectory::GetProcessFullPath("").c_str());
 
@@ -342,7 +342,7 @@ void QSofaRecorder::slot_playforward()
         else
         {
 
-            RealGUI::setPixmap("textures/media-playback-pause.png", playforward);
+            RealGUI::SetPixmap("textures/media-playback-pause.png", playforward);
 
             timerStep->start ( 0 );
         }
@@ -350,7 +350,7 @@ void QSofaRecorder::slot_playforward()
     else
     {
         timerStep->stop();
-        RealGUI::setPixmap("textures/media-playback-start.png", playforward);
+        RealGUI::SetPixmap("textures/media-playback-start.png", playforward);
     }
 }
 void QSofaRecorder::slot_stepforward()

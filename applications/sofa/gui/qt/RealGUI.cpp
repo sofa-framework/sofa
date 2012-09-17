@@ -103,8 +103,6 @@ namespace gui
 namespace qt
 {
 
-
-
 SOFA_LINK_CLASS(ImageQt);
 
 
@@ -115,18 +113,10 @@ typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
 #endif
 
-
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
 using namespace sofa::core::visual;
-
-
-///////////////////////////////////////////////////////////
-//////////////////// BaseGUI Interface ////////////////////
-///////////////////////////////////////////////////////////
-extern QApplication* application; // = NULL;
-extern RealGUI* gui;
 
 #ifdef SOFA_QT4
 /// Custom QApplication class handling FileOpen events for MacOS
@@ -135,8 +125,7 @@ class QSOFAApplication : public QApplication
 public:
     QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
-    {
-    }
+    { }
 
 protected:
     bool event(QEvent *event)
@@ -165,18 +154,13 @@ QApplication* application = NULL;
 const char* progname="";
 
 
+//======================= STATIC METHODS ========================= {
 int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* options */ )
 {
-    if ( ImageQt::Init() )
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+    return ImageQt::Init() ? 0 : 1;
 }
 
+//------------------------------------
 
 BaseGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
 {
@@ -195,6 +179,8 @@ BaseGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     return gui;
 }
 
+//------------------------------------
+
 void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 {
     int  *argc = new int;
@@ -204,6 +190,8 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
 }
+
+//------------------------------------
 
 void RealGUI::InitApplication( RealGUI* _gui)
 {
@@ -218,39 +206,13 @@ void RealGUI::InitApplication( RealGUI* _gui)
 
     // show the gui
     _gui->show();
-
 }
-
-int RealGUI::mainLoop()
-{
-    int retcode;
-    if (windowFilePath().isNull())
-    {
-        retcode = application->exec();
-    }
-    else
-    {
-        const std::string &filename=windowFilePath().ascii();
-        const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
-        if (extension == "simu") fileOpenSimu(filename);
-        retcode = application->exec();
-    }
-    return exitApplication(retcode);
-}
-
-void RealGUI::redraw()
-{
-    emit newStep();
-}
-
-int RealGUI::closeGUI()
-{
-
-    delete this;
-    return 0;
-}
+//======================= STATIC METHODS ========================= }
 
 
+
+
+//======================= CONSTRUCTOR - DESTRUCTOR ========================= {
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& options )
     :
 #ifdef SOFA_GUI_INTERACTION
@@ -279,7 +241,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 #endif
 
     simulationGraph(NULL),
-    mCreateViewersOpt(false),
+    mCreateViewersOpt(true),
     m_dumpState(false),
     m_dumpStateStream(NULL),
     m_exportGnuplot(false),
@@ -300,77 +262,28 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     htmlPage(NULL),
     animationState(false)
 {
-    mViewerName = viewername;
+    parseOptions(options);
 
-    // parse the options
-    mCreateViewersOpt = true;
-    for (unsigned int i=0; i<options.size(); ++i)
-    {
-        if (options[i] == "noViewers")
-        {
-            mCreateViewersOpt = false;
-            std::cerr<<"=========================== No Viewers ====================="<<std::endl;
-        }
-    }
+    createPluginManager();
 
-#ifdef SOFA_GUI_INTERACTION
-    interactionButton = new QPushButton(optionTabs);
-    interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
-    interactionButton->setCheckable(true);
-    interactionButton->setStyleSheet("background-color: cyan;");
-
-    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
-    gridLayout->removeWidget(screenshotButton);
-    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
-
-    interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
-    interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-    interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
-#endif // QT_NO_TOOLTIP	
-#endif
-
-    connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
-
-    //--------
-    pluginManager_dialog = new SofaPluginManager();
-    pluginManager_dialog->hide();
-
-    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
-    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
-
+    // TODO: deal with this...
     informationOnPickCallBack = InformationOnPickCallBack(this);
 
-#ifdef SOFA_QT4
-    fileMenu->removeAction(Action);
-#endif
-    //Configure Recently Opened Menu
-    const int indexRecentlyOpened=fileMenu->count()-2;
-    QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
-    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
-    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    createRecentFilesMenu(); // configure Recently Opened Menu
 
-    left_stack = new QWidgetStack ( splitter2 );
+    timerStep = new QTimer(this);
+    connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
+    connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
-#ifdef SOFA_GUI_INTERACTION
-    connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
-#endif
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
-#ifdef SOFA_DUMP_VISITOR_INFO
-    connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
-#endif
-
-
-    pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
-
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
-    //Create a Dock Window to receive the Sofa Recorder
+    // create a Dock Window to receive the Sofa Recorder
 #ifndef SOFA_GUI_QT_NO_RECORDER
     QDockWindow *dockRecorder=new QDockWindow(this);
     dockRecorder->setResizeEnabled(true);
@@ -380,7 +293,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     recorder = new QSofaRecorder(dockRecorder);
     dockRecorder->setWidget(recorder);
-
     connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
 #else
     //Status Bar Configuration
@@ -398,80 +310,22 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
-    simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    if (mCreateViewersOpt) createViewers(viewername);
+    createSimulationGraph();
+
+    //TODO : viewer
+    mViewerName = viewername;
+    left_stack = new QWidgetStack ( splitter2 );
+    if (mCreateViewersOpt)
+        createViewers(viewername);
 
     currentTabChanged ( tabs->currentPage() );
 
-    //ADD GUI for Background
-    //------------------------------------------------------------------------
-    //Informations
-    QWidget *colour = new QWidget(TabPage);
-    QHBoxLayout *colourLayout = new QHBoxLayout(colour);
-    colourLayout->addWidget(new QLabel(QString("Colour "),colour));
+    createBackgroundGUIInfos(); // add GUI for Background Informations
 
-    for (unsigned int i=0; i<3; ++i)
-    {
-        std::ostringstream s;
-        s<<"background" <<i;
-        background[i] = new WDoubleLineEdit(colour,s.str().c_str());
-        background[i]->setMinValue( 0.0f);
-        background[i]->setMaxValue( 1.0f);
-        background[i]->setValue( 1.0f);
+    createWindowVisitor();
 
-        colourLayout->addWidget(background[i]);
-        connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
-    }
+    createSceneDescription();
 
-    QWidget *image = new QWidget(TabPage);
-    QHBoxLayout *imageLayout = new QHBoxLayout(image);
-    imageLayout->addWidget(new QLabel(QString("Image "),image));
-
-    backgroundImage = new QLineEdit(image,"backgroundImage");
-    if (mCreateViewersOpt)
-        backgroundImage->setText( QString(mViewer->getBackgroundImage().c_str()) );
-    else
-        backgroundImage->setText( QString() ); //by default if we havn't yet a viewer
-    imageLayout->addWidget(backgroundImage);
-    connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
-
-
-    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,colour);
-    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(2,image);
-
-    //---------------------------------------------------------------------------------------------------
-
-    ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
-    connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
-#ifdef SOFA_QT4
-    tabs->removeTab(tabs->indexOf(TabVisualGraph));
-#endif
-
-
-#ifndef SOFA_DUMP_VISITOR_INFO
-    //Remove option to see visitor trace
-    this->exportVisitorCheckbox->hide();
-#else
-    //Main window containing a QListView only
-    windowTraceVisitor = new WindowVisitor;
-    windowTraceVisitor->graphView->setSorting(-1);
-    windowTraceVisitor->hide();
-    connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
-    handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
-#endif
-    //--------
-    descriptionScene = new QDialog(this);
-    descriptionScene->resize(400,400);
-    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
-    htmlPage = new QTextBrowser(descriptionScene);
-    descriptionLayout->addWidget(htmlPage);
-#ifdef SOFA_QT4
-    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
-#else
-    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
-    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
-    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
-#endif
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
@@ -479,16 +333,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
-    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
-    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
-    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
-    connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
-    connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
-    connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
-    connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
-    connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
-    connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
-    connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+#ifdef SOFA_QT4
+    tabs->removeTab(tabs->indexOf(TabVisualGraph));
+#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
@@ -496,34 +343,33 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     if (recorder && mCreateViewersOpt)
         connect( recorder, SIGNAL( NewTime() ), getViewerWidget(), SLOT( update() ) );
 #endif
-    timerStep = new QTimer(this);
-    connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
-
-    animationState = false;
 
 #ifdef SOFA_GUI_INTERACTION
+    interactionButton = new QPushButton(optionTabs);
+    interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
+    interactionButton->setCheckable(true);
+    interactionButton->setStyleSheet("background-color: cyan;");
+
+    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
+    gridLayout->removeWidget(screenshotButton);
+    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
+
+    interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
+    interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
+#endif
+
+    connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
+
     m_interactionActived = false;
+
     if(mCreateViewersOpt)
         getViewerWidget()->installEventFilter(this);
 #endif
 }
 
-void RealGUI::fileRecentlyOpened(int id)
-{
-    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
-}
-
-void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
-{
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-
-#ifdef SOFA_QT4
-    b->setPixmap(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str()))));
-#else
-    b->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-#endif
-}
+//------------------------------------
 
 RealGUI::~RealGUI()
 {
@@ -539,16 +385,77 @@ RealGUI::~RealGUI()
         lmlreader = NULL;
     }
 #endif
+
     if( displayFlag != NULL )
-    {
         delete displayFlag;
-    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     delete windowTraceVisitor;
     delete handleTraceVisitor;
 #endif
+
     removeViewer();
 }
+//======================= CONSTRUCTOR - DESTRUCTOR ========================= }
+
+
+
+//======================= METHODS ========================= {
+int RealGUI::mainLoop()
+{
+    int retcode;
+    if (windowFilePath().isNull())
+    {
+        retcode = application->exec();
+    }
+    else
+    {
+        const std::string &filename=windowFilePath().ascii();
+        const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+        if (extension == "simu") fileOpenSimu(filename);
+        retcode = application->exec();
+    }
+    return exitApplication(retcode);
+}
+
+//------------------------------------
+
+void RealGUI::redraw()
+{
+    emit newStep();
+}
+
+//------------------------------------
+
+int RealGUI::closeGUI()
+{
+
+    delete this;
+    return 0;
+}
+
+//------------------------------------
+
+void RealGUI::fileRecentlyOpened(int id)
+{
+    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
+}
+
+//------------------------------------
+
+void RealGUI::SetPixmap(std::string pixmap_filename, QPushButton* b)
+{
+    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
+        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
+
+#ifdef SOFA_QT4
+    b->setPixmap(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str()))));
+#else
+    b->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
+#endif
+}
+
+//------------------------------------
 
 void RealGUI::init()
 {
@@ -563,6 +470,8 @@ void RealGUI::init()
     gnuplot_directory = "";
     m_fullScreen = false;
 }
+
+//------------------------------------
 
 //createViewers
 void RealGUI::createViewers(const char* viewerName)
@@ -613,6 +522,8 @@ void RealGUI::createViewers(const char* viewerName)
         left_stack->addWidget ( getViewerWidget() );
     initViewer();
 }
+
+//------------------------------------
 
 //initViewer
 void RealGUI::initViewer()
@@ -718,6 +629,8 @@ void RealGUI::initViewer()
     mGuiName=mViewerName;
 }
 
+//------------------------------------
+
 //changeViewer
 void RealGUI::changeViewer()
 {
@@ -764,6 +677,8 @@ void RealGUI::changeViewer()
     std::string filename(this->windowFilePath().ascii());
     fileOpen ( filename.c_str() ); // keep the current display flags
 }
+
+//------------------------------------
 
 //updateViewerList
 void RealGUI::updateViewerList()
@@ -837,6 +752,8 @@ void RealGUI::updateViewerList()
     }
 }
 
+//------------------------------------
+
 //fileOpen
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
@@ -862,6 +779,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     stopDumpVisitor();
 }
 
+//------------------------------------
+
 #ifdef SOFA_PML
 void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
 {
@@ -883,6 +802,8 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     }
 }
 
+//------------------------------------
+
 //lmlOpen
 void RealGUI::lmlOpen ( const char* filename )
 {
@@ -902,6 +823,7 @@ void RealGUI::lmlOpen ( const char* filename )
 }
 #endif
 
+//------------------------------------
 
 void RealGUI::loadHtmlDescription(const char* filename)
 {
@@ -924,6 +846,7 @@ void RealGUI::loadHtmlDescription(const char* filename)
     }
 }
 
+//------------------------------------
 
 void RealGUI::createDisplayFlags(Node::SPtr root)
 {
@@ -952,6 +875,7 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
     }
 }
 
+//------------------------------------
 
 void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFile )
 {
@@ -994,6 +918,8 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
 }
 
+//------------------------------------
+
 void RealGUI::clear()
 {
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1031,6 +957,8 @@ void RealGUI::setViewerResolution ( int w, int h )
         //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
     }
 }
+
+//------------------------------------
 
 void RealGUI::setFullScreen (bool enable)
 {
@@ -1090,6 +1018,8 @@ void RealGUI::setFullScreen (bool enable)
     }
 }
 
+//------------------------------------
+
 void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
 {
     background[0]->setText(QString::number(c[0]));
@@ -1098,34 +1028,45 @@ void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
     updateBackgroundColour();
 }
 
+//------------------------------------
+
 void RealGUI::setBackgroundImage(const std::string& c)
 {
     backgroundImage->setText(QString(c.c_str()));
     updateBackgroundImage();
 }
 
+//------------------------------------
+
 void RealGUI::setDumpState(bool b)
 {
     dumpStateCheckBox->setChecked(b);
 }
+
+//------------------------------------
 
 void RealGUI::setLogTime(bool b)
 {
     displayComputationTimeCheckBox->setChecked(b);
 }
 
+//------------------------------------
+
 void RealGUI::setExportState(bool b)
 {
     exportGnuplotFilesCheckbox->setChecked(b);
 }
+
+//------------------------------------
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 void RealGUI::setTraceVisitors(bool b)
 {
     exportVisitorCheckbox->setChecked(b);
 }
-
 #endif
+
+//------------------------------------
 
 void RealGUI::setRecordPath(const std::string &
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1138,10 +1079,15 @@ void RealGUI::setRecordPath(const std::string &
 #endif
 }
 
+//------------------------------------
+
 void RealGUI::setGnuplotPath(const std::string &path)
 {
     gnuplot_directory = path;
 }
+
+//------------------------------------
+
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
     const defaulttype::Vec<2,int> &res=viewerConf->resolution.getValue();
@@ -1150,13 +1096,15 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
     mViewer->configure(viewerConf);
 }
 
+//------------------------------------
+
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
 {
     SofaMouseManager::getInstance()->updateOperation(button);
     //        SofaMouseManager::getInstance()->updateContent();
 }
 
-
+//------------------------------------
 
 void RealGUI::screenshot()
 {
@@ -1195,6 +1143,8 @@ void RealGUI::screenshot()
     }
 }
 
+//------------------------------------
+
 void RealGUI::fileOpenSimu ( std::string s )
 {
     std::ifstream in(s.c_str());
@@ -1230,12 +1180,18 @@ void RealGUI::fileOpenSimu ( std::string s )
         }
     }
 }
+
+//------------------------------------
+
 void RealGUI::fileNew()
 {
     std::string newScene("config/newScene.scn");
     if (sofa::helper::system::DataRepository.findFile (newScene))
         fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
 }
+
+//------------------------------------
+
 void RealGUI::fileOpen()
 {
     std::string filename(this->windowFilePath().ascii());
@@ -1266,6 +1222,8 @@ void RealGUI::fileOpen()
     }
 }
 
+//------------------------------------
+
 void RealGUI::fileReload()
 {
 
@@ -1295,6 +1253,8 @@ void RealGUI::fileReload()
 
 }
 
+//------------------------------------
+
 void RealGUI::fileSave()
 {
     std::string filename(this->windowFilePath().ascii());
@@ -1307,6 +1267,7 @@ void RealGUI::fileSave()
     fileSaveAs ( node,filename.c_str() );
 }
 
+//------------------------------------
 
 void RealGUI::fileSaveAs(Node *node)
 {
@@ -1330,10 +1291,14 @@ void RealGUI::fileSaveAs(Node *node)
 
 }
 
+//------------------------------------
+
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
     simulation::getSimulation()->exportXML ( node, filename );
 }
+
+//------------------------------------
 
 void RealGUI::fileExit()
 {
@@ -1343,10 +1308,14 @@ void RealGUI::fileExit()
     this->close();
 }
 
+//------------------------------------
+
 void RealGUI::saveXML()
 {
     simulation::getSimulation()->exportXML ( currentSimulation(), "scene.scn" );
 }
+
+//------------------------------------
 
 void RealGUI::editRecordDirectory()
 {
@@ -1365,10 +1334,24 @@ void RealGUI::editRecordDirectory()
 
 }
 
+//------------------------------------
+
+void RealGUI::createPluginManager()
+{
+    pluginManager_dialog = new SofaPluginManager();
+    pluginManager_dialog->hide();
+    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
+    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+}
+
+//------------------------------------
+
 void RealGUI::showPluginManager()
 {
     pluginManager_dialog->show();
 }
+
+//------------------------------------
 
 void RealGUI::showMouseManager()
 {
@@ -1376,10 +1359,14 @@ void RealGUI::showMouseManager()
     SofaMouseManager::getInstance()->show();
 }
 
+//------------------------------------
+
 void RealGUI::showVideoRecorderManager()
 {
     SofaVideoRecorderManager::getInstance()->show();
 }
+
+//------------------------------------
 
 void RealGUI::editGnuplotDirectory()
 {
@@ -1393,6 +1380,7 @@ void RealGUI::editGnuplotDirectory()
     }
 }
 
+//------------------------------------
 
 void RealGUI::setTitle ( std::string windowTitle )
 {
@@ -1410,6 +1398,7 @@ void RealGUI::setTitle ( std::string windowTitle )
     setWindowFilePath( windowTitle.c_str() );
 }
 
+//------------------------------------
 
 void RealGUI::playpauseGUI ( bool value )
 {
@@ -1424,6 +1413,8 @@ void RealGUI::playpauseGUI ( bool value )
         timerStep->stop();
     }
 }
+
+//------------------------------------
 
 #ifdef SOFA_GUI_INTERACTION
 void RealGUI::interactionGUI ( bool value )
@@ -1463,8 +1454,7 @@ void RealGUI::interactionGUI ( bool )
 }
 #endif
 
-
-//###################################################################################################################
+//------------------------------------
 
 void RealGUI::startDumpVisitor()
 {
@@ -1477,6 +1467,9 @@ void RealGUI::startDumpVisitor()
     }
 #endif
 }
+
+//------------------------------------
+
 void RealGUI::stopDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1491,9 +1484,127 @@ void RealGUI::stopDumpVisitor()
     }
 #endif
 }
-//*****************************************************************************************
-//called at each step of the rendering
 
+//------------------------------------
+
+void RealGUI::parseOptions(const std::vector<std::string>& options)
+{
+    for (unsigned int i=0; i<options.size(); ++i)
+    {
+        if (options[i] == "noViewers")
+            mCreateViewersOpt = false;
+    }
+}
+
+//------------------------------------
+
+void RealGUI::createRecentFilesMenu()
+{
+#ifdef SOFA_QT4
+    fileMenu->removeAction(Action);
+#endif
+    const int indexRecentlyOpened=fileMenu->count()-2;
+    QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
+    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
+    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+}
+
+//------------------------------------
+
+void RealGUI::createBackgroundGUIInfos()
+{
+    QWidget *colour = new QWidget(TabPage);
+    QHBoxLayout *colourLayout = new QHBoxLayout(colour);
+    colourLayout->addWidget(new QLabel(QString("Colour "),colour));
+
+    for (unsigned int i=0; i<3; ++i)
+    {
+        std::ostringstream s;
+        s<<"background" <<i;
+        background[i] = new WDoubleLineEdit(colour,s.str().c_str());
+        background[i]->setMinValue( 0.0f);
+        background[i]->setMaxValue( 1.0f);
+        background[i]->setValue( 1.0f);
+
+        colourLayout->addWidget(background[i]);
+        connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
+    }
+
+    QWidget *image = new QWidget(TabPage);
+    QHBoxLayout *imageLayout = new QHBoxLayout(image);
+    imageLayout->addWidget(new QLabel(QString("Image "),image));
+
+    backgroundImage = new QLineEdit(image,"backgroundImage");
+    if ( mViewer != NULL )
+        backgroundImage->setText( QString(mViewer->getBackgroundImage().c_str()) );
+    else
+        backgroundImage->setText( QString() );
+    imageLayout->addWidget(backgroundImage);
+    connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
+
+    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,colour);
+    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(2,image);
+}
+
+//------------------------------------
+
+void RealGUI::createSimulationGraph()
+{
+    simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
+    ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
+    connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
+    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
+    connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
+    connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
+    connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+    connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
+    connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
+    connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
+    connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+}
+
+//------------------------------------
+
+void RealGUI::createWindowVisitor()
+{
+    pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
+#ifndef SOFA_DUMP_VISITOR_INFO
+    //Remove option to see visitor trace
+    this->exportVisitorCheckbox->hide();
+#else
+    //Main window containing a QListView only
+    windowTraceVisitor = new WindowVisitor;
+    windowTraceVisitor->graphView->setSorting(-1);
+    windowTraceVisitor->hide();
+    connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
+    connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
+    handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
+#endif
+}
+
+//------------------------------------
+
+void RealGUI::createSceneDescription()
+{
+    descriptionScene = new QDialog(this);
+    descriptionScene->resize(400,400);
+    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
+    htmlPage = new QTextBrowser(descriptionScene);
+    descriptionLayout->addWidget(htmlPage);
+#ifdef SOFA_QT4
+    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
+#else
+    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
+    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
+    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
+#endif
+}
+
+//------------------------------------
+
+//called at each step of the rendering
 void RealGUI::step()
 {
     Node* root = currentSimulation();
@@ -1539,9 +1650,9 @@ void RealGUI::step()
         startButton->setOn ( false );
 }
 
-//*****************************************************************************************
-// Update sofa Simulation with the time step
+//------------------------------------
 
+// Update sofa Simulation with the time step
 void RealGUI::eventNewStep()
 {
     static ctime_t beginTime[10];
@@ -1580,6 +1691,8 @@ void RealGUI::eventNewStep()
     }
 }
 
+//------------------------------------
+
 void RealGUI::currentTabChanged ( QWidget* widget )
 {
     if ( widget == currentTab ) return;
@@ -1602,7 +1715,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
     currentTab = widget;
 }
 
-
+//------------------------------------
 
 void RealGUI::eventNewTime()
 {
@@ -1621,12 +1734,9 @@ void RealGUI::eventNewTime()
 #endif
 }
 
+//------------------------------------
 
-
-
-//*****************************************************************************************
 // Set the time between each iteration of the Sofa Simulation
-
 void RealGUI::setDt ( double value )
 {
     Node* root = currentSimulation();
@@ -1638,13 +1748,15 @@ void RealGUI::setDt ( double value )
     }
 }
 
+//------------------------------------
+
 void RealGUI::setDt ( const QString& value )
 {
     setDt ( value.toDouble() );
 }
 
+//------------------------------------
 
-//*****************************************************************************************
 // Reset the simulation to t=0
 void RealGUI::resetScene()
 {
@@ -1661,8 +1773,8 @@ void RealGUI::resetScene()
     stopDumpVisitor();
 }
 
-//*****************************************************************************************
-//
+//------------------------------------
+
 void RealGUI::displayComputationTime ( bool value )
 {
     Node* root = currentSimulation();
@@ -1677,10 +1789,8 @@ void RealGUI::displayComputationTime ( bool value )
     }
 }
 
+//------------------------------------
 
-
-//*****************************************************************************************
-//
 void RealGUI::setExportGnuplot ( bool exp )
 {
     Node* root = currentSimulation();
@@ -1691,13 +1801,9 @@ void RealGUI::setExportGnuplot ( bool exp )
     }
 }
 
-//*****************************************************************************************
-//
-#ifdef SOFA_DUMP_VISITOR_INFO
+//------------------------------------
+
 void RealGUI::setExportVisitor ( bool exp )
-#else
-void RealGUI::setExportVisitor ( bool /*exp*/ )
-#endif
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     if (exp)
@@ -1712,8 +1818,8 @@ void RealGUI::setExportVisitor ( bool /*exp*/ )
 #endif
 }
 
-//*****************************************************************************************
-//
+//------------------------------------
+
 void RealGUI::dumpState ( bool value )
 {
     m_dumpState = value;
@@ -1728,10 +1834,8 @@ void RealGUI::dumpState ( bool value )
     }
 }
 
+//------------------------------------
 
-
-//*****************************************************************************************
-//
 void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 {
     if ( !root ) return;
@@ -1759,9 +1863,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
     simulation::getSimulation()->exportOBJ ( root, filename.c_str(),exportMTL );
 }
 
-
-//*****************************************************************************************
-
+//------------------------------------
 
 void RealGUI::keyPressEvent ( QKeyEvent * e )
 {
@@ -1783,7 +1885,6 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         return;
     }
 #endif
-
 
 #ifdef SOFA_QT4
     if (e->modifiers()) return;
@@ -1839,8 +1940,9 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     }
 
-
 }
+
+//------------------------------------
 
 #ifdef SOFA_GUI_INTERACTION
 bool RealGUI::eventFilter(QObject * /*obj*/, QEvent *e)
@@ -1856,6 +1958,8 @@ bool RealGUI::eventFilter(QObject * /*obj*/, QEvent *e)
     return false; // pass other events
 }
 
+//------------------------------------
+
 void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
 {
     if (m_interactionActived)
@@ -1870,6 +1974,8 @@ void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
     }
 }
 
+//------------------------------------
+
 void RealGUI::wheelEvent(QWheelEvent* e)
 {
     if(m_interactionActived)
@@ -1881,6 +1987,8 @@ void RealGUI::wheelEvent(QWheelEvent* e)
         return;
     }
 }
+
+//------------------------------------
 
 void RealGUI::mousePressEvent(QMouseEvent * e)
 {
@@ -1911,6 +2019,8 @@ void RealGUI::mousePressEvent(QMouseEvent * e)
     }
 }
 
+//------------------------------------
+
 void RealGUI::mouseReleaseEvent(QMouseEvent * e)
 {
     if(m_interactionActived)
@@ -1940,6 +2050,8 @@ void RealGUI::mouseReleaseEvent(QMouseEvent * e)
     }
 }
 
+//------------------------------------
+
 void RealGUI::keyReleaseEvent(QKeyEvent * e)
 {
     if(m_interactionActived)
@@ -1951,6 +2063,8 @@ void RealGUI::keyReleaseEvent(QKeyEvent * e)
     }
 }
 #endif
+
+//------------------------------------
 
 void RealGUI::dropEvent(QDropEvent* event)
 {
@@ -1973,6 +2087,8 @@ void RealGUI::dropEvent(QDropEvent* event)
     else fileOpen(filename);
 }
 
+//------------------------------------
+
 #ifdef SOFA_QT4
 void RealGUI::changeHtmlPage( const QUrl& u)
 {
@@ -1990,11 +2106,15 @@ void RealGUI::changeHtmlPage( const QString& u)
     if (extension == "xml" || extension == "scn") fileOpen(path);
 }
 
+//------------------------------------
+
 void RealGUI::updateViewerParameters()
 {
     if(isEmbeddedViewer())
         getViewerWidget()->update();
 }
+
+//------------------------------------
 
 void RealGUI::updateBackgroundColour()
 {
@@ -2002,11 +2122,15 @@ void RealGUI::updateBackgroundColour()
     updateViewerParameters();
 }
 
+//------------------------------------
+
 void RealGUI::updateBackgroundImage()
 {
     mViewer->setBackgroundImage( backgroundImage->text().ascii() );
     updateViewerParameters();
 }
+
+//------------------------------------
 
 void RealGUI::showhideElements()
 {
@@ -2014,11 +2138,15 @@ void RealGUI::showhideElements()
     updateViewerParameters();
 }
 
+//------------------------------------
+
 void RealGUI::Update()
 {
     updateViewerParameters();
     statWidget->CreateStats(mViewer->getScene());
 }
+
+//------------------------------------
 
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
@@ -2035,6 +2163,8 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
     statWidget->CreateStats(root);
 }
 
+//------------------------------------
+
 void RealGUI::LockAnimation(bool value)
 {
     if(value)
@@ -2047,6 +2177,8 @@ void RealGUI::LockAnimation(bool value)
         playpauseGUI(animationState);
     }
 }
+
+//------------------------------------
 
 void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 {
@@ -2095,6 +2227,9 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         }
     }
 }
+
+//------------------------------------
+
 } // namespace qt
 
 } // namespace gui

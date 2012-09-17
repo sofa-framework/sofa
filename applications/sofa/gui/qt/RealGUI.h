@@ -124,6 +124,8 @@ public:
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
+    static void SetPixmap(std::string pixmap_filename, QPushButton* b);
+
 protected:
     static void CreateApplication(int _argc=0, char** _argv=0l);
     static void InitApplication( RealGUI* _gui);
@@ -258,6 +260,25 @@ public:
     int mainLoop();
     int closeGUI();
 
+    virtual void fileOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileOpenSimu(std::string filename);
+    virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+
+    virtual void setTitle( std::string windowTitle );
+    virtual void fileNew();
+    virtual void fileOpen();
+    virtual void fileSave();
+    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);}
+    virtual void fileSaveAs(Node* node,const char* filename);
+    virtual void fileReload();
+    virtual void fileExit();
+    virtual void saveXML();
+    virtual void editRecordDirectory();
+    virtual void editGnuplotDirectory();
+    virtual void showPluginManager();
+    virtual void showMouseManager();
+    virtual void showVideoRecorderManager();
+
     virtual void createViewers(const char* viewerName);
     virtual void initViewer();
 
@@ -272,63 +293,38 @@ public:
     {
         return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
     }
-
-    static void setPixmap(std::string pixmap_filename, QPushButton* b);
-
-    virtual void fileOpen(std::string filename, bool temporaryFile=false);
-    virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
-
-    //Configuration methods
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
-    virtual void setDumpState(bool);
-    virtual void setLogTime(bool);
-    virtual void setExportState(bool);
-
-    virtual void setRecordPath(const std::string & path);
-    virtual void setGnuplotPath(const std::string & path);
-
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button);
 
-    virtual void setTitle( std::string windowTitle );
+    //Configuration methods
+    virtual void setDumpState(bool);
+    virtual void setLogTime(bool);
+    virtual void setExportState(bool);
+    virtual void setRecordPath(const std::string & path);
+    virtual void setGnuplotPath(const std::string & path);
 
-    virtual void fileNew();
-    virtual void fileOpen();
-    virtual void fileSave();
-    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);}
-
-    virtual void fileSaveAs(Node* node,const char* filename);
-
-    virtual void fileReload();
-    virtual void fileExit();
-    virtual void saveXML();
-    virtual void editRecordDirectory();
-    virtual void editGnuplotDirectory();
-    virtual void showPluginManager();
-    virtual void showMouseManager();
-    virtual void showVideoRecorderManager();
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
 
-
 protected:
-    void loadHtmlDescription(const char* filename);
+    void init();
     void createDisplayFlags(Node::SPtr root);
+    void loadHtmlDescription(const char* filename);
+    void loadSimulation(bool one_step=false);
     void eventNewStep();
     void eventNewTime();
-    void init();
     void keyPressEvent ( QKeyEvent * e );
-
-    void loadSimulation(bool one_step=false);
-
-    virtual int exitApplication(unsigned int _retcode = 0) {return _retcode;}
-
     void startDumpVisitor();
     void stopDumpVisitor();
+
+    virtual int exitApplication(unsigned int _retcode = 0)
+    {
+        return _retcode;
+    }
 
     void sleep(float seconds, float init_time)
     {
@@ -337,9 +333,21 @@ protected:
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
-
 private:
     void addViewer();
+
+    /// Parse options from the RealGUI constructor
+    void parseOptions(const std::vector<std::string>& options);
+
+    void createPluginManager();
+
+    /// configure Recently Opened Menu
+    void createRecentFilesMenu();
+
+    void createBackgroundGUIInfos();
+    void createSimulationGraph();
+    void createWindowVisitor();
+    void createSceneDescription();
 //----------------- METHODS------------------------}
 
 
