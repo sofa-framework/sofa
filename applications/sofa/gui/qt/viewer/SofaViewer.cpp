@@ -62,23 +62,23 @@ SofaViewer::~SofaViewer()
     }
 }
 
-bool SofaViewer::isThreaded(void) {return false;}
-bool SofaViewer::startViewerThread(void) {return true;}
-bool SofaViewer::stopViewerThread(void) {return true;}
-
-bool SofaViewer::loadSceneView(void)
+/*
+bool SofaViewer::unload(void)
 {
-    if(isThreaded())
-        startViewerThread();
+    if ( getScene() !=NULL )
+    {
+      getPickHandler()->reset();//activateRay(false);
+      getPickHandler()->unload();
+
+      // Unload viewer components before delete the whole scene
+      unloadSceneView();
+      simulation::getSimulation()->unload ( getScene() );
+      setScene(NULL);
+    }
+
     return true;
 }
-
-bool SofaViewer::unloadSceneView(void)
-{
-    if(isThreaded())
-        stopViewerThread();
-    return true;
-}
+*/
 
 sofa::simulation::Node* SofaViewer::getScene()
 {
@@ -146,7 +146,7 @@ void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
         pick.init(groot.get());
         pick.setColourRenderCallback(&colourPickingRenderCallBack);
     }
-
+    loadSceneView();
 }
 
 void SofaViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
