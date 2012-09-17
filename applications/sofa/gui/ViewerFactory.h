@@ -39,18 +39,27 @@ namespace gui
 class BaseViewerArgument
 {
 public:
-    std::string name;
+    BaseViewerArgument(std::string _name) :
+        name(_name)
+    {}
+
     // I have to have at least one virtual function in my base class to use dynamic_cast or to make it polymorphic
     virtual std::string getName() {return name;}
+
+protected:
+    std::string name;
 };
 
 class ViewerQtArgument : public BaseViewerArgument
 {
 public:
-    ViewerQtArgument() :
-        parent(NULL)
+    ViewerQtArgument(std::string _name, QWidget* _parent) :
+        BaseViewerArgument(_name),
+        parent(_parent)
     {}
 
+    QWidget* getParentWidget() {return parent;}
+protected:
     QWidget* parent;
 };
 

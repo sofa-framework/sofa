@@ -134,7 +134,10 @@ public:
     {
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
-        return viewerArg ? new QtViewer(viewerArg->parent, viewerArg->name.c_str() ) : new QtViewer(NULL, arg.name.c_str() );
+        return viewerArg ?
+                new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
+                new QtViewer(NULL, pArg->getName().c_str() )
+                ;
     }
 
     static const char* viewerName()
