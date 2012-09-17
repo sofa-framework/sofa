@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "Main.h"
 #include "GUIManager.h"
-#include "SofaGUI.h"
 #include "BatchGUI.h"
 #include "qt/RealGUI.h"
 #include "glut/SimpleGUI.h"

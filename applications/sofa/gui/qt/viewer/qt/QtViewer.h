@@ -38,7 +38,7 @@
 
 #include <viewer/SofaViewer.h>
 
-#include <viewer/ViewerFactory.h>
+#include <sofa/gui/ViewerFactory.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
@@ -130,7 +130,7 @@ public:
     static const std::string VIEW_FILE_EXTENSION;
 
 
-    static QtViewer* create(QtViewer*, const SofaViewerArgument& arg)
+    static QtViewer* create(QtViewer*, const sofa::gui::ViewerArgument& arg)
     {
         return new QtViewer(arg.parent, arg.name.c_str() );
     }

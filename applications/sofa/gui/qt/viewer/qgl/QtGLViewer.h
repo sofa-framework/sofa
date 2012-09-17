@@ -35,7 +35,7 @@
 #include <fstream>
 
 #include <viewer/SofaViewer.h>
-#include <viewer/ViewerFactory.h>
+#include <sofa/gui/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Transformation.h>
@@ -108,7 +108,7 @@ private:
 
 public:
 
-    static QtGLViewer* create(QtGLViewer*, const SofaViewerArgument& arg)
+    static QtGLViewer* create(QtGLViewer*, const sofa::gui::ViewerArgument& arg)
     {
         return new QtGLViewer(arg.parent, arg.name.c_str() );
     }

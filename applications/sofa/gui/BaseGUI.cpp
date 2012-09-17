@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SofaGUI.h"
+#include "BaseGUI.h"
 #include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
@@ -44,20 +44,20 @@ namespace sofa
 
 namespace gui
 {
-const char* SofaGUI::mProgramName = NULL;
-std::string SofaGUI::mGuiName = "";
+const char* BaseGUI::mProgramName = NULL;
+std::string BaseGUI::mGuiName = "";
 
-SofaGUI::SofaGUI()
+BaseGUI::BaseGUI()
 {
 
 }
 
-SofaGUI::~SofaGUI()
+BaseGUI::~BaseGUI()
 {
 
 }
 
-void SofaGUI::configureGUI(sofa::simulation::Node::SPtr groot)
+void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 {
 
     sofa::component::configurationsetting::SofaDefaultPathSetting *defaultPath;
@@ -113,7 +113,7 @@ void SofaGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 }
 
-void SofaGUI::exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory )
+void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory )
 {
 
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
