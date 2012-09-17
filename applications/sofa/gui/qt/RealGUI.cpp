@@ -567,9 +567,6 @@ void RealGUI::init()
 
 void RealGUI::removeViewer()
 {
-    if(viewer->isThreaded())
-        viewer->stopViewerThread();
-
     if(mCreateViewersOpt)
     {
         delete viewer;
@@ -724,8 +721,8 @@ void RealGUI::initViewer()
     }
 
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
-    if( !viewer->isThreaded() ) // How to pass info from viewer thread to gui application thread?
-        viewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
+
+    viewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
 
     guiName=viewerName;
 }
@@ -1052,8 +1049,6 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         updateViewerParameters();
     }
     resetScene();
-
-    viewer->loadSceneView();
 
 }
 

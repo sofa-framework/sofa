@@ -122,11 +122,6 @@ public:
     virtual QWidget* getQWidget()=0;
     virtual QString helpString()=0;
 
-    /// Overload this method in instanciated viewer to notify if the viewer is managed in another render thread or not
-    virtual bool isThreaded(void);
-    virtual bool startViewerThread(void);
-    virtual bool stopViewerThread(void);
-
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
@@ -138,9 +133,9 @@ public:
     virtual void wait() {}
 
     /// Call when set a new scene
-    virtual bool loadSceneView(void);
+    virtual bool loadSceneView(void) {}
     /// Call before delete a scene
-    virtual bool unloadSceneView(void);
+    virtual bool unloadSceneView(void) {}
 
     /// Recompute viewer's home position so it encompass the whole scene and apply it
     virtual void viewAll(void) = 0;
