@@ -1385,8 +1385,15 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
             vectorsCoord[v.index]->endEdit();
         }
     }
-
-    return vectorsCoord[v.index];
+    Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+    const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+    if (!val.empty() && val.size() != (unsigned int)this->getSize())
+    {
+        serr << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+    }
+#endif
+    return d;
 }
 
 template <class DataTypes>
@@ -1397,7 +1404,17 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
         serr << "Accessing null VecCoord" << sendl;
     }
     if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != NULL)
-        return vectorsCoord[v.index];
+    {
+        const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        {
+            serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+        }
+#endif
+        return d;
+    }
     else
     {
         serr << "Vector " << v << " does not exist" << sendl;
@@ -1427,15 +1444,32 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
             vectorsDeriv[v.index]->endEdit();
         }
     }
-
-    return vectorsDeriv[v.index];
+    Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+    const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+    if (!val.empty() && val.size() != (unsigned int)this->getSize())
+    {
+        serr << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+    }
+#endif
+    return d;
 }
 
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(ConstVecDerivId v) const
 {
     if (v.index < vectorsDeriv.size())
-        return vectorsDeriv[v.index];
+    {
+        const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        {
+            serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+        }
+#endif
+        return d;
+    }
     else
     {
         serr << "Vector " << v << "does not exist" << sendl;
