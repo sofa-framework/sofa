@@ -107,6 +107,9 @@ public:
     ///create a new graph(or tree) and return its root node
     virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
+    /// Get the top root simulation::Node of the Sofa scene
+    static sofa::simulation::Node::SPtr GetRoot();
+
     ///load a scene from memory (typically : an xml into a string)
     static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
     ///load a scene from a file
@@ -115,6 +118,10 @@ public:
     static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
 
     static Simulation::SPtr theSimulation;
+
+protected:
+    /// The only one top root Node of the Sofa scene
+    static Node::SPtr sRoot;
 };
 
 /// Set the (unique) simulation which controls the scene

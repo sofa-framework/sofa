@@ -82,6 +82,7 @@ namespace sofa
 namespace simulation
 {
 
+Node::SPtr Simulation::sRoot = NULL;
 
 using namespace sofa::defaulttype;
 Simulation::Simulation()
@@ -104,6 +105,11 @@ void setSimulation ( Simulation* s )
 Simulation* getSimulation()
 {
     return Simulation::theSimulation.get();
+}
+
+sofa::simulation::Node::SPtr Simulation::GetRoot()
+{
+    return sRoot;
 }
 
 /// Print all object in the graph
@@ -425,23 +431,23 @@ Node::SPtr Simulation::processXML(xml::BaseElement* xml, const char *filename)
         std::cerr << "Objects initialization failed."<<std::endl;
     }
 
-    Node::SPtr root = dynamic_cast<Node*> ( xml->getObject() );
-    if ( root == NULL )
+    sRoot = dynamic_cast<Node*> ( xml->getObject() );
+    if ( sRoot == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
         delete xml;
         return NULL;
     }
 
-    // 				std::cout << "Initializing simulation "<<root->getName() <<std::endl;
+    // 				std::cout << "Initializing simulation "<<sRoot->getName() <<std::endl;
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(root.get());
+    findSimu.execute(sRoot.get());
     if( !findSimu.found.empty() )
         setSimulation( findSimu.found[0] );
 
-    return root;
+    return sRoot;
 }
 
 /// Load from a string in memory
@@ -451,12 +457,12 @@ Node::SPtr Simulation::loadFromMemory ( const char *filename, const char *data, 
     // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
-    Node::SPtr root = processXML(xml, filename);
+    sRoot = processXML(xml, filename);
 
     // 				std::cout << "load done."<<std::endl;
     delete xml;
 
-    return root;
+    return sRoot;
 }
 
 
@@ -467,12 +473,12 @@ Node::SPtr Simulation::loadFromFile ( const char *filename )
     // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromFile ( filename );
 
-    Node::SPtr root = processXML(xml, filename);
+    sRoot = processXML(xml, filename);
 
     // 				std::cout << "load done."<<std::endl;
     delete xml;
 
-    return root;
+    return sRoot;
 }
 
 /// Load a scene
@@ -512,13 +518,14 @@ Node::SPtr Simulation::load ( const char *filename )
             if (out == "")
                 return NULL;
         }
-
-        return loadFromMemory(filename, out.c_str(), out.size());
+        sRoot = loadFromMemory(filename, out.c_str(), out.size());
+        return sRoot;
     }
 
     if (ext == "scn" || ext == "xml")
     {
-        return loadFromFile(filename);
+        sRoot = loadFromFile(filename);
+        return sRoot;
     }
 
     std::cerr << "Simulation : Error : extension not handled" << std::endl;
