@@ -34,11 +34,11 @@
 #include "SofaGUIQt.h"
 #include <sofa/gui/SofaGUI.h>
 #include <time.h>
-#include "viewer/ViewerFactory.h"
+#include "../ViewerFactory.h"
+#include "../BaseViewer.h"
 #include "QSofaListView.h"
 #include "GraphListenerQListView.h"
 #include "FileManagement.h"
-#include "viewer/SofaViewer.h"
 #include "AddObject.h"
 #include "ModifyObject.h"
 #include "DisplayFlagsDataWidget.h"
@@ -116,7 +116,7 @@ class QSofaRecorder;
 
 class QSofaStatWidget;
 
-class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUI
+class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUIImpl
 {
     Q_OBJECT
 
@@ -141,8 +141,6 @@ public:
 
     int closeGUI();
 
-    Node* currentSimulation();
-
     /// @}
 
 
@@ -151,13 +149,10 @@ public:
     QString windowFilePath() const { QString filePath = filePath_; return filePath; }
 #endif
 
-    const char* viewerName;
-
 #ifdef SOFA_GUI_INTERACTION
     QPushButton *interactionButton;
 #endif
 
-    sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
 
 
@@ -165,10 +160,19 @@ public:
     ~RealGUI();
 
     virtual void createViewers(const char* viewerName);
-    virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/)
-    {std::cerr<<"sofa::gui::qt::RealGUI::registerViewer() does nothing here"<<std::endl;}
     virtual void initViewer();
-    virtual void removeViewer();
+
+    /// Our viewer is a QObject SofaViewer
+    virtual bool isEmbeddedViewer()
+    {
+        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer) ? true : false;
+    }
+
+    /// We are sur we use a QObject SofaViewer and return its QWidget
+    QWidget* getViewerWidget()
+    {
+        dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
+    }
 
     static void setPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -238,10 +242,10 @@ public slots:
 
 // Propagate signal to call viewer method in case of it is not a widget
 // Maybe, have to create a SofaGuiViewerMediator class to provide this
-    virtual void resetView()            {viewer->resetView();       }
-    virtual void saveView()             {viewer->saveView();        }
-    virtual void setSizeW ( int _valW ) {viewer->setSizeW(_valW);   }
-    virtual void setSizeH ( int _valH ) {viewer->setSizeH(_valH);   }
+    virtual void resetView()            {mViewer->resetView();       }
+    virtual void saveView()             {mViewer->saveView();        }
+    virtual void setSizeW ( int _valW ) {mViewer->setSizeW(_valW);   }
+    virtual void setSizeH ( int _valH ) {mViewer->setSizeH(_valH);   }
 
 #ifdef SOFA_QT4
     virtual void changeHtmlPage( const QUrl&);
@@ -324,8 +328,6 @@ protected:
     std::string simulation_name;
     std::string gnuplot_directory;
     std::string pathDumpVisitor;
-
-    sofa::simulation::Node* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
     void sleep(float seconds, float init_time)
     {

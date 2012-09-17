@@ -48,7 +48,6 @@ win32 {
 
 HEADERS += viewer/VisualModelPolicy.h \
 	viewer/SofaViewer.h \
-	viewer/ViewerFactory.h \
 	GraphListenerQListView.h \
 	GenGraphForm.h \
 	AddObject.h \

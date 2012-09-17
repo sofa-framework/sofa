@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaGUI.h"
+#include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
 
@@ -43,8 +44,8 @@ namespace sofa
 
 namespace gui
 {
-const char* SofaGUI::programName = NULL;
-std::string SofaGUI::guiName = "";
+const char* SofaGUI::mProgramName = NULL;
+std::string SofaGUI::mGuiName = "";
 
 SofaGUI::SofaGUI()
 {
@@ -97,7 +98,7 @@ void SofaGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 #endif
     }
 
-    //Viewer Dimension
+    //Viewer Dimension TODO in viewer !
     sofa::component::configurationsetting::ViewerSetting *viewerConf;
     groot->get(viewerConf, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (viewerConf) setViewerConfiguration(viewerConf);

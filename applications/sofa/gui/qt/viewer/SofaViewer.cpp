@@ -37,209 +37,17 @@ namespace viewer
 {
 
 SofaViewer::SofaViewer()
-    : groot(NULL)
-    , currentCamera(NULL)
+    : sofa::gui::BaseViewer()
     , m_isControlPressed(false)
-    , _video(false)
-    , _axis(false)
-    , backgroundColour(Vector3())
-    , texLogo(NULL)
-    , backgroundImageFile("textures/SOFA_logo.bmp")
-    , ambientColour(Vector3())
-    , _stereoEnabled(false)
-    , _stereoMode(STEREO_AUTO)
-    , _stereoShift(1.0)
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
 }
 
 SofaViewer::~SofaViewer()
 {
-    if(texLogo)
-    {
-        delete texLogo;
-        texLogo = NULL;
-    }
 }
 
-/*
-bool SofaViewer::unload(void)
-{
-    if ( getScene() !=NULL )
-    {
-      getPickHandler()->reset();//activateRay(false);
-      getPickHandler()->unload();
-
-      // Unload viewer components before delete the whole scene
-      unloadSceneView();
-      simulation::getSimulation()->unload ( getScene() );
-      setScene(NULL);
-    }
-
-    return true;
-}
-*/
-
-sofa::simulation::Node* SofaViewer::getScene()
-{
-    return groot.get();
-}
-const std::string& SofaViewer::getSceneFileName()
-{
-    return sceneFileName;
-}
-void SofaViewer::setSceneFileName(const std::string &f)
-{
-    sceneFileName = f;
-}
-
-void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
-{
-    std::string file =
-        filename ? sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(
-                filename) : std::string();
-    std::string screenshotPrefix =
-        sofa::helper::system::SetDirectory::GetParentDir(
-                sofa::helper::system::DataRepository.getFirstPath().c_str())
-        + std::string("/share/screenshots/") + file
-        + std::string("_");
-    capture.setPrefix(screenshotPrefix);
-#ifdef SOFA_HAVE_FFMPEG
-    videoRecorder.setPrefix(screenshotPrefix);
-#endif //SOFA_HAVE_FFMPEG
-    sceneFileName = filename ? filename : std::string("default.scn");
-    groot = scene;
-    initTexturesDone = false;
-
-    //Camera initialization
-    if (groot)
-    {
-        groot->get(currentCamera);
-        if (!currentCamera)
-        {
-            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
-            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
-            groot->addObject(currentCamera);
-            currentCamera->p_position.forceSet();
-            currentCamera->p_orientation.forceSet();
-            currentCamera->bwdInit();
-
-        }
-        component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
-        groot->get(visualStyle);
-        if (!visualStyle)
-        {
-            visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
-            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
-
-            core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
-            displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
-            visualStyle->displayFlags.endEdit();
-
-            groot->addObject(visualStyle);
-            visualStyle->init();
-        }
-
-        currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
-
-        // init pickHandler
-        pick.init(groot.get());
-        pick.setColourRenderCallback(&colourPickingRenderCallBack);
-    }
-    loadSceneView();
-}
-
-void SofaViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
-{
-    currentCamera->setCameraType(mode);
-}
-
-bool SofaViewer::ready()
-{
-    return true;
-}
-
-void SofaViewer::configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
-{
-    using namespace core::visual;
-    if (viewerConf->cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)
-        setCameraMode(VisualParams::ORTHOGRAPHIC_TYPE);
-    else
-        setCameraMode(VisualParams::PERSPECTIVE_TYPE);
-    if ( viewerConf->objectPickingMethod.getValue().getSelectedId() == gui::PickHandler::RAY_CASTING)
-        pick.setPickingMethod( gui::PickHandler::RAY_CASTING );
-    else
-        pick.setPickingMethod( gui::PickHandler::SELECTION_BUFFER);
-}
-//Fonctions needed to take a screenshot
-const std::string SofaViewer::screenshotName()
-{
-    return capture.findFilename().c_str();
-}
-
-void SofaViewer::setPrefix(const std::string filename)
-{
-    capture.setPrefix(filename);
-}
-
-void SofaViewer::screenshot(const std::string filename, int compression_level)
-{
-    capture.saveScreen(filename, compression_level);
-}
-
-void SofaViewer::getView(Vec3d& pos, Quat& ori) const
-{
-    if (!currentCamera)
-        return;
-
-    const Vec3d& camPosition = currentCamera->getPosition();
-    const Quat& camOrientation = currentCamera->getOrientation();
-
-    pos[0] = camPosition[0];
-    pos[1] = camPosition[1];
-    pos[2] = camPosition[2];
-
-    ori[0] = camOrientation[0];
-    ori[1] = camOrientation[1];
-    ori[2] = camOrientation[2];
-    ori[3] = camOrientation[3];
-}
-
-void SofaViewer::setView(const Vec3d& pos, const Quat &ori)
-{
-    Vec3d position;
-    Quat orientation;
-    for (unsigned int i=0 ; i<3 ; i++)
-    {
-        position[i] = pos[i];
-        orientation[i] = ori[i];
-    }
-    orientation[3] = ori[3];
-
-    if (currentCamera)
-        currentCamera->setView(position, orientation);
-
-    getQWidget()->update();
-}
-
-void SofaViewer::moveView(const Vec3d& pos, const Quat &ori)
-{
-    if (!currentCamera)
-        return;
-
-    currentCamera->moveCamera(pos, ori);
-    getQWidget()->update();
-}
-
-void SofaViewer::newView()
-{
-    if (!currentCamera || !groot)
-        return;
-
-    currentCamera->setDefaultView(groot->getGravity());
-}
-
-void SofaViewer::resetView()
+void SofaViewer::redraw()
 {
     getQWidget()->update();
 }
@@ -262,7 +70,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT,viewport);
-        pick.activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
         break;
     case Qt::Key_B:
         // --- change background
@@ -419,7 +227,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     switch (e->key())
     {
     case Qt::Key_Shift:
-        pick.deactivateRay();
+        getPickHandler()->deactivateRay();
 
         break;
     case Qt::Key_Control:
@@ -531,8 +339,8 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     if (e->state() & Qt::ShiftButton)
     {
 
-        pick.activateRay(viewport[2],viewport[3], groot.get());
-        pick.updateMouse2D( mousepos );
+        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->updateMouse2D( mousepos );
 
         //_sceneTransform.ApplyInverse();
         switch (e->type())
@@ -541,15 +349,15 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
 
             if (e->button() == Qt::LeftButton)
             {
-                pick.handleMouseEvent(PRESSED, LEFT);
+                getPickHandler()->handleMouseEvent(PRESSED, LEFT);
             }
             else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
             {
-                pick.handleMouseEvent(PRESSED, RIGHT);
+                getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
             }
             else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
             {
-                pick.handleMouseEvent(PRESSED, MIDDLE);
+                getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
             }
             break;
         case QEvent::MouseButtonRelease:
@@ -558,15 +366,15 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
 
             if (e->button() == Qt::LeftButton)
             {
-                pick.handleMouseEvent(RELEASED, LEFT);
+                getPickHandler()->handleMouseEvent(RELEASED, LEFT);
             }
             else if (e->button() == Qt::RightButton)
             {
-                pick.handleMouseEvent(RELEASED, RIGHT);
+                getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
             }
             else if (e->button() == Qt::MidButton)
             {
-                pick.handleMouseEvent(RELEASED, MIDDLE);
+                getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
             }
         }
         break;
@@ -577,7 +385,7 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     }
     else
     {
-        pick.activateRay(viewport[2],viewport[3], groot.get());
+        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
     }
     return true;
 }
@@ -620,91 +428,6 @@ void SofaViewer::captureEvent()
         }
     }
 }
-
-void SofaViewer::setBackgroundColour(float r, float g, float b)
-{
-    _background = 2;
-    backgroundColour[0] = r;
-    backgroundColour[1] = g;
-    backgroundColour[2] = b;
-}
-
-void SofaViewer::setBackgroundImage(std::string imageFileName)
-{
-    _background = 0;
-
-    if( sofa::helper::system::DataRepository.findFile(imageFileName) )
-    {
-        backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
-        std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
-        std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
-        if(texLogo)
-        {
-            delete texLogo;
-            texLogo = NULL;
-        }
-        helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
-        if( !image )
-        {
-            helper::vector<std::string> validExtensions;
-            helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
-            std::cerr << "Could not create: " << imageFileName << std::endl;
-            std::cerr << "Valid extensions: " << validExtensions << std::endl;
-        }
-        else
-        {
-            texLogo = new helper::gl::Texture( image );
-            texLogo->init();
-
-        }
-
-    }
-}
-
-std::string SofaViewer::getBackgroundImage()
-{
-    return backgroundImageFile;
-}
-PickHandler* SofaViewer::getPickHandler()
-{
-    return &pick;
-}
-
-void SofaViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
-{
-    if(!currentCamera) return;
-    if( node->f_bbox.getValue().isValid() && !node->f_bbox.getValue().isFlat() )
-        currentCamera->fitBoundingBox(
-            node->f_bbox.getValue().minBBox(),
-            node->f_bbox.getValue().maxBBox()
-        );
-
-    this->getQWidget()->update();
-
-}
-
-void SofaViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
-{
-    if(!currentCamera) return;
-
-    if( object->f_bbox.getValue().isValid() && !object->f_bbox.getValue().isFlat() )
-        currentCamera->fitBoundingBox(object->f_bbox.getValue().minBBox(),
-                object->f_bbox.getValue().maxBBox());
-    else
-    {
-        if(object->getContext()->f_bbox.getValue().isValid() && !object->getContext()->f_bbox.getValue().isFlat()  )
-        {
-            currentCamera->fitBoundingBox(
-                object->getContext()->f_bbox.getValue().minBBox(),
-                object->getContext()->f_bbox.getValue().maxBBox());
-        }
-    }
-    this->getQWidget()->update();
-
-}
-
-
-
 
 
 }
