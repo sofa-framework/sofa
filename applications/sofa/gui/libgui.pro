@@ -9,16 +9,19 @@ DEPENDPATH += $$ROOT_SRC_DIR/applications
 DEFINES += SOFA_BUILD_SOFAGUI
 
 SOURCES = \
+    BaseGUI.cpp \
+    BaseGUIUtil.cpp \
     BaseViewer.cpp \
 	BatchGUI.cpp \
 	ColourPickingVisitor.cpp \
 	FilesRecentlyOpenedManager.cpp \
 	MouseOperations.cpp \
 	PickHandler.cpp \
-	SofaGUI.cpp \
 	GUIManager.cpp
 
 HEADERS = \
+    BaseGUI.h \
+    BaseGUIUtil.h \
     BaseViewer.h \
 	BatchGUI.h \
 	ColourPickingVisitor.h \

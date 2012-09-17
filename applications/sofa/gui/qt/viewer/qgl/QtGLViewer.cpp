@@ -42,7 +42,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
 
@@ -1034,7 +1034,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     position  = transform*Vec4d(0,0,0,1);
     direction = transform*Vec4d(0,0,1,0);
     direction.normalize();
-    pick.updateRay(position, direction);
+    pick->updateRay(position, direction);
 }
 
 // -------------------------------------------------------------------
@@ -1048,7 +1048,7 @@ void QtGLViewer::resetView()
     {
         //Test if we have a specific view point for the QGLViewer
         //That case, the camera will be well placed
-        std::string viewFileName = sceneFileName+"."+sofa::gui::SofaGUI::GetGUIName()+".view";
+        std::string viewFileName = sceneFileName+"."+sofa::gui::BaseGUI::GetGUIName()+".view";
         std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
@@ -1110,7 +1110,7 @@ void QtGLViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+"."+sofa::gui::SofaGUI::GetGUIName()+".view";
+        std::string viewFileName = sceneFileName+"."+sofa::gui::BaseGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {

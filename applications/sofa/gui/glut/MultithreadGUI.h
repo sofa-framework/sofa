@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_GLUT_MULTITHREADGUI_H
 #define SOFA_GUI_GLUT_MULTITHREADGUI_H
 
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/PickHandler.h>
 
 #include <sofa/core/objectmodel/AspectPool.h>
@@ -84,7 +84,7 @@ using namespace sofa::component::collision;
 class MainLoopTask;
 #endif
 
-class SOFA_SOFAGUIGLUT_API MultithreadGUI : public sofa::gui::SofaGUI
+class SOFA_SOFAGUIGLUT_API MultithreadGUI : public sofa::gui::BaseGUI
 {
 
 public:
@@ -111,7 +111,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     /// @}
 

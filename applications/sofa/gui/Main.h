@@ -41,7 +41,6 @@ namespace gui
 {
 
 void SOFA_GUIMAIN_API initMain();
-class SofaGUI;
 
 }
 }

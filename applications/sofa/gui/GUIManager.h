@@ -37,14 +37,14 @@ namespace sofa
 
 namespace gui
 {
-class SofaGUI;
+class BaseGUI;
 
 
 class SOFA_SOFAGUI_API GUIManager
 {
 public:
     typedef int InitGUIFn(const char* name, const std::vector<std::string>& options);
-    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename);
+    typedef BaseGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename);
 
     struct GUICreator
     {
@@ -99,11 +99,11 @@ protected:
     static std::list<GUICreator> guiCreators;
 
     static std::vector<std::string> guiOptions;
-    static SofaGUI* currentGUI;
+    static BaseGUI* currentGUI;
     static const char* valid_guiname;
 
 public:
-    static SofaGUI* getGUI();
+    static BaseGUI* getGUI();
 };
 
 }

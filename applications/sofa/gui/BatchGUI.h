@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_BATCHGUI_H
 #define SOFA_GUI_BATCHGUI_H
 
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/BaseGUI.h>
 #include <sofa/simulation/common/Node.h>
 
 namespace sofa
@@ -34,7 +34,7 @@ namespace sofa
 namespace gui
 {
 
-class SOFA_SOFAGUI_API BatchGUI : public SofaGUI
+class SOFA_SOFAGUI_API BatchGUI : public BaseGUI
 {
 
 public:
@@ -61,7 +61,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}

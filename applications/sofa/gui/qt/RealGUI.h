@@ -32,10 +32,12 @@
 
 #include "GUI.h"
 #include "SofaGUIQt.h"
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/BaseGUI.h>
 #include <time.h>
-#include "../ViewerFactory.h"
 #include "../BaseViewer.h"
+#include "viewer/SofaViewer.h"
+#include "../ViewerFactory.h"
+#include "../BaseGUIUtil.h"
 #include "QSofaListView.h"
 #include "GraphListenerQListView.h"
 #include "FileManagement.h"
@@ -116,11 +118,11 @@ class QSofaRecorder;
 
 class QSofaStatWidget;
 
-class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUIImpl
+class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUIUtil
 {
     Q_OBJECT
 
-    /// @name SofaGUI Interface
+    /// @name BaseGUI Interface
     /// @{
 
 
@@ -128,7 +130,7 @@ public:
 
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
 protected:
 
@@ -171,7 +173,7 @@ public:
     /// We are sur we use a QObject SofaViewer and return its QWidget
     QWidget* getViewerWidget()
     {
-        dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
+        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
     }
 
     static void setPixmap(std::string pixmap_filename, QPushButton* b);
@@ -241,7 +243,7 @@ public slots:
     virtual void updateBackgroundImage();
 
 // Propagate signal to call viewer method in case of it is not a widget
-// Maybe, have to create a SofaGuiViewerMediator class to provide this
+// Maybe, have to create a BaseGUIViewerMediator class to provide this
     virtual void resetView()            {mViewer->resetView();       }
     virtual void saveView()             {mViewer->saveView();        }
     virtual void setSizeW ( int _valW ) {mViewer->setSizeW(_valW);   }

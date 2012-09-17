@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include "GUIManager.h"
+#include "BaseGUI.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -34,13 +35,13 @@ namespace gui
 {
 
 /*STATIC FIELD DEFINITIONS */
-SofaGUI* GUIManager::currentGUI = NULL;
+BaseGUI* GUIManager::currentGUI = NULL;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
 std::vector<std::string> GUIManager::guiOptions;
 const char* GUIManager::valid_guiname = NULL;
 
 
-SofaGUI* GUIManager::getGUI()
+BaseGUI* GUIManager::getGUI()
 {
     return currentGUI;
 }
@@ -164,7 +165,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 
 int GUIManager::Init(const char* argv0, const char* name /* = "" */)
 {
-    SofaGUI::SetProgramName(argv0);
+    BaseGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
     GUICreator* creator;

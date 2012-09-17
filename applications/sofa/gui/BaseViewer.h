@@ -174,7 +174,7 @@ protected:
 
     Vector3 ambientColour;
 
-    PickHandler pick;
+    PickHandler* pick;
 
     //instruments handling
     int _navigationMode;

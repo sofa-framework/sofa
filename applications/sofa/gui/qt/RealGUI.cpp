@@ -123,7 +123,7 @@ using namespace sofa::core::visual;
 
 
 ///////////////////////////////////////////////////////////
-//////////////////// SofaGUI Interface ////////////////////
+//////////////////// BaseGUI Interface ////////////////////
 ///////////////////////////////////////////////////////////
 extern QApplication* application; // = NULL;
 extern RealGUI* gui;
@@ -178,7 +178,7 @@ int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* 
 }
 
 
-SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
+BaseGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
 {
     CreateApplication();
 
@@ -200,7 +200,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     int  *argc = new int;
     char **argv=new char*[2];
     *argc = 1;
-    argv[0] = strdup ( SofaGUI::GetProgramName() );
+    argv[0] = strdup ( BaseGUI::GetProgramName() );
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
 }
@@ -605,7 +605,7 @@ void RealGUI::createViewers(const char* viewerName)
         std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<viewerName<<std::endl;
         application->exit();
     }
-    if( isEmbededViewer() )
+    if( isEmbeddedViewer() )
         left_stack->addWidget ( getViewerWidget() );
     initViewer();
 }
@@ -627,7 +627,7 @@ void RealGUI::initViewer()
     m_exportGnuplot = false;
     gnuplot_directory = "";
 
-    if( isEmbeded() )
+    if( isEmbeddedViewer() )
     {
 #ifdef SOFA_QT4
         left_stack->setCurrentWidget ( getViewerWidget() );
@@ -850,7 +850,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     //Hide all the dialogs to modify the graph
     emit ( newScene() );
 
-    SofaGUIImpl::fileOpen(filename, temporaryFile);
+    BaseGUIUtil::fileOpen(filename, temporaryFile);
 
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
