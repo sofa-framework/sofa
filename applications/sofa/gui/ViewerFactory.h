@@ -44,10 +44,10 @@ public:
     virtual std::string getName() {return name;}
 };
 
-class ViewerArgument : public BaseViewerArgument
+class ViewerQtArgument : public BaseViewerArgument
 {
 public:
-    ViewerArgument() :
+    ViewerQtArgument() :
         parent(NULL)
     {}
 

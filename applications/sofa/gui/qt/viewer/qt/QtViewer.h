@@ -133,7 +133,7 @@ public:
     static QtViewer* create(QtViewer*, BaseViewerArgument arg)
     {
         BaseViewerArgument* pArg = &arg;
-        ViewerArgument* viewerArg = dynamic_cast<ViewerArgument*>(pArg);
+        ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ? new QtViewer(viewerArg->parent, viewerArg->name.c_str() ) : new QtViewer(NULL, arg.name.c_str() );
     }
 

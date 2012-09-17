@@ -111,7 +111,7 @@ public:
     static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument arg)
     {
         BaseViewerArgument* pArg = &arg;
-        ViewerArgument* viewerArg = dynamic_cast<ViewerArgument*>(pArg);
+        ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ? new QtGLViewer(viewerArg->parent, viewerArg->name.c_str() ) : new QtGLViewer(NULL, arg.name.c_str() );
     }
 
