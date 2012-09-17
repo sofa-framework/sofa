@@ -36,11 +36,22 @@ namespace sofa
 namespace gui
 {
 
-struct ViewerArgument
+class BaseViewerArgument
 {
-    ViewerArgument() : parent(0l) {}
-    QWidget* parent;
+public:
     std::string name;
+    // I have to have at least one virtual function in my base class to use dynamic_cast or to make it polymorphic
+    virtual std::string getName() {return name;}
+};
+
+class ViewerArgument : public BaseViewerArgument
+{
+public:
+    ViewerArgument() :
+        parent(NULL)
+    {}
+
+    QWidget* parent;
 };
 
 }
@@ -52,21 +63,21 @@ namespace helper
 {
 
 template < >
-class BaseCreator< sofa::gui::BaseViewer, sofa::gui::ViewerArgument>
+class BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument>
 {
 public:
     virtual ~BaseCreator() { }
-    virtual sofa::gui::BaseViewer *createInstance(sofa::gui::ViewerArgument arg) = 0;
+    virtual sofa::gui::BaseViewer *createInstance(sofa::gui::BaseViewerArgument arg) = 0;
     virtual const std::type_info& type() = 0;
     virtual const char* viewerName() = 0;
     virtual const char* acceleratedName() = 0;
 };
 
 
-class SOFA_SOFAGUI_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::ViewerArgument >
+class SOFA_SOFAGUI_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument >
 {
 public:
-    typedef sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::ViewerArgument > Inherited;
+    typedef sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument > Inherited;
     typedef Inherited::Key Key;
     typedef Inherited::Argument Argument;
     typedef Inherited::Object Object;
@@ -164,7 +175,6 @@ public:
     {
         return RealObject::acceleratedName();
     }
-
 };
 
 
