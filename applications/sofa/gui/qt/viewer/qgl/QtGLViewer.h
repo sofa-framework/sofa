@@ -112,7 +112,10 @@ public:
     {
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
-        return viewerArg ? new QtGLViewer(viewerArg->parent, viewerArg->name.c_str() ) : new QtGLViewer(NULL, arg.name.c_str() );
+        return viewerArg ?
+                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
+                new QtGLViewer(NULL, pArg->getName().c_str() )
+                ;
     }
 
     static const char* viewerName()  { return "QGLViewer"; }

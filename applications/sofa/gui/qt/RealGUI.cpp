@@ -940,10 +940,6 @@ void RealGUI::showVideoRecorderManager()
 
 void RealGUI::createViewers(const char* viewerName)
 {
-    ViewerQtArgument arg;
-    arg.name = "viewer";
-    arg.parent = left_stack;
-
     if( mViewer != NULL )
         removeViewer();
 
@@ -967,7 +963,7 @@ void RealGUI::createViewers(const char* viewerName)
 
             if( strcmp(iter->c_str(), viewerName )== 0 )
             {
-                mViewer = helper::SofaViewerFactory::CreateObject(*iter, arg);
+                mViewer = helper::SofaViewerFactory::CreateObject(*iter, ViewerQtArgument("viewer", left_stack) );
                 action->setOn(true);
             }
             else
@@ -2132,13 +2128,8 @@ void RealGUI::changeViewer()
                 left_stack->removeWidget( getViewerWidget() );
             removeViewer();
 
-            // Need for the next creation
-            ViewerQtArgument arg;
-            arg.name = "viewer";
-            arg.parent = left_stack; // Set it by default but in case of standalone viewer, we don't use it in tis constructor
-
             // Create new viewer
-            mViewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).first, arg);
+            mViewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).first, ViewerQtArgument("viewer", left_stack));
 
             if(isEmbeddedViewer())
                 left_stack->addWidget( getViewerWidget() );
@@ -2212,11 +2203,7 @@ void RealGUI::updateViewerList()
     {
         if(!viewerMap.empty())
         {
-            ViewerQtArgument arg;
-            arg.name = "viewer";
-            arg.parent = left_stack;
-            /* change viewer */
-            mViewer =  helper::SofaViewerFactory::CreateObject( viewerMap.begin()->first, arg);
+            mViewer =  helper::SofaViewerFactory::CreateObject( viewerMap.begin()->first, ViewerQtArgument("viewer", left_stack));
 
             if(isEmbeddedViewer())
                 left_stack->addWidget( getViewerWidget() );
