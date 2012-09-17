@@ -1587,7 +1587,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         qtViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
     }
 
-    SofaMouseManager::getInstance()->setPickHandler(qtViewer->getPickHandler());
+    SofaMouseManager::getInstance()->setPickHandler(_viewer->getPickHandler());
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
@@ -2194,7 +2194,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
     else if ( currentTab == TabGraph )
         simulationGraph->Freeze();
     else if (widget == TabStats)
-        statWidget->CreateStats(getViewer()->getScene());
+        statWidget->CreateStats(currentSimulation());
 
     currentTab = widget;
 }
@@ -2262,7 +2262,7 @@ void RealGUI::updateViewerList()
         {
             if( (*itViewerMap).second->isOn() )
             {
-                this->unloadScene(); //--> witout unload the scene -> just unload the viewer
+                this->unloadScene();
                 removeViewer();
             }
             (*itViewerMap).second->removeFrom(View);
@@ -2281,7 +2281,7 @@ void RealGUI::updateViewerList()
         }
     }
 
-    // if we unloaded a viewer plugin actually in use
+    // first actualisation or if we unloaded a viewer plugin actually in use
     if( mViewer == NULL && !viewerMap.empty())
     {
         mViewer = createViewer(viewerMap.begin()->first, ViewerQtArgument("viewer", left_stack));
