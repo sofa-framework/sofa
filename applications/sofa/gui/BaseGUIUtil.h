@@ -43,35 +43,42 @@ public:
     virtual ~BaseGUIUtil()
     {}
 
-    virtual sofa::simulation::Node* currentSimulation() {if(mViewer)return mViewer->getScene(); else return 0l;}
-    virtual void registerViewer(BaseViewer* viewer) {mViewer = viewer;}
+    virtual sofa::simulation::Node* currentSimulation()
+    {
+        return mViewer ? mViewer->getScene() : NULL;
+    }
+
+    virtual void registerViewer(BaseViewer* viewer)
+    {
+        mViewer = viewer;
+    }
+
     virtual void removeViewer()
     {
-        if(mCreateViewersOpt)
+        if(mCreateViewersOpt && mViewer != NULL)
         {
             delete mViewer;
             mViewer = NULL;
         }
     }
+
 //    virtual void createViewers(const char* viewerName, viewer::SofaViewerArgument arg);
 //    virtual void initViewer();
 //    virtual void changeViewer();
 
-    sofa::simulation::Node* getScene()
-    {
-        if (mViewer) return mViewer->getScene(); else return NULL;
-    }
-
     virtual void unloadScene()
     {
-        if ( getScene() )
+        if(mViewer != NULL)
         {
             mViewer->getPickHandler()->reset();
             mViewer->getPickHandler()->unload();
             mViewer->unload();
-            simulation::getSimulation()->unload ( mViewer->getScene() );
-            mViewer->setScene(NULL);
         }
+
+        simulation::getSimulation()->unload ( currentSimulation() );
+
+        if(mViewer != NULL)
+            mViewer->setScene(NULL);
     }
 
     virtual void fileOpen(std::string filename, bool temporaryFile)
@@ -84,7 +91,7 @@ public:
         frameCounter = 0;
         sofa::simulation::xml::numDefault = 0;
 
-        this->unloadScene();
+        if( this->currentSimulation() ) this->unloadScene();
         simulation::Node::SPtr root = simulation::getSimulation()->load ( filename.c_str() );
         simulation::getSimulation()->init ( root.get() );
         if ( root == NULL )
