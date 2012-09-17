@@ -10,7 +10,6 @@ DEFINES += SOFA_BUILD_SOFAGUI
 
 SOURCES = \
     BaseGUI.cpp \
-    BaseGUIUtil.cpp \
     BaseViewer.cpp \
 	BatchGUI.cpp \
 	ColourPickingVisitor.cpp \
@@ -21,7 +20,6 @@ SOURCES = \
 
 HEADERS = \
     BaseGUI.h \
-    BaseGUIUtil.h \
     BaseViewer.h \
 	BatchGUI.h \
 	ColourPickingVisitor.h \

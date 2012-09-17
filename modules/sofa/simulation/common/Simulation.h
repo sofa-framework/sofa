@@ -101,6 +101,7 @@ public:
 
     /// Load a scene from a file.
     virtual Node::SPtr load(const char* /* filename */);
+
     /// Unload a scene from a Node.
     virtual void unload(Node::SPtr root);
 

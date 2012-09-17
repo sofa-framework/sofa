@@ -25,78 +25,54 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
-#ifdef SOFA_PML
-#  include <sofa/filemanager/sofapml/PMLReader.h>
-#  include <sofa/filemanager/sofapml/LMLReader.h>
-#endif
-
 #include "GUI.h"
 #include "SofaGUIQt.h"
-#include <sofa/gui/BaseGUI.h>
-#include <time.h>
-#include "../BaseViewer.h"
-#include "viewer/SofaViewer.h"
-#include "../ViewerFactory.h"
-#include "../BaseGUIUtil.h"
-#include "QSofaListView.h"
 #include "GraphListenerQListView.h"
-#include "FileManagement.h"
-#include "AddObject.h"
-#include "ModifyObject.h"
-#include "DisplayFlagsDataWidget.h"
 #include "QMenuFilesRecentlyOpened.h"
-#include "SofaPluginManager.h"
-#include "SofaMouseManager.h"
-#include "SofaVideoRecorderManager.h"
 #include "PickHandlerCallBacks.h"
-#include <sofa/simulation/common/xml/XML.h>
-#include <sofa/helper/system/SetDirectory.h>
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-#include "WindowVisitor.h"
-#include "GraphVisitor.h"
-#endif
+#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/ViewerFactory.h>
 
 #ifdef SOFA_QT4
-#include <QApplication>
-#include <QDesktopWidget>
-#include <Q3ListViewItem>
-#include <QStackedWidget>
-#include <QSlider>
-#include <QTimer>
-#include <Q3TextDrag>
-#include <Q3PopupMenu>
-#include <QLibrary>
-#include <QTextBrowser>
-#include <QUrl>
-#include <QStatusBar>
+#   include <Q3ListViewItem>
 typedef Q3ListViewItem QListViewItem;
+#   include <QStackedWidget>
 typedef QStackedWidget QWidgetStack;
-typedef Q3PopupMenu QPopupMenu;
+#   include <QUrl>
+#   include <qevent.h>
 #else
-typedef QTextDrag Q3TextDrag;
-#include <qapplication.h>
-#include <qdesktopwidget.h>
-#include <qdragobject.h>
-#include <qwidgetstack.h>
-#include <qlistview.h>
-#include <qslider.h>
-#include <qpopupmenu.h>
-#include <qlibrary.h>
-#include <qtextbrowser.h>
-#include <qurl.h>
-#include <qstatusbar.h>
+#   include <qurl.h>
+#   include <qwidgetstack.h>
+#   include <qlistview.h>
 #endif
 
-#ifdef SOFA_PML
-#include <sofa/simulation/tree/GNode.h>
+#include <time.h>
+
+#ifdef SOFA_QT4
+class QTimer;
+class QTextBrowser;
 #endif
+
+class WDoubleLineEdit;
 
 namespace sofa
 {
+#ifdef SOFA_PML
+namespace filemanager
+{
+namespace pml
+{
+class PMLReader;
+class LMLReader;
+}
+}
+#endif
+
 namespace gui
 {
 class CallBackPicker;
+class BaseViewer;
 
 namespace qt
 {
@@ -113,9 +89,21 @@ enum SCRIPT_TYPE { PHP, PERL };
 
 class QSofaListView;
 class QSofaStatWidget;
+class GraphListenerQListView;
+class DisplayFlagsDataWidget;
+class SofaPluginManager;
+#ifdef SOFA_DUMP_VISITOR_INFO
+class WindowVisitor;
+class GraphVisitor;
+#endif
+
+namespace viewer
+{
+class SofaViewer;
+}
 
 
-class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUIUtil
+class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUI
 {
     Q_OBJECT
 
@@ -224,6 +212,7 @@ public:
 protected:
     /// create a viewer by default, otherwise you have to manage your own viewer
     bool mCreateViewersOpt;
+    bool mIsEmbeddedViewer;
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
     std::ostringstream m_dumpVisitorStream;
@@ -232,6 +221,7 @@ protected:
     int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
     bool m_fullScreen;
+    BaseViewer* mViewer;
 
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
@@ -259,19 +249,21 @@ private:
     QDialog* descriptionScene;
     QTextBrowser* htmlPage;
     bool animationState;
+    int frameCounter;
 //-----------------DATAS MEMBER------------------------}
 
 
 
 //-----------------METHODS------------------------{
 public:
-    int mainLoop();
-    int closeGUI();
-
+    virtual int mainLoop();
+    virtual int closeGUI();
+    virtual sofa::simulation::Node* currentSimulation();
     virtual void fileOpen(std::string filename, bool temporaryFile=false);
     virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
     virtual void fileNew();
@@ -304,6 +296,8 @@ public:
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
 
+    virtual BaseViewer* getViewer();
+
     void dragEnterEvent( QDragEnterEvent* event)
     {
         event->accept();
@@ -311,6 +305,7 @@ public:
     void dropEvent(QDropEvent* event);
 
 protected:
+    /// init data member from RealGUI for the viewer initialisation in the GUI
     void init();
     void createDisplayFlags(Node::SPtr root);
     void loadHtmlDescription(const char* filename);
@@ -321,22 +316,33 @@ protected:
     void startDumpVisitor();
     void stopDumpVisitor();
 
+    /// Call for initialize the GUI viewer list and create one according to the argument
     /// The viewerName argument is the key to create the Viewer object from the factory
-    virtual void createViewers(const char* viewerName);
-    virtual void createViewer(sofa::helper::SofaViewerFactory::Key _key);
-    virtual void initViewer();
+    virtual void createViewers(const char* viewerName, bool updateViewerList=true);
+
+    /// create a viewer from the viewerFactory according to its string key and its argument
+    /// TODO: find a better way to propagate the argument when we construct the viewer
+    virtual BaseViewer* createViewer(sofa::helper::SofaViewerFactory::Key _key, BaseViewerArgument _viewerArg = BaseViewerArgument("viewer") );
+
+    /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
+    virtual void initViewer(BaseViewer* /*viewer*/);
+
+    /// A way to know if our viewer is embedded or not... (see initViewer)
+    /// TODO: Find a better way to do this
+    sofa::gui::qt::viewer::SofaViewer* getQtViewer();
+
     virtual void removeViewer();
 
     /// Our viewer is a QObject SofaViewer
     virtual bool isEmbeddedViewer()
     {
-        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer) ? true : false;
+        return mIsEmbeddedViewer;
     }
 
-    /// We are sur we use a QObject SofaViewer and return its QWidget
-    QWidget* getViewerWidget()
+    /// Our viewer is a QObject SofaViewer
+    virtual void isEmbeddedViewer(bool _onOff)
     {
-        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
+        mIsEmbeddedViewer = _onOff;
     }
 
     virtual int exitApplication(unsigned int _retcode = 0)
@@ -386,20 +392,17 @@ public slots:
     virtual void screenshot();
     virtual void showhideElements();
     virtual void Update();
-    virtual void updateViewerParameters();
     virtual void updateBackgroundColour();
     virtual void updateBackgroundImage();
 
     // Propagate signal to call viewer method in case of it is not a widget
-    // Maybe, have to create a BaseGUIViewerMediator class to provide this
-    virtual void resetView()            {mViewer->resetView();       }
-    virtual void saveView()             {mViewer->saveView();        }
-    virtual void setSizeW ( int _valW ) {mViewer->setSizeW(_valW);   }
-    virtual void setSizeH ( int _valH ) {mViewer->setSizeH(_valH);   }
+    virtual void resetView()            {getViewer()->resetView();       }
+    virtual void saveView()             {getViewer()->saveView();        }
+    virtual void setSizeW ( int _valW ) {getViewer()->setSizeW(_valW);   }
+    virtual void setSizeH ( int _valH ) {getViewer()->setSizeH(_valH);   }
 
     virtual void clear();
-    //Used in Context Menu
-    //refresh the visualization window
+    /// refresh the visualization window
     virtual void redraw();
     virtual void exportOBJ(sofa::simulation::Node* node, bool exportMTL=true);
     virtual void dumpState(bool);
@@ -410,9 +413,11 @@ public slots:
 
 protected slots:
     /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
+    /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void changeViewer();
 
     /// Update the viewerMap and create viewer if we haven't yet one (the first of the list)
+    /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
 
 signals:

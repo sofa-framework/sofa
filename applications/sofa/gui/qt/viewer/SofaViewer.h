@@ -81,8 +81,6 @@ public:
     /// Optional QTabWidget GUI for a concreate viewer.
     virtual void configureViewerTab(QTabWidget *) {}
 
-    /// Overload this method in instanciated viewer to notify if the viewer is embeded (like a Qt widget) or not (standalone)
-    virtual bool isEmbedded() {return true;}
     virtual QWidget* getQWidget()=0;
     virtual QString helpString()=0;
 
@@ -111,6 +109,11 @@ protected:
     bool m_isControlPressed;
 
     ColourPickingRenderCallBack colourPickingRenderCallBack;
+
+signals:
+    virtual void redrawn() = 0;
+    virtual void resizeW(int) = 0;
+    virtual void resizeH(int) = 0;
 };
 
 template < typename VisualModelPolicyType >
