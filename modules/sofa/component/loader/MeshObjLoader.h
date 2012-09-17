@@ -86,6 +86,8 @@ public:
     //Data <helper::vector<sofa::defaulttype::Vector3> > vertices;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
 
+    Data< bool > computeMaterialFaces;
+
     helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
