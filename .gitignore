@@ -16,6 +16,7 @@
 ########## GITIGNORE SOFA-DEV ##############
 # ignore vim journal files
 .*.swp
+.*.swo
 
 # Ignore all sofa user specific config files
 share/config/plugins.cfg
