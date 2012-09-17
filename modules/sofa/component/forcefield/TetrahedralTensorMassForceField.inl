@@ -279,7 +279,6 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::~Tetrahed
 
 template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init()
 {
-    serr << "initializing TetrahedralTensorMassForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
