@@ -250,11 +250,34 @@ int RealGUI::closeGUI()
     return 0;
 }
 
+
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& options )
     :
 #ifdef SOFA_GUI_INTERACTION
     interactionButton( NULL ),
 #endif
+
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    recorder(NULL),
+#else
+    fpsLabel(NULL),
+    timeLabel(NULL),
+#endif
+
+#ifdef SOFA_GUI_INTERACTION
+    m_interactionActived(false),
+#endif
+
+#ifdef SOFA_PML
+    pmlreader(NULL),
+    lmlreader(NULL),
+#endif
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    windowTraceVisitor(NULL),
+    handleTraceVisitor(NULL),
+#endif
+
     simulationGraph(NULL),
     mCreateViewersOpt(false),
     m_dumpState(false),
@@ -264,14 +287,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     _animationOBJcounter(0),
     m_displayComputationTime(false),
     m_fullScreen(false),
-
     currentTab ( NULL ),
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    recorder(NULL),
-#else
-    fpsLabel(NULL),
-    timeLabel(NULL),
-#endif
     statWidget(NULL),
     timerStep(NULL),
     backgroundImage(NULL),
@@ -279,15 +295,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     pluginManager_dialog(NULL),
     recentlyOpenedFilesManager("config/Sofa.ini"),
     saveReloadFile(false),
-    frameCounter(0),
-#ifdef SOFA_GUI_INTERACTION
-    m_interactionActived(false),
-#endif
     displayFlag(NULL),
-#ifdef SOFA_DUMP_VISITOR_INFO
-    windowTraceVisitor(NULL),
-    handleTraceVisitor(NULL),
-#endif
     descriptionScene(NULL),
     htmlPage(NULL),
     animationState(false)
@@ -432,10 +440,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     ((QVBoxLayout*)(TabPage->layout()))->insertWidget(2,image);
 
     //---------------------------------------------------------------------------------------------------
-#ifdef SOFA_PML
-    pmlreader = NULL;
-    lmlreader = NULL;
-#endif
 
     ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
@@ -899,36 +903,30 @@ void RealGUI::lmlOpen ( const char* filename )
 #endif
 
 
-
-void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFile )
+void RealGUI::loadHtmlDescription(const char* filename)
 {
-    if (filename)
+    std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
+    std::string htmlFile=filename;
+    htmlFile.resize(htmlFile.size()-extension.size()-1);
+    htmlFile+=".html";
+    if (sofa::helper::system::DataRepository.findFile (htmlFile,"",NULL))
     {
-        if (!temporaryFile) recentlyOpenedFilesManager.openFile(filename);
-        setTitle ( filename );
-        saveReloadFile=temporaryFile;
-        std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
-        std::string htmlFile=filename; htmlFile.resize(htmlFile.size()-extension.size()-1);
-        htmlFile+=".html";
-        if (sofa::helper::system::DataRepository.findFile (htmlFile,"",NULL))
-        {
 #ifdef WIN32
-            htmlFile = "file:///"+htmlFile;
+        htmlFile = "file:///"+htmlFile;
 #endif
-            descriptionScene->show();
+        descriptionScene->show();
 #ifdef SOFA_QT4
-            htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
+        htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
 #else
-            htmlPage->mimeSourceFactory()->setFilePath(QString(htmlFile.c_str()));
-            htmlPage->setSource(QString(htmlFile.c_str()));
+        htmlPage->mimeSourceFactory()->setFilePath(QString(htmlFile.c_str()));
+        htmlPage->setSource(QString(htmlFile.c_str()));
 #endif
-
-        }
-
     }
+}
 
-    mViewer->setScene ( root, filename );
 
+void RealGUI::createDisplayFlags(Node::SPtr root)
+{
     if( displayFlag != NULL)
     {
         gridLayout1->removeWidget(displayFlag);
@@ -952,8 +950,21 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
             connect(tabs,SIGNAL(currentChanged(QWidget*)),displayFlag, SLOT( updateWidgetValue() ));
         }
     }
+}
 
-    this->setWindowFilePath(filename);
+
+void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFile )
+{
+    if (filename)
+    {
+        if (!temporaryFile) recentlyOpenedFilesManager.openFile(filename);
+        saveReloadFile=temporaryFile;
+        setTitle ( filename );
+        loadHtmlDescription( filename );
+    }
+
+    mViewer->setScene( root, filename );
+    createDisplayFlags( root );
     mViewer->resetView();
 
     eventNewTime();
@@ -963,9 +974,7 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
-
         simulationGraph->Clear(root.get());
-
         statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -980,20 +989,18 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         getViewerWidget()->show();
         updateViewerParameters();
     }
+
     resetScene();
 
 }
 
-void RealGUI::Clear()
+void RealGUI::clear()
 {
-
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         recorder->Clear(currentSimulation());
 #endif
-
     simulationGraph->Clear(currentSimulation());
-
     statWidget->CreateStats(currentSimulation());
 }
 
@@ -1400,6 +1407,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 #else
     setCaption ( str.c_str() );
 #endif
+    setWindowFilePath( windowTitle.c_str() );
 }
 
 
@@ -1643,17 +1651,12 @@ void RealGUI::resetScene()
     Node* root = currentSimulation();
     startDumpVisitor();
     emit ( newScene() );
-
-    // Reset the scene
     if (root)
     {
         simulation::getSimulation()->reset ( root );
-
         eventNewTime();
-
         emit newStep();
     }
-
     mViewer->getPickHandler()->reset();
     stopDumpVisitor();
 }

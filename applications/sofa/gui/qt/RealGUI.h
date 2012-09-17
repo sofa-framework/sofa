@@ -94,58 +94,55 @@ typedef QTextDrag Q3TextDrag;
 
 namespace sofa
 {
-
 namespace gui
 {
-
 class CallBackPicker;
-
 
 namespace qt
 {
-
-//enum TYPE{ NORMAL, PML, LML};
-enum SCRIPT_TYPE { PHP, PERL };
-
 #ifdef SOFA_PML
 using namespace sofa::filemanager::pml;
 #endif
 
-class QSofaListView;
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
 #endif
 
+//enum TYPE{ NORMAL, PML, LML};
+enum SCRIPT_TYPE { PHP, PERL };
+
+class QSofaListView;
 class QSofaStatWidget;
+
 
 class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUIUtil
 {
     Q_OBJECT
 
-    /// @name BaseGUI Interface
-    /// @{
-
-
+//-----------------STATIC METHODS------------------------{
 public:
-
-
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
 protected:
-
     static void CreateApplication(int _argc=0, char** _argv=0l);
     static void InitApplication( RealGUI* _gui);
+//-----------------STATIC METHODS------------------------}
 
+
+
+//-----------------CONSTRUCTOR - DESTRUCTOR ------------------------{
 public:
+    RealGUI( const char* viewername,
+            const std::vector<std::string>& options = std::vector<std::string>() );
 
-    int mainLoop();
-
-    int closeGUI();
-
-    /// @}
+    ~RealGUI();
+//-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}
 
 
+
+//-----------------OPTIONS DEFINITIONS------------------------{
+public:
 #ifndef SOFA_QT4
     void setWindowFilePath(const QString &filePath) { filePath_=filePath;};
     QString windowFilePath() const { QString filePath = filePath_; return filePath; }
@@ -155,11 +152,111 @@ public:
     QPushButton *interactionButton;
 #endif
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    virtual void setTraceVisitors(bool);
+#endif
+
+
+public slots:
+#ifdef SOFA_QT4
+    virtual void changeHtmlPage( const QUrl&);
+#else
+    virtual void changeHtmlPage( const QString&);
+#endif
+
+
+protected:
+#ifdef SOFA_GUI_INTERACTION
+    void mouseMoveEvent( QMouseEvent * e);
+    void wheelEvent( QWheelEvent * event );
+    void mousePressEvent(QMouseEvent * e);
+    void mouseReleaseEvent(QMouseEvent * e);
+    void keyReleaseEvent(QKeyEvent * e);
+    bool eventFilter(QObject *obj, QEvent *event);
+#endif
+
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    QSofaRecorder* recorder;
+#else
+    QLabel* fpsLabel;
+    QLabel* timeLabel;
+#endif
+
+
+private:
+#ifndef SOFA_QT4
+    QString filePath_;
+#endif
+
+#ifdef SOFA_GUI_INTERACTION
+    bool m_interactionActived;
+#endif
+
+#ifdef SOFA_PML
+    virtual void pmlOpen(const char* filename, bool resetView=true);
+    virtual void lmlOpen(const char* filename);
+    PMLReader *pmlreader;
+    LMLReader *lmlreader;
+#endif
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    WindowVisitor* windowTraceVisitor;
+    GraphVisitor* handleTraceVisitor;
+#endif
+//-----------------OPTIONS DEFINITIONS------------------------}
+
+
+
+//-----------------DATAS MEMBER------------------------{
+public:
+    //TODO: make a protected data with an accessor
     QSofaListView* simulationGraph;
 
+protected:
+    /// create a viewer by default, otherwise you have to manage your own viewer
+    bool mCreateViewersOpt;
+    bool m_dumpState;
+    std::ofstream* m_dumpStateStream;
+    std::ostringstream m_dumpVisitorStream;
+    bool m_exportGnuplot;
+    bool _animationOBJ;
+    int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
+    bool m_displayComputationTime;
+    bool m_fullScreen;
 
-    RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
-    ~RealGUI();
+    std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
+    InformationOnPickCallBack informationOnPickCallBack;
+
+    QWidget* currentTab;
+    QSofaStatWidget* statWidget;
+    QTimer* timerStep;
+    WDoubleLineEdit *background[3];
+    QLineEdit *backgroundImage;
+    /// Stack viewer widget
+    QWidgetStack* left_stack;
+    SofaPluginManager* pluginManager_dialog;
+    QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
+
+    std::string simulation_name;
+    std::string gnuplot_directory;
+    std::string pathDumpVisitor;
+
+private:
+    //currently unused: scale is experimental
+    float object_Scale[2];
+    bool saveReloadFile;
+    DisplayFlagsDataWidget *displayFlag;
+    QDialog* descriptionScene;
+    QTextBrowser* htmlPage;
+    bool animationState;
+//-----------------DATAS MEMBER------------------------}
+
+
+
+//-----------------METHODS------------------------{
+public:
+    int mainLoop();
+    int closeGUI();
 
     virtual void createViewers(const char* viewerName);
     virtual void initViewer();
@@ -190,9 +287,7 @@ public:
     virtual void setDumpState(bool);
     virtual void setLogTime(bool);
     virtual void setExportState(bool);
-#ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setTraceVisitors(bool);
-#endif
+
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
 
@@ -201,7 +296,6 @@ public:
 
     virtual void setTitle( std::string windowTitle );
 
-    //public slots:
     virtual void fileNew();
     virtual void fileOpen();
     virtual void fileSave();
@@ -221,6 +315,36 @@ public:
     void dropEvent(QDropEvent* event);
 
 
+protected:
+    void loadHtmlDescription(const char* filename);
+    void createDisplayFlags(Node::SPtr root);
+    void eventNewStep();
+    void eventNewTime();
+    void init();
+    void keyPressEvent ( QKeyEvent * e );
+
+    void loadSimulation(bool one_step=false);
+
+    virtual int exitApplication(unsigned int _retcode = 0) {return _retcode;}
+
+    void startDumpVisitor();
+    void stopDumpVisitor();
+
+    void sleep(float seconds, float init_time)
+    {
+        unsigned int t = 0;
+        clock_t goal = (clock_t) (seconds + init_time);
+        while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
+    }
+
+
+private:
+    void addViewer();
+//----------------- METHODS------------------------}
+
+
+
+//-----------------SIGNALS-SLOTS------------------------{
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
@@ -229,9 +353,7 @@ public slots:
     virtual void LockAnimation(bool);
     virtual void fileRecentlyOpened(int id);
     virtual void playpauseGUI(bool value);
-//#ifdef SOFA_GUI_INTERACTION
     virtual void interactionGUI(bool value);
-//#endif
     virtual void step();
     virtual void setDt(double);
     virtual void setDt(const QString&);
@@ -242,19 +364,14 @@ public slots:
     virtual void updateBackgroundColour();
     virtual void updateBackgroundImage();
 
-// Propagate signal to call viewer method in case of it is not a widget
-// Maybe, have to create a BaseGUIViewerMediator class to provide this
+    // Propagate signal to call viewer method in case of it is not a widget
+    // Maybe, have to create a BaseGUIViewerMediator class to provide this
     virtual void resetView()            {mViewer->resetView();       }
     virtual void saveView()             {mViewer->saveView();        }
     virtual void setSizeW ( int _valW ) {mViewer->setSizeW(_valW);   }
     virtual void setSizeH ( int _valH ) {mViewer->setSizeH(_valH);   }
 
-#ifdef SOFA_QT4
-    virtual void changeHtmlPage( const QUrl&);
-#else
-    virtual void changeHtmlPage( const QString&);
-#endif
-    virtual void Clear();
+    virtual void clear();
     //Used in Context Menu
     //refresh the visualization window
     virtual void redraw();
@@ -264,10 +381,11 @@ public slots:
     virtual void setExportGnuplot(bool);
     virtual void setExportVisitor(bool);
     virtual void currentTabChanged(QWidget*);
+
 protected slots:
-    /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list.
-    /// Note: When the app start, we registred GUI and static create/init it with a guiName;
-    /// during the app, if you change viewer you keep the same GUI.
+    /// \brief Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list.
+    /// \note: When the app start, we registred GUI with its guiname and static create/init methods
+    /// \note: During the app, if you change viewer you keep the same GUI.
     virtual void changeViewer();
     virtual void updateViewerList();
 
@@ -276,100 +394,8 @@ signals:
     void newScene();
     void newStep();
     void quit();
+//-----------------SIGNALS-SLOTS------------------------}
 
-protected:
-    void eventNewStep();
-    void eventNewTime();
-    void init();
-    void keyPressEvent ( QKeyEvent * e );
-#ifdef SOFA_GUI_INTERACTION
-    void mouseMoveEvent( QMouseEvent * e);
-    void wheelEvent( QWheelEvent * event );
-    void mousePressEvent(QMouseEvent * e);
-    void mouseReleaseEvent(QMouseEvent * e);
-    void keyReleaseEvent(QKeyEvent * e);
-    bool eventFilter(QObject *obj, QEvent *event);
-#endif
-
-    void loadSimulation(bool one_step=false);
-
-    virtual int exitApplication(unsigned int _retcode = 0) {return _retcode;}
-    /// create a viewer by default, otherwise you have to manage your own viewer
-    bool mCreateViewersOpt;
-
-    void startDumpVisitor();
-    void stopDumpVisitor();
-
-    bool m_dumpState;
-    std::ofstream* m_dumpStateStream;
-    std::ostringstream m_dumpVisitorStream;
-    bool m_exportGnuplot;
-    bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
-    bool m_displayComputationTime;
-    bool m_fullScreen;
-
-    std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
-    InformationOnPickCallBack informationOnPickCallBack;
-
-    QWidget* currentTab;
-#ifndef SOFA_GUI_QT_NO_RECORDER
-    QSofaRecorder* recorder;
-#else
-    QLabel* fpsLabel;
-    QLabel* timeLabel;
-#endif
-    QSofaStatWidget* statWidget;
-    QTimer* timerStep;
-    WDoubleLineEdit *background[3];
-    QLineEdit *backgroundImage;
-    /// Stack viewer widget
-    QWidgetStack* left_stack;
-    SofaPluginManager* pluginManager_dialog;
-    QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
-
-    std::string simulation_name;
-    std::string gnuplot_directory;
-    std::string pathDumpVisitor;
-
-    void sleep(float seconds, float init_time)
-    {
-        unsigned int t = 0;
-        clock_t goal = (clock_t) (seconds + init_time);
-        while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
-    }
-
-private:
-
-#ifndef SOFA_QT4
-    QString filePath_;
-#endif
-    //currently unused: scale is experimental
-    float object_Scale[2];
-    bool saveReloadFile;
-
-    int frameCounter;
-
-    void addViewer();
-#ifdef SOFA_GUI_INTERACTION
-    bool m_interactionActived;
-#endif
-
-#ifdef SOFA_PML
-    virtual void pmlOpen(const char* filename, bool resetView=true);
-    virtual void lmlOpen(const char* filename);
-    PMLReader *pmlreader;
-    LMLReader *lmlreader;
-#endif
-
-    DisplayFlagsDataWidget *displayFlag;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    WindowVisitor* windowTraceVisitor;
-    GraphVisitor* handleTraceVisitor;
-#endif
-    QDialog* descriptionScene;
-    QTextBrowser* htmlPage;
-    bool animationState;
 };
 
 
