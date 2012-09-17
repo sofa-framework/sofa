@@ -40,7 +40,6 @@ typedef Q3ListViewItem QListViewItem;
 #   include <QStackedWidget>
 typedef QStackedWidget QWidgetStack;
 #   include <QUrl>
-#   include <qevent.h>
 #else
 #   include <qurl.h>
 #   include <qwidgetstack.h>
@@ -55,6 +54,7 @@ class QTextBrowser;
 #endif
 
 class WDoubleLineEdit;
+class QDragEnterEvent;
 
 namespace sofa
 {
@@ -296,12 +296,28 @@ public:
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
 
+    /// create a viewer according to the argument key
+    /// \note the viewerMap have to be initialize at least once before
+    /// \arg _updateViewerList is used only if you want to reactualise the viewerMap in the GUI
+    /// TODO: find a better way to propagate the argument when we construct the viewer
+    virtual void createViewer(const char* _viewerName, bool _updateViewerList=false);
+
+    /// Used to directly replace the current viewer
+    virtual void registerViewer(BaseViewer* _viewer);
+
     virtual BaseViewer* getViewer();
 
-    void dragEnterEvent( QDragEnterEvent* event)
-    {
-        event->accept();
-    }
+    /// A way to know if our viewer is embedded or not... (see initViewer)
+    /// TODO: Find a better way to do this
+    sofa::gui::qt::viewer::SofaViewer* getQtViewer();
+
+    /// Our viewer is a QObject SofaViewer
+    bool isEmbeddedViewer();
+
+    virtual void removeViewer();
+
+    void dragEnterEvent( QDragEnterEvent* event);
+
     void dropEvent(QDropEvent* event);
 
 protected:
@@ -316,31 +332,11 @@ protected:
     void startDumpVisitor();
     void stopDumpVisitor();
 
-    /// Call for initialize the GUI viewer list and create one according to the argument
-    /// The viewerName argument is the key to create the Viewer object from the factory
-    virtual void createViewers(const char* viewerName, bool updateViewerList=true);
-
-    /// create a viewer from the viewerFactory according to its string key and its argument
-    /// TODO: find a better way to propagate the argument when we construct the viewer
-    virtual BaseViewer* createViewer(sofa::helper::SofaViewerFactory::Key _key, BaseViewerArgument _viewerArg = BaseViewerArgument("viewer") );
-
     /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
-    virtual void initViewer(BaseViewer* /*viewer*/);
-
-    /// A way to know if our viewer is embedded or not... (see initViewer)
-    /// TODO: Find a better way to do this
-    sofa::gui::qt::viewer::SofaViewer* getQtViewer();
-
-    virtual void removeViewer();
+    virtual void initViewer(BaseViewer* _viewer);
 
     /// Our viewer is a QObject SofaViewer
-    virtual bool isEmbeddedViewer()
-    {
-        return mIsEmbeddedViewer;
-    }
-
-    /// Our viewer is a QObject SofaViewer
-    virtual void isEmbeddedViewer(bool _onOff)
+    void isEmbeddedViewer(bool _onOff)
     {
         mIsEmbeddedViewer = _onOff;
     }

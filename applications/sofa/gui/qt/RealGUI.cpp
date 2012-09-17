@@ -360,8 +360,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     //TODO : viewer
     left_stack = new QWidgetStack ( splitter2 );
+    viewerMap.clear();
+    updateViewerList();
     if (mCreateViewersOpt)
-        createViewers(viewername);
+        createViewer(viewername);
 
     currentTabChanged ( tabs->currentPage() );
 
@@ -385,7 +387,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
-    if (recorder && mCreateViewersOpt)
+    if (recorder && getQtViewer())
         connect( recorder, SIGNAL( NewTime() ), getQtViewer()->getQWidget(), SLOT( update() ) );
 #endif
 
@@ -840,13 +842,13 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
 void RealGUI::unloadScene(bool _withViewer)
 {
-    if(_withViewer && mViewer != NULL)
-        mViewer->unload();
+    if(_withViewer && getViewer())
+        getViewer()->unload();
 
     simulation::getSimulation()->unload ( currentSimulation() );
 
-    if(_withViewer && mViewer != NULL)
-        mViewer->setScene(NULL);
+    if(_withViewer && getViewer())
+        getViewer()->setScene(NULL);
 }
 
 //------------------------------------
@@ -1009,7 +1011,7 @@ void RealGUI::setViewerResolution ( int w, int h )
     if( isEmbeddedViewer() )
     {
         QSize winSize = size();
-        QSize viewSize = ( mViewer != NULL ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
+        QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
 #ifdef SOFA_QT4
         QList<int> list;
@@ -1185,14 +1187,89 @@ void RealGUI::setGnuplotPath(const std::string &path)
 
 //------------------------------------
 
+void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=false*/)
+{
+    if(_updateViewerList)
+    {
+        this->updateViewerList();
+        // the viewer with the key viewerName is already created
+        if( mViewer != NULL && !viewerMap.begin()->first.compare( std::string(_viewerName) ) )
+            return;
+    }
+
+    for (std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
+            iter_map != viewerMap.end() ; ++iter_map )
+    {
+        if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
+        {
+            removeViewer();
+            registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, ViewerQtArgument("viewer", left_stack)) );
+            iter_map->second->setOn(true);
+        }
+        else
+            iter_map->second->setOn(false);
+    }
+
+    mGuiName = _viewerName;
+    initViewer( getViewer() );
+}
+
+//------------------------------------
+
+void RealGUI::registerViewer(BaseViewer* _viewer)
+{
+    // Change our viewer
+    sofa::gui::BaseViewer* old = mViewer;
+    mViewer = _viewer;
+    if(mViewer != NULL)
+        delete old;
+    else
+        std::cerr<<"ERROR when registerViewer, the viewer is NULL"<<std::endl;
+}
+
+//------------------------------------
+
 BaseViewer* RealGUI::getViewer()
 {
-    if(mViewer != NULL)
-        return mViewer;
-    else
-        std::cerr<<"Viewer from RealGUI is NULL!"<<std::endl;
+    return mViewer!=NULL ? mViewer : NULL;
+}
 
-    return NULL;
+//------------------------------------
+
+sofa::gui::qt::viewer::SofaViewer* RealGUI::getQtViewer()
+{
+    sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
+    return qtViewer ? qtViewer : NULL;
+}
+
+//------------------------------------
+
+bool RealGUI::isEmbeddedViewer()
+{
+    return mIsEmbeddedViewer;
+}
+
+//------------------------------------
+
+void RealGUI::removeViewer()
+{
+    if(mViewer != NULL)
+    {
+        if(isEmbeddedViewer())
+        {
+            getQtViewer()->removeViewerTab(tabs);
+            left_stack->removeWidget( getQtViewer()->getQWidget() );
+        }
+        delete mViewer;
+        mViewer = NULL;
+    }
+}
+
+//------------------------------------
+
+void RealGUI::dragEnterEvent( QDragEnterEvent* event)
+{
+    event->accept();
 }
 
 //------------------------------------
@@ -1460,53 +1537,6 @@ void RealGUI::stopDumpVisitor()
 
 //------------------------------------
 
-void RealGUI::createViewers(const char* viewerName, bool updateViewerList /*=true*/)
-{
-    viewerMap.clear();
-    if(updateViewerList)
-    {
-        // fill the viewerMap and create viewer if we haven't yet one (the first of the list)
-        this->updateViewerList();
-
-        // the viewer with the key viewerName is already created
-        if( mViewer != NULL && !viewerMap.begin()->first.compare( std::string(viewerName) ) )
-            return;
-    }
-
-    for (std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
-            iter_map != viewerMap.end() ; ++iter_map )
-    {
-        if( strcmp( iter_map->first.c_str(), viewerName ) == 0 )
-        {
-            removeViewer();
-            mViewer = createViewer(iter_map->first, ViewerQtArgument("viewer", left_stack));
-            iter_map->second->setOn(true);
-        }
-        else
-            iter_map->second->setOn(false);
-    }
-}
-
-//------------------------------------
-
-BaseViewer* RealGUI::createViewer(sofa::helper::SofaViewerFactory::Key _key, BaseViewerArgument _viewerArg /*=BaseViewerArgument("viewer")*/)
-{
-    BaseViewer* viewerBase = helper::SofaViewerFactory::CreateObject(_key, _viewerArg );
-
-    if(viewerBase == NULL)
-    {
-        std::cerr<<"ERROR when createViewer, the viewer is NULL"<<std::endl;
-        return NULL;
-    }
-
-    mGuiName = std::string(_key);
-    initViewer(viewerBase);
-
-    return viewerBase;
-}
-
-//------------------------------------
-
 void RealGUI::initViewer(BaseViewer* _viewer)
 {
     if(_viewer == NULL)
@@ -1598,30 +1628,6 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 //------------------------------------
 
-sofa::gui::qt::viewer::SofaViewer* RealGUI::getQtViewer()
-{
-    sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
-    return qtViewer ? qtViewer : NULL;
-}
-
-//------------------------------------
-
-void RealGUI::removeViewer()
-{
-    if(mViewer != NULL)
-    {
-        if(isEmbeddedViewer())
-        {
-            getQtViewer()->removeViewerTab(tabs);
-            left_stack->removeWidget( getQtViewer()->getQWidget() );
-        }
-        delete mViewer;
-        mViewer = NULL;
-    }
-}
-
-//------------------------------------
-
 void RealGUI::parseOptions(const std::vector<std::string>& options)
 {
     for (unsigned int i=0; i<options.size(); ++i)
@@ -1680,8 +1686,8 @@ void RealGUI::createBackgroundGUIInfos()
     imageLayout->addWidget(new QLabel(QString("Image "),image));
 
     backgroundImage = new QLineEdit(image,"backgroundImage");
-    if ( mViewer != NULL )
-        backgroundImage->setText( QString(mViewer->getBackgroundImage().c_str()) );
+    if ( getViewer() )
+        backgroundImage->setText( QString(getViewer()->getBackgroundImage().c_str()) );
     else
         backgroundImage->setText( QString() );
     imageLayout->addWidget(backgroundImage);
@@ -1998,9 +2004,6 @@ void RealGUI::resetScene()
 
 void RealGUI::screenshot()
 {
-    sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
-    if( !qtViewer ) return;
-
     QString filename;
 
 #ifdef SOFA_HAVE_PNG
@@ -2010,12 +2013,16 @@ void RealGUI::screenshot()
 #endif
 
     filename = getSaveFileName ( this,
-            qtViewer->screenshotName().c_str(),
+            getViewer()->screenshotName().c_str(),
             imageString,
             "save file dialog"
             "Choose a filename to save under"
                                );
-    qtViewer->getQWidget()->repaint();
+
+    viewer::SofaViewer* qtViewer = getQtViewer();
+    if( qtViewer )
+        qtViewer->getQWidget()->repaint();
+
     if ( filename != "" )
     {
         std::ostringstream ofilename;
@@ -2025,11 +2032,11 @@ void RealGUI::screenshot()
             end = begin + filename.length();
         ofilename << std::string ( begin, end );
         ofilename << "_";
-        qtViewer->setPrefix ( ofilename.str() );
+        getViewer()->setPrefix ( ofilename.str() );
 #ifdef SOFA_QT4
-        qtViewer->screenshot ( filename.toStdString() );
+        getViewer()->screenshot ( filename.toStdString() );
 #else
-        qtViewer->screenshot ( filename );
+        getViewer()->screenshot ( filename );
 #endif
     }
 }
@@ -2056,8 +2063,8 @@ void RealGUI::Update()
 
 void RealGUI::updateBackgroundColour()
 {
-    if(mViewer != NULL)
-        mViewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
+    if(getViewer())
+        getViewer()->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
     if(isEmbeddedViewer())
         getQtViewer()->getQWidget()->update();;
 }
@@ -2066,8 +2073,8 @@ void RealGUI::updateBackgroundColour()
 
 void RealGUI::updateBackgroundImage()
 {
-    if(mViewer != NULL)
-        mViewer->setBackgroundImage( backgroundImage->text().ascii() );
+    if(getViewer())
+        getViewer()->setBackgroundImage( backgroundImage->text().ascii() );
     if(isEmbeddedViewer())
         getQtViewer()->getQWidget()->update();;
 }
@@ -2216,7 +2223,7 @@ void RealGUI::changeViewer()
         {
             this->unloadScene();
             removeViewer();
-            mViewer = createViewer( iter_map->first, ViewerQtArgument("viewer", left_stack));
+            createViewer(iter_map->first.c_str());
         }
         else
         {
@@ -2253,6 +2260,7 @@ void RealGUI::updateViewerList()
             std::back_inserter(diffKeys)
                                  );
 
+    bool viewerRemoved=false;
     helper::vector< helper::SofaViewerFactory::Key >::const_iterator it;
     for( it = diffKeys.begin(); it != diffKeys.end(); ++it)
     {
@@ -2264,6 +2272,7 @@ void RealGUI::updateViewerList()
             {
                 this->unloadScene();
                 removeViewer();
+                viewerRemoved = true;
             }
             (*itViewerMap).second->removeFrom(View);
             viewerMap.erase(itViewerMap);
@@ -2281,10 +2290,10 @@ void RealGUI::updateViewerList()
         }
     }
 
-    // first actualisation or if we unloaded a viewer plugin actually in use
-    if( mViewer == NULL && !viewerMap.empty())
+    // if we unloaded a viewer plugin actually in use
+    if( viewerRemoved && !viewerMap.empty() )
     {
-        mViewer = createViewer(viewerMap.begin()->first, ViewerQtArgument("viewer", left_stack));
+        createViewer(viewerMap.begin()->first.c_str());
         viewerMap.begin()->second->setOn(true);
     }
 }
