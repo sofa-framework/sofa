@@ -108,9 +108,11 @@ private:
 
 public:
 
-    static QtGLViewer* create(QtGLViewer*, const sofa::gui::ViewerArgument& arg)
+    static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument arg)
     {
-        return new QtGLViewer(arg.parent, arg.name.c_str() );
+        BaseViewerArgument* pArg = &arg;
+        ViewerArgument* viewerArg = dynamic_cast<ViewerArgument*>(pArg);
+        return viewerArg ? new QtGLViewer(viewerArg->parent, viewerArg->name.c_str() ) : new QtGLViewer(NULL, arg.name.c_str() );
     }
 
     static const char* viewerName()  { return "QGLViewer"; }
