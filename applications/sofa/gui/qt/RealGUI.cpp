@@ -938,168 +938,6 @@ void RealGUI::showVideoRecorderManager()
 
 //------------------------------------
 
-void RealGUI::createViewers(const char* viewerName)
-{
-    if( mViewer != NULL )
-        removeViewer();
-
-    viewerMap.clear();
-    if ( viewerName[0] )
-    {
-        helper::vector< helper::SofaViewerFactory::Key > keys;
-        helper::SofaViewerFactory::getInstance()->uniqueKeys(std::back_inserter(keys));
-        helper::vector< helper::SofaViewerFactory::Key >::const_iterator iter;
-
-        for ( iter = keys.begin(); iter != keys.end(); ++iter )
-        {
-            QAction* action = new QAction(this);
-            action->setText( helper::SofaViewerFactory::getInstance()->getViewerName(*iter) );
-            action->setMenuText(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*iter) );
-            action->setToggleAction(true);
-            action->addTo(View);
-            viewerMap[*iter] = action;
-            action->setEnabled(true);
-            connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
-
-            if( strcmp(iter->c_str(), viewerName )== 0 )
-            {
-                mViewer = helper::SofaViewerFactory::CreateObject(*iter, ViewerQtArgument("viewer", left_stack) );
-                action->setOn(true);
-            }
-            else
-            {
-                action->setOn(false);
-            }
-        }
-    }
-
-    if( mViewer == NULL )
-    {
-        std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<viewerName<<std::endl;
-        application->exit();
-    }
-
-    if( isEmbeddedViewer() )
-        left_stack->addWidget ( getViewerWidget() );
-
-    initViewer();
-}
-
-//------------------------------------
-
-void RealGUI::initViewer()
-{
-    if(mViewer == NULL)
-    {
-        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
-        return;
-    }
-
-    frameCounter = 0;
-    _animationOBJ = false;
-    _animationOBJcounter = 0;
-    m_dumpState = false;
-    m_dumpStateStream = 0;
-    m_displayComputationTime = false;
-    m_exportGnuplot = false;
-    gnuplot_directory = "";
-
-    if( isEmbeddedViewer() )
-    {
-#ifdef SOFA_QT4
-        left_stack->setCurrentWidget ( getViewerWidget() );
-        getViewerWidget()->setFocusPolicy ( Qt::StrongFocus );
-#else
-        int id_viewer = left_stack->addWidget ( getViewerWidget() );
-        left_stack->raiseWidget ( id_viewer );
-        getViewerWidget()->setFocusPolicy ( QWidget::StrongFocus );
-        getViewerWidget()->setCursor ( QCursor ( 2 ) );
-#endif
-
-        getViewerWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, getViewerWidget()->sizePolicy().hasHeightForWidth() ) );
-        getViewerWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-        getViewerWidget()->setMouseTracking ( TRUE );
-    }
-    dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->configureViewerTab(tabs);
-
-    connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
-    connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
-    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
-    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
-    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
-    if(isEmbeddedViewer())
-    {
-        connect ( getViewerWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
-        connect ( getViewerWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
-        connect ( getViewerWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
-        connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
-                getViewerWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*))
-               );
-        connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
-                getViewerWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) )
-               );
-    }
-
-    // splitter2 separates horizontally the OptionTab widget and the viewer widget
-    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-    if(isEmbeddedViewer())
-    {
-        splitter_ptr->moveToLast ( left_stack ); // Use addWidget(widget) instead.
-        splitter_ptr->setOpaqueResize ( false );
-
-#ifdef SOFA_QT4
-        // rescale factor for the space occuped by the widget index
-        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
-        splitter_ptr->setStretchFactor( 1, 10); // Viewer
-        QList<int> list;
-#else
-        QValueList<int> list;
-#endif
-
-        list.push_back ( 250 ); // OptionTab
-        list.push_back ( 640 ); // Viewer
-        splitter_ptr->setSizes ( list );
-    }
-    else
-    {
-        splitter_ptr->setOpaqueResize ( false );
-
-#ifdef SOFA_QT4
-        // rescale factor for the space occuped by the widget index
-        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
-        splitter_ptr->setStretchFactor( 1, 0); // Viewer
-        QList<int> list;
-#else
-        QValueList<int> list;
-#endif
-
-        list.push_back ( 250 ); // OptionTab
-        list.push_back ( 0 );  // Viewer
-        splitter_ptr->setSizes ( list );
-    }
-
-    // setGUI
-    textEdit1->setText ( dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->helpString() );
-    if(isEmbeddedViewer())
-        connect ( this, SIGNAL( newStep()), getViewerWidget(), SLOT( update()));
-
-    if(isEmbeddedViewer())
-    {
-        getViewerWidget()->setFocus();
-        getViewerWidget()->show();
-        updateViewerParameters();
-    }
-
-    SofaMouseManager::getInstance()->setPickHandler(mViewer->getPickHandler());
-
-    if(isEmbeddedViewer())
-        mViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
-
-    mGuiName=mViewerName;
-}
-
-//------------------------------------
-
 void RealGUI::setViewerResolution ( int w, int h )
 {
     if(mViewer == NULL)
@@ -1531,6 +1369,177 @@ void RealGUI::stopDumpVisitor()
         m_dumpVisitorStream.str("");
     }
 #endif
+}
+
+//------------------------------------
+
+void RealGUI::createViewers(const char* viewerName)
+{
+    viewerMap.clear();
+    // fill the viewerMap and create viewer if we haven't yet one (the first of the list)
+    this->updateViewerList();
+
+    // the viewer with the key viewerName is already created
+    if( mViewer != NULL && !viewerMap.begin()->first.compare( std::string(viewerName) ) )
+        return;
+
+    for (std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
+            iter_map != viewerMap.end() ; ++iter_map )
+    {
+        if( strcmp( iter_map->first.c_str(), viewerName ) == 0 )
+        {
+            removeViewer();
+            createViewer(iter_map->first);
+            iter_map->second->setOn(true);
+        }
+        else
+            iter_map->second->setOn(false);
+    }
+}
+
+//------------------------------------
+
+void RealGUI::createViewer(sofa::helper::SofaViewerFactory::Key _key)
+{
+    mViewer = helper::SofaViewerFactory::CreateObject(_key, ViewerQtArgument("viewer", left_stack) );
+
+    if(mViewer == NULL)
+    {
+        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
+        return;
+    }
+
+    if( isEmbeddedViewer() )
+        left_stack->addWidget( getViewerWidget() );
+
+    initViewer();
+}
+
+//------------------------------------
+
+void RealGUI::initViewer()
+{
+    if(mViewer == NULL)
+    {
+        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
+        return;
+    }
+
+    frameCounter = 0;
+    _animationOBJ = false;
+    _animationOBJcounter = 0;
+    m_dumpState = false;
+    m_dumpStateStream = 0;
+    m_displayComputationTime = false;
+    m_exportGnuplot = false;
+    gnuplot_directory = "";
+
+    if( isEmbeddedViewer() )
+    {
+#ifdef SOFA_QT4
+        left_stack->setCurrentWidget ( getViewerWidget() );
+        getViewerWidget()->setFocusPolicy ( Qt::StrongFocus );
+#else
+        int id_viewer = left_stack->addWidget ( getViewerWidget() );
+        left_stack->raiseWidget ( id_viewer );
+        getViewerWidget()->setFocusPolicy ( QWidget::StrongFocus );
+        getViewerWidget()->setCursor ( QCursor ( 2 ) );
+#endif
+
+        getViewerWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, getViewerWidget()->sizePolicy().hasHeightForWidth() ) );
+        getViewerWidget()->setMinimumSize ( QSize ( 0, 0 ) );
+        getViewerWidget()->setMouseTracking ( TRUE );
+    }
+    dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->configureViewerTab(tabs);
+
+    connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
+    connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
+    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
+    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
+    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
+    if(isEmbeddedViewer())
+    {
+        connect ( getViewerWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
+        connect ( getViewerWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
+        connect ( getViewerWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
+        connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
+                getViewerWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*))
+               );
+        connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
+                getViewerWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) )
+               );
+    }
+
+    // splitter2 separates horizontally the OptionTab widget and the viewer widget
+    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+    if(isEmbeddedViewer())
+    {
+        splitter_ptr->moveToLast ( left_stack ); // Use addWidget(widget) instead.
+        splitter_ptr->setOpaqueResize ( false );
+
+#ifdef SOFA_QT4
+        // rescale factor for the space occuped by the widget index
+        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
+        splitter_ptr->setStretchFactor( 1, 10); // Viewer
+        QList<int> list;
+#else
+        QValueList<int> list;
+#endif
+
+        list.push_back ( 250 ); // OptionTab
+        list.push_back ( 640 ); // Viewer
+        splitter_ptr->setSizes ( list );
+    }
+    else
+    {
+        splitter_ptr->setOpaqueResize ( false );
+
+#ifdef SOFA_QT4
+        // rescale factor for the space occuped by the widget index
+        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
+        splitter_ptr->setStretchFactor( 1, 0); // Viewer
+        QList<int> list;
+#else
+        QValueList<int> list;
+#endif
+
+        list.push_back ( 250 ); // OptionTab
+        list.push_back ( 0 );  // Viewer
+        splitter_ptr->setSizes ( list );
+    }
+
+    // setGUI
+    textEdit1->setText ( dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->helpString() );
+    if(isEmbeddedViewer())
+        connect ( this, SIGNAL( newStep()), getViewerWidget(), SLOT( update()));
+
+    if(isEmbeddedViewer())
+    {
+        getViewerWidget()->setFocus();
+        getViewerWidget()->show();
+        updateViewerParameters();
+    }
+
+    SofaMouseManager::getInstance()->setPickHandler(mViewer->getPickHandler());
+
+    if(isEmbeddedViewer())
+        mViewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
+
+    mGuiName=mViewerName;
+}
+
+//------------------------------------
+
+void RealGUI::removeViewer()
+{
+    if(mCreateViewersOpt && mViewer != NULL)
+    {
+        dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->removeViewerTab(tabs);
+        if(isEmbeddedViewer())
+            left_stack->removeWidget( getViewerWidget() );
+        delete mViewer;
+        mViewer = NULL;
+    }
 }
 
 //------------------------------------
@@ -2123,18 +2132,10 @@ void RealGUI::changeViewer()
         {
             // Cleanup previous viewer
             this->unloadScene();
-            dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->removeViewerTab(tabs);
-            if(isEmbeddedViewer())
-                left_stack->removeWidget( getViewerWidget() );
             removeViewer();
 
             // Create new viewer
-            mViewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).first, ViewerQtArgument("viewer", left_stack));
-
-            if(isEmbeddedViewer())
-                left_stack->addWidget( getViewerWidget() );
-
-            initViewer();
+            createViewer( (*iter_map).first );
         }
         else
         {
@@ -2151,12 +2152,14 @@ void RealGUI::changeViewer()
 
 void RealGUI::updateViewerList()
 {
+    // the current list of viewer key with associate QAction
     helper::vector< helper::SofaViewerFactory::Key > currentKeys;
     std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
         currentKeys.push_back((*iter_map).first);
-
     std::sort(currentKeys.begin(),currentKeys.end());
+
+    // the new list (most recent since we load/unload viewer plugin)
     helper::vector< helper::SofaViewerFactory::Key > updatedKeys;
     helper::SofaViewerFactory::getInstance()->uniqueKeys(std::back_inserter(updatedKeys));
     std::sort(updatedKeys.begin(),updatedKeys.end());
@@ -2172,21 +2175,19 @@ void RealGUI::updateViewerList()
     helper::vector< helper::SofaViewerFactory::Key >::const_iterator it;
     for( it = diffKeys.begin(); it != diffKeys.end(); ++it)
     {
+        // delete old
         std::map< helper::SofaViewerFactory::Key, QAction* >::iterator itViewerMap;
         if( (itViewerMap = viewerMap.find(*it)) != viewerMap.end() )
         {
             if( (*itViewerMap).second->isOn() )
             {
-                this->unloadScene();
-                dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->removeViewerTab(tabs);
-                if(isEmbeddedViewer())
-                    left_stack->removeWidget(getViewerWidget() );
+                this->unloadScene(); //--> witout unload the scene -> just unload the viewer
                 removeViewer();
             }
             (*itViewerMap).second->removeFrom(View);
             viewerMap.erase(itViewerMap);
         }
-        else
+        else // add new
         {
             QAction* action = new QAction(this);
             action->setText( helper::SofaViewerFactory::getInstance()->getViewerName(*it) );
@@ -2199,19 +2200,16 @@ void RealGUI::updateViewerList()
         }
     }
 
-    if( mViewer == NULL )
+    // if we unloaded a viewer plugin actually in use
+    if( mViewer == NULL && !viewerMap.empty())
     {
-        if(!viewerMap.empty())
-        {
-            mViewer =  helper::SofaViewerFactory::CreateObject( viewerMap.begin()->first, ViewerQtArgument("viewer", left_stack));
-
-            if(isEmbeddedViewer())
-                left_stack->addWidget( getViewerWidget() );
-
-            initViewer();
-        }
+        createViewer(viewerMap.begin()->first);
+        viewerMap.begin()->second->setOn(true);
     }
 }
+
+//------------------------------------
+
 //======================= SIGNALS-SLOTS ========================= }
 
 } // namespace qt

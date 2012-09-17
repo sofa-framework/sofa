@@ -233,6 +233,7 @@ protected:
     bool m_displayComputationTime;
     bool m_fullScreen;
 
+    /// list of all viewer key name (for creation) mapped to its QAction in the GUI
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
 
@@ -289,21 +290,6 @@ public:
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
 
-    virtual void createViewers(const char* viewerName);
-    virtual void initViewer();
-
-    /// Our viewer is a QObject SofaViewer
-    virtual bool isEmbeddedViewer()
-    {
-        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer) ? true : false;
-    }
-
-    /// We are sur we use a QObject SofaViewer and return its QWidget
-    QWidget* getViewerWidget()
-    {
-        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
-    }
-
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
@@ -334,6 +320,24 @@ protected:
     void keyPressEvent ( QKeyEvent * e );
     void startDumpVisitor();
     void stopDumpVisitor();
+
+    /// The viewerName argument is the key to create the Viewer object from the factory
+    virtual void createViewers(const char* viewerName);
+    virtual void createViewer(sofa::helper::SofaViewerFactory::Key _key);
+    virtual void initViewer();
+    virtual void removeViewer();
+
+    /// Our viewer is a QObject SofaViewer
+    virtual bool isEmbeddedViewer()
+    {
+        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer) ? true : false;
+    }
+
+    /// We are sur we use a QObject SofaViewer and return its QWidget
+    QWidget* getViewerWidget()
+    {
+        return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer)->getQWidget();
+    }
 
     virtual int exitApplication(unsigned int _retcode = 0)
     {
@@ -405,10 +409,10 @@ public slots:
     virtual void currentTabChanged(QWidget*);
 
 protected slots:
-    /// \brief Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list.
-    /// \note: When the app start, we registred GUI with its guiname and static create/init methods
-    /// \note: During the app, if you change viewer you keep the same GUI.
+    /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
     virtual void changeViewer();
+
+    /// Update the viewerMap and create viewer if we haven't yet one (the first of the list)
     virtual void updateViewerList();
 
 signals:
