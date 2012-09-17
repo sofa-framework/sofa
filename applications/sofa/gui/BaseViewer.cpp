@@ -43,10 +43,10 @@ BaseViewer::BaseViewer()
     , texLogo(NULL)
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
+    , pick(NULL)
     , _stereoEnabled(false)
     , _stereoMode(STEREO_AUTO)
     , _stereoShift(1.0)
-    ,pick(NULL)
 {
     pick = new PickHandler();
 }
