@@ -59,6 +59,7 @@ MeshObjLoader::MeshObjLoader()
     , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
 //  , vertices(initData(&vertices,"vertices","List of vertices. Different from position when more than one texcoord normal pair is attached to a vertex." ) )
+    , computeMaterialFaces(initData(&computeMaterialFaces, false, "computeMaterialFaces", "True to activate export of Data instances containing list of face indices for each material"))
 {
     faceList.setGroup("OBJ");
     texIndexList.setGroup("OBJ");
@@ -412,35 +413,38 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 out.push_back(f);
         }
     }
-    for (int ft = 0; ft < NBFACETYPE; ++ft)
+    if (computeMaterialFaces.getValue())
     {
-        std::string fname;
-        switch (faceType)
+        for (int ft = 0; ft < NBFACETYPE; ++ft)
         {
-        case MeshObjLoader::EDGE:     fname = "edge"; break;
-        case MeshObjLoader::TRIANGLE: fname = "triangle"; break;
-        case MeshObjLoader::QUAD:     fname = "quad"; break;
-        default: break;
-        }
-        for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
-        {
-            std::string materialName = it->first;
-            const helper::vector<unsigned>& faces = it->second;
-            if (faces.empty()) continue;
-            std::ostringstream oname;
-            oname << "material_" << materialName << "_" << fname << "Indices";
-            //std::ostringstream ohelp;
-            //ohelp << "list of indices of " << fname << "s that should be rendered with  material " << materialName;
-            //std::string shelp = ohelp.str();
-            Data< helper::vector<unsigned int> >* dOut = new Data< helper::vector<unsigned int> >;
-            dOut->setName(oname.str());
-            //dOut->setHelp(shelp.c_str());
-            dOut->setHelp("list of face indices corresponding to a given material");
+            std::string fname;
+            switch (faceType)
+            {
+            case MeshObjLoader::EDGE:     fname = "edge"; break;
+            case MeshObjLoader::TRIANGLE: fname = "triangle"; break;
+            case MeshObjLoader::QUAD:     fname = "quad"; break;
+            default: break;
+            }
+            for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+            {
+                std::string materialName = it->first;
+                const helper::vector<unsigned>& faces = it->second;
+                if (faces.empty()) continue;
+                std::ostringstream oname;
+                oname << "material_" << materialName << "_" << fname << "Indices";
+                //std::ostringstream ohelp;
+                //ohelp << "list of indices of " << fname << "s that should be rendered with  material " << materialName;
+                //std::string shelp = ohelp.str();
+                Data< helper::vector<unsigned int> >* dOut = new Data< helper::vector<unsigned int> >;
+                dOut->setName(oname.str());
+                //dOut->setHelp(shelp.c_str());
+                dOut->setHelp("list of face indices corresponding to a given material");
 
-            this->addData(dOut);
-            dOut->setGroup("Materials");
-            dOut->setValue(faces);
-            subsets_indices.push_back(dOut);
+                this->addData(dOut);
+                dOut->setGroup("Materials");
+                dOut->setValue(faces);
+                subsets_indices.push_back(dOut);
+            }
         }
     }
 
