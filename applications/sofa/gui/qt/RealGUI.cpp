@@ -940,7 +940,7 @@ void RealGUI::showVideoRecorderManager()
 
 void RealGUI::createViewers(const char* viewerName)
 {
-    ViewerArgument arg;
+    ViewerQtArgument arg;
     arg.name = "viewer";
     arg.parent = left_stack;
 
@@ -2133,7 +2133,7 @@ void RealGUI::changeViewer()
             removeViewer();
 
             // Need for the next creation
-            ViewerArgument arg;
+            ViewerQtArgument arg;
             arg.name = "viewer";
             arg.parent = left_stack; // Set it by default but in case of standalone viewer, we don't use it in tis constructor
 
@@ -2212,7 +2212,7 @@ void RealGUI::updateViewerList()
     {
         if(!viewerMap.empty())
         {
-            ViewerArgument arg;
+            ViewerQtArgument arg;
             arg.name = "viewer";
             arg.parent = left_stack;
             /* change viewer */
