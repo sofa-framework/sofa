@@ -989,12 +989,12 @@ void RealGUI::Clear()
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->Clear(getScene());
+        recorder->Clear(currentSimulation());
 #endif
 
-    simulationGraph->Clear(getScene());
+    simulationGraph->Clear(currentSimulation());
 
-    statWidget->CreateStats(getScene());
+    statWidget->CreateStats(currentSimulation());
 }
 
 //----------------------------------
@@ -1217,7 +1217,7 @@ void RealGUI::fileOpenSimu ( std::string s )
             dtEdit->setText(QString(dT.c_str()));
 #ifndef SOFA_GUI_QT_NO_RECORDER
             if (recorder)
-                recorder->SetSimulation(getScene(),initT,endT,writeName);
+                recorder->SetSimulation(currentSimulation(),initT,endT,writeName);
 #endif
 
         }
@@ -1296,14 +1296,14 @@ void RealGUI::fileSave()
     if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
         return;
 
-    Node *node = getScene();
+    Node *node = currentSimulation();
     fileSaveAs ( node,filename.c_str() );
 }
 
 
 void RealGUI::fileSaveAs(Node *node)
 {
-    if (node == NULL) node = getScene();
+    if (node == NULL) node = currentSimulation();
     QString s;
     std::string filename(this->windowFilePath().ascii());
 #ifdef SOFA_PML
@@ -1338,7 +1338,7 @@ void RealGUI::fileExit()
 
 void RealGUI::saveXML()
 {
-    simulation::getSimulation()->exportXML ( getScene(), "scene.scn" );
+    simulation::getSimulation()->exportXML ( currentSimulation(), "scene.scn" );
 }
 
 void RealGUI::editRecordDirectory()
@@ -1406,7 +1406,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 void RealGUI::playpauseGUI ( bool value )
 {
     startButton->setOn ( value );
-    if ( getScene() )  getScene()->getContext()->setAnimate ( value );
+    if ( currentSimulation() )  currentSimulation()->getContext()->setAnimate ( value );
     if(value)
     {
         timerStep->start(0);
@@ -1461,7 +1461,7 @@ void RealGUI::interactionGUI ( bool )
 void RealGUI::startDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
-    Node* root = getScene();
+    Node* root = currentSimulation();
     if (root && this->exportVisitorCheckbox->isOn())
     {
         m_dumpVisitorStream.str("");
@@ -1488,7 +1488,7 @@ void RealGUI::stopDumpVisitor()
 
 void RealGUI::step()
 {
-    Node* root = getScene();
+    Node* root = currentSimulation();
     if ( root == NULL ) return;
 
     startDumpVisitor();
@@ -1519,7 +1519,7 @@ void RealGUI::step()
         if ( ( counter++ % CAPTURE_PERIOD ) ==0 )
 #endif
         {
-            exportOBJ ( getScene(), false );
+            exportOBJ ( currentSimulation(), false );
 
             ++_animationOBJcounter;
         }
@@ -1527,7 +1527,7 @@ void RealGUI::step()
 
     stopDumpVisitor();
     emit newStep();
-    if ( !getScene()->getContext()->getAnimate() )
+    if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setOn ( false );
 }
 
@@ -1538,7 +1538,7 @@ void RealGUI::eventNewStep()
 {
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
-    Node* root = getScene();
+    Node* root = currentSimulation();
     if ( frameCounter==0 )
     {
         ctime_t t = CTime::getRefTime();
@@ -1600,7 +1600,7 @@ void RealGUI::eventNewTime()
 {
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->UpdateTime(getScene());
+        recorder->UpdateTime(currentSimulation());
 #else
     Node* root = getScene();
     if (root && timeLabel)
@@ -1621,7 +1621,7 @@ void RealGUI::eventNewTime()
 
 void RealGUI::setDt ( double value )
 {
-    Node* root = getScene();
+    Node* root = currentSimulation();
     if ( value > 0.0 )
     {
 
@@ -1640,7 +1640,7 @@ void RealGUI::setDt ( const QString& value )
 // Reset the simulation to t=0
 void RealGUI::resetScene()
 {
-    Node* root = getScene();
+    Node* root = currentSimulation();
     startDumpVisitor();
     emit ( newScene() );
 
@@ -1662,7 +1662,7 @@ void RealGUI::resetScene()
 //
 void RealGUI::displayComputationTime ( bool value )
 {
-    Node* root = getScene();
+    Node* root = currentSimulation();
     m_displayComputationTime = value;
     if ( root )
     {
@@ -1680,7 +1680,7 @@ void RealGUI::displayComputationTime ( bool value )
 //
 void RealGUI::setExportGnuplot ( bool exp )
 {
-    Node* root = getScene();
+    Node* root = currentSimulation();
     m_exportGnuplot = exp;
     if ( exp && root )
     {
@@ -1794,7 +1794,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_O:
         // --- export to OBJ
     {
-        exportOBJ ( getScene() );
+        exportOBJ ( currentSimulation() );
 
         break;
     }
