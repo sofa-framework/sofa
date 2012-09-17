@@ -22,30 +22,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_VIEWERFACTORY_H
-#define SOFA_GUI_QT_VIEWERFACTORY_H
+#ifndef SOFA_GUI_VIEWERFACTORY_H
+#define SOFA_GUI_VIEWERFACTORY_H
 
-#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include "BaseViewer.h"
+
+class QWidget;
 
 namespace sofa
 {
 namespace gui
 {
-namespace qt
-{
-namespace viewer
-{
 
-struct SofaViewerArgument
+struct ViewerArgument
 {
+    ViewerArgument() : parent(0l) {}
     QWidget* parent;
     std::string name;
 };
-}
-}
+
 }
 }
 
@@ -55,21 +52,21 @@ namespace helper
 {
 
 template < >
-class BaseCreator< sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument>
+class BaseCreator< sofa::gui::BaseViewer, sofa::gui::ViewerArgument>
 {
 public:
     virtual ~BaseCreator() { }
-    virtual sofa::gui::qt::viewer::SofaViewer *createInstance(sofa::gui::qt::viewer::SofaViewerArgument arg) = 0;
+    virtual sofa::gui::BaseViewer *createInstance(sofa::gui::ViewerArgument arg) = 0;
     virtual const std::type_info& type() = 0;
     virtual const char* viewerName() = 0;
     virtual const char* acceleratedName() = 0;
 };
 
 
-class SOFA_SOFAGUIQT_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument >
+class SOFA_SOFAGUI_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::ViewerArgument >
 {
 public:
-    typedef sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument > Inherited;
+    typedef sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::ViewerArgument > Inherited;
     typedef Inherited::Key Key;
     typedef Inherited::Argument Argument;
     typedef Inherited::Object Object;
@@ -174,5 +171,5 @@ public:
 }
 }
 
-#endif //SOFA_GUI_QT_VIEWERFACTORY_H
+#endif //SOFA_GUI_VIEWERFACTORY_H
 

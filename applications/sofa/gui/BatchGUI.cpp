@@ -132,7 +132,6 @@ void BatchGUI::stopDumpVisitor()
 #endif
 }
 
-
 sofa::simulation::Node* BatchGUI::currentSimulation()
 {
     return groot.get();
@@ -164,7 +163,7 @@ int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& opti
 
 SofaGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
-    BatchGUI::guiName = name;
+    BatchGUI::mGuiName = name;
     BatchGUI* gui = new BatchGUI();
     gui->setScene(groot, filename);
     return gui;
