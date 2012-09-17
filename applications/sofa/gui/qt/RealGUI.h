@@ -392,10 +392,10 @@ public slots:
     virtual void updateBackgroundImage();
 
     // Propagate signal to call viewer method in case of it is not a widget
-    virtual void resetView()            {getViewer()->resetView();       }
-    virtual void saveView()             {getViewer()->saveView();        }
-    virtual void setSizeW ( int _valW ) {getViewer()->setSizeW(_valW);   }
-    virtual void setSizeH ( int _valH ) {getViewer()->setSizeH(_valH);   }
+    virtual void resetView()            {if(getViewer())getViewer()->resetView();       }
+    virtual void saveView()             {if(getViewer())getViewer()->saveView();        }
+    virtual void setSizeW ( int _valW ) {if(getViewer())getViewer()->setSizeW(_valW);   }
+    virtual void setSizeH ( int _valH ) {if(getViewer())getViewer()->setSizeH(_valH);   }
 
     virtual void clear();
     /// refresh the visualization window
