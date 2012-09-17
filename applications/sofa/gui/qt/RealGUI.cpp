@@ -312,9 +312,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     createPluginManager();
 
-    // TODO: deal with this...
-    informationOnPickCallBack = InformationOnPickCallBack(this);
-
     createRecentFilesMenu(); // configure Recently Opened Menu
 
     timerStep = new QTimer(this);
@@ -358,12 +355,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     createSimulationGraph();
 
-    //TODO : viewer
+    //viewer
+    informationOnPickCallBack = InformationOnPickCallBack(this);
     left_stack = new QWidgetStack ( splitter2 );
     viewerMap.clear();
-    updateViewerList();
     if (mCreateViewersOpt)
-        createViewer(viewername);
+        createViewer(viewername, true);
 
     currentTabChanged ( tabs->currentPage() );
 
