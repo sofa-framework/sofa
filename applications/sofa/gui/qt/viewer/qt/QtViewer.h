@@ -254,7 +254,7 @@ private:
     void	DrawLogo(void);
     void	DisplayOBJs();
     void	DisplayMenu(void);
-    void	DrawScene();
+    virtual void	drawScene();
     void  MakeStencilMask();
 
     void	ApplySceneTransformation(int x, int y);

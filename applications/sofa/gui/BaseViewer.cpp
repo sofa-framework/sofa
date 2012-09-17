@@ -138,6 +138,10 @@ bool BaseViewer::ready()
     return true;
 }
 
+void BaseViewer::wait()
+{
+}
+
 void BaseViewer::configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
     using namespace core::visual;

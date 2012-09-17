@@ -25,11 +25,12 @@
 #ifndef SOFA_GUI_BASEVIEWER_H
 #define SOFA_GUI_BASEVIEWER_H
 
-#include "PickHandler.h"
+#include "ColourPickingVisitor.h"
 
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
+
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -69,6 +70,7 @@ namespace sofa
 
 namespace gui
 {
+class PickHandler;
 
 using namespace sofa::defaulttype;
 enum
@@ -89,17 +91,21 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename =
-            NULL, bool /*keepParams*/= false);
+    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
+    /// true when the viewer keep the hand on the render
+    /// false when it's not in activity
     virtual bool ready();
-    virtual void wait() {}
 
-    /// Call when set a new scene
-    virtual bool loadSceneView(void) {return true;}
-    /// Call before delete a scene
-    virtual bool unloadSceneView(void) {return true;}
+    /// ask the viewer to resume its activity
+    virtual void wait();
+
+    /// Load the viewer. It's the initialisation
+    virtual bool load(void) {return true;}
+
+    /// unload the viewer without delete
+    virtual bool unload(void) {return true;}
 
     /// Recompute viewer's home position so it encompass the whole scene and apply it
     virtual void viewAll(void) = 0;
@@ -110,8 +116,7 @@ public:
     //Fonctions needed to take a screenshot
     virtual const std::string screenshotName();
     virtual void setPrefix(const std::string filename);
-    virtual void screenshot(const std::string filename, int compression_level =
-            -1);
+    virtual void screenshot(const std::string filename, int compression_level =-1);
 
     virtual void getView(Vec3d& pos, Quat& ori) const;
     virtual void setView(const Vec3d& pos, const Quat &ori);
@@ -123,12 +128,6 @@ public:
     virtual void setBackgroundImage(std::string imageFileName = std::string("textures/SOFA_logo.bmp"));
     std::string getBackgroundImage();
 
-    PickHandler* getPickHandler();
-
-    //*************************************************************
-    // QT
-    //*************************************************************
-    //SLOTS
     virtual void saveView()=0;
     virtual void setSizeW(int)=0;
     virtual void setSizeH(int)=0;
@@ -136,31 +135,34 @@ public:
     virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);
 
-
-    //SIGNALS
     virtual void redrawn()=0;
     virtual void resizeW(int)=0;
     virtual void resizeH(int)=0;
 
-    // ---------------------- RayCasting PickHandler  ----------------------
-    virtual void moveRayPickInteractor(int, int)
-    {
-    }
-    ;
+    /// RayCasting PickHandler
+    virtual void moveRayPickInteractor(int, int) {}
+
+    PickHandler* getPickHandler();
 
 protected:
-    // internally called while the actual viewer needs a redraw (ie the camera
-    // changed)
+    /// rendering is done in this method (have to be called in a loop)
+    virtual void drawScene(void) = 0;
+
+    // internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
 
+    /// the sofa root note of the current scene
     sofa::simulation::Node::SPtr groot;
+
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+
     std::string sceneFileName;
+
     sofa::helper::gl::Capture capture;
 
 #ifdef SOFA_HAVE_FFMPEG
     sofa::helper::gl::VideoRecorder videoRecorder;
-#endif //SOFA_HAVE_FFMPEG
+#endif
 
     bool _video;
     bool _axis;
@@ -174,7 +176,7 @@ protected:
 
     Vector3 ambientColour;
 
-    PickHandler* pick;
+    PickHandler *pick;
 
     //instruments handling
     int _navigationMode;

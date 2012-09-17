@@ -68,7 +68,7 @@ public:
         {
             mViewer->getPickHandler()->reset();
             mViewer->getPickHandler()->unload();
-            mViewer->loadSceneView();
+            mViewer->unload();
             simulation::getSimulation()->unload ( mViewer->getScene() );
             mViewer->setScene(NULL);
         }
