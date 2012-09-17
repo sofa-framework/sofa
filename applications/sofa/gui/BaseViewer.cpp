@@ -91,6 +91,9 @@ void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
     groot = scene;
     initTexturesDone = false;
 
+
+
+
     //Camera initialization
     if (groot)
     {
@@ -154,6 +157,7 @@ void BaseViewer::configure(sofa::component::configurationsetting::ViewerSetting*
     else
         pick->setPickingMethod( gui::PickHandler::SELECTION_BUFFER);
 }
+
 //Fonctions needed to take a screenshot
 const std::string BaseViewer::screenshotName()
 {
@@ -272,9 +276,17 @@ std::string BaseViewer::getBackgroundImage()
 {
     return backgroundImageFile;
 }
+
 PickHandler* BaseViewer::getPickHandler()
 {
     return pick;
+}
+
+bool BaseViewer::unload(void)
+{
+    getPickHandler()->reset();
+    getPickHandler()->unload();
+    return true;
 }
 
 void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )

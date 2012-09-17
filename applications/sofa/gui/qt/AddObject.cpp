@@ -25,6 +25,7 @@
 
 #include "AddObject.h"
 #include "RealGUI.h"
+#include "FileManagement.h"
 
 #include <iostream>
 #include <sstream>
@@ -37,6 +38,7 @@
 #include <QPushButton>
 #include <Q3ButtonGroup>
 #include <QGridLayout>
+#include <qevent.h>
 #else
 #include <qfiledialog.h>
 #include <qlineedit.h>

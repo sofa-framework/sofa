@@ -26,7 +26,6 @@
 #define SOFA_GUI_BASEGUI_H
 
 #include "SofaGUI.h"
-#include "BaseViewer.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/component/configurationsetting/ViewerSetting.h>
@@ -40,6 +39,8 @@ namespace sofa
 
 namespace gui
 {
+
+class BaseViewer;
 
 class SOFA_SOFAGUI_API BaseGUI
 {
@@ -65,25 +66,26 @@ public:
 
     /// @name methods to configure the GUI
     /// @{
-    virtual void setDumpState(bool) {};
-    virtual void setLogTime(bool) {};
-    virtual void setExportState(bool) {};
+    virtual void setDumpState(bool) {}
+    virtual void setLogTime(bool) {}
+    virtual void setExportState(bool) {}
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setTraceVisitors(bool) {};
+    virtual void setTraceVisitors(bool) {}
 #endif
-    virtual void setRecordPath(const std::string & /*path*/) {};
-    virtual void setGnuplotPath(const std::string & /*path*/) {};
+    virtual void setRecordPath(const std::string & /*path*/) {}
+    virtual void setGnuplotPath(const std::string & /*path*/) {}
 
-    // TODO: deplace in the BaseViewer
-    virtual void initViewer() {}
-    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {};
-    virtual void setViewerResolution(int /* width */, int /* height */) {};
-    virtual void setFullScreen() {};
-    virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
-    virtual void setBackgroundImage(const std::string& /*image*/) {};
-    virtual void registerViewer(BaseViewer* /*viewer*/) {};
+    virtual void initViewer(BaseViewer* /*viewer*/) {}
+    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
+    virtual void setViewerResolution(int /* width */, int /* height */) {}
+    virtual void setFullScreen() {}
+    virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {}
+    virtual void setBackgroundImage(const std::string& /*image*/) {}
 
-    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
+    virtual BaseViewer* getViewer() {return NULL;}
+    virtual void registerViewer(BaseViewer* /*viewer*/) {}
+
+    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {}
     /// @}
 
     /// @name methods to communicate with the GUI

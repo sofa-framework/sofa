@@ -105,7 +105,7 @@ public:
     virtual bool load(void) {return true;}
 
     /// unload the viewer without delete
-    virtual bool unload(void) {return true;}
+    virtual bool unload(void);
 
     /// Recompute viewer's home position so it encompass the whole scene and apply it
     virtual void viewAll(void) = 0;
@@ -135,9 +135,8 @@ public:
     virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);
 
-    virtual void redrawn()=0;
-    virtual void resizeW(int)=0;
-    virtual void resizeH(int)=0;
+    virtual void setFullScreen(bool /*enable*/) {}
+
 
     /// RayCasting PickHandler
     virtual void moveRayPickInteractor(int, int) {}
@@ -148,7 +147,7 @@ protected:
     /// rendering is done in this method (have to be called in a loop)
     virtual void drawScene(void) = 0;
 
-    // internally called while the actual viewer needs a redraw (ie the camera changed)
+    /// internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
 
     /// the sofa root note of the current scene
