@@ -1906,7 +1906,7 @@ void RealGUI::interactionGUI ( bool value )
     }
 
     sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
-    Node* groot = getScene();
+    Node* groot = mViewer->getScene();
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
 }

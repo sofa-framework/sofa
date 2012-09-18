@@ -89,7 +89,7 @@ void QDisplayPropertyWidget::updateListViewItem()
         core::objectmodel::Base* object = objectIterator->second.first;
         Q3ListViewItem* item = objectIterator->second.second;
 
-        if (simulation::Node *node=dynamic_cast< simulation::Node *>(object))
+        if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
         {
             item->setText(0,object->getName().c_str());
             //emit nodeNameModification(node);
@@ -293,7 +293,7 @@ void QDisplayPropertyWidget::clear()
 {
     QTreeWidgetItem *item = NULL;
     QPushButton* pin = NULL;
-    for(unsigned int i = 0; item = topLevelItem(i);)
+    for(unsigned int i = 0; (item = topLevelItem(i));)
     {
         pin = static_cast<QPushButton*>(itemWidget(item, 1));
         if(pin && !pin->isChecked())
@@ -314,7 +314,7 @@ void QDisplayPropertyWidget::clearAll()
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const
 {
     QTreeWidgetItem *componentItem = NULL;
-    for(unsigned int i = 0; componentItem = topLevelItem(i); ++i)
+    for(unsigned int i = 0; (componentItem = topLevelItem(i)); ++i)
         if(componentItem->text(0) == component)
             break;
 
@@ -329,7 +329,7 @@ QTreeWidgetItem* QDisplayPropertyWidget::findGroup(const QString& component, con
         return NULL;
 
     QTreeWidgetItem *groupItem = NULL;
-    for(unsigned int i = 0; groupItem = componentItem->child(i); ++i)
+    for(unsigned int i = 0; (groupItem = componentItem->child(i)); ++i)
         if(groupItem->text(0) == group)
             break;
 
