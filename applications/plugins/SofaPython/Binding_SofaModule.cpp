@@ -29,7 +29,7 @@
 #include "PythonMacros.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/GUIManager.h>
 
 
@@ -146,7 +146,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     char *msgValue;
     if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
         return 0;
-    SofaGUI *gui = GUIManager::getGUI();
+    BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
         printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
