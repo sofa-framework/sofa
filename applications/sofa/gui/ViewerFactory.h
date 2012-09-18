@@ -72,7 +72,7 @@ namespace helper
 {
 
 template < >
-class BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument>
+class SOFA_SOFAGUI_API BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument>
 {
 public:
     virtual ~BaseCreator() { }
@@ -93,11 +93,7 @@ public:
     typedef Inherited::Creator Creator;
 
 
-    static SofaViewerFactory*  getInstance()
-    {
-        static SofaViewerFactory instance;
-        return &instance;
-    }
+    static SofaViewerFactory*  getInstance();
 
     static Object* CreateObject(Key key, Argument arg)
     {
@@ -114,46 +110,9 @@ public:
         return getInstance()->hasKey(key);
     }
 
-    const char* getViewerName(Key key)
-    {
+    const char* getViewerName(Key key);
 
-        Creator* creator;
-        std::multimap<Key, Creator*>::iterator it = this->registry.lower_bound(key);
-        std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
-        while (it != end)
-        {
-            creator = (*it).second;
-            const char* viewerName = creator->viewerName();
-            if(viewerName != NULL )
-            {
-                return viewerName;
-            }
-            ++it;
-        }
-        //	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
-        return NULL;
-    }
-
-    const char* getAcceleratedViewerName(Key key)
-    {
-
-        Creator* creator;
-        std::multimap<Key, Creator*>::iterator it = this->registry.lower_bound(key);
-        std::multimap<Key, Creator*>::iterator end = this->registry.upper_bound(key);
-        while (it != end)
-        {
-            creator = (*it).second;
-            const char* acceleratedName = creator->acceleratedName();
-            if(acceleratedName != NULL )
-            {
-                return acceleratedName;
-            }
-            ++it;
-        }
-        //	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
-        return NULL;
-
-    }
+    const char* getAcceleratedViewerName(Key key);
 
     static const char* ViewerName( Key key)
     {
@@ -185,6 +144,10 @@ public:
         return RealObject::acceleratedName();
     }
 };
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SOFAGUI)
+extern template class SOFA_SOFAGUI_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument >;
+#endif
 
 
 }

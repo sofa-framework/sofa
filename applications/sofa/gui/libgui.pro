@@ -16,7 +16,8 @@ SOURCES = \
 	FilesRecentlyOpenedManager.cpp \
 	MouseOperations.cpp \
 	PickHandler.cpp \
-	GUIManager.cpp
+	GUIManager.cpp \
+	ViewerFactory.cpp
 
 HEADERS = \
     BaseGUI.h \
