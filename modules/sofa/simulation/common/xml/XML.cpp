@@ -120,7 +120,14 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     // (which is already done here). -- Jeremie A. 02/07/2011
     // if (root->Type() != TiXmlNode::ELEMENT) return NULL;
     TiXmlElement* element = root->ToElement();
-    if (!element || !element->Value() || !element->Value()[0]) return NULL;
+    if (!element)
+        return NULL;
+    //std::cout << "XML Element : " << element->ValueStr() << std::endl;
+    if (!element->Value() || !element->Value()[0])
+    {
+        std::cerr << "XML Parsing ERROR: Invalid element : " << *element << std::endl;
+        return NULL;
+    }
 
     // handle special 'preprocessor' tags
 
@@ -285,7 +292,9 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
     }
 
     //print the graph scene
-    //dumpNode(graph);
+//#ifndef NDEBUG
+//  dumpNode(graph);
+//#endif
 
     return graph;
 }
@@ -331,8 +340,10 @@ BaseElement* loadFromFile(const char *filename)
         delete doc;
         return NULL;
     }
+#ifndef NDEBUG
+    doc->Print();
+#endif
     BaseElement* r = processXMLLoading(filename, *doc);
-    //doc->Print();
     //std::cerr << "clear doc"<<std::endl;
     doc->Clear();
     //std::cerr << "delete doc"<<std::endl;
