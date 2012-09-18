@@ -37,10 +37,37 @@ struct loader
 };
 
 
-loader loader::instance;
-
-// this will generate a main function for running tests
-#define BOOST_TEST_MAIN
+#define BOOST_TEST_ALTERNATIVE_INIT_API
 #include <boost/test/included/unit_test.hpp>
 
+using namespace boost::unit_test;
+
+bool init_unit_test()
+{
+
+    int argc = boost::unit_test::framework::master_test_suite().argc;
+    char** argv = boost::unit_test::framework::master_test_suite().argv;
+
+    if( (argc == 2) && std::string( argv[1] ) == "-" )
+    {
+        // read from stdin
+
+        std::string path;
+        while( std::cin >> path ) plugin( path ).load();
+    }
+    else
+    {
+        // read from argv
+
+        for( unsigned i = 1; i < argc; ++i)
+        {
+            plugin( argv[i] ).load();
+        }
+
+    }
+
+    framework::master_test_suite().p_name.value = "SOFA Test Suite";
+
+    return true;
+}
 
