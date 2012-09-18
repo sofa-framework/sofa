@@ -23,8 +23,10 @@ LIBS *= -lboost_unit_test_framework
 
 }
 
-SOURCES = runUnitTests.cpp \
-    MatrixTest.cpp
+SOURCES = \
+    runner.cpp \
+    # runUnitTests.cpp \
+    # MatrixTest.cpp \
 
 HEADERS = \
     MatrixTest.inl
