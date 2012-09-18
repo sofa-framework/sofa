@@ -426,16 +426,20 @@ Node::SPtr Simulation::processXML(xml::BaseElement* xml, const char *filename)
 
     // 				std::cout << "Initializing objects"<<std::endl;
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
-    if( nodeElt==NULL||!(nodeElt->init()))
+    if( nodeElt==NULL )
     {
-        std::cerr << "Objects initialization failed."<<std::endl;
+        std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
+        std::exit(1);
+    }
+    else if( !(nodeElt->init()) )
+    {
+        std::cerr << "LOAD ERROR: Node initialization failed."<<std::endl;
     }
 
     sRoot = dynamic_cast<Node*> ( xml->getObject() );
     if ( sRoot == NULL )
     {
-        std::cerr << "Objects initialization failed."<<std::endl;
-        delete xml;
+        std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
         return NULL;
     }
 

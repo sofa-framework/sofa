@@ -11,6 +11,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/init.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
@@ -192,6 +193,7 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
 {
     std::string filename = cfilename;
     std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
+    sofa::helper::BackTrace::autodump();
 
     //bool wasAnimated = isAnimated();
     bool success = true;
@@ -205,7 +207,10 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
         updateOutputMeshes();
     }
     else
+    {
+        m_RootNode = m_Simulation->createNewGraph("");
         success = false;
+    }
     initTexturesDone = false;
     lastW = 0;
     lastH = 0;
