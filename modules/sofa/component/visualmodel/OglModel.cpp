@@ -28,6 +28,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/RAII.h>
+#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
@@ -562,6 +563,8 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (vparams->displayFlags().getShowNormals())
     {
+        GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
+        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i=0; i<xforms.size(); i++)
         {
@@ -581,6 +584,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glPopMatrix();
         }
+        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
     }
 //    m_vtexcoords.updateIfDirty();
 }

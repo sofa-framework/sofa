@@ -38,6 +38,8 @@ namespace helper
 namespace gl
 {
 
+bool GLSLIsSupported = false;
+
 bool GLSLShader::InitGLSL()
 {
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
@@ -53,9 +55,23 @@ bool GLSLShader::InitGLSL()
         fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
         return false;
     }
+    GLSLIsSupported = true;
     // Return a success!
     return true;
 }
+
+GLhandleARB GLSLShader::GetActiveShaderProgram()
+{
+    if (!GLSLIsSupported) return 0;
+    return glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+}
+
+void  GLSLShader::SetActiveShaderProgram(GLhandleARB s)
+{
+    if (!GLSLIsSupported) return;
+    glUseProgramObjectARB(s);
+}
+
 
 GLSLShader::GLSLShader()
 {

@@ -83,6 +83,9 @@ public:
     /// This is used to load all of the extensions and checks compatibility.
     static bool InitGLSL();
 
+    static GLhandleARB GetActiveShaderProgram();
+    static void  SetActiveShaderProgram(GLhandleARB s);
+
     // This loads all shaders previously set with Set*ShaderFileName() methods
     void InitShaders();
 
