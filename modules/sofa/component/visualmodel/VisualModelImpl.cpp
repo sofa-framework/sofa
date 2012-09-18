@@ -729,7 +729,7 @@ void VisualModelImpl::computeNormals()
 {
     const VecCoord& vertices = getVertices();
     //const VecCoord& vertices = m_vertices2.getValue();
-    if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (vertices).size())) return;
+    if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() == (vertices).size())) return;
 
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
