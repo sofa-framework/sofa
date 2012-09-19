@@ -241,7 +241,7 @@ void ShapeMatching<Rigid3fTypes >::update();
 
 
 template <class DataTypes>
-void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
 
 }
