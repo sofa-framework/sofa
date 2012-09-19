@@ -155,12 +155,39 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     {
         for (unsigned int j=0; j<6; ++j)
         {
-            int edgeIndex=m_container->getEdgeIndex(t[edgesInTetrahedronArray[j][0]],
-                    t[edgesInTetrahedronArray[j][1]]);
+            int p0,p1;
 
-            assert(edgeIndex!= -1);
+            // compute the index of edges in tetra
+            if (j<3)
+            {
+                p0=0; p1=j+1;
+            }
+            else if (j<5)
+            {
+                p0=1; p1=j-1;
+            }
+            else
+            {
+                p0=2; p1=3;
+            }
 
-            //m_container->m_edgesInTetrahedron.resize(edgeIndex+1);
+            int edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+            // we must create the edge
+            if (edgeIndex==-1)
+            {
+                sofa::helper::vector< Edge > v;
+                Edge e1(t[p0],t[p1]);
+                v.push_back(e1);
+
+                addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+
+                edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+
+                sofa::helper::vector< unsigned int > edgeIndexList;
+                edgeIndexList.push_back(edgeIndex);
+                addEdgesWarning( v.size(), v, edgeIndexList);
+            }
+
             m_container->m_edgesInTetrahedron.resize(tetrahedronIndex+1);
             m_container->m_edgesInTetrahedron[tetrahedronIndex][j]= edgeIndex;
         }
