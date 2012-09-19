@@ -250,13 +250,17 @@ public:
 
 
 
+    Data<bool> assembleJ;
+    Data<bool> assembleK;
+
+
 protected:
     BaseStrainMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
-        , maskFrom(NULL)
-        , maskTo(NULL)
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized matrix/vector multiplications" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized matrix/vector multiplications" ) )
+        , maskFrom(NULL)
+        , maskTo(NULL)
     {
 
     }
@@ -268,7 +272,6 @@ protected:
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
-    Data<bool> assembleJ;
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ()
@@ -291,7 +294,6 @@ protected:
         eigenJacobian.compress();
     }
 
-    Data<bool> assembleK;
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
     vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce)

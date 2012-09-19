@@ -237,6 +237,10 @@ public:
     Data<vector<VHessian> >    f_ddw;
     Data<VMaterialToSpatial>    f_F0;
 
+
+    Data<bool> assembleJ;
+    Data<bool> assembleK;
+
 protected:
     BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL);
     virtual ~BaseDeformationMapping()     { }
@@ -266,12 +270,11 @@ protected:
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
-    Data<bool> assembleJ;
+
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ();
 
-    Data<bool> assembleK;
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
     void updateK(const OutVecDeriv& childForce);
 
