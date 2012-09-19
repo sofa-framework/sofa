@@ -477,7 +477,7 @@ void GraphModeler::doubleClick(Q3ListViewItem *item)
 
 }
 
-void GraphModeler::leftClick(Q3ListViewItem *item, const QPoint &point, int index)
+void GraphModeler::leftClick(Q3ListViewItem *item, const QPoint & /*point*/, int /*index*/)
 {
     if (!item) return;
     item->setOpen ( !item->isOpen() );
