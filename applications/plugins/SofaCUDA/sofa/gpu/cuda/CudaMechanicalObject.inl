@@ -385,9 +385,9 @@ public:
     {   MechanicalObjectCudaVec3f1_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, float /*f21*/, const void* /*a22*/, float /*f22*/, const void* /*a23*/, float /*f23*/)
     {   /*MechanicalObjectCudaVec3f1_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, float /*f11*/, const void* /*a12*/, float /*f12*/, const void* /*a13*/, float /*f13*/, const void* /*a14*/, float /*f14*/)
     {   /*MechanicalObjectCudaVec3f1_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, float /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {   /*MechanicalObjectCudaVec3f1_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 
@@ -429,9 +429,9 @@ public:
     {   MechanicalObjectCudaVec6f_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, float /*f21*/, const void* /*a22*/, float /*f22*/, const void* /*a23*/, float /*f23*/)
     {   /*MechanicalObjectCudaVec6f_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, float /*f11*/, const void* /*a12*/, float /*f12*/, const void* /*a13*/, float /*f13*/, const void* /*a14*/, float /*f14*/)
     {   /*MechanicalObjectCudaVec6f_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, float /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {   /*MechanicalObjectCudaVec6f_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 
@@ -497,9 +497,9 @@ public:
     {   MechanicalObjectCudaRigid3f_vDot(size, res, a, b, tmp, cputmp); }
     static void vMultiOpA1B3(unsigned int /*size*/, void* /*res1*/, const void* /*a1*/, void* /*res2*/, const void* /*a21*/, float /*f21*/, const void* /*a22*/, float /*f22*/, const void* /*a23*/, float /*f23*/)
     {   /*MechanicalObjectCudaRigid3f_vMultiOpA1B3(size, res1, a1, res2, a21, f21, a22, f22, a23, f23);*/ }
-    static void vOp4(unsigned int size, void* res1, const void* a11, float f11, const void* a12, float f12, const void* a13, float f13, const void* a14, float f14)
+    static void vOp4(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, float /*f11*/, const void* /*a12*/, float /*f12*/, const void* /*a13*/, float /*f13*/, const void* /*a14*/, float /*f14*/)
     {   /*MechanicalObjectCudaRigid3f_vOp4(size, res1, a11, f11, a12, f12, a13, f13, a14, f14);*/ }
-    static void vOpMCNAB(unsigned int size, void* res1, const void* a11, const void* a12, float f12, void* res2, const void* a21, void* res3, const void* a31)
+    static void vOpMCNAB(unsigned int /*size*/, void* /*res1*/, const void* /*a11*/, const void* /*a12*/, float /*f12*/, void* /*res2*/, const void* /*a21*/, void* /*res3*/, const void* /*a31*/)
     {   /*MechanicalObjectCudaRigid3f_vOpMCNAB(size, res1, a11, a12, f12, res2, a21, res3, a31);*/ }
 };
 
