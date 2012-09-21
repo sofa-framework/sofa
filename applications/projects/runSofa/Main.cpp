@@ -38,9 +38,6 @@
 #endif
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/init.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
 #include <sofa/helper/Factory.h>
@@ -179,9 +176,6 @@ int main(int argc, char** argv)
                 sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::component::init();
-#ifdef SOFA_DEV
-    sofa::component::initDev();
-#endif
     sofa::simulation::xml::initXml();
 
     if (!files.empty())

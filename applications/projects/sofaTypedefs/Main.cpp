@@ -1,9 +1,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/component/init.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 #include <sofa/helper/vector.h>
 
 #include <sofa/helper/ArgumentParser.h>
@@ -76,9 +73,6 @@ const std::string defaultIncludes(
         (argc,argv);
 
         sofa::component::init();
-#ifdef SOFA_DEV
-        sofa::component::initDev();
-#endif
         for (unsigned int i=0; i<plugins.size(); i++)
         sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
 

@@ -42,9 +42,6 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/init.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
@@ -287,9 +284,6 @@ int main(int argc, char** argv)
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::component::init();
-#ifdef SOFA_DEV
-    sofa::component::initDev();
-#endif
 #ifdef SOFA_GPU_CUDA
 #ifdef WIN32
 #ifdef NDEBUG

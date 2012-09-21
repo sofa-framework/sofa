@@ -31,9 +31,6 @@
 #include <sofa/helper/vector.h>
 
 #include <sofa/component/init.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
@@ -312,9 +309,6 @@ public:
 //        sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
         sofa::component::init();
-//    #ifdef SOFA_DEV
-//        sofa::component::initDev();
-//    #endif
 //        sofa::simulation::xml::initXml();
 
 //        std::vector<std::string> plugins;
