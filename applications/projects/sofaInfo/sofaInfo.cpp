@@ -25,9 +25,6 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/init.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initDev.h>
-#endif
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------
@@ -44,9 +41,6 @@ int main(int /*argc*/, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::component::init();
-#ifdef SOFA_DEV
-    sofa::component::initDev();
-#endif
     sofa::simulation::xml::initXml();
 
     sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(argv[1]));
