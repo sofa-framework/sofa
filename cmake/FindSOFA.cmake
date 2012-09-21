@@ -233,7 +233,6 @@ list(APPEND SOFA_LIB_COMPONENT_NAME
     sofa_component_general      SOFA_LIB_COMPONENT_GENERAL          
     sofa_component_misc_dev     SOFA_LIB_COMPONENT_MISC_DEV                      
     sofa_component_advanced     SOFA_LIB_COMPONENT_ADVANCED         
-    sofa_component_advanced_dev SOFA_LIB_COMPONENT_ADVANCED_DEV         
 )
 list(LENGTH SOFA_LIB_COMPONENT_NAME sofaLibComponentList)
 math(EXPR passToBase "${sofaLibComponentList}/2+${passToComponent}")
