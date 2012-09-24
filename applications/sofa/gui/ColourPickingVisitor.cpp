@@ -56,8 +56,11 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const int totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
-        body.body = listCollisionModel[indexListCollisionModel];
-        body.indexCollisionElement = (unsigned int) ( colour[1] * body.body->getSize() + 0.5 );
+        if(indexListCollisionModel >= 0 && indexListCollisionModel < listCollisionModel.size())
+        {
+            body.body = listCollisionModel[indexListCollisionModel];
+            body.indexCollisionElement = (unsigned int) ( colour[1] * body.body->getSize() + 0.5 );
+        }
     }
     else
     {

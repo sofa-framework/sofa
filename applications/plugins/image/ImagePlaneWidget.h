@@ -356,8 +356,8 @@ public:
         if(slicedModels)
             for( int y=0; y<this->image.height(); y++)
                 for( int x=0; x<this->image.width(); x++)
-                    if(slicedModels(x,y,0,0)) if(slicedModels(x,y,0,1)) if(slicedModels(x,y,0,2))
-                                this->image.setPixel ( x, y,  qRgb(slicedModels(x,y,0,0),slicedModels(x,y,0,1) ,slicedModels(x,y,0,2)));
+                    if(slicedModels(x,y,0,0) || slicedModels(x,y,0,1) || slicedModels(x,y,0,2))
+                        this->image.setPixel ( x, y,  qRgb(slicedModels(x,y,0,0),slicedModels(x,y,0,1) ,slicedModels(x,y,0,2)));
 
         Render();
     }

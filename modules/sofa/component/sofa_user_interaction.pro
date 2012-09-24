@@ -37,6 +37,9 @@ HEADERS += initUserInteraction.h \
            collision/RemovePrimitivePerformer.inl \
            collision/InciseAlongPathPerformer.h \
            collision/TopologicalChangeManager.h \
+           collision/CuttingPoint.h \
+           collision/AddFramePerformer.h \
+           collision/AddFramePerformer.inl \
     controller/MechanicalStateControllerOmni.h \
 	controller/MechanicalStateControllerOmni.inl \
     controller/NodeToggleController.h
@@ -64,6 +67,8 @@ SOURCES += initUserInteraction.cpp \
            collision/RemovePrimitivePerformer.cpp \
            collision/InciseAlongPathPerformer.cpp \
            collision/TopologicalChangeManager.cpp \
+           collision/CuttingPoint.cpp \
+           collision/AddFramePerformer.cpp \
     controller/MechanicalStateControllerOmni.cpp \
     controller/NodeToggleController.cpp
 

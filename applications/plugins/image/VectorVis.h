@@ -39,7 +39,7 @@ protected:
     bool shape;
 
     /**
-    * Specifies the order that tensor information is encoded.
+    * Specifies the order that tensor information is encoded. Possible values are LowerTriRowMajor, UpperTriRowMajor, DiagonalFirst
     */
     std::string tensorOrder;
 

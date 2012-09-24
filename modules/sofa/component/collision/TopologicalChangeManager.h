@@ -33,9 +33,8 @@
 
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/SphereModel.h>
-#ifdef SOFA_DEV
-#include <sofa/component/collision/CuttingManager.h>
-#endif
+#include <sofa/component/collision/CuttingPoint.h>
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>

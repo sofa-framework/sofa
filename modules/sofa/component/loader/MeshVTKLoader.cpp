@@ -347,11 +347,17 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     std::getline(inVTKFile, line);
 
     int binary;
-    if (line == "BINARY") binary = 1;
-    else if (line == "ASCII") binary = 0;
+    if (line == "BINARY" || line == "BINARY\r" )
+    {
+        binary = 1;
+    }
+    else if ( line == "ASCII" || line == "ASCII\r")
+    {
+        binary = 0;
+    }
     else
     {
-        serr << "Error: Unrecognized format in file '" << filename << "'." << sendl;
+        std::cout << "Error: Unrecognized format in file '" << filename << "'." << std::endl;
         inVTKFile.close();
         return false;
     }
@@ -364,7 +370,8 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     do
         std::getline(inVTKFile, line);
     while (line == "");
-    if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID")
+    if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
+        && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
         serr << "Error: Unsupported data type in file '" << filename << "'." << sendl;
         inVTKFile.close();
