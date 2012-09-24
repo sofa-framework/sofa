@@ -50,8 +50,9 @@ void ComplianceSolver::init()
 //    cerr<<"ComplianceSolver::init()" << endl;
 }
 
-void ComplianceSolver::writeLocalMatrices() const
+void ComplianceSolver::MatrixAssemblyVisitor::writeLocalMatrices() const
 {
+
     for( State_2_LocalMatrices::const_iterator i=localMatrices.begin(), iend=localMatrices.end(); i!=iend; i++ )
     {
         cerr<< (*i).first->getName() << ": " << (*i).second << endl;
@@ -68,8 +69,6 @@ ComplianceSolver::MatrixAssemblyVisitor::MatrixAssemblyVisitor(const core::Mecha
     , pass(COMPUTE_SIZE)
 {
 
-    s->_PMinvP_isDirty = true;
-    s->localMatrices.clear();
 
 }
 
@@ -146,12 +145,7 @@ void ComplianceSolver::MatrixAssemblyVisitor::onCompliance(core::behavior::BaseF
 void ComplianceSolver::resize(unsigned sizeM, unsigned sizeC )
 {
 
-    _matM.resize(sizeM, sizeM);
-    _matK.resize(sizeM, sizeM);
     _projMatrix.compressedMatrix = createIdentityMatrix( sizeM );
-
-    _matC.resize(sizeC, sizeC);
-    _matJ.resize(sizeC, sizeM);
 
     // TODO check that multi-assignment isn't stabbing us in the back
     _vecF = _vecV = _vecDv = VectorEigen::Zero( sizeM );
@@ -161,6 +155,62 @@ void ComplianceSolver::resize(unsigned sizeM, unsigned sizeC )
     //    cerr<<"ComplianceSolver::solve, local state matrices after COMPUTE_SIZE:" << endl;
     //    writeLocalMatrices();
 }
+
+
+void ComplianceSolver::MatrixAssemblyVisitor::global(SMatrix& M,
+        SMatrix& K,
+        SMatrix& C,
+        SMatrix& J)
+{
+    // TODO assert sizes were computed first ?
+
+    M.resize(sizeM, sizeM);
+    K.resize(sizeM, sizeM);
+    C.resize(sizeC, sizeC);
+    J.resize(sizeC, sizeM);
+
+    // ==== Global matrix assembly
+    sofa::helper::AdvancedTimer::stepBegin("JMJt, JKJt, JCJt");
+    for(State_2_LocalMatrices::iterator i = localMatrices.begin(), end = localMatrices.end();
+        i != end; ++i)
+    {
+
+        core::behavior::BaseMechanicalState* s = (*i).first;
+        //        if(verbose.getValue()){
+        //            cerr<<"ComplianceSolver::solve, matrix global assembly, state = " << s->getName() << endl;
+        //            cerr<<"  M = " << s2mjc[s].M << endl;
+        //            cerr<<"  K = " << s2mjc[s].K << endl;
+        //            cerr<<"  J = " << s2mjc[s].J << endl;
+        //            cerr<<"  c_offset = " << s2mjc[s].c_offset << "---------------------" << endl;
+        //            cerr<<"  C = " << s2mjc[s].C << endl;
+        //        }
+        if( localMatrices[s].M.rows()>0 )
+        {
+            M += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J );
+        }
+        if( localMatrices[s].K.rows()>0 )
+        {
+            K += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J );
+        }
+        if( localMatrices[s].C.rows()>0 )
+        {
+            SMatrix C0 = createShiftMatrix( localMatrices[s].C.rows(), C.cols(), localMatrices[s].c_offset );
+            C += SMatrix(C0.transpose() * localMatrices[s].C * C0);
+            //            cerr<<"  offset = " << s2mjc[s].c_offset << endl;
+            //            cerr<<"  C0 = "  << endl<< DenseMatrix(C0) << endl;
+            //            cerr<<"  J = "  << endl << DenseMatrix(s2mjc[s].J) << endl;
+            //            cerr<<"  matJ before = " << endl << DenseMatrix(_matJ) << endl;
+            //            cerr<<"  matJ += " << endl << DenseMatrix(SMatrix(C0.transpose() * s2mjc[s].J)) << endl;
+            J += SMatrix( C0.transpose() * localMatrices[s].J );        // J vertically shifted, aligned with the compliance matrix
+            //            cerr<<"  matJ after = " << endl << DenseMatrix(_matJ) << endl;
+        }
+    }
+
+    sofa::helper::AdvancedTimer::stepEnd("JMJt, JKJt, JCJt");
+
+
+}
+
 
 void ComplianceSolver::solve(const core::ExecParams* params,
         double h,
@@ -186,150 +236,137 @@ void ComplianceSolver::solve(const core::ExecParams* params,
 
     sofa::helper::AdvancedTimer::stepBegin("Build linear equation");
 
-    // ==== Accumulate forces
-    sofa::helper::AdvancedTimer::stepBegin("forces in the right-hand term");
-    mop.computeForce(f);
-    mop.projectResponse(f);
-    if( verbose.getValue() )
-    {
-        cerr<< __METHOD__ << " filtered external forces = " << f << endl;
-    }
-    sofa::helper::AdvancedTimer::stepEnd("forces in the right-hand term");
-
     // obtain an assembly visitor (possibly from derived classes)
     scoped<MatrixAssemblyVisitor> assembly( newAssemblyVisitor(cparams) );
 
-    // compute system size
-    (*assembly)(COMPUTE_SIZE);
-    this->getContext()->executeVisitor( assembly.get() );
-
-    // resize state vectors
-    resize(assembly->sizeM, assembly->sizeC);
-
-
-    // ==== Create local matrices J,K,M,C at each level
-    (*assembly)(DO_SYSTEM_ASSEMBLY);
-    this->getContext()->executeVisitor( assembly.get() );
-
-    //    cerr<<"ComplianceSolver::solve, local state matrices after SYSTEM_ASSEMBLY:" << endl;
-    //    writeLocalMatrices();
-
-
-
-    // ==== Global matrix assembly
-    sofa::helper::AdvancedTimer::stepBegin("JMJt, JKJt, JCJt");
-    for(State_2_LocalMatrices::iterator i=localMatrices.begin(),iend=localMatrices.end(); i!=iend; i++ )
+    // === external forces
     {
-        core::behavior::BaseMechanicalState* s = (*i).first;
-        //        if(verbose.getValue()){
-        //            cerr<<"ComplianceSolver::solve, matrix global assembly, state = " << s->getName() << endl;
-        //            cerr<<"  M = " << s2mjc[s].M << endl;
-        //            cerr<<"  K = " << s2mjc[s].K << endl;
-        //            cerr<<"  J = " << s2mjc[s].J << endl;
-        //            cerr<<"  c_offset = " << s2mjc[s].c_offset << "---------------------" << endl;
-        //            cerr<<"  C = " << s2mjc[s].C << endl;
-        //        }
-        if( localMatrices[s].M.rows()>0 )
-        {
-            _matM += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J );
-        }
-        if( localMatrices[s].K.rows()>0 )
-        {
-            _matK += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J );
-        }
-        if( localMatrices[s].C.rows()>0 )
-        {
-            SMatrix C0 = createShiftMatrix( localMatrices[s].C.rows(), _matC.cols(), localMatrices[s].c_offset );
-            _matC += SMatrix(C0.transpose() * localMatrices[s].C * C0);
-            //            cerr<<"  offset = " << s2mjc[s].c_offset << endl;
-            //            cerr<<"  C0 = "  << endl<< DenseMatrix(C0) << endl;
-            //            cerr<<"  J = "  << endl << DenseMatrix(s2mjc[s].J) << endl;
-            //            cerr<<"  matJ before = " << endl << DenseMatrix(_matJ) << endl;
-            //            cerr<<"  matJ += " << endl << DenseMatrix(SMatrix(C0.transpose() * s2mjc[s].J)) << endl;
-            _matJ += SMatrix( C0.transpose() * localMatrices[s].J );        // J vertically shifted, aligned with the compliance matrix
-            //            cerr<<"  matJ after = " << endl << DenseMatrix(_matJ) << endl;
-        }
-    }
-    _matK = P() * _matK * P();  /// Filter the matrix. @todo this is not enough to guarantee that the projected DOFs are isolated. M should be set diagonal.
-    sofa::helper::AdvancedTimer::stepEnd("JMJt, JKJt, JCJt");
+        sofa::helper::AdvancedTimer::stepBegin("forces in the right-hand term");
 
-    if( verbose.getValue() )
-    {
-        cerr<<__METHOD__ << " assembly performed ==================================== " << endl ;
-        cerr<<__METHOD__ << " assembled M = " << endl << DenseMatrix(_matM) << endl;
-        cerr<<__METHOD__ << " assembled K = " << endl << DenseMatrix(_matK) << endl;
-        cerr<<__METHOD__ << " assembled P = " << endl << DenseMatrix(P()) << endl;
-        cerr<<__METHOD__ << " assembled C = " << endl << DenseMatrix(_matC) << endl;
-        cerr<<__METHOD__ << " assembled J = " << endl << DenseMatrix(_matJ) << endl;
-        cerr<<__METHOD__ << " assembled f = "   << _vecF.transpose() << endl;
-        cerr<<__METHOD__ << " assembled phi = " << _vecPhi.transpose() << endl;
-        cerr<<__METHOD__ << " assembled v = "   << _vecV.transpose() << endl;
+        mop.computeForce(f);
+        mop.projectResponse(f);
+
+        if( verbose.getValue() )
+        {
+            cerr<< __METHOD__ << " filtered external forces = " << f << endl;
+        }
+        sofa::helper::AdvancedTimer::stepEnd("forces in the right-hand term");
     }
 
+    // === matrices assembly
+    {
+        // compute system size
+        (*assembly)(COMPUTE_SIZE);
+        this->getContext()->executeVisitor( assembly.get() );
+
+        // resize state vectors
+        resize(assembly->sizeM, assembly->sizeC);
+
+        // create local matrices J,K,M,C at each level
+        (*assembly)(DO_SYSTEM_ASSEMBLY);
+        this->getContext()->executeVisitor( assembly.get() );
+
+        // global matrices assembly
+        assembly->global(_matM, _matK, _matC, _matJ);
+
+        // deal with projection matrices
+        _matK = P() * _matK * P();  /// Filter the matrix.
+
+        // TODO this is not enough to guarantee that the projected DOFs
+        // are isolated. M should be set diagonal.
+
+        _PMinvP_isDirty = true;
+
+        if( verbose.getValue() )
+        {
+            cerr<<__METHOD__ << " assembly performed ==================================== " << endl ;
+            cerr<<__METHOD__ << " assembled M = " << endl << DenseMatrix(_matM) << endl;
+            cerr<<__METHOD__ << " assembled K = " << endl << DenseMatrix(_matK) << endl;
+            cerr<<__METHOD__ << " assembled P = " << endl << DenseMatrix(P()) << endl;
+            cerr<<__METHOD__ << " assembled C = " << endl << DenseMatrix(_matC) << endl;
+            cerr<<__METHOD__ << " assembled J = " << endl << DenseMatrix(_matJ) << endl;
+            cerr<<__METHOD__ << " assembled f = "   << _vecF.transpose() << endl;
+            cerr<<__METHOD__ << " assembled phi = " << _vecPhi.transpose() << endl;
+            cerr<<__METHOD__ << " assembled v = "   << _vecV.transpose() << endl;
+        }
+    }
 
 
     // ==== Compute the implicit matrix and right-hand term
-    sofa::helper::AdvancedTimer::stepBegin("implicit equation: scaling and sum of matrices, update right-hand term ");
-    SReal rs = f_rayleighStiffness.getValue();
-    SReal rm = f_rayleighMass.getValue();
-    // complete the right-hand term b = f0 + (h+rs) K v - rm M v    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
-    _vecF += _matK * _vecV * ( implicitVelocity.getValue() * (h + rs) );
-    //    cerr<<"ComplianceSolver::solve, added to f: " << (_matK * _vecV * (implicitVelocity.getValue() * (h + rs) )) << endl;
-    _vecF -= _matM * _vecV * rm;
-    //    cerr<<"ComplianceSolver::solve, substracted from f: " << (_matM * _vecV * rm) << endl;
-    _vecF = P() * _vecF/* */; // filter the right-hand term
-    // The implicit matrix is scaled by 1/h before solving the equation: M = ( (1+h*rm)M - h*B - h*(h+rs)K  )/h = (rm+1/h)M - (rs+h)K  since we ignore B
-    _matM *= rm + 1.0/h;
-    _matM -= _matK * (h+rs);
-    //    cerr<<"ComplianceSolver::solve, final M.size() = " <<  _matM.rows() << ", non zeros: " << _matM.nonZeros() << endl; //49548
-    if( verbose.getValue() )
     {
-        cerr<<"ComplianceSolver::solve, implicit matrix = " << endl << _matM << endl;
-        cerr<<"ComplianceSolver::solve, right-hand term = " << _vecF.transpose() << endl;
-    }
+        sofa::helper::AdvancedTimer::stepBegin("implicit equation: scaling and sum of matrices, update right-hand term ");
+        SReal rs = f_rayleighStiffness.getValue();
+        SReal rm = f_rayleighMass.getValue();
 
-    sofa::helper::AdvancedTimer::stepEnd("implicit equation: scaling and sum of matrices, update right-hand term ");
+        // complete the right-hand term b = f0 + (h+rs) K v - rm M v
+        // Rayleigh mass factor rm is used with a negative sign because it
+        // is recorded as a positive real, while its force is opposed to
+        // the velocity
+        _vecF += _matK * _vecV * ( implicitVelocity.getValue() * (h + rs) );
+        _vecF -= _matM * _vecV * rm;
+
+        _vecF = P() * _vecF; // filter the right-hand side term
+
+        // The implicit matrix is scaled by 1/h before solving the equation:
+        // M = ( (1+h*rm)M - h*B - h*(h+rs)K  )/h = (rm+1/h)M - (rs+h)K
+        // since we ignore B
+        _matM *= rm + 1.0 / h;
+        _matM -= _matK * (h + rs);
+
+        if( verbose.getValue() )
+        {
+            cerr << __METHOD__ << " implicit matrix = " << endl << _matM << endl
+                    << __METHOD__ << " right-hand term = " << _vecF.transpose() << endl;
+        }
+
+        sofa::helper::AdvancedTimer::stepEnd("implicit equation: scaling and sum of matrices, update right-hand term ");
+    }
     sofa::helper::AdvancedTimer::stepEnd("Build linear equation");
 
     // ==== Solve equation system
-    sofa::helper::AdvancedTimer::stepBegin("Solve linear equation");
-    solveEquation();
-    sofa::helper::AdvancedTimer::stepEnd("Solve linear equation");
-
-    (*assembly)(DISTRIBUTE_SOLUTION);
-    this->getContext()->executeVisitor(assembly.get());  // set dv in each MechanicalState
-
-
-    // ==== Apply the result
-
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp vmOp;
-    vmOp.resize(2);
-    vmOp[0].first = nextPos; // p = p + v*h + dv*h*beta
-    vmOp[0].second.push_back(std::make_pair( pos.id(), 1.0));
-    vmOp[0].second.push_back(std::make_pair( vel.id(), h  ));
-    vmOp[0].second.push_back(std::make_pair(  dv.id(), h*implicitPosition.getValue()));
-    vmOp[1].first = nextVel; // v = v + ha
-    vmOp[1].second.push_back(std::make_pair(vel.id(),1.0));
-    vmOp[1].second.push_back(std::make_pair(  dv.id(),1.));
-    vop.v_multiop(vmOp);
-
-    if( verbose.getValue() )
     {
-        mop.propagateX(nextPos);
-        mop.propagateDx(nextVel);
-        serr<<"ComplianceSolver, final x = "<< nextPos <<sendl;
-        serr<<"ComplianceSolver, final v = "<< nextVel <<sendl;
-        serr<<"-----------------------------"<<sendl;
+        sofa::helper::AdvancedTimer::stepBegin("Solve linear equation");
+        solveEquation();
+        sofa::helper::AdvancedTimer::stepEnd("Solve linear equation");
     }
 
+    // ==== Apply the result
+    {
+
+        (*assembly)(DISTRIBUTE_SOLUTION);
+        this->getContext()->executeVisitor(assembly.get());  // set dv in each MechanicalState
+
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp vmOp;
+        vmOp.resize(2);
+        vmOp[0].first = nextPos; // p = p + v*h + dv*h*beta
+        vmOp[0].second.push_back(std::make_pair( pos.id(), 1.0));
+        vmOp[0].second.push_back(std::make_pair( vel.id(), h  ));
+        vmOp[0].second.push_back(std::make_pair(  dv.id(), h*implicitPosition.getValue()));
+
+        vmOp[1].first = nextVel; // v = v + ha
+        vmOp[1].second.push_back(std::make_pair(vel.id(),1.0));
+        vmOp[1].second.push_back(std::make_pair(  dv.id(),1.));
+
+        vop.v_multiop(vmOp);
+
+        if( verbose.getValue() )
+        {
+            mop.propagateX(nextPos);
+            mop.propagateDx(nextVel);
+
+            serr<<"ComplianceSolver, final x = "<< nextPos <<sendl;
+            serr<<"ComplianceSolver, final v = "<< nextVel <<sendl;
+            serr<<"-----------------------------"<<sendl;
+        }
+    }
 }
 
 
 
 simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown(simulation::Node* node)
 {
-    ComplianceSolver::State_2_LocalMatrices& s2mjc = solver->localMatrices;
+    State_2_LocalMatrices& s2mjc = localMatrices;
 
     //    cerr<<"ComplianceSolver::MatrixAssemblyVisitor::processNodeTopDown visit Node "<<node->getName()<<endl;
     if( pass== COMPUTE_SIZE )
@@ -630,7 +667,7 @@ const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMa
 
 bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
 {
-    if(M.rows()!=M.cols() || M.nonZeros()!=M.rows() ) // test if diagonal. WARNING: some non-diagonal matrix pass the test, but they are unlikely in this context.
+    if( (M.rows()!=M.cols()) || (M.nonZeros()!=M.rows()) ) // test if diagonal. WARNING: some non-diagonal matrix pass the test, but they are unlikely in this context.
         return false;
     Minv.resize(M.rows(),M.rows());
     for (int i=0; i<M.outerSize(); ++i)
@@ -639,10 +676,16 @@ bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
         for (SMatrix::InnerIterator it(M,i); it; ++it)
         {
             assert(i==it.col() && "ComplianceSolver::inverseDiagonalMatrix needs a diagonal matrix");
-            Minv.insertBack(i,i) = 1.0/it.value();
+            assert( it.value() );
+
+            Minv.insertBack(i,i) = 1.0 / it.value();
         }
     }
     Minv.finalize();
+
+    assert( Minv.rows() == M.rows() );
+    assert( Minv.cols() == M.cols() );
+
     return true;
 }
 

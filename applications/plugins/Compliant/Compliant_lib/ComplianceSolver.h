@@ -190,6 +190,37 @@ protected:
         /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
 
+
+        /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
+        This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
+        or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
+        */
+        struct LocalMatrices
+        {
+            SMatrix M;         ///< local mass matrix
+            SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
+            SMatrix C;         ///< local compliance matrix, if any
+            SMatrix K;         ///< local stiffness matrix, if any
+            unsigned m_offset; ///< start index in the assembled mass matrix
+            unsigned c_offset; ///< start index in the assembled compliance matrix
+
+            friend std::ostream& operator << (std::ostream& out, const LocalMatrices& sm )
+            {
+                out << "m_offset = " << sm.m_offset << ", c_offset = "<< sm.c_offset << endl;
+                if(sm.M.rows()>0) out << "M=" << endl << DenseMatrix(sm.M) << endl;
+                if(sm.J.rows()>0) out << "J=" << endl << DenseMatrix(sm.J) << endl;
+                if(sm.C.rows()>0) out << "C=" << endl << DenseMatrix(sm.C) << endl;
+                if(sm.K.rows()>0) out << "K=" << endl << DenseMatrix(sm.K) << endl;
+                return out;
+            }
+        };
+        typedef std::map<core::behavior::BaseMechanicalState*,LocalMatrices> State_2_LocalMatrices;
+        State_2_LocalMatrices localMatrices;         ///< The local matrices associated to each state
+        void writeLocalMatrices() const;             ///< debug helper
+
+        // builds global matrices M, K, C, J
+        void global(SMatrix& M, SMatrix& K, SMatrix& C, SMatrix& J);
+
     protected:
 
         /// (callback) called once for every compliant forcefield in
@@ -223,86 +254,58 @@ protected:
     /// Return an identity matrix of the given size, column dominant
     static SMatrixC createIdentityMatrixC( unsigned size );
 
-    /// send visitor and resize state vectors (implementation)
+    /// resize state vectors
     virtual void resize(unsigned sizeM, unsigned sizeC );
 
-    /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
-      This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
-      or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
-      */
-    struct LocalMatrices
-    {
-        SMatrix M;         ///< local mass matrix
-        SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
-        SMatrix C;         ///< local compliance matrix, if any
-        SMatrix K;         ///< local stiffness matrix, if any
-        unsigned m_offset; ///< start index in the assembled mass matrix
-        unsigned c_offset; ///< start index in the assembled compliance matrix
+    // /** @name Global matrix-vector product */
+    // ///@{
 
-        friend std::ostream& operator << (std::ostream& out, const LocalMatrices& sm )
-        {
-            out << "m_offset = " << sm.m_offset << ", c_offset = "<< sm.c_offset << endl;
-            if(sm.M.rows()>0) out << "M=" << endl << DenseMatrix(sm.M) << endl;
-            if(sm.J.rows()>0) out << "J=" << endl << DenseMatrix(sm.J) << endl;
-            if(sm.C.rows()>0) out << "C=" << endl << DenseMatrix(sm.C) << endl;
-            if(sm.K.rows()>0) out << "K=" << endl << DenseMatrix(sm.K) << endl;
-            return out;
-        }
-    };
-    typedef std::map<core::behavior::BaseMechanicalState*,LocalMatrices> State_2_LocalMatrices;
-    State_2_LocalMatrices localMatrices;         ///< The local matrices associated to each state
-    void writeLocalMatrices() const;             ///< debug helper
+    // /// Compute the product of a vector with implicit matrix M, which may not be assembled. M may be the implicit matrix e.g. M-h²K
+    // struct MatrixProduct
+    // {
+    // protected:
+    //     ComplianceSolver& solver;
+    //     mutable VectorEigen product;
+    // public:
+
+    //     MatrixProduct( ComplianceSolver& s ) : solver(s){}
+
+    //     /// Product of a vector with matrix M. The default implementation assumes that M is assembled.
+    //     virtual const VectorEigen& operator()(const VectorEigen& x) const
+    //     {
+    //         product.noalias() = solver.M() * x;
+    //         return product;
+    //     }
+    // };
 
 
-    /** @name Global matrix-vector product */
-    ///@{
+    // /// Compute the product of a vector with matrix M, in case the J products are computed but matrix M is not assembled
+    // struct JtAJProduct: public MatrixProduct
+    // {
+    //     JtAJProduct( ComplianceSolver& s ) : MatrixProduct(s){}
 
-    /// Compute the product of a vector with implicit matrix M, which may not be assembled. M may be the implicit matrix e.g. M-h²K
-    struct MatrixProduct
-    {
-    protected:
-        ComplianceSolver& solver;
-        mutable VectorEigen product;
-    public:
-
-        MatrixProduct( ComplianceSolver& s ) : solver(s) {}
-
-        /// Product of a vector with matrix M. The default implementation assumes that M is assembled.
-        virtual const VectorEigen& operator()(const VectorEigen& x) const
-        {
-            product.noalias() = solver.M() * x;
-            return product;
-        }
-    };
-
-
-    /// Compute the product of a vector with matrix M, in case the J products are computed but matrix M is not assembled
-    struct JtAJProduct: public MatrixProduct
-    {
-        JtAJProduct( ComplianceSolver& s ) : MatrixProduct(s) {}
-
-        /// Product of a vector with matrix M.
-        virtual const VectorEigen& operator()(const VectorEigen& x) const
-        {
-            product.resize(x.size());
-            solver.multM(product,x);
-            return product;
-        }
-    };
+    //     /// Product of a vector with matrix M.
+    //     virtual const VectorEigen& operator()(const VectorEigen& x) const
+    //     {
+    //         product.resize(x.size());
+    //         solver.multM(product,x);
+    //         return product;
+    //     }
+    // };
 
 
 
-    /// Compute the product of the non-assembled implicit matrix with a vector, using local M as implicit matrix
-    void multM(VectorEigen& Mx, const VectorEigen& x)
-    {
-        for( State_2_LocalMatrices::iterator i=localMatrices.begin(), iend=localMatrices.end(); i!=iend; i++ )
-        {
-            const SMatrix& J = (*i).second.J;
-            const SMatrix& M = (*i).second.M;
-            Mx += J.transpose() * (M * (J * x));
-        }
-    }
-    ///@}  // end group matrix-vector product
+    // /// Compute the product of the non-assembled implicit matrix with a vector, using local M as implicit matrix
+    // void multM(VectorEigen& Mx, const VectorEigen& x)
+    // {
+    //     for( State_2_LocalMatrices::iterator i=localMatrices.begin(), iend=localMatrices.end(); i!=iend; i++ )
+    //     {
+    //         const SMatrix& J = (*i).second.J;
+    //         const SMatrix& M = (*i).second.M;
+    //         Mx += J.transpose() * (M * (J * x));
+    //     }
+    // }
+    // ///@}  // end group matrix-vector product
 
 
 
