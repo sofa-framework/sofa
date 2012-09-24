@@ -336,9 +336,9 @@ void SofaHAPIHapticsDevice::onBeginAnimationStep(const double /*dt*/)
 
     int buttonChanged = buttonState ^ lastButtonState;
     // special case: btn2 is mapped to tool selection if "toolSelector" is used
-    if (toolSelector.getValue() && (buttonChanged & HapticDeviceEvent::Button2Mask))
+    if (toolSelector.getValue() && (buttonChanged & HapticDeviceEvent::Button2StateMask))
     {
-        if ((buttonState & HapticDeviceEvent::Button2Mask) != 0)
+        if ((buttonState & HapticDeviceEvent::Button2StateMask) != 0)
         {
             // start tool switch : disable feedback on previous instrument
             int currentToolIndex = toolIndex.getValue();
@@ -440,14 +440,14 @@ void SofaHAPIHapticsDevice::onKeyPressedEvent(KeypressedEvent *kpe)
     case 'H': case 'h':
     {
         sout << "emulated button 1 pressed" << sendl;
-        fakeButtonState |= (1<<0); //HapticDeviceEvent::Button1Mask;
+        fakeButtonState |= (1<<0); //HapticDeviceEvent::Button1StateMask;
         sendHapticDeviceEvent();
         break;
     }
     case 'J': case 'j':
     {
         sout << "emulated button 2 pressed" << sendl;
-        fakeButtonState |= (1<<1); //HapticDeviceEvent::Button2Mask;
+        fakeButtonState |= (1<<1); //HapticDeviceEvent::Button2StateMask;
         sendHapticDeviceEvent();
         break;
     }
@@ -463,14 +463,14 @@ void SofaHAPIHapticsDevice::onKeyReleasedEvent(KeyreleasedEvent *kre)
     case 'H': case 'h':
     {
         sout << "emulated button 1 released" << sendl;
-        fakeButtonState &= ~(1<<0); //HapticDeviceEvent::Button1Mask;
+        fakeButtonState &= ~(1<<0); //HapticDeviceEvent::Button1StateMask;
         sendHapticDeviceEvent();
         break;
     }
     case 'J': case 'j':
     {
         sout << "emulated button 2 released" << sendl;
-        fakeButtonState &= ~(1<<1); //HapticDeviceEvent::Button2Mask;
+        fakeButtonState &= ~(1<<1); //HapticDeviceEvent::Button2StateMask;
         sendHapticDeviceEvent();
         break;
     }

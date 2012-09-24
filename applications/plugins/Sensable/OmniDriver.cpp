@@ -571,8 +571,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 btn1 = newBtn1;
                 btn2 = newBtn2;
                 unsigned char buttonState = 0;
-                if(btn1) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button1Mask;
-                if(!toolSelector.getValue() && btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2Mask;
+                if(btn1) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask;
+                if(!toolSelector.getValue() && btn2) buttonState |= sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask;
                 Vector3 dummyVector;
                 Quat dummyQuat;
                 sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,buttonState);
@@ -637,7 +637,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button1Mask);
+                    sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
@@ -647,7 +647,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button2Mask);
+                    sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }

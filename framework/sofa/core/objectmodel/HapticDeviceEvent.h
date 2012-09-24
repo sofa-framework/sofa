@@ -50,15 +50,15 @@ public:
      */
     typedef enum
     {
-        Button1Mask=(1<<0),
-        Button2Mask=(1<<1),
-        Button3Mask=(1<<2),
-        Button4Mask=(1<<3),
-        Button5Mask=(1<<4),
-        Button6Mask=(1<<5),
-        Button7Mask=(1<<6),
-        Button8Mask=(1<<7)
-    } ButtonsMask;
+        Button1StateMask=(1<<0),
+        Button2StateMask=(1<<1),
+        Button3StateMask=(1<<2),
+        Button4StateMask=(1<<3),
+        Button5StateMask=(1<<4),
+        Button6StateMask=(1<<5),
+        Button7StateMask=(1<<6),
+        Button8StateMask=(1<<7)
+    } ButtonsStateMask;
 
     /**
      * @brief Constructor.
