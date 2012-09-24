@@ -50,8 +50,6 @@ struct raii_log
 };
 
 
-
-
 // schur system functor
 struct MinresSolver::schur
 {
@@ -122,7 +120,7 @@ void MinresSolver::solve_schur(krylov::params& p )
     lambda() = x;
 
     const vec ftmp = f() + J().transpose() * lambda();
-    dv() = PMinvP() * ftmp;
+    dv().noalias() = PMinvP() * ftmp;
     // the following is MUCH slower:
 //        dv() = PMinvP() * (f() + J().transpose() * lambda());
 }
@@ -248,7 +246,6 @@ void MinresSolver::solveEquation()
     p.precision = precision.getValue();
 
     // solve for lambdas
-//        lambda() = use_kkt.getValue() ? solve_kkt(p) : solve_schur(p);
     if(use_kkt.getValue())
     {
         solve_kkt(p);
@@ -259,10 +256,6 @@ void MinresSolver::solveEquation()
     }
 
     iterations_performed.setValue( p.iterations );
-
-//	// now done within the equation solver
-//        this->f() += J().transpose() * lambda();
-//        dv() = PMinvP() * f();  // (FF)
 }
 
 

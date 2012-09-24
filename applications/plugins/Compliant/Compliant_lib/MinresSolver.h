@@ -46,26 +46,6 @@ protected:
     // @use_warm value
     void warm(vec& x) const;
 
-//    // useful one-liners
-//    const mat& M() const;
-//    mat& M();
-
-//    const mat& J() const;
-//    mat& J();
-
-//    const mat& C() const;
-//    mat& C();
-
-//    const mat& projMatrix() const;
-//    mat& projMatrix();
-
-//    // same
-//    vec& f();
-//    const vec& f() const;
-
-//    const vec& phi() const;
-//    vec& phi();
-
 
     // solver types
     typedef ::krylov<SReal> krylov;
