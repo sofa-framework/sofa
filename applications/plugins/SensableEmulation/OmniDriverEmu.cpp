@@ -656,7 +656,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button1Mask);
+                    sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
@@ -666,7 +666,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             Vector3 dummyVector;
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
-                    sofa::core::objectmodel::HapticDeviceEvent::Button2Mask);
+                    sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
             groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
