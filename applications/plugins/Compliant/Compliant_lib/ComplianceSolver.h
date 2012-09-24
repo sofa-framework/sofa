@@ -196,7 +196,24 @@ protected:
 
         /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
+
+
+        /// (callback) called after the matrix sizes have been computed
+        virtual void postSize();
+
+    protected:
+
+        /// (callback) called once for every compliant forcefield in
+        /// the scene; passed data offset and dimension in the
+        /// deformation dofs vector.
+        virtual void onCompliance(core::behavior::BaseForceField* ffield,
+                unsigned offset,
+                unsigned dim);
     };
+
+    /// creates a new assembly visitor. caller is responsible for deletion.
+    virtual MatrixAssemblyVisitor* newAssemblyVisitor(const core::MechanicalParams& );
+
 
 //    typedef Eigen::SimplicialCholesky<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix
     typedef Eigen::SimplicialLLT<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix

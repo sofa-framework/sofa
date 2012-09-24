@@ -7,6 +7,9 @@
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
 #include <iostream>
+
+#include "utils/scoped.h"
+
 using std::cerr;
 using std::endl;
 
@@ -95,6 +98,18 @@ void ComplianceSolver::solveEquation()
 }
 
 
+ComplianceSolver::MatrixAssemblyVisitor* ComplianceSolver::newAssemblyVisitor(const core::MechanicalParams& params)
+{
+    return new MatrixAssemblyVisitor(&params, this);
+}
+
+
+void ComplianceSolver::MatrixAssemblyVisitor::postSize() { }
+
+void ComplianceSolver::MatrixAssemblyVisitor::onCompliance(core::behavior::BaseForceField* ffield,
+        unsigned offset,
+        unsigned dim) { }
+
 void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
@@ -130,23 +145,31 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     // ==== Resize global matrices and vectors
     _PMinvP_isDirty = true;
     localMatrices.clear();
-    MatrixAssemblyVisitor assembly(&cparams,this);
-    this->getContext()->executeVisitor(&assembly(COMPUTE_SIZE)); // first the size
+
+    // scoped pointers make life easier :)
+    scoped<MatrixAssemblyVisitor> assembly( newAssemblyVisitor(cparams) );
+
+    (*assembly)(COMPUTE_SIZE);
+    this->getContext()->executeVisitor( assembly.get() ); // first the size
+    assembly->postSize();
+
     //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
     //    cerr<<"ComplianceSolver::solve, local state matrices after COMPUTE_SIZE:" << endl;
     //    writeLocalMatrices();
 
-    _matM.resize(assembly.sizeM,assembly.sizeM);
-    _matK.resize(assembly.sizeM,assembly.sizeM);
-    _projMatrix.compressedMatrix = createIdentityMatrix(assembly.sizeM);
-    _matC.resize(assembly.sizeC,assembly.sizeC);
-    _matJ.resize(assembly.sizeC,assembly.sizeM);
-    _vecF = _vecV = _vecDv = VectorEigen::Zero(assembly.sizeM);
-    _vecPhi = _vecLambda = VectorEigen::Zero(assembly.sizeC);
+    _matM.resize(assembly->sizeM,assembly->sizeM);
+    _matK.resize(assembly->sizeM,assembly->sizeM);
+    _projMatrix.compressedMatrix = createIdentityMatrix(assembly->sizeM);
+    _matC.resize(assembly->sizeC,assembly->sizeC);
+    _matJ.resize(assembly->sizeC,assembly->sizeM);
+    _vecF = _vecV = _vecDv = VectorEigen::Zero(assembly->sizeM);
+    _vecPhi = _vecLambda = VectorEigen::Zero(assembly->sizeC);
 
 
     // ==== Create local matrices J,K,M,C at each level
-    this->getContext()->executeVisitor(&assembly(DO_SYSTEM_ASSEMBLY));
+    (*assembly)(DO_SYSTEM_ASSEMBLY);
+    this->getContext()->executeVisitor( assembly.get() );
+
     //    cerr<<"ComplianceSolver::solve, local state matrices after SYSTEM_ASSEMBLY:" << endl;
     //    writeLocalMatrices();
 
@@ -232,8 +255,8 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     solveEquation();
     sofa::helper::AdvancedTimer::stepEnd("Solve linear equation");
 
-    this->getContext()->executeVisitor(&assembly(DISTRIBUTE_SOLUTION));  // set dv in each MechanicalState
-
+    (*assembly)(DISTRIBUTE_SOLUTION);
+    this->getContext()->executeVisitor(assembly.get());  // set dv in each MechanicalState
 
 
     // ==== Apply the result
@@ -436,6 +459,10 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::processNode
                 unsigned offset = c_offset; // use a copy, because the parameter is modified by addToBaseVector
                 Wrap wrapPhi(solver->_vecPhi); // wrap as linearsolver::BaseVector for use as function parameter
                 node->mechanicalState->addToBaseVector(&wrapPhi, core::VecDerivId::force(), offset );
+
+                // compliance entry point for derived classes
+                onCompliance(ffield, c_offset, offset - c_offset);
+
                 sofa::helper::AdvancedTimer::stepEnd( "local C and right-hand term");
             }
             else if (ffield->getStiffnessMatrix(mparams)) // accumulate the stiffness if the matrix is not null. TODO: Rayleigh damping
