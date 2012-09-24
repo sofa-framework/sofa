@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <cofa/component/collision/CuttingPoint.h>
+#include <sofa/component/collision/CuttingPoint.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
