@@ -712,13 +712,20 @@ public:
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
             ResizableExtVector<Coord> tposition; tposition.resize(visualModels[m]->getVertices().size());
-            for(unsigned int i=0; i<tposition.size(); i++) 			tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
+            for(unsigned int i=0; i<tposition.size(); i++)
+                tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
 
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)round(mat->diffuse[0]*255.),(unsigned char)round(mat->diffuse[1]*255.),(unsigned char)round(mat->diffuse[2]*255.)};
 
             CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
-            cimg_foroff(tmp,off) if(tmp[off]) {ret.get_shared_channel(0)[off]=color[0]; ret.get_shared_channel(1)[off]=color[1]; ret.get_shared_channel(2)[off]=color[2]; }
+            cimg_foroff(tmp,off)
+            if(tmp[off])
+            {
+                ret.get_shared_channel(0)[off]=color[0];
+                ret.get_shared_channel(1)[off]=color[1];
+                ret.get_shared_channel(2)[off]=color[2];
+            }
         }
 
         return ret;
