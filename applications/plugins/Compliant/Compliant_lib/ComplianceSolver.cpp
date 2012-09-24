@@ -32,6 +32,9 @@ SOFA_DECL_CLASS(ComplianceSolver);
 int ComplianceSolverClass = core::RegisterObject("A simple explicit time integrator").add< ComplianceSolver >();
 
 
+#define __METHOD__ this->getClassName() + "::" + __func__
+
+
 
 ComplianceSolver::ComplianceSolver()
     : implicitVelocity( initData(&implicitVelocity,(SReal)1.,"implicitVelocity","Weight of the next forces in the average forces used to update the velocities. 1 is implicit, 0 is explicit."))
@@ -56,44 +59,76 @@ void ComplianceSolver::writeLocalMatrices() const
 }
 
 
+ComplianceSolver::MatrixAssemblyVisitor::MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s)
+    : simulation::MechanicalVisitor(params)
+    , solver(s)
+    , cparams(*params)
+    , sizeM(0)
+    , sizeC(0)
+    , pass(COMPUTE_SIZE)
+{
+
+    s->_PMinvP_isDirty = true;
+    s->localMatrices.clear();
+
+}
+
+
+
 void ComplianceSolver::solveEquation()
 {
-    if( _matC.rows() != 0 ) // solve constrained dynamics using a Schur complement (J.P.M^{-1}.P.J^T + C).lambda = c - J.M^{-1}.f
+    if( _matC.rows() )
     {
+        // solve constrained dynamics using a Schur complement:
+        // (J.P.M^{-1}.P.J^T + C).lambda = c - J.M^{-1}.f
+
+        // schur complement matrix
         SMatrix schur = _matJ * PMinvP() * _matJ.transpose();
         schur += _matC ;
-        Cholesky schurDcmp(schur);
-        VectorEigen& lambda = _vecLambda =  _vecPhi - _matJ * ( PMinvP() * _vecF ); // right-hand term
+
+        // factorization
+        Cholesky schurDcmp(schur); // TODO check singularity ?
+
+        // right-hand side term
+        VectorEigen& lambda = _vecLambda =  _vecPhi - _matJ * ( PMinvP() * _vecF );
+
         if( verbose.getValue() )
         {
-            cerr<<"ComplianceSolver::solveEquation, schur complement = " << endl << Eigen::MatrixXd(schur) << endl;
-            cerr<<"ComplianceSolver::solvEquatione,  Minv * vecF = " << (PMinvP() * _vecF).transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation, matJ * ( Minv * vecF)  = " << ( _matJ * ( PMinvP() * _vecF)).transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation,  vecPhi  = " <<  _vecPhi.transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation, right-hand term = " << lambda.transpose() << endl;
+            cerr<< __METHOD__ << " schur complement = " << endl << Eigen::MatrixXd(schur) << endl
+                << __METHOD__ << " Minv * vecF = " << (PMinvP() * _vecF).transpose() << endl
+                << __METHOD__ << " matJ * ( Minv * vecF)  = " << ( _matJ * ( PMinvP() * _vecF)).transpose() << endl
+                << __METHOD__ << " vecPhi  = " <<  _vecPhi.transpose() << endl
+                << __METHOD__ << " right-hand term = " << lambda.transpose() << endl;
         }
+
+        // Lagrange multipliers
         lambda = schurDcmp.solve( lambda );
-        VectorEigen netForces = _vecF + _matJ.transpose() * lambda ; // f = f_ext + J^T.lambda
-        _vecDv = PMinvP() * netForces;                   // v = M^{-1}.f
+
+        // f = f_ext + J^T.lambda
+        VectorEigen netForces = _vecF + _matJ.transpose() * lambda ;
+
+        // v = M^{-1}.f
+        _vecDv = PMinvP() * netForces;
+
         if( verbose.getValue() )
         {
-            cerr<<"ComplianceSolver::solveEquation, constraint forces = " << lambda.transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation, net forces = " << _vecF.transpose() << endl;
-            cerr<<"ComplianceSolver::solveEquation, vecDv = " << _vecDv.transpose() << endl;
+            cerr<< __METHOD__ << " constraint forces = " << lambda.transpose() << endl
+                << __METHOD__ << " net forces = " << _vecF.transpose() << endl
+                << __METHOD__ << " vecDv = " << _vecDv.transpose() << endl;
         }
+
     }
-    else   // unconstrained dynamics, solve M.dv = f
+    else
     {
+        // unconstrained dynamics, solve M.dv = f
+
         Cholesky ldlt;
-        ldlt.compute( _matM );
-        {
-            dv() = P() * f();
-            dv() = ldlt.solve( dv() );
-            dv() = P() * dv();
-        }
-//        else {
-//            cerr<<"ComplianceSolver::solveEquation(), system matrix is singular"<<endl;
-//        }
+        ldlt.compute( _matM );	// TODO check singularity ?
+
+        dv() = P() * f();
+        dv() = ldlt.solve( dv() );
+        dv() = P() * dv();
+
     }
 }
 
@@ -104,13 +139,33 @@ ComplianceSolver::MatrixAssemblyVisitor* ComplianceSolver::newAssemblyVisitor(co
 }
 
 
-void ComplianceSolver::MatrixAssemblyVisitor::postSize() { }
-
 void ComplianceSolver::MatrixAssemblyVisitor::onCompliance(core::behavior::BaseForceField* ffield,
         unsigned offset,
         unsigned dim) { }
 
-void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void ComplianceSolver::resize(unsigned sizeM, unsigned sizeC )
+{
+
+    _matM.resize(sizeM, sizeM);
+    _matK.resize(sizeM, sizeM);
+    _projMatrix.compressedMatrix = createIdentityMatrix( sizeM );
+
+    _matC.resize(sizeC, sizeC);
+    _matJ.resize(sizeC, sizeM);
+
+    // TODO check that multi-assignment isn't stabbing us in the back
+    _vecF = _vecV = _vecDv = VectorEigen::Zero( sizeM );
+    _vecPhi = _vecLambda = VectorEigen::Zero( sizeC );
+
+    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
+    //    cerr<<"ComplianceSolver::solve, local state matrices after COMPUTE_SIZE:" << endl;
+    //    writeLocalMatrices();
+}
+
+void ComplianceSolver::solve(const core::ExecParams* params,
+        double h,
+        sofa::core::MultiVecCoordId xResult,
+        sofa::core::MultiVecDerivId vResult)
 {
     // tune parameters
     core::MechanicalParams cparams( *params);
@@ -137,33 +192,19 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
     mop.projectResponse(f);
     if( verbose.getValue() )
     {
-        cerr<<"ComplianceSolver::solve, filtered external forces = " << f << endl;
+        cerr<< __METHOD__ << " filtered external forces = " << f << endl;
     }
     sofa::helper::AdvancedTimer::stepEnd("forces in the right-hand term");
 
-
-    // ==== Resize global matrices and vectors
-    _PMinvP_isDirty = true;
-    localMatrices.clear();
-
-    // scoped pointers make life easier :)
+    // obtain an assembly visitor (possibly from derived classes)
     scoped<MatrixAssemblyVisitor> assembly( newAssemblyVisitor(cparams) );
 
+    // compute system size
     (*assembly)(COMPUTE_SIZE);
-    this->getContext()->executeVisitor( assembly.get() ); // first the size
-    assembly->postSize();
+    this->getContext()->executeVisitor( assembly.get() );
 
-    //    cerr<<"ComplianceSolver::solve, sizeM = " << assembly.sizeM <<", sizeC = "<< assembly.sizeC << endl;
-    //    cerr<<"ComplianceSolver::solve, local state matrices after COMPUTE_SIZE:" << endl;
-    //    writeLocalMatrices();
-
-    _matM.resize(assembly->sizeM,assembly->sizeM);
-    _matK.resize(assembly->sizeM,assembly->sizeM);
-    _projMatrix.compressedMatrix = createIdentityMatrix(assembly->sizeM);
-    _matC.resize(assembly->sizeC,assembly->sizeC);
-    _matJ.resize(assembly->sizeC,assembly->sizeM);
-    _vecF = _vecV = _vecDv = VectorEigen::Zero(assembly->sizeM);
-    _vecPhi = _vecLambda = VectorEigen::Zero(assembly->sizeC);
+    // resize state vectors
+    resize(assembly->sizeM, assembly->sizeC);
 
 
     // ==== Create local matrices J,K,M,C at each level
@@ -214,15 +255,15 @@ void ComplianceSolver::solve(const core::ExecParams* params, double h, sofa::cor
 
     if( verbose.getValue() )
     {
-        cerr<<"ComplianceSolver::solve, assembly performed ==================================== " << endl ;
-        cerr<<"ComplianceSolver::solve, assembled M = " << endl << DenseMatrix(_matM) << endl;
-        cerr<<"ComplianceSolver::solve, assembled K = " << endl << DenseMatrix(_matK) << endl;
-        cerr<<"ComplianceSolver::solve, assembled P = " << endl << DenseMatrix(P()) << endl;
-        cerr<<"ComplianceSolver::solve, assembled C = " << endl << DenseMatrix(_matC) << endl;
-        cerr<<"ComplianceSolver::solve, assembled J = " << endl << DenseMatrix(_matJ) << endl;
-        cerr<<"ComplianceSolver::solve, assembled f = "   << _vecF.transpose() << endl;
-        cerr<<"ComplianceSolver::solve, assembled phi = " << _vecPhi.transpose() << endl;
-        cerr<<"ComplianceSolver::solve, assembled v = "   << _vecV.transpose() << endl;
+        cerr<<__METHOD__ << " assembly performed ==================================== " << endl ;
+        cerr<<__METHOD__ << " assembled M = " << endl << DenseMatrix(_matM) << endl;
+        cerr<<__METHOD__ << " assembled K = " << endl << DenseMatrix(_matK) << endl;
+        cerr<<__METHOD__ << " assembled P = " << endl << DenseMatrix(P()) << endl;
+        cerr<<__METHOD__ << " assembled C = " << endl << DenseMatrix(_matC) << endl;
+        cerr<<__METHOD__ << " assembled J = " << endl << DenseMatrix(_matJ) << endl;
+        cerr<<__METHOD__ << " assembled f = "   << _vecF.transpose() << endl;
+        cerr<<__METHOD__ << " assembled phi = " << _vecPhi.transpose() << endl;
+        cerr<<__METHOD__ << " assembled v = "   << _vecV.transpose() << endl;
     }
 
 

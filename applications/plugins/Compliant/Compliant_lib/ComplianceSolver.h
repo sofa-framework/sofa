@@ -179,14 +179,7 @@ protected:
         unsigned sizeC; ///< size of the compliance matrix, number of scalar constraints
         std::set<core::behavior::BaseMechanicalState*> localDOFs;  ///< Mechanical DOFs in the range of the solver. This is used to discard others, such interaction mouse DOFs
 
-        MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s)
-            : simulation::MechanicalVisitor(params)
-            , solver(s)
-            , cparams(*params)
-            , sizeM(0)
-            , sizeC(0)
-            , pass(COMPUTE_SIZE)
-        {}
+        MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s);
 
         Pass pass;  ///< symbol to represent the current operation
         /// Set the operation to execute during the next traversal
@@ -196,10 +189,6 @@ protected:
 
         /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
-
-
-        /// (callback) called after the matrix sizes have been computed
-        virtual void postSize();
 
     protected:
 
@@ -234,6 +223,8 @@ protected:
     /// Return an identity matrix of the given size, column dominant
     static SMatrixC createIdentityMatrixC( unsigned size );
 
+    /// send visitor and resize state vectors (implementation)
+    virtual void resize(unsigned sizeM, unsigned sizeC );
 
     /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
       This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
