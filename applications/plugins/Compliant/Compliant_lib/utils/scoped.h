@@ -1,19 +1,24 @@
 #ifndef COMPLIANT_UTILS_SCOPED_H
 #define COMPLIANT_UTILS_SCOPED_H
 
-// a simple scoped pointer.
+// some scoped (raii) tools
+
+#include <sofa/helper/AdvancedTimer.h>
+
+namespace scoped
+{
 
 template<class T>
-class scoped
+class ptr
 {
     T* value;
 
     // copy is hereby prohibited
-    scoped(const scoped& ) { }
+    ptr(const ptr& ) { }
 
 public:
 
-    scoped( T* value = 0 ) : value( value ) { }
+    ptr( T* value = 0 ) : value( value ) { }
 
     void reset( T* v = 0 )
     {
@@ -25,9 +30,27 @@ public:
     T* get() const { return value; }
     T& operator*() const { return *value; }
 
-    ~scoped() { reset(); }
+    ~ptr() { reset(); }
 
 };
 
+struct timer
+{
+    typedef std::string message_type;
+    const message_type message;
+
+    timer( const message_type& message)
+        : message(message)
+    {
+        sofa::helper::AdvancedTimer::stepBegin( message );
+    }
+
+    ~timer()
+    {
+        sofa::helper::AdvancedTimer::stepEnd( message );
+    }
+};
+
+}
 
 #endif
