@@ -473,7 +473,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
                 SMatrix K = getSMatrix( (*pKs)[i] ); // geometric stiffness related to this parent
                 SMatrix& pK = s2mjc[pstate].K;       // parent stiffness
 
-                if( pK.rows() ) pK = K;
+                if( !pK.rows() ) pK = K;
                 else pK += K;
 
             }
@@ -543,6 +543,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
 
             scoped::timer step("local K");
 
+            // TODO conservativeResize here ?
             if( localK.rows() != (int) localSize )
             {
                 localK.resize(localSize, localSize);
