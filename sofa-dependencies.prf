@@ -155,23 +155,23 @@ declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofagui sofaguiqt sof
 addToBuildGroup(sofa/gui, sofagui sofaguiqt sofaguiglut sofaguimain)
 
 #--- Projects ---#
-declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component sofa_component_dev)
+declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component)
 declare(generateDoc,      applications/projects/generateDoc,      sofa_component)
 declare(GenerateRigid,    applications/projects/GenerateRigid,    sofa_component)
 declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
-declare(sofaTypedefs,	  applications/projects/sofaTypedefs,	  sofacore sofa_component sofa_component_dev)
+declare(sofaTypedefs,	  applications/projects/sofaTypedefs,	  sofacore sofa_component)
 declare(meshconv,         applications/projects/meshconv,         sofa_component)
-declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain sofa_component sofa_component_dev)
-declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component sofa_component_dev)
-declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
+declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain sofa_component)
+declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component)
+declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl)		#opencl
 
-#declare(sofaPython,      applications/projects/sofaPython,       sofaguimain sofa_component_dev)
+#declare(sofaPython,      applications/projects/sofaPython,       sofaguimain)
 
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(SofaVRPNServer, applications/projects/SofaVRPNServer, vrpn_quat vrpn_atmellib vrpn_server)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component)
-declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofa_component_dev)
-declare(sofaInfo, applications/projects/sofaInfo, sofaguimain sofa_component_dev)
+declare(sofaVerification, applications/projects/sofaVerification, sofa_component)
+declare(sofaInfo, applications/projects/sofaInfo, sofaguimain)
 declare(sofaBatch, applications/projects/sofaBatch, sofa_component)
 #declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
@@ -185,7 +185,7 @@ declare(sofatests,        tests,                                  sofacore)
 
 # SofaDevices
 #--- Tutorials ---#
-declare(sofaobjectcreator,   			applications/tutorials/objectCreator,    				sofa_component sofa_component_dev)
+declare(sofaobjectcreator,   			applications/tutorials/objectCreator,    				sofa_component)
 declare(chainHybrid,         			applications/tutorials/chainHybrid,      				sofa_component sofaguimain sofaobjectcreator)
 declare(houseOfCards,        			applications/tutorials/houseOfCards,     				sofa_component sofaguimain sofaobjectcreator)
 declare(mixedPendulum,       			applications/tutorials/mixedPendulum,    				sofa_component sofaguimain)
@@ -195,8 +195,8 @@ declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,   				sof
 
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
-    declare(ModelHierarchies, applications/plugins/ModelHierarchies, sofa_component sofa_component_dev )
-    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_component_dev sofa_base_animation_loop sofa_eigen2_solver )
+    declare(ModelHierarchies, applications/plugins/ModelHierarchies, sofa_component )
+    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_base_animation_loop sofa_eigen2_solver )
     enable(ModelHierarchies)
     enable(ModelHierarchies_test)
 }
@@ -213,9 +213,9 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
     declare(Compliant, applications/plugins/Compliant/Compliant_lib, Flexible sofaguiqt sofa_eigen2_solver   )
-#    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, Compliant Flexible sofaobjectcreator  sofaguimain sofa_component sofa_component_dev sofabgl sofa_misc_collision )
+#    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, Compliant Flexible sofaobjectcreator  sofaguimain sofa_component sofabgl sofa_misc_collision )
     declare(Compliant_test, applications/plugins/Compliant/Compliant_test,  Compliant sofa_component )
-    declare(Compliant_run, applications/plugins/Compliant/Compliant_run,  Compliant  sofa_component  sofa_component_dev sofaguimain sofaguiqt )
+    declare(Compliant_run, applications/plugins/Compliant/Compliant_run,  Compliant  sofa_component sofaguimain sofaguiqt )
     enable(Compliant)
     enable(Compliant_test)
     enable(Compliant_run)
