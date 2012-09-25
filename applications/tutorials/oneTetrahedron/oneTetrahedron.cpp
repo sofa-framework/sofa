@@ -67,8 +67,8 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
-    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
-    groot->setName( "root" );
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
@@ -117,8 +117,7 @@ int main(int argc, char** argv)
     fem->setYoungModulus(6);
 
     // Tetrahedron skin
-    GNode::SPtr skin = sofa::core::objectmodel::New<GNode>("skin",groot.get());;
-
+    Node::SPtr skin = groot.get()->createChild("skin");
     // The visual model
     OglModel::SPtr visual = sofa::core::objectmodel::New<OglModel>();
     visual->setName( "visual" );

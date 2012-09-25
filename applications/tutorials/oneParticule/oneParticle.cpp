@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/component/odesolver/EulerSolver.h>
@@ -61,8 +61,8 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
-    groot->setName( "root" );
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
@@ -72,8 +72,7 @@ int main(int argc, char** argv)
     groot->addObject(solver);
 
     // One node to define the particle
-    GNode::SPtr particule_node = sofa::core::objectmodel::New<GNode>("particle_node", groot.get());
-
+    sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
     // The particule, i.e, its degrees of freedom : a point with a velocity
     MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
     particle->setName("particle");

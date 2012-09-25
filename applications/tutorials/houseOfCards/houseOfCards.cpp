@@ -280,7 +280,10 @@ int main(int argc, char** argv)
     // Load the Scene
 
     sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-
+    if (groot==NULL)
+    {
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
+    }
 
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
