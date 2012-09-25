@@ -223,6 +223,10 @@ protected:
 
     protected:
 
+        Visitor::Result computeSize(simulation::Node* node);
+        Visitor::Result doSystemAssembly(simulation::Node* node);
+        Visitor::Result distributeSolution(simulation::Node* node);
+
         /// (callback) called once for every compliant forcefield in
         /// the scene; passed data offset and dimension in the
         /// deformation dofs vector.
