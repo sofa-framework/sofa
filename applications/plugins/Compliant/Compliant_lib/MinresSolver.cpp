@@ -10,6 +10,7 @@
 
 #include "utils/minres.h"
 #include "utils/cg.h"
+#include "utils/scoped.h"
 
 using std::cerr;
 using std::endl;
@@ -32,22 +33,19 @@ int MinresSolverClass =
     core::RegisterObject("Variant of ComplianceSolver where a minres iterative solver is used in place of the direct solver")
     .add< MinresSolver >();
 
-// scoped logging
-struct raii_log
-{
-    const std::string name;
+// // scoped logging
+// struct raii_log {
+// 	const std::string name;
 
-    raii_log(const std::string& name) : name(name)
-    {
-        simulation::Visitor::printNode(name);
-    }
+// 	raii_log(const std::string& name) : name(name) {
+// 	  simulation::Visitor::printNode(name);
+// 	}
 
-    ~raii_log()
-    {
-        simulation::Visitor::printCloseNode(name);
-    }
+// 	~raii_log() {
+// 	  simulation::Visitor::printCloseNode(name);
+// 	}
 
-};
+// };
 
 
 // schur system functor
@@ -96,9 +94,10 @@ struct MinresSolver::schur
 
 void MinresSolver::solve_schur(krylov::params& p )
 {
-    raii_log log("MinresSolver::solve_schur");
+    scoped::timer step("iterative solve, schur");
 
-    const vec b = phi() - J() * ( PMinvP() * f() );
+    vec tmp = PMinvP() * f();
+    const vec b = phi() - J() * tmp;
 
     vec x = vec::Zero( b.size() );
     warm( x );
@@ -119,10 +118,11 @@ void MinresSolver::solve_schur(krylov::params& p )
 
     lambda() = x;
 
-    const vec ftmp = f() + J().transpose() * lambda();
-    dv().noalias() = PMinvP() * ftmp;
+    tmp = f() + J().transpose() * lambda();
+    dv().noalias() = PMinvP() * tmp;
+
     // the following is MUCH slower:
-//        dv() = PMinvP() * (f() + J().transpose() * lambda());
+    // dv() = PMinvP() * (f() + J().transpose() * lambda());
 }
 
 void MinresSolver::warm(vec& x) const
@@ -182,7 +182,7 @@ struct MinresSolver::kkt
             #pragma omp section
             {
                 JTlambda.noalias() = J.transpose() * x.tail(n);
-                PTJTlambda.noalias() = P.transpose() * JTlambda; // TODO is this optimized ? is P symmetric ?
+                PTJTlambda.noalias() = P * JTlambda;
             }
             #pragma omp section
             Clambda.noalias() = C * x.tail(n);
@@ -209,7 +209,8 @@ struct MinresSolver::kkt
 
 void MinresSolver::solve_kkt(krylov::params& p )
 {
-    raii_log log("MinresSolver::solve_kkt");
+    scoped::timer step("iterative solve, kkt");
+
     vec b; b.resize(f().size() + phi().size());
 
     // TODO f projection is probably not needed
@@ -221,9 +222,10 @@ void MinresSolver::solve_kkt(krylov::params& p )
     // kkt matrix
     kkt A(M(), J(), P(), C());
 
-    if(use_cg.getValue())
+    if( use_cg.getValue() )
     {
-        // cg::solve(x, A, b, p);
+        // probably not a good idea but hey, the user was warned :)
+        cg::solve(x, A, b, p);
     }
     else
     {
@@ -273,10 +275,10 @@ MinresSolver::MinresSolver()
             "Residual threshold")),
 
     use_warm( initData(&use_warm, false, "warm",
-            "Warm start solver ?")),
+            "Warm start solver (dv only) ?")),
 
     use_cg( initData(&use_cg, false, "cg",
-            "Use CG instead of MINRES ?"))
+            "Use CG instead of MINRES (don't mix with KKT)"))
 {
 
 }
