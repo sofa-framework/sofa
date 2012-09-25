@@ -155,42 +155,6 @@ void ComplianceSolver::resize(unsigned sizeM, unsigned sizeC )
 }
 
 
-void ComplianceSolver::MatrixAssemblyVisitor::global(SMatrix& M,
-        SMatrix& K,
-        SMatrix& C,
-        SMatrix& J)
-{
-    // TODO assert sizes were computed first ?
-
-    M.resize(sizeM, sizeM);
-    K.resize(sizeM, sizeM);
-    C.resize(sizeC, sizeC);
-    J.resize(sizeC, sizeM);
-
-    // ==== Global matrix assembly
-    scoped::timer step("JMJt, JKJt, JCJt");
-    for(State_2_LocalMatrices::iterator i = localMatrices.begin(), end = localMatrices.end();
-        i != end; ++i)
-    {
-
-        core::behavior::BaseMechanicalState* s = (*i).first;
-
-        if( localMatrices[s].M.rows()>0 )
-        {
-            M += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J );
-        }
-        if( localMatrices[s].K.rows()>0 )
-        {
-            K += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J );
-        }
-        if( localMatrices[s].C.rows()>0 )
-        {
-            SMatrix C0 = createShiftMatrix( localMatrices[s].C.rows(), C.cols(), localMatrices[s].c_offset );
-            C += SMatrix(C0.transpose() * localMatrices[s].C * C0);
-            J += SMatrix( C0.transpose() * localMatrices[s].J ); // J vertically shifted, aligned with the compliance matrix
-        }
-    }
-}
 
 
 void ComplianceSolver::solve(const core::ExecParams* params,
@@ -342,6 +306,44 @@ void ComplianceSolver::solve(const core::ExecParams* params,
 }
 
 
+void ComplianceSolver::MatrixAssemblyVisitor::global(SMatrix& M,
+        SMatrix& K,
+        SMatrix& C,
+        SMatrix& J)
+{
+    // TODO assert sizes were computed first ?
+
+    M.resize(sizeM, sizeM);
+    K.resize(sizeM, sizeM);
+    C.resize(sizeC, sizeC);
+    J.resize(sizeC, sizeM);
+
+    // ==== Global matrix assembly
+    scoped::timer step("JMJt, JKJt, JCJt");
+    for(State_2_LocalMatrices::iterator i = localMatrices.begin(), end = localMatrices.end();
+        i != end; ++i)
+    {
+
+        core::behavior::BaseMechanicalState* s = (*i).first;
+
+        if( localMatrices[s].M.rows() )
+        {
+            M += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].M * localMatrices[s].J );
+        }
+        if( localMatrices[s].K.rows() )
+        {
+            K += SMatrix( localMatrices[s].J.transpose() * localMatrices[s].K * localMatrices[s].J );
+        }
+        if( localMatrices[s].C.rows() )
+        {
+            SMatrix C0 = createShiftMatrix( localMatrices[s].C.rows(), C.cols(), localMatrices[s].c_offset );
+            C += SMatrix(C0.transpose() * localMatrices[s].C * C0);
+            J += SMatrix( C0.transpose() * localMatrices[s].J ); // J vertically shifted, aligned with the compliance matrix
+        }
+    }
+}
+
+
 simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::computeSize(simulation::Node* node)
 {
 
@@ -358,6 +360,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::computeSize
 
         for(unsigned i = 0; i < node->forceField.size(); ++i)
         {
+
             if(node->forceField[i]->getComplianceMatrix(mparams))
             {
                 localMatrices[node->mechanicalState].c_offset = sizeC;
@@ -385,6 +388,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
     State_2_LocalMatrices& s2mjc = localMatrices;
 
     if( !node->mechanicalState ) return RESULT_CONTINUE;
+
     assert( s2mjc.find(node->mechanicalState) != s2mjc.end() );
 
     SMatrix& J0 = s2mjc[node->mechanicalState].J;
@@ -394,6 +398,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
 
     const unsigned& m_offset = s2mjc[node->mechanicalState].m_offset;
     const unsigned& c_offset = s2mjc[node->mechanicalState].c_offset;
+
     unsigned localSize = node->mechanicalState->getMatrixSize();
 
     // ==== independent DOFs
@@ -470,6 +475,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
 
                 if( pK.rows() ) pK = K;
                 else pK += K;
+
             }
 
         }
