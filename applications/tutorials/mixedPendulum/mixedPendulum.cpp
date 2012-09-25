@@ -25,6 +25,7 @@
 /** A sample program. Laure Heigeas, Francois Faure, 2007. */
 // scene data structure
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/odesolver/EulerSolver.h>
@@ -57,8 +58,8 @@ int main(int, char** argv)
     double splength = 1.;
 
     //-------------------- The graph root node
-    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
-    groot->setName( "root" );
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
@@ -67,8 +68,8 @@ int main(int, char** argv)
     solver->setName("S");
 
     //-------------------- Deformable body
-    GNode::SPtr deformableBody = sofa::core::objectmodel::New<GNode>("deformableBody", groot.get());
 
+    sofa::simulation::Node::SPtr deformableBody = groot.get()->createChild("deformableBody");
     // degrees of freedom
     MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
     deformableBody->addObject(DOF);
@@ -100,7 +101,7 @@ int main(int, char** argv)
 
 
     //-------------------- Rigid body
-    GNode::SPtr rigidBody = sofa::core::objectmodel::New<GNode>("rigidBody",groot.get());
+    sofa::simulation::Node::SPtr rigidBody = groot.get()->createChild("rigidBody");
 
     // degrees of freedom
     MechanicalObjectRigid3::SPtr rigidDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
@@ -129,7 +130,7 @@ int main(int, char** argv)
 
 
     //-------------------- the particles attached to the rigid body
-    GNode::SPtr rigidParticles = sofa::core::objectmodel::New<GNode>("rigidParticles",groot.get());
+    sofa::simulation::Node::SPtr rigidParticles = groot.get()->createChild("rigidParticles");
 
     // degrees of freedom of the skin
     MechanicalObject3::SPtr rigidParticleDOF = sofa::core::objectmodel::New<MechanicalObject3>();
