@@ -90,45 +90,6 @@ void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
     sceneFileName = filename ? filename : std::string("default.scn");
     groot = scene;
     initTexturesDone = false;
-
-
-
-
-    //Camera initialization
-    if (groot)
-    {
-        groot->get(currentCamera);
-        if (!currentCamera)
-        {
-            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
-            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
-            groot->addObject(currentCamera);
-            currentCamera->p_position.forceSet();
-            currentCamera->p_orientation.forceSet();
-            currentCamera->bwdInit();
-
-        }
-        component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
-        groot->get(visualStyle);
-        if (!visualStyle)
-        {
-            visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
-            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
-
-            core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
-            displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
-            visualStyle->displayFlags.endEdit();
-
-            groot->addObject(visualStyle);
-            visualStyle->init();
-        }
-
-        currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
-
-        // init pickHandler
-        pick->init(groot.get());
-    }
-
 }
 
 void BaseViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
@@ -282,7 +243,47 @@ PickHandler* BaseViewer::getPickHandler()
     return pick;
 }
 
-bool BaseViewer::unload(void)
+bool BaseViewer::load()
+{
+    if (groot)
+    {
+        groot->get(currentCamera);
+        if (!currentCamera)
+        {
+            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
+            groot->addObject(currentCamera);
+            currentCamera->p_position.forceSet();
+            currentCamera->p_orientation.forceSet();
+            currentCamera->bwdInit();
+        }
+        component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
+        groot->get(visualStyle);
+        if (!visualStyle)
+        {
+            visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
+            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
+
+            core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
+            displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
+            visualStyle->displayFlags.endEdit();
+
+            groot->addObject(visualStyle);
+            visualStyle->init();
+        }
+
+        currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
+
+        // init pickHandler
+        pick->init(groot.get());
+
+        return true;
+    }
+
+    return false;
+}
+
+bool BaseViewer::unload()
 {
     getPickHandler()->reset();
     getPickHandler()->unload();

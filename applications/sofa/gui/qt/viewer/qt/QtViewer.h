@@ -168,8 +168,8 @@ public:
 
     QWidget* getQWidget() { return this; }
 
-    bool ready() {return _waitForRender;};
-    void wait() {_waitForRender = true;};
+    bool ready() {return !_waitForRender;}
+    void wait() {_waitForRender = true;}
 
 public slots:
     void resetView();

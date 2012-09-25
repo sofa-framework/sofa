@@ -150,7 +150,7 @@ public:
     {
         return _H;
     };
-    bool ready() {return _waitForRender;}
+    bool ready() {return !_waitForRender;}
     void wait() {_waitForRender = true;}
 
     void	UpdateOBJ(void);

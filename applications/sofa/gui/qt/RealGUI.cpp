@@ -821,6 +821,7 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 #endif
 
         getViewer()->setScene( root, filename );
+        getViewer()->load();
         getViewer()->resetView();
         createDisplayFlags( root );
 
@@ -1766,6 +1767,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
     if(path != NULL && root != NULL)
     {
         getViewer()->setScene(root , path);
+        getViewer()->load();
         getViewer()->resetView();
         if(isEmbeddedViewer())
             getQtViewer()->getQWidget()->update();;
@@ -1926,7 +1928,7 @@ void RealGUI::step()
 
     startDumpVisitor();
 
-    if ( getViewer()->ready() ) return;
+    if ( !getViewer()->ready() ) return;
 
     //root->setLogTime(true);
     //T=T+DT

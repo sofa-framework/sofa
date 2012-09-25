@@ -25,6 +25,8 @@
 #ifndef SOFA_GUI_BASEVIEWER_H
 #define SOFA_GUI_BASEVIEWER_H
 
+#include "SofaGUI.h"
+
 #include "ColourPickingVisitor.h"
 
 #include <sofa/helper/Factory.h>
@@ -55,15 +57,12 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/visualmodel/InteractiveCamera.h>
 
 #include <sofa/helper/io/Image.h>
 
-#ifdef SOFA_BUILD_SOFAGUI
-#	define SOFA_SOFAGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <string>
 
 namespace sofa
 {
@@ -102,7 +101,7 @@ public:
     virtual void wait();
 
     /// Load the viewer. It's the initialisation
-    virtual bool load(void) {return true;}
+    virtual bool load(void);
 
     /// unload the viewer without delete
     virtual bool unload(void);
@@ -143,10 +142,10 @@ public:
 
     PickHandler* getPickHandler();
 
-protected:
-    /// rendering is done in this method (have to be called in a loop)
+    /// the rendering pass is done here (have to be called in a loop)
     virtual void drawScene(void) = 0;
 
+protected:
     /// internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
 
