@@ -77,6 +77,8 @@ class fixed_array
 public:
     T elems[N];    // fixed-size array of elements of type T
 
+    typedef T Array[N]; ///< name the array type
+
 public:
     // type definitions
     typedef T              value_type;
@@ -295,6 +297,18 @@ public:
 
     // direct access to data
     const T* data() const
+    {
+        return elems;
+    }
+
+    /// direct access to array
+    const Array& array() const
+    {
+        return elems;
+    }
+
+    /// direct access to array
+    Array& array()
     {
         return elems;
     }
