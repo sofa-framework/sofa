@@ -36,12 +36,10 @@ namespace behavior
 {
 
 #ifndef SOFA_FLOAT
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction1d>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2d>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3d>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction1f>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2f>;
 template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction3f>;
 #endif
