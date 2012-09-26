@@ -101,9 +101,9 @@ public :
     {
         //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
 //		  v.memsetHost();
-        unsigned int size = v.size();
+//                    unsigned int size = v.size();
         v.clear();
-        v.resize(size);
+//                    v.resize(size);
     }
 
     void set(int i, SReal val)
