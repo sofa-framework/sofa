@@ -29,6 +29,7 @@
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/loader/BaseLoader.h>
+#include "PythonScriptEvent.h"
 
 namespace sofa
 {
@@ -77,6 +78,10 @@ protected:
     virtual void script_onEndAnimationStep(const double dt);
 
     virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value);
+
+    /// Script events; user data is implementation-dependant
+    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
+
     /// @}
 
 
@@ -96,6 +101,7 @@ protected:
     PyObject *m_Func_onMouseButtonMiddle;
     PyObject *m_Func_onMouseWheel;
     PyObject *m_Func_onGUIEvent;
+    PyObject *m_Func_onScriptEvent;
     PyObject *m_Func_onBeginAnimationStep;
     PyObject *m_Func_onEndAnimationStep;
     PyObject *m_Func_onLoaded;

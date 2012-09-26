@@ -134,6 +134,7 @@ Attributes:
 \item \textcode{removeChild(childNode)} 
 \item \textcode{moveChild(childNode)} 
 \item \textcode{detachFromGraph()} 
+\item \textcode{sendScriptEvent(eventName, data)} propagates a script event from this node; eventName is the name of the event (string) and data is whatever you want: scalar, float, array, ... as long as it is a python object or structure. Other PythonScriptController will then receive the correponding \textcode{onScriptEvent(senderName, eventName, data)}. Useful for inter-script communications (see ScriptEvent.scn sample scene in the examples folder).
 \end{itemize}
 
 

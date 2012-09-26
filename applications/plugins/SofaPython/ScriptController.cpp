@@ -152,6 +152,17 @@ void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
             event->getValue().c_str());
 }
 
+
+void ScriptController::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<core::objectmodel::ScriptEvent *>(event))
+    {
+        script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
+    }
+    else Controller::handleEvent(event);
+}
+
+
 } // namespace controller
 
 } // namespace component
