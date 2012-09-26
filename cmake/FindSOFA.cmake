@@ -82,7 +82,7 @@ find_path(SOFA_INCLUDE_FRAMEWORK_DIR
         ${SOFA_DIR}/framework
         ## comment to allow CMake to search in system environment variables and
         ## in cmake cache/environment/defined variables
-		#NO_DEFAULT_PATH
+        #NO_DEFAULT_PATH
 )
 if (VERBOSE_SOFA)
     message( STATUS "SOFA_INCLUDE_FRAMEWORK_DIR = ${SOFA_INCLUDE_FRAMEWORK_DIR}" )
@@ -97,7 +97,7 @@ find_path(SOFA_INCLUDE_MODULES_DIR
         ${SOFA_DIR}/modules
         ## comment to allow CMake to search in system environment variables
         ## and in cmake cache/environment/defined variables
-		#NO_DEFAULT_PATH
+        #NO_DEFAULT_PATH
 )
 if (VERBOSE_SOFA)
     message( STATUS "SOFA_INCLUDE_MODULES_DIR = ${SOFA_INCLUDE_MODULES_DIR}" )
@@ -112,7 +112,7 @@ find_path(SOFA_INCLUDE_APPLICATIONS_DIR
         ${SOFA_DIR}/applications
         ## comment to allow CMake to search in system environment variables and
         ## in cmake cache/environment/defined variables
-		#NO_DEFAULT_PATH
+        #NO_DEFAULT_PATH
 )
 if (VERBOSE_SOFA)
     message( STATUS "SOFA_INCLUDE_APPLICATIONS_DIR = ${SOFA_INCLUDE_APPLICATIONS_DIR}" )
@@ -123,39 +123,38 @@ endif (VERBOSE_SOFA)
 set(SOFA_INCLUDE_EXTLIBS "${SOFA_DIR}/extlibs")
 list(APPEND SOFA_INCLUDE_OTHER_DIRS
     ${SOFA_INCLUDE_EXTLIBS}
-	${SOFA_INCLUDE_EXTLIBS}/ARTrack
+    ${SOFA_INCLUDE_EXTLIBS}/ARTrack
     ${SOFA_INCLUDE_EXTLIBS}/CImg
-	${SOFA_INCLUDE_EXTLIBS}/colladadom
-	${SOFA_INCLUDE_EXTLIBS}/csparse
-	${SOFA_INCLUDE_EXTLIBS}/cudpp
-#    ${SOFA_INCLUDE_EXTLIBS}/eigen-3.0.1
-	${SOFA_INCLUDE_EXTLIBS}/eigen-3.0.5
-	${SOFA_INCLUDE_EXTLIBS}/ffmpeg
-	${SOFA_INCLUDE_EXTLIBS}/fftpack
-	${SOFA_INCLUDE_EXTLIBS}/fishpack
-	${SOFA_INCLUDE_EXTLIBS}/indexedmap
-	${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.3.3
-	${SOFA_INCLUDE_EXTLIBS}/LML
-	${SOFA_INCLUDE_EXTLIBS}/metis
-	${SOFA_INCLUDE_EXTLIBS}/miniBoost
-	${SOFA_INCLUDE_EXTLIBS}/miniFlowVR/include
-	${SOFA_INCLUDE_EXTLIBS}/MKL
-	${SOFA_INCLUDE_EXTLIBS}/muparser
-	${SOFA_INCLUDE_EXTLIBS}/newmat
-	${SOFA_INCLUDE_EXTLIBS}/PML
+    ${SOFA_INCLUDE_EXTLIBS}/colladadom
+    ${SOFA_INCLUDE_EXTLIBS}/csparse
+    ${SOFA_INCLUDE_EXTLIBS}/cudpp
+    ${SOFA_INCLUDE_EXTLIBS}/eigen-3.1.1
+    ${SOFA_INCLUDE_EXTLIBS}/ffmpeg
+    ${SOFA_INCLUDE_EXTLIBS}/fftpack
+    ${SOFA_INCLUDE_EXTLIBS}/fishpack
+    ${SOFA_INCLUDE_EXTLIBS}/indexedmap
+    ${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.3.3
+    ${SOFA_INCLUDE_EXTLIBS}/LML
+    ${SOFA_INCLUDE_EXTLIBS}/metis
+    ${SOFA_INCLUDE_EXTLIBS}/miniBoost
+    ${SOFA_INCLUDE_EXTLIBS}/miniFlowVR/include
+    ${SOFA_INCLUDE_EXTLIBS}/MKL
+    ${SOFA_INCLUDE_EXTLIBS}/muparser
+    ${SOFA_INCLUDE_EXTLIBS}/newmat
+    ${SOFA_INCLUDE_EXTLIBS}/PML
     #${SOFA_INCLUDE_EXTLIBS}/qwt-5.2.0/src
-	${SOFA_INCLUDE_EXTLIBS}/qwt-6.0.1/src
-	${SOFA_INCLUDE_EXTLIBS}/self-ccd-1.0
-#	${SOFA_INCLUDE_EXTLIBS}/SLC
-	${SOFA_INCLUDE_EXTLIBS}/taucs
-	${SOFA_INCLUDE_EXTLIBS}/taucs_mt
-	${SOFA_INCLUDE_EXTLIBS}/taucs-svn
-	${SOFA_INCLUDE_EXTLIBS}/tinyxml
-	${SOFA_INCLUDE_EXTLIBS}/VRPN
-	${SOFA_INCLUDE_EXTLIBS}/wiiuse
+    ${SOFA_INCLUDE_EXTLIBS}/qwt-6.0.1/src
+    ${SOFA_INCLUDE_EXTLIBS}/self-ccd-1.0
+#    ${SOFA_INCLUDE_EXTLIBS}/SLC
+    ${SOFA_INCLUDE_EXTLIBS}/taucs
+    ${SOFA_INCLUDE_EXTLIBS}/taucs_mt
+    ${SOFA_INCLUDE_EXTLIBS}/taucs-svn
+    ${SOFA_INCLUDE_EXTLIBS}/tinyxml
+    ${SOFA_INCLUDE_EXTLIBS}/VRPN
+    ${SOFA_INCLUDE_EXTLIBS}/wiiuse
 )
 if(MSVC)
-	list(APPEND SOFA_INCLUDE_OTHER_DIRS ${SOFA_DIR}/include)
+    list(APPEND SOFA_INCLUDE_OTHER_DIRS ${SOFA_DIR}/include)
 endif(MSVC)
 
 
@@ -195,29 +194,30 @@ set(SOFA_INCLUDE_DIRS
 ## BASE, COMMON, GENERAL, ADVANCED and MISC.
 ##
 ## 1- collect all library name to search in the SOFA_LIBS_NAME list splitted into 5 parts
-##	* the SOFA LIBS BASE LIST
-##	* the SOFA COMMON LIST
-##	* THE SOFA GENERAL LIST
-##	* THE SOFA ADVANCED LIST
-##	* THE SOFA MISC LIST
+##    * the SOFA LIBS BASE LIST
+##    * the SOFA COMMON LIST
+##    * THE SOFA GENERAL LIST
+##    * THE SOFA ADVANCED LIST
+##    * THE SOFA MISC LIST
 ## 2- for each library :
-##	* get it CMAKE_SOFA_LIB_NAME and it associate REAL_SOFA_LIB_NAME
-##	* find library and set SOFA_LIBRARIES
+##    * get it CMAKE_SOFA_LIB_NAME and it associate REAL_SOFA_LIB_NAME
+##    * find library and set SOFA_LIBRARIES
 ## ###########################################################################################
 ## Put the name of the library SOFA CORE to search and put it associate CMakeName
 list(APPEND SOFA_LIB_NAME
-	sofabgl 		    SOFA_LIB_BGL            
-	sofagui 		    SOFA_LIB_GUI            
-	sofatree 		    SOFA_LIB_TREE            
-	sofacore 		    SOFA_LIB_CORE              
-	sofaguiqt 		    SOFA_LIB_GUI_QT         
-	sofahelper 		    SOFA_LIB_HELPER         
-	sofaguiglut 	    SOFA_LIB_GUI_GLUT             
-	sofaguimain 	    SOFA_LIB_GUI_MAIN           
-	sofamodeler 	    SOFA_LIB_MODELER         
-	sofasimulation 	    SOFA_LIB_SIMULATION      
+    sofabgl             SOFA_LIB_BGL            
+    sofagui             SOFA_LIB_GUI            
+    sofatree            SOFA_LIB_TREE            
+    sofacore            SOFA_LIB_CORE              
+    sofaguiqt           SOFA_LIB_GUI_QT         
+    sofahelper          SOFA_LIB_HELPER         
+    sofaguiglut         SOFA_LIB_GUI_GLUT             
+    sofaguimain         SOFA_LIB_GUI_MAIN           
+    sofamodeler         SOFA_LIB_MODELER         
+    sofasimulation      SOFA_LIB_SIMULATION      
     sofaobjectcreator   SOFA_OBJECT_CREATOR     
-	sofadefaulttype     SOFA_LIB_DEFAULT_TYPE   
+    sofadefaulttype     SOFA_LIB_DEFAULT_TYPE   
+    sofagraph           SOFA_LIB_GRAPH
 )
 list(LENGTH SOFA_LIB_NAME sofaLibList)
 math(EXPR passToComponent "${sofaLibList}/2")
@@ -225,7 +225,7 @@ math(EXPR passToComponent "${sofaLibList}/2")
 
 ## Put the name of the library SOFA COMPONENT to search and put it associate CMakeName
 list(APPEND SOFA_LIB_COMPONENT_NAME
-	sofa_component  			SOFA_LIB_COMPONENT                  
+    sofa_component              SOFA_LIB_COMPONENT                  
     sofa_component_dev          SOFA_LIB_COMPONENT_DEV              
     sofa_component_base         SOFA_LIB_COMPONENT_BASE             
     sofa_component_misc         SOFA_LIB_COMPONENT_MISC             
@@ -233,6 +233,7 @@ list(APPEND SOFA_LIB_COMPONENT_NAME
     sofa_component_general      SOFA_LIB_COMPONENT_GENERAL          
     sofa_component_misc_dev     SOFA_LIB_COMPONENT_MISC_DEV                      
     sofa_component_advanced     SOFA_LIB_COMPONENT_ADVANCED         
+    sofa_component_advanced_dev SOFA_LIB_COMPONENT_ADVANCED_DEV         
 )
 list(LENGTH SOFA_LIB_COMPONENT_NAME sofaLibComponentList)
 math(EXPR passToBase "${sofaLibComponentList}/2+${passToComponent}")
@@ -240,12 +241,12 @@ math(EXPR passToBase "${sofaLibComponentList}/2+${passToComponent}")
 
 ## Put the name of the library SOFA BASE to search and put it associate CMakeName
 list(APPEND SOFA_LIB_BASE_NAME
-	sofa_base_animation_loop 	SOFA_LIB_BASE_ANIMATION_LOOP    
-	sofa_base_collision  	 	SOFA_LIB_BASE_COLLISION         
-	sofa_base_linear_solver 	SOFA_LIB_BASE_LINEAR_SOLVER     
-	sofa_base_mechanics  		SOFA_LIB_BASE_MECHANICS         
-	sofa_base_topology  		SOFA_LIB_BASE_TOPOLOGY          
-	sofa_base_visual  			SOFA_LIB_BASE_VISUAL            
+    sofa_base_animation_loop    SOFA_LIB_BASE_ANIMATION_LOOP    
+    sofa_base_collision         SOFA_LIB_BASE_COLLISION         
+    sofa_base_linear_solver     SOFA_LIB_BASE_LINEAR_SOLVER     
+    sofa_base_mechanics         SOFA_LIB_BASE_MECHANICS         
+    sofa_base_topology          SOFA_LIB_BASE_TOPOLOGY          
+    sofa_base_visual            SOFA_LIB_BASE_VISUAL            
 )
 list(LENGTH SOFA_LIB_BASE_NAME sofaLibBaseList)
 math(EXPR passToCommon "${sofaLibBaseList}/2+${passToBase}")
@@ -253,14 +254,14 @@ math(EXPR passToCommon "${sofaLibBaseList}/2+${passToBase}")
 
 ## Put the name of the library SOFA COMMON to search and put it associate CMakeName
 list(APPEND SOFA_LIB_COMMON_NAME
-	sofa_deformable				SOFA_LIB_DEFORMABLE          
-	sofa_explicit_ode_solver	SOFA_LIB_ODE_SOLVER          
-	sofa_implicit_ode_solver	SOFA_LIB_IMPLICIT_ODE_SOLVER 
-	sofa_loader					SOFA_LIB_LOADER              
-	sofa_mesh_collision			SOFA_LIB_MESH_COLLISION      
-	sofa_rigid					SOFA_LIB_RIGID               
-	sofa_simple_fem				SOFA_LIB_SIMPLE_FEM          
-	sofa_object_interaction		SOFA_LIB_OBJECT_INTERACTION  
+    sofa_deformable             SOFA_LIB_DEFORMABLE          
+    sofa_explicit_ode_solver    SOFA_LIB_ODE_SOLVER          
+    sofa_implicit_ode_solver    SOFA_LIB_IMPLICIT_ODE_SOLVER 
+    sofa_loader                 SOFA_LIB_LOADER              
+    sofa_mesh_collision         SOFA_LIB_MESH_COLLISION      
+    sofa_rigid                  SOFA_LIB_RIGID               
+    sofa_simple_fem             SOFA_LIB_SIMPLE_FEM          
+    sofa_object_interaction     SOFA_LIB_OBJECT_INTERACTION  
 )
 list(LENGTH SOFA_LIB_COMMON_NAME sofaCommonLibList)
 math(EXPR passToGeneralLib "${sofaCommonLibList}/2+${passToCommon}")
@@ -268,18 +269,18 @@ math(EXPR passToGeneralLib "${sofaCommonLibList}/2+${passToCommon}")
 
 ## Put the name of the library SOFA GENERAL to search and put it associate CMakeName
 list(APPEND SOFA_LIB_GENERAL_NAME
-	sofa_boundary_condition		SOFA_LIB_BOUNDARY_CONDITION     
-	sofa_constraint				SOFA_LIB_CONSTRAINT             
-	sofa_dense_solver			SOFA_LIB_DENSE_SOLVER           
-	sofa_engine					SOFA_LIB_ENGINE                 
-	sofa_exporter				SOFA_LIB_EXPORTER               
-	sofa_graph_component		SOFA_LIB_GRAPH_COMPONENT        
-	sofa_opengl_visual			SOFA_LIB_OPENGL_VISUAL          
-	sofa_preconditioner			SOFA_LIB_PRECONDITIONER         
-	sofa_topology_mapping		SOFA_LIB_TOPOLOGY_MAPPING        
-	sofa_user_interaction		SOFA_LIB_USER_INTERACTION        
-	sofa_validation				SOFA_LIB_VALIDATION              
-	sofa_haptics				SOFA_LIB_HAPTICS                
+    sofa_boundary_condition     SOFA_LIB_BOUNDARY_CONDITION     
+    sofa_constraint             SOFA_LIB_CONSTRAINT             
+    sofa_dense_solver           SOFA_LIB_DENSE_SOLVER           
+    sofa_engine                 SOFA_LIB_ENGINE                 
+    sofa_exporter               SOFA_LIB_EXPORTER               
+    sofa_graph_component        SOFA_LIB_GRAPH_COMPONENT        
+    sofa_opengl_visual          SOFA_LIB_OPENGL_VISUAL          
+    sofa_preconditioner         SOFA_LIB_PRECONDITIONER         
+    sofa_topology_mapping       SOFA_LIB_TOPOLOGY_MAPPING        
+    sofa_user_interaction       SOFA_LIB_USER_INTERACTION        
+    sofa_validation             SOFA_LIB_VALIDATION              
+    sofa_haptics                SOFA_LIB_HAPTICS                
 )
 list(LENGTH SOFA_LIB_GENERAL_NAME sofaGeneralLibList)
 math(EXPR passToAdvancedLib "${sofaGeneralLibList}/2+${passToGeneralLib}")
@@ -287,16 +288,16 @@ math(EXPR passToAdvancedLib "${sofaGeneralLibList}/2+${passToGeneralLib}")
 
 ## Put the name of the library SOFA ADVANCED to search and put it associate CMakeName
 list(APPEND SOFA_LIB_ADVANCED_NAME
-	sofa_advanced_constraint	SOFA_LIB_ADVANCED_CONSTRAINT        
-	sofa_advanced_fem			SOFA_LIB_ADVANCED_FEM               
-	sofa_advanced_interaction	SOFA_LIB_ADVANCED_INTERACTION       
-	sofa_eigen2_solver			SOFA_LIB_EIGEN2_SOLVER                
-	sofa_eulerian_fluid			SOFA_LIB_EULERIAN_FUILD             
-	sofa_mjed_fem				SOFA_LIB_MJED_FEM                   
-	sofa_non_uniform_fem		SOFA_LIB_NON_UNIFORM_FEM            
-	sofa_non_uniform_fem_dev    SOFA_LIB_NON_UNIFORM_FEM_DEV        
-	sofa_sph_fluid				SOFA_LIB_SPH_FUILD                   
-	sofa_volumetric_data		SOFA_LIB_VOLUMETRIC_DATA             
+    sofa_advanced_constraint    SOFA_LIB_ADVANCED_CONSTRAINT        
+    sofa_advanced_fem           SOFA_LIB_ADVANCED_FEM               
+    sofa_advanced_interaction   SOFA_LIB_ADVANCED_INTERACTION       
+    sofa_eigen2_solver          SOFA_LIB_EIGEN2_SOLVER                
+    sofa_eulerian_fluid         SOFA_LIB_EULERIAN_FUILD             
+    sofa_mjed_fem               SOFA_LIB_MJED_FEM                   
+    sofa_non_uniform_fem        SOFA_LIB_NON_UNIFORM_FEM            
+    sofa_non_uniform_fem_dev    SOFA_LIB_NON_UNIFORM_FEM_DEV        
+    sofa_sph_fluid              SOFA_LIB_SPH_FUILD                   
+    sofa_volumetric_data        SOFA_LIB_VOLUMETRIC_DATA             
 )
 list(LENGTH SOFA_LIB_GENERAL_NAME sofaAdvancedLibList)
 math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
@@ -304,21 +305,21 @@ math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
 
 ## Put the name of the library SOFA MISC to search and put it associate CMakeName
 list(APPEND SOFA_LIB_MISC_NAME
-	sofa_misc				    SOFA_LIB_MISC                   
-	sofa_misc_collision		    SOFA_LIB_MISC_COLLISION         
-	sofa_misc_collision_dev     SOFA_LIB_MISC_COLLISION_DEV     
-	sofa_misc_fem			    SOFA_LIB_MISC_FEM               
-	sofa_misc_dev			    SOFA_LIB_MISC_DEV               
-	sofa_misc_fem_dev   	    SOFA_LIB_MISC_FEM_DEV           
-	sofa_misc_forcefield	    SOFA_LIB_MISC_FORCEFIELD        
- 	sofa_misc_forcefield_dev    SOFA_LIB_MISC_FORCEFIELD_DEV   
-	sofa_misc_mapping		    SOFA_LIB_MISC_MAPPING           
-  	sofa_misc_mapping_dev       SOFA_LIB_MISC_MAPPING_DEV       
-	sofa_misc_solver		    SOFA_LIB_MISC_SOLVER            
-	sofa_misc_solver_dev        SOFA_LIB_MISC_SOLVER_DEV        
-	sofa_misc_topology		    SOFA_LIB_MISC_TOPOLOGY          
-	sofa_misc_topology_dev      SOFA_LIB_MISC_TOPOLOGY_DEV      
-	sofa_misc_engine		    SOFA_LIB_MISC_ENGINE            
+    sofa_misc                   SOFA_LIB_MISC                   
+    sofa_misc_collision         SOFA_LIB_MISC_COLLISION         
+    sofa_misc_collision_dev     SOFA_LIB_MISC_COLLISION_DEV     
+    sofa_misc_fem               SOFA_LIB_MISC_FEM               
+    sofa_misc_dev               SOFA_LIB_MISC_DEV               
+    sofa_misc_fem_dev           SOFA_LIB_MISC_FEM_DEV           
+    sofa_misc_forcefield        SOFA_LIB_MISC_FORCEFIELD        
+     sofa_misc_forcefield_dev   SOFA_LIB_MISC_FORCEFIELD_DEV   
+    sofa_misc_mapping           SOFA_LIB_MISC_MAPPING           
+      SofaMiscMappingDev        SOFA_LIB_MISC_MAPPING_DEV       
+    sofa_misc_solver            SOFA_LIB_MISC_SOLVER            
+    sofa_misc_solver_dev        SOFA_LIB_MISC_SOLVER_DEV        
+    sofa_misc_topology          SOFA_LIB_MISC_TOPOLOGY          
+    SofaMiscTopologyDev         SOFA_LIB_MISC_TOPOLOGY_DEV      
+    sofa_misc_engine            SOFA_LIB_MISC_ENGINE            
 )
 list(LENGTH SOFA_LIB_MISC_NAME sofaMiscLibList)
 math(EXPR passToExtLib "${sofaMiscLibList}/2+${passToMiscLib}")
@@ -326,39 +327,39 @@ math(EXPR passToExtLib "${sofaMiscLibList}/2+${passToMiscLib}")
 
 ## Put the name of the library EXT to search and put it associate CMakeName
 if(MSVC)
-	list(APPEND SOFA_LIB_MSVC
-	    iconv 	SOFAWIN_ICONV
-	    glew32 	SOFAWIN_GLEW
-	    glut32 	SOFAWIN_GLUT
-	    libxml2 SOFAWIN_LIBXML2
-	)	
+    list(APPEND SOFA_LIB_MSVC
+        iconv    SOFAWIN_ICONV
+        glew32   SOFAWIN_GLEW
+        glut32   SOFAWIN_GLUT
+        libxml2  SOFAWIN_LIBXML2
+    )    
 else()
-	set(SOFA_LIB_MSVC)
+    set(SOFA_LIB_MSVC)
 endif()
 
 list(APPEND SOFA_LIB_EXT_NAME
-	qwt 		SOFA_LIB_QWT            
-	miniFlowVR 	SOFA_LIB_MINI_FLOWVR     
-	newmat 		SOFA_LIB_NEWMAT          
-	tinyxml 	SOFA_LIB_TINYXML         
-	${SOFA_LIB_MSVC}
+    qwt         SOFA_LIB_QWT            
+    miniFlowVR  SOFA_LIB_MINI_FLOWVR     
+    newmat      SOFA_LIB_NEWMAT          
+    tinyxml     SOFA_LIB_TINYXML         
+    ${SOFA_LIB_MSVC}
 )
 
 
 ## Collect all list of libs names together in one list
 list(APPEND SOFA_LIBS_NAME 
-	${SOFA_LIB_NAME}
+    ${SOFA_LIB_NAME}
     ${SOFA_LIB_COMPONENT_NAME}
-	${SOFA_LIB_BASE_NAME}
-	${SOFA_LIB_COMMON_NAME}
-	${SOFA_LIB_GENERAL_NAME}
-	${SOFA_LIB_ADVANCED_NAME}
-	${SOFA_LIB_MISC_NAME}
-	${SOFA_LIB_EXT_NAME}
+    ${SOFA_LIB_BASE_NAME}
+    ${SOFA_LIB_COMMON_NAME}
+    ${SOFA_LIB_GENERAL_NAME}
+    ${SOFA_LIB_ADVANCED_NAME}
+    ${SOFA_LIB_MISC_NAME}
+    ${SOFA_LIB_EXT_NAME}
 )
 
 # To use VERBOSE macro (print only if VAR or default VERBOSE_CMAKE is set to true
-include(cmaketools/macros/find_lib.cmake)
+include(find_lib)
 
 list(APPEND SEARCH_LIB_PATHS
     ${SOFA_DIR}/lib
@@ -372,6 +373,7 @@ list(APPEND SEARCH_LIB_PATHS
     #${SOFA_DIR}/bin
 )
 
+list(APPEND CMAKE_LIBRARY_PATH ${SEARCH_LIB_PATHS}) # first default path the find_library command will use
 
 ## Take the name of the library to found in the list[n],
 ## found it full path and place it into the variable of the list[n+1]
@@ -382,8 +384,8 @@ if(VERBOSE_SOFA)
     message(STATUS "----SOFA LIBS LIST : ")
 endif()
 foreach(index RANGE 0 ${count} 1)
-	
-	## Indices to display list in 3 parts
+    
+    ## Indices to display list in 3 parts
     if(VERBOSE_SOFA)
         if(index EQUAL passToComponent)
             message(STATUS "")
@@ -415,19 +417,19 @@ foreach(index RANGE 0 ${count} 1)
         endif()
     endif(VERBOSE_SOFA)
 
-	## Get the valueName of the searched library
-	math(EXPR indexValue "${index}*2")
-	list(GET SOFA_LIBS_NAME ${indexValue} REAL_SOFA_LIB_NAME)
-	
-	## Get the variableName of the coresponding searched library
-	math(EXPR indexName "${index}*2+1")
-	list(GET SOFA_LIBS_NAME ${indexName} CMAKE_SOFA_LIB_NAME)
-	
-	## Allow to select library
+    ## Get the valueName of the searched library
+    math(EXPR indexValue "${index}*2")
+    list(GET SOFA_LIBS_NAME ${indexValue} REAL_SOFA_LIB_NAME)
+    
+    ## Get the variableName of the coresponding searched library
+    math(EXPR indexName "${index}*2+1")
+    list(GET SOFA_LIBS_NAME ${indexName} CMAKE_SOFA_LIB_NAME)
+    
+    ## Allow to select library
 #    option(SOFA_USE_${CMAKE_SOFA_LIB_NAME} "Build ${CMAKE_SOFA_LIB_NAME}" true)
-#	if(SOFA_USE_${CMAKE_SOFA_LIB_NAME})
-	
-		## Use the MACRO defined above to find the library with it full path
+#    if(SOFA_USE_${CMAKE_SOFA_LIB_NAME})
+    
+        ## Use the MACRO defined above to find the library with it full path
         FIND_LIB(${CMAKE_SOFA_LIB_NAME} ${REAL_SOFA_LIB_NAME}
                 PATHSLIST_DEBUG
                     ${SEARCH_LIB_PATHS}
@@ -440,6 +442,7 @@ foreach(index RANGE 0 ${count} 1)
                 VERBOSE         ${VERBOSE_SOFA}
                 FORCE_DEBUG     true
                 FORCE_RELEASE   true
+                NO_DEFAULT_PATH # SOFA provide all extlib it need
         )
         
         if(NOT EXISTS ${${CMAKE_SOFA_LIB_NAME}_DEBUG} OR NOT EXISTS ${${CMAKE_SOFA_LIB_NAME}})
@@ -447,19 +450,19 @@ foreach(index RANGE 0 ${count} 1)
                 "It seems the ${CMAKE_SOFA_LIB_NAME} does not exist : ${${CMAKE_SOFA_LIB_NAME}}.
                 Please, check it in FindSOFA.cmake.")
         endif()
-	
-		## Add all libraries (release and then debug) find to one variable
+    
+        ## Add all libraries (release and then debug) find to one variable
         if(${CMAKE_SOFA_LIB_NAME}_DEBUG)
-		    list(APPEND SOFA_LIBRARIES
-		            optimized ${${CMAKE_SOFA_LIB_NAME}}
-		            debug     ${${CMAKE_SOFA_LIB_NAME}_DEBUG}
-		    )
+            list(APPEND SOFA_LIBRARIES
+                    optimized ${${CMAKE_SOFA_LIB_NAME}}
+                    debug     ${${CMAKE_SOFA_LIB_NAME}_DEBUG}
+            )
         else()
-		    list(APPEND SOFA_LIBRARIES ${${CMAKE_SOFA_LIB_NAME}})
+            list(APPEND SOFA_LIBRARIES ${${CMAKE_SOFA_LIB_NAME}})
         endif()
 
-#	endif(SOFA_USE_${CMAKE_SOFA_LIB_NAME})
-	
+#    endif(SOFA_USE_${CMAKE_SOFA_LIB_NAME})
+    
 endforeach(index)
 
 if(VERBOSE_SOFA)
@@ -475,7 +478,7 @@ endif()
 ## all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SOFA DEFAULT_MSG
-		SOFA_INCLUDE_FRAMEWORK_DIR
+        SOFA_INCLUDE_FRAMEWORK_DIR
         SOFA_INCLUDE_MODULES_DIR
         SOFA_INCLUDE_APPLICATIONS_DIR        
         SOFA_LIB_CORE
@@ -489,6 +492,29 @@ find_package_handle_standard_args(SOFA DEFAULT_MSG
 ## ###########################################################################################
 ## FIND SOFA DEFINES
 ## ###########################################################################################
-include(findSofaDefines)
-findSofaDefines(${VERBOSE_SOFA})
+if(EXISTS ${SOFA_DIR}/sofaDefines.cfg)
+    file(READ ${SOFA_DIR}/sofaDefines.cfg SOFA_DEFINES_CONFIG_FILE_CONTENTS)
+    ## get a list of lines
+    string(REGEX REPLACE "\r?\n" ";" SOFA_DEFINES_CONFIG_FILE_CONTENTS "${SOFA_DEFINES_CONFIG_FILE_CONTENTS}") 
+    if(VERBOSE_SOFA)
+        message(STATUS "Get Sofa defines in ${SOFA_DIR}/sofaDefines.cfg : ")
+    endif()
+
+    ## Add "-D" for compatibility with CMake
+    foreach( define ${SOFA_DEFINES_CONFIG_FILE_CONTENTS})
+        list(APPEND SOFA_DEFINES "-D${define}")
+    endforeach( define ${SOFA_DEFINES_CONFIG_FILE_CONTENTS})
+
+    add_definitions(${SOFA_DEFINES})
+
+    if(VERBOSE_SOFA)
+    message(STATUS "Add SOFA definition into CMake project : ")
+        foreach( define ${SOFA_DEFINES})
+            message(STATUS "add DEFINITION : ${define}")
+        endforeach( define ${SOFA_DEFINES})
+    endif(VERBOSE_SOFA)
+
+else()
+    message("WARNING : sofaDefines.cfg not found...Sofa defines will not be added to the CMake project.")
+endif()
 

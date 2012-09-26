@@ -62,7 +62,7 @@ MACRO(find_lib MYLIBRARY MYLIBRARYNAME)
     cmake_parse_arguments(FIND_LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	# Remain args
-	#message("FIND_LIB_UNPARSED_ARGUMENTS = ${VERB_UNPARSED_ARGUMENTS}")
+	#message("FIND_LIB_UNPARSED_ARGUMENTS = ${FIND_LIB_UNPARSED_ARGUMENTS}")
 
     # default VERBOSE
     if(NOT DEFINED FIND_LIB_VERBOSE)
@@ -89,72 +89,76 @@ MACRO(find_lib MYLIBRARY MYLIBRARYNAME)
 		set(FIND_LIB_RELEASE_POSTFIX "")
 	endif()
 
+    # search order :
+    #message("CMAKE_LIBRARY_PATH = ${CMAKE_LIBRARY_PATH}")
+    #message("CMAKE_SYSTEM_LIBRARY_PATH = ${CMAKE_SYSTEM_LIBRARY_PATH}") # can be skip usging: NO_CMAKE_SYSTEM_PATH
 
-    if(FIND_LIB_VERBOSE)
-        message(STATUS "looking for debug version: ${MYLIBRARYNAME}${FIND_LIB_DEBUG_POSTFIX}")
-    endif()
+
     ## Find debug library
+    if(FIND_LIB_VERBOSE)
+        message(STATUS "\nlooking for debug version: ${MYLIBRARYNAME}${FIND_LIB_DEBUG_POSTFIX}")
+    endif()
     find_library("${MYLIBRARY}_DEBUG"
         NAMES
             "${MYLIBRARYNAME}${FIND_LIB_DEBUG_POSTFIX}"
         PATHS
             ${FIND_LIB_PATHSLIST_DEBUG}
-            ## comment to allow CMake to search in system environment variables and
-            ## in cmake cache/environment/defined variables
-            #NO_DEFAULT_PATH
+        ${FIND_LIB_UNPARSED_ARGUMENTS}
     )
+    if(FIND_LIB_VERBOSE)
+        message(STATUS "${MYLIBRARY}_DEBUG = ${${MYLIBRARY}_DEBUG}")
+    endif()
 
+
+    ## Find release library
     if(FIND_LIB_VERBOSE)
         message(STATUS "looking for release version: ${MYLIBRARYNAME}${FIND_LIB_RELEASE_POSTFIX}")
     endif()
-    ## Find release library
     find_library(${MYLIBRARY}
         NAMES
             "${MYLIBRARYNAME}${FIND_LIB_RELEASE_POSTFIX}"
         PATHS
             ${FIND_LIB_PATHSLIST_RELEASE}
-            ## comment to allow CMake to search in system environment variables and
-            ## in cmake cache/environment/defined variables
-            #NO_DEFAULT_PATH
+        ${FIND_LIB_UNPARSED_ARGUMENTS}
     )
+    if(FIND_LIB_VERBOSE)
+        message(STATUS "${MYLIBRARY} = ${${MYLIBRARY}}")
+    endif()
+
 
     ## Allow to use debug and release version :
     if(FIND_LIB_FORCE_DEBUG)
         ## If no DEBUG LIBRARY found, set the debug variable library to the release variable
         if( NOT ${MYLIBRARY}_DEBUG)
             if(${MYLIBRARY})
+                unset(${MYLIBRARY}_DEBUG CACHE)
+                set(${MYLIBRARY}_DEBUG ${${MYLIBRARY}} CACHE FILEPATH "Path to a debug library set from release one")
                 if(FIND_LIB_VERBOSE)
-                    message("${MYLIBRARY}_DEBUG NOT FOUND. Set it with the ${MYLIBRARY} content")
+                    message(STATUS "${MYLIBRARY}_DEBUG NOT FOUND. Set it with the ${MYLIBRARY} content : ${${MYLIBRARY}_DEBUG}")
                 endif()
-                set(${MYLIBRARY}_DEBUG ${${MYLIBRARY}})
-            else(${MYLIBRARY})
+            else()
                 if(FIND_LIB_VERBOSE)
                     message("${MYLIBRARY}_DEBUG NOT FOUND.")
                 endif()
-            endif(${MYLIBRARY})
-        endif( NOT ${MYLIBRARY}_DEBUG)
+            endif()
+        endif()
     endif()
 
     if(FIND_LIB_FORCE_RELEASE)
         ## If no RELEASE LIBRARY found, set the release variable library to the debug variable
         if( NOT ${MYLIBRARY})
             if(${MYLIBRARY}_DEBUG)
+                unset(${MYLIBRARY} CACHE)
+                set(${MYLIBRARY} ${${MYLIBRARY}_DEBUG} CACHE FILEPATH "Path to a release library set from debug one")
                 if(FIND_LIB_VERBOSE)
-                    message("${MYLIBRARY} NOT FOUND. Set it with the ${MYLIBRARY}_DEBUG content")
+                    message(STATUS "${MYLIBRARY} NOT FOUND. Set it with the ${MYLIBRARY}_DEBUG content : ${{MYLIBRARY}}")
                 endif()
-                set(${MYLIBRARY} ${${MYLIBRARY}_DEBUG})
-            else(${MYLIBRARY}_DEBUG)
+            else()
                 if(FIND_LIB_VERBOSE)
                     message("${MYLIBRARY} NOT FOUND.")
                 endif()
-            endif(${MYLIBRARY}_DEBUG)
-        endif( NOT ${MYLIBRARY})
-    endif()
-
-    ## Display the find result with
-    if(FIND_LIB_VERBOSE)
-        message(STATUS "${MYLIBRARY} = ${${MYLIBRARY}}")
-        message(STATUS "${MYLIBRARY}_DEBUG = ${${MYLIBRARY}_DEBUG}")
+            endif()
+        endif()
     endif()
 
 ENDMACRO()
