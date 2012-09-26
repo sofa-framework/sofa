@@ -26,6 +26,7 @@
 #define SOFA_HELPER_QUATER_INL
 
 #include "Quater.h"
+#include <limits>
 #include <math.h>
 #include <iostream>
 #include <stdio.h>
@@ -455,6 +456,15 @@ void Quater<Real>::writeOpenGlMatrix(float *m) const
 template<class Real>
 Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 {
+    if( a.norm() < std::numeric_limits<Real>::epsilon() )
+    {
+//		std::cout << "zero norm quaternion" << std::endl;
+        _q[0] = _q[1] = _q[2] = (Real)0.0f;
+        _q[3] = (Real)1.0f;
+
+        return Quater();
+    }
+
     a = a / a.norm();
     _q[0] = (Real)a.x();
     _q[1] = (Real)a.y();
