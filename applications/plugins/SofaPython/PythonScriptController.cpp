@@ -110,6 +110,7 @@ void PythonScriptController::loadScript()
     BIND_SCRIPT_FUNC(reset)
     BIND_SCRIPT_FUNC(cleanup)
     BIND_SCRIPT_FUNC(onGUIEvent)
+    BIND_SCRIPT_FUNC(onScriptEvent)
 
 }
 
@@ -192,6 +193,19 @@ void PythonScriptController::script_cleanup()
 void PythonScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
 {
     SP_CALL(m_Func_onGUIEvent,"(sss)",controlID,valueName,value)
+}
+
+void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
+{
+    core::objectmodel::PythonScriptEvent *pyEvent = dynamic_cast<core::objectmodel::PythonScriptEvent*>(event);
+    if (!pyEvent)
+    {
+        // ignore
+    }
+    else
+    {
+        SP_CALL(m_Func_onScriptEvent,"(ssO)",pyEvent->getSenderName().c_str(),pyEvent->getEventName().c_str(),pyEvent->getUserData())
+    }
 }
 
 

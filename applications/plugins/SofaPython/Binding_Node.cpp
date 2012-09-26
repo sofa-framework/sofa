@@ -31,6 +31,7 @@ using namespace sofa::core;
 #include "Binding_Node.h"
 #include "Binding_Context.h"
 #include "PythonVisitor.h"
+#include "PythonScriptEvent.h"
 
 extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
@@ -237,6 +238,22 @@ extern "C" PyObject * Node_detachFromGraph(PyObject *self, PyObject * /*args*/)
     return Py_BuildValue("i",0);
 }
 
+extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
+{
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    PyObject* pyUserData;
+    char* eventName;
+    if (!PyArg_ParseTuple(args, "sO",&eventName,&pyUserData))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+    PythonScriptEvent event(node->getName().c_str(),eventName,pyUserData);
+    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    return Py_BuildValue("i",0);
+}
+
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
@@ -251,6 +268,7 @@ SP_CLASS_METHOD(Node,addChild)
 SP_CLASS_METHOD(Node,removeChild)
 SP_CLASS_METHOD(Node,moveChild)
 SP_CLASS_METHOD(Node,detachFromGraph)
+SP_CLASS_METHOD(Node,sendScriptEvent)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

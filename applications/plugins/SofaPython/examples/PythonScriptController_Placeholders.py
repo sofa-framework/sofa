@@ -83,5 +83,8 @@ def onMouseWheel(x,y,delta):
 	print 'onMouseButtonWheel x='+str(x)+' y='+str(y)+' delta='+str(delta)
 	return 0
  
+def onScriptEvent(senderName,eventName,data)
+	print 'onScriptEvent eventName='+eventName+' data='+str(data)
+	return 0
  
  
