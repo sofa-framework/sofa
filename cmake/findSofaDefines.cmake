@@ -1,18 +1,29 @@
+## DEPRECATED!
+
 ## ###########################################################################################
 ## CMAKE_DOCUMENTATION_START findSofaDefines
-## 
+## DEPRECATED!
 ## FIND SOFA DEFINES (QMAKE) AND ADD DEFINITIONS (CMAKE).
-## \\li Create a copy of the sofa-local.prf in sofa-local-temp.prf.
-## \\li Add Qmake system command line at the end of the sofa-local.prf
+## \\li Create a copy of the Sofa.pro in Sofa-temp.pro.
+## \\li Add Qmake system command line at the end of the Sofa.pro
 ##    in order to write all sofa defines in a sofaDefines.cfg file.
 ## \\li Execute qmake (or qmake-qt4) where sofa is located to execute my appended code.
 ## \\li Get sofa defines variables from sofaDefines.cfg to add cmake definitions.
-## \\li Restore the original sofa-local.prf from sofa-local-temp.prf.
-## \\li Delete the unnecessary sofa-local-temp.prf and sofaDefines.cfg files.
+## \\li Restore the original Sofa.pro from Sofa-temp.pro.
+## \\li Delete the unnecessary Sofa-temp.pro and sofaDefines.cfg files.
 ## 
 ## CMAKE_DOCUMENTATION_END
 ## ###########################################################################################
-function(findSofaDefines VERBOSE_SOFA)
+
+## DEPRECATED!
+if(_FIND_SOFA_DEFINES_INCLUDED_)
+  return()
+endif()
+set(_FIND_SOFA_DEFINES_INCLUDED_ true)
+
+cmake_minimum_required(VERSION 2.8)
+
+function(FindSofaDefines VERBOSE_SOFA)
 
     ## check we can run this function
     if(NOT SOFA_FOUND AND NOT QT_QMAKE_EXECUTABLE)
@@ -22,38 +33,28 @@ function(findSofaDefines VERBOSE_SOFA)
         return()
     endif()
 
-    ## If user doesn't yet created the sofa-local.prf in SOFA_DIR, I create it for him.
-    if(NOT EXISTS ${SOFA_DIR}/sofa-local.prf)
-        configure_file(${SOFA_DIR}/sofa-default.prf ${SOFA_DIR}/sofa-local.prf COPYONLY)
-        message("You haven't yet create a ${SOFA_DIR}/sofa-local.prf to personalise your config, it has been created for you!")
-    else()
-        file(READ ${SOFA_DIR}/sofa-local.prf SOFA_LOCAL_CONTENT)
-        if(NOT SOFA_LOCAL_CONTENT)
-            message("Your ${SOFA_DIR}/sofa-local.prf is empty. Re create it from sofa-default.prf.")
-            configure_file(${SOFA_DIR}/sofa-default.prf ${SOFA_DIR}/sofa-local.prf COPYONLY)
-        endif()
-    endif()
 
     ## Save the original file in a temp file
-    configure_file(${SOFA_DIR}/sofa-local.prf ${SOFA_DIR}/sofa-local-temp.prf COPYONLY)
+    configure_file(${SOFA_DIR}/Sofa.pro ${SOFA_DIR}/Sofa-temp.pro COPYONLY)
     if(VERBOSE_SOFA)
-        message(STATUS "Create a sofa-local-temp.prf copy in ${SOFA_DIR}")
+        message(STATUS "Create a Sofa-temp.pro copy in ${SOFA_DIR}")
     endif()
 
-    ## Add command line in this file to write all sofa defines in a file
-    file(APPEND ${SOFA_DIR}/sofa-local.prf
+
+    ## Insert command line in this file to write all sofa defines in a file
+    file(APPEND ${SOFA_DIR}/Sofa.pro
         "# print all SOFA DEFINES into a standard file format"\n
-        "message(\"Write temporarily the sofa DEFINES in sofaDefines.cfg to let CMake get them, and then delete it...\")"\n
+        "message(\"Write temporarily the sofa DEFINES in sofaDefines.cfg to let CMake get them, and then delete this file...\")"\n
         "win32 { system( for %G in ($\${DEFINES}) do echo %G>>sofaDefines.cfg ) }"\n
         "unix  { system( for define in $\${DEFINES}; do echo $define>>sofaDefines.cfg; done ) }"
         )
     if(VERBOSE_SOFA)
-        message(STATUS "Customize the ${SOFA_DIR}/sofa-local.prf")
+        message(STATUS "Customize the ${SOFA_DIR}/Sofa.pro")
     endif()
 
 
     ## Force to run qmake to execute my custom code I have inserted above
-    execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} WORKING_DIRECTORY ${SOFA_DIR} RESULT_VARIABLE rv OUTPUT_VARIABLE ov ERROR_VARIABLE er )
+    execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} Sofa.pro WORKING_DIRECTORY ${SOFA_DIR} RESULT_VARIABLE rv OUTPUT_VARIABLE ov ERROR_VARIABLE er )
     if( rv EQUAL "0" AND EXISTS ${SOFA_DIR}/sofaDefines.cfg)
 
         if(VERBOSE_SOFA)
@@ -97,22 +98,21 @@ function(findSofaDefines VERBOSE_SOFA)
     endif()
 
     ## Restore the original file
-    if(EXISTS ${SOFA_DIR}/sofa-local-temp.prf)
+    if(EXISTS ${SOFA_DIR}/Sofa-temp.pro)
         if(VERBOSE_SOFA)
-            message(STATUS "Restore the original ${SOFA_DIR}/sofa-local.prf file from ${SOFA_DIR}/sofa-local-temp.prf")
+            message(STATUS "Restore the original ${SOFA_DIR}/Sofa.pro file from ${SOFA_DIR}/Sofa-temp.pro")
         endif()
-        configure_file(${SOFA_DIR}/sofa-local-temp.prf ${SOFA_DIR}/sofa-local.prf COPYONLY)
+        configure_file(${SOFA_DIR}/Sofa-temp.pro ${SOFA_DIR}/Sofa.pro COPYONLY)
     else()
-        message(WARNING "Problem in finSofaDefines.We can't restore the original sofa-local.prf file from sofa-local-temp.prf => delete sofa-local.prf")
-        execute_process(COMMAND ${CMAKE_COMMAND} -E remove sofa-local.prf WORKING_DIRECTORY ${SOFA_DIR} )
+        message(WARNING "Problem in FindSofaDefines. We can't restore the original Sofa.pro file from Sofa-temp.pro")
     endif()
 
     # Remove the temp file
-    if(EXISTS ${SOFA_DIR}/sofa-local-temp.prf)
+    if(EXISTS ${SOFA_DIR}/Sofa-temp.pro)
         if(VERBOSE_SOFA)
-            message(STATUS "Delete unnecessary ${SOFA_DIR}/sofa-local-temp.prf file")
+            message(STATUS "Delete unnecessary ${SOFA_DIR}/Sofa-temp.pro file")
         endif()
-        execute_process(COMMAND ${CMAKE_COMMAND} -E remove sofa-local-temp.prf WORKING_DIRECTORY ${SOFA_DIR} )
+        execute_process(COMMAND ${CMAKE_COMMAND} -E remove Sofa-temp.pro WORKING_DIRECTORY ${SOFA_DIR} )
     endif()
 
 endfunction()
