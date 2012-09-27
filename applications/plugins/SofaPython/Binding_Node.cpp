@@ -248,8 +248,8 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
-    PythonScriptEvent event(node->getName().c_str(),eventName,pyUserData);
-    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    PythonScriptEvent event(node,eventName,pyUserData);
+    dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     return Py_BuildValue("i",0);
 }
 

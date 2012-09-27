@@ -204,7 +204,7 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     }
     else
     {
-        SP_CALL(m_Func_onScriptEvent,"(ssO)",pyEvent->getSenderName().c_str(),pyEvent->getEventName().c_str(),pyEvent->getUserData())
+        SP_CALL(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
     }
 }
 

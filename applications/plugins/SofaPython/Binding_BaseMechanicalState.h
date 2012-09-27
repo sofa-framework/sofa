@@ -22,61 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Binding.h"
-#include "Binding_SofaModule.h"
+#ifndef BINDING_BASEMECHANICALSTATE_H
+#define BINDING_BASEMECHANICALSTATE_H
 
-#include "Binding_Data.h"
-#include "Binding_DisplayFlagsData.h"
-#include "Binding_Base.h"
-#include "Binding_BaseObject.h"
-#include "Binding_BaseState.h"
-#include "Binding_BaseContext.h"
-#include "Binding_Context.h"
-#include "Binding_Node.h"
-#include "Binding_Vector.h"
-#include "Binding_BaseObjectDescription.h"
-#include "Binding_BaseLoader.h"
-#include "Binding_MeshLoader.h"
-#include "Binding_Topology.h"
-#include "Binding_BaseMechanicalState.h"
-#include "Binding_MechanicalObject.h"
+#include "PythonMacros.h"
 
-#include <Python.h>
+SP_DECLARE_CLASS_TYPE(BaseMechanicalState)
 
-PyObject *SofaPythonModule = 0;
-
-
-
-
-void bindSofaPythonModule()
-{
-    //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
-
-    SofaPythonModule = SP_INIT_MODULE(Sofa)
-            SP_ADD_CLASS(SofaPythonModule,Data)
-            SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
-            SP_ADD_CLASS(SofaPythonModule,Vector3)
-            SP_ADD_CLASS(SofaPythonModule,BaseObjectDescription)
-
-            SP_ADD_CLASS(SofaPythonModule,Base)
-            SP_ADD_CLASS(SofaPythonModule,BaseContext)
-            SP_ADD_CLASS(SofaPythonModule,Context)
-            SP_ADD_CLASS(SofaPythonModule,Node)
-            SP_ADD_CLASS(SofaPythonModule,BaseObject)
-            SP_ADD_CLASS(SofaPythonModule,BaseState)
-            SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
-            SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
-            SP_ADD_CLASS(SofaPythonModule,BaseLoader)
-            SP_ADD_CLASS(SofaPythonModule,MeshLoader)
-            SP_ADD_CLASS(SofaPythonModule,Topology)
-            /*
-                        SP_ADD_CLASS(SofaPythonModule,BaseController)
-                            SP_ADD_CLASS(SofaPythonModule,Controller)
-                                SP_ADD_CLASS(SofaPythonModule,ScriptController)
-                                    SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
-            */
-}
-
-
-
-
+#endif // BINDING_BASEMECHANICALSTATE_H

@@ -50,7 +50,8 @@ SOURCES = initSofaPython.cpp \
     Binding_MeshLoader.cpp \
     Binding_Vector.cpp \
     Binding_Topology.cpp \
-    Binding_MechanicalObject.cpp
+    Binding_MechanicalObject.cpp \
+    Binding_BaseMechanicalState.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -75,7 +76,8 @@ HEADERS = initSofaPython.h \
     Binding_MeshLoader.h \
     Binding_Vector.h \
     Binding_Topology.h \
-    Binding_MechanicalObject.h
+    Binding_MechanicalObject.h \
+    Binding_BaseMechanicalState.h
 
 README_FILE = SofaPython.txt
 
