@@ -23,9 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Binding_MechanicalObject.h"
 #include "Binding_BaseMechanicalState.h"
-#include "Binding_Vector.h"
+#include "Binding_BaseState.h"
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -34,9 +33,9 @@ using namespace sofa::core;
 
 
 
-extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject * args)
+extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
+    BaseMechanicalState* obj=dynamic_cast<BaseMechanicalState*>(((PySPtr<Base>*)self)->object.get());
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -50,13 +49,13 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
         dy = (double)iy;
         dz = (double)iz;
     }
-    obj->setTranslation(dx,dy,dz);
+    obj->applyTranslation(dx,dy,dz);
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
+extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
+    BaseMechanicalState* obj=dynamic_cast<BaseMechanicalState*>(((PySPtr<Base>*)self)->object.get());
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -70,13 +69,13 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
         dy = (double)iy;
         dz = (double)iz;
     }
-    obj->setScale(dx,dy,dz);
+    obj->applyScale(dx,dy,dz);
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * args)
+extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
+    BaseMechanicalState* obj=dynamic_cast<BaseMechanicalState*>(((PySPtr<Base>*)self)->object.get());
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -90,42 +89,20 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
         dy = (double)iy;
         dz = (double)iz;
     }
-    obj->setRotation(dx,dy,dz);
+    obj->applyRotation(dx,dy,dz);
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * MechanicalObject_getTranslation(PyObject *self, PyObject * /*args*/)
-{
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
-    Vector3 *vec = new Vector3(obj->getTranslation());
-    return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
-}
-
-extern "C" PyObject * MechanicalObject_getRotation(PyObject *self, PyObject * /*args*/)
-{
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
-    Vector3 *vec = new Vector3(obj->getRotation());
-    return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
-}
-
-extern "C" PyObject * MechanicalObject_getScale(PyObject *self, PyObject * /*args*/)
-{
-    MechanicalObject3* obj=dynamic_cast<MechanicalObject3*>(((PySPtr<Base>*)self)->object.get());
-    Vector3 *vec = new Vector3(obj->getScale());
-    return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
-}
 
 
-SP_CLASS_METHODS_BEGIN(MechanicalObject)
-SP_CLASS_METHOD(MechanicalObject,setTranslation)
-SP_CLASS_METHOD(MechanicalObject,setScale)
-SP_CLASS_METHOD(MechanicalObject,setRotation)
-SP_CLASS_METHOD(MechanicalObject,getTranslation)
-SP_CLASS_METHOD(MechanicalObject,getScale)
-SP_CLASS_METHOD(MechanicalObject,getRotation)
+SP_CLASS_METHODS_BEGIN(BaseMechanicalState)
+SP_CLASS_METHOD(BaseMechanicalState,applyTranslation)
+SP_CLASS_METHOD(BaseMechanicalState,applyScale)
+SP_CLASS_METHOD(BaseMechanicalState,applyRotation)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(MechanicalObject,MechanicalObject3,BaseMechanicalState)
+SP_CLASS_TYPE_SPTR(BaseMechanicalState,BaseMechanicalState,BaseState)
+
 
 

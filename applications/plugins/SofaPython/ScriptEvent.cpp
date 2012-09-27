@@ -33,9 +33,9 @@ namespace core
 namespace objectmodel
 {
 
-ScriptEvent::ScriptEvent(const char* senderName, const char* eventName)
+ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
     : sofa::core::objectmodel::Event()
-    , m_senderName(senderName)
+    , m_sender(sender)
     , m_eventName(eventName)
 {
 

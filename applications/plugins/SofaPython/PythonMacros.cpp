@@ -6,6 +6,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/topology/Topology.h>
@@ -17,10 +18,12 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::core;
 using namespace sofa::core::loader;
 using namespace sofa::core::topology;
+using namespace sofa::core::behavior;
 
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
+#include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
 #include "Binding_BaseContext.h"
 #include "Binding_Context.h"
@@ -54,6 +57,8 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 
     if (dynamic_cast<MechanicalObject3*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
+    if (dynamic_cast<BaseMechanicalState*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));
     if (dynamic_cast<BaseState*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseState));
 

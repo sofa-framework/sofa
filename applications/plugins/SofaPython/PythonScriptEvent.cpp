@@ -34,8 +34,8 @@ namespace core
 namespace objectmodel
 {
 
-PythonScriptEvent::PythonScriptEvent(const char* senderName, const char* eventName, PyObject* userData)
-    : sofa::core::objectmodel::ScriptEvent(senderName,eventName)
+PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, PyObject* userData)
+    : sofa::core::objectmodel::ScriptEvent(sender,eventName)
     , m_userData(userData)
 {
     Py_INCREF(userData);
