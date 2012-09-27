@@ -29,7 +29,7 @@ using namespace sofa::core::objectmodel;
 
 #include "Binding_BaseContext.h"
 #include "Binding_Base.h"
-#include "Binding_Vec3.h"
+#include "Binding_Vector.h"
 
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
@@ -38,7 +38,7 @@ using namespace sofa::simulation;
 extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    PyPtr<Vec3>* pyVec;
+    PyPtr<Vector3>* pyVec;
     if (!PyArg_ParseTuple(args, "O",&pyVec))
         return 0;
     obj->setGravity(*pyVec->object);
@@ -48,7 +48,7 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    return SP_BUILD_PYPTR(Vec3,Vec3,new Vec3(obj->getGravity()),true); // "true", because I manage the deletion myself
+    return SP_BUILD_PYPTR(Vector3,Vector3,new Vector3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
 extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
@@ -81,7 +81,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args)
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,desc);//.get();
     if (obj==0)
     {
-        printf("<PYTHON> ERROR createObject '%s' of type '%s' in node '%s'\n",
+        printf("<SofaPython> ERROR createObject '%s' of type '%s' in node '%s'\n",
                 desc->getName().c_str(),
                 desc->getAttribute("type",""),
                 context->getName().c_str());

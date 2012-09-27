@@ -96,7 +96,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        printf("<PYTHON> Error: Node.getChildNode(%s) not found.\n",path);
+        printf("<SofaPython> Error: Node.getChildNode(%s) not found.\n",path);
         return 0;
     }
     return SP_BUILD_PYSPTR(childNode);

@@ -37,7 +37,6 @@ SOURCES = initSofaPython.cpp \
     Binding_Context.cpp \
     Binding_BaseContext.cpp \
     Binding_Node.cpp \
-    Binding_Vec3.cpp \
     Binding_BaseObjectDescription.cpp \
     Binding_Data.cpp \
     Binding_BaseObject.cpp \
@@ -46,7 +45,11 @@ SOURCES = initSofaPython.cpp \
     PythonVisitor.cpp \
     Binding_DisplayFlagsData.cpp \
     ScriptEvent.cpp \
-    PythonScriptEvent.cpp
+    PythonScriptEvent.cpp \
+    Binding_BaseLoader.cpp \
+    Binding_MeshLoader.cpp \
+    Binding_Vector.cpp \
+    Binding_Topology.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -59,7 +62,6 @@ HEADERS = initSofaPython.h \
     Binding_Node.h \
     Binding_Context.h \
     Binding_BaseContext.h \
-    Binding_Vec3.h \
     Binding_BaseObjectDescription.h \
     Binding_Data.h \
     Binding_BaseObject.h \
@@ -67,7 +69,11 @@ HEADERS = initSofaPython.h \
     PythonVisitor.h \
     Binding_DisplayFlagsData.h \
     ScriptEvent.h \
-    PythonScriptEvent.h
+    PythonScriptEvent.h \
+    Binding_BaseLoader.h \
+    Binding_MeshLoader.h \
+    Binding_Vector.h \
+    Binding_Topology.h
 
 README_FILE = SofaPython.txt
 

@@ -23,6 +23,7 @@ SofaPython provides several module methods, for general purpose (not linked to a
 
 \begin{itemize}
 \item \textcode{sendGUIMessage(msgType,msgValue)} 
+\item \textcode{createObject(BaseObjectDescription)}
 \end{itemize}
 
 %Class Hierarchy
@@ -35,10 +36,11 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 
 \begin{figure}[htbp]
 \begin{center}
-\Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ]  ] 
-			[ .BaseObject BaseState ] ]
+\Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ] ] 
+			[.BaseObject BaseState [.BaseLoader MeshLoader ] 
+			[.Topology MeshTopology ] ] ]
 \Tree [.BaseObjectDescription ]
-\Tree [.Vec3 ]
+\Tree [.Vector3 ]
 \Tree [.Data DisplayFlagsData ]
 \caption{Sofa python types hierarchy}
 \label{default}
@@ -70,8 +72,8 @@ Attributes :
 \item \textcode{name}
 \end{itemize}
 
-%Sofa.Vec3
-\subsubsection{Sofa.Vec3}
+%Sofa.Vector3
+\subsubsection{Sofa.Vector3}
 Attributes :
 \begin{itemize}
 \item \textcode{x} 
@@ -91,7 +93,10 @@ Attributes:
 \end{itemize}
 
 \subsubsection{Sofa.BaseObject}
-(empty)
+Methods :
+\begin{itemize}
+\item \textcode{setSrc(valueString, loader)} use a \textcode{Sofa.BaseLoader} to initialize the object
+\end{itemize}
 
 \subsubsection{Sofa.BaseState}
 Methods :

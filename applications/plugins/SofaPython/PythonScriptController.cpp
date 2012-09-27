@@ -70,7 +70,7 @@ void PythonScriptController::loadScript()
     if (!m_Script)
     {
         // LOAD ERROR
-        std::cout << "<PYTHON> ERROR : "<<getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." << std::endl;
+        std::cout << "<SofaPython> ERROR : "<<getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." << std::endl;
         return;
     }
 

@@ -49,16 +49,16 @@ void PythonEnvironment::Init()
 {
     if (m_Initialized) return;
     // Initialize the Python Interpreter
-    std::cout<<"<PYTHON> Initializing python framework..."<<std::endl;
-    std::cout<<"<PYTHON> "<<Py_GetVersion()<<std::endl;
+    //std::cout<<"<SofaPython> Initializing python framework..."<<std::endl;
+    std::cout<<"<SofaPython> Python framework version: "<<Py_GetVersion()<<std::endl;
 //    PyEval_InitThreads();
     Py_Initialize();
-    std::cout<<"<PYTHON> Registering Sofa bindings..."<<std::endl;
+    //std::cout<<"<SofaPython> Registering Sofa bindings..."<<std::endl;
 
     // append sofa modules to the embedded python environment
     bindSofaPythonModule();
 
-    std::cout<<"<PYTHON> Initialization done."<<std::endl;
+    //std::cout<<"<SofaPython> Initialization done."<<std::endl;
 
     m_Initialized = true;
 
@@ -104,10 +104,10 @@ PyObject* PythonEnvironment::importScript( const char *filename )
 {
     Init(); // MUST be called at least once; so let's call it each time we load a python script
 
-    std::cout << "<PYTHON> Loading python script \""<<filename<<"\""<<std::endl;
+//    std::cout << "<SofaPython> Loading python script \""<<filename<<"\""<<std::endl;
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-//    std::cout << "<PYTHON> script directory \""<<dir<<"\""<<std::endl;
+//    std::cout << "<SofaPython> script directory \""<<dir<<"\""<<std::endl;
 
     // temp: directory always added to environment;
     // TODO: check if the path is already set to this directory...
@@ -115,30 +115,30 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     // append current path to Python module search path...
     std::string commandString = "sys.path.append(\""+dir+"\")";
 
-//    printf("<PYTHON> %s\n",commandString.c_str());
+//    printf("<SofaPython> %s\n",commandString.c_str());
 
     PyObject *pModule = 0;
 
     //  Py_BEGIN_ALLOW_THREADS
 
     PyRun_SimpleString("import sys");
-//    printf("<PYTHON> 1\n");
+//    printf("<SofaPython> 1\n");
     PyRun_SimpleString(commandString.c_str());
-//    printf("<PYTHON> 2\n");
+//    printf("<SofaPython> 2\n");
 
     // Load the module object
     pModule = PyImport_Import(PyString_FromString(bareFilename.c_str()));
-    //  printf("<PYTHON> 3\n");
+    //  printf("<SofaPython> 3\n");
 
     //  Py_END_ALLOW_THREADS
 
     if (!pModule)
     {
-        printf("<PYTHON> Script \"%s\" import error\n",bareFilename.c_str());
+        printf("<SofaPython> Script \"%s\" import error\n",bareFilename.c_str());
         PyErr_Print();
         return 0;
     }
-//    printf("<PYTHON> 5\n");
+//    printf("<SofaPython> 5\n");
 
     return pModule;
 }
@@ -164,7 +164,7 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
         }
         catch (const error_already_set e)
         {
-            printf("<PYTHON> exception\n");
+            printf("<SofaPython> exception\n");
             PyErr_Print();
 
         }

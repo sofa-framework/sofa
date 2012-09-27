@@ -22,31 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseContext.h>
-using namespace sofa::core::objectmodel;
+#ifndef BINDING_BASELOADER_H
+#define BINDING_BASELOADER_H
 
-#include "Binding_BaseObject.h"
-#include "Binding_Base.h"
+#include "PythonMacros.h"
 
-extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
-{
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
-    char *valueString;
-    PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
-    {
-        PyErr_BadArgument();
-        return 0;
-    }
-    BaseObject* loader=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyLoader)->object.get());
-    obj->setSrc(valueString,loader);
-    return Py_BuildValue("i",0);
-}
+SP_DECLARE_CLASS_TYPE(BaseLoader)
 
-
-SP_CLASS_METHODS_BEGIN(BaseObject)
-SP_CLASS_METHOD(BaseObject,setSrc)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(BaseObject,BaseObject,Base)
+#endif // BINDING_BASELOADER_H
