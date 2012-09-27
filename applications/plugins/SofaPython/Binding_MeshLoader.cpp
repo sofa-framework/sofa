@@ -22,31 +22,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseContext.h>
-using namespace sofa::core::objectmodel;
 
-#include "Binding_BaseObject.h"
-#include "Binding_Base.h"
+#include "Binding_MeshLoader.h"
+#include "Binding_BaseLoader.h"
 
-extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
+#include <sofa/core/loader/MeshLoader.h>
+using namespace sofa::core::loader;
+using namespace sofa::core;
+
+extern "C" PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
-    char *valueString;
-    PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
-    {
-        PyErr_BadArgument();
-        return 0;
-    }
-    BaseObject* loader=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyLoader)->object.get());
-    obj->setSrc(valueString,loader);
+    MeshLoader* obj=dynamic_cast<MeshLoader*>(((PySPtr<Base>*)self)->object.get());
+    obj->reinit();
     return Py_BuildValue("i",0);
 }
 
 
-SP_CLASS_METHODS_BEGIN(BaseObject)
-SP_CLASS_METHOD(BaseObject,setSrc)
+
+
+SP_CLASS_METHODS_BEGIN(MeshLoader)
+SP_CLASS_METHOD(MeshLoader,reinit)
+/*
+SP_CLASS_METHOD(MeshLoader,applyTranslation)
+SP_CLASS_METHOD(MeshLoader,applyRotation)
+SP_CLASS_METHOD(MeshLoader,applyScale)
+SP_CLASS_METHOD(MeshLoader,setTranslation)
+SP_CLASS_METHOD(MeshLoader,setRotation)
+SP_CLASS_METHOD(MeshLoader,setScale)
+SP_CLASS_METHOD(MeshLoader,getTranslation)
+SP_CLASS_METHOD(MeshLoader,getRotation)
+SP_CLASS_METHOD(MeshLoader,getScale)
+*/
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(BaseObject,BaseObject,Base)
+SP_CLASS_TYPE_SPTR(MeshLoader,MeshLoader,BaseLoader)
+
+

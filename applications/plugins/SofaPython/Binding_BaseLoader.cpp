@@ -22,31 +22,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseContext.h>
-using namespace sofa::core::objectmodel;
 
+#include "Binding_BaseLoader.h"
 #include "Binding_BaseObject.h"
-#include "Binding_Base.h"
 
-extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
+#include <sofa/core/loader/BaseLoader.h>
+using namespace sofa::core::loader;
+using namespace sofa::core;
+
+
+
+extern "C" PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
-    char *valueString;
-    PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
+    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    bool result = obj->load();
+    return PyBool_FromLong(result);
+}
+
+extern "C" PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
+{
+    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    bool result = obj->canLoad();
+    return PyBool_FromLong(result);
+}
+
+extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
+{
+    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    char *filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
     {
         PyErr_BadArgument();
         return 0;
     }
-    BaseObject* loader=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyLoader)->object.get());
-    obj->setSrc(valueString,loader);
+    obj->setFilename(filename);
     return Py_BuildValue("i",0);
 }
 
+extern "C" PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
+{
+    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    std::string filename = obj->getFilename();
+    return PyString_FromString(filename.c_str());
+}
 
-SP_CLASS_METHODS_BEGIN(BaseObject)
-SP_CLASS_METHOD(BaseObject,setSrc)
+
+
+SP_CLASS_METHODS_BEGIN(BaseLoader)
+SP_CLASS_METHOD(BaseLoader,load)
+SP_CLASS_METHOD(BaseLoader,canLoad)
+SP_CLASS_METHOD(BaseLoader,setFilename)
+SP_CLASS_METHOD(BaseLoader,getFilename)
+//SP_CLASS_METHOD(BaseLoader,skipToEOL)
+//SP_CLASS_METHOD(BaseLoader,readLine)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(BaseObject,BaseObject,Base)
+SP_CLASS_TYPE_SPTR(BaseLoader,BaseLoader,BaseObject)
+

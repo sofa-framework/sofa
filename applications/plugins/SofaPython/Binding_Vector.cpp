@@ -23,11 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Binding_Vec3.h"
+#include "Binding_Vector.h"
 
-extern "C" PyObject * Vec3_getAttr_x(PyObject *self, void*)
+extern "C" PyObject * Vector3_getAttr_x(PyObject *self, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -35,9 +35,9 @@ extern "C" PyObject * Vec3_getAttr_x(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->x());
 }
-extern "C" int Vec3_setAttr_x(PyObject *self, PyObject * args, void*)
+extern "C" int Vector3_setAttr_x(PyObject *self, PyObject * args, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -47,9 +47,9 @@ extern "C" int Vec3_setAttr_x(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
-extern "C" PyObject * Vec3_getAttr_y(PyObject *self, void*)
+extern "C" PyObject * Vector3_getAttr_y(PyObject *self, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -57,9 +57,9 @@ extern "C" PyObject * Vec3_getAttr_y(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->y());
 }
-extern "C" int Vec3_setAttr_y(PyObject *self, PyObject * args, void*)
+extern "C" int Vector3_setAttr_y(PyObject *self, PyObject * args, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -69,9 +69,9 @@ extern "C" int Vec3_setAttr_y(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
-extern "C" PyObject * Vec3_getAttr_z(PyObject *self, void*)
+extern "C" PyObject * Vector3_getAttr_z(PyObject *self, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -79,9 +79,9 @@ extern "C" PyObject * Vec3_getAttr_z(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->z());
 }
-extern "C" int Vec3_setAttr_z(PyObject *self, PyObject * args, void*)
+extern "C" int Vector3_setAttr_z(PyObject *self, PyObject * args, void*)
 {
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -95,33 +95,33 @@ extern "C" int Vec3_setAttr_z(PyObject *self, PyObject * args, void*)
 // =============================================================================
 // (de)allocator
 // =============================================================================
-PyObject * Vec3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*kwds*/)
+PyObject * Vector3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*kwds*/)
 {
-    Vec3 *obj = new Vec3();
+    Vector3 *obj = new Vector3();
     double x,y,z;
     if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
         return 0;
     obj->x()=x;
     obj->y()=y;
     obj->z()=z;
-    return SP_BUILD_PYPTR(Vec3,Vec3,obj,true); // "true", because I manage the deletion myself (below)
+    return SP_BUILD_PYPTR(Vector3,Vector3,obj,true); // "true", because I manage the deletion myself (below)
 }
-void Vec3_PyFree(void * self)
+void Vector3_PyFree(void * self)
 {
-    if (!((PyPtr<Vec3>*)self)->deletable) return;
-    Vec3* obj=dynamic_cast<Vec3*>(((PyPtr<Vec3>*)self)->object);
+    if (!((PyPtr<Vector3>*)self)->deletable) return;
+    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
     delete obj; // done!
 }
 
 
 
-SP_CLASS_METHODS_BEGIN(Vec3)
+SP_CLASS_METHODS_BEGIN(Vector3)
 SP_CLASS_METHODS_END
 
-SP_CLASS_ATTRS_BEGIN(Vec3)
-SP_CLASS_ATTR(Vec3,x)
-SP_CLASS_ATTR(Vec3,y)
-SP_CLASS_ATTR(Vec3,z)
+SP_CLASS_ATTRS_BEGIN(Vector3)
+SP_CLASS_ATTR(Vector3,x)
+SP_CLASS_ATTR(Vector3,y)
+SP_CLASS_ATTR(Vector3,z)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Vec3,Vec3)
+SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(Vector3,Vector3)

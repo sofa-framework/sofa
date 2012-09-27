@@ -102,7 +102,7 @@ extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
         return list;
     }
     // default (should not happen)...
-    printf("<PYTHON> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
+    printf("<SofaPython> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
     return PyString_FromString(data->getValueString().c_str());
 }
 
@@ -171,7 +171,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         if (PyList_Size(args)!=typeinfo->size())
         {
             // only a warning; do not raise an exception...
-            printf("<PYTHON> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
+            printf("<SofaPython> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
             if (PyList_Size(args)<typeinfo->size())
                 size = PyList_Size(args);
         }
@@ -239,7 +239,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         return 0;
     }
 
-    printf("<PYTHON> argument type not supported\n");
+    printf("<SofaPython> argument type not supported\n");
     PyErr_BadArgument();
     return -1;
 }
@@ -258,7 +258,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
-        printf("<PYTHON> Error: Data.getValue index overflow\n");
+        printf("<SofaPython> Error: Data.getValue index overflow\n");
         PyErr_BadArgument();
         return 0;
     }
@@ -270,7 +270,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
         return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
 
     // should never happen....
-    printf("<PYTHON> Error: Data.getValue unknown data type\n");
+    printf("<SofaPython> Error: Data.getValue unknown data type\n");
     PyErr_BadArgument();
     return 0;
 }
@@ -288,7 +288,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
-        printf("<PYTHON> Error: Data.setValue index overflow\n");
+        printf("<SofaPython> Error: Data.setValue index overflow\n");
         PyErr_BadArgument();
         return 0;
     }
@@ -309,7 +309,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     }
 
     // should never happen....
-    printf("<PYTHON> Error: Data.setValue type mismatch\n");
+    printf("<SofaPython> Error: Data.setValue type mismatch\n");
     PyErr_BadArgument();
     return 0;
 }

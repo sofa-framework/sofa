@@ -35,15 +35,6 @@ using namespace sofa::core::objectmodel;
 
 
 
-// parameters convertion
-/*
-PyObject* _PyObject_cast(bool b) {return PyBool_FromLong(b);}
-PyObject* _PyObject_cast(int i) {return PyLong_FromLong(i);}
-PyObject* _PyObject_cast(float f) {return PyFloat_FromDouble(f);}
-PyObject* _PyObject_cast(double f) {return PyFloat_FromDouble(f);}
-PyObject* _PyObject_cast(char* str) {return PyString_FromString(str);}
-*/
-
 // =============================================================================
 // Python structures names in sofa...
 // naming convention:
@@ -308,7 +299,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
-#define SP_CALL(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
-#define SP_CALL_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<PYTHON> exception\n"); PyErr_Print(); } } }
+#define SP_CALL(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
+#define SP_CALL_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
 
 #endif // PYTHONMACROS_H

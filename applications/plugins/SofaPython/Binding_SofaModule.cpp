@@ -41,37 +41,28 @@ using namespace sofa::simulation;
 
 
 // object factory
-extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * /*args*/)
+extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args)
 {
-    /*
-    PyObject* pyContext;
     PyObject* pyDesc;
-    if (!PyArg_ParseTuple(args, "OO",&pyContext,&pyDesc))
+    if (!PyArg_ParseTuple(args, "O",&pyDesc))
+    {
+        PyErr_BadArgument();
         return 0;
-    BaseContext *context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)pyContext)->object.get());
+    }
     BaseObjectDescription *desc=(((PyPtr<BaseObjectDescription>*)pyDesc)->object);
 
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,desc);//.get();
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(0,desc);//.get();
     if (obj==0)
     {
-        printf("<PYTHON> ERROR createObject '%s' of type '%s' in node '%s'\n",
+        printf("<SofaPython> ERROR createObject '%s' of type '%s''\n",
                 desc->getName().c_str(),
-                desc->getAttribute("type",""),
-                context->getName().c_str());
+                desc->getAttribute("type",""));
         PyErr_BadArgument();
         return 0;
     }
 
-    obj->init();
-
-
     // par défaut, ce sera toujours au minimum un BaseObject...
     return SP_BUILD_PYSPTR(obj.get());
-    */
-    // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.creatObject(BaseContext,BaseObjectDescription) is deprecated.\nPlease use BaseContext.createObject(BaseObjectDescription) instead.\n");
-    PyErr_BadArgument();
-    return 0;
 }
 
 
@@ -94,7 +85,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
         return SP_BUILD_PYSPTR(sptr.get());
     */
     // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.\n");
+    printf("<SofaPython> ERROR: Sofa.getObject(BaseContext,path) is deprecated.\nPlease use BaseContext.getObject(path) instead.\n");
     PyErr_BadArgument();
     return 0;
 
@@ -126,13 +117,13 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
         }
     if (!childNode)
     {
-        printf("<PYTHON> Error: Sofa.getChildNode(%s) not found.\n",path);
+        printf("<SofaPython> Error: Sofa.getChildNode(%s) not found.\n",path);
         return 0;
     }
     return SP_BUILD_PYSPTR(childNode);
     */
     // deprecated on date 2012/07/18
-    printf("<PYTHON> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.\n");
+    printf("<SofaPython> ERROR: Sofa.getChildNode(Node,path) is deprecated.\nPlease use Node.getChild(path) instead.\n");
     PyErr_BadArgument();
     return 0;
 }
@@ -149,7 +140,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
-        printf("<PYTHON> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
+        printf("<SofaPython> ERROR sendGUIMessage(%s,%s): no GUI !!\n",msgType,msgValue);
         return Py_BuildValue("i",-1);
     }
     gui->sendMessage(msgType,msgValue);
@@ -163,7 +154,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
-SP_MODULE_METHOD(Sofa,createObject)     // deprecated on date 2012/07/18
+SP_MODULE_METHOD(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,sendGUIMessage)

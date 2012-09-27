@@ -53,7 +53,7 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
 {
     Controller::parse(arg);
 
-    std::cout<<getName()<<" ScriptController::parse"<<std::endl;
+    //std::cout<<getName()<<" ScriptController::parse"<<std::endl;
 
     // load & bind script
     loadScript();

@@ -22,16 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_VEC3_H
-#define BINDING_VEC3_H
-
-#include <sofa/defaulttype/SolidTypes.h>
-using namespace sofa::defaulttype;
-
-typedef Vec<3,SReal> Vec3;
+#ifndef BINDING_MESHLOADER_H
+#define BINDING_MESHLOADER_H
 
 #include "PythonMacros.h"
 
-SP_DECLARE_CLASS_TYPE(Vec3)
+SP_DECLARE_CLASS_TYPE(MeshLoader)
 
-#endif // BINDING_VEC3_H
+#endif // BINDING_MESHLOADER_H
