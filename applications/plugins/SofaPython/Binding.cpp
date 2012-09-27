@@ -38,6 +38,7 @@
 #include "Binding_BaseLoader.h"
 #include "Binding_MeshLoader.h"
 #include "Binding_Topology.h"
+#include "Binding_MechanicalObject.h"
 
 #include <Python.h>
 
@@ -62,6 +63,7 @@ void bindSofaPythonModule()
             SP_ADD_CLASS(SofaPythonModule,Node)
             SP_ADD_CLASS(SofaPythonModule,BaseObject)
             SP_ADD_CLASS(SofaPythonModule,BaseState)
+            SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
             SP_ADD_CLASS(SofaPythonModule,BaseLoader)
             SP_ADD_CLASS(SofaPythonModule,MeshLoader)
             SP_ADD_CLASS(SofaPythonModule,Topology)

@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_TOPOLOGY_H
-#define BINDING_TOPOLOGY_H
+#ifndef BINDING_MECHANICALOBJECT_H
+#define BINDING_MECHANICALOBJECT_H
 
 #include "PythonMacros.h"
 
-SP_DECLARE_CLASS_TYPE(Topology)
+SP_DECLARE_CLASS_TYPE(MechanicalObject)
 
-#endif // BINDING_TOPOLOGY_H
+#endif // BINDING_MECHANICALOBJECT_H

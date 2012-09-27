@@ -37,7 +37,7 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 \begin{figure}[htbp]
 \begin{center}
 \Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ] ] 
-			[.BaseObject BaseState [.BaseLoader MeshLoader ] 
+			[.BaseObject [.BaseState MechanicalObject ] [.BaseLoader MeshLoader ] 
 			[.Topology MeshTopology ] ] ]
 \Tree [.BaseObjectDescription ]
 \Tree [.Vector3 ]
@@ -102,6 +102,20 @@ Methods :
 Methods :
 \begin{itemize}
 \item \textcode{resize(size)}
+\end{itemize}
+
+\subsubsection{Sofa.MechanicalObject}
+Methods :
+\begin{itemize}
+\item \textcode{setTranslation(x,y,z)} Initial transformations accessor.
+\item \textcode{setRotation(x,y,z)} Initial transformations accessor. Euler angles in degrees.
+\item \textcode{setScale(x,y,z)} Initial transformations accessor.
+\item \textcode{getTranslation()} returns a \textcode{Sofa.Vector3} object. Initial transformations accessor.
+\item \textcode{getRotation()} returns a \textcode{Sofa.Vector3} object. Initial transformations accessor. Euler angles in degrees.
+\item \textcode{getScale()} returns a \textcode{Sofa.Vector3} object. Initial transformations accessor.
+\item \textcode{applyTranslation(x,y,z)}
+\item \textcode{applyRotation(x,y,z)} Euler angles in degrees.
+\item \textcode{applyScale(x,y,z)} 
 \end{itemize}
 
 \subsubsection{Sofa.BaseContext}
