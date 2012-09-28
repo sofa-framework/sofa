@@ -1,0 +1,66 @@
+# SEE https://wiki.sofa-framework.org/wiki/SetupSVN
+
+### Section for configuring miscelleneous Subversion options.
+[miscellany]
+### Set enable-auto-props to 'yes' to enable automatic properties
+### for 'svn add' and 'svn import', it defaults to 'no'.
+### Automatic properties are defined in the section 'auto-props'.
+enable-auto-props = yes
+
+### Section for configuring automatic properties.
+[auto-props]
+*.c = svn:mime-type=text/x-csrc;svn:eol-style=native
+*.h = svn:mime-type=text/x-chdr;svn:eol-style=native
+*.C = svn:mime-type=text/x-c++src;svn:eol-style=native
+*.H = svn:mime-type=text/x-c++hdr;svn:eol-style=native
+*.cpp = svn:mime-type=text/x-c++src;svn:eol-style=native
+*.cxx = svn:mime-type=text/x-c++src;svn:eol-style=native
+*.hpp = svn:mime-type=text/x-c++hdr;svn:eol-style=native
+*.inl = svn:mime-type=text/x-c++hdr;svn:eol-style=native
+*.cu = svn:mime-type=text/x-csrc;svn:eol-style=native
+*.cuh = svn:mime-type=text/x-chdr;svn:eol-style=native
+*.cl = svn:mime-type=text/x-csrc;svn:eol-style=native
+*.macrocl = svn:mime-type=text/x-csrc;svn:eol-style=native
+*.py = svn:mime-type=text/x-python;svn:eol-style=native
+*.pl = svn:mime-type=text/x-perl;svn:eol-style=native
+*.pm = svn:mime-type=text/x-perl;svn:eol-style=native
+*.perl = svn:mime-type=text/x-perl;svn:eol-style=native
+*.java = svn:mime-type=text/x-java;svn:eol-style=native
+*.m = svn:mime-type=text/x-objc;svn:eol-style=native
+*.mm = svn:mime-type=text/x-objc;svn:eol-style=native
+*.objc = svn:mime-type=text/x-objc;svn:eol-style=native
+*.tex = svn:mime-type=text/x-tex;svn:eol-style=native
+*.bib = svn:mime-type=text/x-bibtex;svn:eol-style=native
+*.pro = svn:mime-type=text/plain;svn:eol-style=native
+*.pri = svn:mime-type=text/plain;svn:eol-style=native
+*.prf = svn:mime-type=text/plain;svn:eol-style=native
+*.cfg = svn:mime-type=text/x-ini;svn:eol-style=native
+*.ini = svn:mime-type=text/x-ini;svn:eol-style=native
+*.dsp = svn:mime-type=text/plain;svn:eol-style=CRLF
+*.dsw = svn:mime-type=text/plain;svn:eol-style=CRLF
+*.bat = svn:mime-type=text/x-msdos-batch;svn:eol-style=CRLF;svn:executable
+*.sh = svn:mime-type=text/x-shellscript;svn:eol-style=native;svn:executable
+*.awk = svn:mime-type=text/x-awk;svn:eol-style=native
+*.txt = svn:mime-type=text/plain;svn:eol-style=native
+*.scn = svn:mime-type=text/xml;svn:eol-style=native
+*.pscn = svn:mime-type=text/x-php;svn:eol-style=native
+*.xml = svn:mime-type=text/xml;svn:eol-style=native
+*.html = svn:mime-type=text/html;svn:eol-style=native
+*.htm = svn:mime-type=text/html;svn:eol-style=native
+*.php = svn:mime-type=text/x-php;svn:eol-style=native
+*.php3 = svn:mime-type=text/x-php;svn:eol-style=native
+*.php4 = svn:mime-type=text/x-php;svn:eol-style=native
+*.php5 = svn:mime-type=text/x-php;svn:eol-style=native
+*.css = svn:mime-type=text/css;svn:eol-style=native
+*.png = svn:mime-type=image/png
+*.jpg = svn:mime-type=image/jpeg
+*.jpeg = svn:mime-type=image/jpeg
+*.gif = svn:mime-type=image/gif
+*.ico = svn:mime-type=image/vnd.microsoft.icon
+*.svg = svn:mime-type=image/svg+xml
+*.xcf = svn:mime-type=image/x-xcf
+*.tif = svn:mime-type=image/tiff
+*.tiff = svn:mime-type=image/tiff
+*.pdf = svn:mime-type=application/pdf
+*.eps = svn:mime-type=application/postscript
+Makefile = svn:mime-type=text/x-makefile;svn:eol-style=native
