@@ -3,7 +3,7 @@
 ########################################################################
 
 # Uncomment to activate internal in-development codes put inside SOFA_DEV blocks
-DEFINES += SOFA_DEV
+# DEFINES += SOFA_DEV
 
 # Uncomment SOFA_RELEASE to restrict compilation to to-be-released codes
 # DEFINES += SOFA_RELEASE
