@@ -1,9 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Frame-based Elastic Materials</title>
 
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Frame-based Elastic Materials</title></head><body>
+</head><body>
 <h1 style="text-align: center;">Frame-based Elastic Materials</h1>
 
 <div style="text-align: center;"><br>
@@ -17,7 +19,8 @@
 
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;"><a name="Video_steak"></a>Video:</span> Example of volumetric data, discretization and animations.<br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;"><a name="Video_steak"></a>Video:</span>
+Example of volumetric data, discretization and animations.<br>
       </td>
     </tr>
     <tr>
@@ -43,6 +46,8 @@
 <ul>
 
   <li><a href="#Introduction">Introduction</a></li>
+  <li><a href="#Installation">Installation</a><br>
+  </li>
   <li><a href="#Examples">Examples</a></li>
   <ul>
     <li><a href="#Simple_example">simple</a></li>
@@ -53,7 +58,7 @@
   </ul>
   <li><a href="#Code_documentation">Code documentation</a></li>
   <li><a href="#Publications">Publications</a></li>
-  <li><a href="#Plugin_project_organization">Plugin project organization</a></li>
+  
   <li><a href="#Copyright">Intellectual property and rights</a><br>
   </li>
 </ul>
@@ -93,6 +98,18 @@ and to compute the weight functions of the frames.<br>
 More detail is given in the main page of the <a href="#Code_documentation">code documentation</a>.<br>
 
 <br>
+<h2><a name="Installation"></a>
+Installation</h2>
+<ul>
+  <li>Uncheck DEFINES += SOFA_HAVE_FRAME in your sofa-local.cfg file
+and build the project (depending on your platform, you may have to
+regenerate the Makefile or the Solution)<br>
+  </li>
+  <li>For a better viewing, activate and use the QGLViewer.<br>
+  </li>
+</ul>
+
+<br>
 
 <h2><a name="Examples"></a>Examples</h2>
 
@@ -112,8 +129,10 @@ In this
 simple example (file&nbsp; <a href="basic_Affine-D332.scn" target="_blank">basic_Affine-D332.scn</a>), the moving frames (shown
 as red, green, blue frames) are in the <span style="font-style: italic;">Beam</span> parent node, while the <span style="font-style: italic;">Physics</span> child node contains
 deformation gradients (or elastons). A skinning (also called
-frame blending) mapping , <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp; updates the child based on the parent. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.
-Here it maps only to one sample, shown as a yellow cross. It is an elaston
+frame blending) mapping , <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp;
+updates the child based on the parent. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.
+Here it maps only to one sample, shown as a yellow cross. It is an
+elaston
 ( <span style="font-style: italic;">DeformationGradient332</span>
 template specialization), therefore a single one is sufficient to
 capture all the deformation modes between the two affine frames.<br>
@@ -272,31 +291,6 @@ Transactions on Graphics</i>, ACM, 2011, Proceedings of SIGGRAPH'2011</dd>
 </dl>
 
 <br>
-
-<h2><a name="Plugin_project_organization"></a>Plugin project
-organization</h2>
-
-The plugin source files are in <span style="font-family: monospace;">applications/plugins/frame</span><br>
-Examples are in <span style="font-family: monospace;">applications/plugins/frame/examples<br>
-</span>This documentation is in <span style="font-family: monospace;">applications/plugins/frame/doc</span><br>
-<br>
-
-The following project configuration was set up:
-<ul>
-
-  <li>Add the following line to file <samp>sofa-local.prf</samp>:
-    <pre>DEFINES += SOFA_HAVE_FRAME</pre>
-  </li>
-  <li>The following config hat been set up and you should not have to
-modify it:<br>
-  </li>
-  <ul>
-    <li>Added the following lines to file&nbsp; <samp>Sofa.pro</samp>
-:<br>
-      <code> contains(DEFINES, SOFA_HAVE_FRAME) { usePlugin(frame) } </code></li>
-  </ul>
-</ul>
-
 <h2><a name="Copyright"></a>Intellectual property and rights</h2>
 
 <br>
