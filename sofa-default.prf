@@ -343,8 +343,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # DEFINES += SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER  # Note that you must define SOFA_GPU_CUDA to use this plugin.
 # DEFINES += SOFA_HAVE_VOXELIZER                       # Note that you must define SOFA_GPU_CUDA to use this plugin.
 # DEFINES += SOFA_HAVE_PHYSICALFIELDMODELING           # (reaction-diffusion propagation).
-# DEFINES += SOFA_HAVE_FRAME                           # Frame-based meshless simulation of deformable solids
-# DEFINES += SOFA_HAVE_IMAGE
 # DEFINES += SOFA_HAVE_LIBFREENECT
    # SOFA_LIBFREENECT_PATH = /usr/include
 # DEFINES += SOFA_HAVE_REGISTRATION
@@ -364,6 +362,8 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 win32{
   # OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk
 }
+# DEFINES += SOFA_HAVE_FRAME                           # Frame-based meshless simulation of deformable solids
+# DEFINES += SOFA_HAVE_IMAGE
 # DEFINES += SOFA_HAVE_PLUGIN_COLLADA
 # DEFINES += SOFA_HAVE_PLUGIN_FEM
 # DEFINES += SOFA_HAVE_PLUGIN_Flexible   # Experimental unification of FEM and meshless deformable solids
