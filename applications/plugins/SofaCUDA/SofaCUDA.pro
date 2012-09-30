@@ -57,6 +57,8 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaSphereForceField.inl \
            sofa/gpu/cuda/CudaEllipsoidForceField.h \
            sofa/gpu/cuda/CudaEllipsoidForceField.inl \
+           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h \
+           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl \
            sofa/gpu/cuda/CudaIdentityMapping.h \
            sofa/gpu/cuda/CudaIdentityMapping.inl \
            sofa/gpu/cuda/CudaBarycentricMapping.h \
@@ -108,6 +110,7 @@ SOURCES += main.cpp \
            sofa/gpu/cuda/CudaPlaneForceField.cpp \
            sofa/gpu/cuda/CudaSphereForceField.cpp \
            sofa/gpu/cuda/CudaEllipsoidForceField.cpp \
+           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp \
            sofa/gpu/cuda/CudaIdentityMapping.cpp \
            sofa/gpu/cuda/CudaBarycentricMapping.cpp \
            sofa/gpu/cuda/CudaBarycentricMapping-f.cpp \
@@ -150,6 +153,7 @@ CUDA_SOURCES += sofa/gpu/cuda/mycuda.cu \
            sofa/gpu/cuda/CudaPlaneForceField.cu \
            sofa/gpu/cuda/CudaSphereForceField.cu \
            sofa/gpu/cuda/CudaEllipsoidForceField.cu \
+           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu \
            sofa/gpu/cuda/CudaBarycentricMapping.cu \
            sofa/gpu/cuda/CudaRigidMapping.cu \
            sofa/gpu/cuda/CudaSubsetMapping.cu \

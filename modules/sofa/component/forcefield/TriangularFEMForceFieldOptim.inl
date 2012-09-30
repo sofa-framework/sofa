@@ -206,8 +206,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     const VecElement& triangles = _topology->getTriangles();
     const  VecCoord& x = *this->mstate->getX();
     const  VecCoord& x0 = *this->mstate->getX0();
-    helper::vector<TriangleInfo>& triangleInf = *(triangleInfo.beginEdit());
-    helper::vector<TriangleState>& triangleSta = *(triangleState.beginEdit());
+    VecTriangleInfo& triangleInf = *(triangleInfo.beginEdit());
+    VecTriangleState& triangleSta = *(triangleState.beginEdit());
     triangleInf.resize(nbTriangles);
     triangleSta.resize(nbTriangles);
 
@@ -220,15 +220,17 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     triangleState.endEdit();
 
     /// prepare to store info in the edge array
-    helper::vector<EdgeInfo>& edgeInf = *(edgeInfo.beginEdit());
+    VecEdgeInfo& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
     edgeInfo.endEdit();
 
     /// prepare to store info in the vertex array
     unsigned int nbPoints = _topology->getNbPoints();
-    helper::vector<VertexInfo>& vi = *(vertexInfo.beginEdit());
+    VecVertexInfo& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
     vertexInfo.endEdit();
+
+    data.reinit(this);
 }
 
 
@@ -249,8 +251,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f = d_f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > x = d_x;
-    sofa::helper::WriteAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecTriangleState > > triState = triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = triangleInfo;
 
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
@@ -309,8 +311,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df = d_df;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > dx = d_dx;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = triangleInfo;
 
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
@@ -373,8 +375,8 @@ template<class DataTypes>
 template<class MatrixWriter>
 void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = triangleInfo;
     const Real kFactor = (Real)mparams->kFactor();
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
@@ -533,8 +535,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     unsigned int nbTriangles=_topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
 
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleState> > > triState = triangleState;
-    sofa::helper::ReadAccessor< core::objectmodel::Data< helper::vector<TriangleInfo> > > triInfo = triangleInfo;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = triangleState;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = triangleInfo;
     const bool showStressValue = this->showStressValue.getValue();
     const bool showStressVector = this->showStressVector.getValue();
     if (showStressValue || showStressVector)

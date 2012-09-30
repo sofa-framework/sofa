@@ -49,6 +49,18 @@ namespace component
 namespace forcefield
 {
 
+template<class DataTypes>
+class SOFA_SIMPLE_FEM_API TriangularFEMForceFieldOptim;
+
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class TriangularFEMForceFieldOptimInternalData
+{
+public:
+    typedef TriangularFEMForceFieldOptim<DataTypes> Main;
+    void reinit(Main* /*m*/) {}
+};
+
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -101,6 +113,9 @@ protected:
     typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
+
+    typedef TriangularFEMForceFieldOptimInternalData<DataTypes> InternalData;
+    InternalData data;
 
 protected:
     /// ForceField API
@@ -236,16 +251,20 @@ public:
     };
 
     /// Topology Data
-    topology::TriangleData<sofa::helper::vector<TriangleInfo> > triangleInfo;
-    topology::TriangleData<sofa::helper::vector<TriangleState> > triangleState;
-    topology::PointData<sofa::helper::vector<VertexInfo> > vertexInfo;
-    topology::EdgeData<sofa::helper::vector<EdgeInfo> > edgeInfo;
+    typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
+    typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
+    typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
+    typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
+    topology::TriangleData<VecTriangleInfo> triangleInfo;
+    topology::TriangleData<VecTriangleState> triangleState;
+    topology::PointData<VecVertexInfo> vertexInfo;
+    topology::EdgeData<VecEdgeInfo> edgeInfo;
 
 
-    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,vector<TriangleInfo> >
+    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
     {
     public:
-        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInfo> >(_data), ff(_ff) {}
+        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleInfo >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleInfo >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInfo& ,
                 const Triangle & t,
@@ -268,10 +287,10 @@ public:
         computeTriangleRotation(result,x0[t[0]], x0[t[1]], x0[t[2]]);
     }
 
-    class TFEMFFOTriangleStateHandler : public topology::TopologyDataHandler<Triangle,vector<TriangleState> >
+    class TFEMFFOTriangleStateHandler : public topology::TopologyDataHandler<Triangle,VecTriangleState >
     {
     public:
-        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleState> >* _data) : topology::TopologyDataHandler<Triangle, sofa::helper::vector<TriangleState> >(_data), ff(_ff) {}
+        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleState >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleState >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleState& ,
                 const Triangle & t,
