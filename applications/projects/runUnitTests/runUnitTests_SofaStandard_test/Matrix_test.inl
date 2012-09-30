@@ -32,11 +32,11 @@ BOOST_AUTO_TEST_CASE( eiBlock1_vector_product )
 {
     eiBlock1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
+
 }
 BOOST_AUTO_TEST_CASE( crs1_vector_product )
 {
-//    BOOST_WARN_MESSAGE( nrows%BROWS==0 && ncols%BCOLS==0, "nrows=" << nrows<<", BROWS="<< (int)BROWS <<", nrows%BROWS=="<<nrows%BROWS<<", ncols=" << ncols << ", BCOLS=" << (int)BCOLS <<", ncols%BCOLS=" << ncols%BCOLS );
-    BOOST_REQUIRE( NROWS%BROWS==0 && NCOLS%BCOLS==0 ); // otherwise the product crashes
+    BOOST_REQUIRE_MESSAGE( NROWS%BROWS==0 && NCOLS%BCOLS==0, "Error: CompressedRowSparseMatrix * Vector crashes when the size of the matrix is not a multiple of the size of the matrix blocks. Aborting this test, and reporting a failure." ); // otherwise the product crashes
     crs1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 }
