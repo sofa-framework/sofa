@@ -234,13 +234,13 @@ struct TestSparseMatrices
 
 typedef TestSparseMatrices<double,4,8,2,2> Ts1;
 BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_2_2, Ts1 );
-#include "MatrixTest.inl"
+#include "Matrix_test.inl"
 BOOST_AUTO_TEST_SUITE_END();
 
 
 typedef TestSparseMatrices<float,4,8,2,3> Ts2;
 BOOST_FIXTURE_TEST_SUITE( SparseMatrix_float_4_8_2_2, Ts2 );
-#include "MatrixTest.inl"
+#include "Matrix_test.inl"
 BOOST_AUTO_TEST_SUITE_END();
 
 
