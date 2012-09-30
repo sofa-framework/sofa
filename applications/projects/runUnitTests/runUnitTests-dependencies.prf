@@ -1,0 +1,8 @@
+includeOnce($$_FILE_) {
+	declare(runUnitTests, applications/projects/runUnitTests, sofa_eigen2_solver sofa_component )
+	declare(runUnitTests_SofaStandard_test, applications/projects/runUnitTests/runUnitTests_SofaStandard_test, sofa_eigen2_solver sofa_component )
+	enable(runUnitTests_SofaStandard_test)
+	enable(runUnitTests)
+}
+
+
