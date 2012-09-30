@@ -1,7 +1,9 @@
 load(sofa/pre)
 
 TEMPLATE = lib
-TARGET  = runUnitTests_SofaStandard_test
+
+HEADERS += \
+    Matrix_test.inl \
 
 SOURCES += \
     Matrix_test.cpp \
