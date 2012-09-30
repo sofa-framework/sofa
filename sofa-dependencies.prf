@@ -213,21 +213,11 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Flexible) {
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant) {
     declare(Compliant, applications/plugins/Compliant/Compliant_lib, Flexible sofaguiqt sofa_eigen2_solver   )
-#    declare(Compliant_test, applications/plugins/Compliant/Compliant_test, Compliant Flexible sofaobjectcreator  sofaguimain sofa_component sofabgl sofa_misc_collision )
     declare(Compliant_test, applications/plugins/Compliant/Compliant_test,  Compliant sofa_component )
     declare(Compliant_run, applications/plugins/Compliant/Compliant_run,  Compliant  sofa_component sofaguimain sofaguiqt )
     enable(Compliant)
     enable(Compliant_test)
     enable(Compliant_run)
-}
-#contains(DEFINES, SOFA_HAVE_FRAME) {
-#    declare(frame, applications/plugins/frame, sofaguiqt sofa_sparse_solver sofa_eigen2_solver   )
-#    enable(frame)
-#}
-
-contains(DEFINES, SOFA_PROJECT_runUnitTests) {
-declare(runUnitTests, applications/projects/runUnitTests, sofa_eigen2_solver sofa_component )
-enable(runUnitTests)
 }
 
 contains(DEFINES, SOFA_HAVE_EmptyPlugin2) {
@@ -481,6 +471,8 @@ contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, 
 ######################################################################
 
 useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
+#useApp(runUnitTests,   applications/projects/runUnitTests  )
+contains(DEFINES, SOFA_PROJECT_runUnitTests) { useApp(runUnitTests, applications/projects/runUnitTests ) }
 
 
 }
