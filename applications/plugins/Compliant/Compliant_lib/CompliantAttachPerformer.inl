@@ -171,7 +171,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    helper::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
+    defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
     ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
 
