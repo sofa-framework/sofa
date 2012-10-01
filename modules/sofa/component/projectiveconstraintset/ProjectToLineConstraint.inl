@@ -207,7 +207,6 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
     // fill the jacobian in ascending order
-    Indices::const_iterator it= tmp.begin();
     unsigned i=0;
     for(Indices::const_iterator it= tmp.begin(); i<numBlocks; i++ )
     {

@@ -433,7 +433,7 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
 void RecordedCamera::drawRotation()
 {
     Vec3 _pos = m_rotationStartPoint.getValue();
-    Vec3 _center = m_rotationCenter.getValue();
+    //Vec3 _center = m_rotationCenter.getValue();
 
     //double _initAngle = 0.0;
 

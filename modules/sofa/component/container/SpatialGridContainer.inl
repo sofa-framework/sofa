@@ -531,7 +531,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
     unsigned int next = 0;
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
     {
-        Key k = itg->first;
+        //Key k = itg->first;
         Grid* g = itg->second;
         if (g->empty) continue;
         for (int i=0; i<NCELL; ++i)

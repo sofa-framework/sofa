@@ -121,7 +121,7 @@ void Quad2TriangleTopologicalMapping::init()
             // These values are only correct if the mesh is a grid topology
             int nx = 2;
             int ny = 1;
-            int nz = 1;
+            //int nz = 1;
 
             {
                 topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
@@ -129,7 +129,7 @@ void Quad2TriangleTopologicalMapping::init()
                 {
                     nx = grid->getNx()-1;
                     ny = grid->getNy()-1;
-                    nz = grid->getNz()-1;
+                    //nz = grid->getNz()-1;
                 }
             }
 

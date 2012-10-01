@@ -541,17 +541,17 @@ void MeshExporter::writeMeshGmsh()
 
     //Write Cells
     outfile << "$Elements\n";
-    unsigned int numberOfCells, totalSize;
+    unsigned int numberOfCells/*, totalSize*/;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
             +( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
             +( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
-    totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
+    /*totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
             +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
             +( (writeTetras.getValue()) ? 5 *topology->getNbTetras() : 0 )
-            +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
+            +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );*/
 
 
     outfile << numberOfCells << "\n";

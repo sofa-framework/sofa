@@ -268,8 +268,8 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
 bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
 {
     std::string cmd;
-    int npoints = 0;
-    int nlines = 0;
+    //int npoints = 0;
+    //int nlines = 0;
 
     int totalNumMasses;
     int totalNumSprings;
@@ -280,14 +280,14 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
     {
         file >> totalNumMasses;
         setNbPoints(totalNumMasses);
-        npoints=totalNumMasses;
+        //npoints=totalNumMasses;
     }
 
     if (cmd=="nums")
     {
         file >> totalNumSprings;
         setNbLines(totalNumSprings);
-        nlines=totalNumSprings;
+        //nlines=totalNumSprings;
         //		setNumSprings(totalNumSprings);
     }
 
@@ -301,13 +301,13 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            bool fixed=false;
+            //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             if (mass < 0)
             {
                 // fixed point initialization
                 mass = -mass;
-                fixed = true;
+                //fixed = true;
             }
             addPoint(px,py,pz);
         }
@@ -921,7 +921,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
     VTKDataIO<int>* inputPolygons = NULL;
     VTKDataIO<int>* inputCells = NULL;
     VTKDataIO<int>* inputCellTypes = NULL;
-    int nbp = 0, nbf = 0;
+    int /*nbp = 0,*/ nbf = 0;
     while(!inVTKFile.eof())
     {
         std::getline(inVTKFile, line);
@@ -938,7 +938,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
             if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
-            nbp = n;
+            //nbp = n;
         }
         else if (kw == "POLYGONS")
         {

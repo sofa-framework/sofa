@@ -385,7 +385,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     VTKDataIO<int>* inputCellTypesInt = NULL;
     inputCellOffsets = NULL;
 
-    int nbp = 0, nbf = 0;
+    int /*nbp = 0, */nbf = 0;
     while(!inVTKFile.eof())
     {
         std::getline(inVTKFile, line);
@@ -403,7 +403,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             //inputPoints = new VTKDataIO<double>;
             if (inputPoints == NULL) return false;
             if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
-            nbp = n;
+            //nbp = n;
         }
         else if (kw == "POLYGONS")
         {

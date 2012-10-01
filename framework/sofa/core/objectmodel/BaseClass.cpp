@@ -82,7 +82,7 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
     name.resize(len+1);
     int start = 0;
     int dest = 0;
-    char cprev = '\0';
+    //char cprev = '\0';
     //sout << "name = "<<realname<<sendl;
     for (int i=0; i<len; i++)
     {
@@ -103,7 +103,7 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
                 name[dest++] = realname[start++];
             }
         }
-        cprev = c;
+        //cprev = c;
         //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" name = "<<name<<sendl;
     }
     while (start < len)
@@ -147,7 +147,7 @@ std::string BaseClass::decodeClassName(const std::type_info& t)
     int start = 0;
     int dest = 0;
     int i;
-    char cprev = '\0';
+    //char cprev = '\0';
     //sout << "name = "<<realname<<sendl;
     for (i=0; i<len; i++)
     {
@@ -173,7 +173,7 @@ std::string BaseClass::decodeClassName(const std::type_info& t)
                 name[dest++] = realname[start++];
             }
         }
-        cprev = c;
+        //cprev = c;
     }
 
     while (start < i)
@@ -235,7 +235,7 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
     int start = 0;
     int dest = 0;
     int i = 0;
-    char cprev = '\0';
+    //char cprev = '\0';
     while (i < len && realname[i]!='<')
         ++i;
     start = i+1; ++i;
@@ -259,7 +259,7 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
                 name[dest++] = realname[start++];
             }
         }
-        cprev = c;
+        //cprev = c;
     }
     while (start < i)
     {

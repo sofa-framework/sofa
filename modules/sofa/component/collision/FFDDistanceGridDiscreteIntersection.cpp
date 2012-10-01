@@ -808,7 +808,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
         DistanceGrid::Coord b = c1.undeform0(p1);
         // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
         int iter;
-        SReal err1 = 1000.0f;
+        //SReal err1 = 1000.0f;
         bool found = false;
         for(iter=0; iter<5; ++iter)
         {
@@ -833,7 +833,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
                 }
                 break;
             }
-            err1 = err;
+            //err1 = err;
             b += c1.undeformDir( b, diff );
         }
         if (found)

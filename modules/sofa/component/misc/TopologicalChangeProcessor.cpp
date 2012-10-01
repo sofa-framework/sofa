@@ -933,7 +933,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
 
     std::istringstream count(line);
 
-    bool onlyCoordinates = false;
+    //bool onlyCoordinates = false;
     if ( !count.eof())
     {
         Real currentNumber;
@@ -951,7 +951,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
         {
             if ( nbElements*3 == values.size())
             {
-                onlyCoordinates = true;
+                //onlyCoordinates = true;
 //                                    std::cout << "WARNING(TopologicalChangeProcessor::processTopologicalChanges()):Guess you just input the coordinates and not the indices of triangles" << std::endl;
             }
             else
@@ -970,7 +970,7 @@ std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, 
                 }
                 else
                 {
-                    onlyCoordinates = true;
+                    //onlyCoordinates = true;
                     std::cout << "WARNING(TopologicalChangeProcessor::getValuesInLine()):Incorrect input in " << m_filename.getValue() <<
                             " in line " << std::string(line) <<
                             "\nIf only coordinates are wanted, there are too much values. If coordinates with the index are wanted, there are not enough values." <<

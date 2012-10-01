@@ -703,7 +703,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
                 edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0]);
 
             int secondIntersectedEdgeIndex = 0, thirdIntersectedEdgeIndex = 0;
-            int conectedIndex, nonConectedIndex;
+            int conectedIndex/*, nonConectedIndex*/;
 
             if(pointsID[0]==intersectedEdge[0][0])
                 pointsID[1]=intersectedEdge[0][1];
@@ -795,12 +795,12 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
                 if(pointsID[1]==intersectedEdge[thirdIntersectedEdgeIndex][1])
                 {
                     conectedIndex=1;
-                    nonConectedIndex=2;
+                    //nonConectedIndex=2;
                 }
                 else
                 {
                     conectedIndex=2;
-                    nonConectedIndex=1;
+                    //nonConectedIndex=1;
                 }
             }
             else
@@ -808,12 +808,12 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
                 if(pointsID[1]==intersectedEdge[thirdIntersectedEdgeIndex][0])
                 {
                     conectedIndex=1;
-                    nonConectedIndex=2;
+                    //nonConectedIndex=2;
                 }
                 else
                 {
                     conectedIndex=2;
-                    nonConectedIndex=1;
+                    //nonConectedIndex=1;
                 }
             }
 
@@ -1814,7 +1814,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
                 edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
 
             int secondIntersectedEdgeIndex = 0, thirdIntersectedEdgeIndex = 0;
-            int conectedIndex, nonConectedIndex;
+            int conectedIndex/*, nonConectedIndex*/;
 
             if(pointsID[0]==intersectedEdge[0][0])
                 pointsID[1]=intersectedEdge[0][1];
@@ -1906,12 +1906,12 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
                 if(pointsID[1]==intersectedEdge[thirdIntersectedEdgeIndex][1])
                 {
                     conectedIndex=1;
-                    nonConectedIndex=2;
+                    //nonConectedIndex=2;
                 }
                 else
                 {
                     conectedIndex=2;
-                    nonConectedIndex=1;
+                    //nonConectedIndex=1;
                 }
             }
             else
@@ -1919,12 +1919,12 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronWithP
                 if(pointsID[1]==intersectedEdge[thirdIntersectedEdgeIndex][0])
                 {
                     conectedIndex=1;
-                    nonConectedIndex=2;
+                    //nonConectedIndex=2;
                 }
                 else
                 {
                     conectedIndex=2;
-                    nonConectedIndex=1;
+                    //nonConectedIndex=1;
                 }
             }
 

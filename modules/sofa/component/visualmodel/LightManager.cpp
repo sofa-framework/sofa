@@ -219,7 +219,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     const core::visual::VisualParams::Pass pass = vp->pass();
     GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
     GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
-    GLfloat lightModelViewProjectionMatrices[MAX_NUMBER_OF_LIGHTS*16];
+    //GLfloat lightModelViewProjectionMatrices[MAX_NUMBER_OF_LIGHTS*16];
     GLfloat zNears[MAX_NUMBER_OF_LIGHTS];
     GLfloat zFars[MAX_NUMBER_OF_LIGHTS];
 
@@ -265,9 +265,9 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 lightFlag[i] = 0;
                 shadowTextureID[i] = 0;
 
-                for(unsigned int j=0 ; j<4; j++)
+                /*for(unsigned int j=0 ; j<4; j++)
                     for(unsigned int k=0 ; k<4; k++)
-                        lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;
+                        lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;*/
             }
 
             for(unsigned int i=0 ; i<shadowShaders.size() ; i++)

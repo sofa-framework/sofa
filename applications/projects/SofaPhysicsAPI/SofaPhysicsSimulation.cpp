@@ -654,7 +654,7 @@ void SofaPhysicsSimulation::Impl::calcProjection()
 {
     int width = lastW;
     int height = lastH;
-    double xNear, yNear, xOrtho, yOrtho;
+    double xNear, yNear/*, xOrtho, yOrtho*/;
     double xFactor = 1.0, yFactor = 1.0;
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
@@ -679,10 +679,10 @@ void SofaPhysicsSimulation::Impl::calcProjection()
     yNear = 0.35 * vparams->zNear();
     offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
+    /*xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
             / vparams->zNear();
     yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
-            / vparams->zNear();
+            / vparams->zNear();*/
 
     if ((height != 0) && (width != 0))
     {

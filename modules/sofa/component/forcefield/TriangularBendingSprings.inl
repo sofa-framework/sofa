@@ -213,7 +213,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
             /// describe the jth edge index of triangle no i
             EdgesInTriangle te = ff->_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
-            Triangle t = ff->_topology->getTriangle(triangleRemoved[i]);
+            //Triangle t = ff->_topology->getTriangle(triangleRemoved[i]);
 
 
             for(unsigned int j=0; j<3; ++j)
@@ -381,11 +381,11 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
                 for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                 {
 
-                    bool is_forgotten = false;
+                    //bool is_forgotten = false;
                     if (edgeInf[j_loc].m1 == (int) last)
                     {
                         edgeInf[j_loc].m1 =(int) tab[i];
-                        is_forgotten=true;
+                        //is_forgotten=true;
                         //sout << "INFO_print : TriangularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
 
                     }
@@ -394,7 +394,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
                         if (edgeInf[j_loc].m2 ==(int) last)
                         {
                             edgeInf[j_loc].m2 =(int) tab[i];
-                            is_forgotten=true;
+                            //is_forgotten=true;
                             //sout << "INFO_print : TriangularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
 
                         }
