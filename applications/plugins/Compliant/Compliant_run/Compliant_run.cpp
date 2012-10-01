@@ -32,8 +32,9 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/bgl/BglSimulation.h>
+//#include <sofa/simulation/tree/TreeSimulation.h>
+//#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -188,11 +189,11 @@ simulation::Node::SPtr createScene()
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
 
 
-    CompliantAttachButtonSetting::SPtr buttonSetting = New<CompliantAttachButtonSetting>();
-    root->addObject(buttonSetting);
-    sofa::helper::OptionsGroup b=buttonSetting->button.getValue();
-    b.setSelectedItem("Left");
-    buttonSetting->button.setValue(b);
+//    CompliantAttachButtonSetting::SPtr buttonSetting = New<CompliantAttachButtonSetting>();
+//    root->addObject(buttonSetting);
+//    sofa::helper::OptionsGroup b=buttonSetting->button.getValue();
+//    b.setSelectedItem("Left");
+//    buttonSetting->button.setValue(b);
 
     Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
@@ -276,12 +277,13 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-#ifdef SOFA_DEV
-    if (simulationType == "bgl")
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    else
-#endif
-        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+//#ifdef SOFA_DEV
+//    if (simulationType == "bgl")
+//        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+//    else
+//#endif
+//        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     sofa::component::init();
 #ifdef SOFA_GPU_CUDA
