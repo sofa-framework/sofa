@@ -570,7 +570,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
     int ic,jc;
     int dim2,ITER;
     int nobasis;
-    int itermax,ispeak;
+    int itermax/*,ispeak*/;
 
     double qs,z0,zb,dblock;
     double pivot, tovip;
@@ -584,7 +584,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
     /*input*/
 
     itermax = dim2;
-    ispeak  = 0;
+    //ispeak  = 0;
 
     /*output*/
 
@@ -834,7 +834,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
     int ic,jc;
     int dim2,ITER;
     int nobasis;
-    int itermax,ispeak;
+    int itermax/*,ispeak*/;
 
     double qs,z0,zb,dblock;
     double pivot, tovip;
@@ -846,7 +846,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
     /*input*/
 
     itermax = dim2;
-    ispeak  = 0;
+    //ispeak  = 0;
 
     /*output*/
 

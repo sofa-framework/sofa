@@ -366,7 +366,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
     }
 
     std::cout << (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header << std::endl;
-    enum { Header, CellData, PointData } section = Header;
+    //enum { Header, CellData, PointData } section = Header;
     int dataSize = 0;
     int nx = 0, ny = 0, nz = 0;
     Coord origin, spacing(1.0f,1.0f,1.0f);
@@ -392,12 +392,12 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
         }
         else if (kw == "CELL_DATA")
         {
-            section = CellData;
+            //section = CellData;
             ln >> dataSize;
         }
         else if (kw == "POINT_DATA")
         {
-            section = PointData;
+            //section = PointData;
             ln >> dataSize;
         }
         else if (kw == "SCALARS")

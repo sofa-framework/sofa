@@ -124,7 +124,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     double error=0.0;
 
 
-    bool convergence = false;
+    //bool convergence = false;
 
     double t0 = (double)_timer->getTime() ;
     double timeScale = 1.0 / (double)CTime::getTicksPerSec();
@@ -210,7 +210,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
 
         if(error < _tol*(_dim+1) && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
-            convergence = true;
+            //convergence = true;
             return;
         }
     }

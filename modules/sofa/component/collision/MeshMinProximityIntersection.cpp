@@ -288,7 +288,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    Vector3 PQ = Q-P;
+    //Vector3 PQ = Q-P;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -388,7 +388,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    Vector3 PQ = Q-P;
+    //Vector3 PQ = Q-P;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -562,7 +562,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Sphere& e1, 
     Vector3 P = e1.center();
     Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
     Vector3 QP = P-Q;
-    Vector3 PQ = Q-P;
+    //Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -646,7 +646,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Sphere& e1, Outp
     Vector3 P = e1.center();
     Vector3 Q = e2.p1() - x32 * alpha;
     Vector3 QP = P-Q;
-    Vector3 PQ = Q-P;
+    //Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;

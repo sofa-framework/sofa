@@ -130,7 +130,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     // and Current articulation value at the coresponding artculation
 
                     std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
-                    std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
+                    //std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
 
                     //	while (articulatedObjIt != articulatedObjItEnd)
                     if ((*it)->translation.getValue())

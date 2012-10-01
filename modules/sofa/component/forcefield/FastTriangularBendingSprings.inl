@@ -194,7 +194,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
             /// describe the jth edge index of triangle no i
             EdgesInTriangle te = ff->_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
-            Triangle t = ff->_topology->getTriangle(triangleRemoved[i]);
+            //Triangle t = ff->_topology->getTriangle(triangleRemoved[i]);
 
 
             for(unsigned int j=0; j<3; ++j)

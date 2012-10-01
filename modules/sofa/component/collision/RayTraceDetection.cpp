@@ -148,7 +148,7 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
         int resTriangle = -1;
         int resTriangle2 = -1;
         Vector3 trianglePoints[4];
-        bool found = false;
+        //bool found = false;
         int nPoints = 0;
         Vector3 normau[3];
         /*if it fails to find a correspondence between the triangles it tries the raytracing procedure */
@@ -242,7 +242,7 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
             detection->value = -(res.t);
 
             detection->id = tri1.getIndex()*3+t;
-            found = true;
+            //found = true;
 
         }
 
@@ -296,15 +296,15 @@ void RayTraceDetection::addCollisionPair (const std::pair <
     CubeModel *cm2 = dynamic_cast < CubeModel * >(cmPair.second);
     if (cm1 && cm2)
     {
-        ctime_t t0, t1, t2;
-        t0 = CTime::getRefTime ();
+        //ctime_t t0, t1, t2;
+        /*t0 = */CTime::getRefTime ();
         findPairsVolume (cm1, cm2);
 
 
-        t1 = CTime::getRefTime ();
+        /*t1 = */CTime::getRefTime ();
 
         findPairsVolume (cm2, cm1);
-        t2 = CTime::getRefTime ();
+        /*t2 = */CTime::getRefTime ();
     }
 }
 

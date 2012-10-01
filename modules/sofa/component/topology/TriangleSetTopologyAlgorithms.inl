@@ -990,10 +990,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             {
                 //std::cout << "-- POINT::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 EdgeID edgeIDSecond = indices_list[i+1];
-                Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
+                //Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
                 TriangleID triId;
                 Triangle tri;
-                bool found = false;
+                //bool found = false;
 
                 sofa::helper::vector <unsigned int> triangleedgeshell = m_container->getTrianglesAroundEdge (edgeIDSecond);
 
@@ -1011,7 +1011,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         triangles_barycoefs[triangles_barycoefs.size()-2].push_back (1.0);
                         triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
                         triangles_barycoefs[triangles_barycoefs.size()-1].push_back (1.0);
-                        found = true;
+                        //found = true;
 
                         break;
                     }
@@ -1314,7 +1314,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             {
                 //std::cout << "-- TRIANGLE::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 EdgeID edgeIDSecond = indices_list[i+1];
-                Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
+                //Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
 
                 const EdgesInTriangle triedge = m_container->getEdgesInTriangle (triangleIDFirst);
                 int edgeInTriangle = m_container->getEdgeIndexInTriangle (triedge, edgeIDSecond);

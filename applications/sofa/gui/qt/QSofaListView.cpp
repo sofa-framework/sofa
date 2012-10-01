@@ -651,8 +651,8 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
 void QSofaListView::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
 {
     if ( node == NULL ) return;
-    const SReal conversionDegRad = 3.141592653/180.0;
-    Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
+    //const SReal conversionDegRad = 3.141592653/180.0;
+    //Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
     TransformationVisitor transform(sofa::core::ExecParams::defaultInstance());
     transform.setTranslation(dx,dy,dz);
     transform.setRotation(rx,ry,rz);

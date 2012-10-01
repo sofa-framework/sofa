@@ -599,13 +599,13 @@ void TimerData::process()
     if (nbIter == 0) return; // do not keep stats on very first iteration
 
     ctime_t t0 = records[0].time;
-    ctime_t last_t = 0;
+    //ctime_t last_t = 0;
     int level = 0;
     for (unsigned int ri = 0; ri < records.size(); ++ri)
     {
         const Record& r = records[ri];
         ctime_t t = r.time - t0;
-        last_t = r.time;
+        //last_t = r.time;
         if (r.type == Record::REND || r.type == Record::RSTEP_END) --level;
         switch (r.type)
         {

@@ -232,7 +232,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             cubeModel->resize(0);
             for (unsigned int i=0; i<cells.size(); ++i)
             {
-                Grid::Key k = cells[i].k;
+                //Grid::Key k = cells[i].k;
                 int pfirst = cells[i].pfirst;
                 int plast = cells[i].plast;
                 Cube cfirst(prevCubeModel, pfirst);

@@ -214,7 +214,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
             /// describe the jth edge index of quad no i
             EdgesInQuad te = ff->_topology->getEdgesInQuad(quadRemoved[i]);
             /// describe the jth vertex index of quad no i
-            Quad t =  ff->_topology->getQuad(quadRemoved[i]);
+            //Quad t =  ff->_topology->getQuad(quadRemoved[i]);
 
 
             for(unsigned int j=0; j<4; ++j)
@@ -403,11 +403,11 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                 for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                 {
 
-                    bool is_forgotten = false;
+                    //bool is_forgotten = false;
                     if (edgeInf[j_loc].m1 == (int) last)
                     {
                         edgeInf[j_loc].m1 =(int) tab[i];
-                        is_forgotten=true;
+                        //is_forgotten=true;
                         //sout << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
 
                     }
@@ -416,7 +416,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         if (edgeInf[j_loc].m2 ==(int) last)
                         {
                             edgeInf[j_loc].m2 =(int) tab[i];
-                            is_forgotten=true;
+                            //is_forgotten=true;
                             //sout << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
 
                         }
@@ -426,7 +426,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                     if (edgeInf[j_loc].m3 == (int) last)
                     {
                         edgeInf[j_loc].m3 =(int) tab[i];
-                        is_forgotten=true;
+                        //is_forgotten=true;
                         //sout << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc << sendl;
 
                     }
@@ -435,7 +435,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
                         if (edgeInf[j_loc].m4 ==(int) last)
                         {
                             edgeInf[j_loc].m4 =(int) tab[i];
-                            is_forgotten=true;
+                            //is_forgotten=true;
                             //sout << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc << sendl;
 
                         }

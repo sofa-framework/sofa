@@ -128,13 +128,13 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     using sofa::helper::AdvancedTimer;
 
     double time = 0.0;
-    double timeTotal = 0.0;
+    //double timeTotal = 0.0;
     double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
 
     if (displayTime.getValue())
     {
         time = (double) CTime::getTime();
-        timeTotal = (double) CTime::getTime();
+        //timeTotal = (double) CTime::getTime();
     }
 
     // Update the BehaviorModels

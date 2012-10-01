@@ -106,8 +106,8 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 
 
     std::string cmd;
-    int npoints = 0;
-    int nlines = 0;
+    //int npoints = 0;
+    //int nlines = 0;
 
     int totalNumMasses;
     int totalNumSprings;
@@ -118,13 +118,13 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
     if (cmd == "numm")
     {
         file >> totalNumMasses;
-        npoints=totalNumMasses;
+        //npoints=totalNumMasses;
     }
 
     if (cmd=="nums")
     {
         file >> totalNumSprings;
-        nlines=totalNumSprings;
+        //nlines=totalNumSprings;
     }
 
 
@@ -142,13 +142,13 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            bool fixed=false;
+            //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             if (mass < 0)
             {
                 // fixed point initialization
                 mass = -mass;
-                fixed = true;
+                //fixed = true;
             }
             my_positions.push_back(Vector3(px, py, pz));
         }

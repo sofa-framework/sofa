@@ -147,8 +147,8 @@ public:
         }
         if (!remove.empty())
         {
-            sofa::core::topology::BaseMeshTopology* _topology;
-            _topology = this->getContext()->getMeshTopology();
+            //sofa::core::topology::BaseMeshTopology* _topology;
+            //_topology = this->getContext()->getMeshTopology();
 
             sofa::component::topology::PointSetTopologyModifier* pointMod;
             this->getContext()->get(pointMod);

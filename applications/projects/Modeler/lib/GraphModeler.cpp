@@ -828,8 +828,8 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
     newXML = xml::loadFromFile (presetFile.c_str() );
     if (newXML == NULL) return;
 
-    bool collisionNodeFound=false;
-    xml::BaseElement *meshMecha=NULL;
+    //bool collisionNodeFound=false;
+    //xml::BaseElement *meshMecha=NULL;
     xml::BaseElement::child_iterator<> it(newXML->begin());
     for (; it!=newXML->end(); ++it)
     {
@@ -841,7 +841,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         if (it->getType() == std::string("MeshObjLoader") || it->getType() == std::string("SparseGrid"))
         {
             updatePresetNode(*it, filenames[0], translation, rotation, scale);
-            meshMecha = it;
+            //meshMecha = it;
         }
         if (it->getType() == std::string("OglModel"))
         {
@@ -863,7 +863,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         }
         if (it->getName() == std::string("CollisionNode"))
         {
-            collisionNodeFound=true;
+            //collisionNodeFound=true;
             xml::BaseElement* collisionXML = it;
 
             xml::BaseElement::child_iterator<> it_collision(collisionXML->begin());

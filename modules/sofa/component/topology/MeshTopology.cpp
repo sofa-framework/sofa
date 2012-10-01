@@ -2501,7 +2501,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElement(
     }
 
 
-    Triangle the_tri = this->getTriangle(elem);
+    //Triangle the_tri = this->getTriangle(elem);
 
     for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
     {

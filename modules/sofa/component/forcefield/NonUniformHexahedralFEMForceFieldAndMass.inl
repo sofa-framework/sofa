@@ -1069,7 +1069,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
         for ( unsigned int e = 0; e < hexahedra.size(); ++e )
         {
             const ElementMass &Me = this->_elementMasses.getValue() [e];
-            const Element hexa = hexahedra[e];
+            //const Element hexa = hexahedra[e];
             const ElementStiffness &Ke = hexahedronInf[e].stiffness;
             const Mat33& Re = hexahedronInf[e].rotation;
             Mat33 Ret = Re.transposed();
