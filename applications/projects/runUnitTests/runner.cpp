@@ -16,6 +16,8 @@ struct plugin
         {
             std::cout << "done." << std::endl;
 
+	    // TODO is there a reason why we should init the plugin manager
+	    // on each plugin load ?
             sofa::helper::system::PluginManager::getInstance().init();
         }
     }

@@ -43,8 +43,17 @@ public:
         name(_name)
     {}
 
-    // I have to have at least one virtual function in my base class to use dynamic_cast or to make it polymorphic
-    virtual std::string getName() {return name;}
+  virtual ~BaseViewerArgument() { }
+
+    // I have to have at least one virtual function in my base class
+    // to use dynamic_cast or to make it polymorphic
+
+    // maxime.tournier@inria.fr: then you want to make the class
+    // destructor virtual, otherwise you'll be in trouble. see
+    // http://www.parashift.com/c++-faq/virtual-dtors.html Also,
+    // consider putting method definitions in .cpp to void code bloat
+    // and increased link times whenever possible.
+    virtual std::string getName() const {return name;}
 
 protected:
     std::string name;
@@ -58,7 +67,7 @@ public:
         parent(_parent)
     {}
 
-    QWidget* getParentWidget() {return parent;}
+    QWidget* getParentWidget() const {return parent;}
 protected:
     QWidget* parent;
 };
