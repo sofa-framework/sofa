@@ -448,6 +448,7 @@ contains(DEFINES, SOFA_HAVE_PLUGIN_Compliant)           { usePlugin(Compliant, a
 contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable, applications/plugins/Sensable) }
 contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmulation, applications/plugins/SensableEmulation) }
 contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, applications/plugins/SofaPython) }
+contains(DEFINES, SOFA_HAVE_PLUGIN_optixdetection)      { usePlugin(optixdetection, applications/plugins/optixdetection) }
 
 !contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
     contains(DEFINES, SOFA_HAVE_HAPI)                   { usePlugin(SofaHAPI, applications/plugins/SofaHAPI) }
