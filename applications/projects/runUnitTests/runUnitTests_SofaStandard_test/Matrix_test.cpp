@@ -23,8 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /** Sparse matrix test suite.
-  Class TestSparseMatrices is used as fixture in Boost.Test suite.
-  The actual tests are performed within boost macros at the bottom of the file.
+  The same suite is instanciated using different parameters: entry types (float/double) and block size in CompressedRowSparse.
   */
 
 #include <boost/test/auto_unit_test.hpp>
@@ -41,8 +40,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 using std::cout;
 
-/** Set up a context for unit tests of sparse matrices.
-  Used as fixture in Boost.Test suite.
+/** Sparse matrix test suite.
+
+  Creates matrices of different types, sets their entries and checks that all the matrices are the same.
+
+  Perform matrix-vector products and compare the results.
   */
 template <typename _Real, unsigned NumRows, unsigned NumCols, unsigned BlockRows, unsigned BlockCols>
 struct TestSparseMatrices

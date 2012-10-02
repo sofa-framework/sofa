@@ -358,6 +358,24 @@ public:
         result = compressedMatrix * data;
     }
 
+    /// Matrix-Vector product (dense vector with contiguous memory layout)
+    template<class V1, class V2>
+    void multVector( V1& output, const V2& input ){
+        Eigen::Map<VectorEigen> mo(&output[0],output.size());
+        Eigen::Map<const VectorEigen> mi(&input[0],input.size());
+        compress();
+        mo = compressedMatrix * mi;
+    }
+
+    /// Matrix-Vector product (dense vector with contiguous memory layout)
+    template<class V>
+    V operator* (const V& input){
+        V output(this->rowSize());
+        multVector(output,input);
+        return output;
+    }
+
+
 
     friend std::ostream& operator << (std::ostream& out, const EigenBaseSparseMatrix<TReal>& v )
     {

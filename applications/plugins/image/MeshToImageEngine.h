@@ -244,7 +244,9 @@ protected:
         // draw edges
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing edges.."<<std::endl;
 
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
+#endif
         for(unsigned int i=0; i<nbedg; i++)
         {
             Coord pts[2];
@@ -255,7 +257,9 @@ protected:
         // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing triangles.."<<std::endl;
 
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
+#endif
         for(unsigned int i=0; i<nbtri; i++)
         {
             Coord pts[3];
@@ -264,7 +268,9 @@ protected:
             this->draw_triangle(im,pts[1],pts[2],pts[0],color1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
 
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
+#endif
         for(unsigned int i=0; i<cltri.size(); i++)
         {
             Coord pts[3];

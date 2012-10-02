@@ -63,7 +63,7 @@ bool init_unit_test()
             std::cerr<<"Warning: runUnitTests expects a list of libraries to test in the command line, e.g.:  bin/runUnitTest lib/*_test.so " << std::endl;
 
         // read from argv
-        for( unsigned i = 1; i < argc; ++i)
+        for( int i = 1; i < argc; ++i)
         {
             plugin( argv[i] ).load();
         }
