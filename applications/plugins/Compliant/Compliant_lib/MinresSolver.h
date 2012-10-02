@@ -26,36 +26,36 @@ public:
     virtual void solveEquation();
 
     MinresSolver();
-
-protected:
-
+    
+ protected:
+       
     typedef SMatrix mat;
     typedef VectorSofa::VectorEigen vec;
     typedef SReal real;
-
+    
     Data<bool> use_kkt;
     Data<unsigned int> max_iterations;
     Data<unsigned int> iterations_performed;
     Data<real> precision;
     Data<bool> use_warm;
     Data<bool> use_cg;
-
+    
     mutable vec last;
-
+     
     // fills a solution vector @x with @last solution based on
     // @use_warm value
     void warm(vec& x) const;
-
-
+    
+    
     // solver types
     typedef ::krylov<SReal> krylov;
     typedef ::minres<SReal> minres;
     typedef ::cg<SReal> cg;
-
+    
     // requires visitor.fetch() == true
     void solve_schur(krylov::params& ) ;
     void solve_kkt(krylov::params& ) ;
-
+    
     // internal types
     struct schur;
     struct kkt;
