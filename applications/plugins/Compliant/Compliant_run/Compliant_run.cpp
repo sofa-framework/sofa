@@ -49,6 +49,8 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/topology/CubeTopology.h>
 #include <sofa/component/visualmodel/VisualStyle.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -79,7 +81,8 @@ typedef ExtensionMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTy
 typedef DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
 typedef UniformCompliance<Vec1Types> UniformCompliance1;
 typedef component::odesolver::ComplianceSolver ComplianceSolver;
-
+typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 
 bool startAnim = true;
@@ -90,8 +93,8 @@ SReal dampingRatio = 0.1;
 Vec3 gravity(0,-1,0);
 SReal dt = 0.01;
 
-/// Create a string
-simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
+/// Create a compliant string
+simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0, double dampingRatio=0 )
 {
     static unsigned numObject = 1;
     std::ostringstream oss;
@@ -177,9 +180,8 @@ simulation::Node::SPtr createString(simulation::Node::SPtr parent, Vec3 startPoi
 }
 
 
-/// Create the scene
-
-simulation::Node::SPtr createScene()
+/// Create the compliant string composed of three parts
+simulation::Node::SPtr createCompliantScene()
 {
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
@@ -207,7 +209,7 @@ simulation::Node::SPtr createScene()
 
     // ========  first string
     unsigned n1 = 2;
-    Node::SPtr  string1 = createString( simulatedScene, Vec3(0,0,0), Vec3(1,0,0), n1, 1.0*n1, complianceValue, dampingRatio );
+    Node::SPtr  string1 = createCompliantString( simulatedScene, Vec3(0,0,0), Vec3(1,0,0), n1, 1.0*n1, complianceValue, dampingRatio );
 
 
     FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
@@ -215,7 +217,7 @@ simulation::Node::SPtr createScene()
 
     // ========  second string
     unsigned n2 = 2;
-    Node::SPtr  string2 = createString( simulatedScene, Vec3(3,0,0), Vec3(2,0,0), n2, 2.0, complianceValue, dampingRatio );
+    Node::SPtr  string2 = createCompliantString( simulatedScene, Vec3(3,0,0), Vec3(2,0,0), n2, 1.0*n2, complianceValue, dampingRatio );
     FixedConstraint3::SPtr fixed2 = New<FixedConstraint3>();
     string2->addObject( fixed2 );
 
@@ -263,6 +265,109 @@ simulation::Node::SPtr createScene()
 
 
 
+/// Create a stiff string
+simulation::Node::SPtr createStiffString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 )
+{
+    static unsigned numObject = 1;
+    std::ostringstream oss;
+    oss << "string_" << numObject++;
+    SReal totalLength = (endPoint-startPoint).norm();
+
+    //--------
+    Node::SPtr  string_node = parent->createChild(oss.str());
+
+    MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+    string_node->addObject(DOF);
+    DOF->setName(oss.str()+"_DOF");
+
+    UniformMass3::SPtr mass = New<UniformMass3>();
+    string_node->addObject(mass);
+    mass->setName(oss.str()+"_mass");
+    mass->mass.setValue( totalMass/numParticles );
+
+    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
+    string_node->addObject(spring);
+    spring->setName(oss.str()+"_spring");
+
+
+
+    //--------
+    // create the particles and the springs
+    DOF->resize(numParticles);
+    MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+    for( unsigned i=0; i<numParticles; i++ )
+    {
+        double alpha = (double)i/(numParticles-1);
+        x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
+        if(i>0)
+        {
+            spring->addSpring(i-1,i,stiffnessValue,dampingRatio,totalLength/(numParticles-1));
+         }
+    }
+
+    return string_node;
+
+}
+
+/// Create the stiff string composed of three parts
+simulation::Node::SPtr createStiffScene()
+{
+    // The graph root node
+    Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
+    root->setGravity( Coord3(0,-1,0) );
+    root->setAnimate(false);
+    root->setDt(0.01);
+    addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
+
+    Node::SPtr simulatedScene = root->createChild("simulatedScene");
+
+
+    EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
+    simulatedScene->addObject( eulerImplicitSolver );
+    CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
+    simulatedScene->addObject(cgLinearSolver);
+
+
+    // ========  first string
+    unsigned n1 = 3;
+    Node::SPtr  string1 = createStiffString( simulatedScene, Vec3(0,0,0), Vec3(1,0,0), n1, 1.0*n1, 1/complianceValue, dampingRatio );
+
+
+    FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
+    string1->addObject( fixed1 );
+
+    // ========  second string
+    unsigned n2 = 3;
+    Node::SPtr  string2 = createStiffString( simulatedScene, Vec3(3,0,0), Vec3(2,0,0), n2, 1.0*n2, 1/complianceValue, dampingRatio );
+    FixedConstraint3::SPtr fixed2 = New<FixedConstraint3>();
+    string2->addObject( fixed2 );
+
+
+    // ========  Node with multiple parents to create an interaction using a MultiMapping
+    Node::SPtr commonChild = string1->createChild("commonChild");
+    string2->addChild(commonChild);
+
+    MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
+    commonChild->addObject(mappedDOF);
+
+    SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
+    multimapping->setName("InteractionMultiMapping");
+    multimapping->addInputModel( string1->getMechanicalState() );
+    multimapping->addInputModel( string2->getMechanicalState() );
+    multimapping->addOutputModel( mappedDOF.get() );
+    multimapping->addPoint( string1->getMechanicalState(), n1-1 );
+    multimapping->addPoint( string2->getMechanicalState(), n2-1 );
+    commonChild->addObject(multimapping);
+
+    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
+    commonChild->addObject(spring);
+    spring->setName("InteractionSpring");
+    spring->addSpring(0,1,1/complianceValue,dampingRatio,1.0);
+
+    return root;
+}
+
+
 int main(int argc, char** argv)
 {
 
@@ -303,7 +408,8 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
 
     //=================================================
-    sofa::simulation::Node::SPtr groot = createScene();
+    sofa::simulation::Node::SPtr groot = createStiffScene();
+//    sofa::simulation::Node::SPtr groot = createCompliantScene();
     //=================================================
 
     sofa::simulation::getSimulation()->init(groot.get());
