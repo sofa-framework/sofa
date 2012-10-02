@@ -75,7 +75,7 @@ public:
 
 protected:
     ComplianceSolver();
-    virtual ~ComplianceSolver() {}
+    virtual ~ComplianceSolver(){}
 
 public:
     typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
@@ -139,7 +139,7 @@ protected:
     /** Solve the equation system:
 
     \f$
-    \left( \begin{array}{cc} PM & -PJ^T \\
+\left( \begin{array}{cc} PM & -PJ^T \\
                                J &  C \end{array}\right)
       \left( \begin{array}{c} \Delta v \\ \lambda \end{array}\right)
     = \left( \begin{array}{c} Pf \\  \phi  \end{array}\right)
@@ -179,11 +179,11 @@ protected:
         unsigned sizeC; ///< size of the compliance matrix, number of scalar constraints
         std::set<core::behavior::BaseMechanicalState*> localDOFs;  ///< Mechanical DOFs in the range of the solver. This is used to discard others, such interaction mouse DOFs
 
-        MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s);
+      MatrixAssemblyVisitor(const core::MechanicalParams* params, ComplianceSolver* s);
 
         Pass pass;  ///< symbol to represent the current operation
         /// Set the operation to execute during the next traversal
-        MatrixAssemblyVisitor& operator() ( Pass p ) { pass =p; return *this; }
+        MatrixAssemblyVisitor& operator() ( Pass p ){ pass =p; return *this; }
 
         virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 
@@ -191,48 +191,47 @@ protected:
         static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
 
 
-        /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
-        This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
-        or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
-        */
-        struct LocalMatrices
-        {
-            SMatrix M;         ///< local mass matrix
-            SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
-            SMatrix C;         ///< local compliance matrix, if any
-            SMatrix K;         ///< local stiffness matrix, if any
-            unsigned m_offset; ///< start index in the assembled mass matrix
-            unsigned c_offset; ///< start index in the assembled compliance matrix
+      /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
+	  This can be used either to perform final assembly by summing products, e.g. _matM += J.transpose() * M * J
+	  or to compute global matrix-vector products by looping over all the entries and accumulating products, e.g. df += J.transpose() * (K * (J * dx))
+      */
+      struct LocalMatrices
+      {
+        SMatrix M;         ///< local mass matrix
+        SMatrix J;         ///< local Jacobian wrt assembled independent DOFs:   v_local = J * v_global
+        SMatrix C;         ///< local compliance matrix, if any
+        SMatrix K;         ///< local stiffness matrix, if any
+        unsigned m_offset; ///< start index in the assembled mass matrix
+        unsigned c_offset; ///< start index in the assembled compliance matrix
 
-            friend std::ostream& operator << (std::ostream& out, const LocalMatrices& sm )
-            {
-                out << "m_offset = " << sm.m_offset << ", c_offset = "<< sm.c_offset << endl;
-                if(sm.M.rows()>0) out << "M=" << endl << DenseMatrix(sm.M) << endl;
-                if(sm.J.rows()>0) out << "J=" << endl << DenseMatrix(sm.J) << endl;
-                if(sm.C.rows()>0) out << "C=" << endl << DenseMatrix(sm.C) << endl;
-                if(sm.K.rows()>0) out << "K=" << endl << DenseMatrix(sm.K) << endl;
-                return out;
-            }
-        };
-        typedef std::map<core::behavior::BaseMechanicalState*,LocalMatrices> State_2_LocalMatrices;
-        State_2_LocalMatrices localMatrices;         ///< The local matrices associated to each state
-        void writeLocalMatrices() const;             ///< debug helper
+        friend std::ostream& operator << (std::ostream& out, const LocalMatrices& sm ){
+	  out << "m_offset = " << sm.m_offset << ", c_offset = "<< sm.c_offset << endl;
+	  if(sm.M.rows()>0) out << "M=" << endl << DenseMatrix(sm.M) << endl;
+	  if(sm.J.rows()>0) out << "J=" << endl << DenseMatrix(sm.J) << endl;
+	  if(sm.C.rows()>0) out << "C=" << endl << DenseMatrix(sm.C) << endl;
+	  if(sm.K.rows()>0) out << "K=" << endl << DenseMatrix(sm.K) << endl;
+	  return out;
+        }
+      };
+      typedef std::map<core::behavior::BaseMechanicalState*,LocalMatrices> State_2_LocalMatrices;
+      State_2_LocalMatrices localMatrices;         ///< The local matrices associated to each state
+      void writeLocalMatrices() const;             ///< debug helper
 
-        // builds global matrices M, K, C, J
-        void global(SMatrix& M, SMatrix& K, SMatrix& C, SMatrix& J);
-
+      // builds global matrices M, K, C, J
+      void global(SMatrix& M, SMatrix& K, SMatrix& C, SMatrix& J);
+      
     protected:
 
-        Visitor::Result computeSize(simulation::Node* node);
-        Visitor::Result doSystemAssembly(simulation::Node* node);
-        Visitor::Result distributeSolution(simulation::Node* node);
-
+      Visitor::Result computeSize(simulation::Node* node);
+      Visitor::Result doSystemAssembly(simulation::Node* node);
+      Visitor::Result distributeSolution(simulation::Node* node);
+      
         /// (callback) called once for every compliant forcefield in
         /// the scene; passed data offset and dimension in the
-        /// deformation dofs vector.
-        virtual void onCompliance(core::behavior::BaseForceField* ffield,
-                unsigned offset,
-                unsigned dim);
+        /// deformation dofs vector. 
+        virtual void onCompliance(core::behavior::BaseForceField* ffield, 
+				  unsigned offset, 
+				  unsigned dim);
     };
 
     /// creates a new assembly visitor. caller is responsible for deletion.
@@ -260,7 +259,7 @@ protected:
 
     /// resize state vectors
     virtual void resize(unsigned sizeM, unsigned sizeC );
-
+    
     // /** @name Global matrix-vector product */
     // ///@{
 
