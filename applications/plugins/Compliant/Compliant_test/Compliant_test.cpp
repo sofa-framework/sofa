@@ -1056,8 +1056,7 @@ public:
 #ifdef WIN32
 #define BOOST_TEST_INCLUDED
 #endif
-#define BOOST_TEST_MODULE example
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/unit_test_log.hpp>
 #if BOOST_WORKAROUND(  __GNUC__, < 3 )
 #include <boost/test/output_test_stream.hpp>
