@@ -66,7 +66,9 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, std::vector<unsig
     P.resize(nbp);
     for (unsigned int i=0; i<nbp; i++) { Coord p = transform.toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
 
+#ifdef USING_OMP_PRAGMAS
     #pragma omp parallel for
+#endif
     for (unsigned int i=0; i<nbp; i++)
     {
         // compute centroid

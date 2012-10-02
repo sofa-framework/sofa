@@ -20,23 +20,28 @@ BOOST_AUTO_TEST_CASE( eigenMatrixBlockFromCompressedRowSparseMatrix ) { BOOST_CH
 // Matrix-Vector product tests
 BOOST_AUTO_TEST_CASE( fullMat_vector_product )
 {
-    fullMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+//    fullMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+    fullVec_nrows_result = fullMat * fullVec_ncols;
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 }
 BOOST_AUTO_TEST_CASE( mapMat_vector_product )
 {
-    mapMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+//    mapMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+    fullVec_nrows_result = mapMat * fullVec_ncols;
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 }
 BOOST_AUTO_TEST_CASE( eiBlock1_vector_product )
 {
-    eiBlock1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+//    eiBlock1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+//    eiBlock1.multVector(fullVec_nrows_result,fullVec_ncols);
+    fullVec_nrows_result = eiBlock1 * fullVec_ncols;
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 
 }
 BOOST_AUTO_TEST_CASE( crs1_vector_product )
 {
-    BOOST_REQUIRE_MESSAGE( NROWS%BROWS==0 && NCOLS%BCOLS==0, "Error: CompressedRowSparseMatrix * Vector crashes when the size of the matrix is not a multiple of the size of the matrix blocks. Aborting this test, and reporting a failure." ); // otherwise the product crashes
-    crs1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+//    BOOST_REQUIRE_MESSAGE( NROWS%BROWS==0 && NCOLS%BCOLS==0, "Error: CompressedRowSparseMatrix * Vector crashes when the size of the matrix is not a multiple of the size of the matrix blocks. Aborting this test, and reporting a failure." ); // otherwise the product crashes
+//    crs1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
+    fullVec_nrows_result = crs1 * fullVec_ncols;
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 }

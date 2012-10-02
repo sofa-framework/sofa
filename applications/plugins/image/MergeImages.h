@@ -275,7 +275,9 @@ protected:
         CImgList<T>& img = out->getCImgList();
 
 
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
+#endif
         cimg_forXYZ(img(0),x,y,z) //space
         {
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;

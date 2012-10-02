@@ -1449,7 +1449,9 @@ public:
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
     {
         FullVector<Real2> res;
-        mul(res,v);
+        if(v.size()%bColSize()==0)
+            mul(res,v);
+        else std::cerr<<"CompressedRowSparseMatrix::operator*(const FullVector<Real2>& v) , v.size() must be a multiple of block size. Returning an empty vector."<<std::endl;
         return res;
     }
 
