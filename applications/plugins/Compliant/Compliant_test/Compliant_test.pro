@@ -1,7 +1,7 @@
 load(sofa/pre)
 
-TEMPLATE = app
-TARGET = Compliant_test
+TEMPLATE = lib
+
 CONFIG += console
 DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
