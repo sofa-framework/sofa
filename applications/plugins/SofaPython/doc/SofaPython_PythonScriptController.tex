@@ -10,27 +10,28 @@ runSofa applications/plugins/SofaPython/examples/ExampleController.scn
 \subsection{Component data}
 \begin{itemize}
 \item \textcode{filename} is the name of the .py script file.
+\item \textcode{classname} is the name of the class in the script to instanciate for the controller. NOTE: the class MUST inherit from \textcode{Sofa.PythonScriptController}. See example files.
 \end{itemize}
 
 \subsection{Python script entry points}
 
 \begin{itemize}
-\item \textcode{onKeyPressed(c)}
-\item \textcode{onKeyReleased(c)}
-\item \textcode{onLoaded(node)}
-\item \textcode{onMouseButtonLeft(mouseX,mouseY,isPressed)}
-\item \textcode{onMouseButtonRight(mouseX,mouseY,isPressed)}
-\item \textcode{onMouseButtonMiddle(mouseX,mouseY,isPressed)}
-\item \textcode{onMouseWheel(mouseX,mouseY,wheelDelta)}
-\item \textcode{onGUIEvent(strControlID,valueName,strValue)}
-\item \textcode{onBeginAnimationStep(deltaTime)}
-\item \textcode{onEndAnimationStep(deltaTime)}
-\item \textcode{onScriptEvent(senderNode, eventName, data)}
-\item \textcode{createGraph(node)}
-\item \textcode{initGraph(node)}
-\item \textcode{storeResetState()}
-\item \textcode{reset()}
-\item \textcode{cleanup()}
+\item \textcode{onKeyPressed(self,c)}
+\item \textcode{onKeyReleased(self,c)}
+\item \textcode{onLoaded(self,node)}
+\item \textcode{onMouseButtonLeft(self,mouseX,mouseY,isPressed)}
+\item \textcode{onMouseButtonRight(self,mouseX,mouseY,isPressed)}
+\item \textcode{onMouseButtonMiddle(self,mouseX,mouseY,isPressed)}
+\item \textcode{onMouseWheel(self,mouseX,mouseY,wheelDelta)}
+\item \textcode{onGUIEvent(self,strControlID,valueName,strValue)}
+\item \textcode{onBeginAnimationStep(self,deltaTime)}
+\item \textcode{onEndAnimationStep(self,deltaTime)}
+\item \textcode{onScriptEvent(self,senderNode, eventName, data)}
+\item \textcode{createGraph(self,node)}
+\item \textcode{initGraph(self,node)}
+\item \textcode{storeResetState(self)}
+\item \textcode{reset(self)}
+\item \textcode{cleanup(self)}
 \end{itemize}
 
 

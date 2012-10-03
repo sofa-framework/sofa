@@ -242,7 +242,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
                                                                     "Sofa."#Type, \
                                                                     ObjSize, \
                                                                     0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,  \
-                                                                    Py_TPFLAGS_DEFAULT, \
+                                                                    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, \
                                                                     0,0,0,0,0,0,0, \
                                                                     SP_SOFAPYMETHODS(Type), \
                                                                     0, \
@@ -255,15 +255,15 @@ static PyTypeObject DummyChild_PyTypeObject = {
 
 
 // définition type de base(=sans parent) sans attributs
-#define SP_CLASS_TYPE_BASE_SPTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,0,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
+#define SP_CLASS_TYPE_BASE_SPTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&PyBaseObject_Type,0,0)
+#define SP_CLASS_TYPE_BASE_PTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
 
 
 // définition type de base(=sans parent) avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
-#define SP_CLASS_TYPE_BASE_SPTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),0,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
+#define SP_CLASS_TYPE_BASE_SPTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType))
 
 // définition type hérité de "Parent" sans attributs
 #define SP_CLASS_TYPE_SPTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0)
@@ -299,7 +299,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
-#define SP_CALL(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
-#define SP_CALL_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
+#define SP_CALL_MODULEFUNC(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
+#define SP_CALL_MODULEFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
 
 #endif // PYTHONMACROS_H
