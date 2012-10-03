@@ -42,7 +42,7 @@
 	
 	<!-- The PythonScriptController gathers events from input devices and populates the Mechanical state -->
 	<Node name="Input">
-		<PythonScriptController filename="keyboardControl.py"/>
+		<PythonScriptController filename="keyboardControl.py" classname="KeyboardControl"/>
 		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0  0  0  1.0"/>
 		<Node name="VisuAvatar" activated="false" >
 			<OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>

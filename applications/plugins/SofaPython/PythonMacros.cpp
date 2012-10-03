@@ -11,6 +11,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
+#include "PythonScriptController.h"
 
 using namespace sofa::simulation;
 using namespace sofa::simulation::tree;
@@ -19,6 +20,7 @@ using namespace sofa::core;
 using namespace sofa::core::loader;
 using namespace sofa::core::topology;
 using namespace sofa::core::behavior;
+using namespace sofa::component::controller;
 
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
@@ -31,6 +33,7 @@ using namespace sofa::core::behavior;
 #include "Binding_BaseLoader.h"
 #include "Binding_MeshLoader.h"
 #include "Binding_Topology.h"
+#include "Binding_PythonScriptController.h"
 
 using namespace sofa::core;
 
@@ -61,6 +64,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));
     if (dynamic_cast<BaseState*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseState));
+
+    if (dynamic_cast<PythonScriptController*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(PythonScriptController));
 
     if (dynamic_cast<BaseObject*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject));

@@ -86,13 +86,17 @@ protected:
 
 
 public:
-    sofa::core::objectmodel::DataFileName m_filename;
-
+    sofa::core::objectmodel::DataFileName       m_filename;
+    sofa::core::objectmodel::Data<std::string>  m_classname;
 
 protected:
     PyObject *m_Script;         // python script module
     PyObject *m_ScriptDict;     // functions dictionnary
 
+    PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
+//    PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
+    PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
+/*
     // optionnal script entry points:
     PyObject *m_Func_onKeyPressed;
     PyObject *m_Func_onKeyReleased;
@@ -110,8 +114,7 @@ protected:
     PyObject *m_Func_storeResetState;
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
-public:
-
+*/
 };
 
 
