@@ -130,7 +130,7 @@ public:
     static const std::string VIEW_FILE_EXTENSION;
 
 
-    static QtViewer* create(QtViewer*, BaseViewerArgument arg)
+    static QtViewer* create(QtViewer*, BaseViewerArgument& arg)
     {
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
