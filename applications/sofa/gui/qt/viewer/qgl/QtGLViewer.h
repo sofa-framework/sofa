@@ -108,7 +108,7 @@ private:
 
 public:
 
-    static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument arg)
+    static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument& arg)
     {
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);

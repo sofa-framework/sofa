@@ -1201,7 +1201,8 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
         if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
         {
             removeViewer();
-            registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, ViewerQtArgument("viewer", left_stack)) );
+            ViewerQtArgument viewerArg = ViewerQtArgument("viewer", left_stack);
+            registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, viewerArg) );
             iter_map->second->setOn(true);
         }
         else

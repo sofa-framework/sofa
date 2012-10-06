@@ -40,7 +40,7 @@ namespace sofa
 namespace helper
 {
 
-template class SOFA_SOFAGUI_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument >;
+template class SOFA_SOFAGUI_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
 
 SofaViewerFactory*  SofaViewerFactory::getInstance()
 {
