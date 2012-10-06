@@ -257,6 +257,8 @@ load(sofa/post)
 
 # print all SOFA DEFINES into a standard file format (mainly used for build with CMake)
 message("Write temporarily the sofa DEFINES in sofaDefines$${LIBSUFFIX}.cfg to let CMake get them")
-system( echo >sofaDefines$${LIBSUFFIX}.cfg )
+# under windows, lets try also: copy /y NUL EmptyFile.txt >NUL OR echo. 2>EmptyFile.txt to clear the textFile
+win32 { system( type NUL > sofaDefines$${LIBSUFFIX}.cfg ) }
 win32 { system( for %G in ($${DEFINES}) do echo %G>>sofaDefines$${LIBSUFFIX}.cfg ) }
+unix  { system( echo >sofaDefines$${LIBSUFFIX}.cfg ) }
 unix  { system( for define in $${DEFINES}; do echo $define>>sofaDefines$${LIBSUFFIX}.cfg; done ) }
