@@ -66,7 +66,7 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
 #ifndef SOFA_HAVE_GLEW
-    , useVBO(initData(&useVBO, (bool) CanUseGlExtension("GL_ARB_vertex_buffer_object"), "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
 #else
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
 #endif
