@@ -83,7 +83,7 @@ public:
     }
 
     Data< double > forceCoef;
-    Data< double > momentCoef;
+    //Data< double > momentCoef;
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const SolidTypes<SReal>::Transform &world_H_tool, const SolidTypes<SReal>::SpatialVector &V_tool_world, SolidTypes<SReal>::SpatialVector &W_tool_world );
@@ -92,7 +92,7 @@ public:
     //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
 protected:
     LCPForceFeedback();
-    ~LCPForceFeedback()
+    virtual ~LCPForceFeedback()
     {
         delete(_timer);
     }

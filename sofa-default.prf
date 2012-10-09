@@ -386,10 +386,14 @@ win32{
 # QMAKE_LFLAGS_RELEASE += /DEBUG
 }
 unix{
-CONFIG -= debug release
-# Uncomment if you want to compile the debug or release version
-#CONFIG += debug
-CONFIG += release
+# we respect by default the debug / release flag given to qmake
+# use qmake -r CONFIG+=debug to active debug-mode compilation
+CONFIG(debug, debug|release){
+  CONFIG -= release
+} else {
+  CONFIG -= debug
+  CONFIG *= release
+}
 
 # Uncomment if you want debug symbols even in release build
 # QMAKE_CXXFLAGS += -g
