@@ -149,11 +149,14 @@ protected:
         unsigned int voronoiIndex;    // value corresponding to the value in the voronoi image
         Coord c;            // centroid
         indList indices;    // indices of parents of that region
-        vector<vector<Real> > coeff;    // coeffs of weigh tfit
-        Real err;           // errror of weight fit
+        vector<vector<Real> > coeff;    // polynomial coeffs for weight fit
+        Real err;           // errror on weight fit
         vector<Real> vol; // volume (and moments) of this region
         regionData(indList ind,unsigned int i):nb(1),voronoiIndex(i),c(Coord()),indices(ind),err(0) {}
+        regionData() {}
     };
+
+    vector<regionData> regions;
 
     virtual void update()
     {
@@ -171,7 +174,7 @@ protected:
         // get output data
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        pos.clear();
+        pos.clear();                // pos is cleared since it is always initialized with one point, so user placed points are not allowed for now..
 
         // init voronoi (=region data) and distances (=error image)
         waDist werr(this->f_error);
@@ -185,15 +188,16 @@ protected:
         regimg.fill(0);
 
         // init regions
-        vector<regionData> regions;
+        regions.clear();
 
         if(this->f_order.getValue()==1) // midpoint integration : put samples uniformly and weight them by their volume
         {
             // identify regions with similar repartitions
-            Cluster_SimilarIndices(regions);
+            Cluster_SimilarIndices();
 
             // init soft regions (=more than one parent) where uniform sampling will be done
-            for(unsigned int i=0; i<regions.size(); i++)
+            // rigid regions (one parent) are kept in the list of region (and dist remains=-1 so they will not be sampled)
+            for(unsigned int i=0; i<regions.size();i++)
             {
                 if(regions[i].indices.size()>1)
                 {
@@ -324,10 +328,10 @@ protected:
             else if(this->f_method.getValue().getSelectedId() == ELASTON)
             {
                 // identify regions with similar repartitions
-                Cluster_SimilarIndices(regions);
+                Cluster_SimilarIndices();
 
                 // fit weights
-                for(unsigned int i=pos.size(); i<regions.size(); i++) fitWeights(regions[i],1);
+                for(unsigned int i=pos.size(); i<regions.size(); i++) fitWeights(regions[i],1,false);
 
                 // subdivide region with largest error until target number is reached
                 while(regions.size()<targetNumber.getValue())
@@ -336,9 +340,9 @@ protected:
                     unsigned int maxindex=0;
                     for(unsigned int i=0; i<regions.size(); i++) if(maxerr<regions[i].err) {maxerr=regions[i].err; maxindex=i;}
                     if(maxerr==0) break;
-                    subdivideRegion(regions,maxindex);
-                    fitWeights(regions[maxindex],1);
-                    fitWeights(regions.back(),1);
+                    subdivideRegion(maxindex);
+                    fitWeights(regions[maxindex],1,false);
+                    fitWeights(regions.back(),1,false);
                 }
 
                 // fit weights
@@ -382,7 +386,7 @@ protected:
 
     /// Identify regions sharing similar parents
     /// returns a list of region containing the parents, the number of voxels and center; and fill the voronoi image
-    void Cluster_SimilarIndices(vector<regionData>& regions)
+    void Cluster_SimilarIndices()
     {
         // get tranform and images at time t
         raInd rindices(this->f_index);          if(!rindices->getCImgList().size())  { serr<<"Indices not found"<<sendl; return; }
@@ -437,7 +441,7 @@ protected:
     }
 
     /// subdivide region[index] in two regions
-    void subdivideRegion(vector<regionData>& regions, const unsigned int index)
+    void subdivideRegion(const unsigned int index)
     {
         raTransform transform(this->f_transform);
         raInd rindices(this->f_index);
@@ -524,7 +528,7 @@ protected:
         cimg_forXYZ(regimg,x,y,z)
         if(regimg(x,y,z)==region.voronoiIndex)
         {
-            Coord prel = region.c - transform->fromImage(Coord(x,y,z));
+            Coord prel = transform->fromImage(Coord(x,y,z)) - region.c;
             defaulttype::getCompleteBasis(basis,prel,order);
             for(int k=0; k<dimBasis; k++) region.vol[k]+=basis[k]*dv;
         }

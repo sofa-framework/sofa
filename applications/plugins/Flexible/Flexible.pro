@@ -10,6 +10,7 @@ SOURCES = initFlexible.cpp\
     types/DeformationGradientTypes.cpp \
     types/StrainTypes.cpp \
     types/AffineTypes.cpp \
+    #types/AffineMass.cpp \
     types/QuadraticTypes.cpp \
     quadrature/BaseGaussPointSampler.cpp \
     quadrature/TopologyGaussPointSampler.cpp \
@@ -45,6 +46,7 @@ HEADERS = initFlexible.h \
     types/DeformationGradientTypes.h \
     types/StrainTypes.h \
     types/AffineTypes.h \
+    #types/AffineMass.h \
     types/QuadraticTypes.h \
     types/PolynomialBasis.h \
     quadrature/BaseGaussPointSampler.h \

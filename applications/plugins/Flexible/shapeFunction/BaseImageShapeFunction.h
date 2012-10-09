@@ -146,13 +146,13 @@ public:
 
         //get closest voxel with non zero weights
         bool project=false;
-        if(P[0]<0 || P[1]<0 || P[2]<0 || P[0]>indices.width()-1 || P[1]>indices.height()-1 || P[2]>indices.depth()-1) project=true;
+        if(P[0]<=0 || P[1]<=0 || P[2]<=0 || P[0]>=indices.width()-1 || P[1]>=indices.height()-1 || P[2]>=indices.depth()-1) project=true;
         else if(indices(P[0],P[1],P[2],0)==0) project=true;
         if(project)
         {
             Real dmin=cimg::type<Real>::max();
             Coord newP=P;
-            cimg_forXYZ(indices,x,y,z) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { newP=Coord(x,y,z); dmin=d; } }
+            cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { newP=Coord(x,y,z); dmin=d; } }
             if(dmin==cimg::type<Real>::max()) return;
             P=newP;
         }
@@ -174,15 +174,15 @@ public:
                 // add neighbors with same index
                 count=0;
                 for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
+                {
+                    for (unsigned int r2=0;r2<nbRef;r2++)
+                        if(indices(P[0]+i,P[1]+j,P[2]+k,r2)==ind)
                         {
-                            for (unsigned int r2=0; r2<nbRef; r2++)
-                                if(indices(P[0]+i,P[1]+j,P[2]+k,r2)==ind)
-                                {
-                                    val.push_back(weights(P[0]+i,P[1]+j,P[2]+k,r2));
-                                    pos.push_back(lpos[count]);
-                                }
-                            count++;
+                            val.push_back(weights(P[0]+i,P[1]+j,P[2]+k,r2));
+                            pos.push_back(lpos[count]);
                         }
+                    count++;
+                }
                 // fit weights
                 vector<Real> coeff;
                 defaulttype::PolynomialFit(coeff,val,pos, order);

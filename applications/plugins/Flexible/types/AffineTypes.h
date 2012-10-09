@@ -202,7 +202,7 @@ public:
         Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
         void operator +=(const Deriv& a) { v+=a.getVec(); }
 
-        Coord operator -(const Coord& a) const { return Coord(v-a.v); }
+        Deriv operator -(const Coord& a) const { return Deriv(v-a.v); }
         void operator -=(const Coord& a) { v-=a.v; }
 
 
