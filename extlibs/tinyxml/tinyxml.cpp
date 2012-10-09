@@ -31,6 +31,12 @@ distribution.
 
 #include "tinyxml.h"
 
+namespace sofa
+{
+
+namespace tinyxml
+{
+
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
 bool TiXmlBase::condenseWhiteSpace = true;
@@ -1884,3 +1890,6 @@ bool TiXmlPrinter::Visit( const TiXmlUnknown& unknown )
 	return true;
 }
 
+} // namespace tinyxml
+
+} // namespace sofa

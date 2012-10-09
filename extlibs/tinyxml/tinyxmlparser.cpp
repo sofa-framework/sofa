@@ -27,6 +27,12 @@ distribution.
 
 #include "tinyxml.h"
 
+namespace sofa
+{
+
+namespace tinyxml
+{
+
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
 #	if defined( DEBUG ) && defined( _MSC_VER )
@@ -1636,3 +1642,6 @@ bool TiXmlText::Blank() const
 	return true;
 }
 
+} // namespace tinyxml
+
+} // namespace sofa
