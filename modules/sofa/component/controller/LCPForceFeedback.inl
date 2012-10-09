@@ -124,20 +124,25 @@ namespace controller
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
-    , haptic_freq(0.0)
+: forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
+  mState(NULL),
+  mNextBufferId(0),
+  mCurBufferId(0),
+  mIsCuBufferInUse(false),
+  constraintSolver(NULL),
+  _timer(NULL),
+  time_buf(0),
+  timer_iterations(0),
+  haptic_freq(0.0),
+  num_constraints(0)
 {
     this->f_listening.setValue(true);
     mCP[0] = NULL;
     mCP[1] = NULL;
     mCP[2] = NULL;
-    mCurBufferId = 0;
-    mNextBufferId = 0;
-    mIsCuBufferInUse = false;
     _timer = new CTime();
     time_buf = _timer->getTime();
     timer_iterations = 0;
-
 }
 
 

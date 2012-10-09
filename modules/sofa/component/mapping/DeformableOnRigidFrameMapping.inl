@@ -64,6 +64,9 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     , m_rootAngularForceScaleFactor(initData(&m_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
     , m_rootLinearForceScaleFactor(initData(&m_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
+    , m_fromModel(NULL)
+    , m_toModel(NULL)
+    , m_fromRootModel(NULL)
 {
     maskFrom = NULL;
     maskTo = NULL;
@@ -88,7 +91,6 @@ int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 {
-    Inherit::init();
     if(!this->fromModels1.empty())
     {
         if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModels1.get(0)))
@@ -102,13 +104,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 
     if(this->getFromModels1().empty())
     {
-        serr << "Error while iniatilizing ; input Model not found" << sendl;
+        serr << "Error while initializing ; input Model not found" << sendl;
         return;
     }
 
     if(this->getToModels().empty())
     {
-        serr << "Error while iniatilizing ; output Model not found" << sendl;
+        serr << "Error while initializing ; output Model not found" << sendl;
         return;
     }
 
@@ -122,6 +124,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
         m_fromRootModel = this->getFromModels2()[0];
         sout << "Root Model found : Name = " << m_fromRootModel->getName() << sendl;
     }
+    Inherit::init();
 }
 
 template <class TIn, class TInRoot, class TOut>

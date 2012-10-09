@@ -143,6 +143,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
     , materials			(initData	(&materials, "materials", "List of materials"))
     , groups			(initData	(&groups, "groups", "Groups of triangles and quads using a given material"))
+    , xformsModified(false)
 {
 #ifdef SOFA_SMP
     originalMaterial = material.getValue();
