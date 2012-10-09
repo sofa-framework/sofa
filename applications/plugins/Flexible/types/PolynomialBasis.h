@@ -43,6 +43,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 namespace sofa
 {
@@ -189,6 +190,70 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
 
     return; // order>4 not implemented...
 }
+
+
+
+template<typename real>
+Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBasis_TranslationMatrix(const Vec<3,real>& t,const unsigned int order)
+{
+    typedef Vec<3,real> Coord;
+
+    unsigned int j,dim=(order+1)*(order+2)*(order+3)/6;
+    Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> A(dim,dim);
+    A.setIdentity();
+
+    // order 0
+    unsigned int count=1;
+    if (count==dim) return A;
+
+    // order 1
+    vector<real> T; getCompleteBasis(T,t,order);
+    for (j=1;j<dim;j++) A(j,0)=T[j]; // fill first column
+    count=4;
+    if (count==dim) return A;
+
+    // order 2
+    A(count,1)=2*T[1]; count++;
+    A(count,1)=T[2]; A(count,2)=T[1]; count++;
+    A(count,1)=T[3];    A(count,3)=T[1]; count++;
+    A(count,2)=2*T[2]; count++;
+    A(count,2)=T[3];    A(count,3)=T[2]; count++;
+    A(count,3)=2*T[3]; count++;
+    if (count==dim) return A;
+
+    // order 3
+    A(count,1)=T[8]; A(count,2)=T[6]; A(count,3)=T[5]; A(count,5)=T[3]; A(count,6)=T[2]; A(count,8)=T[1];  count++;
+    A(count,1)=3*T[4]; A(count,4)=3*T[1]; count++;
+    A(count,1)=2*T[5]; A(count,2)=T[4]; A(count,4)=T[2]; A(count,5)=2*T[1]; count++;
+    A(count,1)=2*T[6]; A(count,3)=T[4]; A(count,4)=T[3]; A(count,6)=2*T[1]; count++;
+    A(count,1)=T[7]; A(count,2)=2*T[5]; A(count,5)=2*T[2]; A(count,7)=T[1]; count++;
+    A(count,2)=3*T[7]; A(count,7)=3*T[2]; count++;
+    A(count,2)=2*T[8]; A(count,3)=T[7]; A(count,7)=T[3]; A(count,8)=2*T[2]; count++;
+    A(count,1)=T[9]; A(count,3)=2*T[6]; A(count,6)=2*T[3]; A(count,9)=T[1]; count++;
+    A(count,2)=T[9]; A(count,3)=2*T[8]; A(count,8)=2*T[3]; A(count,9)=T[2];  count++;
+    A(count,3)=3*T[9]; A(count,9)=3*T[3];  count++;
+    if (count==dim) return A;
+
+    // order 4
+    A(count,1)=4*T[11]; A(count,4)=6*T[4]; A(count,11)=4*T[1];  count++;
+    A(count,1)=2*T[14]; A(count,2)=2*T[12]; A(count,4)=T[7]; A(count,5)=4*T[5]; A(count,7)=T[4]; A(count,12)=2*T[2]; A(count,14)=2*T[1];  count++;
+    A(count,1)=2*T[17]; A(count,3)=2*T[13]; A(count,4)=T[9]; A(count,6)=4*T[6]; A(count,9)=T[4]; A(count,13)=2*T[3]; A(count,17)=2*T[1];  count++;
+    A(count,2)=4*T[15]; A(count,7)=6*T[7];  A(count,15)=4*T[2];  count++;
+    A(count,2)=2*T[18]; A(count,3)=2*T[16]; A(count,7)=T[9]; A(count,8)=4*T[8]; A(count,9)=T[7]; A(count,16)=2*T[3]; A(count,18)=2*T[2];  count++;
+    A(count,3)=4*T[19]; A(count,9)=6*T[9];  A(count,19)=4*T[3];  count++;
+    A(count,1)=2*T[10]; A(count,2)=T[13]; A(count,3)=T[12]; A(count,4)=T[8]; A(count,5)=2*T[6]; A(count,6)=2*T[5]; A(count,8)=T[4]; A(count,10)=2*T[1]; A(count,12)=T[3]; A(count,13)=T[2];  count++;
+    A(count,1)=T[16]; A(count,2)=2*T[10]; A(count,3)=T[14]; A(count,5)=2*T[8]; A(count,6)=T[7]; A(count,7)=T[6]; A(count,8)=2*T[5]; A(count,10)=2*T[2]; A(count,14)=T[3]; A(count,16)=T[1];  count++;
+    A(count,1)=T[18]; A(count,2)=T[17]; A(count,3)=2*T[10]; A(count,5)=T[9]; A(count,6)=2*T[8]; A(count,8)=2*T[6]; A(count,9)=T[5]; A(count,10)=2*T[3]; A(count,17)=T[2]; A(count,18)=T[1];  count++;
+    A(count,1)=3*T[12]; A(count,2)=T[11]; A(count,4)=3*T[5]; A(count,5)=3*T[4]; A(count,11)=T[2]; A(count,12)=3*T[1];  count++;
+    A(count,1)=3*T[13]; A(count,3)=T[11]; A(count,4)=3*T[6]; A(count,6)=3*T[4]; A(count,11)=T[3]; A(count,13)=3*T[1];  count++;
+    A(count,1)=T[15]; A(count,2)=3*T[14]; A(count,5)=3*T[7]; A(count,7)=3*T[5]; A(count,14)=3*T[2]; A(count,15)=T[1];  count++;
+    A(count,2)=3*T[16]; A(count,3)=T[15]; A(count,7)=3*T[8]; A(count,8)=3*T[7]; A(count,15)=T[3]; A(count,16)=3*T[2];  count++;
+    A(count,1)=T[19]; A(count,3)=3*T[17]; A(count,6)=3*T[9]; A(count,9)=3*T[6]; A(count,17)=3*T[3]; A(count,19)=T[1];  count++;
+    A(count,2)=T[19]; A(count,3)=3*T[18]; A(count,8)=3*T[9]; A(count,9)=3*T[8]; A(count,18)=3*T[3]; A(count,19)=T[2];  count++;
+
+    return A; // order>4 not implemented...
+}
+
 
 
 template<typename real>
@@ -408,71 +473,6 @@ MatSym<6,Real> getOrder4Factors(const vector<Real>& v)
 }
 
 
-
-/**
-* polynomial approximation of scalar value given 3d offsets (constant for order 0, linear for order 1, quadratic for order 2)
-* least squares fit: \f$ argmin_coeff ( sum_i ( val_i - coeff^T.(pos_i)~ )^2 ) = argmin_coeff ||coeff-X.val||^2 \f$
-* -> normal equation = \f$  coeff = (X^TX)^-1 X^T val  \f$
-* with :
-*   - \f$ val_i \f$ is the value to be approximated at location \f$ pos_i \f$
-*   - \f$ ()~ \f$ is the polynomial basis of order @param order
-*   - \f$ Xij = (pos_i)~ j i \f$
-*   - @returns the polynomial coefficients coeff
-*/
-
-template<typename real>
-void PolynomialFit(vector<real>& coeff, const vector<real>& val, const vector<Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
-{
-    typedef  Vec<3,real> Coord;
-    typedef Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>  Matrix;
-    typedef Eigen::Matrix<real,Eigen::Dynamic,1>  Vector;
-    const int nbp=pos.size(),dim=(order+1)*(order+2)*(order+3)/6;
-
-    Matrix X(nbp,dim);
-
-    for (int i=0; i<nbp; i++)
-    {
-        vector<real> basis;
-        getCompleteBasis(basis,pos[i],order);
-        memcpy(&X(i,0),&basis[0],dim*sizeof(real));
-    }
-    Eigen::JacobiSVD<Matrix> svd(X, Eigen::ComputeThinU | Eigen::ComputeThinV);
-
-    if (svd.singularValues().minCoeff()<MIN_COEFF) { PolynomialFit(coeff,val, pos, order-1,MIN_COEFF); return;}
-
-    Vector c=svd.solve( Eigen::Map<const Vector>(&val[0],nbp) );
-//    std::cout<<"X="<<X<<std::endl;
-//    std::cout<<"y="<<y<<std::endl;
-//std::cout<<"c="<<c<<std::endl;
-//std::cout<<"nb="<<svd.singularValues ()<<std::endl;
-    coeff.resize(dim);
-    memcpy(&coeff[0],&c(0),dim*sizeof(real));
-}
-
-
-template<typename real>
-real getPolynomialFit_Error(const vector<real>& coeff, const vector<real>& val, const vector<Vec<3,real> >& pos)
-{
-    real error=0;
-    for(unsigned int i=0; i<pos.size(); i++) error+=getPolynomialFit_Error(coeff, val[i], pos[i]);
-    return error;
-}
-
-template<typename real>
-real getPolynomialFit_Error(const vector<real>& coeff, const real& val, const Vec<3,real>& pos)
-{
-    typedef  Vec<3,real> Coord;
-    int dim=coeff.size(),order;
-    if(dim==1) order=0; else if(dim==4) order=1; else if(dim==10) order=2; else if(dim==20) order=3; else order=4;
-    dim=(order+1)*(order+2)*(order+3)/6;
-    vector<real> basis;
-    getCompleteBasis(basis,pos,order);
-    real v=0; for (int i=0; i<dim; i++) v+=coeff[i]*basis[i];
-    real error=(v-(real)val)*(v-(real)val);
-    return error;
-}
-
-
 /**
 * get differential quantities (val(p0), grad(val) (p0), grad2(val) (p0)) given a polynomial fit centered on p0
 */
@@ -497,6 +497,65 @@ void getPolynomialFit_differential(  const vector<real>& coeff, real& Val, Vec<3
         (*Hessian)(2,2)=(coeff[9]*(real)2.);
     }
 }
+
+/**
+* polynomial approximation of scalar value given 3d offsets (constant for order 0, linear for order 1, quadratic for order 2)
+* least squares fit: \f$ argmin_coeff ( sum_i ( val_i - coeff^T.(pos_i)~ )^2 ) = argmin_coeff ||coeff-X.val||^2 \f$
+* -> normal equation = \f$  coeff = (X^TX)^-1 X^T val  \f$
+* with :
+*   - \f$ val_i \f$ is the value to be approximated at location \f$ pos_i \f$
+*   - \f$ ()~ \f$ is the polynomial basis of order @param order
+*   - \f$ Xij = (pos_i)~ j i \f$
+*   - @returns the polynomial coefficients coeff
+*/
+
+template<typename real>
+void PolynomialFit(vector<real>& coeff, const vector<real>& val, const vector<Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
+{
+    typedef Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>  Matrix;
+    typedef Eigen::Matrix<real,Eigen::Dynamic,1>  Vector;
+    const int nbp=pos.size(),dim=(order+1)*(order+2)*(order+3)/6;
+
+    Matrix X(nbp,dim);
+
+    for (int i=0; i<nbp; i++)
+    {
+        vector<real> basis;
+        getCompleteBasis(basis,pos[i],order);
+        memcpy(&X(i,0),&basis[0],dim*sizeof(real));
+    }
+    Eigen::JacobiSVD<Matrix> svd(X, Eigen::ComputeThinU | Eigen::ComputeThinV);
+
+    if (svd.singularValues().minCoeff()<MIN_COEFF) { PolynomialFit(coeff,val, pos, order-1,MIN_COEFF); return;}
+
+    Vector c=svd.solve( Eigen::Map<const Vector>(&val[0],nbp) );
+
+    coeff.resize(dim);
+    memcpy(&coeff[0],&c(0),dim*sizeof(real));
+}
+
+// returns error \f$ sum_i ( val_i - coeff^T.(pos_i)~ )^2 \f$
+template<typename real>
+real getPolynomialFit_Error(const vector<real>& coeff, const vector<real>& val, const vector<Vec<3,real> >& pos)
+{
+    real error=0;
+    for(unsigned int i=0; i<pos.size(); i++) error+=getPolynomialFit_Error(coeff, val[i], pos[i]);
+    return error;
+}
+
+template<typename real>
+real getPolynomialFit_Error(const vector<real>& coeff, const real& val, const Vec<3,real>& pos)
+{
+    int dim=coeff.size(),order;
+    if(dim==1) order=0; else if(dim==4) order=1; else if(dim==10) order=2; else if(dim==20) order=3; else order=4;
+    dim=(order+1)*(order+2)*(order+3)/6;
+    vector<real> basis;
+    getCompleteBasis(basis,pos,order);
+    real v=0; for (int i=0; i<dim; i++) v+=coeff[i]*basis[i];
+    real error=(v-(real)val)*(v-(real)val);
+    return error;
+}
+
 
 
 } // namespace defaulttype

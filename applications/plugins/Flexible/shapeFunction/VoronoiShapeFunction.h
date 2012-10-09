@@ -192,6 +192,14 @@ public:
                     }
                 }
             }
+            // normalize
+            cimg_forXYZ(voronoi,x,y,z)
+                    if(voronoi(x,y,z))
+            {
+                DistT totW=0;
+                cimg_forC(weights,c) totW+=weights(x,y,z,c);
+                if(totW) cimg_forC(weights,c) weights(x,y,z,c)/=totW;
+            }
         }
         else if(this->method.getValue().getSelectedId() == LAPLACE || this->method.getValue().getSelectedId() == SIBSON)
         {
@@ -298,7 +306,7 @@ protected:
         NaturalNeighborDataMap data;
         Real pixelvol=voxelsize[0]*voxelsize[1]*voxelsize[2];
         Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
-        bool border;
+        //bool border;
 
         cimg_forXYZ(voronoiPt,x,y,z)
         if(voronoiPt(x,y,z)==index)
@@ -306,13 +314,13 @@ protected:
             unsigned int node=voronoi(x,y,z);
             if(!data.count(node)) data[node]=NaturalNeighborData();
             data[node].vol+=pixelvol;
-            border=false;
-            if(x!=0)                    if(voronoiPt(x-1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
-            if(x!=voronoiPt.width()-1)  if(voronoiPt(x+1,y,z)!=index) {data[node].surf+=pixelsurf[0];  border=true;}
-            if(y!=0)                    if(voronoiPt(x,y-1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
-            if(y!=voronoiPt.height()-1) if(voronoiPt(x,y+1,z)!=index) {data[node].surf+=pixelsurf[1];  border=true;}
-            if(z!=0)                    if(voronoiPt(x,y,z-1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
-            if(z!=voronoiPt.depth()-1)  if(voronoiPt(x,y,z+1)!=index) {data[node].surf+=pixelsurf[2];  border=true;}
+            //border=false;
+            if(x!=0)                    if(voronoiPt(x-1,y,z)!=index) {data[node].surf+=pixelsurf[0];  /*border=true;*/}
+            if(x!=voronoiPt.width()-1)  if(voronoiPt(x+1,y,z)!=index) {data[node].surf+=pixelsurf[0];  /*border=true;*/}
+            if(y!=0)                    if(voronoiPt(x,y-1,z)!=index) {data[node].surf+=pixelsurf[1];  /*border=true;*/}
+            if(y!=voronoiPt.height()-1) if(voronoiPt(x,y+1,z)!=index) {data[node].surf+=pixelsurf[1];  /*border=true;*/}
+            if(z!=0)                    if(voronoiPt(x,y,z-1)!=index) {data[node].surf+=pixelsurf[2];  /*border=true;*/}
+            if(z!=voronoiPt.depth()-1)  if(voronoiPt(x,y,z+1)!=index) {data[node].surf+=pixelsurf[2];  /*border=true;*/}
             if(distancesPt(x,y,z)+distances(x,y,z)<data[node].dist) data[node].dist=distancesPt(x,y,z)+distances(x,y,z);
         }
         return data;
