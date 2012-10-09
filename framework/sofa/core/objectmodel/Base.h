@@ -193,6 +193,10 @@ public:
 
     /// Add a data field.
     /// Note that this method should only be called if the Data was not initialized with the initData method
+    void addData(BaseData* f, const std::string& name);
+
+    /// Add a data field.
+    /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f);
 
     /// Remove a data field.

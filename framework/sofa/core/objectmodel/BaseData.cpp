@@ -84,7 +84,7 @@ BaseData::BaseData( const BaseInitData& init)
         exit( 1 );
     }
     //setAutoLink(true);
-    if (m_owner) m_owner->addData(this);
+    if (m_owner) m_owner->addData(this, m_name);
 }
 
 BaseData::~BaseData()

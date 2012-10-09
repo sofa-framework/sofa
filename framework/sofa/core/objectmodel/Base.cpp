@@ -127,7 +127,13 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 /// Note that this method should only be called if the field was not initialized with the initData method
 void Base::addData(BaseData* f)
 {
-    std::string name = f->getName();
+    addData(f, f->getName());
+}
+
+/// Add a data field.
+/// Note that this method should only be called if the field was not initialized with the initData method
+void Base::addData(BaseData* f, const std::string& name)
+{
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
         serr << "Data field name " << name
