@@ -39,7 +39,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 
-class TiXmlElement;
+#include <tinyxml.h>
 
 namespace sofa
 {

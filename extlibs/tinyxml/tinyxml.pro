@@ -1,11 +1,13 @@
-# Target is a library:  tinyxml
+# Target is a library:  sofatinyxml
 load(sofa/pre)
 
 TEMPLATE = lib
 TARGET = tinyxml
 
+DEFINES *= SOFA_BUILD_TINYXML
+
 DEFINES *= TIXML_USE_STL
-CONFIGSTATIC = static
+#CONFIGSTATIC = static
 
 HEADERS += \
   tinystr.h \

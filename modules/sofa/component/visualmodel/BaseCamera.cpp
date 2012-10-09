@@ -29,8 +29,6 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/helper/gl/Axis.h>
 
-#include <tinyxml.h>
-
 namespace sofa
 {
 
