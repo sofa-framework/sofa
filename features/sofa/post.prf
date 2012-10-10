@@ -310,3 +310,8 @@ equals(ROOT_PATH, .) {
 #message( "INCLUDEPATH: " $${INCLUDEPATH})
 #message( "DEPENDPATH: " $${DEPENDPATH})
 #message( "LIBDIR: " $${QMAKE_LIBDIR})
+
+
+exists($$ROOT_BUILD_DIR/post-local.prf) {
+	load($$ROOT_BUILD_DIR/post-local)
+}
