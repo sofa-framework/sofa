@@ -21,7 +21,7 @@ public:
     bool load(const char* filename);
 
     /// Start the simulation
-    /// Currently this simple set the animated flag to true, but this might
+    /// Currently this simply sets the animated flag to true, but this might
     /// start a separate computation thread in a future version
     void start();
 

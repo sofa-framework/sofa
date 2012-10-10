@@ -39,7 +39,7 @@ namespace tinyxml
 
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
-bool TiXmlBase::condenseWhiteSpace = true;
+bool SOFA_TINYXML_API TiXmlBase::condenseWhiteSpace = true;
 
 // Microsoft compiler security
 FILE* TiXmlFOpen( const char* filename, const char* mode )
