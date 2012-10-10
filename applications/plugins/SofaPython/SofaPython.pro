@@ -79,7 +79,6 @@ HEADERS = initSofaPython.h \
     Binding_Topology.h \
     Binding_MechanicalObject.h \
     Binding_BaseMechanicalState.h \
-    Binding_ScriptController.h \
     Binding_PythonScriptController.h
 
 README_FILE = SofaPython.txt
