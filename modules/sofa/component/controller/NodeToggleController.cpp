@@ -136,6 +136,21 @@ void NodeToggleController::onHapticDeviceEvent(core::objectmodel::HapticDeviceEv
     }
 }
 
+void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent *oev)
+{
+    switch(oev->getKey())
+    {
+    case 'A':
+    case 'a':
+    {
+        std::cout << "NodeToggleController: switching active node" << std::endl;
+        toggle();
+        break;
+    }
+    default:
+        break;
+    }
+}
 
 } // namespace controller
 
