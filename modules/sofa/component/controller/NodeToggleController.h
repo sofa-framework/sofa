@@ -43,6 +43,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
 
 namespace sofa
 {
@@ -97,6 +98,11 @@ public:
      */
     void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev);
 
+	    /**
+    * @brief Key Press event callback.
+    */
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *oev);
+	
     /**
      * @brief Mouse event callback.
      */
