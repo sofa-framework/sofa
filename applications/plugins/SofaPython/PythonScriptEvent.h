@@ -25,6 +25,7 @@
 #ifndef PYTHONSCRIPTEVENT_H
 #define PYTHONSCRIPTEVENT_H
 
+#include <initSofaPython.h>
 #include "ScriptEvent.h"
 
 #include <Python.h>
@@ -42,7 +43,7 @@ namespace objectmodel
 /**
  * @brief This event notifies about GUI interaction.
  */
-class SOFA_CORE_API PythonScriptEvent : public sofa::core::objectmodel::ScriptEvent
+class SOFA_SOFAPYTHON_API PythonScriptEvent : public sofa::core::objectmodel::ScriptEvent
 {
 public:
 
