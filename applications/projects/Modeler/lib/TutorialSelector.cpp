@@ -26,8 +26,6 @@
 #include "TutorialSelector.h"
 #include "iconnode.xpm"
 
-#include <tinyxml.h>
-
 #include <iostream>
 
 #include <sofa/helper/vector.h>

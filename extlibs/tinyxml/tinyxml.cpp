@@ -39,7 +39,7 @@ namespace tinyxml
 
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
-bool SOFA_TINYXML_API TiXmlBase::condenseWhiteSpace = true;
+bool TiXmlBase::condenseWhiteSpace = true;
 
 // Microsoft compiler security
 FILE* TiXmlFOpen( const char* filename, const char* mode )
@@ -1599,7 +1599,7 @@ TiXmlAttribute* TiXmlAttributeSet::FindOrCreate( const char* _name )
 
 
 #ifdef TIXML_USE_STL	
-std::istream& operator>> (std::istream & in, TiXmlNode & base)
+SOFA_TINYXML_API std::istream& operator>> (std::istream & in, TiXmlNode & base)
 {
 	TIXML_STRING tag;
 	tag.reserve( 8 * 1000 );
@@ -1612,7 +1612,7 @@ std::istream& operator>> (std::istream & in, TiXmlNode & base)
 
 
 #ifdef TIXML_USE_STL	
-std::ostream& operator<< (std::ostream & out, const TiXmlNode & base)
+SOFA_TINYXML_API std::ostream& operator<< (std::ostream & out, const TiXmlNode & base)
 {
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
@@ -1623,7 +1623,7 @@ std::ostream& operator<< (std::ostream & out, const TiXmlNode & base)
 }
 
 
-std::string& operator<< (std::string& out, const TiXmlNode& base )
+SOFA_TINYXML_API std::string& operator<< (std::string& out, const TiXmlNode& base )
 {
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();

@@ -26,11 +26,6 @@
 
 #include <sstream>
 
-#include <tinyxml.cpp>
-#include <tinyxmlerror.cpp>
-#include <tinystr.cpp>
-#include <tinyxmlparser.cpp>
-
 #include <algorithm>
 
 #include <sofa/helper/system/thread/CTime.h>
