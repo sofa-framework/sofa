@@ -35,7 +35,6 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -231,7 +230,6 @@ public:
 
     SparseMatrix& getJacobianBlocks() { return jacobian; }
 
-    engine::BaseGaussPointSampler* _sampler;
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     Data<vector<VReal> >       f_w;
