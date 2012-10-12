@@ -25,6 +25,7 @@
 #ifndef SCRIPTEVENT_H
 #define SCRIPTEVENT_H
 
+#include <initSofaPython.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <string>
 #include <sofa/simulation/common/Node.h>
@@ -42,7 +43,7 @@ namespace objectmodel
 /**
  * @brief This event notifies about GUI interaction.
  */
-class SOFA_CORE_API ScriptEvent : public sofa::core::objectmodel::Event
+class SOFA_SOFAPYTHON_API ScriptEvent : public sofa::core::objectmodel::Event
 {
 public:
 
