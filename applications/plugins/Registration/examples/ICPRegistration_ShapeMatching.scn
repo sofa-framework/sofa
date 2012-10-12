@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin name="Registration" pluginName="sofaRegistration" />
+	
+	<VisualStyle displayFlags="showBehavior showVisual" />
+	
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" vdamping=0.01/>
+	<CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" />
+
+	<Node name="target">
+			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+	</Node>
+			
+	<Node name="source">
+			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
+			<Mesh src="@meshLoader"/>
+			<MechanicalObject  name="PointSet"  position="@meshLoader.position" useMask="0" />
+			<UniformMass mass="10"/>
+			<RotationFinder neighborhoodLevel="2" axisToFlip="0"/>
+            <ShapeMatchingForceField name="ShapeMatching" stiffness="10" />
+			<ClosestPointRegistrationForceField template="Vec3d&gt"
+					position="@../target/Bone.position" 
+					cacheSize="4"
+					stiffness="5" damping="0" />
+		<Node name="Visu">
+			<OglModel name="Visual" fileMesh="data/femur_m.obj" normals="0"   color="1 .4 0.5 1" />
+			<BarycentricMapping object1="../.." object2="Visual" />
+		</Node>			
+	</Node>
+
+
+</Node>

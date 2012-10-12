@@ -1,0 +1,11 @@
+ObjectType = Image
+NDims = 3
+DimSize = 100 200 120
+ElementSpacing = 0.01381 0.0129554 0.0390019
+Position = -1.88574 -1.13047 -3.44723
+ElementNumberOfChannels = 1
+ElementType = MET_UCHAR
+HeaderSize = -1
+isPerpective = 0
+ElementDataFile = thigh_m.raw
+

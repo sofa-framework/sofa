@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin name="Registration" pluginName="sofaRegistration" />
+	
+	<VisualStyle displayFlags="showForceFields showVisual" />
+	
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" />
+
+	<Node name="target">
+			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+	</Node>
+			
+	<Node name="source">
+			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
+			<Mesh src="@meshLoader" />
+			<MechanicalObject  name="PointSet"  useMask="0" />
+			<UniformMass mass="10"/>
+			
+			<ClusteringEngine template="Vec3d" name="clustering" radius='0.4'  number='100' position="@meshLoader.position"/>
+			<ShapeMatching template="Vec3d" name="shapeMatching" iterations='1' position="@PointSet.position" cluster="@clustering.cluster"/>
+			<PositionBasedDynamicsConstraint template="Vec3d" stiffness = '1' position="@shapeMatching.targetPosition"/>		
+						
+			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@meshLoader.triangles" quads="@meshLoader.quads"/>
+
+			<ClosestPointRegistrationForceField template="Vec3d&gt"
+					sourceTriangles="@meshLoader.triangles"					
+					sourceNormals="@NormalsFromPoints.normals"					
+					position="@../target/Bone.position" 
+					triangles="@../target/Bone.triangles"	
+					normals="@../target/Bone.normal"					
+					cacheSize="4"
+					stiffness="1" damping="0" />
+		<Node name="Visu">
+			<OglModel name="Visual" fileMesh="data/femur_m.obj" normals="0"   color="1 .4 0.5 1" />
+			<BarycentricMapping object1="../.." object2="Visual" />
+		</Node>			
+	</Node>
+
+
+</Node>
