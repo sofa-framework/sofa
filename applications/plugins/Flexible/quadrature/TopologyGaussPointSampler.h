@@ -64,15 +64,9 @@ public:
     Data< SeqPositions > f_inPosition;
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
+    Data< vector<unsigned int> > f_cell;
     //@}
 
-
-    /** @name  region data */
-    //@{
-    typedef helper::WriteAccessor<Data< vector<unsigned int> > > waRegion;
-    Data< vector<unsigned int> > f_region;
-    virtual const unsigned int* getRegion() {return &f_region.getValue()[0]; }
-    //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
@@ -88,7 +82,7 @@ public:
         }
 
         addInput(&f_inPosition);
-        addOutput(&f_region);
+        addOutput(&f_cell);
         setDirtyValue();
     }
 
@@ -98,7 +92,7 @@ protected:
     TopologyGaussPointSampler()    :   Inherited()
         , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
         , parentTopology( 0 )
-        , f_region(initData(&f_region,"region","sample region: cell index associated with each sample"))
+        , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
     {
     }
 
@@ -124,7 +118,8 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        waRegion reg(this->f_region);
+
+        helper::WriteAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
 
         if ( tetrahedra.empty() && cubes.empty() )
         {
@@ -137,13 +132,13 @@ protected:
                 {
                     pos.resize ( edges.size() );
                     vol.resize ( pos.size() );
-                    reg.resize ( pos.size() );
+                    cel.resize ( pos.size() );
                     for (unsigned int i=0; i<edges.size(); i++ )
                     {
                         const Coord& p1=parent[edges[i][0]],p2=parent[edges[i][1]];
                         pos[i] = (p1+p2)*0.5;
                         vol[i].resize(1); vol[i][0]=(p1-p2).norm();
-                        reg[i] = i;
+                        cel[i] = i;
                         // to do : volume integrals for elastons
                     }
                 }
@@ -156,13 +151,13 @@ protected:
                 {
                     pos.resize ( triangles.size() +quads.size() );
                     vol.resize ( pos.size() );
-                    reg.resize ( pos.size() );
+                    cel.resize ( pos.size() );
                     for ( unsigned int i = 0; i < triangles.size(); i++ )
                     {
                         const Coord& p1=parent[triangles[i][0]],p2=parent[triangles[i][1]],p3=parent[triangles[i][2]];
                         pos[i] = (p1+p2+p3)/(Real)3.;
                         vol[i].resize(1); vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
-                        reg[i] = i;
+                        cel[i] = i;
                         // to do : volume integrals for elastons
                     }
                     int c0 = triangles.size();
@@ -171,7 +166,7 @@ protected:
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
                         pos[i+c0] = (p1+p2+p3+p4)*0.25;
                         vol[i+c0].resize(1); vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
-                        reg[i+c0] = i+c0;
+                        cel[i+c0] = i+c0;
                         // to do : volume integrals for elastons
                     }
                 }
@@ -185,13 +180,13 @@ protected:
             {
                 pos.resize ( tetrahedra.size() +cubes.size() );
                 vol.resize ( pos.size() );
-                reg.resize ( pos.size() );
+                cel.resize ( pos.size() );
                 for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
                 {
                     const Coord& p1=parent[tetrahedra[i][0]],p2=parent[tetrahedra[i][1]],p3=parent[tetrahedra[i][2]],p4=parent[tetrahedra[i][3]];
                     pos[i] = (p1+p2+p3+p4)*0.25;
                     vol[i].resize(1); vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
-                    reg[i] = i;
+                    cel[i] = i;
                     // to do : volume integrals for elastons
                 }
                 int c0 = tetrahedra.size();
@@ -199,7 +194,7 @@ protected:
                 {
                     const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
                     pos[i+c0] = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
-                    reg[i+c0] = i+c0;
+                    cel[i+c0] = i+c0;
                     getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
                     //vol[i+c0].resize(1); vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
                 }
@@ -208,7 +203,7 @@ protected:
             {
                 pos.resize ( 8*cubes.size() );
                 vol.resize ( pos.size() );
-                reg.resize ( pos.size() );
+                cel.resize ( pos.size() );
 
 
                 // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
@@ -227,7 +222,7 @@ protected:
                             {
                                 pos[count] = c + u*gx3 + v*gx2 + w*gx1;
                                 vol[count].resize(1); vol[count][0] = V;
-                                reg[count] = i;
+                                cel[count] = i;
                                 //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
                                 //
                                 count++;
@@ -285,10 +280,6 @@ protected:
         for(unsigned int i=0; i<9; i++) {V[count]=0; count++;}
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams)
-    {
-        Inherited::draw(vparams);
-    }
 
 
 

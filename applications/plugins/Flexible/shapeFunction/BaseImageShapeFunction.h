@@ -102,11 +102,6 @@ public:
     Data< IndTypes > f_index;
     //@}
 
-    /** @name  Options */
-    //@{
-    Data<bool> averageInRegion;
-    //@}
-
     virtual std::string getTemplateName() const    { return templateName(this); }
     static std::string templateName(const BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
@@ -206,7 +201,7 @@ public:
         this->normalize(w,dw,ddw);
     }
 
-
+/*
     /// fit weights and their derivatives in gauss point regions
     void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* region)
     {
@@ -320,6 +315,7 @@ public:
         // normalize
         this->normalize(w,dw,ddw);
     }
+*/
 
     virtual void init()
     {
@@ -333,7 +329,6 @@ protected:
         , transform(initData(&transform,TransformType(),"transform",""))
         , f_w(initData(&f_w,DistTypes(),"weights",""))
         , f_index(initData(&f_index,IndTypes(),"indices",""))
-        , averageInRegion(initData(&averageInRegion,true,"averageInRegion","average shape function in Gauss point region; interpolate otherwise."))
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
@@ -342,7 +337,6 @@ protected:
         transform.setGroup("input");
         f_w.setGroup("output");
         f_index.setGroup("output");
-        averageInRegion.setGroup("parameters");
     }
 
     virtual ~BaseImageShapeFunction()

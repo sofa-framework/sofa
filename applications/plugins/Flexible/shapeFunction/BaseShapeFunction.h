@@ -123,10 +123,6 @@ public:
     /// this function is typically used for collision and visual points
     virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
 
-    /// average shape function values (and their first and second derivatives) at child positions given their associated regions
-    /// this function is typically used for Gauss points
-    virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* region)=0;
-
     /// wrapper
     void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)
     {

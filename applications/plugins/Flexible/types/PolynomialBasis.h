@@ -558,6 +558,234 @@ real getPolynomialFit_Error(const vector<real>& coeff, const real& val, const Ve
 
 
 
+
+/**
+  Factors used for the computation of Polynomial Fit solution/error for joint domains
+*/
+template<typename real>
+struct PolynomialFitFactors
+{
+
+    typedef Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>  Matrix;
+    typedef Eigen::Matrix<real,Eigen::Dynamic,1>  Vector;
+
+    Matrix  a;  // dim*dim matrix : sum_i (pos_i)~.(pos_i)~^T   = (X^TX)
+    Matrix  b;  // num_nodes*dim matrix : b_j = sum_i (val_{ji}).(pos_i)~   =  (X^T.val_j)
+    Matrix  c;  // num_nodes*num_nodes matrix : c_{jk} = sum_i val_{ji}.val_{ki}
+    Matrix  coeff;  // num_nodes*dim matrix of the optimal coeffs minimizing    \sum_j ||coeff_j-X.val_j||^2
+
+    unsigned int nb;                            // nb of voxels in the region
+    std::set<unsigned int> voronoiIndices;      // value corresponding to the value in the voronoi image
+    Vec<3,real> center;                              // centroid
+    std::map<unsigned int , unsigned int> parentsToNodeIndex;    // map between indices of parents to node indices
+    Vector vol;  // volume (and moments) of this region
+
+    PolynomialFitFactors() :nb(0),center(0,0,0)  { }
+    PolynomialFitFactors(const std::set<unsigned int>& parents, const unsigned int voronoiIndex) :nb(0),center(0,0,0)  { setParents(parents); voronoiIndices.insert(voronoiIndex); }
+
+    void operator =(const PolynomialFitFactors& f)
+    {
+        a=f.a;
+        b=f.b;
+        c=f.c;
+        coeff=f.coeff;
+
+        nb=f.nb;
+        voronoiIndices=f.voronoiIndices;
+        center=f.center;
+        parentsToNodeIndex=f.parentsToNodeIndex;
+        vol=f.vol;
+    }
+
+    void setParents(const vector<unsigned int>& parents)     { parentsToNodeIndex.clear();  for(unsigned int i=0;i<parents.size();i++)  parentsToNodeIndex[parents[i]]=i; }
+    void setParents(const std::set<unsigned int>& parents)     { parentsToNodeIndex.clear();  unsigned int i=0; for(std::set<unsigned int>::iterator it=parents.begin();it!=parents.end();it++)  parentsToNodeIndex[*it]=i++; }
+
+    // compute factors. vals is a num_nodes x nbp matrix
+    void fill( const Matrix& val, const vector<Vec<3,real> >& pos, const unsigned int order, const real dv, const unsigned int volOrder)
+    {
+        unsigned int num_nodes = val.rows(); if(!num_nodes) return;
+
+        unsigned int dim=dimFromOrder(order);
+        //        a.resize(dim,dim); a.setZero();
+        //        b.resize(num_nodes,dim);  b.setZero();
+        //        c.resize(num_nodes,num_nodes);  c.setZero();
+
+        unsigned int volDim=dimFromOrder(volOrder);
+        vol.resize(volDim); vol.setZero();
+
+        nb=pos.size();
+        Matrix X(nb,dim);
+        for (unsigned int i=0;i<nb;i++)
+        {
+            vector<real> basis;
+            defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
+            defaulttype::getCompleteBasis(basis,pos[i]-center,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2*dv;
+        }
+        a = X.transpose()*X;
+        b = val*X;
+        c = val*val.transpose();
+    }
+
+    // direct solve of coeffs from point data
+    void directSolve( const Matrix& val, const vector<Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
+    {
+        unsigned int num_nodes = val.rows(); if(!num_nodes) return;
+
+        unsigned int dim=dimFromOrder(order);
+
+        nb=pos.size();
+        Matrix X(nb,dim);
+        for (unsigned int i=0;i<nb;i++)
+        {
+            vector<real> basis; defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
+        }
+
+        // jacobi svd
+        coeff.resize(num_nodes,dim); coeff.setZero();
+        Eigen::JacobiSVD<Matrix> svd(X, Eigen::ComputeThinU | Eigen::ComputeThinV);
+        if (svd.singularValues().minCoeff()<MIN_COEFF)
+        {
+            PolynomialFitFactors<real> fact;
+            fact.center=center;
+            fact.directSolve(val,pos,order-1,MIN_COEFF);
+            coeff.leftCols(dimFromOrder(order-1))=fact.coeff;
+        }
+        else for (unsigned int i=0;i<num_nodes;i++) coeff.row(i) = svd.solve(val.row(i).transpose());
+
+        // fill a,b,c (for error checking)
+        a = X.transpose()*X;
+        b = val*X;
+        c = val*val.transpose();
+    }
+
+    // least squares solution at a given order, using LLT.
+    // a and b must be filled.
+    // For node i: coeff(i) = a^1.b(i)
+    void solve (const unsigned int order)
+    {
+        unsigned int num_nodes = b.rows(); if(!num_nodes) return;
+        unsigned int dim = a.rows(); if(!dim) return;
+        coeff.resize(num_nodes,dim);  coeff.setZero();
+
+        unsigned int targetDim=dimFromOrder(order);
+        Matrix A,B;
+        if(targetDim<dim) {  A = a.topLeftCorner(targetDim,targetDim); B = b.leftCols(targetDim); }
+        else {A=a; B=b; targetDim=dim;}
+
+        if(order==0) { for (unsigned int i=0;i<num_nodes;i++) coeff(i,0)=(A(0,0)==0)?1./(real)num_nodes:(B(i,0)/A(0,0)); return; }
+
+        Eigen::LLT<Matrix> llt(A);
+        if(llt.info()==Eigen::Success) for (unsigned int i=0;i<num_nodes;i++) coeff.row(i).leftCols(targetDim) = llt.solve(B.row(i).transpose()).transpose();
+
+        bool success=true;
+        const real TOL=1E-2;
+        if(llt.info()!=Eigen::Success) success=false;
+        else if(fabs(coeff.col(0).sum()-1)>TOL) success=false;      // normally checking Eigen::Success should suffice, but for some reasons, some singular matrices remain undetected..
+        else for(unsigned int i=1;i<dim;i++) if(fabs(coeff.col(i).sum())>TOL) success=false;
+
+        if(!success) solve(order-1);
+    }
+
+    // error integral computation: \f$ ||coeff-X.val||^2 = coeff^T.a.coeff - 2.coeff^T.b + c \f$
+    real getError(const int nodeIndex=-1) const
+    {
+        real err = 0;
+        int num_nodes = b.rows();
+        for (int i=0; i<num_nodes; i++) if(nodeIndex==-1 || nodeIndex==i) err += c(i,i) +  coeff.row(i) * a * coeff.row(i).transpose() - (real)2. * coeff.row(i) * b.row(i).transpose();
+        return err;
+    }
+
+    // error computation at point p: \f$  ( val - coeff^T.(pos)~ )^2  \f$
+    real getError(const Vec<3,real>& p, const Vector& val) const
+    {
+        unsigned int dim = coeff.cols(); if(!dim) return -1;
+        unsigned int order=orderFromDim(dim);
+
+        vector<real> basis; defaulttype::getCompleteBasis(basis,p-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim);
+
+        int num_nodes = val.cols(); if(coeff.rows()!=num_nodes) return -1;
+        real err = 0;
+        for (int i=0; i<num_nodes; i++) { real e=(val(i) - coeff.row(i) * ebasis); err += e*e; }
+        return err;
+    }
+
+
+    // get factors when all pos are translated by t
+    void setCenter(const Vec<3,real>& ctr)
+    {
+        unsigned int dim = a.rows();
+        if(dim)
+        {
+            Matrix T=defaulttype::getCompleteBasis_TranslationMatrix(center-ctr,orderFromDim(dim));
+            a = T*a*T.transpose();
+            b = b*T.transpose();
+        }
+
+        unsigned int volDim = vol.rows();
+        if(volDim)  vol = defaulttype::getCompleteBasis_TranslationMatrix(center-ctr,orderFromDim(volDim))*vol;
+
+        center=ctr;
+    }
+
+    // updates nodes given that vals for new node i is a weighted sum of old vals \sum val_j w(i,j)
+    void updateNodes(const Matrix& w, const std::vector<unsigned int> newParents)
+    {
+        b = w*b;
+        c = w*c*w.transpose();
+        setParents(newParents);
+    }
+
+    // operators for two disjoint domains with same nodes
+    // you should have : center = f.center,  parentsToNodeIndex = f.parentsToNodeIndex
+    void operator +=(const PolynomialFitFactors& f)
+    {
+        a += f.a;
+        b += f.b;
+        c += f.c;
+        nb += f.nb;
+        vol = vol + f.vol;
+        voronoiIndices.insert(f.voronoiIndices.begin(),f.voronoiIndices.end());
+    }
+
+    // returns differential coeffs for each parent
+    void getMapping(vector<unsigned int>& index,vector<real>& w, vector<Vec<3,real> >& dw, vector<Mat<3,3,real> >& ddw)
+    {
+        unsigned int num_nodes = b.rows(); if(!num_nodes) return;
+        unsigned int dim = a.rows(); if(!dim) return;
+
+        index.resize(num_nodes); w.resize(num_nodes); dw.resize(num_nodes); ddw.resize(num_nodes);
+        unsigned int i=0;
+        for(std::map<unsigned int , unsigned int>::iterator it=parentsToNodeIndex.begin(); it!=parentsToNodeIndex.end(); it++)
+        {
+            index[i] = it->first;
+            w[i]=coeff(i,0);
+            if(dim>3)  // = Coeff * CompleteBasisDeriv(0,0,0);
+            {
+                dw[i][0]=coeff(i,1);
+                dw[i][1]=coeff(i,2);
+                dw[i][2]=coeff(i,3);
+            }
+            if(dim>9) // = Coeff * CompleteBasisDeriv2(0,0,0);
+            {
+                ddw[i](0,0)=(coeff(i,4)*(real)2.);
+                ddw[i](0,1)=ddw[i](1,0)=coeff(i,5);
+                ddw[i](0,2)=ddw[i](2,0)=coeff(i,6);
+                ddw[i](1,1)=(coeff(i,7)*(real)2.);
+                ddw[i](1,2)=ddw[i](2,1)=coeff(i,8);
+                ddw[i](2,2)=(coeff(i,9)*(real)2.);
+            }
+            i++;
+        }
+    }
+
+    //helpers
+    inline unsigned int orderFromDim(const unsigned int dim) const { if(dim==1) return 0; else if(dim==4) return 1; else if(dim==10) return 2; else if(dim==20) return 3; else return 4;}
+    inline unsigned int dimFromOrder(const unsigned int order) const { return (order+1)*(order+2)*(order+3)/6; }
+
+
+};
+
+
 } // namespace defaulttype
 } // namespace sofa
 

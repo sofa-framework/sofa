@@ -69,11 +69,6 @@ public:
         Inherit::init();
     }
 
-    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw, const unsigned int* /*region*/)
-    {
-        Inherit::computeShapeFunction(childPosition,M,ref,w,dw,ddw);        // weight averaging over a region not supported -> get interpolated values
-    }
-
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
         helper::ReadAccessor<Data<vector<Coord> > > parent(this->f_position);
