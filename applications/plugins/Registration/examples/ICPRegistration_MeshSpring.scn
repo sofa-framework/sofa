@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin name="Registration" pluginName="sofaRegistration" />
+
+	<VisualStyle displayFlags="showBehavior showVisual" />
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" vdamping="0.01"/>
+	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />
+
+	<Node name="target">
+			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+	</Node>
+	<Node name="source">
+			<MeshObjLoader name="MeshLoader"  filename="data/femur_m_res.obj" />
+			<Mesh src="@MeshLoader" />
+			<MechanicalObject  name="PointSet"  useMask="0" />
+			<UniformMass mass="0.001"/>
+   			<MeshSpringForceField name="Springs" stiffness="10000" />
+
+			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@MeshLoader.triangles" quads="@MeshLoader.quads"/>
+			<ClosestPointRegistrationForceField template="Vec3d&gt"
+					sourceTriangles="@MeshLoader.triangles"					
+					sourceNormals="@NormalsFromPoints.normals"					
+					position="@../target/Bone.position" 
+					triangles="@../target/Bone.triangles"	
+					normals="@../target/Bone.normal"					
+					cacheSize="4"
+					stiffness="5" damping="0" />
+		<Node name="Visu">
+			<OglModel name="Visual" fileMesh="data/femur_m.obj" normals="0"   color="1 .4 0.5 1" />
+			<BarycentricMapping object1="../.." object2="Visual" />
+		</Node>			
+	</Node>
+
+
+</Node>
