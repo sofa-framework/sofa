@@ -174,7 +174,11 @@ static inline unsigned int ID(const char* str)
 
 bool Mesh::saveLwo(const char* filename) const
 {
+#ifdef WIN32
+  FILE* fp = fopen(filename,"wb+");
+#else
   FILE* fp = fopen(filename,"w+");
+#endif
   if (fp==NULL) return false;
   std::cout<<"Writing LWO file "<<filename<<std::endl;
 
