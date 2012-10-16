@@ -54,7 +54,7 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
     else
     {
         std::string otype(type, 0, args);
-        std::cout << otype << " :";
+        std::cout << model1->getName() << "-" << model2->getName() << " " << otype << " :";
         Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
         while (args != std::string::npos)
         {
