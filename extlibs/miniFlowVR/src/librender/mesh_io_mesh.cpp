@@ -200,7 +200,11 @@ bool Mesh::loadMesh(const char* filename)
 
 bool Mesh::saveMesh(const char* filename) const
 {
+#ifdef WIN32
+  FILE* fp = fopen(filename,"wb+");
+#else
   FILE* fp = fopen(filename,"w+");
+#endif
   if (fp==NULL) return false;
   std::cout<<"Writing Mesh file "<<filename<<std::endl;
   std::cout<<nbp()<<" points, "<<nbf()<<" faces"<<std::endl;
