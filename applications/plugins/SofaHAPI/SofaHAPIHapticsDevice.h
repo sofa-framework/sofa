@@ -76,6 +76,8 @@ public:
     Data<double> toolTransitionSpringStiffness;
     Data<std::string> driverName;
     Data<bool> drawDevice;
+    Data<double> drawHandleSize;
+    Data<double> drawForceScale;
 
     //SofaHAPIHapticsDeviceData data;
     ForceFeedbackTransform data;
