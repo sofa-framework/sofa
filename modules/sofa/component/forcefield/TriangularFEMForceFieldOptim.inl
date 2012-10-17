@@ -95,6 +95,8 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , showStressValue(initData(&showStressValue,true,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , showStressColorMap(initData(&showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
+    , showStressMaxValue(initData(&showStressMaxValue,(Real)0.0,"showStressMaxValue","Max value for rendering of stress values"))
+    , showStressValueAlpha(initData(&showStressValueAlpha,(float)1.0,"showStressValueAlpha","Alpha (1-transparency) value for rendering of stress values"))
     , drawPrevMaxStress((Real)-1.0)
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &triangleInfo);
@@ -544,61 +546,193 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         Real minStress = 0;
         Real maxStress = 0;
         std::vector<Real> stresses;
+        std::vector<std::pair<int,Real> > pstresses;
         std::vector<Deriv> stressVectors;
         std::vector<Real> stresses2;
         std::vector<Deriv> stressVectors2;
         stresses.resize(nbTriangles);
-        if (showStressVector)
+        //if (showStressVector)
         {
             stressVectors.resize(nbTriangles);
             stresses2.resize(nbTriangles);
             stressVectors2.resize(nbTriangles);
         }
+        if (showStressValue)
+        {
+            pstresses.resize(x.size());
+        }
         for (unsigned int i=0; i<nbTriangles; i++)
         {
-            if (showStressVector)
+            //if (showStressVector)
             {
                 getTrianglePrincipalStress(i,stresses[i],stressVectors[i],stresses2[i],stressVectors2[i]);
             }
-            else
-            {
-                getTriangleVonMisesStress(i,stresses[i]);
-            }
+            //else
+            //{
+            //    getTriangleVonMisesStress(i,stresses[i]);
+            //}
             if ( stresses[i] < minStress ) minStress = stresses[i];
             if ( stresses[i] > maxStress ) maxStress = stresses[i];
+            if ( stresses2[i] < minStress ) minStress = stresses2[i];
+            if ( stresses2[i] > maxStress ) maxStress = stresses2[i];
+            if (showStressValue)
+            {
+                Real maxs = std::min(stresses[i],stresses2[i]);
+                Triangle t = triangles[i];
+                for (unsigned int j=0;j<t.size();++j)
+                {
+                    unsigned int p = t[j];
+                    pstresses[p].first += 1;
+                    pstresses[p].second += helper::rabs(maxs);
+                }
+            }
         }
         maxStress = std::max(-minStress, maxStress);
         minStress = 0;
         if (drawPrevMaxStress > maxStress)
+        {
             maxStress = drawPrevMaxStress; //(Real)(maxStress * 0.01 + drawPrevMaxStress * 0.99);
-        drawPrevMaxStress = maxStress;
+        }
+        else
+        {
+            drawPrevMaxStress = maxStress;
+            sout << "max stress = " << maxStress << sendl;
+        }
+        if (showStressMaxValue.isSet())
+        {
+            maxStress = showStressMaxValue.getValue();
+        }
         visualmodel::ColorMap::evaluator<Real> evalColor = showStressColorMap.getValue().getEvaluator(minStress, maxStress);
         if (showStressValue)
         {
-            std::vector< Vector3 > points;
-            std::vector< Vector3 > normals;
-            std::vector< Vec4f > colors;
+            for (unsigned int i=0;i<pstresses.size();++i)
+            {
+                if (pstresses[i].first != 0)
+                    pstresses[i].second /= pstresses[i].first;
+            }
+            std::vector< Vector3 > pnormals;
+            pnormals.resize(x.size());
             for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Triangle t = triangles[i];
                 Vector3 a = x[t[0]];
                 Vector3 b = x[t[1]];
                 Vector3 c = x[t[2]];
-                Vec4f color = evalColor(helper::rabs(stresses[i]));
+                Vector3 n = cross(b-a,c-a);
+                n.normalize();
+                pnormals[t[0]] += n;
+                pnormals[t[1]] += n;
+                pnormals[t[2]] += n;
+            }
+            for (unsigned int i=0; i<x.size(); i++)
+                pnormals[i].normalize();
+
+            std::vector< Vector3 > points;
+            std::vector< Vector3 > normals;
+            std::vector< Vec4f > colors;
+            const float stressValueAlpha = this->showStressValueAlpha.getValue();
+            if (stressValueAlpha < 1.0f)
+                vparams->drawTool()->setMaterial(Vec4f(1.0f,1.0f,1.0f,stressValueAlpha));
+            for (unsigned int i=0; i<nbTriangles; i++)
+            {
+                Triangle t = triangles[i];
+                Vector3 a = x[t[0]];
+                Vector3 b = x[t[1]];
+                Vector3 c = x[t[2]];
+                Vector3 an = pnormals[t[0]];
+                Vector3 bn = pnormals[t[1]];
+                Vector3 cn = pnormals[t[2]];
+                //Vec4f color = evalColor(helper::rabs(stresses[i]));
+                //color[3] = stressValueAlpha;
+                Vector3 ab = (a+b)*0.5+(((a-b)*an)*an+((b-a)*bn)*bn)*0.25;
+                Vector3 bc = (b+c)*0.5+(((b-c)*bn)*bn+((c-b)*cn)*cn)*0.25;
+                Vector3 ca = (c+a)*0.5+(((c-a)*cn)*cn+((a-c)*an)*an)*0.25;
+                Vec4f colora = evalColor(helper::rabs(pstresses[t[0]].second));
+                Vec4f colorb = evalColor(helper::rabs(pstresses[t[1]].second));
+                Vec4f colorc = evalColor(helper::rabs(pstresses[t[2]].second));
+                Vec4f colorab = evalColor(helper::rabs((pstresses[t[0]].second+pstresses[t[1]].second)/2));
+                Vec4f colorbc = evalColor(helper::rabs((pstresses[t[1]].second+pstresses[t[2]].second)/2));
+                Vec4f colorca = evalColor(helper::rabs((pstresses[t[2]].second+pstresses[t[0]].second)/2));
+                colora[3] = stressValueAlpha;
+                colorb[3] = stressValueAlpha;
+                colorc[3] = stressValueAlpha;
+                colorab[3] = stressValueAlpha;
+                colorbc[3] = stressValueAlpha;
+                colorca[3] = stressValueAlpha;
+                {
+                Vector3 n = cross(ab-a,ca-a);
+                n.normalize();
+                normals.push_back(n);
+                points.push_back(a);
+                points.push_back(ab);
+                points.push_back(ca);
+                colors.push_back(colora);
+                colors.push_back(colorab);
+                colors.push_back(colorca);
+                }
+                {
+                Vector3 n = cross(b-ab,bc-ab);
+                n.normalize();
+                normals.push_back(n);
+                points.push_back(ab);
+                points.push_back(b);
+                points.push_back(bc);
+                colors.push_back(colorab);
+                colors.push_back(colorb);
+                colors.push_back(colorbc);
+                }
+                {
+                Vector3 n = cross(bc-ca,c-ca);
+                n.normalize();
+                normals.push_back(n);
+                points.push_back(ca);
+                points.push_back(bc);
+                points.push_back(c);
+                colors.push_back(colorca);
+                colors.push_back(colorbc);
+                colors.push_back(colorc);
+                }
+                {
+                Vector3 n = cross(bc-ab,ca-ab);
+                n.normalize();
+                normals.push_back(n);
+                points.push_back(ab);
+                points.push_back(bc);
+                points.push_back(ca);
+                colors.push_back(colorab);
+                colors.push_back(colorbc);
+                colors.push_back(colorca);
+                }
+                /*
+                {
                 Vector3 n = cross(b-a,c-a);
                 n.normalize();
                 normals.push_back(n);
                 points.push_back(a);
                 points.push_back(b);
                 points.push_back(c);
-                colors.push_back(color);
-                colors.push_back(color);
-                colors.push_back(color);
+                colors.push_back(colora);
+                colors.push_back(colorb);
+                colors.push_back(colorc);
+                }
+                */
             }
+            if (vparams->displayFlags().getShowWireFrame())
+                vparams->drawTool()->setPolygonMode(0,true);
+            else
+            {
+                vparams->drawTool()->setPolygonMode(2,true);
+                vparams->drawTool()->setPolygonMode(1,false);
+            }
+
             vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawTriangles(points, normals, colors);
             vparams->drawTool()->setLightingEnabled(false);
-        }
+            if (stressValueAlpha < 1.0f)
+                vparams->drawTool()->resetMaterial(Vec4f(1.0f,1.0f,1.0f,stressValueAlpha));
+ 
+            vparams->drawTool()->setPolygonMode(0,false);
+       }
         if (showStressVector && maxStress > 0)
         {
             std::vector< Vector3 > points[2];
