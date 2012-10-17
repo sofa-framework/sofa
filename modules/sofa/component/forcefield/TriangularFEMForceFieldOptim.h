@@ -322,6 +322,8 @@ public:
     Data<bool> showStressValue;
     Data<bool> showStressVector;
     Data<visualmodel::ColorMap> showStressColorMap;
+    Data<Real> showStressMaxValue;
+    Data<float> showStressValueAlpha;
 
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;
