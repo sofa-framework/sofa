@@ -233,7 +233,7 @@ protected:
             // target nb of points
             unsigned int nb = (fpos.size()+nbrigid>targetNumber.getValue())?fpos.size()+nbrigid:targetNumber.getValue();
             unsigned int nbsoft = nb-nbrigid;
-            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: Number of rigid/soft regions : "<<nbrigid<<"/"<<nbsoft<< std::endl;
+            if(this->f_printLog.getValue()) std::cout<<this->getName()<<": Number of rigid/soft regions : "<<nbrigid<<"/"<<nbsoft<< std::endl;
 
             // init seeds for uniform sampling
             std::set<std::pair<DistT,sofa::defaulttype::Vec<3,int> > > trial;
@@ -273,7 +273,7 @@ protected:
                 it++; if(it>=iterations.getValue()) converged=true;
             }
 
-            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: Completed in "<< it <<" Lloyd iterations"<<std::endl;
+            if(this->f_printLog.getValue()) std::cout<<this->getName()<<": Completed in "<< it <<" Lloyd iterations"<<std::endl;
 
             // create soft regions and update teir data
             for(unsigned int i=0; i<fpos.size(); i++)           // Disabled for now since fpos is empty
@@ -309,9 +309,9 @@ protected:
                 fillPolynomialFactors(Reg[i],true);
                 Reg[i].solve(fitOrder());
                 err+=Reg[i].getError();
-                //if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: weight fitting error on sample "<<i<<" = "<<Reg[i].getError()<< std::endl;
+                //if(this->f_printLog.getValue()) std::cout<<this->getName()<<"GaussPointSampler: weight fitting error on sample "<<i<<" = "<<Reg[i].getError()<< std::endl;
             }
-            if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: total error = "<<err<<std::endl;
+            if(this->f_printLog.getValue()) std::cout<<this->getName()<<": total error = "<<err<<std::endl;
         }
         else
         {
@@ -352,15 +352,15 @@ protected:
                 {
                     fillPolynomialFactors(Reg[i],true);
                     err+=Reg[i].getError();
-                    //if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: weight fitting error on sample "<<i<<" = "<<Reg[i].getError()<< std::endl;
+                    //if(this->f_printLog.getValue()) std::cout<<this->getName()<<": weight fitting error on sample "<<i<<" = "<<Reg[i].getError()<< std::endl;
                 }
-                if(this->f_printLog.getValue()) std::cout<<"GaussPointSampler: total error = "<<err<<std::endl;
+                if(this->f_printLog.getValue()) std::cout<<this->getName()<<": total error = "<<err<<std::endl;
             }
         }
 
         cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)==-1) dist(x,y,z)=0; // clean error output image (used as a container for distances)
 
-        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"GaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
+        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<this->getName()<<": "<< pos.size() <<" generated samples"<<std::endl;
 
         updateMapping();
     }

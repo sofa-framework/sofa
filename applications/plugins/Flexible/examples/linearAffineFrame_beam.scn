@@ -6,14 +6,11 @@
 
   <MeshObjLoader name="mesh" filename="mesh/beam.obj" triangulate="1"/>
 
-<!--
-    <StaticSolver />
 
--->
+  <Node name="hexaFEM"  >
     <EulerImplicitSolver />
-    <CGLinearSolver iterations="200"/>
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
 
-  <Node name="FEM"  >
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
        <RegularGrid 
                    n="5 5 21"
@@ -26,17 +23,20 @@
        <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  drawBoxes="0" /> 
        <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 
-	<UniformMass totalMass="1" />
+	<UniformMass totalMass="10" />
 
 	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0.4" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/beam.obj"  color="1 .4 0.5 1" />
+	     <VisualModel  fileMesh="mesh/beam.obj"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>
 
-  <Node name="BeamFEM">
+  <Node name="tetFEM">
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
        <MechanicalObject template="Vec3d" name="Triangles"   />
        <RegularGrid 
                    n="5 5 21"
@@ -46,6 +46,8 @@
        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
        <TriangleModel name="CollisionModel" />
+
+	<UniformMass totalMass="10" />
 
       	<TetrahedronFEMForceField method="polar"  youngModulus="1000"  poissonRatio="0.4"  />
 
@@ -64,23 +66,27 @@
 
 
     <Node 	name="Flexible"   >
-            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.03" padSize="1" rotateImage="true" />
-	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+    <VisualStyle displayFlags="hideWireframe  " />
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+          <!--  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.02" padSize="1" rotateImage="true" />-->
+	    <ImageContainer template="ImageUC" name="image" filename="mesh/beam.raw" drawBB="false"/>
 
 <!-- param = DESIRED NUMBER OF FRAMES -->
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="10" fixedPosition="0 0 -1 0.2 0.2 -1 -0.2 0.2 -1 0.2 -0.2 -1 -0.2 -0.2 -1" printLog="false"/> 
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="50" fixedPosition="0 0 -0.99 0.19 0.19 -0.99 -0.19 0.19 -0.99 0.19 -0.19 -0.99 -0.19 -0.19 -0.99" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
 	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
 
 
 	    <FixedConstraint indices="0 1 2 3 4" /> 
 
-	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
+	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />
 <!--    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/>  -->
 	    <Node 	name="behavior"   >
 
 <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="false" targetNumber="100"/>
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="true" printLog="false" targetNumber="1000"/>
 
 <!--	       <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 6 30"/> -->
 <!--	       <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 6 30"/> -->
@@ -90,14 +96,14 @@
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
 		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
-		    <HookeForceField  template="E331" name="ff" youngModulus="775.0" poissonRatio="0.4" viscosity="0"/>
+		    <HookeForceField  template="E331" name="ff" youngModulus="1000.0" poissonRatio="0.4" viscosity="0"/>
 		</Node>
 
 	    </Node>
 
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
-	     <UniformMass totalMass="1" />
+	     <UniformMass totalMass="10" />
 	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
@@ -116,7 +122,7 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8 "/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8"/>
 	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
