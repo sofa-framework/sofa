@@ -26,6 +26,14 @@
 #include "CudaMath.h"
 #include "cuda.h"
 
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+#if defined(_MSC_VER)
+#pragma warning __CUDA_ARCH__ is too low for atomics
+#else
+#warning __CUDA_ARCH__ is too low for atomics
+#endif
+#endif
+
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
@@ -142,9 +150,11 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addForce_kernel(int size, Cud
                 + frame_y * (ti.bx * stress.y);                     // ( 0,  bx,   0) * stress
         CudaVec3<float> fa = -fb-fc;
 
-//        f[t.ia] += fa;
-//        f[t.ib] += fb;
-//        f[t.ic] += fc;
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+        f[t.ia] += fa;
+        f[t.ib] += fb;
+        f[t.ic] += fc;
+#else
         atomicAdd(&(f[t.ia].x), fa.x);
         atomicAdd(&(f[t.ia].y), fa.y);
         atomicAdd(&(f[t.ia].z), fa.z);
@@ -154,7 +164,7 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addForce_kernel(int size, Cud
         atomicAdd(&(f[t.ic].x), fc.x);
         atomicAdd(&(f[t.ic].y), fc.y);
         atomicAdd(&(f[t.ic].z), fc.z);
-
+#endif
 }
 
 typedef CudaVec3<float> Coord;
@@ -203,9 +213,11 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addDForce_kernel(int size, Cu
                 + ts.frame_y * (ti.bx * dstress.y);                      // ( 0,  bx,   0) * dstress
         Deriv dfa = -dfb-dfc;
 
-//        df[t.ia] -= dfa;
-//        df[t.ib] -= dfb;
-//        df[t.ic] -= dfc;
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+        df[t.ia] -= dfa;
+        df[t.ib] -= dfb;
+        df[t.ic] -= dfc;
+#else
         atomicAdd(&(df[t.ia].x), -dfa.x);
         atomicAdd(&(df[t.ia].y), -dfa.y);
         atomicAdd(&(df[t.ia].z), -dfa.z);
@@ -215,6 +227,7 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addDForce_kernel(int size, Cu
         atomicAdd(&(df[t.ic].x), -dfc.x);
         atomicAdd(&(df[t.ic].y), -dfc.y);
         atomicAdd(&(df[t.ic].z), -dfc.z);
+#endif
 }
 
 //////////////////////
