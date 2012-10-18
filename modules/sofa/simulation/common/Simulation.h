@@ -111,15 +111,6 @@ public:
     /// Get the top root simulation::Node of the Sofa scene
     static sofa::simulation::Node::SPtr GetRoot();
 
-    /// load a scene from memory (typically : an xml into a string)
-    static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
-
-    /// load a scene from a file
-    static Node::SPtr loadFromFile ( const char *filename );
-
-    /// generic function to process xml tree (after loading the xml structure from the 2 previous functions)
-    static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
-
     static Simulation::SPtr theSimulation;
 
 protected:

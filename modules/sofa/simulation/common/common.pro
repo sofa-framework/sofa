@@ -84,7 +84,10 @@ HEADERS += common.h \
 		   xml/BaseMultiMappingElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
-           xml/XML.h   
+           xml/XML.h \   
+    SceneLoaderXML.h \
+    SceneLoaderPHP.h \
+    SceneLoaderFactory.h
 
 SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \
@@ -142,7 +145,10 @@ SOURCES += Node.cpp \
 		   xml/BaseMultiMappingElement.cpp \
            xml/AttributeElement.cpp \
            xml/DataElement.cpp \
-           xml/XML.cpp 
+           xml/XML.cpp \ 
+    SceneLoaderFactory.cpp \
+    SceneLoaderXML.cpp \
+    SceneLoaderPHP.cpp
 
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \

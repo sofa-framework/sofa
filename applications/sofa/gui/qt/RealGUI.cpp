@@ -60,6 +60,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+#include <sofa/simulation/common/SceneLoaderFactory.h>
+
 #ifdef SOFA_QT4
 #   include <QApplication>
 #   include <Q3TextDrag>
@@ -732,12 +734,34 @@ void RealGUI::fileOpen()
 {
     std::string filename(this->windowFilePath().ascii());
 
-    QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
+    // build the filter with the SceneLoaderFactory
+    std::string filter;
+    SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
+    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
+    {
+        if (it!=loaders->begin()) filter +=";;";
+        filter += (*it)->getFileTypeDesc();
+        filter += " (";
+        SceneLoaderFactory::SceneLoader::ExtensionList extensions;
+        (*it)->getExtensionList(&extensions);
+        for (SceneLoaderFactory::SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
+        {
+            if (itExt!=extensions.begin()) filter +=" ";
+            filter+="*.";
+            filter+=(*itExt);
+        }
+        filter+=")";
+    }
 #ifdef SOFA_PML
-            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
+//            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
+    filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml);;All (*)";
 #else
-            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
+//            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
+    filter += ";;Simulation (*.simu);;All (*)";
 #endif
+
+    QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
+            filter.c_str(),
             "open file dialog",  "Choose a file to open"
                                 );
 
