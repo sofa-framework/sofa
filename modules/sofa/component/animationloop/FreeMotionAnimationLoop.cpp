@@ -217,7 +217,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
             mop.projectResponse(vel);
             mop.propagateV(vel);
             mop.projectResponse(dx);
-            mop.propagateDx(dx);
+            mop.propagateDx(dx, true);
 
             // "mapped" x = xfree + dx
             simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
@@ -234,7 +234,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
             mop.projectResponse(dx);
-            mop.propagateDx(dx);
+            mop.propagateDx(dx, true);
 
             // "mapped" x = xfree + dx
             simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
