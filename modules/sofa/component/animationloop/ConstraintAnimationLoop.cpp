@@ -525,7 +525,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /*
 
     mop.propagateV(core::VecDerivId::velocity());
 
-    mop.propagateDx(core::VecDerivId::dx());
+    mop.propagateDx(core::VecDerivId::dx(), true);
 
     // "mapped" x = xfree + dx
     simulation::MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(context);

@@ -111,10 +111,10 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 
 
 /// Propagate the given displacement through all mappings
-void MechanicalOperations::propagateDx(core::MultiVecDerivId dx)
+void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
 {
     setDx(dx);
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams /* PARAMS FIRST */, dx, false, false) );
+    executeVisitor( MechanicalPropagateDxVisitor(&mparams /* PARAMS FIRST */, dx, false, ignore_flag) );
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta

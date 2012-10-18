@@ -635,6 +635,15 @@ public:
 #endif
     }
 
+    // If mapped or only_mapped is ste, this visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    {
+        if (mapped || only_mapped)
+            return false;
+        else
+            return !map->areForcesMapped();
+    }
+
     MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
     MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
 

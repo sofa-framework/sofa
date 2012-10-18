@@ -60,7 +60,7 @@ public:
     /// @{
 
     /// Propagate the given displacement through all mappings
-    void propagateDx(core::MultiVecDerivId dx);
+    void propagateDx(core::MultiVecDerivId dx, bool ignore_flag = false);
     /// Propagate the given displacement through all mappings and reset the current force delta
     void propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df);
     /// Propagate the given position through all mappings
