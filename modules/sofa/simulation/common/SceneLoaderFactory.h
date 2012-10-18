@@ -43,7 +43,7 @@ namespace simulation
  *  and dynamically retrieved given the type name.
  *
  */
-class SOFA_CORE_API SceneLoaderFactory
+class SOFA_SIMULATION_COMMON_API SceneLoaderFactory
 {
 
 public:
