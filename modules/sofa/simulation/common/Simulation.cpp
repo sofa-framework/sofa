@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/PrintVisitor.h>
-#include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
@@ -45,15 +44,15 @@
 #include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/UpdateLinksVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/simulation/common/SceneLoaderFactory.h>
 
 
 #include <fstream>
@@ -406,132 +405,19 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 }
 
 
-/// Load a scene from a file
-Node::SPtr Simulation::processXML(xml::BaseElement* xml, const char *filename)
-{
-    if ( xml==NULL )
-    {
-        return NULL;
-    }
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-
-    // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
-
-#ifndef WIN32
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-
-    // 				std::cout << "Initializing objects"<<std::endl;
-    sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
-    if( nodeElt==NULL )
-    {
-        std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
-        std::exit(1);
-    }
-    else if( !(nodeElt->init()) )
-    {
-        std::cerr << "LOAD ERROR: Node initialization failed."<<std::endl;
-    }
-
-    sRoot = dynamic_cast<Node*> ( xml->getObject() );
-    if ( sRoot == NULL )
-    {
-        std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
-        return NULL;
-    }
-
-    // 				std::cout << "Initializing simulation "<<sRoot->getName() <<std::endl;
-
-    // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(sRoot.get());
-    if( !findSimu.found.empty() )
-        setSimulation( findSimu.found[0] );
-
-    return sRoot;
-}
-
-/// Load from a string in memory
-Node::SPtr Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
-{
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
-
-    sRoot = processXML(xml, filename);
-
-    // 				std::cout << "load done."<<std::endl;
-    delete xml;
-
-    return sRoot;
-}
-
-
-/// Load a scene from a file
-Node::SPtr Simulation::loadFromFile ( const char *filename )
-{
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromFile ( filename );
-
-    sRoot = processXML(xml, filename);
-
-    // 				std::cout << "load done."<<std::endl;
-    delete xml;
-
-    return sRoot;
-}
 
 /// Load a scene
 Node::SPtr Simulation::load ( const char *filename )
 {
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
-    if (ext == "php" || ext == "pscn")
+    SceneLoaderFactory::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
+
+    if (loader)
     {
-        std::string out="",error="";
-        std::vector<std::string> args;
-
-
-        //TODO : replace when PipeProcess will get file as stdin
-        //at the moment, the filename is given as an argument
-        args.push_back(std::string("-f" + std::string(filename)));
-        //args.push_back("-w");
-        std::string newFilename="";
-        //std::string newFilename=filename;
-
-        helper::system::FileRepository fp("PATH", ".");
-#ifdef WIN32
-        std::string command = "php.exe";
-#else
-        std::string command = "php";
-#endif
-        if (!fp.findFile(command,""))
-        {
-            std::cerr << "Simulation : Error : php not found in your PATH environment" << std::endl;
-            return NULL;
-        }
-
-        sofa::helper::system::PipeProcess::executeProcess(command.c_str(), args,  newFilename, out, error);
-
-        if(error != "")
-        {
-            std::cerr << "Simulation : load : "<< error << std::endl;
-            if (out == "")
-                return NULL;
-        }
-        sRoot = loadFromMemory(filename, out.c_str(), out.size());
+        sRoot = loader->load(filename);
         return sRoot;
     }
 
-    if (ext == "scn" || ext == "xml")
-    {
-        sRoot = loadFromFile(filename);
-        return sRoot;
-    }
-
+    // unable to load file
     std::cerr << "Simulation : Error : extension not handled" << std::endl;
     return NULL;
 
