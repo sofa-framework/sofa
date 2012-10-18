@@ -33,7 +33,7 @@ namespace sofa
 namespace simulation
 {
 
-class SceneLoaderXML : public SceneLoaderFactory::SceneLoader
+class SOFA_SIMULATION_COMMON_API SceneLoaderXML : public SceneLoaderFactory::SceneLoader
 {
 public:
     /// Pre-loading check
