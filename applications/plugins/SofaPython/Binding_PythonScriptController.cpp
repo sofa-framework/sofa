@@ -50,7 +50,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject *self, PyObject *
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -68,7 +68,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject *self, PyObjec
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -86,7 +86,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject *self, PyObject 
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -103,7 +103,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject *self
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -120,7 +120,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject *self, 
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -131,7 +131,7 @@ extern "C" PyObject * PythonScriptController_storeResetState(PyObject *self, PyO
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -142,7 +142,7 @@ extern "C" PyObject * PythonScriptController_reset(PyObject *self, PyObject * /*
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -153,7 +153,7 @@ extern "C" PyObject * PythonScriptController_cleanup(PyObject *self, PyObject * 
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -172,7 +172,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject *self, PyObject
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -189,7 +189,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject *self, PyObje
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -206,7 +206,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject *self, PyObj
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -224,7 +224,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject *self, P
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -242,7 +242,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject *self,
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -260,7 +260,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject *self, 
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -277,7 +277,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject *self, PyObje
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
@@ -303,7 +303,7 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject *self, PyObj
     // TODO check pyData
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    std::cout << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
+    std::cerr << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
