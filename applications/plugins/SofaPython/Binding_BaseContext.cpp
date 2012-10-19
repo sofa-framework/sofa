@@ -162,28 +162,6 @@ extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*
 }
 
 
-/*
-extern "C" PyObject * BaseContext_getAttr_gravity(PyObject *self, void*)
-{
-    printf("BaseContext_getAttr_gravity\n");
-    BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    return SP_BUILD_PYPTR(Vec3,new Vec3(obj->getGravity()),true); // "true", because I manage the deletion myself
-}
-extern "C" int BaseContext_setAttr_gravity(PyObject *self, PyObject * args, void*)
-{
-    printf("BaseContext_setAttr_gravity\n");
-    BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    PyPtr<Vec3>* pyVec;
-    if (!PyArg_ParseTuple(args, "(O)",&pyVec))
-    {
-        printf("PyArg_ParseTuple error\n");
-        printf("%s\n",PyString_AsString(args));
-        return 0;
-    }
-    obj->setGravity(*pyVec->object);
-    return 0;
-}
-*/
 
 SP_CLASS_ATTRS_BEGIN(BaseContext)
 SP_CLASS_ATTR(BaseContext,active)

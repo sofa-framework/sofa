@@ -302,4 +302,6 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_CALL_MODULEFUNC(func, ...) { if (func) { if (!PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__))) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
 #define SP_CALL_MODULEFUNC_NOPARAM(func) { if (func) { if (!PyObject_CallObject(func,0)) { printf("<SofaPython> exception\n"); PyErr_Print(); } } }
 
+
+
 #endif // PYTHONMACROS_H

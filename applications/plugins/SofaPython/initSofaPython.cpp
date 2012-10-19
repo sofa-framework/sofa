@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "initSofaPython.h"
+#include "SceneLoaderPY.h"
 
 namespace sofa
 {
@@ -46,7 +47,7 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        first = false;
+        first = false;        
     }
 }
 
@@ -89,4 +90,10 @@ const char* getModuleComponentList()
 //SOFA_LINK_CLASS(MyBehaviorModel)
 //SOFA_LINK_CLASS(MyProjectiveConstraintSet)
 SOFA_LINK_CLASS(PythonController)
+
+
+// register the loader in the factory
+static sofa::simulation::SceneLoaderFactory::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+
+
 
