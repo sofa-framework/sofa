@@ -121,7 +121,11 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
 
     objectName = valueString.substr(posAt+1);
     loader = getContext()->get<BaseObject>(objectName);
-
+    if (!loader)
+    {
+        serr << "Source object \"" << valueString << "\" NOT FOUND." << sendl;
+        return;
+    }
     setSrc(valueString, loader, attributeList);
 }
 
