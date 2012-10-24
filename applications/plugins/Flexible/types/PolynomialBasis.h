@@ -598,7 +598,7 @@ struct PolynomialFitFactors
     }
 
     void setParents(const vector<unsigned int>& parents)     { parentsToNodeIndex.clear();  for(unsigned int i=0;i<parents.size();i++)  parentsToNodeIndex[parents[i]]=i; }
-    void setParents(const std::set<unsigned int>& parents)     { parentsToNodeIndex.clear();  unsigned int i=0; for(std::set<unsigned int>::iterator it=parents.begin();it!=parents.end();it++)  parentsToNodeIndex[*it]=i++; }
+    void setParents(const std::set<unsigned int>& parents)     { parentsToNodeIndex.clear();  unsigned int i=0; for( std::set<unsigned int>::const_iterator it=parents.begin();it!=parents.end();it++)  parentsToNodeIndex[*it]=i++; }
 
     // compute factors. vals is a num_nodes x nbp matrix
     void fill( const Matrix& val, const vector<Vec<3,real> >& pos, const unsigned int order, const real dv, const unsigned int volOrder)
