@@ -38,11 +38,11 @@ using sofa::component::topology::PointData;
 * @warning the interpolation is done by a LinearJacobianBlock hard-coded in this component
 * @todo find a way to describe the mass interpolation as a sofa graph with regular mappings
 */
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
+template <class DataTypes,class ShapeFunctionTypes>
 class ImageDensityMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(ImageDensityMass,DataTypes,ShapeFunctionTypes,MassTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(ImageDensityMass,DataTypes,ShapeFunctionTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -84,7 +84,7 @@ public:
 
     /** @name Mass stuff */
     //@{
-    typedef MassTypes MassType;
+    typedef defaulttype::Mat<DataTypes::deriv_total_size,DataTypes::deriv_total_size,Real>  MassType;
     typedef helper::vector<MassType> VecMass;
 
     /// store the mass matrices (size of elements if used)
@@ -142,7 +142,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes, MassType>* = NULL)
+    static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes>* = NULL)
     {
         return DataTypes::Name()+std::string(",")+ShapeFunctionTypes::Name()/*+","+MassTypes::Name()*/;
     }
@@ -150,19 +150,19 @@ public:
 protected:
 
     /// add the cross contribution (J1^T.voxelMass.J0) to the dof mass
-    void addJ1tmJ0( MassTypes& mass, /*const*/ LinearJacobianBlock& J0, /*const*/ LinearJacobianBlock& J1, Real voxelMass );
+    void addJ1tmJ0( MassType& mass, /*const*/ LinearJacobianBlock& J0, /*const*/ LinearJacobianBlock& J1, Real voxelMass );
 };
 
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_IMAGEDENSITYMASS_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d>; // volume FEM (tetra, hexa)
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d>; // surface FEM (triangles, quads)
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f>;
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f>;
 #endif
 #endif
 
