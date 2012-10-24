@@ -35,7 +35,7 @@ namespace simulation
 {
 
 // register the loader in the factory
-static SceneLoaderFactory::SceneLoader* loaderXML = SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderXML());
+static SceneLoader* loaderXML = SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderXML());
 
 
 

@@ -40,7 +40,7 @@ SceneLoaderFactory* SceneLoaderFactory::getInstance()
 }
 
 /// Get an entry given a file extension
-SceneLoaderFactory::SceneLoader* SceneLoaderFactory::getEntryFileExtension(std::string extension)
+SceneLoader* SceneLoaderFactory::getEntryFileExtension(std::string extension)
 {
     SceneLoaderList::iterator it = registry.begin();
     while (it!=registry.end())
@@ -54,7 +54,7 @@ SceneLoaderFactory::SceneLoader* SceneLoaderFactory::getEntryFileExtension(std::
 }
 
 /// Get an entry given a file extension
-SceneLoaderFactory::SceneLoader* SceneLoaderFactory::getEntryFileName(std::string filename)
+SceneLoader* SceneLoaderFactory::getEntryFileName(std::string filename)
 {
     SceneLoaderList::iterator it = registry.begin();
     while (it!=registry.end())
@@ -68,7 +68,7 @@ SceneLoaderFactory::SceneLoader* SceneLoaderFactory::getEntryFileName(std::strin
 }
 
 /// Add a scene loader
-SceneLoaderFactory::SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
+SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
 {
     registry.push_back(loader);
     return loader;

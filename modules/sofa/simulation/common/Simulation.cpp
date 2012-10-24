@@ -409,7 +409,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 /// Load a scene
 Node::SPtr Simulation::load ( const char *filename )
 {
-    SceneLoaderFactory::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
+    SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
     if (loader)
     {

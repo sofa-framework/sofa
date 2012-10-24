@@ -43,39 +43,40 @@ namespace simulation
  *  and dynamically retrieved given the type name.
  *
  */
+
+/// Abstract interface of a scene loader
+class SOFA_SIMULATION_COMMON_API SceneLoader
+{
+public:
+    typedef std::vector<std::string> ExtensionList;
+
+    /// Pre-loading check
+    virtual bool canLoadFileName(const char *filename)
+    {
+        std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+        return canLoadFileExtension(ext.c_str());
+    }
+
+    virtual bool canLoadFileExtension(const char *extension) = 0;
+
+    /// load the file
+    virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
+
+    /// get the file type description
+    virtual std::string getFileTypeDesc() = 0;
+
+    /// get the list of file extensions
+    virtual void getExtensionList(ExtensionList* list) = 0;
+
+
+};
+
+
 class SOFA_SIMULATION_COMMON_API SceneLoaderFactory
 {
 
 public:
-    class SceneLoader;
-
     typedef std::vector<SceneLoader*> SceneLoaderList;
-
-    /// Abstract interface of a scene loader
-    class SceneLoader
-    {
-    public:
-        typedef std::vector<std::string> ExtensionList;
-
-        /// Pre-loading check
-        virtual bool canLoadFileName(const char *filename)
-        {
-            std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
-            return canLoadFileExtension(ext.c_str());
-        }
-
-        virtual bool canLoadFileExtension(const char *extension) = 0;
-
-        /// load the file
-        virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
-
-        /// get the file type description
-        virtual std::string getFileTypeDesc() = 0;
-
-        /// get the list of file extensions
-        virtual void getExtensionList(ExtensionList* list) = 0;
-
-    };
 
     /// Get the ObjectFactory singleton instance
     static SceneLoaderFactory* getInstance();

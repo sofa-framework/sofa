@@ -33,7 +33,7 @@ namespace sofa
 namespace simulation
 {
 
-class SceneLoaderPY : public SceneLoaderFactory::SceneLoader
+class SceneLoaderPY : public SceneLoader
 {
 public:
     /// Pre-loading check
