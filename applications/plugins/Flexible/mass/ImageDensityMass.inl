@@ -30,8 +30,8 @@ using namespace sofa::core::behavior;
 
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::~ImageDensityMass()
+template < class DataTypes, class ShapeFunctionTypes >
+ImageDensityMass< DataTypes, ShapeFunctionTypes >::~ImageDensityMass()
 {
 }
 
@@ -39,16 +39,16 @@ ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::~ImageDensityMass()
 ///////////////////////////////////////////
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::clear()
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::clear()
 {
     f_masses.beginEdit()->clear();
     f_masses.endEdit();
 }
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::resize( int vsize )
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::resize( int vsize )
 {
     f_masses.beginEdit()->resize( vsize );
     f_masses.endEdit();
@@ -64,8 +64,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::resize( int vsi
 
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::init()
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::init()
 {
     Inherited::init();
 
@@ -79,8 +79,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::init()
 
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::reinit()
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::reinit()
 {
 
     // get the shape function component
@@ -158,8 +158,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::reinit()
 
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addJ1tmJ0( MassTypes& mass, LinearJacobianBlock& J0, LinearJacobianBlock& J1, Real voxelMass )
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::addJ1tmJ0( MassType& mass, LinearJacobianBlock& J0, LinearJacobianBlock& J1, Real voxelMass )
 {
     for( int w=0 ; w<DataTypes::deriv_total_size ; ++w ) // for all cinematic dof
     {
@@ -199,8 +199,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addJ1tmJ0( Mass
 
 
 // -- Mass interface
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addMDx( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::addMDx( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
 {
     helper::WriteAccessor< DataVecDeriv > _res = res;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
@@ -221,30 +221,30 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addMDx( const c
     }
 }
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& , const DataVecDeriv&)
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& , const DataVecDeriv&)
 {
-    serr<<"void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
+    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes >::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
 }
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-double ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& ) const
+template < class DataTypes, class ShapeFunctionTypes >
+double ImageDensityMass< DataTypes, ShapeFunctionTypes >::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& ) const
 {
-    serr<<"void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::getKineticEnergy not yet implemented"<<sendl;
+    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes >::getKineticEnergy not yet implemented"<<sendl;
     return 0;
 }
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-double ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const
+template < class DataTypes, class ShapeFunctionTypes >
+double ImageDensityMass< DataTypes, ShapeFunctionTypes >::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const
 {
-    serr<<"void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::getPotentialEnergy not yet implemented"<<sendl;
+    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes >::getPotentialEnergy not yet implemented"<<sendl;
     return 0;
 }
 
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
 {
     if(mparams)
     {
@@ -266,8 +266,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addGravityToV(c
 }
 
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
@@ -289,8 +289,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addForce(const 
     }
 }
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const VecMass &masses = f_masses.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -304,8 +304,8 @@ void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::addMToMatrix(co
 
 ///////////////////////
 
-template <class DataTypes,class ShapeFunctionTypes,class MassTypes>
-void ImageDensityMass<DataTypes, ShapeFunctionTypes, MassTypes>::draw(const core::visual::VisualParams* /*vparams*/)
+template < class DataTypes, class ShapeFunctionTypes >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes >::draw(const core::visual::VisualParams* /*vparams*/)
 {
 
 }
