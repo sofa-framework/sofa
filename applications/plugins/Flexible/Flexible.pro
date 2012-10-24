@@ -37,6 +37,7 @@ SOURCES = initFlexible.cpp\
     #material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
     #forceField/FlexibleTetrahedronFEMForceField.cpp \
+    mass/ImageDensityMass.cpp \
 
 
 
@@ -102,6 +103,9 @@ HEADERS = initFlexible.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
     #forceField/FlexibleTetrahedronFEMForceField.h \
+    mass/ImageDensityMass.h \
+    mass/ImageDensityMass.inl \
+
 
 
 contains(DEFINES, SOFA_HAVE_IMAGE) {
