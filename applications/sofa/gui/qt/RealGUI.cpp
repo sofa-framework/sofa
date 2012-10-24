@@ -742,9 +742,9 @@ void RealGUI::fileOpen()
         if (it!=loaders->begin()) filter +=";;";
         filter += (*it)->getFileTypeDesc();
         filter += " (";
-        SceneLoaderFactory::SceneLoader::ExtensionList extensions;
+        SceneLoader::ExtensionList extensions;
         (*it)->getExtensionList(&extensions);
-        for (SceneLoaderFactory::SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
+        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
         {
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
