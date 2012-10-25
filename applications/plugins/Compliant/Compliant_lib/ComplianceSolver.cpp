@@ -427,13 +427,15 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
 
             SMatrix Jcp = getSMatrix( (*pJs)[i] ); // child wrt parent
             SMatrix& Jp0 = s2mjc[pstate].J;        // parent wrt global DOF
-
+            assert( Jp0.size() );
+            
             // contribute to the Jacobian matrix of the child wrt global DOF
             SMatrix& Jc0 = s2mjc[cstate].J;  // child wrt global DOF;
 
-            if( !Jc0.rows() ) Jc0 = SMatrix(Jcp * Jp0);
+            if( !Jc0.size() ) Jc0 = SMatrix(Jcp * Jp0);
             else Jc0 += SMatrix(Jcp * Jp0);
-
+            assert( Jc0.size() );
+            
             // Geometric stiffness
             if( pKs && ((*pKs)[i]) ) {
 
@@ -603,11 +605,17 @@ ComplianceSolver::SMatrixC ComplianceSolver::createIdentityMatrixC( unsigned siz
 }
 
 
-const ComplianceSolver::SMatrix& ComplianceSolver::MatrixAssemblyVisitor::getSMatrix( const defaulttype::BaseMatrix* m)
+ComplianceSolver::SMatrix ComplianceSolver::MatrixAssemblyVisitor::getSMatrix( const defaulttype::BaseMatrix* m)
 {
-    const linearsolver::EigenBaseSparseMatrix<SReal>* sm = dynamic_cast<const linearsolver::EigenBaseSparseMatrix<SReal>*>(m);
-    assert(sm);
-    return sm->compressedMatrix;
+   	assert( m );
+    const linearsolver::EigenBaseSparseMatrix<double>* smd = dynamic_cast<const linearsolver::EigenBaseSparseMatrix<double>*>(m);
+    if ( smd ) return smd->compressedMatrix.cast<SReal>();
+    
+    const linearsolver::EigenBaseSparseMatrix<float>* smf = dynamic_cast<const linearsolver::EigenBaseSparseMatrix<float>*>(m);
+    if( smf ) return smf->compressedMatrix.cast<SReal>();
+
+    assert( false && "not an eigen sparse matrix");
+    return SMatrix();
 }
 
 
