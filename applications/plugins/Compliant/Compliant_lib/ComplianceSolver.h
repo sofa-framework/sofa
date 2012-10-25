@@ -187,8 +187,13 @@ protected:
 
         virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 
-        /// Casts the matrix using a dynamic_cast. Crashes if the BaseMatrix* is not a SMatrix*
-        static const SMatrix& getSMatrix( const defaulttype::BaseMatrix* );
+        /// converts to an Eigen::SparseMatrix<SReal>, when paramater
+        /// is itself a Eigen::SparseMatrix<double> or Eigen::SparseMatrix<float>
+   	    static SMatrix getSMatrix( const defaulttype::BaseMatrix* );
+
+	      
+	      
+
 
 
       /** Local matrices and offsets associated with a given MechanicalState, and their offsets in the assembled independent DOFs.
