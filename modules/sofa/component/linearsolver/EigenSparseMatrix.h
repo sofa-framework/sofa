@@ -79,6 +79,56 @@ protected:
     BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
 
+
+  	// some helpers to ease mapping to eigen types, lvalue and rvalue
+	  template<class VecDeriv>
+	  struct map_traits {
+		  typedef typename VecDeriv::value_type value_type;
+		  typedef typename defaulttype::DataTypeInfo<value_type>::ValueType real_type;
+		  
+		  static const unsigned size = defaulttype::DataTypeInfo<value_type>::Size;
+		  
+		  typedef Eigen::Matrix< real_type, Eigen::Dynamic, 1 > matrix_type;
+
+		  typedef Eigen::Map< matrix_type > map_type;
+		  typedef Eigen::Map< const matrix_type > const_map_type;
+		  
+		  static map_type map(const real_type* data, unsigned k) {
+			  return map_type( const_cast<real_type*>(data), k * size );
+		  }
+		  
+		  static const_map_type const_map(const real_type* data, unsigned k) {
+			  return const_map_type( data, k * size );
+		  }
+		  
+
+	  };
+	  
+	  template<class VecDeriv>
+	  static typename map_traits<VecDeriv>::const_map_type
+	  map(const helper::ReadAccessor< Data<VecDeriv> >& data) {
+		  return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
+	  }
+	
+	  template<class VecDeriv>
+	  static typename map_traits<VecDeriv>::map_type
+	  map(helper::WriteAccessor< Data<VecDeriv> >& data) {
+		  return map_traits<VecDeriv>::map(&data[0][0], data.size());
+	  }
+
+	  template<class VecDeriv>
+	  static typename map_traits<VecDeriv>::const_map_type
+	  map(const VecDeriv& data) {
+		  return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
+	  }
+
+	  template<class VecDeriv>
+	  static typename map_traits<VecDeriv>::map_type
+	  map( VecDeriv& data) {
+		   return map_traits<VecDeriv>::map(&data[0][0], data.size());
+	  }
+	
+
 public:
 
     EigenSparseMatrix(int nbRow=0, int nbCol=0):Inherit(nbRow,nbCol) {}
@@ -217,9 +267,9 @@ public:
         // use optimized product if possible
         if(canCast(data))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r = this->compressedMatrix * d;
+	          Eigen::Map<const VectorEigenIn> d( (const InReal*)(&data[0][0]),data.size()*Nin);
+	          Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
+	          r = this->compressedMatrix * d.template cast<Real>();
         }
         else
         {
@@ -253,11 +303,7 @@ public:
         // use optimized product if possible
         if(canCast(data.ref()))
         {
-            typedef Eigen::Map<VectorEigenIn> InVectorMap;
-            const InVectorMap d(const_cast<InReal*>(&data[0][0]),data.size()*Nin);
-            typedef Eigen::Map<VectorEigen> OutVectorMap;
-            OutVectorMap r(&result[0][0],result.size()*Nout);
-            r = this->compressedMatrix * d;
+	        this->map(result) = this->compressedMatrix * this->map(data).template cast<Real>();
             //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
             //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
@@ -288,9 +334,7 @@ public:
         // use optimized product if possible
         if(canCast(data))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-            r += this->compressedMatrix * d;
+	          map(result) += this->compressedMatrix * map(data).template cast<Real>();
             return;
         }
 
@@ -320,9 +364,7 @@ public:
         // use optimized product if possible
         if(canCast(dat.ref()))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
-            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
-            r += this->compressedMatrix * d;
+            map(result) += this->compressedMatrix * map(dat).template cast<Real>();
             return;
         }
 
@@ -352,9 +394,7 @@ public:
         // use optimized product if possible
         if(canCast(dat.ref()))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nin);
-            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nout);
-            r += this->compressedMatrix * d * fact;
+	          map(res) += this->compressedMatrix * map(dat).template cast<Real>() * fact;
             return;
         }
 
@@ -381,9 +421,7 @@ public:
         // use optimized product if possible
         if(canCast(result))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
-            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
-            r += this->compressedMatrix.transpose() * d;
+	          map(result) += (this->compressedMatrix.transpose() * map(data)).template cast<InReal>();
             return;
         }
 
@@ -413,9 +451,7 @@ public:
         // use optimized product if possible
         if(canCast(res.wref()))
         {
-            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&dat[0][0]),dat.size()*Nout);
-            Eigen::Map<VectorEigen> r(&res[0][0],res.size()*Nin);
-            r += this->compressedMatrix.transpose() * d;
+   	        map(res) += (this->compressedMatrix.transpose() * map(dat)).template cast<InReal>();
             return;
         }
 
