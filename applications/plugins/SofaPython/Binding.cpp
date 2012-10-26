@@ -34,7 +34,6 @@
 #include "Binding_Context.h"
 #include "Binding_Node.h"
 #include "Binding_Vector.h"
-#include "Binding_BaseObjectDescription.h"
 #include "Binding_BaseLoader.h"
 #include "Binding_MeshLoader.h"
 #include "Binding_Topology.h"
@@ -57,7 +56,6 @@ void bindSofaPythonModule()
     SP_ADD_CLASS(SofaPythonModule,Data)
         SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
     SP_ADD_CLASS(SofaPythonModule,Vector3)
-    SP_ADD_CLASS(SofaPythonModule,BaseObjectDescription)
 
         SP_ADD_CLASS(SofaPythonModule,Base)
             SP_ADD_CLASS(SofaPythonModule,BaseContext)

@@ -1,0 +1,57 @@
+\
+\section{Creating graph objects in Python}
+
+
+Creating objects in Python is as simple as describing them in XML scene files.
+
+You can use either \textcode{Sofa.createObject(typename,...)} or \textcode{Sofa.BaseContext.createObject(typename,...)} to do it (the second creates the object THEN adds it to the context, whereas the first creates an "orphan" object taht you must add later to a context.)
+
+Both functions take a string for the type name of the object to create, then any optional named parameters neede to complete the object description.
+
+Here is an example of xml file, and its equivament in SofaPython code: (xml is commented)
+
+\begin{code_python}
+#        <EulerImplicit name="cg_odesolver" printLog="false" />
+	node.createObject('EulerImplicit',name='cg_odesolver',printLog='false')
+#        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+	node.createObject('CGLinearSolver',name='linear solver',iterations=25,tolerance=2.0e-9,threshold=1.0e-9)
+#        <MechanicalObject />
+	node.createObject('MechanicalObject')
+#        <UniformMass totalmass="10" />
+	node.createObject('UniformMass',name='mass',totalmass=10)
+#        <RegularGrid nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
+	node.createObject('RegularGrid', name='RegularGrid1', nx=6, ny=5, nz=3, xmin=-11, xmax=11, ymin=-7, ymax=7, zmin=-4, zmax=4)
+#        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
+	node.createObject('RegularGridSpringForceField',name='Springs',stiffness='350', damping='1')
+
+#        <Node name="VisuDragon" tags="Visual">
+	VisuNode = node.createChild('VisuDragon')
+#            <OglModel name="Visual" filename="mesh/dragon.obj" color="red" />
+	VisuNode.createObject('OglModel',name='Visual',filename='mesh/dragon.obj', color=color)
+#            <BarycentricMapping object1="../.." object2="Visual" />
+	VisuNode.createObject('BarycentricMapping',object1='../..', object2='Visual' )
+#        </Node>	
+
+#        <Node name="Surf">
+	SurfNode = node.createChild('Surf')
+#            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+	SurfNode.createObject('MeshObjLoader', name='loader', filename='mesh/dragon.obj')
+#            <Mesh src="@loader" />
+	SurfNode.createObject('Mesh',src='@loader')
+#            <MechanicalObject src="@loader" />
+	SurfNode.createObject('MechanicalObject', name='meca', src='@loader')
+#            <Triangle />
+	SurfNode.createObject('Triangle')
+#            <Line />
+	SurfNode.createObject('Line')
+#            <Point />
+	SurfNode.createObject('Point')
+#            <BarycentricMapping />
+	SurfNode.createObject('BarycentricMapping')
+#        </Node>	
+
+
+\end{code_python}
+
+
+Remark: the values given for each optional named parameter can be a string, a scalar or an integer; this way you can flawlessly use computed variables, or even method calls to initialize your components.

@@ -61,6 +61,7 @@ using namespace sofa::core::objectmodel;
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,NULL,NULL} };
 #define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
+#define SP_MODULE_METHOD_KW(MODULENAME,M) {#M, (PyCFunction)MODULENAME##_##M, METH_KEYWORDS|METH_VARARGS, ""},
 
 
 
@@ -147,6 +148,7 @@ SP_CLASS_METHODS_END
 #define SP_CLASS_METHODS_BEGIN(C) static PyMethodDef SP_SOFAPYMETHODS(C)[] = {
 #define SP_CLASS_METHODS_END {NULL,NULL,NULL,NULL} };
 #define SP_CLASS_METHOD(C,M) {#M, C##_##M, METH_VARARGS, ""},
+#define SP_CLASS_METHOD_KW(C,M) {#M, (PyCFunction)C##_##M, METH_KEYWORDS|METH_VARARGS, ""},
 
 /*
 static PyGetSetDef DummyClass_PyAttributes[] =

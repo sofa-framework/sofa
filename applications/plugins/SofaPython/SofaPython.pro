@@ -37,7 +37,6 @@ SOURCES = initSofaPython.cpp \
     Binding_Context.cpp \
     Binding_BaseContext.cpp \
     Binding_Node.cpp \
-    Binding_BaseObjectDescription.cpp \
     Binding_Data.cpp \
     Binding_BaseObject.cpp \
     Binding_BaseState.cpp \
@@ -66,7 +65,6 @@ HEADERS = initSofaPython.h \
     Binding_Node.h \
     Binding_Context.h \
     Binding_BaseContext.h \
-    Binding_BaseObjectDescription.h \
     Binding_Data.h \
     Binding_BaseObject.h \
     Binding_BaseState.h \
