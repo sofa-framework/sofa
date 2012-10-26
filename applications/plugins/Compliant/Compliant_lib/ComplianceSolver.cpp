@@ -336,6 +336,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::computeSize
 
     // ==== Compliances require a block in the global compliance matrix
     if( node->mechanicalState ) {
+//        cerr<<"ComplianceSolver::MatrixAssemblyVisitor::computeSize, mechanical state  " << node->mechanicalState->getName() << endl;
 
         for(unsigned i = 0; i < node->forceField.size(); ++i) {
 
@@ -348,6 +349,7 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::computeSize
             }
         }
     }
+//    else cerr<<"ComplianceSolver::MatrixAssemblyVisitor::computeSize, NO mechanical state in node " << node->getName() << endl;
 
     // ==== register all the DOFs
     if (node->mechanicalState ) {
