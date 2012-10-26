@@ -70,21 +70,45 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
 }
 
 // object factory
-extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args)
+extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
-    PyObject* pyDesc;
-    if (!PyArg_ParseTuple(args, "O",&pyDesc))
-        return 0;
-    BaseObjectDescription *desc=(((PyPtr<BaseObjectDescription>*)pyDesc)->object);
 
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,desc);//.get();
+//    std::cout << "<PYTHON> BaseContext_createObject PyTuple_Size=" << PyTuple_Size(args) << " PyDict_Size=" << PyDict_Size(kw) << std::endl;
+
+    char *type;
+    if (!PyArg_ParseTuple(args, "s",&type))
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
+
+    // temporarily, the name is set to the type name.
+    // if a "name" parameter is provided, it will overwrite it.
+    BaseObjectDescription desc(type,type);
+
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+        //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
+            if (PyString_Check(value))
+                desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
+            else
+                desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
+    }
+
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
     if (obj==0)
     {
-        printf("<SofaPython> ERROR createObject '%s' of type '%s' in node '%s'\n",
-                desc->getName().c_str(),
-                desc->getAttribute("type",""),
-                context->getName().c_str());
+        std::cerr << "<SofaPython> ERROR createObject " << desc.getName() << " of type " << desc.getAttribute("type","")<< " in node "<<context->getName()<<std::endl;
         PyErr_BadArgument();
         return 0;
     }
@@ -122,7 +146,7 @@ SP_CLASS_METHOD(BaseContext,getTime)
 SP_CLASS_METHOD(BaseContext,getDt)
 SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
-SP_CLASS_METHOD(BaseContext,createObject)
+SP_CLASS_METHOD_KW(BaseContext,createObject)
 SP_CLASS_METHOD(BaseContext,getObject)
 SP_CLASS_METHODS_END
 

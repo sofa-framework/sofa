@@ -41,22 +41,37 @@ using namespace sofa::simulation;
 
 
 // object factory
-extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args)
+extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw)
 {
-    PyObject* pyDesc;
-    if (!PyArg_ParseTuple(args, "O",&pyDesc))
+    char *type;
+    if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
         return 0;
     }
-    BaseObjectDescription *desc=(((PyPtr<BaseObjectDescription>*)pyDesc)->object);
 
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(0,desc);//.get();
+    // temporarily, the name is set to the type name.
+    // if a "name" parameter is provided, it will overwrite it.
+    BaseObjectDescription desc(type,type);
+
+    if (PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            desc.setAttribute(PyString_AsString(PyList_GetItem(keys,i)),PyString_AsString(PyList_GetItem(values,i)));
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
+    }
+
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(0,&desc);//.get();
     if (obj==0)
     {
         printf("<SofaPython> ERROR createObject '%s' of type '%s''\n",
-                desc->getName().c_str(),
-                desc->getAttribute("type",""));
+                desc.getName().c_str(),
+                desc.getAttribute("type",""));
         PyErr_BadArgument();
         return 0;
     }
@@ -154,7 +169,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
-SP_MODULE_METHOD(Sofa,createObject)
+SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,sendGUIMessage)

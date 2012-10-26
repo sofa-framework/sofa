@@ -13,33 +13,15 @@ class Fontain(Sofa.PythonScriptController):
 	def createCube(self,parentNode,name,x,y,z,vx,vy,vz,color):
 		node = parentNode.createChild(name)
 
-		node.createObject(Sofa.BaseObjectDescription('cg_odesolver','EulerImplicit'))
-
-		desc = Sofa.BaseObjectDescription('linear solver','CGLinearSolver')
-		desc.setAttribute('iterations','25')
-		desc.setAttribute('tolerance','1.0e-9')
-		desc.setAttribute('threshold','1.0e-9')
-		node.createObject(desc)
-
-		desc = Sofa.BaseObjectDescription('MecaObject','MechanicalObject')
-		desc.setAttribute('template','Rigid')
-		object = node.createObject(desc)
-
-		mass = node.createObject(Sofa.BaseObjectDescription('mass','UniformMass'))
-		mass.findData('totalmass').value=100
+		node.createObject('EulerImplicit')
+		node.createObject('CGLinearSolver',iterations=25,tolerance=1.0e-9,threshold=1.0e-9)
+		object = node.createObject('MechanicalObject',name='MecaObject',template='Rigid')
+		node.createObject('UniformMass',totalmas=100)
 
 		# VisualNode
 		VisuNode = node.createChild('Visu')
-
-		desc = Sofa.BaseObjectDescription('Visual','OglModel')
-		desc.setAttribute('fileMesh','mesh/PokeCube.obj')
-		desc.setAttribute('color',color)
-		VisuNode.createObject(desc)
-
-		desc = Sofa.BaseObjectDescription('mapping','RigidMapping')
-		desc.setAttribute('object1','@..')
-		desc.setAttribute('object2','@Visual')
-		VisuNode.createObject(desc)
+		VisuNode.createObject('OglModel',name='Visual',fileMesh='mesh/PokeCube.obj',color=color)
+		VisuNode.createObject('RigidMapping',object1='@..',object2='@Visual')
 
 		# apply wanted initial translation
 		#object.applyTranslation(x,y,z)
@@ -74,10 +56,7 @@ class Fontain(Sofa.PythonScriptController):
 		node = self.createCube(self.rootNode,'particle'+str(self.particleCount),0,0,0,random.uniform(-10,10),random.uniform(10,30),random.uniform(-10,10),color)
 		self.particleCount+=1
 		# add the controller script
-		desc=Sofa.BaseObjectDescription('script','PythonScriptController')
-		desc.setAttribute('filename','fontain.py')
-		desc.setAttribute('classname','Particle')
-		node.createObject(desc)
+		node.createObject('PythonScriptController', filename='fontain.py', classname='Particle')
 	 
 	# optionnally, script can create a graph...
 	def createGraph(self,node):

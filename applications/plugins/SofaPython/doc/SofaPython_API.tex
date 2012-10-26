@@ -23,7 +23,7 @@ SofaPython provides several module methods, for general purpose (not linked to a
 
 \begin{itemize}
 \item \textcode{sendGUIMessage(msgType,msgValue)} 
-\item \textcode{createObject(BaseObjectDescription)}
+\item \textcode{createObject(type[, datafield=value [,...] ])} creates an object. ex: \textcode{node.createObject('UniformMass',totalmass=1)} See "Creating graph objects in Python" section for more info.
 \end{itemize}
 
 %Class Hierarchy
@@ -39,7 +39,6 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 \Tree [.Base [.BaseContext [.Context [.BaseNode Node ] ] ] 
 			[.BaseObject [.BaseState [.BaseMechanicalState MechanicalObject ] ] [.BaseLoader MeshLoader ] 
 			[.Topology MeshTopology ] ] ]
-\Tree [.BaseObjectDescription ]
 \Tree [.Vector3 ]
 \Tree [.Data DisplayFlagsData ]
 \caption{Sofa python types hierarchy}
@@ -48,29 +47,6 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 \end{figure}
 
 \newpage
-
-%Sofa.BaseObjectDescription
-\subsubsection{Sofa.BaseObjectDescription}
-Used to create objects with the Method \textcode{Sofa.createObject} :
-\begin{code_python}
- desc = Sofa.BaseObjectDescription('particle','MechanicalObject')
- particle = Sofa.createObject(node,desc)
-\end{code_python}
-
-Methods :
-\begin{itemize}
-\item \textcode{setAttributes}
-\item \textcode{getAttributes}
-\end{itemize}
-Constructor : 
-\begin{itemize}
-\item \textcode{BaseObjectDescription(name,type)}
-
-\end{itemize}
-Attributes :
-\begin{itemize}
-\item \textcode{name}
-\end{itemize}
 
 %Sofa.Vector3
 \subsubsection{Sofa.Vector3}
@@ -131,7 +107,7 @@ Methods :
 \item \textcode{getDt()} 
 \item \textcode{getGravity()} returns a \textcode{Sofa.vec3} object
 \item \textcode{setGravity(Vec3)} 
-\item \textcode{createObject(BaseObjectDescription)}
+\item \textcode{createObject(type[, datafield=value [,...] ])} creates an object. ex: \textcode{node.createObject('UniformMass',totalmass=1)} See "Creating graph objects in Python" section for more info.
 \item \textcode{getObject(path)}
 \end{itemize}
 Attributes:
@@ -218,7 +194,7 @@ Some attributes (like showAll) are hierarchicaly above others: setting them to \
 
 Simple example of use:
 \begin{code_python}
- style = node.getRoot().createObject(Sofa.BaseObjectDescription('style','VisualStyle'))
+ style = node.getRoot().createObject('VisualStyle')
  style.findData('displayFlags').showBehaviorModels = True
 \end{code_python}
 
