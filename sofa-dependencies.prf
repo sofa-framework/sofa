@@ -195,12 +195,12 @@ declare(oneParticuleWithSofaTypedefs,   applications/tutorials/oneParticuleWithS
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,   				sofa_component sofaguimain)
 
 
-contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
-    declare(ModelHierarchies, applications/plugins/ModelHierarchies, sofa_component )
-    declare(ModelHierarchies_test, applications/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_base_animation_loop sofa_eigen2_solver )
-    enable(ModelHierarchies)
-    enable(ModelHierarchies_test)
-}
+#contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
+#    declare(ModelHierarchies, applications-dev/plugins/ModelHierarchies, sofa_component )
+#    declare(ModelHierarchies_test, applications-dev/projects/ModelHierarchies_test, ModelHierarchies sofaguimain sofa_component sofa_base_animation_loop sofa_eigen2_solver )
+#    enable(ModelHierarchies)
+#    enable(ModelHierarchies_test)
+#}
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_COLLADA) {
     declare(ColladaSceneLoader, applications/plugins/ColladaSceneLoader, sofa_loader sofasimulation sofa_base_mechanics sofa_rigid sofa_boundary_condition sofa_base_topology sofa_base_visual sofa_opengl_visual)
@@ -450,6 +450,7 @@ contains(DEFINES, SOFA_HAVE_SENSABLE)                   { usePlugin(Sensable, ap
 contains(DEFINES, SOFA_HAVE_SENSABLEEMULATION)          { usePlugin(SensableEmulation, applications/plugins/SensableEmulation) }
 contains(DEFINES, SOFA_HAVE_PYTHON)                     { usePlugin(SofaPython, applications/plugins/SofaPython) }
 contains(DEFINES, SOFA_HAVE_PLUGIN_optixdetection)      { usePlugin(optixdetection, applications/plugins/optixdetection) }
+contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies)    { usePlugin(ModelHierarchies, applications-dev/plugins/ModelHierarchies) }
 
 !contains(DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
     contains(DEFINES, SOFA_HAVE_HAPI)                   { usePlugin(SofaHAPI, applications/plugins/SofaHAPI) }
