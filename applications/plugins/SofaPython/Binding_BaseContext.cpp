@@ -185,8 +185,6 @@ extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*
     return 0;
 }
 
-
-
 SP_CLASS_ATTRS_BEGIN(BaseContext)
 SP_CLASS_ATTR(BaseContext,active)
 SP_CLASS_ATTR(BaseContext,animate)

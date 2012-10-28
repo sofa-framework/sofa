@@ -49,10 +49,8 @@ extern "C" int Data_setAttr_name(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
-extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
+PyObject *GetDataValuePython(BaseData* data)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
-
     // depending on the data type, we return the good python type (int, float, sting, array, ...)
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
@@ -106,18 +104,13 @@ extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
     return PyString_FromString(data->getValueString().c_str());
 }
 
-extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
+bool SetDataValuePython(BaseData* data, PyObject* args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
     // de quel type est args ?
     bool isInt = PyInt_Check(args);
     bool isScalar = PyFloat_Check(args);
     bool isString = PyString_Check(args);
     bool isList = PyList_Check(args);
-//    printf ("isInt=%d\n", isInt);
-//    printf ("isScalar=%d\n", isScalar);
-//    printf ("isString=%d\n", isString);
-//    printf ("isList=%d\n", isList);
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     if (isInt)
     {
@@ -127,14 +120,14 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         {
             // type mismatch or too long list
             PyErr_BadArgument();
-            return -1;
+            return false;
         }
         long value = PyInt_AsLong(args);
         if (typeinfo->Scalar())
             typeinfo->setScalarValue((void*)data->getValueVoidPtr(),0,(SReal)value); // cast int to float
         else
             typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),0,value);
-        return 0;
+        return true;
     }
     else if (isScalar)
     {
@@ -143,18 +136,18 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         {
             // type mismatch or too long list
             PyErr_BadArgument();
-            return -1;
+            return false;
         }
         SReal value = PyFloat_AsDouble(args);
         typeinfo->setScalarValue((void*)data->getValueVoidPtr(),0,value);
-        return 0;
+        return true;
     }
     else if (isString)
     {
         // it's a string
         char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
         data->read(str);
-        return 0;
+        return true;
     }
     else if (isList)
     {
@@ -163,7 +156,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
         if (PyList_Size(args)==0)
         {
             // empty list: ignored
-            return 0;
+            return true;
         }
 
         // right number if list members ?
@@ -200,7 +193,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return -1;
+                    return false;
                 }
             }
             else if (PyFloat_Check(listElt))
@@ -210,7 +203,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return -1;
+                    return false;
                 }
                 SReal value = PyFloat_AsDouble(listElt);
                 typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
@@ -222,7 +215,7 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return -1;
+                    return false;
                 }
                 char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
                 typeinfo->setTextValue((void*)data->getValueVoidPtr(),i,str);
@@ -231,13 +224,32 @@ extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
             {
                 printf("Lists not yet supported...\n");
                 PyErr_BadArgument();
-                return -1;
+                return false;
 
             }
         }
 
-        return 0;
+        return true;
     }
+
+    return false;
+
+}
+
+
+
+extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    return GetDataValuePython(data);
+}
+
+extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    if (SetDataValuePython(data,args))
+        return 0;   // OK
+
 
     printf("<SofaPython> argument type not supported\n");
     PyErr_BadArgument();
@@ -333,6 +345,7 @@ SP_CLASS_METHOD(Data,getValueString)
 SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHODS_END
+
 
 SP_CLASS_ATTRS_BEGIN(Data)
 SP_CLASS_ATTR(Data,name)
