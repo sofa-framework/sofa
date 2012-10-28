@@ -29,4 +29,7 @@
 
 SP_DECLARE_CLASS_TYPE(Data)
 
+PyObject *GetDataValuePython(BaseData* data);
+bool SetDataValuePython(BaseData* data, PyObject* value);
+
 #endif // BINDING_BASEDATA_H
