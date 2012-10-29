@@ -57,8 +57,8 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaSphereForceField.inl \
            sofa/gpu/cuda/CudaEllipsoidForceField.h \
            sofa/gpu/cuda/CudaEllipsoidForceField.inl \
-           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h \
-           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl \
+#           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h \
+#           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl \
            sofa/gpu/cuda/CudaIdentityMapping.h \
            sofa/gpu/cuda/CudaIdentityMapping.inl \
            sofa/gpu/cuda/CudaBarycentricMapping.h \
@@ -84,7 +84,9 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaParticleSource.inl \
            sofa/gpu/cuda/CudaMemoryManager.h  \
            sofa/gpu/cuda/CudaMeshMatrixMass.h \
-           sofa/gpu/cuda/CudaMeshMatrixMass.inl
+           sofa/gpu/cuda/CudaMeshMatrixMass.inl \
+	   sofa/gpu/cuda/CudaTridiagonalMatrixUtils.h \
+	   sofa/gpu/cuda/CudaRotationMatrix.h
 
 SOURCES += main.cpp \
            sofa/gpu/cuda/mycuda.cpp \
@@ -104,13 +106,14 @@ SOURCES += main.cpp \
            sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp \
            sofa/gpu/cuda/CudaLinearForceField.cpp \
            sofa/gpu/cuda/CudaSpringForceField.cpp \
+           #sofa/gpu/cuda/CudaTetrahedralTotalLagrangianForceField.cpp \ 
            sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp \ 
            sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp \
            sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp \
            sofa/gpu/cuda/CudaPlaneForceField.cpp \
            sofa/gpu/cuda/CudaSphereForceField.cpp \
            sofa/gpu/cuda/CudaEllipsoidForceField.cpp \
-           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp \
+#           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp \
            sofa/gpu/cuda/CudaIdentityMapping.cpp \
            sofa/gpu/cuda/CudaBarycentricMapping.cpp \
            sofa/gpu/cuda/CudaBarycentricMapping-f.cpp \
@@ -153,7 +156,7 @@ CUDA_SOURCES += sofa/gpu/cuda/mycuda.cu \
            sofa/gpu/cuda/CudaPlaneForceField.cu \
            sofa/gpu/cuda/CudaSphereForceField.cu \
            sofa/gpu/cuda/CudaEllipsoidForceField.cu \
-           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu \
+#           sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu \
            sofa/gpu/cuda/CudaBarycentricMapping.cu \
            sofa/gpu/cuda/CudaRigidMapping.cu \
            sofa/gpu/cuda/CudaSubsetMapping.cu \
@@ -162,6 +165,7 @@ CUDA_SOURCES += sofa/gpu/cuda/mycuda.cu \
            sofa/gpu/cuda/CudaPenalityContactForceField.cu \
            sofa/gpu/cuda/CudaVisualModel.cu \
            sofa/gpu/cuda/CudaParticleSource.cu \
+	   sofa/gpu/cuda/CudaTridiagonalMatrixUtils.cu \
            sofa/gpu/cuda/CudaMeshMatrixMass.cu
 
 
