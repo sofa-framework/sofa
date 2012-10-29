@@ -129,7 +129,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 
     Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;
-    Real invdt=1./dt;
+    Real invdt=(Real)(1./dt);
 
     velocity.resize(res.size());
 
