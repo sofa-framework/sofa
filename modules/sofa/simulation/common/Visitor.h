@@ -204,13 +204,22 @@ public:
     static double getTimeSpent(ctime_t initTime, ctime_t endTime);
     static void startDumpVisitor(std::ostream *s, double time);
     static void stopDumpVisitor();
-
+    static bool isPrintActivated() { return printActivated; }
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
-    static void printComment(const std::string &s) ;
-    static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
+    static void printComment(const std::string &s);
+    static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() );
+    static void printCloseNode(const std::string &type);
+    // const char* versions allow to call the print methods without dynamically allocating a std::string in case print is disabled
+    static void printComment(const char* s);
+    static void printNode(const char* type, const std::string &name, const TRACE_ARGUMENT &arguments);
+    static void printNode(const char* type, const std::string &name);
+    static void printNode(const char* type);
+    static void printCloseNode(const char* type);
+
     static void printVector(core::behavior::BaseMechanicalState *mm, core::ConstVecId id);
-    static void printCloseNode(const std::string &type) ;
+
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
+
     void setNode(core::objectmodel::Base* c);
 
     static void EnableExportStateVector(bool activation) {outputStateVector=activation;}

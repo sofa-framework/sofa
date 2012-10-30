@@ -150,6 +150,9 @@ bool LMContactConstraintLoop::isCollisionDetected()
 void LMContactConstraintLoop::step(const core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Step");
+#endif
 
     {
         AnimateBeginEvent ev ( dt );
@@ -222,7 +225,7 @@ void LMContactConstraintLoop::step(const core::ExecParams* params, double dt)
     sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
 #endif
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("Step"));
+    simulation::Visitor::printCloseNode("Step");
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 

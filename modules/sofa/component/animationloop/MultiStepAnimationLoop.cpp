@@ -62,6 +62,9 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Step");
+#endif
 
     {
         AnimateBeginEvent ev ( dt );
@@ -119,7 +122,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS
     sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
 #endif
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("Step"));
+    simulation::Visitor::printCloseNode("Step");
 #endif
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");

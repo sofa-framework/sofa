@@ -146,8 +146,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         std::ostringstream comment;
-        comment << "Iteration_" << nb_iter;
-        simulation::Visitor::printNode(comment.str());
+        if (simulation::Visitor::isPrintActivated())
+        {
+            comment << "Iteration_" << nb_iter;
+            simulation::Visitor::printNode(comment.str());
+        }
 #endif
         // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,sout );
 
@@ -165,7 +168,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 endcond = "tolerance";
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-                simulation::Visitor::printCloseNode(comment.str());
+                if (simulation::Visitor::isPrintActivated())
+                    simulation::Visitor::printCloseNode(comment.str());
 #endif
                 break;
             }
@@ -205,7 +209,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 serr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
             }
 #ifdef SOFA_DUMP_VISITOR_INFO
-            simulation::Visitor::printCloseNode(comment.str());
+            if (simulation::Visitor::isPrintActivated())
+                simulation::Visitor::printCloseNode(comment.str());
 #endif
             break;
         }
@@ -222,7 +227,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         rho_1 = rho;
 #ifdef SOFA_DUMP_VISITOR_INFO
-        simulation::Visitor::printCloseNode(comment.str());
+        if (simulation::Visitor::isPrintActivated())
+            simulation::Visitor::printCloseNode(comment.str());
 #endif
     }
 

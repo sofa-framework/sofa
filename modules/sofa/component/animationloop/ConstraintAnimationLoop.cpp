@@ -552,6 +552,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
     sofa::helper::AdvancedTimer::begin("Animate");
 
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Step");
+#endif
 
     {
         AnimateBeginEvent ev ( dt );
@@ -807,7 +810,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
     sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
 #endif
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("Step"));
+    simulation::Visitor::printCloseNode("Step");
 #endif
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");

@@ -136,6 +136,7 @@ void Visitor::dumpInfo( const std::string &info)
 
 void Visitor::startDumpVisitor(std::ostream *s, double time)
 {
+    std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
     printActivated=true; outputVisitor=s;
     std::string initDump;
@@ -144,6 +145,7 @@ void Visitor::startDumpVisitor(std::ostream *s, double time)
 };
 void Visitor::stopDumpVisitor()
 {
+    std::cout << "stopDumpVisitor" << std::endl;
     std::ostringstream s;
     s << "<TotalTime value=\"" << getTimeSpent(initDumpTime,  sofa::helper::system::thread::CTime::getRefTime() ) << "\" />\n";
     s << "</TraceVisitor>\n";
@@ -178,6 +180,7 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVe
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {
+    std::cout << "printNode " << type << " " << name << std::endl;
     if (Visitor::printActivated)
     {
         std::ostringstream s;
@@ -204,6 +207,32 @@ void Visitor::printCloseNode(const std::string &type)
         s << "</" << type << ">\n";
         dumpInfo(s.str());
     }
+}
+
+void Visitor::printComment(const char* s)
+{
+    if (!Visitor::printActivated) return;
+    printComment(std::string(s));
+}
+void Visitor::printNode(const char* type, const std::string &name, const TRACE_ARGUMENT &arguments)
+{
+    if (!Visitor::printActivated) return;
+    printNode(std::string(type),name,arguments);
+}
+void Visitor::printNode(const char* type, const std::string &name)
+{
+    if (!Visitor::printActivated) return;
+    printNode(std::string(type),name);
+}
+void Visitor::printNode(const char* type)
+{
+    if (!Visitor::printActivated) return;
+    printNode(std::string(type));
+}
+void Visitor::printCloseNode(const char* type)
+{
+    if (!Visitor::printActivated) return;
+    printCloseNode(std::string(type));
 }
 
 #endif
