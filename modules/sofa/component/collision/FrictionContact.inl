@@ -132,7 +132,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
             contacts.push_back(o);
     }
 
-    if (contacts.size()<outputs.size())
+    if (contacts.size()<outputs.size() && this->f_printLog.getValue())
     {
         // DUPLICATED CONTACTS FOUND
         sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;

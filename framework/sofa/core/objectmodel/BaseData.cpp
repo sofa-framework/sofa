@@ -265,7 +265,11 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     }
 
     std::string m = msgs.str();
-    if (m_owner)
+    if (m_owner
+#ifdef NDEBUG
+        && (!m.empty() || m_owner->f_printLog.getValue())
+#endif
+    )
     {
         m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
         if (!m.empty()) m_owner->sout << m;
