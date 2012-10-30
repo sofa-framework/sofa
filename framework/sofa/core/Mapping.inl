@@ -256,7 +256,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams /* PARAMS FIRST  =
 template <class In, class Out>
 void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
 {
-    sout<<"Mapping<In,Out>::applyDJT"<<sendl;
+    //sout<<"Mapping<In,Out>::applyDJT"<<sendl;
 }
 
 

@@ -362,7 +362,7 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
     if (constraintSolverList.empty())
     {
-        ctx->sout << "No ConstraintSolver found." << ctx->sendl;
+        //ctx->sout << "No ConstraintSolver found." << ctx->sendl;
         return;
     }
 
