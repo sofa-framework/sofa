@@ -35,6 +35,9 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/simulation/common/Node.h>
 
+#include <sofa/component/mass/UniformMass.inl>
+
+
 namespace sofa
 {
 namespace component
@@ -214,5 +217,138 @@ template class SOFA_Flexible_API MechanicalObject<Affine3Types>;
 
 
 } // namespace container
+
+
+namespace mass
+{
+
+//#ifndef SOFA_FLOAT
+//template<> SOFA_Flexible_API
+//void UniformMass<Affine3dTypes, Affine3dMass>::reinit()
+//{
+//    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
+//    {
+//        MassType* m = this->mass.beginEdit();
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        this->mass.endEdit();
+//    }
+//    else
+//    {
+//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//    }
+//}
+//#endif
+//#ifndef SOFA_DOUBLE
+//template<> SOFA_Flexible_API
+//void UniformMass<Affine3fTypes, Affine3fMass>::reinit()
+//{
+//    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
+//    {
+//        MassType* m = this->mass.beginEdit();
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        this->mass.endEdit();
+//    }
+//    else
+//    {
+//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//    }
+//}
+//#endif
+
+
+
+#ifndef SOFA_FLOAT
+template <> SOFA_Flexible_API
+void UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::draw(const core::visual::VisualParams* /*vparams*/)
+{
+}
+template <> SOFA_Flexible_API
+double UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx  ) const
+{
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    double e = 0;
+    const MassType& m = mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
+
+    Deriv mg = m * theGravity;
+
+    for ( unsigned int i=ibegin; i<iend; i++ )
+    {
+        Deriv translation;
+        translation[0]=(float)x[i].getCenter()[0],  translation[0]=(float)x[1].getCenter()[1], translation[2]=(float)x[i].getCenter()[2];
+        e -= translation * mg;
+    }
+    return e;
+}
+#endif
+#ifndef SOFA_DOUBLE
+template <> SOFA_Flexible_API
+void UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::draw(const core::visual::VisualParams* /*vparams*/)
+{
+}
+template <> SOFA_Flexible_API
+double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx  ) const
+{
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    double e = 0;
+    const MassType& m = mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
+
+    Deriv mg = m * theGravity;
+
+    for ( unsigned int i=ibegin; i<iend; i++ )
+    {
+        Deriv translation;
+        translation[0]=(float)x[i].getCenter()[0],  translation[0]=(float)x[1].getCenter()[1], translation[2]=(float)x[i].getCenter()[2];
+        e -= translation * mg;
+    }
+    return e;
+}
+#endif
+
+
+    // ==========================================================================
+    // Instanciation
+
+    SOFA_DECL_CLASS ( AffineUniformMass )
+
+    using namespace sofa::defaulttype;
+
+    int AffineUniformMassClass = core::RegisterObject ( "Define the same mass for all the particles" )
+            .add< UniformMass<Affine3Types,Affine3Mass> >()
+            ;
+
+    template class SOFA_Flexible_API UniformMass<Affine3Types,Affine3Mass>;
+
+} // namespace mass
+
+
+
 } // namespace component
 } // namespace sofa

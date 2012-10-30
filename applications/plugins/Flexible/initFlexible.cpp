@@ -105,5 +105,7 @@ SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
 SOFA_LINK_CLASS(DistanceMapping)
 SOFA_LINK_CLASS(ExtensionMapping)
+SOFA_LINK_CLASS(ImageDensityMass)
+SOFA_LINK_CLASS(AffineUniformMass)
 
 

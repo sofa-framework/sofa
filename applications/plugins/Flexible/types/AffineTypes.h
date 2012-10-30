@@ -38,6 +38,9 @@
 
 #include <sofa/defaulttype/Quat.h>
 
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <sofa/component/mass/UniformMass.h>
+
 namespace sofa
 {
 
@@ -447,6 +450,230 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3fTy
 
 } // namespace container
 } // namespace component
+
+
+// ====================================================================
+// AffineMass
+
+
+namespace defaulttype
+{
+
+using std::endl;
+using helper::vector;
+
+/** Mass associated with an affine deformable frame */
+template<int _spatial_dimensions,typename _Real>
+class AffineMass
+{
+public:
+    typedef _Real Real;
+
+    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const unsigned int VSize = StdAffineTypes<spatial_dimensions,Real>::deriv_total_size;
+
+    typedef Mat<VSize, VSize, Real> MassMatrix;
+
+
+    AffineMass() : m_invMassMatrix(NULL)
+    {
+        m_massMatrix.identity();
+    }
+
+    /// build a uniform, diagonal matrix
+    AffineMass( Real m ) : m_invMassMatrix(NULL)
+    {
+        setValue( m );
+    }
+
+
+    ~AffineMass()
+    {
+        if( m_invMassMatrix )
+        {
+            delete m_invMassMatrix;
+            m_invMassMatrix = NULL;
+        }
+    }
+
+    /// make a null inertia matrix
+    void clear()
+    {
+        m_massMatrix.clear();
+        update();
+    }
+
+
+    static const char* Name();
+
+    /// @returns the invert of the mass matrix
+    const MassMatrix& getInverse() const
+    {
+        // optimization: compute the mass invert only once (needed by explicit solvers)
+        if( !m_invMassMatrix )
+        {
+            m_invMassMatrix = new MassMatrix;
+            m_invMassMatrix->invert( m_massMatrix );
+        }
+        return *m_invMassMatrix;
+    }
+
+    /// @returns the mass matrix
+    const MassMatrix& getMatrix() const
+    {
+        return m_massMatrix;
+    }
+
+    /// set a uniform, diagonal matrix
+    virtual void setValue( Real m )
+    {
+        for( unsigned i=0 ; i<VSize ; ++i ) m_massMatrix(i,i) = m;
+        update();
+    }
+
+
+    /// apply a factor to the mass matrix
+    void operator*= ( Real m )
+    {
+        m_massMatrix *= m;
+        update();
+    }
+
+
+    /// operator to cast to const Real, supposing the mass is uniform (and so diagonal)
+    operator const Real() const
+    {
+        return m_massMatrix(0,0);
+    }
+
+
+
+    /// Write acess to line i of the mass matrix
+    inline typename MassMatrix::LineNoInit& operator[](int i)
+    {
+        return m_massMatrix[i];
+    }
+
+    /// Read-only access to line i of the mass matrix
+    inline const typename MassMatrix::LineNoInit& operator[](int i) const
+    {
+        return m_massMatrix[i];
+    }
+
+
+
+
+    inline friend std::ostream& operator << ( std::ostream& out, const AffineMass<spatial_dimensions, Real>& m )
+    {
+        out<<m.m_massMatrix;
+        return out;
+    }
+    inline friend std::istream& operator >> ( std::istream& in, AffineMass<spatial_dimensions, Real>& m )
+    {
+        in>>m.m_massMatrix;
+        return in;
+    }
+
+
+
+protected:
+
+    mutable MassMatrix *m_invMassMatrix; ///< a pointer to the inverse of the mass matrix
+    MassMatrix m_massMatrix; ///< the mass matrix
+
+    /// when the mass matrix is changed, if the inverse exists, it has to be updated
+    void update()
+    {
+        if( m_invMassMatrix ) m_invMassMatrix->invert( m_massMatrix );
+    }
+};
+
+
+template<int _spatial_dimensions,typename _Real>
+inline typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv operator/(const typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv& d, const AffineMass<_spatial_dimensions, _Real>& m)
+{
+    return m.getInverse() * d.getVec();
+}
+
+template<int _spatial_dimensions,typename _Real>
+inline typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv operator*(const typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv& d, const AffineMass<_spatial_dimensions, _Real>& m)
+{
+    return m.getMatrix() * d.getVec();
+}
+
+template<int _spatial_dimensions,typename _Real>
+inline typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv operator*(const AffineMass<_spatial_dimensions, _Real>& m,const typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv& d)
+{
+    return d * m;
+}
+
+typedef AffineMass<3, double> Affine3dMass;
+typedef AffineMass<3, float> Affine3fMass;
+
+
+#ifdef SOFA_FLOAT
+typedef Affine3fMass Affine3Mass;
+#else
+typedef Affine3dMass Affine3Mass;
+#endif
+
+
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
+template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
+
+/// \endcond
+
+
+
+} // namespace defaulttype
+
+namespace component
+{
+
+namespace mass
+{
+
+template<int N, typename Real>
+class AddMToMatrixFunctor< typename defaulttype::StdAffineTypes<N,Real>::Deriv, defaulttype::AffineMass<N,Real> >
+{
+public:
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::AffineMass<N,Real>& mass, int pos, double fact)
+    {
+//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
+        typedef defaulttype::AffineMass<N,Real> AffineMass;
+        for( unsigned i=0; i<AffineMass::VSize; ++i )
+            for( unsigned j=0; j<AffineMass::VSize; ++j )
+            {
+                mat->add(pos+i, pos+j, mass.getMatrix()[i][j]*fact);
+//            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
+            }
+    }
+};
+
+#ifndef SOFA_FLOAT
+template <>
+void UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::draw( const core::visual::VisualParams* vparams );
+template <>
+double UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::draw( const core::visual::VisualParams* vparams );
+template <>
+double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
+#endif
+
+
+
+} // namespace mass
+
+} // namespace component
+
+
 
 
 
