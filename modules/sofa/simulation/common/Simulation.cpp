@@ -221,11 +221,6 @@ void Simulation::animate ( Node* root, double dt )
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode(std::string("Step"));
-#endif
-
-
     sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
     if(aloop)
     {

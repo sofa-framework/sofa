@@ -100,7 +100,6 @@ void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename
 void BatchGUI::resetScene()
 {
     sofa::simulation::Node* root = currentSimulation();
-    startDumpVisitor();
 
     if ( root )
     {

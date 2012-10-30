@@ -78,7 +78,7 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 {
     if ( !gRoot ) return;
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode(std::string("UpdateVisual"));
+    simulation::Visitor::printNode("UpdateVisual");
 #endif
     sofa::helper::AdvancedTimer::begin("UpdateVisual");
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
@@ -94,7 +94,7 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
     gRoot->execute<VisualUpdateVisitor>(params);
     sofa::helper::AdvancedTimer::end("UpdateVisual");
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("UpdateVisual"));
+    simulation::Visitor::printCloseNode("UpdateVisual");
 #endif
 
 }
