@@ -180,94 +180,94 @@ using namespace sofa::core::objectmodel;
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onLoaded, "(O)", SP_BUILD_PYSPTR(node))
-    SP_CALL_OBJECTFUNC("onLoaded","(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onLoaded"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_createGraph(sofa::simulation::Node *node)
 {
 //    SP_CALL_MODULEFUNC(m_Func_createGraph, "(O)", SP_BUILD_PYSPTR(node))
-    SP_CALL_OBJECTFUNC("createGraph","(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_OBJECTFUNC(const_cast<char*>("createGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_initGraph(sofa::simulation::Node *node)
 {
 //    SP_CALL_MODULEFUNC(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(node))
-    SP_CALL_OBJECTFUNC("initGraph","(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_OBJECTFUNC(const_cast<char*>("initGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
 void PythonScriptController::script_onKeyPressed(const char c)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onKeyPressed, "(c)", c)
-    SP_CALL_OBJECTFUNC("onKeyPressed","(c)", c)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
 }
 void PythonScriptController::script_onKeyReleased(const char c)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onKeyReleased, "(c)", c)
-    SP_CALL_OBJECTFUNC("onKeyReleased","(c)", c)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
 }
 
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonLeft, "(iiO)", posX,posY,pyPressed)
-    SP_CALL_OBJECTFUNC("onMouseButtonLeft","(iiO)", posX,posY,pyPressed)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonLeft"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
 }
 
 void PythonScriptController::script_onMouseButtonRight(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonRight, "(iiO)", posX,posY,pyPressed)
-    SP_CALL_OBJECTFUNC("onMouseButtonRight","(iiO)", posX,posY,pyPressed)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonRight"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
 }
 
 void PythonScriptController::script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonMiddle, "(iiO)", posX,posY,pyPressed)
-    SP_CALL_OBJECTFUNC("onMouseButtonMiddle","(iiO)", posX,posY,pyPressed)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonMiddle"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
 }
 
 void PythonScriptController::script_onMouseWheel(const int posX,const int posY,const int delta)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onMouseWheel, "(iii)", posX,posY,delta)
-    SP_CALL_OBJECTFUNC("onMouseWheel","(iii)", posX,posY,delta)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseWheel"),const_cast<char*>("(iii)"), posX,posY,delta)
 }
 
 
 void PythonScriptController::script_onBeginAnimationStep(const double dt)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onBeginAnimationStep, "(d)", dt)
-    SP_CALL_OBJECTFUNC("onBeginAnimationStep","(d)", dt)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onBeginAnimationStep"),const_cast<char*>("(d)"), dt)
 }
 
 void PythonScriptController::script_onEndAnimationStep(const double dt)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onEndAnimationStep, "(d)", dt)
-    SP_CALL_OBJECTFUNC("onEndAnimationStep","(d)", dt)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onEndAnimationStep"),const_cast<char*>("(d)"), dt)
 }
 
 void PythonScriptController::script_storeResetState()
 {
 //    SP_CALL_MODULEFUNC_NOPARAM(m_Func_storeResetState)
-    SP_CALL_OBJECTFUNC("storeResetState",0)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("storeResetState"),0)
 }
 
 void PythonScriptController::script_reset()
 {
 //    SP_CALL_MODULEFUNC_NOPARAM(m_Func_reset)
-    SP_CALL_OBJECTFUNC("reset",0)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("reset"),0)
 }
 
 void PythonScriptController::script_cleanup()
 {
 //    SP_CALL_MODULEFUNC_NOPARAM(m_Func_cleanup)
-    SP_CALL_OBJECTFUNC("cleanup",0)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("cleanup"),0)
 }
 
 void PythonScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
 {
 //    SP_CALL_MODULEFUNC(m_Func_onGUIEvent,"(sss)",controlID,valueName,value)
-    SP_CALL_OBJECTFUNC("onGUIEvent","(sss)",controlID,valueName,value)
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onGUIEvent"),const_cast<char*>("(sss)"),controlID,valueName,value)
 }
 
 void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
@@ -280,7 +280,7 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     else
     {
 //        SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
-        SP_CALL_OBJECTFUNC("onScriptEvent","(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
+        SP_CALL_OBJECTFUNC(const_cast<char*>("onScriptEvent"),const_cast<char*>("(OsO)"),SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
     }
 
     //TODO
