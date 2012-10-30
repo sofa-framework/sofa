@@ -136,7 +136,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         ++OUTSIZE;
     }
 
-    //if (OUTSIZE<SIZE)
+    if (OUTSIZE<SIZE && this->f_printLog.getValue())
     {
         // DUPLICATED CONTACTS FOUND
         sout << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." << sendl;

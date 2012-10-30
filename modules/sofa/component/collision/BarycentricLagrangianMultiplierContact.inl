@@ -79,9 +79,9 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         if (!found)
             contacts.push_back(o);
     }
-    if (contacts.size()<outputs.size())
+    if (contacts.size()<outputs.size() && this->f_printLog.getValue())
     {
-        //std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
+        sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;
     }
     if (ff==NULL)
     {
