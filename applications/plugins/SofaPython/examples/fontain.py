@@ -63,6 +63,7 @@ class Fontain(Sofa.PythonScriptController):
 		print 'Fontain.createGraph called from node '+node.name	
 		for i in range(1,100):
 			self.spawnParticle()
+		return 0
 	
 	def onScriptEvent(self,senderNode,eventName,data):
 		print 'onScriptEvent eventName='+eventName+' data='+str(data)+' sender='+senderNode.name

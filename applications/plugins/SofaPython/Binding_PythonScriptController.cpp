@@ -38,63 +38,62 @@ using namespace sofa::simulation;
 //#define LOG_UNIMPLEMENTED_METHODS   // prints a message each time a non-implemented (in the script) method is called
 
 
-extern "C" PyObject * PythonScriptController_onLoaded(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
         return 0;
     }
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_createGraph(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
         return 0;
     }
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_initGraph(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
         return 0;
     }
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
@@ -103,15 +102,15 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject *self
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
@@ -120,48 +119,48 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject *self, 
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_storeResetState(PyObject *self, PyObject * /*args*/)
+extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, PyObject * /*args*/)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_reset(PyObject *self, PyObject * /*args*/)
+extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /*args*/)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_cleanup(PyObject *self, PyObject * /*args*/)
+extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject * /*args*/)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     char* controlID;
     char* valueName;
     char* value;
@@ -172,15 +171,15 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject *self, PyObject
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     char k;
     if (!PyArg_ParseTuple(args, "c",&k))
     {
@@ -189,15 +188,15 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject *self, PyObje
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     char k;
     if (!PyArg_ParseTuple(args, "c",&k))
     {
@@ -206,15 +205,15 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject *self, PyObj
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int x,y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
@@ -224,15 +223,15 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject *self, P
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int x,y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
@@ -242,15 +241,15 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject *self,
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int x,y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
@@ -260,15 +259,15 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject *self, 
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     int x,y,delta;
     if (!PyArg_ParseTuple(args, "iii",&x,&y,&delta))
     {
@@ -277,15 +276,15 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject *self, PyObje
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     return Py_BuildValue("i",0);
 }
 
-extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject *self, PyObject * args)
+extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyObject * args)
 {
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     PyObject *pySenderNode;
     char* eventName;
     PyObject *pyData;
@@ -303,6 +302,7 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject *self, PyObj
     // TODO check pyData
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     std::cerr << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 

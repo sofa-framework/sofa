@@ -52,32 +52,31 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 // Generic accessor to Data fields (in python native type)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
-    PyObject *result = PyObject_GenericGetAttr(o,attr_name);
-    if (result) return result;
-
-    // attribue does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
     char *dataName = PyString_AsString(attr_name);
-    //printf("Base_GetAttr name=%s\n",name);
+//    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),dataName);
+
+    // attribue does not exist: see if a Data field has this name...
     BaseData * data = obj->findData(dataName);
     if (!data)
-        return 0;
+    {
+//        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),dataName);
+
+        return PyObject_GenericGetAttr(o,attr_name);;
+    }
     // we have our data... let's create the right Python type....
     return GetDataValuePython(data);
 }
 
 extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
-    int result = PyObject_GenericSetAttr(o,attr_name,v);
-    if (result!=-1) return result;
-
     // attribue does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
     char *dataName = PyString_AsString(attr_name);
     //printf("Base_GetAttr name=%s\n",name);
     BaseData * data = obj->findData(dataName);
     if (!data)
-        return -1;
+        return PyObject_GenericSetAttr(o,attr_name,v);
     // we have our data... let's create the right Python type....
     if (!SetDataValuePython(data,v))
         return -1;
