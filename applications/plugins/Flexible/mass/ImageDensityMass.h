@@ -16,6 +16,7 @@
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../deformationMapping/LinearJacobianBlock.inl"
 
+
 #include <ImageTypes.h>
 
 
@@ -33,16 +34,16 @@ using sofa::component::topology::PointData;
 
 /**
 * Compute mass matrices based on a density map
-* Masses are defined per free dofs
+* Masses are defined per free dofs (lumped by summing all line entries)
 * The interpolation weights are given by a BaseShapeFunction component present in the scene
 * @warning the interpolation is done by a LinearJacobianBlock hard-coded in this component
 * @todo find a way to describe the mass interpolation as a sofa graph with regular mappings
 */
-template <class DataTypes,class ShapeFunctionTypes>
+template <class DataTypes,class ShapeFunctionTypes,class MassType>
 class ImageDensityMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ImageDensityMass,DataTypes,ShapeFunctionTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE3(ImageDensityMass,DataTypes,ShapeFunctionTypes,MassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -84,7 +85,6 @@ public:
 
     /** @name Mass stuff */
     //@{
-    typedef defaulttype::Mat<DataTypes::deriv_total_size,DataTypes::deriv_total_size,Real>  MassType;
     typedef helper::vector<MassType> VecMass;
 
     /// store the mass matrices (size of elements if used)
@@ -99,7 +99,7 @@ protected:
         , f_masses( initData( &f_masses, "masses", "Vector of mass matrices") )
     {}
 
-    ~ImageDensityMass();
+    virtual ~ImageDensityMass();
 
 public:
 
@@ -142,9 +142,9 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes>* = NULL)
+    static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes, MassType>* = NULL)
     {
-        return DataTypes::Name()+std::string(",")+ShapeFunctionTypes::Name()/*+","+MassTypes::Name()*/;
+        return DataTypes::Name()+std::string(",")+ShapeFunctionTypes::Name()/*+","+MassType::Name()*/;
     }
 
 protected:
@@ -157,12 +157,14 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_IMAGEDENSITYMASS_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d>; // volume FEM (tetra, hexa)
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d>; // surface FEM (triangles, quads)
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Affine3dTypes,core::behavior::ShapeFunction3d,defaulttype::Affine3dMass>; // affine frames
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f>;
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f>;
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
+extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Affine3fTypes,core::behavior::ShapeFunction3f,defaulttype::Affine3fMass>;
 #endif
 #endif
 
