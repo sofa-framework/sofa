@@ -99,7 +99,7 @@ void UniformMass<DataTypes, MassType>::reinit()
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->getX()->size() *this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->getX()->size() * this->mass.getValue() );
     }
 }
 
