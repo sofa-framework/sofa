@@ -68,21 +68,26 @@ public:
 
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
-    enum {material_dimensions=ShapeFunctionTypes::material_dimensions};
-    static const unsigned int spatial_dimensions=3;
+	enum {material_dimensions=ShapeFunctionTypes::material_dimensions};
+	static const unsigned int spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
 
     /** @name types */
     //@{
-    typedef vector<unsigned int> VRef;
-    typedef vector<Real> VReal;
-    typedef Vec<spatial_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
-    typedef vector<Coord> VCoord;
-    typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
-    typedef vector<Gradient> VGradient;
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
-    typedef vector<Hessian> VHessian;
-    typedef Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
-    typedef vector<MaterialToSpatial> VMaterialToSpatial;
+	typedef typename ShapeFunctionTypes::VRef VRef;
+	typedef typename ShapeFunctionTypes::VReal VReal;
+	typedef typename ShapeFunctionTypes::Coord Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+	typedef typename ShapeFunctionTypes::VCoord VCoord;
+	typedef typename ShapeFunctionTypes::Gradient Gradient;                       ///< Gradient of a scalar value in material space
+	typedef typename ShapeFunctionTypes::VGradient VGradient;
+	typedef typename ShapeFunctionTypes::Hessian Hessian;    ///< Hessian (second derivative) of a scalar value in material space
+	typedef typename ShapeFunctionTypes::VHessian VHessian;
+	typedef typename ShapeFunctionTypes::MaterialToSpatial MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
+	typedef typename ShapeFunctionTypes::VMaterialToSpatial VMaterialToSpatial;
+
+	typedef typename ShapeFunctionTypes::VecVRef VecVRef;
+	typedef typename ShapeFunctionTypes::VecVReal VecVReal;
+	typedef typename ShapeFunctionTypes::VecVGradient VecVGradient;
+	typedef typename ShapeFunctionTypes::VecVHessian VecVHessian;
     //@}
 
     /** @name data */
@@ -106,7 +111,7 @@ public:
             if(!_state) { serr<<"state not found"<< sendl; return; }
             else
             {
-                helper::WriteAccessor<Data<vector<Coord> > > pos(this->f_position);
+				helper::WriteAccessor<Data<VCoord > > pos(this->f_position);
                 pos.resize(_state->getSize());
                 for(unsigned int i=0; i<pos.size(); ++i)
                 {
@@ -121,10 +126,10 @@ public:
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
     /// this function is typically used for collision and visual points
-    virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
+	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
 
     /// wrapper
-    void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, vector<VRef>& ref, vector<VReal>& w, vector<VGradient>& dw,vector<VHessian>& ddw)
+	void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
         unsigned int nb=childPosition.size();
         M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
@@ -179,7 +184,25 @@ protected:
 template <int material_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
+	static const unsigned int spatial_dimensions=3;
+
     typedef Real_ Real;
+	typedef vector<unsigned int> VRef;
+	typedef vector<Real> VReal;
+	typedef Vec<spatial_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+	typedef vector<Coord> VCoord;
+	typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
+	typedef vector<Gradient> VGradient;
+	typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
+	typedef vector<Hessian> VHessian;
+	typedef Mat<spatial_dimensions,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
+	typedef vector<MaterialToSpatial> VMaterialToSpatial;
+
+	typedef vector<VRef> VecVRef;
+	typedef vector<VReal> VecVReal;
+	typedef vector<VGradient> VecVGradient;
+	typedef vector<VHessian> VecVHessian;
+
     static const int material_dimensions=material_dimensions_ ;  ///< number of node dimensions (1 for a wire, 2 for a hull, 3 for a volumetric object)
     static const char* Name();
 };
