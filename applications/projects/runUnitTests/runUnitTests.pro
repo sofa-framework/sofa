@@ -19,18 +19,16 @@ macx {
 
 unix {
    LIBS += -ldl
-LIBS *= -lboost_unit_test_framework
-
+   LIBS *= -lboost_unit_test_framework
 }
 
 SOURCES = \
-    runner.cpp \
-    # runUnitTests.cpp \
-    # MatrixTest.cpp \
+    runner.cpp
 
-HEADERS = \
-    MatrixTest.inl
+
 
 #unix: QMAKE_LIBDIR += $$SOFA_GPU_CUDA_DIR
+
+
 
 load(sofa/post)
