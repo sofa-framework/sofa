@@ -43,6 +43,12 @@ Shepard shape function (=inverse distance weights) is defined as w_i(x)=1/d(x,x_
 http://en.wikipedia.org/wiki/Inverse_distance_weighting
   */
 
+template<typename TShapeFunctionTypes>
+struct ShepardShapeFunctionInternalData
+{
+};
+
+
 template <class ShapeFunctionTypes_>
 class ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
@@ -60,7 +66,12 @@ public:
     typedef typename Inherit::VRef VRef;
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
-    typedef typename Inherit::Hessian Hessian;
+	typedef typename Inherit::Hessian Hessian;
+	typedef typename Inherit::VecVRef VecVRef;
+	typedef typename Inherit::VecVReal VecVReal;
+	typedef typename Inherit::VecVGradient VecVGradient;
+	typedef typename Inherit::VecVHessian VecVHessian;
+	typedef ShepardShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
 
     Data<Real> power;
 
@@ -69,9 +80,14 @@ public:
         Inherit::init();
     }
 
+	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw, VecVHessian& ddw)
+	{
+		Inherit::computeShapeFunction(childPosition, M, ref, w, dw, ddw);
+	}
+
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
-        helper::ReadAccessor<Data<vector<Coord> > > parent(this->f_position);
+		helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
         Real pw=power.getValue();
 
