@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/TopologySubsetData.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <set>
 
@@ -103,7 +102,6 @@ public:
 protected :
 
     /// Matrix used in getJ
-//        linearsolver::CompressedRowSparseMatrix<SReal> jacobian;
     linearsolver::SparseMatrix<SReal> jacobian;
 
 };

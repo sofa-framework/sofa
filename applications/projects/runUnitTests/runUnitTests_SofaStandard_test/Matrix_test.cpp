@@ -23,8 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /** Sparse matrix test suite.
-  The same suite is instanciated using different parameters: entry types (float/double) and block size in CompressedRowSparse.
+  The same suite is instanciated using different parameters: entry types (float/double) and BlockMN size in CompressedRowSparse.
   */
+
 
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/unit_test_log.hpp>
@@ -38,7 +39,23 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <ctime>
+
+
 using std::cout;
+
+
+/// return a random Real in range [low,high]
+/// better run srand to initialize the seed typically srand( (unsigned)time(0) );
+/// @todo move it to a reusable helper
+template<class Real>
+Real rand_real( Real low, Real high )
+{
+    return low + (Real)rand()/((Real)RAND_MAX/(high-low));
+}
+
+
 
 /** Sparse matrix test suite.
 
@@ -65,8 +82,14 @@ struct TestSparseMatrices
     typedef sofa::component::linearsolver::SparseMatrix<Real> MapMatrix;
 
     // Blockwise Compressed Sparse Row format
-    typedef sofa::defaulttype::Mat<BROWS,BCOLS,Real> Block;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<Block> CRSMatrix;
+    typedef sofa::defaulttype::Mat<BROWS,BCOLS,Real> BlockMN;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMN> CRSMatrixMN;
+    typedef sofa::defaulttype::Mat<BCOLS,BROWS,Real> BlockNM;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNM> CRSMatrixNM;
+    typedef sofa::defaulttype::Mat<BROWS,BROWS,Real> BlockMM;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMM> CRSMatrixMM;
+    typedef sofa::defaulttype::Mat<BCOLS,BCOLS,Real> BlockNN;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNN> CRSMatrixNN;
 
     // Implementation based on Eigen
     typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BCOLS,Real>, sofa::defaulttype::Vec<BCOLS,Real> > InTypes;
@@ -75,21 +98,49 @@ struct TestSparseMatrices
     typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseMatrix;
 
 
+    // Regular Mat implementation
+    typedef sofa::defaulttype::Mat<NROWS,NCOLS,Real> MatMN;
+    typedef sofa::defaulttype::Mat<NCOLS,NROWS,Real> MatNM;
+    typedef sofa::defaulttype::Mat<NROWS,NROWS,Real> MatMM;
+    typedef sofa::defaulttype::Mat<NCOLS,NCOLS,Real> MatNN;
+    typedef sofa::defaulttype::Vec<NROWS,Real> VecM;
+    typedef sofa::defaulttype::Vec<NCOLS,Real> VecN;
+
+
     // The matrices used in the tests
-    CRSMatrix crs1,crs2;
+    CRSMatrixMN crs1,crs2;
     FullMatrix fullMat;
     MapMatrix mapMat;
     EigenBlockMatrix eiBlock1,eiBlock2,eiBlock3;
     EigenBaseMatrix eiBase;
+    // matrices for multiplication test
+    CRSMatrixNM crsMultiplier;
+    CRSMatrixMM crsMultiplication;
+    CRSMatrixNN crsTransposeMultiplication;
+    FullMatrix fullMultiplier;
+    FullMatrix fullMultiplication;
+    FullMatrix fullTransposeMultiplication;
+    MatMN mat;
+    MatNM matMultiplier;
+    MatMM matMultiplication;
+    MatNN matTransposeMultiplication;
+
 
     // The vectors used in the tests
     FullVector fullVec_ncols;
     FullVector fullVec_nrows_reference,fullVec_nrows_result;
+    VecM vecM;
+    VecN vecN;
 
 
     /// Create the context for the matrix tests.
     TestSparseMatrices()
     {
+        //std::cout<<"Matrix_test "<<NumRows<<" "<<NumCols<<" "<<BlockRows<<" "<<BlockCols<<std::endl;
+
+        // seed the random generator
+        srand( (unsigned)time(0) );
+
         // resize and fill the matrices
         crs1.resize(NROWS,NCOLS);
         crs2.resize(NROWS,NCOLS);
@@ -99,25 +150,30 @@ struct TestSparseMatrices
         eiBlock2.resize(NROWS,NCOLS);
         eiBlock3.resize(NROWS,NCOLS);
         eiBase.resize(NROWS,NCOLS);
+
         for( unsigned j=0; j<NCOLS; j++)
         {
             for( unsigned i=0; i<NROWS; i++)
             {
                 double valij = i*NCOLS+j;
                 crs1.set(i,j,valij);
-                Block* b = crs2.wbloc(i/BROWS,j/BCOLS,true);
-                assert(b && "a matrix block exists");
+                BlockMN* b = crs2.wbloc(i/BROWS,j/BCOLS,true);
+                assert(b && "a matrix BlockMN exists");
                 (*b)[i%BROWS][j%BCOLS] = valij;
                 fullMat.set(i,j,valij);
                 mapMat.set(i,j,valij);
                 eiBlock1.add(i,j,valij);
                 eiBase.add(i,j,valij);
-                Block& bb = eiBlock2.wBlock(i/BROWS,j/BCOLS);
+                BlockMN& bb = eiBlock2.wBlock(i/BROWS,j/BCOLS);
                 bb[i%BROWS][j%BCOLS] = valij;
+                mat(i,j) = valij;
             }
         }
         crs1.compress(); crs2.compress(); eiBlock1.compress(); eiBlock2.compress(); eiBase.compress();
         eiBlock3.copyFrom(crs1);
+
+
+
 
         // resize and fill the vectors
         fullVec_ncols.resize(NCOLS);
@@ -126,8 +182,42 @@ struct TestSparseMatrices
         for( unsigned i=0; i<NCOLS; i++)
         {
             fullVec_ncols[i] = i;
+            vecN[i] = i;
         }
         fullMat.mul(fullVec_nrows_reference,fullVec_ncols); //    cerr<<"MatrixTest: vref = " << vref << endl;
+
+        vecM = mat * vecN;
+
+
+
+
+
+
+        // matrix multiplication
+
+        fullMultiplier.resize(NCOLS,NROWS);
+        crsMultiplier.resize(NCOLS,NROWS);
+
+        for( unsigned j=0; j<NROWS; j++)
+        {
+            for( unsigned i=0; i<NCOLS; i++)
+            {
+                Real random = rand_real( -100000, 100000 );
+                crsMultiplier.set( i, j, random );
+                fullMultiplier.set( i, j, random );
+                matMultiplier(i,j) = random;
+            }
+        }
+        crsMultiplier.compress();
+
+        matMultiplication = mat * matMultiplier;
+        crs1.mul( crsMultiplication, crsMultiplier );
+        fullMat.mul( fullMultiplication, fullMultiplier );
+
+        matTransposeMultiplication = mat.multTranspose( mat );
+        crs1.mulTranspose( crsTransposeMultiplication, crs1 );
+        fullMat.mulT( fullTransposeMultiplication, fullMat );
+
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
@@ -142,6 +232,18 @@ struct TestSparseMatrices
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<int M, int N, typename Real, typename Matrix2>
+    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if(M!=m2.rowSize() || N!=m2.colSize()) return false;
+        for( unsigned i=0; i<M; i++ )
+            for( unsigned j=0; j<N; j++ )
+                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) return false;
+        return true;
+    }
+
+
+    /// return true if the vectors have same size and all their entries are equal within the given tolerance
     template< typename Vector1, typename Vector2>
     static bool vectorsAreEqual( const Vector1& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
     {
@@ -150,6 +252,20 @@ struct TestSparseMatrices
             if( fabs(m1.element(i)-m2.element(i))>tolerance  ) return false;
         return true;
     }
+
+
+    /// return true if the vectors have same size and all their entries are equal within the given tolerance
+    template< int N, typename Real, typename Vector2>
+    static bool vectorsAreEqual( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if( N!=m2.size() ) return false;
+        for( unsigned i=0; i<N; i++ )
+            if( fabs(m1[i]-m2.element(i))>tolerance  ) return false;
+        return true;
+    }
+
+
+
 
     /** Check that EigenMatrix update works as well as direct init. Return true if the test succeeds.*/
     bool checkEigenMatrixUpdate()
@@ -204,7 +320,7 @@ struct TestSparseMatrices
                 for( int j=bc-1; j>=0; j--) // set the blocs in reverse order
                 {
                     // create a block and give it some value
-                    Block b;
+                    BlockMN b;
                     for( unsigned k=0; k<BROWS && k<BCOLS; k++ )
                         b[k][k] = i+j;
 
@@ -235,14 +351,34 @@ struct TestSparseMatrices
 };
 
 
-typedef TestSparseMatrices<double,4,8,2,2> Ts1;
-BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_2_2, Ts1 );
+// trivial blocs
+typedef TestSparseMatrices<double,4,8,4,8> Ts4848;
+BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_4_8, Ts4848 );
 #include "Matrix_test.inl"
 BOOST_AUTO_TEST_SUITE_END();
 
 
-typedef TestSparseMatrices<float,4,8,2,3> Ts2;
-BOOST_FIXTURE_TEST_SUITE( SparseMatrix_float_4_8_2_3, Ts2 );
+// semi-trivial blocs
+typedef TestSparseMatrices<double,4,8,4,2> Ts4842;
+BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_4_2, Ts4842 );
+#include "Matrix_test.inl"
+BOOST_AUTO_TEST_SUITE_END();
+typedef TestSparseMatrices<double,4,8,1,8> Ts4818;
+BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_1_8, Ts4818 );
+#include "Matrix_test.inl"
+BOOST_AUTO_TEST_SUITE_END();
+
+
+// well-fitted blocs
+typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
+BOOST_FIXTURE_TEST_SUITE( SparseMatrix_double_4_8_2_2, Ts4822 );
+#include "Matrix_test.inl"
+BOOST_AUTO_TEST_SUITE_END();
+
+
+// not fitted blocs
+typedef TestSparseMatrices<float,4,8,2,3> Ts4823;
+BOOST_FIXTURE_TEST_SUITE( SparseMatrix_float_4_8_2_3, Ts4823 );
 #include "Matrix_test.inl"
 BOOST_AUTO_TEST_SUITE_END();
 
