@@ -295,43 +295,96 @@ public:
                 data[i*pitch+j] = (Real)0;
     }
 
+    /// matrix-vector product
+    /// @returns this * v
     template<class Real2>
-    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    FullVector<Real2> operator*( const FullVector<Real2>& v ) const
     {
-        FullVector<Real2> res(rowSize());
-        for (Index i=0; i<nRow; ++i)
-        {
-            Real r = 0;
-            for (Index j=0; j<nCol; ++j)
-                r += data[i*pitch+j] * v[j];
-            res[i] = r;
-        }
+        FullVector<Real2> res( rowSize() );
+        mul( res, v );
         return res;
     }
 
+    /// matrix-vector product
+    /// res = this * v
     template<class Real2>
-    void mul(FullVector<Real2>& res,const FullVector<Real2>& b) const
+    void mul( FullVector<Real2>& res,const FullVector<Real2>& b ) const
     {
-        for (Index i=0; i<nRow; ++i)
+        for( Index i=0 ; i<nRow ; ++i )
         {
             Real r = 0;
-            for (Index j=0; j<nCol; ++j)
+            for( Index j=0 ; j<nCol ; ++j )
                 r += data[i*pitch+j] * b[j];
             res[i] = r;
         }
     }
 
+    /// transposed matrix-vector product
+    /// res = this^T * v
     template<class Real2>
-    void mulT(FullVector<Real2>& res,const FullVector<Real2>& b) const
+    void mulT( FullVector<Real2>& res, const FullVector<Real2>& b ) const
     {
-        for (Index i=0; i<nCol; ++i)
+        for( Index i=0 ; i<nCol ; ++i )
         {
             Real r = 0;
-            for (Index j=0; j<nRow; ++j)
+            for( Index j=0 ; j<nRow ; ++j )
                 r += data[j*pitch+i] * b[j];
             res[i] = r;
         }
     }
+
+
+
+
+    /// matrix multiplication
+    /// @returns this * m
+    template<class Real2>
+    FullMatrix<Real2> operator*( const FullMatrix<Real2>& m ) const
+    {
+        FullMatrix<Real2> res( rowSize(), colSize() );
+        mul( res, m );
+        return res;
+    }
+
+    /// matrix multiplication
+    /// res = this * m
+    template<class Real2>
+    void mul( FullMatrix<Real2>& res, const FullMatrix<Real2>& m ) const
+    {
+        assert( m.rowSize() == (unsigned)nCol );
+
+        res.resize( nRow, m.colSize() );
+        for( Index i=0 ; i<nRow ; ++i )
+        {
+            for( unsigned j=0 ; j<m.colSize() ; ++j )
+            {
+                res.set( i, j, element(i,0)*m.element(0,j) );
+                for( Index k=1 ; k<nCol; ++k )
+                    res.add( i, j, element(i,k)*m.element(k,j) );
+            }
+        }
+    }
+
+    /// transposed matrix multiplication
+    /// res = this^T * m
+    template<class Real2>
+    void mulT( FullMatrix<Real2>& res, const FullMatrix<Real2>& m ) const
+    {
+        assert( m.rowSize() == (unsigned)nRow );
+
+        res.resize( nCol, m.colSize() );
+        for( Index i=0 ; i<nCol ; ++i )
+        {
+            for( unsigned j=0 ; j<m.colSize() ; ++j )
+            {
+                res.set( i, j, element(0,i)*m.element(0,j) );
+                for( Index k=1 ; k<nRow ; ++k )
+                    res.add( i, j, element(k,i)*m.element(k,j) );
+            }
+        }
+    }
+
+
 
 
     friend std::ostream& operator << (std::ostream& out, const FullMatrix<T>& v )

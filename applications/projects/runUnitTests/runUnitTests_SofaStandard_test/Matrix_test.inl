@@ -5,6 +5,7 @@
 
 // ==============================
 // Set/get value tests
+BOOST_AUTO_TEST_CASE( set_fullMat ) { BOOST_CHECK( matricesAreEqual(mat,fullMat)); }
 BOOST_AUTO_TEST_CASE( set_crs1 ) { BOOST_CHECK( matricesAreEqual(fullMat,crs1)); }
 BOOST_AUTO_TEST_CASE( set_crs2 ) { BOOST_CHECK( matricesAreEqual(fullMat,crs2)); }
 BOOST_AUTO_TEST_CASE( set_mapMat ) { BOOST_CHECK( matricesAreEqual(fullMat,mapMat)); }
@@ -15,9 +16,12 @@ BOOST_AUTO_TEST_CASE( eigenMatrix_update ) { BOOST_CHECK( checkEigenMatrixUpdate
 BOOST_AUTO_TEST_CASE( eigenMatrix_block_row_filling ) { BOOST_CHECK( checkEigenMatrixBlockRowFilling() ); }
 BOOST_AUTO_TEST_CASE( eigenMatrixBlockFromCompressedRowSparseMatrix ) { BOOST_CHECK( checkEigenMatrixBlockFromCompressedRowSparseMatrix() ); }
 
-
 // ==============================
 // Matrix-Vector product tests
+BOOST_AUTO_TEST_CASE( set_fullVec_nrows_reference )
+{
+    BOOST_CHECK(vectorsAreEqual(vecM,fullVec_nrows_reference));
+}
 BOOST_AUTO_TEST_CASE( fullMat_vector_product )
 {
 //    fullMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
@@ -45,3 +49,11 @@ BOOST_AUTO_TEST_CASE( crs1_vector_product )
     fullVec_nrows_result = crs1 * fullVec_ncols;
     BOOST_CHECK(vectorsAreEqual(fullVec_nrows_reference,fullVec_nrows_result));
 }
+
+
+// ==============================
+// Matrix product tests
+BOOST_AUTO_TEST_CASE( full_matrix_product ) { BOOST_CHECK( matricesAreEqual(matMultiplication,fullMultiplication));  }
+BOOST_AUTO_TEST_CASE( crs_matrix_product ) { BOOST_CHECK( matricesAreEqual(fullMultiplication,crsMultiplication)); }
+BOOST_AUTO_TEST_CASE( full_matrix_transposeproduct ) { BOOST_CHECK( matricesAreEqual(matTransposeMultiplication,fullTransposeMultiplication)); }
+BOOST_AUTO_TEST_CASE( crs_matrix_transposeproduct ) { BOOST_CHECK( matricesAreEqual(fullTransposeMultiplication,crsTransposeMultiplication)); }

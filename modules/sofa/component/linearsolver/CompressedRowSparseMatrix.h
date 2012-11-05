@@ -1317,76 +1317,90 @@ public:
     /** Compute res = this * m
       The block sizes must be compatible, i.e. this::NC==m::NR and res::NR==this::NR and res::NC==m::NC.
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
+      @warning matrices this and m must be compressed
       */
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
-    void mul(CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m) const
+    void mul( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        compress();
-        m.compress();
-        res.resize(this->nRow,m.nCol);  // clear and resize the result
+        assert( Bloc::nbCols == MB::nbLines );
+        assert( RB::nbLines == Bloc::nbLines );
+        assert( MB::nbCols == RB::nbCols );
 
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-null block row
+        // must already be compressed, since matrices are const they cannot be modified
+        //compress();
+        //m.compress();
+        res.resize( this->nRow,m.nCol );  // clear and resize the result
+
+        for( unsigned int xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
         {
-            unsigned mr=0; // block row index in m
+            unsigned mr = 0; // block row index in m
 
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+            Range rowRange( rowBegin[xi], rowBegin[xi+1] );
+            for( int xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
             {
                 Index row = rowIndex[xi];      // block row
                 Index col = colsIndex[xj];     // block column
                 const Bloc& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
-                while(m.rowIndex[mr]<col) mr++;
-                if(m.rowIndex[mr]>col) continue;  // no matching row, ignore this block
+                while( m.rowIndex[mr]<col ) mr++;
+                if( m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
 
                 // Accumulate  res[row] += b * m[col]
-                Range mrowRange(m.rowBegin[mr], m.rowBegin[mr+1]);
-                for (Index mj = mrowRange.begin();  mj< rowRange.end(); ++mj) // for each non-null block in  m[col]
+                Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
+                for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
                     *res.wbloc(row,mcol,true) += b * m.colsValue[mj];  // find the matching bloc in res, and accumulate the block product
                 }
             }
         }
+        //res.compress(); // should not be necessary
     }
+
 
     /** Compute res = this.transpose * m
       The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
+      @warning matrices this and m must be compressed
       */
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
-    void mulTranspose(CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m) const
+    void mulTranspose( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        compress();
-        m.compress();
-        res.resize(this->nCol,m.nCol);  // clear and resize the result
+        assert( Bloc::nbLines == MB::nbLines );
+        assert( RB::nbLines == Bloc::nbCols );
+        assert( MB::nbCols == RB::nbCols );
 
-        unsigned mr=0; // block row index in m
+        // must already be compressed, since matrices are const they cannot be modified
+        //compress();
+        //m.compress();
+        res.resize( this->nCol,m.nCol );  // clear and resize the result
 
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-null transpose block column
+        for( unsigned int xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
         {
-            Index mrow = rowIndex[xi];      // transpose column
+            unsigned mr = 0; // block row index in m
 
-            // find the non-null row in m, if any
-            while(m.rowIndex[mr]<mrow) mr++;
-            if(m.rowIndex[mr]>mrow) continue;  // no matching row, ignore this block
-
-            // Accumulate this.transpose.column * m.row,  i.e.:  this[row].transpose * m[row]
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]); // iterate on a column of this.transpose
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block of the column
+            Range rowRange( rowBegin[xi], rowBegin[xi+1] );
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
             {
+                Index col = rowIndex[xi];      // block col (transposed col = row)
+                Index row = colsIndex[xj];     // block row (transposed row = col)
                 const Bloc& b = colsValue[xj]; // block value
 
-                // Accumulate  res[row] += b * m[col]
-                Range mrowRange(m.rowBegin[mr], m.rowBegin[mr+1]);
-                for (Index mj = mrowRange.begin();  mj< rowRange.end(); ++mj) // for each non-null block in  m[col]
+                // find the non-null row in m, if any
+                while( m.rowIndex[mr]<col ) mr++;
+                if( m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+
+                // Accumulate  res[row] += b^T * m[col]
+                Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
+                for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
-                    *res.wbloc(mrow,mcol,true) += b.multTranspose(m.colsValue[mj]);  // accumulate the block product
+                    *res.wbloc(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching bloc in res, and accumulate the block product
                 }
             }
         }
+        //res.compress(); // should not be necessary
     }
 
     /** Helper class to represent a column of the block matrix.
