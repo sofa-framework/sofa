@@ -44,6 +44,7 @@ set QMAKESPEC=win32-msvc2005
 @echo on
 @echo Making Visual project 8
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+xcopy .\bin\dll_msvc2005_x86\*.* .\bin\*.* /y /q
 goto common
 
 :vc9
@@ -52,6 +53,7 @@ set QMAKESPEC=win32-msvc2008
 @echo Making Visual project 9
 call "%VS90COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+xcopy .\bin\dll_msvc2008_x86\*.* .\bin\*.* /y /q
 goto common
 
 :vc10
@@ -60,6 +62,7 @@ set QMAKESPEC=win32-msvc2010
 @echo Making Visual project 10
 call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+xcopy .\bin\dll_msvc2010_x86\*.* .\bin\*.* /y /q
 goto common
 
 :vc9_x64
@@ -69,6 +72,7 @@ set TARGET_MACHINE=x64
 @echo Making Visual project 9 x64
 call "%VS90COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+xcopy .\bin\dll_msvc2008_x64\*.* .\bin\*.* /y /q
 goto common
 
 :vc10_x64
@@ -78,6 +82,7 @@ set TARGET_MACHINE=x64
 @echo Making Visual project 10 x64
 call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+xcopy .\bin\dll_msvc2010_x64\*.* .\bin\*.* /y /q
 goto common
 
 :common
