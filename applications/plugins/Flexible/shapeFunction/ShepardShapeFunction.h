@@ -85,7 +85,7 @@ public:
 		Inherit::computeShapeFunction(childPosition, M, ref, w, dw, ddw);
 	}
 
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
 		helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
