@@ -413,20 +413,19 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
+		//if(isDisplayed() || propertyWidgetFlagOn)
+		{
+			processTableModifications(d);
+			fillTable(d);
+			rows = dataRows;
+		}
+
         if(!propertyWidgetFlagOn)
             wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
 
-        if(isDisplayed() || propertyWidgetFlagOn)
-        {
-            processTableModifications(d);
-            fillTable(d);
-            rows = dataRows;
-        }
-
-        //TODO: find how to hide the widget
         wTableView->setDisplayed(isDisplayed());
 
         if (readOnly)
