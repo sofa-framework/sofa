@@ -54,7 +54,10 @@ PyObject *GetDataValuePython(BaseData* data)
     // depending on the data type, we return the good python type (int, float, sting, array, ...)
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    if (typeinfo->size()==1)
+    int rowWidth = typeinfo->size();
+    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+
+    if (typeinfo->size(data->getValueVoidPtr())==1)
     {
         // this type is NOT a vector; return directly the proper native type
         if (typeinfo->Text())
@@ -76,28 +79,34 @@ PyObject *GetDataValuePython(BaseData* data)
     else
     {
         // this is a vector; return a python list of the corrsponding type (ints, scalars or strings)
-        PyObject *list = PyList_New(typeinfo->size());
-        for (unsigned int i=0; i<typeinfo->size(); i++)
+
+        PyObject *rows = PyList_New(nbRows);
+        for (unsigned int i=0; i<nbRows; i++)
         {
-            // build each value of the list
-            if (typeinfo->Text())
+            PyObject *row = PyList_New(rowWidth);
+            for (unsigned int j=0; j<rowWidth; j++)
             {
-                // it's some text
-                PyList_SetItem(list,i,PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),i).c_str()));
+                // build each value of the list
+                if (typeinfo->Text())
+                {
+                    // it's some text
+                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),i*rowWidth+j).c_str()));
+                }
+                if (typeinfo->Scalar())
+                {
+                    // it's a SReal
+                    PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),i*rowWidth+j)));
+                }
+                if (typeinfo->Integer())
+                {
+                    // it's some Integer...
+                    PyList_SetItem(row,j,PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),i*rowWidth+j)));
+                }
             }
-            if (typeinfo->Scalar())
-            {
-                // it's a SReal
-                PyList_SetItem(list,i,PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),i)));
-            }
-            if (typeinfo->Integer())
-            {
-                // it's some Integer...
-                PyList_SetItem(list,i,PyInt_FromLong(typeinfo->getIntegerValue(data->getValueVoidPtr(),i)));
-            }
+            PyList_SetItem(rows,i,row);
         }
 
-        return list;
+        return rows;
     }
     // default (should not happen)...
     printf("<SofaPython> BaseData_getAttr_value WARNING: unsupported native type=%s ; returning string value\n",data->getValueTypeString().c_str());
@@ -112,11 +121,13 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     bool isString = PyString_Check(args);
     bool isList = PyList_Check(args);
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    int rowWidth = typeinfo->size();
+    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
     if (isInt)
     {
         // it's an int
 
-        if (typeinfo->size()<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
+        if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
         {
             // type mismatch or too long list
             PyErr_BadArgument();
@@ -132,7 +143,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     else if (isScalar)
     {
         // it's a scalar
-        if (typeinfo->size()<1 || !typeinfo->Scalar())
+        if (rowWidth*nbRows<1 || !typeinfo->Scalar())
         {
             // type mismatch or too long list
             PyErr_BadArgument();
@@ -159,77 +170,181 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             return true;
         }
 
-        // right number if list members ?
-        int size = typeinfo->size();
-        if (PyList_Size(args)!=typeinfo->size())
-        {
-            // only a warning; do not raise an exception...
-            printf("<SofaPython> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
-            if (PyList_Size(args)<typeinfo->size())
-                size = PyList_Size(args);
-        }
+        // is-it a double-dimension list ?
+        PyObject *firstRow = PyList_GetItem(args,0);
 
-        // okay, let's set our list...
-        for (int i=0; i<size; i++)
+        if (PyList_Check(PyList_GetItem(args,0)))
         {
-            PyObject *listElt = PyList_GetItem(args,i);
+            // two-dimension array!
 
-            if (PyInt_Check(listElt))
+            // right number if rows ?
+            if (PyList_Size(args)!=nbRows)
             {
-                // it's an int
-                if (typeinfo->Integer())
+                // only a warning; do not raise an exception...
+                printf("<SofaPython> Warning: list size mismatch for data \"%s\" (incorrect rows count)\n",data->getName().c_str());
+                if (PyList_Size(args)<nbRows)
+                    nbRows = PyList_Size(args);
+            }
+
+            // let's fill our rows!
+            for (int i=0; i<nbRows; i++)
+            {
+                PyObject *row = PyList_GetItem(args,i);
+
+                // right number if list members ?
+                int size = rowWidth;
+                if (PyList_Size(row)!=size)
                 {
-                    // integer value
-                    long value = PyInt_AsLong(listElt);
-                    typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i,value);
+                    // only a warning; do not raise an exception...
+                    printf("<SofaPython> Warning: row %i size mismatch for data \"%s\"\n",i,data->getName().c_str());
+                    if (PyList_Size(row)<size)
+                        size = PyList_Size(row);
                 }
-                else if (typeinfo->Scalar())
+
+                // okay, let's set our list...
+                for (int j=0; j<size; j++)
                 {
-                    // cast to scalar value
-                    SReal value = (SReal)PyInt_AsLong(listElt);
+
+                    PyObject *listElt = PyList_GetItem(row,i);
+
+                    if (PyInt_Check(listElt))
+                    {
+                        // it's an int
+                        if (typeinfo->Integer())
+                        {
+                            // integer value
+                            long value = PyInt_AsLong(listElt);
+                            typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                        }
+                        else if (typeinfo->Scalar())
+                        {
+                            // cast to scalar value
+                            SReal value = (SReal)PyInt_AsLong(listElt);
+                            typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                        }
+                        else
+                        {
+                            // type mismatch
+                            PyErr_BadArgument();
+                            return false;
+                        }
+                    }
+                    else if (PyFloat_Check(listElt))
+                    {
+                        // it's a scalar
+                        if (!typeinfo->Scalar())
+                        {
+                            // type mismatch
+                            PyErr_BadArgument();
+                            return false;
+                        }
+                        SReal value = PyFloat_AsDouble(listElt);
+                        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i*rowWidth+j,value);
+                    }
+                    else if (PyString_Check(listElt))
+                    {
+                        // it's a string
+                        if (!typeinfo->Text())
+                        {
+                            // type mismatch
+                            PyErr_BadArgument();
+                            return false;
+                        }
+                        char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
+                        typeinfo->setTextValue((void*)data->getValueVoidPtr(),i*rowWidth+j,str);
+                    }
+                    else
+                    {
+                        printf("Lists not yet supported...\n");
+                        PyErr_BadArgument();
+                        return false;
+
+                    }
+                }
+
+                return true;
+
+
+            }
+
+        }
+        else
+        {
+            // it is a one-dimension only array
+            // right number if list members ?
+            int size = rowWidth*nbRows;
+            if (PyList_Size(args)!=size)
+            {
+                // only a warning; do not raise an exception...
+                printf("<SofaPython> Warning: list size mismatch for data \"%s\"\n",data->getName().c_str());
+                if (PyList_Size(args)<size)
+                    size = PyList_Size(args);
+            }
+
+            // okay, let's set our list...
+            for (int i=0; i<size; i++)
+            {
+
+                PyObject *listElt = PyList_GetItem(args,i);
+
+                if (PyInt_Check(listElt))
+                {
+                    // it's an int
+                    if (typeinfo->Integer())
+                    {
+                        // integer value
+                        long value = PyInt_AsLong(listElt);
+                        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(),i,value);
+                    }
+                    else if (typeinfo->Scalar())
+                    {
+                        // cast to scalar value
+                        SReal value = (SReal)PyInt_AsLong(listElt);
+                        typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                    }
+                    else
+                    {
+                        // type mismatch
+                        PyErr_BadArgument();
+                        return false;
+                    }
+                }
+                else if (PyFloat_Check(listElt))
+                {
+                    // it's a scalar
+                    if (!typeinfo->Scalar())
+                    {
+                        // type mismatch
+                        PyErr_BadArgument();
+                        return false;
+                    }
+                    SReal value = PyFloat_AsDouble(listElt);
                     typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
+                }
+                else if (PyString_Check(listElt))
+                {
+                    // it's a string
+                    if (!typeinfo->Text())
+                    {
+                        // type mismatch
+                        PyErr_BadArgument();
+                        return false;
+                    }
+                    char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
+                    typeinfo->setTextValue((void*)data->getValueVoidPtr(),i,str);
                 }
                 else
                 {
-                    // type mismatch
+                    printf("Lists not yet supported...\n");
                     PyErr_BadArgument();
                     return false;
-                }
-            }
-            else if (PyFloat_Check(listElt))
-            {
-                // it's a scalar
-                if (!typeinfo->Scalar())
-                {
-                    // type mismatch
-                    PyErr_BadArgument();
-                    return false;
-                }
-                SReal value = PyFloat_AsDouble(listElt);
-                typeinfo->setScalarValue((void*)data->getValueVoidPtr(),i,value);
-            }
-            else if (PyString_Check(listElt))
-            {
-                // it's a string
-                if (!typeinfo->Text())
-                {
-                    // type mismatch
-                    PyErr_BadArgument();
-                    return false;
-                }
-                char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
-                typeinfo->setTextValue((void*)data->getValueVoidPtr(),i,str);
-            }
-            else
-            {
-                printf("Lists not yet supported...\n");
-                PyErr_BadArgument();
-                return false;
 
+                }
             }
+
+            return true;
         }
 
-        return true;
     }
 
     return false;
