@@ -129,7 +129,7 @@ public:
 	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)=0;
 
     /// wrapper
-	void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
+	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
         unsigned int nb=childPosition.size();
         M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
