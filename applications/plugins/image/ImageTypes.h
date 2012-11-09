@@ -33,7 +33,7 @@
 #define cimg_use_opencv
 #endif
 
-#include <SOFACImg.h>
+#include <CImg/SOFACImg.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>

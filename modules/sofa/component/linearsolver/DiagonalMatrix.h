@@ -218,7 +218,7 @@ public:
     }
 
     template<class Dest>
-    void doCompute(Dest* dest) const
+    void addTo(Dest* dest) const
     {
         int ny = rowSize();
         for (int y=0; y<ny; ++y)
@@ -228,15 +228,15 @@ public:
 protected:
 
     template<class M>
-    void compute(const M& m, bool add = false)
+    void equal(const M& m, bool add = false)
     {
         if (m.hasRef(this))
         {
             DiagonalMatrix<T> tmp;
             tmp.resize(m.rowSize(), m.colSize());
-            m.doCompute(&tmp);
+            m.addTo(&tmp);
             if (add)
-                tmp.doCompute(this);
+                tmp.addTo(this);
             else
                 swap(tmp);
         }
@@ -244,9 +244,18 @@ protected:
         {
             if (!add)
                 resize(m.rowSize(), m.colSize());
-            m.doCompute(this);
+            m.addTo(this);
         }
     }
+
+    /// this += m
+    template<class M>
+    inline void addEqual( const M& m )
+    {
+        equal( m, true );
+    }
+
+
 public:
 
     template<class Real2>
@@ -254,37 +263,37 @@ public:
     {
         if (&m == this) return;
         resize(m.rowSize(), m.colSize());
-        m.doCompute(this);
+        m.addTo(this);
     }
 
     template<class Real2>
     void operator+=(const DiagonalMatrix<Real2>& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class Real2>
     void operator-=(const DiagonalMatrix<Real2>& m)
     {
-        compute(MatrixExpr< MatrixNegative< DiagonalMatrix<Real2> > >(MatrixNegative< DiagonalMatrix<Real2> >(m)), true);
+        addEqual(MatrixExpr< MatrixNegative< DiagonalMatrix<Real2> > >(MatrixNegative< DiagonalMatrix<Real2> >(m)));
     }
 
     template<class Expr2>
     void operator=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, false);
+        equal(m, false);
     }
 
     template<class Expr2>
     void operator+=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        compute(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)), true);
+        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
     }
 
     MatrixExpr< MatrixTranspose< DiagonalMatrix<T> > > t() const
@@ -579,7 +588,7 @@ public:
     {
         MyDest<Dest> myd(m1,d);
         std::cout << "EXPR using diagonal pre-product: " << m1.expr() << " * " << m2.expr() << std::endl;
-        m2.doCompute(&myd);
+        m2.addTo(&myd);
     }
 };
 
@@ -605,7 +614,7 @@ public:
     {
         MyDest<Dest> myd(m2,d);
         std::cout << "EXPR using diagonal post-product: " << m1.expr() << " * " << m2.expr() << std::endl;
-        m1.doCompute(&myd);
+        m1.addTo(&myd);
     }
 };
 

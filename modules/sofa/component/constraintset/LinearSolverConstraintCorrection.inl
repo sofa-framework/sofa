@@ -413,9 +413,9 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     F.resize(numDOFReals);
     const linearsolver::FullVector<Real>* fcast = dynamic_cast< const linearsolver::FullVector<Real>* >(f);
     if (fcast)
-        J.mulTranspose(F, *fcast); // fast
+        J.addMulTranspose(F, *fcast); // fast
     else
-        J.mulTranspose(F, f); // slow but generic
+        J.addMulTranspose(F, f); // slow but generic
     for (unsigned int i=0; i< numDOFs; i++)
         for (unsigned int r=0; r<N; ++r)
             force[i][r] = F[i*N+r];

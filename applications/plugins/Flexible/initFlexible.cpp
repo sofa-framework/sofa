@@ -86,6 +86,7 @@ SOFA_LINK_CLASS(TopologyGaussPointSampler)
 #ifdef SOFA_HAVE_IMAGE
 SOFA_LINK_CLASS(VoronoiShapeFunction)
 SOFA_LINK_CLASS(ImageGaussPointSampler)
+SOFA_LINK_CLASS(ImageDensityMass)
 #endif
 
 SOFA_LINK_CLASS(ShepardShapeFunction)
@@ -105,7 +106,6 @@ SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
 SOFA_LINK_CLASS(DistanceMapping)
 SOFA_LINK_CLASS(ExtensionMapping)
-SOFA_LINK_CLASS(ImageDensityMass)
 SOFA_LINK_CLASS(AffineUniformMass)
 
 

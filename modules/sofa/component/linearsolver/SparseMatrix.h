@@ -263,7 +263,7 @@ public:
     }
 
     template<class Real2>
-    void mulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
+    void addMulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
         res.resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -288,7 +288,7 @@ public:
     }
 
     template<class Real2>
-    void mulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    void addMulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
     {
         res.resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -313,7 +313,7 @@ public:
     }
 
     template<class Real2>
-    void mulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    void addMulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
     {
         res->resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -336,7 +336,7 @@ public:
         }
     }
 
-    void mulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    void addMulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
     {
         res->resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -475,7 +475,7 @@ public:
     }
 
     template<class Dest>
-    void doCompute(Dest* dest) const
+    void addTo(Dest* dest) const
     {
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
         {
@@ -492,15 +492,15 @@ public:
 protected:
 
     template<class M>
-    void compute(const M& m, bool add = false)
+    void equal(const M& m, bool add = false)
     {
         if (m.hasRef(this))
         {
             SparseMatrix<T> tmp;
             tmp.resize(m.rowSize(), m.colSize());
-            m.doCompute(&tmp);
+            m.addTo(&tmp);
             if (add)
-                tmp.doCompute(this);
+                tmp.addTo(this);
             else
                 swap(tmp);
         }
@@ -508,9 +508,17 @@ protected:
         {
             if (!add)
                 resize(m.rowSize(), m.colSize());
-            m.doCompute(this);
+            m.addTo(this);
         }
     }
+
+    /// this += m
+    template<class M>
+    inline void addEqual( const M& m )
+    {
+        equal( m, true );
+    }
+
 public:
 
     template<class Real2>
@@ -518,37 +526,37 @@ public:
     {
         if (&m == this) return;
         resize(m.rowSize(), m.colSize());
-        m.doCompute(this);
+        m.addTo(this);
     }
 
     template<class Real2>
     void operator+=(const SparseMatrix<Real2>& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class Real2>
     void operator-=(const SparseMatrix<Real2>& m)
     {
-        compute(MatrixExpr< MatrixNegative< SparseMatrix<Real2> > >(MatrixNegative< SparseMatrix<Real2> >(m)), true);
+        equal(MatrixExpr< MatrixNegative< SparseMatrix<Real2> > >(MatrixNegative< SparseMatrix<Real2> >(m)), true);
     }
 
     template<class Expr2>
     void operator=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, false);
+        equal(m, false);
     }
 
     template<class Expr2>
     void operator+=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        compute(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)), true);
+        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
     }
 
     friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )

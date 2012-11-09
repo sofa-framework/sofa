@@ -37,7 +37,6 @@ SOURCES = initFlexible.cpp\
     #material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
     #forceField/FlexibleTetrahedronFEMForceField.cpp \
-    mass/ImageDensityMass.cpp \
 
 
 
@@ -103,8 +102,6 @@ HEADERS = initFlexible.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
     #forceField/FlexibleTetrahedronFEMForceField.h \
-    mass/ImageDensityMass.h \
-    mass/ImageDensityMass.inl \
 
 
 
@@ -115,19 +112,22 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
             LIBS += -lml  -lcvaux -lhighgui -lcv -lcxcore
             }
 
-    INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/CImg \
-                   $$SOFA_INSTALL_INC_DIR/applications/plugins/image
+    INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs \
+                   $$SOFA_INSTALL_INC_DIR/applications/plugins
 
     HEADERS +=  quadrature/ImageGaussPointSampler.h \
                 shapeFunction/BaseImageShapeFunction.h \
                 shapeFunction/VoronoiShapeFunction.h \
                 shapeFunction/DiffusionShapeFunction.h \
                 deformationMapping/ImageDeformation.h \
+                mass/ImageDensityMass.h \
+                mass/ImageDensityMass.inl \
 
     SOURCES += quadrature/ImageGaussPointSampler.cpp \
                shapeFunction/VoronoiShapeFunction.cpp \
                shapeFunction/DiffusionShapeFunction.cpp \
                deformationMapping/ImageDeformation.cpp \
+               mass/ImageDensityMass.cpp \
     }
 
 README_FILE = Flexible.txt
