@@ -395,7 +395,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID 
     double d=normalOfPlane*pointOnPlane;
     double t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
 
-    if((t<1)&&(t>0))
+    if((t<1)&&(t>=0))
     {
         intersection=p1+(p2-p1)*t;
         return true;
@@ -420,7 +420,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (Edg
     double d=normalOfPlane*pointOnPlane;
     double t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
 
-    if((t<1)&&(t>0))
+    if((t<1)&&(t>=0))
     {
         intersection=p1+(p2-p1)*t;
         return true;
