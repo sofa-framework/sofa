@@ -29,8 +29,8 @@
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../types/PolynomialBasis.h"
 
-#include "ImageTypes.h"
-#include "ImageAlgorithms.h"
+#include <image/ImageTypes.h>
+#include <image/ImageAlgorithms.h>
 
 #include <sofa/helper/OptionsGroup.h>
 #include <algorithm>

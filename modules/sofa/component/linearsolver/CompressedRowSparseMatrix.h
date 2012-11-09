@@ -1234,88 +1234,121 @@ public:
     /// @}
 
 protected:
-    template<class Real2>
-    static Real vget(const defaulttype::BaseVector& vec, int i) { return vec.element(i); }
+
+
+    /// @name setter/getter & product methods on template vector types
+    /// @{
+
+    template<class Vec> static Real vget(const Vec& vec, int i, int j, int k) { return vget( vec, i*j+k ); }
+    template<int N> static Real vget(const helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k) { return vec[i][k]; }
+
+                          static Real  vget(const defaulttype::BaseVector& vec, int i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, int i) { return vec[i]; }
-    static void vset(defaulttype::BaseVector& vec, int i, Real v) { vec.set(i, v); }
+
+
+    template<class Vec> static void vset(Vec& vec, int i, int j, int k, Real v) { vset( vec, i*j+k, v ); }
+    template<int N> static void vset(helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k, Real v) { vec[i][k] = v; }
+
+                          static void vset(defaulttype::BaseVector& vec, int i, Real v) { vec.set(i, v); }
     template<class Real2> static void vset(FullVector<Real2>& vec, int i, Real2 v) { vec[i] = v; }
-    static void vadd(defaulttype::BaseVector& vec, int i, Real v) { vec.add(i, v); }
+
+
+    template<class Vec> static void vadd(Vec& vec, int i, int j, int k, Real v) { vadd( vec, i*j+k, v ); }
+    template<int N> static void vadd(helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k, Real v) { vec[i][k] += v; }
+
+                          static void vadd(defaulttype::BaseVector& vec, int i, Real v) { vec.add(i, v); }
     template<class Real2> static void vadd(FullVector<Real2>& vec, int i, Real2 v) { vec[i] += v; }
+
+
+
+      /** Product of the matrix with a templated vector */
+      template<class Real2, class V1, class V2>
+      void tmul(V1& res, const V2& vec) const
+      {
+          assert( vec.size()%bColSize() == 0 ); // vec.size() must be a multiple of block size.
+
+          ((Matrix*)this)->compress();
+          res.resize(rowSize());
+          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          {
+              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+              // multiply the non-null blocks with the corresponding chunks of the large vector
+              Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              {
+                  // transfer a chunk of large vector to a local block-sized vector
+                  defaulttype::Vec<NC,Real2> v;
+                  //Index jN = colsIndex[xj] * NC;    // scalar column index
+                  for (int bj = 0; bj < NC; ++bj)
+                      v[bj] = vget(vec,colsIndex[xj],NC,bj);
+
+                  // multiply the block with the local vector
+                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  for (int bi = 0; bi < NL; ++bi)
+                      for (int bj = 0; bj < NC; ++bj)
+                          r[bi] += traits::v(b, bi, bj) * v[bj];
+              }
+
+              // transfer the local result  to the large result vector
+              //Index iN = rowIndex[xi] * NL;                      // scalar row index
+              for (int bi = 0; bi < NL; ++bi)
+                  vset(res, rowIndex[xi], NL, bi, r[bi]);
+          }
+      }
+
+      /** Product of the transpose with a templated vector and add it to res   res += this^T * vec */
+      template<class Real2, class V1, class V2>
+      void taddMulTranspose(V1& res, const V2& vec) const
+      {
+          assert( vec.size()%bRowSize() == 0 ); // vec.size() must be a multiple of block size.
+
+          ((Matrix*)this)->compress();
+          res.resize(colSize());
+          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
+          {
+              // copy the corresponding chunk of the input to a local vector
+              defaulttype::Vec<NL,Real2> v;
+              //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
+              for (int bi = 0; bi < NL; ++bi)
+                  v[bi] = vget(vec, rowIndex[xi], NL, bi);
+
+              // accumulate the product of the column with the local vector
+              Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
+              {
+                  const Bloc& b = colsValue[xj]; // non-empty block
+
+                  defaulttype::Vec<NC,Real2> r;  // local vector to store the product
+                  //Index jN = colsIndex[xj] * NC;
+
+                  // columnwise bloc-vector product
+                  for (int bj = 0; bj < NC; ++bj)
+                      r[bj] = traits::v(b, 0, bj) * v[0];
+                  for (int bi = 1; bi < NL; ++bi)
+                      for (int bj = 0; bj < NC; ++bj)
+                          r[bj] += traits::v(b, bi, bj) * v[bi];
+
+                  // accumulate the product to the result
+                  for (int bj = 0; bj < NC; ++bj)
+                      vadd(res, colsIndex[xj], NC, bj, r[bj]);
+              }
+          }
+      }
+
+
+/// @}
+
+
 public:
 
-    /** Product of the matrix with a vector */
-    template<class Real2, class V1, class V2>
-    void tmul(V1& res, const V2& vec) const
-    {
-        ((Matrix*)this)->compress();
-        res.resize(rowSize());
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
-        {
-            defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
-            // multiply the non-null blocks with the corresponding chunks of the large vector
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                // transfer a chunk of large vector to a local block-sized vector
-                defaulttype::Vec<NC,Real2> v;
-                Index jN = colsIndex[xj] * NC;    // scalar column index
-                for (int bj = 0; bj < NC; ++bj)
-                    v[bj] = vget(vec,jN + bj);
+      /// @name Matrix operators
+      /// @{
 
-                // multiply the block with the local vector
-                const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (int bi = 0; bi < NL; ++bi)
-                    for (int bj = 0; bj < NC; ++bj)
-                        r[bi] += traits::v(b, bi, bj) * v[bj];
-            }
-
-            // transfer the local result  to the large result vector
-            Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (int bi = 0; bi < NL; ++bi)
-                vset(res, iN + bi, r[bi]);
-        }
-    }
-
-    /** Product of the transpose with a vector */
-    template<class Real2, class V1, class V2>
-    void tmulTranspose(V1& res, const V2& vec) const
-    {
-        ((Matrix*)this)->compress();
-        res.resize(colSize());
-        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
-        {
-            // copy the corresponding chunk of the input to a local vector
-            defaulttype::Vec<NL,Real2> v;
-            Index iN = rowIndex[xi] * NL;    // index of the row in the vector
-            for (int bi = 0; bi < NL; ++bi)
-                v[bi] = vget(vec, iN + bi);
-
-            // accumulate the product of the column with the local vector
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
-            {
-                const Bloc& b = colsValue[xj]; // non-empty block
-
-                defaulttype::Vec<NC,Real2> r;  // local vector to store the product
-                Index jN = colsIndex[xj] * NC;
-
-                // columnwise bloc-vector product
-                for (int bj = 0; bj < NC; ++bj)
-                    r[bj] = traits::v(b, 0, bj) * v[0];
-                for (int bi = 1; bi < NL; ++bi)
-                    for (int bj = 0; bj < NC; ++bj)
-                        r[bj] += traits::v(b, bi, bj) * v[bi];
-
-                // accumulate the product to the result
-                for (int bj = 0; bj < NC; ++bj)
-                    vadd(res, jN + bj, r[bj]);
-            }
-        }
-    }
 
     /** Compute res = this * m
-      The block sizes must be compatible, i.e. this::NC==m::NR and res::NR==this::NR and res::NC==m::NC.
+      @warning The block sizes must be compatible, i.e. this::NC==m::NR and res::NR==this::NR and res::NC==m::NC.
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
       @warning matrices this and m must be compressed
       */
@@ -1335,10 +1368,11 @@ public:
         {
             unsigned mr = 0; // block row index in m
 
+            Index row = rowIndex[xi];      // block row
+
             Range rowRange( rowBegin[xi], rowBegin[xi+1] );
             for( int xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
             {
-                Index row = rowIndex[xi];      // block row
                 Index col = colsIndex[xj];     // block column
                 const Bloc& b = colsValue[xj]; // block value
 
@@ -1360,7 +1394,7 @@ public:
 
 
     /** Compute res = this.transpose * m
-      The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
+      @warning The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
       @warning matrices this and m must be compressed
       */
@@ -1380,10 +1414,11 @@ public:
         {
             unsigned mr = 0; // block row index in m
 
+            Index col = rowIndex[xi];      // block col (transposed col = row)
+
             Range rowRange( rowBegin[xi], rowBegin[xi+1] );
             for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
             {
-                Index col = rowIndex[xi];      // block col (transposed col = row)
                 Index row = colsIndex[xj];     // block row (transposed row = col)
                 const Bloc& b = colsValue[xj]; // block value
 
@@ -1403,71 +1438,136 @@ public:
         //res.compress(); // should not be necessary
     }
 
+
+
+    /** @returns this + m
+      @warning The block must be the same (same type and same size)
+      @warning The matrices must have the same mathematical size
+      @warning matrices this and m must be compressed
+      */
+    CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> operator+( const CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex>& m ) const
+    {
+        CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> res = *this;
+        res += m;
+        return res;
+    }
+
+
+
+
+    /// @}
+
+
     /** Helper class to represent a column of the block matrix.
       Stores indices of one bloc per row. In each row, if the bloc in the derired colum is null, the next bloc is indexed.
       */
-    struct Column
+    /*struct Column
     {
         Index column; ///< the index of the column
         VecIndex indices;  ///< In each row: index of the first non-null bloc with column equal or superior to the desired column.
-    };
+    };*/
 
+
+
+    /// @name specialization of product methods on a few vector types
+    /// @{
+
+    /// equal res = this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
     void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
         tmul< Real2, FullVector<Real2>, FullVector<Real2> >(res, v);
     }
 
+    /// equal res += this^T * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
-    void mulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
+    void addMulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
-        tmulTranspose< Real2, FullVector<Real2>, FullVector<Real2> >(res, v);
+        taddMulTranspose< Real2, FullVector<Real2>, FullVector<Real2> >(res, v);
     }
 
+    /// equal res = this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
     void mul(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
     {
         tmul< Real2, FullVector<Real2>, defaulttype::BaseVector >(res, *v);
     }
 
+    /// equal res += this^T * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
-    void mulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    void addMulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
     {
-        tmulTranspose< Real2, FullVector<Real2>, defaulttype::BaseVector >(res, *v);
+        taddMulTranspose< Real2, FullVector<Real2>, defaulttype::BaseVector >(res, *v);
     }
 
+    /// equal res = this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
     void mul(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
     {
         tmul< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
     }
 
+    /// equal res += this^T * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
-    void mulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    void addMulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
     {
-        tmulTranspose< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
+        taddMulTranspose< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
     }
 
+    /// equal res = this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
     void mul(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
     {
         tmul< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
     }
 
-    void mulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    /// equal res += this^T * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
+    void addMulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
     {
-        tmul< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
+        taddMulTranspose< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
     }
 
-    template<class Real2>
-    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+
+    /// equal result = this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
+    template< typename InVecDeriv, typename OutVecDeriv >
+    void mul( OutVecDeriv& result, const InVecDeriv& v ) const
     {
-        FullVector<Real2> res;
-        if(v.size()%bColSize()==0)
-            mul(res,v);
-        else std::cerr<<"CompressedRowSparseMatrix::operator*(const FullVector<Real2>& v) , v.size() must be a multiple of block size. Returning an empty vector."<<std::endl;
+        tmul< Real, OutVecDeriv, InVecDeriv >(result, v);
+    }
+
+
+    /// equal result += this^T * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
+    template< typename InVecDeriv, typename OutVecDeriv >
+    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& v ) const
+    {
+        taddMulTranspose< Real, InVecDeriv, OutVecDeriv >(result, v);
+    }
+
+    /// @returns this * v
+    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
+    template<class Vec>
+    Vec operator*(const Vec& v) const
+    {
+        Vec res;
+        mul( res, v );
         return res;
     }
+
+    /// @}
+
+
+
+
 
     // methods for MatrixExpr support
 
@@ -1487,8 +1587,12 @@ public:
         return true;
     }
 
+
+    /// dest += this
+    /// different bloc types possible
+    /// @todo how to optimize when same bloc types
     template<class Dest>
-    void doCompute(Dest* dest) const
+    void addTo(Dest* dest) const
     {
         for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)
         {
@@ -1519,16 +1623,18 @@ public:
 
 protected:
 
+    /// add ? this += m : this = m
+    /// m can be the same as this
     template<class M>
-    void compute(const M& m, bool add = false)
+    void equal( const M& m, bool add = false )
     {
         if (m.hasRef(this))
         {
             Matrix tmp;
             tmp.resize(m.rowSize(), m.colSize());
-            m.doCompute(&tmp);
+            m.addTo(&tmp);
             if (add)
-                tmp.doCompute(this);
+                tmp.addTo(this);
             else
                 swap(tmp);
         }
@@ -1536,9 +1642,19 @@ protected:
         {
             if (!add)
                 resize(m.rowSize(), m.colSize());
-            m.doCompute(this);
+            m.addTo(this);
         }
     }
+
+    /// this += m
+    template<class M>
+    inline void addEqual( const M& m )
+    {
+        equal( m, true );
+    }
+
+
+
 public:
 
     template<class TBloc2, class TVecBloc2, class TVecIndex2>
@@ -1546,37 +1662,37 @@ public:
     {
         if (&m == this) return;
         resize(m.rowSize(), m.colSize());
-        m.doCompute(this);
+        m.addTo(this);
     }
 
     template<class TBloc2, class TVecBloc2, class TVecIndex2>
     void operator+=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class TBloc2, class TVecBloc2, class TVecIndex2>
     void operator-=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
     {
-        compute(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> > >(MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> >(m)), true);
+        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> > >(MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> >(m)), true);
     }
 
     template<class Expr2>
     void operator=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, false);
+        equal(m, false);
     }
 
     template<class Expr2>
     void operator+=(const MatrixExpr< Expr2 >& m)
     {
-        compute(m, true);
+        addEqual(m);
     }
 
     template<class Expr2>
     void operator-=(const MatrixExpr< Expr2 >& m)
     {
-        compute(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)), true);
+        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
     }
 
     MatrixExpr< MatrixTranspose< Matrix > > t() const

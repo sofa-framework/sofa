@@ -25,8 +25,8 @@
 #ifndef SOFA_Flexible_ImageDeformation_H
 #define SOFA_Flexible_ImageDeformation_H
 
-#include "initImage.h"
-#include "ImageTypes.h"
+#include <image/initImage.h>
+#include <image/ImageTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>

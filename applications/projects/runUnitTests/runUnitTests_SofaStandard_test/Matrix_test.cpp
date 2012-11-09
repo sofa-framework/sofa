@@ -377,9 +377,9 @@ BOOST_AUTO_TEST_SUITE_END();
 
 
 // not fitted blocs
-typedef TestSparseMatrices<float,4,8,2,3> Ts4823;
-BOOST_FIXTURE_TEST_SUITE( SparseMatrix_float_4_8_2_3, Ts4823 );
-#include "Matrix_test.inl"
-BOOST_AUTO_TEST_SUITE_END();
+//typedef TestSparseMatrices<float,4,8,2,3> Ts4823;
+//BOOST_FIXTURE_TEST_SUITE( SparseMatrix_float_4_8_2_3, Ts4823 );
+//#include "Matrix_test.inl"
+//BOOST_AUTO_TEST_SUITE_END();
 
 

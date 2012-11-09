@@ -9,11 +9,7 @@ DEFINES += SOFA_BUILD_IMAGE
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
-INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/CImg
-
-contains(DEFINES, SOFA_EXTLIBS_FFMPEG) {
-	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/ffmpeg
-	}
+INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
 
 contains(DEFINES, SOFA_IMAGE_HAVE_OPENCV) { # should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
 	INCLUDEPATH += $$SOFA_OPENCV_PATH

@@ -17,7 +17,7 @@
 #include "../deformationMapping/LinearJacobianBlock.inl"
 
 
-#include <ImageTypes.h>
+#include <image/ImageTypes.h>
 
 
 namespace sofa

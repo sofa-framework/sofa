@@ -57,3 +57,16 @@ BOOST_AUTO_TEST_CASE( full_matrix_product ) { BOOST_CHECK( matricesAreEqual(matM
 BOOST_AUTO_TEST_CASE( crs_matrix_product ) { BOOST_CHECK( matricesAreEqual(fullMultiplication,crsMultiplication)); }
 BOOST_AUTO_TEST_CASE( full_matrix_transposeproduct ) { BOOST_CHECK( matricesAreEqual(matTransposeMultiplication,fullTransposeMultiplication)); }
 BOOST_AUTO_TEST_CASE( crs_matrix_transposeproduct ) { BOOST_CHECK( matricesAreEqual(fullTransposeMultiplication,crsTransposeMultiplication)); }
+
+// Matrix addition
+BOOST_AUTO_TEST_CASE( crs_matrix_addition )
+{
+    crs2 = crs1 + crs1;
+    BOOST_CHECK( matricesAreEqual(mat*2,crs2));
+
+    crs2 += crs1;
+    BOOST_CHECK( matricesAreEqual(mat*3,crs2));
+
+    crs2 -= crs1;
+    BOOST_CHECK( matricesAreEqual(mat*2,crs2));
+}

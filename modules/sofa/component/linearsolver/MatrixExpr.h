@@ -270,10 +270,10 @@ protected:
 
 public:
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
         MyDest<Dest> myd(d);
-        m1.doCompute(&myd);
+        m1.addTo(&myd);
     }
 };
 
@@ -328,11 +328,11 @@ protected:
 
 public:
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
         std::cout << "EXPR using transposed computation: " << expr() << std::endl;
         MyDest<Dest> myd(d);
-        m1.doCompute(&myd);
+        m1.addTo(&myd);
     }
 };
 
@@ -391,10 +391,10 @@ protected:
 
 public:
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
         MyDest<Dest> myd(r2,d);
-        m1.doCompute(&myd);
+        m1.addTo(&myd);
     }
 };
 
@@ -444,10 +444,10 @@ public:
     }
 
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
-        m1.doCompute(d);
-        m2.doCompute(d);
+        m1.addTo(d);
+        m2.addTo(d);
     }
 };
 
@@ -504,11 +504,11 @@ protected:
 
 public:
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
-        m1.doCompute(d);
+        m1.addTo(d);
         MyDest<Dest> myd(d);
-        m2.doCompute(&myd);
+        m2.addTo(&myd);
     }
 };
 
@@ -554,7 +554,7 @@ public:
     }
 
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
         Op op;
         op(m1, m2, d);
@@ -602,7 +602,7 @@ public:
     }
 
     template<class Dest>
-    void doCompute(Dest* d) const
+    void addTo(Dest* d) const
     {
         Op op;
         op(m1, d);
