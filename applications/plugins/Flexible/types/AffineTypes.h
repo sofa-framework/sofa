@@ -67,72 +67,24 @@ public:
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
     typedef Mat<spatial_dimensions,spatial_dimensions, Real> Frame;       ///< Matrix representing a frame
 
-    class Deriv
+    class Deriv : public Vec<VSize,Real>
     {
-        Vec<VSize,Real> v;
+        typedef Vec<VSize,Real> MyVec;
     public:
-        Deriv() { clear(); }
-        Deriv( const Vec<VSize,Real>& d):v(d) {}
+        Deriv() { MyVec::clear(); }
+        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
         Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVAffine()=a;}
-        void clear() { v.clear(); }
 
-        static const unsigned int total_size = VSize;
+        //static const unsigned int total_size = VSize;
         typedef Real value_type;
 
-        static unsigned int size() { return VSize; }
-
-        /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
-
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
-
         /// point
-        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
+        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
 
         /// local frame
-        Frame& getVAffine() { return *reinterpret_cast<Frame*>(&v[spatial_dimensions]); }
-        const Frame& getVAffine() const { return *reinterpret_cast<const Frame*>(&v[spatial_dimensions]); }
-
-
-        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v); }
-        void operator +=(const Deriv& a) { v+=a.v; }
-
-        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v); }
-        void operator -=(const Deriv& a) { v-=a.v; }
-
-
-        template<typename real2>
-        Deriv operator *(real2 a) const { return Deriv(v*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; }
-
-        template<typename real2>
-        void operator /=(real2 a) { v /= a; }
-
-        Deriv operator - () const { return Deriv(-v); }
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Deriv& a) const    { return v*a.v; }
-
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
-        {
-            out<<c.v;
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
-        {
-            in>>c.v;
-            return in;
-        }
-
+        Frame& getVAffine() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
+        const Frame& getVAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
 
         /// project to a rigid motion
         void setRigid()
@@ -165,63 +117,27 @@ public:
 
 
 
-    class Coord
+    class Coord : public Vec<VSize,Real>
     {
-        Vec<VSize,Real> v;
+        typedef Vec<VSize,Real> MyVec;
 
     public:
         Coord() { clear(); }
-        Coord( const Vec<VSize,Real>& d):v(d) {}
+        Coord( const Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
-        void clear()  { v.clear(); for(unsigned int i=0; i<spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
+        void clear()  { MyVec::clear(); for(unsigned int i=0; i<spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
-        static const unsigned int total_size = VSize;
+        //static const unsigned int total_size = VSize;
         typedef Real value_type;
 
-        static unsigned int size() { return VSize; }
-
-        /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
-
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
-
         /// point
-        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
+        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
 
         /// local frame
-        Frame& getAffine() { return *reinterpret_cast<Frame*>(&v[spatial_dimensions]); }
-        const Frame& getAffine() const { return *reinterpret_cast<const Frame*>(&v[spatial_dimensions]); }
+        Frame& getAffine() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
+        const Frame& getAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
 
-
-        Coord operator +(const Coord& a) const { return Coord(v+a.v); }
-        void operator +=(const Coord& a) { v+=a.v; }
-
-        Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.getVec(); }
-
-        Deriv operator -(const Coord& a) const { return Deriv(v-a.v); }
-        void operator -=(const Coord& a) { v-=a.v; }
-
-
-        template<typename real2>
-        Coord operator *(real2 a) const { return Coord(v*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; }
-
-        template<typename real2>
-        void operator /=(real2 a) { v /= a; }
-
-        Coord operator - () const { return Coord(-v); }
-
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return v*a.v;    }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
@@ -464,7 +380,7 @@ using helper::vector;
 
 /** Mass associated with an affine deformable frame */
 template<int _spatial_dimensions,typename _Real>
-class AffineMass
+class AffineMass : public Mat<StdAffineTypes<_spatial_dimensions,_Real>::deriv_total_size, StdAffineTypes<_spatial_dimensions,_Real>::deriv_total_size, _Real>
 {
 public:
     typedef _Real Real;
@@ -475,13 +391,13 @@ public:
     typedef Mat<VSize, VSize, Real> MassMatrix;
 
 
-    AffineMass() : m_invMassMatrix(NULL)
+    AffineMass() : MassMatrix(), m_invMassMatrix(NULL)
     {
-        m_massMatrix.identity();
+        MassMatrix::identity();
     }
 
     /// build a uniform, diagonal matrix
-    AffineMass( Real m ) : m_invMassMatrix(NULL)
+    AffineMass( Real m ) : MassMatrix(), m_invMassMatrix(NULL)
     {
         setValue( m );
     }
@@ -499,8 +415,8 @@ public:
     /// make a null inertia matrix
     void clear()
     {
-        m_massMatrix.clear();
-        update();
+        MassMatrix::clear();
+        if( m_invMassMatrix ) m_invMassMatrix->clear();
     }
 
 
@@ -513,92 +429,95 @@ public:
         if( !m_invMassMatrix )
         {
             m_invMassMatrix = new MassMatrix;
-            m_invMassMatrix->invert( m_massMatrix );
+            m_invMassMatrix->invert( *this );
         }
         return *m_invMassMatrix;
-    }
-
-    /// @returns the mass matrix
-    const MassMatrix& getMatrix() const
-    {
-        return m_massMatrix;
     }
 
     /// set a uniform, diagonal matrix
     virtual void setValue( Real m )
     {
-        for( unsigned i=0 ; i<VSize ; ++i ) m_massMatrix(i,i) = m;
-        update();
+        for( unsigned i=0 ; i<VSize ; ++i ) (*this)(i,i) = m;
+        updateInverse();
     }
 
+
+    /// copy
+    void operator= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) = m;
+        updateInverse();
+    }
+
+    /// this += m
+    void operator+= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) += m;
+        updateInverse();
+    }
+
+    /// this -= m
+    void operator-= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) -= m;
+        updateInverse();
+    }
+
+    /// this *= m
+    void operator*= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) *= m;
+        updateInverse();
+    }
 
     /// apply a factor to the mass matrix
     void operator*= ( Real m )
     {
-        m_massMatrix *= m;
-        update();
+        *((MassMatrix*)this) *= m;
+        updateInverse();
     }
+
+    /// apply a factor to the mass matrix
+    void operator/= ( Real m )
+    {
+        *((MassMatrix*)this) /= m;
+        updateInverse();
+    }
+
 
 
     /// operator to cast to const Real, supposing the mass is uniform (and so diagonal)
     operator const Real() const
     {
-        return m_massMatrix(0,0);
+        return (*this)(0,0);
     }
 
 
-
-    /// Write acess to line i of the mass matrix
-    inline typename MassMatrix::LineNoInit& operator[](int i)
-    {
-        return m_massMatrix[i];
-    }
-
-    /// Read-only access to line i of the mass matrix
-    inline const typename MassMatrix::LineNoInit& operator[](int i) const
-    {
-        return m_massMatrix[i];
-    }
-
-
-
-
-    inline friend std::ostream& operator << ( std::ostream& out, const AffineMass<spatial_dimensions, Real>& m )
-    {
-        out<<m.m_massMatrix;
-        return out;
-    }
-    inline friend std::istream& operator >> ( std::istream& in, AffineMass<spatial_dimensions, Real>& m )
-    {
-        in>>m.m_massMatrix;
-        return in;
-    }
+    /// @todo overload these functions so they can be able to update 'm_invMassMatrix' after modifying 'this'
+    //void fill(real r)
+    // transpose
+    // transpose(m)
+    // addtranspose
+   //subtranspose
 
 
 
 protected:
 
     mutable MassMatrix *m_invMassMatrix; ///< a pointer to the inverse of the mass matrix
-    MassMatrix m_massMatrix; ///< the mass matrix
 
     /// when the mass matrix is changed, if the inverse exists, it has to be updated
-    void update()
+    /// @warning there are certainly cases (non overloaded functions or non virtual) that modify 'this' without updating 'm_invMassMatrix'. Another solution = keep a copy of 'this' each time the inversion is done, and when getInverse, if copy!=this -> update
+    void updateInverse()
     {
-        if( m_invMassMatrix ) m_invMassMatrix->invert( m_massMatrix );
+        if( m_invMassMatrix ) m_invMassMatrix->invert( *this );
     }
 };
-
 
 template<int _spatial_dimensions,typename _Real>
 inline typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv operator/(const typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv& d, const AffineMass<_spatial_dimensions, _Real>& m)
 {
-    return m.getInverse() * d.getVec();
-}
-
-template<int _spatial_dimensions,typename _Real>
-inline typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv operator*(const typename StdAffineTypes<_spatial_dimensions,_Real>::Deriv& d, const AffineMass<_spatial_dimensions, _Real>& m)
-{
-    return m.getMatrix() * d.getVec();
+    return m.getInverse() * d;
 }
 
 template<int _spatial_dimensions,typename _Real>
@@ -648,7 +567,7 @@ public:
         for( unsigned i=0; i<AffineMass::VSize; ++i )
             for( unsigned j=0; j<AffineMass::VSize; ++j )
             {
-                mat->add(pos+i, pos+j, mass.getMatrix()[i][j]*fact);
+                mat->add(pos+i, pos+j, mass[i][j]*fact);
 //            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
             }
     }

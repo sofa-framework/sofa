@@ -1,5 +1,5 @@
-#ifndef SOFA_FLEXIBLE_IMAGEDENSITYMASS_INL
-#define SOFA_FLEXIBLE_IMAGEDENSITYMASS_INL
+#ifndef SOFA_FLEXIBLE_ImageDensityMass_INL
+#define SOFA_FLEXIBLE_ImageDensityMass_INL
 
 #include "ImageDensityMass.h"
 #include <sofa/core/behavior/Mass.inl>
@@ -8,7 +8,7 @@
 //#include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 
-#include "../types/AffineTypes.h"
+#include <Flexible/types/AffineTypes.h>
 
 #include <sofa/helper/gl/template.h>
 
@@ -45,20 +45,8 @@ ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::~ImageDensityMass()
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::clear()
 {
-    f_masses.beginEdit()->clear();
-    f_masses.endEdit();
+    m_massMatrix.clear();
 }
-
-
-template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::resize( int vsize )
-{
-    f_masses.beginEdit()->resize( vsize );
-    f_masses.endEdit();
-}
-
-
-
 
 
 
@@ -72,12 +60,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 {
     Inherited::init();
 
-    if( f_masses.getValue().empty() )
-    {
-        resize( this->mstate->getX()->size() );
-    }
-
     reinit();
+
+    //std::cerr<<m_massMatrix<<std::endl;
 }
 
 
@@ -85,7 +70,6 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 {
-
     // get the shape function component
     this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::Local );
     if( !m_shapeFunction )
@@ -96,10 +80,8 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
     const VecCoord& DOFX0 = *this->mstate->getX0();
 
-
-    VecMass& masses = *f_masses.beginEdit();
-    for( unsigned i=0 ; i<masses.size() ; ++i )
-        masses[i].clear();
+    // eventually resize and always clear
+    m_massMatrix.resizeBloc( DOFX0.size(), DOFX0.size() ); // one block per dof
 
 
     const TransformType& transform = f_transform.getValue();
@@ -140,31 +122,64 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
             for( unsigned k=0; k<nbControlPoints ; k++ )
                 linearJacobians[k].init( DOFX0[controlPoints[k]], voxelPos, voxelPos, typename LinearJacobianBlock::MaterialToSpatial(), weights[k], Gradient(), Hessian() );
 
+            MassType JltmJk;
+            bool notNull;
+
             // for each control point influencing the voxel
             for( unsigned k=0; k<nbControlPoints ; k++ )
             {
-                // influence of the same dof with itself
-                addJ1tmJ0( masses[controlPoints[k]], linearJacobians[k], linearJacobians[k], voxelMass );
+                const unsigned cp_k = controlPoints[k];
 
-                // influence of 2 different dofs
-                for( unsigned l=k+1; l<controlPoints.size() && weights[l]>0 ; l++ )
+                // influence of the same dof with itself
+                JltmJk = J1tmJ0( linearJacobians[k], linearJacobians[k], voxelMass, notNull );
+
+                if( notNull )
                 {
-                    // lumping
-                    addJ1tmJ0( masses[controlPoints[k]], linearJacobians[k], linearJacobians[l], voxelMass );
-                    addJ1tmJ0( masses[controlPoints[l]], linearJacobians[l], linearJacobians[k], voxelMass );
+                    MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
+                    Mkk += JltmJk;
+                }
+
+
+                for( unsigned l=k+1; l<nbControlPoints ; l++ )
+                {
+                    const unsigned cp_l = controlPoints[l];
+
+                    // influence of 2 different dofs, ie non-diagonal terms
+                    JltmJk = J1tmJ0( linearJacobians[k], linearJacobians[l], voxelMass, notNull );
+
+                    if( notNull )
+                    {
+                        if( f_isLumped.getValue() )
+                        {
+                            // sum to the diagonal term on the same line
+                            MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
+                            Mkk += JltmJk;
+
+                            MassType& Mll = *m_massMatrix.wbloc(cp_l,cp_l,true);
+                            Mll += JltmJk.transposed();
+                        }
+                        else
+                        {
+                            MassType& Mkl = *m_massMatrix.wbloc(cp_k,cp_l,true);
+                            Mkl += JltmJk;
+
+                            MassType& Mlk = *m_massMatrix.wbloc(cp_l,cp_k,true);
+                            Mlk += JltmJk.transposed();
+                        }
+                    }
                 }
             }
         }
     }
-
-    f_masses.endEdit();
 }
 
 
 
+
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addJ1tmJ0( MassType& mass, LinearJacobianBlock& J0, LinearJacobianBlock& J1, Real voxelMass )
+MassType ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::J1tmJ0( LinearJacobianBlock& J0, LinearJacobianBlock& J1, Real voxelMass, bool& notNull )
 {
+    MassType M;
     for( int w=0 ; w<DataTypes::deriv_total_size ; ++w ) // for all cinematic dof
     {
         Deriv m;
@@ -181,8 +196,16 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addJ1tmJ0( Mas
         J1.addMultTranspose( m , force );
 
         for( int v=0 ; v<DataTypes::deriv_total_size ; ++v ) // for all cinematic dof
-            mass[w][v] += m[v];
+            M[w][v] = m[v];
     }
+
+    // check if M is not null
+    notNull = false;
+    for( int w=0 ; w<DataTypes::deriv_total_size && !notNull ; ++w )
+        for( int v=0 ; v<DataTypes::deriv_total_size && !notNull ; ++v )
+            if( M[w][v] !=0 ) notNull = true; // TODO should the equality have a threshold?
+
+    return M;
 }
 
 
@@ -206,22 +229,23 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addJ1tmJ0( Mas
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
 {
-    helper::WriteAccessor< DataVecDeriv > _res = res;
-    helper::ReadAccessor< DataVecDeriv > _dx = dx;
-    const VecMass &masses = f_masses.getValue();
+    VecDeriv& _res = *res.beginEdit();
+
     if( factor == 1.0 )
     {
-        for( unsigned int i=0 ; i<_dx.size() ; i++ )
-        {
-            _res[i] += masses[i] * _dx[i];
-        }
+        const VecDeriv& _dx = dx.getValue();
+        m_massMatrix.addMul( _res, _dx );
     }
     else
     {
+        VecDeriv _dx = dx.getValue();
+
         for( unsigned int i=0 ; i<_dx.size() ; i++ )
         {
-            _res[i] += masses[i] * _dx[i] * factor;
+            _dx[i] *= factor;
         }
+
+        m_massMatrix.addMul( _res, _dx );
     }
 }
 
@@ -274,11 +298,9 @@ template < class DataTypes, class ShapeFunctionTypes, class MassType >
 void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return;
+    if(this->m_separateGravity.getValue()) return;
 
-    const VecMass &masses = f_masses.getValue();
-    helper::WriteAccessor< DataVecDeriv > _f = f;
+    VecDeriv& _f = *f.beginEdit();
 
     // gravity
     Vec3d g ( this->getContext()->getGravity() );
@@ -287,22 +309,14 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const
 
 
     // add weight
-    for (unsigned int i=0; i<masses.size(); i++)
-    {
-        _f[i] += masses[i]*theGravity;
-    }
+    m_massMatrix.addMul_by_line( _f, theGravity );
+
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    const VecMass &masses = f_masses.getValue();
-    const int N = defaulttype::DataTypeInfo<Deriv>::size();
-    AddMToMatrixFunctor<Deriv,MassType> calc;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real mFactor = (Real)mparams->mFactor();
-    for (unsigned int i=0; i<masses.size(); i++)
-        calc(r.matrix, masses[i], r.offset + N*i, mFactor);
+    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix not yet implemented"<<sendl;
 }
 
 
@@ -322,4 +336,4 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::draw(const cor
 
 } // namespace sofa
 
-#endif // SOFA_FLEXIBLE_IMAGEDENSITYMASS_INL
+#endif // SOFA_FLEXIBLE_ImageDensityMass_INL

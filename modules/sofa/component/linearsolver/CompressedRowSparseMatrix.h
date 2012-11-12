@@ -177,11 +177,13 @@ public:
     {
     }
 
+    /// \returns the number of row blocs
     unsigned int rowBSize() const
     {
         return nBlocRow;
     }
 
+    /// \returns the number of col blocs
     unsigned int colBSize() const
     {
         return nBlocCol;
@@ -669,11 +671,13 @@ public:
         return NULL;
     }
 
+    ///< Mathematical size of the matrix
     unsigned int rowSize() const
     {
         return nRow;
     }
 
+    ///< Mathematical size of the matrix
     unsigned int colSize() const
     {
         return nCol;
@@ -1240,35 +1244,38 @@ protected:
     /// @{
 
     template<class Vec> static Real vget(const Vec& vec, int i, int j, int k) { return vget( vec, i*j+k ); }
-    template<int N> static Real vget(const helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k) { return vec[i][k]; }
+    template<class Vec> static Real vget(const helper::vector<Vec>&vec, int i, int /*j*/, int k) { return vec[i][k]; }
 
                           static Real  vget(const defaulttype::BaseVector& vec, int i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, int i) { return vec[i]; }
 
 
     template<class Vec> static void vset(Vec& vec, int i, int j, int k, Real v) { vset( vec, i*j+k, v ); }
-    template<int N> static void vset(helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k, Real v) { vec[i][k] = v; }
+    template<class Vec> static void vset(helper::vector<Vec>&vec, int i, int /*j*/, int k, Real v) { vec[i][k] = v; }
 
                           static void vset(defaulttype::BaseVector& vec, int i, Real v) { vec.set(i, v); }
     template<class Real2> static void vset(FullVector<Real2>& vec, int i, Real2 v) { vec[i] = v; }
 
 
     template<class Vec> static void vadd(Vec& vec, int i, int j, int k, Real v) { vadd( vec, i*j+k, v ); }
-    template<int N> static void vadd(helper::vector<defaulttype::Vec<N,Real> >&vec, int i, int /*j*/, int k, Real v) { vec[i][k] += v; }
+    template<class Vec> static void vadd(helper::vector<Vec>&vec, int i, int /*j*/, int k, Real v) { vec[i][k] += v; }
 
                           static void vadd(defaulttype::BaseVector& vec, int i, Real v) { vec.add(i, v); }
     template<class Real2> static void vadd(FullVector<Real2>& vec, int i, Real2 v) { vec[i] += v; }
 
+    template<class Vec> static void vresize(Vec& vec, int /*blockSize*/, int totalSize) { vec.resize( totalSize ); }
+    template<class Vec> static void vresize(helper::vector<Vec>&vec, int blockSize, int /*totalSize*/) { vec.resize( blockSize ); }
 
 
-      /** Product of the matrix with a templated vector */
+
+      /** Product of the matrix with a templated vector res = this * vec*/
       template<class Real2, class V1, class V2>
       void tmul(V1& res, const V2& vec) const
       {
           assert( vec.size()%bColSize() == 0 ); // vec.size() must be a multiple of block size.
 
           ((Matrix*)this)->compress();
-          res.resize(rowSize());
+          vresize( res, rowBSize(), rowSize() );
           for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
@@ -1297,6 +1304,74 @@ protected:
           }
       }
 
+
+      /** Product of the matrix with a templated vector res += this * vec*/
+      template<class Real2, class V1, class V2>
+      void taddMul(V1& res, const V2& vec) const
+      {
+          assert( vec.size()%bColSize() == 0 ); // vec.size() must be a multiple of block size.
+
+          ((Matrix*)this)->compress();
+          vresize( res, rowBSize(), rowSize() );
+          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          {
+              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+              // multiply the non-null blocks with the corresponding chunks of the large vector
+              Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              {
+                  // transfer a chunk of large vector to a local block-sized vector
+                  defaulttype::Vec<NC,Real2> v;
+                  //Index jN = colsIndex[xj] * NC;    // scalar column index
+                  for (int bj = 0; bj < NC; ++bj)
+                      v[bj] = vget(vec,colsIndex[xj],NC,bj);
+
+                  // multiply the block with the local vector
+                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  for (int bi = 0; bi < NL; ++bi)
+                      for (int bj = 0; bj < NC; ++bj)
+                          r[bi] += traits::v(b, bi, bj) * v[bj];
+              }
+
+              // transfer the local result  to the large result vector
+              //Index iN = rowIndex[xi] * NL;                      // scalar row index
+              for (int bi = 0; bi < NL; ++bi)
+                  vadd(res, rowIndex[xi], NL, bi, r[bi]);
+          }
+      }
+
+
+      /** Product of the matrix with a templated vector that have the size of the bloc res += this * [vec,...,vec]^T */
+      template<class Real2, class V1, class V2>
+      void taddMul_by_line(V1& res, const V2& vec) const
+      {
+          assert( vec.size() == NC ); // vec.size() must have the block size.
+
+          ((Matrix*)this)->compress();
+          vresize( res, rowBSize(), rowSize() );
+          for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          {
+              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+              // multiply the non-null blocks with the corresponding chunks of the large vector
+              Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+              for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+              {
+                  // multiply the block with the local vector
+                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  for (int bi = 0; bi < NL; ++bi)
+                      for (int bj = 0; bj < NC; ++bj)
+                          r[bi] += traits::v(b, bi, bj) * vec[bj];
+              }
+
+              // transfer the local result  to the large result vector
+              //Index iN = rowIndex[xi] * NL;                      // scalar row index
+              for (int bi = 0; bi < NL; ++bi)
+                  vadd(res, rowIndex[xi], NL, bi, r[bi]);
+          }
+      }
+
       /** Product of the transpose with a templated vector and add it to res   res += this^T * vec */
       template<class Real2, class V1, class V2>
       void taddMulTranspose(V1& res, const V2& vec) const
@@ -1304,7 +1379,7 @@ protected:
           assert( vec.size()%bRowSize() == 0 ); // vec.size() must be a multiple of block size.
 
           ((Matrix*)this)->compress();
-          res.resize(colSize());
+          vresize( res, rowBSize(), rowSize() );
           for (unsigned int xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
           {
               // copy the corresponding chunk of the input to a local vector
@@ -1472,7 +1547,7 @@ public:
     /// @name specialization of product methods on a few vector types
     /// @{
 
-    /// equal res = this * v
+   /* /// equal res = this * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
     template<class Real2>
     void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
@@ -1533,24 +1608,24 @@ public:
     void addMulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
     {
         taddMulTranspose< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
-    }
+    }*/
 
 
     /// equal result = this * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template< typename InVecDeriv, typename OutVecDeriv >
-    void mul( OutVecDeriv& result, const InVecDeriv& v ) const
+    template< typename V1, typename V2 >
+    void mul( V2& result, const V1& v ) const
     {
-        tmul< Real, OutVecDeriv, InVecDeriv >(result, v);
+        tmul< Real, V2, V1 >(result, v);
     }
 
 
     /// equal result += this^T * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template< typename InVecDeriv, typename OutVecDeriv >
-    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& v ) const
+    template< typename V1, typename V2 >
+    void addMultTranspose( V1& result, const V2& v ) const
     {
-        taddMulTranspose< Real, InVecDeriv, OutVecDeriv >(result, v);
+        taddMulTranspose< Real, V1, V2 >(result, v);
     }
 
     /// @returns this * v
@@ -1562,6 +1637,25 @@ public:
         mul( res, v );
         return res;
     }
+
+
+    /// result += this * (v,...,v)^T
+    /// v has the size of one bloc
+    template< typename V, typename Real2 >
+    void addMul_by_line( V& res, const defaulttype::Vec<NC,Real2>& v ) const
+    {
+        taddMul_by_line< Real2,V,defaulttype::Vec<NC,Real2> >( res, v );
+    }
+
+
+    /// result += this * v
+    template< typename V1, typename V2 >
+    void addMul( V1& res, const V2& v ) const
+    {
+        taddMul< Real,V1,V2 >( res, v );
+    }
+
+
 
     /// @}
 

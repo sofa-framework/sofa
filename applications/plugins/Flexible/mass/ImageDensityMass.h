@@ -1,5 +1,5 @@
-#ifndef SOFA_FLEXIBLE_IMAGEDENSITYMASS_H
-#define SOFA_FLEXIBLE_IMAGEDENSITYMASS_H
+#ifndef SOFA_FLEXIBLE_ImageDensityMass_H
+#define SOFA_FLEXIBLE_ImageDensityMass_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -12,9 +12,11 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-#include "../shapeFunction/BaseShapeFunction.h"
-#include "../deformationMapping/LinearJacobianBlock.inl"
+
+#include <Flexible/shapeFunction/BaseShapeFunction.h>
+#include <Flexible/deformationMapping/LinearJacobianBlock.inl>
 
 
 #include <image/ImageTypes.h>
@@ -31,10 +33,9 @@ namespace mass
 
 using sofa::component::topology::PointData;
 
-
 /**
 * Compute mass matrices based on a density map
-* Masses are defined per free dofs (lumped by summing all line entries)
+* Mass is defined as a global matrix (including non diagonal terms)
 * The interpolation weights are given by a BaseShapeFunction component present in the scene
 * @warning the interpolation is done by a LinearJacobianBlock hard-coded in this component
 * @todo find a way to describe the mass interpolation as a sofa graph with regular mappings
@@ -85,10 +86,17 @@ public:
 
     /** @name Mass stuff */
     //@{
-    typedef helper::vector<MassType> VecMass;
+    //typedef helper::vector<MassType> VecMass;
 
     /// store the mass matrices (size of elements if used)
-    Data< VecMass > f_masses;
+    //Data< VecMass > f_masses;
+
+
+    typedef linearsolver::CompressedRowSparseMatrix<MassType> MassMatrix; ///< the global mass matrix type
+    MassMatrix m_massMatrix; ///< the global mass matrix
+
+    Data< bool > f_isLumped;
+
     //@}
 
 protected:
@@ -96,7 +104,7 @@ protected:
     ImageDensityMass()
         : f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
         , f_transform( initData( &f_transform, TransformType(), "transform", "The density map transform" ) )
-        , f_masses( initData( &f_masses, "masses", "Vector of mass matrices") )
+        , f_isLumped( initData( &f_isLumped, false, "isLumped", "Should the mass matrix be lumped?" ) )
     {}
 
     virtual ~ImageDensityMass();
@@ -110,10 +118,6 @@ public:
     virtual void init();
 
 
-
-    void addMass(const MassType& mass);
-
-    void resize(int vsize);
 
     // -- Mass interface
     void addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
@@ -149,13 +153,14 @@ public:
 
 protected:
 
-    /// add the cross contribution (J1^T.voxelMass.J0) to the dof mass
-    void addJ1tmJ0( MassType& mass, /*const*/ LinearJacobianBlock& J0, /*const*/ LinearJacobianBlock& J1, Real voxelMass );
+    /// \returns the cross contribution (J1^T.voxelMass.J0) to the dof mass
+    /// notNull is set to true iff one entry of the returned matrix is not null
+    MassType J1tmJ0( /*const*/ LinearJacobianBlock& J0, /*const*/ LinearJacobianBlock& J1, Real voxelMass, bool& notNull );
 };
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_IMAGEDENSITYMASS_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
@@ -174,4 +179,4 @@ extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Affi
 
 } // namespace sofa
 
-#endif // SOFA_FLEXIBLE_IMAGEDENSITYMASS_H
+#endif // SOFA_FLEXIBLE_ImageDensityMass_H

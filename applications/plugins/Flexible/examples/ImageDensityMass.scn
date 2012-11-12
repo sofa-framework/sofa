@@ -5,8 +5,55 @@
     <DefaultVisualManagerLoop />
     
    
+    
+    <Node 	name="FEM tetra NOT lumped"   >
+    <EulerImplicitSolver /> <CGLinearSolver  />
+<!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
+<!-- 	<Mesh name="mesh" src="@loader" /> -->
+	
+	
+	<Mesh name="mesh" position="-1.5 0 0    -0.5 0 0    -1.5 1 0    -1.5 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
+		      
+		
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
 
-    <Node 	name="FEM tetra"   >
+        <FixedConstraint indices="0 1" />
+        
+        <BarycentricShapeFunction  />
+	
+	
+	
+	<MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
+	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
+  <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
+	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" isLumped="false" />
+		
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>	    
+	    </Node>
+	    		
+        </Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  />
+             <IdentityMapping />
+	</Node>
+
+
+    </Node>
+    
+
+    <Node 	name="FEM tetra lumped"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
 <!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
 <!-- 	<Mesh name="mesh" src="@loader" /> -->
@@ -28,7 +75,7 @@
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
 	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform"  />
+	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" isLumped="true" />
 	
 	<!--EACH NODE OF THE TETRA SHOULD CARRY A MASS OF 41.6666... -->
 	
@@ -56,7 +103,6 @@
 
 
 
-    
     
     
     
