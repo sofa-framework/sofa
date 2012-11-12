@@ -99,7 +99,7 @@ void UniformMass<DataTypes, MassType>::reinit()
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->getX()->size() * this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->getX()->size() * (Real)this->mass.getValue() );
     }
 }
 
@@ -144,7 +144,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    this->totalMass.setValue ( this->mstate->getX()->size() * this->mass.getValue() );
+                    this->totalMass.setValue ( this->mstate->getX()->size() * (Real)this->mass.getValue() );
                 }
                 break;
 

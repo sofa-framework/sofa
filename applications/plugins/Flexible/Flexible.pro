@@ -128,6 +128,7 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
                shapeFunction/DiffusionShapeFunction.cpp \
                deformationMapping/ImageDeformation.cpp \
                mass/ImageDensityMass.cpp \
+
     }
 
 README_FILE = Flexible.txt

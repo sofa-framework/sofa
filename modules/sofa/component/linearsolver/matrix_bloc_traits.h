@@ -90,8 +90,34 @@ public:
     }
 };
 
+
+// by default, supposing T is a defaulttype::Mat (usefull for type derivated from defaulttype::Mat)
 template<class T>
-class matrix_bloc_traits;
+class matrix_bloc_traits
+{
+public:
+    typedef T Bloc;
+    typedef typename T::Real Real;
+    enum { NL = T::nbLines };
+    enum { NC = T::nbCols };
+    static Real& v(Bloc& b, int row, int col) { return b[row][col]; }
+    static const Real& v(const Bloc& b, int row, int col) { return b[row][col]; }
+    static void clear(Bloc& b) { b.clear(); }
+    static bool empty(const Bloc& b)
+    {
+        for (int i=0; i<NL; ++i)
+            for (int j=0; j<NC; ++j)
+                if (b[i][j] != 0) return false;
+        return true;
+    }
+    static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
+
+    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+
+    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
+    static const char* Name();
+};
 
 template <int L, int C, class real>
 class matrix_bloc_traits < defaulttype::Mat<L,C,real> >

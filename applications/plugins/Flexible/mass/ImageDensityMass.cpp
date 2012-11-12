@@ -1,4 +1,4 @@
-#define SOFA_FLEXIBLE_IMAGEDENSITYMASS_CPP
+#define SOFA_FLEXIBLE_ImageDensityMass_CPP
 
 #include "ImageDensityMass.inl"
 #include <sofa/core/ObjectFactory.h>
@@ -22,7 +22,7 @@ SOFA_DECL_CLASS(ImageDensityMass)
 
 
 // Register in the Factory
-int ImageDensityMassClass = core::RegisterObject("Define a specific mass for each dof")
+int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix including non diagonal terms")
 #ifndef SOFA_FLOAT
         .add< ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunction3d,Mat3x3d> >( true )
         .add< ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunction2d,Mat3x3d> >()
