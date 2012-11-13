@@ -127,6 +127,21 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     return root;
 }
 
+/// Load from a string in memory
+Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+{
+    //::sofa::simulation::init();
+    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
+
+    Node::SPtr root = processXML(xml, filename);
+
+    // 				std::cout << "load done."<<std::endl;
+    delete xml;
+
+    return root;
+}
+
 
 } // namespace simulation
 

@@ -42,9 +42,6 @@ public:
     /// load the file
     virtual sofa::simulation::Node::SPtr load(const char *filename);
 
-    /// load a scene from memory (typically : an xml into a string)
-    static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
-
     /// get the file type description
     virtual std::string getFileTypeDesc();
 
