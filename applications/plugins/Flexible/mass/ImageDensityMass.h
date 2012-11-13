@@ -86,28 +86,27 @@ public:
 
     /** @name Mass stuff */
     //@{
-    //typedef helper::vector<MassType> VecMass;
-
-    /// store the mass matrices (size of elements if used)
-    //Data< VecMass > f_masses;
-
 
     typedef linearsolver::CompressedRowSparseMatrix<MassType> MassMatrix; ///< the global mass matrix type
     MassMatrix m_massMatrix; ///< the global mass matrix
 
-    Data< bool > f_isLumped;
+    Data< bool > f_isLumped; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)
 
     //@}
 
 protected:
 
     ImageDensityMass()
-        : f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
+        : m_shapeFunction(NULL)
+        , f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
         , f_transform( initData( &f_transform, TransformType(), "transform", "The density map transform" ) )
         , f_isLumped( initData( &f_isLumped, false, "isLumped", "Should the mass matrix be lumped?" ) )
     {}
 
-    virtual ~ImageDensityMass();
+    virtual ~ImageDensityMass() {};
+
+    /// \returns a pointer to the dof rest position
+    virtual const VecCoord* getX0();
 
 public:
 
@@ -141,11 +140,6 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
     static std::string templateName(const ImageDensityMass<DataTypes, ShapeFunctionTypes, MassType>* = NULL)
     {
         return DataTypes::Name()+std::string(",")+ShapeFunctionTypes::Name()/*+","+MassType::Name()*/;
@@ -162,14 +156,14 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Affine3dTypes,core::behavior::ShapeFunction3d,defaulttype::Affine3dMass>; // affine frames
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunction2d,defaulttype::Mat3x3d>; // surface FEM (triangles, quads)
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Affine3dTypes,core::behavior::ShapeFunction3d,defaulttype::Affine3dMass>; // affine frames
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
-extern template class SOFA_BASE_MECHANICS_API ImageDensityMass<defaulttype::Affine3fTypes,core::behavior::ShapeFunction3f,defaulttype::Affine3fMass>;
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction3f,defaulttype::Mat3x3f>;
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunction2f,defaulttype::Mat3x3f>;
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Affine3fTypes,core::behavior::ShapeFunction3f,defaulttype::Affine3fMass>;
 #endif
 #endif
 

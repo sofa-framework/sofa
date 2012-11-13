@@ -30,15 +30,6 @@ using namespace sofa::core::behavior;
 
 
 
-
-
-
-template < class DataTypes, class ShapeFunctionTypes, class MassType >
-ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::~ImageDensityMass()
-{
-}
-
-
 ///////////////////////////////////////////
 
 
@@ -60,25 +51,33 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 {
     Inherited::init();
 
-    reinit();
-
-    //std::cerr<<m_massMatrix<<std::endl;
-}
-
-
-
-template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
-{
     // get the shape function component
-    this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::Local );
+    if( !m_shapeFunction )  this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::SearchDown );
+    if( !m_shapeFunction )  this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::SearchUp );
     if( !m_shapeFunction )
     {
         serr << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found" << sendl;
         return;
     }
 
-    const VecCoord& DOFX0 = *this->mstate->getX0();
+    reinit();
+
+    //std::cerr<<m_massMatrix<<std::endl;
+}
+
+
+template < class DataTypes, class ShapeFunctionTypes, class MassType >
+const typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::VecCoord* ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getX0()
+{
+    return this->mstate->getX0();
+}
+
+
+template < class DataTypes, class ShapeFunctionTypes, class MassType >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
+{
+
+    const VecCoord& DOFX0 = *getX0();
 
     // eventually resize and always clear
     m_massMatrix.resizeBloc( DOFX0.size(), DOFX0.size() ); // one block per dof
