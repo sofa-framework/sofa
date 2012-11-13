@@ -121,6 +121,13 @@ PyObject* PythonEnvironment::importScript( const char *filename )
 
     //  Py_BEGIN_ALLOW_THREADS
 
+    PyObject *pSysModuleDict = PyImport_GetModuleDict();
+
+    assert(pSysModuleDict != 0 && PyMapping_Check(pSysModuleDict));
+
+    bool previously_loaded = (PyMapping_HasKey(pSysModuleDict,PyString_FromString(bareFilename.c_str())) == 1);
+    /// if true, a module with similar name has been loaded. We need to do a reload the module.
+
     PyRun_SimpleString("import sys");
 //    printf("<SofaPython> 1\n");
     PyRun_SimpleString(commandString.c_str());
@@ -138,7 +145,13 @@ PyObject* PythonEnvironment::importScript( const char *filename )
         PyErr_Print();
         return 0;
     }
-//    printf("<SofaPython> 5\n");
+
+    if (previously_loaded){
+        printf("<SofaPython> Script \"%s\" reloaded\n",bareFilename.c_str());
+        pModule = PyImport_ReloadModule(pModule);
+    }
+
+    //    printf("<SofaPython> 5\n");
 
     return pModule;
 }
