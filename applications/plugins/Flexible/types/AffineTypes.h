@@ -393,7 +393,6 @@ public:
 
     AffineMass() : MassMatrix(), m_invMassMatrix(NULL)
     {
-        MassMatrix::identity();
     }
 
     /// build a uniform, diagonal matrix

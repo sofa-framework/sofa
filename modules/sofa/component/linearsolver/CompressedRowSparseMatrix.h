@@ -1434,10 +1434,19 @@ public:
         assert( RB::nbLines == Bloc::nbLines );
         assert( MB::nbCols == RB::nbCols );
 
+        assert( colSize() == m.rowSize() );
+
         // must already be compressed, since matrices are const they cannot be modified
         //compress();
         //m.compress();
-        res.resize( this->nRow,m.nCol );  // clear and resize the result
+
+        ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
+        ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
+
+
+        res.resize( this->nRow, m.nCol );  // clear and resize the result
+
+        if( m.rowIndex.empty() ) return; // if m is null
 
         for( unsigned int xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
         {
@@ -1480,10 +1489,18 @@ public:
         assert( RB::nbLines == Bloc::nbCols );
         assert( MB::nbCols == RB::nbCols );
 
+        assert( rowSize() == m.rowSize() );
+
         // must already be compressed, since matrices are const they cannot be modified
         //compress();
         //m.compress();
-        res.resize( this->nCol,m.nCol );  // clear and resize the result
+        ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
+        ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
+
+
+        res.resize( this->nCol, m.nCol );  // clear and resize the result
+
+        if( m.rowIndex.empty() ) return; // if m is null
 
         for( unsigned int xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
         {
