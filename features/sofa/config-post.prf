@@ -75,7 +75,11 @@ win32 {
 	else:win32-msvc2008 : VCCONFIGDIR = $${VCCONFIGDIR}VC9
     else                : VCCONFIGDIR = $${VCCONFIGDIR}VC10
 
-	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
+	contains(TARGET_MACHINE, x64) {
+		LIBS *= -L$$ROOT_SRC_DIR/lib/win64/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win64/Common
+	} else {
+		LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
+	}
 }
 macx {
 	LIBS *= -L$$ROOT_SRC_DIR/lib/macx
