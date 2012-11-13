@@ -100,22 +100,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::load(const char *filename)
         if (out == "")
             return NULL;
     }
-    root = loadFromMemory(filename, out.c_str(), out.size());
-
-    return root;
-}
-
-/// Load from a string in memory
-Node::SPtr SceneLoaderPHP::loadFromMemory ( const char *filename, const char *data, unsigned int size )
-{
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
-
-    Node::SPtr root = SceneLoaderXML::processXML(xml, filename);
-
-    // 				std::cout << "load done."<<std::endl;
-    delete xml;
+    root = SceneLoaderXML::loadFromMemory(filename, out.c_str(), out.size());
 
     return root;
 }

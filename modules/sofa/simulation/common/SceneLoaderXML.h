@@ -45,6 +45,9 @@ public:
     /// generic function to process xml tree (after loading the xml structure)
     static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
 
+    /// load a scene from memory (typically : an xml into a string)
+    static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
+
     /// get the file type description
     virtual std::string getFileTypeDesc();
 
