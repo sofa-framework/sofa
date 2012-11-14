@@ -62,7 +62,25 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 
     reinit();
 
-    //std::cerr<<m_massMatrix<<std::endl;
+    if( f_printMassMatrix.getValue() ) sout<<m_massMatrix<<sendl;
+}
+
+
+template < class DataTypes, class ShapeFunctionTypes, class MassType >
+typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getVoxelVolume( const TransformType& transform ) const
+{
+    if( ShapeFunctionTypes::material_dimensions == 2) // for 2D shape functions, it should return an area
+    {
+        // todo how to find the right directions to compute the area? Would need the topology or at least the voxel neighbourhood.
+        Real volume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
+        volume = pow( volume, 1.0/3.0 );
+        return volume * volume;
+    }
+    else
+    {
+        // by default, it returns the voxel volume
+        return transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
+    }
 }
 
 
@@ -84,6 +102,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
 
     const TransformType& transform = f_transform.getValue();
+    double voxelVolume = getVoxelVolume( transform );
 
     // get the density image
     const CImg<double>& densityImage = f_densityImage.getValue().getCImg(0);
@@ -108,7 +127,6 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
             m_shapeFunction->computeShapeFunction( voxelPos, M, controlPoints, weights/*, gradients, hessians*/ );
 
             // get the voxel density
-            double voxelVolume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
             double voxelMass = voxelDensity * voxelVolume;
 
             // check the real number of control points

@@ -94,6 +94,8 @@ public:
 
     //@}
 
+    Data< bool > f_printMassMatrix;
+
 protected:
 
     ImageDensityMass()
@@ -101,6 +103,7 @@ protected:
         , f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
         , f_transform( initData( &f_transform, TransformType(), "transform", "The density map transform" ) )
         , f_isLumped( initData( &f_isLumped, false, "isLumped", "Should the mass matrix be lumped?" ) )
+        , f_printMassMatrix( initData( &f_printMassMatrix, false, "printMassMatrix", "Should the mass matrix be print in console after being precomputed?" ) )
     {}
 
     virtual ~ImageDensityMass() {};
@@ -144,6 +147,9 @@ public:
     {
         return DataTypes::Name()+std::string(",")+ShapeFunctionTypes::Name()/*+","+MassType::Name()*/;
     }
+
+    /// \returns the volume of one voxel in 3D or try to approximate the surface of the pixel in 2D
+    Real getVoxelVolume( const TransformType& transform ) const;
 
 protected:
 
