@@ -26,7 +26,7 @@
 #include "CudaMath.h"
 #include "cuda.h"
 
-#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 200
 #if defined(_MSC_VER)
 #pragma warning __CUDA_ARCH__ is too low for atomics
 #else
@@ -150,7 +150,7 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addForce_kernel(int size, Cud
                 + frame_y * (ti.bx * stress.y);                     // ( 0,  bx,   0) * stress
         CudaVec3<float> fa = -fb-fc;
 
-#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 200
         f[t.ia] += fa;
         f[t.ib] += fb;
         f[t.ic] += fc;
@@ -213,7 +213,7 @@ __global__ void TriangularFEMForceFieldOptimCuda3f_addDForce_kernel(int size, Cu
                 + ts.frame_y * (ti.bx * dstress.y);                      // ( 0,  bx,   0) * dstress
         Deriv dfa = -dfb-dfc;
 
-#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 110
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ < 200
         df[t.ia] -= dfa;
         df[t.ib] -= dfb;
         df[t.ic] -= dfc;
