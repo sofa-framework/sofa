@@ -147,7 +147,7 @@ PyObject* PythonEnvironment::importScript( const char *filename )
     }
 
     if (previously_loaded){
-        printf("<SofaPython> Script \"%s\" reloaded\n",bareFilename.c_str());
+        //printf("<SofaPython> Script \"%s\" reloaded\n",bareFilename.c_str());
         pModule = PyImport_ReloadModule(pModule);
     }
 

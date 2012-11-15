@@ -87,6 +87,6 @@ class Particle(Sofa.PythonScriptController):
 	# called on each animation step
 	def onBeginAnimationStep(self,dt):
 		position = self.particleObject.findData('position').value
-		if position[1]<-5.0:
+		if position[0][1]<-5.0:
 			self.myNode.sendScriptEvent('below_floor',0)
 		return 0
