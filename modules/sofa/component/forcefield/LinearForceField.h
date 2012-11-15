@@ -84,6 +84,8 @@ public:
     Data< double > arrowSizeCoef;
 protected:
     LinearForceField();
+    virtual ~LinearForceField() { delete data; };
+
 public:
     void draw(const core::visual::VisualParams* vparams);
 
