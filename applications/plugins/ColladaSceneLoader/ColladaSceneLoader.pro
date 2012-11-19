@@ -21,5 +21,8 @@ win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$
 win32 {
 	LIBS += assimp/lib/assimp.lib
 }
+unix {
+	LIBS += -lassimp
+}
 
 load(sofa/post)
