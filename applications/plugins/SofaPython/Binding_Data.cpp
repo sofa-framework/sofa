@@ -205,7 +205,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 for (int j=0; j<size; j++)
                 {
 
-                    PyObject *listElt = PyList_GetItem(row,i);
+                    PyObject *listElt = PyList_GetItem(row,j);
 
                     if (PyInt_Check(listElt))
                     {
