@@ -281,12 +281,13 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const sofa::defaulttype::Vec<3,double> &p,
     unsigned int ind_p1,
     unsigned int ind_p2,
-    unsigned int ind_p3) const
+    unsigned int ind_p3,
+    bool bRest) const
 {
     const double ZERO = 1e-12;
     sofa::helper::vector< double > baryCoefs;
 
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c = (bRest ? *(this->object->getX0()) : *(this->object->getX()));
 
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
