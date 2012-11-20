@@ -171,7 +171,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         }
 
         // is-it a double-dimension list ?
-        PyObject *firstRow = PyList_GetItem(args,0);
+        //PyObject *firstRow = PyList_GetItem(args,0);
 
         if (PyList_Check(PyList_GetItem(args,0)))
         {
@@ -262,10 +262,10 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     }
                 }
 
-                return true;
 
 
             }
+            return true;
 
         }
         else
