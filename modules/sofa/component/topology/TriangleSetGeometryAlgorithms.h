@@ -119,7 +119,8 @@ public:
     sofa::helper::vector< double > compute3PointsBarycoefs( const sofa::defaulttype::Vec<3,double> &p,
             unsigned int ind_p1,
             unsigned int ind_p2,
-            unsigned int ind_p3) const;
+            unsigned int ind_p3,
+            bool bRest=false) const;
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
