@@ -115,6 +115,9 @@ DEFINES += SOFA_HAVE_GLEW
 # On Windows, the path where boost is install and the suffix of the dlls should be specified
 # BOOST_ROOT = "C:\Code\boost\boost_1_46_1"
 # BOOST_SUFFIX = -vc90-mt-1_46_1
+# on some Unix setups, boost headers and libs are not located in the same place (ex: on mac using macports)
+# BOOST_ROOT_HEADERS = /opt/local/include
+# BOOST_ROOT_LIBS = /opt/local/lib
 
 # Uncomment if you want Python scripting support in sofa
 # DEFINES += SOFA_HAVE_PYTHON
