@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+#include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
@@ -142,7 +143,9 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     char *nodeName;
     if (!PyArg_ParseTuple(args, "s",&nodeName))
         return 0;
-    return SP_BUILD_PYSPTR(obj->createChild(nodeName).get());
+    Node* child = obj->createChild(nodeName).get();
+    ScriptEnvironment::nodeCreatedByScript(child);
+    return SP_BUILD_PYSPTR(child);
 }
 
 extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
@@ -159,8 +162,13 @@ extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
     }
     node->addObject(object);
 
+    if (node->isInitialized())
+        printf("<SofaPython> WARNING Sofa.Node.addObject called on a node(%s) that is already initialized\n",node->getName().c_str());
+    if (!ScriptEnvironment::isNodeCreatedByScript(node))
+        printf("<SofaPython> WARNING Sofa.Node.addObject called on a node(%s) that is not created by the script\n",node->getName().c_str());
+
     //object->init();
-    node->init(sofa::core::ExecParams::defaultInstance());
+    // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());
 
     return Py_BuildValue("i",0);
 }
@@ -252,7 +260,6 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     dynamic_cast<Node*>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     return Py_BuildValue("i",0);
 }
-
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)

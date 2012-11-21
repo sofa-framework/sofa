@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "SceneLoaderPY.h"
 #include "PythonEnvironment.h"
+#include "ScriptEnvironment.h"
 #include "PythonMacros.h"
 
 #include <sofa/simulation/common/Simulation.h>
@@ -83,7 +84,9 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+        ScriptEnvironment::enableNodeQueuedInit(false);
         SP_CALL_MODULEFUNC(pFunc, "(O)", SP_BUILD_PYSPTR(rootNode.get()))
+        ScriptEnvironment::enableNodeQueuedInit(true);
         return rootNode;
     }
     else

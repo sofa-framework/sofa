@@ -8,7 +8,7 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	node = parentNode.createChild(name)
 	node.createObject('EulerImplicit',name='cg_odesolver',printLog='false')
 	node.createObject('CGLinearSolver',name='linear solver',iterations='25',tolerance='1.0e-9',threshold='1.0e-9')
-	object = node.createObject('MechanicalObject',name='mObject')
+	object = node.createObject('MechanicalObject',name='mObject',dx=x,dy=y,dz=z)
 	mass = node.createObject('UniformMass',name='mass',totalmass='10')
 	node.createObject('SparseGridTopology', n='4 4 4', fileTopology='mesh/Armadillo_verysimplified.obj')
 	node.createObject('HexahedronFEMForceField', youngModulus='100')
@@ -26,7 +26,8 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	SurfNode.createObject('Point')
 	SurfNode.createObject('BarycentricMapping')
 
-	object.applyTranslation(x,y,z)
+	# one can't use this function from here, as it is meant to be used at runtime, not in the graph creation phase
+	#object.applyTranslation(x,y,z)
 
 	return node
 
@@ -72,8 +73,8 @@ def createScene(rootNode):
 	floorNode.createObject('OglModel', name='FloorV', filename='mesh/floor2b.obj', texturename='textures/floor.bmp')
 
 	# make some dynamic meshes spawn...
-	for i in xrange(-2,3):
-		for j in xrange(-2, 3):
+	for i in xrange(-1,2):
+		for j in xrange(-1, 2):
 			#print 'x='+str(i)+' z='+str(j)
 			color = randomColor()
 			createArmadillo(rootNode,'Armadillo',i*20,50,j*20,color)
