@@ -122,6 +122,7 @@ public:
 
     /// Initialize the components
     void init(const core::ExecParams* params);
+    bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const core::ExecParams* params);
     /// Do one step forward in time
@@ -471,6 +472,7 @@ public:
     static Node::SPtr create( RealObject* obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
 protected:
     bool debug_;
+    bool initialized;
 
     virtual void doAddObject(core::objectmodel::BaseObject::SPtr obj);
     virtual void doRemoveObject(core::objectmodel::BaseObject::SPtr obj);
@@ -489,6 +491,7 @@ protected:
     BaseContext* _context;
 
     helper::vector<MutationListener*> listener;
+
 
 public:
 

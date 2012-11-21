@@ -52,7 +52,8 @@ SOURCES = initSofaPython.cpp \
     Binding_MechanicalObject.cpp \
     Binding_BaseMechanicalState.cpp \
     Binding_PythonScriptController.cpp \
-    SceneLoaderPY.cpp
+    SceneLoaderPY.cpp \
+    ScriptEnvironment.cpp
 
 HEADERS = initSofaPython.h \
     ScriptController.h \
@@ -79,7 +80,8 @@ HEADERS = initSofaPython.h \
     Binding_MechanicalObject.h \
     Binding_BaseMechanicalState.h \
     Binding_PythonScriptController.h \
-    SceneLoaderPY.h
+    SceneLoaderPY.h \
+    ScriptEnvironment.h
 
 README_FILE = SofaPython.txt
 

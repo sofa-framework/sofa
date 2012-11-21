@@ -31,6 +31,8 @@ using namespace sofa::core::objectmodel;
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 
+#include "ScriptEnvironment.h"
+
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
 
@@ -115,9 +117,13 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
 
     Node *node = dynamic_cast<Node*>(context);
     if (node)
-        node->init(sofa::core::ExecParams::defaultInstance());
-    else
-        obj->init();
+    {
+        //printf("<SofaPython> Sofa.Node.createObject(%s) node=%s isInitialized()=%d\n",type,node->getName().c_str(),node->isInitialized());
+        if (node->isInitialized())
+            printf("<SofaPython> WARNING Sofa.Node.createObject(%s) called on a node(%s) that is already initialized\n",type,node->getName().c_str());
+        if (!ScriptEnvironment::isNodeCreatedByScript(node))
+            printf("<SofaPython> WARNING Sofa.Node.createObject(%s) called on a node(%s) that is not created by the script\n",type,node->getName().c_str());
+    }
 
     return SP_BUILD_PYSPTR(obj.get());
 }

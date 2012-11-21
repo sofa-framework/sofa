@@ -194,7 +194,7 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
 }
 */
 
-} // namespace core
+} // namespace simulation
 
 } // namespace sofa
 

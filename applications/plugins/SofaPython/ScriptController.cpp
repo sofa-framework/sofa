@@ -24,10 +24,15 @@
 ******************************************************************************/
 
 #include "ScriptController.h"
+#include "ScriptEnvironment.h"
+#include "PythonEnvironment.h"
+
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
+using namespace sofa::simulation;
 
 namespace sofa
 {
@@ -60,6 +65,8 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     // call script notifications...
     script_onLoaded( dynamic_cast<simulation::Node*>(getContext()) );
     script_createGraph( dynamic_cast<simulation::Node*>(getContext()) );
+
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::init()
@@ -67,6 +74,7 @@ void ScriptController::init()
     Controller::init();
     // init the script
     script_initGraph( dynamic_cast<simulation::Node*>(getContext()) );
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::storeResetState()
@@ -74,6 +82,7 @@ void ScriptController::storeResetState()
     Controller::storeResetState();
     // init the script
     script_storeResetState();
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::reset()
@@ -81,6 +90,7 @@ void ScriptController::reset()
     Controller::reset();
     // init the script
     script_reset();
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::cleanup()
@@ -88,16 +98,19 @@ void ScriptController::cleanup()
     Controller::cleanup();
     // init the script
     script_cleanup();
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onBeginAnimationStep(const double dt)
 {
     script_onBeginAnimationStep(dt);
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onEndAnimationStep(const double dt)
 {
     script_onEndAnimationStep(dt);
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
@@ -133,16 +146,19 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
         break;
 
     }
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
 {
     script_onKeyPressed(evt->getKey());
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
 {
     script_onKeyReleased(evt->getKey());
+    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
@@ -150,6 +166,7 @@ void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
     script_onGUIEvent(event->getControlID().c_str(),
             event->getValueName().c_str(),
             event->getValue().c_str());
+    ScriptEnvironment::initScriptNodes();
 }
 
 
@@ -158,6 +175,7 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     if (dynamic_cast<core::objectmodel::ScriptEvent *>(event))
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
+        ScriptEnvironment::initScriptNodes();
     }
     else Controller::handleEvent(event);
 }

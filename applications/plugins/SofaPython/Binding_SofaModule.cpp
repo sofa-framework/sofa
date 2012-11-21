@@ -50,6 +50,8 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         return 0;
     }
 
+    printf("<SofaPython> WARNING Sofa.createObject is deprecated; use Sofa.Node.createObject instead.\n");
+
     // temporarily, the name is set to the type name.
     // if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);

@@ -106,6 +106,7 @@ Node::Node(const std::string& name)
 
     , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
     , debug_(false)
+    , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
@@ -173,6 +174,7 @@ void Node::init(const core::ExecParams* params)
 {
     //     cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::InitVisitor>(params);
+
     //     cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
@@ -837,6 +839,7 @@ void Node::bwdInit()
 
 void Node::initialize()
 {
+    initialized = true;  // flag telling is the node is initialized
     //cerr<<"Node::initialize()"<<endl;
 
     initVisualContext();
@@ -866,6 +869,7 @@ void Node::initialize()
     //for (Sequence<Node>::iterator it = child.begin(); it != child.end(); it++) {
     //    (*it)->init();
     //}
+
 }
 
 void Node::updateContext()
