@@ -3,6 +3,14 @@ contains(DEFINES, SOFA_HAVE_BOOST){
     INCLUDEPATH *= $$BOOST_ROOT
     LIBS *= -L$$BOOST_ROOT/stage/lib/ -L$$BOOST_ROOT/lib/
   }
+
+  !isEmpty(BOOST_ROOT_HEADERS) {
+    INCLUDEPATH *= $$BOOST_ROOT_HEADERS
+  }
+  !isEmpty(BOOST_ROOT_LIBS) {
+    LIBS *= -L$$BOOST_ROOT_LIBS
+  }
+
   !win32 {	
 	LIBS *= -l$${BOOST_PREFIX}boost_thread$$BOOST_SUFFIX -l$${BOOST_PREFIX}boost_system$$BOOST_SUFFIX
 	}
