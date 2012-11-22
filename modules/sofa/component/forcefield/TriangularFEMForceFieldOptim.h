@@ -50,7 +50,7 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class SOFA_SIMPLE_FEM_API TriangularFEMForceFieldOptim;
+class TriangularFEMForceFieldOptim;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
@@ -76,7 +76,7 @@ public:
 */
 
 template<class DataTypes>
-class SOFA_SIMPLE_FEM_API TriangularFEMForceFieldOptim : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceFieldOptim : public core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceFieldOptim, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
