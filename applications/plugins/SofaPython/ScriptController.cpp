@@ -66,7 +66,7 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     script_onLoaded( dynamic_cast<simulation::Node*>(getContext()) );
     script_createGraph( dynamic_cast<simulation::Node*>(getContext()) );
 
-    ScriptEnvironment::initScriptNodes();
+ //   ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::init()
@@ -74,7 +74,7 @@ void ScriptController::init()
     Controller::init();
     // init the script
     script_initGraph( dynamic_cast<simulation::Node*>(getContext()) );
-    ScriptEnvironment::initScriptNodes();
+//    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::storeResetState()
