@@ -138,6 +138,14 @@ public:
     virtual void setLightingEnabled(bool _isAnabled) = 0 ;
     /// @}
 
+
+    /// @name Overlay methods
+
+    /// draw 2D text at position (x,y) from top-left corner
+    virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text ) = 0;
+
+    /// @}
+
     virtual void clear() = 0 ;
 
 
