@@ -560,6 +560,70 @@ void DrawToolGL::scale( float s )
     glScale(s,s,s);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text )
+{
+    GLint viewport[4];
+    glGetIntegerv( GL_VIEWPORT, viewport );
+
+
+    static const float letterSize = glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
+
+    float scale = fontSize / letterSize;
+
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
+
+    glPushAttrib( GL_LIGHTING_BIT );
+    glEnable( GL_COLOR_MATERIAL );
+
+    glPushAttrib( GL_ENABLE_BIT );
+    glEnable( GL_LINE_SMOOTH );
+    glEnable( GL_POLYGON_SMOOTH );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
+
+
+    glColor4f( color[0], color[1], color[2], color[3] );
+
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, viewport[2], 0, viewport[3] );
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+
+    glTranslated(x,viewport[3]-y-fontSize,0);
+
+
+    glScalef( scale, scale, scale );
+
+    glLineWidth( fontSize/20.0 );
+
+    for( const char*c = text ; *c ; ++c )
+    {
+        glutStrokeCharacter ( GLUT_STROKE_ROMAN, *c );
+    }
+
+    glPopAttrib(); // GL_ENABLE_BIT
+    glPopAttrib(); // GL_LIGHTING_BIT
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+}
+
+
+
 } // namespace visual
 
 } // namespace core

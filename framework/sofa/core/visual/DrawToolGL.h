@@ -116,6 +116,8 @@ public:
     virtual void multMatrix(float* glTransform );
     virtual void scale( float s );
 
+    virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text );
+
 
 protected:
 
