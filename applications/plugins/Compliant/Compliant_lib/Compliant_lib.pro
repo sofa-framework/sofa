@@ -37,7 +37,7 @@ win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$
 win32 {
 SOFA_CHOLMOD_PATH = ../../../../extlibs/SuiteSparse/cholmod
 INCLUDEPATH += $$SOFA_CHOLMOD_PATH/Include
-LIBPATH += $$SOFA_CHOLMOD_PATH/Lib
+QMAKE_LIBDIR += $$SOFA_CHOLMOD_PATH/Lib
 LIBS += -lamd
 LIBS += -llapack
 LIBS += -lblas

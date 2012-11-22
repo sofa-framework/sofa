@@ -31,8 +31,11 @@ using namespace core::behavior;
 SOFA_DECL_CLASS(ComplianceSolver);
 int ComplianceSolverClass = core::RegisterObject("A simple explicit time integrator").add< ComplianceSolver >();
 
-
-#define __METHOD__ ( std::string(this->getClassName()) + "::" + __func__)
+#ifdef _MSC_VER
+	#define __METHOD__ ( std::string(this->getClassName()) + "::" + __FUNCTION__)
+#else
+	#define __METHOD__ ( std::string(this->getClassName()) + "::" + __func__)
+#endif
 
 
 
