@@ -22,7 +22,7 @@ unix {
 
 win32 {
 	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Include
-	LIBPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Lib
+	QMAKE_LIBDIR += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Lib
 }
 
 load(sofa/post)
