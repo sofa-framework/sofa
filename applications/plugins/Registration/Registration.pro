@@ -10,6 +10,7 @@ DEFINES += SOFA_BUILD_REGISTRATION
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
+INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
 
 HEADERS += \
         initRegistration.h \
