@@ -89,6 +89,9 @@ public:
     typedef typename Inherit::IndTypes IndTypes;
     typedef typename Inherit::waInd waInd;
     Data< IndTypes > f_voronoi;
+
+    typedef Vec<3,int> iCoord;
+    typedef std::pair<Real,iCoord > DistanceToPoint;
     //@}
 
     /** @name  Options */
@@ -126,15 +129,6 @@ public:
         CImg<DistT>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<DistT>::max();
 
-        // compute voronoi and distances based on nodes
-        typedef sofa::defaulttype::Vec<3,int> iCoord;
-        typedef std::pair<Real,iCoord > DistanceToPoint;
-        std::set<DistanceToPoint> trial;                // list of seed points
-        for(unsigned int i=0; i<parent.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, inT.ref(), parent[i], i+1);
-
-        if(useDijkstra.getValue()) dijkstra<Real,T>(trial,dist, voronoi, voxelsize , biasFactor);
-        else fastMarching<Real,T>(trial,dist, voronoi, voxelsize ,biasFactor );
-
         // init indices and weights images
         unsigned int nbref=this->f_nbRef.getValue();
         dim[3]=nbref;
@@ -144,116 +138,28 @@ public:
         waDist weightData(this->f_w);         weightData->setDimensions(dim);
         CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
 
-        // compute weights
-        if(this->method.getValue().getSelectedId() == DISTANCE)
+        vector<iCoord> parentiCoord;
+        for(unsigned int i=0; i<parent.size(); i++)
         {
-            // compute weight of each parent
-            for(unsigned int i=0; i<parent.size(); i++)
-            {
-                DistT dmax=0;
-                cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1) if(dmax<dist(x,y,z)) dmax=dist(x,y,z);
-
-                // distances from voronoi border
-                CImg<DistT> distB=dist;  cimg_foroff(distB,off) if(distB[off]!=-1) distB[off]=dmax;
-                CImg<IndT> voronoiP=voronoi;
-                cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1)
-                {
-                    bool border=false;  if(x!=0 && voronoi(x-1,y,z)!=i+1  && voronoi(x-1,y,z)!=0) border=true; else if(x!=voronoi.width()-1 && voronoi(x+1,y,z)!=i+1 && voronoi(x+1,y,z)!=0) border=true; else if(y!=0 && voronoi(x,y-1,z)!=i+1 && voronoi(x,y-1,z)!=0) border=true; else if(y!=voronoi.height()-1 && voronoi(x,y+1,z)!=i+1 && voronoi(x,y+1,z)!=0) border=true; else if(z!=0 && voronoi(x,y,z-1)!=i+1 && voronoi(x,y,z-1)!=0) border=true; else if(z!=voronoi.depth()-1 && voronoi(x,y,z+1)!=i+1 && voronoi(x,y,z+1)!=0) border=true;
-                    if(border)
-                    {
-                        distB(x,y,z)=0;
-                        trial.insert( DistanceToPoint(0.,iCoord(x,y,z)) );
-                    }
-                }
-                if(useDijkstra.getValue()) dijkstra<Real,T>(trial,distB, voronoiP, voxelsize , biasFactor);
-                else fastMarching<Real,T>(trial,distB, voronoiP, voxelsize ,biasFactor );
-
-                // extend voronoi to 2*dmax
-                dmax*=(DistT)2.;
-                CImg<DistT> distP=dist;  cimg_foroff(distP,off) if(distP[off]!=-1) distP[off]=dmax;
-                AddSeedPoint<Real>(trial,distP,voronoiP, inT.ref(), parent[i], i+1);
-                if(useDijkstra.getValue()) dijkstra<Real,T>(trial,distP, voronoiP, voxelsize , biasFactor);
-                else fastMarching<Real,T>(trial,distP, voronoiP, voxelsize ,biasFactor );
-                // compute weight as distance ratio
-                cimg_forXYZ(voronoiP,x,y,z) if(voronoiP(x,y,z)==i+1)
-                {
-                    DistT w;
-                    if(voronoi(x,y,z)==i+1) w=(DistT)0.5*((DistT)1. + distB(x,y,z)/(distP(x,y,z)+distB(x,y,z))); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    else w=(DistT)0.5*((DistT)1. - distB(x,y,z)/(distP(x,y,z)-distB(x,y,z))); // outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                    if(w<0) w=0; else if(w>(DistT)1.) w=(DistT)1.;
-                    // insert in weights
-                    unsigned int j=0;
-                    while(j!=nbref && weights(x,y,z,j)>=w) j++;
-                    if(j!=nbref)
-                    {
-                        if(j!=nbref-1) for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); }
-                        weights(x,y,z,j)=w;
-                        indices(x,y,z,j)=i+1;
-                    }
-                }
-            }
-            // normalize
-            cimg_forXYZ(voronoi,x,y,z)
-                    if(voronoi(x,y,z))
-            {
-                DistT totW=0;
-                cimg_forC(weights,c) totW+=weights(x,y,z,c);
-                if(totW) cimg_forC(weights,c) weights(x,y,z,c)/=totW;
-            }
-        }
-        else if(this->method.getValue().getSelectedId() == LAPLACE || this->method.getValue().getSelectedId() == SIBSON)
-        {
-            CImg<IndT> voronoiPt;
-            CImg<DistT> distPt;
-            unsigned int indexPt=parent.size()+1;
-
-            cimg_forXYZ(voronoi,x,y,z)
-            if(voronoi(x,y,z))
-            {
-                // compute updated voronoi including voxel (x,y,z)
-                voronoiPt=voronoi;   voronoiPt(x,y,z)=indexPt;
-                distPt=dist;         distPt(x,y,z)=0;
-                trial.insert( DistanceToPoint(0.,iCoord(x,y,z)) );
-
-                if(useDijkstra.getValue()) dijkstra<Real,T>(trial,distPt, voronoiPt, voxelsize , biasFactor);
-                else fastMarching<Real,T>(trial,distPt, voronoiPt, voxelsize,biasFactor );
-
-                // compute Natural Neighbor Data based on neighboring voronoi cells
-                NaturalNeighborDataMap dat=getNaturalNeighborData(indexPt,distPt,voronoiPt,dist,voronoi,voxelsize);
-
-                if (this->method.getValue().getSelectedId() == LAPLACE)   // replace vol (SIBSON) by surf/dist coordinates (LAPLACE)
-                {
-                    for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ )
-                        if((*it).second.dist==0) (*it).second.vol=std::numeric_limits<Real>::max();
-                        else (*it).second.vol=(*it).second.surf/(*it).second.dist;
-                }
-
-                // prune to nbref if necessary (nb of natural neighbors >nbref)
-                while(dat.size()>nbref)
-                {
-                    Real vmin=std::numeric_limits<Real>::max(); unsigned int key=0;
-                    for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ ) if((*it).second.vol<vmin) key=(*it).first;
-                    dat.erase(key);
-                }
-
-                // compute weights based on Natural Neighbor coordinates
-                Real total=0;
-                for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ ) total+=(*it).second.vol;
-                if(total)
-                {
-                    int count=0;
-                    for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ )
-                    {
-                        weights(x,y,z,count)=(*it).second.vol/total;
-                        indices(x,y,z,count)=(*it).first;
-                        count++;
-                    }
-                }
-            }
+            Coord p = inT->toImage(parent[i]);
+            parentiCoord.push_back(iCoord(round(p[0]),round(p[1]),round(p[2])));
         }
 
+        // compute voronoi and distances based on nodes
+        std::set<DistanceToPoint> trial;                // list of seed points
+        for(unsigned int i=0; i<parent.size(); i++)
+        {
+            trial.insert( DistanceToPoint(0.,parentiCoord[i]) );
+            voronoi(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=i+1;
+            dist(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=0;
+        }
+        if(useDijkstra.getValue()) dijkstra<Real,T>(trial,dist, voronoi, voxelsize , biasFactor); else fastMarching<Real,T>(trial,dist, voronoi, voxelsize ,biasFactor );
 
+        // compute weights from voronoi
+        if(this->method.getValue().getSelectedId() == DISTANCE)  ComputeWeigths_DistanceRatio(indices,weights,voronoi,dist,biasFactor,parentiCoord);
+        else ComputeWeigths_NaturalNeighbors(indices,weights,voronoi,dist,biasFactor);
     }
+
 
 protected:
     VoronoiShapeFunction()
@@ -284,6 +190,125 @@ protected:
     }
 
 
+
+    void ComputeWeigths_DistanceRatio(CImg<IndT>& indices, CImg<DistT>& weights, const CImg<IndT>& voronoi, const CImg<DistT>& dist, const CImg<T>* biasFactor, const vector<iCoord> &parentiCoord )
+    {
+        // get data
+        const unsigned int nbref=this->f_nbRef.getValue();
+        const Vec<3,Real>& voxelsize=this->transform.getValue().getScale();
+
+        // compute weight of each parent
+        for(unsigned int i=0; i<parentiCoord.size(); i++)
+        {
+            std::set<DistanceToPoint> trial;                // list of seed points
+            DistT dmax=0;
+            cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1) if(dmax<dist(x,y,z)) dmax=dist(x,y,z);
+
+            // distances from voronoi border
+            CImg<DistT> distB=dist;  cimg_foroff(distB,off) if(distB[off]!=-1) distB[off]=dmax;
+            CImg<IndT> voronoiP=voronoi;
+            cimg_forXYZ(voronoi,x,y,z) if(voronoi(x,y,z)==i+1)
+            {
+                bool border=false;  if(x!=0 && voronoi(x-1,y,z)!=i+1  && voronoi(x-1,y,z)!=0) border=true; else if(x!=voronoi.width()-1 && voronoi(x+1,y,z)!=i+1 && voronoi(x+1,y,z)!=0) border=true; else if(y!=0 && voronoi(x,y-1,z)!=i+1 && voronoi(x,y-1,z)!=0) border=true; else if(y!=voronoi.height()-1 && voronoi(x,y+1,z)!=i+1 && voronoi(x,y+1,z)!=0) border=true; else if(z!=0 && voronoi(x,y,z-1)!=i+1 && voronoi(x,y,z-1)!=0) border=true; else if(z!=voronoi.depth()-1 && voronoi(x,y,z+1)!=i+1 && voronoi(x,y,z+1)!=0) border=true;
+                if(border)
+                {
+                    distB(x,y,z)=0;
+                    trial.insert( DistanceToPoint(0.,iCoord(x,y,z)) );
+                }
+            }
+            if(this->useDijkstra.getValue()) dijkstra<Real,T>(trial,distB, voronoiP, voxelsize , biasFactor); else fastMarching<Real,T>(trial,distB, voronoiP, voxelsize ,biasFactor );
+
+            // extend voronoi to 2*dmax
+            dmax*=(DistT)2.;
+            CImg<DistT> distP=dist;  cimg_foroff(distP,off) if(distP[off]!=-1) distP[off]=dmax;
+
+            voronoiP(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=i+1;
+            distP(parentiCoord[i][0],parentiCoord[i][1],parentiCoord[i][2])=0;
+            trial.insert( DistanceToPoint(0.,parentiCoord[i]) );
+
+            if(this->useDijkstra.getValue()) dijkstra<Real,T>(trial,distP, voronoiP, voxelsize , biasFactor); else fastMarching<Real,T>(trial,distP, voronoiP, voxelsize ,biasFactor );
+
+            // compute weight as distance ratio
+            cimg_forXYZ(voronoiP,x,y,z) if(voronoiP(x,y,z)==i+1)
+            {
+                DistT w;
+                if(voronoi(x,y,z)==i+1) w=(DistT)0.5*((DistT)1. + distB(x,y,z)/(distP(x,y,z)+distB(x,y,z))); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                else w=(DistT)0.5*((DistT)1. - distB(x,y,z)/(distP(x,y,z)-distB(x,y,z))); // outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                if(w<0) w=0; else if(w>(DistT)1.) w=(DistT)1.;
+                // insert in weights
+                unsigned int j=0;
+                while(j!=nbref && weights(x,y,z,j)>=w) j++;
+                if(j!=nbref)
+                {
+                    if(j!=nbref-1) for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); }
+                    weights(x,y,z,j)=w;
+                    indices(x,y,z,j)=i+1;
+                }
+            }
+        }
+        // normalize
+        cimg_forXYZ(voronoi,x,y,z)
+                if(voronoi(x,y,z))
+        {
+            DistT totW=0;
+            cimg_forC(weights,c) totW+=weights(x,y,z,c);
+            if(totW) cimg_forC(weights,c) weights(x,y,z,c)/=totW;
+        }
+    }
+
+
+    void ComputeWeigths_NaturalNeighbors(CImg<IndT>& indices, CImg<DistT>& weights, const CImg<IndT>& voronoi, const CImg<DistT>& dist, const CImg<T>* biasFactor)
+    {
+        // get data
+        const unsigned int nbref=this->f_nbRef.getValue();
+        const Vec<3,Real>& voxelsize=this->transform.getValue().getScale();
+        unsigned int indexPt=this->f_position.getValue().size()+1;
+
+        cimg_forXYZ(voronoi,x,y,z)
+                if(voronoi(x,y,z))
+        {
+            // compute updated voronoi including voxel (x,y,z)
+            std::set<DistanceToPoint> trial;                // list of seed points
+            trial.insert( DistanceToPoint(0.,iCoord(x,y,z)) );
+            CImg<IndT> voronoiPt=voronoi;   voronoiPt(x,y,z)=indexPt;
+            CImg<DistT> distPt=dist;        distPt(x,y,z)=0;
+
+            if(this->useDijkstra.getValue()) dijkstra<Real,T>(trial,distPt, voronoiPt, voxelsize , biasFactor); else fastMarching<Real,T>(trial,distPt, voronoiPt, voxelsize,biasFactor );
+
+            // compute Natural Neighbor Data based on neighboring voronoi cells
+            NaturalNeighborDataMap dat=getNaturalNeighborData(indexPt,distPt,voronoiPt,dist,voronoi,voxelsize);
+
+            if (this->method.getValue().getSelectedId() == LAPLACE)   // replace vol (SIBSON) by surf/dist coordinates (LAPLACE)
+            {
+                for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ )
+                    if((*it).second.dist==0) (*it).second.vol=std::numeric_limits<Real>::max();
+                    else (*it).second.vol=(*it).second.surf/(*it).second.dist;
+            }
+
+            // prune to nbref if necessary (nb of natural neighbors >nbref)
+            while(dat.size()>nbref)
+            {
+                Real vmin=std::numeric_limits<Real>::max(); unsigned int key=0;
+                for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ ) if((*it).second.vol<vmin) key=(*it).first;
+                dat.erase(key);
+            }
+
+            // compute weights based on Natural Neighbor coordinates
+            Real total=0;
+            for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ ) total+=(*it).second.vol;
+            if(total)
+            {
+                int count=0;
+                for ( typename NaturalNeighborDataMap::iterator it=dat.begin() ; it != dat.end(); it++ )
+                {
+                    weights(x,y,z,count)=(*it).second.vol/total;
+                    indices(x,y,z,count)=(*it).first;
+                    count++;
+                }
+            }
+        }
+    }
+
     /**
     * returns Natural Neighbor Interpolant coordinates of a point @param index: http://dilbert.engr.ucdavis.edu/~suku/nem/
     * from :
@@ -301,7 +326,7 @@ protected:
     };
     typedef std::map<unsigned int, NaturalNeighborData> NaturalNeighborDataMap;
 
-    NaturalNeighborDataMap getNaturalNeighborData(const unsigned int index, const CImg<DistT>& distancesPt,const CImg<IndT>& voronoiPt, const CImg<DistT>& distances,const CImg<IndT>& voronoi, const sofa::defaulttype::Vec<3,Real>& voxelsize)
+    NaturalNeighborDataMap getNaturalNeighborData(const unsigned int index, const CImg<DistT>& distancesPt,const CImg<IndT>& voronoiPt, const CImg<DistT>& distances,const CImg<IndT>& voronoi, const Vec<3,Real>& voxelsize)
     {
         NaturalNeighborDataMap data;
         Real pixelvol=voxelsize[0]*voxelsize[1]*voxelsize[2];
@@ -309,7 +334,7 @@ protected:
         //bool border;
 
         cimg_forXYZ(voronoiPt,x,y,z)
-        if(voronoiPt(x,y,z)==index)
+                if(voronoiPt(x,y,z)==index)
         {
             unsigned int node=voronoi(x,y,z);
             if(!data.count(node)) data[node]=NaturalNeighborData();
@@ -325,6 +350,8 @@ protected:
         }
         return data;
     }
+
+
 };
 
 
