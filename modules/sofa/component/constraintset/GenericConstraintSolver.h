@@ -82,15 +82,17 @@ public:
 
 class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
+public:
+	SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
+
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
-
-public:
-    SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
+    
 protected:
     GenericConstraintSolver();
     virtual ~GenericConstraintSolver();
+
 public:
     void init();
 
@@ -109,13 +111,11 @@ public:
     ConstraintProblem* getConstraintProblem();
     void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
 
-private:
+protected:
 
     GenericConstraintProblem cp1, cp2, cp3;
     GenericConstraintProblem *current_cp, *last_cp;
-    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-
-    simulation::Node *context;
+    std::vector< core::behavior::BaseConstraintCorrection* > constraintCorrections;
 
     CTime timer;
     CTime timerTotal;
@@ -123,6 +123,8 @@ private:
     double time;
     double timeTotal;
     double timeScale;
+
+	simulation::Node *context;
 };
 
 
