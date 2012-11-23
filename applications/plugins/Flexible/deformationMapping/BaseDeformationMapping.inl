@@ -216,6 +216,8 @@ void BaseDeformationMapping<JacobianBlockType>::reinit()
 {
     if(this->assembleJ.getValue()) updateJ();
 
+    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+
     Inherit::reinit();
 }
 
@@ -280,6 +282,8 @@ void BaseDeformationMapping<JacobianBlockType>::updateK(const OutVecDeriv& child
 template <class JacobianBlockType>
 void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
+    if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
 //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 

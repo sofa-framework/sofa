@@ -606,9 +606,6 @@ struct PolynomialFitFactors
         unsigned int num_nodes = val.rows(); if(!num_nodes) return;
 
         unsigned int dim=dimFromOrder(order);
-        //        a.resize(dim,dim); a.setZero();
-        //        b.resize(num_nodes,dim);  b.setZero();
-        //        c.resize(num_nodes,num_nodes);  c.setZero();
 
         unsigned int volDim=dimFromOrder(volOrder);
         vol.resize(volDim); vol.setZero();
@@ -754,9 +751,9 @@ struct PolynomialFitFactors
         unsigned int dim = a.rows(); if(!dim) return;
 
         index.resize(num_nodes); w.resize(num_nodes); dw.resize(num_nodes); ddw.resize(num_nodes);
-        unsigned int i=0;
         for(std::map<unsigned int , unsigned int>::iterator it=parentsToNodeIndex.begin(); it!=parentsToNodeIndex.end(); it++)
         {
+            unsigned int i = it->second;
             index[i] = it->first;
             w[i]=coeff(i,0);
             if(dim>3)  // = Coeff * CompleteBasisDeriv(0,0,0);
@@ -774,7 +771,6 @@ struct PolynomialFitFactors
                 ddw[i](1,2)=ddw[i](2,1)=coeff(i,8);
                 ddw[i](2,2)=(coeff(i,9)*(real)2.);
             }
-            i++;
         }
     }
 
