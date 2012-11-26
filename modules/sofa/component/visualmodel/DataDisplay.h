@@ -22,9 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initOpenGLVisual.h>
+#ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
+#define SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
 
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/misc/ColorMap.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 namespace sofa
 {
@@ -32,33 +37,57 @@ namespace sofa
 namespace component
 {
 
-
-void initOpenGLVisual()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+
+class SOFA_OPENGL_VISUAL_API DataDisplay : public core::visual::VisualModel, public ExtVec3fState
+{
+public:
+    SOFA_CLASS2(DataDisplay, core::visual::VisualModel, ExtVec3fState);
+
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+
+    typedef helper::vector<Real> VecPointData;
+
+protected:
+
+    DataDisplay()
+        : f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
+          , state(NULL)
+          , topology(NULL)
+    {}
+
+    virtual ~DataDisplay() {
+        glDeleteTextures(1, &texture);
     }
-}
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(OglViewport)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(DataDisplay)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTetrahedralModel)
-SOFA_LINK_CLASS(OglTexture)
-#endif
+public:
 
+    Data<VecPointData> f_pointData;
+
+    misc::ColorMap *colorMap;
+    core::State<DataTypes> *state;
+    core::topology::BaseMeshTopology* topology;
+    GLuint texture;
+
+    void init();
+    //void reinit();
+
+    //void initVisual() { initTextures(); }
+    //void clearVisual() { }
+    //void initTextures() {}
+    void drawVisual(const core::visual::VisualParams* vparams);
+    //void drawTransparent(const VisualParams* /*vparams*/)
+    void updateVisual();
+
+    void prepareLegend();
+
+};
+
+} // namespace visualmodel
 
 } // namespace component
 
 } // namespace sofa
+
+#endif // #ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
