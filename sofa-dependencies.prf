@@ -75,7 +75,7 @@ declare(sofa_base_animation_loop, modules/sofa/component/sofa_base_animation_loo
 declare(sofa_base_visual, modules/sofa/component/sofa_base_visual.pro, sofa_base_topology)
 declare(sofa_loader, modules/sofa/component/sofa_loader.pro, sofatree zlib)
 declare(sofa_deformable, modules/sofa/component/sofa_deformable.pro, sofa_base_topology)
-declare(sofa_simple_fem, modules/sofa/component/sofa_simple_fem.pro, sofa_base_topology sofa_base_visual )
+declare(sofa_simple_fem, modules/sofa/component/sofa_simple_fem.pro, sofa_base_topology sofa_misc)
 declare(sofa_object_interaction, modules/sofa/component/sofa_object_interaction.pro, sofa_deformable)
 declare(sofa_explicit_ode_solver, modules/sofa/component/sofa_explicit_ode_solver.pro, sofatree)
 declare(sofa_implicit_ode_solver, modules/sofa/component/sofa_implicit_ode_solver.pro, sofatree)

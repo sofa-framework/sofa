@@ -6,11 +6,13 @@ TARGET = sofa_misc
 DEFINES += SOFA_BUILD_MISC
 
 HEADERS += initMisc.h \
-           misc/MeshTetraStuffing.h
+           misc/MeshTetraStuffing.h \
+           misc/ColorMap.h
 
 SOURCES += initMisc.cpp \
-           misc/MeshTetraStuffing.cpp
-
+           misc/MeshTetraStuffing.cpp \
+           misc/ColorMap.cpp
+  
 
 contains(DEFINES,SOFA_SMP){
 HEADERS += linearsolver/ParallelCGLinearSolver.h \
