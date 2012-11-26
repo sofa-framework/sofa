@@ -98,7 +98,7 @@ declare(sofa_eulerian_fluid, modules/sofa/component/sofa_eulerian_fluid.pro, sof
 declare(sofa_volumetric_data, modules/sofa/component/sofa_volumetric_data.pro, sofa_base_collision sofa_mesh_collision  sofa_user_interaction miniFlowVR)
 declare(sofa_non_uniform_fem, modules/sofa/component/sofa_non_uniform_fem.pro, sofa_simple_fem sofa_opengl_visual sofa_dense_solver sofa_volumetric_data)
 declare(sofa_pardiso_solver, modules/sofa/component/sofa_pardiso_solver.pro, sofatree)
-declare(sofa_misc_topology, modules/sofa/component/sofa_misc_topology.pro, sofa_non_uniform_fem zlib miniFlowVR)
+declare(sofa_misc_topology, modules/sofa/component/sofa_misc_topology.pro, zlib miniFlowVR sofa_base_topology)
 declare(sofa_misc_mapping, modules/sofa/component/sofa_misc_mapping.pro, sofa_simple_fem sofa_rigid sofa_eigen2_solver )
 declare(sofa_misc_forcefield, modules/sofa/component/sofa_misc_forcefield.pro, sofa_deformable sofa_boundary_condition sofa_misc_topology)
 declare(sofa_misc_fem, modules/sofa/component/sofa_misc_fem.pro, sofa_simple_fem)
