@@ -23,6 +23,7 @@ unix {
 win32 {
 	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Include
 	QMAKE_LIBDIR += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Lib
+	LIBS *= -lboost_unit_test_framework-vc90-mt-1_50
 }
 
 load(sofa/post)
