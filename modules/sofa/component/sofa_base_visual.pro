@@ -11,8 +11,7 @@ HEADERS += initBaseVisual.h \
            visualmodel/RecordedCamera.h \
            visualmodel/VisualModelImpl.h \
 		   visualmodel/VisualStyle.h \
-		   visualmodel/VisualTransform.h \
-		   visualmodel/ColorMap.h
+		   visualmodel/VisualTransform.h
 
 SOURCES += initBaseVisual.cpp \
            visualmodel/BaseCamera.cpp \
@@ -20,8 +19,7 @@ SOURCES += initBaseVisual.cpp \
            visualmodel/RecordedCamera.cpp \
            visualmodel/VisualModelImpl.cpp \
 		   visualmodel/VisualStyle.cpp \
-		   visualmodel/VisualTransform.cpp \
-		   visualmodel/ColorMap.cpp
+		   visualmodel/VisualTransform.cpp
 
 
 # Make sure there are no cross-dependencies

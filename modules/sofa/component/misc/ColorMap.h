@@ -22,10 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
-#define SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
+#ifndef SOFA_COMPONENT_MISC_COLORMAP_H
+#define SOFA_COMPONENT_MISC_COLORMAP_H
 
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/Vec.h>
@@ -37,22 +40,22 @@ namespace sofa
 namespace component
 {
 
-namespace visualmodel
+namespace misc
 {
 
-class SOFA_BASE_VISUAL_API ColorMap
+class SOFA_MISC_API ColorMap : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    typedef defaulttype::Vec4f Color;
+    SOFA_CLASS(ColorMap, sofa::core::objectmodel::BaseObject);
+
+    typedef defaulttype::Vec3f Color3;  // Color tripplet
+    typedef defaulttype::Vec4f Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
 
-    std::string name;
-    VecColor entries;
+protected:
+    ColorMap();
 
-    ColorMap(const std::string& name="");
-
-    static ColorMap* getDefault();
-
+public:
     template<class Real>
     class evaluator
     {
@@ -79,6 +82,24 @@ public:
         const Real vscale;
     };
 
+    Data<unsigned int> f_paletteSize;
+    Data<sofa::helper::OptionsGroup> f_colorScheme;
+
+    VecColor entries;
+
+    void initOld(const std::string &data);
+
+    void init() { reinit(); }
+    void reinit();
+
+    unsigned int getNbColors() { return entries.size(); }
+    Color getColor(unsigned int i) {
+        if (i < entries.size()) return entries[i];
+        return Color(0.0, 0.0, 0.0, 0.0);
+    }
+
+    static ColorMap* getDefault();
+
     template<class Real>
     evaluator<Real> getEvaluator(Real vmin, Real vmax) const
     {
@@ -88,10 +109,12 @@ public:
             return evaluator<Real>(getDefault(), vmin, vmax);
     }
 
+    Color3 hsv2rgb(const Color3 &hsv);
+
     inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
     {
-        if (m.name.empty()) out << "\"\"";
-        else out << m.name;
+        if (m.getName().empty()) out << "\"\"";
+        else out << m.getName();
         out << " ";
         out << m.entries;
         return out;
@@ -99,14 +122,16 @@ public:
 
     inline friend std::istream& operator >> (std::istream& in, ColorMap& m )
     {
-        in >> m.name;
-        if (m.name == "\"\"") m.name = "";
+        std::string name;
+        in >> name;
+        if (name == "\"\"") m.setName("");
+        else m.setName(name);
         in >> m.entries;
         return in;
     }
 };
 
-} // namespace visualmodel
+} // namespace misc
 
 } // namespace component
 
