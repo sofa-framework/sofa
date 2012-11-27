@@ -22,6 +22,7 @@
 #include <image/ImageTypes.h>
 
 
+
 namespace sofa
 {
 
@@ -90,7 +91,8 @@ public:
     typedef linearsolver::CompressedRowSparseMatrix<MassType> MassMatrix; ///< the global mass matrix type
     MassMatrix m_massMatrix; ///< the global mass matrix
 
-    Data< bool > f_isLumped; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)
+
+    Data< int > f_lumping; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)  0->no, 1->by bloc, 2->diagonal matrix
 
     //@}
 
@@ -102,11 +104,13 @@ protected:
         : m_shapeFunction(NULL)
         , f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
         , f_transform( initData( &f_transform, TransformType(), "transform", "The density map transform" ) )
-        , f_isLumped( initData( &f_isLumped, false, "isLumped", "Should the mass matrix be lumped?" ) )
+        , f_lumping( initData( &f_lumping, 0, "lumping", "Should the mass matrix be lumped? 0->no, 1->by bloc, 2->diagonal matrix" ) )
         , f_printMassMatrix( initData( &f_printMassMatrix, false, "printMassMatrix", "Should the mass matrix be print in console after being precomputed?" ) )
     {}
 
-    virtual ~ImageDensityMass() {};
+    virtual ~ImageDensityMass()
+    {
+    }
 
     /// \returns a pointer to the dof rest position
     virtual const VecCoord* getX0();

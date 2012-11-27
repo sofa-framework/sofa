@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="0.3"  >
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.1"  >
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
-   
+    
+        <EulerImplicitSolver /> <CGLinearSolver  />
+<!--    <EulerExplicitSolver /> -->
     
     <Node 	name="FEM tetra NOT lumped"   >
-    <EulerImplicitSolver /> <CGLinearSolver  />
+
 <!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
 <!-- 	<Mesh name="mesh" src="@loader" /> -->
 	
@@ -28,7 +30,7 @@
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
 	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" isLumped="false"  printMassMatrix="true"/>
+	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="0"  printMassMatrix="true"/>
 		
 
         <Node 	name="behavior"   >
@@ -54,10 +56,6 @@
     
 
     <Node 	name="FEM tetra lumped"   >
-    <EulerImplicitSolver /> <CGLinearSolver  />
-<!--         <MeshGmshLoader name="loader" filename="mesh/tetra.msh" /> -->
-<!-- 	<Mesh name="mesh" src="@loader" /> -->
-	
 	
 	<Mesh name="mesh" position="0 0 0    1 0 0    0 1 0    0 0 1" edges="0 1  1 2  2 0  0 3  1 3  2 3" triangles="0 1 2   1 3 2   3 0 2  0 3 1" tetrahedra="0 1 2 3" />
 		      
@@ -75,7 +73,7 @@
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
 	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" isLumped="true"  printMassMatrix="true"/>
+	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1"  printMassMatrix="true"/>
 	
 	<!--EACH NODE OF THE TETRA SHOULD CARRY A MASS OF 41.6666... -->
 	
@@ -106,8 +104,7 @@
     
     
     
-    <Node 	name="FEM triangle" >
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+    <Node 	name="FEM triangle NOT lumped" >
 
     <Mesh name="mesh" position="3 0 0    4 0 0     3.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
     <MechanicalObject name="defoDOF" template="Vec3d"   />
@@ -121,7 +118,7 @@
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
 	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 60"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-	<ImageDensityMass  template="Vec3d,ShapeFunction2d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" isLumped="true" printMassMatrix="true" /> 
+	<ImageDensityMass  template="Vec3d,ShapeFunction2d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" /> 
     
     <!--EACH NODE OF THE TRIANGLE SHOULD CARRY A MASS OF 10 -->
 
@@ -148,7 +145,45 @@
 </Node>
 
 
+    <Node 	name="FEM triangle lumped" >
 
+    <Mesh name="mesh" position="5 0 0    6 0 0     5.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
+    <MechanicalObject name="defoDOF" template="Vec3d"   />
+    <BarycentricShapeFunction template="ShapeFunction2d"  />
+
+    <FixedConstraint indices="0 1" />
+    
+    
+    <MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
+	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 60"/>
+  <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
+	<ImageDensityMass  template="Vec3d,ShapeFunction2d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" /> 
+    
+    <!--EACH NODE OF THE TRIANGLE SHOULD CARRY A MASS OF 10 -->
+
+    <Node name="deformationNode" >
+ 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" /> 
+        <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+   	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
+            
+<!-- 	<TriangleSetTopologyContainer triangles="@../mesh.triangles" /> -->
+<!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
+	
+        <Node name="StrainNode">
+            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+	    <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" method="qr"/>
+            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
+        </Node>
+    </Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  />
+             <IdentityMapping />
+	</Node>
+
+</Node>
 
 
 
