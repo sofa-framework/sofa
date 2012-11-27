@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLORMAP_H
-#define SOFA_COMPONENT_MISC_COLORMAP_H
+#ifndef SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
+#define SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
@@ -43,7 +43,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_MISC_API ColorMap : public virtual sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API ColorMap : public virtual sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(ColorMap, sofa::core::visual::VisualModel);
