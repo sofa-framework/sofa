@@ -38,7 +38,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using sofa::component::misc::ColorMap;
+using sofa::component::visualmodel::ColorMap;
 
 SOFA_DECL_CLASS(DataDisplay)
 

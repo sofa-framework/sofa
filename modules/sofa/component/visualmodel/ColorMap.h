@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MISC_COLORMAP_H
 #define SOFA_COMPONENT_MISC_COLORMAP_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
@@ -40,13 +40,13 @@ namespace sofa
 namespace component
 {
 
-namespace misc
+namespace visualmodel
 {
 
-class SOFA_MISC_API ColorMap : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_MISC_API ColorMap : public virtual sofa::core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(ColorMap, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ColorMap, sofa::core::visual::VisualModel);
 
     typedef defaulttype::Vec3f Color3;  // Color tripplet
     typedef defaulttype::Vec4f Color;   // ... with alpha value
@@ -131,7 +131,7 @@ public:
     }
 };
 
-} // namespace misc
+} // namespace visualmodel
 
 } // namespace component
 

@@ -34,7 +34,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/misc/ColorMap.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
@@ -1831,7 +1831,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 maxStress = averageStress;
         }
 
-        misc::ColorMap::evaluator<double> evalColor = misc::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
+        visualmodel::ColorMap::evaluator<double> evalColor = visualmodel::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
         glBegin(GL_TRIANGLES);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {

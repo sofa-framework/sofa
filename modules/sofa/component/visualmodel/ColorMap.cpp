@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/misc/ColorMap.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 //#include <sofa/helper/rmath.h>
 #include <string>
 #include <iostream>
@@ -35,7 +35,7 @@ namespace sofa
 namespace component
 {
 
-namespace misc
+namespace visualmodel
 {
 
 enum { NDefaultColorMapEntries = 64 };
@@ -238,7 +238,7 @@ ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
     return rgb;
 }
 
-} // namespace misc
+} // namespace visualmodel
 
 } // namespace component
 

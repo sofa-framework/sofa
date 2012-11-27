@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
-#include <sofa/component/misc/ColorMap.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -303,7 +303,7 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    misc::ColorMap::SPtr showStressColorMapReal;
+    visualmodel::ColorMap::SPtr showStressColorMapReal;
 
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
