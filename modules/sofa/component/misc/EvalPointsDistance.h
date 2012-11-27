@@ -32,6 +32,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/helper/vector.h>
+
 #include <fstream>
 
 namespace sofa
@@ -67,6 +69,8 @@ public:
     sofa::core::objectmodel::DataFileName f_filename;
     /// Period between outputs
     Data < double > f_period;
+    /// Computed distances
+    Data < helper::vector<Real> > dist;
     /// Computed distances (mean, min, max, standard deviation)
     Data < double > distMean, distMin, distMax, distDev;
     /// Relative computed distances (mean, min, max, standard deviation)
@@ -86,8 +90,10 @@ protected:
 public:
     /// Init the computation of the distances
     virtual void init();
+    /// Update
+    virtual void reinit();
     /// Reset the computation of the distances
-    virtual void reset();
+    virtual void reset() { reinit(); };
 
     /** Distance computation */
 

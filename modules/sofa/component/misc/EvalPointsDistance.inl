@@ -48,6 +48,7 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     : f_draw( initData(&f_draw, true, "draw", "activate rendering of lines between associated points"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
+    , dist( initData(&dist, "distance", "distances (OUTPUT)"))
     , distMean( initData(&distMean, 1.0, "distMean", "mean distance (OUTPUT)"))
     , distMin( initData(&distMin, 1.0, "distMin", "min distance (OUTPUT)"))
     , distMax( initData(&distMax, 1.0, "distMax", "max distance (OUTPUT)"))
@@ -95,6 +96,15 @@ void EvalPointsDistance<DataTypes>::init()
         return;
     }
 
+    reinit();
+}
+
+//-------------------------------- reinit ----------------------------------
+template<class DataTypes>
+void EvalPointsDistance<DataTypes>::reinit()
+{
+    if (outfile)
+        delete outfile;
     const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
@@ -107,19 +117,18 @@ void EvalPointsDistance<DataTypes>::init()
         }
         else
             (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
+    } else {
+        outfile = NULL;
     }
+
     if(f_period.getValue() == 0.0)
     {
         serr << " ERROR perido must be different of zero  " << sendl;
         return;
     }
-}
 
-//-------------------------------- reset ------------------------------------
-template<class DataTypes>
-void EvalPointsDistance<DataTypes>::reset()
-{
-    lastTime = 0;
+    lastTime = -f_period.getValue();
+    eval();
 }
 
 
@@ -152,9 +161,12 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     Real rd2 = 0.0;
     int rn=0;
     Coord dx0 = x2[s2]-x0[s1];
+    helper::vector<Real> &distances = *dist.beginEdit();
+    distances.resize(n);
     for (int i=0; i<n; ++i)
     {
         Real d = (Real)(x1[s1+i]-x2[s2+i]).norm();
+        distances[i] = d;
         dsum += d;
         d2 += d*d;
         if (i==0 || d < dmin) dmin = d;
@@ -171,6 +183,8 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
             ++rn;
         }
     }
+    dist.endEdit();
+
     Real dmean = (n>0)?dsum/n : (Real)0.0;
     Real ddev = (Real)((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
     distMean.setValue(dmean);
@@ -239,7 +253,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
                     << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
                     << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
                     << sendl;
-            lastTime += f_period.getValue();
+            lastTime = time;
         }
     }
 }
