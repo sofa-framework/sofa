@@ -14,6 +14,7 @@ HEADERS += initOpenGLVisual.h \
            visualmodel/OglRenderingSRGB.h \
            visualmodel/ClipPlane.h \
            visualmodel/CompositingVisualLoop.h \
+           visualmodel/ColorMap.h \
            visualmodel/DataDisplay.h
 
 SOURCES += initOpenGLVisual.cpp \
@@ -25,6 +26,7 @@ SOURCES += initOpenGLVisual.cpp \
            visualmodel/OglRenderingSRGB.cpp \
            visualmodel/ClipPlane.cpp \
            visualmodel/CompositingVisualLoop.cpp \
+           visualmodel/ColorMap.cpp \
            visualmodel/DataDisplay.cpp
 
 contains(DEFINES,SOFA_HAVE_GLEW) {    # seems to be built without GLEW define since we include glext.h from helper/system/gl.h

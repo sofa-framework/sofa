@@ -88,7 +88,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , _topology(NULL)
-    , showStressColorMapReal(sofa::core::objectmodel::New< misc::ColorMap >())
+    , showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
     , f_poisson(initData(&f_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
@@ -606,7 +606,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         {
             maxStress = showStressMaxValue.getValue();
         }
-        misc::ColorMap::evaluator<Real> evalColor = showStressColorMapReal->getEvaluator(minStress, maxStress);
+        visualmodel::ColorMap::evaluator<Real> evalColor = showStressColorMapReal->getEvaluator(minStress, maxStress);
         if (showStressValue)
         {
             for (unsigned int i=0;i<pstresses.size();++i)

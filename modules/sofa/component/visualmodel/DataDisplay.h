@@ -28,7 +28,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/misc/ColorMap.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 namespace sofa
@@ -65,7 +65,7 @@ public:
 
     Data<VecPointData> f_pointData;
 
-    misc::ColorMap *colorMap;
+    visualmodel::ColorMap *colorMap;
     core::State<DataTypes> *state;
     core::topology::BaseMeshTopology* topology;
     GLuint texture;
