@@ -69,7 +69,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getVoxelVolume( const TransformType& transform ) const
 {
-    if( ShapeFunctionTypes::material_dimensions == 2) // for 2D shape functions, it should return an area
+    if( ShapeFunctionTypes::material_dimensions == 2 ) // for 2D shape functions, it should return an area
     {
         // todo how to find the right directions to compute the area? Would need the topology or at least the voxel neighbourhood.
         Real volume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
@@ -153,7 +153,17 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
                 if( notNull )
                 {
                     MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
-                    Mkk += JltmJk;
+
+                    if( f_lumping.getValue()==2 )
+                    {
+                        for( int w=0 ; w<Deriv::total_size ; ++w )
+                            for( int v=0 ; v<Deriv::total_size ; ++v )
+                                Mkk[w][w] += JltmJk[w][v];
+                    }
+                    else
+                        Mkk += JltmJk;
+
+
                 }
 
 
@@ -166,14 +176,29 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
                     if( notNull )
                     {
-                        if( f_isLumped.getValue() )
+                        if( f_lumping.getValue() == 2 )
                         {
                             // sum to the diagonal term on the same line
+                            MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
+                            for( int w=0 ; w<Deriv::total_size ; ++w )
+                                for( int v=0 ; v<Deriv::total_size ; ++v )
+                                    Mkk[w][w] += JltmJk[w][v];
+
+                            MassType& Mll = *m_massMatrix.wbloc(cp_l,cp_l,true);
+                            for( int w=0 ; w<Deriv::total_size ; ++w )
+                                for( int v=0 ; v<Deriv::total_size ; ++v )
+                                    Mll[w][w] += JltmJk[v][w];
+
+                        }
+                        else if( f_lumping.getValue() == 1 )
+                        {
+                            // sum to the diagonal bloc on the same line
                             MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
                             Mkk += JltmJk;
 
                             MassType& Mll = *m_massMatrix.wbloc(cp_l,cp_l,true);
                             Mll += JltmJk.transposed();
+
                         }
                         else
                         {
@@ -267,9 +292,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const 
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& , const DataVecDeriv&)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& /*acc*/, const DataVecDeriv& /*f*/)
 {
-    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
+    serr<<"ImageDensityMass::accFromF not yet implemented when not lumped matrix (need the assembled matrix inversion)"<<sendl;
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
@@ -331,9 +356,26 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix not yet implemented"<<sendl;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    BaseMatrix* m = r.matrix;
+
+    Real mFactor = (Real)mparams->mFactor();
+
+    for (unsigned int xi = 0; xi < m_massMatrix.getRowIndex().size(); ++xi)
+    {
+        typename MassMatrix::Index iN = m_massMatrix.getRowIndex()[xi] * m_massMatrix.getBlockRows();
+        typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[xi], m_massMatrix.getRowBegin()[xi+1]);
+        for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        {
+            typename MassMatrix::Index jN = m_massMatrix.getColsIndex()[xj] * m_massMatrix.getBlockCols();
+            const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[xj];
+            for (int bi = 0; bi < m_massMatrix.getBlockRows(); ++bi)
+                for (int bj = 0; bj < m_massMatrix.getBlockCols(); ++bj)
+                    m->add( iN+bi, jN+bj, b[bi][bj]*mFactor );
+        }
+    }
 }
 
 
