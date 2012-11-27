@@ -143,6 +143,20 @@ void ColorMap::initOld(const std::string &data)
     return;
 }
 
+void ColorMap::init()
+{
+    // Prepare texture for legend
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_1D, texture);
+    //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    reinit();
+}
+
+
 void ColorMap::reinit()
 {
     entries.clear();
@@ -160,7 +174,7 @@ void ColorMap::reinit()
         // TODO
     } else if (scheme == "Red to Blue") {
         // List the colors
-        float step = (2.0/3.0)/(nColors-1);
+        float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(
@@ -171,11 +185,11 @@ void ColorMap::reinit()
 
     } else if (scheme == "Blue to Red") {
         // List the colors
-        float step = (2.0/3.0)/(nColors-1);
+        float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(
-                    hsv2rgb(Color3(2.0/3.0 - i*step, 1.0, 1.0)),
+                    hsv2rgb(Color3(2.0f/3.0f - i*step, 1.0, 1.0)),
                     1.0 // alpha
                     ));
         }
@@ -187,7 +201,7 @@ void ColorMap::reinit()
         }
 
         // List the colors
-        float step = 1.0/(nColors-1);
+        float step = 1.0f/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(
@@ -196,6 +210,8 @@ void ColorMap::reinit()
                     ));
         }
     }
+
+    prepareLegend();
 }
 
 ColorMap* ColorMap::getDefault()
@@ -209,6 +225,107 @@ ColorMap* ColorMap::getDefault()
     return defaultColorMap.get();
 }
 
+void ColorMap::prepareLegend()
+{
+    int width = getNbColors();
+    unsigned char *data = new unsigned char[ width * 3 ];
+
+    for (int i=0; i<width; i++) {
+        Color c = getColor(i);
+        data[i*3+0] = (unsigned char)(c[0]*255);
+        data[i*3+1] = (unsigned char)(c[1]*255);
+        data[i*3+2] = (unsigned char)(c[2]*255);
+    }
+
+    glBindTexture(GL_TEXTURE_1D, texture);
+
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
+        data);
+
+    delete data;
+}
+
+void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
+{
+    if (!vparams->displayFlags().getShowVisualModels()) return;
+
+    //
+    // Draw legend
+    //
+    // TODO: move the code to DrawTool
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    const int vWidth = viewport[2];
+    const int vHeight = viewport[3];
+
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_1D);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    // Setup orthogonal projection
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, vWidth, vHeight, 0.0, -1.0, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glBindTexture(GL_TEXTURE_1D, texture);
+
+    //glBlendFunc(GL_ONE, GL_ONE);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord1f(1.0);
+    glVertex3f(20, 30, 0.0);
+
+    glTexCoord1f(1.0);
+    glVertex3f(30, 30, 0.0);
+
+    glTexCoord1f(0.0);
+    glVertex3f(30, 130, 0.0);
+
+    glTexCoord1f(0.0);
+    glVertex3f(20, 130, 0.0);
+
+    glEnd();
+
+    // Restore projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    // Restore model view matrix
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    // Restore state
+    glPopAttrib();
+
+    //
+    // Maximum & minimum
+    //
+
+    std::ostringstream smin, smax;
+    smin << min;
+    smax << max;
+
+    vparams->drawTool()->writeOverlayText(
+        10, 10, 14,  // x, y, size
+        Color(1.0f, 1.0f, 1.0f, 1.0f),
+        smax.str().c_str());
+
+    vparams->drawTool()->writeOverlayText(
+        10, 135, 14,  // x, y, size
+        Color(1.0f, 1.0f, 1.0f, 1.0f),
+        smin.str().c_str());
+}
+
+
 // Color space conversion routines
 
 // Hue/Saturation/Value -> Red/Green/Blue
@@ -219,12 +336,12 @@ ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
 {
     Color3 rgb(0.0, 0.0, 0.0);
 
-    double i, f;
-    f = modf(hsv[0] * 6.0, &i);
+    float i, f;
+    f = modff(hsv[0] * 6.0f, &i);
 
-    double x = hsv[2] * (1.0 - hsv[1]),
-           y = hsv[2] * (1.0 - hsv[1] * f),
-           z = hsv[2] * (1.0 - hsv[1] * (1.0 - f));
+    float x = hsv[2] * (1.0f - hsv[1]),
+           y = hsv[2] * (1.0f - hsv[1] * f),
+           z = hsv[2] * (1.0f - hsv[1] * (1.0 - f));
 
     switch ((int)i % 6) {
         case 0: rgb = Color3(hsv[2],      z,      x); break;

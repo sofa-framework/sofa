@@ -54,6 +54,9 @@ public:
 
 protected:
     ColorMap();
+    virtual ~ColorMap() {
+        glDeleteTextures(1, &texture);
+    }
 
 public:
     template<class Real>
@@ -86,11 +89,23 @@ public:
     Data<sofa::helper::OptionsGroup> f_colorScheme;
 
     VecColor entries;
+    GLuint texture;
+    double min, max;
 
     void initOld(const std::string &data);
 
-    void init() { reinit(); }
+    void init();
     void reinit();
+
+    //void initVisual() { initTextures(); }
+    //void clearVisual() { }
+    //void initTextures() {}
+    void drawVisual(const core::visual::VisualParams* vparams);
+    //void drawTransparent(const VisualParams* /*vparams*/)
+    //void updateVisual();
+
+    void prepareLegend();
+
 
     unsigned int getNbColors() { return entries.size(); }
     Color getColor(unsigned int i) {
@@ -101,12 +116,15 @@ public:
     static ColorMap* getDefault();
 
     template<class Real>
-    evaluator<Real> getEvaluator(Real vmin, Real vmax) const
+    evaluator<Real> getEvaluator(Real vmin, Real vmax)
     {
-        if (!entries.empty())
+        min = (double)vmin;
+        max = (double)vmax;
+        if (!entries.empty()) {
             return evaluator<Real>(this, vmin, vmax);
-        else
+        } else {
             return evaluator<Real>(getDefault(), vmin, vmax);
+        }
     }
 
     Color3 hsv2rgb(const Color3 &hsv);

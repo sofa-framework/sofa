@@ -48,14 +48,6 @@ int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data
 
 void DataDisplay::init()
 {
-    // Prepare texture for legend
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_1D, texture);
-    //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
     topology = this->getContext()->getMeshTopology();
     if (!topology) {
         sout << "No topology information, drawing just points." << sendl;
@@ -66,35 +58,6 @@ void DataDisplay::init()
         serr << "No ColorMap found, using default." << sendl;
         colorMap = ColorMap::getDefault();
     }
-
-    reinit();
-}
-
-void DataDisplay::updateVisual()
-{
-    // TODO: We don't have to do this every time if we can detect when ColorMap
-    // was changed.
-    prepareLegend();
-}
-
-void DataDisplay::prepareLegend()
-{
-    int width = colorMap->getNbColors();
-    unsigned char *data = new unsigned char[ width * 3 ];
-
-    for (int i=0; i<width; i++) {
-        ColorMap::Color c = colorMap->getColor(i);
-        data[i*3+0] = c[0]*255;
-        data[i*3+1] = c[1]*255;
-        data[i*3+2] = c[2]*255;
-    }
-
-    glBindTexture(GL_TEXTURE_1D, texture);
-
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-        data);
-
-    delete data;
 }
 
 void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
@@ -161,63 +124,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
-
-    //
-    // Draw legend
-    //
-    // TODO: show the min/max
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
-    const int vWidth = viewport[2];
-    const int vHeight = viewport[3];
-
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_1D);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_BLEND);
-
-    // Setup orthogonal projection
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, vWidth, vHeight, 0.0, -1.0, 1.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    glBindTexture(GL_TEXTURE_1D, texture);
-
-    //glBlendFunc(GL_ONE, GL_ONE);
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glBegin(GL_QUADS);
-
-    glTexCoord1f(1.0);
-    glVertex3f(10, 10, 0.0);
-
-    glTexCoord1f(1.0);
-    glVertex3f(20, 10, 0.0);
-
-    glTexCoord1f(0.0);
-    glVertex3f( 20, 110, 0.0);
-
-    glTexCoord1f(0.0);
-    glVertex3f(10, 110, 0.0);
-
-    glEnd();
-
-    // Restore projection matrix
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-
-    // Restore model view matrix
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-
-    // Restore state
-    glPopAttrib();
 }
 
 } // namespace visualmodel
