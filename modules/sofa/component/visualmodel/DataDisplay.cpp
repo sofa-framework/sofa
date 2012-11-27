@@ -107,7 +107,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     } else if (bDrawPointData) {
         ColorMap::evaluator<Real> eval = colorMap->getEvaluator(ptMin, ptMax);
-        // For now just triangles ...
+        // Triangles
         glBegin(GL_TRIANGLES);
         for (int i=0; i<topology->getNbTriangles(); ++i)
         {
@@ -120,6 +120,22 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     x[ t[j] ][0],
                     x[ t[j] ][1],
                     x[ t[j] ][2]);
+            }
+        }
+        glEnd();
+        // Quads
+        glBegin(GL_QUADS);
+        for (int i=0; i<topology->getNbQuads(); ++i)
+        {
+            const Quad &q = topology->getQuad(i);
+            for (int j=0; j<4; j++) {
+                Vec4f color = eval(ptData[q[j]]);
+                glColor4f(color[0], color[1], color[2], color[3]);
+                //glColor4f(1.0, 1.0, 1.0, 1.0);
+                glVertex3f(
+                    x[ q[j] ][0],
+                    x[ q[j] ][1],
+                    x[ q[j] ][2]);
             }
         }
         glEnd();

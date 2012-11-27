@@ -46,6 +46,7 @@ public:
     SOFA_CLASS2(DataDisplay, core::visual::VisualModel, ExtVec3fState);
 
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Quad     Quad;
 
     typedef helper::vector<Real> VecPointData;
 
