@@ -57,10 +57,6 @@ protected:
           , topology(NULL)
     {}
 
-    virtual ~DataDisplay() {
-        glDeleteTextures(1, &texture);
-    }
-
 public:
 
     Data<VecPointData> f_pointData;
@@ -68,7 +64,6 @@ public:
     visualmodel::ColorMap *colorMap;
     core::State<DataTypes> *state;
     core::topology::BaseMeshTopology* topology;
-    GLuint texture;
 
     void init();
     //void reinit();
@@ -78,7 +73,7 @@ public:
     //void initTextures() {}
     void drawVisual(const core::visual::VisualParams* vparams);
     //void drawTransparent(const VisualParams* /*vparams*/)
-    void updateVisual();
+    //void updateVisual();
 
     void prepareLegend();
 
