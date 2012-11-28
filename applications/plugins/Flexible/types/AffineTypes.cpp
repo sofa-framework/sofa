@@ -37,6 +37,9 @@
 
 #include <sofa/component/mass/UniformMass.inl>
 
+#include <sofa/component/misc/Monitor.inl>
+#include <sofa/component/misc/ExtraMonitor.inl>
+
 
 namespace sofa
 {
@@ -346,6 +349,43 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
     template class SOFA_Flexible_API UniformMass<Affine3Types,Affine3Mass>;
 
 } // namespace mass
+
+
+
+
+
+
+namespace misc
+{
+
+
+SOFA_DECL_CLASS( AffineMonitor )
+// Register in the Factory
+int AffineMonitorClass = core::RegisterObject("Monitoring of particles")
+        .add< Monitor<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API Monitor<defaulttype::Affine3Types>;
+
+
+SOFA_DECL_CLASS( AffineExtraMonitor )
+// Register in the Factory
+int AffineExtraMonitorClass = core::RegisterObject("Monitoring of particles")
+        .add< ExtraMonitor<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3Types>;
+
+
+
+} // namespace misc
+
+
+
+
+
+
+
+
+
+
+
 
 
 

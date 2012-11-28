@@ -589,10 +589,10 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
 
 } // namespace mass
 
+
+
+
 } // namespace component
-
-
-
 
 
 
