@@ -83,6 +83,33 @@ public:
         }
     }
 
+    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const typename Inherit::DataVecCoord& x ) const
+    {
+        double e = 0;
+        const typename Inherit::VecCoord& _x = x.getValue();
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+            case 0:
+            {
+                for( unsigned int i=0 ; i<this->material.size() ; i++ )
+                {
+                    e += this->material[i].getPotentialEnergy_method0( _x[i] );
+                }
+                break;
+            }
+            case 1:
+            {
+                for( unsigned int i=0 ; i<this->material.size() ; i++ )
+                {
+                    e += this->material[i].getPotentialEnergy_method1( _x[i] );
+                }
+                break;
+            }
+        }
+        return e;
+    }
+
 protected:
     VolumePreservationForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)

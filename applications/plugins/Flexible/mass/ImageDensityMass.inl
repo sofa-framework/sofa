@@ -333,17 +333,36 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& ) const
+double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& v ) const
 {
-    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy not yet implemented"<<sendl;
-    return 0;
+    const VecDeriv& _v = v.getValue();
+    double e = 0;
+
+    VecDeriv Mv = m_massMatrix * _v;
+
+    for( unsigned int i=0 ; i<_v.size() ; i++ )
+        e += _v[i] * Mv[i];
+
+    return e/2;
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const
+double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const
 {
-    serr<<"void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy not yet implemented"<<sendl;
-    return 0;
+    const VecCoord& _x = x.getValue();
+
+    VecCoord Mx = m_massMatrix * _x;
+
+    SReal e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<_x.size(); i++)
+    {
+        e -= theGravity*Mx[i];
+    }
+    return e;
 }
 
 

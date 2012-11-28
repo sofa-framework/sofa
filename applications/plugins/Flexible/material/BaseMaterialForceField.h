@@ -217,6 +217,19 @@ public:
         return 0;
     }
 
+
+    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
+    {
+        double e = 0;
+        const VecCoord& _x = x.getValue();
+
+        for( unsigned int i=0 ; i<material.size() ; i++ )
+        {
+            e += material[i].getPotentialEnergy( _x[i] );
+        }
+        return e;
+    }
+
 protected:
 
     BaseMaterialForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL)

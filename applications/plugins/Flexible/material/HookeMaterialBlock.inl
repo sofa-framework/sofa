@@ -235,7 +235,7 @@ public:
     }
 
 
-    Real getPotentialEnergy(const Coord& x)
+    Real getPotentialEnergy(const Coord& x) const
     {
         Deriv f; const Deriv v;
         addForce( f , x , v );
@@ -254,7 +254,7 @@ public:
         return W;
     }
 
-    void addForce( Deriv& f , const Coord& x , const Deriv& v)
+    void addForce( Deriv& f , const Coord& x , const Deriv& v) const
     {
         // order 0
         applyK_Isotropic<Real,material_dimensions>(f.getStrain(),x.getStrain(),mu,lamd,factors.vol());
@@ -352,7 +352,7 @@ public:
         }
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor )
+    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor ) const
     {
         // order 0
         applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrain(),dx.getStrain(),mu,lamd,factors.vol()*kfactor);
@@ -450,7 +450,7 @@ public:
 
 
 
-    MatBlock getK()
+    MatBlock getK() const
     {
         MatBlock K = MatBlock();
         EigenMap eK(&K[0][0]);
@@ -500,7 +500,7 @@ public:
         return K;
     }
 
-    MatBlock getC()
+    MatBlock getC() const
     {
         // TO DO: check why C need to be multiplied by -1
         MatBlock C ;
@@ -513,7 +513,7 @@ public:
         return C;
     }
 
-    MatBlock getB()
+    MatBlock getB() const
     {
         MatBlock B = MatBlock();
         EigenMap eB(&B[0][0]);
