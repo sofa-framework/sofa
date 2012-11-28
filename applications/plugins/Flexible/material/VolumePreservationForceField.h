@@ -48,13 +48,13 @@ using helper::OptionsGroup;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API VolumePreservationForceField : public BaseMaterialForceField<defaulttype::VolumePreservationMaterialBlock<_DataTypes> >
+class SOFA_Flexible_API VolumePreservationForceField : public BaseMaterialForceFieldT<defaulttype::VolumePreservationMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::VolumePreservationMaterialBlock<_DataTypes> BlockType;
-    typedef BaseMaterialForceField<BlockType> Inherit;
+    typedef BaseMaterialForceFieldT<BlockType> Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE(VolumePreservationForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+    SOFA_CLASS(SOFA_TEMPLATE(VolumePreservationForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceFieldT, BlockType));
 
     typedef typename Inherit::Real Real;
 

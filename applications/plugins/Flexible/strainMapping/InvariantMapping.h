@@ -43,13 +43,13 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API InvariantMapping : public BaseStrainMapping<defaulttype::InvariantJacobianBlock<TIn,TOut> >
+class SOFA_Flexible_API InvariantMapping : public BaseStrainMappingT<defaulttype::InvariantJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::InvariantJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseStrainMapping<BlockType > Inherit;
+    typedef BaseStrainMappingT<BlockType > Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE2(InvariantMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
+    SOFA_CLASS(SOFA_TEMPLATE2(InvariantMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
     Data<bool> deviatoric;
 

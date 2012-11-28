@@ -45,13 +45,13 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API DiagonalStrainMapping : public BaseStrainMapping<defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> >
+class SOFA_Flexible_API DiagonalStrainMapping : public BaseStrainMappingT<defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseStrainMapping<BlockType > Inherit;
+    typedef BaseStrainMappingT<BlockType > Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
 
 
