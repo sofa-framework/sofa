@@ -79,7 +79,10 @@
 	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
 
 
-	    <FixedConstraint indices="0 1 2 3 4" /> 
+<!-- 	    <FixedConstraint indices="0 1 2 3 4" />  -->
+
+            <PartialFixedConstraint indices="0 1 2 3 4" fixedDirections="1 1 1 0 0 0 0 0 0 0 0 0" /> 
+
 
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />
 <!--    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/>  -->

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_INL
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
@@ -352,19 +352,7 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     }
 }
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void PartialFixedConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PartialFixedConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
+
 
 
 
@@ -374,6 +362,6 @@ void PartialFixedConstraint<Rigid2fTypes >::draw(const core::visual::VisualParam
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_INL
 
 
