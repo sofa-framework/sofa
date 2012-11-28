@@ -32,7 +32,7 @@ struct minres
     typedef typename krylov::params params;
 
     // solves Ax = b using minres.
-    // @A is a function object vec -> vec implementing matrix multiplication
+    // @A is a function object: vec -> vec implementing matrix multiplication
     template<class Matrix>
     static void solve(vec& x, const Matrix& A, const vec& b, params& p)
     {
@@ -55,13 +55,14 @@ struct minres
         d.residual( residual );
 
         natural i;
-        for( i = 0; i < p.iterations; ++i)
-        {
-            d.step(x, A);
-            if( d.phi <= p.precision) break;
+        for( i = 0; i < p.iterations; ++i) {
+	        if( d.phi <= p.precision) break; 
+	        d.step(x, A);
         }
-        p.iterations = i;
 
+        // update iteration performed/residual norm
+        p.iterations = i;
+        p.precision = d.phi;
     }
 
 
