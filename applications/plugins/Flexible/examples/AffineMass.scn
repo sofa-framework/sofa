@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.1"  >
     <VisualStyle displayFlags="showVisual  " />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -78,6 +78,8 @@
     
     <Node name="DENSITY NOT LUMPED  BLUE" >
 
+<!--     <ExtraMonitor template="Affine" listening="1"/> -->
+    
 	  <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
