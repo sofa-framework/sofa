@@ -47,23 +47,25 @@ namespace mapping
 
 using helper::vector;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template<class InDataTypes, class OutDataTypes>
-class BaseStrainMappingInternalData
+/** Abstract interface to allow for resizing
+*/
+class SOFA_Flexible_API BaseStrainMapping : public virtual core::objectmodel::BaseObject
 {
 public:
+    virtual void resizeOut()=0;
 };
+
 
 
 /** Abstract one-to-one mapping (one parent->one child) using JacobianBlocks or sparse eigen matrix
 */
 
 template <class JacobianBlockType>
-class SOFA_Flexible_API BaseStrainMapping : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>
+class SOFA_Flexible_API BaseStrainMappingT : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BaseStrainMapping
 {
 public:
     typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(BaseStrainMapping,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out));
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(BaseStrainMappingT,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out),BaseStrainMapping);
 
     /** @name  Input types    */
     //@{
@@ -102,7 +104,7 @@ public:
 
     virtual void resizeOut()
     {
-        if(this->f_printLog.getValue()) std::cout<<"strainMapping::resizeOut()"<<std::endl;
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         this->toModel->resize(in.size());
@@ -136,11 +138,15 @@ public:
     {
         if(this->assembleJ.getValue()) updateJ();
 
+        apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+
         Inherit::reinit();
     }
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
         helper::ReadAccessor<Data<InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
         if(inpos.size()!=outpos.size()) this->resizeOut();
@@ -255,7 +261,7 @@ public:
 
 
 protected:
-    BaseStrainMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL)
+    BaseStrainMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized matrix/vector multiplications" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized matrix/vector multiplications" ) )
@@ -265,7 +271,7 @@ protected:
 
     }
 
-    virtual ~BaseStrainMapping()     { }
+    virtual ~BaseStrainMappingT()     { }
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 

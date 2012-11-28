@@ -50,13 +50,13 @@ using helper::vector;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API HookeForceField : public BaseMaterialForceField<defaulttype::HookeMaterialBlock<_DataTypes> >
+class SOFA_Flexible_API HookeForceField : public BaseMaterialForceFieldT<defaulttype::HookeMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::HookeMaterialBlock<_DataTypes> BlockType;
-    typedef BaseMaterialForceField<BlockType> Inherit;
+    typedef BaseMaterialForceFieldT<BlockType> Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE(HookeForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+    SOFA_CLASS(SOFA_TEMPLATE(HookeForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceFieldT, BlockType));
 
     typedef typename Inherit::Real Real;
 

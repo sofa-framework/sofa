@@ -58,7 +58,8 @@ public:
     typedef typename TStrain::StrainMat StrainMat;  ///< Matrix representing a strain
     typedef typename TStrain::StrainVec StrainVec;  ///< Vec representing a strain (Voigt notation)
     enum { strain_size = TStrain::strain_size };
-
+    enum { order = TStrain::order };
+    enum { spatial_dimensions = TStrain::spatial_dimensions };
 
     static const bool constantJ = true;
 
@@ -69,7 +70,7 @@ public:
     */
 
 
-    StrainVec _plasticStrain;
+    InCoord _plasticStrain;
 
     void reset()
     {
@@ -84,7 +85,7 @@ public:
         // eventually remove a part of the strain to simulate plasticity
 
         // could be optimized by storing the computation of the previous time step
-        StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
+        StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
         StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
 
         // elasticStrain = totalStrain * plasticStrain^-1
@@ -93,14 +94,14 @@ public:
 
         // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
         if( elasticStrainVec.norm2() > squaredYield )
-            _plasticStrain += creep * elasticStrainVec;
+            _plasticStrain.getStrain() += creep * elasticStrainVec;
 
         // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-        Real plasticStrainNorm2 = _plasticStrain.norm2();
+        Real plasticStrainNorm2 = _plasticStrain.getStrain().norm2();
         if( plasticStrainNorm2 > max*max )
-            _plasticStrain *= max / helper::rsqrt( plasticStrainNorm2 );
+            _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
 
-        plasticStrainMat = StrainVoigtToMat( _plasticStrain ) + StrainMat::Identity();
+        plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
 
         // remaining elasticStrain = totalStrain * plasticStrain^-1
         plasticStrainMatInverse.invert( plasticStrainMat );
@@ -115,31 +116,31 @@ public:
         // eventually remove a part of the strain to simulate plasticity
 
         // elasticStrain = totalStrain - plasticStrain
-        StrainVec elasticStrain = data.getStrain() - _plasticStrain;
+        InCoord elasticStrain = data - _plasticStrain;
 
         // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
-        if( elasticStrain.norm2() > squaredYield )
-            _plasticStrain += creep * elasticStrain;
+        if( elasticStrain.getStrain().norm2() > squaredYield )
+            _plasticStrain += elasticStrain * creep;
 
         // if( ||plasticStrain|| > c_max ) plasticStrain *= c_max / ||plasticStrain||
-        Real plasticStrainNorm2 = _plasticStrain.norm2();
+        Real plasticStrainNorm2 = _plasticStrain.getStrain().norm2();
         if( plasticStrainNorm2 > max*max )
-            _plasticStrain *= max / helper::rsqrt( plasticStrainNorm2 );
+            _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
 
         // remaining elasticStrain = totatStrain - plasticStrain
-        elasticStrain = data.getStrain() - _plasticStrain;
+        elasticStrain = data - _plasticStrain;
 
-        result.getStrain() += elasticStrain;
+        result += elasticStrain;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getStrain() += data.getStrain();
+        result += data;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result.getStrain() += data.getStrain();
+        result += data;
     }
 
     MatBlock getJ()

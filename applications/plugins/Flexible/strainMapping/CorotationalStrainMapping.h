@@ -44,13 +44,13 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API CorotationalStrainMapping : public BaseStrainMapping<defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> >
+class SOFA_Flexible_API CorotationalStrainMapping : public BaseStrainMappingT<defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseStrainMapping<BlockType > Inherit;
+    typedef BaseStrainMappingT<BlockType > Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE2(CorotationalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMapping,BlockType ));
+    SOFA_CLASS(SOFA_TEMPLATE2(CorotationalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
     /** @name  Corotational methods */
     //@{
@@ -123,6 +123,8 @@ protected:
 
     virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
         if(inpos.size()!=outpos.size()) this->resizeOut();

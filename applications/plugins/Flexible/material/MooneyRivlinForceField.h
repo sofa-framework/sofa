@@ -46,13 +46,13 @@ using helper::vector;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API MooneyRivlinForceField : public BaseMaterialForceField<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
+class SOFA_Flexible_API MooneyRivlinForceField : public BaseMaterialForceFieldT<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::MooneyRivlinMaterialBlock<_DataTypes> BlockType;
-    typedef BaseMaterialForceField<BlockType> Inherit;
+    typedef BaseMaterialForceFieldT<BlockType> Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE(MooneyRivlinForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceField, BlockType));
+    SOFA_CLASS(SOFA_TEMPLATE(MooneyRivlinForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceFieldT, BlockType));
 
     typedef typename Inherit::Real Real;
 

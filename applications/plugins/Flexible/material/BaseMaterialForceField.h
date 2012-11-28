@@ -45,15 +45,24 @@ namespace forcefield
 
 using helper::vector;
 
+/** Abstract interface to allow for resizing
+*/
+class SOFA_Flexible_API BaseMaterialForceField : public virtual core::objectmodel::BaseObject
+{
+public:
+    virtual void resize()=0;
+};
+
+
 /** Abstract forcefield using MaterialBlocks or sparse eigen matrix
 */
 
 template <class MaterialBlockType>
-class SOFA_Flexible_API BaseMaterialForceField : public core::behavior::ForceField<typename MaterialBlockType::T>
+class SOFA_Flexible_API BaseMaterialForceFieldT : public core::behavior::ForceField<typename MaterialBlockType::T>, public BaseMaterialForceField
 {
 public:
     typedef core::behavior::ForceField<typename MaterialBlockType::T> Inherit;
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(BaseMaterialForceField,MaterialBlockType),SOFA_TEMPLATE(core::behavior::ForceField,typename MaterialBlockType::T));
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(BaseMaterialForceFieldT,MaterialBlockType),SOFA_TEMPLATE(core::behavior::ForceField,typename MaterialBlockType::T),BaseMaterialForceField);
 
     /** @name  Input types    */
     //@{
@@ -80,6 +89,8 @@ public:
 
     virtual void resize()
     {
+        if(!(this->mstate)) return;
+
         if(this->f_printLog.getValue()) std::cout<<"Material::resize()"<<std::endl;
 
         // init material
@@ -142,6 +153,12 @@ public:
             if(this->assembleC.getValue()) updateC();
             if(this->assembleK.getValue()) updateK();
             if(this->assembleB.getValue()) updateB();
+        }
+
+        if(this->f_printLog.getValue())
+        {
+            Real W=0;  for(unsigned int i=0; i<material.size(); i++) W+=material[i].getPotentialEnergy(x[i]);
+            std::cout<<this->getName()<<":addForce, potentialEnergy="<<W<<std::endl;
         }
     }
 
@@ -232,7 +249,7 @@ public:
 
 protected:
 
-    BaseMaterialForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL)
+    BaseMaterialForceFieldT(core::behavior::MechanicalState<DataTypes> *mm = NULL)
         : Inherit(mm)
         , assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
@@ -242,7 +259,7 @@ protected:
 
     }
 
-    virtual ~BaseMaterialForceField()    {     }
+    virtual ~BaseMaterialForceFieldT()    {     }
 
     SparseMatrix material;
 
