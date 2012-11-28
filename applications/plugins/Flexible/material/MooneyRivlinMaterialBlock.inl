@@ -88,24 +88,24 @@ public:
         C2Vol2=C2*vol*(Real)2.;
     }
 
-    Real getPotentialEnergy(const Coord& x)
+    Real getPotentialEnergy(const Coord& x) const
     {
         return C1Vol2*(Real)0.5*(x.getStrain()[0]*x.getStrain()[0]-(Real)3.) + C2Vol2*(Real)0.5*(x.getStrain()[1]*x.getStrain()[1]-(Real)3.);
     }
 
-    void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/)
+    void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/) const
     {
         f.getStrain()[0]-=C1Vol2*x.getStrain()[0];
         f.getStrain()[1]-=C2Vol2*x.getStrain()[1];
     }
 
-    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ ) const
     {
         df.getStrain()[0]-=C1Vol2*dx.getStrain()[0]*kfactor;
         df.getStrain()[1]-=C2Vol2*dx.getStrain()[1]*kfactor;
     }
 
-    MatBlock getK()
+    MatBlock getK() const
     {
         MatBlock K = MatBlock();
         K[0][0]=-C1Vol2;
@@ -113,15 +113,15 @@ public:
         return K;
     }
 
-    MatBlock getC()
+    MatBlock getC() const
     {
-        MatBlock C= MatBlock();
+        MatBlock C = MatBlock();
         C[0][0]=1./C1Vol2;
         C[1][1]=1./C2Vol2;
         return C;
     }
 
-    MatBlock getB()
+    MatBlock getB() const
     {
         return MatBlock();
     }

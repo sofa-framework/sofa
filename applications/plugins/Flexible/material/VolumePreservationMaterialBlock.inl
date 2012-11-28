@@ -75,7 +75,7 @@ public:
     static const bool constantK=false;
 
     Real KVol;  ///< bulk  * volume
-    Real dfdJ; ///< store stiffness
+    mutable Real dfdJ; ///< store stiffness
 
     void init( const Real &k )
     {
@@ -84,7 +84,7 @@ public:
         KVol=k*vol;
     }
 
-    Real getPotentialEnergy( const Coord& ) { return 0; }
+    Real getPotentialEnergy( const Coord& ) const { return 0; }
 
     Real getPotentialEnergy_method0(const Coord& x) const
     {
@@ -98,42 +98,42 @@ public:
         return KVol*(J-(Real)1.)*(J-(Real)1.)*(Real)0.5;
     }
 
-    void addForce( Deriv& , const Coord& , const Deriv& ) {};
+    void addForce( Deriv& , const Coord& , const Deriv& ) const {};
 
-    void addForce_method0( Deriv& f , const Coord& x , const Deriv& /*v*/)
+    void addForce_method0( Deriv& f , const Coord& x , const Deriv& /*v*/)  const
     {
         Real J=x.getStrain()[2];
         f.getStrain()[2]-=KVol*log(J)/J;
         dfdJ=KVol*(log(J)-(Real)1.)/(J*J);
     }
 
-    void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)
+    void addForce_method1( Deriv& f , const Coord& x , const Deriv& /*v*/)  const
     {
         Real J=x.getStrain()[2];
         f.getStrain()[2]-=KVol*(J-(Real)1.);
         dfdJ=-KVol;
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )
+    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )  const
     {
         df.getStrain()[2]+=dfdJ*dx.getStrain()[2]*kfactor;
     }
 
-    MatBlock getK()
+    MatBlock getK() const
     {
         MatBlock K = MatBlock();
         K(2,2)=dfdJ;
         return K;
     }
 
-    MatBlock getC()
+    MatBlock getC() const
     {
         MatBlock C = MatBlock();
         C(2,2)=-1./dfdJ;
         return C;
     }
 
-    MatBlock getB()
+    MatBlock getB() const
     {
         return MatBlock();
     }
