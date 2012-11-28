@@ -30,6 +30,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 
+#include <sofa/simulation/common/MechanicalComputeEnergyVisitor.h>
 
 namespace sofa
 {
@@ -43,6 +44,10 @@ class QEnergyStatWidget : public QGraphStatWidget
 
     Q_OBJECT
 
+    sofa::simulation::MechanicalComputeEnergyVisitor *m_kineticEnergyVisitor;
+    sofa::simulation::MechanicalComputeEnergyVisitor *m_potentialEnergyVisitory;
+
+
 public:
 
     QEnergyStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Energy", 3 )
@@ -50,6 +55,15 @@ public:
         setCurve( 0, "Kinetic", Qt::red );
         setCurve( 1, "Potential", Qt::green );
         setCurve( 2, "Mechanical", Qt::blue );
+
+        m_kineticEnergyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
+        m_potentialEnergyVisitory = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
+    }
+
+    ~QEnergyStatWidget()
+    {
+        delete m_kineticEnergyVisitor;
+        delete m_potentialEnergyVisitory;
     }
 
     void step()
@@ -57,20 +71,11 @@ public:
         //Add Time
         QGraphStatWidget::step();
 
-        //Add Kinetic Energy
-        if( _node->mass )
-            _YHistory[0].push_back( _node->mass->getKineticEnergy() );
-        else
-            _YHistory[0].push_back(0);
+       m_kineticEnergyVisitor->execute( _node->getContext() );
+        _YHistory[0].push_back( m_kineticEnergyVisitor->getKineticEnergy() );
 
-        //Add Potential Energy
-        double potentialEnergy=0;
-        typedef sofa::simulation::Node::Sequence<core::behavior::BaseForceField> SeqFF;
-        for( SeqFF::iterator it = _node->forceField.begin() ; it != _node->forceField.end() ; ++it )
-        {
-            potentialEnergy += (*it)->getPotentialEnergy();
-        }
-        _YHistory[1].push_back( potentialEnergy );
+        m_potentialEnergyVisitory->execute( _node->getContext() );
+        _YHistory[1].push_back( m_potentialEnergyVisitory->getPotentialEnergy() );
 
         //Add Mechanical Energy
         _YHistory[2].push_back( _YHistory[0].back() + _YHistory[1].back() );
