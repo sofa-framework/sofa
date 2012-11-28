@@ -154,7 +154,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
                 {
                     MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
 
-                    if( f_lumping.getValue()==2 )
+                    if( f_lumping.getValue()==DIAGONAL_LUMPING )
                     {
                         for( int w=0 ; w<Deriv::total_size ; ++w )
                             for( int v=0 ; v<Deriv::total_size ; ++v )
@@ -176,7 +176,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
                     if( notNull )
                     {
-                        if( f_lumping.getValue() == 2 )
+                        if( f_lumping.getValue() == DIAGONAL_LUMPING )
                         {
                             // sum to the diagonal term on the same line
                             MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
@@ -190,7 +190,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
                                     Mll[w][w] += JltmJk[v][w];
 
                         }
-                        else if( f_lumping.getValue() == 1 )
+                        else if( f_lumping.getValue() == BLOCK_LUMPING )
                         {
                             // sum to the diagonal bloc on the same line
                             MassType& Mkk = *m_massMatrix.wbloc(cp_k,cp_k,true);
@@ -292,9 +292,44 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const 
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& /*acc*/, const DataVecDeriv& /*f*/)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& acc, const DataVecDeriv& f )
 {
-    serr<<"ImageDensityMass::accFromF not yet implemented when not lumped matrix (need the assembled matrix inversion)"<<sendl;
+    if( f_lumping.getValue()==DIAGONAL_LUMPING )
+    {
+        VecDeriv& _acc = *acc.beginEdit();
+        const VecDeriv& _f = f.getValue();
+
+        for( unsigned int i=0 ; i<_f.size() ; i++ )
+        {
+            int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+            const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[m_massMatrix.getRowBegin()[rowId]];
+            for( int bi = 0; bi < m_massMatrix.getBlockRows(); ++bi )
+                    _acc[i][bi] = _f[i][bi] / b[bi][bi];
+        }
+
+        acc.endEdit();
+    }
+    else if( f_lumping.getValue()==BLOCK_LUMPING )
+    {
+        VecDeriv& _acc = *acc.beginEdit();
+        const VecDeriv& _f = f.getValue();
+
+        for( unsigned int i=0 ; i<_f.size() ; i++ )
+        {
+            int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+            const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[m_massMatrix.getRowBegin()[rowId]];
+            typename MassMatrix::Bloc invb;
+            invb.invert( b );
+            _acc[i] = invb * _f[i];
+            // todo either store the inverted matrices or do not compute the inverse but store a factorization
+        }
+
+        acc.endEdit();
+    }
+    else
+    {
+        serr<<"ImageDensityMass::accFromF not yet implemented when not lumped matrix (need the assembled matrix inversion)"<<sendl;
+    }
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
