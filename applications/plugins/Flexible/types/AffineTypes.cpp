@@ -71,28 +71,28 @@ void FixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vpara
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
-//template <>
-//void PartialFixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
-//{
-//    const SetIndexArray & indices = f_indices.getValue();
-//    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//    std::vector< Vector3 > points;
+template <>
+void PartialFixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
+{
+    const SetIndexArray & indices = f_indices.getValue();
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    std::vector< Vector3 > points;
 
-//    const VecCoord& x = *mstate->getX();
-//    if( f_fixAll.getValue()==true )
-//        for (unsigned i=0; i<x.size(); i++ )
-//          points.push_back(x[i].getCenter());
-//    else
-//    {
-//            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-//            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-//    }
+    const VecCoord& x = *mstate->getX();
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+          points.push_back(x[i].getCenter());
+    else
+    {
+            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+    }
 
-//    if( _drawSize.getValue() == 0) // old classical drawing by points
-//      vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-//    else
-//      vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-//}
+    if( _drawSize.getValue() == 0) // old classical drawing by points
+      vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    else
+      vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+}
 
 
 
@@ -100,17 +100,16 @@ void FixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vpara
 // Instantiation
 
 SOFA_DECL_CLASS ( AffineFixedConstraint )
-
-int AffineFixedConstraintClass = core::RegisterObject ( "Attach given particles to their initial positions" )
+int AffineFixedConstraintClass = core::RegisterObject ( "Attach given dofs to their initial positions" )
         .add< FixedConstraint<defaulttype::Affine3Types> >()
         ;
 template class SOFA_Flexible_API FixedConstraint<Affine3Types>;
 
-//SOFA_DECL_CLASS ( AffinePartialFixedConstraint )
-//int AffinePartialFixedConstraintClass = core::RegisterObject ( "Attach given particles to their initial positions" )
-//.add< PartialFixedConstraint<defaulttype::Affine3Types> >()
-//;
-//template class SOFA_Flexible_API PartialFixedConstraint<Affine3Types>;
+SOFA_DECL_CLASS ( AffinePartialFixedConstraint )
+int AffinePartialFixedConstraintClass = core::RegisterObject ( "Attach given cinamtic dofs to their initial positions" )
+.add< PartialFixedConstraint<defaulttype::Affine3Types> >()
+;
+template class SOFA_Flexible_API PartialFixedConstraint<Affine3Types>;
 
 } // namespace projectiveconstraintset
 } // namespace component
