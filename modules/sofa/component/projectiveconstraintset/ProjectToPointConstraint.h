@@ -153,7 +153,7 @@ protected :
     FCPointHandler* pointHandler;
 
     /// Matrix used in getJ
-    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
+//    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
 
 };
 

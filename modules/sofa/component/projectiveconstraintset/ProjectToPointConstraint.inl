@@ -170,49 +170,48 @@ void ProjectToPointConstraint<DataTypes>::init()
 template <class DataTypes>
 void  ProjectToPointConstraint<DataTypes>::reinit()
 {
-    //    cerr<<"ProjectToPointConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     // get the indices sorted
     SetIndexArray tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
 
-    // resize the jacobian
-    unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
-    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
+//    // resize the jacobian
+//    unsigned numBlocks = this->mstate->getSize();
+//    unsigned blockSize = DataTypes::deriv_total_size;
+//    jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
-    // fill the jacobian is ascending order
-    SetIndexArray::const_iterator it= tmp.begin();
-    unsigned i=0;
-    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
-    {
-        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
-        {
-            it++;
-            for( unsigned j=0; j<blockSize; j++ )
-            {
-                jacobian.beginRow(blockSize*i+j );
-                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // constrained particle: set the diagonal to
-            }
-        }
-        else
-            for( unsigned j=0; j<blockSize; j++ )
-            {
-                jacobian.beginRow(blockSize*i+j );
-                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
-            }
-    }
-    // Set the matrix to identity beyond the last constrained particle
-    for(; i<numBlocks && it!=tmp.end(); i++ )
-    {
-        for( unsigned j=0; j<blockSize; j++ )
-        {
-            //            cerr<<"ProjectToPointConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
-            jacobian.beginRow( blockSize*i+j );
-            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
-        }
-    }
-    jacobian.compress();
+//    // fill the jacobian is ascending order
+//    SetIndexArray::const_iterator it= tmp.begin();
+//    unsigned i=0;
+//    for(SetIndexArray::const_iterator it= tmp.begin(); i<numBlocks && it!=tmp.end(); i++ )
+//    {
+//        if( i==*it )  // constrained particle: set diagonal to 0, and move the cursor to the next constraint
+//        {
+//            it++;
+//            for( unsigned j=0; j<blockSize; j++ )
+//            {
+//                jacobian.beginRow(blockSize*i+j );
+//                jacobian.set( blockSize*i+j, blockSize*i+j, 0); // constrained particle: set the diagonal to
+//            }
+//        }
+//        else
+//            for( unsigned j=0; j<blockSize; j++ )
+//            {
+//                jacobian.beginRow(blockSize*i+j );
+//                jacobian.set( blockSize*i+j, blockSize*i+j, 1); // unconstrained particle: set the diagonal to identity
+//            }
+//    }
+//    // Set the matrix to identity beyond the last constrained particle
+//    for(; i<numBlocks && it!=tmp.end(); i++ )
+//    {
+//        for( unsigned j=0; j<blockSize; j++ )
+//        {
+//            //            cerr<<"ProjectToPointConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
+//            jacobian.beginRow( blockSize*i+j );
+//            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
+//        }
+//    }
+//    jacobian.compress();
 
 }
 
