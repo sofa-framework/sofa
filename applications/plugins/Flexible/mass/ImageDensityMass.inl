@@ -357,8 +357,8 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotential
     // gravity
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-    for (unsigned int i=0; i<_x.size(); i++)
+    DataTypes::set ( theGravity, g[0], g[1], g[2] );
+    for( unsigned int i=0 ; i<_x.size() ; i++ )
     {
         e -= theGravity*Mx[i];
     }

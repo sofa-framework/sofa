@@ -44,8 +44,7 @@ class QEnergyStatWidget : public QGraphStatWidget
 
     Q_OBJECT
 
-    sofa::simulation::MechanicalComputeEnergyVisitor *m_kineticEnergyVisitor;
-    sofa::simulation::MechanicalComputeEnergyVisitor *m_potentialEnergyVisitory;
+    sofa::simulation::MechanicalComputeEnergyVisitor *m_energyVisitor;
 
 
 public:
@@ -56,14 +55,12 @@ public:
         setCurve( 1, "Potential", Qt::green );
         setCurve( 2, "Mechanical", Qt::blue );
 
-        m_kineticEnergyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
-        m_potentialEnergyVisitory = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
+        m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
     }
 
     ~QEnergyStatWidget()
     {
-        delete m_kineticEnergyVisitor;
-        delete m_potentialEnergyVisitory;
+        delete m_energyVisitor;
     }
 
     void step()
@@ -71,11 +68,10 @@ public:
         //Add Time
         QGraphStatWidget::step();
 
-       m_kineticEnergyVisitor->execute( _node->getContext() );
-        _YHistory[0].push_back( m_kineticEnergyVisitor->getKineticEnergy() );
+        m_energyVisitor->execute( _node->getContext() );
 
-        m_potentialEnergyVisitory->execute( _node->getContext() );
-        _YHistory[1].push_back( m_potentialEnergyVisitory->getPotentialEnergy() );
+        _YHistory[0].push_back( m_energyVisitor->getKineticEnergy() );
+        _YHistory[1].push_back( m_energyVisitor->getPotentialEnergy() );
 
         //Add Mechanical Energy
         _YHistory[2].push_back( _YHistory[0].back() + _YHistory[1].back() );

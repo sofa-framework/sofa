@@ -239,8 +239,8 @@ public:
     {
         c.clear();
         c.getVCenter()[0] = ( Real ) x;
-        c.getVCenter() [1] = ( Real ) y;
-        c.getVCenter() [2] = ( Real ) z;
+        c.getVCenter()[1] = ( Real ) y;
+        c.getVCenter()[2] = ( Real ) z;
     }
 
     template<typename T>
