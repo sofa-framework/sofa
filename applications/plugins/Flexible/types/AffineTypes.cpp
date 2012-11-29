@@ -120,6 +120,7 @@ template class SOFA_Flexible_API PartialFixedConstraint<Affine3Types>;
 
 
 
+#include <sofa/helper/gl/Axis.h>
 namespace sofa
 {
 namespace component
@@ -134,16 +135,15 @@ namespace container
 template <>
 inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
+
     if ( showIndices.getValue() )
     {
-        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
         glColor3f ( 1.0,1.0,1.0 );
+        glPushAttrib(GL_LIGHTING_BIT);
         glDisable ( GL_LIGHTING );
-        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
-        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
 
         for ( int i=0 ; i< vsize ; i++ )
         {
@@ -179,15 +179,15 @@ inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParam
 
             glPopMatrix();
         }
+        glPopAttrib();
     }
 
-    if ( showObject.getValue() )
+
+    if (showObject.getValue())
     {
-        glPushAttrib ( GL_LIGHTING_BIT );
-        glDisable ( GL_LIGHTING );
-        const Affine3Types::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
-        for ( int i=0; i<this->getSize(); i++ )
+        const Affine3Types::VecCoord& x = ( *getX() );
+        for (int i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -197,8 +197,8 @@ inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParam
             vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
             vparams->drawTool()->popMatrix();
         }
-        glPopAttrib();
     }
+
 }
 
 

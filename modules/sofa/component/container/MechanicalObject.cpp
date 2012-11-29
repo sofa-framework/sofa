@@ -225,16 +225,15 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+
     if (showIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -274,23 +273,20 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
     if (showObject.getValue())
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
         for (int i = 0; i < vsize; ++i)
         {
-            glPushMatrix();
-            //glTranslatef(getPX(i), getPY(i), getPZ(i));
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            vparams->drawTool()->drawFrame(Vector3(), Quat(), Vector3(1.0,1.0,1.0));
-            glPopMatrix();
+            x[i].writeOpenGlMatrix ( glTransform );
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale );
+            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            vparams->drawTool()->popMatrix();
         }
-        glPopAttrib();
     }
+    glPopAttrib();
 }
 
 #endif
@@ -431,16 +427,14 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
     if (showIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
+        glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -476,26 +470,23 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
             glPopMatrix();
         }
+        glPopAttrib();
     }
 
     if (showObject.getValue())
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
         for (int i = 0; i < vsize; ++i)
         {
-            glPushMatrix();
-            //glTranslatef(getPX(i), getPY(i), getPZ(i));
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            vparams->drawTool()->drawFrame(Vector3(), Quat(), Vector3(1.0,1.0,1.0));
-            glPopMatrix();
+            x[i].writeOpenGlMatrix ( glTransform );
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale );
+            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            vparams->drawTool()->popMatrix();
         }
-        glPopAttrib();
     }
 }
 
@@ -504,16 +495,14 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
     if (showIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
+        glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -549,23 +538,21 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 
             glPopMatrix();
         }
+        glPopAttrib();
     }
 
     if (showObject.getValue())
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
         for (int i = 0; i < vsize; ++i)
         {
-            glPushMatrix();
+            vparams->drawTool()->pushMatrix();
             glTranslatef(getPX(i), getPY(i), getPZ(i));
-            glScalef(scale,scale,scale);
+            vparams->drawTool()->scale ( scale );
             vparams->drawTool()->drawFrame(Vector3(), x[i].getOrientation(), Vector3(1.0,1.0,1.0));
-            glPopMatrix();
+            vparams->drawTool()->popMatrix();
         }
-        glPopAttrib();
     }
 }
 

@@ -2474,15 +2474,15 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    Mat<4,4, GLfloat> modelviewM;
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context;
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+
     if (showIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
         float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -2521,11 +2521,9 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     }
     if (showVectors.getValue())
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
@@ -2562,19 +2560,16 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
                 break;
             }
         }
-        glPopAttrib();
     }
     if (showObject.getValue())
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
         const float& scale = showObjectScale.getValue();
         vector<Vector3> positions(vsize);
         for (int i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
         vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
-        glPopAttrib();
     }
+    glPopAttrib();
 }
 
 #ifdef SOFA_SMP
