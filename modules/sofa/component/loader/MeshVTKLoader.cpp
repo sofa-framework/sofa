@@ -433,10 +433,37 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             inputCellTypesInt = dynamic_cast<VTKDataIO<int>* > (inputCellTypes);
             if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
         }
+        else if (kw == "CELL_DATA") {
+            int n;
+            ln >> n;
+
+            std::getline(inVTKFile, line);
+            if (line.empty()) continue;
+            /// line defines the type and name such as SCALAR dataset
+            std::istringstream lnData(line);
+            std::string dataStructure, dataName, dataType;
+            lnData >> dataStructure;
+
+            if (dataStructure == "SCALARS") {
+                inputCellDataVector.resize(1);
+                lnData >> dataName;
+                lnData >> dataType;
+
+                inputCellDataVector[0] = newVTKDataIO(dataType);
+                if (inputCellDataVector[0] == NULL) return false;
+                /// one more getline to read LOOKUP_TABLE line, not used here
+                std::getline(inVTKFile, line);
+
+                if (!inputCellDataVector[0]->read(inVTKFile,n, binary)) return false;
+                inputCellDataVector[0]->name = dataName;
+                std::cout << "Read cell data: " << inputCellDataVector[0]->dataSize << std::endl;
+            } else  /// TODO
+                std::cerr << "WARNING: reading vector data not implemented" << std::endl;
+        }
         else if (!kw.empty())
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
-        if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
+        if (inputPoints && inputCells && inputCellTypes && inputCellDataVector.size() > 0) break; // already found the mesh description, skip the rest
     }
 
     if (binary)
