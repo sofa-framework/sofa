@@ -1,7 +1,7 @@
 #ifndef FLEXIBLE_UTILS_SE3_H
 #define FLEXIBLE_UTILS_SE3_H
 
-// SE(3) kinematics.
+// SE(3) kinematics
 
 // author: maxime.tournier@inria.fr
 // license: LGPL 2.1
@@ -10,9 +10,12 @@
 #include <Eigen/Geometry>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <boost/math/special_functions/sinc.hpp>
+#include <limits>
 
+// TODO include boost::math in sofa or implement SE3::sinc more precisely
+// #include <boost/math/special_functions/sinc.hpp>
 
+// TODO this should probably be non-template and use SReal instead
 template<class U>
 struct SE3
 {
@@ -185,7 +188,9 @@ struct SE3
     }
 
 
-    static const real epsilon() {return 1e-16;}
+    static const real epsilon() {
+	    return std::numeric_limits<real>::epsilon();
+    }
 
 
 
@@ -210,17 +215,26 @@ struct SE3
         }
         else
         {
-            // TODO use boost::sinc ?
+            // TODO q.vec() / sinc(theta) instead ?
             return theta * q.vec().normalized();
         }
 
     }
 
+	static real sinc( const real& x ) {
+		
+		if( std::abs(x) < epsilon() ) {
+			// TODO Taylor series similar to boost::math::sinc instead
+			return 1.0;
+		}
+
+		return std::sin(x) / x;
+	}
+
+
     // SO(3) log derivative, body coordinates
     static mat33 dlog(const quat& q)
     {
-
-
         vec3 log_q = log(q);
         mat33 res = mat33::Identity() + hat( log_q );
 
@@ -230,7 +244,8 @@ struct SE3
         vec3 n = log_q.normalized();
 
         real cos = std::cos(theta);
-        real sinc = boost::math::sinc_pi(theta);
+
+        real sinc = SE3::sinc(theta);
 
         assert( std::abs( sinc ) > epsilon() );
 
@@ -271,7 +286,7 @@ struct SE3
     }
 
 
-    // Left and right translation derivatives:
+    // left and right translation derivatives:
 
     // L_h(g) = h.g
     // R_h(g) = g.h
