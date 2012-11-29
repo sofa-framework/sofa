@@ -45,7 +45,7 @@ public:
     typedef typename T::Real Real;
 
     typedef component::engine::BaseGaussPointSampler::volumeIntegralType volumeIntegralType;
-    typedef Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stifness or compliance matrix block
+    typedef Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stiffness or compliance matrix block
     static const bool constantK=false; ///< tells if the stiffness is constant (to avoid recomputations)
 
     // quadrature data (from a GaussPointSampler)

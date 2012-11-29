@@ -270,7 +270,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Energy Widget
         if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
         {
-            if (dialogFlags_.REINIT_FLAG && (!real_node->mass.empty() || !real_node->forceField.empty() ) )
+            if (dialogFlags_.REINIT_FLAG /*&& (!real_node->mass.empty() || !real_node->forceField.empty() )*/ )
             {
                 energy = new QEnergyStatWidget(dialogTab, real_node);
                 dialogTab->addTab(energy,QString("Energy Stats"));
