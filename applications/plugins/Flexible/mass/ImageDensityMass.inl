@@ -73,7 +73,7 @@ typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real Image
     {
         // todo how to find the right directions to compute the area? Would need the topology or at least the voxel neighbourhood.
         Real volume = transform.getScale()[0] * transform.getScale()[1] * transform.getScale()[2];
-        volume = pow( volume, 1.0/3.0 );
+        volume = pow( volume, Real(1.0/3.0) );
         return volume * volume;
     }
     else
