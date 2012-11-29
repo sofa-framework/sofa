@@ -357,7 +357,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # DEFINES += SOFA_HAVE_MANIFOLDTOPOLOGIES
 # Uncomment if you want to use Interventional Radiology module
 # DEFINES += SOFA_HAVE_SOFAEVE
-#DEFINES += SOFA_HAVE_optixdetection
 
 
 } # END SOFA_DEV
@@ -374,6 +373,7 @@ win32{
 # DEFINES += SOFA_HAVE_PLUGIN_Compliant  # Alternative formulation of the dynamics. Requires the Flexible plugin, and the installation of the Boost.Test library, see Compliant/doc/index.html
 # DEFINES += SOFA_HAVE_PLUGIN_CompliantDev  # Alternative formulation of the dynamics (private part). Requires the Compliant plugin.
 # DEFINES += SOFA_HAVE_PLUGIN_ModelHierarchies # Experiments on layered and adaptive models
+# DEFINES += SOFA_HAVE_PLUGIN_optixdetection
 
 ########################################################################
 # Compiler options

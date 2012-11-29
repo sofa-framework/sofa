@@ -1,13 +1,14 @@
 [General]
+def_graphic_ext=
 img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
 kileprversion=2
-kileversion=2.0
+kileversion=2.1.0
 lastDocument=principes.tex
 masterDocument=
 name=principes
 pkg_extIsRegExp=false
-pkg_extensions=.cls .sty
+pkg_extensions=.cls .sty .bbx .cbx .lbx
 src_extIsRegExp=false
 src_extensions=.tex .ltx .latex .dtx .ins .bib .mp
 
@@ -15,20 +16,38 @@ src_extensions=.tex .ltx .latex .dtx .ins .bib .mp
 MakeIndex=
 QuickBuild=
 
+[document-settings,item:principes.tex]
+Bookmarks=
+Encoding=ISO-8859-15
+FoldedColumns=
+FoldedLines=
+Highlighting=LaTeX
+Indentation Mode=
+Mode=LaTeX
+ReadWrite=true
+
 [item:principes.kilepr]
 archive=true
 column=6881384
 encoding=
 highlight=
 line=0
+mode=
 open=false
 order=-1
 
 [item:principes.tex]
 archive=true
-column=9
-encoding=ISO 8859-15
+column=27
+encoding=ISO-8859-15
 highlight=LaTeX
-line=170
-open=true
+line=33
+mode=LaTeX
+open=false
 order=0
+
+[view-settings,view=0,item:principes.tex]
+CursorColumn=27
+CursorLine=33
+JumpList=
+ViMarks=
