@@ -86,7 +86,8 @@ private:
 
     static std::map < std::pair<std::pair<float,float>,float>, Cylinder* > CylinderMap;
     static Cylinder* get(const Vector3& len);
-
+public:
+    static void clear() { CylinderMap.clear(); } // need to be called when display list has been created in another opengl context
 };
 
 } // namespace gl

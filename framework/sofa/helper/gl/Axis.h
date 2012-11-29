@@ -90,6 +90,8 @@ private:
 
     static std::map < std::pair<std::pair<float,float>,float>, Axis* > axisMap;
     static Axis* get(const Vector3& len);
+public:
+    static void clear() { axisMap.clear(); } // need to be called when display list has been created in another opengl context
 
 };
 

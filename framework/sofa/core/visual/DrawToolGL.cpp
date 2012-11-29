@@ -29,6 +29,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/Axis.h>
+#include <sofa/helper/gl/Cylinder.h>
 
 namespace sofa
 {
@@ -44,6 +45,7 @@ using namespace sofa::helper::gl;
 
 DrawToolGL::DrawToolGL()
 {
+    clear();
     mLightEnabled = false;
     mWireFrameEnabled = false;
     mPolygonMode = 1;
@@ -535,7 +537,8 @@ void DrawToolGL::resetMaterial(const Vec<4,float> &colour,std::string)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::clear()
 {
-
+    helper::gl::Axis::clear();
+    helper::gl::Cylinder::clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

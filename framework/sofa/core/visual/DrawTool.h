@@ -58,7 +58,7 @@ public:
     typedef sofa::defaulttype::Vec<2,int> Vec2i;
     typedef sofa::defaulttype::Quaternion Quaternion;
 
-    DrawTool() {}
+    DrawTool() { clear(); }
     virtual ~DrawTool() {}
 
     /// @name Primitive rendering methods
@@ -146,7 +146,7 @@ public:
 
     /// @}
 
-    virtual void clear() = 0 ;
+    virtual void clear() {};
 
 
 };

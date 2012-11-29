@@ -46,11 +46,11 @@ namespace gl
 static const int quadricDiscretisation = 16;
 //GLuint Axis::displayList;
 //GLUquadricObj *Axis::quadratic = NULL;
-std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap;
+std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
 
 void Axis::initDraw()
 {
-    if (quadratic!=NULL) return;
+    if (quadratic && displayList) return;
 
     Vector3 L= length;
     SReal Lmin = L[0];
@@ -127,16 +127,19 @@ void Axis::draw()
 {
     initDraw();
 
-    glPushMatrix();
-    glPushAttrib(GL_ENABLE_BIT);
-
+    glPushAttrib(GL_LIGHTING_BIT);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
+
+    glPushMatrix();
+
     glMultMatrixd(matTransOpenGL);
     glCallList(displayList);
 
-    glPopAttrib();
     glPopMatrix();
+
+    glPopAttrib();
+
 }
 
 void Axis::update(const double *mat)
