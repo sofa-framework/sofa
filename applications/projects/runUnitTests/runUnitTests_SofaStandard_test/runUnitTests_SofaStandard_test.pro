@@ -10,7 +10,7 @@ SOURCES += \
     initSofaStandard_test.cpp \
     Matrix_test.cpp \
  
-LIBS += -lboost_unit_test_framework
+LIBS += -l$${BOOST_PREFIX}boost_unit_test_framework$$BOOST_SUFFIX
 
 load(sofa/post)
 

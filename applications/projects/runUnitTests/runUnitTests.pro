@@ -19,7 +19,7 @@ macx {
 
 unix {
    LIBS += -ldl
-   LIBS *= -lboost_unit_test_framework
+   LIBS *= -l$${BOOST_PREFIX}boost_unit_test_framework$$BOOST_SUFFIX
 }
 
 SOURCES = \
