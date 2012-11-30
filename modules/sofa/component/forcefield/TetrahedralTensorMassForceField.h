@@ -171,6 +171,9 @@ public:
         TetrahedralTensorMassForceField<DataTypes>* ff;
     };
 
+    //CUDA Boolean: true if the GPU can handle atomic operations (Cuda version)
+    Data<bool> atomicGPU;
+
 protected:
 
 //    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
@@ -179,8 +182,6 @@ protected:
 //    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
     EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
 
-    //CUDA Boolean: true if the GPU can handle atomic operations (Cuda version)
-    Data<bool> atomicGPU;
 
     TetrahedralTMEdgeHandler* edgeHandler;
 
