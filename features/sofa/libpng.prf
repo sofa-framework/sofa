@@ -1,6 +1,5 @@
 contains(DEFINES, SOFA_HAVE_PNG) {
-	!isEmpty(PNG_LIB)
-	{
+	!isEmpty(PNG_LIB) {
 		LIBS *= -l$$PNG_LIB
 	} else {
 		win32 {
