@@ -86,10 +86,11 @@ protected:
     Data< Real >	m_defaultVolume;			///< Default Volume.
     Data< Deriv >	m_mainDirection;			///< Main axis for pressure application.
 
+    Data< Real > m_drawForceScale;  ///< scale used to render force vectors
+    vector< Deriv> m_f;             ///< store forces for visualization
+
     State state;								///< In pulse mode, says wether pressure is increasing or decreasing.
     Real m_pulseModePressure;					///< Current pressure computed in pulse mode.
-
-
 
     SurfacePressureForceField();
     virtual ~SurfacePressureForceField();

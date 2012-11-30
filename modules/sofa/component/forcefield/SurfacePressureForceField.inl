@@ -56,7 +56,8 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
     m_volumeConservationMode(initData(&m_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
     m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume")),
-    m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application"))
+    m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
+    m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
 {
 
 }
@@ -136,13 +137,10 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
         VecDeriv fplus = f;
       */
 
-    const Data<VecCoord>* xRest= this->mstate->read(core::ConstVecCoordId::restPosition()) ;
+//    const Data<VecCoord>* xRest= this->mstate->read(core::ConstVecCoordId::restPosition()) ;
+//    const VecCoord &x0 = xRest->getValue();
 
-    const VecCoord &x0 = xRest->getValue();
-
-
-
-
+    m_f.resize(f.size());  for(unsigned int i=0;i<m_f.size();i++) m_f[i].clear(); // store forces for visualization
 
     Real p = m_pulseMode.getValue() ? computePulseModePressure() : m_pressure.getValue();
 
@@ -162,7 +160,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         if (m_topology->getNbTriangles() > 0)
         {
-            addTriangleSurfacePressure(f,x0,v,p, true);
+            addTriangleSurfacePressure(m_f,x,v,p, true);
 
             /*
 
@@ -189,10 +187,11 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         if (m_topology->getNbQuads() > 0)
         {
-            addQuadSurfacePressure(f,x,v,p);
+            addQuadSurfacePressure(m_f,x,v,p);
         }
     }
 
+    for(unsigned int i=0;i<m_f.size();i++) f[i]+=m_f[i];
     d_f.endEdit();
 }
 
@@ -406,11 +405,9 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& 
                 p *= fabs(scal);
             }
 
-
             f[t[0]] += p;
             f[t[1]] += p;
             f[t[2]] += p;
-
 
 
         }
@@ -554,6 +551,22 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
+    if (m_drawForceScale.getValue() && m_f.size()==x.size())
+    {
+        std::vector< defaulttype::Vector3 > points;
+        const Vec<4,float> color(0,1,0.5,1);
+
+        for (unsigned int i=0; i<x.size(); i++)
+        {
+            points.push_back(x[i]);
+            points.push_back(x[i]+m_f[i]*m_drawForceScale.getValue());
+        }
+        vparams->drawTool()->drawLines(points, 1, color);
+    }
+
 }
 
 } // namespace forcefield
