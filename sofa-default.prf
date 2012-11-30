@@ -101,6 +101,8 @@ DEFINES += SOFA_HAVE_ZLIB
 
 # Uncomment if you want to use libPNG to read/write PNG images
 DEFINES += SOFA_HAVE_PNG
+# on some configs, one must use a specific version of libpng
+# PNG_LIB = png12
 
 # Uncomment if you want to use GLEW to handle OpenGL extensions
 DEFINES += SOFA_HAVE_GLEW

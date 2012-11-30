@@ -1,9 +1,14 @@
 contains(DEFINES, SOFA_HAVE_PNG) {
-	win32 {
-		LIBS *= -llibpng
-	}
-	unix {
-		macx  : LIBS *= -lpng12
-		!macx : LIBS *= -lpng
+	!isEmpty(PNG_LIB)
+	{
+		LIBS *= -l$$PNG_LIB
+	} else {
+		win32 {
+			LIBS *= -llibpng
+		}
+		unix {
+			macx  : LIBS *= -lpng12
+			!macx : LIBS *= -lpng
+		}
 	}
 }
