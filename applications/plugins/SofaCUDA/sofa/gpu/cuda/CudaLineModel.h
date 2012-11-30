@@ -22,48 +22,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
+#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
 
-#include <sofa/component/collision/PointModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#include "CudaTypes.h"
+#include <sofa/component/collision/LineModel.h>
 
 namespace sofa
 {
 
-namespace component
+namespace gpu
 {
 
-namespace collision
+namespace cuda
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
+typedef sofa::component::collision::TLineModel<CudaVec3fTypes> CudaLineModel;
+typedef sofa::component::collision::TLineModel<CudaVec3fTypes> CudaLine;
 
-SOFA_DECL_CLASS(Point)
+} // namespace cuda
 
-int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
-#ifndef SOFA_FLOAT
-        .add< TPointModel<defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TPointModel<defaulttype::Vec3fTypes> >()
-#endif
-        .addAlias("Point")
-// .addAlias("PointModel")
-        .addAlias("PointMesh")
-        .addAlias("PointSet")
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3fTypes>;
-#endif
-
-} // namespace collision
-
-} // namespace component
+} // namespace gpu
 
 } // namespace sofa
 
+#endif

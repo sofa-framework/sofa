@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/component/collision/PointModel.inl>
+#include "CudaTypes.h"
+#include "CudaTriangleModel.h"
+#include <sofa/component/collision/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,35 +36,37 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
+template class TLineModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class TLineModel<sofa::gpu::cuda::CudaVec3f1Types>;
 
-SOFA_DECL_CLASS(Point)
-
-int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
-#ifndef SOFA_FLOAT
-        .add< TPointModel<defaulttype::Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TPointModel<defaulttype::Vec3fTypes> >()
-#endif
-        .addAlias("Point")
-// .addAlias("PointModel")
-        .addAlias("PointMesh")
-        .addAlias("PointSet")
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3fTypes>;
-#endif
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class TLineModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class TLineModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace collision
 
 } // namespace component
 
-} // namespace sofa
+namespace gpu
+{
 
+namespace cuda
+{
+
+SOFA_DECL_CLASS(CudaLineModel)
+
+int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::collision::TLineModel<CudaVec3fTypes> >()
+        .add< component::collision::TLineModel<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::TLineModel<CudaVec3dTypes> >()
+        .add< component::collision::TLineModel<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
+
+} // namespace cuda
+
+} // namespace gpu
+
+} // namespace sofa

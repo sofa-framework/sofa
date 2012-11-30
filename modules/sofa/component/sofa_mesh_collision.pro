@@ -23,8 +23,10 @@ HEADERS += initMeshCollision.h \
            collision/MeshMinProximityIntersection.h \
            collision/Point.h \
            collision/PointModel.h \
+           collision/PointModel.inl \
            collision/Line.h \
            collision/LineModel.h \
+           collision/LineModel.inl \
            collision/Triangle.h \
            collision/TriangleModel.h \
            collision/TriangleModel.inl \
