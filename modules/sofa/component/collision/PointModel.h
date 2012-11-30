@@ -43,20 +43,29 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class PointModel;
+template<class DataTypes>
+class TPointModel;
+
 class PointLocalMinDistanceFilter;
 
-class Point : public core::TCollisionElementIterator<PointModel>
+template<class TDataTypes>
+class TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
 {
 public:
-    Point(PointModel* model, int index);
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TPointModel<DataTypes> ParentModel;
 
-    explicit Point(core::CollisionElementIterator& i);
+    TPoint(ParentModel* model, int index);
+    TPoint() {}
 
-    const Vector3& p() const;
-    const Vector3& pFree() const;
-    const Vector3& v() const;
-    Vector3 n() const;
+    explicit TPoint(core::CollisionElementIterator& i);
+
+    const Coord& p() const;
+    const Coord& pFree() const;
+    const Deriv& v() const;
+    Deriv n() const;
 
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
@@ -74,23 +83,27 @@ public:
     virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
-class SOFA_MESH_COLLISION_API PointModel : public core::CollisionModel
+template<class TDataTypes>
+class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(PointModel, core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
 
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
-    typedef DataTypes::VecCoord VecCoord;
-    typedef DataTypes::VecDeriv VecDeriv;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Deriv Deriv;
-    typedef Point Element;
+//    typedef Vec3Types InDataTypes;
+//    typedef Vec3Types DataTypes;
+    typedef TDataTypes DataTypes;
+    typedef DataTypes InDataTypes;
+    typedef TPointModel<DataTypes> ParentModel;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TPoint<DataTypes> Element;
     typedef helper::vector<unsigned int> VecIndex;
 
-    friend class Point;
+    friend class TPoint<DataTypes>;
 protected:
-    PointModel();
+    TPointModel();
 public:
     virtual void init();
 
@@ -108,7 +121,7 @@ public:
 
     virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
-    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
     //virtual const char* getTypeName() const { return "Point"; }
 
@@ -127,9 +140,29 @@ public:
 
     Data<bool> bothSide; // to activate collision on both side of the point model (when surface normals are defined on these points)
 
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const TPointModel<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
 
-    core::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<DataTypes>* mstate;
 
     Data<bool> computeNormals;
 
@@ -147,38 +180,58 @@ protected:
     PointActiver *myActiver;
 };
 
-inline Point::Point(PointModel* model, int index)
-    : core::TCollisionElementIterator<PointModel>(model, index)
+template<class DataTypes>
+inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
+    : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 
 }
 
-inline Point::Point(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
+template<class DataTypes>
+inline TPoint<DataTypes>::TPoint(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 
 }
 
-inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return (*this->model->mstate->getX())[this->index]; }
 
-inline const Vector3& Point::pFree() const
+template<class DataTypes>
+inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 {
     if (hasFreePosition())
-        return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[index];
+        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index];
     else
         return p();
 }
 
-inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }
 
-inline Vector3 Point::n() const { return ((unsigned)index<model->normals.size()) ? model->normals[index] : Vector3(); }
+template<class DataTypes>
+inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
 
-inline bool Point::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+template<class DataTypes>
+inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-inline bool Point::activated(core::CollisionModel *cm) const
+template<class DataTypes>
+inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
 {
-    return model->myActiver->activePoint(index, cm);
+    return this->model->myActiver->activePoint(this->index, cm);
 }
+
+typedef TPointModel<Vec3Types> PointModel;
+typedef TPoint<Vec3Types> Point;
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#ifndef SOFA_FLOAT
+extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 //bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);
 

@@ -74,6 +74,7 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaPointModel.h \
            sofa/gpu/cuda/CudaSphereModel.h \
            sofa/gpu/cuda/CudaTriangleModel.h \
+           sofa/gpu/cuda/CudaLineeModel.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.inl \
            sofa/gpu/cuda/CudaVisualModel.h \
@@ -129,6 +130,7 @@ SOURCES += main.cpp \
            sofa/gpu/cuda/CudaSphereModel.cpp \
            sofa/gpu/cuda/CudaPointModel.cpp \
            sofa/gpu/cuda/CudaTriangleModel.cpp \
+           sofa/gpu/cuda/CudaLineModel.cpp \
            sofa/gpu/cuda/CudaPenalityContactForceField.cpp \
            sofa/gpu/cuda/CudaVisualModel.cpp \
            sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp \

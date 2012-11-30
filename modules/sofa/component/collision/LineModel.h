@@ -44,27 +44,36 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class LineModel;
+template<class DataTypes>
+class TLineModel;
+
 class LineLocalMinDistanceFilter;
 
-class Line : public core::TCollisionElementIterator<LineModel>
+template<class TDataTypes>
+class TLine : public core::TCollisionElementIterator<TLineModel<TDataTypes> >
 {
 public:
-    Line(LineModel* model, int index);
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TLineModel<DataTypes> ParentModel;
 
-    explicit Line(core::CollisionElementIterator& i);
+    TLine(ParentModel* model, int index);
+    TLine() {}
+
+    explicit TLine(core::CollisionElementIterator& i);
 
     unsigned i1() const;
     unsigned i2() const;
 
-    const Vector3& p1() const;
-    const Vector3& p2() const;
+    const Coord& p1() const;
+    const Coord& p2() const;
 
-    const Vector3& p1Free() const;
-    const Vector3& p2Free() const;
+    const Coord& p1Free() const;
+    const Coord& p2Free() const;
 
-    const Vector3& v1() const;
-    const Vector3& v2() const;
+    const Deriv& v1() const;
+    const Deriv& v2() const;
 
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
@@ -84,10 +93,11 @@ public:
     virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
-class SOFA_MESH_COLLISION_API LineModel : public core::CollisionModel
+template<class TDataTypes>
+class SOFA_MESH_COLLISION_API TLineModel : public core::CollisionModel
 {
 public :
-    SOFA_CLASS(LineModel,sofa::core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TLineModel, TDataTypes), core::CollisionModel);
 
 protected:
     struct LineData
@@ -101,18 +111,21 @@ protected:
     bool needsUpdate;
     virtual void updateFromTopology();
 
-    LineModel();
+    TLineModel();
 
 public:
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
-    typedef DataTypes::VecCoord VecCoord;
-    typedef DataTypes::VecDeriv VecDeriv;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Deriv Deriv;
-    typedef Line Element;
-
-    friend class Line;
+//    typedef Vec3Types InDataTypes;
+//    typedef Vec3Types DataTypes;
+//    typedef DataTypes DataTypes;
+    typedef TDataTypes DataTypes;
+    typedef DataTypes InDataTypes;
+    typedef TLineModel<DataTypes> ParentModel;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TLine<DataTypes> Element;
+    friend class TLine<DataTypes>;
 
     virtual void init();
 
@@ -132,7 +145,7 @@ public:
 
     bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
-    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
     //virtual const char* getTypeName() const { return "Line"; }
 
@@ -151,10 +164,30 @@ public:
 
     Data<bool> bothSide; // to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const TLineModel<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 
 protected:
 
-    core::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;
     PointModel* mpoints;
     int meshRevision;
@@ -168,49 +201,64 @@ protected:
 
 };
 
-inline Line::Line(LineModel* model, int index)
-    : core::TCollisionElementIterator<LineModel>(model, index)
+template<class DataTypes>
+inline TLine<DataTypes>::TLine(ParentModel* model, int index)
+    : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 //	activated = model->myActiver->activeLine(index);
 }
 
-inline Line::Line(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
+template<class DataTypes>
+inline TLine<DataTypes>::TLine(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 //	LineModel* CM = static_cast<LineModel*>(i.getCollisionModel());
 //	activated = CM->myActiver->activeLine(i.getIndex());
 }
 
-inline unsigned Line::i1() const { return model->elems[index].i1; }
-inline unsigned Line::i2() const { return model->elems[index].i2; }
+template<class DataTypes>
+inline unsigned TLine<DataTypes>::i1() const { return this->model->elems[this->index].i1; }
 
-inline const Vector3& Line::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
-inline const Vector3& Line::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
+template<class DataTypes>
+inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].i2; }
 
-inline const Vector3& Line::p1Free() const
+template<class DataTypes>
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return (*this->model->mstate->getX())[this->model->elems[this->index].i1]; }
+
+template<class DataTypes>
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return (*this->model->mstate->getX())[this->model->elems[this->index].i2]; }
+
+template<class DataTypes>
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
 {
     if (hasFreePosition())
-        return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[model->elems[index].i1];
+        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].i1];
     else
         return p1();
 }
 
-inline const Vector3& Line::p2Free() const
+template<class DataTypes>
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 {
     if (hasFreePosition())
-        return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[model->elems[index].i2];
+        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].i2];
     else
         return p2();
 }
 
-inline const Vector3& Line::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
-inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*this->model->mstate->getV())[this->model->elems[this->index].i1]; }
 
-inline bool Line::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].i2]; }
 
-inline bool Line::activated(core::CollisionModel *cm) const
+template<class DataTypes>
+inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+
+template<class DataTypes>
+inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
 {
-    return model->myActiver->activeLine(index, cm);
+    return this->model->myActiver->activeLine(this->index, cm);
 }
 
 //inline const Vector3* Line::tRight() const {
@@ -263,6 +311,18 @@ inline bool Line::activated(core::CollisionModel *cm) const
 //
 //    void updateFromTopology();
 //};
+
+typedef TLineModel<Vec3Types> LineModel;
+typedef TLine<Vec3Types> Line;
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#ifndef SOFA_FLOAT
+extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace collision
 
