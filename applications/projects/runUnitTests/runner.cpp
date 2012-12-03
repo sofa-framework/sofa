@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 struct plugin
 {
@@ -38,13 +39,15 @@ struct loader
     static loader instance;
 };
 
+#define BOOST_ALL_DYN_LINK
 
-
-
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_NO_MAIN
 #include <boost/test/unit_test.hpp>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp> // wchar_t must be define as built-in type on Windows in order to avoid undefined external symbol
+
+#include <boost/regex.hpp>
 
 using namespace boost::unit_test;
 
@@ -59,19 +62,50 @@ bool init_unit_test()
         // read from stdin
 
         std::string path;
-        while( std::cin >> path ) plugin( path ).load();
+        while( std::cin >> path )
+		{
+			std::cout << "Test : " << path << std::endl;
+			plugin(path).load();
+		}
     }
     else
     {
         if( argc==1 )
-            std::cerr<<"Warning: runUnitTests expects a list of libraries to test in the command line, e.g.:  bin/runUnitTest lib/*_test.so " << std::endl;
+		{
+            //std::cerr<<"Warning: runUnitTests expects a list of libraries to test in the command line, e.g.:  bin/runUnitTest lib/*_test.so " << std::endl;
+			std::cout << "Gathering test units ..." << std::endl;
 
-        // read from argv
-        for( int i = 1; i < argc; ++i)
-        {
-            plugin( argv[i] ).load();
-        }
+			boost::filesystem::path exePath = argv[0];
+			boost::filesystem::path dirPath = exePath.parent_path();
 
+			std::vector<boost::filesystem::path> files;
+			std::copy(boost::filesystem::directory_iterator(dirPath), boost::filesystem::directory_iterator(), std::back_inserter(files));
+
+			for(int i = 0; i < files.size(); ++i)
+			{
+				boost::filesystem::path filepath(files[i].filename());
+				std::string filename(filepath.native().begin(), filepath.native().end());
+				
+				boost::filesystem::path extensionPath = filepath.extension();
+				std::string extension(extensionPath.native().begin(), extensionPath.native().end());
+
+				if(	std::string::npos != filename.find("_test") && std::string::npos == filename.find("boost") &&
+					(0 == extension.compare(".dll") || 0 == extension.compare(".so") || 0 == extension.compare(".dynlib")))
+				{
+					std::cout << "Test : " << filename << std::endl;
+					plugin(filename).load();
+				}
+			}
+		}
+		else
+		{
+			// read from argv
+			for( int i = 1; i < argc; ++i)
+			{
+				std::cout << "Test : " << argv[i] << std::endl;
+				plugin( argv[i] ).load();
+			}
+		}
     }
 
     framework::master_test_suite().p_name.value = "SOFA Test Suite";
