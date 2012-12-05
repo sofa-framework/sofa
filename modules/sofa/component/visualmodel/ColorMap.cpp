@@ -23,9 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/visualmodel/ColorMap.h>
-//#include <sofa/helper/rmath.h>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+
 #include <string>
 #include <iostream>
 

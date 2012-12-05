@@ -30,6 +30,8 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
+#include <sofa/helper/gl/template.h>
+
 
 namespace sofa
 {

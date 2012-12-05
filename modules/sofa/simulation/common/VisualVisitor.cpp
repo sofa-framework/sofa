@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/simulation/common/VisualVisitor.h>
 
+#include <sofa/core/visual/VisualParams.h>
+
 //#define DEBUG_DRAW
 
 namespace sofa

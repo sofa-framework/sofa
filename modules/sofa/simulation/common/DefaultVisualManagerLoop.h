@@ -27,7 +27,6 @@
 
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 
@@ -36,6 +35,14 @@ using namespace sofa::core::behavior;
 
 namespace sofa
 {
+
+namespace core
+{ 
+namespace visual
+{
+class VisualParams;
+} // namespace visual
+} // namespace core
 
 namespace simulation
 {

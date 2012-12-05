@@ -27,13 +27,17 @@
 
 #include <vector>
 #include <sofa/core/core.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
 
 namespace core
 {
+
+namespace visual 
+{ 
+class VisualParams;
+} // namespace visual 
 
 class CollisionModel;
 class CollisionElementIterator;

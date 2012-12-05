@@ -26,7 +26,6 @@
 #define SOFA_CORE_VISUAL_VISUALMANAGER_H
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -36,6 +35,8 @@ namespace core
 
 namespace visual
 {
+
+class VisualParams;
 
 class VisualManager : public virtual VisualModel
 {

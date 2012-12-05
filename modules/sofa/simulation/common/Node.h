@@ -82,12 +82,19 @@ using sofa::simulation::Visitor;
 using sofa::simulation::VisitorScheduler;
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <string>
 #include <stack>
 
 namespace sofa
 {
+
+namespace core
+{
+namespace visual
+{
+class VisualParams;
+} // namespace visual
+} // namespace core
 
 namespace simulation
 {

@@ -31,6 +31,14 @@
 namespace sofa
 {
 
+namespace core
+{
+namespace visual
+{
+class VisualParams; 
+} // namespace visual
+} // namespace core
+
 namespace simulation
 {
 
@@ -70,12 +78,8 @@ public:
 class SOFA_SIMULATION_COMMON_API UpdateVisualContextVisitor : public UpdateContextVisitor
 {
 public:
+    UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams);
 
-
-    UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams)
-        : UpdateContextVisitor(vparams)
-    {
-    }
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }
 protected:

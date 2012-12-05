@@ -28,7 +28,7 @@
 #include <sofa/core/core.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/template.h>
+
 #include <vector>
 
 namespace sofa

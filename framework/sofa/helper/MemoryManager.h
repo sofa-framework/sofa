@@ -27,7 +27,6 @@
 
 #include <sofa/helper/helper.h>
 #include <cstring>
-#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {
@@ -51,7 +50,7 @@ public :
     //have to be changed according of the type of device
     typedef void* device_pointer;
 
-    typedef GLuint gl_buffer;
+    typedef unsigned int gl_buffer;
 
     enum { MAX_DEVICES = 0 };
     enum { BSIZE = 32 };

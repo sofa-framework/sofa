@@ -39,6 +39,14 @@
 namespace sofa
 {
 
+namespace core
+{
+namespace visual
+{
+class VisualParams;
+} // namespace visual
+} // namespace core
+
 namespace simulation
 {
 
