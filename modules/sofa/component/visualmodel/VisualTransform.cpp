@@ -28,6 +28,8 @@
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/simulation/common/UpdateContextVisitor.h>
 
+#include <sofa/core/visual/DrawTool.h>
+
 namespace sofa
 {
 namespace component

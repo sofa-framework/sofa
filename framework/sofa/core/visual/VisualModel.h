@@ -26,7 +26,6 @@
 #define SOFA_CORE_VISUAL_VISUALMODEL_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
@@ -38,6 +37,8 @@ namespace core
 
 namespace visual
 {
+
+class VisualParams;
 
 /**
  *  \brief An interface which all VisualModel inherit.

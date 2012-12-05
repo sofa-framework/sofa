@@ -25,6 +25,8 @@
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/Node.h>
 
+#include <sofa/core/visual/VisualParams.h>
+
 namespace sofa
 {
 
@@ -48,6 +50,14 @@ Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(simulation::N
     return RESULT_CONTINUE;
 }
 
+
+UpdateVisualContextVisitor::UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams)
+	: UpdateContextVisitor(vparams)
+{
+
+}
+
+
 Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node* node)
 {
 
@@ -56,6 +66,7 @@ Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node*
         node->updateVisualContext();
     return RESULT_CONTINUE;
 }
+
 
 } // namespace simulation
 

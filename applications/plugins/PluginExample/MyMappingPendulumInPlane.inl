@@ -25,7 +25,9 @@
 
 #include "MyMappingPendulumInPlane.h"
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 

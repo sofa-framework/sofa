@@ -26,7 +26,6 @@
 #define SOFA_CORE_VISUAL_VISUALLOOP_H
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -36,6 +35,9 @@ namespace core
 
 namespace visual
 {
+
+class VisualParams;
+
 /*
  * VisualLoop is an API managing steps for drawing, rendering scene.
  * Components inherit from this API need to be unique in the root node of the scene

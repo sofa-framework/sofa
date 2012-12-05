@@ -25,6 +25,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>

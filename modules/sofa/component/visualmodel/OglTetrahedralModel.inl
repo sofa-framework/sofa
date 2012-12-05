@@ -28,6 +28,7 @@
 #include "OglTetrahedralModel.h"
 
 #include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 

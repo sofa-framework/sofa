@@ -26,6 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAVISUALMODEL_INL
 
 #include "CudaVisualModel.h"
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

@@ -29,6 +29,8 @@
 #include <cstring>
 #include "mycuda.h"
 
+#include <sofa/helper/system/gl.h>
+
 
 namespace sofa
 {

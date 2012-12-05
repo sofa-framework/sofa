@@ -34,14 +34,27 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
+
+#include <sofa/helper/system/gl.h>
+
 
 namespace sofa
 {
+
+namespace helper
+{
+namespace gl
+{
+class FrameBufferObject;
+} // namespace gl
+} // namespace helper
+
 namespace core
 {
 namespace visual
 {
+
+class DrawTool;
 
 /// The enumeration used to describe potentially supported graphics API.
 enum
