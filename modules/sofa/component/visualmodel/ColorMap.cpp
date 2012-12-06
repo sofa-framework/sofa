@@ -343,7 +343,7 @@ ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
 
     float x = hsv[2] * (1.0f - hsv[1]),
            y = hsv[2] * (1.0f - hsv[1] * f),
-           z = hsv[2] * (1.0f - hsv[1] * (1.0 - f));
+           z = hsv[2] * (1.0f - hsv[1] * (1.0f - f));
 
     switch ((int)i % 6) {
         case 0: rgb = Color3(hsv[2],      z,      x); break;
