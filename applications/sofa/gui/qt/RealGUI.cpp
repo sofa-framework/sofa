@@ -748,7 +748,7 @@ void RealGUI::fileOpen()
         {
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
-            filter+=(*itExt);
+            filter+=(*itExt);       
         }
         filter+=")";
     }
@@ -760,9 +760,10 @@ void RealGUI::fileOpen()
     filter += ";;Simulation (*.simu);;All (*)";
 #endif
 
+    QString selectedFilter = "Scenes (*.xml *.scn)"; 
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
             filter.c_str(),
-            "open file dialog",  "Choose a file to open"
+            "open file dialog",  "Choose a file to open", &selectedFilter
                                 );
 
     if ( s.length() >0 )
