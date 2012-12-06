@@ -59,6 +59,24 @@ SOFA_DECL_CLASS(ImagePNG)
 
 Creator<Image::FactoryImage,ImagePNG> ImagePNGClass("png");
 
+// we have to give our own reading function to libpng in order to use the "fread" function belonging to Sofa
+// and not the one belonging to libpng since Sofa do the "fopen" on the FILE struct
+void png_my_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+   png_size_t check;
+
+   if (png_ptr == NULL)
+      return;
+
+   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
+    * instead of an int, which is what fread() actually returns.
+    */
+   check = fread(data, 1, length, (png_FILE_p)png_ptr->io_ptr);
+
+   if (check != length)
+      png_error(png_ptr, "Read Error");
+}
+
 bool ImagePNG::load(std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
@@ -108,7 +126,8 @@ bool ImagePNG::load(std::string filename)
         return false;
     }
 
-    png_init_io(PNG_reader, file);
+    //png_init_io(PNG_reader, file);
+	png_set_read_fn(PNG_reader, file, png_my_read_data);
 
     png_read_info(PNG_reader, PNG_info);
 
@@ -208,6 +227,21 @@ bool ImagePNG::load(std::string filename)
     return true;
 }
 
+// we have to give our own writing function to libpng in order to use the "fwrite" function belonging to Sofa
+// and not the one belonging to libpng since Sofa do the "fopen" on the FILE struct
+void png_my_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+	png_size_t check;
+
+	if (png_ptr == NULL)
+		return;
+
+	check = fwrite(data, 1, length, (png_FILE_p)(png_ptr->io_ptr));
+
+	if (check != length)
+		png_error(png_ptr, "Write Error");
+}
+
 bool ImagePNG::save(std::string filename, int compression_level)
 {
 
@@ -247,7 +281,8 @@ bool ImagePNG::save(std::string filename, int compression_level)
         return false;
     }
 
-    png_init_io(PNG_writer, file);
+    //png_init_io(PNG_writer, file);
+	png_set_write_fn(PNG_writer, file, png_my_write_data);
 
     png_uint_32 width, height;
     png_uint_32 bit_depth, channels, color_type;
