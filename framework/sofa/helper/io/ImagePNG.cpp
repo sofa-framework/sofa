@@ -242,6 +242,17 @@ void png_my_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 		png_error(png_ptr, "Write Error");
 }
 
+void png_default_flush(png_structp png_ptr)
+{
+	png_FILE_p io_ptr;
+
+	if (png_ptr == NULL)
+		return;
+
+	io_ptr = (png_FILE_p)CVT_PTR((png_ptr->io_ptr));
+	fflush(io_ptr);
+}
+
 bool ImagePNG::save(std::string filename, int compression_level)
 {
 
@@ -282,7 +293,7 @@ bool ImagePNG::save(std::string filename, int compression_level)
     }
 
     //png_init_io(PNG_writer, file);
-	png_set_write_fn(PNG_writer, file, png_my_write_data);
+	png_set_write_fn(PNG_writer, file, png_my_write_data, png_default_flush);
 
     png_uint_32 width, height;
     png_uint_32 bit_depth, channels, color_type;
