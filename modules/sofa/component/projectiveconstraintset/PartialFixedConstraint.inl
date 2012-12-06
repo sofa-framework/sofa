@@ -35,6 +35,8 @@
 #include <iostream>
 #include <sofa/component/topology/TopologySubsetData.inl>
 
+#include <sofa/core/visual/VisualParams.h>
+
 
 namespace sofa
 {
