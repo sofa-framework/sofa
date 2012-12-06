@@ -37,6 +37,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
