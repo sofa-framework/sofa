@@ -65,7 +65,7 @@ bool init_unit_test()
         while( std::cin >> path )
 		{
 			std::cout << "Test : " << path << std::endl;
-			plugin(path).load();
+            plugin(path).load();
 		}
     }
     else

@@ -26,6 +26,7 @@ unix {
    LIBS += -ldl
    LIBS *= -l$${BOOST_PREFIX}boost_unit_test_framework$$BOOST_SUFFIX
    LIBS *= -l$${BOOST_PREFIX}boost_filesystem$$BOOST_SUFFIX
+   LIBS *= -l$${BOOST_PREFIX}boost_system$$BOOST_SUFFIX
 }
 
 SOURCES = \
