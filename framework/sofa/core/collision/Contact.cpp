@@ -44,7 +44,7 @@ Contact::Factory* Contact::Factory::getInstance()
     return &instance;
 }
 
-Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod)
+Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod, bool verbose)
 {
     std::string::size_type args = type.find('?');
     if (args == std::string::npos)
@@ -54,7 +54,10 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
     else
     {
         std::string otype(type, 0, args);
-        std::cout << model1->getName() << "-" << model2->getName() << " " << otype << " :";
+
+		if (verbose)
+			std::cout << model1->getName() << "-" << model2->getName() << " " << otype << " :";
+
         Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
         while (args != std::string::npos)
         {
@@ -64,9 +67,12 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
             {
                 std::string var(type, args+1, eq-args-1);
                 std::string val(type, eq+1, (next == std::string::npos ? type.size() : next) - (eq+1));
-                std::cout << " " << var << " = " << val;
+
+				if (verbose)
+					std::cout << " " << var << " = " << val;
+
                 std::vector< objectmodel::BaseData* > v = c->findGlobalField( var.c_str() );
-                if (v.empty())
+                if (v.empty() && verbose)
                     std::cerr << "ERROR: parameter " << var << " not found in contact type " << otype << std::endl;
                 else
                     for (unsigned int i=0; i<v.size(); ++i)
@@ -74,7 +80,10 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
             }
             args = next;
         }
-        std::cout << std::endl;
+
+		if (verbose)
+			std::cout << std::endl;
+
         return c;
     }
 }

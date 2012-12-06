@@ -128,7 +128,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
                 ++outputsIt;
                 continue;
             }
-            core::collision::Contact::SPtr contact = core::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
+			core::collision::Contact::SPtr contact = core::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod, this->f_printLog.getValue());
             if (contact == NULL)
             {
                 std::string model1class = model1->getClassName();

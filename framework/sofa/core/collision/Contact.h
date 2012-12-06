@@ -94,13 +94,13 @@ public:
         {
             return getInstance()->createAnyObject(arg);
         }
-    };
+	};
 
     /// Create a new contact given 2 collision elements and an intersection method
-    static Contact::SPtr Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
+    static Contact::SPtr Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod, bool verbose=true);
 
     template<class RealContact>
-    static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
+        static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
     {
         typedef typename RealContact::CollisionModel1 RealCollisionModel1;
         typedef typename RealContact::CollisionModel2 RealCollisionModel2;
