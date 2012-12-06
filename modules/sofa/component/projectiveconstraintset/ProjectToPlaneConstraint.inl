@@ -209,7 +209,8 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
 
     // fill the jacobian is ascending order
     unsigned i=0;
-    for(Indices::const_iterator it= tmp.begin(); i<numBlocks; i++ )
+    Indices::const_iterator it = tmp.begin();
+    while( i<numBlocks && it != tmp.end())
     {
         jacobian.beginBlockRow(i);
         if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
@@ -222,6 +223,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
             jacobian.createBlock(i,bIdentity); // only one block to create
         }
         jacobian.endBlockRow();
+        i++;
     }
     jacobian.compress();
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
