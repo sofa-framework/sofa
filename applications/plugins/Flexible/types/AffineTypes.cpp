@@ -40,6 +40,7 @@
 #include <sofa/component/misc/Monitor.inl>
 #include <sofa/component/misc/ExtraMonitor.inl>
 
+#include <sofa/component/constraintset/UncoupledConstraintCorrection.inl>
 
 namespace sofa
 {
@@ -379,7 +380,18 @@ template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3Types>;
 
 
 
+namespace constraintset
+{
 
+
+SOFA_DECL_CLASS( AffineUncoupledConstraintCorrection )
+// Register in the Factory
+int AffineUncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
+        .add< UncoupledConstraintCorrection<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affine3Types>;
+
+
+} // namespace constraintset
 
 
 
