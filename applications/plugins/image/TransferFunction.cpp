@@ -46,6 +46,7 @@ int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageUC,ImageUI    > >()
         .add<TransferFunction<ImageUC,ImageUS    > >()
         .add<TransferFunction<ImageUS,ImageUC    > >()
+        .add<TransferFunction<ImageUC,ImageB    > >()
 
 #ifdef BUILD_ALL_IMAGE_TYPES
         .add<TransferFunction<ImageC ,ImageC     > >()
@@ -79,6 +80,7 @@ template class SOFA_IMAGE_API TransferFunction<ImageD  ,ImageUC    >;
 template class SOFA_IMAGE_API TransferFunction<ImageUC   ,ImageUI     >;
 template class SOFA_IMAGE_API TransferFunction<ImageUC   ,ImageUS     >;
 template class SOFA_IMAGE_API TransferFunction<ImageUS   ,ImageUC     >;
+template class SOFA_IMAGE_API TransferFunction<ImageUC   ,ImageB     >;
 
 #ifdef BUILD_ALL_IMAGE_TYPES
 template class SOFA_IMAGE_API TransferFunction<ImageC   ,ImageC     >;

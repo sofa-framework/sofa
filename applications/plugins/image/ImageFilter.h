@@ -119,41 +119,41 @@ public:
     static std::string templateName(const ImageFilter<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     ImageFilter()    :   Inherited()
-        , filter ( initData ( &filter,"filter","Filter" ) )
-        , param ( initData ( &param,"param","Parameters" ) )
-        , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-        , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-        , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
-        , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
+      , filter ( initData ( &filter,"filter","Filter" ) )
+      , param ( initData ( &param,"param","Parameters" ) )
+      , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
+      , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
+      , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
+      , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
     {
         inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
         helper::OptionsGroup filterOptions(23	,"0 - None"
-                ,"1 - Blur ( sigma )"
-                ,"2 - Blur Median ( n )"
-                ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
-                ,"4 - Blur Anisotropic ( amplitude )"
-                ,"5 - Deriche ( sigma , order , axis )"
-                ,"6 - Crop ( xmin , ymin , zmin , xmax , ymax , zmax)"
-                ,"7 - Resize( dimx , dimy , dimz , no interp.|nearest neighb.|moving av.|linear|grid|bicubic|lanzcos)"
-                ,"8 - Trim ( tmin , tmax )"
-                ,"9 - Dilate ( size )"
-                ,"10 - Erode ( size )"
-                ,"11 - Noise ( sigma , gaussian|uniform|Salt&Pepper|Poisson|Rician )"
-                ,"12 - Quantize ( nbLevels )"
-                ,"13 - Threshold ( value )"
-                ,"14 - Laplacian"
-                ,"15 - Structure tensors ( scheme )"
-                ,"16 - Distance ( value, scale )"
-                ,"17 - Gradient ( axis x | y | z | magnitude)"
-                ,"18 - Hessian (axis1 , axis2) "
-                ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
-                ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
-                ,"21 - SelectChannels ( c0, c1 )"
-                ,"22 - Skeleton from distance map"
-                                          );
+                                           ,"1 - Blur ( sigma )"
+                                           ,"2 - Blur Median ( n )"
+                                           ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
+                                           ,"4 - Blur Anisotropic ( amplitude )"
+                                           ,"5 - Deriche ( sigma , order , axis )"
+                                           ,"6 - Crop ( xmin , ymin , zmin , xmax , ymax , zmax)"
+                                           ,"7 - Resize( dimx , dimy , dimz , no interp.|nearest neighb.|moving av.|linear|grid|bicubic|lanzcos)"
+                                           ,"8 - Trim ( tmin , tmax )"
+                                           ,"9 - Dilate ( size )"
+                                           ,"10 - Erode ( size )"
+                                           ,"11 - Noise ( sigma , gaussian|uniform|Salt&Pepper|Poisson|Rician )"
+                                           ,"12 - Quantize ( nbLevels )"
+                                           ,"13 - Threshold ( min , max )"
+                                           ,"14 - Laplacian"
+                                           ,"15 - Structure tensors ( scheme )"
+                                           ,"16 - Distance ( value, scale )"
+                                           ,"17 - Gradient ( axis x | y | z | magnitude)"
+                                           ,"18 - Hessian (axis1 , axis2) "
+                                           ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
+                                           ,"20 - Resample ( ox , oy , oz , dimx , dimy , dimz , dx , dy , dz  , nearest neighb.|linear|cubic)"
+                                           ,"21 - SelectChannels ( c0, c1 )"
+                                           ,"22 - Skeleton from distance map"
+                                           );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
     }
@@ -316,8 +316,15 @@ protected:
         case THRESHOLD:
             if(updateImage)
             {
-                To value=0; if(p.size()) value=(To)p[0];
-                cimglist_for(img,l) img(l)=inimg(l).get_threshold (value);
+                Ti valuemin=cimg::type<Ti>::min(); if(p.size()) valuemin=(Ti)p[0];
+                Ti valuemax=cimg::type<Ti>::max(); if(p.size()>1) valuemax=(Ti)p[1];
+
+                cimglist_for(img,l)
+                        cimg_forXYZ(img(l),x,y,z)
+                {
+                    if(inimg(l)(x,y,z)>=valuemin && inimg(l)(x,y,z)<=valuemax) img(l)(x,y,z)=(To)1;
+                    else img(l)(x,y,z)=(To)0;
+                }
             }
             break;
         case LAPLACIAN:
