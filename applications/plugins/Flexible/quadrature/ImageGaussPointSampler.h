@@ -83,6 +83,10 @@ public:
     typedef helper::WriteAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
+    typedef defaulttype::Image<bool> MaskTypes;
+    typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
+    Data< MaskTypes > f_mask;
+
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > f_transform;
@@ -111,6 +115,7 @@ public:
         addInput(&f_index);
         addInput(&f_w);
         addInput(&f_transform);
+        addInput(&f_mask);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
@@ -125,8 +130,9 @@ public:
 
 protected:
     ImageGaussPointSampler()    :   Inherit()
-      , f_index(initData(&f_index,IndTypes(),"indices",""))
-      , f_w(initData(&f_w,DistTypes(),"weights",""))
+      , f_index(initData(&f_index,IndTypes(),"indices","image of dof indices"))
+      , f_w(initData(&f_w,DistTypes(),"weights","weight image"))
+      , f_mask(initData(&f_mask,MaskTypes(),"mask","optional mask to restrict the sampling region"))
       , f_transform(initData(&f_transform,TransformType(),"transform",""))
       , f_region(initData(&f_region,IndTypes(),"region","sample region : labeled image with sample indices"))
       , f_error(initData(&f_error,DistTypes(),"error","weigth fitting error"))
@@ -375,6 +381,10 @@ protected:
         raTransform transform(this->f_transform);
         const CImg<IndT>& indices = rindices->getCImg(0);  // suppose time=0
 
+        raMask rmask(this->f_mask);
+        const CImg<bool>* mask = NULL;
+        if(rmask->getCImgList().size()) mask=&rmask->getCImg();
+
         // get regimg
         waInd wreg(this->f_region);
         CImg<IndT>& regimg = wreg->getCImg(0);
@@ -403,6 +413,7 @@ protected:
         // traverse index image to identify regions with unique indices
         cimg_forXYZ(indices,x,y,z)
                 if(indices(x,y,z))
+                    if(!mask || (*mask)(x,y,z))
         {
             indList l;
             cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v)-1);
@@ -544,52 +555,52 @@ protected:
     }
 
 
-        /// update mapping with weights fitted over a region (order 2)
-        /// typically done in bkwinit (to overwrite weights computed in the mapping using shape function interpolation)
-        virtual void updateMapping()
+    /// update mapping with weights fitted over a region (order 2)
+    /// typically done in bkwinit (to overwrite weights computed in the mapping using shape function interpolation)
+    virtual void updateMapping()
+    {
+        if(!deformationMapping) {serr<<"deformationMapping not found -> cannot map Gauss points"<<sendl; return;}
+
+        unsigned int nb = Reg.size();
+
+        waPositions pos(this->f_position);
+        waVolume vol(this->f_volume);
+
+        pos.resize ( nb );
+        vol.resize ( nb );
+
+        vector<vector<unsigned int> > index(nb);
+        vector<vector<Real> > w(nb);
+        vector<vector<Vec<spatial_dimensions,Real> > > dw(nb);
+        vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
+
+        Mat<spatial_dimensions,spatial_dimensions,Real> I=Mat<spatial_dimensions,spatial_dimensions,Real>::Identity(); // could be image orientation
+        vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0((int)nb,I);
+
+        for(unsigned int i=0; i<nb; i++)
         {
-            if(!deformationMapping) {serr<<"deformationMapping not found -> cannot map Gauss points"<<sendl; return;}
-
-            unsigned int nb = Reg.size();
-
-            waPositions pos(this->f_position);
-            waVolume vol(this->f_volume);
-
-            pos.resize ( nb );
-            vol.resize ( nb );
-
-            vector<vector<unsigned int> > index(nb);
-            vector<vector<Real> > w(nb);
-            vector<vector<Vec<spatial_dimensions,Real> > > dw(nb);
-            vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
-
-            Mat<spatial_dimensions,spatial_dimensions,Real> I=Mat<spatial_dimensions,spatial_dimensions,Real>::Identity(); // could be image orientation
-            vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0((int)nb,I);
-
-            for(unsigned int i=0; i<nb; i++)
-            {
-                defaulttype::PolynomialFitFactors<Real>* reg=&Reg[i];
-                reg->solve(2);
-                pos[i]=reg->center;
-                vol[i].resize(reg->vol.rows());  for(unsigned int j=0; j<vol[i].size(); j++) vol[i][j]=reg->vol(j);
-                reg->getMapping(index[i],w[i],dw[i],ddw[i]);
-            }
-
-            // test
-            for(unsigned int i=0; i<nb; i++)
-            {
-                Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; /*if(w[i][j]<0 || w[i][j]>1) std::cout<<"error on "<<i<<" : w = "<<w[i][j]<<std::endl; */}
-                Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
-                if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
-            }
-
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
-            deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);
+            defaulttype::PolynomialFitFactors<Real>* reg=&Reg[i];
+            reg->solve(fillOrder());
+            pos[i]=reg->center;
+            vol[i].resize(reg->vol.rows());  for(unsigned int j=0; j<vol[i].size(); j++) vol[i][j]=reg->vol(j);
+            reg->getMapping(index[i],w[i],dw[i],ddw[i]);
         }
 
+        // test
+        for(unsigned int i=0; i<nb; i++)
+        {
+            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; /*if(w[i][j]<0 || w[i][j]>1) std::cout<<"error on "<<i<<" : w = "<<w[i][j]<<std::endl; */}
+            Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
+            if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
+        }
+
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
+        deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);
+    }
 
 
-    };
+
+};
 
 }
 }
