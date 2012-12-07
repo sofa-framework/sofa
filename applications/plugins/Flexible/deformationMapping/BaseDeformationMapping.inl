@@ -442,6 +442,47 @@ void BaseDeformationMapping<JacobianBlockType>::applyDJT(const core::MechanicalP
 
 
 
+template <class JacobianBlockType>
+void BaseDeformationMapping<JacobianBlockType>::applyJT( const core::ConstraintParams */*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
+{
+    // TODO handle mask
+
+    InMatrixDeriv& out = *_out.beginEdit();
+    const OutMatrixDeriv& in = _in.getValue();
+
+    typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (typename OutMatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename OutMatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        typename OutMatrixDeriv::ColConstIterator colIt = rowIt.begin();
+
+        if (colIt != colItEnd)
+        {
+            typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned int indexIn = colIt.index();
+
+                for(unsigned int j=0; j<jacobian[indexIn].size(); j++)
+                {
+                    unsigned int indexOut = this->f_index.getValue()[indexIn][j];
+
+                    InDeriv tmp;
+                    jacobian[indexIn][j].addMultTranspose( tmp, colIt.val() );
+
+                    o.addCol( indexOut, tmp );
+                }
+            }
+        }
+    }
+
+    _out.endEdit();
+}
+
+
+
 
 /** abstract implementation of BasePointMapper functions
     they call mapPosition/mapDefoGradient specialized functions (templated on specific jacobianBlockType)

@@ -384,6 +384,44 @@ namespace constraintset
 {
 
 
+template<>
+SOFA_Flexible_API void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
+{
+    //std::cerr<<"UncoupledConstraintCorrection< defaulttype::Affine3Types >::init\n";
+    Inherit::init();
+
+    double dt = this->getContext()->getDt();
+
+    const double dt2 = dt * dt;
+
+    Affine3Mass massValue;
+    VecReal usedComp;
+
+    sofa::component::mass::UniformMass< Affine3Types, Affine3Mass >* uniformMass;
+
+    this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
+    if( uniformMass )
+    {
+        massValue = uniformMass->getMass();
+
+        Real H = dt2 / (Real)massValue;
+
+        //for( int i=0 ; i<12 ; ++i )
+            usedComp.push_back( H );
+    }
+    // todo add ImageDensityMass
+    /*else
+    {
+        for( int i=0 ; i<1 ; ++i )
+            usedComp.push_back( defaultCompliance.getValue() );
+    }*/
+
+    compliance.setValue(usedComp);
+}
+
+
+
+
 SOFA_DECL_CLASS( AffineUncoupledConstraintCorrection )
 // Register in the Factory
 int AffineUncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
