@@ -116,8 +116,10 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     else
          std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
 
+             */
     std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;
-    */
+
+    std::cout<<"size of InputPositions="<<InputPositions.getValue()<<std::endl;
 
 
     const VecCoord* in = &InputPositions.getValue();
@@ -252,8 +254,10 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
                 {
                     ++outside;
                 }
-                if ( index < c0 )
-                    addPointInTriangle ( index, coefs.ptr() );
+                if ( index < c0 ){
+                    std::cout<<"addPoint "<<i<<" in Triangle "<<index<<" coef bary :"<<coefs<<std::endl;
+                    addPointInTriangle ( index, coefs.ptr(),i );
+                }
                 else
                     addPointInQuad ( index-c0, coefs.ptr() );
             }
@@ -342,19 +346,51 @@ void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualPara
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/)
 {
+    std::cout<<"addPointInLine not implemented"<<std::endl;
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords,  const unsigned int pointIndex)
 {
+    if(tableElts==NULL|| baryPos==NULL)
+        return;
+    (*tableElts)[pointIndex] = triangleIndex;
+    (*baryPos)[pointIndex][0] =( Real ) baryCoords[0];
+    (*baryPos)[pointIndex][1] =( Real ) baryCoords[1];
+
+
+    if(computeLinearInterpolation.getValue())
+    {
+        const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
+
+        if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || triangles.size()==0 )
+            return;
+
+        // node0
+        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][0]);
+        Real value = (Real)1.-(Real)(baryCoords[0]-baryCoords[1]);
+        (*linearInterpolValues)[pointIndex].push_back(value);
+
+        // node1
+        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][1]);
+        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[0]);
+
+        // node2
+        (*linearInterpolIndices)[pointIndex].push_back(triangles[triangleIndex][2]);
+        (*linearInterpolValues)[pointIndex].push_back((Real)baryCoords[1]);
+
+
+    }
+
+
 
 }
 
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/)
 {
-
+    std::cout<<"addPointInQuad not implemented"<<std::endl;
 }
 
 template <class DataTypes>
@@ -399,7 +435,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/)
 {
-
+    std::cout<<"addPointInCube not implemented"<<std::endl;
 }
 
 

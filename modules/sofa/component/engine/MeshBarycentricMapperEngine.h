@@ -80,7 +80,7 @@ public:
 
     void addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/);
 
-    void addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/);
+    void addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/, const unsigned int /*pointIndex*/);
 
     void addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/);
 
