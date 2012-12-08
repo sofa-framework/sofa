@@ -94,10 +94,10 @@ protected:
     virtual ~ProjectToPlaneConstraint();
 
 public:
-    IndexSubsetData f_indices;     ///< the particles to project
-    Data<double> f_drawSize;
-    Data<Coord> f_origin;  ///< A point in the plane
-    Data<Deriv> f_normal;  ///< The normal to the plane. Normalized at init()
+    IndexSubsetData f_indices;  ///< the particles to project
+    Data<Coord> f_origin;       ///< A point in the plane
+    Data<Deriv> f_normal;       ///< The normal to the plane. Will be normalized by init().
+    Data<double> f_drawSize;    ///< The size of the display of the constrained particles
 
 
 protected:

@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
-
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
-<VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
-<Node 	name="complianceSolverScene" >
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+    <RequiredPlugin pluginName="Flexible"/>
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
+    <Node 	name="complianceSolverScene" >
+        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
 <!--parametrizable mesh-->
-    <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
-    <MeshTopology name="mesh" src="@loader" />
-    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunction2d"  />
+        <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
+        <MeshTopology name="mesh" src="@loader" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <BarycentricShapeFunction template="ShapeFunction2d"  />
 
 <!--simple mesh-->
 <!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
@@ -18,10 +18,10 @@
     <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  1 1" />-->
 
 
-    <BoxConstraint box="0.395 0.395 -0.005    0.605 0.605 0.005  " />
+        <BoxConstraint box="0.395 0.395 -0.005    0.605 0.605 0.005  " />
 <!--    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />-->
-    <UniformMass  name="mass" totalMass="1"/>
-    <Node> <OglModel /> <IdentityMapping /> </Node>
+        <UniformMass  name="mass" totalMass="1"/>
+        <Node> <OglModel /> <IdentityMapping /> </Node>
 
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->

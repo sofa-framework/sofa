@@ -22,7 +22,7 @@ Encoding=ISO-8859-15
 FoldedColumns=
 FoldedLines=
 Highlighting=LaTeX
-Indentation Mode=
+Indentation Mode=normal
 Mode=LaTeX
 ReadWrite=true
 
@@ -38,16 +38,16 @@ order=-1
 
 [item:principes.tex]
 archive=true
-column=27
+column=18
 encoding=ISO-8859-15
 highlight=LaTeX
-line=33
+line=66
 mode=LaTeX
-open=false
+open=true
 order=0
 
 [view-settings,view=0,item:principes.tex]
-CursorColumn=27
-CursorLine=33
+CursorColumn=18
+CursorLine=66
 JumpList=
 ViMarks=

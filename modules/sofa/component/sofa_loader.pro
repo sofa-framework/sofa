@@ -7,6 +7,7 @@ DEFINES += SOFA_BUILD_LOADER
 
 HEADERS += initLoader.h \
            loader/GridMeshCreator.h \
+           loader/StringMeshCreator.h \
            loader/MeshGmshLoader.h \
            loader/MeshObjLoader.h \
            loader/MeshOffLoader.h \
@@ -25,6 +26,7 @@ HEADERS += initLoader.h \
 
 SOURCES += initLoader.cpp \
            loader/GridMeshCreator.cpp \
+           loader/StringMeshCreator.cpp \
            loader/MeshGmshLoader.cpp \
            loader/MeshObjLoader.cpp \
            loader/MeshOffLoader.cpp \

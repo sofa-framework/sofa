@@ -94,10 +94,10 @@ protected:
     virtual ~ProjectToLineConstraint();
 
 public:
-    IndexSubsetData f_indices;     ///< the particles to project
-    Data<double> f_drawSize;
-    Data<Coord> f_origin;  ///< A point in the plane
-    Data<Deriv> f_direction;  ///< The direction of the line. Normalized at init()
+    IndexSubsetData f_indices;  ///< the particles to project
+    Data<double> f_drawSize;    ///< The size of the square used to display the constrained particles
+    Data<Coord> f_origin;       ///< A point on the line
+    Data<Deriv> f_direction;    ///< The direction of the line. Will be normalized by init()
 
 
 protected:
