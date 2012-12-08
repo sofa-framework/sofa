@@ -60,6 +60,8 @@ class ProjectToPointConstraintInternalData
 };
 
 /** Attach given particles to their initial positions.
+ * Contrary to FixedConstraint, this one stops the particles even if they have a non-null initial velocity.
+ * @sa FixedConstraint
 */
 template <class DataTypes>
 class ProjectToPointConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>

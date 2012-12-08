@@ -41,7 +41,7 @@ using namespace sofa::core::loader;
 
 SOFA_DECL_CLASS(GridMeshCreator)
 
-int GridMeshCreatorClass = core::RegisterObject("Specific mesh loader for Obj file format.")
+int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-dimensional mesh.")
         .add< GridMeshCreator >()
         ;
 

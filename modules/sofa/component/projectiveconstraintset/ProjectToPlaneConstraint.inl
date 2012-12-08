@@ -88,9 +88,9 @@ template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_origin( initData(&f_origin,Coord(),"origin","A point in the plane"))
     , f_normal( initData(&f_normal,Deriv(),"normal","Normal vector to the plane"))
+    , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new ProjectToPlaneConstraintInternalData<DataTypes>())
 {
     // default to index 0

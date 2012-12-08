@@ -58,7 +58,10 @@ class FixedConstraintInternalData
 
 };
 
-/** Attach given particles to their initial positions.
+/** Maintain a constant velocity.
+ * If the particle is initially fixed then it is attached to its initial position.
+ * Otherwise it keeps on drifting.
+ * For maintaining particles fixed in any case, @sa ProjectToPointConstraint
 */
 template <class DataTypes>
 class FixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_GridMeshCreator_H
-#define SOFA_COMPONENT_LOADER_GridMeshCreator_H
+#ifndef SOFA_COMPONENT_LOADER_StringMeshCreator_H
+#define SOFA_COMPONENT_LOADER_StringMeshCreator_H
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/component/component.h>
@@ -38,38 +38,27 @@ namespace loader
 {
 
 
-/** Procedurally creates a triangular grid.
-  The coordinates range from (0,0,0) to (1,1,0). They can be translated, rotated and scaled using the corresponding attributes of the parent class.
+/** Procedurally creates a string.
+  The coordinates range from (0,0,0) to (1,0,0). They can be translated, rotated and scaled using the corresponding attributes of the parent class.
 
   @author François Faure, 2012
-*/
-class SOFA_LOADER_API GridMeshCreator : public sofa::core::loader::MeshLoader
+  */
+class SOFA_LOADER_API StringMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
 
-    SOFA_CLASS(GridMeshCreator,sofa::core::loader::MeshLoader);
+    SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
     virtual bool canLoad() { return true; }
-    virtual bool load(); ///< create the grid
+    virtual bool load(); ///< create the string
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg ) { return BaseLoader::canCreate (obj, context, arg); }
 
-    Data< defaulttype::Vec2i > resolution;  ///< Number of vertices in each direction
-    Data< int > trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
+    Data< unsigned > resolution;  ///< Number of vertices (more than 1)
 
 protected:
-    GridMeshCreator();
-
-    ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.
-    unsigned vert( unsigned x, unsigned y) { return x + y*resolution.getValue()[0]; }
-
-    // To avoid edge redundancy, we insert the edges to a set, an then dump the set. Edge (a,b) is considered equal to (b,a), so only one of them is inserted
-    std::set<Edge> uniqueEdges;                                ///< edges without redundancy
-    void insertUniqueEdge(unsigned a, unsigned b);             ///< insert an edge if it is not redundant
-    void insertTriangle(unsigned a, unsigned b, unsigned c);   ///< insert a triangle (no reduncy checking !) and unique edges
-    void insertQuad(unsigned a, unsigned b, unsigned c, unsigned d);   ///< insert a quad (no reduncy checking !) and unique edges
-
+    StringMeshCreator();
 };
 
 

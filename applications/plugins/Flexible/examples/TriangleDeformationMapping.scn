@@ -1,54 +1,53 @@
 <?xml version="1.0"?>
-
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
-<VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
+    <RequiredPlugin pluginName="Flexible"/>
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
+
+    <Node 	name="GreenLagrange" >
+        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <!--parametrizable mesh-->
+        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
+        <MeshTopology name="mesh" src="@loader" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <BarycentricShapeFunction template="ShapeFunction2d"  />
+
+        <!--simple mesh-->
+        <!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
+        <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
+        <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0.1 1 0" />
+        <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  0 1" />-->
 
 
-<Node 	name="GreenLagrange" >
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
-
-<!--parametrizable mesh-->
-    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
-    <MeshTopology name="mesh" src="@loader" />
-    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunction2d"  />
-
-<!--simple mesh-->
-<!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
-    <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
-    <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0.1 1 0" />
-    <BarycentricShapeFunction template="ShapeFunction2d" position="0 0  1 0  0 1" />-->
-
-
-    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
-    <UniformMass  name="mass" totalMass="1"/>
+        <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
+        <UniformMass  name="mass" totalMass="1"/>
 
 
 <!--    Just to compute and visualize deformation gradients. Does nothing until we set a strain mapping and a material-->
-    <Node name="deformationNode" >
-	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
-        <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+        <Node name="deformationNode" >
+            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+            <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
 <!--            
-	<TriangleSetTopologyContainer triangles="@../mesh.triangles" />
-        <TriangleDeformationMapping  scaleView="0.03" />
+            <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
+            <TriangleDeformationMapping  scaleView="0.03" />
 -->
-        <Node name="StrainNode">
-            <MechanicalObject template="E321"  name="VoigtStrainDOF" />
-	    <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
-            <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
+            <Node name="StrainNode">
+                <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+                <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+                <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
+            </Node>
         </Node>
-    </Node>
 
 	<Node name="Visual"  >
-	     <VisualModel  />
-             <IdentityMapping />
-	</Node>
+            <VisualModel  />
+            <IdentityMapping />
+        </Node>
 
 <!--    elastic force, until we set up triangle FEM-->
 <!--    <MeshSpringForceField linesStiffness="10"/>-->
 
-</Node>
+    </Node>
 
 
 
@@ -64,24 +63,23 @@
     <UniformMass  name="mass" totalMass="1"/>
 
     <Node name="deformationNode" >
- 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" /> 
+        <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-   	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
-            
+        <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/>
+
 <!-- 	<TriangleSetTopologyContainer triangles="@../mesh.triangles" /> -->
 <!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
-	
+
         <Node name="StrainNode">
             <MechanicalObject template="E321"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" method="qr"/>
+            <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;" assembleJ="false" method="qr"/>
             <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
         </Node>
     </Node>
-
-	<Node name="Visual"  >
-	     <VisualModel  />
-             <IdentityMapping />
-	</Node>
+    <Node name="Visual"  >
+        <VisualModel  />
+        <IdentityMapping />
+    </Node>
 
 </Node>
 
