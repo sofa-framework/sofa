@@ -11,7 +11,7 @@
 \newcommand{\vnext}{\vect v_{n+1}}
 \newcommand{\acc}{\vect{a}}
 \newcommand{\force}{\vect{f}}
-\newcommand{\forcext}{\vect{f}_{ext}}
+\newcommand{\forcext}{\vect{f}_{ext}} 
 \newcommand{\lam}{\vect{\lambda}}
 \newcommand{\lcur}{\lam_{n}}
 \newcommand{\lnext}{\lam_{n+1}}
@@ -24,16 +24,20 @@
 \newcommand{\J}{\mat J}
 \newcommand{\Jt}{\mat J^T}
 \newcommand{\C}{\mat C}
+\newcommand{\K}{\mat K}
 \newcommand{\violation}{ \phi}
 \newcommand{\dviolation}{\dot \violation}
 \newcommand{\violcur}{\violation_{n}}
+\newcommand{\dviolcur}{\dot \violcur}
 \newcommand{\violnext}{\violation_{n+1}}
 \newcommand{\dviolnext}{\dot \violation_{n+1}}
 \newcommand{\cmp}{c}
 \newcommand{\dampingratio}{d}
 
+
 \section{Constraint forces}
-This approach unifies soft and hard constraints. Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
+\subsection{Generalized constraints}
+This approach unifies soft and hard constraints, by providing constraints with compliance. Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
 \begin{equation} \label{eq acc hard}
 \left( \begin{array}{cc}
 \M & -\Jt \\
@@ -45,7 +49,7 @@ This approach unifies soft and hard constraints. Hard constraints are usually im
 -\violation
 \end{array}\right) 
 \end{equation}
-where $\M$ is the mass matrix, $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force and $\violation$ is the constraint violation.
+where $\M$ is the mass matrix (or, more generally, a dynamics matrix such as $\M-h²\K$ used in implicit time integration), $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force and $\violation$ is the constraint violation.
 $\lam$ and $\violation$ are vectors with as many entries as scalar constraints. The equation system is typically solved using a Schur complement to compute the constraint forces:
 \begin{equation}\label{eq schur rigid}
 \J \Minv \Jt \lam = -\violation - \J \Minv \forcext
@@ -58,7 +62,7 @@ In the generalized approach, the constraint forces are considered proportional t
 \lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
 \end{equation}
 where the positive real number $\cmp$ is the compliance of the constraint and $\dampingratio$ is its damping ratio.
-Combined with a time discretization scheme, this leads to an equation system similar to \eqref{eq schur rigid} as shown is the next section.
+Combined with a time discretization scheme, this leads to an equation system similar to \eqref{eq schur rigid} as shown in Section~\ref{sec:time integration}.
 % This leads to equation system:
 % \begin{equation} \label{eq acc compliant}
 % \left( \begin{array}{cc}
@@ -77,9 +81,18 @@ Combined with a time discretization scheme, this leads to an equation system sim
 % \end{equation}
 % contrary to the standard implicit integration approach, where the indefinite stiffness matrix grows to infinity for hard constraints.
 
+\subsection{Force or constraint ?} \label{sec force or constraint}
+ForceFields generally contribute the the top line of Equation~\ref{eq acc hard}, by accumulating force in the right-hand term. In implicit integration, their stiffness matrix is also accumulated to the left-hand side.
+When a ForceField has an invertible stiffness matrix, it can be handled as a constraint with non-null compliance, rather than a standard force. In this case, it contributes to the bottom of Equation~\ref{eq acc hard} rather than to the top.
 
-\section{Time integration}
-Our implicit scheme is:
+Due to matrix conditioning issues, and depending on which linear solver is used, it may be a good idea to process very stiff forces as low compliances rather than large stiffnesses. Note, however, that each force handled as a constraint increases the size of the equation system, since it adds lines to the bottom (and columns to the right) of the equation system.
+Conversely, it may be more efficient to handle soft forces as stiffnesses, since the size of the stiffness matrix depends on the number of independent DOFs, which does not increase along with the number of forces.
+
+Note that geometric stiffness is not handled in the compliance view, which may result in instabilities in case of large displacements.
+
+
+\section{Time integration} \label{sec:time integration}
+Our integration scheme is:
 \begin{eqnarray}
  \vnext &=& \vcur + h \Minv \left(\alpha \fnext + (1-\alpha) \fcur\right) \\
   \xnext &=& \xcur + h \left( \beta \vnext + (1-\beta) \vcur \right)
@@ -90,11 +103,14 @@ where index $n$ denotes current values while index $n+1$ denotes next values, $\
 \dx = \xnext -  \xcur    &=& h (v + \beta  \dv)
 \end{eqnarray}
 be the velocity and position changes across the time step.
+We have not carefully studied the influence of these parameters, but it seems that $\alpha=0.5$ and $\beta=1$ corresponds to an \textbf{energy-conserving integration scheme}.
+
+
 The constraint violation $\violation$ and its Jacobian $\J$ are:
 \begin{eqnarray}
  \J &=& \frac{\partial \vect \violation}{\partial \pos} \\
  \violnext &\simeq& \violcur + \J \dx = \violcur + h   \dviolation + \J h \beta \Delta \vel  \label{eq violnext}\\
-\dviolnext &\simeq& \violnext + \J \dv \label{eq dviolnext}
+\dviolnext &\simeq& \dviolcur + \J \dv \label{eq dviolnext}
 \end{eqnarray}
 The corresponding forces are:
 \begin{eqnarray}
@@ -191,4 +207,26 @@ While shifting values in dense arrays using matrix products is not efficient (ve
 \caption{The assembly is performed by summing the global vectors and matrices obtained by shifting local vectors and matrices.}
 \label{fig assembly}
 \end{figure}
+
+
+\section{Implementation}
+The virtual functions used for setting up the equation system are declared in BaseForceField.h and BaseMapping.h, and documented in ``Experimental Compliance API'' documentation blocks.
+
+ForceFields may be handled as forces or as soft constraints, as explained in Section~\ref{sec force or constraint}. The default behavior is to handle them as forces. 
+
+The BaseForceField functions are:
+\begin{itemize}
+ \item \texttt{getComplianceMatrix} returns NULL if the ForceField is to be handled as a traditional force function, while it returns a pointer to a compliance matrix if it is to be handled as a constraint.
+ \item \texttt{getStiffnessMatrix} is the complement of \texttt{getCompliantMatrix}. If one retuns NULL, then the other must return a pointer to a matrix.
+ \item \texttt{writeConstraintValue} is used to write the constraint violation $\violation$ in Eq.\ref{eq generalized constraint} when the ForceField is handled as a constraint.
+ \item \texttt{getDampingRatio} is used in the constraint case, and corresponds to parameter $ \dampingratio$ in Eq.\ref{eq generalized constraint}
+\end{itemize}
+
+The BaseMapping functions are:
+\begin{itemize}
+ \item \texttt{getJs} returns a list of Jacobian matrices, one for each parent of the mapping. Typical mappings have only one parent, but MultiMappings have several ones.
+ \item \texttt{getKs} returns a list of stiffness matrices, one for each parent. These correspond to geometric stiffness, i.e. change of forces due to mapping nonlinearity, like \texttt{addDJT} in the traditional API.
+\end{itemize}
+
+
 

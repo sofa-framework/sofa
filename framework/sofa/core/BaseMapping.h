@@ -150,7 +150,7 @@ public:
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
 
-    /// @name Experimental assembly API
+    /// @name Experimental Compliance API
     /// @{
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with  getFrom().
