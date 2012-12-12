@@ -131,7 +131,7 @@ public:
     /** \brief Tests if a point is included in the triangle indexed by ind_t
      *
      */
-    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test) const;
+    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test, bool bRest=false) const;
 
     bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test) const;
 
