@@ -391,10 +391,13 @@ template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const TriangleID ind_t,
         bool is_tested,
         const sofa::defaulttype::Vec<3,Real>& p,
-        unsigned int &ind_t_test) const
+        unsigned int &ind_t_test,
+        bool bRest) const
 {
     const double ZERO = -1e-12;
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::VecCoord& vect_c = bRest
+        ? *(this->object->getX0())
+        : *(this->object->getX());
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
