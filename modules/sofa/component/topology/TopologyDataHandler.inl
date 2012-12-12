@@ -184,7 +184,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(cons
     m_topologyData->endEdit();
 
     // TODO check why this call.
-    this->remove( indices );
+    //this->remove( indices );
 }
 
 
