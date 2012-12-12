@@ -118,12 +118,16 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
+    m_container->setPointTopologyToDirty();
+
     if(moveDOF)
     {
         PointsMoved *ev = new PointsMoved(id, ancestors, coefs);
         addStateChange(ev);
         propagateStateChanges();
     }
+
+    m_container->setPointTopologyToDirty();
 
     // Warning that vertices just been moved
     PointsMoved *ev2 = new PointsMoved(id, ancestors, coefs);

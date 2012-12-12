@@ -630,6 +630,8 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
+    m_container->setTriangleTopologyToDirty();
+
     (void)moveDOF;
     unsigned int nbrVertex = id.size();
     bool doublet;
@@ -673,6 +675,7 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
     // Step 3/4 - Physically move all dof:
     PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
 
+    m_container->setTriangleTopologyToDirty();
 
     // Step 4/4 - Create event to recompute all elements concerned by moving and propagate it:
 
