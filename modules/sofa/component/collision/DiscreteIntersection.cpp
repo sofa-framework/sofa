@@ -95,10 +95,10 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
 {
     //sout<<"Collision between Sphere - Sphere"<<sendl;
-    typename Sphere::Coord sph1Pos(sph1.center());
-    typename Sphere::Coord sph2Pos(sph2.center());
-    typename Sphere::Real radius1 = sph1.r(), radius2 = sph2.r();
-    typename Sphere::Coord tmp = sph1Pos - sph2Pos;
+    Sphere::Coord sph1Pos(sph1.center());
+    Sphere::Coord sph2Pos(sph2.center());
+    Sphere::Real radius1 = sph1.r(), radius2 = sph2.r();
+    Sphere::Coord tmp = sph1Pos - sph2Pos;
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
 
@@ -110,7 +110,6 @@ int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
 
 bool DiscreteIntersection::testIntersection( Sphere& sph1, Cube& cube)
 {
-    //std::cout<<"SPHERE/CUBE testIntersection!!!!!!!!!!!!!!!!!!!!"<<std::endl;
     // Values of the "aligned" bounding box
     Vector3 Bmin = cube.minVect();
     Vector3 Bmax = cube.maxVect();
