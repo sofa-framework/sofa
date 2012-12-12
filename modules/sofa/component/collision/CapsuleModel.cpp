@@ -22,20 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
 
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
-#include <sofa/component/collision/DiscreteIntersection.h>
-#include <sofa/component/collision/MeshIntTool.h>
+
+#include <sofa/component/collision/CapsuleModel.inl>
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
@@ -45,35 +36,34 @@ namespace component
 
 namespace collision
 {
-class SOFA_MESH_COLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
-{
 
-    typedef DiscreteIntersection::OutputVector OutputVector;
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace helper;
 
-public:
-    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
+SOFA_DECL_CLASS(Capsule)
 
-    bool testIntersection(Triangle&, Line&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Triangle&);
+int CapsuleModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
+#ifdef SOFA_FLOAT
+        .add<  TCapsuleModel<Vec3fTypes> >()
+#else
+        .add < TCapsuleModel<Vec3dTypes> >()
+#endif
+        .addAlias("Capsule")
+        .addAlias("CapsuleModel")
+//.addAlias("CapsuleMesh")
+//.addAlias("CapsuleSet")
+        ;
 
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Triangle&, OutputVector*);
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
+#endif
 
-    int computeIntersection(Triangle & e1,Capsule & e2, OutputVector* contacts);
-
-    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
-
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
-
-protected:
-
-    DiscreteIntersection* intersection;
-
-};
 
 } // namespace collision
 
@@ -81,4 +71,3 @@ protected:
 
 } // namespace sofa
 
-#endif

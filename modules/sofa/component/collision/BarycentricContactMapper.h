@@ -35,6 +35,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/BaseContactMapper.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 //#include <sofa/component/collision/TetrahedronModel.h>
@@ -158,6 +159,30 @@ public:
                 return -1;
             }
         }
+    }
+};
+
+
+template <class DataTypes>
+class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<CapsuleModel, DataTypes>{
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+
+    int addPoint(const Coord& P, int index, Real& r){
+        r = this->model->radius(index);
+
+        SReal baryCoords[1];
+        const Coord & p0 = this->model->point1(index);
+        const Coord pA = this->model->point2(index) - p0;
+        Coord pos = P - p0;
+        baryCoords[0] = ( ( pos*pA ) /pA.norm2() );
+
+        if(baryCoords[0] > 1)
+            baryCoords[0] = 1;
+        else if(baryCoords[0] < 0)
+            baryCoords[0] = 0;
+
+        return this->mapper->addPointInLine ( index, baryCoords );
     }
 };
 

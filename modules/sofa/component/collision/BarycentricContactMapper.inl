@@ -80,7 +80,6 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     return mstate.get();
 }
 
-
 } // namespace collision
 
 } // namespace component

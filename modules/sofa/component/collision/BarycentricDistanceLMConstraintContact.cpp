@@ -49,6 +49,10 @@ Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, 
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, PointModel> > TrianglePointDistanceLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, LineModel> > TriangleLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TriangleModel, TriangleModel> > TriangleTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
+//Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleDistanceLMConstraintContactClass("distanceLMConstraint",true);
+//Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, SphereModel> > CapsuleSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
+//Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CapsuleModel, TriangleModel> > CapsuleTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
+
 
 } // namespace collision
 

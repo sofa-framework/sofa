@@ -13,6 +13,8 @@ HEADERS += initBaseCollision.h \
            collision/SphereModel.inl \
            collision/Cube.h \
            collision/CubeModel.h \
+           collision/CylinderModel.h \
+           collision/CylinderModel.inl \
            collision/DiscreteIntersection.h \
            collision/DiscreteIntersection.inl \
            collision/BruteForceDetection.h \
@@ -20,19 +22,27 @@ HEADERS += initBaseCollision.h \
            collision/MinProximityIntersection.h \
            collision/NewProximityIntersection.h \
            collision/NewProximityIntersection.inl \
-    collision/BaseProximityIntersection.h
+           collision/CapsuleModel.h \
+           collision/CapsuleModel.inl \
+    collision/BaseProximityIntersection.h \
+    collision/CapsuleIntTool.h
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
            collision/DefaultPipeline.cpp \
            collision/SphereModel.cpp \
            collision/CubeModel.cpp \
+           collision/CapsuleModel.cpp \
            collision/DiscreteIntersection.cpp \
            collision/BruteForceDetection.cpp \
            collision/DefaultContactManager.cpp \
            collision/MinProximityIntersection.cpp \
            collision/NewProximityIntersection.cpp \
-    collision/BaseProximityIntersection.cpp
+           collision/CylinderModel.cpp \           
+    collision/BaseProximityIntersection.cpp \    
+    collision/CapsuleIntTool.cpp
+
+
 
 
 # Make sure there are no cross-dependencies

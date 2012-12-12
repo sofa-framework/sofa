@@ -53,6 +53,7 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/CapsuleModel.h>
 
 //Including Visual Models
 #include <sofa/component/visualmodel/OglModel.h>
@@ -339,6 +340,10 @@ void SimpleObjectCreator::AddCollisionModels(simulation::Node::SPtr CollisionNod
         {
             component::collision::SphereModel::SPtr point = sofa::core::objectmodel::New<component::collision::SphereModel>();  point->setName("SphereCollision");
             CollisionNode->addObject(point);
+        }
+        else if(elements[i] == "Capsule"){
+            component::collision::CapsuleModel::SPtr capsule = sofa::core::objectmodel::New<component::collision::CapsuleModel>();  capsule->setName("CapsuleCollision");
+            CollisionNode->addObject(capsule);
         }
     }
 }

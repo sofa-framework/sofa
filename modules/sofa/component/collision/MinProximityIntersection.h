@@ -27,6 +27,7 @@
 
 #include <sofa/component/collision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
 
@@ -58,6 +59,8 @@ public:
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
     int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    int computeIntersection(Capsule&, Capsule&, OutputVector*);
+    int computeIntersection(Capsule&, Sphere&, OutputVector*);
     //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     void draw(const core::visual::VisualParams* vparams);

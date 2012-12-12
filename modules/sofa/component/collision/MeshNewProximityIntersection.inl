@@ -266,79 +266,13 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(double dist
     return 1;
 }
 
-template<class Sphere>
-bool MeshNewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
-{
-    OutputVector contacts;
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1);
-    return n>0;
+
+inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
 }
 
-template<class Sphere>
-int MeshNewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
-{
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
-}
-
-template<class Sphere>
-bool MeshNewProximityIntersection::testIntersection(Line&, Sphere&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<intersection->sendl;
-    return true;
-}
-
-template<class Sphere>
-int MeshNewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, OutputVector* contacts)
-{
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
-}
-
-template<class Sphere>
-bool MeshNewProximityIntersection::testIntersection(Triangle&, Sphere&)
-{
-    intersection->serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<intersection->sendl;
-    return true;
-}
-
-template<class Sphere>
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, OutputVector* contacts)
-{
-    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-    const double dist2 = alarmDist*alarmDist;
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
+inline int MeshNewProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
 }
 
 } // namespace collision

@@ -88,6 +88,8 @@ public:
 
     virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f colour,  int subd=16);
 
+    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f colour,  int subd=16);
+
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f colour,  int subd=16);
 
     virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16);

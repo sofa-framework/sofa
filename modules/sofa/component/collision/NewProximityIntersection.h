@@ -27,8 +27,10 @@
 
 #include <sofa/component/collision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/CapsuleIntTool.h>
 
 namespace sofa
 {
@@ -54,12 +56,14 @@ public:
     virtual void init();
 
     bool testIntersection(Cube& ,Cube&);
-    template<class Sphere>
     bool testIntersection(Sphere&, Sphere&);
+    bool testIntersection(Capsule&,Capsule&);
+    bool testIntersection(Capsule&,Sphere&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
-    template<class Sphere>
     int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
+    int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
 
     static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
 

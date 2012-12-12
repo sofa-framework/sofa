@@ -27,6 +27,8 @@
 
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/MeshIntTool.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/LineModel.h>
@@ -56,6 +58,8 @@ public:
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
     bool testIntersection(Triangle&, Sphere&);
+    bool testIntersection(Capsule&,Triangle&);
+    bool testIntersection(Capsule&,Line&);
 
     int computeIntersection(Point&, Point&, OutputVector*);
     int computeIntersection(Sphere&, Point&, OutputVector*);
@@ -64,6 +68,8 @@ public:
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
     int computeIntersection(Triangle&, Sphere&, OutputVector*);
+    int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
+    int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
 
 protected:
 

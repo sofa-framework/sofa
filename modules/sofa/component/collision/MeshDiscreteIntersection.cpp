@@ -56,11 +56,21 @@ MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object,
     if (addSelf)
     {
         intersection->intersectors.add<TriangleModel,     LineModel,       MeshDiscreteIntersection>  (this);
+        intersection->intersectors.add<CapsuleModel,LineModel,MeshDiscreteIntersection>(this);
+        intersection->intersectors.add<CapsuleModel,TriangleModel,MeshDiscreteIntersection>(this);
     }
 }
 
 bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
 {
+    return true;
+}
+
+bool MeshDiscreteIntersection::testIntersection(Capsule&,Triangle&){
+    return true;
+}
+
+bool MeshDiscreteIntersection::testIntersection(Capsule&,Line&){
     return true;
 }
 
