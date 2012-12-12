@@ -28,6 +28,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 
 namespace sofa
@@ -179,6 +180,7 @@ protected:
     VecDeriv _forces;
 
     EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     class BeamFFEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >
     {
@@ -213,6 +215,8 @@ protected:
     bool _updateStiffnessMatrix;
     bool _assembling;
 
+    double lastUpdatedStep;
+
     container::StiffnessContainer* stiffnessContainer;
 //	container::LengthContainer* lengthContainer;
     container::PoissonContainer* poissonContainer;
@@ -236,12 +240,15 @@ public:
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
 
     virtual void init();
+    virtual void bwdInit();
     virtual void reinit();
     virtual void reinitBeam(unsigned int i);
 
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV );
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
 
     void draw(const core::visual::VisualParams* vparams);
 
