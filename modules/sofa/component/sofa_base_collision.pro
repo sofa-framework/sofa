@@ -13,8 +13,6 @@ HEADERS += initBaseCollision.h \
            collision/SphereModel.inl \
            collision/Cube.h \
            collision/CubeModel.h \
-           collision/CylinderModel.h \
-           collision/CylinderModel.inl \
            collision/DiscreteIntersection.h \
            collision/DiscreteIntersection.inl \
            collision/BruteForceDetection.h \
@@ -38,7 +36,6 @@ SOURCES += initBaseCollision.cpp \
            collision/DefaultContactManager.cpp \
            collision/MinProximityIntersection.cpp \
            collision/NewProximityIntersection.cpp \
-           collision/CylinderModel.cpp \           
     collision/BaseProximityIntersection.cpp \    
     collision/CapsuleIntTool.cpp
 
