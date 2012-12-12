@@ -97,7 +97,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _assembling(false)
     , edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);    
 }
 
 template<class DataTypes>
@@ -105,6 +105,17 @@ BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 {
     if(edgeHandler) delete edgeHandler;
 }
+
+template <class DataTypes>
+void BeamFEMForceField<DataTypes>::bwdInit()
+{
+    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    assert(state);
+    matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    lastUpdatedStep=-1.0;
+}
+
+
 
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
@@ -436,7 +447,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 
     if(Theta>0.0000001)
     {
-        std::cout << "beam " << i << " : Theta = " << Theta << std::endl;
+        //std::cout << "beam " << i << " : Theta = " << Theta << std::endl;
         dW.normalize();
 
         beamQuat(i) = quatA*dQ.axisToQuat(dW, Theta/2);
@@ -642,6 +653,111 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
         }
 
     }
+
+}
+
+template<class DataTypes>
+const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
+    //std::cout << this->getName() << ": getStiffnessMatrix " << std::endl;
+
+    double actualTime = this->getContext()->getTime();
+
+    sout << "Actual Time: " << actualTime << " / " << lastUpdatedStep << sendl;
+
+    if (actualTime == lastUpdatedStep) {  //matrix already assembled in this time step
+        sout << this->getName() << "Matrix already assembled in step " << actualTime << sendl;
+        return &matS;
+    }
+
+    lastUpdatedStep = actualTime;
+    sout << this->getName() << "Assemble matrix in step " << actualTime << sendl;
+
+    double k = mparams->kFactor();
+    unsigned int offset = 0; // r.offset;
+
+    matS.clear();
+
+    typedef Eigen::Triplet<double> Triplet;
+    std::vector<Triplet> tripletList;
+
+    unsigned int i=0;
+
+    if (_partial_list_segment)
+    {
+        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+        {
+            i = _list_segment.getValue()[j];
+            Element edge= (*_indexedElements)[i];
+            Index a = edge[0];
+            Index b = edge[1];
+
+            Displacement local_depl;
+            Vec3d u;
+            Quat& q = beamQuat(i); //x[a].getOrientation();
+            q.normalize();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            for (int x1=0; x1<12; x1+=3)
+                for (int y1=0; y1<12; y1+=3)
+                {
+                    Mat<3,3,Real> m;
+                    K0.getsub(x1,y1, m);
+                    m = R*m*Rt;
+                    K.setsub(x1,y1, m);
+                }
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = offset+a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = offset+b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1)
+                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)*k));
+        }
+    }
+    else
+    {        
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {            
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+
+            Displacement local_depl;
+            Vec3d u;
+            Quat& q = beamQuat(i); //x[a].getOrientation();
+            q.normalize();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            for (int x1=0; x1<12; x1+=3)
+                for (int y1=0; y1<12; y1+=3)
+                {
+                    Mat<3,3,Real> m;
+                    K0.getsub(x1,y1, m);
+                    m = R*m*Rt;
+                    K.setsub(x1,y1, m);
+                }
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = offset+a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = offset+b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1) {                    
+                    tripletList.push_back(Triplet(index[x1], index[y1], - K(x1,y1)*k));
+                }
+        }
+    }
+
+    matS.compressedMatrix.setFromTriplets(tripletList.begin(), tripletList.end());    
+    tripletList.clear();
+    return &matS;
 
 }
 
