@@ -27,6 +27,8 @@
 
 #include <sofa/component/visualmodel/DataDisplay.h>
 
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+
 
 namespace sofa
 {
@@ -66,18 +68,34 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
     const VecPointData &ptData = f_pointData.getValue();
+    const VecCellData &clData = f_cellData.getValue();
 
     bool bDrawPointData = false;
+    bool bDrawCellData = false;
+
+    // For now support only triangular topology
+    topology::TriangleSetTopologyContainer* tt = dynamic_cast<topology::TriangleSetTopologyContainer*>(topology);
 
     // Safety checks
+    // TODO: can this go to updateVisual()?
     if (ptData.size() > 0) {
         if (ptData.size() != x.size()) {
-            serr << "Size of pointData doesn't mach number of nodes" << sendl;
+            serr << "Size of pointData does not mach number of nodes" << sendl;
         } else {
             bDrawPointData = true;
         }
     }
+    if (clData.size() > 0) {
+        if (!topology || !tt) {
+            serr << "Triangular topology is necessary for drawing cell data" << sendl;
+        } else if ((int)clData.size() != tt->getNbTriangles()) {
+            serr << "Size of cellData does not match number of triangles" << sendl;
+        } else {
+            bDrawCellData = true;
+        }
+    }
 
+    // Range for points
     Real ptMin=0.0, ptMax=0.0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
@@ -89,9 +107,38 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
     }
 
+    // Range for cells
+    Real clMin=0.0, clMax=0.0;
+    if (bDrawCellData) {
+        VecCellData::const_iterator i = clData.begin();
+        clMin = *i;
+        clMax = *i;
+        while (++i != clData.end()) {
+            if (clMin > *i) clMin = *i;
+            if (clMax < *i) clMax = *i;
+        }
+    }
+
     glDisable(GL_LIGHTING);
 
-    if (!topology && bDrawPointData) {
+    if (bDrawCellData) {
+        // Triangles
+        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(clMin, clMax);
+        int nbTriangles = tt->getNbTriangles();
+        glBegin(GL_TRIANGLES);
+        for (int i=0; i<nbTriangles; i++)
+        {
+            Vec4f color = eval(clData[i]);
+            glColor4f(color[0], color[1], color[2], color[3]);
+            Triangle tri = tt->getTriangle(i);
+            glVertex3f(x[ tri[0] ][0], x[ tri[0] ][1], x[ tri[0] ][2]);
+            glVertex3f(x[ tri[1] ][0], x[ tri[1] ][1], x[ tri[1] ][2]);
+            glVertex3f(x[ tri[2] ][0], x[ tri[2] ][1], x[ tri[2] ][2]);
+        }
+        glEnd();
+    }
+
+    if ((bDrawCellData || !topology) && bDrawPointData) {
         ColorMap::evaluator<Real> eval = colorMap->getEvaluator(ptMin, ptMax);
         // Just the points
         glPointSize(10);
@@ -140,6 +187,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
+
 }
 
 } // namespace visualmodel
