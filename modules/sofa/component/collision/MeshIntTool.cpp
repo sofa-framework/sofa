@@ -374,8 +374,8 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
     n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p2,contacts,true);
 
     if(n == 2){
-        typename OutputVector::iterator detection1 = contacts->end() - 2;
-        typename OutputVector::iterator detection2 = contacts->end() - 1;
+        OutputVector::iterator detection1 = contacts->end() - 2;
+        OutputVector::iterator detection2 = contacts->end() - 1;
 
         if(detection1->value > detection2->value - 1e-15 && detection1->value < detection2->value + 1e-15){
             detection1->point[0] = (detection1->point[0] + detection2->point[0])/2.0;
@@ -388,7 +388,7 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
             n = 1;
         }
         else{
-            for(typename OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
+            for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
                 detection->value -= substract_dist;
                 detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
                 detection->id = id;
@@ -396,7 +396,7 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
         }
     }
     else{
-        for(typename OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
+        for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
             detection->value -= substract_dist;
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
             detection->id = id;
@@ -413,7 +413,7 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
     if (tri_flg&TriangleModel::FLAG_E31)
         n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts);
 
-    for(typename OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
+    for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
         detection->id = id;
     }
