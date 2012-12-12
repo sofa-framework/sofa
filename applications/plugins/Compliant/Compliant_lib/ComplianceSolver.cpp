@@ -159,6 +159,7 @@ void ComplianceSolver::solve(const core::ExecParams* params,
     // tune parameters
     core::MechanicalParams cparams( *params);
     cparams.setMFactor(1.0);
+    cparams.setKFactor(1.0);
     cparams.setDt(h);
     cparams.setImplicitVelocity( implicitVelocity.getValue() );
     cparams.setImplicitPosition( implicitPosition.getValue() );
