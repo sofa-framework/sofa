@@ -49,11 +49,13 @@ public:
     typedef core::topology::BaseMeshTopology::Quad     Quad;
 
     typedef helper::vector<Real> VecPointData;
+    typedef helper::vector<Real> VecCellData;
 
 protected:
 
     DataDisplay()
         : f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
+          , f_cellData(initData(&f_cellData, "cellData", "Data associated with elements"))
           , state(NULL)
           , topology(NULL)
     {}
@@ -61,6 +63,7 @@ protected:
 public:
 
     Data<VecPointData> f_pointData;
+    Data<VecCellData> f_cellData;
 
     visualmodel::ColorMap *colorMap;
     core::State<DataTypes> *state;
