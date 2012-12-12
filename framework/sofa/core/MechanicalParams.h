@@ -229,9 +229,9 @@ public:
         , m_f (ConstVecDerivId::force())
         , m_dx(ConstVecDerivId::dx())
         , m_df(ConstVecDerivId::dforce())
-        , m_mFactor(1.0)
+        , m_mFactor(0)
         , m_bFactor(0)
-        , m_kFactor(1.0)
+        , m_kFactor(0)
         , m_symmetricMatrix(true)
     {
     }
