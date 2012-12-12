@@ -70,32 +70,6 @@ inline int NewProximityIntersection::doIntersectionPointPoint(double dist2, cons
     return 1;
 }
 
-template<class Sphere>
-bool NewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
-{
-    OutputVector contacts;
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1);
-    return n>0;
-}
-
-template<class Sphere>
-int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
-{
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
-}
-
 
 } // namespace collision
 

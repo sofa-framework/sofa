@@ -65,6 +65,8 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
         intersection->intersectors.ignore<TriangleModel, LineModel>();
         intersection->intersectors.ignore<TriangleModel, TriangleModel>();
+        intersection->intersectors.add<CapsuleModel, TriangleModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<CapsuleModel, LineModel, MeshMinProximityIntersection>(this);
 
         if (intersection->useSphereTriangle.getValue())
         {
@@ -723,6 +725,22 @@ int MeshMinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, Out
     }
     detection->value -= contactDist;
     return 1;
+}
+
+int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
+}
+
+int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
+}
+
+bool MeshMinProximityIntersection::testIntersection(Capsule&,Triangle&){
+    return true;
+}
+
+bool MeshMinProximityIntersection::testIntersection(Capsule&,Line&){
+    return true;
 }
 
 } // namespace collision

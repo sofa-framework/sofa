@@ -35,6 +35,9 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 
+#include <sofa/component/collision/CapsuleModel.h>
+
+
 namespace sofa
 {
 
@@ -143,7 +146,11 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             points.push_back(t.p2Index());
             points.push_back(t.p3Index());
         }
-
+        else if(CapsuleModel *capsule = dynamic_cast<CapsuleModel*>(b.body)){
+            fixPoint = (capsule->point1(idx) + capsule->point2(idx))/2.0;
+            points.push_back(capsule->point1Index(idx));
+            points.push_back(capsule->point2Index(idx));
+        }
     }
     else if (b.mstate)
     {

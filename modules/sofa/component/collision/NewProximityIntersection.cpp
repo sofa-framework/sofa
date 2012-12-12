@@ -61,6 +61,9 @@ void NewProximityIntersection::init()
 {
     intersectors.add<CubeModel, CubeModel, NewProximityIntersection>(this);
     intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
+    intersectors.add<CapsuleModel,CapsuleModel, NewProximityIntersection> (this);
+    intersectors.add<CapsuleModel,SphereModel, NewProximityIntersection> (this);
+
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
@@ -80,6 +83,51 @@ bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
     }
 
     return true;
+}
+
+
+bool NewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
+{
+    OutputVector contacts;
+    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1);
+    return n>0;
+}
+
+bool NewProximityIntersection::testIntersection(Capsule&, Sphere&){
+    //you can do but not useful because it is not called
+    return false;
+}
+
+
+bool NewProximityIntersection::testIntersection(Capsule&, Capsule&){    
+    return true;
+}
+
+
+int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
+{
+    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
+    if (n>0)
+    {
+        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
+        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        {
+            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->value -= contactDist;
+        }
+    }
+    return n;
+}
+
+
+int NewProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
+    return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
+}
+
+int NewProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
 }
 
 

@@ -29,6 +29,7 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 
+
 namespace sofa
 {
 

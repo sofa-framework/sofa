@@ -92,6 +92,14 @@ int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*
     return 0; /// \todo
 }
 
+int MinProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
+    return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
+}
+
+int MinProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
+}
+
 /*
 bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {

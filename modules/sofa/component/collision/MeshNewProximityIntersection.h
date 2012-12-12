@@ -27,11 +27,13 @@
 
 #include <sofa/component/collision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/MeshIntTool.h>
 
 namespace sofa
 {
@@ -50,30 +52,28 @@ public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
     bool testIntersection(Point&, Point&);
-    template<class Sphere>
     bool testIntersection(Sphere&, Point&);
     bool testIntersection(Line&, Point&);
-    template<class Sphere>
     bool testIntersection(Line&, Sphere&);
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
-    template<class Sphere>
     bool testIntersection(Triangle&, Sphere&);
     bool testIntersection(Triangle&, Line&);
     bool testIntersection(Triangle&, Triangle&);
+    bool testIntersection(Capsule&,Triangle&);
+    bool testIntersection(Capsule&,Line&);
 
     int computeIntersection(Point&, Point&, OutputVector*);
-    template<class Sphere>
     int computeIntersection(Sphere&, Point&, OutputVector*);
     int computeIntersection(Line&, Point&, OutputVector*);
-    template<class Sphere>
     int computeIntersection(Line&, Sphere&, OutputVector*);
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
-    template<class Sphere>
     int computeIntersection(Triangle&, Sphere&, OutputVector*);
     int computeIntersection(Triangle&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Triangle&, OutputVector*);
+    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
+    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
 
     static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id);
 

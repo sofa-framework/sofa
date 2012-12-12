@@ -74,6 +74,45 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
     return mstate.get();
 }
 
+//template <class DataTypes>
+//int ContactMapper<CapsuleModel, DataTypes>::addPoint(const typename DataTypes::Coord& C, int index, typename DataTypes::Real& r){
+//    const Coord & cap_center = this->model->center(index);
+//    Vector3 cap_p1 = this->model->point1(index);
+//    Vector3 cap_p2 = this->model->point2(index);
+//    double cap_rad = this->model->radius(index);
+
+//    Vector3 AB = cap_p2 - cap_p1;
+//    Vector3 AC = C - cap_p1;
+//    Vector3 P_on_capsule;
+//    double alpha = (AB * AC)/AB.norm2();
+//    std::cout<<"alpha "<<alpha<<std::endl;
+//    if(alpha < 0.000001){
+//        Vector3 PC = C - cap_p1;
+//        PC.normalize();
+
+//        P_on_capsule = cap_p1 + cap_rad * PC;
+//    }
+//    else if(alpha > 0.999999){
+//        Vector3 PC = C - cap_p2;
+//        PC.normalize();
+
+//        P_on_capsule = cap_p2 + cap_rad * PC;
+//    }
+//    else{
+//        Vector3 P = cap_p1 + alpha * AB;
+//        Vector3 PC = C - P;
+//        PC.normalize();
+
+//        P_on_capsule = P + cap_rad * PC;
+//    }
+
+//    Vector3 cap_center_P_on_capsule = P_on_capsule - cap_center;
+//    r = cap_center_P_on_capsule.norm();
+//    std::cout<<"r "<<r<<std::endl;
+
+//    return index;
+//}
+
 
 } // namespace collision
 

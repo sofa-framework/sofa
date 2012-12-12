@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/Sphere.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/component/collision/Line.h>

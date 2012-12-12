@@ -283,6 +283,61 @@ void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, const std::vect
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void DrawToolGL::drawCapsule(const Vector3& p1, const Vector3 &p2, float radius,const Vec<4,float> colour, int subd){
+    Vector3 tmp = p2-p1;
+    setMaterial(colour);
+    /* create Vectors p and q, co-planar with the capsules's cross-sectional disk */
+    Vector3 p=tmp;
+    if (fabs(p[0]) + fabs(p[1]) < 0.00001*tmp.norm())
+        p[0] += 1.0;
+    else
+        p[2] += 1.0;
+    Vector3 q;
+    q = p.cross(tmp);
+    p = tmp.cross(q);
+    /* do the normalization outside the segment loop */
+    p.normalize();
+    q.normalize();
+
+    int i2;
+    float theta, st, ct;
+    /* build the cylinder part of the capsule from rectangular subd */
+    std::vector<Vector3> points;
+    std::vector<Vector3> normals;
+
+    for (i2=0 ; i2<=subd ; i2++)
+    {
+        /* sweep out a circle */
+        theta =  i2 * 2.0 * 3.14 / subd;
+        st = sin(theta);
+        ct = cos(theta);
+        /* construct normal */
+        tmp = p*ct+q*st;
+        /* set the normal for the two subseqent points */
+        normals.push_back(tmp);
+
+        Vector3 w(p1);
+        w += tmp*fabs(radius);
+        points.push_back(w);
+
+        w=p2;
+        w += tmp*fabs(radius);
+        points.push_back(w);
+    }
+
+    //we draw here the cylinder part
+    drawTriangleStrip(points, normals,colour);
+
+    //now we must draw the two hemispheres
+    //but it's easier to draw spheres...
+    drawSphere(p1,radius);
+    drawSphere(p2,radius);
+
+    resetMaterial(colour);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec<4,float> colour, int subd)
 {
     Vector3 tmp = p2-p1;
