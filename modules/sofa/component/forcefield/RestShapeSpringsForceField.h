@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 #include <sofa/component/component.h>
 
@@ -88,6 +89,7 @@ public:
     Data< sofa::defaulttype::Vec4f > springColor;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
+    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;    
 
     //VecDeriv Springs_dir;
 protected:
@@ -106,6 +108,8 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
+
 protected :
 
     void recomputeIndices();
@@ -114,6 +118,7 @@ protected :
     VecReal k;
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
+    double lastUpdatedStep;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.

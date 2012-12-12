@@ -58,8 +58,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , springColor(initData(&springColor,"springColor","spring color"))
     , restMState(NULL)
 //	, pp_0(NULL)
-{
-
+{    
 }
 
 
@@ -105,6 +104,11 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     this->k = stiffness.getValue();
 
     recomputeIndices();
+
+    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    assert(state);
+    matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    lastUpdatedStep = -1.0;
 
 }
 
@@ -266,12 +270,11 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
-
+    // 	const VecReal& k = stiffness.getValue();   
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    double kFact = mparams->kFactor();
+    double kFact = mparams->kFactor();   
 
     const int N = Coord::total_size;
 
@@ -292,7 +295,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);                
             }
         }
     }
@@ -314,6 +317,58 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
             }
         }
     }
+}
+
+template<class DataTypes>
+const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
+    sout << this->getName() << ": getStiffnessMatrix " << sendl;
+
+    double actualTime = this->getContext()->getTime();
+
+    sout << "Actual Time: " << actualTime << " / " << lastUpdatedStep << sendl;
+
+    if (actualTime == lastUpdatedStep) {  //matrix already assembled in this time step
+        sout << this->getName() << "Matrix already assembled in step " << actualTime << sendl;
+        return &matS;
+    }
+
+    lastUpdatedStep = actualTime;
+    sout << this->getName() << "Assemble matrix in step " << actualTime << sendl;
+
+    unsigned int offset = 0;
+    double kFact = mparams->kFactor();
+    const int N = Coord::total_size;
+
+    unsigned int curIndex = 0;
+
+    typedef Eigen::Triplet<double> Triplet;
+    std::vector<Triplet> tripletList;
+    matS.clear();
+
+    if (k.size()!= m_indices.size() )
+    {
+        const Real k0 = k[0];
+        for (unsigned int index = 0; index < m_indices.size(); index++)
+        {
+            curIndex = m_indices[index];    
+            for(int i = 0; i < N; i++)
+                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0));
+        }        
+    }
+    else
+    {        
+        for (unsigned int index = 0; index < m_indices.size(); index++)
+        {
+            curIndex = m_indices[index];
+
+            for(int i = 0; i < N; i++)
+                tripletList.push_back(Triplet(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]));
+        }
+    }        
+
+    matS.compressedMatrix.setFromTriplets(tripletList.begin(), tripletList.end());    
+
+    return &matS;
 }
 
 } // namespace forcefield
