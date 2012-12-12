@@ -2690,8 +2690,10 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
         mapper!=NULL )
     {
         const unsigned int outStateSize = this->toModel->getX()->size();
-        const unsigned int  inStateSize = this->fromModel->getX()->size();
-        return mapper->getJ(outStateSize, inStateSize);
+        const unsigned int  inStateSize = this->fromModel->getX()->size();        
+        const sofa::defaulttype::BaseMatrix* matJ = mapper->getJ(outStateSize, inStateSize);
+
+        return matJ;
     }
     else
         return NULL;
@@ -2911,7 +2913,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         this->addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
 #endif
     }
-    //matrixJ->compress();
+    matrixJ->compress();
 //	std::cout << "J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
@@ -2964,7 +2966,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
             this->addMatrixContrib(matrixJ, outId, edge[1], (   fx));
         }
     }
-    //matrixJ->compress();
+    matrixJ->compress();
 //	std::cout << "BarycentricMapperEdgeSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
@@ -3020,7 +3022,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
         }
     }
 
-    //matrixJ->compress();
+    matrixJ->compress();
 //	std::cout << "BarycentricMapperTriangleSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
@@ -3079,7 +3081,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
             this->addMatrixContrib(matrixJ, outId, quad[3], ( ( 1-fx ) *   ( fy ) ));
         }
     }
-    //matrixJ->compress();
+    matrixJ->compress();
 //	std::cout << "BarycentricMapperQuadSetTopology  J = " << std::endl<< *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
@@ -3087,7 +3089,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
 
 template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,Out>::getJ(int outSize, int inSize)
-{
+{    
+
     if (matrixJ && !updateJ)
         return matrixJ;
 
@@ -3096,8 +3099,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperTetrahedronSetTopology<In,Out>::getJ() \n";
-
 
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
@@ -3118,7 +3119,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
 
         }
     }
-    else
+    else        
     {
         typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
@@ -3140,8 +3141,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
             this->addMatrixContrib(matrixJ, outId, tetra[3],         ( fz ));
         }
     }
-    //matrixJ->compress();
-//	std::cout << "BarycentricMapperTetrahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
+    matrixJ->compress();
     updateJ = false;
     return matrixJ;
 }
@@ -3156,8 +3156,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
     if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
-        matrixJ->clear();
-    //         std::cerr << "BarycentricMapperHexahedronSetTopology<In,Out>::getJ() \n";
+        matrixJ->clear();    
 
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
 
@@ -3206,8 +3205,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
             this->addMatrixContrib(matrixJ, outId, cube[7], ( ( 1-fx ) *   ( fy ) *   ( fz ) ));
         }
     }
-    //matrixJ->compress();
-//	std::cout << "BarycentricMapperHexahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
+    matrixJ->compress();
     updateJ = false;
     return matrixJ;
 }
@@ -4269,10 +4267,11 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 template<class TIn, class TOut>
 const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
-    // actual type for getJ() result
+    //std::cerr << this->getName() << ": getJs " << std::endl;
     typedef typename Mapper::MatrixType mat_type;
+    const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
-    const mat_type* mat = dynamic_cast<const mat_type*>(getJ());
+    const mat_type* mat = dynamic_cast<const mat_type*>(matJ);
     assert( mat );
 
     eigen.copyFrom( *mat );   // woot
