@@ -74,7 +74,7 @@ HEADERS += sofa/gpu/cuda/mycuda.h \
            sofa/gpu/cuda/CudaPointModel.h \
            sofa/gpu/cuda/CudaSphereModel.h \
            sofa/gpu/cuda/CudaTriangleModel.h \
-           sofa/gpu/cuda/CudaLineeModel.h \
+           sofa/gpu/cuda/CudaLineModel.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.h \
            sofa/gpu/cuda/CudaPenalityContactForceField.inl \
            sofa/gpu/cuda/CudaVisualModel.h \
