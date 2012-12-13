@@ -191,6 +191,7 @@ class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<C
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
 #endif
 
