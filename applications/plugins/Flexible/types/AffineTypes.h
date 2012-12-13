@@ -71,6 +71,9 @@ public:
     {
         typedef Vec<VSize,Real> MyVec;
     public:
+
+        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 12
+
         Deriv() { MyVec::clear(); }
         Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
         Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVAffine()=a;}
@@ -122,10 +125,13 @@ public:
         typedef Vec<VSize,Real> MyVec;
 
     public:
+
+        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 12
+
         Coord() { clear(); }
         Coord( const Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
-        void clear()  { MyVec::clear(); for(unsigned int i=0; i<spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
+        void clear()  { MyVec::clear(); for(unsigned int i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
         //static const unsigned int total_size = VSize;
         typedef Real value_type;
@@ -135,8 +141,8 @@ public:
         const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
 
         /// local frame
-        Frame& getAffine() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
-        const Frame& getAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
+        Frame& getAffine() { return *reinterpret_cast<Frame*>(&this->elems[_spatial_dimensions]); }
+        const Frame& getAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[_spatial_dimensions]); }
 
 
         /// write to an output stream

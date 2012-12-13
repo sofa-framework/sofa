@@ -387,10 +387,9 @@ namespace constraintset
 template<>
 SOFA_Flexible_API void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
 {
-    //std::cerr<<"UncoupledConstraintCorrection< defaulttype::Affine3Types >::init\n";
     Inherit::init();
 
-    double dt = this->getContext()->getDt();
+    const double dt = this->getContext()->getDt();
 
     const double dt2 = dt * dt;
 
