@@ -46,6 +46,7 @@ ContactMapperCreator< ContactMapper<CapsuleModel> > CapsuleContactMapperClass("d
 
 template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
 template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
+template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
 //template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
 
 } // namespace collision
