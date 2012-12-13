@@ -202,7 +202,7 @@ struct TestSparseMatrices
         {
             for( unsigned i=0; i<NCOLS; i++)
             {
-                Real random = rand_real( -100000, 100000 );
+                Real random = rand_real( (Real) -100000, (Real) 100000 );
                 crsMultiplier.set( i, j, random );
                 fullMultiplier.set( i, j, random );
                 matMultiplier(i,j) = random;
@@ -222,12 +222,13 @@ struct TestSparseMatrices
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
     template<typename Matrix1, typename Matrix2>
-    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<float>::epsilon())
     {
         if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) return false;
-        for( unsigned i=0; i<m1.rowSize(); i++ )
-            for( unsigned j=0; j<m1.colSize(); j++ )
-                if( fabs(m1.element(i,j)-m2.element(i,j))>tolerance  ) return false;
+        for(unsigned i=0; i<m1.rowSize(); i++)
+            for(unsigned j=0; j<m1.colSize(); j++)
+                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) return false;
+
         return true;
     }
 

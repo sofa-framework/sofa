@@ -81,6 +81,12 @@ public:
     {
     }
 
+	FullVector(const FullVector& vect)
+		: data(NULL), cursize(0), allocsize(0)
+	{
+		(*this) = vect;
+	}
+
     explicit FullVector(Index n)
         : data(new T[n]), cursize(n), allocsize(n)
     {
