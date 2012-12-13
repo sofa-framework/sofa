@@ -78,6 +78,9 @@ bool init_unit_test()
 			boost::filesystem::path exePath = argv[0];
 			boost::filesystem::path dirPath = exePath.parent_path();
 
+			if(dirPath.empty())
+				dirPath = "./";
+
 			std::vector<boost::filesystem::path> files;
 			std::copy(boost::filesystem::directory_iterator(dirPath), boost::filesystem::directory_iterator(), std::back_inserter(files));
 
