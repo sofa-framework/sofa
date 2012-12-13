@@ -19,6 +19,8 @@ QuickBuild=
 [document-settings,item:compliant.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
@@ -27,10 +29,22 @@ ReadWrite=true
 [document-settings,item:compliant_body.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
 ReadWrite=true
+
+[item:biblio.bib]
+archive=true
+column=32519
+encoding=
+highlight=
+line=0
+mode=
+open=false
+order=-1
 
 [item:compliant.kilepr]
 archive=true
@@ -44,28 +58,32 @@ order=-1
 
 [item:compliant.tex]
 archive=true
-column=2
+column=21
 encoding=UTF-8
 highlight=LaTeX
-line=22
+line=29
 mode=LaTeX
 open=true
 order=0
 
 [item:compliant_body.tex]
 archive=true
-column=43
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=154
+line=42
 mode=LaTeX
 open=true
 order=1
 
 [view-settings,view=0,item:compliant.tex]
-CursorColumn=2
-CursorLine=22
+CursorColumn=21
+CursorLine=29
+JumpList=
+ViMarks=
 
 [view-settings,view=0,item:compliant_body.tex]
-CursorColumn=43
-CursorLine=154
+CursorColumn=0
+CursorLine=42
+JumpList=
+ViMarks=

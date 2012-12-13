@@ -34,8 +34,17 @@
 \newcommand{\cmp}{c}
 \newcommand{\dampingratio}{d}
 
+\section{Introduction}
+This plugin serves two purposes:
+\begin{itemize}
+ \item to provide a new, more complete mechanisme for assembling the dynamical system matrices such as mass $\M$ and stiffness $\K$, as well as constraint Jacobians $\J$,
+ \item and experiment a unified approach of soft and hard constraints, as presented in~\cite{servin2006interactive}.
+\end{itemize}
+Contrary with other implementations of matrix assembly available in SOFA, this one handles mappings, and even multimappings.
 
-\section{Constraint forces}
+Sections \ref{sec constraint forces} and \ref{sec:time integration} explain the unified constraint approach, while Section~\ref{sec matrix assembly} presents the matrix assembly process based on an example. An overview of the corresponding API is given in Section~\ref{sec implementation}. 
+
+\section{Constraint forces} \label{sec constraint forces}
 \subsection{Generalized constraints}
 This approach unifies soft and hard constraints, by providing constraints with compliance. Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
 \begin{equation} \label{eq acc hard}
@@ -151,7 +160,7 @@ The system is singular due to matrix $\P $, however we can use $ \P \Minv\P $ as
 \end{array} \]
 
 
-\section{Matrix assembly}
+\section{Matrix assembly} \label{sec matrix assembly}
 The equation system, in its most general form, can be written as:
 \begin{equation}
  \label{eq abstract system}
@@ -209,7 +218,7 @@ While shifting values in dense arrays using matrix products is not efficient (ve
 \end{figure}
 
 
-\section{Implementation}
+\section{Implementation} \label{sec implementation}
 The virtual functions used for setting up the equation system are declared in BaseForceField.h and BaseMapping.h, and documented in ``Experimental Compliance API'' documentation blocks.
 
 ForceFields may be handled as forces or as soft constraints, as explained in Section~\ref{sec force or constraint}. The default behavior is to handle them as forces, and in this case their force is accumulated using a classical \texttt{MechanicalOperations::computeForce} operation, while their stiffness matrix is accumulated using the \texttt{getStiffnessMatrix} briefly described below.
@@ -225,7 +234,7 @@ The BaseForceField functions are:
 The BaseMapping functions are:
 \begin{itemize}
  \item \texttt{getJs} returns a list of Jacobian matrices, one for each parent of the mapping. Typical mappings have only one parent, but MultiMappings have several ones.
- \item \texttt{getKs} returns a list of stiffness matrices, one for each parent. These correspond to geometric stiffness, i.e. change of forces due to mapping nonlinearity, like \texttt{addDJT} in the traditional API.
+ \item \texttt{getKs} returns a list of stiffness matrices, one for each parent. These correspond to geometric stiffness, i.e. change of forces due to mapping nonlinearity, like \texttt{addDJT} in the traditional API. \textbf{\begin{large}TODO:                                                                                                                                                                                                                                       \end{large}} refine this, to also return off-diagonal terms in MultiMappings. 
 \end{itemize}
 
 
