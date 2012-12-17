@@ -57,13 +57,17 @@ public:
 
     bool testIntersection(Cube&, Cube&);
 
+    template <class Sphere>
     bool testIntersection(Sphere&, Sphere&);
+    template <class Sphere>
     bool testIntersection(Sphere&, Cube&);
     bool testIntersection(Capsule&, Capsule&);
     bool testIntersection(Capsule&, Sphere&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);    
+    template <class Sphere>
     int computeIntersection(Sphere&, Sphere&, OutputVector*);    
+    template <class Sphere>
     int computeIntersection(Sphere&, Cube&, OutputVector*);
     int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
     int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);

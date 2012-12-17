@@ -86,47 +86,9 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
     return true;
 }
 
-//bool DiscreteIntersection::testIntersection(Triangle& t1, Triangle& t2)
-//{
-//	sout<<"Collision between Triangle - Triangle"<<sendl;
-//	return false;
-//}
-
-bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
-{
-    //sout<<"Collision between Sphere - Sphere"<<sendl;
-    Sphere::Coord sph1Pos(sph1.center());
-    Sphere::Coord sph2Pos(sph2.center());
-    Sphere::Real radius1 = sph1.r(), radius2 = sph2.r();
-    Sphere::Coord tmp = sph1Pos - sph2Pos;
-    return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
-}
-
 int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
 {
     return 0; /// \todo
-}
-
-
-bool DiscreteIntersection::testIntersection( Sphere& sph1, Cube& cube)
-{
-    // Values of the "aligned" bounding box
-    Vector3 Bmin = cube.minVect();
-    Vector3 Bmax = cube.maxVect();
-    // Center of sphere
-    Vector3 ctr(sph1.center());
-    // Square of radius
-    double r2 = sph1.r()*sph1.r();
-    // Distance
-    double dmin = 0;
-
-    for ( int i = 0; i<3; i++)
-    {
-        if ( ctr[i] < Bmin[i] )      dmin += (ctr[i]-Bmin[i])*(ctr[i]-Bmin[i]);
-        else if ( ctr[i] > Bmax[i] ) dmin += (ctr[i]-Bmax[i])*(ctr[i]-Bmax[i]);
-    }
-
-    return (dmin <= r2 );
 }
 
 bool DiscreteIntersection::testIntersection(Capsule&, Capsule&){
@@ -137,36 +99,6 @@ bool DiscreteIntersection::testIntersection(Capsule&, Capsule&){
 bool DiscreteIntersection::testIntersection(Capsule&, Sphere&){
     //TO DO
     return false;
-}
-
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
-{
-    double r = sph1.r() + sph2.r();
-    Vector3 dist = sph2.center() - sph1.center();
-
-    if (dist.norm2() >= r*r)
-        return 0;
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->normal = dist;
-    double distSph1Sph2 = detection->normal.norm();
-    detection->normal /= distSph1Sph2;
-    detection->point[0] = sph1.center() + detection->normal * sph1.r();
-    detection->point[1] = sph2.center() - detection->normal * sph2.r();
-
-    detection->value = distSph1Sph2 - r;
-    detection->elem.first = sph1;
-    detection->elem.second = sph2;
-    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
-
-    return 1;
-}
-
-int DiscreteIntersection::computeIntersection(Sphere& /*sph1*/, Cube& /*cube*/, OutputVector* /*contacts*/)
-{
-    //to do
-    return 0;
 }
 
 

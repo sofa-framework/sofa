@@ -54,7 +54,7 @@ void TCapsuleModel<DataTypes>::resize(int size)
 
     if ((int)capsule_radii.size() < size)
     {
-        while(capsule_radii.size() < size)
+        while((int)capsule_radii.size() < size)
             capsule_radii.push_back(_default_radius.getValue());
     }
     else
@@ -156,7 +156,7 @@ template<class DataTypes>
 void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
     Vec<4,float> col4f(getColor4f());
-    vparams->drawTool()->drawCapsule(point1(index),point2(index),radius(index),col4f);
+    vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
 template<class DataTypes>
@@ -172,7 +172,7 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         const int npoints = _mstate->getX()->size()/2;
 
         for (int i=0; i<npoints; i++){
-            vparams->drawTool()->drawCapsule(point1(i),point2(i),radius(i),col4f);
+            vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
@@ -197,21 +197,9 @@ inline const typename TCapsuleModel<DataTypes>::Coord & TCapsuleModel<DataTypes>
 }
 
 template <class DataTypes>
-const typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::axis(int i) const{
-    Coord ax = point2(i) - point1(i);
-    return ax;
-}
-
-template <class DataTypes>
 typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::radius(int i) const
 {
     return this->_capsule_radii.getValue()[i];
-}
-
-template <class DataTypes>
-typename TCapsuleModel<DataTypes>::Real TCapsuleModel<DataTypes>::height(int i) const
-{
-    return axis(i).norm();
 }
 
 template <class DataTypes>
@@ -236,17 +224,6 @@ template <class DataTypes>
 int TCapsuleModel<DataTypes>::point2Index(int i) const
 {
     return  _capsule_points[i].second;
-}
-
-template<class DataTypes>
-inline const typename TCapsuleModel<DataTypes>::Coord TCapsuleModel<DataTypes>::center(int i) const {
-    return (point1(i) + point2(i))/2.0;
-}
-
-template <class DataTypes>
-const typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::center() const
-{
-    return this->model->center(this->index);
 }
 
 template <class DataTypes>

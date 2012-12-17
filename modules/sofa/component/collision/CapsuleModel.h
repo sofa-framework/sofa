@@ -69,20 +69,6 @@ public:
     explicit TCapsule(core::CollisionElementIterator& i);
 
     /**
-      *Returns an orthonormal system which base vectors n1,n2,n3.
-      *n1 corresponds to this->axis.
-      */
-    void localCoordSys(Vector3 & n1,Vector3 & n2,Vector3 & n3)const;
-
-    /**
-      *Returns the matrix in the format of OpenGL, size of matrix must be
-      *16. This matrix corresponds to the rotation matrix of the cylinder.
-      */
-    void rotationMatrix(Real * matrix)const;
-
-    const Coord center() const;
-
-    /**
       *Gives one apex of the capsule segment.
       */
     Coord point1()const;
@@ -92,7 +78,6 @@ public:
       */
     Coord point2()const;
 
-    const Coord& axis() const;
     Real radius() const;
 };
 
@@ -141,8 +126,6 @@ public:
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
     Real radius(int index) const;
-
-    Real height(int index) const;
 
     inline const Coord & point(int i)const;
 
