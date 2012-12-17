@@ -395,7 +395,7 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!this->mstate) return;
 
-    glPushAttrib( GL_LIGHTING_BIT || GL_LINE_BIT || GL_ENABLE_BIT  || GL_POLYGON_BIT || GL_DEPTH_BUFFER_BIT || GL_COLOR_BUFFER_BIT);
+    glPushAttrib( GL_ALL_ATTRIB_BITS);
 
 
     if (vparams->displayFlags().getShowWireFrame())
