@@ -37,6 +37,7 @@
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/controller/Controller.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
