@@ -137,10 +137,6 @@ public:
 
     int point2Index(int index)const;
 
-    const Coord center(int index) const;
-
-    const Coord axis(int i) const;
-
     inline unsigned int nbCap()const;
 
     Real defaultRadius()const;
