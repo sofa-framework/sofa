@@ -42,6 +42,8 @@
 
 #include <sofa/component/constraintset/UncoupledConstraintCorrection.inl>
 
+#include <sofa/component/mapping/IdentityMapping.inl>
+
 namespace sofa
 {
 namespace component
@@ -432,7 +434,24 @@ template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affi
 
 
 
+namespace mapping
+{
 
+
+SOFA_DECL_CLASS(AffineIdentityMapping)
+
+// Register in the Factory
+int AffineIdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
+        .add< IdentityMapping< defaulttype::Affine3Types, defaulttype::Vec3Types > >()
+        .add< IdentityMapping< defaulttype::Affine3Types, defaulttype::ExtVec3fTypes > >()
+        ;
+
+
+template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::Vec3Types >;
+template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::ExtVec3fTypes >;
+
+
+} // namespace mapping
 
 
 
