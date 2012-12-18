@@ -41,7 +41,9 @@
 
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
+#ifdef SOFA_HAVE_BGL
 #include <sofa/simulation/bgl/BglSimulation.h>
+#endif
 #include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/component/visualmodel/OglModel.h>
 

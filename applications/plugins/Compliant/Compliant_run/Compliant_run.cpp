@@ -33,8 +33,12 @@
 #include <sofa/helper/system/PluginManager.h>
 
 //#include <sofa/simulation/tree/TreeSimulation.h>
-//#include <sofa/simulation/bgl/BglSimulation.h>
+#ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
+#endif
+#ifdef SOFA_HAVE_BGL
+#include <sofa/simulation/bgl/BglSimulation.h>
+#endif
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
