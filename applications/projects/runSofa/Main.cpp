@@ -29,8 +29,10 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
-#ifdef SOFA_DEV
+#endif
+#ifdef SOFA_HAVE_BGL
 #include <sofa/simulation/bgl/BglSimulation.h>
 #endif
 #ifdef SOFA_SMP
@@ -126,7 +128,7 @@ int main(int argc, char** argv)
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree)")
+    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&verif,'v',"verification","load verification data for the scene")
 #ifdef SOFA_SMP
@@ -157,13 +159,12 @@ int main(int argc, char** argv)
 
     if(gui!="batch") glutInit(&argc,argv);
 
+#ifdef SOFA_HAVE_BGL
     if (simulationType == "dag")
-    {
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-        cerr<<"runSofa using DAG simulation" << endl;
-    }
     else
-#ifdef SOFA_DEV
+#endif
+#ifdef SOFA_HAVE_BGL
         if (simulationType == "bgl")
             sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
         else

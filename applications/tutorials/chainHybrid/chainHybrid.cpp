@@ -27,7 +27,7 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#ifdef SOFA_DEV
+#ifdef SOFA_HAVE_BGL
 #include <sofa/simulation/bgl/BglSimulation.h>
 #endif
 #include <sofa/simulation/common/Node.h>
@@ -231,7 +231,7 @@ int main(int argc, char** argv)
     .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
 
-#ifdef SOFA_DEV
+#ifdef SOFA_HAVE_BGL
     if (simulationType == "bgl")
         sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     else

@@ -42,7 +42,7 @@
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/component/collision/TreeCollisionGroupManager.h>
-#ifdef SOFA_DEV
+#ifdef SOFA_HAVE_BGL
 #include <sofa/component/collision/BglCollisionGroupManager.h>
 #endif
 #include <sofa/component/collision/BruteForceDetection.h>
@@ -91,7 +91,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(cons
     contactManager->setDefaultResponseType(responseType);
     root->addObject(contactManager);
 
-#ifdef SOFA_DEV
+#ifdef SOFA_HAVE_BGL
     //--> adding component to handle groups of collision.
     if (simulationType == "bgl")
     {

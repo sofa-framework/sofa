@@ -25,7 +25,6 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
-#include <sofa/simulation/bgl/BglSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
@@ -48,8 +47,12 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
+#endif
+#ifdef SOFA_HAVE_BGL
 #include <sofa/simulation/bgl/BglSimulation.h>
+#endif
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
 #include <sofa/helper/Factory.h>

@@ -91,6 +91,20 @@ else {
   message( "|  BOOST libraries: DISABLED")
 }
 
+contains(DEFINES,SOFA_HAVE_DAG) {
+  message( "|  Directed Acyclic Graph (DAG): ENABLED")
+}
+else {
+  message( "|  Directed Acyclic Graph (DAG): DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_BGL) {
+  message( "|  Boost Graph Library (BGL): ENABLED")
+}
+else {
+  message( "|  Boost Graph Library (BGL): DISABLED")
+}
+
 contains(DEFINES,SOFA_HAVE_PYTHON) {
   message( "|  PYTHON script support: ENABLED")
 }
