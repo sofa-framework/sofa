@@ -296,7 +296,6 @@ public:
                     for(unsigned int j=0; j<strain_size; j++)
                     {
                         applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i),x.getStrainHessian(j),mu,lamd,factors.order4()(i,j));
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(j),x.getStrainHessian(i),mu,lamd,factors.order4()(i,j));
                     }
             }
         }
@@ -345,7 +344,6 @@ public:
                         for(unsigned int j=0; j<strain_size; j++)
                         {
                             applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(i),v.getStrainHessian(j),viscosity,0,factors.order4()(i,j));
-                            applyK_Isotropic<Real,material_dimensions,strain_size>(f.getStrainHessian(j),v.getStrainHessian(i),viscosity,0,factors.order4()(i,j));
                         }
                 }
             }
@@ -393,7 +391,6 @@ public:
                     for(unsigned int j=0; j<strain_size; j++)
                     {
                         applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i),dx.getStrainHessian(j),mu,lamd,factors.order4()(i,j)*kfactor);
-                        applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(j),dx.getStrainHessian(i),mu,lamd,factors.order4()(i,j)*kfactor);
                     }
             }
         }
@@ -441,7 +438,6 @@ public:
                         for(unsigned int j=0; j<strain_size; j++)
                         {
                             applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(i),dx.getStrainHessian(j),viscosity,0,factors.order4()(i,j)*bfactor);
-                            applyK_Isotropic<Real,material_dimensions,strain_size>(df.getStrainHessian(j),dx.getStrainHessian(i),viscosity,0,factors.order4()(i,j)*bfactor);
                         }
                 }
             }
@@ -493,7 +489,6 @@ public:
                     for(unsigned int j=0; j<strain_size; j++)
                     {
                         eK.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
-                        eK.block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(mu,lamd,factors.order4()(i,j));
                     }
             }
         }
@@ -556,7 +551,6 @@ public:
                     for(unsigned int j=0; j<strain_size; j++)
                     {
                         eB.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
-                        eB.block(offset+strain_size*j,offset+strain_size*i,strain_size,strain_size) = assembleK_Isotropic<Real,material_dimensions,strain_size>(viscosity,0,factors.order4()(i,j));
                     }
             }
         }

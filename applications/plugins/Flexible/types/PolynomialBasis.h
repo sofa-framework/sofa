@@ -424,12 +424,12 @@ Vec<6,Real> getOrder2Factors(const vector<Real>& v)
     Vec<6,Real> ret;
     if(v.size()>=10)
     {
-        ret(0)=v[4];
-        ret(1)=v[5];
-        ret(2)=v[6];
-        ret(3)=v[7];
-        ret(4)=v[8];
-        ret(5)=v[9];
+        ret(0)=v[4];    // x * x
+        ret(1)=v[5];    // x * y
+        ret(2)=v[6];    // x * z
+        ret(3)=v[7];    // y * y
+        ret(4)=v[8];    // y * z
+        ret(5)=v[9];    // z * z
     }
     else //unit cube
     {
@@ -444,9 +444,10 @@ Mat<3,6,Real> getOrder3Factors(const vector<Real>& v)
     Mat<3,6,Real> ret;
     if(v.size()>=20)
     {
-        ret(0,0)=v[11]; ret(0,1)=v[12]; ret(0,2)=v[13]; ret(0,3)=v[14]; ret(0,4)=v[10]; ret(0,5)=v[17];
-        ret(1,0)=v[12]; ret(1,1)=v[14]; ret(1,2)=v[10]; ret(1,3)=v[15]; ret(1,4)=v[16]; ret(1,5)=v[18];
-        ret(2,0)=v[13]; ret(2,1)=v[10]; ret(2,2)=v[17]; ret(2,3)=v[16]; ret(2,4)=v[18]; ret(2,5)=v[19];
+        //  x^2             xy              y^2             xz              yz              z^2
+        ret(0,0)=v[11]; ret(0,1)=v[12]; ret(0,2)=v[14]; ret(0,3)=v[13]; ret(0,4)=v[10]; ret(0,5)=v[17];     // x
+        ret(1,0)=v[12]; ret(1,1)=v[14]; ret(1,2)=v[15]; ret(1,3)=v[10]; ret(1,4)=v[16]; ret(1,5)=v[18];     // y
+        ret(2,0)=v[13]; ret(2,1)=v[10]; ret(2,2)=v[16]; ret(2,3)=v[17]; ret(2,4)=v[18]; ret(2,5)=v[19];     // z
     }
     return ret;
 }
@@ -457,17 +458,18 @@ MatSym<6,Real> getOrder4Factors(const vector<Real>& v)
     MatSym<6,Real> ret;
     if(v.size()>=35)
     {
-        ret(0,0)=v[20];
-        ret(1,0)=v[29]; ret(1,1)=v[21];
-        ret(2,0)=v[30]; ret(2,1)=v[26]; ret(2,2)=v[22];
-        ret(3,0)=v[21]; ret(3,1)=v[31]; ret(3,2)=v[27]; ret(3,3)=v[23];
-        ret(4,0)=v[26]; ret(4,1)=v[27]; ret(4,2)=v[28]; ret(4,3)=v[32]; ret(4,4)=v[24];
-        ret(5,0)=v[22]; ret(5,1)=v[28]; ret(5,2)=v[33]; ret(5,3)=v[24]; ret(5,4)=v[34]; ret(5,5)=v[25];
+        //  x^2             xy              y^2             xz              yz              z^2
+        ret(0,0)=v[20];                                                                                     // x^2
+        ret(1,0)=v[29]; ret(1,1)=v[21];                                                                     // xy
+        ret(2,0)=v[21]; ret(2,1)=v[31]; ret(2,2)=v[23];                                                     // y^2
+        ret(3,0)=v[30]; ret(3,1)=v[26]; ret(3,2)=v[27]; ret(3,3)=v[22];                                     // xz
+        ret(4,0)=v[26]; ret(4,1)=v[27]; ret(4,2)=v[32]; ret(4,3)=v[28]; ret(4,4)=v[24];                     // yz
+        ret(5,0)=v[22]; ret(5,1)=v[28]; ret(5,2)=v[24]; ret(5,3)=v[33]; ret(5,4)=v[34]; ret(5,5)=v[25];     // z^2
     }
     else //unit cube
     {
-        ret(0,0)=ret(3,3)=ret(5,5)=(Real)1./(Real)80.;
-        ret(1,1)=ret(2,2)=ret(4,4)=(Real)1./(Real)144.;
+        ret(0,0)=ret(2,2)=ret(5,5)=(Real)1./(Real)80.;
+        ret(1,1)=ret(3,3)=ret(4,4)=(Real)1./(Real)144.;
     }
     return ret;
 }
