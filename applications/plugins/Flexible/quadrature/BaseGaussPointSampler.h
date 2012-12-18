@@ -129,7 +129,7 @@ protected:
     {
         if (!vparams->displayFlags().getShowVisualModels()) return;
         raPositions pos(this->f_position);
-        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->f_position.getValue(),5.0,Vec<4,float>(0.2,1,0.2,1));
+        if (this->showSamples.getValue()) vparams->drawTool()->drawPoints(this->f_position.getValue(),5.0f,Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
     }
 
 

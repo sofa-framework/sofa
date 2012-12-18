@@ -135,8 +135,8 @@ namespace container
 // Draw Specializations
 
 
-template <>
-inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
+template <> SOFA_Flexible_API
+void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
 
     if ( showIndices.getValue() )
@@ -153,7 +153,7 @@ inline void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParam
             std::ostringstream oss;
             oss << i;
             std::string tmp = oss.str();
-            const char* s = tmp.c_str();
+            const char* s = tmp.c_str(); 
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 

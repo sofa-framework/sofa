@@ -280,7 +280,7 @@ void BaseDeformationMapping<JacobianBlockType>::updateK(const OutVecDeriv& child
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -310,7 +310,7 @@ void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalPara
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJ(const core::MechanicalParams */*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void BaseDeformationMapping<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
     else
@@ -352,7 +352,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyJ(const core::MechanicalPar
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJT(const core::MechanicalParams */*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
+void BaseDeformationMapping<JacobianBlockType>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if(this->assembleJ.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
     else
@@ -443,7 +443,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyDJT(const core::MechanicalP
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJT( const core::ConstraintParams */*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
+void BaseDeformationMapping<JacobianBlockType>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
 {
     // TODO handle mask
 

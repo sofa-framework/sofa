@@ -363,7 +363,6 @@ namespace component
 namespace container
 {
 
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineTYPES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Affine3dTypes>;
@@ -374,6 +373,9 @@ extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3fTypes>;
 #endif
 #endif
+
+template <> SOFA_Flexible_API
+void MechanicalObject<defaulttype::Affine3Types>::draw(const core::visual::VisualParams* vparams);
 
 } // namespace container
 } // namespace component
@@ -584,15 +586,15 @@ public:
 };
 
 #ifndef SOFA_FLOAT
-template <>
+template <> SOFA_Flexible_API
 void UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::draw( const core::visual::VisualParams* vparams );
-template <>
+template <> SOFA_Flexible_API
 double UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
 #endif
 #ifndef SOFA_DOUBLE
-template <>
+template <> SOFA_Flexible_API
 void UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::draw( const core::visual::VisualParams* vparams );
-template <>
+template <> SOFA_Flexible_API
 double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
 #endif
 
