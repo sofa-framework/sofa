@@ -50,7 +50,7 @@ std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap; // gr
 
 void Axis::initDraw()
 {
-    if (quadratic && displayList) return;
+    if (quadratic) return;
 
     Vector3 L= length;
     SReal Lmin = L[0];
