@@ -219,6 +219,12 @@ While shifting values in dense arrays using matrix products is not efficient (ve
 
 
 \section{Implementation} \label{sec implementation}
+
+\subsection{Dependencies}
+This plugin uses \texttt{Eigen} and \texttt{suitesparse}.
+
+\subsection{Functions}
+
 The virtual functions used for setting up the equation system are declared in BaseForceField.h and BaseMapping.h, and documented in ``Experimental Compliance API'' documentation blocks.
 
 ForceFields may be handled as forces or as soft constraints, as explained in Section~\ref{sec force or constraint}. The default behavior is to handle them as forces, and in this case their force is accumulated using a classical \texttt{MechanicalOperations::computeForce} operation, while their stiffness matrix is accumulated using the \texttt{getStiffnessMatrix} briefly described below.
@@ -226,6 +232,7 @@ ForceFields may be handled as forces or as soft constraints, as explained in Sec
 The BaseForceField functions are:
 \begin{itemize}
  \item \texttt{getComplianceMatrix} returns NULL if the ForceField is to be handled as a traditional force function, while it returns a pointer to a compliance matrix if it is to be handled as a constraint.
+ \item \texttt{addForc}e is used to accumulate the force in the right-hand term. This function is not specific to the \textit{Compliant} plugin. This should do nothing when the force must be handled as a constraint.
  \item \texttt{getStiffnessMatrix} is the complement of \texttt{getCompliantMatrix}. If one retuns NULL, then the other must return a pointer to a matrix.
  \item \texttt{writeConstraintValue} is used to write the constraint violation $\violation$ in Eq.\ref{eq generalized constraint} when the ForceField is handled as a constraint.
  \item \texttt{getDampingRatio} is used in the constraint case, and corresponds to parameter $ \dampingratio$ in Eq.\ref{eq generalized constraint}
@@ -236,6 +243,12 @@ The BaseMapping functions are:
  \item \texttt{getJs} returns a list of Jacobian matrices, one for each parent of the mapping. Typical mappings have only one parent, but MultiMappings have several ones.
  \item \texttt{getKs} returns a list of stiffness matrices, one for each parent. These correspond to geometric stiffness, i.e. change of forces due to mapping nonlinearity, like \texttt{addDJT} in the traditional API. \textbf{\begin{large}TODO:                                                                                                                                                                                                                                       \end{large}} refine this, to also return off-diagonal terms in MultiMappings. 
 \end{itemize}
+
+The BaseMass function used by the plugin is:
+\begin{itemize}
+ \item \texttt{addMToMatrix} to create the mass matrix. This function is not specific to the \textit{Compliant} plugin.
+\end{itemize}
+
 
 
 
