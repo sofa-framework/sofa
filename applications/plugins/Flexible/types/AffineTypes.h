@@ -363,6 +363,10 @@ namespace component
 namespace container
 {
 
+
+template <> SOFA_Flexible_API
+void MechanicalObject<defaulttype::Affine3Types>::draw(const core::visual::VisualParams* vparams);
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineTYPES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Affine3dTypes>;
@@ -374,8 +378,6 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3fTy
 #endif
 #endif
 
-template <> SOFA_Flexible_API
-void MechanicalObject<defaulttype::Affine3Types>::draw(const core::visual::VisualParams* vparams);
 
 } // namespace container
 } // namespace component
