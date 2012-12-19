@@ -25,6 +25,7 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
@@ -329,7 +330,8 @@ public:
 //        if (int err=sofa::gui::GUIManager::createGUI(NULL))
 //            cerr<<"sofa::gui::GUIManager::createGUI failed " << endl;
 
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::bgl::BglSimulation());
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+//        sofa::simulation::setSimulation(simulation = new sofa::simulation::bgl::BglSimulation());
         root = simulation->createNewGraph("root");
         root->setName("Scene root");
 
