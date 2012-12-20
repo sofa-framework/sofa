@@ -150,13 +150,17 @@ public:
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
 
-    /// @name Experimental Compliance API
+    /// @name Experimental API used in the Compliant solver to perform global matrix assembly (François Faure, 2012)
     /// @{
 
-    /// Returns pointers to Jacobian matrices associated with parent states, consistently with  getFrom().
+    /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
 
-    /// Return pointers to the geometric stiffness matrices. This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
+    /** Return pointers to the geometric stiffness matrices. 
+	This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product. 
+	These matrices are associated with the parent DOFs. 
+	@todo Change this API to take into account the cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks.
+    */
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getKs() { return NULL; }
 
     /// @}
