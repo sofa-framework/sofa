@@ -61,6 +61,9 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+	typedef typename DataTypes::CPos CPos;
+	typedef typename DataTypes::DPos DPos;
+
 protected:
     sofa::helper::vector<unsigned int> contacts;
 
@@ -68,11 +71,11 @@ protected:
 
 public:
 
-    Data<Deriv> planeNormal;
+    Data<DPos> planeNormal;
     Data<Real> planeD;
     Data<Real> stiffness;
     Data<Real> damping;
-    Data<Real> maxForce;
+	Data<Real> maxForce;
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
     Data<Real> drawSize;
@@ -82,7 +85,7 @@ public:
     Data< defaulttype::Vec<2,int> > localRange;
 
     /// option bilateral : if true, the force field is applied on both side of the plane
-    Data<bool> bilateral;
+   Data<bool> bilateral;
 protected:
     PlaneForceField()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
@@ -90,23 +93,18 @@ protected:
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
         , maxForce(initData(&maxForce, (Real)0, "maxForce", "if non-null, the max force that can be applied to the object"))
-        , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
+		, color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
         , bilateral( initData(&bilateral, false, "bilateral", "if true the plane force field is applied on both sides"))
     {
-        Deriv n;
-        DataTypes::set(n, 0, 1, 0);
-        planeNormal.setValue(n);
+		Deriv n;
+		DataTypes::set(n, 0, 1, 0);
+        planeNormal.setValue(DataTypes::getDPos(n));
     }
 public:
-    void setPlane(const Deriv& normal, Real d)
-    {
-        Real n = normal.norm();
-        planeNormal.setValue( normal / n);
-        planeD.setValue( d / n );
-    }
+    void setPlane(const Deriv& normal, Real d);
 
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 

@@ -48,6 +48,14 @@ namespace component
 namespace forcefield
 {
 
+template<class DataTypes>
+void PlaneForceField<DataTypes>::setPlane(const Deriv& normal, Real d)
+{
+	DPos tmpN = DataTypes::getDPos(normal);
+	Real n = tmpN.norm();
+	planeNormal.setValue( tmpN / n);
+	planeD.setValue( d / n );
+}
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
@@ -69,27 +77,32 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
-    Real limit = maxForce.getValue();
-    limit *= limit; // squared
+	Real limit = this->maxForce.getValue();
+	limit *= limit; // squared
+
+	Real stiff = this->stiffness.getValue();
+	Real damp = this->damping.getValue();
+	DPos planeN = planeNormal.getValue();
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
+        Real d = DataTypes::getCPos(p1[i])*planeN-planeD.getValue();
         if (bilateral.getValue() || d<0 )
         {
             //serr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<sendl;
-            Real forceIntensity = -this->stiffness.getValue()*d;
+            Real forceIntensity = -stiff*d;
             //serr<<"PlaneForceField<DataTypes>::addForce, stiffness = "<<stiffness.getValue()<<sendl;
-            Real dampingIntensity = -this->damping.getValue()*d;
+            Real dampingIntensity = -damp*d;
             //serr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<sendl;
-            Deriv force = planeNormal.getValue()*forceIntensity - v1[i]*dampingIntensity;
+            DPos force = planeN*forceIntensity - DataTypes::getDPos(v1[i])*dampingIntensity; 
 
-            Real amplitude = force.norm2();
-            if(limit && amplitude > limit)
-                force *= sqrt(limit / amplitude);
-
+			Real amplitude = force.norm2();
+			if(limit && amplitude > limit)
+				force *= sqrt(limit / amplitude);
             //serr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<sendl;
-            f1[i]+=force;
+			Deriv tmpF;
+			DataTypes::setDPos(tmpF, force);
+            f1[i] += tmpF;
             //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
         }
@@ -104,11 +117,13 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 
     df1.resize(dx1.size());
     const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactor());
+	DPos planeN = planeNormal.getValue();
+
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
         assert(p<dx1.size());
-        df1[p] += planeNormal.getValue() * (fact * (dx1[p]*planeNormal.getValue()));
+        DataTypes::setDPos(df1[p], DataTypes::getDPos(df1[p]) + planeN * (fact * (DataTypes::getDPos(dx1[p]) * planeN)));
     }
 }
 
@@ -116,7 +131,8 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactor());
-    const Deriv& normal = planeNormal.getValue();
+    Deriv normal;
+	DataTypes::setDPos(normal, planeNormal.getValue());
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
@@ -132,6 +148,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
             }
     }
 }
+
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
@@ -150,11 +167,9 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = x[i]*planeNormal.getValue()-planeD.getValue();
+        Real d = DataTypes::getCPos(x[i])*planeNormal.getValue()-planeD.getValue();
         if (d<0)
-        {
             this->contacts.push_back(i);
-        }
     }
 }
 
@@ -163,7 +178,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
-    defaulttype::Vec3d axe3d(1,1,1); axe3d = axe;
+    defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
     defaulttype::Vec3d normal3d; normal3d = planeNormal.getValue();
     defaulttype::Vec3d v = normal3d.cross(axe3d);
     if (v.norm2() < 1.0e-10) return;
@@ -178,7 +193,7 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
+	//if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     drawPlane(vparams);
 }
 
@@ -237,20 +252,19 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
-
-    defaulttype::Vector3 point1,point2;
+	defaulttype::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
-        Coord p2 = p1[i];
+        Real d = DataTypes::getCPos(p1[i])*planeNormal.getValue()-planeD.getValue();
+        CPos p2 = DataTypes::getCPos(p1[i]);
         p2 += planeNormal.getValue()*(-d);
-        if (d<0 || bilateral.getValue())
+        if (d<0)
         {
             point1 = DataTypes::getCPos(p1[i]);
-            point2 = DataTypes::getCPos(p2);
+            point2 = p2;
+			pointsLine.push_back(point1);
+			pointsLine.push_back(point2);
         }
-        pointsLine.push_back(point1);
-        pointsLine.push_back(point2);
     }
     vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
 }
