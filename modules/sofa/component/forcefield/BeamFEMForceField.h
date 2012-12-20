@@ -28,7 +28,10 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/TopologyData.h>
+
+#ifdef SOFA_HAVE_EIGEN2
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#endif
 
 
 namespace sofa
@@ -180,7 +183,9 @@ protected:
     VecDeriv _forces;
 
     EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+#ifdef SOFA_HAVE_EIGEN2
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
+#endif
 
     class BeamFFEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >
     {
@@ -215,7 +220,9 @@ protected:
     bool _updateStiffnessMatrix;
     bool _assembling;
 
+#ifdef SOFA_HAVE_EIGEN2
     double lastUpdatedStep;
+#endif
 
     container::StiffnessContainer* stiffnessContainer;
 //	container::LengthContainer* lengthContainer;
@@ -248,7 +255,9 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
+#ifdef SOFA_HAVE_EIGEN2
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
+#endif
 
     void draw(const core::visual::VisualParams* vparams);
 

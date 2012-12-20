@@ -109,10 +109,12 @@ BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
+#ifdef SOFA_HAVE_EIGEN2
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep=-1.0;
+#endif
 }
 
 
@@ -656,6 +658,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
 }
 
+#ifdef SOFA_HAVE_EIGEN2
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
     //std::cout << this->getName() << ": getStiffnessMatrix " << std::endl;
@@ -760,6 +763,7 @@ const sofa::defaulttype::BaseMatrix* BeamFEMForceField<DataTypes>::getStiffnessM
     return &matS;
 
 }
+#endif
 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
