@@ -59,6 +59,7 @@ public:
     Data<double> p_fovy;
     Data<bool> p_useFBO;
     Data<bool> p_swapMainView;
+    Data<bool> p_drawCamera;
 
     helper::gl::FrameBufferObject fbo;
 
@@ -67,6 +68,7 @@ protected:
     virtual ~OglViewport();
 public:
     void init();
+    void draw(const core::visual::VisualParams* vparams);
     void initVisual();
     void preDrawScene(core::visual::VisualParams* vp);
     bool drawScene(core::visual::VisualParams* vp);

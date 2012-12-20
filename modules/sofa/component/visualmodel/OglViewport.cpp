@@ -61,6 +61,7 @@ OglViewport::OglViewport()
     ,p_fovy(initData(&p_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
     ,p_useFBO(initData(&p_useFBO, true, "useFBO", "Use a FBO to render the viewport"))
     ,p_swapMainView(initData(&p_swapMainView, false, "swapMainView", "Swap this viewport with the main view"))
+    ,p_drawCamera(initData(&p_drawCamera, false, "drawCamera", "Draw a frame representing the camera (see it in main viewport)"))
 {
 }
 
@@ -418,6 +419,20 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
     glPopMatrix();
 
     //glViewport(0,0,vp->viewport[2],vp->viewport[3]);
+}
+
+void OglViewport::draw(const core::visual::VisualParams* vparams)
+{
+	if (!p_drawCamera.getValue())
+		return;
+
+	if (!p_cameraRigid.isDisplayed())
+		vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vector3(0.1,0.1,0.1));
+	else
+	{
+		RigidCoord rcam = p_cameraRigid.getValue();
+		vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vector3(0.1,0.1,0.1));
+	}
 }
 
 }
