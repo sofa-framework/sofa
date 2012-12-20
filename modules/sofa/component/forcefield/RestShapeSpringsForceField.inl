@@ -105,11 +105,12 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     recomputeIndices();
 
+#ifdef SOFA_HAVE_EIGEN2
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep = -1.0;
-
+#endif
 }
 
 
@@ -319,6 +320,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
     }
 }
 
+#ifdef SOFA_HAVE_EIGEN2
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
     sout << this->getName() << ": getStiffnessMatrix " << sendl;
@@ -370,6 +372,7 @@ const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getS
 
     return &matS;
 }
+#endif
 
 } // namespace forcefield
 
