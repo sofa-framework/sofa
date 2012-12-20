@@ -36,7 +36,6 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 
-#include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 
 namespace sofa
@@ -57,74 +56,73 @@ class GenericConstraintSolver;
 class SOFA_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-    FullVector<double> _d;
-    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified;
-    double sor;
+	FullVector<double> _d;
+	std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
+	bool scaleTolerance, allVerified, unbuilt;
+	double sor;
+	double sceneTime;
 
-    // For unbuilt version :
-    SparseMatrix<double> Wdiag;
+	// For unbuilt version :
+	SparseMatrix<double> Wdiag;
     std::list<unsigned int> constraints_sequence;
-    bool change_sequence;
-    std::vector<core::behavior::BaseConstraintCorrection*> cclist_elem1, cclist_elem2;
+	bool change_sequence;
+	std::vector<core::behavior::BaseConstraintCorrection*> cclist_elem1, cclist_elem2;
 
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
-        , change_sequence(false) {}
-    ~GenericConstraintProblem() { freeConstraintResolutions(); }
+	GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
+		, change_sequence(false) {}
+	~GenericConstraintProblem() { freeConstraintResolutions(); }
 
-    void clear(int nbConstraints);
-    void freeConstraintResolutions();
-    void solveTimed(double tol, int maxIt, double timeout);
+	void clear(int nbConstraints);
+	void freeConstraintResolutions();
+	void solveTimed(double tol, int maxIt, double timeout);
 
-    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
-    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+	void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+	void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
 };
 
 class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
+	typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
+	typedef std::vector<list_cc> VecListcc;
+	typedef sofa::core::MultiVecId MultiVecId;
+
 public:
 	SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
-
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-    typedef std::vector<list_cc> VecListcc;
-    typedef sofa::core::MultiVecId MultiVecId;
-    
 protected:
-    GenericConstraintSolver();
-    virtual ~GenericConstraintSolver();
-
+	GenericConstraintSolver();
+	virtual ~GenericConstraintSolver();
 public:
-    void init();
+	void init();
 
-    bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+	bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 
-    Data<bool> displayTime;
-    Data<int> maxIt;
-    Data<double> tolerance, sor;
-    Data<bool> scaleTolerance, allVerified, schemeCorrection;
-    Data<bool> unbuilt;
-    Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints /*, graphForces */;
+	Data<bool> displayTime;
+	Data<int> maxIt;
+	Data<double> tolerance, sor;
+	Data<bool> scaleTolerance, allVerified, schemeCorrection;
+	Data<bool> unbuilt;
+	Data<bool> computeGraphs;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints, graphForces;
 
-    ConstraintProblem* getConstraintProblem();
-    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
+	ConstraintProblem* getConstraintProblem();
+	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
 
 protected:
-
-    GenericConstraintProblem cp1, cp2, cp3;
-    GenericConstraintProblem *current_cp, *last_cp;
-    std::vector< core::behavior::BaseConstraintCorrection* > constraintCorrections;
-
-    CTime timer;
-    CTime timerTotal;
-
-    double time;
-    double timeTotal;
-    double timeScale;
+	GenericConstraintProblem cp1, cp2, cp3;
+	GenericConstraintProblem *current_cp, *last_cp;
+	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 
 	simulation::Node *context;
+
+	CTime timer;
+	CTime timerTotal;
+
+	double time;
+	double timeTotal;
+	double timeScale;
 };
 
 
@@ -132,23 +130,23 @@ class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simu
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res)
-        : simulation::BaseMechanicalVisitor(params) , cparams(params)
-        , _res(res), _offset(0)
-    {
+    : simulation::BaseMechanicalVisitor(params) , cparams(params)
+	, _res(res), _offset(0)
+	{
 #ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
+      setReadWriteVectors();
 #endif
     }
 
     virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
-        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintResolution(_res, _offset);
-            end(node, c, t0);
-        }
-        return RESULT_CONTINUE;
+      if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+      {
+        ctime_t t0 = begin(node, c);
+        c->getConstraintResolution(_res, _offset);
+        end(node, c, t0);
+      }
+      return RESULT_CONTINUE;
     }
 
     /// Return a class name for this visitor
@@ -173,8 +171,8 @@ public:
     void setReadWriteVectors() { }
 #endif
 private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
+	/// Constraint parameters
+	const sofa::core::ConstraintParams *cparams;
 
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
@@ -183,38 +181,38 @@ private:
 class SOFA_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , contactId(_contactId)
-        , cparams(_cparams)
-    {
+	MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
+		: simulation::BaseMechanicalVisitor(_cparams)
+		, res(_res)
+		, contactId(_contactId)
+		, cparams(_cparams)
+	{
 #ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
+		setReadWriteVectors();
 #endif
-    }
+	}
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
-    {
-        ctime_t t0 = begin(node, c);
+	virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+	{
+		ctime_t t0 = begin(node, c);
 
-        c->buildConstraintMatrix(cparams, res, contactId);
+		c->buildConstraintMatrix(cparams, res, contactId);
 
-        end(node, c, t0);
-        return RESULT_CONTINUE;
-    }
+		end(node, c, t0);
+		return RESULT_CONTINUE;
+	}
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const
-    {
-        return "MechanicalSetConstraint";
-    }
+	/// Return a class name for this visitor
+	/// Only used for debugging / profiling purposes
+	virtual const char* getClassName() const
+	{
+		return "MechanicalSetConstraint";
+	}
 
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
+	virtual bool isThreadSafe() const
+	{
+		return false;
+	}
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -223,48 +221,48 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
+	void setReadWriteVectors()
+	{
+	}
 #endif
 
 protected:
 
-    sofa::core::MultiMatrixDerivId res;
+	sofa::core::MultiMatrixDerivId res;
     unsigned int &contactId;
-    const sofa::core::ConstraintParams *cparams;
+	const sofa::core::ConstraintParams *cparams;
 };
 
 
 class SOFA_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , cparams(_cparams)
-    {
+	MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
+		: simulation::BaseMechanicalVisitor(_cparams)
+		, res(_res)
+		, cparams(_cparams)
+	{
 #ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
+		setReadWriteVectors();
 #endif
-    }
+	}
 
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-    {
-        ctime_t t0 = begin(node, map);
-        map->applyJT(cparams, res, res);
-        end(node, map, t0);
-    }
+	virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+	{
+		ctime_t t0 = begin(node, map);
+		map->applyJT(cparams, res, res);
+		end(node, map, t0);
+	}
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
+	/// Return a class name for this visitor
+	/// Only used for debugging / profiling purposes
+	virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
 
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
+	virtual bool isThreadSafe() const
+	{
+		return false;
+	}
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
@@ -272,14 +270,14 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
+	void setReadWriteVectors()
+	{
+	}
 #endif
 
 protected:
-    core::MultiMatrixDerivId res;
-    const sofa::core::ConstraintParams *cparams;
+	core::MultiMatrixDerivId res;
+	const sofa::core::ConstraintParams *cparams;
 };
 
 } // namespace constraintset
