@@ -3,7 +3,8 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = Compliant_run
 CONFIG += console
-DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+
+LIBS += -lsofagraph
 
 SOURCES = Compliant_run.cpp
 

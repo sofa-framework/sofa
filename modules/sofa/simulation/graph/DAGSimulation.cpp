@@ -50,7 +50,7 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-DAGSimulation::DAGSimulation()//: visualNode(NULL)
+DAGSimulation::DAGSimulation()// : visualNode(NULL)
 {
     //-------------------------------------------------------------------------------------------------------
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",

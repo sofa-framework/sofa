@@ -4,8 +4,6 @@ defineAsPlugin(Compliant)
 TARGET = Compliant
 
 DEFINES += SOFA_BUILD_Compliant
-DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
-
 
 SOURCES = \
     initCompliant.cpp \

@@ -131,7 +131,7 @@ DEFINES += SOFA_HAVE_GLEW
 # Uncomment if you want Python scripting support in sofa
 # DEFINES += SOFA_HAVE_PYTHON
 
-# Uncomment if you want to use EIGEN2 for Matrix Solvers
+# Uncomment to use EIGEN matrices and solvers (distributed in extlibs)
  DEFINES += SOFA_HAVE_EIGEN2
 
 # Uncomment if you want to use MKL for Matrix Solvers

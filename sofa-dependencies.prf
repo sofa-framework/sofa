@@ -152,7 +152,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
     }
 } else {
     exists($$ROOT_BUILD_DIR/applications-dev/sofa-dev-dependencies.prf) {
-        message(SOFA_DEV is not defined but applications-dev/sofa-dev-dependencies.prf exists; Is it on purpose?)
+        message(SOFA_DEV is not defined but applications-dev/sofa-dev-dependencies.prf exists; Nothing from sofa-dev will be compiled. )
     }
 
 } # END SOFA_DEV

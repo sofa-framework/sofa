@@ -224,11 +224,11 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     (argc,argv);
 
-#ifdef SOFA_DEV
-    if (simulationType == "bgl")
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    else
-#endif
+//#ifdef SOFA_DEV
+//    if (simulationType == "bgl")
+//        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+//    else
+//#endif
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
 

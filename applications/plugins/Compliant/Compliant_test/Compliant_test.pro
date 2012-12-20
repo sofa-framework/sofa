@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = lib
 
 CONFIG += console
-DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+LIBS += -lsofagraph
 
 SOURCES = Compliant_test.cpp
 

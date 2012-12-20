@@ -166,7 +166,7 @@ public:
     virtual bool useMask() const { return false; }
 
 
-    /** @name Experimental Compliance API
+    /** @name Experimental API used in the Compliant solver to perform global matrix assembly (François Faure, 2012)
      * Each ForceField may be processed either as a traditional force function, or a as a compliance (provided that its stiffness matrix is invertible).
      * If getStiffnessMatrix returns a non-null pointer, then the ForceField is handled as a traditional force function, and getComplianceMatrix must return a null pointer.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
