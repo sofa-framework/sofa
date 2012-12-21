@@ -102,6 +102,7 @@ HEADERS = initFlexible.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
     #forceField/FlexibleTetrahedronFEMForceField.h \
+    shapeFunction/BaseShepardShapeFunction.h
 
 
 

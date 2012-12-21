@@ -118,7 +118,7 @@ public:
                     StdVectorTypes<Coord,Coord>::set( pos[i], _state->getPX(i),_state->getPY(i),_state->getPZ(i) );
 //                    pos[i]=Coord(_state->getPX(i),_state->getPY(i),_state->getPZ(i));
 //                std::cout<<"pts: "<<_state->getPX(0)<<", "<<_state->getPY(0)<<", "<<_state->getPZ(0);
-                }
+				}
             }
         }
 
@@ -131,10 +131,10 @@ public:
     /// wrapper
 	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
-        unsigned int nb=childPosition.size();
+		unsigned int nb=childPosition.size();
         M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
         for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
-    }
+	}
 
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
