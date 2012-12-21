@@ -25,8 +25,8 @@
 #ifndef FLEXIBLE_ShepardShapeFunction_H
 #define FLEXIBLE_ShepardShapeFunction_H
 
-#include "../initFlexible.h"
-#include "../shapeFunction/BaseShapeFunction.h"
+#include <initFlexible.h>
+#include <shapeFunction/BaseShepardShapeFunction.h>
 #include <limits>
 
 namespace sofa
@@ -43,18 +43,18 @@ Shepard shape function (=inverse distance weights) is defined as w_i(x)=1/d(x,x_
 http://en.wikipedia.org/wiki/Inverse_distance_weighting
   */
 
-template<typename TShapeFunctionTypes>
-struct ShepardShapeFunctionInternalData
-{
-};
+//template<typename TShapeFunctionTypes>
+//struct ShepardShapeFunctionInternalData
+//{
+//};
 
 
 template <class ShapeFunctionTypes_>
-class ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class ShepardShapeFunction : public BaseShepardShapeFunction<ShapeFunctionTypes_>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+	SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShepardShapeFunction, ShapeFunctionTypes_));
+	typedef BaseShepardShapeFunction<ShapeFunctionTypes_> Inherit;
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
@@ -71,9 +71,9 @@ public:
 	typedef typename Inherit::VecVReal VecVReal;
 	typedef typename Inherit::VecVGradient VecVGradient;
 	typedef typename Inherit::VecVHessian VecVHessian;
-	typedef ShepardShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
+	typedef typename Inherit::InternalData InternalData;
 
-    Data<Real> power;
+//    Data<Real> power;
 
     virtual void init()
     {
@@ -89,7 +89,7 @@ public:
     {
 		helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
-        Real pw=power.getValue();
+		Real pw=this->power.getValue();
 
         M=MaterialToSpatial();
         for ( unsigned int i = 0; i < material_dimensions; i++ ) M[i][i]=(Real)1.; //identity
@@ -149,7 +149,6 @@ public:
 protected:
     ShepardShapeFunction()
         :Inherit()
-        , power(initData(&power,(Real)2.0, "power", "power of the inverse distance"))
     {
     }
 
