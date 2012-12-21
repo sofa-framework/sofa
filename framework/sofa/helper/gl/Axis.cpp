@@ -71,18 +71,18 @@ void Axis::initDraw()
     gluQuadricNormals(quadratic, GLU_SMOOTH);
     gluQuadricTexture(quadratic, GL_TRUE);
 
-    displayList=glGenLists(1);
+    displayLists=glGenLists(3);
 
-    glNewList(displayList, GL_COMPILE);
+    glNewList(displayLists, GL_COMPILE);
+
 
     // Center
-    glColor3f(1,1,1);
     gluSphere(quadratic,l[0],quadricDiscretisation,quadricDiscretisation/2);
 
     if (L[0] > 0.0)
     {
         // X Axis
-        glColor3f(1,0,0);
+//        glColor3f(1,0,0);
         glRotatef(90,0,1,0);
         gluCylinder(quadratic,l[0],l[0],L[0],quadricDiscretisation,quadricDiscretisation);
         glRotatef(-90,0,1,0);
@@ -94,10 +94,18 @@ void Axis::initDraw()
         glRotatef(-90,0,1,0);
         glTranslated(-L[0],0,0);
     }
+
+    glEndList();
+
+
+
+
+    glNewList(displayLists+1, GL_COMPILE);
+
     if (L[1] > 0.0)
     {
         // Y Axis
-        glColor3f(0,1,0);
+//        glColor3f(0,1,0);
         glRotatef(-90,1,0,0);
         gluCylinder(quadratic,l[1],l[1],L[1],quadricDiscretisation,quadricDiscretisation);
         glRotatef(90,1,0,0);
@@ -109,10 +117,15 @@ void Axis::initDraw()
         glRotatef(90,1,0,0);
         glTranslated(0,-L[1],0);
     }
+
+    glEndList();
+
+    glNewList(displayLists+2, GL_COMPILE);
+
     if (L[2] > 0.0)
     {
         // Z Axis
-        glColor3f(0,0,1);
+//        glColor3f(0,0,1);
         gluCylinder(quadratic,l[2],l[2],L[2],quadricDiscretisation,quadricDiscretisation);
 
         glTranslated(0,0,L[2]);
@@ -123,7 +136,7 @@ void Axis::initDraw()
     glEndList();
 }
 
-void Axis::draw()
+void Axis::draw( const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
 {
     initDraw();
 
@@ -134,7 +147,14 @@ void Axis::draw()
     glPushMatrix();
 
     glMultMatrixd(matTransOpenGL);
-    glCallList(displayList);
+
+    glColor4f( colorX[0], colorX[1], colorX[2], colorX[3] );
+    glCallList(displayLists);
+    glColor4f( colorY[0], colorY[1], colorY[2], colorY[3] );
+    glCallList(displayLists+1);
+    glColor4f( colorZ[0], colorZ[1], colorZ[2], colorZ[3] );
+    glCallList(displayLists+2);
+
 
     glPopMatrix();
 
@@ -247,53 +267,53 @@ Axis* Axis::get(const Vector3& len)
     return a;
 }
 
-void Axis::draw(const Vector3& center, const Quaternion& orient, const Vector3& len)
+void Axis::draw(const Vector3& center, const Quaternion& orient, const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
 {
     Axis* a = get(len);
     a->update(center, orient);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const double orient[4][4], const Vector3& len)
+void Axis::draw(const Vector3& center, const double orient[4][4], const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
 {
     Axis* a = get(len);
     a->update(center, orient);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, const Vector3& len)
+void Axis::draw(const double *mat, const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
 {
     Axis* a = get(len);
     a->update(mat);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const Quaternion& orient, SReal len)
+void Axis::draw(const Vector3& center, const Quaternion& orient, SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(center, orient);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const double orient[4][4], SReal len)
+void Axis::draw(const Vector3& center, const double orient[4][4], SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(center, orient);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, SReal len)
+void Axis::draw(const double *mat, SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(mat);
-    a->draw();
+    a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r)
+void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r )
 {
     Vector3 v = p2-p1;
-    Axis::draw(p1, p1+v*0.9, r,r);
-    Axis::draw(p1+v*0.9,p2, 2.0*r,0.0);
+    Axis::draw(p1, p1+v*0.9, r,r );
+    Axis::draw(p1+v*0.9,p2, 2.0*r,0.0 );
 }
 
 void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const double& r2 )

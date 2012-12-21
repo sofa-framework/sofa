@@ -65,26 +65,26 @@ public:
     void update(const Vector3& center, const double orient[4][4]);
     void update(const double *mat);
 
-    void draw();
+    void draw( const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
 
-    static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length);
-    static void draw(const Vector3& center, const double orient[4][4], const Vector3& length);
-    static void draw(const double *mat, const Vector3& length);
-    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1);
-    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    static void draw(const double *mat, SReal length=(SReal)1.0);
+    static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const Vector3& center, const double orient[4][4], const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const double *mat, const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const double *mat, SReal length=(SReal)1.0, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
 
     //Draw a nice vector (cylinder + cone) given 2 points and a radius (used to draw the cylinder)
-    static void draw(const Vector3& center, const Vector3& ext, const double& radius);
+    static void draw(const Vector3& center, const Vector3& ext, const double& radius );
     //Draw a cylinder given two points and the radius of the extremities (to have a cone, simply set one radius to zero)
-    static void draw(const Vector3& center, const Vector3& ext, const double& r1, const double& r2);
+    static void draw(const Vector3& center, const Vector3& ext, const double& r1, const double& r2 );
 private:
 
     Vector3 length;
     double matTransOpenGL[16];
 
     GLUquadricObj *quadratic;
-    GLuint displayList;
+    GLuint displayLists;
 
     void initDraw();
 
