@@ -178,9 +178,9 @@ protected:
         imCoord dim = rweights->getDimensions();
         dim[3]=dim[4]=1; // remove nbchannels from dimensions (to allocate single channel images later)
 
-        raMask rmask(this->f_mask);
-        const CImg<bool>* mask = NULL;
-        if(rmask->getCImgList().size()) mask=&rmask->getCImg();
+//        raMask rmask(this->f_mask);
+//        const CImg<bool>* mask = NULL;
+//        if(rmask->getCImgList().size()) mask=&rmask->getCImg();
 
         // get output data
         waPositions pos(this->f_position);
