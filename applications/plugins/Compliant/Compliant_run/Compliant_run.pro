@@ -4,7 +4,6 @@ TEMPLATE = app
 TARGET = Compliant_run
 CONFIG += console
 
-LIBS += -lsofagraph
 
 SOURCES = Compliant_run.cpp
 
@@ -18,7 +17,6 @@ macx {
 unix {
 	RC_FILE = sofa.rc
     LIBS += -ldl
-#    LIBS += -lFlexible -lCompliant
     INCLUDEPATH += /usr/include/suitesparse/
 
 }
