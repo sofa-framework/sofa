@@ -392,7 +392,9 @@ int main(int argc, char** argv)
 //    else
 //#endif
 //        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#ifdef SOFA_HAVE_DAG
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+#endif
 
     sofa::component::init();
 #ifdef SOFA_GPU_CUDA
