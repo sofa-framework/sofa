@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FrameFixedConstraint_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FrameFixedConstraint_INL
 
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include "FrameFixedConstraint.h"

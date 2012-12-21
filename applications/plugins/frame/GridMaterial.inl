@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_INL
 #define SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_INL
 
+#include <sofa/core/visual/VisualParams.h>
 #include "GridMaterial.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/gl/glText.inl>

@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
+#include <sofa/core/visual/VisualParams.h>
 #include "FrameBlendingMapping.h"
 #include "LinearBlending.inl"
 #include "DualQuatBlending.inl"

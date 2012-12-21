@@ -25,6 +25,7 @@
 #ifndef FRAME_FRAMEDIAGONALMASS_INL
 #define FRAME_FRAMEDIAGONALMASS_INL
 
+#include <sofa/core/visual/VisualParams.h>
 #include "FrameDiagonalMass.h"
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>

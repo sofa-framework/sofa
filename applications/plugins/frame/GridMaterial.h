@@ -36,6 +36,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <../extlibs/CImg/CImg.h>
 
+#include <sofa/helper/system/gl.h>
+
 #define DISTANCE_GEODESIC 0
 #define DISTANCE_DIFFUSION 1
 #define DISTANCE_ANISOTROPICDIFFUSION 2
