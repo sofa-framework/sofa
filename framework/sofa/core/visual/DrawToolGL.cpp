@@ -258,7 +258,11 @@ void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientatio
     setPolygonMode(0,false);
     helper::gl::Axis::draw(position, orientation, size);
 }
-
+void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientation, const Vec<3,float> &size, const Vec4f &colour)
+{
+    setPolygonMode(0,false);
+    helper::gl::Axis::draw(position, orientation, size, colour, colour, colour);
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, const Vec<4,float> colour)

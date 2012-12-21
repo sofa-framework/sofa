@@ -87,6 +87,7 @@ public:
             const Vec4f colour) = 0 ;
 
     virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size) = 0 ;
+    virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &colour) = 0 ;
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f colour) = 0;
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f colour) = 0 ;
