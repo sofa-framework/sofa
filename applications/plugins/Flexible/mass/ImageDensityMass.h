@@ -98,11 +98,13 @@ public:
 
     Data< bool > f_printMassMatrix;
 
+    Real m_totalMass; ///< for debug purpose
+
 protected:
 
     ImageDensityMass()
         : m_shapeFunction(NULL)
-        , f_densityImage( initData(&f_densityImage, "densityImage", "A density map") )
+        , f_densityImage( initData(&f_densityImage, "densityImage", "A density map (ratio kg/dm^3)") )
         , f_transform( initData( &f_transform, TransformType(), "transform", "The density map transform" ) )
         , f_lumping( initData( &f_lumping, (int)NO_LUMPING, "lumping", "Should the mass matrix be lumped? 0->no, 1->by bloc, 2->diagonal matrix" ) )
         , f_printMassMatrix( initData( &f_printMassMatrix, false, "printMassMatrix", "Should the mass matrix be print in console after being precomputed?" ) )
@@ -140,6 +142,8 @@ public:
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 
     bool isDiagonal() { return false; }

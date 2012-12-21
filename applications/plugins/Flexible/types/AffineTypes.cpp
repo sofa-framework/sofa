@@ -57,47 +57,129 @@ using namespace sofa::helper;
 template <>
 void FixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    std::vector< Vector3 > points;
 
+    const SetIndexArray & indices = f_indices.getValue();
     const VecCoord& x = *mstate->getX();
-    if( f_fixAll.getValue()==true )
-        for (unsigned i=0; i<x.size(); i++ )
-            points.push_back(x[i].getCenter());
-    else
-    {
-        if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-        else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-    }
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
+    {
+        std::vector< Vector3 > points;
+
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[i].getCenter());
+        else
+        {
+            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+        }
+
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    }
     else
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+    {
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[i].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        else
+        {
+            if( x.size() < indices.size() )
+                for (unsigned i=0; i<x.size(); i++ )
+                {
+                    vparams->drawTool()->pushMatrix();
+                    float glTransform[16];
+                    x[indices[i]].writeOpenGlMatrix ( glTransform );
+                    vparams->drawTool()->multMatrix( glTransform );
+                    vparams->drawTool()->scale ( f_drawSize.getValue() );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->popMatrix();
+                }
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[*it].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        }
+    }
 }
 
 template <>
 void PartialFixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    std::vector< Vector3 > points;
 
+    const SetIndexArray & indices = f_indices.getValue();
     const VecCoord& x = *mstate->getX();
-    if( f_fixAll.getValue()==true )
-        for (unsigned i=0; i<x.size(); i++ )
-          points.push_back(x[i].getCenter());
-    else
-    {
-            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-    }
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
-      vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    {
+        std::vector< Vector3 > points;
+
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[i].getCenter());
+        else
+        {
+            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+        }
+
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    }
     else
-      vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+    {
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[i].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        else
+        {
+            if( x.size() < indices.size() )
+                for (unsigned i=0; i<x.size(); i++ )
+                {
+                    vparams->drawTool()->pushMatrix();
+                    float glTransform[16];
+                    x[indices[i]].writeOpenGlMatrix ( glTransform );
+                    vparams->drawTool()->multMatrix( glTransform );
+                    vparams->drawTool()->scale ( _drawSize.getValue() );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->popMatrix();
+                }
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[*it].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        }
+    }
 }
 
 
@@ -112,7 +194,7 @@ int AffineFixedConstraintClass = core::RegisterObject ( "Attach given dofs to th
 template class SOFA_Flexible_API FixedConstraint<Affine3Types>;
 
 SOFA_DECL_CLASS ( AffinePartialFixedConstraint )
-int AffinePartialFixedConstraintClass = core::RegisterObject ( "Attach given cinamtic dofs to their initial positions" )
+int AffinePartialFixedConstraintClass = core::RegisterObject ( "Attach given cinematic dofs to their initial positions" )
 .add< PartialFixedConstraint<defaulttype::Affine3Types> >()
 ;
 template class SOFA_Flexible_API PartialFixedConstraint<Affine3Types>;
@@ -138,6 +220,7 @@ namespace container
 template <> SOFA_Flexible_API
 void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     if ( showIndices.getValue() )
     {
@@ -190,6 +273,7 @@ void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vpar
     {
         const float& scale = showObjectScale.getValue();
         const Affine3Types::VecCoord& x = ( *getX() );
+
         for (int i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -197,11 +281,22 @@ void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vpar
             x[i].writeOpenGlMatrix ( glTransform );
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale);
-            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+
+            switch( drawMode.getValue() )
+            {
+                case 1:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    break;
+                case 2:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                default:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            }
+
             vparams->drawTool()->popMatrix();
         }
     }
-
 }
 
 

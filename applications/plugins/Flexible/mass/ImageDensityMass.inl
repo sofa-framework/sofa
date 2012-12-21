@@ -62,7 +62,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 
     reinit();
 
-    if( f_printMassMatrix.getValue() ) sout<<m_massMatrix<<sendl;
+    if( f_printMassMatrix.getValue() )
+    {
+        sout<<m_massMatrix<<sendl;
+        sout<<"Total Mass = "<<m_totalMass<<sendl;
+    }
 }
 
 
@@ -104,6 +108,8 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
     const TransformType& transform = f_transform.getValue();
     double voxelVolume = getVoxelVolume( transform );
 
+    m_totalMass = 0;
+
     // get the density image
     const CImg<double>& densityImage = f_densityImage.getValue().getCImg(0);
 
@@ -127,7 +133,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
             m_shapeFunction->computeShapeFunction( voxelPos, M, controlPoints, weights/*, gradients, hessians*/ );
 
             // get the voxel density
-            double voxelMass = voxelDensity * voxelVolume;
+            double voxelMass = voxelDensity * voxelVolume * 1000.0; // warning, the density is given for a ratio between kg and dm^3, so there is a factor 1000 to obtain kg from m^3
+
+            m_totalMass += voxelMass;
 
             // check the real number of control points
             unsigned nbControlPoints = 0;
@@ -432,6 +440,48 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
     }
 }
 
+template < class DataTypes, class ShapeFunctionTypes, class MassType >
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass( unsigned int index, defaulttype::BaseMatrix *m ) const
+{
+    // warning the mass needs to be diagonal-lumped per dof
+
+//    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
+
+    const unsigned dimension = DataTypes::deriv_total_size;
+
+    if( m->rowSize() != dimension || m->colSize() != dimension ) m->resize( dimension, dimension );
+
+    m->clear();
+
+//    for( unsigned i=0 ; i<dimension; ++i )
+//        m->set( i,i,1);
+
+    int i = index;
+    int bi = 0;
+    m_massMatrix.split_row_index( i, bi );
+
+    int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+    if( m_massMatrix.sortedFind( m_massMatrix.getRowIndex(), i, rowId ) )
+    {
+        typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[rowId], m_massMatrix.getRowBegin()[rowId+1] );
+        for( int xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )
+        {
+            const typename MassMatrix::Bloc& b = m_massMatrix.getColsValue()[xj];
+            for ( int bi = 0; bi < m_massMatrix.getBlockRows() ; ++bi )
+                for ( int bj = 0; bj < m_massMatrix.getBlockCols() ; ++bj )
+                        m->add( bi, bi, b[bi][bj] ); // diagonal lumping
+//                      m->add( bi, bj, b[bi][bj] ); // block lumping
+        }
+    }
+
+
+//    for( unsigned i=0 ; i<dimension; ++i )
+//        if( m->element( i , i ) == 0 )
+//        {
+//            m->set( i, i, 1 );
+//            std::cerr<<"ImageDensityMass::getElementMass wtf?"<<std::endl;
+//        }
+}
 
 ///////////////////////
 
