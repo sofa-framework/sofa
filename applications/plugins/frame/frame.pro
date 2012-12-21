@@ -85,4 +85,8 @@ contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
 #           HexaRemover.cpp
 } # END SOFA_GPU_CUDA
 
+unix {
+        LIBS *= -lX11
+}
+
 load(sofa/post)
