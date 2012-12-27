@@ -9,7 +9,7 @@ DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 SOURCES = initFlexible.cpp\
     types/DeformationGradientTypes.cpp \
     types/StrainTypes.cpp \
-    types/AffineTypes.cpp \
+    types/AffineComponents.cpp \
     #types/AffineMass.cpp \
     types/QuadraticTypes.cpp \
     quadrature/BaseGaussPointSampler.cpp \
@@ -46,6 +46,7 @@ HEADERS = initFlexible.h \
     types/DeformationGradientTypes.h \
     types/StrainTypes.h \
     types/AffineTypes.h \
+    types/AffineComponents.h \
     #types/AffineMass.h \
     types/QuadraticTypes.h \
     types/PolynomialBasis.h \

@@ -22,18 +22,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_AffineTYPES_CPP
+#define FLEXIBLE_AffineComponents_CPP
 
 #include "../initFlexible.h"
-#include "../types/AffineTypes.h"
+#include "AffineComponents.h"
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/simulation/common/Node.h>
 
 #include <sofa/component/container/MechanicalObject.inl>
 
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.inl>
+#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/simulation/common/Node.h>
+
+#include <sofa/component/engine/BoxROI.inl>
+
 
 #include <sofa/component/mass/UniformMass.inl>
 
@@ -53,6 +61,12 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
+
+
+
+// ==========================================================================
+// FixedConstraint
+
 
 template <>
 void FixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
@@ -117,6 +131,25 @@ void FixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vpara
         }
     }
 }
+
+
+
+SOFA_DECL_CLASS ( AffineFixedConstraint )
+int AffineFixedConstraintClass = core::RegisterObject ( "Attach given dofs to their initial positions" )
+        .add< FixedConstraint<defaulttype::Affine3Types> >()
+        ;
+template class SOFA_Flexible_API FixedConstraint<Affine3Types>;
+
+
+
+
+
+
+
+// ==========================================================================
+// PartialFixedConstraint
+
+
 
 template <>
 void PartialFixedConstraint<Affine3Types>::draw(const core::visual::VisualParams* vparams)
@@ -183,21 +216,43 @@ void PartialFixedConstraint<Affine3Types>::draw(const core::visual::VisualParams
 }
 
 
-
-// ==========================================================================
-// Instantiation
-
-SOFA_DECL_CLASS ( AffineFixedConstraint )
-int AffineFixedConstraintClass = core::RegisterObject ( "Attach given dofs to their initial positions" )
-        .add< FixedConstraint<defaulttype::Affine3Types> >()
-        ;
-template class SOFA_Flexible_API FixedConstraint<Affine3Types>;
-
 SOFA_DECL_CLASS ( AffinePartialFixedConstraint )
 int AffinePartialFixedConstraintClass = core::RegisterObject ( "Attach given cinematic dofs to their initial positions" )
 .add< PartialFixedConstraint<defaulttype::Affine3Types> >()
 ;
 template class SOFA_Flexible_API PartialFixedConstraint<Affine3Types>;
+
+
+
+
+// ==========================================================================
+// ProjectToPointConstraint
+SOFA_DECL_CLASS ( AffineProjectToPointConstraint )
+int AffineProjectToPointConstraintClass = core::RegisterObject ( "Project particles to a point" )
+.add< ProjectToPointConstraint<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API ProjectToPointConstraint<Affine3Types>;
+
+// ==========================================================================
+// ProjectToLineConstraint
+SOFA_DECL_CLASS ( AffineProjectToLineConstraint )
+int AffineProjectToLineConstraintClass = core::RegisterObject ( "Project particles to a line" )
+.add< ProjectToLineConstraint<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API ProjectToLineConstraint<Affine3Types>;
+
+// ==========================================================================
+// ProjectToPlaneConstraint
+SOFA_DECL_CLASS ( AffineProjectToPlaneConstraint )
+int AffineProjectToPlaneConstraintClass = core::RegisterObject ( "Project particles to a plane" )
+.add< ProjectToPlaneConstraint<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API ProjectToPlaneConstraint<Affine3Types>;
+
+// ==========================================================================
+// ProjectDirectionConstraint
+SOFA_DECL_CLASS ( AffineProjectDirectionConstraint )
+int AffineProjectDirectionConstraintClass = core::RegisterObject ( "Project particles to a line" )
+.add< ProjectDirectionConstraint<defaulttype::Affine3Types> >();
+template class SOFA_Flexible_API ProjectDirectionConstraint<Affine3Types>;
+
 
 } // namespace projectiveconstraintset
 } // namespace component
@@ -549,6 +604,17 @@ template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, def
 } // namespace mapping
 
 
+namespace engine
+{
+    SOFA_DECL_CLASS(AffineBoxROI)
+
+    // Register in the Factory
+    int AffineBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
+            .add< BoxROI< defaulttype::Affine3Types > >();
+
+    template class SOFA_Flexible_API BoxROI< defaulttype::Affine3Types >;
+
+} // namespace engine
 
 
 

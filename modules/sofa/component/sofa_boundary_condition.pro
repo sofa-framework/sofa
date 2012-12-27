@@ -98,12 +98,15 @@ HEADERS += projectiveconstraintset/ProjectToLineConstraint.h \
 		   projectiveconstraintset/ProjectToPlaneConstraint.h \
            projectiveconstraintset/ProjectToPlaneConstraint.inl \
            projectiveconstraintset/ProjectToPointConstraint.h \
-           projectiveconstraintset/ProjectToPointConstraint.inl
+           projectiveconstraintset/ProjectToPointConstraint.inl \
+           projectiveconstraintset/ProjectDirectionConstraint.h \
+           projectiveconstraintset/ProjectDirectionConstraint.inl \
 
 
 SOURCES += projectiveconstraintset/ProjectToLineConstraint.cpp \
            projectiveconstraintset/ProjectToPlaneConstraint.cpp \
-           projectiveconstraintset/ProjectToPointConstraint.cpp
+           projectiveconstraintset/ProjectToPointConstraint.cpp \
+           projectiveconstraintset/ProjectDirectionConstraint.cpp
 }
 
 # Make sure there are no cross-dependencies

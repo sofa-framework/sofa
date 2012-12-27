@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_INL
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
+#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -62,7 +62,7 @@ using namespace sofa::core::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -76,7 +76,7 @@ bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction
 
 // Define RemovalFunction
 template< class DataTypes>
-void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
     if (fc)
     {
@@ -85,13 +85,12 @@ void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(un
 }
 
 template <class DataTypes>
-ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
+ProjectDirectionConstraint<DataTypes>::ProjectDirectionConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_origin( initData(&f_origin,CPos(),"origin","A point in the line"))
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
-    , data(new ProjectToLineConstraintInternalData<DataTypes>())
+    , data(new ProjectDirectionConstraintInternalData<DataTypes>())
 {
     // default to index 0
     f_indices.beginEdit()->push_back(0);
@@ -102,7 +101,7 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
 
 
 template <class DataTypes>
-ProjectToLineConstraint<DataTypes>::~ProjectToLineConstraint()
+ProjectDirectionConstraint<DataTypes>::~ProjectDirectionConstraint()
 {
     if (pointHandler)
         delete pointHandler;
@@ -111,21 +110,21 @@ ProjectToLineConstraint<DataTypes>::~ProjectToLineConstraint()
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::clearConstraints()
+void ProjectDirectionConstraint<DataTypes>::clearConstraints()
 {
     f_indices.beginEdit()->clear();
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::addConstraint(unsigned int index)
+void ProjectDirectionConstraint<DataTypes>::addConstraint(unsigned int index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::removeConstraint(unsigned int index)
+void ProjectDirectionConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -135,7 +134,7 @@ void ProjectToLineConstraint<DataTypes>::removeConstraint(unsigned int index)
 
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::init()
+void ProjectDirectionConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
@@ -163,14 +162,14 @@ void ProjectToLineConstraint<DataTypes>::init()
 
     reinit();
 
-//  cerr<<"ProjectToLineConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
+//  cerr<<"ProjectDirectionConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
 
 }
 
 template <class DataTypes>
-void  ProjectToLineConstraint<DataTypes>::reinit()
+void  ProjectDirectionConstraint<DataTypes>::reinit()
 {
-//    cerr<<"ProjectToLineConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
+//    cerr<<"ProjectDirectionConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     // normalize the normal vector
     CPos n = f_direction.getValue();
@@ -194,8 +193,8 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
                 bIdentity[i][j]   = 0;
             }
         }
-//    cerr<<"ProjectToLineConstraint<DataTypes>::reinit() bIdentity[0] = " << endl << bIdentity[0] << endl;
-//    cerr<<"ProjectToLineConstraint<DataTypes>::reinit() bProjection[0] = " << endl << bProjection[0] << endl;
+//    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit() bIdentity[0] = " << endl << bIdentity[0] << endl;
+//    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit() bProjection[0] = " << endl << bProjection[0] << endl;
 
     // get the indices sorted
     Indices tmp = f_indices.getValue();
@@ -225,12 +224,20 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
         i++;
     }
     jacobian.compress();
-//    cerr<<"ProjectToLineConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
+//    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
+
+
+    const VecCoord& x = *this->mstate->getX();
+    const Indices &indices = f_indices.getValue();
+    for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+    {
+        m_origin.push_back( DataTypes::getCPos(x[*it]) );
+    }
 
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void ProjectDirectionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
@@ -241,31 +248,30 @@ void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseM
 
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void ProjectDirectionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     jacobian.mult(res.wref(),res.ref());
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
+void ProjectDirectionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ , DataMatrixDeriv& /*cData*/)
 {
     serr<<"projectJacobianMatrix(const core::MechanicalParams*, DataMatrixDeriv& ) is not implemented" << sendl;
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
+void ProjectDirectionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
 {
     projectResponse(mparams,vdata);
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
+void ProjectDirectionConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
 {
     VecCoord& x = *xData.beginEdit();
 
     const CPos& n = f_direction.getValue();
-    const CPos& o = f_origin.getValue();
 
     const Indices& indices = f_indices.getValue();
     for(unsigned i=0; i<indices.size(); i++ )
@@ -273,9 +279,7 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
         // replace the point with its projection to the line
 
         const CPos xi = DataTypes::getCPos( x[indices[i]] );
-        DataTypes::setCPos( x[indices[i]], o + n * ((xi-o)*n) );
-
-//        x[indices[i]] = o + n * ((x[indices[i]]-o)*n) );
+        DataTypes::setCPos( x[indices[i]], m_origin[i] + n * ((xi-m_origin[i])*n) );
     }
 
     xData.endEdit();
@@ -283,22 +287,22 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 // Matrix Integration interface
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
     serr << "applyConstraint is not implemented " << sendl;
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
-    serr<<"ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
+    serr<<"ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented "<< sendl;
 }
 
 
 
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
@@ -310,7 +314,7 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     {
         std::vector< Vector3 > points;
         Vector3 point;
-        //serr<<"ProjectToLineConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
+        //serr<<"ProjectDirectionConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -339,15 +343,15 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 //// Specialization for rigids
 //#ifndef SOFA_FLOAT
 //template <>
-//    void ProjectToLineConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+//    void ProjectDirectionConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 //template <>
-//    void ProjectToLineConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+//    void ProjectDirectionConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 //#endif
 //#ifndef SOFA_DOUBLE
 //template <>
-//    void ProjectToLineConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+//    void ProjectDirectionConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 //template <>
-//    void ProjectToLineConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+//    void ProjectDirectionConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 //#endif
 
 
@@ -358,6 +362,6 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
 
 
