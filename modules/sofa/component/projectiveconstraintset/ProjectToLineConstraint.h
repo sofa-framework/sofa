@@ -75,6 +75,7 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::CPos CPos;
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
     typedef Data<VecCoord> DataVecCoord;
@@ -96,8 +97,8 @@ protected:
 public:
     IndexSubsetData f_indices;  ///< the particles to project
     Data<double> f_drawSize;    ///< The size of the square used to display the constrained particles
-    Data<Coord> f_origin;       ///< A point on the line
-    Data<Deriv> f_direction;    ///< The direction of the line. Will be normalized by init()
+    Data<CPos> f_origin;       ///< A point on the line
+    Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
 
 protected:

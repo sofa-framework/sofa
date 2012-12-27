@@ -315,7 +315,7 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
-        typename VecDeriv::iterator it;
+        typename VecCoord::iterator it;
         for( it = res.begin(); it != res.end(); ++it )
         {
             *it = f_point.getValue();

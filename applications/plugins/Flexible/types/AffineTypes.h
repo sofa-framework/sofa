@@ -28,18 +28,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
 
-#include <sofa/defaulttype/Quat.h>
-
-#include <sofa/component/mass/AddMToMatrixFunctor.h>
-#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa
 {
@@ -66,6 +60,9 @@ public:
     // ------------    Types and methods defined for easier data access
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
     typedef Mat<spatial_dimensions,spatial_dimensions, Real> Frame;       ///< Matrix representing a frame
+
+    typedef SpatialCoord CPos;
+    typedef SpatialCoord DPos;
 
     class Deriv : public Vec<VSize,Real>
     {
@@ -351,44 +348,11 @@ template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static con
 /// \endcond
 
 
-} // namespace defaulttype
-
-
-
-// ==========================================================================
-// Mechanical Object
-
-namespace component
-{
-namespace container
-{
-
-
-template <> SOFA_Flexible_API
-void MechanicalObject<defaulttype::Affine3Types>::draw(const core::visual::VisualParams* vparams);
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineTYPES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Affine3dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Affine3fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Affine3fTypes>;
-#endif
-#endif
-
-
-} // namespace container
-} // namespace component
 
 
 // ====================================================================
 // AffineMass
 
-
-namespace defaulttype
-{
 
 using std::endl;
 using helper::vector;
@@ -564,50 +528,7 @@ template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char*
 
 } // namespace defaulttype
 
-namespace component
-{
 
-namespace mass
-{
-
-template<int N, typename Real>
-class AddMToMatrixFunctor< typename defaulttype::StdAffineTypes<N,Real>::Deriv, defaulttype::AffineMass<N,Real> >
-{
-public:
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::AffineMass<N,Real>& mass, int pos, double fact)
-    {
-//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
-        typedef defaulttype::AffineMass<N,Real> AffineMass;
-        for( unsigned i=0; i<AffineMass::VSize; ++i )
-            for( unsigned j=0; j<AffineMass::VSize; ++j )
-            {
-                mat->add(pos+i, pos+j, mass[i][j]*fact);
-//            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
-            }
-    }
-};
-
-#ifndef SOFA_FLOAT
-template <> SOFA_Flexible_API
-void UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::draw( const core::visual::VisualParams* vparams );
-template <> SOFA_Flexible_API
-double UniformMass<defaulttype::Affine3dTypes, defaulttype::Affine3dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
-#endif
-#ifndef SOFA_DOUBLE
-template <> SOFA_Flexible_API
-void UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::draw( const core::visual::VisualParams* vparams );
-template <> SOFA_Flexible_API
-double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
-#endif
-
-
-
-} // namespace mass
-
-
-
-
-} // namespace component
 
 
 

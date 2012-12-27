@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -55,20 +55,18 @@ using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class ProjectToPlaneConstraintInternalData
+class ProjectDirectionConstraintInternalData
 {
 
 };
 
-/** Project particles to an affine plane.
-  @author Francois Faure, 2012
-  @todo Optimized versions for planes parallel to the main directions
+/** Project particles to an affine straight line going through the particle original position.
 */
 template <class DataTypes>
-class ProjectToPlaneConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class ProjectDirectionConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProjectToPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ProjectDirectionConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -90,20 +88,21 @@ public:
 
 
 protected:
-    ProjectToPlaneConstraint();
+    ProjectDirectionConstraint();
 
-    virtual ~ProjectToPlaneConstraint();
+    virtual ~ProjectDirectionConstraint();
 
 public:
     IndexSubsetData f_indices;  ///< the particles to project
-    Data<CPos> f_origin;       ///< A point in the plane
-    Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
-    Data<double> f_drawSize;    ///< The size of the display of the constrained particles
+    Data<double> f_drawSize;    ///< The size of the square used to display the constrained particles
+    Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
 
 protected:
-    ProjectToPlaneConstraintInternalData<DataTypes>* data;
-    friend class ProjectToPlaneConstraintInternalData<DataTypes>;
+    ProjectDirectionConstraintInternalData<DataTypes>* data;
+    friend class ProjectDirectionConstraintInternalData<DataTypes>;
+
+    helper::vector<CPos> m_origin;
 
 
 public:
@@ -124,9 +123,7 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    /** Project the the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
-      */
+    /// Project the the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
 
@@ -136,9 +133,9 @@ public:
     class FCPointHandler : public TopologySubsetDataHandler<Point, Indices >
     {
     public:
-        typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
+        typedef typename ProjectDirectionConstraint<DataTypes>::Indices Indices;
 
-        FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, PointSubsetData<Indices>* _data)
+        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, PointSubsetData<Indices>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
 
 
@@ -150,7 +147,7 @@ public:
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
-        ProjectToPlaneConstraint<DataTypes> *fc;
+        ProjectDirectionConstraint<DataTypes> *fc;
     };
 
 protected :
@@ -164,22 +161,22 @@ protected :
     SparseMatrix J;        ///< auxiliary variable
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec2dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec6dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec2fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec6fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 
@@ -190,4 +187,4 @@ extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defau
 } // namespace sofa
 
 
-#endif
+#endif // SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_H

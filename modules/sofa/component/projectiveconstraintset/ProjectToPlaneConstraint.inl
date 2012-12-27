@@ -88,8 +88,8 @@ template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_origin( initData(&f_origin,Coord(),"origin","A point in the plane"))
-    , f_normal( initData(&f_normal,Deriv(),"normal","Normal vector to the plane"))
+    , f_origin( initData(&f_origin,CPos(),"origin","A point in the plane"))
+    , f_normal( initData(&f_normal,CPos(),"normal","Normal vector to the plane"))
     , f_drawSize( initData(&f_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new ProjectToPlaneConstraintInternalData<DataTypes>())
 {
@@ -173,7 +173,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     // normalize the normal vector
-    Deriv n = f_normal.getValue();
+    CPos n = f_normal.getValue();
     if( n.norm()==0 )
         n[1]=0;
     else n *= 1/n.norm();
@@ -261,19 +261,23 @@ void ProjectToPlaneConstraint<DataTypes>::projectVelocity(const core::Mechanical
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams , DataVecCoord& xData)
+void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ , DataVecCoord& xData)
 {
-    helper::WriteAccessor<DataVecCoord> x ( mparams, xData );
-    const Deriv& n = f_normal.getValue();
-    const Deriv& o = f_origin.getValue();
+    VecCoord& x = *xData.beginEdit();
+
+    const CPos& n = f_normal.getValue();
+    const CPos& o = f_origin.getValue();
 
     const Indices& indices = f_indices.getValue();
     for(unsigned i=0; i<indices.size(); i++ )
     {
         // replace the point with its projection to the plane
-        x[indices[i]] -= n * ((x[indices[i]]-o)*n);
+//        x[indices[i]] -= n * ((x[indices[i]]-o)*n);
+        const CPos xi = DataTypes::getCPos( x[indices[i]] );
+        DataTypes::setCPos( x[indices[i]], xi - n * ((xi-o)*n) );
     }
 
+    xData.endEdit();
 }
 
 // Matrix Integration interface
