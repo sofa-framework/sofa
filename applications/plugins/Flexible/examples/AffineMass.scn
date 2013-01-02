@@ -99,8 +99,8 @@
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
 
 	    
-	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 25"/>
-	    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform"  /> 
+	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
+	    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" printMassMatrix="true" /> 
 
 	    <Node 	name="behavior"   >
 
@@ -151,7 +151,7 @@
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
 
 	    
-	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 25"/>
+	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
 	    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true"/> 
 
 	    <Node 	name="behavior"   >
@@ -204,7 +204,7 @@
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
 
 	    
-	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 25"/>
+	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
 	    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="2" printMassMatrix="true"/> 
 
 	    <Node 	name="behavior"   >

@@ -28,7 +28,7 @@
 	<MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
 	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
-	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
 	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="0"  printMassMatrix="true"/>
 		
@@ -71,7 +71,7 @@
 	<MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
 	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
-	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1000"/>
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
 	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1"  printMassMatrix="true"/>
 	
@@ -116,7 +116,7 @@
     <MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
 	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
-	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 60"/>
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.06"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
 	<ImageDensityMass  template="Vec3d,ShapeFunction2d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" /> 
     
@@ -157,7 +157,7 @@
     <MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="false" />
 	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
-	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 60"/>
+	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.06"/>
   <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
 	<ImageDensityMass  template="Vec3d,ShapeFunction2d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" /> 
     
