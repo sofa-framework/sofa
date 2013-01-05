@@ -155,26 +155,26 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
     if (count==dim) return;
     // order 2
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basis[count]=p[j]*p[k];
-            count++;
-        }
+    {
+        basis[count]=p[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
     // order 3
     basis[count]=p[0]*p[1]*p[2];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++)
-        {
-            basis[count]=p2[j]*p[k];
-            count++;
-        }
+    {
+        basis[count]=p2[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
     // order 4
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basis[count]=p2[j]*p2[k];
-            count++;
-        }
+    {
+        basis[count]=p2[j]*p2[k];
+        count++;
+    }
     basis[count]=p2[0]*p[1]*p[2];
     count++;
     basis[count]=p[0]*p2[1]*p[2];
@@ -182,10 +182,10 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
     basis[count]=p[0]*p[1]*p2[2];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++) if (j!=k)
-            {
-                basis[count]=p3[j]*p[k];
-                count++;
-            }
+    {
+        basis[count]=p3[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
 
     return; // order>4 not implemented...
@@ -281,11 +281,11 @@ inline void getCompleteBasisGradient(vector<Vec<3,real> >& basisDeriv, const Vec
     if (count==dim) return;
     // order 2
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basisDeriv[count][k]+=p[j];
-            basisDeriv[count][j]+=p[k];
-            count++;
-        }
+    {
+        basisDeriv[count][k]+=p[j];
+        basisDeriv[count][j]+=p[k];
+        count++;
+    }
     if (count==dim) return;
     // order 3
     basisDeriv[count][0]=p[1]*p[2];
@@ -293,19 +293,19 @@ inline void getCompleteBasisGradient(vector<Vec<3,real> >& basisDeriv, const Vec
     basisDeriv[count][2]=p[0]*p[1];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++)
-        {
-            basisDeriv[count][k]+=p2[j];
-            basisDeriv[count][j]+=2*p[j]*p[k];
-            count++;
-        }
+    {
+        basisDeriv[count][k]+=p2[j];
+        basisDeriv[count][j]+=2*p[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
     // order 4
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basisDeriv[count][k]=2*p2[j]*p[k];
-            basisDeriv[count][j]=2*p[j]*p2[k];
-            count++;
-        }
+    {
+        basisDeriv[count][k]=2*p2[j]*p[k];
+        basisDeriv[count][j]=2*p[j]*p2[k];
+        count++;
+    }
     basisDeriv[count][0]=2*p[0]*p[1]*p[2];
     basisDeriv[count][1]=p2[0]*p[2];
     basisDeriv[count][2]=p2[0]*p[1];
@@ -319,11 +319,11 @@ inline void getCompleteBasisGradient(vector<Vec<3,real> >& basisDeriv, const Vec
     basisDeriv[count][2]=2*p[0]*p[1]*p[2];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++) if (j!=k)
-            {
-                basisDeriv[count][k]=p3[j];
-                basisDeriv[count][j]=3*p2[j]*p[k];
-                count++;
-            }
+    {
+        basisDeriv[count][k]=p3[j];
+        basisDeriv[count][j]=3*p2[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
 
     return; // order>4 not implemented...
@@ -350,11 +350,11 @@ inline void getCompleteBasisHessian(vector<MatSym<3,real> >& basisDeriv, const V
     if (count==dim) return;
     // order 2
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basisDeriv[count](k,j)+=1;
-            if(k==j)  basisDeriv[count](k,j)+=1;
-            count++;
-        }
+    {
+        basisDeriv[count](k,j)+=1;
+        if(k==j)  basisDeriv[count](k,j)+=1;
+        count++;
+    }
     if (count==dim) return;
     // order 3
     basisDeriv[count](0,1)=p[2];
@@ -362,20 +362,20 @@ inline void getCompleteBasisHessian(vector<MatSym<3,real> >& basisDeriv, const V
     basisDeriv[count](1,2)=p[0];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++)
-        {
-            basisDeriv[count](k,j)+=2*p[j];
-            if(k==j) basisDeriv[count](k,j)+=2*p[j];
-            count++;
-        }
+    {
+        basisDeriv[count](k,j)+=2*p[j];
+        if(k==j) basisDeriv[count](k,j)+=2*p[j];
+        count++;
+    }
     if (count==dim) return;
     // order 4
     for (j=0; j<3; j++) for (k=j; k<3; k++)
-        {
-            basisDeriv[count](k,j)=4*p[j]*p[k];
-            basisDeriv[count](k,k)=2*p2[j];
-            basisDeriv[count](j,j)=2*p2[k];
-            count++;
-        }
+    {
+        basisDeriv[count](k,j)=4*p[j]*p[k];
+        basisDeriv[count](k,k)=2*p2[j];
+        basisDeriv[count](j,j)=2*p2[k];
+        count++;
+    }
     basisDeriv[count](0,0)=2*p[1]*p[2];
     basisDeriv[count](0,1)=2*p[0]*p[2];
     basisDeriv[count](0,2)=2*p[0]*p[1];
@@ -393,11 +393,11 @@ inline void getCompleteBasisHessian(vector<MatSym<3,real> >& basisDeriv, const V
     count++;
 
     for (j=0; j<3; j++) for (k=0; k<3; k++) if (j!=k)
-            {
-                basisDeriv[count](k,j)=3*p2[j];
-                basisDeriv[count](j,j)=6*p[j]*p[k];
-                count++;
-            }
+    {
+        basisDeriv[count](k,j)=3*p2[j];
+        basisDeriv[count](j,j)=6*p[j]*p[k];
+        count++;
+    }
     if (count==dim) return;
 
     return; // order>4 not implemented...
@@ -729,6 +729,23 @@ struct PolynomialFitFactors
     // updates nodes given that vals for new node i is a weighted sum of old vals \sum val_j w(i,j)
     void updateNodes(const Matrix& w, const std::vector<unsigned int> newParents)
     {
+        b = w*b;
+        c = w*c*w.transpose();
+        setParents(newParents);
+    }
+
+    void updateNodes(const std::map<unsigned int,Vector>& wmap)
+    {
+        typedef typename std::map<unsigned int,Vector>::const_iterator wMapIt;
+        int num_nodes = b.rows(),count=0;
+        Matrix w(wmap.size(),num_nodes);
+        std::vector<unsigned int> newParents(wmap.size());
+        for(wMapIt it=wmap.begin();it!=wmap.end();it++)
+        {
+            newParents[count]=it->first;
+            w.row(count)=it->second;
+            count++;
+        }
         b = w*b;
         c = w*c*w.transpose();
         setParents(newParents);
