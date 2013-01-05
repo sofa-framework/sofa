@@ -592,12 +592,12 @@ protected:
         }
 
         // test
-        for(unsigned int i=0; i<nb; i++)
+        /*for(unsigned int i=0; i<nb; i++)
         {
-            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; /*if(w[i][j]<0 || w[i][j]>1) std::cout<<"error on "<<i<<" : w = "<<w[i][j]<<std::endl; */}
+            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; }
             Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
             if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
-        }
+        }*/
 
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
         deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);

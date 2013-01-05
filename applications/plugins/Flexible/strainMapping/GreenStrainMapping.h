@@ -51,14 +51,22 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(GreenStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
+    Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
+
 protected:
     GreenStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
+         , f_geometricStiffness( initData( &f_geometricStiffness, true, "geometricStiffness", "Should geometricStiffness be considered?" ) )
     {
     }
 
     virtual ~GreenStrainMapping()     { }
 
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForce)
+    {
+        if(!f_geometricStiffness.getValue()) return;
+        else Inherit::applyDJT(mparams,parentDfId,childForce);
+    }
 };
 
 
