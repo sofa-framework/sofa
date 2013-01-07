@@ -217,6 +217,7 @@ void BaseDeformationMapping<JacobianBlockType>::reinit()
     if(this->assembleJ.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
     Inherit::reinit();
 }
