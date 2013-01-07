@@ -196,6 +196,19 @@ public:
             return affineInv * (v-getCenter());
         }
 
+        /// Project a point from the child frame to the parent frame
+        Coord pointToParent( const Coord& v ) const
+        {
+            return Coord( getAffine()*v.getCenter() + getCenter(), getAffine()*v.getAffine() );
+        }
+
+        /// Project a point from the parent frame to the child frame
+        Coord pointToChild( const Coord& v ) const
+        {
+            Frame affineInv;
+            affineInv.invert( getAffine() );
+            return Coord( affineInv * (v.getCenter()-getCenter()), affineInv*v.getAffine() );
+        }
 
         /// project to a rigid displacement
         void setRigid()
