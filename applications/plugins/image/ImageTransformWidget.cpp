@@ -147,18 +147,18 @@ bool ImageLPTransformWidget<TransformType>::createWidgets()
     layout->addWidget(isPerspective,5,1);
 
 
-    connect( translation[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( translation[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( translation[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( rotation[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( rotation[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( rotation[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( scale[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( scale[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( scale[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( offsetT, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( scaleT, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
-    connect( isPerspective, SIGNAL( stateChanged(int) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( translation[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( translation[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( translation[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( rotation[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( rotation[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( rotation[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( scale[0], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( scale[1], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( scale[2], SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( offsetT, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( scaleT, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    this->connect( isPerspective, SIGNAL( stateChanged(int) ), this, SLOT( setWidgetDirty() ) );
 
     return true;
 }

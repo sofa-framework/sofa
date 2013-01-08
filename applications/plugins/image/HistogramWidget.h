@@ -386,7 +386,7 @@ public:
     {
         bool b = Inherit::createWidgets();
         HistogramSetting* s = dynamic_cast<HistogramSetting*>(this->container.setting);
-        connect(s,SIGNAL(clampModified()), this, SLOT(setWidgetDirty()));
+        this->connect(s,SIGNAL(clampModified()), this, SLOT(setWidgetDirty()));
         return b;
     }
 };

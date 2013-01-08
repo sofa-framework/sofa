@@ -378,7 +378,7 @@ public:
 
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
-        JBlock J = assembleJ( _R );
+        JBlock J = this->assembleJ( _R );
         eB.block(0,0,strain_size,frame_size) = J;
 
         if( order > 0 )
@@ -613,7 +613,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        eB = assembleJ(_R);
+        eB = this->assembleJ(_R);
         return B;
     }
 
@@ -757,7 +757,7 @@ public:
         MatBlock B = MatBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,Out::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;
         EigenMap eB(&B[0][0]);
-        eB = assembleJ(_R);
+        eB = this->assembleJ(_R);
         return B;
     }
 
