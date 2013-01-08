@@ -63,7 +63,7 @@ public :
 		Inherit::computeShapeFunction(childPosition, M, ref, w, dw, ddw);
 	}
 
-	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    virtual void computeShapeFunction(const Coord& /*childPosition*/, MaterialToSpatial& /*M*/, VRef& /*ref*/, VReal& /*w*/, VGradient* /*dw*/=NULL,VHessian* /*ddw*/=NULL)
 	{
 	}
 

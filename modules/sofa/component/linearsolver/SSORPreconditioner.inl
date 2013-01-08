@@ -290,7 +290,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
 template<class TMatrix, class TVector, class TThreadManager>
 void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) getMatrixInvertData(&M);
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
     int n = M.rowSize();
     data->inv_diag.resize(n);

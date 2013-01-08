@@ -487,7 +487,7 @@ public:
     {
         bool result = Inherit::createWidgets();
         VectorVisSettings* s = dynamic_cast<VectorVisSettings*>(this->container.settings);
-        connect(s, SIGNAL(settingsModified()), this, SLOT(setWidgetDirty()));
+        this->connect(s, SIGNAL(settingsModified()), this, SLOT(setWidgetDirty()));
         return result;
     }
 };

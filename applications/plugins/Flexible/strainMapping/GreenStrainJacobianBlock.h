@@ -183,14 +183,14 @@ public:
         EigenMap eB(&B[0][0]);
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
-        JBlock J = assembleJ(F.getF());
+        JBlock J = this->assembleJ(F.getF());
         eB.block(0,0,strain_size,frame_size) = J;
 
         if( order > 0 )
         {
             // order 1
             Vec<spatial_dimensions,JBlock> Jgrad;
-            for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= assembleJ(F.getGradientF(k));
+            for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= this->assembleJ(F.getGradientF(k));
             unsigned int offsetE=strain_size;
             for(unsigned int k=0; k<spatial_dimensions; k++)
             {

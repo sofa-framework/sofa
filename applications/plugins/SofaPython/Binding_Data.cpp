@@ -81,10 +81,10 @@ PyObject *GetDataValuePython(BaseData* data)
         // this is a vector; return a python list of the corrsponding type (ints, scalars or strings)
 
         PyObject *rows = PyList_New(nbRows);
-        for (unsigned int i=0; i<nbRows; i++)
+        for (int i=0; i<nbRows; i++)
         {
             PyObject *row = PyList_New(rowWidth);
-            for (unsigned int j=0; j<rowWidth; j++)
+            for (int j=0; j<rowWidth; j++)
             {
                 // build each value of the list
                 if (typeinfo->Text())

@@ -58,7 +58,7 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 
     fileStream << "ObjectType = Image" << std::endl;
 
-    unsigned int dim[]={img(0).width(),img(0).height(),img(0).depth(), img.size()};
+    unsigned int dim[]={(unsigned)img(0).width(),(unsigned)img(0).height(),(unsigned)img(0).depth(), img.size()};
     unsigned int nbdims=(dim[3]==1)?3:4; //  for 2-d, we still need z scale dimension
 
     fileStream << "NDims = " << nbdims << std::endl;
