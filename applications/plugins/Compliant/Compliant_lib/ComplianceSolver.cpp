@@ -240,7 +240,7 @@ void ComplianceSolver::solve(const core::ExecParams* params,
             // Rayleigh mass factor rm is used with a negative sign because it
             // is recorded as a positive real, while its force is opposed to
             // the velocity
-            _vecF += _matK * _vecV * ( implicitVelocity.getValue() * (h + rs) );
+            // _vecF += _matK * _vecV * ( implicitVelocity.getValue() * (h + rs) );
             _vecF -= _matM * _vecV * rm;
 
             _vecF = P() * _vecF; // filter the right-hand side term

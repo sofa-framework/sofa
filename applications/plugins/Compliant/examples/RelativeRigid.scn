@@ -2,7 +2,7 @@
 <Node 	 name="Root"  printLog="1"  dt="1e-05"  >
 	<VisualStyle name="visualStyle0"  displayFlags="hideVisual showBehaviorModels hideForceFields hideInteractionForceFields hideCollision hideMapping hideOptions" />
 	<Node 	 name="RigidBody"  printLog="1"  >
-		<MinresSolver name="minresSolver4"  implicitVelocity="1"  implicitPosition="1"  rayleighStiffness="0"  rayleighMass="0" />
+		<ComplianceSolver name="minresSolver4"  implicitVelocity="1"  implicitPosition="1"  rayleighStiffness="0"  rayleighMass="0" />
 		<MechanicalObject template="Rigid" name="arbDOF"  position="0 0 0 0 0 0 1 2 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
 		<UniformMass template="Rigid" name="uniformMass1" />
 		<Node 	 name="Joint"  printLog="1"  >
