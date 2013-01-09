@@ -49,7 +49,7 @@ namespace mapping
 
 
 template <class JacobianBlockType>
-BaseDeformationMapping<JacobianBlockType>::BaseDeformationMapping (core::State<In>* from , core::State<Out>* to)
+BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State<In>* from , core::State<Out>* to)
     : Inherit ( from, to )
     , _shapeFunction(NULL)
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
@@ -83,7 +83,7 @@ BaseDeformationMapping<JacobianBlockType>::BaseDeformationMapping (core::State<I
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::resizeOut()
+void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
@@ -142,7 +142,7 @@ void BaseDeformationMapping<JacobianBlockType>::resizeOut()
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
@@ -185,7 +185,7 @@ void BaseDeformationMapping<JacobianBlockType>::resizeOut(const vector<Coord>& p
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::init()
+void BaseDeformationMappingT<JacobianBlockType>::init()
 {
     if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
         maskFrom = &stateFrom->forceMask;
@@ -212,7 +212,7 @@ void BaseDeformationMapping<JacobianBlockType>::init()
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::reinit()
+void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
     if(this->assembleJ.getValue()) updateJ();
 
@@ -225,7 +225,7 @@ void BaseDeformationMapping<JacobianBlockType>::reinit()
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::updateJ()
+void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 {
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     //helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -249,7 +249,7 @@ void BaseDeformationMapping<JacobianBlockType>::updateJ()
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::updateK(const OutVecDeriv& childForce)
+void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& childForce)
 {
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     K.resizeBlocks(in.size(),in.size());
@@ -281,7 +281,7 @@ void BaseDeformationMapping<JacobianBlockType>::updateK(const OutVecDeriv& child
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -311,7 +311,7 @@ void BaseDeformationMapping<JacobianBlockType>::apply(const core::MechanicalPara
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
     else
@@ -353,7 +353,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyJ(const core::MechanicalPar
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
+void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if(this->assembleJ.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
     else
@@ -393,7 +393,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyJT(const core::MechanicalPa
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
     if(BlockType::constantJ) return;
 
@@ -444,7 +444,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyDJT(const core::MechanicalP
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
+void BaseDeformationMappingT<JacobianBlockType>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
 {
     // TODO handle mask
 
@@ -490,7 +490,7 @@ void BaseDeformationMapping<JacobianBlockType>::applyJT( const core::ConstraintP
 **/
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::ForwardMapping(Coord& p,const Coord& p0)
+void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const Coord& p0)
 {
     if ( !_shapeFunction ) return;
 
@@ -536,7 +536,7 @@ inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::M
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::BackwardMapping(Coord& p0,const Coord& p,const Real Thresh, const unsigned int NbMaxIt)
+void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const Coord& p,const Real Thresh, const unsigned int NbMaxIt)
 {
     if ( !_shapeFunction ) return;
 
@@ -568,7 +568,7 @@ void BaseDeformationMapping<JacobianBlockType>::BackwardMapping(Coord& p0,const 
 
 
 template <class JacobianBlockType>
-unsigned int BaseDeformationMapping<JacobianBlockType>::getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree)
+unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree)
 {
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     if(this->missingInformationDirty)
@@ -626,7 +626,7 @@ public:
 
 
 template <class JacobianBlockType>
-void BaseDeformationMapping<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
+void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
