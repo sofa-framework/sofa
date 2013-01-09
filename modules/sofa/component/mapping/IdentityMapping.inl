@@ -352,10 +352,29 @@ struct IdentityMappingMatrixHelper
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
-    eigen.copyFrom( *static_cast<const MatrixType*>(getJ()) );
-    js.resize( 1 );
-    js[0] = &eigen;
-    return &js;
+	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
+		updateJ = false;
+		
+		unsigned rows = NOut * this->toModel->getSize();
+		unsigned cols = NIn * this->fromModel->getSize();
+		
+		assert( rows == cols );
+		
+		eigen.compressedMatrix.resize( rows, cols );
+		eigen.compressedMatrix.setZero();
+		eigen.compressedMatrix.reserve( rows );
+		
+		for( unsigned i = 0; i < rows; ++i) {
+			eigen.compressedMatrix.startVec( i );
+			eigen.compressedMatrix.insertBack(i, i) = 1.0;
+		}
+		
+		eigen.compressedMatrix.finalize();
+	}
+	
+	js.resize( 1 );
+	js[0] = &eigen;
+	return &js;
 }
 
 #endif
