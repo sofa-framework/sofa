@@ -46,11 +46,11 @@ using helper::vector;
 
 
 template <class TIn, class TOut>
-class LinearMapping : public BaseDeformationMapping<defaulttype::LinearJacobianBlock<TIn,TOut> >
+class LinearMapping : public BaseDeformationMappingT<defaulttype::LinearJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::LinearJacobianBlock<TIn,TOut> BlockType;
-    typedef BaseDeformationMapping<BlockType> Inherit;
+    typedef BaseDeformationMappingT<BlockType> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VecCoord VecCoord;
@@ -67,7 +67,7 @@ public:
     typedef defaulttype::DefGradientTypes<Inherit::spatial_dimensions, Inherit::material_dimensions, 0, Real> FType;
     typedef defaulttype::LinearJacobianBlock<TIn,FType> DeformationGradientMapperType;
 
-    SOFA_CLASS(SOFA_TEMPLATE2(LinearMapping,TIn,TOut), SOFA_TEMPLATE(BaseDeformationMapping,BlockType ));
+    SOFA_CLASS(SOFA_TEMPLATE2(LinearMapping,TIn,TOut), SOFA_TEMPLATE(BaseDeformationMappingT,BlockType ));
 
 protected:
     LinearMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)

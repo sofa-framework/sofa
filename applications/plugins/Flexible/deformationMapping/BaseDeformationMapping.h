@@ -121,15 +121,32 @@ public:
 };
 
 
+// not templated BaseDeformationMapping for identification
+class BaseDeformationMapping
+{
+protected:
+
+    virtual ~BaseDeformationMapping() {}
+
+public:
+
+    /// \returns the from model size
+    virtual size_t getFromSize() const = 0;
+    /// \returns the to model size
+    virtual size_t getToSize() const = 0;
+};
+
+
+
 /** Abstract mapping (one parent->several children with different influence) using JacobianBlocks or sparse eigen matrix
 */
 
 template <class JacobianBlockType>
-class BaseDeformationMapping : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BasePointMapper<JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real>
+class BaseDeformationMappingT : public BaseDeformationMapping, public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BasePointMapper<JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real>
 {
 public:
     typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;
-    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(BaseDeformationMapping,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out), SOFA_TEMPLATE2(BasePointMapper,JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real) );
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(BaseDeformationMappingT,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out), SOFA_TEMPLATE2(BasePointMapper,JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real) );
 
     /** @name  Input types    */
     //@{
@@ -217,6 +234,9 @@ public:
 
     //@}
 
+    virtual size_t getFromSize() const { return this->fromModel->getSize(); }
+    virtual size_t getToSize()  const { return this->toModel->getSize(); }
+
 
     /** @name PointMapper functions */
     //@{
@@ -242,8 +262,8 @@ public:
     Data<bool> assembleK;
 
 protected:
-    BaseDeformationMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMapping()     { }
+    BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
+    virtual ~BaseDeformationMappingT()     { }
 
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
 
