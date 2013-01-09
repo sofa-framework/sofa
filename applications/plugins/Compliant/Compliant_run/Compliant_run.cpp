@@ -67,6 +67,8 @@ using sofa::component::configurationsetting::CompliantAttachButtonSetting;
 #include <plugins/Flexible/deformationMapping/ExtensionMapping.h>
 #include <plugins/Flexible/deformationMapping/DistanceMapping.h>
 
+#include <sofa/simulation/common/Simulation.h>
+
 using namespace sofa;
 using namespace sofa::helper;
 using namespace sofa::simulation;
