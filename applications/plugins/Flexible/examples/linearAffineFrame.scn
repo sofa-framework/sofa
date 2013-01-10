@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+<Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
     <VisualStyle displayFlags="showVisual  " />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
     <EulerImplicitSolver />
     <CGLinearSolver iterations="100"/>
+
+    <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 
      <Node 	name="FEM"   >
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
@@ -15,7 +17,7 @@
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
              <FixedConstraint indices="@FixedROI.indices" />
 
-	     <UniformMass totalMass="250" />
+	     <UniformMass totalMass="20" />
 
 	<!--  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  --> 
  <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
@@ -70,7 +72,7 @@
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	      <Mesh name="mesh" src="@loader" />
 	      <MechanicalObject />
-	     <UniformMass totalMass="250" />
+	     <UniformMass totalMass="20" />
 	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
         </Node>
 

@@ -129,6 +129,8 @@ public:
         if(this->assembleK.getValue()) updateK();
         if(this->assembleB.getValue()) updateB();
 
+        addForce(NULL, *this->mstate->write(core::VecDerivId::force()), *this->mstate->read(core::ConstVecCoordId::position()), *this->mstate->read(core::ConstVecDerivId::velocity()));
+
         Inherit::reinit();
     }
 

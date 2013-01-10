@@ -53,6 +53,7 @@ class SOFA_Flexible_API BaseStrainMapping : public virtual core::objectmodel::Ba
 {
 public:
     virtual void resizeOut()=0;
+    virtual void applyJT()=0;
 };
 
 
@@ -108,6 +109,7 @@ public:
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         this->toModel->resize(in.size());
+
         jacobian.resize(in.size());
 
         reinit();
@@ -138,10 +140,19 @@ public:
     {
         if(this->assembleJ.getValue()) updateJ();
 
+        // clear forces
+        helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
+
         apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
         applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
         Inherit::reinit();
+    }
+
+    virtual void applyJT()
+    {
+        applyJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
+       //TODO applyDJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
     }
 
     virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
