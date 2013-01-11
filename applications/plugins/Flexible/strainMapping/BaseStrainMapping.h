@@ -53,6 +53,7 @@ class SOFA_Flexible_API BaseStrainMapping : public virtual core::objectmodel::Ba
 {
 public:
     virtual void resizeOut()=0;
+    virtual void resizeOut(const unsigned int range)=0;
     virtual void applyJT()=0;
 };
 
@@ -105,12 +106,26 @@ public:
 
     virtual void resizeOut()
     {
+        if(partialMapping) return;
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
         this->toModel->resize(in.size());
 
         jacobian.resize(in.size());
+
+        reinit();
+    }
+
+    virtual void resizeOut(const unsigned int range) // resize output up to a certain range (used to have non-physical deformation gradients)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut("<<range<<")"<<std::endl;
+
+        this->toModel->resize(range);
+
+        jacobian.resize(range);
+
+        partialMapping=true;
 
         reinit();
     }
@@ -277,6 +292,7 @@ protected:
         : Inherit ( from, to )
         , assembleJ ( initData ( &assembleJ,false, "assembleJ","Assemble the Jacobian matrix or use optimized matrix/vector multiplications" ) )
         , assembleK ( initData ( &assembleK,false, "assembleK","Assemble the geometric stiffness matrix or use optimized matrix/vector multiplications" ) )
+        , partialMapping (false)
         , maskFrom(NULL)
         , maskTo(NULL)
     {
@@ -287,6 +303,7 @@ protected:
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 
+    bool partialMapping; ///< tells if input and output sizes are different on purpose (otherwise automatic resizing is performed when input size changes)
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
