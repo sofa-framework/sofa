@@ -118,7 +118,6 @@ public:
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
-    virtual void partialResizeOut(const std::map<unsigned int,unsigned int> &NewToOldIndex, const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0;
 };
 
 
@@ -210,7 +209,6 @@ public:
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
-    virtual void partialResizeOut(const std::map<unsigned int,unsigned int> &NewToOldIndex, const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0);
 
     /** @name Mapping functions */
     //@{
