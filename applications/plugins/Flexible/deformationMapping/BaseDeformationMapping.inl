@@ -183,66 +183,10 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 
     // clear forces
     if(this->toModel->write(core::VecDerivId::force())) { helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear(); }
+    // clear velocities
+    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(unsigned int i=0;i<vel.size();i++) vel[i].clear(); }
 
     reinit();
-}
-
-// same as basic ResizeOut except that we keep some children (and store their force), via an indirection map
-template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::partialResizeOut(const std::map<unsigned int,unsigned int> &NewToOldIndex, const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
-{
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
-
-    helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force()));
-
-    helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
-    this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
-
-    unsigned int size = position0.size();
-
-    // keep forces for old children
-    if(this->toModel->write(core::VecDerivId::force()))
-    {
-        if(size>f.size()) f.resize(size);
-        for(typename std::map<unsigned int,unsigned int>::const_iterator it=NewToOldIndex.begin();it!=NewToOldIndex.end();it++) f[it->first]=f[it->second];
-    }
-
-    // paste input values
-    this->toModel->resize(size);
-    pos0.resize(size);  for(unsigned int i=0; i<size; i++ )        pos0[i]=position0[i];
-
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index (this->f_index);   wa_index.resize(size);  for(unsigned int i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteAccessor<Data<vector<VReal> > > wa_w (this->f_w);          wa_w.resize(size);  for(unsigned int i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
-    helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(unsigned int i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
-    helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(unsigned int i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
-    helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(unsigned int i=0; i<size; i++ )    for(unsigned int j=0; j<spatial_dimensions; j++ ) for(unsigned int k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
-
-    if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
-
-    // init jacobians
-    this->jacobian.resize(size);
-    for(unsigned int i=0; i<size; i++ )
-    {
-        unsigned int nbref=this->f_index.getValue()[i].size();
-        this->jacobian[i].resize(nbref);
-        for(unsigned int j=0; j<nbref; j++ )
-        {
-            unsigned int index=this->f_index.getValue()[i][j];
-            this->jacobian[i][j].init( in[index],out[i],pos0[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
-        }
-    }
-
-    // clear forces for new children
-    if(this->toModel->write(core::VecDerivId::force()))
-    {
-        for(unsigned int i=0;i<f.size();i++)
-            if(NewToOldIndex.find(i)==NewToOldIndex.end())
-                f[i].clear();
-    }
-
-    this->reinit();
 }
 
 
