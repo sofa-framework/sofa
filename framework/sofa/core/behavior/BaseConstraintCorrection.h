@@ -116,7 +116,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
 
     /// @name Deprecated API
     /// @{
