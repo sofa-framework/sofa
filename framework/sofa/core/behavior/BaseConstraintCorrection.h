@@ -114,6 +114,9 @@ public:
     /// @param lambda is the constraint space force vector
     virtual void applyPredictiveConstraintForce(const ConstraintParams * /*cparams*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
 
+    /// Rebuild the system using a mass and force factor
+    /// Experimental API used to investigate convergence issues.
+    void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
 
     /// @name Deprecated API
     /// @{

@@ -202,6 +202,9 @@ public:
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
+    /// Rebuild the system using a mass and force factor
+    void rebuildSystem(double massFactor, double forceFactor);
+
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v);
 
@@ -472,6 +475,8 @@ protected:
     GroupDataMap gData;
     GroupData defaultGroup;
 
+    double currentMFactor, currentBFactor, currentKFactor;
+
 };
 
 template<class Matrix, class Vector>
@@ -576,6 +581,9 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
+    this->currentMFactor = mparams->mFactor();
+    this->currentBFactor = mparams->bFactor();
+    this->currentKFactor = mparams->kFactor();
     createGroups(mparams);
     for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
@@ -601,6 +609,40 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
             currentGroup->matrixAccessor.computeGlobalMatrix();
         }
     }
+}
+
+template<class Matrix, class Vector>
+void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double forceFactor)
+{
+    MechanicalParams mparams;
+    mparams.setMFactor(this->currentMFactor*massFactor);
+    mparams.setBFactor(this->currentBFactor*forceFactor);
+    mparams.setKFactor(this->currentKFactor*forceFactor);
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    {
+        setGroup(g);
+        if (!this->frozen)
+        {
+            simulation::common::MechanicalOperations mops(&mparams /* PARAMS FIRST */, this->getContext());
+            if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
+            currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
+            currentGroup->matrixAccessor.clear();
+            //unsigned int nbRow=0, nbCol=0;
+            //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
+            //this->getMatrixDimension(&nbRow, &nbCol);
+            //resizeSystem(nbRow);
+            mops.getMatrixDimension(&(currentGroup->matrixAccessor));
+            currentGroup->matrixAccessor.setupMatrices();
+            resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
+            currentGroup->systemMatrix->clear();
+            //unsigned int offset = 0;
+            //MechanicalAddMBK_ToMatrixVisitor(currentGroup->systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
+            mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams.mFactor(), mparams.bFactor(), mparams.kFactor());
+            //this->addMBK_ToMatrix(&(currentGroup->matrixAccessor), mFact, bFact, kFact);
+            currentGroup->matrixAccessor.computeGlobalMatrix();
+        }
+    }
+    this->invertSystem();
 }
 
 template<class Matrix, class Vector>
@@ -704,6 +746,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
+
+template<> SOFA_BASE_LINEAR_SOLVER_API
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::rebuildSystem(double massFactor, double forceFactor);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v);
