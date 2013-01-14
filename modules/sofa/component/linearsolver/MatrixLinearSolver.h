@@ -203,7 +203,7 @@ public:
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
     /// Rebuild the system using a mass and force factor
-    void rebuildSystem(double massFactor, double forceFactor);
+    virtual void rebuildSystem(double massFactor, double forceFactor);
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v);
@@ -618,6 +618,7 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
     mparams.setMFactor(this->currentMFactor*massFactor);
     mparams.setBFactor(this->currentBFactor*forceFactor);
     mparams.setKFactor(this->currentKFactor*forceFactor);
+    serr << "M=" << mparams.mFactor() << " K=" << mparams.kFactor() << sendl;
     for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
         setGroup(g);
@@ -627,18 +628,11 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();
-            //unsigned int nbRow=0, nbCol=0;
-            //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
-            //this->getMatrixDimension(&nbRow, &nbCol);
-            //resizeSystem(nbRow);
             mops.getMatrixDimension(&(currentGroup->matrixAccessor));
             currentGroup->matrixAccessor.setupMatrices();
             resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
             currentGroup->systemMatrix->clear();
-            //unsigned int offset = 0;
-            //MechanicalAddMBK_ToMatrixVisitor(currentGroup->systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
             mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams.mFactor(), mparams.bFactor(), mparams.kFactor());
-            //this->addMBK_ToMatrix(&(currentGroup->matrixAccessor), mFact, bFact, kFact);
             currentGroup->matrixAccessor.computeGlobalMatrix();
         }
     }

@@ -242,6 +242,7 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            //serr << "REBUILD " <<  cc->getName() << " m="<<massFactor << " f=" << forceFactor << sendl;
             cc->rebuildSystem(massFactor, forceFactor);
     }
 }

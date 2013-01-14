@@ -64,7 +64,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
