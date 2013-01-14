@@ -110,9 +110,12 @@ protected:
         , f_printMassMatrix( initData( &f_printMassMatrix, false, "printMassMatrix", "Should the mass matrix be print in console after being precomputed?" ) )
     {}
 
+	// note: (max) this is useless
     virtual ~ImageDensityMass()
     {
     }
+
+	SReal getDampingRatio() { return 0; }
 
     /// \returns a pointer to the dof rest position
     virtual const VecCoord* getX0();
