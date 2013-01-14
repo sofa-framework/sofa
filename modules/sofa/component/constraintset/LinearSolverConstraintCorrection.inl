@@ -215,6 +215,15 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 }
 
 template<class DataTypes>
+void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFactor, double forceFactor)
+{
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
+    }
+}
+
+template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
 {
     if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;

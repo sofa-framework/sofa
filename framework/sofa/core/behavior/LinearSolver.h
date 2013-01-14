@@ -62,6 +62,10 @@ public:
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
     virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
 
+    /// Rebuild the system using a mass and force factor
+    /// Experimental API used to investigate convergence issues.
+    void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
 

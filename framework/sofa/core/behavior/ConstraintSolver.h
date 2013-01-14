@@ -71,6 +71,12 @@ public:
     virtual bool buildSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
 
     /**
+     * Rebuild the system using a mass and force factor.
+     * Experimental API used to investigate convergence issues.
+     */
+    virtual void rebuildSystem(double /*massfactor*/, double /*forceFactor*/){}
+
+    /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
     virtual bool solveSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;

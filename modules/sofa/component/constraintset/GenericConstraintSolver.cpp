@@ -237,6 +237,15 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     return true;
 }
 
+void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
+{
+    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->rebuildSystem(massFactor, forceFactor);
+    }
+}
+
 void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim)
 {
 	int compteur, compteur2;

@@ -103,6 +103,8 @@ public:
 
     virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const defaulttype::BaseVector *lambda);
 
+    virtual void rebuildSystem(double massFactor, double forceFactor);
+
     /// @name Deprecated API
     /// @{
 
