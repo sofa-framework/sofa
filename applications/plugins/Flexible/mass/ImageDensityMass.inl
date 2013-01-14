@@ -65,6 +65,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
     if( f_printMassMatrix.getValue() )
     {
         sout<<m_massMatrix<<sendl;
+        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow(m_totalVolume,1.0/3.0)<<")"<<sendl;
         sout<<"Total Mass = "<<m_totalMass<<sendl;
     }
 }
@@ -109,6 +110,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
     double voxelVolume = getVoxelVolume( transform );
 
     m_totalMass = 0;
+    m_totalVolume = 0;
 
     // get the density image
     const CImg<double>& densityImage = f_densityImage.getValue().getCImg(0);
@@ -136,6 +138,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
             double voxelMass = voxelDensity * voxelVolume * 1000.0; // warning, the density is given for a ratio between kg and dm^3, so there is a factor 1000 to obtain kg from m^3
 
             m_totalMass += voxelMass;
+            m_totalVolume += voxelVolume;
 
             // check the real number of control points
             unsigned nbControlPoints = 0;

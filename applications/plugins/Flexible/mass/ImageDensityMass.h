@@ -98,7 +98,7 @@ public:
 
     Data< bool > f_printMassMatrix;
 
-    Real m_totalMass; ///< for debug purpose
+    Real m_totalMass, m_totalVolume; ///< for debug purpose
 
 protected:
 
