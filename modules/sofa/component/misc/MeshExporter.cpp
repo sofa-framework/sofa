@@ -51,7 +51,7 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
 
 MeshExporter::MeshExporter()
     : stepCounter(0), nbFiles(0)
-    , meshFilename( initData(&meshFilename, "filename", "output Mesh file name"))
+    , meshFilename( initData(&meshFilename, "filename", "output Mesh file name \n Important Info ! \n Export can be done by pressing \n the 'E' key (listening required)"))
     , fileFormat( initData(&fileFormat, sofa::helper::OptionsGroup(6,"ALL","vtkxml","vtk","netgen","tetgen","gmsh"), "format", "File format to use"))
     , position( initData(&position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , writeEdges( initData(&writeEdges, (bool) true, "edges", "write edge topology"))
@@ -94,6 +94,10 @@ void MeshExporter::init()
             position.setReadOnly(true);
         }
     }
+
+    // Activate the listening to the event in order to be able to export file at the nth-step
+    if(exportEveryNbSteps.getValue() != 0)
+        this->f_listening.setValue(true);
 
     nbFiles = 0;
     /*
