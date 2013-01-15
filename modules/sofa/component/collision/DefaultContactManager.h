@@ -53,6 +53,7 @@ protected:
     void cleanup();
 public:
     Data<sofa::helper::OptionsGroup> response;
+    Data<std::string> responseParams;
 protected:
     DefaultContactManager();
     ~DefaultContactManager();
