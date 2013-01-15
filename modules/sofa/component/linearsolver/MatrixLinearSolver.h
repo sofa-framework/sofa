@@ -618,7 +618,7 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
     mparams.setMFactor(this->currentMFactor*massFactor);
     mparams.setBFactor(this->currentBFactor*forceFactor);
     mparams.setKFactor(this->currentKFactor*forceFactor);
-    serr << "M=" << mparams.mFactor() << " K=" << mparams.kFactor() << sendl;
+    //serr << "M=" << mparams.mFactor() << " K=" << mparams.kFactor() << sendl;
     for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
         setGroup(g);

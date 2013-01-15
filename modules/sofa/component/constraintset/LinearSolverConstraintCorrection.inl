@@ -219,7 +219,7 @@ void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFacto
 {
     for (unsigned i = 0; i < linearsolvers.size(); i++)
     {
-        serr << "REBUILD " <<  linearsolvers[i]->getName() << " m="<<massFactor << "f=" << forceFactor << sendl;
+        //serr << "REBUILD " <<  linearsolvers[i]->getName() << " m="<<massFactor << "f=" << forceFactor << sendl;
         linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
     }
 }
