@@ -689,6 +689,7 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::N
         ForceMaskActivate(map->getMechTo());
     }
     //map->propagateDx();
+    //std::cout << getClassName() << getInfos() << " : " << map->getName() << "::applyJ()" << std::endl;
     map->applyJ(mparams /* PARAMS FIRST */, dx, dx);
 
     if (!ignoreMask)
@@ -702,7 +703,10 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::N
 
 void MechanicalPropagateDxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    if (!ignoreMask)
+    {
+        mm->forceMask.activate(false);
+    }
 }
 
 

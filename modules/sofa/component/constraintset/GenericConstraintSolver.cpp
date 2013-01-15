@@ -247,19 +247,21 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
     }
 }
 
-void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim)
+void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
 {
 	int compteur, compteur2;
 	file.precision(9);
 	// affichage de la matrice du LCP
-	file << std::endl << " M = [";
+        if (printMatrix) {
+        file << std::endl << " M = [";
 	for(compteur=0;compteur<dim;compteur++) {
 		for(compteur2=0;compteur2<dim;compteur2++) {
 			file << "\t" << M[compteur][compteur2];
 		}
 		file << std::endl;
 	}
-	file << "      ];" << std::endl << std::endl;
+        file << "      ];" << std::endl << std::endl;
+        }
 
 	// affichage de q
 	file << " q = [";
@@ -293,6 +295,12 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 	}
 	else
 	{
+            if(this->f_printLog.getValue())
+            {
+                std::cout << "---> Before Resolution" << std::endl;
+                    afficheLCP(std::cout, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+            }
+
 		sofa::helper::AdvancedTimer::stepBegin("ConstraintsGaussSeidel");
 		current_cp->gaussSeidel(0, this);
 		sofa::helper::AdvancedTimer::stepEnd("ConstraintsGaussSeidel");
@@ -305,7 +313,10 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 	}
 
 	if(this->f_printLog.getValue())
-		afficheLCP(std::cout, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension());
+        {
+            std::cout << "---> After Resolution" << std::endl;
+                afficheLCP(std::cout, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+        }
 	
 	return true;
 }
