@@ -56,6 +56,9 @@ public:
 
     ConstraintParams& setOrder(ConstOrder o) { m_constOrder = o;   return *this; }
 
+	/// Smooth contribution factor (for smooth constraints resolution)
+    double smoothFactor() const { return m_smoothFactor; }
+
     /// @}
 
     std::string getName() const
@@ -115,6 +118,9 @@ public:
 
     /// @{
 
+	/// Set smooth contribution factor (for smooth constraints resolution)
+    ConstraintParams& setSmoothFactor(double v) { m_smoothFactor = v; return *this; }
+
     const ConstMultiVecCoordId& x() const { return m_x; }
     ConstMultiVecCoordId& x()       { return m_x; }
 
@@ -142,6 +148,7 @@ public:
         , m_x (ConstVecCoordId::position())
         , m_v (ConstVecDerivId::velocity())
         , m_constOrder (POS_AND_VEL)
+		, m_smoothFactor (1)
     {
     }
 
@@ -163,6 +170,9 @@ protected:
 
     /// Description of the order of the constraint
     ConstOrder m_constOrder;
+
+	/// Smooth contribution factor (for smooth constraints resolution)
+    double m_smoothFactor;
 };
 
 } // namespace core

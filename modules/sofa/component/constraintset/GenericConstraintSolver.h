@@ -130,9 +130,11 @@ protected:
 class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res)
-    : simulation::BaseMechanicalVisitor(params) , cparams(params)
-	, _res(res), _offset(0)
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
+    : simulation::BaseMechanicalVisitor(params)
+	, cparams(params)
+	, _res(res)
+	, _offset(0)
 	{
 #ifdef SOFA_DUMP_VISITOR_INFO
       setReadWriteVectors();
@@ -144,7 +146,7 @@ public:
       if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
       {
         ctime_t t0 = begin(node, c);
-        c->getConstraintResolution(_res, _offset);
+        c->getConstraintResolution(cparams, _res, _offset);
         end(node, c, t0);
       }
       return RESULT_CONTINUE;

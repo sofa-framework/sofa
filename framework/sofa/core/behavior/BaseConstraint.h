@@ -137,10 +137,27 @@ public:
     typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
     /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
+	/// @deprecated
     virtual void getConstraintInfo(VecConstraintBlockInfo& /*blocks*/, VecPersistentID& /*ids*/, VecConstCoord& /*positions*/, VecConstDeriv& /*directions*/, VecConstArea& /*areas*/) {}
 
+	/// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
+	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
+	virtual void getConstraintInfo(const ConstraintParams* /*cParams*/, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+	{
+		getConstraintInfo(blocks, ids, positions, directions, areas);
+	}
+
     /// Add the corresponding ConstraintResolution using the offset parameter
+	/// @deprecated
     virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
+
+	/// Add the corresponding ConstraintResolution using the offset parameter
+	/// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
+	/// \param resTab is the result vector that contains the contraint resolution algorithms
+    virtual void getConstraintResolution(const ConstraintParams* /*cParams*/, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)
+	{
+		getConstraintResolution(resTab, offset);
+	};
 };
 
 } // namespace behavior
