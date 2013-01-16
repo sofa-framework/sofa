@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  gravity="0 0 -9.81"  >
+	<VisualStyle name="displayFlags"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<DefaultContactManager name="Response"  response="default" />
+	<TreeCollisionGroupManager name="Group" />
+	<NewProximityIntersection name="newProximityIntersection0" />
+	<EulerImplicitSolver name="Implicit Euler Solver" />
+	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
+             <RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
+	         <PythonScriptController name="pythonScriptCapsule"  listening="1"  filename="CapsuleCollision.py"  classname="CapsuleCollision" />
+	</Node>
+</Node>
