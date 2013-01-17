@@ -51,6 +51,7 @@ class SOFA_Flexible_API BaseMaterialForceField : public virtual core::objectmode
 {
 public:
     virtual void resize()=0;
+    virtual double getPotentialEnergy( const unsigned int index ) const=0;
 };
 
 
@@ -247,6 +248,15 @@ public:
             e += material[i].getPotentialEnergy( _x[i] );
         }
         return e;
+    }
+
+    virtual double getPotentialEnergy( const unsigned int index ) const
+    {
+        if(!this->mstate) return 0;
+        helper::ReadAccessor<Data< VecCoord > >  x(*this->mstate->read(core::ConstVecCoordId::position()));
+        if(index>=material.size()) return 0;
+        if(index>=x.size()) return 0;
+        return material[index].getPotentialEnergy( x[index] );
     }
 
 protected:
