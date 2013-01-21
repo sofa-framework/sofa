@@ -130,7 +130,7 @@ protected:
     SpringForceFieldInternalData<DataTypes> data;
     friend class SpringForceFieldInternalData<DataTypes>;
 
-    void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
+    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
     void updateMaskStatus();
 
 
@@ -150,7 +150,7 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
     virtual void addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
-    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const {return m_potentialEnergy; }
 
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
@@ -206,7 +206,15 @@ public:
 
     virtual bool useMask() const ;
 
+    /// initialization to export kinetic and potential energy to gnuplot files format
+    virtual void initGnuplot(const std::string path);
 
+    /// export kinetic and potential energy state at "time" to a gnuplot file
+    virtual void exportGnuplot(double time);
+
+    protected:
+    /// stream to export Potential Energy to gnuplot files
+    std::ofstream* m_gnuplotFileEnergy;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)

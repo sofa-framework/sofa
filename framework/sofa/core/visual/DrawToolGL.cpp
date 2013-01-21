@@ -79,6 +79,22 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     glPointSize(1);
 }
 
+void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f> colour)
+{
+    glPointSize(size);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POINTS);
+    {
+        for (unsigned int i=0; i<points.size(); ++i)
+        {
+            setMaterial(colour[i]);
+            drawPoint(points[i], colour[i]);
+            if (getLightEnabled()) glEnable(GL_LIGHTING);
+            resetMaterial(colour[i]);
+        }
+    } glEnd();
+    glPointSize(1);
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const Vec<4,float> colour)

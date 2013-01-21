@@ -341,7 +341,7 @@ public:
     virtual void readVec(VecId v, std::istream &in) = 0;
     virtual double compareVec(ConstVecId v, std::istream &in) = 0;
 
-    /// @}
+    /// @}getPotent
 };
 
 } // namespace behavior

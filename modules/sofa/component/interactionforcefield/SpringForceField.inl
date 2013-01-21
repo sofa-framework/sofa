@@ -169,12 +169,11 @@ void SpringForceField<DataTypes>::addForce(
 
     f1.resize(x1.size());
     f2.resize(x2.size());
-    m_potentialEnergy = 0;
+    this->m_potentialEnergy = 0;
     for (unsigned int i=0; i<this->springs.getValue().size(); i++)
     {
-        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
-
     data_f1.endEdit();
     data_f2.endEdit();
 }
@@ -394,6 +393,28 @@ template<class DataTypes>
 bool SpringForceField<DataTypes>::useMask() const
 {
     return maskInUse;
+}
+
+template<class DataTypes>
+void SpringForceField<DataTypes>::initGnuplot(const std::string path)
+{
+    if (!this->getName().empty())
+    {
+        if (m_gnuplotFileEnergy != NULL)
+        {
+            delete m_gnuplotFileEnergy;
+        }
+        m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_PotentialEnergy.txt").c_str() );
+    }
+}
+
+template<class DataTypes>
+void SpringForceField<DataTypes>::exportGnuplot(double time)
+{
+    if (m_gnuplotFileEnergy!=NULL)
+    {
+        (*m_gnuplotFileEnergy) << time <<"\t"<< this->m_potentialEnergy << std::endl;
+    }
 }
 
 } // namespace interactionforcefield

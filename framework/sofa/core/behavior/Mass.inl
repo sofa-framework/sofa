@@ -198,13 +198,15 @@ template<class DataTypes>
 double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
+    {
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
+    }
     return 0;
 }
 
 template<class DataTypes>
 double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const
-{
+{   
     return getPotentialEnergy(x.getValue(mparams));
 }
 
@@ -296,7 +298,7 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FI
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
                 <<"\t"<< this->getPotentialEnergy(mparams)
                 <<"\t"<< this->getPotentialEnergy(mparams)
-                +this->getKineticEnergy(mparams)<< sendl;
+                +this->getKineticEnergy(mparams)<< std::endl;
     }
 }
 

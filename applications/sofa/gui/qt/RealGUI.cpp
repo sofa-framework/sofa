@@ -61,6 +61,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sofa/simulation/common/SceneLoaderFactory.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
 
 #ifdef SOFA_QT4
 #   include <QApplication>
@@ -2192,7 +2193,12 @@ void RealGUI::setExportGnuplot ( bool exp )
     Node* root = currentSimulation();
     m_exportGnuplot = exp;
     if ( exp && root )
+    {
+        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+        InitGnuplotVisitor v(params , gnuplot_directory);
+        root->execute( v );
         exportGnuplot(root,gnuplot_directory);
+    }
 }
 
 //------------------------------------

@@ -127,9 +127,8 @@ public:
     /// getKineticEnergy(const MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv&) method implemented by the component.
     virtual double getKineticEnergy( const MechanicalParams* mparams) const;
     virtual double getKineticEnergy( const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const;
-
     /// @deprecated
-    virtual double getKineticEnergy( const VecDeriv& v       ) const;
+    virtual double getKineticEnergy( const VecDeriv& v) const;
 
     ///                         $ e = M g x $
     ///
