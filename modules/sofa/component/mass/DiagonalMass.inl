@@ -407,7 +407,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::Mechanic
 
     const MassVector &masses= f_mass.getValue();
     helper::ReadAccessor< DataVecDeriv > _v = v;
-    double e = 0;
+    double e = 0.0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
         e += _v[i]*masses[i]*_v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic

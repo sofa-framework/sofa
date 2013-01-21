@@ -44,7 +44,6 @@ using namespace sofa::core;
 template<class DataTypes>
 class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
 {
-    double m_potentialEnergy;
 public:
     SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
 

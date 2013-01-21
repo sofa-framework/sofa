@@ -32,6 +32,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/SpringForceField.inl>
 #include <cassert>
+#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
+#include <sofa/component/linearsolver/EigenVectorWrapper.h>
 
 namespace sofa
 {
@@ -50,16 +54,17 @@ void StiffSpringForceField<DataTypes>::init()
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addSpringForce(
-    double& potentialEnergy,
-    VecDeriv& f1,
-    const  VecCoord& p1,
-    const VecDeriv& v1,
-    VecDeriv& f2,
-    const  VecCoord& p2,
-    const  VecDeriv& v2,
-    int i,
-    const Spring& spring)
+        Real& potentialEnergy,
+        VecDeriv& f1,
+        const  VecCoord& p1,
+        const VecDeriv& v1,
+        VecDeriv& f2,
+        const  VecCoord& p2,
+        const  VecDeriv& v2,
+        int i,
+        const Spring& spring)
 {
+    //    this->cpt_addForce++;
     int a = spring.m1;
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
@@ -134,7 +139,6 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
-
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
     const VecDeriv& v1 =  data_v1.getValue();
@@ -146,14 +150,11 @@ void StiffSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparam
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
-    m_potentialEnergy = 0;
-    //serr<<"StiffSpringForceField<DataTypes>::addForce()"<<sendl;
+    this->m_potentialEnergy = 0;
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        //serr<<"StiffSpringForceField<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;
-        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
-
     data_f1.endEdit();
     data_f2.endEdit();
 }
@@ -190,6 +191,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+
     double kFact = mparams->kFactor();
     if (this->mstate1 == this->mstate2)
     {
@@ -204,6 +206,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
             unsigned p2 = mat.offset+Deriv::total_size*s.m2;
             const Mat& m = this->dfdx[e];
             for(int i=0; i<N; i++)
+            {
                 for (int j=0; j<N; j++)
                 {
                     Real k = (Real)(m[i][j]*kFact);
@@ -212,6 +215,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
                     mat.matrix->add(p2+i,p1+j, k);//or mat->add(p1+j,p2+i, k);
                     mat.matrix->add(p2+i,p2+j, -k);
                 }
+            }
         }
     }
     else
@@ -231,31 +235,48 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
             unsigned p2 = /*mat.offset+*/Deriv::total_size*s.m2;
             Mat m = this->dfdx[e]* (Real) kFact;
             if (mat11)
+            {
                 for(int i=0; i<N; i++)
+                {
                     for (int j=0; j<N; j++)
                     {
                         mat11.matrix->add(mat11.offset+p1+i,mat11.offset+p1+j, -(Real)m[i][j]);
                     }
+                }
+            }
             if (mat12)
+            {
                 for(int i=0; i<N; i++)
+                {
                     for (int j=0; j<N; j++)
                     {
                         mat12.matrix->add(mat12.offRow+p1+i,mat12.offCol+p2+j,  (Real)m[i][j]);
                     }
+                }
+            }
             if (mat21)
+            {
                 for(int i=0; i<N; i++)
+                {
                     for (int j=0; j<N; j++)
                     {
                         mat21.matrix->add(mat21.offRow+p1+i,mat21.offCol+p2+j,  (Real)m[i][j]);
                     }
+                }
+            }
             if (mat22)
+            {
                 for(int i=0; i<N; i++)
+                {
                     for (int j=0; j<N; j++)
                     {
                         mat22.matrix->add(mat22.offset+p2+i,mat11.offset+p2+j, -(Real)m[i][j]);
                     }
+                }
+            }
         }
     }
+
 }
 
 } // namespace interactionforcefield

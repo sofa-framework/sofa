@@ -187,6 +187,7 @@ public:
     virtual SReal getDampingRatio() { serr<<"BaseForceField::getDampingRatio not implemented"<<sendl; return 0; }
 
     /// @}
+
 };
 
 } // namespace behavior

@@ -48,6 +48,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
     Data< Real >  linesStiffness;
@@ -94,7 +96,6 @@ protected:
     virtual ~MeshSpringForceField();
 public:
     virtual double getPotentialEnergy() const;
-
 
     Real getStiffness() const { return linesStiffness.getValue(); }
     Real getLinesStiffness() const { return linesStiffness.getValue(); }

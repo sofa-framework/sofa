@@ -82,7 +82,7 @@ public:
     virtual void clearRowsCols(int imin, int imax) { clearRows(imin,imax); clearCols(imin,imax); }
     /** Make the final data setup after adding entries. For most concrete types, this method does nothing.
       */
-    virtual void compress() {}
+    virtual void compress() {std::cerr << "BaseMatrix::compress() : Do Nothing" << std::endl;}
 
     /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
     /// @{

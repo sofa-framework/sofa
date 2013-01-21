@@ -75,10 +75,9 @@ public:
 
 protected:
     sofa::helper::vector<Mat>  dfdx;
-    double m_potentialEnergy;
 
     /// Accumulate the spring force and compute and store its stiffness
-    virtual void addSpringForce(double& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, int i, const Spring& spring);
+    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, int i, const Spring& spring);
 
     /// Apply the stiffness, i.e. accumulate df given dx
     virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
@@ -104,7 +103,7 @@ public:
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const {std::cout << "coucou" << std::endl; return this->m_potentialEnergy; }
     ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
 
     virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);

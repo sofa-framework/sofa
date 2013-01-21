@@ -75,6 +75,15 @@ public:
         serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
     }
 
+    /// initialization to export potential energy to gnuplot files format
+    virtual void initGnuplot(const std::string path){
+        std::cout << path << std::endl << "Warning ::: initGnuplot not implemented for all interaction force field" << std::endl;
+    }
+
+    /// export kinetic and potential energy state at "time" to a gnuplot file
+    virtual void exportGnuplot(double time){
+        std::cout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << std::endl;
+    }
 
 };
 

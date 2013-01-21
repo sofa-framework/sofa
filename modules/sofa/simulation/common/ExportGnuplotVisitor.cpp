@@ -38,6 +38,18 @@ using std::endl;
 
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
+    if (node->interactionForceField.getSize() != 0)
+    {
+        int size = node->interactionForceField.getSize();
+        for(int i = 0; i < size; i++)
+        {
+            if (node->interactionForceField.getValue()[i] )
+            {
+                node->interactionForceField.getValue()[i]->initGnuplot(gnuplotDirectory);
+            }
+        }
+    }
+
     if (node->mechanicalState)
     {
         node->mechanicalState->initGnuplot(gnuplotDirectory);
@@ -57,6 +69,18 @@ ExportGnuplotVisitor::ExportGnuplotVisitor(const core::ExecParams* params /* PAR
 
 simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
+    if (node->interactionForceField.getSize() != 0)
+    {
+        int size = node->interactionForceField.getSize();
+        for(int i = 0; i < size; i++)
+        {
+            if (node->interactionForceField.getValue()[i] )
+            {
+                node->interactionForceField.getValue()[i]->exportGnuplot(m_time);
+            }
+        }
+    }
+
     if (node->mechanicalState)
     {
         node->mechanicalState->exportGnuplot(m_time);

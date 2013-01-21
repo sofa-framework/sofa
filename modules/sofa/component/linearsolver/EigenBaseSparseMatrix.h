@@ -157,29 +157,32 @@ public:
     void add(int i, int j, double v)
     {
         if( v!=0.0 )
+        {
             incoming[i][j]+=(Real)v;
-        //        cerr<<"EigenBaseSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
+            //            cerr<<"EigenBaseSparseMatrix::set, size = "<< this->rowSize()<<", "<< this->colSize() <<", entry: "<< i <<", "<<j<<" = "<< incoming[i][j] << endl;
+        }
     }
 
     /// Converts the incoming matrix to compressedIncoming and clears the incoming matrix.
+    /// Insert Method inspired by the following tutorial : http://eigen.tuxfamily.org/dox/TutorialSparse.html
     void compress_incoming()
     {
-        compressedIncoming.setZero();
         compressedIncoming.resize( compressedMatrix.rows(),compressedMatrix.cols() );
         if( incoming.empty() ) return;
-
         for( typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end(); r!=rend; r++ )
         {
             int row = (*r).first;
-            compressedIncoming.startVec(row);
+            //            compressedIncoming.startVec(row);
             for( typename RowMap::const_iterator c=(*r).second.begin(),cend=(*r).second.end(); c!=cend; c++ )
             {
                 int col = (*c).first;
                 Real val = (*c).second;
-                compressedIncoming.insertBack(row,col) = val;
+                //                compressedIncoming.insertBack(row,col) = val;
+                compressedIncoming.insert(row, col) = val; //modified
             }
         }
-        compressedIncoming.finalize();
+        compressedIncoming.makeCompressed(); //modified
+        //        compressedIncoming.finalize();
         incoming.clear();
     }
 
@@ -214,66 +217,66 @@ public:
         assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
     }
 
-//    /// Clears the matrix, sets the values from the scheduled list, and clears the replacement schedule list. @sa set(int i, int j, double v).
-//    virtual void compressReplace()
-//    {
-//        if( incoming.empty() ) return;
+    //    /// Clears the matrix, sets the values from the scheduled list, and clears the replacement schedule list. @sa set(int i, int j, double v).
+    //    virtual void compressReplace()
+    //    {
+    //        if( incoming.empty() ) return;
 
-//        Matrix cpy = eigenMatrix;
-//        eigenMatrix.resize(eigenMatrix.rows(),eigenMatrix.cols());
+    //        Matrix cpy = eigenMatrix;
+    //        eigenMatrix.resize(eigenMatrix.rows(),eigenMatrix.cols());
 
-//        typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end();
-//        for(int i=0; i<cpy.rows(); i++)
-//        {
-//            eigenMatrix.startVec(i);
-//            while( r!=rend && (*r).first<i) r++; // find incoming values in the current row
-//            if( r!=rend && (*r).first==i )
-//            {
-//                // there are incoming values in the current row, so interleave
-//                typename Matrix::InnerIterator j(cpy,i);         // iterator on the previous matrix value
-//                typename RowMap::const_iterator jj = (*r).second.begin(); // iterator on the incoming line
-//                while( j && jj!=(*r).second.end() )
-//                {
-//                    if( j.col()<(*jj).first )   // value already present
-//                    {
-//                        eigenMatrix.insertBack(i,j.col())= j.value();
-//                        ++j;
-//                    }
-//                    else    // incoming entry is inserted, or replace the current one
-//                    {
-//                        eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
-//                        if(j.col()==(*jj).first) // replacement
-//                            ++j;
-//                        else
-//                            jj++;
-//                    }
-//                }
-//                // interleaving is over. One of the two lists may be not finished yet.
-//                for(;j;++j)
-//                    eigenMatrix.insertBack(i,j.col())= j.value();
-//                for(;jj!=(*r).second.end();jj++)
-//                    eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
-//            }
-//            else // no new values to insert, just copy the previous values
-//            {
-//                for(typename Matrix::InnerIterator j(cpy,i); j; ++j)
-//                    eigenMatrix.insertBack(i,j.col())= j.value();
-//            }
-//        }
-//        eigenMatrix.finalize();
-//        incoming.clear();
-//    }
+    //        typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end();
+    //        for(int i=0; i<cpy.rows(); i++)
+    //        {
+    //            eigenMatrix.startVec(i);
+    //            while( r!=rend && (*r).first<i) r++; // find incoming values in the current row
+    //            if( r!=rend && (*r).first==i )
+    //            {
+    //                // there are incoming values in the current row, so interleave
+    //                typename Matrix::InnerIterator j(cpy,i);         // iterator on the previous matrix value
+    //                typename RowMap::const_iterator jj = (*r).second.begin(); // iterator on the incoming line
+    //                while( j && jj!=(*r).second.end() )
+    //                {
+    //                    if( j.col()<(*jj).first )   // value already present
+    //                    {
+    //                        eigenMatrix.insertBack(i,j.col())= j.value();
+    //                        ++j;
+    //                    }
+    //                    else    // incoming entry is inserted, or replace the current one
+    //                    {
+    //                        eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
+    //                        if(j.col()==(*jj).first) // replacement
+    //                            ++j;
+    //                        else
+    //                            jj++;
+    //                    }
+    //                }
+    //                // interleaving is over. One of the two lists may be not finished yet.
+    //                for(;j;++j)
+    //                    eigenMatrix.insertBack(i,j.col())= j.value();
+    //                for(;jj!=(*r).second.end();jj++)
+    //                    eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
+    //            }
+    //            else // no new values to insert, just copy the previous values
+    //            {
+    //                for(typename Matrix::InnerIterator j(cpy,i); j; ++j)
+    //                    eigenMatrix.insertBack(i,j.col())= j.value();
+    //            }
+    //        }
+    //        eigenMatrix.finalize();
+    //        incoming.clear();
+    //    }
 
 
-//    void endEdit(){
-////        compress();
-//        compressedMatrix.finalize();
-//    }
+    //    void endEdit(){
+    ////        compress();
+    //        compressedMatrix.finalize();
+    //    }
 
-//    void clear(int i, int j)
-//    {
-//        compressedMatrix.coeffRef(i,j) = (Real)0;
-//    }
+    //    void clear(int i, int j)
+    //    {
+    //        compressedMatrix.coeffRef(i,j) = (Real)0;
+    //    }
 
     /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
     void clearRow(int i)
@@ -468,15 +471,15 @@ public:
     MatrixAccessor getAccessor() { return MatrixAccessor(this); }
 
 
-//    /// Multiply the matrix by vector v and put the result in vector result
-//    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
-//    {
-//        result->resize(this->rowSize());
-//        // map the vectors and perform the product on the maps
-//        Eigen::Map<VectorEigen> vm( &((*v)[0]), v->size() );
-//        Eigen::Map<VectorEigen> rm( &((*result)[0]), result->size() );
-//        rm = eigenMatrix * vm;
-//    }
+    //    /// Multiply the matrix by vector v and put the result in vector result
+    //    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+    //    {
+    //        result->resize(this->rowSize());
+    //        // map the vectors and perform the product on the maps
+    //        Eigen::Map<VectorEigen> vm( &((*v)[0]), v->size() );
+    //        Eigen::Map<VectorEigen> rm( &((*result)[0]), result->size() );
+    //        rm = eigenMatrix * vm;
+    //    }
 
 
 

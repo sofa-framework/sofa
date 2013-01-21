@@ -45,7 +45,7 @@ public:
 protected:
     AttachBodyButtonSetting();
 public:
-    std::string getOperationType() {return "Attach";}
+    std::string getOperationType() {return "AdaptativeAttach";}
     Data<SReal> stiffness;
     Data<SReal> arrowSize;
     Data<SReal> showFactorSize;

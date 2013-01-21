@@ -55,6 +55,7 @@ public:
     ~DrawToolGL();
 
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f colour);
+    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f> colour);
 
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f colour);
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f colour);
