@@ -559,24 +559,6 @@ public:
         addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
     }
 
-    friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
-
     static const char* Name() { return "SparseMatrix"; }
 };
 
