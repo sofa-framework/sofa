@@ -153,7 +153,7 @@ template <class DataDeriv>
 void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
     const SetIndexArray & indices = f_indices.getValue();
-    VecBool blockedDirection = fixedDirections.getValue();
+    const VecBool& blockedDirection = fixedDirections.getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if (f_fixAll.getValue() == true)
     {
@@ -255,7 +255,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
-    VecBool blockedDirection = fixedDirections.getValue();
+    const VecBool& blockedDirection = fixedDirections.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row and Col
@@ -278,7 +278,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
     //cerr<<"PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
 
-    VecBool blockedDirection = fixedDirections.getValue();
+    const VecBool& blockedDirection = fixedDirections.getValue();
     const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -287,6 +287,26 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
             if (blockedDirection[c])
             {
                 vect->clear(offset + N * (*it) + c);
+            }
+        }
+    }
+}
+
+
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    unsigned blockSize = DataTypes::deriv_total_size;
+
+    const VecBool& blockedDirection = fixedDirections.getValue();
+    const SetIndexArray & indices = f_indices.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        for (unsigned int c = 0; c < blockSize; ++c)
+        {
+            if (blockedDirection[c])
+            {
+                M->clearRowCol( offset + (*it) * blockSize );
             }
         }
     }

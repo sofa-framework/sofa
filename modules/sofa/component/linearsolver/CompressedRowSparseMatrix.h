@@ -1473,7 +1473,7 @@ public:
                 }
             }
         }
-        //res.compress(); // should not be necessary
+        res.compress();
     }
 
 
@@ -1527,7 +1527,7 @@ public:
                 }
             }
         }
-        //res.compress(); // should not be necessary
+        res.compress();
     }
 
 
@@ -1826,23 +1826,6 @@ public:
         return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
     }
 
-    friend std::ostream& operator << (std::ostream& out, const Matrix& v )
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
 
     static const char* Name()
     {

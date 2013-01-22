@@ -330,23 +330,6 @@ public:
         return res;
     }
 
-    friend std::ostream& operator << (std::ostream& out, const BlocFullMatrix<N,T>& v)
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
 
     static const char* Name();
 };
@@ -737,24 +720,6 @@ public:
             }
         }
         return res;
-    }
-
-    friend std::ostream& operator << (std::ostream& out, const BTDMatrix<N,T>& v)
-    {
-        int nx = v.colSize();
-        int ny = v.rowSize();
-        out << "[";
-        for (int y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (int x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
     }
 
     static const char* Name();
