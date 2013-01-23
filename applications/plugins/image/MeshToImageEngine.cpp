@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_MESHTOIMAGEENGINE_CPP
+#define SOFA_IMAGE_MeshToImageEngine_CPP
 
 #include "MeshToImageEngine.h"
 #include <sofa/core/ObjectFactory.h>
@@ -40,13 +40,17 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(MeshToImageEngine)
 
-int MeshToImageEngineClass = core::RegisterObject("Compute a rasterization image from a mesh")
+int MeshToImageEngineClass = core::RegisterObject("Compute a rasterization image from several meshes")
         .add<MeshToImageEngine<ImageB> >(true)
         .add<MeshToImageEngine<ImageUC> >()
         .add<MeshToImageEngine<ImageUS> >()
+        .add<MeshToImageEngine<ImageD> >()
         ;
 
 template class SOFA_IMAGE_API MeshToImageEngine<ImageB>;
+template class SOFA_IMAGE_API MeshToImageEngine<ImageUC>;
+template class SOFA_IMAGE_API MeshToImageEngine<ImageUS>;
+template class SOFA_IMAGE_API MeshToImageEngine<ImageD>;
 
 } //
 } // namespace component
