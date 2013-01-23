@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_MESHTOIMAGEENGINE_H
-#define SOFA_IMAGE_MESHTOIMAGEENGINE_H
+#ifndef SOFA_IMAGE_MeshToImageEngine_H
+#define SOFA_IMAGE_MeshToImageEngine_H
 
 #include "initImage.h"
 #include "ImageTypes.h"
@@ -72,7 +72,9 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > voxelSize;
+    Data< vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    typedef helper::WriteAccessor<Data< vector<Real> > > waVecReal;
+    Data< Vec<3,unsigned> > nbVoxels;
     Data< bool > rotateImage;
     Data< unsigned int > padSize;
     Data< unsigned int > subdiv;
@@ -93,62 +95,72 @@ public:
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    helper::vector< Data< SeqPositions > *> vf_positions;
     Data< SeqPositions > closingPosition;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
-    Data< SeqTriangles > closingTriangles;
+    helper::vector< Data< SeqTriangles >*> vf_triangles;
+    Data< SeqTriangles > closingTriangles; // closing could be done per mesh
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
-    Data< SeqEdges > edges;
+    helper::vector< Data< SeqEdges >*> vf_edges;
 
-    Data< double > value;
+//Data< double > value;
+    helper::vector< Data< double >*> vf_values;
     Data< double > closingValue;
+
+    Data<unsigned int> f_nbMeshes;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
-        , voxelSize(initData(&voxelSize,(Real)(1.0),"voxelSize","voxel Size"))
+      , voxelSize(initData(&voxelSize,vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , nbVoxels(initData(&nbVoxels,Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
         , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
         , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
         , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
-        , position(initData(&position,SeqPositions(),"position","input positions"))
         , closingPosition(initData(&closingPosition,SeqPositions(),"closingPosition","ouput closing positions"))
-        , triangles(initData(&triangles,SeqTriangles(),"triangles","input triangles"))
         , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
-        , edges(initData(&edges,SeqEdges(),"edges","input edges"))
-        , value(initData(&value,1.,"value","pixel value inside mesh"))
         , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
+        , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
     {
-        position.setReadOnly(true);
-        triangles.setReadOnly(true);
-        edges.setReadOnly(true);
+        createInputMeshesData();
     }
 
     virtual ~MeshToImageEngine()
     {
+        deleteInputDataVector(vf_positions);
+        deleteInputDataVector(vf_edges);
+        deleteInputDataVector(vf_triangles);
+        deleteInputDataVector(vf_values);
     }
 
     virtual void init()
     {
-        addInput(&position);
-        addInput(&triangles);
-        addInput(&edges);
+        addInput(&f_nbMeshes);
+        createInputMeshesData();
+
+        // HACK to enforce copying linked data so the first read is not done in update(). Because the first read enforces the copy, then tag the data as modified and all update() again.
+        for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+        {
+            this->vf_positions[meshId]->getValue();
+            this->vf_edges[meshId]->getValue();
+            this->vf_triangles[meshId]->getValue();
+        }
+
         addOutput(&closingPosition);
         addOutput(&closingTriangles);
         addOutput(&image);
         addOutput(&transform);
-        setDirtyValue();
     }
 
     virtual void reinit() { update(); }
@@ -159,42 +171,62 @@ protected:
     {
         cleanDirty();
 
-        this->closeMesh();
+        createInputMeshesData();
 
-        raPositions pos(this->position);        unsigned int nbp = pos.size();
-        raTriangles tri(this->triangles);       unsigned int nbtri = tri.size();
-        raEdges edg(this->edges);               unsigned int nbedg = edg.size();
-        raPositions clpos(this->closingPosition);
-        raTriangles cltri(this->closingTriangles);
-
-        if(!nbp || (!nbtri && !nbedg) ) return;
-
-
-        //        bool isTransformSet=false;
-        //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
+        // to be backward-compatible, if less than 3 values, fill with the last one
+        waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
+        for( unsigned i=vs.size() ; i<3 ; ++i ) vs.push_back( vs[vs_lastid] );
+        vs.resize(3);
 
         waImage iml(this->image);
         waTransform tr(this->transform);
 
-        // update transform
-        for(unsigned int j=0; j<3; j++) tr->getScale()[j]=this->voxelSize.getValue();
 
-        Real BB[3][2]= { {pos[0][0],pos[0][0]} , {pos[0][1],pos[0][1]} , {pos[0][2],pos[0][2]} };
+        // update transform
+
+        Real BB[3][2] = { {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} , {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} , {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} };
+
         if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {
-            for(unsigned int i=1; i<nbp; i++) for(unsigned int j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
             for(unsigned int j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
+
+            for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+            {
+                raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+
+                for(unsigned int i=0; i<nbp; i++) for(unsigned int j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
+            }
+
+            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(unsigned int j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
+            else for(unsigned int j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
+
             for(unsigned int j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
         }
         else  // use Oriented Bounding Box
         {
+            unsigned nbpTotal = 0; // total points over all meshes
+
             // get mean and covariance
             Coord mean; mean.fill(0);
-            for(unsigned int i=0; i<nbp; i++) mean+=pos[i];
-            mean/=(Real)nbp;
+            for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+            {
+                raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+                for(unsigned int i=0; i<nbp; i++) mean+=pos[i];
+                nbpTotal += nbp;
+            }
+            mean/=(Real)nbpTotal;
+
+
+
             Mat<3,3,Real> M; M.fill(0);
-            for(unsigned int i=0; i<nbp; i++)  for(unsigned int j=0; j<3; j++)  for(unsigned int k=j; k<3; k++)  M[j][k] += (pos[i][j] - mean[j]) * (pos[i][k] - mean[k]);
-            M/=(Real)nbp;
+            for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+            {
+                raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+                for(unsigned int i=0; i<nbp; i++)  for(unsigned int j=0; j<3; j++)  for(unsigned int k=j; k<3; k++)  M[j][k] += (pos[i][j] - mean[j]) * (pos[i][k] - mean[k]);
+            }
+            M/=(Real)nbpTotal;
+
+
             // get eigen vectors of the covariance matrix
             NEWMAT::SymmetricMatrix e(3); e = 0.0;
             for(unsigned int j=0; j<3; j++) { for(unsigned int k=j; k<3; k++)  e(j+1,k+1) = M[j][k]; for(unsigned int k=0; k<j; k++)  e(k+1,j+1) = e(j+1,k+1); }
@@ -222,12 +254,21 @@ protected:
             //std::cout<<"Mtest="<<Mtest<<std::endl;
 
             // get bb
-            Coord P=MT*pos[0];
-            for(unsigned int i=0; i<3; i++) BB[i][0] = BB[i][1] = P[i];
-            for(unsigned int i=1; i<nbp; i++) { P=MT*(pos[i]);  for(unsigned int j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
+            Coord P;
+            for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
+            {
+                raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+                for(unsigned int i=0; i<nbp; i++) { P=MT*(pos[i]);  for(unsigned int j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
+            }
+
+            if( nbVoxels.getValue()[0]!=0 && nbVoxels.getValue()[1]!=0 && nbVoxels.getValue()[2]!=0 ) for(unsigned int j=0; j<3; j++) tr->getScale()[j] = (BB[j][1] - BB[j][0]) / nbVoxels.getValue()[j];
+            else for(unsigned int j=0; j<3; j++) tr->getScale()[j] = this->voxelSize.getValue()[j];
+
             P=Coord(BB[0][0],BB[1][0],BB[2][0]) - tr->getScale()*this->padSize.getValue();
             tr->getTranslation()=M*(P);
         }
+
+
 
         tr->getOffsetT()=(Real)0.0;
         tr->getScaleT()=(Real)1.0;
@@ -238,55 +279,114 @@ protected:
         for(unsigned int j=0; j<3; j++) dim[j]=1+ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
 
+
+
         CImg<T>& im=iml->getCImg();
-        T color0=(T)0,color1=(T)this->value.getValue(),color2=(T)this->closingValue.getValue();
-        im.fill(color0);
+        im.fill((T)0);
 
-        // draw edges
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing edges.."<<std::endl;
+        // the working image, where rasterize one mesh (with 4 values,  0=empty, 1=rasterized, 2=closing, 3=outside)
+        CImg<unsigned char> imCurrent;
+        imCurrent.assign( dim[0], dim[1], dim[2], 1 );
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
-#endif
-        for(unsigned int i=0; i<nbedg; i++)
+
+
+        for( unsigned meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
-            Coord pts[2];
-            for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
-            this->draw_line(im,pts[0],pts[1],color1,this->subdiv.getValue());
+            imCurrent.fill((unsigned char)0);
+
+            raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
+            raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
+            raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
+
+            if(!nbp || (!nbtri && !nbedg) ) continue;
+
+
+            //        bool isTransformSet=false;
+            //        if(this->transform.isSet()) { isTransformSet=true; if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelize using existing transform.."<<std::endl;}
+
+
+
+            // draw all rasterized object with color 1
+
+            // draw edges
+            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=0; i<nbedg; i++)
+            {
+                Coord pts[2];
+                for(unsigned int j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
+                this->draw_line(imCurrent,pts[0],pts[1],(unsigned char)1,this->subdiv.getValue());
+            }
+
+//            // draw filled faces
+            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=0; i<nbtri; i++)
+            {
+                Coord pts[3];
+                for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
+                this->draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)1,this->subdiv.getValue());
+                this->draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
+
+
+
+
+            // draw closing faces with color 2
+
+            raTriangles cltri(this->closingTriangles);
+            unsigned previousClosingTriSize = cltri.size();
+
+
+            this->closeMesh( meshId );
+
+            raPositions clpos(this->closingPosition);
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            {
+                Coord pts[3];
+                for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+                this->draw_triangle(imCurrent,pts[0],pts[1],pts[2],(unsigned char)2,this->subdiv.getValue());
+                this->draw_triangle(imCurrent,pts[1],pts[2],pts[0],(unsigned char)2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
+
+
+
+
+            T color = (T)this->vf_values[meshId]->getValue();
+            T colorClosing;
+            if( this->closingValue.getValue()==0 ) colorClosing=color;
+            else colorClosing = (T)this->closingValue.getValue();
+
+
+            // flood fill from the exterior point (0,0,0) with the color 3 so every voxel==3 are outside
+            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
+
+            unsigned char fillColor = (unsigned char)3;
+            imCurrent.draw_fill(0,0,0,&fillColor);
+            cimg_foroff(imCurrent,off)
+            {
+                if( imCurrent[off]!=fillColor ) // not outside
+                {
+                    if( !imCurrent[off] || imCurrent[off]==(unsigned char)1 ) im[off]=color; // inside or rasterized
+                    else if( imCurrent[off]==(unsigned char)2 ) im[off]=colorClosing; // closing
+                }
+            }
         }
 
-        // draw filled faces
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelizing triangles.."<<std::endl;
+        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<": Voxelization done"<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
-#endif
-        for(unsigned int i=0; i<nbtri; i++)
-        {
-            Coord pts[3];
-            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],color1,this->subdiv.getValue());
-            this->draw_triangle(im,pts[1],pts[2],pts[0],color1,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-        }
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
-#endif
-        for(unsigned int i=0; i<cltri.size(); i++)
-        {
-            Coord pts[3];
-            for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],color2,this->subdiv.getValue());
-            this->draw_triangle(im,pts[1],pts[2],pts[0],color2,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-        }
-
-        // flood fill from the exterior point (0,0,0)
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Filling object.."<<std::endl;
-        CImg<T> im2=im;
-        im2.draw_fill(0,0,0,&color1);
-        cimg_foroff(im,off) if(!im2[off]) im[off]=color1;
-
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: Voxelization done."<<std::endl;
+        cleanDirty();
     }
 
 
@@ -296,11 +396,11 @@ protected:
     }
 
 
-
-    void draw_line(CImg<T>& im,const Coord& p0,const Coord& p1,const T& color,const unsigned int subdiv)
+    template<class PixelT>
+    void draw_line(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const PixelT& color,const unsigned int subdiv)
     // floating point bresenham
     {
-        Coord P0(p0),P1(p1);
+          Coord P0(p0),P1(p1);
 
 //        unsigned int dim[3]={im.width(),im.height(),im.depth()};
 //        for(unsigned int j=0;j<3;j++)
@@ -323,7 +423,8 @@ protected:
         }
     }
 
-    void draw_triangle(CImg<T>& im,const Coord& p0,const Coord& p1,const Coord& p2,const T& color,const unsigned int subdiv)
+    template<class PixelT>
+    void draw_triangle(CImg<PixelT>& im,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);
@@ -351,10 +452,10 @@ protected:
     }
 
 
-    void closeMesh()
+    void closeMesh( unsigned meshId )
     {
-        raPositions pos(this->position);
-        raTriangles tri(this->triangles);
+        raPositions pos(*this->vf_positions[meshId]);
+        raTriangles tri(*this->vf_triangles[meshId]);
 
         waPositions clpos(this->closingPosition);
         waTriangles cltri(this->closingTriangles);
@@ -421,7 +522,105 @@ protected:
     }
 
 
+
+
+
+
+
+
+    void createInputMeshesData(int nb = -1)
+    {
+        unsigned int n = (nb < 0) ? f_nbMeshes.getValue() : (unsigned int)nb;
+
+        createInputDataVector(n, vf_positions, "position", "input positions for mesh ", SeqPositions(), true);
+        createInputDataVector(n, vf_edges, "edges", "input edges for mesh ", SeqEdges(), true);
+        createInputDataVector(n, vf_triangles, "triangles", "input triangles for mesh ", SeqTriangles(), true);
+        createInputDataVector(n, vf_values, "value", "pixel value inside mesh ", 1., false);
+        if (n != f_nbMeshes.getValue())
+            f_nbMeshes.setValue(n);
+    }
+
+    template<class T>
+    void createInputDataVector(unsigned int nb, helper::vector< Data<T>* >& vf, std::string name, std::string help, const T&defaultValue, bool readOnly=false)
+    {
+        vf.reserve(nb);
+        for (unsigned int i=vf.size(); i<nb; ++i)
+        {
+            std::ostringstream oname, ohelp;
+            oname << name;
+            ohelp << help;
+
+            if( i>0 ) // to stay backward-compatible with the previous definition voxelizing only one input mesh
+            {
+                oname << (i+1);
+                ohelp << (i+1);
+            }
+
+            std::string name_i = oname.str();
+            std::string help_i = ohelp.str();
+            Data<T>* d = new Data<T>(help_i.c_str(), true, false);
+            d->setName(name_i);
+            d->setReadOnly(readOnly);
+            d->setValue(defaultValue);
+            vf.push_back(d);
+            this->addData(d);
+            this->addInput(d);
+        }
+    }
+
+    template<class T>
+    void deleteInputDataVector(helper::vector< Data<T>* >& vf)
+    {
+        for (unsigned int i=0; i<vf.size(); ++i)
+        {
+            this->delInput(vf[i]);
+            delete vf[i];
+        }
+        vf.clear();
+    }
+
+public:
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        const char* p = arg->getAttribute(f_nbMeshes.getName().c_str());
+        if (p)
+        {
+            std::string nbStr = p;
+            sout << "parse: setting nbMeshes="<<nbStr<<sendl;
+            f_nbMeshes.read(nbStr);
+            createInputMeshesData();
+        }
+        Inherit1::parse(arg);
+    }
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str )
+    {
+        std::map<std::string,std::string*>::const_iterator it = str.find(f_nbMeshes.getName());
+        if (it != str.end() && it->second)
+        {
+            std::string nbStr = *it->second;
+            sout << "parseFields: setting nbMeshes="<<nbStr<<sendl;
+            f_nbMeshes.read(nbStr);
+            createInputMeshesData();
+        }
+        Inherit1::parseFields(str);
+    }
+
 };
+
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
+extern template class SOFA_IMAGE_API MeshToImageEngine<ImageB>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<ImageUC>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<ImageUS>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<ImageD>;
+#endif
+
+
 
 
 } // namespace engine
@@ -430,4 +629,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_IMAGE_MESHTOIMAGEENGINE_H
+#endif // SOFA_IMAGE_MeshToImageEngine_H
