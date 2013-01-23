@@ -35,6 +35,8 @@ namespace core
 namespace objectmodel
 {
 
+//#define SOFA_DDG_TRACE
+
 BaseData::BaseData(const char* h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
