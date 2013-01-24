@@ -156,6 +156,7 @@ public:
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src,  unsigned int &offset); \
     template<> inline void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);
 
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec1fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec2fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
@@ -182,6 +183,7 @@ CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
 
+using sofa::gpu::cuda::CudaVec1fTypes;
 using sofa::gpu::cuda::CudaVec2fTypes;
 using sofa::gpu::cuda::CudaVec3fTypes;
 using sofa::gpu::cuda::CudaVec3f1Types;
@@ -191,6 +193,7 @@ using sofa::gpu::cuda::CudaRigid3fTypes;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
+extern template class sofa::component::container::MechanicalObject<CudaVec1fTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaVec2fTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaVec3fTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaVec3f1Types>;
