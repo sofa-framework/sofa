@@ -137,6 +137,7 @@ public:
 };
 
 typedef sofa::defaulttype::Vec3f Vec3f;
+typedef sofa::defaulttype::Vec1f Vec1f;
 typedef sofa::defaulttype::Vec2f Vec2f;
 typedef sofa::defaulttype::Vec6f Vec6f;
 
@@ -350,6 +351,16 @@ inline const char* CudaVec3fTypes::Name()
     return "CudaVec3f";
 }
 
+
+typedef CudaVectorTypes<Vec1f,Vec1f,float> CudaVec1fTypes;
+typedef CudaVec1fTypes CudaVec1Types;
+
+template<>
+inline const char* CudaVec1fTypes::Name()
+{
+    return "CudaVec1f";
+}
+
 typedef CudaVectorTypes<Vec2f,Vec2f,float> CudaVec2fTypes;
 typedef CudaVec2fTypes CudaVec2Types;
 
@@ -554,6 +565,7 @@ inline const char* CudaRigid3fTypes::Name()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Vec1d;
 using sofa::defaulttype::Vec2d;
 using sofa::defaulttype::Vec6d;
 typedef Vec3r1<double> Vec3d1;
@@ -565,6 +577,15 @@ template<>
 inline const char* CudaVec3dTypes::Name()
 {
     return "CudaVec3d";
+}
+
+typedef CudaVectorTypes<Vec1d,Vec1d,double> CudaVec1dTypes;
+//typedef CudaVec1dTypes CudaVec1Types;
+
+template<>
+inline const char* CudaVec1dTypes::Name()
+{
+    return "CudaVec1d";
 }
 
 typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
