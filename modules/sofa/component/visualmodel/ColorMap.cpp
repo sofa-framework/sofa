@@ -200,12 +200,11 @@ void ColorMap::reinit()
         }
 
     } else if (scheme == "Red") {
-        //float step = 1.4/(nColors);
-        float step = 1.4/(nColors);
+        float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
             entries.push_back(Color(
-                    0.3 + i*step, 0.0, 0.0,
+                    0.3f + i*step, 0.0, 0.0,
                     1.0 // alpha
                     ));
         }
@@ -219,12 +218,11 @@ void ColorMap::reinit()
 
 
     } else if (scheme == "Green") {
-        //float step = 1.4/(nColors);
-        float step = 1.4/(nColors);
+        float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
             entries.push_back(Color(
-                    0.0, 0.3 + i*step, 0.0,
+                    0.0, 0.3f + i*step, 0.0,
                     1.0 // alpha
                     ));
         }
@@ -238,12 +236,11 @@ void ColorMap::reinit()
 
 
     } else if (scheme == "Blue") {
-        //float step = 1.4/(nColors);
-        float step = 1.4/(nColors);
+        float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
             entries.push_back(Color(
-                    0.0, 0.0, 0.3 + i*step,
+                    0.0, 0.0, 0.3f + i*step,
                     1.0 // alpha
                     ));
         }
