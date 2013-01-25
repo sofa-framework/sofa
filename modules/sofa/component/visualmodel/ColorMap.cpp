@@ -119,10 +119,13 @@ ColorMap::ColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
 {
-    f_colorScheme.beginEdit()->setNames(4,
+    f_colorScheme.beginEdit()->setNames(6,
         "Red to Blue",  // HSV space
         "Blue to Red",  // HSV space
         "HSV",          // HSV space
+        "Red",          // RGB space
+        "Green",        // RGB space
+        "Blue",         // RGB space
         "Custom"        // TODO: Custom colors
         );
     f_colorScheme.beginEdit()->setSelectedItem("HSV");
@@ -195,6 +198,63 @@ void ColorMap::reinit()
                     1.0 // alpha
                     ));
         }
+
+    } else if (scheme == "Red") {
+        //float step = 1.4/(nColors);
+        float step = 1.4/(nColors);
+        for (unsigned int i=0; i<nColors/2; i++)
+        {
+            entries.push_back(Color(
+                    0.3 + i*step, 0.0, 0.0,
+                    1.0 // alpha
+                    ));
+        }
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        {
+            entries.push_back(Color(
+                    1.0, i*step, i*step,
+                    1.0 // alpha
+                    ));
+        }
+
+
+    } else if (scheme == "Green") {
+        //float step = 1.4/(nColors);
+        float step = 1.4/(nColors);
+        for (unsigned int i=0; i<nColors/2; i++)
+        {
+            entries.push_back(Color(
+                    0.0, 0.3 + i*step, 0.0,
+                    1.0 // alpha
+                    ));
+        }
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        {
+            entries.push_back(Color(
+                    i*step, 1.0, i*step,
+                    1.0 // alpha
+                    ));
+        }
+
+
+    } else if (scheme == "Blue") {
+        //float step = 1.4/(nColors);
+        float step = 1.4/(nColors);
+        for (unsigned int i=0; i<nColors/2; i++)
+        {
+            entries.push_back(Color(
+                    0.0, 0.0, 0.3 + i*step,
+                    1.0 // alpha
+                    ));
+        }
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        {
+            entries.push_back(Color(
+                    i*step, i*step, 1.0,
+                    1.0 // alpha
+                    ));
+        }
+
 
     } else {
         // HSV is the default
