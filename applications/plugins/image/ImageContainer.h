@@ -45,7 +45,7 @@
 #endif
 
 
-namespace sofa
+namespace sofa 
 {
 
 namespace component
@@ -111,17 +111,18 @@ public:
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
     ImageContainer() : Inherited()
-        , image(initData(&image,ImageTypes(),"image","image"))
-        , transform(initData(&transform, TransformType(), "transform" , ""))
-        , m_filename(initData(&m_filename,"filename","Image file"))
-        , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
-        , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
-        , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
+      , image(initData(&image,ImageTypes(),"image","image"))
+      , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
+      , m_filename(initData(&m_filename,"filename","Image file"))
+      , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
+      , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
+      , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
     {
         this->addAlias(&image, "inputImage");
         this->addAlias(&transform, "inputTransform");
         this->addAlias(&nFrames, "nFrames");
-        transform.setGroup("Transform");
+        this->transform.setGroup("Transform");
+        this->transform.unset();
         f_listening.setValue(true);  // to update camera during animate
     }
 
@@ -136,8 +137,18 @@ public:
 
     virtual void init()
     {
+        bool set = false;
         waImage wimage(this->image);
+        if (this->transform.isSet())
+            set = true;
         waTransform wtransform(this->transform);
+        if (!set)
+            this->transform.unset();
+
+        if (this->transform.isSet())
+            std::cout << "Transform is set" << std::endl;
+        else
+            std::cout << "Transform is NOT set" << std::endl;
 
         if(!wimage->getCImgList().size())
             if(!load())
@@ -148,7 +159,6 @@ public:
                 }
 
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
-
         wtransform->update(); // update of internal data
     }
 
@@ -157,52 +167,49 @@ public:
 
 protected:
 
-    Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
-    {
-        Mat<3,3,Real> rotMatrix;
-        float c, s, k1, k2;
-        float TH_TINY = 0.00001;
+	Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
+	{
+		Mat<3,3,Real> rotMatrix;
+		float c, s, k1, k2;
+		float TH_TINY = 0.00001;
 
-        float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
-        float theta = sqrt( theta2 );
-        if (theta > TH_TINY)
-        {
-            c = cos(theta);
-            s = sin(theta);
-            k1 = s / theta;
-            k2 = (1 - c) / theta2;
-        }
-        else    // Taylor expension around theta = 0
-        {
-            k2 = 1.0/2.0 - theta2/24.0;
-            c = 1.0 - theta2*k2;
-            k1 = 1.0 - theta2/6;
-        }
+	    float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
+	    float theta = sqrt( theta2 );
+	    if (theta > TH_TINY){
+			c = cos(theta);
+			s = sin(theta);
+			k1 = s / theta;
+			k2 = (1 - c) / theta2;
+		}
+		else {  // Taylor expension around theta = 0
+			k2 = 1.0/2.0 - theta2/24.0;
+			c = 1.0 - theta2*k2;
+			k1 = 1.0 - theta2/6;
+		}
 
-        /* I + M*Mt */
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j <= i; j++)
-            {
-                rotMatrix(i,j) = k2 * rotVec[i] * rotVec[j] ;
-                if (i != j)
-                    rotMatrix(j,i) = rotMatrix(i,j);
-                else
-                    rotMatrix(i,i) = rotMatrix(i,i) + c ;
-            }
-        }
-        double aux = k1 * rotVec[2];
-        rotMatrix(0,1) = rotMatrix(0,1) - aux;
-        rotMatrix(1,0) = rotMatrix(1,0) + aux;
-        aux = k1 * rotVec[1];
-        rotMatrix(0,2) = rotMatrix(0,2) + aux;
-        rotMatrix(2,0) = rotMatrix(2,0) - aux;
-        aux = k1 * rotVec[0];
-        rotMatrix(1,2) = rotMatrix(1,2) - aux;
-        rotMatrix(2,1) = rotMatrix(2,1) + aux;
+	   /* I + M*Mt */
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j <= i; j++){
+				rotMatrix(i,j) = k2 * rotVec[i] * rotVec[j] ;
+				if (i != j)
+					rotMatrix(j,i) = rotMatrix(i,j);
+				else
+					rotMatrix(i,i) = rotMatrix(i,i) + c ;
+		     }
+		}
+	   double aux = k1 * rotVec[2];
+	   rotMatrix(0,1) = rotMatrix(0,1) - aux;
+	   rotMatrix(1,0) = rotMatrix(1,0) + aux;
+	   aux = k1 * rotVec[1];
+	   rotMatrix(0,2) = rotMatrix(0,2) + aux;
+	   rotMatrix(2,0) = rotMatrix(2,0) - aux;
+	   aux = k1 * rotVec[0];
+	   rotMatrix(1,2) = rotMatrix(1,2) - aux;
+	   rotMatrix(2,1) = rotMatrix(2,1) + aux;
 
-        return rotMatrix;
-    }
+	   return rotMatrix;
+	}
 
     bool load()
     {
@@ -227,63 +234,66 @@ protected:
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
 
-        // read image
-        //Load .inr.gz using ZLib
-        if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
-        {
-            float voxsize[3];
-            float translation[3]= {0.,0.,0.}, rotation[3]= {0.,0.,0.};
-            CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
-            wimage->getCImgList().push_back(img);
+		 // read image
+		//Load .inr.gz using ZLib
+		if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
+		{
+			float voxsize[3];
+			float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
+			CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
+			wimage->getCImgList().push_back(img);
 
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
-            for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]= (Real)translation[i];
+			for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
 
-            Mat<3,3,Real> R;
-            R = RotVec3DToRotMat3D(rotation);
+			Mat<3,3,Real> R;
+			R = RotVec3DToRotMat3D(rotation);
             helper::Quater< float > q; q.fromMatrix(R);
             // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
             if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-            wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-            wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            if (!this->transform.isSet()) {
+                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            }
 //			Real t0 = wtransform->getRotation()[0];
 //			Real t1 = wtransform->getRotation()[1];
 //			Real t2 = wtransform->getRotation()[2];
 
-        }
+		}
         else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                 || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
         {
             if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
-            double scale[3]= {1.,1.,1.},translation[3]= {0.,0.,0.},affine[9]= {1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
             bool isPerspective=false;
             wimage->getCImgList().assign(load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)scale[i];
-            for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Mat<3,3,Real> R; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) R[i][j]=(Real)affine[3*i+j];
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
             helper::Quater< Real > q; q.fromMatrix(R);
             // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
             if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-            wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-            wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
-
-            wtransform->getOffsetT()=(Real)offsetT;
-            wtransform->getScaleT()=(Real)scaleT;
-            wtransform->isPerspective()=isPerspective;
+            if (!this->transform.isSet()) {
+                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getOffsetT()=(Real)offsetT;
+                wtransform->getScaleT()=(Real)scaleT;
+                wtransform->isPerspective()=isPerspective;
+            }
         }
         else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
         {
             // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
             std::ifstream fileStream (fname.c_str(), std::ifstream::in);
-            if (!fileStream.is_open()) { serr << "Can not open " << fname << sendl; return false; }
+            if (!fileStream.is_open()) { serr << "Cannot open " << fname << sendl; return false; }
             std::string str;
             fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
             Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
-            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)scale[i];
+            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
             fileStream.close();
             std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
             wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
@@ -298,13 +308,15 @@ protected:
         {
             float voxsize[3];
             wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            if (!this->transform.isSet())
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
         }
         else if (fname.find(".inr")!=std::string::npos)
         {
             float voxsize[3];
             wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            if (!this->transform.isSet())
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
         }
         else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
 
@@ -325,13 +337,13 @@ protected:
         {
             float voxsize[3];
             wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
         }
         else if (fname.find(".inr")!=std::string::npos)
         {
             float voxsize[3];
             wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
         }
         else
         {
@@ -383,7 +395,7 @@ protected:
         p[7]=Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
-        for(unsigned int i=0; i<p.size(); i++) c[i]=rtransform->fromImage(p[i]);
+        for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
     virtual void computeBBox(const core::ExecParams*  params )
@@ -393,8 +405,8 @@ protected:
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
-        for(unsigned int i=1; i<c.size(); i++)
-            for(unsigned int j=0; j<3; j++)
+        for(unsigned int i=1;i<c.size();i++)
+            for(unsigned int j=0;j<3;j++)
             {
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
@@ -412,7 +424,7 @@ protected:
         glPushAttrib( GL_LIGHTING_BIT || GL_ENABLE_BIT || GL_LINE_BIT );
         glPushMatrix();
 
-        const float color[]= {1.,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
+        const float color[]={1.,0.5,0.5,0.}, specular[]={0.,0.,0.,0.};
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
         glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
@@ -524,9 +536,6 @@ protected:
         return nextFname.str();
     }
 };
-
-
-
 
 
 
