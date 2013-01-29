@@ -44,7 +44,8 @@ HEADERS += \
 #	QImageMouseButtonsWidget.h \
 	VectorVisualizationWidget.h \
         VectorVis.h \
-        ImageAlgorithms.h
+        ImageAlgorithms.h \
+        SparseImage.h
 
 SOURCES += \
 	initImage.cpp \
@@ -64,7 +65,7 @@ SOURCES += \
 	ImageTransformWidget.cpp \
 	HistogramWidget.cpp \
 #	QImageMouseButtonsWidget.cpp \
-	VectorVisualizationWidget.cpp \
+    VectorVisualizationWidget.cpp
 
 README_FILE = image.txt
 	
