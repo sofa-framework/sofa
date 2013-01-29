@@ -92,6 +92,12 @@ public:
         set( r1, r2, r3, r4 );
     }
 
+    /// Specific constructor for 5-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5)
+    {
+        set( r1, r2, r3, r4, r5 );
+    }
+
     /// Specific constructor for 6-elements vectors.
     Vec(real r1, real r2, real r3, real r4, real r5, real r6)
     {
@@ -157,6 +163,17 @@ public:
         this->elems[1]=r2;
         this->elems[2]=r3;
         this->elems[3]=r4;
+    }
+
+    /// Specific set for 5-elements vectors.
+    void set(real r1, real r2, real r3, real r4, real r5)
+    {
+        BOOST_STATIC_ASSERT(N == 5);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
     }
 
     /// Specific set for 6-elements vectors.

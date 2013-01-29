@@ -34,6 +34,7 @@
 
 #include <cstdlib>
 #include <sofa/helper/helper.h>
+#include <limits>
 
 #define RAND48_SEED_0   (0x330e)
 #define RAND48_SEED_1   (0xabcd)
@@ -73,10 +74,18 @@ public:
 
     //integer between [0, 2^32)
     unsigned long int random();
+
     //integer between [min, max)
-    long int randomInteger(long min, long max);
-    //float number between [min, max)
-    double randomDouble(double min, double max);
+    long int randomInteger( long min = std::numeric_limits<long>::min(), long max = std::numeric_limits<long>::max() );
+
+    //double number between [min, max)
+    double randomDouble( double min = std::numeric_limits<double>::min(), double max = std::numeric_limits<double>::max() );
+
+    //real number between [min, max)
+    template<class Real> Real randomReal( Real min = std::numeric_limits<Real>::min(), Real max = std::numeric_limits<Real>::max() )
+    {
+        return (min + ((max - min)*(Real)random())/((Real)4294967295));
+    }
 };
 
 }
