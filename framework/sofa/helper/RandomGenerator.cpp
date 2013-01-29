@@ -111,13 +111,14 @@ unsigned long RandomGenerator::random()
 
 long RandomGenerator::randomInteger(long min, long max)
 {
-    return (min + ((max - min)*random())/(4294967295U));
+    return randomReal<long>(min,max);
 }
 
 double RandomGenerator::randomDouble(double min, double max)
 {
-    return (min + ((max - min)*(double)random())/((double)4294967295.0));
+    return randomReal<double>(min,max);
 }
+
 
 }
 

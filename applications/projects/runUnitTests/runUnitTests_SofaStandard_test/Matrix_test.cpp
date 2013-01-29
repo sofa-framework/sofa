@@ -39,21 +39,12 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/RandomGenerator.h>
 
 #include <ctime>
 
 
 using std::cout;
-
-
-/// return a random Real in range [low,high]
-/// better run srand to initialize the seed typically srand( (unsigned)time(0) );
-/// @todo move it to a reusable helper
-template<class Real>
-Real rand_real( Real low, Real high )
-{
-    return low + (Real)rand()/((Real)RAND_MAX/(high-low));
-}
 
 
 
@@ -66,6 +57,9 @@ Real rand_real( Real low, Real high )
 template <typename _Real, unsigned NumRows, unsigned NumCols, unsigned BlockRows, unsigned BlockCols>
 struct TestSparseMatrices
 {
+    sofa::helper::RandomGenerator randomGenerator;
+
+
     // Scalar type and dimensions of the matrices to test
     typedef _Real Real;
     static const unsigned NROWS=NumRows;   // matrix size
@@ -139,7 +133,7 @@ struct TestSparseMatrices
         //std::cout<<"Matrix_test "<<NumRows<<" "<<NumCols<<" "<<BlockRows<<" "<<BlockCols<<std::endl;
 
         // seed the random generator
-        srand( (unsigned)time(0) );
+        randomGenerator.initSeed( (long)time(0) );
 
         // resize and fill the matrices
         crs1.resize(NROWS,NCOLS);
@@ -202,7 +196,7 @@ struct TestSparseMatrices
         {
             for( unsigned i=0; i<NCOLS; i++)
             {
-                Real random = rand_real( (Real) -100000, (Real) 100000 );
+                Real random = randomGenerator.randomReal( (Real) -100000, (Real) 100000 );
                 crsMultiplier.set( i, j, random );
                 fullMultiplier.set( i, j, random );
                 matMultiplier(i,j) = random;

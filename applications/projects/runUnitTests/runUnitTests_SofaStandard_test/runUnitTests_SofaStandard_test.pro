@@ -12,6 +12,8 @@ SOURCES += \
  
 LIBS += -l$${BOOST_PREFIX}boost_unit_test_framework$$BOOST_SUFFIX
 
+DEFINES += SOFA_BUILD_SofaStandard_test
+
 load(sofa/post)
 
 
