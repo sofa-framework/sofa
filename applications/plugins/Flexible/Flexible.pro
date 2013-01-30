@@ -6,7 +6,7 @@ TARGET = Flexible
 DEFINES += SOFA_BUILD_Flexible
 DEFINES *= EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
-SOURCES = initFlexible.cpp\
+SOURCES = initFlexible.cpp \
     types/DeformationGradientTypes.cpp \
     types/StrainTypes.cpp \
     types/AffineComponents.cpp \
@@ -142,7 +142,7 @@ win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$
 
 win32 {
 	QMAKE_CXXFLAGS += /bigobj
-	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR\extlibs\SuiteSparse\cholmod\Include
+	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/SuiteSparse/cholmod/Include
 	DEFINES += EIGEN_DONT_ALIGN
 }
 unix {

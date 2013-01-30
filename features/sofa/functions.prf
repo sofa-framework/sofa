@@ -34,22 +34,20 @@ defineTest(addCommand) {
 # the include tree.
 #
 # Parameters:
-#		name		a unique name associated with this block (eg: using $$__FILE__ as
+#		name		a unique name associated with this block (eg: using $$_FILE_ as
 #						argument will ensure this block will only be read once for the given file)
 #
 defineTest(includeOnce) {
 	projectFile = $$basename(1)
 	projectName = $$replace(projectFile, \\., _)
 	projectName = $$replace(projectName, -, _)
-
 	defined = $$eval($${projectName}.defined)
 	path = $$eval($${projectName}.path)
-
 	equals(defined, true) : equals(path, $$_PRO_FILE_) {
 		return(false)
 	} else {
 		eval($${projectName}.defined = true)
-		eval($${projectName}.path = $$1)
+		eval($${projectName}.path = $$replace(1,\\\\,/))
 		export($${projectName}.defined)
 		export($${projectName}.path)
 		return(true)
@@ -84,11 +82,12 @@ defineReplace(toWindowsPath) {
 #
 defineTest(addInstallableSubdir) {
 	artifact = $$1
-	dir  = $$2
+	dir = $$2
 	deps = $$3
 	for(subdirs, dir) {
 		entries = $$files($$subdirs)
 		for(entry, entries) {
+			entry = $$replace(entry,\\\\,/)
 			name = $$replace(entry, [/\\\\\\.], _)
 			SUBDIRS += $$name
 			
@@ -104,7 +103,6 @@ defineTest(addInstallableSubdir) {
 			export($${name}.depends)
 		}
 	}
-	
 	export(SUBDIRS)
 }
 
