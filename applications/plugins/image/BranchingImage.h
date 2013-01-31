@@ -64,7 +64,7 @@ public:
             if( value ) delete [] value;
             value = new T[spectrum];
             memcpy( value, cv.value, spectrum*sizeof(T) );
-            connections = cv.connections;
+            neighbours = cv.neighbours;
             index = cv.index;
         }
 
@@ -123,7 +123,7 @@ public:
 
         T* value; ///< value of the voxel for each channel (value is the size of the C dimension of the ConnectionImage)
 
-        Vec< NB_NeighbourDirections, NoPreallocationVector<unsigned> > connections; ///< neighbours of the voxels. In each 6 directions (bottom, up, left...), a list of all connected voxels (indices in the Voxels list of the neighbour pixel in the ConnectionImage)
+        NoPreallocationVector<ConnectionVoxel*> neighbours; // a vector of all connected voxel pointers
 
         /// accessor
         /// @warning index must be less than the spectrum
@@ -137,6 +137,16 @@ public:
             for( unsigned i=0 ; i<spectrum ; ++i )
                 if( value[i] != other.value[i] ) return false;
             return true;
+        }
+
+        void addNeighbour( const ConnectionVoxel& n )
+        {
+            neighbours.push_back( const_cast<ConnectionVoxel*>(&n) );
+        }
+
+        bool isNeighbour( const ConnectionVoxel& n ) const
+        {
+            return neighbours.find( const_cast<ConnectionVoxel*>(&n) ) != -1;
         }
 
     private: // cannot be private to be able to compile std::container copy constructors...
@@ -331,26 +341,29 @@ public:
                 if( vect.magnitude(1) != 0 )
                 {
 //                    assert( index1D == index3Dto1D(x,y,z) );
-                    ConnectionVoxel v( dimension[DIMENSION_S] );
-//                    Voxel& v = imt[index1D].add( dimension[DIMENSION_S] );
-                    for( unsigned c = 0 ; c<dimension[DIMENSION_S] ; ++c )
-                        v[c] = cimgt(x,y,z,c);
-                    v.index = index1D;
-                    imt[index1D].push_back( v, dimension[DIMENSION_S] );
-                    //imt.add( index1D, v, dimension[DIMENSION_S] );
+                    {
+                        ConnectionVoxel v( dimension[DIMENSION_S] );
+                        for( unsigned c = 0 ; c<dimension[DIMENSION_S] ; ++c )
+                            v[c] = cimgt(x,y,z,c);
+                        v.index = index1D;
+                        imt[index1D].push_back( v, dimension[DIMENSION_S] );
+                    }
                     // neighbours
-                    if( x>0 && cimgt.get_vector_at(x-1,y,z).magnitude(1) != 0 )
-                        v.connections[LEFT].push_back( 0 );
-                    if( (unsigned)x<dimension[DIMENSION_X]-1 && cimgt.get_vector_at(x+1,y,z).magnitude(1) != 0 )
-                        v.connections[RIGHT].push_back( 0 );
-                    if( y>0 && cimgt.get_vector_at(x,y-1,z).magnitude(1) != 0 )
-                        v.connections[BOTTOM].push_back( 0 );
-                    if( (unsigned)y<dimension[DIMENSION_Y]-1 && cimgt.get_vector_at(x,y+1,z).magnitude(1) != 0 )
-                        v.connections[TOP].push_back( 0 );
-                    if( z>0 && cimgt.get_vector_at(x,y,z-1).magnitude(1) != 0 )
-                        v.connections[BACK].push_back( 0 );
-                    if( (unsigned)z<dimension[DIMENSION_Z]-1 && cimgt.get_vector_at(x,y,z+1).magnitude(1) != 0 )
-                        v.connections[FRONT].push_back( 0 );
+                    if( x>0 && !imt[index1D-1].empty() )
+                    {
+                        imt[index1D][0].addNeighbour( imt[index1D-1][0] );
+                        imt[index1D-1][0].addNeighbour( imt[index1D][0] );
+                    }
+                    if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() )
+                    {
+                        imt[index1D][0].addNeighbour( imt[index1D-dimension[DIMENSION_X]][0] );
+                        imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( imt[index1D][0] );
+                    }
+                    if( z>0 && !imt[index1D-sliceSize].empty() )
+                    {
+                        imt[index1D][0].addNeighbour( imt[index1D-sliceSize][0] );
+                        imt[index1D-sliceSize][0].addNeighbour( imt[index1D][0] );
+                    }
                 }
                 ++index1D;
             }
@@ -492,11 +505,8 @@ public:
                 total += imt[index].size()*( sizeof(unsigned) /*index*/ + dimension[DIMENSION_S]*sizeof(T) ); // voxel = index + all channels
                 for( unsigned v=0 ; v<imt[index].size() ; ++v )
                 {
-                    total += NB_NeighbourDirections * ( sizeof(unsigned) + sizeof(void*) ); // 6 neighbour vectors per voxel
-                    for( unsigned d=0 ; d<NB_NeighbourDirections ; ++d )
-                    {
-                        total += imt[index][v].connections[d].size() * sizeof( T* ); // neighbours
-                    }
+                    total += sizeof(unsigned) + sizeof(void*); // neighbour vector
+                    total += imt[index][v].neighbours.size() * sizeof( T* );
                 }
             }
         }
