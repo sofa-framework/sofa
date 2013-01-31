@@ -45,7 +45,11 @@ HEADERS += \
 	VectorVisualizationWidget.h \
         VectorVis.h \
         ImageAlgorithms.h \
-        SparseImage.h
+        Containers.h \
+        BranchingImage.h \
+        BranchingImageContainer.h \
+        BranchingImageConverter.h \
+
 
 SOURCES += \
 	initImage.cpp \
@@ -62,10 +66,12 @@ SOURCES += \
         ImageSampler.cpp \
         ImageExporter.cpp \
 	ImagePlaneWidget.cpp \
-	ImageTransformWidget.cpp \
+    ImageTransformWidget.cpp \
 	HistogramWidget.cpp \
 #	QImageMouseButtonsWidget.cpp \
-    VectorVisualizationWidget.cpp
+    VectorVisualizationWidget.cpp \
+    BranchingImageContainer.cpp \
+    BranchingImageConverter.cpp
 
 README_FILE = image.txt
 	

@@ -135,6 +135,21 @@ public:
         return out;
     }
 
+    bool operator == ( const Image<T>& other ) const
+    {
+        if( img.size() != other.img.size() ) return false;
+        for( unsigned t=0 ; t<img.size() ; ++t )
+            if( img[t] != other.img[t] ) return false;
+        return true;
+    }
+
+    bool operator != ( const Image<T>& other ) const
+    {
+        return !(*this==other);
+    }
+
+
+
     //basic functions to complement CImgList
 
 
@@ -304,6 +319,13 @@ public:
 
         }
         return ret;
+    }
+
+    // approximative size
+    size_t approximativeSizeInBytes() const
+    {
+        if( img.empty() ) return 0;
+        return img(0).width()*img(0).height()*img(0).depth()*img(0).spectrum()*img.size()*sizeof(T);
     }
 
 };
