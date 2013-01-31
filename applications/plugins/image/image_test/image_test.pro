@@ -6,11 +6,12 @@ CONFIG += console
 
 DEFINES += SOFA_BUILD_Image_test
 
-HEADERS += initImage_test.h
+HEADERS += initImage_test.h \
+           BranchingImage_test.inl \
 
 
 SOURCES += initImage_test.cpp \
-           SparseImage_test.cpp \
+           BranchingImage_test.cpp \
 
 
 

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showWireframe showVisual" />
+  
+  <MeshObjLoader name="meshloader" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <OglModel name="mesh"  src="@meshloader" color="0.5 0.5 1 .1"/> 
+  
+  <MeshToImageEngine template="ImageUC"  name="rasterizer" position="@mesh.position" triangles="@mesh.triangles" value="1" voxelSize=".1" padSize="0" rotateImage="false" printLog="true"/>
+  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+<!--   <ImageViewer template="ImageUC" name="viewer" src="@image" plane="10 10 10"/> -->
+
+  <ImageToBranchingImageEngine template="ImageUC,BranchingImageUC" name="branchingImageConverter" inputImage="@image.image" printLog="true"/>
+  <BranchingImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@branchingImageConverter.branchingImage" transform="@image.transform"/>
+<!--   <BranchingImageContainer template="BranchingImageUC" name="branchingImage" src="@branchingImageConverter" transform="@image.transform"/> -->
+
+
+ <BranchingImageToImageEngine template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" printLog="true"/> />
+ <ImageContainer template="ImageUC" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/>
+<!-- <ImageViewer template="ImageUC" name="viewer2" src="@image2" plane="30 30 30"/> -->
+
+</Node>
+
