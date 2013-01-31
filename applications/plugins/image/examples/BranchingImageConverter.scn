@@ -16,7 +16,7 @@
 
  <BranchingImageToImageEngine template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" printLog="true"/> />
  <ImageContainer template="ImageUC" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/>
-<!-- <ImageViewer template="ImageUC" name="viewer2" src="@image2" plane="30 30 30"/> -->
+<ImageViewer template="ImageUC" name="viewer2" src="@image2" plane="30 30 30"/>
 
 </Node>
 

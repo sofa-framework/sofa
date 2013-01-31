@@ -99,6 +99,14 @@ public:
         _array = tmpArray;
     }
 
+    /// \return the index of the first occurence, if !present \return -1
+    int find( const T& v ) const
+    {
+        for( unsigned i = 0 ; i<_size ; ++i )
+            if( _array[i]==v ) return (int)i;
+        return -1;
+    }
+
     /// entry accessor
     T& operator[]( size_t index ) { /*assert( index < _size );*/ return _array[ index ]; }
     /// entry const accessor
