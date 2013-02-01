@@ -32,6 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -343,6 +344,8 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
+
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
 
@@ -377,12 +380,16 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
     edgeInfo.endEdit();
     d_f.endEdit();
+
+    sofa::helper::AdvancedTimer::stepEnd("addForceTetraTensorMass");
 }
 
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
+
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     double kFactor = mparams->kFactor();
@@ -412,6 +419,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     edgeInfo.endEdit();
 
     d_df.endEdit();
+
+    sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
 }
 
 
