@@ -87,20 +87,25 @@ void NodeToggleController::toggle()
         Node* n = dynamic_cast<Node*>(children[i]);
         if (n->isActive()) prevNodeIndex = i;
     }
-    if (prevNodeIndex==-1) newNodeIndex=0;
+    if (prevNodeIndex==-1)
+    {
+        newNodeIndex=0;
+
+        dynamic_cast<Node*>(children[newNodeIndex])->is_activated.setValue(true);
+        dynamic_cast<Node*>(children[newNodeIndex])->setActive(true);
+        sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
+        dynamic_cast<Node*>(children[newNodeIndex])->executeVisitor(&visitorON);
+        std::cout<<"Activate"<<std::endl;
+    }
     else
     {
         newNodeIndex = (prevNodeIndex+1)%children.size();
+        dynamic_cast<Node*>(children[prevNodeIndex])->is_activated.setValue(true);
         sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
         dynamic_cast<Node*>(children[prevNodeIndex])->executeVisitor(&visitorOFF);
         dynamic_cast<Node*>(children[prevNodeIndex])->setActive(false);
-
+        std::cout<<"Desactivate"<<std::endl;
     }
-
-    dynamic_cast<Node*>(children[newNodeIndex])->setActive(true);
-    sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
-    dynamic_cast<Node*>(children[newNodeIndex])->executeVisitor(&visitorON);
-
 }
 
 
@@ -114,12 +119,14 @@ void NodeToggleController::onBeginAnimationStep(const double /*dt*/)
         Node* context = dynamic_cast<Node*>(getContext());
         std::cout<<"context name = "<<context->name<<std::endl;
         Node::Children children = context->getChildren();
-        for (unsigned int i=0; i<children.size(); i++)
-        {
-            Node* n = dynamic_cast<Node*>(children[i]);
-            std::cout<<"child = "<<n->name<<std::endl;
-            n->setActive(false);
-        }
+//        for (unsigned int i=0; i<children.size(); i++)
+//        {
+//            Node* n = dynamic_cast<Node*>(children[i]);
+//            std::cout<<"child = "<<n->name<<std::endl;
+//            n->setActive(false);
+//            sofa::simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
+//            n->executeVisitor(&v);
+//        }
 
         toggle();
     }
