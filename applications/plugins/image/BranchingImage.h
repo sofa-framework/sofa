@@ -23,11 +23,10 @@ using helper::NoPreallocationVector;
 
 
 
-
-/// A BranchingImage is an array (size of t) of maps.
-/// Each map key corresponds to a pixel index (x,y,z) and key = z*sizex*sizey+y*sizex+x.
-/// Each pixel corresponds to a SuperimposedVoxels, alias an array of ConnectionVoxel.
+/// A BranchingImage is an array (size of t) of vectors (one vector per pixel (x,y,z)).
+/// Each pixel corresponds to a SuperimposedVoxels, alias a vector of ConnectionVoxel.
 /// a ConnectionVoxel stores a value for each channels + its neighbours indices
+/// Nesme, Kry, Jeřábková, Faure, "Preserving Topology and Elasticity for Embedded Deformable Models", Siggraph09
 template<typename _T>
 struct BranchingImage
 {
