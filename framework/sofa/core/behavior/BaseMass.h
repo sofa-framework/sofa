@@ -135,16 +135,16 @@ public:
     /// Add InvMassS contribution to global Vector assembling
     /// \param matrix matrix to add the result to
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addinvMsToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    virtual void addinvMsToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addinvMsToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
-    virtual void addinvMsAndinvMpToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/, defaulttype::BaseVector* /*vector2*/ /*vector*/ )
+    virtual void addinvMsAndinvMpToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/, defaulttype::BaseVector* /*vector2*/ /*vector*/ )
     {std::cerr << "addinvMsAndinvMpToVector : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
     /// Add S contribution to global Vector assembling
     /// \param matrix matrix to add the result to
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addSToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    virtual void addSToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addSToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
     /// Add InvMass contribution to global Matrix assembling
