@@ -38,6 +38,17 @@ public:
         memcpy( _array, c._array, _size*sizeof(T) );
     }
 
+    /// free memory
+    void clear()
+    {
+        if( _array )
+        {
+            delete [] _array;
+            _array = 0;
+            _size = 0;
+        }
+    }
+
     /// clone
     void operator=( const NoPreallocationVector<T>& c )
     {
@@ -104,6 +115,14 @@ public:
     {
         for( unsigned i = 0 ; i<_size ; ++i )
             if( _array[i]==v ) return (int)i;
+        return -1;
+    }
+
+    /// \return the index of the occurence, if !present \return -1
+    int getOffset( const T* v ) const
+    {
+        int offset = v - _array;
+        if( offset>=0 && (unsigned)offset<_size ) return offset;
         return -1;
     }
 

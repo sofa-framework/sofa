@@ -38,19 +38,16 @@ public:
     typedef _T T;
 
     /// each direction around a voxel
-    typedef enum { BACK=0, Zm1=BACK, BOTTOM=1, Ym1=BOTTOM, LEFT=2, Xm1=LEFT, FRONT=3, Zp1=FRONT, TOP=4, Yp1=TOP, RIGHT=5, Xp1=RIGHT, NB_NeighbourDirections=6 } NeighbourDirections;
+    typedef enum { BACK=0, Zm1=BACK, BOTTOM=1, Ym1=BOTTOM, LEFT=2, Xm1=LEFT, FRONT=3, Zp1=FRONT, TOP=4, Yp1=TOP, RIGHT=5, Xp1=RIGHT, NB_NeighbourDirections=6 } NeighbourDirection;
+    /// returns the opposite direction of a given direction  left->right,  right->left
+    inline NeighbourDirection oppositeDirection( NeighbourDirection d ) const { return NeighbourDirection( (d+3)%NB_NeighbourDirections ); }
 
-
-    /// a ConnectionVoxel stores a value for each channels + its neighbour indices
-    /// @todo are the indices a good thing or would a pointer be better?
+    /// a ConnectionVoxel stores a value for each channels + its neighbour indices /*+ its 1D index in the image*/
     /// NB: a ConnectionVoxel does not know its spectrum size (nb of channels) to save memory
     class ConnectionVoxel
     {
 
     public:
-
-        /// returns the opposite direction of a given direction  left->right,  right->left
-        inline NeighbourDirections oppositeDirection( NeighbourDirections d ) { return (d+3)%NB_NeighbourDirections; }
 
         /// default constructor = no allocation
         ConnectionVoxel() : value(0) {}
@@ -59,13 +56,14 @@ public:
         ~ConnectionVoxel() { if( value ) delete [] value; }
 
         /// copy
+        /// @warning neighbourood is copied but impossible to check its validity
         void clone( const ConnectionVoxel& cv, unsigned spectrum )
         {
             if( value ) delete [] value;
             value = new T[spectrum];
             memcpy( value, cv.value, spectrum*sizeof(T) );
+            //index = cv.index;
             neighbours = cv.neighbours;
-            index = cv.index;
         }
 
         /// alloc or realloc without keeping existing data and without initialization
@@ -119,11 +117,15 @@ public:
             return true;
         }
 
-        unsigned index; ///< the 1D position in the full image
+        //unsigned index; ///< the 1D position in the BranchingImage3D // @TODO is it really necessary
 
         T* value; ///< value of the voxel for each channel (value is the size of the C dimension of the ConnectionImage)
 
-        NoPreallocationVector<ConnectionVoxel*> neighbours; // a vector of all connected voxel pointers
+        typedef NoPreallocationVector<unsigned> NeighboursInOneDirection;
+        typedef Vec< NB_NeighbourDirections, NeighboursInOneDirection > Neighbours;
+        Neighbours neighbours; ///< neighbours of the voxels. In each 6 directions (bottom, up, left...), a list of all connected voxels (indices in the Voxels list of the neighbour pixel in the ConnectionImage)
+
+
 
         /// accessor
         /// @warning index must be less than the spectrum
@@ -132,6 +134,7 @@ public:
             return value[ index ];
         }
 
+        /// equivalent to ==
         bool isEqual( const ConnectionVoxel& other, unsigned spectrum ) const
         {
             for( unsigned i=0 ; i<spectrum ; ++i )
@@ -139,17 +142,22 @@ public:
             return true;
         }
 
-        void addNeighbour( const ConnectionVoxel& n )
+        /// add the given voxel as a neigbour
+        /// @warning it is doing only one way (this has to be added as a neighbour of n)
+        /// if testUnicity==true, the neighbour is added only if it is not already there
+        void addNeighbour( NeighbourDirection d, unsigned neighbourOffset, bool testUnicity = false )
         {
-            neighbours.push_back( const_cast<ConnectionVoxel*>(&n) );
+            if( !testUnicity || !isNeighbour(d,neighbourOffset) ) neighbours[d].push_back( neighbourOffset );
         }
 
-        bool isNeighbour( const ConnectionVoxel& n ) const
+        /// is the given voxel a neighbour of this voxel?
+        bool isNeighbour( NeighbourDirection d, unsigned neighbourOffset ) const
         {
-            return neighbours.find( const_cast<ConnectionVoxel*>(&n) ) != -1;
+            return neighbours[d].find( neighbourOffset ) != -1;
         }
 
-    private: // cannot be private to be able to compile std::container copy constructors...
+
+    private:
 
         // no pure copy constructor (spectrum is needed to be able to copy the ConnectionVoxel)
         ConnectionVoxel( const ConnectionVoxel& ) { assert(false); }
@@ -171,22 +179,15 @@ public:
 
         SuperimposedVoxels() : Inherited() {}
 
-        // copy constructor
-        SuperimposedVoxels( const SuperimposedVoxels& cv, unsigned spectrum ) : Inherited()
-        {
-            this->resize( cv.size() );
-            for( unsigned i=0 ; i<cv.size() ; ++i )
-            {
-                (*this)[i].clone( cv[i], spectrum );
-            }
-        }
-
+        /// add a superimposed voxel
         void push_back( const ConnectionVoxel& v, unsigned spectrum )
         {
             Inherited::resizeAndKeep( this->_size+1 );
             this->last().clone( v, spectrum );
         }
 
+        /// copy superimposed voxels
+        /// @warning about voxel connectivity
         void clone( const SuperimposedVoxels& other, unsigned spectrum )
         {
             resize( other._size );
@@ -196,6 +197,7 @@ public:
             }
         }
 
+        /// equivalent to ==
         bool isEqual( const SuperimposedVoxels& other, unsigned spectrum ) const
         {
             if( this->_size != other._size ) return false;
@@ -204,12 +206,20 @@ public:
             return true;
         }
 
+        /// convert to a unique voxel
+        /// conversionType : 0->first voxel, 1->average
         void toFlatVoxel( T& v, unsigned conversionType, unsigned channel ) const
         {
             if( this->empty() ) return;
 
             switch( conversionType )
             {
+            case 1:
+                v = this->_array[0][channel];
+                for( unsigned i=1 ; i<this->_size ; ++i )
+                    v += this->_array[i][channel];
+                v = (T)( v / (float)this->_size );
+                break;
             case 0:
             default:
                 v = this->_array[0][channel];
@@ -218,14 +228,13 @@ public:
         }
 
 
-        /// @todo all needed operators +, +=, etc. can be overloaded here
+        /// all needed operators +, +=, etc. can be overloaded here
 
 
     private :
 
         /// impossible to copy a ConnectedVoxel without the spectrum size
         void push_back( const ConnectionVoxel& v ) { assert(false); }
-        /// copy constructor - impossible to copy a ConnectedVoxel without the spectrum size
         SuperimposedVoxels( const SuperimposedVoxels& cv ) { assert(false); }
         void operator=( const SuperimposedVoxels& ) { assert(false); }
         bool operator==( const SuperimposedVoxels& ) const { assert(false); }
@@ -243,8 +252,7 @@ public:
 
         BranchingImage3D() : Inherited() {}
 
-        // possible overloads or helper functions
-
+        /// copy
         void clone( const BranchingImage3D& other, unsigned spectrum )
         {
             resize( other._size );
@@ -254,6 +262,7 @@ public:
             }
         }
 
+        /// equivalent to ==
         bool isEqual( const BranchingImage3D& other, unsigned spectrum ) const
         {
             if( this->_size != other._size ) return false;
@@ -262,8 +271,15 @@ public:
             return true;
         }
 
+        /// \returns the offset of the given ConnectionVoxel in its SuperImposedVoxels vector
+        int getOffset( unsigned index1d, const ConnectionVoxel& v ) const
+        {
+            return this->_array[index1d].getOffset( &v );
+        }
+
     private:
 
+        /// impossible to copy a ConnectedVoxel without the spectrum size
         BranchingImage3D( const BranchingImage3D& ) { assert(false); }
         void operator=( const BranchingImage3D& ) { assert(false); }
         bool operator==( const BranchingImage3D& ) const { assert(false); }
@@ -273,12 +289,10 @@ public:
 
 
 
-
+    /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
+    /// the 5 dimensions of an image ( x, y, z, spectrum=nb channels , time )
     typedef Vec<NB_DimensionLabel,unsigned int> Dimension; // [x,y,z,s,t]
-
-
-
 
 
     Dimension dimension; ///< the image dimensions [x,y,z,s,t]
@@ -345,25 +359,14 @@ public:
                         ConnectionVoxel v( dimension[DIMENSION_S] );
                         for( unsigned c = 0 ; c<dimension[DIMENSION_S] ; ++c )
                             v[c] = cimgt(x,y,z,c);
-                        v.index = index1D;
+//                        v.index = index1D;
+                        v.neighbours.clear();
                         imt[index1D].push_back( v, dimension[DIMENSION_S] );
                     }
                     // neighbours
-                    if( x>0 && !imt[index1D-1].empty() )
-                    {
-                        imt[index1D][0].addNeighbour( imt[index1D-1][0] );
-                        imt[index1D-1][0].addNeighbour( imt[index1D][0] );
-                    }
-                    if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() )
-                    {
-                        imt[index1D][0].addNeighbour( imt[index1D-dimension[DIMENSION_X]][0] );
-                        imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( imt[index1D][0] );
-                    }
-                    if( z>0 && !imt[index1D-sliceSize].empty() )
-                    {
-                        imt[index1D][0].addNeighbour( imt[index1D-sliceSize][0] );
-                        imt[index1D-sliceSize][0].addNeighbour( imt[index1D][0] );
-                    }
+                    if( x>0 && !imt[index1D-1].empty() ) { imt[index1D][0].addNeighbour( LEFT, 0 ); imt[index1D-1][0].addNeighbour( RIGHT, 0 ); }
+                    if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() ) { imt[index1D][0].addNeighbour( BOTTOM, 0 ); imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( TOP, 0 ); }
+                    if( z>0 && !imt[index1D-sliceSize].empty() ) { imt[index1D][0].addNeighbour( BACK, 0 ); imt[index1D-sliceSize][0].addNeighbour( FRONT, 0 ); }
                 }
                 ++index1D;
             }
@@ -374,6 +377,7 @@ public:
 
 
     /// conversion to a flat image
+    /// conversionType : 0->first voxel, 1->average
     void toImage( Image<T>& img, unsigned conversionType = 0 ) const
     {
         img.clear();
@@ -398,7 +402,7 @@ public:
     }
 
 
-
+    /// delete everything, free memory
     void clear()
     {
         if( imgList )
@@ -428,22 +432,39 @@ public:
         y = y - z * dimension[DIMENSION_Y];
     }
 
-    /// compute the map key of a neighbour (supposing it is valid neighbour)
-    inline unsigned index1DNeighbour( unsigned key, NeighbourDirections dir ) const
+    /// \returns the index of the neighbour in the given direction (index in the BranchingImage3D)
+    inline unsigned getNeighbourIndex( NeighbourDirection d, unsigned voxelIndex ) const
     {
-        switch( dir )
+        switch(d)
         {
-            case LEFT:   return key - 1;
-            case RIGHT:  return key + 1;
-            case BOTTOM: return key - dimension[DIMENSION_X];
-            case TOP:    return key + dimension[DIMENSION_X];
-            case BACK:   return key - sliceSize;
-            case FRONT:  return key + sliceSize;
-            default: return -1;
+            case LEFT: return voxelIndex-1; break;
+            case RIGHT: return voxelIndex+1; break;
+            case BOTTOM: return voxelIndex-dimension[DIMENSION_X]; break;
+            case TOP: return voxelIndex+dimension[DIMENSION_X]; break;
+            case BACK: return voxelIndex-sliceSize; break;
+            case FRONT: return voxelIndex+sliceSize; break;
+            default: return 0;
         }
     }
 
+    /// \returns the direction between two neighbour voxels
+    /// @warnings the two given voxels are supposed to be neighbours, otherwise NB_NeighbourDirections is returned
+    /// example: returning LEFT means neighbourIndex is at the LEFT position of index
+    inline NeighbourDirection getDirection( unsigned index, unsigned neighbourIndex ) const
+    {
+        int offset = neighbourIndex - index;
+        if( offset==-1 ) return LEFT;
+        else if( offset==1 ) return RIGHT;
+        else if( offset==-dimension[DIMENSION_X] ) return BOTTOM;
+        else if( offset==dimension[DIMENSION_X] ) return TOP;
+        else if( offset==-sliceSize ) return BACK;
+        else if( offset==sliceSize ) return FRONT;
+        else return NB_NeighbourDirections;
+    }
 
+
+
+    /// \returns the 5 image dimensions (x,y,z,s,t)
     const Dimension& getDimension() const
     {
         return dimension;
@@ -465,7 +486,7 @@ public:
             imgList[t].resize( imageSize );
     }
 
-
+    /// write dimensions
     inline friend std::istream& operator >> ( std::istream& in, BranchingImage<T>& im )
     {
         Dimension dim;
@@ -474,43 +495,92 @@ public:
         return in;
     }
 
+    /// read dimensions
     friend std::ostream& operator << ( std::ostream& out, const BranchingImage<T>& im )
     {
         out << im.getDimension();
         return out;
     }
 
-
+    /// comparison
     bool operator==( const BranchingImage<T>& other ) const
     {
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
             if( !imgList[t].isEqual( other.imgList[t], dimension[DIMENSION_S] ) ) return false;
         return true;
     }
+
+    /// comparison
     bool operator!=( const BranchingImage<T>& other ) const
     {
         return !(*this==other);
     }
 
 
+
+    /// \returns an approximative size in bytes, useful for debugging
     size_t approximativeSizeInBytes() const
     {
         size_t total = dimension[DIMENSION_T]*(imageSize+1)*( sizeof(unsigned) + sizeof(void*) ); // superimposed voxel vectors + BranchingImage3D vector
 
-        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t ) // per BranchingImage3D
         {
             const BranchingImage3D& imt = imgList[t];
-            for( unsigned int index=0 ; index<imt.size() ; ++index )
+            for( unsigned int index=0 ; index<imt.size() ; ++index ) // per SumperimposedVoxels
             {
-                total += imt[index].size()*( sizeof(unsigned) /*index*/ + dimension[DIMENSION_S]*sizeof(T) ); // voxel = index + all channels
-                for( unsigned v=0 ; v<imt[index].size() ; ++v )
+                total += imt[index].size() * ( /*sizeof(unsigned)*/ /*index*/ +
+                                               sizeof(void*) /* channel vector*/ +
+                                               dimension[DIMENSION_S]*sizeof(T) /*channel entries*/ +
+                                               NB_NeighbourDirections * ( sizeof(unsigned) + sizeof(void*) ) /* 6 neighbour vectors per voxel*/
+                                               );
+
+                for( unsigned v=0 ; v<imt[index].size() ; ++v ) // per ConnnectedVoxel
                 {
-                    total += sizeof(unsigned) + sizeof(void*); // neighbour vector
-                    total += imt[index][v].neighbours.size() * sizeof( T* );
+                    for( unsigned d=0 ; d<NB_NeighbourDirections ; ++d )
+                    {
+                        total += imt[index][v].neighbours[d].size() * sizeof( T* ); // neighbour entries
+                    }
                 }
             }
         }
         return total;
+    }
+
+    /// check neighbourood validity
+    int isNeighbouroodValid() const
+    {
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        {
+            const BranchingImage3D& imt = imgList[t];
+            unsigned index1d = 0;
+            for( unsigned z = 0 ; z < dimension[DIMENSION_Z] ; ++z )
+            {
+                for( unsigned y = 0 ; y < dimension[DIMENSION_Y] ; ++y )
+                {
+                    for( unsigned x = 0 ; x < dimension[DIMENSION_X] ; ++x )
+                    {
+                        const SuperimposedVoxels& voxels = imt[index1d];
+                        for( unsigned v = 0 ; v < voxels.size() ; ++v )
+                        {
+                            const typename ConnectionVoxel::Neighbours& neighbours = voxels[v].neighbours;
+                            for( unsigned d = 0 ; d < NB_NeighbourDirections ; ++d )
+                            {
+                                const typename ConnectionVoxel::NeighboursInOneDirection& neighboursOneDirection = neighbours[d];
+                                for( unsigned n = 0 ; n < neighboursOneDirection.size() ; ++n )
+                                {
+                                    unsigned neighbourIndex = getNeighbourIndex( (NeighbourDirection)d, index1d );
+                                    if( neighboursOneDirection[n] >= imt[neighbourIndex].size() )  return 1; // there is nobody where there should be the neighbour
+                                    if( !imt[neighbourIndex][neighboursOneDirection[n]].isNeighbour( oppositeDirection((NeighbourDirection)d), imt.getOffset(index1d,voxels[v]) ) ) return 2; // complementary neighbour is no inserted
+//                                    if( imt[neighbourIndex][neighboursOneDirection[n]].index != neighbourIndex || voxels[v].index != index1d ) return false; // a voxel has a good index
+                                }
+                            }
+                        }
+                        ++ index1d;
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
 
