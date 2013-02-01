@@ -49,6 +49,7 @@ HEADERS += \
         BranchingImage.h \
         BranchingImageContainer.h \
         BranchingImageConverter.h \
+        BranchingImageCoarsener.h \
 
 
 SOURCES += \
@@ -71,7 +72,9 @@ SOURCES += \
 #	QImageMouseButtonsWidget.cpp \
     VectorVisualizationWidget.cpp \
     BranchingImageContainer.cpp \
-    BranchingImageConverter.cpp
+    BranchingImageConverter.cpp \
+    BranchingImageCoarsener.cpp \
+
 
 README_FILE = image.txt
 	

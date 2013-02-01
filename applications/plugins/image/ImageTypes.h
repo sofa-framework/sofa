@@ -66,6 +66,7 @@ struct Image
 {
     typedef _T T;
     typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
+    typedef CImg<T> CImgT;
 
 protected:
     CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)

@@ -29,11 +29,6 @@
 #include "ImageTypes.h"
 #include "BranchingImage.h"
 #include <sofa/core/DataEngine.h>
-//#include <sofa/core/objectmodel/BaseObject.h>
-//#include <sofa/helper/OptionsGroup.h>
-
-//#include <sofa/component/component.h>
-//#include <omp.h>
 
 
 namespace sofa
