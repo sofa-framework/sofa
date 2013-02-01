@@ -96,12 +96,12 @@ namespace fixture {
                     if( neighbourTest )
                     {
                         // test neighbourood connections
-                        if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d-1][0] ) ) ) ) return false;
-                        if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d+1][0] ) ) ) ) return false;
-                        if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d-sparseImg.dimension[0]][0] ) ) ) ) return false;
-                        if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d+sparseImg.dimension[0]][0] ) ) ) ) return false;
-                        if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d-sparseImg.sliceSize][0] ) ) ) ) return false;
-                        if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( iml[index1d+sparseImg.sliceSize][0] ) ) ) ) return false;
+                        if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::LEFT, 0 ) ) ) ) return false;
+                        if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::RIGHT, 0 ) ) ) ) return false;
+                        if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::BOTTOM, 0 ) ) ) ) return false;
+                        if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::TOP, 0 ) ) ) ) return false;
+                        if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::BACK, 0 ) ) ) ) return false;
+                        if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::FRONT, 0 ) ) ) ) return false;
                     }
                 }
           }
