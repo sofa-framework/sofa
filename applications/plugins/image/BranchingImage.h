@@ -59,6 +59,9 @@ public:
         void clone( const ConnectionVoxel& cv, unsigned spectrum )
         {
             if( value ) delete [] value;
+
+            if( !spectrum || !cv.value ) { value=0; return; }
+
             value = new T[spectrum];
             memcpy( value, cv.value, spectrum*sizeof(T) );
             //index = cv.index;
@@ -68,8 +71,10 @@ public:
         /// alloc or realloc without keeping existing data and without initialization
         void resize( size_t newSize )
         {
-            if( !value ) value = new T[newSize];
-            else { delete [] value; value = new T[newSize]; } // could do a realloc keeping existing data
+            if( value ) delete [] value;
+            if( !newSize ) { value=0; return; }
+            value = new T[newSize];
+            // could do a realloc keeping existing data
         }
 
         /// computes a norm over all channels
@@ -189,10 +194,14 @@ public:
         /// @warning about voxel connectivity
         void clone( const SuperimposedVoxels& other, unsigned spectrum )
         {
-            resize( other._size );
-            for( unsigned i=0 ; i<this->_size ; ++i )
+            if( other.empty() ) clear();
+            else
             {
-                this->_array[i].clone( other._array[i], spectrum );
+                Inherited::resize( other._size );
+                for( unsigned i=0 ; i<this->_size ; ++i )
+                {
+                    this->_array[i].clone( other._array[i], spectrum );
+                }
             }
         }
 
@@ -206,7 +215,7 @@ public:
         }
 
         /// convert to a unique voxel
-        /// conversionType : 0->first voxel, 1->average
+        /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels
         void toFlatVoxel( T& v, unsigned conversionType, unsigned channel ) const
         {
             if( this->empty() ) return;
@@ -220,10 +229,20 @@ public:
                 v = (T)( v / (float)this->_size );
                 break;
             case 0:
-            default:
                 v = this->_array[0][channel];
                 break;
+            case 2:
+            default:
+                v = this->_size;
+                break;
             }
+        }
+
+        void resize( size_t newSize, unsigned spectrum )
+        {
+            Inherited::resize( newSize );
+            for( unsigned i=0 ; i<this->_size ; ++i )
+                this->_array[i].resize( spectrum );
         }
 
 
@@ -237,6 +256,7 @@ public:
         SuperimposedVoxels( const SuperimposedVoxels& cv ) { assert(false); }
         void operator=( const SuperimposedVoxels& ) { assert(false); }
         bool operator==( const SuperimposedVoxels& ) const { assert(false); }
+        void resize( size_t ) { assert(false); }
 
     }; // class SuperimposedVoxels
 
@@ -376,8 +396,8 @@ public:
 
 
     /// conversion to a flat image
-    /// conversionType : 0->first voxel, 1->average
-    void toImage( Image<T>& img, unsigned conversionType = 0 ) const
+    /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels
+    void toImage( Image<T>& img, unsigned conversionType = 2 ) const
     {
         img.clear();
         typename Image<T>::imCoord dim = dimension;

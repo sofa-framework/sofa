@@ -38,70 +38,70 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageToBranchingImageEngine)
+SOFA_DECL_CLASS(ImageToBranchingImageConverter)
 
-int ImageToBranchingImageEngineClass = core::RegisterObject("ImageToBranchingImageEngine")
-        .add<ImageToBranchingImageEngine<unsigned char> >(true)
-        .add<ImageToBranchingImageEngine<double> >()
+int ImageToBranchingImageConverterClass = core::RegisterObject("ImageToBranchingImageConverter")
+        .add<ImageToBranchingImageConverter<unsigned char> >(true)
+        .add<ImageToBranchingImageConverter<double> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
-        .add<ImageToBranchingImageEngine<char> >()
-        .add<ImageToBranchingImageEngine<int> >()
-        .add<ImageToBranchingImageEngine<unsigned int> >()
-        .add<ImageToBranchingImageEngine<short> >()
-        .add<ImageToBranchingImageEngine<unsigned short> >()
-        .add<ImageToBranchingImageEngine<long> >()
-        .add<ImageToBranchingImageEngine<unsigned long> >()
-        .add<ImageToBranchingImageEngine<float> >()
-        .add<ImageToBranchingImageEngine<bool> >()
+        .add<ImageToBranchingImageConverter<char> >()
+        .add<ImageToBranchingImageConverter<int> >()
+        .add<ImageToBranchingImageConverter<unsigned int> >()
+        .add<ImageToBranchingImageConverter<short> >()
+        .add<ImageToBranchingImageConverter<unsigned short> >()
+        .add<ImageToBranchingImageConverter<long> >()
+        .add<ImageToBranchingImageConverter<unsigned long> >()
+        .add<ImageToBranchingImageConverter<float> >()
+        .add<ImageToBranchingImageConverter<bool> >()
 #endif
         ;
 
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<unsigned char>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<double>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned char>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<double>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<char>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<int>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<unsigned int>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<short>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<unsigned short>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<long>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<unsigned long>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<float>;
-template class SOFA_IMAGE_API ImageToBranchingImageEngine<bool>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<char>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<int>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned int>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<short>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned short>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<long>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned long>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<float>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<bool>;
 #endif
 
 
 
-SOFA_DECL_CLASS(BranchingImageToImageEngine)
+SOFA_DECL_CLASS(BranchingImageToImageConverter)
 
-int BranchingImageToImageEngineClass = core::RegisterObject("BranchingImageToImageEngine")
-        .add<BranchingImageToImageEngine<unsigned char> >(true)
-        .add<BranchingImageToImageEngine<double> >()
+int BranchingImageToImageConverterClass = core::RegisterObject("BranchingImageToImageConverter")
+        .add<BranchingImageToImageConverter<unsigned char> >(true)
+        .add<BranchingImageToImageConverter<double> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
-        .add<BranchingImageToImageEngine<char> >()
-        .add<BranchingImageToImageEngine<int> >()
-        .add<BranchingImageToImageEngine<unsigned int> >()
-        .add<BranchingImageToImageEngine<short> >()
-        .add<BranchingImageToImageEngine<unsigned short> >()
-        .add<BranchingImageToImageEngine<long> >()
-        .add<BranchingImageToImageEngine<unsigned long> >()
-        .add<BranchingImageToImageEngine<float> >()
-        .add<BranchingImageToImageEngine<bool> >()
+        .add<BranchingImageToImageConverter<char> >()
+        .add<BranchingImageToImageConverter<int> >()
+        .add<BranchingImageToImageConverter<unsigned int> >()
+        .add<BranchingImageToImageConverter<short> >()
+        .add<BranchingImageToImageConverter<unsigned short> >()
+        .add<BranchingImageToImageConverter<long> >()
+        .add<BranchingImageToImageConverter<unsigned long> >()
+        .add<BranchingImageToImageConverter<float> >()
+        .add<BranchingImageToImageConverter<bool> >()
 #endif
         ;
 
-template class SOFA_IMAGE_API BranchingImageToImageEngine<unsigned char>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<double>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned char>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<double>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API BranchingImageToImageEngine<char>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<int>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<unsigned int>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<short>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<unsigned short>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<long>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<unsigned long>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<float>;
-template class SOFA_IMAGE_API BranchingImageToImageEngine<bool>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<char>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<int>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned int>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<short>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned short>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<long>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned long>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<float>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<bool>;
 #endif
 
 
