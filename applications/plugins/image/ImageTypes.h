@@ -114,7 +114,7 @@ public:
     }
 
     //affectors
-    void setDimensions(imCoord& dim)
+    void setDimensions(const imCoord& dim)
     {
         cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],dim[3]);
         if(img.size()>dim[4]) img.remove(dim[4],img.size()-1);

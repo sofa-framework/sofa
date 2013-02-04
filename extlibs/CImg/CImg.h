@@ -8,7 +8,7 @@
  #                    ( http://cimg.sourceforge.net )
  #
  #  Project manager : David Tschumperle.
- #                    ( http://www.greyc.ensicaen.fr/~dtschump/ )
+ #                    ( http://tschumperle.users.greyc.fr/ )
  #
  #                    A complete list of contributors is available in file 'README.txt'
  #                    distributed within the CImg package.
@@ -28,7 +28,7 @@
  #  under French law and abiding by the rules of distribution of free software.
  #  You can  use, modify and or redistribute the software under the terms of
  #  the CeCILL or CeCILL-C licenses as circulated by CEA, CNRS and INRIA
- #  at the following URL : "http://www.cecill.info".
+ #  at the following URL: "http://www.cecill.info".
  #
  #  As a counterpart to the access to the source code and  rights to copy,
  #  modify and redistribute granted by the license, users are provided only
@@ -54,7 +54,7 @@
 
 // Set version number of the library.
 #ifndef cimg_version
-#define cimg_version 151
+#define cimg_version 154
 
 /*-----------------------------------------------------------
  #
@@ -80,10 +80,10 @@
 
 // Detect/configure OS variables.
 //
-// Define 'cimg_OS' to : '0' for an unknown OS (will try to minize library dependencies).
-//                       '1' for a Unix-like OS (Linux, Solaris, BSD, MacOSX, Irix, ...).
-//                       '2' for Microsoft Windows.
-//                       (auto-detection is performed if 'cimg_OS' is not set by the user).
+// Define 'cimg_OS' to: '0' for an unknown OS (will try to minize library dependencies).
+//                      '1' for a Unix-like OS (Linux, Solaris, BSD, MacOSX, Irix, ...).
+//                      '2' for Microsoft Windows.
+//                      (auto-detection is performed if 'cimg_OS' is not set by the user).
 #ifndef cimg_OS
 #if defined(unix)        || defined(__unix)      || defined(__unix__) \
  || defined(linux)       || defined(__linux)     || defined(__linux__) \
@@ -101,7 +101,7 @@
 #define cimg_OS 0
 #endif
 #elif !(cimg_OS==0 || cimg_OS==1 || cimg_OS==2)
-#error CImg Library : Invalid configuration variable 'cimg_OS'.
+#error CImg Library: Invalid configuration variable 'cimg_OS'.
 #error (correct values are '0 = unknown OS', '1 = Unix-like OS', '2 = Microsoft Windows').
 #endif
 
@@ -155,11 +155,11 @@
 
 // Configure verbosity of output messages.
 //
-// Define 'cimg_verbosity' to : '0' to hide library messages (quiet mode).
-//                              '1' to output library messages on the console.
-//                              '2' to output library messages on a basic dialog window (default behavior).
-//                              '3' to do as '1' + add extra warnings (may slow down the code !).
-//                              '4' to do as '2' + add extra warnings (may slow down the code !).
+// Define 'cimg_verbosity' to: '0' to hide library messages (quiet mode).
+//                             '1' to output library messages on the console.
+//                             '2' to output library messages on a basic dialog window (default behavior).
+//                             '3' to do as '1' + add extra warnings (may slow down the code!).
+//                             '4' to do as '2' + add extra warnings (may slow down the code!).
 //
 // Define 'cimg_strict_warnings' to replace warning messages by exception throwns.
 //
@@ -167,15 +167,15 @@
 #ifndef cimg_verbosity
 #define cimg_verbosity 2
 #elif !(cimg_verbosity==0 || cimg_verbosity==1 || cimg_verbosity==2 || cimg_verbosity==3 || cimg_verbosity==4)
-#error CImg Library : Configuration variable 'cimg_verbosity' is badly defined.
+#error CImg Library: Configuration variable 'cimg_verbosity' is badly defined.
 #error (should be { 0=quiet | 1=console | 2=dialog | 3=console+warnings | 4=dialog+warnings }).
 #endif
 
 // Configure display framework.
 //
-// Define 'cimg_display' to : '0' to disable display capabilities.
-//                            '1' to use the X-Window framework (X11).
-//                            '2' to use the Microsoft GDI32 framework.
+// Define 'cimg_display' to: '0' to disable display capabilities.
+//                           '1' to use the X-Window framework (X11).
+//                           '2' to use the Microsoft GDI32 framework.
 #ifndef cimg_display
 #if cimg_OS==0
 #define cimg_display 0
@@ -189,7 +189,7 @@
 #define cimg_display 2
 #endif
 #elif !(cimg_display==0 || cimg_display==1 || cimg_display==2)
-#error CImg Library : Configuration variable 'cimg_display' is badly defined.
+#error CImg Library: Configuration variable 'cimg_display' is badly defined.
 #error (should be { 0=none | 1=X-Window (X11) | 2=Microsoft GDI32 }).
 #endif
 
@@ -2025,12 +2025,12 @@ namespace cimg_library_suffixed {
     //! Set current \CImg exception mode.
     /**
        The way error messages are handled by \CImg can be changed dynamically, using this function.
-       \param mode Desired exception mode. Possible values are :
-       - \c 0 : Hide library messages (quiet mode).
-       - \c 1 : Print library messages on the console.
-       - \c 2 : Display library messages on a dialog window (default behavior).
-       - \c 3 : Do as \c 1 + add extra debug warnings (slow down the code !).
-       - \c 4 : Do as \c 2 + add extra debug warnings (slow down the code !).
+       \param mode Desired exception mode. Possible values are:
+       - \c 0: Hide library messages (quiet mode).
+       - \c 1: Print library messages on the console.
+       - \c 2: Display library messages on a dialog window (default behavior).
+       - \c 3: Do as \c 1 + add extra debug warnings (slow down the code!).
+       - \c 4: Do as \c 2 + add extra debug warnings (slow down the code!).
      **/
     inline unsigned int& exception_mode(const unsigned int mode) {
       return _exception_mode(mode,true);
@@ -2063,33 +2063,33 @@ namespace cimg_library_suffixed {
 
       CImgException is the base class of all exceptions thrown by \CImg.
       CImgException is never thrown itself. Derived classes that specify the type of errord are thrown instead.
-      These derived classes can be :
+      These derived classes can be:
 
-      - \b CImgArgumentException : Thrown when one argument of a called \CImg function is invalid.
+      - \b CImgArgumentException: Thrown when one argument of a called \CImg function is invalid.
       This is probably one of the most thrown exception by \CImg.
-      For instance, the following example throws a \c CImgArgumentException :
+      For instance, the following example throws a \c CImgArgumentException:
       \code
       CImg<float> img(100,100,1,3); // Define a 100x100 color image with float-valued pixels.
       img.mirror('e');              // Try to mirror image along the (non-existing) 'e'-axis.
       \endcode
 
-      - \b CImgDisplayException : Thrown when something went wrong during the display of images in CImgDisplay instances.
+      - \b CImgDisplayException: Thrown when something went wrong during the display of images in CImgDisplay instances.
 
-      - \b CImgInstanceException : Thrown when an instance associated to a called \CImg method does not fit
-      the function requirements. For instance, the following example throws a \c CImgInstanceException :
+      - \b CImgInstanceException: Thrown when an instance associated to a called \CImg method does not fit
+      the function requirements. For instance, the following example throws a \c CImgInstanceException:
       \code
       const CImg<float> img;           // Define an empty image.
       const float value = img.at(0);   // Try to read first pixel value (does not exist).
       \endcode
 
-      - \b CImgIOException : Thrown when an error occured when trying to load or save image files.
+      - \b CImgIOException: Thrown when an error occured when trying to load or save image files.
       This happens when trying to read files that do not exist or with invalid formats.
-      For instance, the following example throws a \c CImgIOException :
+      For instance, the following example throws a \c CImgIOException:
       \code
       const CImg<float> img("missing_file.jpg");  // Try to load a file that does not exist.
       \endcode
 
-      - \b CImgWarningException : Thrown only if configuration macro \c cimg_strict_warnings is set, and
+      - \b CImgWarningException: Thrown only if configuration macro \c cimg_strict_warnings is set, and
       when a \CImg function has to display a warning message (see cimg::warn()).
 
       It is not recommended to throw CImgException instances by yourself, since they are expected to be thrown only by \CImg.
@@ -2101,7 +2101,7 @@ namespace cimg_library_suffixed {
 
       In all cases, when an error occurs in \CImg, an instance of the corresponding exception class is thrown.
       This may lead the program to break (this is the default behavior), but you can bypass this behavior by handling the exceptions by yourself,
-      using a usual <tt>try { ... } catch () { ... }</tt> bloc, as in the following example :
+      using a usual <tt>try { ... } catch () { ... }</tt> bloc, as in the following example:
       \code
       #define "CImg.h"
       using namespace cimg_library;
@@ -2109,9 +2109,9 @@ namespace cimg_library_suffixed {
         cimg::exception_mode(0);                                    // Enable quiet exception mode.
         try {
           ...                                                       // Here, do what you want to stress the CImg library.
-        } catch (CImgException &e) {                                // You succeeded : something went wrong !
-          std::fprintf(stderr,"CImg Library Error : %s",e.what());  // Display your custom error message.
-          ...                                                       // Do what you want now to save the ship !
+        } catch (CImgException &e) {                                // You succeeded: something went wrong!
+          std::fprintf(stderr,"CImg Library Error: %s",e.what());   // Display your custom error message.
+          ...                                                       // Do what you want now to save the ship!
           }
         }
       \endcode
@@ -2332,8 +2332,20 @@ namespace cimg_library_suffixed {
     template<> struct type<double> {
       static const char* string() { static const char *const s = "double"; return s; }
       static bool is_float() { return true; }
-      static bool is_inf(const double val) { return !is_nan(val) && val+1==val; }
-      static bool is_nan(const double val) { return !(val<=0 || val>=0); }
+      static bool is_inf(const double val) {
+#ifdef isinf
+        return (bool)isinf(val);
+#else
+        return !is_nan(val) && val+1==val;
+#endif
+      }
+      static bool is_nan(const double val) {
+#ifdef isnan
+        return (bool)isnan(val);
+#else
+        return !(val<=0 || val>=0);
+#endif
+      }
       static double min() { return -1.7E308; }
       static double max() { return  1.7E308; }
       static double inf() { return max()*max(); }
@@ -2694,7 +2706,7 @@ namespace cimg_library_suffixed {
 
 #else
     // Define random keycodes when no display is available.
-    // (should rarely be used then !).
+    // (should rarely be used then!).
     const unsigned int keyESC        = 1U;   //!< Keycode for the \c ESC key (architecture-dependent).
     const unsigned int keyF1         = 2U;   //!< Keycode for the \c F1 key (architecture-dependent).
     const unsigned int keyF2         = 3U;   //!< Keycode for the \c F2 key (architecture-dependent).
@@ -4011,6 +4023,9 @@ namespace cimg_library_suffixed {
        on Windows-based systems.
     **/
     inline int system(const char *const command, const char *const module_name=0) {
+#ifdef cimg_no_system_calls
+      return -1;
+#else
 #if cimg_OS==2
       PROCESS_INFORMATION pi;
       STARTUPINFO si;
@@ -4030,6 +4045,7 @@ namespace cimg_library_suffixed {
 #endif
         return std::system(command);
       return module_name?0:1;
+#endif
     }
 
     //! Return a reference to a temporary variable of type T.
@@ -4183,18 +4199,18 @@ namespace cimg_library_suffixed {
         esec = (unsigned int)((dt - edays*86400000.0 - ehours*3600000.0 - emin*60000.0)/1000.0),
         ems = (unsigned int)(dt - edays*86400000.0 - ehours*3600000.0 - emin*60000.0 - esec*1000.0);
       if (!edays && !ehours && !emin && !esec)
-        std::fprintf(cimg::output(),"%s[CImg] Elapsed time : %u ms%s\n",cimg::t_red,ems,cimg::t_normal);
+        std::fprintf(cimg::output(),"%s[CImg] Elapsed time: %u ms%s\n",cimg::t_red,ems,cimg::t_normal);
       else {
         if (!edays && !ehours && !emin)
-          std::fprintf(cimg::output(),"%s[CImg] Elapsed time : %u sec %u ms%s\n",cimg::t_red,esec,ems,cimg::t_normal);
+          std::fprintf(cimg::output(),"%s[CImg] Elapsed time: %u sec %u ms%s\n",cimg::t_red,esec,ems,cimg::t_normal);
         else {
           if (!edays && !ehours)
-            std::fprintf(cimg::output(),"%s[CImg] Elapsed time : %u min %u sec %u ms%s\n",cimg::t_red,emin,esec,ems,cimg::t_normal);
+            std::fprintf(cimg::output(),"%s[CImg] Elapsed time: %u min %u sec %u ms%s\n",cimg::t_red,emin,esec,ems,cimg::t_normal);
           else{
             if (!edays)
-              std::fprintf(cimg::output(),"%s[CImg] Elapsed time : %u hours %u min %u sec %u ms%s\n",cimg::t_red,ehours,emin,esec,ems,cimg::t_normal);
+              std::fprintf(cimg::output(),"%s[CImg] Elapsed time: %u hours %u min %u sec %u ms%s\n",cimg::t_red,ehours,emin,esec,ems,cimg::t_normal);
             else{
-              std::fprintf(cimg::output(),"%s[CImg] Elapsed time : %u days %u hours %u min %u sec %u ms%s\n",cimg::t_red,edays,ehours,emin,esec,ems,cimg::t_normal);
+              std::fprintf(cimg::output(),"%s[CImg] Elapsed time: %u days %u hours %u min %u sec %u ms%s\n",cimg::t_red,edays,ehours,emin,esec,ems,cimg::t_normal);
             }
           }
         }
@@ -4261,7 +4277,7 @@ namespace cimg_library_suffixed {
     // Random number generators.
     // CImg may use its own Random Number Generator (RNG) if configuration macro 'cimg_use_rng' is set.
     // Use it for instance when you have to deal with concurrent threads trying to call std::srand()
-    // at the same time !
+    // at the same time!
 #ifdef cimg_use_rng
 
     // Use a custom RNG.
@@ -4470,8 +4486,8 @@ namespace cimg_library_suffixed {
 
     //! Return the nearest power of 2 higher than given value.
     template<typename T>
-    inline unsigned int nearest_pow2(const T x) {
-      unsigned int i = 1;
+    inline unsigned long nearest_pow2(const T x) {
+      unsigned long i = 1;
       while (x>i) i<<=1;
       return i;
     }
@@ -4522,7 +4538,7 @@ namespace cimg_library_suffixed {
 
     //! Return the min-mod of two values.
     /**
-       \note <i>minmod(\p a,\p b)</i> is defined to be :
+       \note <i>minmod(\p a,\p b)</i> is defined to be:
        - <i>minmod(\p a,\p b) = min(\p a,\p b)</i>, if \p a and \p b have the same sign.
        - <i>minmod(\p a,\p b) = 0</i>, if \p a and \p b have different signs.
     **/
@@ -4635,21 +4651,21 @@ namespace cimg_library_suffixed {
     /**
        \param[in,out] str C-string to work with (modified at output).
      **/
-    inline void strescape(char *const str) {
-#define cimg_strescape(ci,co) case ci: *nd = co; ++ns; break;
+    inline void strunescape(char *const str) {
+#define cimg_strunescape(ci,co) case ci: *nd = co; ++ns; break;
       static unsigned int val = 0;
       for (char *ns = str, *nd = str; *ns || (bool)(*nd=0); ++nd) if (*ns=='\\') switch (*(++ns)) {
-            cimg_strescape('n','\n');
-            cimg_strescape('t','\t');
-            cimg_strescape('v','\v');
-            cimg_strescape('b','\b');
-            cimg_strescape('r','\r');
-            cimg_strescape('f','\f');
-            cimg_strescape('a','\a');
-            cimg_strescape('\\','\\');
-            cimg_strescape('\?','\?');
-            cimg_strescape('\'','\'');
-            cimg_strescape('\"','\"');
+            cimg_strunescape('n','\n');
+            cimg_strunescape('t','\t');
+            cimg_strunescape('v','\v');
+            cimg_strunescape('b','\b');
+            cimg_strunescape('r','\r');
+            cimg_strunescape('f','\f');
+            cimg_strunescape('a','\a');
+            cimg_strunescape('\\','\\');
+            cimg_strunescape('\?','\?');
+            cimg_strunescape('\'','\'');
+            cimg_strunescape('\"','\"');
           case 0 : *nd = 0; break;
           case '0' : case '1' : case '2' : case '3' : case '4' : case '5' : case '6' : case '7' :
             std::sscanf(ns,"%o",&val); while (*ns>='0' && *ns<='7') ++ns;
@@ -4665,9 +4681,9 @@ namespace cimg_library_suffixed {
     inline const char *strbuffersize(const unsigned long size) {
       static char res[256] = { 0 };
       if (size<1024LU) cimg_snprintf(res,sizeof(res),"%lu byte%s",size,size>1?"s":"");
-      else if (size<1024*1024LU) { const float nsize = size/1024.0f; cimg_snprintf(res,sizeof(res),"%.1f Kb",nsize); }
-      else if (size<1024*1024*1024LU) { const float nsize = size/(1024*1024.0f); cimg_snprintf(res,sizeof(res),"%.1f Mb",nsize); }
-      else { const float nsize = size/(1024*1024*1024.0f); cimg_snprintf(res,sizeof(res),"%.1f Gb",nsize); }
+      else if (size<1024*1024LU) { const float nsize = size/1024.0f; cimg_snprintf(res,sizeof(res),"%.1f Kio",nsize); }
+      else if (size<1024*1024*1024LU) { const float nsize = size/(1024*1024.0f); cimg_snprintf(res,sizeof(res),"%.1f Mio",nsize); }
+      else { const float nsize = size/(1024*1024*1024.0f); cimg_snprintf(res,sizeof(res),"%.1f Gio",nsize); }
       return res;
     }
 
@@ -4709,9 +4725,9 @@ namespace cimg_library_suffixed {
     **/
     inline std::FILE *fopen(const char *const path, const char *const mode) {
       if (!path)
-        throw CImgArgumentException("cimg::fopen() : Specified file path is (null).");
+        throw CImgArgumentException("cimg::fopen(): Specified file path is (null).");
       if (!mode)
-        throw CImgArgumentException("cimg::fopen() : File '%s', specified mode is (null).",
+        throw CImgArgumentException("cimg::fopen(): File '%s', specified mode is (null).",
                                     path);
       std::FILE *res = 0;
       if (*path=='-' && (!path[1] || path[1]=='.')) {
@@ -4722,7 +4738,7 @@ namespace cimg_library_suffixed {
         }
 #endif
       } else res = std::fopen(path,mode);
-      if (!res) throw CImgIOException("cimg::fopen() : Failed to open file '%s' with mode '%s'.",
+      if (!res) throw CImgIOException("cimg::fopen(): Failed to open file '%s' with mode '%s'.",
                                       path,mode);
       return res;
     }
@@ -4735,10 +4751,10 @@ namespace cimg_library_suffixed {
        the file has not been closed properly.
     **/
     inline int fclose(std::FILE *file) {
-      if (!file) warn("cimg::fclose() : Specified file is (null).");
+      if (!file) warn("cimg::fclose(): Specified file is (null).");
       if (!file || file==stdin || file==stdout) return 0;
       const int errn = std::fclose(file);
-      if (errn!=0) warn("cimg::fclose() : Error code %d returned during file closing.",
+      if (errn!=0) warn("cimg::fclose(): Error code %d returned during file closing.",
                         errn);
       return errn;
     }
@@ -4791,7 +4807,7 @@ namespace cimg_library_suffixed {
           if ((file=std::fopen(tmp,"wb"))!=0) { cimg::fclose(file); std::remove(tmp); path_found = true; }
         }
         if (!path_found)
-          throw CImgIOException("cimg::temporary_path() : Failed to locate path for writing temporary files.\n");
+          throw CImgIOException("cimg::temporary_path(): Failed to locate path for writing temporary files.\n");
       }
       return st_path;
     }
@@ -4813,7 +4829,7 @@ namespace cimg_library_suffixed {
       } else if (!st_path) {
         st_path = new char[MAX_PATH];
         std::memset(st_path,0,MAX_PATH);
-        // Note : in the following line, 0x26 = CSIDL_PROGRAM_FILES (not defined on every compiler).
+        // Note: in the following line, 0x26 = CSIDL_PROGRAM_FILES (not defined on every compiler).
 #if !defined(__INTEL_COMPILER)
         if (!SHGetSpecialFolderPathA(0,st_path,0x0026,false)) {
           const char *const pfPath = std::getenv("PROGRAMFILES");
@@ -5339,7 +5355,7 @@ namespace cimg_library_suffixed {
      **/
     inline const char *file_type(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
-        throw CImgArgumentException("cimg::file_type() : Specified filename is (null).");
+        throw CImgArgumentException("cimg::file_type(): Specified filename is (null).");
       static const char
         *const _pnm = "pnm",
         *const _pfm = "pfm",
@@ -5392,7 +5408,7 @@ namespace cimg_library_suffixed {
     template<typename T>
     inline int fread(T *const ptr, const unsigned long nmemb, std::FILE *stream) {
       if (!ptr || nmemb<=0 || !stream)
-        throw CImgArgumentException("cimg::fread() : Invalid reading request of %u %s%s from file %p to buffer %p.",
+        throw CImgArgumentException("cimg::fread(): Invalid reading request of %u %s%s from file %p to buffer %p.",
                                     nmemb,cimg::type<T>::string(),nmemb>1?"s":"",stream,ptr);
 
       const unsigned long wlimitT = 63*1024*1024, wlimit = wlimitT/sizeof(T);
@@ -5404,7 +5420,7 @@ namespace cimg_library_suffixed {
         to_read-=l_al_read;
       } while (l_to_read==l_al_read && to_read>0);
       if (to_read>0)
-        warn("cimg::fread() : Only %u/%u elements could be read from file.",
+        warn("cimg::fread(): Only %u/%u elements could be read from file.",
              al_read,nmemb);
       return al_read;
     }
@@ -5420,7 +5436,7 @@ namespace cimg_library_suffixed {
     template<typename T>
     inline int fwrite(const T *ptr, const unsigned long nmemb, std::FILE *stream) {
       if (!ptr || !stream)
-        throw CImgArgumentException("cimg::fwrite() : Invalid writing request of %u %s%s from buffer %p to file %p.",
+        throw CImgArgumentException("cimg::fwrite(): Invalid writing request of %u %s%s from buffer %p to file %p.",
                                     nmemb,cimg::type<T>::string(),nmemb>1?"s":"",ptr,stream);
       if (nmemb<=0) return 0;
       const unsigned long wlimitT = 63*1024*1024, wlimit = wlimitT/sizeof(T);
@@ -5432,7 +5448,7 @@ namespace cimg_library_suffixed {
         to_write-=l_al_write;
       } while (l_to_write==l_al_write && to_write>0);
       if (to_write>0)
-        warn("cimg::fwrite() : Only %u/%u elements could be written in file.",
+        warn("cimg::fwrite(): Only %u/%u elements could be written in file.",
              al_write,nmemb);
       return al_write;
     }
@@ -5447,9 +5463,9 @@ namespace cimg_library_suffixed {
     **/
     inline char *load_network_external(const char *const filename, char *const filename_local) {
       if (!filename)
-        throw CImgArgumentException("cimg::load_network_external() : Specified filename is (null).");
+        throw CImgArgumentException("cimg::load_network_external(): Specified filename is (null).");
       if (!filename_local)
-        throw CImgArgumentException("cimg::load_network_external() : Specified destination string is (null).");
+        throw CImgArgumentException("cimg::load_network_external(): Specified destination string is (null).");
       const char *const _ext = cimg::split_filename(filename), *const ext = (*_ext && _ext>filename)?_ext-1:_ext;
       char command[1024] = { 0 };
       std::FILE *file = 0;
@@ -5460,21 +5476,24 @@ namespace cimg_library_suffixed {
       } while (file);
 
       // Try with 'curl' first.
-      cimg_snprintf(command,sizeof(command),"%s -f --silent --compressed -o \"%s\" \"%s\"",cimg::curl_path(),filename_local,filename);
+      cimg_snprintf(command,sizeof(command),"%s -f --silent --compressed -o \"%s\" \"%s\"",
+                    cimg::curl_path(),filename_local,filename);
       cimg::system(command);
       if (!(file = std::fopen(filename_local,"rb"))) {
 
         // Try with 'wget' else.
-        cimg_snprintf(command,sizeof(command),"%s -q -r -l 0 --no-cache -O \"%s\" \"%s\"",cimg::wget_path(),filename_local,filename);
+        cimg_snprintf(command,sizeof(command),"%s -q -r -l 0 --no-cache -O \"%s\" \"%s\"",
+                      cimg::wget_path(),filename_local,filename);
         cimg::system(command);
         if (!(file = std::fopen(filename_local,"rb")))
-          throw CImgIOException("cimg::load_network_external() : Failed to load file '%s' with external tools 'wget' or 'curl'.",filename);
+          throw CImgIOException("cimg::load_network_external(): Failed to load file '%s' with external tools 'wget' or 'curl'.",filename);
         cimg::fclose(file);
 
         // Try gunzip it.
         cimg_snprintf(command,sizeof(command),"%s.gz",filename_local);
         std::rename(filename_local,command);
-        cimg_snprintf(command,sizeof(command),"%s --quiet %s.gz",gunzip_path(),filename_local);
+        cimg_snprintf(command,sizeof(command),"%s --quiet \"%s.gz\"",
+                      gunzip_path(),filename_local);
         cimg::system(command);
         file = std::fopen(filename_local,"rb");
         if (!file) {
@@ -5485,7 +5504,7 @@ namespace cimg_library_suffixed {
       }
       std::fseek(file,0,SEEK_END); // Check if file size is 0.
       if (std::ftell(file)<=0)
-        throw CImgIOException("cimg::load_network_external() : Failed to load file '%s' with external commands 'wget' or 'curl'.",filename);
+        throw CImgIOException("cimg::load_network_external(): Failed to load file '%s' with external commands 'wget' or 'curl'.",filename);
       cimg::fclose(file);
       return filename_local;
     }
@@ -5505,7 +5524,7 @@ namespace cimg_library_suffixed {
       if (!name && visu) {
         if (usage) {
           std::fprintf(cimg::output(),"\n %s%s%s",cimg::t_red,cimg::basename(argv[0]),cimg::t_normal);
-          std::fprintf(cimg::output()," : %s",usage);
+          std::fprintf(cimg::output(),": %s",usage);
           std::fprintf(cimg::output()," (%s, %s)\n\n",__DATE__,__TIME__);
         }
         if (defaut) std::fprintf(cimg::output(),"%s\n",defaut);
@@ -5597,30 +5616,30 @@ namespace cimg_library_suffixed {
     **/
     inline void info() {
       char tmp[1024] = { 0 };
-      std::fprintf(cimg::output(),"\n %s%sCImg Library %u.%u.%u%s, compiled %s ( %s ) with the following flags :\n\n",
+      std::fprintf(cimg::output(),"\n %s%sCImg Library %u.%u.%u%s, compiled %s ( %s ) with the following flags:\n\n",
                    cimg::t_red,cimg::t_bold,cimg_version/100,(cimg_version/10)%10,cimg_version%10,
                    cimg::t_normal,__DATE__,__TIME__);
 
-      std::fprintf(cimg::output(),"  > Operating System :       %s%-13s%s %s('cimg_OS'=%d)%s\n",
+      std::fprintf(cimg::output(),"  > Operating System:       %s%-13s%s %s('cimg_OS'=%d)%s\n",
                    cimg::t_bold,
                    cimg_OS==1?"Unix":(cimg_OS==2?"Windows":"Unknow"),
                    cimg::t_normal,cimg::t_green,
                    cimg_OS,
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > CPU endianness :         %s%s Endian%s\n",
+      std::fprintf(cimg::output(),"  > CPU endianness:         %s%s Endian%s\n",
                    cimg::t_bold,
                    cimg::endianness()?"Big":"Little",
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Verbosity mode :         %s%-13s%s %s('cimg_verbosity'=%d)%s\n",
+      std::fprintf(cimg::output(),"  > Verbosity mode:         %s%-13s%s %s('cimg_verbosity'=%d)%s\n",
                    cimg::t_bold,
                    cimg_verbosity==0?"Quiet":(cimg_verbosity==1?"Console":(cimg_verbosity==2?"Dialog":(cimg_verbosity==3?"Console+Warnings":"Dialog+Warnings"))),
                    cimg::t_normal,cimg::t_green,
                    cimg_verbosity,
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Stricts warnings :       %s%-13s%s %s('cimg_strict_warnings' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Stricts warnings:       %s%-13s%s %s('cimg_strict_warnings' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_strict_warnings
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5629,7 +5648,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using VT100 messages :   %s%-13s%s %s('cimg_use_vt100' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using VT100 messages:   %s%-13s%s %s('cimg_use_vt100' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_vt100
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5638,7 +5657,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Display type :           %s%-13s%s %s('cimg_display'=%d)%s\n",
+      std::fprintf(cimg::output(),"  > Display type:           %s%-13s%s %s('cimg_display'=%d)%s\n",
                    cimg::t_bold,
                    cimg_display==0?"No display":cimg_display==1?"X11":cimg_display==2?"Windows GDI":"Unknown",
                    cimg::t_normal,cimg::t_green,
@@ -5646,7 +5665,7 @@ namespace cimg_library_suffixed {
                    cimg::t_normal);
 
 #if cimg_display==1
-      std::fprintf(cimg::output(),"  > Using XShm for X11 :     %s%-13s%s %s('cimg_use_xshm' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using XShm for X11:     %s%-13s%s %s('cimg_use_xshm' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_xshm
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5655,7 +5674,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using XRand for X11 :    %s%-13s%s %s('cimg_use_xrandr' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using XRand for X11:    %s%-13s%s %s('cimg_use_xrandr' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_xrandr
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5664,7 +5683,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 #endif
-      std::fprintf(cimg::output(),"  > Using OpenMP :           %s%-13s%s %s('cimg_use_openmp' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using OpenMP:           %s%-13s%s %s('cimg_use_openmp' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_openmp
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5672,7 +5691,7 @@ namespace cimg_library_suffixed {
                    "No",cimg::t_normal,cimg::t_green,"undefined",
 #endif
                    cimg::t_normal);
-      std::fprintf(cimg::output(),"  > Using PNG library :      %s%-13s%s %s('cimg_use_png' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using PNG library:      %s%-13s%s %s('cimg_use_png' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_png
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5680,7 +5699,7 @@ namespace cimg_library_suffixed {
                    "No",cimg::t_normal,cimg::t_green,"undefined",
 #endif
                    cimg::t_normal);
-      std::fprintf(cimg::output(),"  > Using JPEG library :     %s%-13s%s %s('cimg_use_jpeg' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using JPEG library:     %s%-13s%s %s('cimg_use_jpeg' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_jpeg
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5689,7 +5708,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using TIFF library :     %s%-13s%s %s('cimg_use_tiff' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using TIFF library:     %s%-13s%s %s('cimg_use_tiff' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_tiff
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5698,7 +5717,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using Magick++ library : %s%-13s%s %s('cimg_use_magick' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using Magick++ library: %s%-13s%s %s('cimg_use_magick' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_magick
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5707,7 +5726,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using FFTW3 library :    %s%-13s%s %s('cimg_use_fftw3' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using FFTW3 library:    %s%-13s%s %s('cimg_use_fftw3' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_fftw3
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5716,7 +5735,7 @@ namespace cimg_library_suffixed {
 #endif
                    cimg::t_normal);
 
-      std::fprintf(cimg::output(),"  > Using LAPACK library :   %s%-13s%s %s('cimg_use_lapack' %s)%s\n",
+      std::fprintf(cimg::output(),"  > Using LAPACK library:   %s%-13s%s %s('cimg_use_lapack' %s)%s\n",
                    cimg::t_bold,
 #ifdef cimg_use_lapack
                    "Yes",cimg::t_normal,cimg::t_green,"defined",
@@ -5726,25 +5745,25 @@ namespace cimg_library_suffixed {
                    cimg::t_normal);
 
       cimg_snprintf(tmp,sizeof(tmp),"\"%.1020s\"",cimg::imagemagick_path());
-      std::fprintf(cimg::output(),"  > Path of ImageMagick :    %s%-13s%s\n",
+      std::fprintf(cimg::output(),"  > Path of ImageMagick:    %s%-13s%s\n",
                    cimg::t_bold,
                    tmp,
                    cimg::t_normal);
 
       cimg_snprintf(tmp,sizeof(tmp),"\"%.1020s\"",cimg::graphicsmagick_path());
-      std::fprintf(cimg::output(),"  > Path of GraphicsMagick : %s%-13s%s\n",
+      std::fprintf(cimg::output(),"  > Path of GraphicsMagick: %s%-13s%s\n",
                    cimg::t_bold,
                    tmp,
                    cimg::t_normal);
 
       cimg_snprintf(tmp,sizeof(tmp),"\"%.1020s\"",cimg::medcon_path());
-      std::fprintf(cimg::output(),"  > Path of 'medcon' :       %s%-13s%s\n",
+      std::fprintf(cimg::output(),"  > Path of 'medcon':       %s%-13s%s\n",
                    cimg::t_bold,
                    tmp,
                    cimg::t_normal);
 
       cimg_snprintf(tmp,sizeof(tmp),"\"%.1020s\"",cimg::temporary_path());
-      std::fprintf(cimg::output(),"  > Temporary path :         %s%-13s%s\n",
+      std::fprintf(cimg::output(),"  > Temporary path:         %s%-13s%s\n",
                    cimg::t_bold,
                    tmp,
                    cimg::t_normal);
@@ -6037,17 +6056,17 @@ namespace cimg_library_suffixed {
    ----------------------------------*/
   //! Allow to create windows, display images on them and manage user events (keyboard, mouse and windows events).
   /**
-     CImgDisplay methods rely on a low-level graphic library to perform : it can be either \b X-Window (X11, for Unix-based systems)
+     CImgDisplay methods rely on a low-level graphic library to perform: it can be either \b X-Window (X11, for Unix-based systems)
      or \b GDI32 (for Windows-based systems).
      If both libraries are missing, CImgDisplay will not be able to display images on screen, and will enter a minimal mode
      where warning messages will be outputed each time the program is trying to call one of the CImgDisplay method.
 
      The configuration variable \c cimg_display tells about the graphic library used.
      It is set automatically by \CImg when one of these graphic libraries has been detected.
-     But, you can override its value if necessary. Valid choices are :
-     - 0 : Disable display capabilities.
-     - 1 : Use \b X-Window (X11) library.
-     - 2 : Use \b GDI32 library.
+     But, you can override its value if necessary. Valid choices are:
+     - 0: Disable display capabilities.
+     - 1: Use \b X-Window (X11) library.
+     - 2: Use \b GDI32 library.
 
      Remember to link your program against \b X11 or \b GDI32 libraries if you use CImgDisplay.
   **/
@@ -6212,7 +6231,7 @@ namespace cimg_library_suffixed {
 
     //! Construct a display as a copy of an existing one.
     /**
-        \param disp  : Display instance to copy.
+        \param disp Display instance to copy.
         \note The pixel buffer of the input window is initially displayed on the associated window.
     **/
     CImgDisplay(const CImgDisplay& disp):
@@ -6229,7 +6248,7 @@ namespace cimg_library_suffixed {
 #if cimg_display==0
 
     static void _no_display_exception() {
-      throw CImgDisplayException("CImgDisplay() : No display available.");
+      throw CImgDisplayException("CImgDisplay(): No display available.");
     }
 
     //! Destructor - Empty constructor \inplace.
@@ -6653,17 +6672,17 @@ namespace cimg_library_suffixed {
        The normalization type tells about how the values of an input image are normalized by the CImgDisplay to be correctly displayed.
        The range of values for pixels displayed on screen is <tt>[0,255]</tt>. If the range of values of the data to display
        is different, a normalization may be required for displaying the data in a correct way.
-       The normalization type can be one of :
-       - \c 0 : Value normalization is disabled. It is then assumed that all input data to be displayed by the CImgDisplay instance
+       The normalization type can be one of:
+       - \c 0: Value normalization is disabled. It is then assumed that all input data to be displayed by the CImgDisplay instance
        have values in range <tt>[0,255]</tt>.
-       - \c 1 : Value normalization is always performed (this is the default behavior).
+       - \c 1: Value normalization is always performed (this is the default behavior).
        Before displaying an input image, its values will be (virtually) stretched
        in range <tt>[0,255]</tt>, so that the contrast of the displayed pixels will be maximum.
        Use this mode for images whose minimum and maximum values are not prescribed to known values (e.g. float-valued images).
        Note that when normalized versions of images are computed for display purposes, the actual values of these images are not modified.
-       - \c 2 : Value normalization is performed once (on the first image display), then the same normalization coefficients are kept for
+       - \c 2: Value normalization is performed once (on the first image display), then the same normalization coefficients are kept for
        next displayed frames.
-       - \c 3 : Value normalization depends on the pixel type of the data to display. For integer pixel types, the normalization
+       - \c 3: Value normalization depends on the pixel type of the data to display. For integer pixel types, the normalization
        is done regarding the minimum/maximum values of the type (no normalization occurs then for <tt>unsigned char</tt>).
        For float-valued pixel types, the normalization is done regarding the minimum/maximum value of the image data instead.
 
@@ -6736,10 +6755,10 @@ namespace cimg_library_suffixed {
 
     //! Return current state of the mouse buttons.
     /**
-       \note Three mouse buttons can be managed. If one button is pressed, its corresponding bit in the returned value is set :
-       - bit \c 0 (value \c 0x1) : State of the left mouse button.
-       - bit \c 1 (value \c 0x2) : State of the right mouse button.
-       - bit \c 2 (value \c 0x4) : State of the middle mouse button.
+       \note Three mouse buttons can be managed. If one button is pressed, its corresponding bit in the returned value is set:
+       - bit \c 0 (value \c 0x1): State of the left mouse button.
+       - bit \c 1 (value \c 0x2): State of the right mouse button.
+       - bit \c 2 (value \c 0x4): State of the middle mouse button.
 
        Several bits can be activated if more than one button are pressed at the same time.
        \par Example
@@ -7406,7 +7425,7 @@ namespace cimg_library_suffixed {
       if (!dpy) {
         Display *const _dpy = XOpenDisplay(0);
         if (!_dpy)
-          throw CImgDisplayException("CImgDisplay::screen_width() : Failed to open X11 display.");
+          throw CImgDisplayException("CImgDisplay::screen_width(): Failed to open X11 display.");
         res = DisplayWidth(_dpy,DefaultScreen(_dpy));
         XCloseDisplay(_dpy);
       } else {
@@ -7427,7 +7446,7 @@ namespace cimg_library_suffixed {
       if (!dpy) {
         Display *const _dpy = XOpenDisplay(0);
         if (!_dpy)
-          throw CImgDisplayException("CImgDisplay::screen_height() : Failed to open X11 display.");
+          throw CImgDisplayException("CImgDisplay::screen_height(): Failed to open X11 display.");
         res = DisplayHeight(_dpy,DefaultScreen(_dpy));
         XCloseDisplay(_dpy);
       } else {
@@ -7754,7 +7773,7 @@ namespace cimg_library_suffixed {
       }
       if (!cimg::X11_attr().resolutions)
         cimg::warn(_cimgdisplay_instance
-                   "init_fullscreen() : Xrandr extension not supported by the X server.",
+                   "init_fullscreen(): Xrandr extension not supported by the X server.",
                    cimgdisplay_instance);
 #endif
 
@@ -7832,13 +7851,13 @@ namespace cimg_library_suffixed {
         dpy = XOpenDisplay(0);
         if (!dpy)
           throw CImgDisplayException(_cimgdisplay_instance
-                                     "assign() : Failed to open X11 display.",
+                                     "assign(): Failed to open X11 display.",
                                      cimgdisplay_instance);
 
         cimg::X11_attr().nb_bits = DefaultDepth(dpy,DefaultScreen(dpy));
         if (cimg::X11_attr().nb_bits!=8 && cimg::X11_attr().nb_bits!=16 && cimg::X11_attr().nb_bits!=24 && cimg::X11_attr().nb_bits!=32)
           throw CImgDisplayException(_cimgdisplay_instance
-                                     "assign() : Invalid %u bits screen mode detected "
+                                     "assign(): Invalid %u bits screen mode detected "
                                      "(only 8, 16, 24 and 32 bits modes are managed).",
                                      cimgdisplay_instance,
                                      cimg::X11_attr().nb_bits);
@@ -8053,7 +8072,15 @@ namespace cimg_library_suffixed {
         dimx = tmpdimx?tmpdimx:1,
         dimy = tmpdimy?tmpdimy:1;
       XLockDisplay(dpy);
-      if (_window_width!=dimx || _window_height!=dimy) XResizeWindow(dpy,_window,dimx,dimy);
+      if (_window_width!=dimx || _window_height!=dimy) {
+        XWindowAttributes attr;
+        for (unsigned int i = 0; i<10; ++i) {
+          XResizeWindow(dpy,_window,dimx,dimy);
+          XGetWindowAttributes(dpy,_window,&attr);
+          if (attr.width==(int)dimx && attr.height==(int)dimy) break;
+          cimg::wait(5);
+        }
+      }
       if (_width!=dimx || _height!=dimy) switch (cimg::X11_attr().nb_bits) {
         case 8 :  { unsigned char pixel_type = 0; _resize(pixel_type,dimx,dimy,force_redraw); } break;
         case 16 : { unsigned short pixel_type = 0; _resize(pixel_type,dimx,dimy,force_redraw); } break;
@@ -8175,7 +8202,7 @@ namespace cimg_library_suffixed {
     CImgDisplay& display(const CImg<T>& img) {
       if (!img)
         throw CImgArgumentException(_cimgdisplay_instance
-                                    "display() : Empty specified image.",
+                                    "display(): Empty specified image.",
                                     cimgdisplay_instance);
       if (is_empty()) return assign(img);
       return render(img).paint(false);
@@ -8194,7 +8221,7 @@ namespace cimg_library_suffixed {
     CImgDisplay& render(const CImg<T>& img, const bool flag8=false) {
       if (!img)
         throw CImgArgumentException(_cimgdisplay_instance
-                                    "render() : Empty specified image.",
+                                    "render(): Empty specified image.",
                                     cimgdisplay_instance);
       if (is_empty()) return *this;
       if (img._depth!=1) return render(img.get_projections2d(img._width/2,img._height/2,img._depth/2));
@@ -8699,8 +8726,8 @@ namespace cimg_library_suffixed {
         disp->set_wheel((int)((short)HIWORD(wParam))/120);
         SetEvent(cimg::Win32_attr().wait_event);
       case WM_SETCURSOR :
-        if (disp->_is_cursor_visible) ShowCursor(TRUE);
-        else ShowCursor(FALSE);
+        if (disp->_is_cursor_visible) while (ShowCursor(TRUE)<0);
+        else while (ShowCursor(FALSE)>=0);
         break;
       }
       return DefWindowProc(window,msg,wParam,lParam);
@@ -8996,7 +9023,6 @@ namespace cimg_library_suffixed {
     CImgDisplay& show_mouse() {
       if (is_empty()) return *this;
       _is_cursor_visible = true;
-      ShowCursor(TRUE);
       SendMessage(_window,WM_SETCURSOR,0,0);
       return *this;
     }
@@ -9004,7 +9030,6 @@ namespace cimg_library_suffixed {
     CImgDisplay& hide_mouse() {
       if (is_empty()) return *this;
       _is_cursor_visible = false;
-      ShowCursor(FALSE);
       SendMessage(_window,WM_SETCURSOR,0,0);
       return *this;
     }
@@ -9037,7 +9062,7 @@ namespace cimg_library_suffixed {
     CImgDisplay& display(const CImg<T>& img) {
       if (!img)
         throw CImgArgumentException(_cimgdisplay_instance
-                                    "display() : Empty specified image.",
+                                    "display(): Empty specified image.",
                                     cimgdisplay_instance);
       if (is_empty()) return assign(img);
       return render(img).paint();
@@ -9055,7 +9080,7 @@ namespace cimg_library_suffixed {
     CImgDisplay& render(const CImg<T>& img) {
       if (!img)
         throw CImgArgumentException(_cimgdisplay_instance
-                                    "render() : Empty specified image.",
+                                    "render(): Empty specified image.",
                                     cimgdisplay_instance);
 
       if (is_empty()) return *this;
@@ -9168,7 +9193,7 @@ namespace cimg_library_suffixed {
      \par Image representation
 
      A %CImg image is defined as an instance of the container \c CImg<T>, which contains a regular grid of pixels,
-     each pixel value being of type \c T. The image grid can have up to 4 dimensions : width, height, depth
+     each pixel value being of type \c T. The image grid can have up to 4 dimensions: width, height, depth
      and number of channels.
      Usually, the three first dimensions are used to describe spatial coordinates <tt>(x,y,z)</tt>, while the number of channels
      is rather used as a vector-valued dimension (it may describe the R,G,B color channels for instance).
@@ -9178,8 +9203,8 @@ namespace cimg_library_suffixed {
      as well as images with less dimensions (1d scalar signal, 2d color images, ...).
      Most member functions of the class CImg<\c T> are designed to handle this maximum case of (3+1) dimensions.
 
-     Concerning the pixel value type \c T :
-     fully supported template types are the basic C++ types : <tt>unsigned char, char, short, unsigned int, int,
+     Concerning the pixel value type \c T:
+     fully supported template types are the basic C++ types: <tt>unsigned char, char, short, unsigned int, int,
      unsigned long, long, float, double, ... </tt>.
      Typically, fast image display can be done using <tt>CImg<unsigned char></tt> images,
      while complex image processing algorithms may be rather coded using <tt>CImg<float></tt> or <tt>CImg<double></tt>
@@ -9189,7 +9214,7 @@ namespace cimg_library_suffixed {
 
      \par Image structure
 
-     The \c CImg<T> structure contains \e six fields :
+     The \c CImg<T> structure contains \e six fields:
      - \c _width defines the number of \a columns of the image (size along the X-axis).
      - \c _height defines the number of \a rows of the image (size along the Y-axis).
      - \c _depth defines the number of \a slices of the image (size along the Z-axis).
@@ -9210,9 +9235,9 @@ namespace cimg_library_suffixed {
      \par Image declaration and construction
 
      Declaring an image can be done by using one of the several available constructors.
-     Here is a list of the most used :
+     Here is a list of the most used:
 
-     - Construct images from arbitrary dimensions :
+     - Construct images from arbitrary dimensions:
          - <tt>CImg<char> img;</tt> declares an empty image.
          - <tt>CImg<unsigned char> img(128,128);</tt> declares a 128x128 greyscale image with
          \c unsigned \c char pixel values.
@@ -9223,17 +9248,17 @@ namespace cimg_library_suffixed {
          (with \c double pixel values).
          - <tt>CImg<> img(128,128,128,3);</tt> declares a 128x128x128 volumetric color image
          (with \c float pixels, which is the default value of the template parameter \c T).
-         - \b Note : images pixels are <b>not automatically initialized to 0</b>. You may use the function \c fill() to
-         do it, or use the specific constructor taking 5 parameters like this :
+         - \b Note: images pixels are <b>not automatically initialized to 0</b>. You may use the function \c fill() to
+         do it, or use the specific constructor taking 5 parameters like this:
          <tt>CImg<> img(128,128,128,3,0);</tt> declares a 128x128x128 volumetric color image with all pixel values to 0.
 
-     - Construct images from filenames :
+     - Construct images from filenames:
          - <tt>CImg<unsigned char> img("image.jpg");</tt> reads a JPEG color image from the file "image.jpg".
          - <tt>CImg<float> img("analyze.hdr");</tt> reads a volumetric image (ANALYZE7.5 format) from the file "analyze.hdr".
-         - \b Note : You need to install <a href="http://www.imagemagick.org">ImageMagick</a>
+         - \b Note: You need to install <a href="http://www.imagemagick.org">ImageMagick</a>
          to be able to read common compressed image formats (JPG,PNG, ...) (See \ref cimg_files_io).
 
-     - Construct images from C-style arrays :
+     - Construct images from C-style arrays:
          - <tt>CImg<int> img(data_buffer,256,256);</tt> constructs a 256x256 greyscale image from a \c int* buffer
          \c data_buffer (of size 256x256=65536).
          - <tt>CImg<unsigned char> img(data_buffer,256,256,1,3,false);</tt> constructs a 256x256 color image
@@ -9246,10 +9271,10 @@ namespace cimg_library_suffixed {
      \par Most useful functions
 
      The \c CImg<T> class contains a lot of functions that operates on images.
-     Some of the most useful are :
+     Some of the most useful are:
 
-     - operator()() : allows to access or write pixel values.
-     - display() : displays the image in a new window.
+     - operator()(): allows to access or write pixel values.
+     - display(): displays the image in a new window.
   **/
   template<typename T>
   struct CImg {
@@ -9423,7 +9448,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
         }
@@ -9452,7 +9477,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
         }
@@ -9524,9 +9549,9 @@ namespace cimg_library_suffixed {
        \warning
        - You must specify \e exactly \c dx*\c dy*\c dz*\c dc doubles in the initialization sequence.
          Otherwise, the constructor may crash or fill your image with garbage.
-         For instance, the code below will probably crash on most platforms :
+         For instance, the code below will probably crash on most platforms:
          \code
-         const CImg<float> img(2,2,1,1, 0.5,0.5,255,255); // FAIL : The two last arguments are 'int', not 'double' !
+         const CImg<float> img(2,2,1,1, 0.5,0.5,255,255); // FAIL: The two last arguments are 'int', not 'double'!
          \endcode
      **/
     CImg(const unsigned int size_x, const unsigned int size_y, const unsigned int size_z, const unsigned int size_c,
@@ -9548,7 +9573,7 @@ namespace cimg_library_suffixed {
        \note
        - Similar to CImg(unsigned int,unsigned int,unsigned int,unsigned int), but it also fills
          the pixel buffer with values described in the value string \c values.
-       - Value string \c values may describe two different filling processes :
+       - Value string \c values may describe two different filling processes:
          - Either \c values is a sequences of values assigned to the image pixels, as in <tt>"1,2,3,7,8,2"</tt>.
            In this case, set \c repeat_values to \c true to periodically fill the image with the value sequence.
          - Either, \c values is a formula, as in <tt>"cos(x/10)*sin(y/20)"</tt>. In this case, parameter \c repeat_values is pointless.
@@ -9571,7 +9596,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
         }
@@ -9612,7 +9637,7 @@ namespace cimg_library_suffixed {
       if (is_shared) {
         _width = _height = _depth = _spectrum = 0; _data = 0;
         throw CImgArgumentException(_cimg_instance
-                                    "CImg() : Invalid construction request of a (%u,%u,%u,%u) shared instance from a (%s*) buffer "
+                                    "CImg(): Invalid construction request of a (%u,%u,%u,%u) shared instance from a (%s*) buffer "
                                     "(pixel types are different).",
                                     cimg_instance,
                                     size_x,size_y,size_z,size_c,CImg<t>::pixel_type());
@@ -9623,7 +9648,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
 
@@ -9643,7 +9668,7 @@ namespace cimg_library_suffixed {
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance
-                                        "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                        "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                         cimg_instance,
                                         cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
           }
@@ -9697,7 +9722,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*img._width*img._height*img._depth*img._spectrum),
                                       img._width,img._height,img._depth,img._spectrum);
@@ -9716,7 +9741,7 @@ namespace cimg_library_suffixed {
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance
-                                        "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                        "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                         cimg_instance,
                                         cimg::strbuffersize(sizeof(T)*img._width*img._height*img._depth*img._spectrum),
                                         img._width,img._height,img._depth,img._spectrum);
@@ -9735,7 +9760,7 @@ namespace cimg_library_suffixed {
        \param is_shared Tells about the shared state of the constructed copy.
        \note
        - Similar to CImg(const CImg<t>&), except that it allows to decide the shared state of
-         the constructed image, which does not depend anymore on the shared state of the input image \c img :
+         the constructed image, which does not depend anymore on the shared state of the input image \c img:
          - If \c is_shared is \c true, the constructed copy will share its pixel buffer with the input image \c img.
            For that case, the pixel types \c T and \c t \e must be the same.
          - If \c is_shared is \c false, the constructed copy will allocate its own pixel buffer, whether the input image \c img is
@@ -9747,7 +9772,7 @@ namespace cimg_library_suffixed {
       if (is_shared) {
         _width = _height = _depth = _spectrum = 0; _data = 0;
         throw CImgArgumentException(_cimg_instance
-                                    "CImg() : Invalid construction request of a shared instance from a "
+                                    "CImg(): Invalid construction request of a shared instance from a "
                                     "CImg<%s> image (%u,%u,%u,%u,%p) (pixel types are different).",
                                     cimg_instance,
                                     CImg<t>::pixel_type(),img._width,img._height,img._depth,img._spectrum,img._data);
@@ -9758,7 +9783,7 @@ namespace cimg_library_suffixed {
         try { _data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*img._width*img._height*img._depth*img._spectrum),
                                       img._width,img._height,img._depth,img._spectrum);
@@ -9777,7 +9802,7 @@ namespace cimg_library_suffixed {
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance
-                                        "CImg() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                        "CImg(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                         cimg_instance,
                                         cimg::strbuffersize(sizeof(T)*img._width*img._height*img._depth*img._spectrum),
                                         img._width,img._height,img._depth,img._spectrum);
@@ -9860,7 +9885,7 @@ namespace cimg_library_suffixed {
       if (siz!=curr_siz) {
         if (_is_shared)
           throw CImgArgumentException(_cimg_instance
-                                      "assign() : Invalid assignement request of shared instance from specified image (%u,%u,%u,%u).",
+                                      "assign(): Invalid assignement request of shared instance from specified image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       size_x,size_y,size_z,size_c);
         else {
@@ -9868,7 +9893,7 @@ namespace cimg_library_suffixed {
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance
-                                        "assign() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                        "assign(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                         cimg_instance,
                                         cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
           }
@@ -9947,7 +9972,7 @@ namespace cimg_library_suffixed {
         try { new_data = new T[siz]; } catch (...) {
           _width = _height = _depth = _spectrum = 0; _data = 0;
           throw CImgInstanceException(_cimg_instance
-                                      "assign() : Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
+                                      "assign(): Failed to allocate memory (%s) for image (%u,%u,%u,%u).",
                                       cimg_instance,
                                       cimg::strbuffersize(sizeof(T)*size_x*size_y*size_z*size_c),size_x,size_y,size_z,size_c);
         }
@@ -9963,7 +9988,7 @@ namespace cimg_library_suffixed {
                     const unsigned int size_z, const unsigned int size_c, const bool is_shared) {
       if (is_shared)
         throw CImgArgumentException(_cimg_instance
-                                    "assign() : Invalid assignment request of shared instance from (%s*) buffer"
+                                    "assign(): Invalid assignment request of shared instance from (%s*) buffer"
                                     "(pixel types are different).",
                                     cimg_instance,
                                     CImg<t>::pixel_type());
@@ -9977,7 +10002,7 @@ namespace cimg_library_suffixed {
       if (!values || !siz) {
         if (is_shared)
           throw CImgArgumentException(_cimg_instance
-                                      "assign() : Invalid assignment request of shared instance from (null) or empty buffer.",
+                                      "assign(): Invalid assignment request of shared instance from (null) or empty buffer.",
                                       cimg_instance);
         else return assign();
       }
@@ -9986,7 +10011,7 @@ namespace cimg_library_suffixed {
         if (!_is_shared) {
           if (values+siz<_data || values>=_data+size()) assign();
           else cimg::warn(_cimg_instance
-                          "assign() : Shared image instance has overlapping memory.",
+                          "assign(): Shared image instance has overlapping memory.",
                           cimg_instance);
         }
         _width = size_x; _height = size_y; _depth = size_z; _spectrum = size_c; _is_shared = true;
@@ -10045,7 +10070,7 @@ namespace cimg_library_suffixed {
           case 'c' : case 's' : siz[k] = img._spectrum; ++s; break;
           default :
             throw CImgArgumentException(_cimg_instance
-                                        "assign() : Invalid character '%c' detected in specified dimension string '%s'.",
+                                        "assign(): Invalid character '%c' detected in specified dimension string '%s'.",
                                         cimg_instance,
                                         *s,dimensions);
           }
@@ -10216,7 +10241,7 @@ namespace cimg_library_suffixed {
       const unsigned long off = (unsigned long)offset(x,y,z,c);
       if (!_data || off>=size()) {
         cimg::warn(_cimg_instance
-                   "operator() : Invalid pixel request, at coordinates (%u,%u,%u,%u) [offset=%u].",
+                   "operator(): Invalid pixel request, at coordinates (%u,%u,%u,%u) [offset=%u].",
                    cimg_instance,
                    x,y,z,c,off);
         return *_data;
@@ -10362,7 +10387,7 @@ namespace cimg_library_suffixed {
        Initialize all pixel values from the specified string \c expression.
        \param expression Value string describing the way pixel values are set.
        \note
-       - String parameter \c expression may describe different things :
+       - String parameter \c expression may describe different things:
          - If \c expression is a list of values (as in \c "1,2,3,8,3,2"), or a formula (as in \c "(x*y)%255"),
            the pixel values are set from specified \c expression and the image size is not modified.
          - If \c expression is a filename (as in \c "reference.jpg"), the corresponding image file is loaded and replace the image instance.
@@ -10758,17 +10783,18 @@ namespace cimg_library_suffixed {
     CImg<_cimg_Tt> operator*(const CImg<t>& img) const {
       if (_width!=img._height || _depth!=1 || _spectrum!=1)
         throw CImgArgumentException(_cimg_instance
-                                    "operator*() : Invalid multiplication of instance by specified matrix (%u,%u,%u,%u,%p)",
+                                    "operator*(): Invalid multiplication of instance by specified matrix (%u,%u,%u,%u,%p)",
                                     cimg_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data);
-
       CImg<_cimg_Tt> res(img._width,_height);
-      _cimg_Tt *ptrd = res._data;
       _cimg_Ttdouble value;
 #ifdef cimg_use_openmp
 #pragma omp parallel for if (size()>=1000 && img.size()>=1000) private(value)
-#endif
+      cimg_forXY(res,i,j) { value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); res(i,j) = (_cimg_Tt)value; }
+#else
+      _cimg_Tt *ptrd = res._data;
       cimg_forXY(res,i,j) { value = 0; cimg_forX(*this,k) value+=(*this)(k,j)*img(i,k); *(ptrd++) = (_cimg_Tt)value; }
+#endif
       return res;
     }
 
@@ -11415,7 +11441,7 @@ namespace cimg_library_suffixed {
 
     //! Construct an image list from two images.
     /**
-       Return a new list of image (\c CImgList instance) containing exactly two elements :
+       Return a new list of image (\c CImgList instance) containing exactly two elements:
          - A copy of the image instance, at position [\c 0].
          - A copy of the specified image \c img, at position [\c 1].
 
@@ -11449,7 +11475,7 @@ namespace cimg_library_suffixed {
 
     //! Construct an image list from image instance and an input image list.
     /**
-       Return a new list of images (\c CImgList instance) containing exactly \c list.size() \c + \c 1 elements :
+       Return a new list of images (\c CImgList instance) containing exactly \c list.size() \c + \c 1 elements:
          - A copy of the image instance, at position [\c 0].
          - A copy of the specified image list \c list, from positions [\c 1] to [\c list.size()].
 
@@ -11618,7 +11644,7 @@ namespace cimg_library_suffixed {
       const unsigned long off = (unsigned long)offset(x,y,z,c);
       if (off>=size()) {
         cimg::warn(_cimg_instance
-                   "data() : Invalid pointer request, at coordinates (%u,%u,%u,%u) [offset=%u].",
+                   "data(): Invalid pointer request, at coordinates (%u,%u,%u,%u) [offset=%u].",
                    cimg_instance,
                    x,y,z,c,off);
         return _data;
@@ -11770,7 +11796,7 @@ namespace cimg_library_suffixed {
     T& at(const int offset) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "at() : Empty instance.",
+                                    "at(): Empty instance.",
                                     cimg_instance);
       return _at(offset);
     }
@@ -11784,7 +11810,7 @@ namespace cimg_library_suffixed {
     T at(const int offset) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "at() : Empty instance.",
+                                    "at(): Empty instance.",
                                     cimg_instance);
       return _at(offset);
     }
@@ -11839,7 +11865,7 @@ namespace cimg_library_suffixed {
     T& atX(const int x, const int y=0, const int z=0, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atX() : Empty instance.",
+                                    "atX(): Empty instance.",
                                     cimg_instance);
       return _atX(x,y,z,c);
     }
@@ -11852,7 +11878,7 @@ namespace cimg_library_suffixed {
     T atX(const int x, const int y=0, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atX() : Empty instance.",
+                                    "atX(): Empty instance.",
                                     cimg_instance);
       return _atX(x,y,z,c);
     }
@@ -11883,7 +11909,7 @@ namespace cimg_library_suffixed {
     T& atXY(const int x, const int y, const int z=0, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXY() : Empty instance.",
+                                    "atXY(): Empty instance.",
                                     cimg_instance);
       return _atXY(x,y,z,c);
     }
@@ -11896,7 +11922,7 @@ namespace cimg_library_suffixed {
     T atXY(const int x, const int y, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXY() : Empty instance.",
+                                    "atXY(): Empty instance.",
                                     cimg_instance);
       return _atXY(x,y,z,c);
     }
@@ -11928,7 +11954,7 @@ namespace cimg_library_suffixed {
     T& atXYZ(const int x, const int y, const int z, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXYZ() : Empty instance.",
+                                    "atXYZ(): Empty instance.",
                                     cimg_instance);
       return _atXYZ(x,y,z,c);
     }
@@ -11942,7 +11968,7 @@ namespace cimg_library_suffixed {
     T atXYZ(const int x, const int y, const int z, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXYZ() : Empty instance.",
+                                    "atXYZ(): Empty instance.",
                                     cimg_instance);
       return _atXYZ(x,y,z,c);
     }
@@ -11975,7 +12001,7 @@ namespace cimg_library_suffixed {
     T& atXYZC(const int x, const int y, const int z, const int c) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXYZC() : Empty instance.",
+                                    "atXYZC(): Empty instance.",
                                     cimg_instance);
       return _atXYZC(x,y,z,c);
     }
@@ -11989,7 +12015,7 @@ namespace cimg_library_suffixed {
     T atXYZC(const int x, const int y, const int z, const int c) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "atXYZC() : Empty instance.",
+                                    "atXYZC(): Empty instance.",
                                     cimg_instance);
       return _atXYZC(x,y,z,c);
     }
@@ -12043,7 +12069,7 @@ namespace cimg_library_suffixed {
     Tfloat linear_atX(const float fx, const int y=0, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "linear_atX() : Empty instance.",
+                                    "linear_atX(): Empty instance.",
                                     cimg_instance);
 
       return _linear_atX(fx,y,z,c);
@@ -12091,7 +12117,7 @@ namespace cimg_library_suffixed {
     Tfloat linear_atXY(const float fx, const float fy, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "linear_atXY() : Empty instance.",
+                                    "linear_atXY(): Empty instance.",
                                     cimg_instance);
 
       return _linear_atXY(fx,fy,z,c);
@@ -12155,7 +12181,7 @@ namespace cimg_library_suffixed {
     Tfloat linear_atXYZ(const float fx, const float fy=0, const float fz=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "linear_atXYZ() : Empty instance.",
+                                    "linear_atXYZ(): Empty instance.",
                                     cimg_instance);
 
       return _linear_atXYZ(fx,fy,fz,c);
@@ -12246,7 +12272,7 @@ namespace cimg_library_suffixed {
     Tfloat linear_atXYZC(const float fx, const float fy=0, const float fz=0, const float fc=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "linear_atXYZC() : Empty instance.",
+                                    "linear_atXYZC(): Empty instance.",
                                     cimg_instance);
 
       return _linear_atXYZC(fx,fy,fz,fc);
@@ -12354,7 +12380,7 @@ namespace cimg_library_suffixed {
     Tfloat cubic_atX(const float fx, const int y=0, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "cubic_atX() : Empty instance.",
+                                    "cubic_atX(): Empty instance.",
                                     cimg_instance);
       return _cubic_atX(fx,y,z,c);
     }
@@ -12432,7 +12458,7 @@ namespace cimg_library_suffixed {
     Tfloat cubic_atXY(const float fx, const float fy, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "cubic_atXY() : Empty instance.",
+                                    "cubic_atXY(): Empty instance.",
                                     cimg_instance);
       return _cubic_atXY(fx,fy,z,c);
     }
@@ -12561,7 +12587,7 @@ namespace cimg_library_suffixed {
     Tfloat cubic_atXYZ(const float fx, const float fy, const float fz, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "cubic_atXYZ() : Empty instance.",
+                                    "cubic_atXYZ(): Empty instance.",
                                     cimg_instance);
       return _cubic_atXYZ(fx,fy,fz,c);
     }
@@ -13096,7 +13122,7 @@ namespace cimg_library_suffixed {
        \param z Z-coordinate of the pixel value.
        \param c C-coordinate of the pixel value.
        \note
-       - Return \c true only if all these conditions are verified :
+       - Return \c true only if all these conditions are verified:
          - The image instance is \e not empty.
          - <tt>0<=x<=\ref width()-1</tt>.
          - <tt>0<=y<=\ref height()-1</tt>.
@@ -13116,7 +13142,7 @@ namespace cimg_library_suffixed {
        \param[out] z Z-coordinate of the pixel value, if test succeeds.
        \param[out] c C-coordinate of the pixel value, if test succeeds.
        \note
-       - Useful to convert an offset to a buffer value into pixel value coordinates :
+       - Useful to convert an offset to a buffer value into pixel value coordinates:
        \code
        const CImg<float> img(100,100,1,3);      // Construct a 100x100 RGB color image.
        const unsigned long offset = 1249;       // Offset to the pixel (49,12,0,0).
@@ -13209,7 +13235,7 @@ namespace cimg_library_suffixed {
          img1("reference.jpg"),             // Load RGB-color image.
          img2 = img1.get_shared_channel(1); // Get shared version of the green channel.
        if (img1.is_overlapped(img2)) {      // Test succeeds, 'img1' and 'img2' overlaps.
-         std::printf("Buffers overlap !\n");
+         std::printf("Buffers overlap!\n");
        }
        \endcode
     **/
@@ -13518,7 +13544,7 @@ namespace cimg_library_suffixed {
         return false;
       }
       for (unsigned int c = 0; c<nb_primitives; ++c) {
-        if ((int)*(ptrs++)!=-128) ptrs+=2;
+        if (*(ptrs++)!=(T)-128) ptrs+=2;
         else if ((ptrs+=3)<ptre) {
           const unsigned int w = (unsigned int)*(ptrs-3), h = (unsigned int)*(ptrs-2), s = (unsigned int)*(ptrs-1);
           if (!h && !s) {
@@ -13546,7 +13572,7 @@ namespace cimg_library_suffixed {
         return false;
       }
       for (unsigned int o = 0; o<nb_primitives; ++o) {
-        if ((int)*(ptrs++)==-128 && (ptrs+=3)<ptre) {
+        if (*(ptrs++)==(T)-128 && (ptrs+=3)<ptre) {
           const unsigned int w = (unsigned int)*(ptrs-3), h = (unsigned int)*(ptrs-2), s = (unsigned int)*(ptrs-1);
           if (!h && !s) {
             if (w>=o) {
@@ -13619,7 +13645,7 @@ namespace cimg_library_suffixed {
           }
         }
         if (!l) throw CImgArgumentException("[_cimg_math_parser] "
-                                            "CImg<%s>::%s() : Empty specified expression.",
+                                            "CImg<%s>::%s(): Empty specified expression.",
                                             pixel_type(),calling_function);
 
         int lv = 0; // Count parenthesis level of expression.
@@ -13628,7 +13654,7 @@ namespace cimg_library_suffixed {
         for (const char *ps = expr._data; *ps && lv>=0; ++ps) *(pd++) = (unsigned int)(*ps=='('?lv++:*ps==')'?--lv:lv);
         if (lv!=0) {
           throw CImgArgumentException("[_cimg_math_parser] "
-                                      "CImg<%s>::%s() : Unbalanced parentheses in specified expression '%s'.",
+                                      "CImg<%s>::%s(): Unbalanced parentheses in specified expression '%s'.",
                                       pixel_type(),calling_function,
                                       expr._data);
         }
@@ -13688,7 +13714,7 @@ namespace cimg_library_suffixed {
       unsigned int compile(char *const ss, char *const se) {
         if (!ss || se<=ss || !*ss) {
           throw CImgArgumentException("[_cimg_math_parser] "
-                                      "CImg<%s>::%s() : Missing item in specified expression '%s'.",
+                                      "CImg<%s>::%s(): Missing item in specified expression '%s'.",
                                       pixel_type(),calling_function,
                                       expr._data);
         }
@@ -13767,7 +13793,11 @@ namespace cimg_library_suffixed {
                              *ss=='w' || *ss=='h' || *ss=='d' || *ss=='s' ||
                              *ss=='e' || *ss=='u' || *ss=='g' || *ss=='i')) ||
                 (s==ss+2 && ((*ss=='p' && *(ss+1)=='i') ||
-                             (*ss=='i' && (*(ss+1)=='m' || *(ss+1)=='M' || *(ss+1)=='a' || *(ss+1)=='v'))))) is_valid_name = false;
+                             (*ss=='i' && (*(ss+1)=='m' || *(ss+1)=='M' || *(ss+1)=='a' || *(ss+1)=='v')) ||
+                             (*ss=='x' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
+                             (*ss=='y' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
+                             (*ss=='z' && (*(ss+1)=='m' || *(ss+1)=='M')) ||
+                             (*ss=='c' && (*(ss+1)=='m' || *(ss+1)=='M'))))) is_valid_name = false;
             for (const char *ns = ss; ns<s; ++ns)
               if ((*ns<'a' || *ns>'z') && (*ns<'A' || *ns>'Z') && (*ns<'0' || *ns>'9') && *ns!='_') {
                 is_valid_name = false; break;
@@ -13779,24 +13809,37 @@ namespace cimg_library_suffixed {
                   !std::strcmp(variable_name,"d") || !std::strcmp(variable_name,"s") || !std::strcmp(variable_name,"e") ||
                   !std::strcmp(variable_name,"u") || !std::strcmp(variable_name,"g") || !std::strcmp(variable_name,"i") ||
                   !std::strcmp(variable_name,"pi") || !std::strcmp(variable_name,"im") || !std::strcmp(variable_name,"iM") ||
-                  !std::strcmp(variable_name,"ia") || !std::strcmp(variable_name,"iv"))
+                  !std::strcmp(variable_name,"ia") || !std::strcmp(variable_name,"iv") ||
+                  !std::strcmp(variable_name,"xm") || !std::strcmp(variable_name,"ym") ||
+                  !std::strcmp(variable_name,"zm") || !std::strcmp(variable_name,"cm") ||
+                  !std::strcmp(variable_name,"xM") || !std::strcmp(variable_name,"yM") ||
+                  !std::strcmp(variable_name,"zM") || !std::strcmp(variable_name,"cM"))
                 throw CImgArgumentException("[_cimg_math_parser] "
-                                            "CImg<%s>::%s() : Invalid assignment of reserved variable name '%s' in specified expression '%s'.",
-                                             pixel_type(),calling_function,
-                                             variable_name._data,expr._data);
-               else
+                                            "CImg<%s>::%s(): Invalid assignment of reserved variable name '%s' in specified expression '%s%s%s'.",
+                                            pixel_type(),calling_function,
+                                            variable_name._data,
+                                            (ss-8)>expr._data?"...":"",
+                                            (ss-8)>expr._data?ss-8:expr._data,
+                                            se<&expr.back()?"...":"");
+              else
                  throw CImgArgumentException("[_cimg_math_parser] "
-                                             "CImg<%s>::%s() : Invalid variable name '%s' in specified expression '%s'.",
+                                             "CImg<%s>::%s(): Invalid variable name '%s' in specified expression '%s%s%s'.",
                                              pixel_type(),calling_function,
-                                             variable_name._data,expr._data);
-             }
+                                             variable_name._data,
+                                             (ss-8)>expr._data?"...":"",
+                                             (ss-8)>expr._data?ss-8:expr._data,
+                                             se<&expr.back()?"...":"");
+            }
              for (unsigned int i = 0; i<mempos; ++i) // Check for existing variable with same name.
                if (label[i]._data && !std::strcmp(variable_name,label[i])) {
                  *se = saved_char;
                  throw CImgArgumentException("[_cimg_math_parser] "
-                                             "CImg<%s>::%s() : Invalid multiple assignments of variable '%s' in specified expression '%s'.",
+                                             "CImg<%s>::%s(): Invalid multiple assignments of variable '%s' in specified expression '%s%s%s'.",
                                              pixel_type(),calling_function,
-                                             variable_name._data,expr._data);
+                                             variable_name._data,
+                                             (ss-8)>expr._data?"...":"",
+                                             (ss-8)>expr._data?ss-8:expr._data,
+                                             se<&expr.back()?"...":"");
                }
              const unsigned int src_pos = compile(s+1,se);
              if (mempos>=mem.size()) mem.resize(-200,1,1,1,0);
@@ -13982,9 +14025,12 @@ namespace cimg_library_suffixed {
         for (unsigned int i = 0; i<mempos; ++i) if (label[i]._data && !std::strcmp(variable_name,label[i])) _cimg_mp_return(i);
         *se = saved_char;
         throw CImgArgumentException("[_cimg_math_parser] "
-                                    "CImg<%s>::%s() : Invalid item '%s' in specified expression '%s'.\n",
+                                    "CImg<%s>::%s(): Invalid item '%s' in specified expression '%s%s%s'.\n",
                                     pixel_type(),calling_function,
-                                    variable_name._data,expr._data);
+                                    variable_name._data,
+                                    (ss-8)>expr._data?"...":"",
+                                    (ss-8)>expr._data?ss-8:expr._data,
+                                    se<&expr.back()?"...":"");
         return 0;
       }
 
@@ -14180,7 +14226,7 @@ namespace cimg_library_suffixed {
       }
       double mp_isint() {
         const double val = mem[opcode(2)];
-        return (double)(int)val==val;
+        return (double)(cimg::mod(val,1.0)==0);
       }
       double mp_isbool() {
         const double val = mem[opcode(2)];
@@ -14484,7 +14530,7 @@ namespace cimg_library_suffixed {
     /**
        Replace each pixel value \f$I_{(x,y,z,c)}\f$ of the image instance by its sign \f$\mathrm{sign}(I_{(x,y,z,c)})\f$.
        \note
-       - The sign is set to :
+       - The sign is set to:
          - \c 1 if pixel value is strictly positive.
          - \c -1 if pixel value is strictly negative.
          - \c 0 if pixel value is equal to \c 0.
@@ -15138,7 +15184,7 @@ namespace cimg_library_suffixed {
     T& min() {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "min() : Empty instance.",
+                                    "min(): Empty instance.",
                                     cimg_instance);
       T *ptr_min = _data;
       T min_value = *ptr_min;
@@ -15150,7 +15196,7 @@ namespace cimg_library_suffixed {
     const T& min() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "min() : Empty instance.",
+                                    "min(): Empty instance.",
                                     cimg_instance);
       const T *ptr_min = _data;
       T min_value = *ptr_min;
@@ -15164,7 +15210,7 @@ namespace cimg_library_suffixed {
     T& max() {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "max() : Empty instance.",
+                                    "max(): Empty instance.",
                                     cimg_instance);
       T *ptr_max = _data;
       T max_value = *ptr_max;
@@ -15176,7 +15222,7 @@ namespace cimg_library_suffixed {
     const T& max() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "max() : Empty instance.",
+                                    "max(): Empty instance.",
                                     cimg_instance);
       const T *ptr_max = _data;
       T max_value = *ptr_max;
@@ -15192,7 +15238,7 @@ namespace cimg_library_suffixed {
     T& min_max(t& max_val) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "min_max() : Empty instance.",
+                                    "min_max(): Empty instance.",
                                     cimg_instance);
       T *ptr_min = _data;
       T min_value = *ptr_min, max_value = min_value;
@@ -15210,7 +15256,7 @@ namespace cimg_library_suffixed {
     const T& min_max(t& max_val) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "min_max() : Empty instance.",
+                                    "min_max(): Empty instance.",
                                     cimg_instance);
       const T *ptr_min = _data;
       T min_value = *ptr_min, max_value = min_value;
@@ -15231,7 +15277,7 @@ namespace cimg_library_suffixed {
     T& max_min(t& min_val) {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "max_min() : Empty instance.",
+                                    "max_min(): Empty instance.",
                                     cimg_instance);
       T *ptr_max = _data;
       T max_value = *ptr_max, min_value = max_value;
@@ -15249,7 +15295,7 @@ namespace cimg_library_suffixed {
     const T& max_min(t& min_val) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "max_min() : Empty instance.",
+                                    "max_min(): Empty instance.",
                                     cimg_instance);
       const T *ptr_max = _data;
       T max_value = *ptr_max, min_value = max_value;
@@ -15269,7 +15315,7 @@ namespace cimg_library_suffixed {
     T kth_smallest(const unsigned int k) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "kth_smallest() : Empty instance.",
+                                    "kth_smallest(): Empty instance.",
                                     cimg_instance);
       CImg<T> arr(*this);
       unsigned int l = 0, ir = size() - 1;
@@ -15306,7 +15352,7 @@ namespace cimg_library_suffixed {
     T median() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "median() : Empty instance.",
+                                    "median(): Empty instance.",
                                     cimg_instance);
       const unsigned int s = size();
       const T res = kth_smallest(s>>1);
@@ -15319,7 +15365,7 @@ namespace cimg_library_suffixed {
     Tdouble sum() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "sum() : Empty instance.",
+                                    "sum(): Empty instance.",
                                     cimg_instance);
       Tdouble res = 0;
       cimg_for(*this,ptrs,T) res+=(Tdouble)*ptrs;
@@ -15332,7 +15378,7 @@ namespace cimg_library_suffixed {
     Tdouble mean() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "mean() : Empty instance.",
+                                    "mean(): Empty instance.",
                                     cimg_instance);
       Tdouble res = 0;
       cimg_for(*this,ptrs,T) res+=(Tdouble)*ptrs;
@@ -15341,13 +15387,13 @@ namespace cimg_library_suffixed {
 
     //! Return the variance of the pixel values.
     /**
-       \param variance_method Method used to estimate the variance. Can be :
-       - \c 0 : Second moment, computed as
+       \param variance_method Method used to estimate the variance. Can be:
+       - \c 0: Second moment, computed as
        \f$1/N \sum\limits_{k=1}^{N} (x_k - \bar x)^2 = 1/N \left( \sum\limits_{k=1}^N x_k^2 - \left( \sum\limits_{k=1}^N x_k \right)^2 / N \right)\f$
        with \f$ \bar x = 1/N \sum\limits_{k=1}^N x_k \f$.
-       - \c 1 : Best unbiased estimator, computed as \f$\frac{1}{N-1} \sum\limits_{k=1}^{N} (x_k - \bar x)^2 \f$.
-       - \c 2 : Least median of squares.
-       - \c 3 : Least trimmed of squares.
+       - \c 1: Best unbiased estimator, computed as \f$\frac{1}{N-1} \sum\limits_{k=1}^{N} (x_k - \bar x)^2 \f$.
+       - \c 2: Least median of squares.
+       - \c 3: Least trimmed of squares.
     **/
     Tdouble variance(const unsigned int variance_method=1) const {
       Tdouble foo;
@@ -15363,7 +15409,7 @@ namespace cimg_library_suffixed {
     Tdouble variance_mean(const unsigned int variance_method, t& mean) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "variance_mean() : Empty instance.",
+                                    "variance_mean(): Empty instance.",
                                     cimg_instance);
 
       Tdouble variance = 0, average = 0;
@@ -15419,7 +15465,7 @@ namespace cimg_library_suffixed {
     Tdouble variance_noise(const unsigned int variance_method=2) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "variance_noise() : Empty instance.",
+                                    "variance_noise(): Empty instance.",
                                     cimg_instance);
 
       const unsigned long siz = size();
@@ -15479,7 +15525,7 @@ namespace cimg_library_suffixed {
     Tdouble MSE(const CImg<t>& img) const {
       if (img.size()!=size())
         throw CImgArgumentException(_cimg_instance
-                                    "MSE() : Instance and specified image (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "MSE(): Instance and specified image (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data);
       Tdouble vMSE = 0;
@@ -15569,15 +15615,15 @@ namespace cimg_library_suffixed {
 
     //! Compute norm of the image, viewed as a matrix.
     /**
-       \param magnitude_type Norm type. Can be :
-       - \c -1 : Linf-norm
-       - \c 0 : L2-norm
-       - \c 1 : L1-norm
+       \param magnitude_type Norm type. Can be:
+       - \c -1: Linf-norm
+       - \c 0: L2-norm
+       - \c 1: L1-norm
     **/
     Tdouble magnitude(const int magnitude_type=2) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "magnitude() : Empty instance.",
+                                    "magnitude(): Empty instance.",
                                     cimg_instance);
       Tdouble res = 0;
       switch (magnitude_type) {
@@ -15601,7 +15647,7 @@ namespace cimg_library_suffixed {
     Tdouble trace() const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "trace() : Empty instance.",
+                                    "trace(): Empty instance.",
                                     cimg_instance);
       Tdouble res = 0;
       cimg_forX(*this,k) res+=(Tdouble)(*this)(k,k);
@@ -15614,7 +15660,7 @@ namespace cimg_library_suffixed {
     Tdouble det() const {
       if (is_empty() || _width!=_height || _depth!=1 || _spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "det() : Instance is not a square matrix.",
+                                    "det(): Instance is not a square matrix.",
                                     cimg_instance);
 
       switch (_width) {
@@ -15648,11 +15694,11 @@ namespace cimg_library_suffixed {
     Tdouble dot(const CImg<t>& img) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "dot() : Empty instance.",
+                                    "dot(): Empty instance.",
                                     cimg_instance);
       if (!img)
         throw CImgArgumentException(_cimg_instance
-                                    "dot() : Empty specified image.",
+                                    "dot(): Empty specified image.",
                                     cimg_instance);
 
       const unsigned int nb = cimg::min(size(),img.size());
@@ -15799,7 +15845,7 @@ namespace cimg_library_suffixed {
         while (i2<siz) { i2+=2*i + 1; ++i; }
         if (i2==siz) _width = _height = i;
         else throw CImgInstanceException(_cimg_instance
-                                         "matrix() : Invalid instance size %u (should be a square integer).",
+                                         "matrix(): Invalid instance size %u (should be a square integer).",
                                          cimg_instance,
                                          siz);
       }
@@ -15842,7 +15888,7 @@ namespace cimg_library_suffixed {
         break;
       default :
         throw CImgInstanceException(_cimg_instance
-                                    "tensor() : Invalid instance size (does not define a 1x1, 2x2 or 3x3 tensor).",
+                                    "tensor(): Invalid instance size (does not define a 1x1, 2x2 or 3x3 tensor).",
                                     cimg_instance);
       }
       return res;
@@ -15926,7 +15972,7 @@ namespace cimg_library_suffixed {
     CImg<T>& cross(const CImg<t>& img) {
       if (_width!=1 || _height<3 || img._width!=1 || img._height<3)
         throw CImgInstanceException(_cimg_instance
-                                    "cross() : Instance and/or specified image (%u,%u,%u,%u,%p) are not 3d vectors.",
+                                    "cross(): Instance and/or specified image (%u,%u,%u,%u,%p) are not 3d vectors.",
                                     cimg_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data);
 
@@ -15945,14 +15991,14 @@ namespace cimg_library_suffixed {
 
     //! Invert the instance image, viewed as a matrix.
     /**
-       \param use_LU Choose the inverting algorithm. Can be :
-       - \c true : LU-based matrix inversion.
-       - \c false : SVD-based matrix inversion.
+       \param use_LU Choose the inverting algorithm. Can be:
+       - \c true: LU-based matrix inversion.
+       - \c false: SVD-based matrix inversion.
     **/
     CImg<T>& invert(const bool use_LU=true) {
       if (_width!=_height || _depth!=1 || _spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "invert() : Instance is not a square matrix.",
+                                    "invert(): Instance is not a square matrix.",
                                     cimg_instance);
 #ifdef cimg_use_lapack
       int INFO = (int)use_LU, N = _width, LWORK = 4*N, *const IPIV = new int[N];
@@ -15963,14 +16009,14 @@ namespace cimg_library_suffixed {
       cimg::getrf(N,lapA,IPIV,INFO);
       if (INFO)
         cimg::warn(_cimg_instance
-                   "invert() : LAPACK function dgetrf_() returned error code %d.",
+                   "invert(): LAPACK function dgetrf_() returned error code %d.",
                    cimg_instance,
                    INFO);
       else {
         cimg::getri(N,lapA,IPIV,WORK,LWORK,INFO);
         if (INFO)
           cimg::warn(_cimg_instance
-                     "invert() : LAPACK function dgetri_() returned error code %d.",
+                     "invert(): LAPACK function dgetri_() returned error code %d.",
                      cimg_instance,
                      INFO);
       }
@@ -16049,14 +16095,14 @@ namespace cimg_library_suffixed {
     CImg<T>& solve(const CImg<t>& A) {
       if (_width!=1 || _depth!=1 || _spectrum!=1 || _height!=A._height || A._depth!=1 || A._spectrum!=1)
         throw CImgArgumentException(_cimg_instance
-                                    "solve() : Instance and specified matrix (%u,%u,%u,%u,%p) have incompatible dimensions.",
+                                    "solve(): Instance and specified matrix (%u,%u,%u,%u,%p) have incompatible dimensions.",
                                     cimg_instance,
                                     A._width,A._height,A._depth,A._spectrum,A._data);
       typedef _cimg_Ttfloat Ttfloat;
       if (A._width==A._height) {
 #ifdef cimg_use_lapack
         char TRANS = 'N';
-        int INFO, N = _height, LWORK = 4*N, one = 1, *const IPIV = new int[N];
+        int INFO, N = _height, LWORK = 4*N, *const IPIV = new int[N];
         Ttfloat
           *const lapA = new Ttfloat[N*N],
           *const lapB = new Ttfloat[N],
@@ -16066,7 +16112,7 @@ namespace cimg_library_suffixed {
         cimg::getrf(N,lapA,IPIV,INFO);
         if (INFO)
           cimg::warn(_cimg_instance
-                     "solve() : LAPACK library function dgetrf_() returned error code %d.",
+                     "solve(): LAPACK library function dgetrf_() returned error code %d.",
                      cimg_instance,
                      INFO);
 
@@ -16074,7 +16120,7 @@ namespace cimg_library_suffixed {
           cimg::getrs(TRANS,N,lapA,IPIV,lapB,INFO);
           if (INFO)
             cimg::warn(_cimg_instance
-                       "solve() : LAPACK library function dgetrs_() returned error code %d.",
+                       "solve(): LAPACK library function dgetrs_() returned error code %d.",
                        cimg_instance,
                        INFO);
         }
@@ -16103,7 +16149,7 @@ namespace cimg_library_suffixed {
         cimg::sgels(TRANS, M, N, NRHS, lapA, LDA, lapB, LDB, WORK, LWORK, INFO);
         if (INFO != 0)
           cimg::warn(_cimg_instance
-                     "solve() : LAPACK library function sgels() returned error code %d.",
+                     "solve(): LAPACK library function sgels() returned error code %d.",
                      cimg_instance,
                      INFO);
         assign(NRHS, N);
@@ -16159,7 +16205,7 @@ namespace cimg_library_suffixed {
       const unsigned int siz = (int)size();
       if (A._width!=3 || A._height!=siz)
         throw CImgArgumentException(_cimg_instance
-                                    "solve_tridiagonal() : Instance and tridiagonal matrix "
+                                    "solve_tridiagonal(): Instance and tridiagonal matrix "
                                     "(%u,%u,%u,%u,%p) have incompatible dimensions.",
                                     cimg_instance,
                                     A._width,A._height,A._depth,A._spectrum,A._data);
@@ -16193,7 +16239,7 @@ namespace cimg_library_suffixed {
       else {
         if (_width!=_height || _depth>1 || _spectrum>1)
           throw CImgInstanceException(_cimg_instance
-                                      "eigen() : Instance is not a square matrix.",
+                                      "eigen(): Instance is not a square matrix.",
                                       cimg_instance);
 
         if (val.size()<(unsigned long)_width) val.assign(1,_width);
@@ -16205,7 +16251,7 @@ namespace cimg_library_suffixed {
           double f = e*e - 4*(a*d - b*c);
           if (f<0)
             cimg::warn(_cimg_instance
-                       "eigen() : Complex eigenvalues found.",
+                       "eigen(): Complex eigenvalues found.",
                        cimg_instance);
 
           f = std::sqrt(f);
@@ -16220,7 +16266,7 @@ namespace cimg_library_suffixed {
         } break;
         default :
           throw CImgInstanceException(_cimg_instance
-                                      "eigen() : Eigenvalues computation of general matrices is limited to 2x2 matrices.",
+                                      "eigen(): Eigenvalues computation of general matrices is limited to 2x2 matrices.",
                                       cimg_instance);
         }
       }
@@ -16257,7 +16303,7 @@ namespace cimg_library_suffixed {
         cimg::syev(JOB,UPLO,N,lapA,lapW,WORK,LWORK,INFO);
         if (INFO)
           cimg::warn(_cimg_instance
-                     "symmetric_eigen() : LAPACK library function dsyev_() returned error code %d.",
+                     "symmetric_eigen(): LAPACK library function dsyev_() returned error code %d.",
                      cimg_instance,
                      INFO);
 
@@ -16271,7 +16317,7 @@ namespace cimg_library_suffixed {
 #else
         if (_width!=_height || _depth>1 || _spectrum>1)
           throw CImgInstanceException(_cimg_instance
-                                      "eigen() : Instance is not a square matrix.",
+                                      "eigen(): Instance is not a square matrix.",
                                       cimg_instance);
 
         val.assign(1,_width);
@@ -16341,12 +16387,12 @@ namespace cimg_library_suffixed {
     //! Sort pixel values.
     /**
        \param is_increasing Tells if pixel values are sorted in an increasing (\c true) or decreasing (\c false) way.
-       \param axis Tells if the value sorting must be done along a specific axis. Can be :
-       - \c 0 : All pixel values are sorted, independently on their initial position.
-       - \c 'x' : Image columns are sorted, according to the first value in each column.
-       - \c 'y' : Image rows are sorted, according to the first value in each row.
-       - \c 'z' : Image slices are sorted, according to the first value in each slice.
-       - \c 'c' : Image channels are sorted, according to the first value in each channel.
+       \param axis Tells if the value sorting must be done along a specific axis. Can be:
+       - \c 0: All pixel values are sorted, independently on their initial position.
+       - \c 'x': Image columns are sorted, according to the first value in each column.
+       - \c 'y': Image rows are sorted, according to the first value in each row.
+       - \c 'z': Image slices are sorted, according to the first value in each slice.
+       - \c 'c': Image channels are sorted, according to the first value in each channel.
     **/
     CImg<T>& sort(const bool is_increasing=true, const char axis=0) {
       if (is_empty()) return *this;
@@ -16381,7 +16427,7 @@ namespace cimg_library_suffixed {
       } break;
       default :
         throw CImgArgumentException(_cimg_instance
-                                    "sort() : Invalid specified axis '%c' "
+                                    "sort(): Invalid specified axis '%c' "
                                     "(should be { x | y | z | c }).",
                                     cimg_instance,axis);
       }
@@ -16677,7 +16723,7 @@ namespace cimg_library_suffixed {
                             const unsigned int starting_node, const unsigned int ending_node,
                             CImg<t>& previous_node) {
       if (starting_node>=nb_nodes)
-        throw CImgArgumentException("CImg<%s>::dijkstra() : Specified indice of starting node %u is higher than number of nodes %u.",
+        throw CImgArgumentException("CImg<%s>::dijkstra(): Specified indice of starting node %u is higher than number of nodes %u.",
                                     pixel_type(),starting_node,nb_nodes);
       CImg<T> dist(1,nb_nodes,1,1,cimg::type<T>::max());
       dist(starting_node) = 0;
@@ -16748,7 +16794,7 @@ namespace cimg_library_suffixed {
     CImg<T> get_dijkstra(const unsigned int starting_node, const unsigned int ending_node, CImg<t>& previous_node) const {
       if (_width!=_height || _depth!=1 || _spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "dijkstra() : Instance is not a graph adjacency matrix.",
+                                    "dijkstra(): Instance is not a graph adjacency matrix.",
                                     cimg_instance);
 
       return dijkstra(*this,_width,starting_node,ending_node,previous_node);
@@ -17797,10 +17843,10 @@ namespace cimg_library_suffixed {
     //! Round pixel values.
     /**
        \param y Rounding precision.
-       \param rounding_type Rounding type. Can be :
-       - \c -1 : Backward.
-       - \c 0 : Nearest.
-       - \c 1 : Forward.
+       \param rounding_type Rounding type. Can be:
+       - \c -1: Backward.
+       - \c 0: Nearest.
+       - \c 1: Forward.
     **/
     CImg<T>& round(const double y=1, const int rounding_type=0) {
       if (y>0) cimg_for(*this,ptrd,T) *ptrd = cimg::round(*ptrd,y,rounding_type);
@@ -17876,7 +17922,7 @@ namespace cimg_library_suffixed {
         } break;
         default :
           throw CImgArgumentException(_cimg_instance
-                                      "noise() : Invalid specified noise type %d "
+                                      "noise(): Invalid specified noise type %d "
                                       "(should be { 0=gaussian | 1=uniform | 2=salt&Pepper | 3=poisson }).",
                                       cimg_instance,
                                       noise_type);
@@ -18034,7 +18080,7 @@ namespace cimg_library_suffixed {
     CImg<T>& quantize(const unsigned int nb_levels, const bool keep_range=true) {
       if (!nb_levels)
         throw CImgArgumentException(_cimg_instance
-                                    "quantize() : Invalid quantization request with 0 values.",
+                                    "quantize(): Invalid quantization request with 0 values.",
                                     cimg_instance);
 
       if (is_empty()) return *this;
@@ -18107,11 +18153,11 @@ namespace cimg_library_suffixed {
     }
 
     //! Compute the histogram of pixel values \newinstance.
-    CImg<floatT> get_histogram(const unsigned int nb_levels, const T min_value=(T)0, const T max_value=(T)0) const {
-      if (!nb_levels || is_empty()) return CImg<floatT>();
+    CImg<ulongT> get_histogram(const unsigned int nb_levels, const T min_value=(T)0, const T max_value=(T)0) const {
+      if (!nb_levels || is_empty()) return CImg<ulongT>();
       T vmin = min_value<max_value?min_value:max_value, vmax = min_value<max_value?max_value:min_value;
       if (vmin==vmax && vmin==0) vmin = min_max(vmax);
-      CImg<floatT> res(nb_levels,1,1,1,0);
+      CImg<ulongT> res(nb_levels,1,1,1,0);
       cimg_for(*this,ptrs,T) {
         const T val = *ptrs;
         if (val>=vmin && val<=vmax) ++res[val==vmax?nb_levels-1:(unsigned int)((val-vmin)*nb_levels/(vmax-vmin))];
@@ -18139,11 +18185,11 @@ namespace cimg_library_suffixed {
       T vmin = min_value, vmax = max_value;
       if (vmin==vmax && vmin==0) vmin = min_max(vmax);
       if (vmin<vmax) {
-        CImg<floatT> hist = get_histogram(nb_levels,vmin,vmax);
-        float cumul = 0;
+        CImg<ulongT> hist = get_histogram(nb_levels,vmin,vmax);
+        unsigned long cumul = 0;
         cimg_forX(hist,pos) { cumul+=hist[pos]; hist[pos] = cumul; }
         cimg_for(*this,ptrd,T) {
-          const int pos = (unsigned int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
+          const int pos = (int)((*ptrd-vmin)*(nb_levels-1)/(vmax-vmin));
           if (pos>=0 && pos<(int)nb_levels) *ptrd = (T)(vmin + (vmax-vmin)*hist[pos]/size());
         }
       }
@@ -18181,7 +18227,7 @@ namespace cimg_library_suffixed {
     get_index(const CImg<t>& colormap, const float dithering=1, const bool map_indexes=true) const {
       if (colormap._spectrum!=_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "index() : Instance and specified colormap (%u,%u,%u,%u,%p) "
+                                    "index(): Instance and specified colormap (%u,%u,%u,%u,%p) "
                                     "have incompatible dimensions.",
                                     cimg_instance,
                                     colormap._width,colormap._height,colormap._depth,colormap._spectrum,colormap._data);
@@ -18417,7 +18463,7 @@ namespace cimg_library_suffixed {
     CImg<t> get_map(const CImg<t>& colormap) const {
       if (_spectrum!=1 && colormap._spectrum!=1)
         throw CImgArgumentException(_cimg_instance
-                                    "map() : Instance and specified colormap (%u,%u,%u,%u,%p) "
+                                    "map(): Instance and specified colormap (%u,%u,%u,%u,%p) "
                                     "have incompatible dimensions.",
                                     cimg_instance,
                                     colormap._width,colormap._height,colormap._depth,colormap._spectrum,colormap._data);
@@ -18466,7 +18512,7 @@ namespace cimg_library_suffixed {
        in 2d case, and between 6(false)- or 26(true)-connectivity in 3d case.
        \param tolerance Tolerance used to determine if two neighboring pixels belong to the same region.
        \note The algorithm of connected components computation has been primarily done
-       by A. Meijster, according to the publication :
+       by A. Meijster, according to the publication:
        'W.H. Hesselink, A. Meijster, C. Bron, "Concurrent Determination of Connected Components.",
        In: Science of Computer Programming 41 (2001), pp. 173--194'.
        The submitted code has then been modified to fit CImg coding style and constraints.
@@ -18578,6 +18624,23 @@ namespace cimg_library_suffixed {
       return res;
     }
 
+    // [internal] Replace possibly malicious characters for commands to be called by system() by their escaped version.
+    CImg<T>& _system_strescape() {
+#define cimg_system_strescape(c,s) case c : if (p!=ptrs) CImg<T>(ptrs,p-ptrs,1,1,1,false).move_to(list); \
+      CImg<T>(s,std::strlen(s),1,1,1,false).move_to(list); ptrs = p+1; break
+      CImgList<T> list;
+      const T *ptrs = _data;
+      cimg_for(*this,p,T) switch ((int)*p) {
+        cimg_system_strescape('\\',"\\\\");
+        cimg_system_strescape('\"',"\\\"");
+        cimg_system_strescape('!',"\"\\!\"");
+        cimg_system_strescape('`',"\\`");
+        cimg_system_strescape('$',"\\$");
+      }
+      if (ptrs<end()) CImg<T>(ptrs,end()-ptrs,1,1,1,false).move_to(list);
+      return (list>'x').move_to(*this);
+    }
+
     //@}
     //---------------------------------
     //
@@ -18587,7 +18650,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "default", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_default.jpg
     **/
     static const CImg<Tuchar>& default_LUT256() {
@@ -18607,7 +18670,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "HSV", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_hsv.jpg
     **/
     static const CImg<Tuchar>& HSV_LUT256() {
@@ -18622,7 +18685,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "lines", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_lines.jpg
     **/
     static const CImg<Tuchar>& lines_LUT256() {
@@ -18657,7 +18720,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "hot", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_hot.jpg
     **/
     static const CImg<Tuchar>& hot_LUT256() {
@@ -18672,7 +18735,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "cool", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_cool.jpg
     **/
     static const CImg<Tuchar>& cool_LUT256() {
@@ -18683,7 +18746,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "jet", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_jet.jpg
     **/
     static const CImg<Tuchar>& jet_LUT256() {
@@ -18698,7 +18761,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "flag", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_flag.jpg
     **/
     static const CImg<Tuchar>& flag_LUT256() {
@@ -18713,7 +18776,7 @@ namespace cimg_library_suffixed {
 
     //! Return colormap \e "cube", containing 256 colors entries in RGB.
     /**
-       \return The following \c 256x1x1x3 colormap is returned :
+       \return The following \c 256x1x1x3 colormap is returned:
        \image html ref_colormap_cube.jpg
     **/
     static const CImg<Tuchar>& cube_LUT256() {
@@ -18766,7 +18829,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoHSV() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoHSV() : Instance is not a RGB image.",
+                                    "RGBtoHSV(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -18806,7 +18869,7 @@ namespace cimg_library_suffixed {
     CImg<T>& HSVtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "HSVtoRGB() : Instance is not a HSV image.",
+                                    "HSVtoRGB(): Instance is not a HSV image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -18851,7 +18914,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoHSL() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoHSL() : Instance is not a RGB image.",
+                                    "RGBtoHSL(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -18893,7 +18956,7 @@ namespace cimg_library_suffixed {
     CImg<T>& HSLtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "HSLtoRGB() : Instance is not a HSL image.",
+                                    "HSLtoRGB(): Instance is not a HSL image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -18930,7 +18993,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoHSI() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoHSI() : Instance is not a RGB image.",
+                                    "RGBtoHSI(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -18965,7 +19028,7 @@ namespace cimg_library_suffixed {
     CImg<T>& HSItoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "HSItoRGB() : Instance is not a HSI image.",
+                                    "HSItoRGB(): Instance is not a HSI image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19008,7 +19071,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoYCbCr() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoYCbCr() : Instance is not a RGB image.",
+                                    "RGBtoYCbCr(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19036,7 +19099,7 @@ namespace cimg_library_suffixed {
     CImg<T>& YCbCrtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "YCbCrtoRGB() : Instance is not a YCbCr image.",
+                                    "YCbCrtoRGB(): Instance is not a YCbCr image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19064,7 +19127,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoYUV() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoYUV() : Instance is not a RGB image.",
+                                    "RGBtoYUV(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19090,7 +19153,7 @@ namespace cimg_library_suffixed {
     CImg<T>& YUVtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "YUVtoRGB() : Instance is not a YUV image.",
+                                    "YUVtoRGB(): Instance is not a YUV image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19118,7 +19181,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoCMY() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoCMY() : Instance is not a RGB image.",
+                                    "RGBtoCMY(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19146,7 +19209,7 @@ namespace cimg_library_suffixed {
     CImg<T>& CMYtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "CMYtoRGB() : Instance is not a CMY image.",
+                                    "CMYtoRGB(): Instance is not a CMY image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19179,7 +19242,7 @@ namespace cimg_library_suffixed {
     CImg<Tuchar> get_CMYtoCMYK() const {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "CMYtoCMYK() : Instance is not a CMY image.",
+                                    "CMYtoCMYK(): Instance is not a CMY image.",
                                     cimg_instance);
 
       CImg<Tfloat> res(_width,_height,_depth,4);
@@ -19210,7 +19273,7 @@ namespace cimg_library_suffixed {
     CImg<Tfloat> get_CMYKtoCMY() const {
       if (_spectrum!=4)
         throw CImgInstanceException(_cimg_instance
-                                    "CMYKtoCMY() : Instance is not a CMYK image.",
+                                    "CMYKtoCMY(): Instance is not a CMYK image.",
                                     cimg_instance);
 
       CImg<Tfloat> res(_width,_height,_depth,3);
@@ -19240,7 +19303,7 @@ namespace cimg_library_suffixed {
     CImg<T>& RGBtoXYZ() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoXYZ() : Instance is not a RGB image.",
+                                    "RGBtoXYZ(): Instance is not a RGB image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19265,7 +19328,7 @@ namespace cimg_library_suffixed {
     CImg<T>& XYZtoRGB() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "XYZtoRGB() : Instance is not a XYZ image.",
+                                    "XYZtoRGB(): Instance is not a XYZ image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19295,7 +19358,7 @@ namespace cimg_library_suffixed {
 
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "XYZtoLab() : Instance is not a XYZ image.",
+                                    "XYZtoLab(): Instance is not a XYZ image.",
                                     cimg_instance);
 
       const Tfloat
@@ -19330,7 +19393,7 @@ namespace cimg_library_suffixed {
 
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "LabtoXYZ() : Instance is not a Lab image.",
+                                    "LabtoXYZ(): Instance is not a Lab image.",
                                     cimg_instance);
 
       const Tfloat
@@ -19366,7 +19429,7 @@ namespace cimg_library_suffixed {
     CImg<T>& XYZtoxyY() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "XYZtoxyY() : Instance is not a XYZ image.",
+                                    "XYZtoxyY(): Instance is not a XYZ image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19393,7 +19456,7 @@ namespace cimg_library_suffixed {
     CImg<T>& xyYtoXYZ() {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "xyYtoXYZ() : Instance is not a xyY image.",
+                                    "xyYtoXYZ(): Instance is not a xyY image.",
                                     cimg_instance);
 
       T *p1 = data(0,0,0,0), *p2 = data(0,0,0,1), *p3 = data(0,0,0,2);
@@ -19487,7 +19550,7 @@ namespace cimg_library_suffixed {
     CImg<T> get_RGBtoBayer() const {
       if (_spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "RGBtoBayer() : Instance is not a RGB image.",
+                                    "RGBtoBayer(): Instance is not a RGB image.",
                                     cimg_instance);
 
       CImg<T> res(_width,_height,_depth,1);
@@ -19515,7 +19578,7 @@ namespace cimg_library_suffixed {
     CImg<Tuchar> get_BayertoRGB(const unsigned int interpolation_type=3) const {
       if (_spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "BayertoRGB() : Instance is not a Bayer image.",
+                                    "BayertoRGB(): Instance is not a Bayer image.",
                                     cimg_instance);
 
       CImg<Tuchar> res(_width,_height,_depth,3);
@@ -19638,9 +19701,9 @@ namespace cimg_library_suffixed {
        \param size_y Number of rows (new size along the Y-axis).
        \param size_z Number of slices (new size along the Z-axis).
        \param size_c Number of vector-channels (new size along the C-axis).
-       \param interpolation_type Method of interpolation :
-       - -1 = no interpolation : raw memory resizing.
-       - 0 = no interpolation : additional space is filled according to \p boundary_conditions.
+       \param interpolation_type Method of interpolation:
+       - -1 = no interpolation: raw memory resizing.
+       - 0 = no interpolation: additional space is filled according to \p boundary_conditions.
        - 1 = nearest-neighbor interpolation.
        - 2 = moving average interpolation.
        - 3 = linear interpolation.
@@ -19684,7 +19747,7 @@ namespace cimg_library_suffixed {
       if (centering_x<0 || centering_x>1 || centering_y<0 || centering_y>1 ||
           centering_z<0 || centering_z>1 || centering_c<0 || centering_c>1)
         throw CImgArgumentException(_cimg_instance
-                                    "resize() : Specified centering arguments (%g,%g,%g,%g) are outside range [0,1].",
+                                    "resize(): Specified centering arguments (%g,%g,%g,%g) are outside range [0,1].",
                                     cimg_instance,
                                     centering_x,centering_y,centering_z,centering_c);
 
@@ -19904,22 +19967,25 @@ namespace cimg_library_suffixed {
         if (sx!=_width) {
           if (_width==1) get_resize(sx,_height,_depth,_spectrum,1).move_to(resx);
           else {
-            const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
-            resx.assign(sx,_height,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
-            ptrd = resx._data;
-            const T *ptrs0 = _data;
-            cimg_forYZC(resx,y,z,c) {
-              poff = off._data; pfoff = foff._data;
-              const T *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_width-1);
-              cimg_forX(resx,x) {
-                const float alpha = *(pfoff++);
-                const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+1):val1;
-                *(ptrd++) = (T)((1-alpha)*val1 + alpha*val2);
-                ptrs+=*(poff++);
+            if (_width>sx) get_resize(sx,_height,_depth,_spectrum,2).move_to(resx);
+            else {
+              const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
+              resx.assign(sx,_height,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
+              ptrd = resx._data;
+              const T *ptrs0 = _data;
+              cimg_forYZC(resx,y,z,c) {
+                poff = off._data; pfoff = foff._data;
+                const T *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_width-1);
+                cimg_forX(resx,x) {
+                  const float alpha = *(pfoff++);
+                  const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+1):val1;
+                  *(ptrd++) = (T)((1-alpha)*val1 + alpha*val2);
+                  ptrs+=*(poff++);
+                }
+                ptrs0+=_width;
               }
-              ptrs0+=_width;
             }
           }
         } else resx.assign(*this,true);
@@ -19927,20 +19993,23 @@ namespace cimg_library_suffixed {
         if (sy!=_height) {
           if (_height==1) resx.get_resize(sx,sy,_depth,_spectrum,1).move_to(resy);
           else {
-            const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
-            resy.assign(sx,sy,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
-            cimg_forXZC(resy,x,z,c) {
-              ptrd = resy.data(x,0,z,c);
-              const T *ptrs = resx.data(x,0,z,c), *const ptrsmax = ptrs + (_height-1)*sx;
-              poff = off._data; pfoff = foff._data;
-              cimg_forY(resy,y) {
-                const float alpha = *(pfoff++);
-                const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sx):val1;
-                *ptrd = (T)((1-alpha)*val1 + alpha*val2);
-                ptrd+=sx;
-                ptrs+=*(poff++);
+            if (_height>sy) resx.get_resize(sx,sy,_depth,_spectrum,2).move_to(resy);
+            else {
+              const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
+              resy.assign(sx,sy,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
+              cimg_forXZC(resy,x,z,c) {
+                ptrd = resy.data(x,0,z,c);
+                const T *ptrs = resx.data(x,0,z,c), *const ptrsmax = ptrs + (_height-1)*sx;
+                poff = off._data; pfoff = foff._data;
+                cimg_forY(resy,y) {
+                  const float alpha = *(pfoff++);
+                  const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sx):val1;
+                  *ptrd = (T)((1-alpha)*val1 + alpha*val2);
+                  ptrd+=sx;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -19950,21 +20019,24 @@ namespace cimg_library_suffixed {
         if (sz!=_depth) {
           if (_depth==1) resy.get_resize(sx,sy,sz,_spectrum,1).move_to(resz);
           else {
-            const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
-            const unsigned int sxy = sx*sy;
-            resz.assign(sx,sy,sz,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYC(resz,x,y,c) {
-              ptrd = resz.data(x,y,0,c);
-              const T *ptrs = resy.data(x,y,0,c), *const ptrsmax = ptrs + (_depth-1)*sxy;
-              poff = off._data; pfoff = foff._data;
-              cimg_forZ(resz,z) {
-                const float alpha = *(pfoff++);
-                const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sxy):val1;
-                *ptrd = (T)((1-alpha)*val1 + alpha*val2);
-                ptrd+=sxy;
-                ptrs+=*(poff++);
+            if (_depth>sz) resy.get_resize(sx,sy,sz,_spectrum,2).move_to(resz);
+            else {
+              const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
+              const unsigned int sxy = sx*sy;
+              resz.assign(sx,sy,sz,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYC(resz,x,y,c) {
+                ptrd = resz.data(x,y,0,c);
+                const T *ptrs = resy.data(x,y,0,c), *const ptrsmax = ptrs + (_depth-1)*sxy;
+                poff = off._data; pfoff = foff._data;
+                cimg_forZ(resz,z) {
+                  const float alpha = *(pfoff++);
+                  const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sxy):val1;
+                  *ptrd = (T)((1-alpha)*val1 + alpha*val2);
+                  ptrd+=sxy;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -19974,21 +20046,24 @@ namespace cimg_library_suffixed {
         if (sc!=_spectrum) {
           if (_spectrum==1) resz.get_resize(sx,sy,sz,sc,1).move_to(resc);
           else {
-            const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
-            const unsigned int sxyz = sx*sy*sz;
-            resc.assign(sx,sy,sz,sc);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYZ(resc,x,y,z) {
-              ptrd = resc.data(x,y,z,0);
-              const T *ptrs = resz.data(x,y,z,0), *const ptrsmax = ptrs + (_spectrum-1)*sxyz;
-              poff = off._data; pfoff = foff._data;
-              cimg_forC(resc,c) {
-                const float alpha = *(pfoff++);
-                const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sxyz):val1;
-                *ptrd = (T)((1-alpha)*val1 + alpha*val2);
-                ptrd+=sxyz;
-                ptrs+=*(poff++);
+            if (_spectrum>sc) resz.get_resize(sx,sy,sz,sc,2).move_to(resc);
+            else {
+              const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
+              const unsigned int sxyz = sx*sy*sz;
+              resc.assign(sx,sy,sz,sc);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYZ(resc,x,y,z) {
+                ptrd = resc.data(x,y,z,0);
+                const T *ptrs = resz.data(x,y,z,0), *const ptrsmax = ptrs + (_spectrum-1)*sxyz;
+                poff = off._data; pfoff = foff._data;
+                cimg_forC(resc,c) {
+                  const float alpha = *(pfoff++);
+                  const T val1 = *ptrs, val2 = ptrs<ptrsmax?*(ptrs+sxyz):val1;
+                  *ptrd = (T)((1-alpha)*val1 + alpha*val2);
+                  ptrd+=sxyz;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20001,16 +20076,16 @@ namespace cimg_library_suffixed {
         //
       case 4 : {
         CImg<T> resx, resy, resz, resc;
-        const unsigned int sxy = sx*sy, sxyz = sx*sy*sz;
         if (sx!=_width) {
           if (sx<_width) get_resize(sx,_height,_depth,_spectrum,1).move_to(resx);
           else {
             resx.assign(sx,_height,_depth,_spectrum,0);
-            const T *ptrs = _data;
-            T *ptrd = resx._data + (int)(centering_x*(sx-1)/_width);
-            cimg_forYZC(*this,y,z,c) {
-              cimg_forX(*this,x) ptrd[x*sx/_width] = *(ptrs++);
-              ptrd+=sx;
+            const int dx = sx*2, dy = width()*2;
+            int err = (int)(dy + centering_x*(sx*dy/width() - dy)), xs = 0;
+            cimg_forX(resx,x) if ((err-=dy)<=0) {
+              cimg_forYZC(resx,y,z,c) resx(x,y,z,c) = (*this)(xs,y,z,c);
+              ++xs;
+              err+=dx;
             }
           }
         } else resx.assign(*this,true);
@@ -20019,11 +20094,12 @@ namespace cimg_library_suffixed {
           if (sy<_height) resx.get_resize(sx,sy,_depth,_spectrum,1).move_to(resy);
           else {
             resy.assign(sx,sy,_depth,_spectrum,0);
-            const T *ptrs = resx._data;
-            T *ptrd = resy._data + (int)(centering_y*(sy-1)/_height)*sx;
-            cimg_forZC(*this,z,c) {
-              cimg_forY(*this,y) { std::memcpy(ptrd + (y*sy/_height)*sx,ptrs,sizeof(T)*sx); ptrs+=sx; }
-              ptrd+=sxy;
+            const int dx = sy*2, dy = height()*2;
+            int err = (int)(dy + centering_y*(sy*dy/height() - dy)), ys = 0;
+            cimg_forY(resy,y) if ((err-=dy)<=0) {
+              cimg_forXZC(resy,x,z,c) resy(x,y,z,c) = resx(x,ys,z,c);
+              ++ys;
+              err+=dx;
             }
           }
           resx.assign();
@@ -20033,11 +20109,12 @@ namespace cimg_library_suffixed {
           if (sz<_depth) resy.get_resize(sx,sy,sz,_spectrum,1).move_to(resz);
           else {
             resz.assign(sx,sy,sz,_spectrum,0);
-            const T *ptrs = resy._data;
-            T *ptrd = resz._data + (int)(centering_z*(sz-1)/_depth)*sxy;
-            cimg_forC(*this,c) {
-              cimg_forZ(*this,z) { std::memcpy(ptrd + (z*sz/_depth)*sxy,ptrs,sizeof(T)*sxy); ptrs+=sxy; }
-              ptrd+=sxyz;
+            const int dx = sz*2, dy = depth()*2;
+            int err = (int)(dy + centering_z*(sz*dy/depth() - dy)), zs = 0;
+            cimg_forZ(resz,z) if ((err-=dy)<=0) {
+              cimg_forXYC(resz,x,y,c) resz(x,y,z,c) = resy(x,y,zs,c);
+              ++zs;
+              err+=dx;
             }
           }
           resy.assign();
@@ -20047,9 +20124,13 @@ namespace cimg_library_suffixed {
           if (sc<_spectrum) resz.get_resize(sx,sy,sz,sc,1).move_to(resc);
           else {
             resc.assign(sx,sy,sz,sc,0);
-            const T *ptrs = resz._data;
-            T *ptrd = resc._data + (int)(centering_c*(sc-1)/_spectrum)*sxyz;
-            cimg_forC(*this,c) { std::memcpy(ptrd + (c*sc/_spectrum)*sxyz,ptrs,sizeof(T)*sxyz); ptrs+=sxyz; }
+            const int dx = sc*2, dy = spectrum()*2;
+            int err = (int)(dy + centering_c*(sc*dy/spectrum() - dy)), cs = 0;
+            cimg_forC(resc,c) if ((err-=dy)<=0) {
+              cimg_forXYZ(resc,x,y,z) resc(x,y,z,c) = resz(x,y,z,cs);
+              ++cs;
+              err+=dx;
+            }
           }
           resz.assign();
         } else resc.assign(resz,true);
@@ -20071,27 +20152,30 @@ namespace cimg_library_suffixed {
         if (sx!=_width) {
           if (_width==1) get_resize(sx,_height,_depth,_spectrum,1).move_to(resx);
           else {
-            const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
-            resx.assign(sx,_height,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
-            ptrd = resx._data;
-            const T *ptrs0 = _data;
-            cimg_forYZC(resx,y,z,c) {
-              poff = off._data; pfoff = foff._data;
-              const T *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_width-2);
-              cimg_forX(resx,x) {
-                const float t = *(pfoff++);
-                const Tfloat
-                  val1 = (Tfloat)*ptrs,
-                  val0 = ptrs>ptrs0?(Tfloat)*(ptrs-1):val1,
-                  val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+1):val1,
-                  val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2):val2,
-                  val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
-                *(ptrd++) = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrs+=*(poff++);
+            if (_width>sx) get_resize(sx,_height,_depth,_spectrum,2).move_to(resx);
+            else {
+              const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
+              resx.assign(sx,_height,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
+              ptrd = resx._data;
+              const T *ptrs0 = _data;
+              cimg_forYZC(resx,y,z,c) {
+                poff = off._data; pfoff = foff._data;
+                const T *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_width-2);
+                cimg_forX(resx,x) {
+                  const float t = *(pfoff++);
+                  const Tfloat
+                    val1 = (Tfloat)*ptrs,
+                    val0 = ptrs>ptrs0?(Tfloat)*(ptrs-1):val1,
+                    val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+1):val1,
+                    val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2):val2,
+                    val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
+                  *(ptrd++) = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrs+=*(poff++);
+                }
+                ptrs0+=_width;
               }
-              ptrs0+=_width;
             }
           }
         } else resx.assign(*this,true);
@@ -20099,25 +20183,28 @@ namespace cimg_library_suffixed {
         if (sy!=_height) {
           if (_height==1) resx.get_resize(sx,sy,_depth,_spectrum,1).move_to(resy);
           else {
-            const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
-            resy.assign(sx,sy,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
-            cimg_forXZC(resy,x,z,c) {
-              ptrd = resy.data(x,0,z,c);
-              const T *const ptrs0 = resx.data(x,0,z,c), *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_height-2)*sx;
-              poff = off._data; pfoff = foff._data;
-              cimg_forY(resy,y) {
-                const float t = *(pfoff++);
-                const Tfloat
-                  val1 = (Tfloat)*ptrs,
-                  val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sx):val1,
-                  val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sx):val1,
-                  val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sx):val2,
-                  val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sx;
-                ptrs+=*(poff++);
+            if (_height>sy) resx.get_resize(sx,sy,_depth,_spectrum,2).move_to(resy);
+            else {
+              const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
+              resy.assign(sx,sy,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
+              cimg_forXZC(resy,x,z,c) {
+                ptrd = resy.data(x,0,z,c);
+                const T *const ptrs0 = resx.data(x,0,z,c), *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_height-2)*sx;
+                poff = off._data; pfoff = foff._data;
+                cimg_forY(resy,y) {
+                  const float t = *(pfoff++);
+                  const Tfloat
+                    val1 = (Tfloat)*ptrs,
+                    val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sx):val1,
+                    val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sx):val1,
+                    val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sx):val2,
+                    val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sx;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20127,26 +20214,29 @@ namespace cimg_library_suffixed {
         if (sz!=_depth) {
           if (_depth==1) resy.get_resize(sx,sy,sz,_spectrum,1).move_to(resz);
           else {
-            const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
-            const unsigned int sxy = sx*sy;
-            resz.assign(sx,sy,sz,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYC(resz,x,y,c) {
-              ptrd = resz.data(x,y,0,c);
-              const T *const ptrs0 = resy.data(x,y,0,c), *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_depth-2)*sxy;
-              poff = off._data; pfoff = foff._data;
-              cimg_forZ(resz,z) {
-                const float t = *(pfoff++);
-                const Tfloat
-                  val1 = (Tfloat)*ptrs,
-                  val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sxy):val1,
-                  val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxy):val1,
-                  val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxy):val2,
-                  val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sxy;
-                ptrs+=*(poff++);
+            if (_depth>sz) resy.get_resize(sx,sy,sz,_spectrum,2).move_to(resz);
+            else {
+              const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
+              const unsigned int sxy = sx*sy;
+              resz.assign(sx,sy,sz,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYC(resz,x,y,c) {
+                ptrd = resz.data(x,y,0,c);
+                const T *const ptrs0 = resy.data(x,y,0,c), *ptrs = ptrs0, *const ptrsmax = ptrs0 + (_depth-2)*sxy;
+                poff = off._data; pfoff = foff._data;
+                cimg_forZ(resz,z) {
+                  const float t = *(pfoff++);
+                  const Tfloat
+                    val1 = (Tfloat)*ptrs,
+                    val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sxy):val1,
+                    val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxy):val1,
+                    val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxy):val2,
+                    val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sxy;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20156,26 +20246,29 @@ namespace cimg_library_suffixed {
         if (sc!=_spectrum) {
           if (_spectrum==1) resz.get_resize(sx,sy,sz,sc,1).move_to(resc);
           else {
-            const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
-            const unsigned int sxyz = sx*sy*sz;
-            resc.assign(sx,sy,sz,sc);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYZ(resc,x,y,z) {
-              ptrd = resc.data(x,y,z,0);
-              const T *const ptrs0 = resz.data(x,y,z,0), *ptrs = ptrs0, *const ptrsmax = ptrs + (_spectrum-2)*sxyz;
-              poff = off._data; pfoff = foff._data;
-              cimg_forC(resc,c) {
-                const float t = *(pfoff++);
-                const Tfloat
-                  val1 = (Tfloat)*ptrs,
-                  val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sxyz):val1,
-                  val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxyz):val1,
-                  val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxyz):val2,
-                  val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sxyz;
-                ptrs+=*(poff++);
+            if (_spectrum>sc) resz.get_resize(sx,sy,sz,sc,2).move_to(resc);
+            else {
+              const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
+              const unsigned int sxyz = sx*sy*sz;
+              resc.assign(sx,sy,sz,sc);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYZ(resc,x,y,z) {
+                ptrd = resc.data(x,y,z,0);
+                const T *const ptrs0 = resz.data(x,y,z,0), *ptrs = ptrs0, *const ptrsmax = ptrs + (_spectrum-2)*sxyz;
+                poff = off._data; pfoff = foff._data;
+                cimg_forC(resc,c) {
+                  const float t = *(pfoff++);
+                  const Tfloat
+                    val1 = (Tfloat)*ptrs,
+                    val0 = ptrs>ptrs0?(Tfloat)*(ptrs-sxyz):val1,
+                    val2 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxyz):val1,
+                    val3 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxyz):val2,
+                    val = val1 + 0.5f*(t*(-val0+val2) + t*t*(2*val0-5*val1+4*val2-val3) + t*t*t*(-val0+3*val1-3*val2+val3));
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sxyz;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20199,34 +20292,37 @@ namespace cimg_library_suffixed {
         if (sx!=_width) {
           if (_width==1) get_resize(sx,_height,_depth,_spectrum,1).move_to(resx);
           else {
-            const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
-            resx.assign(sx,_height,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
-            ptrd = resx._data;
-            const T *ptrs0 = _data;
-            cimg_forYZC(resx,y,z,c) {
-              poff = off._data; pfoff = foff._data;
-              const T *ptrs = ptrs0, *const ptrsmin = ptrs0 + 1, *const ptrsmax = ptrs0 + (_width-2);
-              cimg_forX(resx,x) {
-                const float
-                  t = *(pfoff++),
-                  w0 = _cimg_lanczos(t+2),
-                  w1 = _cimg_lanczos(t+1),
-                  w2 = _cimg_lanczos(t),
-                  w3 = _cimg_lanczos(t-1),
-                  w4 = _cimg_lanczos(t-2);
-                const Tfloat
-                  val2 = (Tfloat)*ptrs,
-                  val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-1):val2,
-                  val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2):val1,
-                  val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+1):val2,
-                  val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2):val3,
-                  val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
-                *(ptrd++) = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrs+=*(poff++);
+            if (_width>sx) get_resize(sx,_height,_depth,_spectrum,2).move_to(resx);
+            else {
+              const float fx = (!boundary_conditions && sx>_width)?(sx>1?(_width-1.0f)/(sx-1):0):(float)_width/sx;
+              resx.assign(sx,_height,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forX(resx,x) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fx; *(poff++) = (unsigned int)curr - (unsigned int)old; }
+              ptrd = resx._data;
+              const T *ptrs0 = _data;
+              cimg_forYZC(resx,y,z,c) {
+                poff = off._data; pfoff = foff._data;
+                const T *ptrs = ptrs0, *const ptrsmin = ptrs0 + 1, *const ptrsmax = ptrs0 + (_width-2);
+                cimg_forX(resx,x) {
+                  const float
+                    t = *(pfoff++),
+                    w0 = _cimg_lanczos(t+2),
+                    w1 = _cimg_lanczos(t+1),
+                    w2 = _cimg_lanczos(t),
+                    w3 = _cimg_lanczos(t-1),
+                    w4 = _cimg_lanczos(t-2);
+                  const Tfloat
+                    val2 = (Tfloat)*ptrs,
+                    val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-1):val2,
+                    val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2):val1,
+                    val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+1):val2,
+                    val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2):val3,
+                    val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
+                  *(ptrd++) = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrs+=*(poff++);
+                }
+                ptrs0+=_width;
               }
-              ptrs0+=_width;
             }
           }
         } else resx.assign(*this,true);
@@ -20234,32 +20330,35 @@ namespace cimg_library_suffixed {
         if (sy!=_height) {
           if (_height==1) resx.get_resize(sx,sy,_depth,_spectrum,1).move_to(resy);
           else {
-            const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
-            resy.assign(sx,sy,_depth,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
-            cimg_forXZC(resy,x,z,c) {
-              ptrd = resy.data(x,0,z,c);
-              const T *const ptrs0 = resx.data(x,0,z,c), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sx, *const ptrsmax = ptrs0 + (_height-2)*sx;
-              poff = off._data; pfoff = foff._data;
-              cimg_forY(resy,y) {
-                const float
-                  t = *(pfoff++),
-                  w0 = _cimg_lanczos(t+2),
-                  w1 = _cimg_lanczos(t+1),
-                  w2 = _cimg_lanczos(t),
-                  w3 = _cimg_lanczos(t-1),
-                  w4 = _cimg_lanczos(t-2);
-                const Tfloat
-                  val2 = (Tfloat)*ptrs,
-                  val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sx):val2,
-                  val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sx):val1,
-                  val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sx):val2,
-                  val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sx):val3,
-                  val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sx;
-                ptrs+=*(poff++);
+            if (_height>sy) resx.get_resize(sx,sy,_depth,_spectrum,2).move_to(resy);
+            else {
+              const float fy = (!boundary_conditions && sy>_height)?(sy>1?(_height-1.0f)/(sy-1):0):(float)_height/sy;
+              resy.assign(sx,sy,_depth,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forY(resy,y) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fy; *(poff++) = sx*((unsigned int)curr-(unsigned int)old); }
+              cimg_forXZC(resy,x,z,c) {
+                ptrd = resy.data(x,0,z,c);
+                const T *const ptrs0 = resx.data(x,0,z,c), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sx, *const ptrsmax = ptrs0 + (_height-2)*sx;
+                poff = off._data; pfoff = foff._data;
+                cimg_forY(resy,y) {
+                  const float
+                    t = *(pfoff++),
+                    w0 = _cimg_lanczos(t+2),
+                    w1 = _cimg_lanczos(t+1),
+                    w2 = _cimg_lanczos(t),
+                    w3 = _cimg_lanczos(t-1),
+                    w4 = _cimg_lanczos(t-2);
+                  const Tfloat
+                    val2 = (Tfloat)*ptrs,
+                    val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sx):val2,
+                    val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sx):val1,
+                    val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sx):val2,
+                    val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sx):val3,
+                    val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sx;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20269,33 +20368,36 @@ namespace cimg_library_suffixed {
         if (sz!=_depth) {
           if (_depth==1) resy.get_resize(sx,sy,sz,_spectrum,1).move_to(resz);
           else {
-            const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
-            const unsigned int sxy = sx*sy;
-            resz.assign(sx,sy,sz,_spectrum);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYC(resz,x,y,c) {
-              ptrd = resz.data(x,y,0,c);
-              const T *const ptrs0 = resy.data(x,y,0,c), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sxy, *const ptrsmax = ptrs0 + (_depth-2)*sxy;
-              poff = off._data; pfoff = foff._data;
-              cimg_forZ(resz,z) {
-                const float
-                  t = *(pfoff++),
-                  w0 = _cimg_lanczos(t+2),
-                  w1 = _cimg_lanczos(t+1),
-                  w2 = _cimg_lanczos(t),
-                  w3 = _cimg_lanczos(t-1),
-                  w4 = _cimg_lanczos(t-2);
-                const Tfloat
-                  val2 = (Tfloat)*ptrs,
-                  val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sxy):val2,
-                  val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sxy):val1,
-                  val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxy):val2,
-                  val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxy):val3,
-                  val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sxy;
-                ptrs+=*(poff++);
+            if (_depth>sz) resy.get_resize(sx,sy,sz,_spectrum,2).move_to(resz);
+            else {
+              const float fz = (!boundary_conditions && sz>_depth)?(sz>1?(_depth-1.0f)/(sz-1):0):(float)_depth/sz;
+              const unsigned int sxy = sx*sy;
+              resz.assign(sx,sy,sz,_spectrum);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forZ(resz,z) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fz; *(poff++) = sxy*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYC(resz,x,y,c) {
+                ptrd = resz.data(x,y,0,c);
+                const T *const ptrs0 = resy.data(x,y,0,c), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sxy, *const ptrsmax = ptrs0 + (_depth-2)*sxy;
+                poff = off._data; pfoff = foff._data;
+                cimg_forZ(resz,z) {
+                  const float
+                    t = *(pfoff++),
+                    w0 = _cimg_lanczos(t+2),
+                    w1 = _cimg_lanczos(t+1),
+                    w2 = _cimg_lanczos(t),
+                    w3 = _cimg_lanczos(t-1),
+                    w4 = _cimg_lanczos(t-2);
+                  const Tfloat
+                    val2 = (Tfloat)*ptrs,
+                    val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sxy):val2,
+                    val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sxy):val1,
+                    val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxy):val2,
+                    val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxy):val3,
+                    val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sxy;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20305,33 +20407,36 @@ namespace cimg_library_suffixed {
         if (sc!=_spectrum) {
           if (_spectrum==1) resz.get_resize(sx,sy,sz,sc,1).move_to(resc);
           else {
-            const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
-            const unsigned int sxyz = sx*sy*sz;
-            resc.assign(sx,sy,sz,sc);
-            curr = old = 0; poff = off._data; pfoff = foff._data;
-            cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
-            cimg_forXYZ(resc,x,y,z) {
-              ptrd = resc.data(x,y,z,0);
-              const T *const ptrs0 = resz.data(x,y,z,0), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sxyz, *const ptrsmax = ptrs + (_spectrum-2)*sxyz;
-              poff = off._data; pfoff = foff._data;
-              cimg_forC(resc,c) {
-                const float
-                  t = *(pfoff++),
-                  w0 = _cimg_lanczos(t+2),
-                  w1 = _cimg_lanczos(t+1),
-                  w2 = _cimg_lanczos(t),
-                  w3 = _cimg_lanczos(t-1),
-                  w4 = _cimg_lanczos(t-2);
-                const Tfloat
-                  val2 = (Tfloat)*ptrs,
-                  val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sxyz):val2,
-                  val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sxyz):val1,
-                  val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxyz):val2,
-                  val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxyz):val3,
-                  val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
-                *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
-                ptrd+=sxyz;
-                ptrs+=*(poff++);
+            if (_spectrum>sc) resz.get_resize(sx,sy,sz,sc,2).move_to(resc);
+            else {
+              const float fc = (!boundary_conditions && sc>_spectrum)?(sc>1?(_spectrum-1.0f)/(sc-1):0):(float)_spectrum/sc;
+              const unsigned int sxyz = sx*sy*sz;
+              resc.assign(sx,sy,sz,sc);
+              curr = old = 0; poff = off._data; pfoff = foff._data;
+              cimg_forC(resc,c) { *(pfoff++) = curr - (unsigned int)curr; old = curr; curr+=fc; *(poff++) = sxyz*((unsigned int)curr - (unsigned int)old); }
+              cimg_forXYZ(resc,x,y,z) {
+                ptrd = resc.data(x,y,z,0);
+                const T *const ptrs0 = resz.data(x,y,z,0), *ptrs = ptrs0, *const ptrsmin = ptrs0 + sxyz, *const ptrsmax = ptrs + (_spectrum-2)*sxyz;
+                poff = off._data; pfoff = foff._data;
+                cimg_forC(resc,c) {
+                  const float
+                    t = *(pfoff++),
+                    w0 = _cimg_lanczos(t+2),
+                    w1 = _cimg_lanczos(t+1),
+                    w2 = _cimg_lanczos(t),
+                    w3 = _cimg_lanczos(t-1),
+                    w4 = _cimg_lanczos(t-2);
+                  const Tfloat
+                    val2 = (Tfloat)*ptrs,
+                    val1 = ptrs>=ptrsmin?(Tfloat)*(ptrs-sxyz):val2,
+                    val0 = ptrs>ptrsmin?(Tfloat)*(ptrs-2*sxyz):val1,
+                    val3 = ptrs<=ptrsmax?(Tfloat)*(ptrs+sxyz):val2,
+                    val4 = ptrs<ptrsmax?(Tfloat)*(ptrs+2*sxyz):val3,
+                    val = (val0*w0 + val1*w1 + val2*w2 + val3*w3 + val4*w4)/(w1 + w2 + w3 + w4);
+                  *ptrd = (T)(val<vmin?vmin:val>vmax?vmax:val);
+                  ptrd+=sxyz;
+                  ptrs+=*(poff++);
+                }
               }
             }
           }
@@ -20345,7 +20450,7 @@ namespace cimg_library_suffixed {
         //
       default :
         throw CImgArgumentException(_cimg_instance
-                                    "resize() : Invalid specified interpolation %d "
+                                    "resize(): Invalid specified interpolation %d "
                                     "(should be { -1=raw | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }).",
                                     cimg_instance,
                                     interpolation_type);
@@ -20610,7 +20715,7 @@ namespace cimg_library_suffixed {
       } break;
       default :
         throw CImgArgumentException(_cimg_instance
-                                    "mirror() : Invalid specified axis '%c'.",
+                                    "mirror(): Invalid specified axis '%c'.",
                                     cimg_instance,
                                     axis);
       }
@@ -20646,10 +20751,10 @@ namespace cimg_library_suffixed {
        \param delta_c Amount of displacement along the C-axis.
        \param boundary_conditions Border condition.
 
-       - \c boundary_conditions can be :
-          - 0 : Zero border condition (Dirichlet).
-          - 1 : Nearest neighbors (Neumann).
-          - 2 : Repeat Pattern (Fourier style).
+       - \c boundary_conditions can be:
+          - 0: Zero border condition (Dirichlet).
+          - 1: Nearest neighbors (Neumann).
+          - 2: Repeat Pattern (Fourier style).
     **/
     CImg<T>& shift(const int delta_x, const int delta_y=0, const int delta_z=0, const int delta_c=0,
                    const int boundary_conditions=0) {
@@ -21049,7 +21154,7 @@ namespace cimg_library_suffixed {
       }
       if (!res)
         throw CImgArgumentException(_cimg_instance
-                                    "permute_axes() : Invalid specified permutation '%s'.",
+                                    "permute_axes(): Invalid specified permutation '%s'.",
                                     cimg_instance,
                                     permut);
       return res;
@@ -21184,7 +21289,7 @@ namespace cimg_library_suffixed {
         } break;
         default :
           throw CImgArgumentException(_cimg_instance
-                                      "rotate() : Invalid specified border conditions %d "
+                                      "rotate(): Invalid specified border conditions %d "
                                       "(should be { 0=dirichlet | 1=neumann | 2=cyclic }).",
                                       cimg_instance,
                                       boundary_conditions);
@@ -21212,7 +21317,7 @@ namespace cimg_library_suffixed {
                        const unsigned int boundary_conditions=3, const unsigned int interpolation_type=1) const {
       if (interpolation_type>2)
         throw CImgArgumentException(_cimg_instance
-                                    "rotate() : Invalid specified interpolation type %d "
+                                    "rotate(): Invalid specified interpolation type %d "
                                     "(should be { 0=none | 1=linear | 2=bicubic }).",
                                     cimg_instance,
                                     interpolation_type);
@@ -21284,7 +21389,7 @@ namespace cimg_library_suffixed {
       } break;
       default :
         throw CImgArgumentException(_cimg_instance
-                                    "rotate() : Invalid specified border conditions %d "
+                                    "rotate(): Invalid specified border conditions %d "
                                     "(should be { 0=dirichlet | 1=neumann | 2=cyclic }).",
                                     cimg_instance,
                                     boundary_conditions);
@@ -21312,7 +21417,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || !warp) return *this;
       if (is_relative && !is_sameXYZ(warp))
         throw CImgArgumentException(_cimg_instance
-                                    "warp() : Instance and specified relative warping field (%u,%u,%u,%u,%p) "
+                                    "warp(): Instance and specified relative warping field (%u,%u,%u,%u,%p) "
                                     "have different XYZ dimensions.",
                                     cimg_instance,
                                     warp._width,warp._height,warp._depth,warp._spectrum,warp._data);
@@ -21673,7 +21778,7 @@ namespace cimg_library_suffixed {
                      const bool boundary_conditions=false) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "crop() : Empty instance.",
+                                    "crop(): Empty instance.",
                                     cimg_instance);
       const int
         nx0 = x0<x1?x0:x1, nx1 = x0^x1^nx0,
@@ -21761,8 +21866,22 @@ namespace cimg_library_suffixed {
     }
 
     //! Autocrop image region, regarding the specified background color.
-    CImg<T>& autocrop(const T *const color, const char *const axes="zyx") {
+    /**
+       \param color Color used for the crop. If \c 0, color is guessed.
+       \param axes Axes used for the crop.
+    **/
+    CImg<T>& autocrop(const T *const color=0, const char *const axes="zyx") {
       if (is_empty()) return *this;
+      if (!color) { // Guess color.
+        const CImg<T> col1 = get_vector_at(0,0,0);
+        const unsigned int w = _width, h = _height, d = _depth, s = _spectrum;
+        autocrop(col1,axes);
+        if (_width==w && _height==h && _depth==d && _spectrum==s) {
+          const CImg<T> col2 = get_vector_at(w-1,h-1,d-1);
+          autocrop(col2,axes);
+        }
+        return *this;
+      }
       for (const char *s = axes; *s; ++s) {
         const char axis = cimg::uncase(*s);
         switch (axis) {
@@ -21799,7 +21918,7 @@ namespace cimg_library_suffixed {
     }
 
     //! Autocrop image region, regarding the specified background color \newinstance.
-    CImg<T> get_autocrop(const T *const color, const char *const axes="zyx") const {
+    CImg<T> get_autocrop(const T *const color=0, const char *const axes="zyx") const {
       return (+*this).autocrop(color,axes);
     }
 
@@ -21975,7 +22094,7 @@ namespace cimg_library_suffixed {
                                 const bool is_oriented_only=false) const {
       if (_spectrum!=2 && _spectrum!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "streamline() : Instance is not a 2d or 3d vector field.",
+                                    "streamline(): Instance is not a 2d or 3d vector field.",
                                     cimg_instance);
       if (_spectrum==2) {
         if (is_oriented_only) {
@@ -22021,7 +22140,7 @@ namespace cimg_library_suffixed {
                                    const float x0=0, const float y0=0, const float z0=0,
                                    const float x1=0, const float y1=0, const float z1=0) {
       if (dl<=0)
-        throw CImgArgumentException("CImg<%s>::streamline() : Invalid specified integration length %g "
+        throw CImgArgumentException("CImg<%s>::streamline(): Invalid specified integration length %g "
                                     "(should be >0).",
                                     pixel_type(),
                                     dl);
@@ -22241,7 +22360,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = (unsigned int)offset(x0,y0,z0,c0), end = offset(x1,y0,z0,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_points() : Invalid request of a shared-memory subset (%u->%u,%u,%u,%u).",
+                                    "get_shared_points(): Invalid request of a shared-memory subset (%u->%u,%u,%u,%u).",
                                     cimg_instance,
                                     x0,x1,y0,z0,c0);
 
@@ -22254,7 +22373,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = (unsigned int)offset(x0,y0,z0,c0), end = offset(x1,y0,z0,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_points() : Invalid request of a shared-memory subset (%u->%u,%u,%u,%u).",
+                                    "get_shared_points(): Invalid request of a shared-memory subset (%u->%u,%u,%u,%u).",
                                     cimg_instance,
                                     x0,x1,y0,z0,c0);
 
@@ -22273,7 +22392,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,y0,z0,c0), end = offset(0,y1,z0,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_rows() : Invalid request of a shared-memory subset (0->%u,%u->%u,%u,%u).",
+                                    "get_shared_rows(): Invalid request of a shared-memory subset (0->%u,%u->%u,%u,%u).",
                                     cimg_instance,
                                     _width-1,y0,y1,z0,c0);
 
@@ -22286,7 +22405,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,y0,z0,c0), end = offset(0,y1,z0,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_rows() : Invalid request of a shared-memory subset (0->%u,%u->%u,%u,%u).",
+                                    "get_shared_rows(): Invalid request of a shared-memory subset (0->%u,%u->%u,%u,%u).",
                                     cimg_instance,
                                     _width-1,y0,y1,z0,c0);
 
@@ -22318,7 +22437,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,0,z0,c0), end = offset(0,0,z1,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_slices() : Invalid request of a shared-memory subset (0->%u,0->%u,%u->%u,%u).",
+                                    "get_shared_slices(): Invalid request of a shared-memory subset (0->%u,0->%u,%u->%u,%u).",
                                     cimg_instance,
                                     _width-1,_height-1,z0,z1,c0);
 
@@ -22330,7 +22449,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,0,z0,c0), end = offset(0,0,z1,c0);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_slices() : Invalid request of a shared-memory subset (0->%u,0->%u,%u->%u,%u).",
+                                    "get_shared_slices(): Invalid request of a shared-memory subset (0->%u,0->%u,%u->%u,%u).",
                                     cimg_instance,
                                     _width-1,_height-1,z0,z1,c0);
 
@@ -22360,7 +22479,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,0,0,c0), end = offset(0,0,0,c1);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_channels() : Invalid request of a shared-memory subset (0->%u,0->%u,0->%u,%u->%u).",
+                                    "get_shared_channels(): Invalid request of a shared-memory subset (0->%u,0->%u,0->%u,%u->%u).",
                                     cimg_instance,
                                     _width-1,_height-1,_depth-1,c0,c1);
 
@@ -22372,7 +22491,7 @@ namespace cimg_library_suffixed {
       const unsigned int beg = offset(0,0,0,c0), end = offset(0,0,0,c1);
       if (beg>end || beg>=size() || end>=size())
         throw CImgArgumentException(_cimg_instance
-                                    "get_shared_channels() : Invalid request of a shared-memory subset (0->%u,0->%u,0->%u,%u->%u).",
+                                    "get_shared_channels(): Invalid request of a shared-memory subset (0->%u,0->%u,0->%u,%u->%u).",
                                     cimg_instance,
                                     _width-1,_height-1,_depth-1,c0,c1);
 
@@ -22431,7 +22550,7 @@ namespace cimg_library_suffixed {
           for (int pe=_depth-dp; p<pe; p+=dp) get_crop(0,0,p,0,_width-1,_height-1,p+dp-1,_spectrum-1).move_to(res);
           get_crop(0,0,p,0,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
         } break;
-        default: {
+        default : {
           for (int pe=_spectrum-dp; p<pe; p+=dp) get_crop(0,0,0,p,_width-1,_height-1,_depth-1,p+dp-1).move_to(res);
           get_crop(0,0,0,p,_width-1,_height-1,_depth-1,_spectrum-1).move_to(res);
         }
@@ -22441,7 +22560,7 @@ namespace cimg_library_suffixed {
         const unsigned int siz = _axis=='x'?_width:_axis=='y'?_height:_axis=='z'?_depth:_axis=='c'?_spectrum:0;
         if ((unsigned int)nb>siz)
           throw CImgArgumentException(_cimg_instance
-                                      "get_split() : Instance cannot be split along %c-axis into %u blocs.",
+                                      "get_split(): Instance cannot be split along %c-axis into %u blocs.",
                                       cimg_instance,
                                       axis,nb);
         int err = (int)siz;
@@ -22594,8 +22713,9 @@ namespace cimg_library_suffixed {
        \param mask = the correlation kernel.
        \param boundary_conditions = the border condition type (0=zero, 1=dirichlet)
        \param is_normalized = enable local normalization.
-       \note The correlation of the image instance \p *this by the mask \p mask is defined to be :
-       res(x,y,z) = sum_{i,j,k} (*this)(x+i,y+j,z+k)*mask(i,j,k)
+       \note
+       - The correlation of the image instance \p *this by the mask \p mask is defined to be:
+       res(x,y,z) = sum_{i,j,k} (*this)(x+i,y+j,z+k)*mask(i,j,k).
     **/
     template<typename t>
     CImg<T>& correlate(const CImg<t>& mask, const unsigned int boundary_conditions=1, const bool is_normalized=false) {
@@ -22904,7 +23024,8 @@ namespace cimg_library_suffixed {
        \param mask = the correlation kernel.
        \param boundary_conditions = the border condition type (0=zero, 1=dirichlet)
        \param is_normalized = enable local normalization.
-       \note The result \p res of the convolution of an image \p img by a mask \p mask is defined to be :
+       \note
+       - The result \p res of the convolution of an image \p img by a mask \p mask is defined to be:
        res(x,y,z) = sum_{i,j,k} img(x-i,y-j,z-k)*mask(i,j,k)
     **/
     template<typename t>
@@ -23354,7 +23475,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!is_sameXYZ(priority))
         throw CImgArgumentException(_cimg_instance
-                                    "watershed() : image instance and specified priority (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "watershed(): image instance and specified priority (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,priority._width,priority._height,priority._depth,priority._spectrum,priority._data);
       if (_spectrum!=1) { cimg_forC(*this,c) get_shared_channel(c).watershed(priority.get_shared_channel(c%priority._spectrum),fill_lines); return *this; }
 
@@ -23565,7 +23686,7 @@ namespace cimg_library_suffixed {
       } break;
       default :
         throw CImgArgumentException(_cimg_instance
-                                    "deriche() : Invalid specified filter order %u "
+                                    "deriche(): Invalid specified filter order %u "
                                     "(should be { 0=smoothing | 1=1st-derivative | 2=2nd-derivative }).",
                                     cimg_instance,
                                     order);
@@ -23606,43 +23727,200 @@ namespace cimg_library_suffixed {
       return CImg<Tfloat>(*this,false).deriche(sigma,order,axis,boundary_conditions);
     }
 
+    // [internal] Apply a recursive filter (used by CImg<T>::vanvliet()).
+    /**
+       \param ptr the pointer of the data
+       \param filter the coefficient of the filter in the following order [n,n-1,n-2,n-3].
+       \param N size of the data
+       \param off the offset between two data point
+       \param order the order of the filter 0 (smoothing), 1st derivtive, 2nd derivative, 3rd derivative
+       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann }</tt>.
+       \note dirichlet boundary conditions have a strange behavior. And
+       boundary condition should be corrected using Bill Triggs method (IEEE trans on Sig Proc 2005).
+    **/
+    template <int K>
+    static void _cimg_recursive_apply(T *data, const Tfloat filter[], const int N, const unsigned long off, const int order, const bool boundary_conditions) {
+      Tfloat val[K];  // res[n,n-1,n-2,n-3,..] or res[n,n+1,n+2,n+3,..]
+      switch (order) {
+      case 0 : {
+        for (int pass = 0; pass<2; ++pass) {
+          for (int k = 1; k<K; ++k) val[k] = (Tfloat)(boundary_conditions?*data:0);
+          for (int n = 0; n<N; ++n) {
+            val[0] = (Tfloat)(*data)*filter[0];
+            for (int k = 1; k<K; ++k) val[0]+=val[k]*filter[k];
+            *data = (T)val[0];
+            if (!pass) data+=off; else data-=off;
+            for (int k = K-1; k>0; --k) val[k] = val[k-1];
+          }
+          if (!pass) data-=off;
+        }
+      } break;
+      case 1 : {
+        Tfloat x[3]; // [front,center,back]
+        for (int pass = 0; pass<2; ++pass) {
+          for (int k = 0; k<3; ++k) x[k] = (Tfloat)(boundary_conditions?*data:0);
+          for (int k = 0; k<K; ++k) val[k] = 0;
+          for (int n = 0; n<N-1; ++n) {
+            if (!pass) {
+              x[0] = (Tfloat)*(data+off);
+              val[0] = 0.5f * (x[0] - x[2])*filter[0];
+            } else val[0] = (Tfloat)(*data)*filter[0];
+            for (int k = 1; k<K; ++k) val[0]+=val[k]*filter[k];
+            *data = (T)val[0];
+            if (!pass) {
+              data+=off;
+              for (int k = 2; k>0; --k) x[k] = x[k-1];
+            } else data-=off;
+            for (int k = K-1; k>0; --k) val[k] = val[k-1];
+          }
+          *data = (T)0;
+        }
+      } break;
+      case 2: {
+        Tfloat x[3]; // [front,center,back]
+        for (int pass = 0; pass<2; ++pass) {
+          for (int k = 0; k<3; ++k) x[k] = (Tfloat)(boundary_conditions?*data:0);
+          for (int k = 0; k<K; ++k) val[k] = 0;
+          for (int n = 0; n<N-1; ++n) {
+            if (!pass) { x[0] = (Tfloat)*(data+off); val[0] = (x[1] - x[2])*filter[0]; }
+            else { x[0] = (Tfloat)*(data-off); val[0] = (x[2] - x[1])*filter[0]; }
+            for (int k = 1; k<K; ++k) val[0]+=val[k]*filter[k];
+            *data = (T)val[0];
+            if (!pass) data+=off; else data-=off;
+            for (int k = 2; k>0; --k) x[k] = x[k-1];
+            for (int k = K-1; k>0; --k) val[k] = val[k-1];
+          }
+          *data = (T)0;
+        }
+      } break;
+      case 3: {
+        Tfloat x[3]; // [front,center,back]
+        for (int pass = 0; pass<2; ++pass) {
+          for (int k = 0; k<3; ++k) x[k] = (Tfloat)(boundary_conditions?*data:0);
+          for (int k = 0; k<K; ++k) val[k] = 0;
+          for (int n = 0; n<N-1; ++n) {
+            if (!pass) { x[0] = (Tfloat)*(data+off); val[0] = (x[0] - 2*x[1] + x[2])*filter[0]; }
+            else { x[0] = (Tfloat)*(data-off); val[0] = 0.5f*(x[2] - x[0])*filter[0]; }
+            for (int k = 1; k<K; ++k) val[0]+=val[k]*filter[k];
+            *data = (T)val[0];
+            if (!pass) data+=off; else data-=off;
+            for (int k = 2; k>0; --k) x[k] = x[k-1];
+            for (int k = K-1; k>0; --k) val[k] = val[k-1];
+          }
+          *data = (T)0;
+        }
+      } break;
+      }
+    }
+
+    //! Van Vliet recursive Gaussian filter.
+    /**
+       \param sigma standard deviation of the Gaussian filter
+       \param order the order of the filter 0,1,2,3
+       \param axis  Axis along which the filter is computed. Can be <tt>{ 'x' | 'y' | 'z' | 'c' }</tt>.
+       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann }</tt>.
+       \note dirichlet boundary condition has a strange behavior
+
+       Ian T. Young, Lucas J. van Vliet, Recursive implementation of the
+       Gaussian filter, Signal Processing, Volume 44, Issue 2, June 1995,
+       Pages 139-151,
+    **/
+    CImg<T>& vanvliet(const float sigma, const int order, const char axis='x', const bool boundary_conditions=true) {
+      const char naxis = cimg::uncase(axis);
+      const float nsigma = sigma>=0?sigma:-sigma*(naxis=='x'?_width:naxis=='y'?_height:naxis=='z'?_depth:_spectrum)/100;
+      if (is_empty() || (nsigma<0.1)) return *this;
+      const Tfloat
+        q = (Tfloat)(nsigma<2.5?3.97156-4.14554*std::sqrt(1-0.2689*nsigma):0.98711*nsigma-0.96330),
+        b0 = 1.57825f + 2.44413f*q + 1.4281f*q*q + 0.4222205f*q*q*q,
+        b1 = (2.44413f*q + 2.85619f*q*q + 1.26661f*q*q*q),
+        b2 = -(1.4281f*q*q + 1.26661f*q*q*q),
+        b3 = 0.4222205f*q*q*q,
+        B = 1.f - (b1 + b2 + b3)/b0;
+      Tfloat filter[4];
+      filter[0] = B; filter[1] = b1/b0; filter[2] = b2/b0; filter[3] = b3/b0;
+
+      switch (naxis) {
+      case 'x' : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
+        cimg_forYZC(*this,y,z,c) _cimg_recursive_apply<4>(data(0,y,z,c),filter,_width,1U,order,boundary_conditions);
+      } break;
+      case 'y' : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
+        cimg_forXZC(*this,x,z,c) _cimg_recursive_apply<4>(data(x,0,z,c),filter,_height,(unsigned long)_width,order,boundary_conditions);
+      } break;
+      case 'z' : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
+        cimg_forXYC(*this,x,y,c) _cimg_recursive_apply<4>(data(x,y,0,c),filter,_depth,(unsigned long)(_width*_height),order,boundary_conditions);
+      } break;
+      default : {
+#ifdef cimg_use_openmp
+#pragma omp parallel for collapse(3)
+#endif
+        cimg_forXYZ(*this,x,y,z) _cimg_recursive_apply<4>(data(x,y,z,0),filter,_spectrum,(unsigned long)(_width*_height*_depth),order,boundary_conditions);
+      }
+      }
+      return *this;
+    }
+
+    //! Blur image using Van Vliet recursive Gaussian filter. \newinstance.
+    CImg<Tfloat> get_vanvliet(const float sigma, const int order, const char axis='x', const bool boundary_conditions=true) const {
+      return CImg<Tfloat>(*this,false).vanvliet(sigma,order,axis,boundary_conditions);
+    }
+
     //! Blur image.
     /**
        \param sigma_x Standard deviation of the blur, along the X-axis.
        \param sigma_y Standard deviation of the blur, along the Y-axis.
        \param sigma_z Standard deviation of the blur, along the Z-axis.
-       \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann }</tt>.
+       \param boundary_conditions Boundary conditions. Can be <tt>{ false=dirichlet | true=neumann }</tt>.
+       \param is_gaussian Tells if the blur uses a gaussian (\c true) or quasi-gaussian (\c false) kernel.
        \note
        - The blur is computed as a 0-order Deriche filter. This is not a gaussian blur.
        - This is a recursive algorithm, not depending on the values of the standard deviations.
+       \see deriche(), vanvliet().
     **/
-    CImg<T>& blur(const float sigma_x, const float sigma_y, const float sigma_z, const bool boundary_conditions=true) {
+    CImg<T>& blur(const float sigma_x, const float sigma_y, const float sigma_z,
+                  const bool boundary_conditions=true, const bool is_gaussian=false) {
       if (!is_empty()) {
-        if (_width>1) deriche(sigma_x,0,'x',boundary_conditions);
-        if (_height>1) deriche(sigma_y,0,'y',boundary_conditions);
-        if (_depth>1) deriche(sigma_z,0,'z',boundary_conditions);
+        if (is_gaussian) {
+          if (_width>1) vanvliet(sigma_x,0,'x',boundary_conditions);
+          if (_height>1) vanvliet(sigma_y,0,'y',boundary_conditions);
+          if (_depth>1) vanvliet(sigma_z,0,'z',boundary_conditions);
+        } else {
+          if (_width>1) deriche(sigma_x,0,'x',boundary_conditions);
+          if (_height>1) deriche(sigma_y,0,'y',boundary_conditions);
+          if (_depth>1) deriche(sigma_z,0,'z',boundary_conditions);
+        }
       }
       return *this;
     }
 
     //! Blur image \newinstance.
-    CImg<Tfloat> get_blur(const float sigma_x, const float sigma_y, const float sigma_z, const bool boundary_conditions=true) const {
-      return CImg<Tfloat>(*this,false).blur(sigma_x,sigma_y,sigma_z,boundary_conditions);
+    CImg<Tfloat> get_blur(const float sigma_x, const float sigma_y, const float sigma_z,
+                          const bool boundary_conditions=true, const bool is_gaussian=false) const {
+      return CImg<Tfloat>(*this,false).blur(sigma_x,sigma_y,sigma_z,boundary_conditions,is_gaussian);
     }
 
     //! Blur image isotropically.
     /**
        \param sigma Standard deviation of the blur.
        \param boundary_conditions Boundary conditions. Can be <tt>{ 0=dirichlet | 1=neumann }</tt>.a
+       \see deriche(), vanvliet().
     **/
-    CImg<T>& blur(const float sigma, const bool boundary_conditions=true) {
+    CImg<T>& blur(const float sigma, const bool boundary_conditions=true, const bool is_gaussian=false) {
       const float nsigma = sigma>=0?sigma:-sigma*cimg::max(_width,_height,_depth)/100;
-      return blur(nsigma,nsigma,nsigma,boundary_conditions);
+      return blur(nsigma,nsigma,nsigma,boundary_conditions,is_gaussian);
     }
 
     //! Blur image isotropically \newinstance.
-    CImg<Tfloat> get_blur(const float sigma, const bool boundary_conditions=true) const {
-      return CImg<Tfloat>(*this,false).blur(sigma,boundary_conditions);
+    CImg<Tfloat> get_blur(const float sigma, const bool boundary_conditions=true, const bool is_gaussian=false) const {
+      return CImg<Tfloat>(*this,false).blur(sigma,boundary_conditions,is_gaussian);
     }
 
     //! Blur image anisotropically, directed by a field of diffusion tensors.
@@ -23664,7 +23942,7 @@ namespace cimg_library_suffixed {
       // Check arguments and init variables
       if (!is_sameXYZ(G) || (G._spectrum!=3 && G._spectrum!=6))
         throw CImgArgumentException(_cimg_instance
-                                    "blur_anisotropic() : Invalid specified diffusion tensor field (%u,%u,%u,%u,%p).",
+                                    "blur_anisotropic(): Invalid specified diffusion tensor field (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     G._width,G._height,G._depth,G._spectrum,G._data);
 
@@ -24466,7 +24744,7 @@ namespace cimg_library_suffixed {
     //! Return image gradient.
     /**
        \param axes Axes considered for the gradient computation, as a C-string (e.g "xy").
-       \param scheme = Numerical scheme used for the gradient computation :
+       \param scheme = Numerical scheme used for the gradient computation:
        - -1 = Backward finite differences
        - 0 = Centered finite differences
        - 1 = Forward finite differences
@@ -24486,7 +24764,7 @@ namespace cimg_library_suffixed {
           case 'z' : is_3d = true; break;
           default :
             throw CImgArgumentException(_cimg_instance
-                                        "get_gradient() : Invalid specified axis '%c'.",
+                                        "get_gradient(): Invalid specified axis '%c'.",
                                         cimg_instance,
                                         axis);
           }
@@ -24543,10 +24821,9 @@ namespace cimg_library_suffixed {
       } break;
       case 2 : { // Sobel scheme.
         CImg_3x3(I,Tfloat);
-        const Tfloat a = 1, b = 2;
         cimg_forZC(*this,z,c) cimg_for3x3(*this,x,y,z,c,I,Tfloat) {
-          *(ptrd0++) = -a*Ipp - b*Ipc - a*Ipn + a*Inp + b*Inc + a*Inn;
-          *(ptrd1++) = -a*Ipp - b*Icp - a*Inp + a*Ipn + b*Icn + a*Inn;
+          *(ptrd0++) = -Ipp - 2*Ipc - Ipn + Inp + 2*Inc + Inn;
+          *(ptrd1++) = -Ipp - 2*Icp - Inp + Ipn + 2*Icn + Inn;
         }
       } break;
       case 3 : { // Rotation invariant mask.
@@ -24594,7 +24871,7 @@ namespace cimg_library_suffixed {
       const unsigned int lmax = std::strlen(naxes);
       if (lmax%2)
         throw CImgArgumentException(_cimg_instance
-                                    "get_hessian() : Invalid specified axes '%s'.",
+                                    "get_hessian(): Invalid specified axes '%s'.",
                                     cimg_instance,
                                     naxes);
 
@@ -24652,7 +24929,7 @@ namespace cimg_library_suffixed {
           }
           else if (!valid_axis)
             throw CImgArgumentException(_cimg_instance
-                                        "get_hessian() : Invalid specified axes '%s'.",
+                                        "get_hessian(): Invalid specified axes '%s'.",
                                         cimg_instance,
                                         naxes);
         }
@@ -24878,7 +25155,7 @@ namespace cimg_library_suffixed {
        \param precision Precision required for algorithm convergence.
        \param nb_scales Number of scales used to estimate the displacement field.
        \param iteration_max Maximum number of iterations allowed for one scale.
-       \param is_backward : if false, match I2(X+U(X)) = I1(X), else match I2(X) = I1(X-U(X)).
+       \param is_backward If false, match I2(X+U(X)) = I1(X), else match I2(X) = I1(X-U(X)).
     **/
     CImg<T>& displacement(const CImg<T>& source, const float smoothness=0.1f, const float precision=5.0f,
                           const unsigned int nb_scales=0, const unsigned int iteration_max=10000,
@@ -24894,12 +25171,12 @@ namespace cimg_library_suffixed {
       if (is_empty() || !source) return +*this;
       if (!is_sameXYZC(source))
         throw CImgArgumentException(_cimg_instance
-                                    "displacement() : Instance and source image (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "displacement(): Instance and source image (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     source._width,source._height,source._depth,source._spectrum,source._data);
       if (precision<0)
         throw CImgArgumentException(_cimg_instance
-                                    "displacement() : Invalid specified precision %g "
+                                    "displacement(): Invalid specified precision %g "
                                     "(should be >=0)",
                                     cimg_instance,
                                     precision);
@@ -25207,12 +25484,12 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!containsXYZC(x,y,z,0))
         throw CImgArgumentException(_cimg_instance
-                                    "distance_dijkstra() : image instance does not contain specified starting point (%u,%u,%u).",
+                                    "distance_dijkstra(): image instance does not contain specified starting point (%u,%u,%u).",
                                     cimg_instance,
                                     x,y,z);
       if (_spectrum!=1)
         throw CImgInstanceException(_cimg_instance
-                                    "distance_dijkstra() : image instance is not a scalar image.",
+                                    "distance_dijkstra(): image instance is not a scalar image.",
                                     cimg_instance);
       CImg<Tfloat> res(_width,_height,_depth,2);
       CImg<boolT> in_queue(_width,_height,_depth,1,0);
@@ -25246,7 +25523,7 @@ namespace cimg_library_suffixed {
           res(x,y+1,z) = npot; res(x,y+1,z,1) = 3;
         }
         if (z-1>=0 && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z-1)+potential),x,y,z-1)) {
-          res(x,y,z-1) = npot; res(x,y,z+1,1) = 6;
+          res(x,y,z-1) = npot; res(x,y,z-1,1) = 6;
         }
         if (z+1<depth() && Q._priority_queue_insert(in_queue,sizeQ,-(npot=(*this)(x,y,z+1)+potential),x,y,z+1)) {
           res(x,y,z+1) = npot; res(x,y,z+1,1) = 5;
@@ -25332,9 +25609,9 @@ namespace cimg_library_suffixed {
         case 'x' : {
           const unsigned int w = _width/2;
           if (w) {
-            if (w%2)
+            if ((w%2) && w!=1)
               throw CImgInstanceException(_cimg_instance
-                                          "haar() : Sub-image width %u is not even at scale %u.",
+                                          "haar(): Sub-image width %u is not even at scale %u.",
                                           cimg_instance,
                                           w);
 
@@ -25357,9 +25634,9 @@ namespace cimg_library_suffixed {
         case 'y' : {
           const unsigned int h = _height/2;
           if (h) {
-            if (h%2)
+            if ((h%2) && h!=1)
               throw CImgInstanceException(_cimg_instance
-                                          "haar() : Sub-image height %u is not even at scale %u.",
+                                          "haar(): Sub-image height %u is not even at scale %u.",
                                           cimg_instance,
                                           h);
 
@@ -25382,9 +25659,9 @@ namespace cimg_library_suffixed {
         case 'z' : {
           const unsigned int d = _depth/2;
           if (d) {
-            if (d%2)
+            if ((d%2) && d!=1)
               throw CImgInstanceException(_cimg_instance
-                                          "haar() : Sub-image depth %u is not even at scale %u.",
+                                          "haar(): Sub-image depth %u is not even at scale %u.",
                                           cimg_instance,
                                           d);
 
@@ -25406,7 +25683,7 @@ namespace cimg_library_suffixed {
         } break;
         default :
           throw CImgArgumentException(_cimg_instance
-                                      "haar() : Invalid specified axis '%c' "
+                                      "haar(): Invalid specified axis '%c' "
                                       "(should be { x | y | z }).",
                                       cimg_instance,
                                       axis);
@@ -25432,7 +25709,7 @@ namespace cimg_library_suffixed {
           } break;
           default :
             throw CImgArgumentException(_cimg_instance
-                                        "haar() : Invalid specified axis '%c' "
+                                        "haar(): Invalid specified axis '%c' "
                                         "(should be { x | y | z }).",
                                         cimg_instance,
                                         axis);
@@ -25451,7 +25728,7 @@ namespace cimg_library_suffixed {
           } break;
           default :
             throw CImgArgumentException(_cimg_instance
-                                        "haar() : Invalid specified axis '%c' "
+                                        "haar(): Invalid specified axis '%c' "
                                         "(should be { x | y | z }).",
                                         cimg_instance,
                                         axis);
@@ -25585,12 +25862,12 @@ namespace cimg_library_suffixed {
     **/
     static void FFT(CImg<T>& real, CImg<T>& imag, const char axis, const bool is_invert=false) {
       if (!real)
-        throw CImgInstanceException("CImg<%s>::FFT() : Specified real part is empty.",
+        throw CImgInstanceException("CImg<%s>::FFT(): Specified real part is empty.",
                                     pixel_type());
 
       if (!imag) imag.assign(real._width,real._height,real._depth,real._spectrum,0);
       if (!real.is_sameXYZC(imag))
-        throw CImgInstanceException("CImg<%s>::FFT() : Specified real part (%u,%u,%u,%u,%p) and imaginary part (%u,%u,%u,%u,%p) have different dimensions.",
+        throw CImgInstanceException("CImg<%s>::FFT(): Specified real part (%u,%u,%u,%u,%p) and imaginary part (%u,%u,%u,%u,%p) have different dimensions.",
                                     pixel_type(),
                                     real._width,real._height,real._depth,real._spectrum,real._data,
                                     imag._width,imag._height,imag._depth,imag._spectrum,imag._data);
@@ -25601,7 +25878,7 @@ namespace cimg_library_suffixed {
       switch (cimg::uncase(axis)) {
       case 'x' : { // Fourier along X, using FFTW library.
         data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*real._width);
-        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT() : Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the X-axis.",
+        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the X-axis.",
                                                   pixel_type(),
                                                   cimg::strbuffersize(sizeof(fftw_complex)*real._width),
                                                   real._width,real._height,real._depth,real._spectrum);
@@ -25619,7 +25896,7 @@ namespace cimg_library_suffixed {
       } break;
       case 'y' : { // Fourier along Y, using FFTW library.
         data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * real._height);
-        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT() : Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the Y-axis.",
+        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the Y-axis.",
                                                   pixel_type(),
                                                   cimg::strbuffersize(sizeof(fftw_complex)*real._height),
                                                   real._width,real._height,real._depth,real._spectrum);
@@ -25638,7 +25915,7 @@ namespace cimg_library_suffixed {
       } break;
       case 'z' : { // Fourier along Z, using FFTW library.
         data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * real._depth);
-        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT() : Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the Z-axis.",
+        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the Z-axis.",
                                                   pixel_type(),
                                                   cimg::strbuffersize(sizeof(fftw_complex)*real._depth),
                                                   real._width,real._height,real._depth,real._spectrum);
@@ -25657,7 +25934,7 @@ namespace cimg_library_suffixed {
       } break;
       default : { // Fourier along C, using FFTW library.
         data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * real._spectrum);
-        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT() : Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the C-axis.",
+        if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u) along the C-axis.",
                                                   pixel_type(),
                                                   cimg::strbuffersize(sizeof(fftw_complex)*real._spectrum),
                                                   real._width,real._height,real._depth,real._spectrum);
@@ -25682,7 +25959,7 @@ namespace cimg_library_suffixed {
       case 'x' : { // Fourier along X, using built-in functions.
         const unsigned int N = real._width, N2 = (N>>1);
         if (((N-1)&N) && N!=1)
-          throw CImgInstanceException("CImgList<%s>::FFT() : Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the X-axis.",
+          throw CImgInstanceException("CImgList<%s>::FFT(): Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the X-axis.",
                                       pixel_type(),
                                       real._width,real._height,real._depth,real._spectrum);
 
@@ -25724,7 +26001,7 @@ namespace cimg_library_suffixed {
       case 'y' : { // Fourier along Y, using built-in functions.
         const unsigned int N = real._height, N2 = (N>>1);
         if (((N-1)&N) && N!=1)
-          throw CImgInstanceException("CImgList<%s>::FFT() : Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the Y-axis.",
+          throw CImgInstanceException("CImgList<%s>::FFT(): Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the Y-axis.",
                                       pixel_type(),
                                       real._width,real._height,real._depth,real._spectrum);
 
@@ -25765,7 +26042,7 @@ namespace cimg_library_suffixed {
       case 'z' : { // Fourier along Z, using built-in functions.
         const unsigned int N = real._depth, N2 = (N>>1);
         if (((N-1)&N) && N!=1)
-          throw CImgInstanceException("CImgList<%s>::FFT() : Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the Z-axis.",
+          throw CImgInstanceException("CImgList<%s>::FFT(): Specified real and imaginary parts (%u,%u,%u,%u) have non 2^N dimension along the Z-axis.",
                                       pixel_type(),
                                       real._width,real._height,real._depth,real._spectrum);
 
@@ -25804,7 +26081,7 @@ namespace cimg_library_suffixed {
         if (is_invert) { real/=N; imag/=N; }
       } break;
       default :
-        throw CImgArgumentException("CImgList<%s>::FFT() : Invalid specified axis '%c' for real and imaginary parts (%u,%u,%u,%u) "
+        throw CImgArgumentException("CImgList<%s>::FFT(): Invalid specified axis '%c' for real and imaginary parts (%u,%u,%u,%u) "
                                     "(should be { x | y | z }).",
                                     pixel_type(),axis,
                                     real._width,real._height,real._depth,real._spectrum);
@@ -25820,19 +26097,19 @@ namespace cimg_library_suffixed {
     **/
     static void FFT(CImg<T>& real, CImg<T>& imag, const bool is_invert=false) {
       if (!real)
-        throw CImgInstanceException("CImgList<%s>::FFT() : Empty specified real part.",
+        throw CImgInstanceException("CImgList<%s>::FFT(): Empty specified real part.",
                                     pixel_type());
 
       if (!imag) imag.assign(real._width,real._height,real._depth,real._spectrum,0);
       if (!real.is_sameXYZC(imag))
-        throw CImgInstanceException("CImgList<%s>::FFT() : Specified real part (%u,%u,%u,%u,%p) and imaginary part (%u,%u,%u,%u,%p) have different dimensions.",
+        throw CImgInstanceException("CImgList<%s>::FFT(): Specified real part (%u,%u,%u,%u,%p) and imaginary part (%u,%u,%u,%u,%p) have different dimensions.",
                                     pixel_type(),
                                     real._width,real._height,real._depth,real._spectrum,real._data,
                                     imag._width,imag._height,imag._depth,imag._spectrum,imag._data);
 
 #ifdef cimg_use_fftw3
       fftw_complex *data_in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*real._width*real._height*real._depth);
-      if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT() : Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u).",
+      if (!data_in) throw CImgInstanceException("CImgList<%s>::FFT(): Failed to allocate memory (%s) for computing FFT of image (%u,%u,%u,%u).",
                                                 pixel_type(),
                                                 cimg::strbuffersize(sizeof(fftw_complex)*real._width*real._height*real._depth*real._spectrum),
                                                 real._width,real._height,real._depth,real._spectrum);
@@ -25866,9 +26143,9 @@ namespace cimg_library_suffixed {
       fftw_destroy_plan(data_plan);
       fftw_free(data_in);
 #else
-      if (real._depth>1)  FFT(real,imag,'z',is_invert);
+      if (real._depth>1) FFT(real,imag,'z',is_invert);
       if (real._height>1) FFT(real,imag,'y',is_invert);
-      if (real._width>1)  FFT(real,imag,'x',is_invert);
+      if (real._width>1) FFT(real,imag,'x',is_invert);
 #endif
     }
 
@@ -25888,7 +26165,7 @@ namespace cimg_library_suffixed {
     CImg<T>& shift_object3d(const float tx, const float ty=0, const float tz=0) {
       if (_height!=3 || _depth>1 || _spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "shift_object3d() : Instance is not a set of 3d vertices.",
+                                    "shift_object3d(): Instance is not a set of 3d vertices.",
                                     cimg_instance);
 
       get_shared_row(0)+=tx; get_shared_row(1)+=ty; get_shared_row(2)+=tz;
@@ -25907,7 +26184,7 @@ namespace cimg_library_suffixed {
     CImg<T>& shift_object3d() {
       if (_height!=3 || _depth>1 || _spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "shift_object3d() : Instance is not a set of 3d vertices.",
+                                    "shift_object3d(): Instance is not a set of 3d vertices.",
                                     cimg_instance);
 
       CImg<T> xcoords = get_shared_row(0), ycoords = get_shared_row(1), zcoords = get_shared_row(2);
@@ -25930,7 +26207,7 @@ namespace cimg_library_suffixed {
     CImg<T>& resize_object3d(const float sx, const float sy=-100, const float sz=-100) {
       if (_height!=3 || _depth>1 || _spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "resize_object3d() : Instance is not a set of 3d vertices.",
+                                    "resize_object3d(): Instance is not a set of 3d vertices.",
                                     cimg_instance);
 
       CImg<T> xcoords = get_shared_row(0), ycoords = get_shared_row(1), zcoords = get_shared_row(2);
@@ -25950,7 +26227,7 @@ namespace cimg_library_suffixed {
     CImg<T> resize_object3d() {
       if (_height!=3 || _depth>1 || _spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "resize_object3d() : Instance is not a set of 3d vertices.",
+                                    "resize_object3d(): Instance is not a set of 3d vertices.",
                                     cimg_instance);
 
       CImg<T> xcoords = get_shared_row(0), ycoords = get_shared_row(1), zcoords = get_shared_row(2);
@@ -25976,14 +26253,14 @@ namespace cimg_library_suffixed {
       if (!obj_vertices || !obj_primitives) return *this;
       if (obj_vertices._height!=3 || obj_vertices._depth>1 || obj_vertices._spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "append_object3d() : Specified vertice image (%u,%u,%u,%u,%p) is not a set of 3d vertices.",
+                                    "append_object3d(): Specified vertice image (%u,%u,%u,%u,%p) is not a set of 3d vertices.",
                                     cimg_instance,
                                     obj_vertices._width,obj_vertices._height,obj_vertices._depth,obj_vertices._spectrum,obj_vertices._data);
 
       if (is_empty()) { primitives.assign(obj_primitives); return assign(obj_vertices); }
       if (_height!=3 || _depth>1 || _spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "append_object3d() : Instance is not a set of 3d vertices.",
+                                    "append_object3d(): Instance is not a set of 3d vertices.",
                                     cimg_instance);
 
       const unsigned int P = _width;
@@ -26016,11 +26293,11 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (_height!=3)
         throw CImgInstanceException(_cimg_instance
-                                    "texturize_object3d() : image instance is not a set of 3d points.",
+                                    "texturize_object3d(): image instance is not a set of 3d points.",
                                     cimg_instance);
       if (coords && (coords._width!=_width || coords._height!=2))
         throw CImgArgumentException(_cimg_instance
-                                    "texturize_object3d() : Invalid specified texture coordinates (%u,%u,%u,%u,%p).",
+                                    "texturize_object3d(): Invalid specified texture coordinates (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     coords._width,coords._height,coords._depth,coords._spectrum,coords._data);
       CImg<unsigned int> _coords;
@@ -26092,7 +26369,7 @@ namespace cimg_library_suffixed {
        const CImg<float> img("reference.jpg");
        CImgList<unsigned int> faces3d;
        CImgList<unsigned char> colors3d;
-       const CImg<float> points3d = img.get_elevation3d(faces3d,colors,img.get_norm()*0.2);
+       const CImg<float> points3d = img.get_elevation3d(faces3d,colors3d,img.get_norm()*0.2);
        CImg<unsigned char>().display_object3d("Elevation3d",points3d,faces3d,colors3d);
        \endcode
        \image html ref_elevation3d.jpg
@@ -26101,7 +26378,7 @@ namespace cimg_library_suffixed {
     CImg<floatT> get_elevation3d(CImgList<tf>& primitives, CImgList<tc>& colors, const CImg<te>& elevation) const {
       if (!is_sameXY(elevation) || elevation._depth>1 || elevation._spectrum>1)
         throw CImgArgumentException(_cimg_instance
-                                    "get_elevation3d() : Instance and specified elevation (%u,%u,%u,%u,%p) "
+                                    "get_elevation3d(): Instance and specified elevation (%u,%u,%u,%u,%p) "
                                     "have incompatible dimensions.",
                                     cimg_instance,
                                     elevation._width,elevation._height,elevation._depth,elevation._spectrum,elevation._data);
@@ -26188,11 +26465,11 @@ namespace cimg_library_suffixed {
                                const int size_x=-100, const int size_y=-100) const {
       if (_spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "get_isoline3d() : Instance is not a scalar image.",
+                                    "get_isoline3d(): Instance is not a scalar image.",
                                     cimg_instance);
       if (_depth>1)
         throw CImgInstanceException(_cimg_instance
-                                    "get_isoline3d() : Instance is not a 2d image.",
+                                    "get_isoline3d(): Instance is not a 2d image.",
                                     cimg_instance);
       primitives.assign();
       if (is_empty()) return *this;
@@ -26230,7 +26507,7 @@ namespace cimg_library_suffixed {
                                   const int size_x=-100, const int size_y=-100, const int size_z=-100) const {
       if (_spectrum>1)
         throw CImgInstanceException(_cimg_instance
-                                    "get_isosurface3d() : Instance is not a scalar image.",
+                                    "get_isosurface3d(): Instance is not a scalar image.",
                                     cimg_instance);
       primitives.assign();
       if (is_empty()) return *this;
@@ -26267,7 +26544,7 @@ namespace cimg_library_suffixed {
         _nsize_x = (unsigned int)(size_x>=0?size_x:(nx1-nx0)*-size_x/100), nsize_x = _nsize_x?_nsize_x:1, nsize_x1 = nsize_x - 1,
         _nsize_y = (unsigned int)(size_y>=0?size_y:(ny1-ny0)*-size_y/100), nsize_y = _nsize_y?_nsize_y:1, nsize_y1 = nsize_y - 1;
       if (nsize_x<2 || nsize_y<2)
-        throw CImgArgumentException("CImg<%s>::elevation3d() : Invalid specified size (%d,%d).",
+        throw CImgArgumentException("CImg<%s>::elevation3d(): Invalid specified size (%d,%d).",
                                     pixel_type(),
                                     nsize_x,nsize_y);
 
@@ -27137,7 +27414,7 @@ namespace cimg_library_suffixed {
       char error_message[1024] = { 0 };
       if (!is_object3d(primitives,colors,opacities,true,error_message))
         throw CImgInstanceException(_cimg_instance
-                                    "object3dtoCImg3d() : Invalid specified 3d object (%u,%u) (%s).",
+                                    "object3dtoCImg3d(): Invalid specified 3d object (%u,%u) (%s).",
                                     cimg_instance,_width,primitives._width,error_message);
       CImg<floatT> res(1,_size_object3dtoCImg3d(primitives,colors,opacities));
       float *ptrd = res._data;
@@ -27304,7 +27581,7 @@ namespace cimg_library_suffixed {
       char error_message[1024] = { 0 };
       if (!is_CImg3d(true,error_message))
         throw CImgInstanceException(_cimg_instance
-                                    "CImg3dtoobject3d() : image instance is not a CImg3d (%s).",
+                                    "CImg3dtoobject3d(): image instance is not a CImg3d (%s).",
                                     cimg_instance,error_message);
       const T *ptrs = _data + 6;
       const unsigned int
@@ -27321,7 +27598,7 @@ namespace cimg_library_suffixed {
       }
       colors.assign(nb_primitives);
       cimglist_for(colors,c) {
-        if ((int)*ptrs==-128) {
+        if (*ptrs==(T)-128) {
           ++ptrs;
           const unsigned int w = (unsigned int)*(ptrs++), h = (unsigned int)*(ptrs++), s = (unsigned int)*(ptrs++);
           if (!h && !s) colors[c].assign(colors[w],true);
@@ -27330,7 +27607,7 @@ namespace cimg_library_suffixed {
       }
       opacities.assign(nb_primitives);
       cimglist_for(opacities,o) {
-        if ((int)*ptrs==-128) {
+        if (*ptrs==(T)-128) {
           ++ptrs;
           const unsigned int w = (unsigned int)*(ptrs++), h = (unsigned int)*(ptrs++), s = (unsigned int)*(ptrs++);
           if (!h && !s) opacities[o].assign(opacities[w],true);
@@ -27348,7 +27625,7 @@ namespace cimg_library_suffixed {
     //---------------------------
 
     // [internal] The following _draw_scanline() routines are *non user-friendly functions*, used only for internal purpose.
-    // Pre-requisites : x0<x1, y-coordinate is valid, col is valid.
+    // Pre-requisites: x0<x1, y-coordinate is valid, col is valid.
     template<typename tc>
     CImg<T>& _draw_scanline(const int x0, const int x1, const int y,
                             const tc *const color, const float opacity=1,
@@ -27452,7 +27729,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_point() : Specified color is (null).",
+                                    "draw_point(): Specified color is (null).",
                                     cimg_instance);
       if (x0>=0 && y0>=0 && z0>=0 && x0<width() && y0<height() && z0<depth()) {
         const unsigned long whd = (unsigned long)_width*_height*_depth;
@@ -27485,7 +27762,7 @@ namespace cimg_library_suffixed {
       switch (points._height) {
       case 0 : case 1 :
         throw CImgArgumentException(_cimg_instance
-                                    "draw_point() : Invalid specified point set (%u,%u,%u,%u,%p).",
+                                    "draw_point(): Invalid specified point set (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     points._width,points._height,points._depth,points._spectrum,points._data);
       case 2 : {
@@ -27526,7 +27803,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Specified color is (null).",
+                                    "draw_line(): Specified color is (null).",
                                     cimg_instance);
       static unsigned int hatch = ~0U - (~0U>>1);
       if (init_hatch) hatch = ~0U - (~0U>>1);
@@ -27608,11 +27885,11 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Specified color is (null).",
+                                    "draw_line(): Specified color is (null).",
                                     cimg_instance);
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_line(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       static unsigned int hatch = ~0U - (~0U>>1);
@@ -27734,7 +28011,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Specified color is (null).",
+                                    "draw_line(): Specified color is (null).",
                                     cimg_instance);
       static unsigned int hatch = ~0U - (~0U>>1);
       if (init_hatch) hatch = ~0U - (~0U>>1);
@@ -27808,7 +28085,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_line(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_line(x0,y0,x1,y1,+texture,tx0,ty0,tx1,ty1,opacity,pattern,init_hatch);
@@ -27930,7 +28207,7 @@ namespace cimg_library_suffixed {
       if (is_empty() && z0<=0 && z1<=0) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_line(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_line(x0,y0,z0,x1,y1,z1,+texture,tx0,ty0,tx1,ty1,opacity,pattern,init_hatch);
@@ -28064,12 +28341,12 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0) return *this;
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_line(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_line(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_line(zbuffer,x0,y0,z0,x1,y1,z1,+texture,tx0,ty0,tx1,ty1,opacity,pattern,init_hatch);
@@ -28188,7 +28465,7 @@ namespace cimg_library_suffixed {
             T *ptrd = ptrd0; cimg_forC(*this,c) { *ptrd = (T)(nopacity*texture((int)(tx/z),(int)(ty/z),0,c) + *ptrd*copacity); ptrd+=wh; }
           }
           ptrd0+=offx; ptrz+=offx;
-          if ((error-=dy)<0) { ptrd0+=offy; ptrz+=offx; error+=dx; }
+          if ((error-=dy)<0) { ptrd0+=offy; ptrz+=offy; error+=dx; }
         }
       }
       return *this;
@@ -28204,17 +28481,6 @@ namespace cimg_library_suffixed {
        \note
        - This function uses several call to the single CImg::draw_line() procedure,
        depending on the vectors size in \p points.
-       \par Example:
-       \code
-       CImg<unsigned char> img(100,100,1,3,0);
-       const unsigned char color[] = { 255,128,64 };
-       CImgList<int> points;
-       points.insert(CImg<int>::vector(0,0)).
-             .insert(CImg<int>::vector(70,10)).
-             .insert(CImg<int>::vector(80,60)).
-             .insert(CImg<int>::vector(10,90));
-       img.draw_line(points,color);
-       \endcode
     **/
     template<typename t, typename tc>
     CImg<T>& draw_line(const CImg<t>& points,
@@ -28225,7 +28491,7 @@ namespace cimg_library_suffixed {
       switch (points._height) {
       case 0 : case 1 :
         throw CImgArgumentException(_cimg_instance
-                                    "draw_line() : Invalid specified point set (%u,%u,%u,%u,%p).",
+                                    "draw_line(): Invalid specified point set (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     points._width,points._height,points._depth,points._spectrum,points._data);
 
@@ -28329,7 +28595,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_spline() : Specified color is (null).",
+                                    "draw_spline(): Specified color is (null).",
                                     cimg_instance);
       if (x0==x1 && y0==y1) return draw_point(x0,y0,color,opacity);
       bool ninit_hatch = init_hatch;
@@ -28366,7 +28632,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_spline() : Specified color is (null).",
+                                    "draw_spline(): Specified color is (null).",
                                     cimg_instance);
       if (x0==x1 && y0==y1 && z0==z1) return draw_point(x0,y0,z0,color,opacity);
       bool ninit_hatch = init_hatch;
@@ -28422,7 +28688,7 @@ namespace cimg_library_suffixed {
                          const bool init_hatch=true) {
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_spline() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_spline(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_empty()) return *this;
@@ -28471,7 +28737,7 @@ namespace cimg_library_suffixed {
       switch (points._height) {
       case 0 : case 1 :
         throw CImgArgumentException(_cimg_instance
-                                    "draw_spline() : Invalid specified point set (%u,%u,%u,%u,%p).",
+                                    "draw_spline(): Invalid specified point set (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     points._width,points._height,points._depth,points._spectrum,points._data);
 
@@ -28521,7 +28787,7 @@ namespace cimg_library_suffixed {
       switch (points._height) {
       case 0 : case 1 :
         throw CImgArgumentException(_cimg_instance
-                                    "draw_spline() : Invalid specified point set (%u,%u,%u,%u,%p).",
+                                    "draw_spline(): Invalid specified point set (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     points._width,points._height,points._depth,points._spectrum,points._data);
       case 2 : {
@@ -28923,7 +29189,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       _draw_triangle(x0,y0,x1,y1,x2,y2,color,opacity,1);
       return *this;
@@ -28950,7 +29216,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       draw_line(x0,y0,x1,y1,color,opacity,pattern,true).
         draw_line(x1,y1,x2,y2,color,opacity,pattern,false).
@@ -28985,11 +29251,11 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       static const T maxval = (T)cimg::min(cimg::type<T>::max(),cimg::type<tc>::max());
@@ -29104,7 +29370,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       static const T maxval = (T)cimg::min(cimg::type<T>::max(),cimg::type<tc>::max());
       const float nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
@@ -29168,11 +29434,11 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       static const T maxval = (T)cimg::min(cimg::type<T>::max(),cimg::type<tc>::max());
@@ -29302,7 +29568,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_triangle(x0,y0,x1,y1,x2,y2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,opacity,brightness);
@@ -29420,7 +29686,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_triangle(x0,y0,z0,x1,y1,z1,x2,y2,z2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,opacity,brightness);
@@ -29551,13 +29817,13 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
 
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_triangle(zbuffer,x0,y0,z0,x1,y1,z1,x2,y2,z2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,opacity,brightness);
@@ -29725,11 +29991,11 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       if (light._depth>1 || light._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified light texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified light texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,light._width,light._height,light._depth,light._spectrum,light._data);
       if (is_overlapped(light)) return draw_triangle(x0,y0,x1,y1,x2,y2,color,+light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
       static const T maxval = (T)cimg::min(cimg::type<T>::max(),cimg::type<tc>::max());
@@ -29808,15 +30074,15 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Specified color is (null).",
+                                    "draw_triangle(): Specified color is (null).",
                                     cimg_instance);
       if (light._depth>1 || light._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified light texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified light texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,light._width,light._height,light._depth,light._spectrum,light._data);
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       if (is_overlapped(light)) return draw_triangle(zbuffer,x0,y0,z0,x1,y1,z1,x2,y2,z2,color,
@@ -29939,7 +30205,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture))
@@ -30029,7 +30295,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_triangle(x0,y0,z0,x1,y1,z1,x2,y2,z2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,
@@ -30139,12 +30405,12 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (is_overlapped(texture)) return draw_triangle(zbuffer,x0,y0,z0,x1,y1,z1,x2,y2,z2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,
@@ -30280,12 +30546,12 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (light._depth>1 || light._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified light texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified light texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,light._width,light._height,light._depth,light._spectrum,light._data);
       if (is_overlapped(texture)) return draw_triangle(x0,y0,x1,y1,x2,y2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
       if (is_overlapped(light))   return draw_triangle(x0,y0,x1,y1,x2,y2,texture,tx0,ty0,tx1,ty1,tx2,ty2,+light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
@@ -30383,12 +30649,12 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (light._depth>1 || light._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified light texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified light texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,light._width,light._height,light._depth,light._spectrum,light._data);
       if (is_overlapped(texture)) return draw_triangle(x0,y0,z0,x1,y1,z1,x2,y2,z2,+texture,tx0,ty0,tx1,ty1,tx2,ty2,light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
       if (is_overlapped(light)) return draw_triangle(x0,y0,z0,x1,y1,z1,x2,y2,z2,texture,tx0,ty0,tx1,ty1,tx2,ty2,+light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
@@ -30507,17 +30773,17 @@ namespace cimg_library_suffixed {
       if (is_empty() || z0<=0 || z1<=0 || z2<=0) return *this;
       if (!is_sameXY(zbuffer))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
+                                    "draw_triangle(): Instance and specified Z-buffer (%u,%u,%u,%u,%p) have different dimensions.",
                                     cimg_instance,
                                     zbuffer._width,zbuffer._height,zbuffer._depth,zbuffer._spectrum,zbuffer._data);
       if (texture._depth>1 || texture._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     texture._width,texture._height,texture._depth,texture._spectrum,texture._data);
       if (light._depth>1 || light._spectrum<_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_triangle() : Invalid specified light texture (%u,%u,%u,%u,%p).",
+                                    "draw_triangle(): Invalid specified light texture (%u,%u,%u,%u,%p).",
                                     cimg_instance,light._width,light._height,light._depth,light._spectrum,light._data);
       if (is_overlapped(texture)) return draw_triangle(zbuffer,x0,y0,z0,x1,y1,z1,x2,y2,z2,
                                                        +texture,tx0,ty0,tx1,ty1,tx2,ty2,light,lx0,ly0,lx1,ly1,lx2,ly2,opacity);
@@ -30693,7 +30959,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_rectangle : Specified color is (null).",
+                                    "draw_rectangle(): Specified color is (null).",
                                     cimg_instance);
       cimg_forC(*this,c) draw_rectangle(x0,y0,z0,c,x1,y1,z1,c,(T)color[c],opacity);
       return *this;
@@ -30768,7 +31034,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || !points || points._width<3) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_polygon() : Specified color is (null).",
+                                    "draw_polygon(): Specified color is (null).",
                                     cimg_instance);
 
       // Normalize 2d input coordinates.
@@ -30842,7 +31108,7 @@ namespace cimg_library_suffixed {
       switch (points._height) {
       case 0 : case 1 :
         throw CImgArgumentException(_cimg_instance
-                                    "draw_polygon() : Invalid specified point set.",
+                                    "draw_polygon(): Invalid specified point set.",
                                     cimg_instance);
       case 2 : { // 2d version.
         CImg<intT> npoints(points._width,2);
@@ -30963,7 +31229,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_ellipse : Specified color is (null).",
+                                    "draw_ellipse(): Specified color is (null).",
                                     cimg_instance);
       if (r1<=0 || r2<=0) return draw_point(x0,y0,color,opacity);
       _draw_scanline(color,opacity);
@@ -31030,7 +31296,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_circle : Specified color is (null).",
+                                    "draw_circle(): Specified color is (null).",
                                     cimg_instance);
       _draw_scanline(color,opacity);
       if (radius<0 || x0-radius>=width() || y0+radius<0 || y0-radius>=height()) return *this;
@@ -31070,7 +31336,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_circle : Specified color is (null).",
+                                    "draw_circle(): Specified color is (null).",
                                     cimg_instance);
       if (radius<0 || x0-radius>=width() || y0+radius<0 || y0-radius>=height()) return *this;
       if (!radius) return draw_point(x0,y0,color,opacity);
@@ -31106,7 +31372,7 @@ namespace cimg_library_suffixed {
                         const CImg<t>& sprite, const float opacity=1) {
       if (is_empty() || !sprite) return *this;
       if (is_overlapped(sprite)) return draw_image(x0,y0,z0,c0,+sprite,opacity);
-      if (x0==0 && y0==0 && z0==0 && c0==0 && is_sameXYZC(sprite) && opacity>=1) return assign(sprite,false);
+      if (x0==0 && y0==0 && z0==0 && c0==0 && is_sameXYZC(sprite) && opacity>=1 && !is_shared()) return assign(sprite,false);
       const bool bx = (x0<0), by = (y0<0), bz = (z0<0), bc = (c0<0);
       const int
         lX = sprite.width() - (x0 + sprite.width()>width()?x0 + sprite.width() - width():0) + (bx?x0:0),
@@ -31149,7 +31415,7 @@ namespace cimg_library_suffixed {
                         const CImg<T>& sprite, const float opacity=1) {
       if (is_empty() || !sprite) return *this;
       if (is_overlapped(sprite)) return draw_image(x0,y0,z0,c0,+sprite,opacity);
-      if (x0==0 && y0==0 && z0==0 && c0==0 && is_sameXYZC(sprite) && opacity>=1) return assign(sprite,false);
+      if (x0==0 && y0==0 && z0==0 && c0==0 && is_sameXYZC(sprite) && opacity>=1 && !is_shared()) return assign(sprite,false);
       const bool bx = (x0<0), by = (y0<0), bz = (z0<0), bc = (c0<0);
       const int
         lX = sprite.width() - (x0 + sprite.width()>width()?x0 + sprite.width() - width():0) + (bx?x0:0),
@@ -31238,7 +31504,7 @@ namespace cimg_library_suffixed {
       if (is_overlapped(mask))   return draw_image(x0,y0,z0,c0,sprite,+mask,opacity,mask_max_value);
       if (mask._width!=sprite._width || mask._height!=sprite._height || mask._depth!=sprite._depth)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_image() : Sprite (%u,%u,%u,%u,%p) and mask (%u,%u,%u,%u,%p) have incompatible dimensions.",
+                                    "draw_image(): Sprite (%u,%u,%u,%u,%p) and mask (%u,%u,%u,%u,%p) have incompatible dimensions.",
                                     cimg_instance,
                                     sprite._width,sprite._height,sprite._depth,sprite._spectrum,sprite._data,
                                     mask._width,mask._height,mask._depth,mask._spectrum,mask._data);
@@ -31251,7 +31517,7 @@ namespace cimg_library_suffixed {
         lC = sprite.spectrum() - (c0 + sprite.spectrum()>spectrum()?c0 + sprite.spectrum() - spectrum():0) + (bc?c0:0);
       const int
         coff = -(bx?x0:0)-(by?y0*mask.width():0)-(bz?z0*mask.width()*mask.height():0)-(bc?c0*mask.width()*mask.height()*mask.depth():0),
-        ssize = mask.width()*mask.height()*mask.depth();
+        ssize = mask.width()*mask.height()*mask.depth()*mask.spectrum();
       const ti *ptrs = sprite._data + coff;
       const tm *ptrm = mask._data   + coff;
       const unsigned long
@@ -31445,7 +31711,7 @@ namespace cimg_library_suffixed {
       if (!text) return *this;
       if (!font)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_text() : Empty specified font.",
+                                    "draw_text(): Empty specified font.",
                                     cimg_instance);
       const unsigned int text_length = (unsigned int)std::strlen(text);
       if (is_empty()) {
@@ -31473,7 +31739,7 @@ namespace cimg_library_suffixed {
       for (unsigned int i = 0; i<text_length; ++i) {
         const unsigned char c = text[i];
         switch (c) {
-        case '\n' : y+=font[' ']._height; x = x0; break;
+        case '\n' : y+=font[0]._height; x = x0; break;
         case '\t' : x+=4*font[' ']._width; break;
         default : if (c<font._width) {
           letter = font[c];
@@ -31532,12 +31798,12 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!flow || flow._spectrum!=2)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_quiver() : Invalid dimensions of specified flow (%u,%u,%u,%u,%p).",
+                                    "draw_quiver(): Invalid dimensions of specified flow (%u,%u,%u,%u,%p).",
                                     cimg_instance,
                                     flow._width,flow._height,flow._depth,flow._spectrum,flow._data);
       if (sampling<=0)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_quiver() : Invalid sampling value %g "
+                                    "draw_quiver(): Invalid sampling value %g "
                                     "(should be >0)",
                                     cimg_instance,
                                     sampling);
@@ -31795,12 +32061,12 @@ namespace cimg_library_suffixed {
        \param color Pointer to \c spectrum() consecutive values, defining the drawing color.
        \param opacity Drawing opacity.
 
-       \param plot_type Define the type of the plot :
+       \param plot_type Define the type of the plot:
                       - 0 = No plot.
                       - 1 = Plot using segments.
                       - 2 = Plot using cubic splines.
                       - 3 = Plot with bars.
-       \param vertex_type Define the type of points :
+       \param vertex_type Define the type of points:
                       - 0 = No points.
                       - 1 = Point.
                       - 2 = Straight cross.
@@ -31823,7 +32089,7 @@ namespace cimg_library_suffixed {
       if (is_empty() || _height<=1) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_graph() : Specified color is (null).",
+                                    "draw_graph(): Specified color is (null).",
                                     cimg_instance);
 
       // Create shaded colors for displaying bar plots.
@@ -32003,7 +32269,7 @@ namespace cimg_library_suffixed {
 
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_fill() : Specified color is (null).",
+                                    "draw_fill(): Specified color is (null).",
                                     cimg_instance);
 
       region.assign(_width,_height,_depth,1,(t)0);
@@ -32250,7 +32516,7 @@ namespace cimg_library_suffixed {
       if (colormap) palette.assign(colormap._data,colormap.size()/colormap._spectrum,1,1,colormap._spectrum,true);
       if (palette && palette._spectrum!=_spectrum)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_mandelbrot() : Instance and specified colormap (%u,%u,%u,%u,%p) have incompatible dimensions.",
+                                    "draw_mandelbrot(): Instance and specified colormap (%u,%u,%u,%u,%p) have incompatible dimensions.",
                                     cimg_instance,
                                     colormap._width,colormap._height,colormap._depth,colormap._spectrum,colormap._data);
 
@@ -32323,7 +32589,7 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_gaussian() : Specified color is (null).",
+                                    "draw_gaussian(): Specified color is (null).",
                                     cimg_instance);
       const float sigma2 = 2*sigma*sigma, nopacity = cimg::abs(opacity), copacity = 1 - cimg::max(opacity,0);
       const unsigned long whd = (unsigned long)_width*_height*_depth;
@@ -32352,12 +32618,12 @@ namespace cimg_library_suffixed {
       if (is_empty()) return *this;
       if (tensor._width!=2 || tensor._height!=2 || tensor._depth!=1 || tensor._spectrum!=1)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_gaussian() : Specified tensor (%u,%u,%u,%u,%p) is not a 2x2 matrix.",
+                                    "draw_gaussian(): Specified tensor (%u,%u,%u,%u,%p) is not a 2x2 matrix.",
                                     cimg_instance,
                                     tensor._width,tensor._height,tensor._depth,tensor._spectrum,tensor._data);
       if (!color)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_gaussian() : Specified color is (null).",
+                                    "draw_gaussian(): Specified color is (null).",
                                     cimg_instance);
       typedef typename CImg<t>::Tfloat tfloat;
       const CImg<tfloat> invT = tensor.get_invert(), invT2 = (invT*invT)/(-2.0);
@@ -32408,7 +32674,7 @@ namespace cimg_library_suffixed {
       typedef typename CImg<t>::Tfloat tfloat;
       if (tensor._width!=3 || tensor._height!=3 || tensor._depth!=1 || tensor._spectrum!=1)
         throw CImgArgumentException(_cimg_instance
-                                    "draw_gaussian() : Specified tensor (%u,%u,%u,%u,%p) is not a 3x3 matrix.",
+                                    "draw_gaussian(): Specified tensor (%u,%u,%u,%u,%p) is not a 3x3 matrix.",
                                     cimg_instance,
                                     tensor._width,tensor._height,tensor._depth,tensor._spectrum,tensor._data);
 
@@ -32451,8 +32717,8 @@ namespace cimg_library_suffixed {
        \param lightx X-coordinate of the light
        \param lighty Y-coordinate of the light
        \param lightz Z-coordinate of the light
-       \param specular_light Amount of specular light.
-       \param specular_shine Shininess of the object
+       \param specular_lightness Amount of specular light.
+       \param specular_shininess Shininess of the object
     **/
     template<typename tp, typename tf, typename tc, typename to>
     CImg<T>& draw_object3d(const float x0, const float y0, const float z0,
@@ -32461,9 +32727,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,opacities,render_type,is_double_sided,focale,lightx,lighty,lightz,
-                           specular_light,specular_shine,CImg<floatT>::empty());
+                           specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     //! Draw a 3d object \simplification.
@@ -32474,10 +32740,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return _draw_object3d(0,zbuffer,x0,y0,z0,vertices,primitives,colors,opacities,
-                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,1);
+                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,1);
     }
 
 #ifdef cimg_use_board
@@ -32489,9 +32755,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(board,x0,y0,z0,vertices,primitives,colors,opacities,render_type,is_double_sided,focale,lightx,lighty,lightz,
-                           specular_light,specular_shine,CImg<floatT>::empty());
+                           specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     template<typename tp, typename tf, typename tc, typename to, typename tz>
@@ -32502,10 +32768,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return _draw_object3d((void*)&board,zbuffer,x0,y0,z0,vertices,primitives,colors,opacities,
-                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,1);
+                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,1);
     }
 #endif
 
@@ -32517,9 +32783,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,opacities,render_type,is_double_sided,focale,lightx,lighty,lightz,
-                           specular_light,specular_shine,CImg<floatT>::empty());
+                           specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     //! Draw a 3d object \simplification.
@@ -32530,10 +32796,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return _draw_object3d(0,zbuffer,x0,y0,z0,vertices,primitives,colors,opacities,
-                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,1);
+                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,1);
     }
 
 #ifdef cimg_use_board
@@ -32545,9 +32811,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(board,x0,y0,z0,vertices,primitives,colors,opacities,render_type,is_double_sided,focale,lightx,lighty,lightz,
-                           specular_light,specular_shine,CImg<floatT>::empty());
+                           specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     template<typename tp, typename tf, typename tc, typename to, typename tz>
@@ -32558,10 +32824,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return _draw_object3d((void*)&board,zbuffer,x0,y0,z0,vertices,primitives,colors,opacities,
-                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,1);
+                            render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,1);
     }
 #endif
 
@@ -32573,9 +32839,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,CImg<floatT>::empty(),
-                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,CImg<floatT>::empty());
+                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     //! Draw a 3d object \simplification.
@@ -32586,10 +32852,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,CImg<floatT>::empty(),
-                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,zbuffer);
+                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,zbuffer);
     }
 
 #ifdef cimg_use_board
@@ -32601,9 +32867,9 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type=4,
                            const bool is_double_sided=false, const float focale=500,
                            const float lightx=0, const float lighty=0, const float lightz=-5e8,
-                           const float specular_light=0.2f, const float specular_shine=0.1f) {
+                           const float specular_lightness=0.2f, const float specular_shininess=0.1f) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,CImg<floatT>::empty(),
-                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,CImg<floatT>::empty());
+                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,CImg<floatT>::empty());
     }
 
     template<typename tp, typename tf, typename tc, typename to, typename tz>
@@ -32614,10 +32880,10 @@ namespace cimg_library_suffixed {
                            const unsigned int render_type,
                            const bool is_double_sided, const float focale,
                            const float lightx, const float lighty, const float lightz,
-                           const float specular_light, const float specular_shine,
+                           const float specular_lightness, const float specular_shininess,
                            CImg<tz>& zbuffer) {
       return draw_object3d(x0,y0,z0,vertices,primitives,colors,CImg<floatT>::empty(),
-                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_light,specular_shine,zbuffer);
+                           render_type,is_double_sided,focale,lightx,lighty,lightz,specular_lightness,specular_shininess,zbuffer);
     }
 #endif
 
@@ -32666,21 +32932,21 @@ namespace cimg_library_suffixed {
                             const unsigned int render_type,
                             const bool is_double_sided, const float focale,
                             const float lightx, const float lighty, const float lightz,
-                            const float specular_light, const float specular_shine,
+                            const float specular_lightness, const float specular_shininess,
                             const float sprite_scale) {
       typedef typename cimg::superset2<tp,tz,float>::type tpfloat;
       if (is_empty() || !vertices || !primitives) return *this;
       char error_message[1024] = { 0 };
       if (!vertices.is_object3d(primitives,colors,opacities,false,error_message))
         throw CImgArgumentException(_cimg_instance
-                                    "draw_object3d() : Invalid specified 3d object (%u,%u) (%s).",
+                                    "draw_object3d(): Invalid specified 3d object (%u,%u) (%s).",
                                     cimg_instance,vertices._width,primitives._width,error_message);
 #ifndef cimg_use_board
       if (pboard) return *this;
 #endif
       const float
-        nspec = 1 - (specular_light<0.0f?0.0f:(specular_light>1.0f?1.0f:specular_light)),
-        nspec2 = 1 + (specular_shine<0.0f?0.0f:specular_shine),
+        nspec = 1 - (specular_lightness<0.0f?0.0f:(specular_lightness>1.0f?1.0f:specular_lightness)),
+        nspec2 = 1 + (specular_shininess<0.0f?0.0f:specular_shininess),
         nsl1 = (nspec2 - 1)/cimg::sqr(nspec - 1),
         nsl2 = 1 - 2*nsl1*nspec,
         nsl3 = nspec2 - nsl1 - nsl2;
@@ -32708,10 +32974,10 @@ namespace cimg_library_suffixed {
           light_texture.assign(default_light_texture,true);
         } else {
           static CImg<floatT> default_light_texture;
-          static float olightx = 0, olighty = 0, olightz = 0, ospecular_shine = 0;
+          static float olightx = 0, olighty = 0, olightz = 0, ospecular_shininess = 0;
           if (!default_light_texture ||
               lightx!=olightx || lighty!=olighty || lightz!=olightz ||
-              specular_shine!=ospecular_shine || default_light_texture._spectrum<_spectrum) {
+              specular_shininess!=ospecular_shininess || default_light_texture._spectrum<_spectrum) {
             default_light_texture.assign(512,512);
             const float
               dlx = lightx - X,
@@ -32727,7 +32993,7 @@ namespace cimg_library_suffixed {
               if (factor>nspec) default_light_texture(x,y) = cimg::min(2,nsl1*factor*factor + nsl2*factor + nsl3);
             }
             default_light_texture.resize(-100,-100,1,_spectrum);
-            olightx = lightx; olighty = lighty; olightz = lightz; ospecular_shine = specular_shine;
+            olightx = lightx; olighty = lighty; olightz = lightz; ospecular_shininess = specular_shininess;
           }
           light_texture.assign(default_light_texture,true);
         }
@@ -32871,7 +33137,7 @@ namespace cimg_library_suffixed {
         } break;
         default :
           throw CImgArgumentException(_cimg_instance
-                                      "draw_object3d() : Invalid primitive[%u] with size %u "
+                                      "draw_object3d(): Invalid primitive[%u] with size %u "
                                       "(should have size 1,2,3,4,5,6,9 or 12).",
                                       cimg_instance,
                                       l,primitive.size());
@@ -33022,7 +33288,7 @@ namespace cimg_library_suffixed {
           } else { // Colored sprite.
             if (!__color)
               throw CImgArgumentException(_cimg_instance
-                                          "draw_object3d() : Undefined texture for sprite primitive [%u].",
+                                          "draw_object3d(): Undefined texture for sprite primitive [%u].",
                                           cimg_instance,n_primitive);
             const tpfloat z = Z + vertices(n0,2);
             const float factor = focale<0?1:sprite_scale*(absfocale?absfocale/(z + absfocale):1);
@@ -33031,7 +33297,7 @@ namespace cimg_library_suffixed {
               _sh = (unsigned int)(color._height*factor),
               sw = _sw?_sw:1, sh = _sh?_sh:1;
             const int nx0 = x0 - (int)sw/2, ny0 = y0 - (int)sh/2;
-            if (sw<_width && sh<_height && (nx0+(int)sw/2>=0 || nx0-(int)sw/2<width() || ny0+(int)sh/2>=0 || ny0-(int)sh/2<height())) {
+            if (sw<=3*_width/2 && sh<=3*_height/2 && (nx0+(int)sw/2>=0 || nx0-(int)sw/2<width() || ny0+(int)sh/2>=0 || ny0-(int)sh/2<height())) {
               const CImg<tc>
                 _sprite = (sw!=color._width || sh!=color._height)?color.get_resize(sw,sh,1,-100,render_type<=3?1:3):CImg<tc>(),
                 &sprite = _sprite?_sprite:color;
@@ -33124,7 +33390,7 @@ namespace cimg_library_suffixed {
         case 6 : { // Textured line
           if (!__color)
             throw CImgArgumentException(_cimg_instance
-                                        "draw_object3d() : Undefined texture for line primitive [%u].",
+                                        "draw_object3d(): Undefined texture for line primitive [%u].",
                                         cimg_instance,n_primitive);
           const unsigned int
             n0 = (unsigned int)primitive[0],
@@ -33405,7 +33671,7 @@ namespace cimg_library_suffixed {
         case 9 : { // Textured triangle
           if (!__color)
             throw CImgArgumentException(_cimg_instance
-                                        "draw_object3d() : Undefined texture for triangle primitive [%u].",
+                                        "draw_object3d(): Undefined texture for triangle primitive [%u].",
                                         cimg_instance,n_primitive);
           const unsigned int
             n0 = (unsigned int)primitive[0],
@@ -33524,7 +33790,7 @@ namespace cimg_library_suffixed {
         case 12 : { // Textured quadrangle
           if (!__color)
             throw CImgArgumentException(_cimg_instance
-                                        "draw_object3d() : Undefined texture for quadrangle primitive [%u].",
+                                        "draw_object3d(): Undefined texture for quadrangle primitive [%u].",
                                         cimg_instance,n_primitive);
           const unsigned int
             n0 = (unsigned int)primitive[0],
@@ -33897,8 +34163,8 @@ namespace cimg_library_suffixed {
             X3d = mx - _width*disp.width()/(_width+(_depth>1?_depth:0));
             Y3d = my - _height*disp.height()/(_height+(_depth>1?_depth:0));
             if (oX3d<0) { oX3d = X3d; oY3d = Y3d; }
-            if ((disp.button()&3)==3) { pose3d.assign(); view3d.assign(); oX3d = oY3d = X3d = Y3d = -1; } // Left + right buttons : reset.
-            else if (disp.button()&1 && pose3d && (oX3d!=X3d || oY3d!=Y3d)) { // Left button : rotate.
+            if ((disp.button()&3)==3) { pose3d.assign(); view3d.assign(); oX3d = oY3d = X3d = Y3d = -1; } // Left + right buttons: reset.
+            else if (disp.button()&1 && pose3d && (oX3d!=X3d || oY3d!=Y3d)) { // Left button: rotate.
               const float
                 R = 0.45f*cimg::min(view3d._width,view3d._height),
                 R2 = R*R,
@@ -33921,13 +34187,13 @@ namespace cimg_library_suffixed {
                 alpha = (float)std::asin(n/R2);
               pose3d.draw_image(CImg<floatT>::rotation_matrix(u,v,w,alpha)*pose3d.get_crop(0,0,2,2));
               view3d.assign();
-            } else if (disp.button()&2 && pose3d && oY3d!=Y3d) {  // Right button : zoom.
+            } else if (disp.button()&2 && pose3d && oY3d!=Y3d) {  // Right button: zoom.
               pose3d(3,2)-=(oY3d - Y3d)*1.5f; view3d.assign();
             }
-            if (disp.wheel()) { // Wheel : zoom
+            if (disp.wheel()) { // Wheel: zoom
               pose3d(3,2)-=disp.wheel()*15; view3d.assign(); disp.set_wheel();
             }
-            if (disp.button()&4 && pose3d && (oX3d!=X3d || oY3d!=Y3d)) { // Middle button : shift.
+            if (disp.button()&4 && pose3d && (oX3d!=X3d || oY3d!=Y3d)) { // Middle button: shift.
               pose3d(3,0)-=oX3d - X3d; pose3d(3,1)-=oY3d - Y3d; view3d.assign();
             }
             oX3d = X3d; oY3d = Y3d;
@@ -33960,6 +34226,22 @@ namespace cimg_library_suffixed {
               tmp0 = get_projections2d(phase?X1:X0,phase?Y1:Y0,phase?Z1:Z0);
               tmp = tmp0.get_channels(0,cimg::min(2,spectrum() - 1));
             } else tmp = get_channels(0,cimg::min(2,spectrum() - 1));
+
+            if (cimg::type<Tuchar>::is_float()) { // Replace +-inf values.
+              Tuchar m = cimg::type<Tuchar>::max(), M = cimg::type<Tuchar>::min();
+              bool is_inf = false;
+              cimg_for(tmp,ptr,Tuchar)
+                if (cimg::type<Tuchar>::is_inf(*ptr)) is_inf = true;
+                else if (*ptr<m) m = *ptr;
+                else if (*ptr>M) M = *ptr;
+              if (is_inf) {
+                const Tuchar
+                  minf = m - (M-m)*20 - 1,
+                  pinf = M + (M-m)*20 + 1;
+                cimg_for(tmp,ptr,Tuchar) if (cimg::type<Tuchar>::is_inf(*ptr)) *ptr = (float)*ptr<0?minf:pinf;
+              }
+            }
+
             switch (old_normalization) {
             case 0 : tmp.move_to(visu0); break;
             case 1 : tmp.normalize(0,255).move_to(visu0); break;
@@ -34117,9 +34399,21 @@ namespace cimg_library_suffixed {
               x0 = X*disp.width()/(_width+d),
               y0 = Y*disp.height()/(_height+d),
               x1 = (X+1)*disp.width()/(_width+d)-1,
-              y1 = (Y+1)*disp.height()/(_height+d)-1;
+              y1 = (Y+1)*disp.height()/(_height+d)-1,
+              zx0 = (Z+_width)*disp.width()/(_width+d),
+              zx1 = (Z+_width+1)*disp.width()/(_width+d),
+              zy0 = (Z+_height)*disp.height()/(_height+d),
+              zy1 = (Z+_height+1)*disp.height()/(_height+d);
+
             if (x1-x0>=4 && y1-y0>=4) visu.draw_rectangle(x0,y0,x1,y1,background_color,0.2f).
                                         draw_rectangle(x0,y0,x1,y1,foreground_color,0.6f,~0U);
+
+            if (_depth>1) {
+              if (y1-y0>=4 && zx1-zx0>=4) visu.draw_rectangle(zx0,y0,zx1,y1,background_color,0.2f).
+                                            draw_rectangle(zx0,y0,zx1,y1,foreground_color,0.6f,~0U);
+              if (x1-x0>=4 && zy1-zy0>=4) visu.draw_rectangle(x0,zy0,x1,zy1,background_color,0.2f).
+                                            draw_rectangle(x0,zy0,x1,zy1,foreground_color,0.6f,~0U);
+            }
           }
 
           if (my>=0 && my<13) text_down = true; else if (my>=visu.height()-13) text_down = false;
@@ -34177,7 +34471,7 @@ namespace cimg_library_suffixed {
         if (X1<0 || Y1<0 || Z1<0) X0 = Y0 = Z0 = X1 = Y1 = Z1 = -1;
         switch (feature_type) {
         case 1 : case 2 : res[0] = X0; res[1] = Y0; res[2] = Z0; res[3] = X1; res[4] = Y1; res[5] = Z1; break;
-        case 3 : res[3] = cimg::abs(X1-X0); res[4] = cimg::abs(Y1-Y0); res[5] = cimg::abs(Z1-Z0);  // keep no break here !
+        case 3 : res[3] = cimg::abs(X1-X0); res[4] = cimg::abs(Y1-Y0); res[5] = cimg::abs(Z1-Z0);  // keep no break here!
         default : res[0] = X0; res[1] = Y0; res[2] = Z0;
         }
       }
@@ -34195,7 +34489,7 @@ namespace cimg_library_suffixed {
                                 const char *const labely=0, const double ymin=0, const double ymax=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "select_graph() : Empty instance.",
+                                    "select_graph(): Empty instance.",
                                     cimg_instance);
       if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title("CImg<%s>",pixel_type());
       const unsigned long siz = (unsigned long)_width*_height*_depth;
@@ -34258,7 +34552,7 @@ namespace cimg_library_suffixed {
             if (nymin>0) axes.draw_axis(seqx,gdimy-1,gray,1,~0U,13,allow_zero);
             if (nymax<0) axes.draw_axis(seqx,0,gray,1,~0U,13,allow_zero);
             if (nxmin>0) axes.draw_axis(0,seqy,gray,1,~0U,13,allow_zero);
-            if (nxmax<0) axes.draw_axis(gdimx-1,seqy,gray,~0U,13,allow_zero);
+            if (nxmax<0) axes.draw_axis(gdimx-1,seqy,gray,1,~0U,13,allow_zero);
 
             cimg_for3x3(axes,x,y,0,0,I,unsigned char)
               if (Icc) {
@@ -34433,7 +34727,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load() : Specified filename is (null).",
+                                    "load(): Specified filename is (null).",
                                     cimg_instance);
 
       if (!cimg::strncasecmp(filename,"http://",7) || !cimg::strncasecmp(filename,"https://",8)) {
@@ -34506,6 +34800,7 @@ namespace cimg_library_suffixed {
                  !cimg::strcasecmp(ext,"ptx") ||
                  !cimg::strcasecmp(ext,"raf") ||
                  !cimg::strcasecmp(ext,"srf")) load_dcraw_external(filename);
+        else if (!cimg::strcasecmp(ext,"gif")) load_gif_external(filename);
 
         // 3d binary formats
         else if (!cimg::strcasecmp(ext,"dcm") ||
@@ -34555,10 +34850,11 @@ namespace cimg_library_suffixed {
         } catch (CImgIOException&) {
           cimg::exception_mode() = omode;
           throw CImgIOException(_cimg_instance
-                                "load() : Failed to open file '%s'.",
+                                "load(): Failed to open file '%s'.",
                                 cimg_instance,
                                 filename);
         }
+
         try {
           const char *const f_type = cimg::file_type(file,filename);
           std::fclose(file);
@@ -34579,7 +34875,7 @@ namespace cimg_library_suffixed {
           } catch (CImgIOException&) {
             cimg::exception_mode() = omode;
             throw CImgIOException(_cimg_instance
-                                  "load() : Failed to recognize format of file '%s'.",
+                                  "load(): Failed to recognize format of file '%s'.",
                                   cimg_instance,
                                   filename);
           }
@@ -34620,7 +34916,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_ascii(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_ascii() : Specified filename is (null).",
+                                    "load_ascii(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -34632,7 +34928,7 @@ namespace cimg_library_suffixed {
       if (!dx || !dy || !dz || !dc) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_ascii() : Invalid ascii header in file '%s', image dimensions are set to (%u,%u,%u,%u).",
+                              "load_ascii(): Invalid ascii header in file '%s', image dimensions are set to (%u,%u,%u,%u).",
                               cimg_instance,
                               filename?filename:"(FILE*)",dx,dy,dz,dc);
       }
@@ -34647,7 +34943,7 @@ namespace cimg_library_suffixed {
       }
       if (err!=1)
         cimg::warn(_cimg_instance
-                   "load_ascii() : Only %lu/%lu values read from file '%s'.",
+                   "load_ascii(): Only %lu/%lu values read from file '%s'.",
                    cimg_instance,
                    off-1,siz,filename?filename:"(FILE*)");
 
@@ -34681,7 +34977,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_dlm(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_dlm() : Specified filename is (null).",
+                                    "load_dlm(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"r");
@@ -34704,7 +35000,7 @@ namespace cimg_library_suffixed {
       if (!dx || !dy) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_dlm() : Invalid DLM file '%s'.",
+                              "load_dlm(): Invalid DLM file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -34739,7 +35035,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_bmp(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_bmp() : Specified filename is (null).",
+                                    "load_bmp(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -34748,7 +35044,7 @@ namespace cimg_library_suffixed {
       if (*header!='B' || header[1]!='M') {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_bmp() : Invalid BMP file '%s'.",
+                              "load_bmp(): Invalid BMP file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -34790,7 +35086,7 @@ namespace cimg_library_suffixed {
       if (compression) {
         if (file)
           throw CImgIOException(_cimg_instance
-                                "load_bmp() : Unable to load compressed data from '(*FILE)' inputs.",
+                                "load_bmp(): Unable to load compressed data from '(*FILE)' inputs.",
                                 cimg_instance);
         else {
           if (!file) cimg::fclose(nfile);
@@ -34930,13 +35226,13 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_jpeg(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_jpeg() : Specified filename is (null).",
+                                    "load_jpeg(): Specified filename is (null).",
                                     cimg_instance);
 
 #ifndef cimg_use_jpeg
       if (file)
         throw CImgIOException(_cimg_instance
-                              "load_jpeg() : Unable to load data from '(FILE*)' unless libjpeg is enabled.",
+                              "load_jpeg(): Unable to load data from '(FILE*)' unless libjpeg is enabled.",
                               cimg_instance);
       else return load_other(filename);
 #else
@@ -34948,7 +35244,7 @@ namespace cimg_library_suffixed {
 
       if (setjmp(jerr.setjmp_buffer)) { // JPEG error
         throw CImgIOException(_cimg_instance
-                             "load_jpeg() : Error message returned by libjpeg : %s.",
+                             "load_jpeg(): Error message returned by libjpeg: %s.",
                              cimg_instance,jerr.message);
       }
 
@@ -34959,10 +35255,12 @@ namespace cimg_library_suffixed {
       jpeg_start_decompress(&cinfo);
 
       if (cinfo.output_components!=1 && cinfo.output_components!=3 && cinfo.output_components!=4) {
-        if (!file) return load_other(filename);
-        else
+        if (!file) {
+          cimg::fclose(nfile);
+          return load_other(filename);
+        } else
           throw CImgIOException(_cimg_instance
-                                "load_jpeg() : Failed to load JPEG data from file '%s'.",
+                                "load_jpeg(): Failed to load JPEG data from file '%s'.",
                                 cimg_instance,filename?filename:"(FILE*)");
       }
       CImg<ucharT> buffer(cinfo.output_width*cinfo.output_components);
@@ -34973,7 +35271,7 @@ namespace cimg_library_suffixed {
         *row_pointer = buffer._data;
         if (jpeg_read_scanlines(&cinfo,row_pointer,1)!=1) {
           cimg::warn(_cimg_instance
-                     "load_jpeg() : Incomplete data in file '%s'.",
+                     "load_jpeg(): Incomplete data in file '%s'.",
                      cimg_instance,filename?filename:"(FILE*)");
           break;
         }
@@ -35015,7 +35313,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load_magick(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_magick() : Specified filename is (null).",
+                                    "load_magick(): Specified filename is (null).",
                                     cimg_instance);
 
 #ifdef cimg_use_magick
@@ -35070,7 +35368,7 @@ namespace cimg_library_suffixed {
       }
 #else
       throw CImgIOException(_cimg_instance
-                            "load_magick() : Unable to load file '%s' unless libMagick++ is enabled.",
+                            "load_magick(): Unable to load file '%s' unless libMagick++ is enabled.",
                             cimg_instance,
                             filename);
 #endif
@@ -35105,17 +35403,17 @@ namespace cimg_library_suffixed {
       return CImg<T>().load_png(file);
     }
 
-    // (Note : Most of this function has been written by Eric Fausett)
+    // (Note: Most of this function has been written by Eric Fausett)
     CImg<T>& _load_png(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_png() : Specified filename is (null).",
+                                    "load_png(): Specified filename is (null).",
                                     cimg_instance);
 
 #ifndef cimg_use_png
       if (file)
         throw CImgIOException(_cimg_instance
-                              "load_png() : Unable to load data from '(FILE*)' unless libpng is enabled.",
+                              "load_png(): Unable to load data from '(FILE*)' unless libpng is enabled.",
                               cimg_instance);
 
       else return load_other(filename);
@@ -35129,7 +35427,7 @@ namespace cimg_library_suffixed {
       if (png_sig_cmp(pngCheck,0,8)) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Invalid PNG file '%s'.",
+                              "load_png(): Invalid PNG file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -35141,7 +35439,7 @@ namespace cimg_library_suffixed {
       if (!png_ptr) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Failed to initialize 'png_ptr' structure for file '%s'.",
+                              "load_png(): Failed to initialize 'png_ptr' structure for file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -35150,7 +35448,7 @@ namespace cimg_library_suffixed {
         if (!file) cimg::fclose(nfile);
         png_destroy_read_struct(&png_ptr,(png_infopp)0,(png_infopp)0);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Failed to initialize 'info_ptr' structure for file '%s'.",
+                              "load_png(): Failed to initialize 'info_ptr' structure for file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -35159,7 +35457,7 @@ namespace cimg_library_suffixed {
         if (!file) cimg::fclose(nfile);
         png_destroy_read_struct(&png_ptr,&info_ptr,(png_infopp)0);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Failed to initialize 'end_info' structure for file '%s'.",
+                              "load_png(): Failed to initialize 'end_info' structure for file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -35169,7 +35467,7 @@ namespace cimg_library_suffixed {
         if (!file) cimg::fclose((std::FILE*)nfile);
         png_destroy_read_struct(&png_ptr, &end_info, (png_infopp)0);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Encountered unknown fatal error in libpng for file '%s'.",
+                              "load_png(): Encountered unknown fatal error in libpng for file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -35211,7 +35509,7 @@ namespace cimg_library_suffixed {
         if (!file) cimg::fclose(nfile);
         png_destroy_read_struct(&png_ptr,&end_info,(png_infopp)0);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Invalid bit depth %u in file '%s'.",
+                              "load_png(): Invalid bit depth %u in file '%s'.",
                               cimg_instance,
                               bit_depth,nfilename?nfilename:"(FILE*)");
       }
@@ -35228,7 +35526,7 @@ namespace cimg_library_suffixed {
         if (!file) cimg::fclose(nfile);
         png_destroy_read_struct(&png_ptr,&end_info,(png_infopp)0);
         throw CImgIOException(_cimg_instance
-                              "load_png() : Invalid color coding type %u in file '%s'.",
+                              "load_png(): Invalid color coding type %u in file '%s'.",
                               cimg_instance,
                               color_type,nfilename?nfilename:"(FILE*)");
       }
@@ -35300,7 +35598,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_pnm(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_pnm() : Specified filename is (null).",
+                                    "load_pnm(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -35312,7 +35610,7 @@ namespace cimg_library_suffixed {
       if (std::sscanf(item," P%u",&ppm_type)!=1) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pnm() : PNM header not found in file '%s'.",
+                              "load_pnm(): PNM header not found in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -35320,7 +35618,7 @@ namespace cimg_library_suffixed {
       if ((err=std::sscanf(item," %u %u %u %u",&W,&H,&D,&colormax))<2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pnm() : WIDTH and HEIGHT fields undefined in file '%s'.",
+                              "load_pnm(): WIDTH and HEIGHT fields undefined in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -35329,7 +35627,7 @@ namespace cimg_library_suffixed {
           while ((err=std::fscanf(nfile," %1023[^\n]",item))!=EOF && (*item=='#' || !err)) std::fgetc(nfile);
           if (std::sscanf(item,"%u",&colormax)!=1)
             cimg::warn(_cimg_instance
-                       "load_pnm() : COLORMAX field is undefined in file '%s'.",
+                       "load_pnm(): COLORMAX field is undefined in file '%s'.",
                        cimg_instance,
                        filename?filename:"(FILE*)");
         } else { colormax = D; D = 1; }
@@ -35467,7 +35765,7 @@ namespace cimg_library_suffixed {
         assign();
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pnm() : PNM type 'P%d' found, but type is not supported.",
+                              "load_pnm(): PNM type 'P%d' found, but type is not supported.",
                               cimg_instance,
                               filename?filename:"(FILE*)",ppm_type);
       }
@@ -35501,7 +35799,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_pfm(std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_pfm() : Specified filename is (null).",
+                                    "load_pfm(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -35512,7 +35810,7 @@ namespace cimg_library_suffixed {
       if (std::sscanf(item," P%c",&pfm_type)!=1) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pfm() : PFM header not found in file '%s'.",
+                              "load_pfm(): PFM header not found in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -35520,7 +35818,7 @@ namespace cimg_library_suffixed {
       if ((err=std::sscanf(item," %d %d",&W,&H))<2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pfm() : WIDTH and HEIGHT fields are undefined in file '%s'.",
+                              "load_pfm(): WIDTH and HEIGHT fields are undefined in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -35528,7 +35826,7 @@ namespace cimg_library_suffixed {
         while ((err=std::fscanf(nfile," %1023[^\n]",item))!=EOF && (*item=='#' || !err)) std::fgetc(nfile);
         if (std::sscanf(item,"%lf",&scale)!=1)
           cimg::warn(_cimg_instance
-                     "load_pfm() : SCALE field is undefined in file '%s'.",
+                     "load_pfm(): SCALE field is undefined in file '%s'.",
                      cimg_instance,
                      filename?filename:"(FILE*)");
       }
@@ -35591,7 +35889,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_rgb(std::FILE *const file, const char *const filename, const unsigned int dimw, const unsigned int dimh) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_rgb() : Specified filename is (null).",
+                                    "load_rgb(): Specified filename is (null).",
                                     cimg_instance);
 
       if (!dimw || !dimh) return assign();
@@ -35646,7 +35944,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_rgba(std::FILE *const file, const char *const filename, const unsigned int dimw, const unsigned int dimh) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_rgba() : Specified filename is (null).",
+                                    "load_rgba(): Specified filename is (null).",
                                     cimg_instance);
 
       if (!dimw || !dimh) return assign();
@@ -35695,7 +35993,7 @@ namespace cimg_library_suffixed {
                        const unsigned int step_frame=1) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_tiff() : Specified filename is (null).",
+                                    "load_tiff(): Specified filename is (null).",
                                     cimg_instance);
 
       const unsigned int
@@ -35706,7 +36004,7 @@ namespace cimg_library_suffixed {
 #ifndef cimg_use_tiff
       if (nfirst_frame || nlast_frame!=~0U || nstep_frame>1)
         throw CImgArgumentException(_cimg_instance
-                                    "load_tiff() : Unable to read sub-images from file '%s' unless libtiff is enabled.",
+                                    "load_tiff(): Unable to read sub-images from file '%s' unless libtiff is enabled.",
                                     cimg_instance,
                                     filename);
       return load_other(filename);
@@ -35717,7 +36015,7 @@ namespace cimg_library_suffixed {
         do ++nb_images; while (TIFFReadDirectory(tif));
         if (nfirst_frame>=nb_images || (nlast_frame!=~0U && nlast_frame>=nb_images))
           cimg::warn(_cimg_instance
-                     "load_tiff() : File '%s' contains %u image(s) while specified frame range is [%u,%u] (step %u).",
+                     "load_tiff(): File '%s' contains %u image(s) while specified frame range is [%u,%u] (step %u).",
                      cimg_instance,
                      filename,nb_images,nfirst_frame,nlast_frame,nstep_frame);
 
@@ -35734,7 +36032,7 @@ namespace cimg_library_suffixed {
         }
         TIFFClose(tif);
       } else throw CImgIOException(_cimg_instance
-                                   "load_tiff() : Failed to open file '%s'.",
+                                   "load_tiff(): Failed to open file '%s'.",
                                    cimg_instance,
                                    filename);
       return *this;
@@ -35759,7 +36057,7 @@ namespace cimg_library_suffixed {
             if (TIFFReadTile(tif,buf,col,row,0,0)<0) {
               _TIFFfree(buf); TIFFClose(tif);
               throw CImgIOException(_cimg_instance
-                                    "load_tiff() : Invalid tile in file '%s'.",
+                                    "load_tiff(): Invalid tile in file '%s'.",
                                     cimg_instance,
                                     TIFFFileName(tif));
             }
@@ -35783,7 +36081,7 @@ namespace cimg_library_suffixed {
               if (TIFFReadTile(tif,buf,col,row,0,vv)<0) {
                 _TIFFfree(buf); TIFFClose(tif);
                 throw CImgIOException(_cimg_instance
-                                      "load_tiff() : Invalid tile in file '%s'.",
+                                      "load_tiff(): Invalid tile in file '%s'.",
                                       cimg_instance,
                                       TIFFFileName(tif));
               }
@@ -35808,7 +36106,7 @@ namespace cimg_library_suffixed {
           if ((TIFFReadEncodedStrip(tif,strip,buf,-1))<0) {
             _TIFFfree(buf); TIFFClose(tif);
             throw CImgIOException(_cimg_instance
-                                  "load_tiff() : Invalid strip in file '%s'.",
+                                  "load_tiff(): Invalid strip in file '%s'.",
                                   cimg_instance,
                                   TIFFFileName(tif));
           }
@@ -35834,7 +36132,7 @@ namespace cimg_library_suffixed {
             if ((TIFFReadEncodedStrip(tif,strip,buf,-1))<0) {
               _TIFFfree(buf); TIFFClose(tif);
               throw CImgIOException(_cimg_instance
-                                    "load_tiff() : Invalid strip in file '%s'.",
+                                    "load_tiff(): Invalid strip in file '%s'.",
                                     cimg_instance,
                                     TIFFFileName(tif));
             }
@@ -35849,20 +36147,22 @@ namespace cimg_library_suffixed {
 
     CImg<T>& _load_tiff(TIFF *const tif, const unsigned int directory) {
       if (!TIFFSetDirectory(tif,directory)) return assign();
-      uint16 samplesperpixel, bitspersample;
+      uint16 samplesperpixel = 1, bitspersample, photo;
       uint16 sampleformat = SAMPLEFORMAT_UINT;
       uint32 nx,ny;
       const char *const filename = TIFFFileName(tif);
       TIFFGetField(tif,TIFFTAG_IMAGEWIDTH,&nx);
       TIFFGetField(tif,TIFFTAG_IMAGELENGTH,&ny);
-      TIFFGetFieldDefaulted(tif,TIFFTAG_SAMPLESPERPIXEL,&samplesperpixel);
-      TIFFGetFieldDefaulted(tif,TIFFTAG_SAMPLEFORMAT,&sampleformat);
+      TIFFGetField(tif,TIFFTAG_SAMPLESPERPIXEL,&samplesperpixel);
+      TIFFGetField(tif, TIFFTAG_SAMPLEFORMAT, &sampleformat);
       TIFFGetFieldDefaulted(tif,TIFFTAG_BITSPERSAMPLE,&bitspersample);
-      assign(nx,ny,1,samplesperpixel);
-      if (bitspersample!=8 || !(samplesperpixel==3 || samplesperpixel==4)) {
-        uint16 photo, config;
+      TIFFGetField(tif,TIFFTAG_PHOTOMETRIC,&photo);
+      int spectrum = samplesperpixel;
+      if (photo == 3) spectrum = 3;
+      assign(nx,ny,1,spectrum);
+      if ((photo < 3)  && ( bitspersample!=8 || !(samplesperpixel==3 || samplesperpixel==4))) {
+        uint16 config;
         TIFFGetField(tif,TIFFTAG_PLANARCONFIG,&config);
-        TIFFGetField(tif,TIFFTAG_PHOTOMETRIC,&photo);
         if (TIFFIsTiled(tif)) {
           uint32 tw, th;
           TIFFGetField(tif,TIFFTAG_TILEWIDTH,&tw);
@@ -35931,31 +36231,29 @@ namespace cimg_library_suffixed {
         uint32 *const raster = (uint32*)_TIFFmalloc(nx*ny*sizeof(uint32));
         if (!raster) {
           _TIFFfree(raster); TIFFClose(tif);
-          throw CImgIOException(_cimg_instance
-                                "load_tiff() : Failed to allocate memory (%s) for file '%s'.",
-                                cimg_instance,
-                                cimg::strbuffersize(sizeof(uint32)*nx*ny),filename);
+          throw CImgException(_cimg_instance
+                              "load_tiff(): Failed to allocate memory (%s) for file '%s'.",
+                              cimg_instance,
+                              cimg::strbuffersize(nx*ny*sizeof(uint32)),filename);
         }
         TIFFReadRGBAImage(tif,nx,ny,raster,0);
-        switch (samplesperpixel) {
+        switch (spectrum) {
         case 1 : {
           cimg_forXY(*this,x,y) (*this)(x,y) = (T)(float)((raster[nx*(ny-1-y)+x] + 128)/257);
         } break;
         case 3 : {
           cimg_forXY(*this,x,y) {
-            const uint32 value = raster[nx*(ny-1-y)+x];
-            (*this)(x,y,0) = (T)(float)TIFFGetR(value);
-            (*this)(x,y,1) = (T)(float)TIFFGetG(value);
-            (*this)(x,y,2) = (T)(float)TIFFGetB(value);
+            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
           }
         } break;
         case 4 : {
           cimg_forXY(*this,x,y) {
-            const uint32 value = raster[nx*(ny-1-y)+x];
-            (*this)(x,y,0) = (T)(float)TIFFGetR(value);
-            (*this)(x,y,1) = (T)(float)TIFFGetG(value);
-            (*this)(x,y,2) = (T)(float)TIFFGetB(value);
-            (*this)(x,y,3) = (T)(float)TIFFGetA(value);
+            (*this)(x,y,0) = (T)(float)TIFFGetR(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,1) = (T)(float)TIFFGetG(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,2) = (T)(float)TIFFGetB(raster[nx*(ny-1-y)+x]);
+            (*this)(x,y,3) = (T)(float)TIFFGetA(raster[nx*(ny-1-y)+x]);
           }
         } break;
         }
@@ -35973,17 +36271,17 @@ namespace cimg_library_suffixed {
     CImg<T>& load_minc2(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_minc2() : Specified filename is (null).",
+                                    "load_minc2(): Specified filename is (null).",
                                     cimg_instance);
 #ifndef cimg_use_minc2
       return load_other(filename);
 #else
       minc::minc_1_reader rdr;
       rdr.open(filename);
-      assign(rdr.ndim(1) ? rdr.ndim(1) : 1,
-             rdr.ndim(2) ? rdr.ndim(2) : 1,
-             rdr.ndim(3) ? rdr.ndim(3) : 1,
-             rdr.ndim(4) ? rdr.ndim(4) : 1);
+      assign(rdr.ndim(1)?rdr.ndim(1):1,
+             rdr.ndim(2)?rdr.ndim(2):1,
+             rdr.ndim(3)?rdr.ndim(3):1,
+             rdr.ndim(4)?rdr.ndim(4):1);
       if(typeid(T)==typeid(unsigned char))
         rdr.setup_read_byte();
       else if(typeid(T)==typeid(int))
@@ -36029,7 +36327,7 @@ namespace cimg_library_suffixed {
     CImg<T>& _load_analyze(std::FILE *const file, const char *const filename, float *const voxel_size=0) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_analyze() : Specified filename is (null).",
+                                    "load_analyze(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *nfile_header = 0, *nfile = 0;
@@ -36048,7 +36346,7 @@ namespace cimg_library_suffixed {
       } else nfile_header = nfile = file; // File is a Niftii file.
       if (!nfile || !nfile_header)
         throw CImgIOException(_cimg_instance
-                              "load_analyze() : Invalid Analyze7.5 or NIFTI header in file '%s'.",
+                              "load_analyze(): Invalid Analyze7.5 or NIFTI header in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
 
@@ -36058,7 +36356,7 @@ namespace cimg_library_suffixed {
       cimg::fread(&header_size,1,nfile_header);
       if (!header_size)
         throw CImgIOException(_cimg_instance
-                              "load_analyze() : Invalid zero-sized header in file '%s'.",
+                              "load_analyze(): Invalid zero-sized header in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
 
@@ -36076,13 +36374,13 @@ namespace cimg_library_suffixed {
       unsigned short *dim = (unsigned short*)(header+40), dimx = 1, dimy = 1, dimz = 1, dimv = 1;
       if (!dim[0])
         cimg::warn(_cimg_instance
-                   "load_analyze() : File '%s' defines an image with zero dimensions.",
+                   "load_analyze(): File '%s' defines an image with zero dimensions.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (dim[0]>4)
         cimg::warn(_cimg_instance
-                   "load_analyze() : File '%s' defines an image with %u dimensions, reading only the 4 first.",
+                   "load_analyze(): File '%s' defines an image with %u dimensions, reading only the 4 first.",
                    cimg_instance,
                    filename?filename:"(FILE*)",dim[0]);
 
@@ -36138,7 +36436,7 @@ namespace cimg_library_suffixed {
       default :
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_analyze() : Unable to load datatype %d in file '%s'",
+                              "load_analyze(): Unable to load datatype %d in file '%s'",
                               cimg_instance,
                               datatype,filename?filename:"(FILE*)");
       }
@@ -36263,7 +36561,7 @@ namespace cimg_library_suffixed {
       out[0] = std::fscanf(file,"%63s",item);
       out[0] = out[1] = out[2] = out[3] = out[5] = 1; out[4] = out[6] = out[7] = -1;
       if(cimg::strncasecmp(item,"#INRIMAGE-4#{",13)!=0)
-        throw CImgIOException("CImg<%s>::load_inr() : INRIMAGE-4 header not found.",
+        throw CImgIOException("CImg<%s>::load_inr(): INRIMAGE-4 header not found.",
                               pixel_type());
 
       while (std::fscanf(file," %63[^\n]%*c",item)!=EOF && std::strncmp(item,"##}",3)) {
@@ -36287,23 +36585,23 @@ namespace cimg_library_suffixed {
           if (!cimg::strncasecmp(tmp1,"packed",6))                                       out[4] = 2;
           if (out[4]>=0) break;
         default :
-          throw CImgIOException("CImg<%s>::load_inr() : Invalid pixel type '%s' defined in header.",
+          throw CImgIOException("CImg<%s>::load_inr(): Invalid pixel type '%s' defined in header.",
                                 pixel_type(),
                                 tmp2);
         }
       }
       if(out[0]<0 || out[1]<0 || out[2]<0 || out[3]<0)
-        throw CImgIOException("CImg<%s>::load_inr() : Invalid dimensions (%d,%d,%d,%d) defined in header.",
+        throw CImgIOException("CImg<%s>::load_inr(): Invalid dimensions (%d,%d,%d,%d) defined in header.",
                               pixel_type(),
                               out[0],out[1],out[2],out[3]);
       if(out[4]<0 || out[5]<0)
-        throw CImgIOException("CImg<%s>::load_inr() : Incomplete pixel type defined in header.",
+        throw CImgIOException("CImg<%s>::load_inr(): Incomplete pixel type defined in header.",
                               pixel_type());
       if(out[6]<0)
-        throw CImgIOException("CImg<%s>::load_inr() : Incomplete PIXSIZE field defined in header.",
+        throw CImgIOException("CImg<%s>::load_inr(): Incomplete PIXSIZE field defined in header.",
                               pixel_type());
       if(out[7]<0)
-        throw CImgIOException("CImg<%s>::load_inr() : Big/Little Endian coding type undefined in header.",
+        throw CImgIOException("CImg<%s>::load_inr(): Big/Little Endian coding type undefined in header.",
                               pixel_type());
     }
 
@@ -36322,7 +36620,7 @@ namespace cimg_library_suffixed {
 
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_inr() : Specified filename is (null).",
+                                    "load_inr(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -36344,7 +36642,7 @@ namespace cimg_library_suffixed {
       if (!loaded) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_inr() : Unknown pixel type defined in file '%s'.",
+                              "load_inr(): Unknown pixel type defined in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -36359,7 +36657,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load_exr(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_exr() : Specified filename is (null).",
+                                    "load_exr(): Specified filename is (null).",
                                     cimg_instance);
 
 #ifndef cimg_use_openexr
@@ -36433,13 +36731,13 @@ namespace cimg_library_suffixed {
         else if (sizeof(stype2)==ltype) { __cimg_load_pandore_case(nbdim,nwidth,nheight,ndepth,dim,stype2); } \
         else if (sizeof(stype3)==ltype) { __cimg_load_pandore_case(nbdim,nwidth,nheight,ndepth,dim,stype3); } \
         else throw CImgIOException(_cimg_instance \
-                                   "load_pandore() : Unknown pixel datatype in file '%s'.", \
+                                   "load_pandore(): Unknown pixel datatype in file '%s'.", \
                                    cimg_instance, \
                                    filename?filename:"(FILE*)"); }
 
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_pandore() : Specified filename is (null).",
+                                    "load_pandore(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
@@ -36448,7 +36746,7 @@ namespace cimg_library_suffixed {
       if (cimg::strncasecmp("PANDORE",header,7)) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pandore() : PANDORE header not found in file '%s'.",
+                              "load_pandore(): PANDORE header not found in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -36606,7 +36904,7 @@ namespace cimg_library_suffixed {
       default :
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_pandore() : Unable to load data with ID_type %u in file '%s'.",
+                              "load_pandore(): Unable to load data with ID_type %u in file '%s'.",
                               cimg_instance,
                               imageid,filename?filename:"(FILE*)");
       }
@@ -36679,14 +36977,14 @@ namespace cimg_library_suffixed {
                        const bool is_multiplexed, const bool invert_endianness) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_raw() : Specified filename is (null).",
+                                    "load_raw(): Specified filename is (null).",
                                     cimg_instance);
       unsigned int siz = size_x*size_y*size_z*size_c, _size_x = size_x, _size_y = size_y, _size_z = size_z, _size_c = size_c;
       std::FILE *const nfile = file?file:cimg::fopen(filename,"rb");
       if (!siz) {  // Retrieve file size.
         const long fpos = std::ftell(nfile);
         if (fpos<0) throw CImgArgumentException(_cimg_instance
-                                                "load_raw() : Cannot determine size of input file '%s'.",
+                                                "load_raw(): Cannot determine size of input file '%s'.",
                                                 cimg_instance,filename?filename:"(FILE*)");
         std::fseek(nfile,0,SEEK_END);
         siz = _size_y = (unsigned int)std::ftell(nfile)/sizeof(T);
@@ -36809,7 +37107,7 @@ namespace cimg_library_suffixed {
                        std::FILE *const file, const char *const filename) {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_off() : Specified filename is (null).",
+                                    "load_off(): Specified filename is (null).",
                                     cimg_instance);
 
       std::FILE *const nfile = file?file:cimg::fopen(filename,"r");
@@ -36822,7 +37120,7 @@ namespace cimg_library_suffixed {
       if (cimg::strncasecmp(line,"OFF",3) && cimg::strncasecmp(line,"COFF",4)) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_off() : OFF header not found in file '%s'.",
+                              "load_off(): OFF header not found in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -36830,7 +37128,7 @@ namespace cimg_library_suffixed {
       if ((err = std::sscanf(line,"%u%u%*[^\n] ",&nb_points,&nb_primitives))!=2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "load_off() : Invalid number of vertices or primitives specified in file '%s'.",
+                              "load_off(): Invalid number of vertices or primitives specified in file '%s'.",
                               cimg_instance,
                               filename?filename:"(FILE*)");
       }
@@ -36843,7 +37141,7 @@ namespace cimg_library_suffixed {
         if ((err = std::sscanf(line,"%f%f%f%*[^\n] ",&X,&Y,&Z))!=3) {
           if (!file) cimg::fclose(nfile);
           throw CImgIOException(_cimg_instance
-                                "load_off() : Failed to read vertex %u/%u in file '%s'.",
+                                "load_off(): Failed to read vertex %u/%u in file '%s'.",
                                 cimg_instance,
                                 l+1,nb_points,filename?filename:"(FILE*)");
         }
@@ -36865,7 +37163,7 @@ namespace cimg_library_suffixed {
           case 1 : {
             if ((err = std::fscanf(nfile,"%u%255[^\n] ",&i0,line))<2) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36879,7 +37177,7 @@ namespace cimg_library_suffixed {
           case 2 : {
             if ((err = std::fscanf(nfile,"%u%u%255[^\n] ",&i0,&i1,line))<2) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36893,7 +37191,7 @@ namespace cimg_library_suffixed {
           case 3 : {
             if ((err = std::fscanf(nfile,"%u%u%u%255[^\n] ",&i0,&i1,&i2,line))<3) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36907,7 +37205,7 @@ namespace cimg_library_suffixed {
           case 4 : {
             if ((err = std::fscanf(nfile,"%u%u%u%u%255[^\n] ",&i0,&i1,&i2,&i3,line))<4) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36921,7 +37219,7 @@ namespace cimg_library_suffixed {
           case 5 : {
             if ((err = std::fscanf(nfile,"%u%u%u%u%u%255[^\n] ",&i0,&i1,&i2,&i3,&i4,line))<5) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36937,7 +37235,7 @@ namespace cimg_library_suffixed {
           case 6 : {
             if ((err = std::fscanf(nfile,"%u%u%u%u%u%u%255[^\n] ",&i0,&i1,&i2,&i3,&i4,&i5,line))<6) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36953,7 +37251,7 @@ namespace cimg_library_suffixed {
           case 7 : {
             if ((err = std::fscanf(nfile,"%u%u%u%u%u%u%u%255[^\n] ",&i0,&i1,&i2,&i3,&i4,&i5,&i6,line))<7) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36970,7 +37268,7 @@ namespace cimg_library_suffixed {
           case 8 : {
             if ((err = std::fscanf(nfile,"%u%u%u%u%u%u%u%u%255[^\n] ",&i0,&i1,&i2,&i3,&i4,&i5,&i6,&i7,line))<7) {
               cimg::warn(_cimg_instance
-                         "load_off() : Failed to read primitive %u/%u from file '%s'.",
+                         "load_off(): Failed to read primitive %u/%u from file '%s'.",
                          cimg_instance,
                          nb_read,nb_primitives,filename?filename:"(FILE*)");
 
@@ -36986,7 +37284,7 @@ namespace cimg_library_suffixed {
           } break;
           default :
             cimg::warn(_cimg_instance
-                       "load_off() : Failed to read primitive %u/%u (%u vertices) from file '%s'.",
+                       "load_off(): Failed to read primitive %u/%u (%u vertices) from file '%s'.",
                        cimg_instance,
                        nb_read,nb_primitives,prim,filename?filename:"(FILE*)");
 
@@ -36997,7 +37295,7 @@ namespace cimg_library_suffixed {
       if (!file) cimg::fclose(nfile);
       if (primitives._width!=nb_primitives)
         cimg::warn(_cimg_instance
-                   "load_off() : Only %u/%u primitives read from file '%s'.",
+                   "load_off(): Only %u/%u primitives read from file '%s'.",
                    cimg_instance,
                    primitives._width,nb_primitives,filename?filename:"(FILE*)");
       return *this;
@@ -37018,6 +37316,24 @@ namespace cimg_library_suffixed {
       return CImgList<T>().load_ffmpeg_external(filename).get_append(axis,align);
     }
 
+    //! Load gif file, using Imagemagick or GraphicsMagicks's external tools.
+    /**
+      \param filename Filename, as a C-string.
+      \param use_graphicsmagick Tells if GraphicsMagick's tool 'gm' is used instead of ImageMagick's tool 'convert'.
+      \param axis Appending axis, if file contains multiple images. Can be <tt>{ 'x' | 'y' | 'z' | 'c' }</tt>.
+      \param align Appending alignment.
+    **/
+    CImg<T>& load_gif_external(const char *const filename,
+                               const char axis='z', const float align=0) {
+      return get_load_gif_external(filename,axis,align).move_to(*this);
+    }
+
+    //! Load gif file, using ImageMagick or GraphicsMagick's external tool 'convert' \newinstance.
+    static CImg<T> get_load_gif_external(const char *const filename,
+                                         const char axis='z', const float align=0) {
+      return CImgList<T>().load_gif_external(filename).get_append(axis,align);
+    }
+
     //! Load image using GraphicsMagick's external tool 'gm'.
     /**
        \param filename Filename, as a C-string.
@@ -37025,19 +37341,24 @@ namespace cimg_library_suffixed {
     CImg<T>& load_graphicsmagick_external(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_graphicsmagick_external() : Specified filename is (null).",
+                                    "load_graphicsmagick_external(): Specified filename is (null).",
                                     cimg_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 };
       std::FILE *file = 0;
+      const CImg<charT> s_filename = CImg<charT>::string(filename)._system_strescape();
 #if cimg_OS==1
-      cimg_snprintf(command,sizeof(command),"%s convert \"%s\" pnm:-",cimg::graphicsmagick_path(),filename);
+      cimg_snprintf(command,sizeof(command),"%s convert \"%s\" pnm:-",
+                    cimg::graphicsmagick_path(),s_filename.data());
       file = popen(command,"r");
       if (file) {
+        const unsigned int omode = cimg::exception_mode();
+        cimg::exception_mode() = 0;
         try { load_pnm(file); } catch (...) {
           pclose(file);
+          cimg::exception_mode() = omode;
           throw CImgIOException(_cimg_instance
-                                "load_graphicsmagick_external() : Failed to load file '%s' with external command 'gm'.",
+                                "load_graphicsmagick_external(): Failed to load file '%s' with external command 'gm'.",
                                 cimg_instance,
                                 filename);
         }
@@ -37049,12 +37370,13 @@ namespace cimg_library_suffixed {
         cimg_snprintf(filetmp,sizeof(filetmp),"%s%c%s.pnm",cimg::temporary_path(),cimg_file_separator,cimg::filenamerand());
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      cimg_snprintf(command,sizeof(command),"%s convert \"%s\" \"%s\"",cimg::graphicsmagick_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s convert \"%s\" \"%s\"",
+                    cimg::graphicsmagick_path(),s_filename.data(),CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command,cimg::graphicsmagick_path());
       if (!(file = std::fopen(filetmp,"rb"))) {
         cimg::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException(_cimg_instance
-                              "load_graphicsmagick_external() : Failed to load file '%s' with external command 'gm'.",
+                              "load_graphicsmagick_external(): Failed to load file '%s' with external command 'gm'.",
                               cimg_instance,
                               filename);
 
@@ -37076,7 +37398,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load_gzip_external(const char *const filename) {
       if (!filename)
         throw CImgIOException(_cimg_instance
-                              "load_gzip_external() : Specified filename is (null).",
+                              "load_gzip_external(): Specified filename is (null).",
                               cimg_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 }, body[512] = { 0 };
@@ -37095,13 +37417,15 @@ namespace cimg_library_suffixed {
         }
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-
-      cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > %s",cimg::gunzip_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > \"%s\"",
+                    cimg::gunzip_path(),
+                    CImg<charT>::string(filename)._system_strescape().data(),
+                    CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command);
       if (!(file = std::fopen(filetmp,"rb"))) {
         cimg::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException(_cimg_instance
-                              "load_gzip_external() : Failed to load file '%s' with external command 'gunzip'.",
+                              "load_gzip_external(): Failed to load file '%s' with external command 'gunzip'.",
                               cimg_instance,
                               filename);
 
@@ -37123,19 +37447,24 @@ namespace cimg_library_suffixed {
     CImg<T>& load_imagemagick_external(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_imagemagick_external() : Specified filename is (null).",
+                                    "load_imagemagick_external(): Specified filename is (null).",
                                     cimg_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 };
       std::FILE *file = 0;
+      const CImg<charT> s_filename = CImg<charT>::string(filename)._system_strescape();
 #if cimg_OS==1
-      cimg_snprintf(command,sizeof(command),"%s \"%s\" pnm:-",cimg::imagemagick_path(),filename);
+      cimg_snprintf(command,sizeof(command),"%s \"%s\" pnm:-",
+                    cimg::imagemagick_path(),s_filename.data());
       file = popen(command,"r");
       if (file) {
+        const unsigned int omode = cimg::exception_mode();
+        cimg::exception_mode() = 0;
         try { load_pnm(file); } catch (...) {
           pclose(file);
+          cimg::exception_mode() = omode;
           throw CImgIOException(_cimg_instance
-                                "load_imagemagick_external() : Failed to load file '%s' with external command 'convert'.",
+                                "load_imagemagick_external(): Failed to load file '%s' with external command 'convert'.",
                                 cimg_instance,
                                 filename);
         }
@@ -37147,12 +37476,13 @@ namespace cimg_library_suffixed {
         cimg_snprintf(filetmp,sizeof(filetmp),"%s%c%s.pnm",cimg::temporary_path(),cimg_file_separator,cimg::filenamerand());
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      cimg_snprintf(command,sizeof(command),"%s \"%s\" \"%s\"",cimg::imagemagick_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s \"%s\" \"%s\"",
+                    cimg::imagemagick_path(),s_filename.data(),CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command,cimg::imagemagick_path());
       if (!(file = std::fopen(filetmp,"rb"))) {
         cimg::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException(_cimg_instance
-                              "load_imagemagick_external() : Failed to load file '%s' with external command 'convert'.",
+                              "load_imagemagick_external(): Failed to load file '%s' with external command 'convert'.",
                               cimg_instance,
                               filename);
 
@@ -37174,7 +37504,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load_medcon_external(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_medcon_external() : Specified filename is (null).",
+                                    "load_medcon_external(): Specified filename is (null).",
                                     cimg_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 }, body[512] = { 0 };
@@ -37184,7 +37514,10 @@ namespace cimg_library_suffixed {
         cimg_snprintf(filetmp,sizeof(filetmp),"%s.hdr",cimg::filenamerand());
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      cimg_snprintf(command,sizeof(command),"%s -w -c anlz -o %s -f %s",cimg::medcon_path(),filetmp,filename);
+      cimg_snprintf(command,sizeof(command),"%s -w -c anlz -o \"%s\" -f \"%s\"",
+                    cimg::medcon_path(),
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    CImg<charT>::string(filename)._system_strescape().data());
       cimg::system(command);
       cimg::split_filename(filetmp,body);
 
@@ -37195,7 +37528,7 @@ namespace cimg_library_suffixed {
         file = std::fopen(command,"rb");
         if (!file) {
           throw CImgIOException(_cimg_instance
-                                "load_medcon_external() : Failed to load file '%s' with external command 'medcon'.",
+                                "load_medcon_external(): Failed to load file '%s' with external command 'medcon'.",
                                 cimg_instance,
                                 filename);
         }
@@ -37221,19 +37554,24 @@ namespace cimg_library_suffixed {
     CImg<T>& load_dcraw_external(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_dcraw_external() : Specified filename is (null).",
+                                    "load_dcraw_external(): Specified filename is (null).",
                                     cimg_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 };
       std::FILE *file = 0;
+      const CImg<charT> s_filename = CImg<charT>::string(filename)._system_strescape();
 #if cimg_OS==1
-      cimg_snprintf(command,sizeof(command),"%s -w -4 -c \"%s\"",cimg::dcraw_path(),filename);
+      cimg_snprintf(command,sizeof(command),"%s -w -4 -c \"%s\"",
+                    cimg::dcraw_path(),s_filename.data());
       file = popen(command,"r");
       if (file) {
+        const unsigned int omode = cimg::exception_mode();
+        cimg::exception_mode() = 0;
         try { load_pnm(file); } catch (...) {
           pclose(file);
+          cimg::exception_mode() = omode;
           throw CImgIOException(_cimg_instance
-                                "load_dcraw_external() : Failed to load file '%s' with external command 'dcraw'.",
+                                "load_dcraw_external(): Failed to load file '%s' with external command 'dcraw'.",
                                 cimg_instance,
                                 filename);
         }
@@ -37245,12 +37583,13 @@ namespace cimg_library_suffixed {
         cimg_snprintf(filetmp,sizeof(filetmp),"%s%c%s.ppm",cimg::temporary_path(),cimg_file_separator,cimg::filenamerand());
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      cimg_snprintf(command,sizeof(command),"%s -w -4 -c \"%s\" > %s",cimg::dcraw_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s -w -4 -c \"%s\" > \"%s\"",
+                    cimg::dcraw_path(),s_filename.data(),CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command,cimg::dcraw_path());
       if (!(file = std::fopen(filetmp,"rb"))) {
         cimg::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException(_cimg_instance
-                              "load_dcraw_external() : Failed to load file '%s' with external command 'dcraw'.",
+                              "load_dcraw_external(): Failed to load file '%s' with external command 'dcraw'.",
                               cimg_instance,
                               filename);
 
@@ -37276,7 +37615,7 @@ namespace cimg_library_suffixed {
       const int ind = camera_index + 1;
       if (ind<0 || ind>255)
         throw CImgArgumentException(_cimg_instance
-                                    "load_camera() : Invalid request for camera #%d.",
+                                    "load_camera(): Invalid request for camera #%d.",
                                     cimg_instance,
                                     camera_index);
       static CvCapture *capture[256] = { 0 };
@@ -37290,12 +37629,12 @@ namespace cimg_library_suffixed {
         if (!capture[ind]) {
           if (camera_index>=0)
             throw CImgIOException(_cimg_instance
-                                  "load_camera() : Failed to initialize camera #%d.",
+                                  "load_camera(): Failed to initialize camera #%d.",
                                   cimg_instance,
                                   camera_index);
           else
             throw CImgIOException(_cimg_instance
-                                  "load_camera() : Failed to initialize default camera.",
+                                  "load_camera(): Failed to initialize default camera.",
                                   cimg_instance);
         }
       }
@@ -37317,7 +37656,7 @@ namespace cimg_library_suffixed {
 #else
       cimg::unused(camera_index,skip_frames,release_camera);
       throw CImgIOException(_cimg_instance
-                            "load_camera() : This function requires the OpenCV library to run "
+                            "load_camera(): This function requires the OpenCV library to run "
                             "(macro 'cimg_use_opencv' must be defined).",
                             cimg_instance);
 #endif
@@ -37336,7 +37675,7 @@ namespace cimg_library_suffixed {
     CImg<T>& load_other(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "load_other() : Specified filename is (null).",
+                                    "load_other(): Specified filename is (null).",
                                     cimg_instance);
 
       const unsigned int omode = cimg::exception_mode();
@@ -37351,18 +37690,18 @@ namespace cimg_library_suffixed {
             catch (CImgException&) {
               try {
                 std::fclose(cimg::fopen(filename,"rb"));
-                cimg::exception_mode() = omode;
-                throw CImgIOException(_cimg_instance
-                                      "load_other() : Failed to recognize format of file '%s'.",
-                                      cimg_instance,
-                                      filename);
               } catch (CImgException&) {
                 cimg::exception_mode() = omode;
                 throw CImgIOException(_cimg_instance
-                                      "load_other() : Failed to open file '%s'.",
+                                      "load_other(): Failed to open file '%s'.",
                                       cimg_instance,
                                       filename);
               }
+              cimg::exception_mode() = omode;
+              throw CImgIOException(_cimg_instance
+                                    "load_other(): Failed to recognize format of file '%s'.",
+                                    cimg_instance,
+                                    filename);
             }
           }
         }
@@ -37383,7 +37722,7 @@ namespace cimg_library_suffixed {
     //@{
     //---------------------------
 
-    //! Display informations about the image data on the standard error output.
+    //! Display informations about the image data.
     /**
        \param title Name for the considered image.
        \param display_stats Tells to compute and display image statistics.
@@ -37401,12 +37740,12 @@ namespace cimg_library_suffixed {
       char _title[64] = { 0 };
       if (!title) cimg_snprintf(_title,sizeof(_title),"CImg<%s>",pixel_type());
 
-      std::fprintf(cimg::output(),"%s%s%s%s : %sthis%s = %p, %ssize%s = (%u,%u,%u,%u) [%lu %s], %sdata%s = (%s*)%p",
+      std::fprintf(cimg::output(),"%s%s%s%s: %sthis%s = %p, %ssize%s = (%u,%u,%u,%u) [%lu %s], %sdata%s = (%s*)%p",
                    cimg::t_magenta,cimg::t_bold,title?title:_title,cimg::t_normal,
                    cimg::t_bold,cimg::t_normal,(void*)this,
                    cimg::t_bold,cimg::t_normal,_width,_height,_depth,_spectrum,
                    mdisp==0?msiz:(mdisp==1?(msiz>>10):(msiz>>20)),
-                   mdisp==0?"b":(mdisp==1?"Kb":"Mb"),
+                   mdisp==0?"b":(mdisp==1?"Kio":"Mio"),
                    cimg::t_bold,cimg::t_normal,pixel_type(),(void*)begin());
       if (_data) std::fprintf(cimg::output(),"..%p (%s) = [ ",(void*)((char*)end()-1),_is_shared?"shared":"non-shared");
       else std::fprintf(cimg::output()," (%s) = [ ",_is_shared?"shared":"non-shared");
@@ -37414,7 +37753,7 @@ namespace cimg_library_suffixed {
       if (!is_empty()) cimg_foroff(*this,off) {
         std::fprintf(cimg::output(),cimg::type<T>::format(),cimg::type<T>::format(_data[off]));
         if (off!=siz1) std::fprintf(cimg::output(),"%s",off%_width==width1?" ; ":" ");
-        if (off==7 && siz>16) { off = siz1-8; if (off!=7) std::fprintf(cimg::output(),"... "); }
+        if (off==7 && siz>16) { off = siz1-8; std::fprintf(cimg::output(),"... "); }
       }
       if (!is_empty() && display_stats)
         std::fprintf(cimg::output()," ], %smin%s = %g, %smax%s = %g, %smean%s = %g, %sstd%s = %g, %scoords_min%s = (%u,%u,%u,%u), %scoords_max%s = (%u,%u,%u,%u).\n",
@@ -37443,8 +37782,8 @@ namespace cimg_library_suffixed {
         \param disp Display window.
         \param display_info Tells if image informations are displayed on the standard output.
     **/
-    const CImg<T>& display(CImgDisplay &disp, const bool display_info) const {
-      return _display(disp,0,display_info,false);
+    const CImg<T>& display(CImgDisplay &disp, const bool display_info, unsigned int *const XYZ=0) const {
+      return _display(disp,0,display_info,XYZ,false);
     }
 
     //! Display image into an interactive window.
@@ -37452,19 +37791,20 @@ namespace cimg_library_suffixed {
         \param title Window title
         \param display_info Tells if image informations are displayed on the standard output.
     **/
-    const CImg<T>& display(const char *const title=0, const bool display_info=true) const {
+    const CImg<T>& display(const char *const title=0, const bool display_info=true, unsigned int *const XYZ=0) const {
       CImgDisplay disp;
-      return _display(disp,title,display_info,false);
+      return _display(disp,title,display_info,XYZ,false);
     }
 
     const CImg<T>& _display(CImgDisplay &disp, const char *const title,
-                            const bool display_info, const bool exit_on_simpleclick) const {
+                            const bool display_info, unsigned int *const XYZ,
+                            const bool exit_on_simpleclick) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "display() : Empty instance.",
+                                    "display(): Empty instance.",
                                     cimg_instance);
 
-      unsigned int oldw = 0, oldh = 0, XYZ[3], key = 0;
+      unsigned int oldw = 0, oldh = 0, _XYZ[3], key = 0;
       int x0 = 0, y0 = 0, z0 = 0, x1 = width() - 1, y1 = height() - 1, z1 = depth() - 1;
 
       if (!disp) {
@@ -37479,7 +37819,8 @@ namespace cimg_library_suffixed {
       CImg<T> zoom;
       for (bool reset_view = true, resize_disp = false, is_first_select = true; !key && !disp.is_closed(); ) {
         if (reset_view) {
-          XYZ[0] = (x0 + x1)/2; XYZ[1] = (y0 + y1)/2; XYZ[2] = (z0 + z1)/2;
+          if (XYZ) { _XYZ[0] = XYZ[0]; _XYZ[1] = XYZ[1]; _XYZ[2] = XYZ[2]; }
+          else { _XYZ[0] = (x0 + x1)/2; _XYZ[1] = (y0 + y1)/2; _XYZ[2] = (z0 + z1)/2; }
           x0 = 0; y0 = 0; z0 = 0; x1 = _width - 1; y1 = _height-1; z1 = _depth-1;
           oldw = disp.width(); oldh = disp.height();
           reset_view = false;
@@ -37505,7 +37846,7 @@ namespace cimg_library_suffixed {
           go_inc = false, go_dec = false, go_in = false, go_out = false,
           go_in_center = false;
         const CImg<T>& visu = zoom?zoom:*this;
-        const CImg<intT> selection = visu._get_select(disp,0,2,XYZ,x0,y0,z0,is_first_select);
+        const CImg<intT> selection = visu._get_select(disp,0,2,_XYZ,x0,y0,z0,is_first_select);
         is_first_select = false;
 
         if (disp.wheel()) {
@@ -37533,7 +37874,7 @@ namespace cimg_library_suffixed {
           case cimg::keyALTGR :
 #endif
           case cimg::keyALT : key = 0; break;
-          case cimg::keyP : if (visu._depth>1 && (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT())) { // Special mode : play stack of frames
+          case cimg::keyP : if (visu._depth>1 && (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT())) { // Special mode: play stack of frames
               const unsigned int
                 w1 = visu._width*disp.width()/(visu._width+(visu._depth>1?visu._depth:0)),
                 h1 = visu._height*disp.height()/(visu._height+(visu._depth>1?visu._depth:0));
@@ -37543,8 +37884,8 @@ namespace cimg_library_suffixed {
               for (unsigned int timer = 0; !key && !disp.is_closed() && !disp.button(); ) {
                 if (disp.is_resized()) disp.resize(false);
                 if (!timer) {
-                  visu.get_slice((int)XYZ[2]).display(disp.set_title("%s | z=%d",dtitle.data(),XYZ[2]));
-                  (++XYZ[2])%=visu._depth;
+                  visu.get_slice((int)_XYZ[2]).display(disp.set_title("%s | z=%d",dtitle.data(),_XYZ[2]));
+                  (++_XYZ[2])%=visu._depth;
                 }
                 if (!is_stopped) { if (++timer>(unsigned int)frame_timing) timer = 0; } else timer = ~0U;
                 if (disp.wheel()) { frame_timing-=disp.wheel()/3.0f; disp.set_wheel(); }
@@ -37557,7 +37898,7 @@ namespace cimg_library_suffixed {
                 case cimg::keyPAGEDOWN : frame_timing+=0.3f; key = 0; break;
                 case cimg::keySPACE : is_stopped = !is_stopped; disp.set_key(key,false); key = 0; break;
                 case cimg::keyARROWLEFT : case cimg::keyARROWUP : is_stopped = true; timer = 0; key = 0; break;
-                case cimg::keyARROWRIGHT : case cimg::keyARROWDOWN : is_stopped = true; (XYZ[2]+=visu._depth-2)%=visu._depth; timer = 0; key = 0; break;
+                case cimg::keyARROWRIGHT : case cimg::keyARROWDOWN : is_stopped = true; (_XYZ[2]+=visu._depth-2)%=visu._depth; timer = 0; key = 0; break;
                 case cimg::keyD : if (disp.is_keyCTRLLEFT() || disp.is_keyCTRLRIGHT()) {
                     disp.set_fullscreen(false).resize(CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,false),
                                                       CImgDisplay::_fitscreen(3*disp.width()/2,3*disp.height()/2,1,128,-100,true),false);
@@ -37602,10 +37943,10 @@ namespace cimg_library_suffixed {
             my = go_in_center?disp.height()/2:disp.mouse_y(),
             mX = mx*(_width+(_depth>1?_depth:0))/disp.width(),
             mY = my*(_height+(_depth>1?_depth:0))/disp.height();
-          int X = XYZ[0], Y = XYZ[1], Z = XYZ[2];
-          if (mX<width() && mY<height())  { X = x0 + mX*(1+x1-x0)/_width; Y = y0 + mY*(1+y1-y0)/_height; Z = XYZ[2]; }
-          if (mX<width() && mY>=height()) { X = x0 + mX*(1+x1-x0)/_width; Z = z0 + (mY-_height)*(1+z1-z0)/_depth; Y = XYZ[1]; }
-          if (mX>=width() && mY<height()) { Y = y0 + mY*(1+y1-y0)/_height; Z = z0 + (mX-_width)*(1+z1-z0)/_depth; X = XYZ[0]; }
+          int X = _XYZ[0], Y = _XYZ[1], Z = _XYZ[2];
+          if (mX<width() && mY<height())  { X = x0 + mX*(1+x1-x0)/_width; Y = y0 + mY*(1+y1-y0)/_height; Z = _XYZ[2]; }
+          if (mX<width() && mY>=height()) { X = x0 + mX*(1+x1-x0)/_width; Z = z0 + (mY-_height)*(1+z1-z0)/_depth; Y = _XYZ[1]; }
+          if (mX>=width() && mY<height()) { Y = y0 + mY*(1+y1-y0)/_height; Z = z0 + (mX-_width)*(1+z1-z0)/_depth; X = _XYZ[0]; }
           if (x1-x0>4) { x0 = X - 7*(X-x0)/8; x1 = X + 7*(x1-X)/8; }
           if (y1-y0>4) { y0 = Y - 7*(Y-y0)/8; y1 = Y + 7*(y1-Y)/8; }
           if (z1-z0>4) { z0 = Z - 7*(Z-z0)/8; z1 = Z + 7*(z1-Z)/8; }
@@ -37658,6 +37999,7 @@ namespace cimg_library_suffixed {
         disp.wait(100);
       }
       disp.set_key(key);
+      if (XYZ) { XYZ[0] = _XYZ[0]; XYZ[1] = _XYZ[1]; XYZ[2] = _XYZ[2]; }
       return *this;
     }
 
@@ -37676,8 +38018,8 @@ namespace cimg_library_suffixed {
        \param light_x X-coordinate of the light source.
        \param light_y Y-coordinate of the light source.
        \param light_z Z-coordinate of the light source.
-       \param specular_light Amount of specular light.
-       \param specular_shine Shininess of the object material.
+       \param specular_lightness Amount of specular light.
+       \param specular_shininess Shininess of the object material.
        \param display_axes Tells if the 3d axes are displayed.
        \param pose_matrix Pointer to 12 values, defining a 3d pose (as a 4x3 matrix).
     **/
@@ -37691,11 +38033,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return _display_object3d(disp,0,vertices,primitives,colors,opacities,centering,render_static,
                                render_motion,is_double_sided,focale,
-                               light_x,light_y,light_z,specular_light,specular_shine,
+                               light_x,light_y,light_z,specular_lightness,specular_shininess,
                                display_axes,pose_matrix);
     }
 
@@ -37710,12 +38052,12 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       CImgDisplay disp;
       return _display_object3d(disp,title,vertices,primitives,colors,opacities,centering,render_static,
                                render_motion,is_double_sided,focale,
-                               light_x,light_y,light_z,specular_light,specular_shine,
+                               light_x,light_y,light_z,specular_lightness,specular_shininess,
                                display_axes,pose_matrix);
     }
 
@@ -37729,11 +38071,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(disp,vertices,primitives,colors,CImgList<floatT>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37747,11 +38089,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(title,vertices,primitives,colors,CImgList<floatT>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37764,11 +38106,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(disp,vertices,primitives,CImgList<T>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37782,11 +38124,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(title,vertices,primitives,CImgList<T>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37798,11 +38140,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(disp,vertices,CImgList<uintT>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37814,11 +38156,11 @@ namespace cimg_library_suffixed {
                                     const int render_static=4, const int render_motion=1,
                                     const bool is_double_sided=true, const float focale=500,
                                     const float light_x=0, const float light_y=0, const float light_z=-5000,
-                                    const float specular_light=0.2f, const float specular_shine=0.1f,
+                                    const float specular_lightness=0.2f, const float specular_shininess=0.1f,
                                     const bool display_axes=true, float *const pose_matrix=0) const {
       return display_object3d(title,vertices,CImgList<uintT>(),centering,
                               render_static,render_motion,is_double_sided,focale,
-                              light_x,light_y,light_z,specular_light,specular_shine,
+                              light_x,light_y,light_z,specular_lightness,specular_shininess,
                               display_axes,pose_matrix);
     }
 
@@ -37832,7 +38174,7 @@ namespace cimg_library_suffixed {
                                      const int render_static, const int render_motion,
                                      const bool is_double_sided, const float focale,
                                      const float light_x, const float light_y, const float light_z,
-                                     const float specular_light, const float specular_shine,
+                                     const float specular_lightness, const float specular_shininess,
                                      const bool display_axes, float *const pose_matrix) const {
       typedef typename cimg::superset<tp,float>::type tpfloat;
 
@@ -37841,25 +38183,25 @@ namespace cimg_library_suffixed {
         if (disp) return CImg<T>(disp.width(),disp.height(),1,(colors && colors[0].size()==1)?1:3,0).
                     _display_object3d(disp,title,vertices,primitives,colors,opacities,centering,
                                       render_static,render_motion,is_double_sided,focale,
-                                      light_x,light_y,light_z,specular_light,specular_shine,
+                                      light_x,light_y,light_z,specular_lightness,specular_shininess,
                                       display_axes,pose_matrix);
         else return CImg<T>(1,2,1,1,64,128).resize(cimg_fitscreen(640,480,1),1,(colors && colors[0].size()==1)?1:3,3).
                _display_object3d(disp,title,vertices,primitives,colors,opacities,centering,
                                  render_static,render_motion,is_double_sided,focale,
-                                 light_x,light_y,light_z,specular_light,specular_shine,
+                                 light_x,light_y,light_z,specular_lightness,specular_shininess,
                                  display_axes,pose_matrix);
       } else { if (disp) disp.resize(*this,false); }
       char error_message[1024] = { 0 };
       if (!vertices.is_object3d(primitives,colors,opacities,true,error_message))
         throw CImgArgumentException(_cimg_instance
-                                    "display_object3d() : Invalid specified 3d object (%u,%u) (%s).",
+                                    "display_object3d(): Invalid specified 3d object (%u,%u) (%s).",
                                     cimg_instance,vertices._width,primitives._width,error_message);
       if (vertices._width && !primitives) {
         CImgList<tf> nprimitives(vertices._width,1,1,1,1);
         cimglist_for(nprimitives,l) nprimitives(l,0) = l;
         return _display_object3d(disp,title,vertices,nprimitives,colors,opacities,centering,
                                  render_static,render_motion,is_double_sided,focale,
-                                 light_x,light_y,light_z,specular_light,specular_shine,
+                                 light_x,light_y,light_z,specular_lightness,specular_shininess,
                                  display_axes,pose_matrix);
       }
       if (!disp) {
@@ -37970,7 +38312,7 @@ namespace cimg_library_suffixed {
                                    Xoff + visu._width/2.0f,Yoff + visu._height/2.0f,Zoff,
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,_is_double_sided==1,focale,
-                                   width()/2.0f+light_x,height()/2.0f+light_y,light_z,specular_light,specular_shine,
+                                   width()/2.0f+light_x,height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
                                    sprite_scale);
           // Draw axes
           if (ndisplay_axes) {
@@ -38185,7 +38527,7 @@ namespace cimg_library_suffixed {
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,
                                    _is_double_sided==1,focale,
-                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_light,specular_shine,
+                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
                                    sprite_scale);
             board.saveEPS(filename);
             visu.draw_text(0,0," Object '%s' saved. ",foreground_color._data,background_color._data,1,13,filename).display(disp);
@@ -38206,7 +38548,7 @@ namespace cimg_library_suffixed {
                                    rotated_vertices,reverse_primitives?reverse_primitives:primitives,
                                    colors,opacities,clicked?nrender_motion:nrender_static,
                                    _is_double_sided==1,focale,
-                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_light,specular_shine,
+                                   visu.width()/2.0f+light_x,visu.height()/2.0f+light_y,light_z,specular_lightness,specular_shininess,
                                    sprite_scale);
             board.saveSVG(filename);
             visu.draw_text(0,0," Object '%s' saved. ",foreground_color._data,background_color._data,1,13,filename).display(disp);
@@ -38246,7 +38588,7 @@ namespace cimg_library_suffixed {
                                  const char *const labely=0, const double ymin=0, const double ymax=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "display_graph() : Empty instance.",
+                                    "display_graph(): Empty instance.",
                                     cimg_instance);
       if (!disp) disp.assign(cimg_fitscreen(640,480,1),0,0).set_title("CImg<%s>",pixel_type());
       const unsigned long siz = (unsigned long)_width*_height*_depth, siz1 = cimg::max(1U,siz-1);
@@ -38362,7 +38704,7 @@ namespace cimg_library_suffixed {
                                  const char *const labely=0, const double ymin=0, const double ymax=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "display_graph() : Empty instance.",
+                                    "display_graph(): Empty instance.",
                                     cimg_instance);
       CImgDisplay disp;
       return display_graph(disp.set_title("%s",title),plot_type,vertex_type,labelx,xmin,xmax,labely,ymin,ymax);
@@ -38379,7 +38721,7 @@ namespace cimg_library_suffixed {
     const CImg<T>& save(const char *const filename, const int number=-1) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save() : Specified filename is (null).",
+                                    "save(): Specified filename is (null).",
                                     cimg_instance);
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
       const char *const ext = cimg::split_filename(filename);
@@ -38496,11 +38838,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_ascii(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_ascii() : Specified filename is (null).",
+                                    "save_ascii(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_ascii() : Empty instance, for file '%s'.",
+                                    "save_ascii(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -38531,11 +38873,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_cpp(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_cpp() : Specified filename is (null).",
+                                    "save_cpp(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_cpp() : Empty instance, for file '%s'.",
+                                    "save_cpp(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -38573,22 +38915,22 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_dlm(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_dlm() : Specified filename is (null).",
+                                    "save_dlm(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_dlm() : Empty instance, for file '%s'.",
+                                    "save_dlm(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_dlm() : Instance is volumetric, values along Z will be unrolled in file '%s'.",
+                   "save_dlm(): Instance is volumetric, values along Z will be unrolled in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (_spectrum>1)
         cimg::warn(_cimg_instance
-                   "save_dlm() : Instance is multispectral, values along C will be unrolled in file '%s'.",
+                   "save_dlm(): Instance is multispectral, values along C will be unrolled in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -38618,22 +38960,22 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_bmp(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_bmp() : Specified filename is (null).",
+                                    "save_bmp(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_bmp() : Empty instance, for file '%s'.",
+                                    "save_bmp(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_bmp() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_bmp(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (_spectrum>3)
         cimg::warn(_cimg_instance
-                   "save_bmp() : Instance is multispectral, only the three first channels will be saved in file '%s'.",
+                   "save_bmp(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -38730,23 +39072,23 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_jpeg(std::FILE *const file, const char *const filename, const unsigned int quality) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_jpeg() : Specified filename is (null).",
+                                    "save_jpeg(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_jpeg() : Empty instance, for file '%s'.",
+                                    "save_jpeg(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_jpeg() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_jpeg(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
 #ifndef cimg_use_jpeg
       if (!file) return save_other(filename,quality);
       else throw CImgIOException(_cimg_instance
-                                 "save_jpeg() : Unable to save data in '(*FILE)' unless libjpeg is enabled.",
+                                 "save_jpeg(): Unable to save data in '(*FILE)' unless libjpeg is enabled.",
                                  cimg_instance);
 #else
       unsigned int dimbuf = 0;
@@ -38756,7 +39098,7 @@ namespace cimg_library_suffixed {
       case 1 : dimbuf = 1; colortype = JCS_GRAYSCALE; break;
       case 2 : dimbuf = 3; colortype = JCS_RGB; break;
       case 3 : dimbuf = 3; colortype = JCS_RGB; break;
-      default: dimbuf = 4; colortype = JCS_CMYK; break;
+      default : dimbuf = 4; colortype = JCS_CMYK; break;
       }
 
       // Call libjpeg functions
@@ -38837,30 +39179,30 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_magick(const char *const filename, const unsigned int bytes_per_pixel=0) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_magick() : Specified filename is (null).",
+                                    "save_magick(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_magick() : Empty instance, for file '%s'.",
+                                    "save_magick(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 #ifdef cimg_use_magick
       double stmin, stmax = (double)max_min(stmin);
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_magick() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_magick(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename);
 
       if (_spectrum>3)
         cimg::warn(_cimg_instance
-                   "save_magick() : Instance is multispectral, only the three first channels will be saved in file '%s'.",
+                   "save_magick(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
                    cimg_instance,
                    filename);
 
       if (stmin<0 || (bytes_per_pixel==1 && stmax>=256) || stmax>=65536)
         cimg::warn(_cimg_instance
-                   "save_magick() : Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
+                   "save_magick(): Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
                    cimg_instance,
                    filename,stmin,stmax);
 
@@ -38899,7 +39241,7 @@ namespace cimg_library_suffixed {
 #else
       cimg::unused(bytes_per_pixel);
       throw CImgIOException(_cimg_instance
-                            "save_magick() : Unable to save file '%s' unless libMagick++ is enabled.",
+                            "save_magick(): Unable to save file '%s' unless libMagick++ is enabled.",
                             cimg_instance,
                             filename);
 #endif
@@ -38923,18 +39265,18 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_png(std::FILE *const file, const char *const filename, const unsigned int bytes_per_pixel=0) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_png() : Specified filename is (null).",
+                                    "save_png(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_png() : Empty image, for file '%s'.",
+                                    "save_png(): Empty image, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 #ifndef cimg_use_png
       cimg::unused(bytes_per_pixel);
       if (!file) return save_other(filename);
       else throw CImgIOException(_cimg_instance
-                                 "save_png() : Unable to save data in '(*FILE)' unless libpng is enabled.",
+                                 "save_png(): Unable to save data in '(*FILE)' unless libpng is enabled.",
                                  cimg_instance);
 #else
       const char *volatile nfilename = filename; // two 'volatile' here to remove a g++ warning due to 'setjmp'.
@@ -38943,19 +39285,19 @@ namespace cimg_library_suffixed {
       double stmin, stmax = (double)max_min(stmin);
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_png() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_png(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename);
 
       if (_spectrum>4)
         cimg::warn(_cimg_instance
-                   "save_png() : Instance is multispectral, only the three first channels will be saved in file '%s'.",
+                   "save_png(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
                    cimg_instance,
                    filename);
 
       if (stmin<0 || (bytes_per_pixel==1 && stmax>=256) || stmax>=65536)
         cimg::warn(_cimg_instance
-                   "save_png() : Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
+                   "save_png(): Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
                    cimg_instance,
                    filename,stmin,stmax);
 
@@ -38966,7 +39308,7 @@ namespace cimg_library_suffixed {
       if(!png_ptr){
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "save_png() : Failed to initialize 'png_ptr' structure when saving file '%s'.",
+                              "save_png(): Failed to initialize 'png_ptr' structure when saving file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -38975,7 +39317,7 @@ namespace cimg_library_suffixed {
         png_destroy_write_struct(&png_ptr,(png_infopp)0);
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "save_png() : Failed to initialize 'info_ptr' structure when saving file '%s'.",
+                              "save_png(): Failed to initialize 'info_ptr' structure when saving file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -38983,7 +39325,7 @@ namespace cimg_library_suffixed {
         png_destroy_write_struct(&png_ptr, &info_ptr);
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "save_png() : Encountered unknown fatal error in libpng when saving file '%s'.",
+                              "save_png(): Encountered unknown fatal error in libpng when saving file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -39095,7 +39437,7 @@ namespace cimg_library_suffixed {
       default :
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
-                              "save_png() : Encountered unknown fatal error in libpng when saving file '%s'.",
+                              "save_png(): Encountered unknown fatal error in libpng when saving file '%s'.",
                               cimg_instance,
                               nfilename?nfilename:"(FILE*)");
       }
@@ -39128,30 +39470,30 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_pnm(std::FILE *const file, const char *const filename, const unsigned int bytes_per_pixel=0) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_pnm() : Specified filename is (null).",
+                                    "save_pnm(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_pnm() : Empty instance, for file '%s'.",
+                                    "save_pnm(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
       double stmin, stmax = (double)max_min(stmin);
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_pnm() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_pnm(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (_spectrum>3)
         cimg::warn(_cimg_instance
-                   "save_pnm() : Instance is multispectral, only the three first channels will be saved in file '%s'.",
+                   "save_pnm(): Instance is multispectral, only the three first channels will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (stmin<0 || (bytes_per_pixel==1 && stmax>=256) || stmax>=65536)
         cimg::warn(_cimg_instance
-                   "save_pnm() : Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
+                   "save_pnm(): Instance has pixel values in [%g,%g], probable type overflow in file '%s'.",
                    cimg_instance,
                    stmin,stmax,filename?filename:"(FILE*)");
 
@@ -39269,16 +39611,16 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_pnk(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_pnk() : Specified filename is (null).",
+                                    "save_pnk(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_pnk() : Empty instance, for file '%s'.",
+                                    "save_pnk(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_spectrum>1)
         cimg::warn(_cimg_instance
-                   "save_pnk() : Instance is multispectral, only the first channel will be saved in file '%s'.",
+                   "save_pnk(): Instance is multispectral, only the first channel will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -39287,7 +39629,7 @@ namespace cimg_library_suffixed {
       const T *ptr = data(0,0,0,0);
 
       if (!cimg::type<T>::is_float() && sizeof(T)==1 && _depth<2) _save_pnm(file,filename,0); // Can be saved as regular PNM file.
-      else if (!cimg::type<T>::is_float() && sizeof(T)==1) { // Save as extended P5 file : Binary byte-valued 3d.
+      else if (!cimg::type<T>::is_float() && sizeof(T)==1) { // Save as extended P5 file: Binary byte-valued 3d.
         std::fprintf(nfile,"P5\n%u %u %u\n255\n",_width,_height,_depth);
         CImg<ucharT> buf(buf_size);
         for (long to_write = (long)_width*_height*_depth; to_write>0; ) {
@@ -39297,7 +39639,7 @@ namespace cimg_library_suffixed {
           cimg::fwrite(buf._data,N,nfile);
           to_write-=N;
         }
-      } else if (!cimg::type<T>::is_float()) { // Save as P8 : Binary int32-valued 3d.
+      } else if (!cimg::type<T>::is_float()) { // Save as P8: Binary int32-valued 3d.
         if (_depth>1) std::fprintf(nfile,"P8\n%u %u %u\n%d\n",_width,_height,_depth,(int)max());
         else std::fprintf(nfile,"P8\n%u %u\n%d\n",_width,_height,(int)max());
         CImg<intT> buf(buf_size);
@@ -39308,7 +39650,7 @@ namespace cimg_library_suffixed {
           cimg::fwrite(buf._data,N,nfile);
           to_write-=N;
         }
-      } else { // Save as P9 : Binary float-valued 3d.
+      } else { // Save as P9: Binary float-valued 3d.
         if (_depth>1) std::fprintf(nfile,"P9\n%u %u %u\n%g\n",_width,_height,_depth,(double)max());
         else std::fprintf(nfile,"P9\n%u %u\n%g\n",_width,_height,(double)max());
         CImg<floatT> buf(buf_size);
@@ -39341,22 +39683,22 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_pfm(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_pfm() : Specified filename is (null).",
+                                    "save_pfm(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_pfm() : Empty instance, for file '%s'.",
+                                    "save_pfm(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_pfm() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_pfm(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
       if (_spectrum>3)
         cimg::warn(_cimg_instance
-                   "save_pfm() : image instance is multispectral, only the three first channels will be saved in file '%s'.",
+                   "save_pfm(): image instance is multispectral, only the three first channels will be saved in file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -39433,16 +39775,16 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_rgb(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_rgb() : Specified filename is (null).",
+                                    "save_rgb(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_rgb() : Empty instance, for file '%s'.",
+                                    "save_rgb(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_spectrum!=3)
         cimg::warn(_cimg_instance
-                   "save_rgb() : image instance has not exactly 3 channels, for file '%s'.",
+                   "save_rgb(): image instance has not exactly 3 channels, for file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -39499,16 +39841,16 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_rgba(std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_rgba() : Specified filename is (null).",
+                                    "save_rgba(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_rgba() : Empty instance, for file '%s'.",
+                                    "save_rgba(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
       if (_spectrum!=4)
         cimg::warn(_cimg_instance
-                   "save_rgba() : image instance has not exactly 4 channels, for file '%s'.",
+                   "save_rgba(): image instance has not exactly 4 channels, for file '%s'.",
                    cimg_instance,
                    filename?filename:"(FILE*)");
 
@@ -39577,11 +39919,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_tiff(const char *const filename, const unsigned int compression_type=0) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_tiff() : Specified filename is (null).",
+                                    "save_tiff(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_tiff() : Empty instance, for file '%s'.",
+                                    "save_tiff(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -39591,7 +39933,7 @@ namespace cimg_library_suffixed {
         cimg_forZ(*this,z) get_slice(z)._save_tiff(tif,z,compression_type);
         TIFFClose(tif);
       } else throw CImgIOException(_cimg_instance
-                                   "save_tiff() : Failed to open file '%s' for writing.",
+                                   "save_tiff(): Failed to open file '%s' for writing.",
                                    cimg_instance,
                                    filename);
 #else
@@ -39643,7 +39985,7 @@ namespace cimg_library_suffixed {
                 buf[i++] = (t)(*this)(cc,row + rr,0,vv);
           if (TIFFWriteEncodedStrip(tif,strip,buf,i*sizeof(t))<0)
             throw CImgIOException(_cimg_instance
-                                  "save_tiff() : Invalid strip writing when saving file '%s'.",
+                                  "save_tiff(): Invalid strip writing when saving file '%s'.",
                                   cimg_instance,
                                   filename?filename:"(FILE*)");
         }
@@ -39667,7 +40009,7 @@ namespace cimg_library_suffixed {
       _cimg_save_tiff("double",float,compression_type);
       const char *const filename = TIFFFileName(tif);
       throw CImgInstanceException(_cimg_instance
-                                  "save_tiff() : Unsupported pixel type '%s' for file '%s'.",
+                                  "save_tiff(): Unsupported pixel type '%s' for file '%s'.",
                                   cimg_instance,
                                   pixel_type(),filename?filename:"(FILE*)");
       return *this;
@@ -39683,11 +40025,11 @@ namespace cimg_library_suffixed {
                               const char *const imitate_file=0) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                   "save_minc2() : Specified filename is (null).",
+                                   "save_minc2(): Specified filename is (null).",
                                    cimg_instance);
      if (is_empty())
        throw CImgInstanceException(_cimg_instance
-                                   "save_minc2() : Empty instance, for file '%s'.",
+                                   "save_minc2(): Empty instance, for file '%s'.",
                                    cimg_instance,
                                    filename);
 #ifndef cimg_use_minc2
@@ -39726,11 +40068,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_analyze(const char *const filename, const float *const voxel_size=0) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_analyze() : Specified filename is (null).",
+                                    "save_analyze(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_analyze() : Empty instance, for file '%s'.",
+                                    "save_analyze(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -39773,7 +40115,7 @@ namespace cimg_library_suffixed {
       if (!cimg::strcasecmp(pixel_type(),"double")) datatype = 64;
       if (datatype<0)
         throw CImgIOException(_cimg_instance
-                              "save_analyze() : Unsupported pixel type '%s' for file '%s'.",
+                              "save_analyze(): Unsupported pixel type '%s' for file '%s'.",
                               cimg_instance,
                               pixel_type(),filename);
 
@@ -39881,11 +40223,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_inr(std::FILE *const file, const char *const filename, const float *const voxel_size) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_inr() : Specified filename is (null).",
+                                    "save_inr(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_inr() : Empty instance, for file '%s'.",
+                                    "save_inr(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -39901,7 +40243,7 @@ namespace cimg_library_suffixed {
       if (!cimg::strcasecmp(pixel_type(),"double"))         { inrtype = "float\nPIXSIZE=64 bits"; inrpixsize = 8; }
       if (inrpixsize<=0)
         throw CImgIOException(_cimg_instance
-                              "save_inr() : Unsupported pixel type '%s' for file '%s'",
+                              "save_inr(): Unsupported pixel type '%s' for file '%s'",
                               cimg_instance,
                               pixel_type(),filename?filename:"(FILE*)");
 
@@ -39926,16 +40268,16 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_exr(const char *const filename) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_exr() : Specified filename is (null).",
+                                    "save_exr(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_exr() : Empty instance, for file '%s'.",
+                                    "save_exr(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
       if (_depth>1)
         cimg::warn(_cimg_instance
-                   "save_exr() : Instance is volumetric, only the first slice will be saved in file '%s'.",
+                   "save_exr(): Instance is volumetric, only the first slice will be saved in file '%s'.",
                    cimg_instance,
                    filename);
 
@@ -40040,7 +40382,7 @@ namespace cimg_library_suffixed {
         else if (sizeof(unsigned int)==4) { unsigned int ndims[5] = { 0 }; for (int d = 0; d<5; ++d) ndims[d] = (unsigned int)dims[d]; cimg::fwrite(ndims,nbdims,nfile); } \
         else if (sizeof(unsigned short)==4) { unsigned short ndims[5] = { 0 }; for (int d = 0; d<5; ++d) ndims[d] = (unsigned short)dims[d]; cimg::fwrite(ndims,nbdims,nfile); } \
         else throw CImgIOException(_cimg_instance \
-                                   "save_pandore() : Unsupported datatype for file '%s'.",\
+                                   "save_pandore(): Unsupported datatype for file '%s'.",\
                                    cimg_instance, \
                                    filename?filename:"(FILE*)"); \
         if (id==2 || id==5 || id==8 || id==16 || id==19 || id==22 || id==26 || id==30) { \
@@ -40050,14 +40392,14 @@ namespace cimg_library_suffixed {
           else if (sizeof(unsigned int)==4) { __cimg_save_pandore_case(unsigned int); } \
           else if (sizeof(unsigned short)==4) { __cimg_save_pandore_case(unsigned short); } \
           else throw CImgIOException(_cimg_instance \
-                                     "save_pandore() : Unsupported datatype for file '%s'.",\
+                                     "save_pandore(): Unsupported datatype for file '%s'.",\
                                      cimg_instance, \
                                      filename?filename:"(FILE*)"); \
         } else if (id==4 || id==7 || id==10 || id==18 || id==21 || id==25 || id==29 || id==33) { \
           if (sizeof(double)==4) { __cimg_save_pandore_case(double); } \
           else if (sizeof(float)==4) { __cimg_save_pandore_case(float); } \
           else throw CImgIOException(_cimg_instance \
-                                     "save_pandore() : Unsupported datatype for file '%s'.",\
+                                     "save_pandore(): Unsupported datatype for file '%s'.",\
                                      cimg_instance, \
                                      filename?filename:"(FILE*)"); \
         } \
@@ -40066,11 +40408,11 @@ namespace cimg_library_suffixed {
 
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_pandore() : Specified filename is (null).",
+                                    "save_pandore(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_pandore() : Empty instance, for file '%s'.",
+                                    "save_pandore(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -40194,11 +40536,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& _save_raw(std::FILE *const file, const char *const filename, const bool is_multiplexed) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_raw() : Specified filename is (null).",
+                                    "save_raw(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_raw() : empty instance, for file '%s'.",
+                                    "save_raw(): empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -40218,8 +40560,6 @@ namespace cimg_library_suffixed {
     //! Save image as a video file, using the FFmpeg library.
     /**
       \param filename Filename, as a C-string.
-      \param first_frame First frame of the video sequence.
-      \param last_frame Last frame of the video sequence.
       \param fps Video framerate.
       \param bitrate Video bitrate.
       \note
@@ -40228,39 +40568,27 @@ namespace cimg_library_suffixed {
       Configuration macro \c cimg_use_ffmpeg must be set for the method to succeed natively.
       Otherwise, the method calls save_ffmpeg_external(const char*,unsigned int,unsigned int,const char*,unsigned int,unsigned int) const.
     **/
-    const CImg<T>& save_ffmpeg(const char *const filename, const unsigned int first_frame=0, const unsigned int last_frame=~0U,
-                               const unsigned int fps=25, const unsigned int bitrate=2048) const {
+    const CImg<T>& save_ffmpeg(const char *const filename, const unsigned int fps=25, const unsigned int bitrate=2048) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_ffmpeg() : Specified filename is (null).",
+                                    "save_ffmpeg(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_ffmpeg() : Empty instance, for file '%s'.",
+                                    "save_ffmpeg(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
       if (!fps)
         throw CImgArgumentException(_cimg_instance
-                                    "save_ffmpeg() : Invalid specified framerate 0, for file '%s'.",
+                                    "save_ffmpeg(): Invalid specified framerate 0, for file '%s'.",
                                     cimg_instance,
                                     filename);
 #ifndef cimg_use_ffmpeg
-      return save_ffmpeg_external(filename,first_frame,last_frame,0,fps,bitrate);
+      return save_ffmpeg_external(filename,0,fps,bitrate);
 #else
-      const unsigned int
-        __first_frame = first_frame<last_frame?first_frame:last_frame,
-        __last_frame = first_frame<last_frame?last_frame:first_frame,
-        _first_frame = __first_frame>=_depth?~0U:__first_frame,
-        _last_frame = __last_frame>=_depth?_depth-1:__last_frame;
-      if (_first_frame==~0U) throw CImgArgumentException(_cimg_instance
-                                                         "save_ffmpeg() : Invalid arguments first_frame=%u, last_frame=%u.",
-                                                         cimg_instance,
-                                                         first_frame,
-                                                         last_frame);
       CImgList<T> list;
-      if (_first_frame==0 && _last_frame==_depth-1) get_split('z').move_to(list);
-      else (get_slices(_first_frame,_last_frame)<'z').move_to(list);
-      list.save_ffmpeg(filename,0,~0U,fps,bitrate);
+      get_split('z').move_to(list);
+      list.save_ffmpeg(filename,fps,bitrate);
 #endif
       return *this;
     }
@@ -40319,11 +40647,11 @@ namespace cimg_library_suffixed {
                              std::FILE *const file, const char *const filename) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_off() : Specified filename is (null).",
+                                    "save_off(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_off() : Empty instance, for file '%s'.",
+                                    "save_off(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename?filename:"(FILE*)");
 
@@ -40331,7 +40659,7 @@ namespace cimg_library_suffixed {
       char error_message[1024] = { 0 };
       if (!is_object3d(primitives,colors,opacities,true,error_message))
         throw CImgInstanceException(_cimg_instance
-                                    "save_off() : Invalid specified 3d object, for file '%s' (%s).",
+                                    "save_off(): Invalid specified 3d object, for file '%s' (%s).",
                                     cimg_instance,
                                     filename?filename:"(FILE*)",error_message);
 
@@ -40379,8 +40707,6 @@ namespace cimg_library_suffixed {
     //! Save volumetric image as a video, using ffmpeg external binary.
     /**
        \param filename Filename, as a C-string.
-       \param first_frame First frame of the video sequence.
-       \param last_frame Last frame of the video sequence.
        \param codec Video codec, as a C-string.
        \param fps Video framerate.
        \param bitrate Video bitrate.
@@ -40389,31 +40715,20 @@ namespace cimg_library_suffixed {
        - This method uses \c ffmpeg, an external executable binary provided by <a href="http://www.ffmpeg.org">FFmpeg</a>.
        It must be installed for the method to succeed.
     **/
-    const CImg<T>& save_ffmpeg_external(const char *const filename, const unsigned int first_frame=0, const unsigned int last_frame=~0U,
-                                        const char *const codec=0, const unsigned int fps=25, const unsigned int bitrate=2048) const {
+    const CImg<T>& save_ffmpeg_external(const char *const filename, const char *const codec=0,
+                                        const unsigned int fps=25, const unsigned int bitrate=2048) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_ffmpeg_external() : Specified filename is (null).",
+                                    "save_ffmpeg_external(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_ffmpeg_external() : Empty instance, for file '%s'.",
+                                    "save_ffmpeg_external(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
-      const unsigned int
-        __first_frame = first_frame<last_frame?first_frame:last_frame,
-        __last_frame = first_frame<last_frame?last_frame:first_frame,
-        _first_frame = __first_frame>=_depth?~0U:__first_frame,
-        _last_frame = __last_frame>=_depth?_depth-1:__last_frame;
-      if (_first_frame==~0U) throw CImgArgumentException(_cimg_instance
-                                                         "save_ffmpeg_external() : Invalid arguments first_frame=%u, last_frame=%u.",
-                                                         cimg_instance,
-                                                         first_frame,
-                                                         last_frame);
       CImgList<T> list;
-      if (_first_frame==0 && _last_frame==_depth-1) get_split('z').move_to(list);
-      else (get_slices(_first_frame,_last_frame)<'z').move_to(list);
-      list.save_ffmpeg_external(filename,0,~0U,codec,fps,bitrate);
+      get_split('z').move_to(list);
+      list.save_ffmpeg_external(filename,codec,fps,bitrate);
       return *this;
     }
 
@@ -40426,11 +40741,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_gzip_external(const char *const filename) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_gzip_external() : Specified filename is (null).",
+                                    "save_gzip_external(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_gzip_external() : Empty instance, for file '%s'.",
+                                    "save_gzip_external(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -40450,12 +40765,15 @@ namespace cimg_library_suffixed {
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
       save(filetmp);
-      cimg_snprintf(command,sizeof(command),"%s -c %s > \"%s\"",cimg::gzip_path(),filetmp,filename);
+      cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > \"%s\"",
+                    cimg::gzip_path(),
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    CImg<charT>::string(filename)._system_strescape().data());
       cimg::system(command);
       file = std::fopen(filename,"rb");
       if (!file)
         throw CImgIOException(_cimg_instance
-                              "save_gzip_external() : Failed to save file '%s' with external command 'gzip'.",
+                              "save_gzip_external(): Failed to save file '%s' with external command 'gzip'.",
                               cimg_instance,
                               filename);
 
@@ -40474,11 +40792,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_graphicsmagick_external(const char *const filename, const unsigned int quality=100) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_graphicsmagick_external() : Specified filename is (null).",
+                                    "save_graphicsmagick_external(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_graphicsmagick_external() : Empty instance, for file '%s'.",
+                                    "save_graphicsmagick_external(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -40489,12 +40807,15 @@ namespace cimg_library_suffixed {
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
       save_pnm(filetmp);
-      cimg_snprintf(command,sizeof(command),"%s convert -quality %u \"%s\" \"%s\"",cimg::graphicsmagick_path(),quality,filetmp,filename);
+      cimg_snprintf(command,sizeof(command),"%s convert -quality %u \"%s\" \"%s\"",
+                    cimg::graphicsmagick_path(),quality,
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    CImg<charT>::string(filename)._system_strescape().data());
       cimg::system(command);
       file = std::fopen(filename,"rb");
       if (!file)
         throw CImgIOException(_cimg_instance
-                              "save_graphicsmagick_external() : Failed to save file '%s' with external command 'gm'.",
+                              "save_graphicsmagick_external(): Failed to save file '%s' with external command 'gm'.",
                               cimg_instance,
                               filename);
 
@@ -40513,11 +40834,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_imagemagick_external(const char *const filename, const unsigned int quality=100) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_imagemagick_external() : Specified filename is (null).",
+                                    "save_imagemagick_external(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_imagemagick_external() : Empty instance, for file '%s'.",
+                                    "save_imagemagick_external(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -40528,12 +40849,15 @@ namespace cimg_library_suffixed {
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
       save_pnm(filetmp);
-      cimg_snprintf(command,sizeof(command),"%s -quality %u \"%s\" \"%s\"",cimg::imagemagick_path(),quality,filetmp,filename);
+      cimg_snprintf(command,sizeof(command),"%s -quality %u \"%s\" \"%s\"",
+                    cimg::imagemagick_path(),quality,
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    CImg<charT>::string(filename)._system_strescape().data());
       cimg::system(command);
       file = std::fopen(filename,"rb");
       if (!file)
         throw CImgIOException(_cimg_instance
-                              "save_imagemagick_external() : Failed to save file '%s' with external command 'convert'.",
+                              "save_imagemagick_external(): Failed to save file '%s' with external command 'convert'.",
                               cimg_instance,
                               filename);
 
@@ -40551,11 +40875,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_medcon_external(const char *const filename) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_medcon_external() : Specified filename is (null).",
+                                    "save_medcon_external(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_medcon_external() : Empty instance, for file '%s'.",
+                                    "save_medcon_external(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -40566,7 +40890,10 @@ namespace cimg_library_suffixed {
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
       save_analyze(filetmp);
-      cimg_snprintf(command,sizeof(command),"%s -w -c dicom -o %s -f %s",cimg::medcon_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s -w -c dicom -o \"%s\" -f \"%s\"",
+                    cimg::medcon_path(),
+                    CImg<charT>::string(filename)._system_strescape().data(),
+                    CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command);
       std::remove(filetmp);
       cimg::split_filename(filetmp,body);
@@ -40580,7 +40907,7 @@ namespace cimg_library_suffixed {
         if (!file) {
           cimg::fclose(cimg::fopen(filename,"r"));
           throw CImgIOException(_cimg_instance
-                                "save_medcon_external() : Failed to save file '%s' with external command 'medcon'.",
+                                "save_medcon_external(): Failed to save file '%s' with external command 'medcon'.",
                                 cimg_instance,
                                 filename);
         }
@@ -40604,11 +40931,11 @@ namespace cimg_library_suffixed {
     const CImg<T>& save_other(const char *const filename, const unsigned int quality=100) const {
       if (!filename)
         throw CImgArgumentException(_cimg_instance
-                                    "save_other() : Specified filename is (null).",
+                                    "save_other(): Specified filename is (null).",
                                     cimg_instance);
       if (is_empty())
         throw CImgInstanceException(_cimg_instance
-                                    "save_other() : Empty instance, for file '%s'.",
+                                    "save_other(): Empty instance, for file '%s'.",
                                     cimg_instance,
                                     filename);
 
@@ -40628,7 +40955,7 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = omode;
       if (!is_saved)
         throw CImgIOException(_cimg_instance
-                              "save_other() : Failed to save file '%s'. Format is not natively supported, and no external commands succeeded.",
+                              "save_other(): Failed to save file '%s'. Format is not natively supported, and no external commands succeeded.",
                               cimg_instance,
                               filename);
       return *this;
@@ -40674,12 +41001,12 @@ namespace cimg_library_suffixed {
     /**
        \note
        - The \c CImgList<T>::iterator type is defined as a <tt>CImg<T>*</tt>.
-       - You may use it like this :
+       - You may use it like this:
        \code
        CImgList<> list;   // Assuming this image list is not empty.
        for (CImgList<>::iterator it = list.begin(); it<list.end(); ++it) (*it).mirror('x');
        \endcode
-       - Using the loop macro \c cimglist_for is another (more concise) alternative :
+       - Using the loop macro \c cimglist_for is another (more concise) alternative:
        \code
        cimglist_for(list,l) list[l].mirror('x');
        \endcode
@@ -41383,7 +41710,7 @@ namespace cimg_library_suffixed {
 #if cimg_verbosity>=3
       if (pos>=_width) {
         cimg::warn(_cimglist_instance
-                   "operator() : Invalid image request, at position [%u].",
+                   "operator(): Invalid image request, at position [%u].",
                    cimglist_instance,
                    pos);
         return *_data;
@@ -41485,7 +41812,7 @@ namespace cimg_library_suffixed {
     //! Return a copy of the list instance, where image \c img has been inserted at the end.
     /**
        \param img Image inserted at the end of the instance copy.
-       \note Define a convenient way to create temporary lists of images, as in the following code :
+       \note Define a convenient way to create temporary lists of images, as in the following code:
        \code
        (img1,img2,img3,img4).display("My four images");
        \endcode
@@ -41579,7 +41906,7 @@ namespace cimg_library_suffixed {
     CImg<T> *data(const unsigned int pos) {
       if (pos>=size()) {
         cimg::warn(_cimglist_instance
-                   "data() : Invalid pointer request, at position [%u].",
+                   "data(): Invalid pointer request, at position [%u].",
                    cimglist_instance,
                    pos);
         return _data;
@@ -41656,7 +41983,7 @@ namespace cimg_library_suffixed {
     CImg<T>& at(const int pos) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "at() : Empty instance.",
+                                    "at(): Empty instance.",
                                     cimglist_instance);
 
       return _data[pos<0?0:pos>=(int)_width?(int)_width-1:pos];
@@ -41693,7 +42020,7 @@ namespace cimg_library_suffixed {
     T& atNXYZC(const int pos, const int x, const int y, const int z, const int c) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXYZC() : Empty instance.",
+                                    "atNXYZC(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXYZC(pos,x,y,z,c);
@@ -41703,7 +42030,7 @@ namespace cimg_library_suffixed {
     T atNXYZC(const int pos, const int x, const int y, const int z, const int c) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXYZC() : Empty instance.",
+                                    "atNXYZC(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXYZC(pos,x,y,z,c);
@@ -41748,7 +42075,7 @@ namespace cimg_library_suffixed {
    T& atNXYZ(const int pos, const int x, const int y, const int z, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXYZ() : Empty instance.",
+                                    "atNXYZ(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXYZ(pos,x,y,z,c);
@@ -41758,7 +42085,7 @@ namespace cimg_library_suffixed {
     T atNXYZ(const int pos, const int x, const int y, const int z, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXYZ() : Empty instance.",
+                                    "atNXYZ(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXYZ(pos,x,y,z,c);
@@ -41803,7 +42130,7 @@ namespace cimg_library_suffixed {
     T& atNXY(const int pos, const int x, const int y, const int z=0, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXY() : Empty instance.",
+                                    "atNXY(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXY(pos,x,y,z,c);
@@ -41813,7 +42140,7 @@ namespace cimg_library_suffixed {
     T atNXY(const int pos, const int x, const int y, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNXY() : Empty instance.",
+                                    "atNXY(): Empty instance.",
                                     cimglist_instance);
 
       return _atNXY(pos,x,y,z,c);
@@ -41858,7 +42185,7 @@ namespace cimg_library_suffixed {
     T& atNX(const int pos, const int x, const int y=0, const int z=0, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNX() : Empty instance.",
+                                    "atNX(): Empty instance.",
                                     cimglist_instance);
 
       return _atNX(pos,x,y,z,c);
@@ -41868,7 +42195,7 @@ namespace cimg_library_suffixed {
     T atNX(const int pos, const int x, const int y=0, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atNX() : Empty instance.",
+                                    "atNX(): Empty instance.",
                                     cimglist_instance);
 
       return _atNX(pos,x,y,z,c);
@@ -41913,7 +42240,7 @@ namespace cimg_library_suffixed {
     T& atN(const int pos, const int x=0, const int y=0, const int z=0, const int c=0) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atN() : Empty instance.",
+                                    "atN(): Empty instance.",
                                     cimglist_instance);
       return _atN(pos,x,y,z,c);
     }
@@ -41922,7 +42249,7 @@ namespace cimg_library_suffixed {
     T atN(const int pos, const int x=0, const int y=0, const int z=0, const int c=0) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "atN() : Empty instance.",
+                                    "atN(): Empty instance.",
                                     cimglist_instance);
       return _atN(pos,x,y,z,c);
     }
@@ -42215,7 +42542,7 @@ namespace cimg_library_suffixed {
     T& min() {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "min() : Empty instance.",
+                                    "min(): Empty instance.",
                                     cimglist_instance);
       T *ptr_min = _data->_data;
       T min_value = *ptr_min;
@@ -42230,7 +42557,7 @@ namespace cimg_library_suffixed {
     const T& min() const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "min() : Empty instance.",
+                                    "min(): Empty instance.",
                                     cimglist_instance);
       const T *ptr_min = _data->_data;
       T min_value = *ptr_min;
@@ -42247,7 +42574,7 @@ namespace cimg_library_suffixed {
     T& max() {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "max() : Empty instance.",
+                                    "max(): Empty instance.",
                                     cimglist_instance);
       T *ptr_max = _data->_data;
       T max_value = *ptr_max;
@@ -42262,7 +42589,7 @@ namespace cimg_library_suffixed {
     const T& max() const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "max() : Empty instance.",
+                                    "max(): Empty instance.",
                                     cimglist_instance);
       const T *ptr_max = _data->_data;
       T max_value = *ptr_max;
@@ -42281,7 +42608,7 @@ namespace cimg_library_suffixed {
     T& min_max(t& max_val) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "min_max() : Empty instance.",
+                                    "min_max(): Empty instance.",
                                     cimglist_instance);
       T *ptr_min = _data->_data;
       T min_value = *ptr_min, max_value = min_value;
@@ -42305,7 +42632,7 @@ namespace cimg_library_suffixed {
     const T& min_max(t& max_val) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "min_max() : Empty instance.",
+                                    "min_max(): Empty instance.",
                                     cimglist_instance);
       const T *ptr_min = _data->_data;
       T min_value = *ptr_min, max_value = min_value;
@@ -42329,7 +42656,7 @@ namespace cimg_library_suffixed {
     T& max_min(t& min_val) {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "max_min() : Empty instance.",
+                                    "max_min(): Empty instance.",
                                     cimglist_instance);
       T *ptr_max = _data->_data;
       T min_value = *ptr_max, max_value = min_value;
@@ -42350,7 +42677,7 @@ namespace cimg_library_suffixed {
     const T& max_min(t& min_val) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "max_min() : Empty instance.",
+                                    "max_min(): Empty instance.",
                                     cimglist_instance);
       const T *ptr_max = _data->_data;
       T min_value = *ptr_max, max_value = min_value;
@@ -42384,12 +42711,12 @@ namespace cimg_library_suffixed {
       const unsigned int npos = pos==~0U?_width:pos;
       if (npos>_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "insert() : Invalid insertion request of specified image (%u,%u,%u,%u,%p) at position %u.",
+                                    "insert(): Invalid insertion request of specified image (%u,%u,%u,%u,%p) at position %u.",
                                     cimglist_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data,npos);
       if (is_shared)
         throw CImgArgumentException(_cimglist_instance
-                                    "insert() : Invalid insertion request of specified shared image CImg<%s>(%u,%u,%u,%u,%p) at position %u "
+                                    "insert(): Invalid insertion request of specified shared image CImg<%s>(%u,%u,%u,%u,%p) at position %u "
                                     "(pixel types are different).",
                                     cimglist_instance,
                                     img.pixel_type(),img._width,img._height,img._depth,img._spectrum,img._data,npos);
@@ -42417,7 +42744,7 @@ namespace cimg_library_suffixed {
       const unsigned int npos = pos==~0U?_width:pos;
       if (npos>_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "insert() : Invalid insertion request of specified image (%u,%u,%u,%u,%p) at position %u.",
+                                    "insert(): Invalid insertion request of specified image (%u,%u,%u,%u,%p) at position %u.",
                                     cimglist_instance,
                                     img._width,img._height,img._depth,img._spectrum,img._data,npos);
       CImg<T> *const new_data = (++_width>_allocated_width)?new CImg<T>[_allocated_width?(_allocated_width<<=1):(_allocated_width=16)]:0;
@@ -42555,13 +42882,13 @@ namespace cimg_library_suffixed {
         npos2 = tpos2<_width?tpos2:_width-1;
       if (npos1>=_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "remove() : Invalid remove request at positions %u->%u.",
+                                    "remove(): Invalid remove request at positions %u->%u.",
                                     cimglist_instance,
                                     npos1,tpos2);
       else {
         if (tpos2>=_width)
           throw CImgArgumentException(_cimglist_instance
-                                      "remove() : Invalid remove request at positions %u->%u.",
+                                      "remove(): Invalid remove request at positions %u->%u.",
                                       cimglist_instance,
                                       npos1,tpos2);
 
@@ -42640,7 +42967,7 @@ namespace cimg_library_suffixed {
     CImgList<T> get_images(const unsigned int pos0, const unsigned int pos1) const {
       if (pos0>pos1 || pos1>=_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "images() : Specified sub-list indices (%u->%u) are out of bounds.",
+                                    "images(): Specified sub-list indices (%u->%u) are out of bounds.",
                                     cimglist_instance,
                                     pos0,pos1);
       CImgList<T> res(pos1-pos0+1);
@@ -42656,7 +42983,7 @@ namespace cimg_library_suffixed {
     CImgList<T> get_shared_images(const unsigned int pos0, const unsigned int pos1) {
       if (pos0>pos1 || pos1>=_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "get_shared_images() : Specified sub-list indices (%u->%u) are out of bounds.",
+                                    "get_shared_images(): Specified sub-list indices (%u->%u) are out of bounds.",
                                     cimglist_instance,
                                     pos0,pos1);
       CImgList<T> res(pos1-pos0+1);
@@ -42668,7 +42995,7 @@ namespace cimg_library_suffixed {
     const CImgList<T> get_shared_images(const unsigned int pos0, const unsigned int pos1) const {
       if (pos0>pos1 || pos1>=_width)
         throw CImgArgumentException(_cimglist_instance
-                                    "get_shared_images() : Specified sub-list indices (%u->%u) are out of bounds.",
+                                    "get_shared_images(): Specified sub-list indices (%u->%u) are out of bounds.",
                                     cimglist_instance,
                                     pos0,pos1);
       CImgList<T> res(pos1-pos0+1);
@@ -42869,7 +43196,7 @@ namespace cimg_library_suffixed {
                            const bool exit_on_rightbutton, const bool exit_on_wheel) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "select() : Empty instance.",
+                                    "select(): Empty instance.",
                                     cimglist_instance);
 
       // Create image correspondence table and get list dimensions for visualization.
@@ -43083,7 +43410,7 @@ namespace cimg_library_suffixed {
     CImgList<T>& load(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "load() : Specified filename is (null).",
+                                    "load(): Specified filename is (null).",
                                     cimglist_instance);
 
       if (!cimg::strncasecmp(filename,"http://",7) || !cimg::strncasecmp(filename,"https://",8)) {
@@ -43126,6 +43453,7 @@ namespace cimg_library_suffixed {
 #endif
         if (!cimg::strcasecmp(ext,"tif") ||
             !cimg::strcasecmp(ext,"tiff")) load_tiff(filename);
+        else if (!cimg::strcasecmp(ext,"gif")) load_gif_external(filename);
         else if (!cimg::strcasecmp(ext,"cimg") ||
                  !cimg::strcasecmp(ext,"cimgz") ||
                  !*ext) load_cimg(filename);
@@ -43161,7 +43489,7 @@ namespace cimg_library_suffixed {
         } catch (CImgIOException&) {
           cimg::exception_mode() = omode;
           throw CImgIOException(_cimglist_instance
-                                "load() : Failed to open file '%s'.",
+                                "load(): Failed to open file '%s'.",
                                 cimglist_instance,
                                 filename);
         }
@@ -43171,7 +43499,7 @@ namespace cimg_library_suffixed {
         } catch (CImgIOException&) {
           cimg::exception_mode() = omode;
           throw CImgIOException(_cimglist_instance
-                                "load() : Failed to recognize format of file '%s'.",
+                                "load(): Failed to recognize format of file '%s'.",
                                 cimglist_instance,
                                 filename);
         }
@@ -43226,7 +43554,7 @@ namespace cimg_library_suffixed {
 #else
 #define _cimgz_load_cimg_case(Tss) \
    throw CImgIOException(_cimglist_instance \
-                         "load_cimg() : Unable to load compressed data from file '%s' unless zlib is enabled.", \
+                         "load_cimg(): Unable to load compressed data from file '%s' unless zlib is enabled.", \
                          cimglist_instance, \
                          filename?filename:"(FILE*)");
 #endif
@@ -43238,7 +43566,7 @@ namespace cimg_library_suffixed {
           W = H = D = C = 0; csiz = 0; \
           if ((err = std::sscanf(tmp,"%u %u %u %u #%u",&W,&H,&D,&C,&csiz))<4) \
             throw CImgIOException(_cimglist_instance \
-                                  "load_cimg() : Invalid specified size (%u,%u,%u,%u) of image %u in file '%s'", \
+                                  "load_cimg(): Invalid specified size (%u,%u,%u,%u) of image %u in file '%s'", \
                                   cimglist_instance, \
                                   W,H,D,C,l,filename?filename:("(FILE*)")); \
           if (W*H*D*C>0) { \
@@ -43262,7 +43590,7 @@ namespace cimg_library_suffixed {
 
       if (!filename && !file)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_cimg() : Specified filename is (null).",
+                                    "load_cimg(): Specified filename is (null).",
                                     cimglist_instance);
 
       const int cimg_iobuffer = 12*1024*1024;
@@ -43278,7 +43606,7 @@ namespace cimg_library_suffixed {
       if (err<2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "load_cimg() : CImg header not found in file '%s'.",
+                              "load_cimg(): CImg header not found in file '%s'.",
                               cimglist_instance,
                               filename?filename:"(FILE*)");
       }
@@ -43303,7 +43631,7 @@ namespace cimg_library_suffixed {
       if (!loaded) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "load_cimg() : Unsupported pixel type '%s' for file '%s'.",
+                              "load_cimg(): Unsupported pixel type '%s' for file '%s'.",
                               cimglist_instance,
                               str_pixeltype,filename?filename:"(FILE*)");
       }
@@ -43380,7 +43708,7 @@ namespace cimg_library_suffixed {
           W = H = D = C = 0; \
           if (std::sscanf(tmp,"%u %u %u %u",&W,&H,&D,&C)!=4) \
             throw CImgIOException(_cimglist_instance \
-                                  "load_cimg() : Invalid specified size (%u,%u,%u,%u) of image %u in file '%s'", \
+                                  "load_cimg(): Invalid specified size (%u,%u,%u,%u) of image %u in file '%s'", \
                                   cimglist_instance, \
                                   W,H,D,C,l,filename?filename:"(FILE*)"); \
           if (W*H*D*C>0) { \
@@ -43429,12 +43757,12 @@ namespace cimg_library_suffixed {
 
       if (!filename && !file)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_cimg() : Specified filename is (null).",
+                                    "load_cimg(): Specified filename is (null).",
                                     cimglist_instance);
 
       if (n1<n0 || x1<x0 || y1<y0 || z1<z0 || c1<c0)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_cimg() : Invalid specified sub-region coordinates [%u->%u] (%u,%u,%u,%u)->(%u,%u,%u,%u) for file '%s'.",
+                                    "load_cimg(): Invalid specified sub-region coordinates [%u->%u] (%u,%u,%u,%u)->(%u,%u,%u,%u) for file '%s'.",
                                     cimglist_instance,
                                     n0,n1,x0,y0,z0,c0,x1,y1,z1,filename?filename:"(FILE*)");
 
@@ -43448,7 +43776,7 @@ namespace cimg_library_suffixed {
       if (err<2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "load_cimg() : CImg header not found in file '%s'.",
+                              "load_cimg(): CImg header not found in file '%s'.",
                               cimglist_instance,
                               filename?filename:"(FILE*)");
       }
@@ -43474,7 +43802,7 @@ namespace cimg_library_suffixed {
       if (!loaded) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "load_cimg() : Unsupported pixel type '%s' for file '%s'.",
+                              "load_cimg(): Unsupported pixel type '%s' for file '%s'.",
                               cimglist_instance,
                               str_pixeltype,filename?filename:"(FILE*)");
       }
@@ -43489,7 +43817,7 @@ namespace cimg_library_suffixed {
     CImgList<T>& load_parrec(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_parrec() : Specified filename is (null).",
+                                    "load_parrec(): Specified filename is (null).",
                                     cimglist_instance);
 
       char body[1024] = { 0 }, filenamepar[1024] = { 0 }, filenamerec[1024] = { 0 };
@@ -43566,7 +43894,7 @@ namespace cimg_library_suffixed {
           cimg::fclose(file);
           cimg::fclose(file2);
           throw CImgIOException(_cimglist_instance
-                                "load_parrec() : Unsupported %d-bits pixel type for file '%s'.",
+                                "load_parrec(): Unsupported %d-bits pixel type for file '%s'.",
                                 cimglist_instance,
                                 pixsize,filename);
         }
@@ -43575,7 +43903,7 @@ namespace cimg_library_suffixed {
       cimg::fclose(file2);
       if (!_width)
         throw CImgIOException(_cimglist_instance
-                              "load_parrec() : Failed to recognize valid PAR-REC data in file '%s'.",
+                              "load_parrec(): Failed to recognize valid PAR-REC data in file '%s'.",
                               cimglist_instance,
                               filename);
       return *this;
@@ -43633,16 +43961,16 @@ namespace cimg_library_suffixed {
                            const unsigned int step_frame, const bool yuv2rgb) {
       if (!filename && !file)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_yuv() : Specified filename is (null).",
+                                    "load_yuv(): Specified filename is (null).",
                                     cimglist_instance);
       if (size_x%2 || size_y%2)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_yuv() : Invalid odd XY dimensions %ux%u in file '%s'.",
+                                    "load_yuv(): Invalid odd XY dimensions %ux%u in file '%s'.",
                                     cimglist_instance,
                                     size_x,size_y,filename?filename:"(FILE*)");
       if (!size_x || !size_y)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_yuv() : Invalid sequence size (%u,%u) in file '%s'.",
+                                    "load_yuv(): Invalid sequence size (%u,%u) in file '%s'.",
                                     cimglist_instance,
                                     size_x,size_y,filename?filename:"(FILE*)");
 
@@ -43660,7 +43988,7 @@ namespace cimg_library_suffixed {
         if (err) {
           if (!file) cimg::fclose(nfile);
           throw CImgIOException(_cimglist_instance
-                                "load_yuv() : File '%s' doesn't contain frame number %u.",
+                                "load_yuv(): File '%s' doesn't contain frame number %u.",
                                 cimglist_instance,
                                 filename?filename:"(FILE*)",nfirst_frame);
         }
@@ -43668,24 +43996,24 @@ namespace cimg_library_suffixed {
       unsigned int frame;
       for (frame = nfirst_frame; !stopflag && frame<=nlast_frame; frame+=nstep_frame) {
         tmp.fill(0);
-        // *TRY* to read the luminance part, do not replace by cimg::fread !
+        // *TRY* to read the luminance part, do not replace by cimg::fread!
         err = (int)std::fread((void*)(tmp._data),1,(unsigned long)tmp._width*tmp._height,nfile);
         if (err!=(int)(tmp._width*tmp._height)) {
           stopflag = true;
           if (err>0)
             cimg::warn(_cimglist_instance
-                       "load_yuv() : File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
+                       "load_yuv(): File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
                        cimglist_instance,
                        filename?filename:"(FILE*)",size_x,size_y);
         } else {
           UV.fill(0);
-          // *TRY* to read the luminance part, do not replace by cimg::fread !
+          // *TRY* to read the luminance part, do not replace by cimg::fread!
           err = (int)std::fread((void*)(UV._data),1,(size_t)(UV.size()),nfile);
           if (err!=(int)(UV.size())) {
             stopflag = true;
             if (err>0)
               cimg::warn(_cimglist_instance
-                         "load_yuv() : File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
+                         "load_yuv(): File '%s' contains incomplete data or given image dimensions (%u,%u) are incorrect.",
                          cimglist_instance,
                          filename?filename:"(FILE*)",size_x,size_y);
           } else {
@@ -43702,7 +44030,7 @@ namespace cimg_library_suffixed {
       }
       if (stopflag && nlast_frame!=~0U && frame!=nlast_frame)
         cimg::warn(_cimglist_instance
-                   "load_yuv() : Frame %d not reached since only %u frames were found in file '%s'.",
+                   "load_yuv(): Frame %d not reached since only %u frames were found in file '%s'.",
                    cimglist_instance,
                    nlast_frame,frame-1,filename?filename:"(FILE*)");
 
@@ -43725,7 +44053,7 @@ namespace cimg_library_suffixed {
                              const unsigned int step_frame=1, const bool pixel_format=true, const bool resume=false) {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_ffmpeg() : Specified filename is (null).",
+                                    "load_ffmpeg(): Specified filename is (null).",
                                     cimglist_instance);
 
       const unsigned int
@@ -43737,7 +44065,7 @@ namespace cimg_library_suffixed {
 #ifndef cimg_use_ffmpeg
       if ((nfirst_frame || nlast_frame!=~0U || nstep_frame>1) || (resume && (pixel_format || !pixel_format)))
         throw CImgArgumentException(_cimglist_instance
-                                    "load_ffmpeg() : Unable to load sub-frames from file '%s' unless libffmpeg is enabled.",
+                                    "load_ffmpeg(): Unable to load sub-frames from file '%s' unless libffmpeg is enabled.",
                                     cimglist_instance,
                                     filename);
 
@@ -43755,31 +44083,31 @@ namespace cimg_library_suffixed {
       if (resume) {
         if (!format_ctx || !codec_ctx || !codec || !avframe || !converted_frame)
           throw CImgArgumentException(_cimglist_instance
-                                      "load_ffmpeg() : Failed to resume loading of file '%s', due to unallocated FFMPEG structures.",
+                                      "load_ffmpeg(): Failed to resume loading of file '%s', due to unallocated FFMPEG structures.",
                                       cimglist_instance,
                                       filename);
       } else {
         // Open video file, find main video stream and codec.
-        if (format_ctx) av_close_input_file(format_ctx);
-        if (av_open_input_file(&format_ctx,filename,0,0,0)!=0)
+        if (format_ctx) avformat_close_input(&format_ctx);
+        if (avformat_open_input(&format_ctx,filename,0,0)!=0)
           throw CImgIOException(_cimglist_instance
-                                "load_ffmpeg() : Failed to open file '%s'.",
+                                "load_ffmpeg(): Failed to open file '%s'.",
                                 cimglist_instance,
                                 filename);
 
-        if (!avframe || !converted_frame || av_find_stream_info(format_ctx)<0) {
-          av_close_input_file(format_ctx); format_ctx = 0;
+        if (!avframe || !converted_frame || avformat_find_stream_info(format_ctx,NULL)<0) {
+          avformat_close_input(&format_ctx); format_ctx = 0;
           return load_ffmpeg_external(filename);
         }
 #if cimg_verbosity>=3
         dump_format(format_ctx,0,0,0);
 #endif
 
-        // Special command : Return informations on main video stream.
-        // as a vector 1x4 containing : (nb_frames,width,height,fps).
+        // Special command: Return informations on main video stream.
+        // as a vector 1x4 containing: (nb_frames,width,height,fps).
         if (!first_frame && !last_frame && !step_frame) {
           for (vstream = 0; vstream<(int)(format_ctx->nb_streams); ++vstream)
-            if (format_ctx->streams[vstream]->codec->codec_type==CODEC_TYPE_VIDEO) break;
+            if (format_ctx->streams[vstream]->codec->codec_type==AVMEDIA_TYPE_VIDEO) break;
           if (vstream==(int)format_ctx->nb_streams) assign();
           else {
             CImgList<doubleT> timestamps;
@@ -43804,14 +44132,14 @@ namespace cimg_library_suffixed {
             (*this)[0].assign(1,4).fill((T)nb_frames,(T)framew,(T)frameh,(T)fps);
             (*this)[1] = (timestamps>'y');
           }
-          av_close_input_file(format_ctx); format_ctx = 0;
+          avformat_close_input(&format_ctx); format_ctx = 0;
           return *this;
         }
 
         for (vstream = 0; vstream<(int)(format_ctx->nb_streams) &&
-               format_ctx->streams[vstream]->codec->codec_type!=CODEC_TYPE_VIDEO; ) ++vstream;
+               format_ctx->streams[vstream]->codec->codec_type!=AVMEDIA_TYPE_VIDEO; ) ++vstream;
         if (vstream==(int)format_ctx->nb_streams) {
-          av_close_input_file(format_ctx); format_ctx = 0;
+          avformat_close_input(&format_ctx); format_ctx = 0;
           return load_ffmpeg_external(filename);
         }
         codec_ctx = format_ctx->streams[vstream]->codec;
@@ -43819,7 +44147,7 @@ namespace cimg_library_suffixed {
         if (!codec) {
           return load_ffmpeg_external(filename);
         }
-        if (avcodec_open(codec_ctx,codec)<0) { // Open codec
+        if (avcodec_open2(codec_ctx,codec,NULL)<0) { // Open codec
           return load_ffmpeg_external(filename);
         }
       }
@@ -43880,7 +44208,7 @@ namespace cimg_library_suffixed {
     CImgList<T>& load_ffmpeg_external(const char *const filename) {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_ffmpeg_external() : Specified filename is (null).",
+                                    "load_ffmpeg_external(): Specified filename is (null).",
                                     cimglist_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 }, filetmp2[512] = { 0 };
@@ -43892,9 +44220,15 @@ namespace cimg_library_suffixed {
       } while (file);
       cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_%%6d.ppm",filetmp);
 #if cimg_OS!=2
-      cimg_snprintf(command,sizeof(command),"%s -i \"%s\" %s >/dev/null 2>&1",cimg::ffmpeg_path(),filename,filetmp2);
+      cimg_snprintf(command,sizeof(command),"%s -i \"%s\" \"%s\" >/dev/null 2>&1",
+                    cimg::ffmpeg_path(),
+                    CImg<charT>::string(filename)._system_strescape().data(),
+                    CImg<charT>::string(filetmp2)._system_strescape().data());
 #else
-      cimg_snprintf(command,sizeof(command),"\"%s -i \"%s\" %s\" >NUL 2>&1",cimg::ffmpeg_path(),filename,filetmp2);
+      cimg_snprintf(command,sizeof(command),"\"%s -i \"%s\" \"%s\"\" >NUL 2>&1",
+                    cimg::ffmpeg_path(),
+                    CImg<charT>::string(filename)._system_strescape().data(),
+                    CImg<charT>::string(filetmp2)._system_strescape().data());
 #endif
       cimg::system(command,0);
       const unsigned int omode = cimg::exception_mode();
@@ -43911,7 +44245,7 @@ namespace cimg_library_suffixed {
       cimg::exception_mode() = omode;
       if (is_empty())
         throw CImgIOException(_cimglist_instance
-                              "load_ffmpeg_external() : Failed to open file '%s' with external command 'ffmpeg'.",
+                              "load_ffmpeg_external(): Failed to open file '%s' with external command 'ffmpeg'.",
                               cimglist_instance,
                               filename);
       return *this;
@@ -43922,6 +44256,77 @@ namespace cimg_library_suffixed {
       return CImgList<T>().load_ffmpeg_external(filename);
     }
 
+    //! Load gif file, using ImageMagick or GraphicsMagick's external tools.
+    /**
+      \param filename Filename to read data from.
+      \param use_graphicsmagick Tells if GraphicsMagick's tool 'gm' is used instead of ImageMagick's tool 'convert'.
+    **/
+    CImgList<T>& load_gif_external(const char *const filename) {
+      if (!filename)
+        throw CImgArgumentException(_cimglist_instance
+                                    "load_gif_external(): Specified filename is (null).",
+                                    cimglist_instance);
+      std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
+      if (!_load_gif_external(filename,false))
+        if (!_load_gif_external(filename,true))
+          try { assign(CImg<T>().load_other(filename)); } catch (CImgException&) { assign(); }
+      if (is_empty())
+        throw CImgIOException(_cimglist_instance
+                              "load_gif_external(): Failed to open file '%s'.",
+                              cimglist_instance,filename);
+      return *this;
+    }
+
+    CImgList<T>& _load_gif_external(const char *const filename, const bool use_graphicsmagick=false) {
+      char command[1024] = { 0 }, filetmp[512] = { 0 }, filetmp2[512] = { 0 };
+      std::FILE *file = 0;
+      do {
+        cimg_snprintf(filetmp,sizeof(filetmp),"%s%c%s",cimg::temporary_path(),cimg_file_separator,cimg::filenamerand());
+        if (use_graphicsmagick) cimg_snprintf(filetmp2,sizeof(filetmp2),"%s.png.0",filetmp);
+        else cimg_snprintf(filetmp2,sizeof(filetmp2),"%s-0.png",filetmp);
+        if ((file=std::fopen(filetmp2,"rb"))!=0) cimg::fclose(file);
+      } while (file);
+#if cimg_OS!=2
+      if (use_graphicsmagick) cimg_snprintf(command,sizeof(command),"%s convert \"%s\" \"%s.png\" >/dev/null 2>&1",
+                                            cimg::graphicsmagick_path(),
+                                            CImg<charT>::string(filename)._system_strescape().data(),
+                                            CImg<charT>::string(filetmp)._system_strescape().data());
+      else cimg_snprintf(command,sizeof(command),"%s \"%s\" \"%s.png\" >/dev/null 2>&1",
+                         cimg::imagemagick_path(),
+                         CImg<charT>::string(filename)._system_strescape().data(),
+                         CImg<charT>::string(filetmp)._system_strescape().data());
+#else
+      if (use_graphicsmagick) cimg_snprintf(command,sizeof(command),"\"%s convert \"%s\" \"%s.png\"\" >NUL 2>&1",
+                                            cimg::graphicsmagick_path(),
+                                            CImg<charT>::string(filename)._system_strescape().data(),
+                                            CImg<charT>::string(filetmp)._system_strescape().data());
+      else cimg_snprintf(command,sizeof(command),"\"%s \"%s\" \"%s.png\"\" >NUL 2>&1",
+                         cimg::imagemagick_path(),
+                         CImg<charT>::string(filename)._system_strescape().data(),
+                         CImg<charT>::string(filetmp)._system_strescape().data());
+#endif
+      cimg::system(command,0);
+      const unsigned int omode = cimg::exception_mode();
+      cimg::exception_mode() = 0;
+      assign();
+      unsigned int i = 0;
+      for (bool stopflag = false; !stopflag; ++i) {
+        if (use_graphicsmagick) cimg_snprintf(filetmp2,sizeof(filetmp2),"%s.png.%u",filetmp,i);
+        else cimg_snprintf(filetmp2,sizeof(filetmp2),"%s-%u.png",filetmp,i);
+        CImg<T> img;
+        try { img.load_png(filetmp2); }
+        catch (CImgException&) { stopflag = true; }
+        if (img) { img.move_to(*this); std::remove(filetmp2); }
+      }
+      cimg::exception_mode() = omode;
+      return *this;
+    }
+
+    //! Load gif file, using ImageMagick or GraphicsMagick's external tools \newinstance.
+    static CImgList<T> get_load_gif_external(const char *const filename) {
+      return CImgList<T>().load_gif_external(filename);
+    }
+
     //! Load a gzipped list, using external tool 'gunzip'.
     /**
       \param filename Filename to read data from.
@@ -43929,7 +44334,7 @@ namespace cimg_library_suffixed {
     CImgList<T>& load_gzip_external(const char *const filename) {
       if (!filename)
         throw CImgIOException(_cimglist_instance
-                              "load_gzip_external() : Specified filename is (null).",
+                              "load_gzip_external(): Specified filename is (null).",
                               cimglist_instance);
       std::fclose(cimg::fopen(filename,"rb"));            // Check if file exists.
       char command[1024] = { 0 }, filetmp[512] = { 0 }, body[512] = { 0 };
@@ -43947,12 +44352,15 @@ namespace cimg_library_suffixed {
         }
         if ((file=std::fopen(filetmp,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > %s",cimg::gunzip_path(),filename,filetmp);
+      cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > \"%s\"",
+                    cimg::gunzip_path(),
+                    CImg<charT>::string(filename)._system_strescape().data(),
+                    CImg<charT>::string(filetmp)._system_strescape().data());
       cimg::system(command);
       if (!(file = std::fopen(filetmp,"rb"))) {
         cimg::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException(_cimglist_instance
-                              "load_gzip_external() : Failed to open file '%s'.",
+                              "load_gzip_external(): Failed to open file '%s'.",
                               cimglist_instance,
                               filename);
 
@@ -44004,7 +44412,7 @@ namespace cimg_library_suffixed {
 #ifndef cimg_use_tiff
       if (nfirst_frame || nlast_frame!=~0U || nstep_frame!=1)
         throw CImgArgumentException(_cimglist_instance
-                                    "load_tiff() : Unable to load sub-images from file '%s' unless libtiff is enabled.",
+                                    "load_tiff(): Unable to load sub-images from file '%s' unless libtiff is enabled.",
                                     cimglist_instance,
                                     filename);
 
@@ -44016,7 +44424,7 @@ namespace cimg_library_suffixed {
         do ++nb_images; while (TIFFReadDirectory(tif));
         if (nfirst_frame>=nb_images || (nlast_frame!=~0U && nlast_frame>=nb_images))
           cimg::warn(_cimglist_instance
-                     "load_tiff() : Invalid specified frame range is [%u,%u] (step %u) since file '%s' contains %u image(s).",
+                     "load_tiff(): Invalid specified frame range is [%u,%u] (step %u) since file '%s' contains %u image(s).",
                      cimglist_instance,
                      nfirst_frame,nlast_frame,nstep_frame,filename,nb_images);
 
@@ -44031,7 +44439,7 @@ namespace cimg_library_suffixed {
         cimglist_for(*this,l) _data[l]._load_tiff(tif,nfirst_frame + l*nstep_frame);
         TIFFClose(tif);
       } else throw CImgIOException(_cimglist_instance
-                                   "load_tiff() : Failed to open file '%s'.",
+                                   "load_tiff(): Failed to open file '%s'.",
                                    cimglist_instance,
                                    filename);
       return *this;
@@ -44064,12 +44472,12 @@ namespace cimg_library_suffixed {
       const unsigned int mdisp = msiz<8*1024?0:(msiz<8*1024*1024?1:2);
       char _title[64] = { 0 };
       if (!title) cimg_snprintf(_title,sizeof(_title),"CImgList<%s>",pixel_type());
-      std::fprintf(cimg::output(),"%s%s%s%s : %sthis%s = %p, %ssize%s = %u/%u [%u %s], %sdata%s = (CImg<%s>*)%p",
+      std::fprintf(cimg::output(),"%s%s%s%s: %sthis%s = %p, %ssize%s = %u/%u [%u %s], %sdata%s = (CImg<%s>*)%p",
                    cimg::t_magenta,cimg::t_bold,title?title:_title,cimg::t_normal,
                    cimg::t_bold,cimg::t_normal,(void*)this,
                    cimg::t_bold,cimg::t_normal,_width,_allocated_width,
                    mdisp==0?msiz:(mdisp==1?(msiz>>10):(msiz>>20)),
-                   mdisp==0?"b":(mdisp==1?"Kb":"Mb"),
+                   mdisp==0?"b":(mdisp==1?"Kio":"Mio"),
                    cimg::t_bold,cimg::t_normal,pixel_type(),(void*)begin());
       if (_data) std::fprintf(cimg::output(),"..%p.\n",(void*)((char*)end()-1));
       else std::fprintf(cimg::output(),".\n");
@@ -44110,9 +44518,10 @@ namespace cimg_library_suffixed {
        The function returns when a key is pressed or the display window is closed by the user.
     **/
     const CImgList<T>& display(CImgDisplay &disp, const bool display_info,
-                               const char axis='x', const float align=0) const {
+                               const char axis='x', const float align=0,
+                               unsigned int *const XYZ=0) const {
       bool is_exit = false;
-      return _display(disp,0,display_info,axis,align,0,true,is_exit);
+      return _display(disp,0,display_info,axis,align,XYZ,0,true,is_exit);
     }
 
     //! Display the current CImgList instance in a new display window.
@@ -44123,18 +44532,19 @@ namespace cimg_library_suffixed {
       \param align Appending alignment.
     **/
     const CImgList<T>& display(const char *const title=0, const bool display_info=true,
-                               const char axis='x', const float align=0) const {
+                               const char axis='x', const float align=0,
+                               unsigned int *const XYZ=0) const {
       CImgDisplay disp;
       bool is_exit = false;
-      return _display(disp,title,display_info,axis,align,0,true,is_exit);
+      return _display(disp,title,display_info,axis,align,XYZ,0,true,is_exit);
     }
 
     const CImgList<T>& _display(CImgDisplay &disp, const char *const title, const bool display_info,
-                                const char axis, const float align,
+                                const char axis, const float align, unsigned int *const XYZ,
                                 const unsigned int orig, const bool is_first_call, bool &is_exit) const {
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "display() : Empty instance.",
+                                    "display(): Empty instance.",
                                     cimglist_instance);
       if (!disp) {
         if (axis=='x') {
@@ -44171,7 +44581,7 @@ namespace cimg_library_suffixed {
         if (!is_first_call)
           disp.resize(cimg_fitscreen(_data[0]._width,_data[0]._height,_data[0]._depth),false).
             set_title("%s (%ux%ux%ux%u)",dtitle.data(),_data[0]._width,_data[0]._height,_data[0]._depth,_data[0]._spectrum);
-        _data[0]._display(disp,0,false,!is_first_call);
+        _data[0]._display(disp,0,false,XYZ,!is_first_call);
         if (disp.key()) is_exit = true;
         disp.resize(cimg_fitscreen(dw,dh,1),false).set_title("%s",dtitle.data());
       } else {
@@ -44191,9 +44601,9 @@ namespace cimg_library_suffixed {
                 delta = cimg::max(1U,(unsigned int)cimg::round(0.3*_width)),
                 ind0 = (unsigned int)cimg::max(0,s[0] - (int)delta),
                 ind1 = (unsigned int)cimg::min(width() - 1,s[0] + (int)delta);
-              if ((ind0!=0 || ind1!=_width-1) && ind1 - ind0>=3) get_shared_images(ind0,ind1)._display(disp,0,false,axis,align,orig + ind0,false,is_exit);
+              if ((ind0!=0 || ind1!=_width-1) && ind1 - ind0>=3) get_shared_images(ind0,ind1)._display(disp,0,false,axis,align,XYZ,orig + ind0,false,is_exit);
             }
-          } else if (s[0]!=0 || s[1]!=width()-1) get_shared_images(s[0],s[1])._display(disp,0,false,axis,align,orig+s[0],false,is_exit);
+          } else if (s[0]!=0 || s[1]!=width()-1) get_shared_images(s[0],s[1])._display(disp,0,false,axis,align,XYZ,orig+s[0],false,is_exit);
         }
       }
       return *this;
@@ -44207,7 +44617,7 @@ namespace cimg_library_suffixed {
     const CImgList<T>& save(const char *const filename, const int number=-1) const {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save() : Specified filename is (null).",
+                                    "save(): Specified filename is (null).",
                                     cimglist_instance);
       // Do not test for empty instances, since .cimg format is able to manage empty instances.
       const char *const ext = cimg::split_filename(filename);
@@ -44310,57 +44720,107 @@ namespace cimg_library_suffixed {
       return false;
     }
 
+    //! Save image sequence as a GIF animated file.
+    /**
+       \param filename Filename to write data to.
+       \param fps Number of desired frames per second.
+       \param nb_loops Number of loops (\c 0 for infinite looping).
+    **/
+    const CImgList<T>& save_gif_external(const char *const filename, const unsigned int fps=25, const unsigned int nb_loops=0) {
+      char command[1024] = { 0 }, filetmp[512] = { 0 }, filetmp2[512] = { 0 };
+      CImgList<charT> filenames;
+      std::FILE *file = 0;
+
+#ifdef cimg_use_png
+#define _cimg_save_gif_ext "png"
+#else
+#define _cimg_save_gif_ext "ppm"
+#endif
+
+      do {
+        cimg_snprintf(filetmp,sizeof(filetmp),"%s%c%s",cimg::temporary_path(),cimg_file_separator,cimg::filenamerand());
+        cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_000001." _cimg_save_gif_ext,filetmp);
+        if ((file=std::fopen(filetmp2,"rb"))!=0) cimg::fclose(file);
+      } while (file);
+      cimglist_for(*this,l) {
+        cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_%.6u." _cimg_save_gif_ext,filetmp,l+1);
+        CImg<charT>::string(filetmp2).move_to(filenames);
+        if (_data[l]._depth>1 || _data[l]._spectrum!=3) _data[l].get_resize(-100,-100,1,3).save(filetmp2);
+        else _data[l].save(filetmp2);
+      }
+
+#if cimg_OS!=2
+      cimg_snprintf(command,sizeof(command),"%s -delay 1x%u -loop %u",
+                    cimg::imagemagick_path(),fps,nb_loops);
+      CImg<ucharT>::string(command).move_to(filenames,0);
+      cimg_snprintf(command,sizeof(command),"\"%s\" >/dev/null 2>&1",
+                    CImg<charT>::string(filename)._system_strescape().data());
+      CImg<ucharT>::string(command).move_to(filenames);
+#else
+      cimg_snprintf(command,sizeof(command),"\"%s -delay 1x%u -loop %u",
+                    cimg::imagemagick_path(),fps,nb_loops);
+      CImg<ucharT>::string(command).move_to(filenames,0);
+      cimg_snprintf(command,sizeof(command),"\"%s\"\" >NUL 2>&1",
+                    CImg<charT>::string(filename)._system_strescape().data());
+      CImg<ucharT>::string(command).move_to(filenames);
+#endif
+      CImg<charT> _command = filenames>'x';
+      cimg_for(_command,p,char) if (!*p) *p = ' ';
+      _command.back() = 0;
+
+      cimg::system(_command);
+      file = std::fopen(filename,"rb");
+      if (!file)
+        throw CImgIOException(_cimglist_instance
+                              "save_gif_external(): Failed to save file '%s' with external command 'convert'.",
+                              cimglist_instance,
+                              filename);
+      else cimg::fclose(file);
+      cimglist_for_in(*this,1,filenames._width-1,l) std::remove(filenames[l]);
+      return *this;
+    }
+
     //! Save image sequence, using FFMPEG library.
     /**
       \param filename Filename to write data to.
-      \param first_frame Index of first image frame to write.
-      \param last_frame Index of last image frame to write.
       \param fps Desired framerate (in frames per seconds) if chosen format supports it.
       \param bitrate Desired bitrate (in bits per seconds) if chosen format supports it.
     **/
     // This piece of code has been originally written by David. G. Starkweather.
-    const CImgList<T>& save_ffmpeg(const char *const filename, const unsigned int first_frame=0, const unsigned int last_frame=~0U,
-                                   const unsigned int fps=25, const unsigned int bitrate=2048) const {
+    const CImgList<T>& save_ffmpeg(const char *const filename, const unsigned int fps=25, const unsigned int bitrate=2048) const {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg() : Specified filename is (null).",
+                                    "save_ffmpeg(): Specified filename is (null).",
                                     cimglist_instance);
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "save_ffmpeg() : Empty instance, for file '%s'.",
+                                    "save_ffmpeg(): Empty instance, for file '%s'.",
                                     cimglist_instance,
                                     filename);
       if (!fps)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg() : Invalid specified framerate 0, for file '%s'.",
+                                    "save_ffmpeg(): Invalid specified framerate 0, for file '%s'.",
                                     cimglist_instance,
                                     filename);
 
-      const unsigned int nlast_frame = last_frame==~0U?_width-1:last_frame;
-      if (first_frame>=_width || nlast_frame>=_width)
-        throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg() : Out of range specified frames [%u,%u], for file '%s'.",
-                                    cimglist_instance,
-                                    first_frame,last_frame,filename);
-
-      for (unsigned int ll = first_frame; ll<=nlast_frame; ++ll) if (!_data[ll].is_sameXYZ(_data[0]))
+      cimglist_for(*this,l) if (!_data[l].is_sameXYZ(_data[0]))
         throw CImgInstanceException(_cimglist_instance
-                                    "save_ffmpeg() : Invalid instance dimensions, for file '%s'.",
+                                    "save_ffmpeg(): Invalid instance dimensions, for file '%s'.",
                                     cimglist_instance,
                                     filename);
 
 #ifndef cimg_use_ffmpeg
-      return save_ffmpeg_external(filename,first_frame,last_frame,0,fps,bitrate);
+      return save_ffmpeg_external(filename,0,fps,bitrate);
 #else
       avcodec_register_all();
       av_register_all();
       const int
-        frame_dimx = _data[first_frame].width(),
-        frame_dimy = _data[first_frame].height(),
-        frame_dimv = _data[first_frame].spectrum();
+        frame_dimx = _data[0].width(),
+        frame_dimy = _data[0].height(),
+        frame_dimv = _data[0].spectrum();
       if (frame_dimv!=1 && frame_dimv!=3)
         throw CImgInstanceException(_cimglist_instance
-                                    "save_ffmpeg() : Image[0] (%u,%u,%u,%u,%p) has not 1 or 3 channels, for file '%s'.",
+                                    "save_ffmpeg(): Image[0] (%u,%u,%u,%u,%p) has not 1 or 3 channels, for file '%s'.",
                                     cimglist_instance,
                                     _data[0]._width,_data[0]._height,_data[0]._depth,_data[0]._spectrum,_data,filename);
 
@@ -44384,7 +44844,7 @@ namespace cimg_library_suffixed {
 
       if (!fmt)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg() : Unable to determine codec for file '%s'.",
+                                    "save_ffmpeg(): Unable to determine codec for file '%s'.",
                                     cimglist_instance,
                                     filename);
 
@@ -44400,7 +44860,7 @@ namespace cimg_library_suffixed {
 #endif
       if (!oc) // Failed to allocate format context.
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate FFMPEG structure for format context, for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate FFMPEG structure for format context, for file '%s'.",
                               cimglist_instance,
                               filename);
 
@@ -44411,28 +44871,27 @@ namespace cimg_library_suffixed {
       std::sprintf(oc->filename,"%s",filename);
 
       // Add video stream.
-      int stream_index = 0;
       AVStream *video_str = 0;
       if (fmt->video_codec!=CODEC_ID_NONE) {
-        video_str = av_new_stream(oc,stream_index);
+        video_str = avformat_new_stream(oc,NULL);
         if (!video_str) { // Failed to allocate stream.
           av_free(oc);
           throw CImgIOException(_cimglist_instance
-                                "save_ffmpeg() : Failed to allocate FFMPEG structure for video stream, for file '%s'.",
+                                "save_ffmpeg(): Failed to allocate FFMPEG structure for video stream, for file '%s'.",
                                 cimglist_instance,
                                 filename);
         }
       } else { // No codec identified.
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to identify proper codec, for file '%s'.",
+                              "save_ffmpeg(): Failed to identify proper codec, for file '%s'.",
                               cimglist_instance,
                               filename);
       }
 
       AVCodecContext *c = video_str->codec;
       c->codec_id = fmt->video_codec;
-      c->codec_type = CODEC_TYPE_VIDEO;
+      c->codec_type = AVMEDIA_TYPE_VIDEO;
       c->bit_rate = 1024*bitrate;
       c->width = frame_dimx;
       c->height = frame_dimy;
@@ -44443,26 +44902,18 @@ namespace cimg_library_suffixed {
       if (c->codec_id==CODEC_ID_MPEG2VIDEO) c->max_b_frames = 2;
       if (c->codec_id==CODEC_ID_MPEG1VIDEO) c->mb_decision = 2;
 
-      if (av_set_parameters(oc,0)<0) { // Parameters not properly set.
-        av_free(oc);
-        throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Invalid parameters set for avcodec, for file '%s'.",
-                              cimglist_instance,
-                              filename);
-      }
-
       // Open codecs and alloc buffers.
       codec = avcodec_find_encoder(c->codec_id);
       if (!codec) { // Failed to find codec.
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : No valid codec found for file '%s'.",
+                              "save_ffmpeg(): No valid codec found for file '%s'.",
                               cimglist_instance,
                               filename);
       }
-      if (avcodec_open(c,codec)<0) // Failed to open codec.
+      if (avcodec_open2(c,codec,NULL)<0) // Failed to open codec.
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to open codec for file '%s'.",
+                              "save_ffmpeg(): Failed to open codec for file '%s'.",
                               cimglist_instance,
                               filename);
 
@@ -44471,7 +44922,7 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate memory for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate memory for file '%s'.",
                               cimglist_instance,
                               filename);
       }
@@ -44484,7 +44935,7 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate memory for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate memory for file '%s'.",
                               cimglist_instance,
                               filename);
       }
@@ -44498,7 +44949,7 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate memory for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate memory for file '%s'.",
                               cimglist_instance,
                               filename);
       }
@@ -44512,7 +44963,7 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate memory for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate memory for file '%s'.",
                               cimglist_instance,
                               filename);
       }
@@ -44522,16 +44973,16 @@ namespace cimg_library_suffixed {
 
       // Open file.
       if (!(fmt->flags&AVFMT_NOFILE)) {
-        if (url_fopen(&oc->pb,filename,URL_WRONLY)<0)
+        if (avio_open(&oc->pb,filename,AVIO_FLAG_WRITE)<0)
           throw CImgIOException(_cimglist_instance
-                                "save_ffmpeg() : Failed to open file '%s'.",
+                                "save_ffmpeg(): Failed to open file '%s'.",
                                 cimglist_instance,
                                 filename);
       }
 
-      if (av_write_header(oc)<0)
+      if (avformat_write_header(oc,NULL)<0)
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to write header in file '%s'.",
+                              "save_ffmpeg(): Failed to write header in file '%s'.",
                               cimglist_instance,
                               filename);
 
@@ -44547,7 +44998,7 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to get conversion context for file '%s'.",
+                              "save_ffmpeg(): Failed to get conversion context for file '%s'.",
                               cimglist_instance,
                               filename);
       }
@@ -44564,13 +45015,13 @@ namespace cimg_library_suffixed {
         avcodec_close(video_str->codec);
         av_free(oc);
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to allocate memory, for file '%s'.",
+                              "save_ffmpeg(): Failed to allocate memory, for file '%s'.",
                               cimglist_instance,
                               filename);
       }
 
       // Loop through each desired image in list.
-      for (unsigned int i = first_frame; i<=nlast_frame; ++i) {
+      cimglist_for(*this,i) {
         CImg<uint8_t> currentIm = _data[i], red, green, blue, gray;
         if (src_pxl_fmt==PIX_FMT_RGB24) {
           red = currentIm.get_shared_channel(0);
@@ -44587,12 +45038,14 @@ namespace cimg_library_suffixed {
         }
         if (!video_str) break;
         if (sws_scale(img_convert_context,tmp_pict->data,tmp_pict->linesize,0,c->height,picture->data,picture->linesize)<0) break;
-        out_size = avcodec_encode_video(c,video_outbuf,video_outbuf_size,picture);
-        if (out_size>0) {
-          AVPacket pkt;
-          av_init_packet(&pkt);
+
+        AVPacket pkt;
+        int got_packet;
+        av_init_packet(&pkt);
+        out_size = avcodec_encode_video2(c,&pkt,picture,&got_packet);
+        if (got_packet) {
           pkt.pts = av_rescale_q(c->coded_frame->pts,c->time_base,video_str->time_base);
-          if (c->coded_frame->key_frame) pkt.flags|=PKT_FLAG_KEY;
+          if (c->coded_frame->key_frame) pkt.flags|=AV_PKT_FLAG_KEY;
           pkt.stream_index = video_str->index;
           pkt.data = video_outbuf;
           pkt.size = out_size;
@@ -44611,16 +45064,16 @@ namespace cimg_library_suffixed {
       }
       if (av_write_trailer(oc)<0)
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg() : Failed to write trailer for file '%s'.",
+                              "save_ffmpeg(): Failed to write trailer for file '%s'.",
                               cimglist_instance,
                               filename);
 
-      av_freep(&oc->streams[stream_index]->codec);
-      av_freep(&oc->streams[stream_index]);
+      av_freep(&oc->streams[0]->codec);
+      av_freep(&oc->streams[0]);
       if (!(fmt->flags&AVFMT_NOFILE)) {
         /*if (url_fclose(oc->pb)<0)
           throw CImgIOException(_cimglist_instance
-                                "save_ffmpeg() : File '%s', failed to close file.",
+                                "save_ffmpeg(): File '%s', failed to close file.",
                                 cimglist_instance,
                                 filename);
         */
@@ -44634,17 +45087,17 @@ namespace cimg_library_suffixed {
     const CImgList<T>& _save_yuv(std::FILE *const file, const char *const filename, const bool is_rgb) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_yuv() : Specified filename is (null).",
+                                    "save_yuv(): Specified filename is (null).",
                                     cimglist_instance);
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "save_yuv() : Empty instance, for file '%s'.",
+                                    "save_yuv(): Empty instance, for file '%s'.",
                                     cimglist_instance,
                                     filename?filename:"(FILE*)");
 
       if ((*this)[0].width()%2 || (*this)[0].height()%2)
         throw CImgInstanceException(_cimglist_instance
-                                    "save_yuv() : Invalid odd instance dimensions (%u,%u) for file '%s'.",
+                                    "save_yuv(): Invalid odd instance dimensions (%u,%u) for file '%s'.",
                                     cimglist_instance,
                                     (*this)[0].width(),(*this)[0].height(),
                                     filename?filename:"(FILE*)");
@@ -44682,12 +45135,12 @@ namespace cimg_library_suffixed {
     const CImgList<T>& _save_cimg(std::FILE *const file, const char *const filename, const bool is_compressed) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_cimg() : Specified filename is (null).",
+                                    "save_cimg(): Specified filename is (null).",
                                     cimglist_instance);
 #ifndef cimg_use_zlib
       if (is_compressed)
         cimg::warn(_cimglist_instance
-                   "save_cimg() : Unable to save compressed data in file '%s' unless zlib is enabled, saving them uncompressed.",
+                   "save_cimg(): Unable to save compressed data in file '%s' unless zlib is enabled, saving them uncompressed.",
                    cimglist_instance,
                    filename?filename:"(FILE*)");
 #endif
@@ -44710,7 +45163,7 @@ namespace cimg_library_suffixed {
             Bytef *const cbuf = new Bytef[csiz];
             if (compress(cbuf,&csiz,(Bytef*)ref._data,siz))
               cimg::warn(_cimglist_instance
-                         "save_cimg() : Failed to save compressed data for file '%s', saving them uncompressed.",
+                         "save_cimg(): Failed to save compressed data for file '%s', saving them uncompressed.",
                          cimglist_instance,
                          filename?filename:"(FILE*)");
             else {
@@ -44760,7 +45213,7 @@ namespace cimg_library_suffixed {
           W = H = D = C = 0; \
           if (std::sscanf(tmp,"%u %u %u %u",&W,&H,&D,&C)!=4) \
             throw CImgIOException(_cimglist_instance \
-                                  "save_cimg() : Invalid size (%u,%u,%u,%u) of image[%u], for file '%s'.", \
+                                  "save_cimg(): Invalid size (%u,%u,%u,%u) of image[%u], for file '%s'.", \
                                   cimglist_instance, \
                                   W,H,D,C,l,filename?filename:"(FILE*)"); \
           if (W*H*D*C>0) { \
@@ -44812,11 +45265,11 @@ namespace cimg_library_suffixed {
 
       if (!file && !filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_cimg() : Specified filename is (null).",
+                                    "save_cimg(): Specified filename is (null).",
                                     cimglist_instance);
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "save_cimg() : Empty instance, for file '%s'.",
+                                    "save_cimg(): Empty instance, for file '%s'.",
                                     cimglist_instance,
                                     filename?filename:"(FILE*)");
 
@@ -44830,7 +45283,7 @@ namespace cimg_library_suffixed {
       if (err<2) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "save_cimg() : CImg header not found in file '%s'.",
+                              "save_cimg(): CImg header not found in file '%s'.",
                               cimglist_instance,
                               filename?filename:"(FILE*)");
       }
@@ -44855,7 +45308,7 @@ namespace cimg_library_suffixed {
       if (!saved) {
         if (!file) cimg::fclose(nfile);
         throw CImgIOException(_cimglist_instance
-                              "save_cimg() : Unsupported data type '%s' for file '%s'.",
+                              "save_cimg(): Unsupported data type '%s' for file '%s'.",
                               cimglist_instance,
                               filename?filename:"(FILE*)",str_pixeltype);
       }
@@ -44949,11 +45402,11 @@ namespace cimg_library_suffixed {
     const CImgList<T>& save_tiff(const char *const filename, const unsigned int compression_type=0) const {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_tiff() : Specified filename is (null).",
+                                    "save_tiff(): Specified filename is (null).",
                                     cimglist_instance);
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "save_tiff() : Empty instance, for file '%s'.",
+                                    "save_tiff(): Empty instance, for file '%s'.",
                                     cimglist_instance,
                                     filename);
 #ifndef cimg_use_tiff
@@ -44976,7 +45429,7 @@ namespace cimg_library_suffixed {
         TIFFClose(tif);
       } else
         throw CImgIOException(_cimglist_instance
-                              "save_tiff() : Failed to open stream for file '%s'.",
+                              "save_tiff(): Failed to open stream for file '%s'.",
                               cimglist_instance,
                               filename);
 #endif
@@ -44991,7 +45444,7 @@ namespace cimg_library_suffixed {
     const CImgList<T>& save_gzip_external(const char *const filename) const {
       if (!filename)
         throw CImgIOException(_cimglist_instance
-                              "save_gzip_external() : Specified filename is (null).",
+                              "save_gzip_external(): Specified filename is (null).",
                               cimglist_instance);
 
       char command[1024] = { 0 }, filetmp[512] = { 0 }, body[512] = { 0 };
@@ -45012,12 +45465,15 @@ namespace cimg_library_suffixed {
 
       if (is_saveable(body)) {
         save(filetmp);
-        cimg_snprintf(command,sizeof(command),"%s -c %s > \"%s\"",cimg::gzip_path(),filetmp,filename);
+        cimg_snprintf(command,sizeof(command),"%s -c \"%s\" > \"%s\"",
+                      cimg::gzip_path(),
+                      CImg<charT>::string(filetmp)._system_strescape().data(),
+                      CImg<charT>::string(filename)._system_strescape().data());
         cimg::system(command);
         file = std::fopen(filename,"rb");
         if (!file)
           throw CImgIOException(_cimglist_instance
-                                "save_gzip_external() : Failed to save file '%s' with external command 'gzip'.",
+                                "save_gzip_external(): Failed to save file '%s' with external command 'gzip'.",
                                 cimglist_instance,
                                 filename);
         else cimg::fclose(file);
@@ -45036,21 +45492,19 @@ namespace cimg_library_suffixed {
     //! Save image sequence, using the external tool 'ffmpeg'.
     /**
       \param filename Filename to write data to.
-      \param first_frame Index of first image frame to write.
-      \param last_frame Index of last image frame to write.
       \param codec Type of compression.
       \param fps Number of frames per second.
       \param bitrate Output bitrate
     **/
-    const CImgList<T>& save_ffmpeg_external(const char *const filename, const unsigned int first_frame=0, const unsigned int last_frame=~0U,
-                                            const char *const codec=0, const unsigned int fps=25, const unsigned int bitrate=2048) const {
+    const CImgList<T>& save_ffmpeg_external(const char *const filename, const char *const codec=0,
+                                            const unsigned int fps=25, const unsigned int bitrate=2048) const {
       if (!filename)
         throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg_external() : Specified filename is (null).",
+                                    "save_ffmpeg_external(): Specified filename is (null).",
                                     cimglist_instance);
       if (is_empty())
         throw CImgInstanceException(_cimglist_instance
-                                    "save_ffmpeg_external() : Empty instance, for file '%s'.",
+                                    "save_ffmpeg_external(): Empty instance, for file '%s'.",
                                     cimglist_instance,
                                     filename);
       const char
@@ -45058,17 +45512,11 @@ namespace cimg_library_suffixed {
         *const _codec = codec?codec:!cimg::strcasecmp(ext,"flv")?"flv":"mpeg2video";
 
       char command[1024] = { 0 }, filetmp[512] = { 0 }, filetmp2[512] = { 0 };
+      CImgList<charT> filenames;
       std::FILE *file = 0;
-      const unsigned int nlast_frame = last_frame==~0U?_width-1:last_frame;
-      if (first_frame>=_width || nlast_frame>=_width)
-        throw CImgArgumentException(_cimglist_instance
-                                    "save_ffmpeg_external() : Out of range specified frames [%u,%u] for file '%s'.",
-                                    cimglist_instance,
-                                    filename,first_frame,last_frame);
-
-      for (unsigned int ll = first_frame; ll<=nlast_frame; ++ll) if (!_data[ll].is_sameXYZ(_data[0]))
+      cimglist_for(*this,l) if (!_data[l].is_sameXYZ(_data[0]))
         throw CImgInstanceException(_cimglist_instance
-                                    "save_ffmpeg_external() : Invalid instance dimensions for file '%s'.",
+                                    "save_ffmpeg_external(): Invalid instance dimensions for file '%s'.",
                                     cimglist_instance,
                                     filename);
       do {
@@ -45076,25 +45524,34 @@ namespace cimg_library_suffixed {
         cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_000001.ppm",filetmp);
         if ((file=std::fopen(filetmp2,"rb"))!=0) cimg::fclose(file);
       } while (file);
-      for (unsigned int l = first_frame; l<=nlast_frame; ++l) {
+      cimglist_for(*this,l) {
         cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_%.6u.ppm",filetmp,l+1);
+        CImg<charT>::string(filetmp2).move_to(filenames);
         if (_data[l]._depth>1 || _data[l]._spectrum!=3) _data[l].get_resize(-100,-100,1,3).save_pnm(filetmp2);
         else _data[l].save_pnm(filetmp2);
       }
 #if cimg_OS!=2
-      cimg_snprintf(command,sizeof(command),"ffmpeg -i %s_%%6d.ppm -vcodec %s -b %uk -r %u -y \"%s\" >/dev/null 2>&1",filetmp,_codec,bitrate,fps,filename);
+      cimg_snprintf(command,sizeof(command),"%s -i \"%s_%%6d.ppm\" -vcodec %s -b %uk -r %u -y \"%s\" >/dev/null 2>&1",
+                    cimg::ffmpeg_path(),
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    _codec,bitrate,fps,
+                    CImg<charT>::string(filename)._system_strescape().data());
 #else
-      cimg_snprintf(command,sizeof(command),"\"ffmpeg -i %s_%%6d.ppm -vcodec %s -b %uk -r %u -y \"%s\"\" >NUL 2>&1",filetmp,_codec,bitrate,fps,filename);
+      cimg_snprintf(command,sizeof(command),"\"%s -i \"%s_%%6d.ppm\" -vcodec %s -b %uk -r %u -y \"%s\"\" >NUL 2>&1",
+                    cimg::ffmpeg_path(),
+                    CImg<charT>::string(filetmp)._system_strescape().data(),
+                    _codec,bitrate,fps,
+                    CImg<charT>::string(filename)._system_strescape().data());
 #endif
       cimg::system(command);
       file = std::fopen(filename,"rb");
       if (!file)
         throw CImgIOException(_cimglist_instance
-                              "save_ffmpeg_external() : Failed to save file '%s' with external command 'ffmpeg'.",
+                              "save_ffmpeg_external(): Failed to save file '%s' with external command 'ffmpeg'.",
                               cimglist_instance,
                               filename);
       else cimg::fclose(file);
-      cimglist_for(*this,lll) { cimg_snprintf(filetmp2,sizeof(filetmp2),"%s_%.6u.ppm",filetmp,lll+1); std::remove(filetmp2); }
+      cimglist_for(*this,l) std::remove(filenames[l]);
       return *this;
     }
 
@@ -45190,7 +45647,7 @@ namespace cimg_library_suffixed {
       if (_width==1) insert(1);
       if (_width>2)
         cimg::warn(_cimglist_instance
-                   "FFT() : Instance has more than 2 images",
+                   "FFT(): Instance has more than 2 images",
                    cimglist_instance);
 
       CImg<T>::FFT(_data[0],_data[1],axis,invert);
@@ -45211,7 +45668,7 @@ namespace cimg_library_suffixed {
       if (_width==1) insert(1);
       if (_width>2)
         cimg::warn(_cimglist_instance
-                   "FFT() : Instance has more than 2 images",
+                   "FFT(): Instance has more than 2 images",
                    cimglist_instance);
 
       CImg<T>::FFT(_data[0],_data[1],invert);
@@ -45284,7 +45741,7 @@ namespace cimg {
                     const CImg<t>& logo, const bool is_centered = false) {
 #if cimg_display==0
     cimg::unused(title,msg,button1_label,button2_label,button3_label,button4_label,button5_label,button6_label,logo._data,is_centered);
-    throw CImgIOException("cimg::dialog() : No display available.");
+    throw CImgIOException("cimg::dialog(): No display available.");
 #else
     const unsigned char
       black[] = { 0,0,0 }, white[] = { 255,255,255 }, gray[] = { 200,200,200 }, gray2[] = { 150,150,150 };
@@ -45299,7 +45756,7 @@ namespace cimg {
               if (button6_label) { CImg<unsigned char>().draw_text(0,0,button6_label,black,gray,1,13).move_to(buttons);
               }}}}}}
     if (!buttons._width)
-      throw CImgArgumentException("cimg::dialog() : No buttons have been defined.");
+      throw CImgArgumentException("cimg::dialog(): No buttons have been defined.");
     cimglist_for(buttons,l) buttons[l].resize(-100,-100,1,3);
 
     unsigned int bw = 0, bh = 0;

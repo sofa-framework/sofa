@@ -97,17 +97,26 @@ public:
     {
         _size = newSize;
         if( _array ) delete [] _array;
+        if( !newSize ) { _array=0; return; }
         _array = new T[_size];
     }
 
     /// still-existing data is preserved
     void resizeAndKeep( size_t newSize )
     {
-        T* tmpArray = new T[newSize];
-        memcpy( tmpArray, _array, std::min(newSize,_size)*sizeof(T) );
-        _size = newSize;
-        if( _array ) delete [] _array;
-        _array = tmpArray;
+        if( !newSize )
+        {
+            delete [] _array;
+            _array = 0;
+        }
+        else
+        {
+            T* tmpArray = new T[newSize];
+            memcpy( tmpArray, _array, std::min(newSize,_size)*sizeof(T) );
+            _size = newSize;
+            if( _array ) delete [] _array;
+            _array = tmpArray;
+        }
     }
 
     /// \return the index of the first occurence, if !present \return -1

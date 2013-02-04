@@ -427,7 +427,30 @@ CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxs
 }
 
 
+/// Copy subImage in largeImage at the given pixel position (in the large image pixel coordinates)
+/// @warning for now both image must have the same type and same spectrum size @todo: improve this
+/// is this possible in CImg? I was not able to find it...
+template<typename T>
+void copySubImage( CImg<T>& largeImage, const CImg<T>& subImage, unsigned posX, unsigned posY, unsigned posZ )
+{
+    if( largeImage.spectrum()!=subImage.spectrum() || posX>=(unsigned)largeImage.width() || posY>=(unsigned)largeImage.height() || posZ>=(unsigned)largeImage.depth() ) return;
 
+    unsigned maxX = std::min( posX+subImage.width() , (unsigned)largeImage.width()  ) - 1;
+    unsigned maxY = std::min( posY+subImage.height(), (unsigned)largeImage.height() ) - 1;
+    unsigned maxZ = std::min( posZ+subImage.depth() , (unsigned)largeImage.depth()  ) - 1;
+
+    for( unsigned z=posZ, subz=0 ; z<=maxZ ; ++z, ++subz )
+    {
+        for( unsigned y=posY, suby=0 ; y<=maxY ; ++y, ++suby )
+        {
+            // todo improve perf by memcpy by line
+            for( unsigned x=posX, subx=0 ; x<=maxX ; ++x, ++subx )
+            {
+                largeImage( x, y, z ) = subImage( subx, suby, subz );
+            }
+        }
+    }
+}
 
 
 

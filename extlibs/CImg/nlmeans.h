@@ -163,7 +163,7 @@ CImg<T>& nlmeans(int patch_size=1, double lambda=-1, double alpha=3, double sigm
               if (cimg::abs(P(xi,yi) - P(xj,yj))/sig<3.) {
                 double d = 0;
                 int n = 0;
-                if (!(xi==xj && yi==yj))
+                if (!(xi==xj && yi==yj)) //{
                   for (int ky = -patch_size; ky<patch_size+1; ky+=sampling) {
                     int
                       yj_ = yj+ky,
@@ -180,11 +180,12 @@ CImg<T>& nlmeans(int patch_size=1, double lambda=-1, double alpha=3, double sigm
                             n++;
                           }
                       }
-                  }
+                    //}
                 float w = (float)std::exp(d*h2);
                 cimg_forC(*this,v) uhat[v]+=w*(*this)(xj,yj,v);
                 wmax = w>wmax?w:wmax; // Store the maximum of the weights
                 sw+=w; // Compute the sum of the weights
+                }
               }
           // add the central pixel with the maximum weight
           cimg_forC(*this,v) uhat[v]+=wmax*(*this)(xi,yi,v);
