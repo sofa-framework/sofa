@@ -49,7 +49,6 @@ HEADERS += \
         BranchingImage.h \
         BranchingImageContainer.h \
         BranchingImageConverter.h \
-        BranchingImageCoarsener.h \
 
 
 SOURCES += \
@@ -73,7 +72,6 @@ SOURCES += \
     VectorVisualizationWidget.cpp \
     BranchingImageContainer.cpp \
     BranchingImageConverter.cpp \
-    BranchingImageCoarsener.cpp \
 
 
 README_FILE = image.txt

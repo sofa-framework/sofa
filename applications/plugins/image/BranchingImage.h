@@ -126,8 +126,9 @@ public:
         T* value; ///< value of the voxel for each channel (value is the size of the C dimension of the ConnectionImage)
 
         typedef NoPreallocationVector<unsigned> NeighboursInOneDirection;
-        typedef Vec< NB_NeighbourDirections, NeighboursInOneDirection > Neighbours;
+        typedef Vec< NB_NeighbourDirections, NeighboursInOneDirection > Neighbours; ///< @todo a bit of space could be saved by explicitly create 6 vectors leftNeighbours, rightNeighbours...
         Neighbours neighbours; ///< neighbours of the voxels. In each 6 directions (bottom, up, left...), a list of all connected voxels (indices in the Voxels list of the neighbour pixel in the ConnectionImage)
+
 
 
 
@@ -314,7 +315,7 @@ public:
     typedef Vec<NB_DimensionLabel,unsigned int> Dimension; // [x,y,z,s,t]
 
 
-    Dimension dimension; ///< the image dimensions [x,y,z,s,t]
+    Dimension dimension; ///< the image dimensions [x,y,z,s,t] - @todo maybe this could be implicit?
     unsigned sliceSize; ///< (x,y) slice size
     unsigned imageSize; ///< (x,y,z) image size
     BranchingImage3D* imgList; ///< array of BranchingImage over time t
