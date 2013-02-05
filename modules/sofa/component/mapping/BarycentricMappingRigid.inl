@@ -461,16 +461,18 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
             matrixJ->add(beamNode*6+dim, 3*tetra[3]+dim, fz);
         }
 
-        /*for (int vert = 0; vert < 4; vert++)
+        for (int vert = 0; vert < 4; vert++)
         {
-            Vec3f v = actualTetraPosition[tetra[vert]];
+            Vector3 v;
+            for (size_t dim = 0; dim < 3; dim++)
+                v[dim] = actualTetraPosition[tetra[vert]][dim] - actualPos[beamNode][dim];
             matrixJ->add(beamNode*6+3, 3*tetra[vert]+1, -v[2]);
             matrixJ->add(beamNode*6+3, 3*tetra[vert]+2, +v[1]);
             matrixJ->add(beamNode*6+4, 3*tetra[vert]+0, +v[2]);
             matrixJ->add(beamNode*6+4, 3*tetra[vert]+2, -v[0]);
             matrixJ->add(beamNode*6+5, 3*tetra[vert]+0, -v[1]);
             matrixJ->add(beamNode*6+5, 3*tetra[vert]+1, +v[0]);            
-        }*/
+        }
     }
 
     matrixJ->compress();
