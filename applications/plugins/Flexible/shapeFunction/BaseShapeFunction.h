@@ -49,6 +49,11 @@ using defaulttype::Mat;
 using defaulttype::MatSym;
 using helper::vector;
 
+template<typename TShapeFunctionTypes>
+struct ShapeFunctionInternalData
+{
+};
+
 
 /** Compute interpolation weights and their derivatives.
   Interpolation is defined across a material space as \f$ x_j = \sum_i w_{ij} x_i \f$, where the x are material coordinates (3 dimensions for a volumetris solid, 2 for a surface, 1 for a line, independently of the dimension of the space they are moving in).
@@ -88,12 +93,14 @@ public:
 	typedef typename ShapeFunctionTypes::VecVReal VecVReal;
 	typedef typename ShapeFunctionTypes::VecVGradient VecVGradient;
 	typedef typename ShapeFunctionTypes::VecVHessian VecVHessian;
+	typedef ShapeFunctionInternalData<TShapeFunctionTypes> InternalData;
     //@}
 
     /** @name data */
     //@{
     Data<unsigned int > f_nbRef;      ///< maximum number of parents per child
     Data< VCoord > f_position;  ///< material coordinates of the parent nodes
+	InternalData m_internalData;
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -178,6 +185,7 @@ protected:
     }
 
     virtual ~BaseShapeFunction() {}
+
 };
 
 

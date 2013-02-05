@@ -47,7 +47,7 @@ public:
 	typedef typename Inherit::VecVReal VecVReal;
 	typedef typename Inherit::VecVGradient VecVGradient;
 	typedef typename Inherit::VecVHessian VecVHessian;
-	typedef ShepardShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
+//	typedef ShepardShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
 
 public :
 
