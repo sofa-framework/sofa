@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
-#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
+#ifndef SOFA_GPU_CUDA_CUDALINEMODEL_H
+#define SOFA_GPU_CUDA_CUDALINEMODEL_H
 
 #include "CudaTypes.h"
 #include <sofa/component/collision/LineModel.h>
@@ -38,7 +38,7 @@ namespace cuda
 {
 
 typedef sofa::component::collision::TLineModel<CudaVec3fTypes> CudaLineModel;
-typedef sofa::component::collision::TLineModel<CudaVec3fTypes> CudaLine;
+typedef sofa::component::collision::TLine<CudaVec3fTypes> CudaLine;
 
 } // namespace cuda
 
