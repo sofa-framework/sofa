@@ -486,9 +486,25 @@ template<class real>
 __device__ __inline__ CudaVec3<real> quatInverseRotate(const CudaVec4<real>& q, const CudaVec3<real>& v)
 {
 	CudaVec3<real> r;
-	r.x = (1.0f - 2.0f * (q.y * q.y + q.z * q.z))*v.x + (2.0f * (q.x * q.y + q.z * q.w))*v.y + (2.0f * (q.z * q.x - q.y * q.w))*v[2];
-	r.y = (2.0f * (q.x * q.y - q.z * q.w))*v.x + (1.0f - 2.0f * (q.z * q.z + q.x * q.x))*v.y + (2.0f * (q.y * q.z + q.x * q.w))*v[2];
-	r.z = (2.0f * (q.z * q.x + q.y * q.w))*v.x + (2.0f * (q.y * q.z - q.x * q.w))*v.y + (1.0f - 2.0f * (q.y * q.y + q.x * q.x))*v[2];
+	r.x = (1.0f - 2.0f * (q.y * q.y + q.z * q.z))*v.x + (2.0f * (q.x * q.y + q.z * q.w))*v.y + (2.0f * (q.z * q.x - q.y * q.w))*v.z;
+	r.y = (2.0f * (q.x * q.y - q.z * q.w))*v.x + (1.0f - 2.0f * (q.z * q.z + q.x * q.x))*v.y + (2.0f * (q.y * q.z + q.x * q.w))*v.z;
+	r.z = (2.0f * (q.z * q.x + q.y * q.w))*v.x + (2.0f * (q.y * q.z - q.x * q.w))*v.y + (1.0f - 2.0f * (q.y * q.y + q.x * q.x))*v.z;
+	return r;
+}
+
+template<class real>
+__device__ __inline__ CudaVec4<real> quatInverse(const CudaVec4<real>& q)
+{
+	CudaVec4<real> r;
+	real qn = rsqrt(norm2(q));
+	
+	qn = qn > 0.0f ? 1/qn : 0.0f;
+	
+	r.w = q.w*qn;
+	r.x = - r.x*qn;
+	r.y = - r.y*qn;
+	r.z = - r.z*qn;
+	
 	return r;
 }
 
