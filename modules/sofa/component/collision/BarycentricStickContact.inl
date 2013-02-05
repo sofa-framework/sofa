@@ -205,6 +205,8 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     // Update mappings
     mapper1.update();
     mapper2.update();
+    mapper1.updateXfree();
+    mapper2.updateXfree();
     sout << size << "BarycentricStickContact springs created"<<sendl;
 }
 
