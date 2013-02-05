@@ -55,6 +55,7 @@ public:
     typedef helper::fixed_array<MappingData,3> MappingOrientData;
 
     typedef typename In::VecCoord VecCoord;
+    typedef typename In::VecDeriv VecDeriv;
 
     enum { NIn = Inherit::NIn };
     enum { NOut = Inherit::NOut };
@@ -74,6 +75,12 @@ protected:
 
     MatrixType* matrixJ;
     bool updateJ;
+
+    /// TEMP
+    VecDeriv actualOut;
+    typename Out::VecCoord actualPos;
+
+    /// TEMP
 
     BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
             helper::ParticleMask *_maskFrom,
