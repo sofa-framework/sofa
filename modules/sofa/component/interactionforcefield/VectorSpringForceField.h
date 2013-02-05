@@ -197,6 +197,7 @@ public:
         springArrayData.clear();
         if (reserve) springArrayData.reserve(reserve);
         springArray.endEdit();
+        if(!useTopology) edgeArray.clear();
     }
 
     bool useMask() const {return true;}
