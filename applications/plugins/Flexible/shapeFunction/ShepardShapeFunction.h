@@ -127,7 +127,7 @@ public:
                 if (w[j])
                 {
                     Coord u=childPosition-parent[ref[j]];
-                    Real u2=u.norm2();
+					Real u2=u.norm2();
                     Real w2=(u2) ? (pw * w[j] / u2) : 0.;
                     (*dw)[j] = - u * w2; // dw = - pw.(x-x_i)/d(x,x_i)^(power+2)
                     if(ddw)
@@ -143,7 +143,7 @@ public:
 
 
         // normalize
-        this->normalize(w,dw,ddw);
+		this->normalize(w,dw,ddw);
     }
 
 protected:
