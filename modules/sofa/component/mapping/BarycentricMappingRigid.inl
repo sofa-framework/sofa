@@ -237,6 +237,11 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 {
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
+    typename core::behavior::MechanicalState<Out>* mechanicalObject;
+    this->getContext()->get(mechanicalObject);
+
+    const typename  Out::VecCoord& pX = *mechanicalObject->getX();
+
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
 #ifdef SOFA_IP_TRACES
@@ -244,6 +249,9 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
     //unsigned int nbTetra = this->fromTopology->getTetrahedra().size();
     //IPTR_BARCPP_APPLYJT( "  number of tetrahedra = " << nbTetra );
 #endif
+
+    actualPos.clear();
+    actualPos.resize(map.size());
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
@@ -264,12 +272,20 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
             out[tetra[2]] += v * fy;
             out[tetra[3]] += v * fz;
 
+            actualPos[i] = pX[i];
+
+
             //compute the linear forces for each vertex from the torque, inspired by rigid mapping
             Vector3 torque = getVOrientation(in[i]);
-            //if (torque.norm() > 10e-6) {
-            for (unsigned int ti = 0; ti<4; ti++)
-                out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
-            //}
+
+            for (unsigned int ti = 0; ti<4; ti++) {
+                Vector3 lever;
+                for (size_t dim = 0; dim < 3; dim++)
+                    lever[dim] = actualTetraPosition[tetra[ti]][dim]-actualPos[i][dim];
+                out[tetra[ti]] -= cross(lever,torque);
+                std::cout << "Force[" << tetra[ti] << "]: " << out[tetra[ti]] << std::endl;
+            }
+
 
 #ifdef SOFA_IP_TRACES
             //IPTR_BARCPP_APPLYJT("torque = " << torque  << endl); //  " |"<<torqueMagnitude<<"| "<< endl); // in point = " << glPointPositions[i] << endl);
@@ -310,6 +326,13 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
             maskFrom->insertEntry(tetra[3]);
         }
     }
+
+    actualOut.clear();
+    actualOut.resize(out.size());
+    for (size_t i = 0; i < out.size(); i++)
+        for (size_t j = 0; j < out[i].size(); j++)
+            actualOut[i][j] = 0.1*out[i][j];
+
 }  //applyJT
 
 
@@ -438,7 +461,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
             matrixJ->add(beamNode*6+dim, 3*tetra[3]+dim, fz);
         }
 
-        for (int vert = 0; vert < 4; vert++)
+        /*for (int vert = 0; vert < 4; vert++)
         {
             Vec3f v = actualTetraPosition[tetra[vert]];
             matrixJ->add(beamNode*6+3, 3*tetra[vert]+1, -v[2]);
@@ -447,7 +470,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
             matrixJ->add(beamNode*6+4, 3*tetra[vert]+2, -v[0]);
             matrixJ->add(beamNode*6+5, 3*tetra[vert]+0, -v[1]);
             matrixJ->add(beamNode*6+5, 3*tetra[vert]+1, +v[0]);            
-        }
+        }*/
     }
 
     matrixJ->compress();
@@ -529,6 +552,63 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         }
     }
     vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    //std::cout << "Drawing" << std::endl;
+
+    for ( unsigned int i=0; i<map.size(); i++ )
+    {
+        //get velocity of the DoF
+        //const defaulttype::Rigid3dTypes::DPos v = defaulttype::Rigid3dTypes::getDPos(in[i]);
+
+        //get its coordinated wrt to the associated tetra with given index
+        //const OutReal fx = ( OutReal ) map[i].baryCoords[0];
+        //const OutReal fy = ( OutReal ) map[i].baryCoords[1];
+        //const OutReal fz = ( OutReal ) map[i].baryCoords[2];
+        int index = map[i].in_index;
+        const topology::Tetrahedron& tetra = tetrahedra[index];
+
+        //out[tetra[0]] += v * ( 1-fx-fy-fz );
+        //out[tetra[1]] += v * fx;
+        //out[tetra[2]] += v * fy;
+        //out[tetra[3]] += v * fz;
+
+        //compute the linear forces for each vertex from the torque, inspired by rigid mapping
+        //Vector3 torque = getVOrientation(in[i]);
+        //if (torque.norm() > 10e-6) {
+        //for (unsigned int ti = 0; ti<4; ti++)
+        //    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
+        //}
+
+        for (size_t i = 0; i < actualPos.size(); i++) {
+            glPointSize(10);
+            glColor3d(1.0,0,0.0);
+            glBegin(GL_POINTS);
+            helper::gl::glVertexT(actualPos[i]);
+            std::cout << "DRW " << actualPos[i] << std::endl;
+            glEnd();
+
+        }
+
+
+        for (unsigned int ti = 0; ti<4; ti++) {
+            glPointSize(10);
+            glColor3d(1.0,0,1.0);
+            glBegin(GL_POINTS);
+            helper::gl::glVertexT(actualTetraPosition[tetra[ti]]);
+            glEnd();
+
+
+            if (tetra[ti] < actualOut.size()) {
+                //std::cout << "Drawing the linear force in " << tetra[ti] << ": " << actualOut[tetra[ti]] << std::endl;
+                glLineWidth(3.0);
+                glBegin(GL_LINES);
+                helper::gl::glVertexT(actualTetraPosition[tetra[ti]]);
+                helper::gl::glVertexT(actualTetraPosition[tetra[ti]]+actualOut[tetra[ti]]);
+                glEnd();
+            }
+
+        }
+        glEnd();
+    }
 }
 
 } // namespace mapping
