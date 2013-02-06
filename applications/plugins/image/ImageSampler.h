@@ -40,6 +40,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
+#include "BranchingImage.h"
+
 #define REGULAR 0
 #define LLOYD 1
 
@@ -58,6 +60,575 @@ using defaulttype::Vec;
 using defaulttype::Mat;
 using cimg_library::CImg;
 
+
+
+
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct ImageSamplerSpecialization
+{
+};
+
+
+/// Specialization for regular Image
+template <>
+struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+
+    template<class ImageSampler>
+    static void init( ImageSampler* )
+    {
+    }
+
+    template<class ImageSampler>
+    static void regularSampling( ImageSampler* sampler, const bool atcorners=false, const bool recursive=false )
+    {
+        typedef typename ImageSampler::Real Real;
+        typedef typename ImageSampler::Coord Coord;
+        typedef typename ImageSampler::Edge Edge;
+        typedef typename ImageSampler::Hexa Hexa;
+        typedef typename ImageSampler::T T;
+
+
+        // get tranform and image at time t
+        typename ImageSampler::raImage in(sampler->image);
+        typename ImageSampler::raTransform inT(sampler->transform);
+        const CImg<T>& inimg = in->getCImg(sampler->time);
+
+        // data access
+        typename ImageSampler::waPositions pos(sampler->position);       pos.clear();
+        typename ImageSampler::waEdges e(sampler->edges);                e.clear();
+        typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
+        typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
+
+        // convert to single channel boolean image
+        CImg<bool> img(inimg.width(),inimg.height(),inimg.depth(),1,false);
+        if(atcorners)
+        {
+            CImg_2x2x2(I,bool);
+            cimg_for2x2x2(inimg,x,y,z,0,I,bool) if(Iccc || Iccn || Icnc || Incc || Innc || Incn || Icnn || Innn) img(x,y,z)=true;
+        }
+        else cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) img(x,y,z)=true;
+
+        // count non empty voxels
+        unsigned int nb=0;
+        cimg_foroff(img,off) if(img[off]) nb++;
+        pos.resize(nb);
+        // record indices of previous y line and z plane for connectivity
+        CImg<unsigned int> pLine(inimg.width()),nLine(inimg.width());
+        CImg<unsigned int> pPlane(inimg.width(),inimg.height()),nPlane(inimg.width(),inimg.height());
+        // fill pos and edges
+        nb=0;
+        cimg_forZ(img,z)
+        {
+            cimg_forY(img,y)
+            {
+                cimg_forX(img,x)
+                {
+                    if(img(x,y,z))
+                    {
+                        // pos
+                        if(atcorners) pos[nb]=Coord(x+0.5,y+0.5,z+0.5);
+                        else pos[nb]=Coord(x,y,z);
+                        // edges
+                        if(x) if(img(x-1,y,z)) e.push_back(Edge(nb-1,nb));
+                        if(y) if(img(x,y-1,z)) e.push_back(Edge(pLine(x),nb));
+                        if(z) if(img(x,y,z-1)) e.push_back(Edge(pPlane(x,y),nb));
+                        // hexa
+                        if(x && y && z) if(img(x-1,y,z) && img(x,y-1,z) && img(x,y,z-1) && img(x-1,y-1,z) && img(x-1,y,z-1)  && img(x,y-1,z-1)   && img(x-1,y-1,z-1) )
+                                h.push_back(Hexa(nb,pLine(x),pLine(x-1),nb-1,pPlane(x,y),pPlane(x,y-1),pPlane(x-1,y-1),pPlane(x-1,y) ));
+
+                        nLine(x)=nb; nPlane(x,y)=nb;
+                        nb++;
+                    }
+                }
+                nLine.swap(pLine);
+            }
+            nPlane.swap(pPlane);
+        }
+
+        if(recursive)
+        {
+            vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
+            sampler->subdivide(indices);
+        }
+
+        for(unsigned int i=0; i<pos.size(); i++) pos[i]=inT->fromImage(pos[i]);
+    }
+
+
+    template<class ImageSampler>
+    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false )
+    {
+        typedef typename ImageSampler::Real Real;
+        typedef typename ImageSampler::Coord Coord;
+        typedef typename ImageSampler::Edge Edge;
+        typedef typename ImageSampler::Hexa Hexa;
+        typedef typename ImageSampler::T T;
+
+        clock_t timer = clock();
+
+        // get tranform and image at time t
+        typename ImageSampler::raImage in(sampler->image);
+        typename ImageSampler::raTransform inT(sampler->transform);
+        const CImg<T>& inimg = in->getCImg(sampler->time);
+        const CImg<T>* biasFactor=bias?&inimg:NULL;
+
+        // data access
+        typename ImageSampler::raPositions fpos(sampler->fixedPosition);
+        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        typename ImageSampler::waEdges e(sampler->edges);                e.clear();
+        typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
+        typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
+
+        // init voronoi and distances
+        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
+        typename ImageSampler::waDist distData(sampler->distances);
+        typename ImageSampler::imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
+
+        // list of seed points
+        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+
+        // farthest point sampling using geodesic distances
+        vector<unsigned int> fpos_voronoiIndex;
+        vector<unsigned int> pos_voronoiIndex;
+        for(unsigned int i=0; i<fpos.size(); i++)
+        {
+            fpos_voronoiIndex.push_back(i+1);
+            AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+        }
+        while(pos.size()<nb)
+        {
+            Real dmax=0;  Coord pmax;
+            cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
+            if(dmax)
+            {
+                pos_voronoiIndex.push_back(fpos.size()+pos.size()+1);
+                pos.push_back(inT->fromImage(pmax));
+                AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos.back(),pos_voronoiIndex.back());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+            }
+            else break;
+        }
+        //voronoi.display();
+
+        unsigned int it=0;
+        bool converged =(it>=lloydIt)?true:false;
+
+        while(!converged)
+        {
+            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,sampler->transform.getValue(),NULL)) // one lloyd iteration
+            {
+                // recompute distance from scratch
+                cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
+                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos[i], pos_voronoiIndex[i]);
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                it++; if(it>=lloydIt) converged=true;
+            }
+            else converged=true;
+        }
+
+        if(sampler->f_printLog.getValue())
+        {
+            std::cout<<"ImageSampler: Completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
+        }
+
+        sampler->position.endEdit();
+    }
+
+
+    template<class ImageSampler>
+    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false,  const unsigned int N=1 )
+    {
+        typedef typename ImageSampler::Real Real;
+        typedef typename ImageSampler::Coord Coord;
+        typedef typename ImageSampler::Edge Edge;
+        typedef typename ImageSampler::Hexa Hexa;
+        typedef typename ImageSampler::T T;
+
+        clock_t timer = clock();
+
+        // get tranform and image at time t
+        typename ImageSampler::raImage in(sampler->image);
+        typename ImageSampler::raTransform inT(sampler->transform);
+        const CImg<T>& inimg = in->getCImg(sampler->time);
+        const CImg<T>* biasFactor=bias?&inimg:NULL;
+
+        // data access
+        typename ImageSampler::raPositions fpos(sampler->fixedPosition);
+        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        typename ImageSampler::waEdges e(sampler->edges);                e.clear();
+        typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
+        typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
+
+        // init voronoi and distances
+        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
+        typename ImageSampler::waDist distData(sampler->distances);
+        typename ImageSampler::imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
+
+        // list of seed points
+        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+
+        // fixed points
+        vector<unsigned int> fpos_voronoiIndex;
+        for(unsigned int i=0; i<fpos.size(); i++)
+        {
+            fpos_voronoiIndex.push_back(i+1);
+            AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+        }
+
+        // new points
+        vector<unsigned int> pos_voronoiIndex;
+        while(pos.size()<nb)
+        {
+            std::vector<Vec<3,Real> > newpos;
+            vector<unsigned int> newpos_voronoiIndex;
+
+            // farthest sampling of N points
+            unsigned int currentN = N;
+            if(!pos.size()) currentN = 1; // special case at the beginning: we start by adding just one point
+            else if(pos.size()+N>nb) currentN = nb-pos.size();  // when trying to add more vertices than necessary
+            while(newpos.size()<currentN)
+            {
+                Real dmax=0;  Coord pmax;
+                cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
+                if(!dmax) break;
+
+                newpos_voronoiIndex.push_back(fpos.size()+pos.size()+newpos.size()+1);
+                newpos.push_back(inT->fromImage(pmax));
+                AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), newpos.back(),newpos_voronoiIndex.back());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+                else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+            }
+
+            // lloyd iterations for the N points
+            unsigned int it=0;
+            bool converged =(it>=lloydIt)?true:false;
+
+            while(!converged)
+            {
+                if(Lloyd<Real,T>(newpos,newpos_voronoiIndex,dist,voronoi,sampler->transform.getValue(),NULL))
+                {
+                    // recompute distance from scratch
+                    cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
+                    for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos[i], pos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), newpos[i], newpos_voronoiIndex[i]);
+                    if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                    else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                    it++; if(it>=lloydIt) converged=true;
+                }
+                else converged=true;
+            }
+
+            // check neighbors of the new voronoi cell and add graph edges
+            unsigned int nbold = fpos.size()+pos.size();
+            for(unsigned int i=0; i<newpos.size() && pos.size()<nb; i++)
+            {
+                std::set<unsigned int> neighb;
+                CImg_3x3x3(I,unsigned int);
+                cimg_for3x3x3(voronoi,x,y,z,0,I,unsigned int)
+                if(Iccc==newpos_voronoiIndex[i])
+                {
+                    if(Incc && Incc<=nbold) neighb.insert(Incc);
+                    if(Icnc && Icnc<=nbold) neighb.insert(Icnc);
+                    if(Iccn && Iccn<=nbold) neighb.insert(Iccn);
+                    if(Ipcc && Ipcc<=nbold) neighb.insert(Ipcc);
+                    if(Icpc && Icpc<=nbold) neighb.insert(Icpc);
+                    if(Iccp && Iccp<=nbold) neighb.insert(Iccp);
+                }
+                for(typename std::set<unsigned int>::iterator itr=neighb.begin(); itr!=neighb.end(); itr++)
+                {
+                    g.push_back(Edge(*itr-1,newpos_voronoiIndex[i]-1));
+                    //if(*itr>fpos.size()) g.push_back(Edge(*itr-fpos.size()-1,newpos_voronoiIndex[i]-1));
+                }
+                pos.push_back(newpos[i]);
+                pos_voronoiIndex.push_back(newpos_voronoiIndex[i]);
+            }
+
+            if(newpos.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
+        }
+
+        if(sampler->f_printLog.getValue())
+        {
+            std::cout<<"ImageSampler: Completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s "<<std::endl;
+        }
+
+        sampler->position.endEdit();
+    }
+};
+
+
+
+/// Specialization for BranchingImage
+template <>
+struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
+{
+    template<class ImageSampler>
+    static void init( ImageSampler* sampler )
+    {
+        sampler->addAlias( &sampler->image, "branchingImage" );
+    }
+
+    template<class ImageSampler>
+    static void regularSampling( ImageSampler* sampler, const bool atcorners=false, const bool recursive=false )
+    {
+        if( !atcorners )
+        {
+            sampler->serr<<"ImageSampler::regularSampling - only at corner is implemented\n";
+        }
+
+
+        typedef typename ImageSampler::Real Real;
+        typedef typename ImageSampler::Coord Coord;
+        typedef typename ImageSampler::Edge Edge;
+        typedef typename ImageSampler::Hexa Hexa;
+        typedef typename ImageSampler::T T;
+
+
+        // get tranform and image at time t
+        typename ImageSampler::raImage in(sampler->image);
+        typename ImageSampler::raTransform inT(sampler->transform);
+        const typename ImageSampler::ImageTypes::BranchingImage3D& inimg = in->imgList[sampler->time];
+
+        // data access
+        typename ImageSampler::waPositions pos(sampler->position);       pos.clear();
+        typename ImageSampler::waEdges e(sampler->edges);                e.clear();
+        typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
+        typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
+
+        const typename ImageSampler::ImageTypes::Dimension& dim = in->getDimension();
+
+
+        unsigned index1d = 0;
+
+        {
+        std::map< unsigned, std::map<unsigned, unsigned> > hindices; // for each index1d, for each superimposed offset -> hexa index
+
+        // first add hexa with linked vertex
+        unsigned indexVertex = 0;
+        for( unsigned z=0 ; z<dim[ImageSampler::ImageTypes::DIMENSION_Z] ; ++z )
+        for( unsigned y=0 ; y<dim[ImageSampler::ImageTypes::DIMENSION_Y] ; ++y )
+        for( unsigned x=0 ; x<dim[ImageSampler::ImageTypes::DIMENSION_X] ; ++x )
+        {
+            for( unsigned v=0 ; v<inimg[index1d].size() ; ++v )
+            {
+                h.push_back( Hexa( indexVertex, indexVertex+1, indexVertex+2, indexVertex+3, indexVertex+4, indexVertex+5, indexVertex+6, indexVertex+7 ) );
+                indexVertex += 8;
+                Hexa& hexa = h[h.size()-1];
+                hindices[index1d][v] = h.size()-1;
+
+                if( x>0 )
+                {
+                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::LEFT].size() ; ++n )
+                    {
+                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::LEFT,index1d);
+                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::LEFT][n];
+                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
+                        mergeVertexIndex( h, hexa[0], neighbor[1] );
+                        mergeVertexIndex( h, hexa[4], neighbor[5] );
+                        mergeVertexIndex( h, hexa[7], neighbor[6] );
+                        mergeVertexIndex( h, hexa[3], neighbor[2] );
+                    }
+                }
+                if( y>0 )
+                {
+                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BOTTOM].size() ; ++n )
+                    {
+                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::BOTTOM,index1d);
+                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BOTTOM][n];
+                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
+                        mergeVertexIndex( h, hexa[0], neighbor[3] );
+                        mergeVertexIndex( h, hexa[1], neighbor[2] );
+                        mergeVertexIndex( h, hexa[4], neighbor[7] );
+                        mergeVertexIndex( h, hexa[5], neighbor[6] );
+                    }
+                }
+                if( z>0 )
+                {
+                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BACK].size() ; ++n )
+                    {
+                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::BACK,index1d);
+                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BACK][n];
+                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
+                        mergeVertexIndex( h, hexa[0], neighbor[4] );
+                        mergeVertexIndex( h, hexa[1], neighbor[5] );
+                        mergeVertexIndex( h, hexa[2], neighbor[6] );
+                        mergeVertexIndex( h, hexa[3], neighbor[7] );
+                    }
+                }
+            }
+            index1d++;
+        }
+        }
+
+
+        {
+            // give a continue index from 0 to max (without hole)
+            unsigned continueIndex = 0;
+            std::map<unsigned,unsigned> continueMap;
+
+            for( unsigned i=0 ; i<h.size() ; ++i )
+            for( unsigned j=0 ; j<8 ; ++j )
+            {
+                if( continueMap.find(h[i][j])==continueMap.end() ) continueMap[h[i][j]]=continueIndex++;
+            }
+            for( unsigned i=0 ; i<h.size() ; ++i )
+            for( unsigned j=0 ; j<8 ; ++j )
+            {
+                h[i][j] = continueMap[h[i][j]];
+            }
+            pos.resize( continueIndex );
+        }
+
+        {
+            std::map<unsigned,bool> alreadyAddedPos;
+            std::map<Edge,bool> alreadyAddedEdge;
+            index1d = 0;
+            unsigned indexHexa = 0;
+            for( unsigned z=0 ; z<dim[ImageSampler::ImageTypes::DIMENSION_Z] ; ++z )
+            for( unsigned y=0 ; y<dim[ImageSampler::ImageTypes::DIMENSION_Y] ; ++y )
+            for( unsigned x=0 ; x<dim[ImageSampler::ImageTypes::DIMENSION_X] ; ++x )
+            {
+                for( unsigned v=0 ; v<inimg[index1d].size() ; ++v )
+                {
+
+                    static const int hexaIndices[8][3] = { {0,0,0},{1,0,0},{1,1,0},{0,1,0},{0,0,1},{1,0,1},{1,1,1},{0,1,1}  };
+
+                    Hexa& hexa = h[indexHexa];
+                    for( unsigned j=0 ; j<8 ; ++j )
+                    {
+                        if( alreadyAddedPos.find(hexa[j])==alreadyAddedPos.end() )
+                        {
+                            alreadyAddedPos[hexa[j]] = true;
+                            pos[hexa[j]] = Coord(x+hexaIndices[j][0],y+hexaIndices[j][1],z+hexaIndices[j][2]);
+                        }
+                    }
+
+                    Edge edge( hexa[0], hexa[1] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[1], hexa[2] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[2], hexa[3] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[3], hexa[0] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[4], hexa[5] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[5], hexa[6] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[6], hexa[7] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[7], hexa[4] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[0], hexa[4] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[1], hexa[5] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[2], hexa[6] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+                    edge = Edge( hexa[3], hexa[7] );
+                    if( alreadyAddedEdge.find( edge )==alreadyAddedEdge.end() )
+                    {
+                        alreadyAddedEdge[edge] = true;
+                        e.push_back( edge );
+                    }
+
+                    ++indexHexa;
+                }
+
+                ++index1d;
+            }
+        }
+
+
+        if(recursive)
+        {
+            vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
+            sampler->subdivide(indices);
+        }
+
+        for(unsigned int i=0; i<pos.size(); i++) pos[i]=inT->fromImage(pos[i]);
+    }
+
+    template<class Hexas>
+    static void mergeVertexIndex( Hexas& h, unsigned index0, unsigned index1 )
+    {
+        for( unsigned i=0 ; i<h.size() ; ++i )
+        for( unsigned j=0 ; j<8 ; ++j )
+        {
+            if( h[i][j]==index1 ) h[i][j]=index0;
+        }
+    }
+
+    template<class ImageSampler>
+    static void uniformSampling( ImageSampler* sampler,const unsigned int /*nb*/=0,  const bool /*bias*/=false, const unsigned int /*lloydIt*/=100,const bool /*useDijkstra*/=false )
+    {
+        sampler->serr<<"ImageSampler::uniformSampling is not yet immplemented for BranchingImage\n";
+    }
+
+    template<class ImageSampler>
+    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int /*nb*/=0,  const bool /*bias*/=false, const unsigned int /*lloydIt*/=100,const bool /*useDijkstra*/=false,  const unsigned int /*N*/=1 )
+    {
+        sampler->serr<<"ImageSampler::recursiveUniformSampling is not yet immplemented for BranchingImage\n";
+    }
+};
+
+
+
+
+
 /**
  * This class samples an object represented by an image
  */
@@ -66,7 +637,11 @@ using cimg_library::CImg;
 template <class _ImageTypes>
 class ImageSampler : public core::DataEngine
 {
+    friend struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
+
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(ImageSampler,_ImageTypes),Inherited);
 
@@ -165,6 +740,8 @@ public:
                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
+
+        ImageSamplerSpecialization<ImageTypes::label>::init( this );
     }
 
     virtual void init()
@@ -198,7 +775,7 @@ protected:
             bool atcorners=false; if(params.size())   atcorners=(bool)params[0];
 
             // sampling
-            regularSampling (atcorners, computeRecursive.getValue());
+            regularSampling(atcorners, computeRecursive.getValue());
         }
         else if(this->method.getValue().getSelectedId() == LLOYD)
         {
@@ -288,70 +865,7 @@ protected:
     */
     void regularSampling ( const bool atcorners=false , const bool recursive=false )
     {
-        // get tranform and image at time t
-        raImage in(this->image);
-        raTransform inT(this->transform);
-        const CImg<T>& inimg = in->getCImg(this->time);
-
-        // data access
-        waPositions pos(this->position);       pos.clear();
-        waEdges e(this->edges);                e.clear();
-        waEdges g(this->graphEdges);           g.clear();
-        waHexa h(this->hexahedra);             h.clear();
-
-        // convert to single channel boolean image
-        CImg<bool> img(inimg.width(),inimg.height(),inimg.depth(),1,false);
-        if(atcorners)
-        {
-            CImg_2x2x2(I,bool);
-            cimg_for2x2x2(inimg,x,y,z,0,I,bool) if(Iccc || Iccn || Icnc || Incc || Innc || Incn || Icnn || Innn) img(x,y,z)=true;
-        }
-        else cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) img(x,y,z)=true;
-
-        // count non empty voxels
-        unsigned int nb=0;
-        cimg_foroff(img,off) if(img[off]) nb++;
-        pos.resize(nb);
-        // record indices of previous y line and z plane for connectivity
-        CImg<unsigned int> pLine(inimg.width()),nLine(inimg.width());
-        CImg<unsigned int> pPlane(inimg.width(),inimg.height()),nPlane(inimg.width(),inimg.height());
-        // fill pos and edges
-        nb=0;
-        cimg_forZ(img,z)
-        {
-            cimg_forY(img,y)
-            {
-                cimg_forX(img,x)
-                {
-                    if(img(x,y,z))
-                    {
-                        // pos
-                        if(atcorners) pos[nb]=Coord(x+0.5,y+0.5,z+0.5);
-                        else pos[nb]=Coord(x,y,z);
-                        // edges
-                        if(x) if(img(x-1,y,z)) e.push_back(Edge(nb-1,nb));
-                        if(y) if(img(x,y-1,z)) e.push_back(Edge(pLine(x),nb));
-                        if(z) if(img(x,y,z-1)) e.push_back(Edge(pPlane(x,y),nb));
-                        // hexa
-                        if(x && y && z) if(img(x-1,y,z) && img(x,y-1,z) && img(x,y,z-1) && img(x-1,y-1,z) && img(x-1,y,z-1)  && img(x,y-1,z-1)   && img(x-1,y-1,z-1) )
-                                h.push_back(Hexa(nb,pLine(x),pLine(x-1),nb-1,pPlane(x,y),pPlane(x,y-1),pPlane(x-1,y-1),pPlane(x-1,y) ));
-
-                        nLine(x)=nb; nPlane(x,y)=nb;
-                        nb++;
-                    }
-                }
-                nLine.swap(pLine);
-            }
-            nPlane.swap(pPlane);
-        }
-
-        if(recursive)
-        {
-            vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
-            subdivide(indices);
-        }
-
-        for(unsigned int i=0; i<pos.size(); i++) pos[i]=inT->fromImage(pos[i]);
+        ImageSamplerSpecialization<ImageTypes::label>::regularSampling( this, atcorners, recursive );
     }
 
 
@@ -466,81 +980,8 @@ protected:
 
     void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false)
     {
-        clock_t timer = clock();
-
-        // get tranform and image at time t
-        raImage in(this->image);
-        raTransform inT(this->transform);
-        const CImg<T>& inimg = in->getCImg(this->time);
-        const CImg<T>* biasFactor=bias?&inimg:NULL;
-
-        // data access
-        raPositions fpos(this->fixedPosition);
-        std::vector<Vec<3,Real> >& pos = *this->position.beginEdit();    pos.clear();
-        waEdges e(this->edges);                e.clear();
-        waEdges g(this->graphEdges);           g.clear();
-        waHexa h(this->hexahedra);             h.clear();
-
-        // init voronoi and distances
-        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
-        waDist distData(this->distances);
-        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
-        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
-
-        // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
-
-        // farthest point sampling using geodesic distances
-        vector<unsigned int> fpos_voronoiIndex;
-        vector<unsigned int> pos_voronoiIndex;
-        for(unsigned int i=0; i<fpos.size(); i++)
-        {
-            fpos_voronoiIndex.push_back(i+1);
-            AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
-        }
-        while(pos.size()<nb)
-        {
-            Real dmax=0;  Coord pmax;
-            cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
-            if(dmax)
-            {
-                pos_voronoiIndex.push_back(fpos.size()+pos.size()+1);
-                pos.push_back(inT->fromImage(pmax));
-                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos.back(),pos_voronoiIndex.back());
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(),biasFactor );
-            }
-            else break;
-        }
-        //voronoi.display();
-
-        unsigned int it=0;
-        bool converged =(it>=lloydIt)?true:false;
-
-        while(!converged)
-        {
-            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL)) // one lloyd iteration
-            {
-                // recompute distance from scratch
-                cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
-                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], pos_voronoiIndex[i]);
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
-                it++; if(it>=lloydIt) converged=true;
-            }
-            else converged=true;
-        }
-
-        if(this->f_printLog.getValue())
-        {
-            std::cout<<"ImageSampler: Completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
-        }
-
-        this->position.endEdit();
+        ImageSamplerSpecialization<ImageTypes::label>::uniformSampling( this, nb, bias, lloydIt, useDijkstra );
     }
-
 
 
 
@@ -551,124 +992,14 @@ protected:
 
     void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false,  const unsigned int N=1)
     {
-        clock_t timer = clock();
-
-        // get tranform and image at time t
-        raImage in(this->image);
-        raTransform inT(this->transform);
-        const CImg<T>& inimg = in->getCImg(this->time);
-        const CImg<T>* biasFactor=bias?&inimg:NULL;
-
-        // data access
-        raPositions fpos(this->fixedPosition);
-        std::vector<Vec<3,Real> >& pos = *this->position.beginEdit();    pos.clear();
-        waEdges e(this->edges);                e.clear();
-        waEdges g(this->graphEdges);           g.clear();
-        waHexa h(this->hexahedra);             h.clear();
-
-        // init voronoi and distances
-        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
-        waDist distData(this->distances);
-        imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
-        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
-
-        // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
-
-        // fixed points
-        vector<unsigned int> fpos_voronoiIndex;
-        for(unsigned int i=0; i<fpos.size(); i++)
-        {
-            fpos_voronoiIndex.push_back(i+1);
-            AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
-        }
-
-        // new points
-        vector<unsigned int> pos_voronoiIndex;
-        while(pos.size()<nb)
-        {
-            std::vector<Vec<3,Real> > newpos;
-            vector<unsigned int> newpos_voronoiIndex;
-
-            // farthest sampling of N points
-            unsigned int currentN = N;
-            if(!pos.size()) currentN = 1; // special case at the beginning: we start by adding just one point
-            else if(pos.size()+N>nb) currentN = nb-pos.size();  // when trying to add more vertices than necessary
-            while(newpos.size()<currentN)
-            {
-                Real dmax=0;  Coord pmax;
-                cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
-                if(!dmax) break;
-
-                newpos_voronoiIndex.push_back(fpos.size()+pos.size()+newpos.size()+1);
-                newpos.push_back(inT->fromImage(pmax));
-                AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), newpos.back(),newpos_voronoiIndex.back());
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi, this->transform.getValue().getScale(),biasFactor );
-            }
-
-            // lloyd iterations for the N points
-            unsigned int it=0;
-            bool converged =(it>=lloydIt)?true:false;
-
-            while(!converged)
-            {
-                if(Lloyd<Real,T>(newpos,newpos_voronoiIndex,dist,voronoi,this->transform.getValue(),NULL))
-                {
-                    // recompute distance from scratch
-                    cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                    for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), pos[i], pos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, this->transform.getValue(), newpos[i], newpos_voronoiIndex[i]);
-                    if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
-                    else fastMarching<Real,T>(trial,dist, voronoi,  this->transform.getValue().getScale(), biasFactor);
-                    it++; if(it>=lloydIt) converged=true;
-                }
-                else converged=true;
-            }
-
-            // check neighbors of the new voronoi cell and add graph edges
-            unsigned int nbold = fpos.size()+pos.size();
-            for(unsigned int i=0; i<newpos.size() && pos.size()<nb; i++)
-            {
-                std::set<unsigned int> neighb;
-                CImg_3x3x3(I,unsigned int);
-                cimg_for3x3x3(voronoi,x,y,z,0,I,unsigned int)
-                if(Iccc==newpos_voronoiIndex[i])
-                {
-                    if(Incc && Incc<=nbold) neighb.insert(Incc);
-                    if(Icnc && Icnc<=nbold) neighb.insert(Icnc);
-                    if(Iccn && Iccn<=nbold) neighb.insert(Iccn);
-                    if(Ipcc && Ipcc<=nbold) neighb.insert(Ipcc);
-                    if(Icpc && Icpc<=nbold) neighb.insert(Icpc);
-                    if(Iccp && Iccp<=nbold) neighb.insert(Iccp);
-                }
-                for(typename std::set<unsigned int>::iterator itr=neighb.begin(); itr!=neighb.end(); itr++)
-                {
-                    g.push_back(Edge(*itr-1,newpos_voronoiIndex[i]-1));
-                    //if(*itr>fpos.size()) g.push_back(Edge(*itr-fpos.size()-1,newpos_voronoiIndex[i]-1));
-                }
-                pos.push_back(newpos[i]);
-                pos_voronoiIndex.push_back(newpos_voronoiIndex[i]);
-            }
-
-            if(newpos.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
-        }
-
-        if(this->f_printLog.getValue())
-        {
-            std::cout<<"ImageSampler: Completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s "<<std::endl;
-        }
-
-        this->position.endEdit();
+        ImageSamplerSpecialization<ImageTypes::label>::recursiveUniformSampling( this, nb, bias, lloydIt, useDijkstra, N );
     }
 
 
 
-
-
 };
+
+
 
 } // namespace engine
 

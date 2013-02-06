@@ -43,6 +43,8 @@ SOFA_DECL_CLASS(ImageToBranchingImageConverter)
 int ImageToBranchingImageConverterClass = core::RegisterObject("ImageToBranchingImageConverter")
         .add<ImageToBranchingImageConverter<unsigned char> >(true)
         .add<ImageToBranchingImageConverter<double> >()
+        .add<ImageToBranchingImageConverter<unsigned char,double> >()
+        .add<ImageToBranchingImageConverter<unsigned char,unsigned int> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
         .add<ImageToBranchingImageConverter<char> >()
         .add<ImageToBranchingImageConverter<int> >()
@@ -58,6 +60,8 @@ int ImageToBranchingImageConverterClass = core::RegisterObject("ImageToBranching
 
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned char>;
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<double>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned char,double>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned char,unsigned int>;
 #ifdef BUILD_ALL_IMAGE_TYPES
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<char>;
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<int>;
@@ -77,6 +81,9 @@ SOFA_DECL_CLASS(BranchingImageToImageConverter)
 int BranchingImageToImageConverterClass = core::RegisterObject("BranchingImageToImageConverter")
         .add<BranchingImageToImageConverter<unsigned char> >(true)
         .add<BranchingImageToImageConverter<double> >()
+        .add<BranchingImageToImageConverter<double,unsigned char> >()
+        .add<BranchingImageToImageConverter<double,unsigned int> >()
+        .add<BranchingImageToImageConverter<unsigned int, unsigned char> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
         .add<BranchingImageToImageConverter<char> >()
         .add<BranchingImageToImageConverter<int> >()
@@ -92,6 +99,9 @@ int BranchingImageToImageConverterClass = core::RegisterObject("BranchingImageTo
 
 template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned char>;
 template class SOFA_IMAGE_API BranchingImageToImageConverter<double>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<double,unsigned char>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<double,unsigned int>;
+template class SOFA_IMAGE_API BranchingImageToImageConverter<unsigned int, unsigned char>;
 #ifdef BUILD_ALL_IMAGE_TYPES
 template class SOFA_IMAGE_API BranchingImageToImageConverter<char>;
 template class SOFA_IMAGE_API BranchingImageToImageConverter<int>;

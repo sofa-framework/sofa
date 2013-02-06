@@ -48,18 +48,18 @@ namespace engine
 /// the coarse size will be equal to inputsize/2^coarseningLevels (each level subdivides the size x/y/z by 2)
 /// This implementation improves the algorithm presented in: Nesme, Kry, Jeřábková, Faure, "Preserving Topology and Elasticity for Embedded Deformable Models", Siggraph09
 /// because the coarse configuration is directly computed from the fine resolution.
-template <class T>
+template <class Tin,class Tout=Tin>
 class ImageToBranchingImageConverter : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ImageToBranchingImageConverter,T),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE2(ImageToBranchingImageConverter,Tin,Tout),Inherited);
 
 
     typedef SReal Real;
 
-    typedef defaulttype::Image<T> ImageTypes;
-    typedef defaulttype::BranchingImage<T> BranchingImageTypes;
+    typedef defaulttype::Image<Tin> ImageTypes;
+    typedef defaulttype::BranchingImage<Tout> BranchingImageTypes;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
 
 
@@ -73,13 +73,13 @@ public:
 
 
     virtual std::string getTemplateName() const { return templateName(this); }
-    static std::string templateName(const ImageToBranchingImageConverter<T>* = NULL) { return ImageTypes::Name()+std::string(",")+BranchingImageTypes::Name(); }
+    static std::string templateName(const ImageToBranchingImageConverter<Tin,Tout>* = NULL) { return ImageTypes::Name()+std::string(",")+BranchingImageTypes::Name(); }
 
     ImageToBranchingImageConverter()    :   Inherited()
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage","Image to coarsen"))
         , outputBranchingImage(initData(&outputBranchingImage,BranchingImageTypes(),"outputBranchingImage","Coarsened BranchingImage"))
         , coarseningLevels(initData(&coarseningLevels,(unsigned)0,"coarseningLevels","How many coarsenings (subdividing x/y/z by 2)?"))
-        , superimpositionType(initData(&superimpositionType,(unsigned)0,"superimpositionType","Which value for superimposed voxels? (0->copy (default), 1->ratio on volume, 2->divided value on superimposed number)"))
+        , superimpositionType(initData(&superimpositionType,(unsigned)0,"superimpositionType","Which value for superimposed voxels? (0->sum (default), 1->average, 2->ratio, 3->count)"))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform","Input Transform"))
         , outputTransform(initData(&outputTransform,TransformType(),"outputTransform","Output Transform"))
     {
@@ -151,7 +151,6 @@ protected:
                 cimg_library::CImg<unsigned long> labelImage;
                 labelImage.resize( input_t.width(), input_t.height(), input_t.depth(), 1  );
 
-
                 // FIND SUPERIMPOSED VOXELS
 
                 unsigned index1d = 0;
@@ -190,13 +189,96 @@ protected:
                     // a superimposed voxel per independant component
                     output_t[index1d].resize( nbLabels, outputDimension[BranchingImageTypes::DIMENSION_S] );
 
-                    // TODO put the superimposed value based on superimpositionType
+
+                    // compute the superimposed values depending on superimpositionType
+                    switch( superimpositionType.getValue() )
+                    {
+                        case 1: // average
+                        {
+                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                            {
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                // count nb pixels==v in subLabelImage
+                                int nbLabelsV = 0;
+                                cimg_forXYZ( subLabelImage, subx,suby,subz )
+                                    if( subLabelImage(subx,suby,subz) == v+1 )
+                                    {
+                                        nbLabelsV++;
+                                        for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                        {
+                                            assert( voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                            voutput[s] += subImage(subx,suby,subz,s);
+                                        }
+                                    }
+                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s ) voutput[s] /= nbLabelsV;
+                            }
+                            break;
+                        }
+                        case 2: // ratio (nb fine in superimposed voxel / total fine)
+                        {
+                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                            {
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                // count nb pixels==v in subLabelImage
+                                int nbLabelsV = 0;
+                                cimg_foroff( subLabelImage, off )
+                                    if( subLabelImage(off) == v+1 )
+                                    {
+                                        nbLabelsV++;
+                                    }
+                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                {
+                                    voutput[s] = 1.0/(float)nbLabelsV;
+                                }
+                            }
+                            break;
+                        }
+                        case 3: // count (nb fine in superimposed voxel)
+                        {
+                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                            {
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                // count nb pixels==v in subLabelImage
+                                int nbLabelsV = 0;
+                                cimg_foroff( subLabelImage, off ) if( subLabelImage(off) == v+1 ) nbLabelsV++;
+                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                {
+                                    assert( voutput[s] <= std::numeric_limits<Tout>::max()-nbLabelsV );
+                                    voutput[s] = nbLabelsV;
+                                }
+                            }
+                            break;
+                        }
+                        case 0: // sum
+                        default:
+                        {
+                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                            {
+                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                cimg_forXYZ( subLabelImage, subx,suby,subz )
+                                    if( subLabelImage(subx,suby,subz) == v+1 )
+                                    {
+                                        for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                        {
+                                            assert( voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                            voutput[s] += subImage(subx,suby,subz,s);
+                                        }
+                                    }
+                            }
+                            break;
+                        }
+                    }
 
                     // copy the block (corresponding to the coarse voxel) in the global label image
                     cimg_library::copySubImage( labelImage, subLabelImage, finex, finey, finez );
 
                     ++index1d;
                 }
+
 
                 // FIND CONNECTIVITY
 
@@ -277,7 +359,12 @@ protected:
         outputBranchingImage.endEdit();
 
 
-        if( f_printLog.getValue() ) std::cerr<<"BranchingImageCoarsener::update - coarsening finished\n";
+        if( f_printLog.getValue() )
+        {
+//            unsigned neighbouroodError = outputBranchingImage.getValue().isNeighbouroodValid();
+            std::cerr<<"ImageToBranchingImageConverter::update - conversion finished ";
+            std::cerr<<"("<<inputImage.getValue().approximativeSizeInBytes()<<" Bytes -> "<<outputBranchingImage.getValue().approximativeSizeInBytes()<<" Bytes -> x"<<inputImage.getValue().approximativeSizeInBytes()/(float)outputBranchingImage.getValue().approximativeSizeInBytes()<<")\n";
+        }
     }
 
 };
@@ -296,28 +383,27 @@ protected:
 
 
 /// convert a branching image to a flat image
-template <class _T>
+template <class Tin,class Tout=Tin>
 class BranchingImageToImageConverter : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(BranchingImageToImageConverter,_T),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE2(BranchingImageToImageConverter,Tin,Tout),Inherited);
 
-    typedef _T T;
-    typedef defaulttype::Image<T> ImageTypes;
-    typedef defaulttype::BranchingImage<T> BranchingImageTypes;
+    typedef defaulttype::Image<Tout> ImageTypes;
+    typedef defaulttype::BranchingImage<Tin> BranchingImageTypes;
 
     Data<ImageTypes> image;
     Data<BranchingImageTypes> inputBranchingImage;
     Data<unsigned> conversionType;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const BranchingImageToImageConverter<T>* = NULL) { return BranchingImageTypes::Name()+std::string(",")+ImageTypes::Name(); }
+    static std::string templateName(const BranchingImageToImageConverter<Tin,Tout>* = NULL) { return BranchingImageTypes::Name()+std::string(",")+ImageTypes::Name(); }
 
     BranchingImageToImageConverter()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image","output Image"))
         , inputBranchingImage(initData(&inputBranchingImage,BranchingImageTypes(),"inputBranchingImage","input BranchingImage"))
-        , conversionType(initData(&conversionType,(unsigned)2,"conversionType","0->first voxel, 1->mean, 2->nb superimposed voxels (default)"))
+        , conversionType(initData(&conversionType,(unsigned)2,"conversionType","0->first voxel, 1->mean, 2->nb superimposed voxels (default), 3->sum"))
     {
         inputBranchingImage.setReadOnly(true);
         this->addAlias(&inputBranchingImage, "branchingImage");

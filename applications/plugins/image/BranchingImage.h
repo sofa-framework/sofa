@@ -20,21 +20,24 @@ namespace defaulttype
 using helper::vector;
 using helper::NoPreallocationVector;
 
-
-
+/// type identifier, must be unique
+static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
 /// A BranchingImage is an array (size of t) of vectors (one vector per pixel (x,y,z)).
 /// Each pixel corresponds to a SuperimposedVoxels, alias a vector of ConnectionVoxel.
 /// a ConnectionVoxel stores a value for each channels + its neighbours indices
 /// Nesme, Kry, Jeřábková, Faure, "Preserving Topology and Elasticity for Embedded Deformable Models", Siggraph09
 template<typename _T>
-struct BranchingImage
+class BranchingImage
 {
 
 public:
 
     /// stored type
     typedef _T T;
+
+    /// type identifier, must be unique
+    static const int label = IMAGELABEL_BRANCHINGIMAGE;
 
     /// each direction around a voxel
     typedef enum { BACK=0, Zm1=BACK, BOTTOM=1, Ym1=BOTTOM, LEFT=2, Xm1=LEFT, FRONT=3, Zp1=FRONT, TOP=4, Yp1=TOP, RIGHT=5, Xp1=RIGHT, NB_NeighbourDirections=6 } NeighbourDirection;
@@ -216,25 +219,41 @@ public:
         }
 
         /// convert to a unique voxel
-        /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels
-        void toFlatVoxel( T& v, unsigned conversionType, unsigned channel ) const
+        /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels, 3->sum
+        template<class T2>
+        void toFlatVoxel( T2& v, unsigned conversionType, unsigned channel ) const
         {
             if( this->empty() ) return;
 
             switch( conversionType )
             {
             case 1:
-                v = this->_array[0][channel];
+                assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
+                v = (T2)this->_array[0][channel];
                 for( unsigned i=1 ; i<this->_size ; ++i )
-                    v += this->_array[i][channel];
-                v = (T)( v / (float)this->_size );
+                {
+                    assert( v <= std::numeric_limits<T2>::max()-this->_array[i][channel] );
+                    v += (T2)this->_array[i][channel];
+                }
+                v = (T2)( v / (float)this->_size );
                 break;
             case 0:
-                v = this->_array[0][channel];
+                assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
+                v = (T2)this->_array[0][channel];
+                break;
+            case 3:
+                assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
+                v = (T2)this->_array[0][channel];
+                for( unsigned i=1 ; i<this->_size ; ++i )
+                {
+                    assert( v <= std::numeric_limits<T2>::max()-this->_array[i][channel] );
+                    v += (T2)this->_array[i][channel];
+                }
                 break;
             case 2:
             default:
-                v = this->_size;
+                assert( this->_size <= (unsigned)std::numeric_limits<T2>::max() );
+                v = (T2)this->_size;
                 break;
             }
         }
@@ -244,6 +263,12 @@ public:
             Inherited::resize( newSize );
             for( unsigned i=0 ; i<this->_size ; ++i )
                 this->_array[i].resize( spectrum );
+        }
+
+        void fill( const ConnectionVoxel& v, unsigned spectrum )
+        {
+            for( unsigned i=0 ; i<this->_size ; ++i )
+                this->_array[i].clone( v, spectrum );
         }
 
 
@@ -258,6 +283,7 @@ public:
         void operator=( const SuperimposedVoxels& ) { assert(false); }
         bool operator==( const SuperimposedVoxels& ) const { assert(false); }
         void resize( size_t ) { assert(false); }
+        void fill( const T& ) { assert(false); }
 
     }; // class SuperimposedVoxels
 
@@ -313,6 +339,7 @@ public:
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
     /// the 5 dimensions of an image ( x, y, z, spectrum=nb channels , time )
     typedef Vec<NB_DimensionLabel,unsigned int> Dimension; // [x,y,z,s,t]
+    typedef Dimension imCoord; // to have a common api with Image
 
 
     Dimension dimension; ///< the image dimensions [x,y,z,s,t] - @todo maybe this could be implicit?
@@ -360,14 +387,15 @@ public:
     }
 
     /// conversion from flat image to connection image
-    BranchingImage<T>& operator=(const Image<T>& im)
+    template<class T2>
+    BranchingImage<T>& operator=(const Image<T2>& im)
     {
         setDimension( im.getDimensions() );
 
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
         {
             BranchingImage3D& imt = imgList[t];
-            const CImg<T>& cimgt = im.getCImg(t);
+            const CImg<T2>& cimgt = im.getCImg(t);
             unsigned index1D = 0;
             cimg_forXYZ(cimgt,x,y,z)
             {
@@ -397,18 +425,19 @@ public:
 
 
     /// conversion to a flat image
-    /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels
-    void toImage( Image<T>& img, unsigned conversionType = 2 ) const
+    /// conversionType : 0->first voxel, 1->average, 2->nb superimposed voxels, 3->sum
+    template<class T2>
+    void toImage( Image<T2>& img, unsigned conversionType ) const
     {
         img.clear();
-        typename Image<T>::imCoord dim = dimension;
+        typename Image<T2>::imCoord dim = dimension;
         img.setDimensions( dim );
         for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
         {
             const BranchingImage3D& bimt = imgList[t];
-            CImg<T>& cimgt = img.getCImg(t);
+            CImg<T2>& cimgt = img.getCImg(t);
 
-            cimgt.fill((T)0);
+            cimgt.fill((T2)0);
 
             unsigned index1D = 0;
             cimg_forXYZ(cimgt,x,y,z)
@@ -489,6 +518,10 @@ public:
     {
         return dimension;
     }
+    const Dimension& getDimensions() const
+    {
+        return dimension;
+    }
 
     /// resizing
     /// @warning data is deleted
@@ -536,7 +569,43 @@ public:
         return !(*this==other);
     }
 
+    /// count the nb of sumperimposed voxels
+    unsigned count() const
+    {
+        unsigned total = 0;
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        {
+            int index1d = 0;
+            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            {
+                total += imgList[t][index1d].size();
+                ++index1d;
+            }
+        }
+        return total;
+    }
 
+    /// sum every values (every channels)
+    T sum() const
+    {
+        T total = 0;
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        {
+            int index1d = 0;
+            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            {
+                for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
+                for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                    total += imgList[t][index1d][v][s];
+                ++index1d;
+            }
+        }
+        return total;
+    }
 
     /// \returns an approximative size in bytes, useful for debugging
     size_t approximativeSizeInBytes() const
@@ -583,9 +652,11 @@ public:
                         for( unsigned v = 0 ; v < voxels.size() ; ++v )
                         {
                             const typename ConnectionVoxel::Neighbours& neighbours = voxels[v].neighbours;
+                            unsigned totalNeighbours = 0;
                             for( unsigned d = 0 ; d < NB_NeighbourDirections ; ++d )
                             {
                                 const typename ConnectionVoxel::NeighboursInOneDirection& neighboursOneDirection = neighbours[d];
+                                totalNeighbours += neighboursOneDirection.size();
                                 for( unsigned n = 0 ; n < neighboursOneDirection.size() ; ++n )
                                 {
                                     unsigned neighbourIndex = getNeighbourIndex( (NeighbourDirection)d, index1d );
@@ -594,6 +665,7 @@ public:
 //                                    if( imt[neighbourIndex][neighboursOneDirection[n]].index != neighbourIndex || voxels[v].index != index1d ) return false; // a voxel has a good index
                                 }
                             }
+                            if( !totalNeighbours ) return 3;
                         }
                         ++ index1d;
                     }
@@ -605,6 +677,7 @@ public:
 
 
 };
+
 
 
 typedef BranchingImage<char> BranchingImageC;
@@ -647,7 +720,6 @@ template<> struct DataTypeName< defaulttype::BranchingImageD > { static const ch
 template<> struct DataTypeName< defaulttype::BranchingImageB > { static const char* name() { return "BranchingImageB"; } };
 
 /// \endcond
-
 
 
 } // namespace defaulttype
