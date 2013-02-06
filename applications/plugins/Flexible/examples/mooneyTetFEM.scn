@@ -1,13 +1,20 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="0.2"  >
+  
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="SofaMJEDFEM"/>
+  
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
+<!--         <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" /> -->
  <!--       <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="20" precision="1e-6" />-->
 <!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
 
 
     <Node 	name="Flexible"   >
+      
+      <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+      
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
         <Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
@@ -44,6 +51,9 @@
 
 
     <Node 	name="FEM"   >
+      
+      <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+      
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
         <Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
@@ -57,7 +67,7 @@
 	  <MJEDTetrahedralForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 100 1000" /> 
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"color="1 .4 0.5 1"/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
 	    </Node>
     </Node> 
