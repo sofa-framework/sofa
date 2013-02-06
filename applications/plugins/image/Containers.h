@@ -154,6 +154,13 @@ public:
     /// @returns true iff the vector is empty (no entry)
     inline bool empty() const { return !_size; }
 
+    /// fill all array entries with the given value v
+    void fill( const T&v )
+    {
+        for( unsigned i=0 ; i<_size ; ++i )
+            _array[i] = v;
+    }
+
 protected:
 
     T* _array; ///< the array where to store the entries

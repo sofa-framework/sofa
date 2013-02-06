@@ -57,6 +57,10 @@ namespace defaulttype
 using namespace cimg_library;
 using helper::vector;
 
+
+/// type identifier, must be unique
+static const int IMAGELABEL_IMAGE = 0;
+
 //-----------------------------------------------------------------------------------------------//
 // 5d-image structure on top of a shared memory CImgList
 //-----------------------------------------------------------------------------------------------//
@@ -67,6 +71,8 @@ struct Image
     typedef _T T;
     typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     typedef CImg<T> CImgT;
+
+    static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
 
 protected:
     CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)
