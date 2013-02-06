@@ -162,7 +162,7 @@ void TransformPosition<DataTypes>::update()
         for (i=0; i< in.size(); ++i)
         {
 
-            out[i]=in[i]+Coord((Real)rg.randomDouble(-dis,dis),(Real)rg.randomDouble(-dis,dis),(Real)rg.randomDouble(-dis,dis));
+            out[i]=in[i]+Coord((Real)rg.random<double>(-dis,dis),(Real)rg.random<double>(-dis,dis),(Real)rg.random<double>(-dis,dis));
         }
     }
     break;

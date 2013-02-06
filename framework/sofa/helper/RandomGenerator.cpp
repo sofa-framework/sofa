@@ -48,6 +48,9 @@ namespace sofa
 namespace helper
 {
 
+static const unsigned long RANDOM_BASE_MAX = 4294967295U;
+
+
 RandomGenerator::RandomGenerator()
 {
     __rand48_seed[0] = RAND48_SEED_0;
@@ -103,21 +106,65 @@ void RandomGenerator::__dorand48(unsigned short xseed[3])
     xseed[2] = (unsigned short) accu;
 }
 
-unsigned long RandomGenerator::random()
+unsigned long RandomGenerator::randomBase()
 {
     __dorand48(__rand48_seed);
     return ((unsigned long) __rand48_seed[2] << 16) + (unsigned long) __rand48_seed[1];
 }
 
-long RandomGenerator::randomInteger(long min, long max)
+///////////////////////
+
+// specialization for long
+template<> long RandomGenerator::random( long min, long max )
 {
-    return randomReal<long>(min,max);
+    return (min + ((max - min)*randomBase())/RANDOM_BASE_MAX);
 }
 
+// specialization for double
+template<> double RandomGenerator::random( double min, double max )
+{
+    return min + (max - min)*((double)randomBase()/(double)RANDOM_BASE_MAX);
+}
+
+// specialization for float
+template<> float RandomGenerator::random( float min, float max )
+{
+    return min + (max - min)*((float)randomBase()/(float)RANDOM_BASE_MAX);
+}
+
+// specialization for bool
+template<> bool RandomGenerator::random( bool, bool )
+{
+    return random<long>( 0, 2 );
+}
+
+
+// specialization for double with limited range
+template<> double RandomGenerator::random()
+{
+    return random<double>( -(double)RANDOM_BASE_MAX, (double)RANDOM_BASE_MAX );
+}
+
+// specialization for float with limited range
+template<> float RandomGenerator::random()
+{
+    return random<float>( -(float)RANDOM_BASE_MAX, (float)RANDOM_BASE_MAX );
+}
+
+////////////////////
+//// DEPRECATED
+////////////////////
+
+long int RandomGenerator::randomInteger(long min, long max)
+{
+    return random<long>(min,max);
+}
 double RandomGenerator::randomDouble(double min, double max)
 {
-    return randomReal<double>(min,max);
+    return random<double>(min,max);
 }
+
+/////////////
 
 
 }

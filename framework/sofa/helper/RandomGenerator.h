@@ -51,12 +51,12 @@ namespace helper
 {
 
 
-//Generate Random number
-//based on random functions from OpenBSD
-
+/// Generate Random number
+/// based on random functions from OpenBSD
 class SOFA_HELPER_API RandomGenerator
 {
 private:
+
     unsigned short __rand48_seed[3];
     unsigned short __rand48_mult[3];
     unsigned short __rand48_add;
@@ -65,27 +65,50 @@ private:
 
     void __dorand48(unsigned short xseed[3]);
 
+protected:
+
+    /// integer between [0, 2^32-1)
+    unsigned long int randomBase();
+
 public:
+
     RandomGenerator();
     RandomGenerator(long seed);
     virtual ~RandomGenerator();
 
     void initSeed(long seed);
 
-    //integer between [0, 2^32)
-    unsigned long int random();
 
-    //integer between [min, max)
-    long int randomInteger( long min = std::numeric_limits<long>::min(), long max = std::numeric_limits<long>::max() );
 
-    //double number between [min, max)
-    double randomDouble( double min = std::numeric_limits<double>::min(), double max = std::numeric_limits<double>::max() );
+    /// @deprecated for backward compatibility
+    /// use random<long>(min,max)
+    long int randomInteger(long min, long max);
+    /// @deprecated for backward compatibility
+    /// use random<double>(min,max)
+    double randomDouble(double min, double max);
 
-    //real number between [min, max)
-    template<class Real> Real randomReal( Real min = std::numeric_limits<Real>::min(), Real max = std::numeric_limits<Real>::max() )
+
+
+
+    /// number between [min, max)  (max has less chance to appear)
+    /// note that "only" 2^32 different values can be generated
+    /// @warning min < max
+    /// @warning for floating types a too large range can generate inf
+    template<class T> T random( T min, T max )
     {
-        return (min + ((max - min)*(Real)random())/((Real)4294967295));
+        return (T)random<long>( (long)min, (long)max );  // default implementation for integer types. Specialization for floating types in .cpp
     }
+
+
+    /// number between [T::min, T::max)  (max has less chance to appear)
+    /// note that "only" 2^32 different values can be generated
+    /// @warning for floating types, min = -(2^32-1) & max = (2^32-1)
+    template<class T> T random()
+    {
+        return random<T>( std::numeric_limits<T>::min(), std::numeric_limits<T>::max() );
+    }
+
+
 };
 
 }

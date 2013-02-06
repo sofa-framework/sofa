@@ -34,7 +34,7 @@ namespace fixture {
           // initialize with random values
           cimglist_for(flatImage.getCImgList(),l)
                   cimg_forXYZC(flatImage.getCImg(l),x,y,z,c)
-                  flatImage.getCImg(l)(x,y,z,c) = randomGenerator.randomReal<T>( 0, 1000000000 );
+                  flatImage.getCImg(l)(x,y,z,c) = randomGenerator.random<T>( -1000, 1000 );
 
           // convert the flat image to a sparse branching image
           branchingImage = flatImage;
