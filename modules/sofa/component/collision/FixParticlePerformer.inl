@@ -36,6 +36,7 @@
 #include <sofa/component/collision/TriangleModel.h>
 
 #include <sofa/component/collision/CapsuleModel.h>
+#include <sofa/component/collision/RigidSphereModel.h>
 
 
 namespace sofa
@@ -125,6 +126,7 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 template <class DataTypes>
 sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint)
 {
+    exit(-1);
     const int idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
 
@@ -151,6 +153,11 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             points.push_back(capsule->point1Index(idx));
             points.push_back(capsule->point2Index(idx));
         }
+        else if(dynamic_cast<RigidSphereModel*>(b.body)){
+            collisionState = dynamic_cast<MouseContainer*>(b.mstate);
+            fixPoint = (*(collisionState->getX()))[idx];
+            points.push_back(idx);
+        }
     }
     else if (b.mstate)
     {
@@ -158,6 +165,7 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
         fixPoint = (*(collisionState->getX()))[idx];
         points.push_back(idx);
     }
+
 
     return collisionState;
 }

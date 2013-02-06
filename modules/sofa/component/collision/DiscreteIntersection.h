@@ -28,10 +28,13 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/RigidSphereModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/CapsuleIntTool.h>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/IntrOBBOBB.h>
 
 namespace sofa
 {
@@ -63,6 +66,8 @@ public:
     bool testIntersection(Sphere&, Cube&);
     bool testIntersection(Capsule&, Capsule&);
     bool testIntersection(Capsule&, Sphere&);
+    bool testIntersection(RigidSphere &,RigidSphere &);
+    bool testIntersection(OBB &,OBB &);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);    
     template <class Sphere>
@@ -71,6 +76,8 @@ public:
     int computeIntersection(Sphere&, Cube&, OutputVector*);
     int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
     int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
+    int computeIntersection(RigidSphere&,RigidSphere &,OutputVector* contacts);
+    int computeIntersection(OBB &, OBB &,OutputVector* contacts);
 };
 
 } // namespace collision

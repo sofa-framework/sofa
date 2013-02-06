@@ -23,7 +23,18 @@ HEADERS += initBaseCollision.h \
            collision/CapsuleModel.h \
            collision/CapsuleModel.inl \
     collision/BaseProximityIntersection.h \
-    collision/CapsuleIntTool.h
+    collision/CapsuleIntTool.h \
+    collision/OBBModel.inl \
+    collision/OBBModel.h \
+    collision/RigidSphereModel.h \
+    collision/RigidSphereModel.inl \
+    collision/OBBIntTool.h \
+    collision/Intersector.h \
+    collision/Intersector.inl \
+    collision/IntrOBBOBB.h \
+    collision/IntrOBBOBB.inl \
+    collision/IntrUtility3.h \
+    collision/IntrUtility3.inl
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
@@ -37,7 +48,14 @@ SOURCES += initBaseCollision.cpp \
            collision/MinProximityIntersection.cpp \
            collision/NewProximityIntersection.cpp \
     collision/BaseProximityIntersection.cpp \    
-    collision/CapsuleIntTool.cpp
+    collision/CapsuleIntTool.cpp \
+    collision/RigidSphereModel.cpp \
+    collision/OBBModel.cpp \
+    collision/OBBIntTool.cpp \
+    collision/Intersector.cpp \
+    collision/IntrOBBOBB.cpp \
+    collision/IntrUtility3.cpp
+
 
 
 

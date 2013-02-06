@@ -1,0 +1,46 @@
+#include <sofa/component/collision/OBBModel.inl>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace helper;
+
+SOFA_DECL_CLASS(OBB)
+
+int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
+#ifdef SOFA_FLOAT
+        .add<  TOBBModel<Rigid3fTypes> >()
+#else
+        .add < TOBBModel<Rigid3dTypes> >()
+#endif
+        .addAlias("OBB")
+        .addAlias("OBBModel")
+//.addAlias("OBBMesh")
+//.addAlias("OBBSet")
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3dTypes>;
+template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3fTypes>;
+template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3fTypes>;
+#endif
+
+} // namespace collision
+
+} // namespace component
+
+} // namespace sofa
+
+
