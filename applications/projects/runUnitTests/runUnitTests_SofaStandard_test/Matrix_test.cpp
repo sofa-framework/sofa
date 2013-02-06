@@ -196,7 +196,7 @@ struct TestSparseMatrices
         {
             for( unsigned i=0; i<NCOLS; i++)
             {
-                Real random = randomGenerator.randomReal( (Real) -100000, (Real) 100000 );
+                Real random = randomGenerator.random<Real>( (Real) -100000, (Real) 100000 );
                 crsMultiplier.set( i, j, random );
                 fullMultiplier.set( i, j, random );
                 matMultiplier(i,j) = random;
