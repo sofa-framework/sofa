@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0" dt="1"  >
+    <VisualStyle displayFlags="showVisual showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.2" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>
+  <!-- <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
+  
+  
+  <ImageToBranchingImageConverter template="ImageB,BranchingImageB" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="4" superimpositionType="0" printLog="true"/>
+  <BranchingImageContainer template="BranchingImageB" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="false"/>
+
+  
+<!--   <BranchingImageToImageConverter template="BranchingImageB,ImageB" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>  -->
+<!--   <ImageContainer template="ImageB" name="image2" image="@imageConverter.image" transform="@branchingImage.transform" drawBB="false"/> -->
+<!--   <ImageViewer template="ImageB" name="viewer2" src="@image2" plane="2 2 2"/> -->
+  
+
+  
+  
+ <ImageSampler template="BranchingImageB" name="sampler" src="@branchingImage" param="1" showEdges="false" printLog="true"/>
+
+  
+  
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver />
+  <Mesh  src="@sampler" />
+
+  <MechanicalObject  name="dofs" />
+
+  
+
+<UniformMass totalMass="100" />
+
+
+	  <HexahedronFEMForceField youngModulus="3" poissonRatio="0" method="large" updateStiffnessMatrix="false" />
+	  
+	  <Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+	     <BarycentricMapping input="@.." output="@." />
+	  </Node>
+
+</Node>
