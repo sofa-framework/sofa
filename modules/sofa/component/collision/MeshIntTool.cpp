@@ -89,7 +89,7 @@ int MeshIntTool::computeIntersection(Capsule & cap, Line & lin,double alarmDist,
 
 
 int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_rad,
-                         const Vector3 & q1, const Vector3 & q2,double alarmDist,double contactDist,OutputVector *contacts){
+                         const Vector3 & q1, const Vector3 & q2,double alarmDist,double contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){
     const Vector3 AB = p2-p1;//capsule segment
     const Vector3 CD = q2-q1;//line segment
     const Vector3 AC = q1-p1;
@@ -187,6 +187,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
                 if(c_proj < 0){//case :
                                //                    A---------------B
                                // C-------------D
+
                     alpha = 0;
                 }
                 else{
@@ -196,7 +197,6 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
                 if(a_proj < 0){//case :
                                // A---------------B
                                //                     C-------------D
-                    beta = 0;
                 }
                 else{//case :
                      //                     A---------------B
@@ -206,6 +206,11 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
             }
         }
     }
+
+    if(ignore_p1 && beta == 0)
+        return 0;
+    if(ignore_p2 && beta == 1)
+        return 0;
 
     double enough_to_touch = alarmDist + cap_rad;
     Vector3 p,q,pq;
@@ -232,13 +237,13 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,double cap_r
     return 1;
 }
 
-int MeshIntTool::doCapLineInt(Capsule & cap,const Vector3 & q1,const Vector3 & q2 ,double alarmDist,double contactDist,OutputVector* contacts)
+int MeshIntTool::doCapLineInt(Capsule & cap,const Vector3 & q1,const Vector3 & q2 ,double alarmDist,double contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
 {
     double cap_rad = cap.radius();
     const Vector3 p1 = cap.point1();
     const Vector3 p2 = cap.point2();
 
-    return doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts);
+    return doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts,ignore_p1,ignore_p2);
 }
 
 
@@ -407,11 +412,11 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
     n = 0;
 
     if (tri_flg&TriangleModel::FLAG_E12)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts);
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P1),!(tri_flg&TriangleModel::FLAG_P2));
     if (tri_flg&TriangleModel::FLAG_E23)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts);
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P2),!(tri_flg&TriangleModel::FLAG_P3));
     if (tri_flg&TriangleModel::FLAG_E31)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts);
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P3),!(tri_flg&TriangleModel::FLAG_P1));
 
     for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);

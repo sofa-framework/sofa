@@ -43,9 +43,11 @@ using namespace defaulttype;
 
 #ifndef SOFA_DOUBLE
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3dTypes >;
 #endif
 
 } // namespace collision
@@ -56,9 +58,11 @@ namespace helper
 {
 #ifndef SOFA_DOUBLE
 template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3fTypes>, core::CollisionModel* >;
 #endif
 #ifndef SOFA_FLOAT
 template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3dTypes>, core::CollisionModel* >;
 #endif
 } // namespace helper
 

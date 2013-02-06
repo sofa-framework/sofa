@@ -58,7 +58,8 @@ SOURCES += initMeshCollision.cpp \
            collision/LineLocalMinDistanceFilter.cpp \
            collision/TriangleLocalMinDistanceFilter.cpp \
            collision/LocalMinDistanceFilter.cpp \
-    collision/MeshIntTool.cpp
+    collision/MeshIntTool.cpp \
+    collision/RigidContactMapper.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

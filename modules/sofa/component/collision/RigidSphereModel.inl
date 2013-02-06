@@ -1,3 +1,5 @@
+#ifndef RIGIDSPHEREMODEL_INL
+#define RIGIDSPHEREMODEL_INL
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
@@ -32,7 +34,7 @@
 
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/RigidSphereModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
@@ -41,7 +43,6 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
-
 
 
 namespace sofa
@@ -58,16 +59,16 @@ using namespace sofa::core::collision;
 using namespace helper;
 
 
-template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel()
+template<class TReal>
+TRigidSphereModel<TReal>::TRigidSphereModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , mstate(NULL)
 {
 }
 
-template<class DataTypes>
-TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+template<class TReal>
+TRigidSphereModel<TReal>::TRigidSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , mstate(_mstate)
@@ -75,8 +76,8 @@ TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>
 }
 
 
-template<class DataTypes>
-void TSphereModel<DataTypes>::resize(int size)
+template<class TReal>
+void TRigidSphereModel<TReal>::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -97,26 +98,27 @@ void TSphereModel<DataTypes>::resize(int size)
 }
 
 
-template<class DataTypes>
-void TSphereModel<DataTypes>::init()
+template<class TReal>
+void TRigidSphereModel<TReal>::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes >* > (getContext()->getMechanicalState());
     if (mstate==NULL)
     {
-        serr<<"TSphereModel requires a Vec3 Mechanical Model" << sendl;
+        serr<<"TRigidSphereModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
     const int npoints = mstate->getX()->size();
     resize(npoints);
+
 }
 
 
-template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
+template<class TReal>
+void TRigidSphereModel<TReal>::draw(const core::visual::VisualParams* ,int index)
 {
-    TSphere<DataTypes> t(this,index);
+    TRigidSphere<TReal> t(this,index);
 
     Vector3 p = t.p();
     glPushMatrix();
@@ -126,8 +128,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 }
 
 
-template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+template<class TReal>
+void TRigidSphereModel<TReal>::draw(const core::visual::VisualParams* vparams)
 {
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
@@ -141,7 +143,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         std::vector<float> radius;
         for (int i=0; i<npoints; i++)
         {
-            TSphere<DataTypes> t(this,i);
+            TRigidSphere<TReal> t(this,i);
             Vector3 p = t.p();
             points.push_back(p);
             radius.push_back(t.r());
@@ -159,8 +161,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setPolygonMode(0,false);
 }
 
-template <class DataTypes>
-void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
+template <class TReal>
+void TRigidSphereModel<TReal>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getX()->size();
@@ -178,13 +180,13 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
+        const TReal distance = (TReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
-            TSphere<DataTypes> p(this,i);
-            const typename TSphere<DataTypes>::Real r = p.r() + distance;
-            const Coord minElem = p.center() - Coord(r,r,r);
-            const Coord maxElem = p.center() + Coord(r,r,r);
+            TRigidSphere<TReal> p(this,i);
+            const TReal r = p.r() + distance;
+            const Vector3 minElem = p.center() - Pos(r,r,r);
+            const Vector3 maxElem = p.center() + Pos(r,r,r);
 
             cubeModel->setParentOf(i, minElem, maxElem);
 
@@ -193,53 +195,8 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
     }
 }
 
-
-
-template <class DataTypes>
-void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
-{
-    CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
-    bool updated = false;
-    if (npoints != size)
-    {
-        resize(npoints);
-        updated = true;
-        cubeModel->resize(0);
-    }
-
-    if (!isMoving() && !cubeModel->empty() && !updated)
-        return; // No need to recompute BBox if immobile
-
-    Vector3 minElem, maxElem;
-
-    cubeModel->resize(size);
-    if (!empty())
-    {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (int i=0; i<size; i++)
-        {
-            TSphere<DataTypes> p(this,i);
-            const Vector3& pt = p.p();
-            const Vector3 ptv = pt + p.v()*dt;
-
-            for (int c = 0; c < 3; c++)
-            {
-                minElem[c] = pt[c];
-                maxElem[c] = pt[c];
-                if (ptv[c] > maxElem[c]) maxElem[c] = ptv[c];
-                else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
-            }
-
-            typename TSphere<DataTypes>::Real r = p.r() + distance;
-            cubeModel->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
-        }
-        cubeModel->computeBoundingTree(maxDepth);
-    }
-}
-
-template <class DataTypes>
-typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const int i) const
+template <class TReal>
+TReal TRigidSphereModel<TReal>::getRadius(const int i) const
 {
     if(i < (int) this->radius.getValue().size())
         return radius.getValue()[i];
@@ -254,3 +211,5 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
 
 } // namespace sofa
 
+
+#endif // RIGIDSPHEREMODEL_INL

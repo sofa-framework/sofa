@@ -53,7 +53,6 @@ using namespace boost::unit_test;
 
 bool init_unit_test()
 {
-
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char** argv = boost::unit_test::framework::master_test_suite().argv;
 

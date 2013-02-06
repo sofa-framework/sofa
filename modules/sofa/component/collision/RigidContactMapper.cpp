@@ -22,18 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-
-#include <sofa/component/collision/BaseProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/RigidSphereModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/CapsuleIntTool.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/OBBIntTool.h>
+#define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
+#include <sofa/component/collision/RigidContactMapper.inl>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -44,55 +35,21 @@ namespace component
 namespace collision
 {
 
-class SOFA_BASE_COLLISION_API NewProximityIntersection : public BaseProximityIntersection
-{
-public:
-    SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
+using namespace defaulttype;
 
-    Data<bool> useLineLine;
-protected:
-    NewProximityIntersection();
-public:
+SOFA_DECL_CLASS(RigidContactMapper)
 
-    typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
-
-    virtual void init();
-
-    bool testIntersection(Cube& ,Cube&);
-    bool testIntersection(Sphere&, Sphere&);
-    bool testIntersection(Capsule&,Capsule&);
-    bool testIntersection(Capsule&,Sphere&);
-    bool testIntersection(RigidSphere&, RigidSphere&);
-    bool testIntersection(OBB&, OBB&);
+ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<OBBModel,Vec3Types> > OBBContactMapperClass("default", true);
 
 
-
-    int computeIntersection(Cube&, Cube&, OutputVector*);
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-    int computeIntersection(RigidSphere&, RigidSphere&, OutputVector*);
-    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
-    int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
-    int computeIntersection(OBB&, OBB&,OutputVector* contacts);
-
-
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
-
-};
+template class SOFA_BASE_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
+template class SOFA_BASE_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
 
 } // namespace collision
 
 } // namespace component
 
-namespace core
-{
-namespace collision
-{
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-#endif
-}
-}
-
 } // namespace sofa
 
-#endif
+

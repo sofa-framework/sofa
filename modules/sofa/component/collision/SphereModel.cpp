@@ -64,7 +64,6 @@ template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
 #endif
 
-
 } // namespace collision
 
 } // namespace component
