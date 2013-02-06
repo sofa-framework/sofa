@@ -168,6 +168,9 @@ protected:
                     // convert the subimage to a bool image with only 1 canal
                     cimg_library::CImg<bool> subBinaryImage = subImage.get_resize( subImage.width(), subImage.height(), subImage.depth(), 1, 3 );
 
+
+////// @todo   improve this part, by implementing a CImg::get_label function that only consider not empty pixels for labelling (and all empty pixels have label=0)
+
                     // connected component labeling
                     cimg_library::CImg<unsigned long> subLabelImage = subBinaryImage.get_label( false );
 
@@ -184,7 +187,19 @@ protected:
                         unsigned label0;
                         cimg_foroff( subLabelImage, off ) if( !subBinaryImage(off) ) { label0=subLabelImage(off); break; }
                         cimg_foroff( subLabelImage, off ) if( !subBinaryImage(off) ) subLabelImage(off)=0; else if( !subLabelImage(off) ) subLabelImage(off)=label0;
+
+                        // give a continue index from 0 to max (without hole)
+                        // hole could have been created by several void independant components
+                        std::map<unsigned,unsigned> continueMap;
+                        continueMap[0] = 0;  // enforce 0 to stay 0
+                        unsigned continueIndex = 1;
+
+                        cimg_foroff( subLabelImage, off ) if( continueMap.find(subLabelImage(off))==continueMap.end() ) continueMap[subLabelImage(off)]=continueIndex++;
+                        cimg_foroff( subLabelImage, off ) subLabelImage(off) = continueMap[subLabelImage(off)];
+                        nbLabels = continueIndex-1;
                     }
+
+///// end improve
 
                     // a superimposed voxel per independant component
                     output_t[index1d].resize( nbLabels, outputDimension[BranchingImageTypes::DIMENSION_S] );
@@ -361,7 +376,6 @@ protected:
 
         if( f_printLog.getValue() )
         {
-//            unsigned neighbouroodError = outputBranchingImage.getValue().isNeighbouroodValid();
             std::cerr<<"ImageToBranchingImageConverter::update - conversion finished ";
             std::cerr<<"("<<inputImage.getValue().approximativeSizeInBytes()<<" Bytes -> "<<outputBranchingImage.getValue().approximativeSizeInBytes()<<" Bytes -> x"<<inputImage.getValue().approximativeSizeInBytes()/(float)outputBranchingImage.getValue().approximativeSizeInBytes()<<")\n";
         }
