@@ -48,7 +48,8 @@ class CudaKernelsLinearForceField< CudaRigid3fTypes >
 {
 public:
     static void addForce(unsigned size, const void* indices, const void* forces, void* f)
-    {
+	{
+		std::cout << "CudaKernelsLinearForceField " << std::endl;
         LinearForceFieldCudaRigid3f_addForce(size, indices, forces, f);
     }
 }; //CudaKernelsLinearForceField< CudaRigid3fTypes >
@@ -88,6 +89,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Ma
     const SetIndexArray& m_indices = m->points.getValue();
 
     data.indices.resize(m_indices.size());
+	data.size = data.indices.size();
 
     for(unsigned i = 0; i < m_indices.size(); i++)
         data.indices[i] = m_indices[i];
@@ -134,7 +136,6 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
         {
             Deriv slope = (m->nextF - m->prevF)*(1.0/(m->nextT - m->prevT));
             Deriv ff = slope*(cT - m->prevT) + m->prevF;
-
             ff = ff*m->force.getValue();
 
             Kernels::addForce(
@@ -151,6 +152,7 @@ template<>
 void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::init()
 {
     data->init(this);
+	Inherit::init();
 }// LinearForceFieldInternalData::init
 
 template<>
