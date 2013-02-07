@@ -68,6 +68,17 @@ protected:
     Real mContactTime;
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#ifndef SOFA_FLOAT
+extern template class SOFA_BASE_COLLISION_API Intersector<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_COLLISION_API Intersector<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_BASE_COLLISION_API Intersector<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_COLLISION_API Intersector<defaulttype::Rigid3fTypes>;
+#endif
+#endif
+
 	//typedef Intersector<float, Vector2<float> > Intersector2f;
     //typedef Intersector<float, Vec<3,float> > Intersector3f;
 	//typedef Intersector<double, Vector2<double> > Intersector2d;
