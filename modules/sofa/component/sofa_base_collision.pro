@@ -34,7 +34,9 @@ HEADERS += initBaseCollision.h \
     collision/IntrOBBOBB.h \
     collision/IntrOBBOBB.inl \
     collision/IntrUtility3.h \
-    collision/IntrUtility3.inl
+    collision/IntrUtility3.inl \
+    collision/IntrCapsuleOBB.h \
+    collision/IntrCapsuleOBB.inl
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
