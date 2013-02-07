@@ -71,7 +71,7 @@ void LinearForceFieldCudaRigid3f_addForce(unsigned size, const void* indices, co
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     LinearForceFieldCudaRigid3t_addForce_kernel<float>
     <<< grid, threads >>>
-    (size, (const int*)indices, ((float*)f)[0], ((float*)f)[1], ((float*)f)[2], ((float*)f)[3], ((float*)f)[4], ((float*)f)[5], (CudaRigidDeriv3<float>*)f);
+    (size, (const int*)indices, ((float*)forces)[0], ((float*)forces)[1], ((float*)forces)[2], ((float*)forces)[3], ((float*)forces)[4], ((float*)forces)[5], (CudaRigidDeriv3<float>*)f);
 }// LinearForceFieldCudaRigid3f_addForce
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
