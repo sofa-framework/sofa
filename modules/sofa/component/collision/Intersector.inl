@@ -1,7 +1,8 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 
-#include "Intersector.h"
+#include <sofa/component/collision/Intersector.h>
+
 namespace sofa{
 
 namespace component{
