@@ -57,7 +57,7 @@ public:
 @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  ExtensionMapping : public core::Mapping<TIn, TOut>
+class ExtensionMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(ExtensionMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));

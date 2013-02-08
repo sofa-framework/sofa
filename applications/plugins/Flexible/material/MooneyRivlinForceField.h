@@ -46,7 +46,7 @@ using helper::vector;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API MooneyRivlinForceField : public BaseMaterialForceFieldT<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
+class MooneyRivlinForceField : public BaseMaterialForceFieldT<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::MooneyRivlinMaterialBlock<_DataTypes> BlockType;

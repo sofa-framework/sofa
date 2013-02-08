@@ -44,7 +44,7 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API CorotationalStrainMapping : public BaseStrainMappingT<defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> >
+class CorotationalStrainMapping : public BaseStrainMappingT<defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::CorotationalStrainJacobianBlock<TIn,TOut> BlockType;
@@ -121,7 +121,7 @@ protected:
 
     virtual ~CorotationalStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 

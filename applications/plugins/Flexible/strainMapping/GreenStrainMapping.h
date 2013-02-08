@@ -43,7 +43,7 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API GreenStrainMapping : public BaseStrainMappingT<defaulttype::GreenStrainJacobianBlock<TIn,TOut> >
+class GreenStrainMapping : public BaseStrainMappingT<defaulttype::GreenStrainJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::GreenStrainJacobianBlock<TIn,TOut> BlockType;

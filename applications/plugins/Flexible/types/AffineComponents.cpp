@@ -536,8 +536,8 @@ namespace constraintset
 {
 
 
-template<>
-SOFA_Flexible_API void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
+template<> SOFA_Flexible_API
+void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
 {
     Inherit::init();
 

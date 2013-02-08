@@ -65,7 +65,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
     if( f_printMassMatrix.getValue() )
     {
         sout<<m_massMatrix<<sendl;
-        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow(m_totalVolume,1.0/3.0)<<")"<<sendl;
+        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<sendl;
         sout<<"Total Mass = "<<m_totalMass<<sendl;
     }
 }

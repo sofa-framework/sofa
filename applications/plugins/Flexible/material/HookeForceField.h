@@ -29,6 +29,7 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/HookeMaterialBlock.inl"
 //#include "../material/HookeMaterialBlock.h"
+//#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -50,7 +51,7 @@ using helper::vector;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API HookeForceField : public BaseMaterialForceFieldT<defaulttype::HookeMaterialBlock<_DataTypes> >
+class HookeForceField : public BaseMaterialForceFieldT<defaulttype::HookeMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::HookeMaterialBlock<_DataTypes> BlockType;

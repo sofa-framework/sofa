@@ -62,7 +62,7 @@ public:
 */
 
 template <class JacobianBlockType>
-class SOFA_Flexible_API BaseStrainMappingT : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BaseStrainMapping
+class BaseStrainMappingT : public core::Mapping<typename JacobianBlockType::In,typename JacobianBlockType::Out>, public BaseStrainMapping
 {
 public:
     typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;
@@ -156,7 +156,7 @@ public:
        //TODO applyDJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
     }
 
-    virtual void apply(const core::MechanicalParams */*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -177,7 +177,7 @@ public:
         if(!BlockType::constantJ) if(this->assembleJ.getValue()) updateJ();
     }
 
-    virtual void applyJ(const core::MechanicalParams */*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+    virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
         if(this->assembleJ.getValue())  eigenJacobian.mult(dOut,dIn);
         else
@@ -195,7 +195,7 @@ public:
     }
 
 
-    virtual void applyJT(const core::MechanicalParams */*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
+    virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
     {
         if(this->assembleJ.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
         else
@@ -212,7 +212,7 @@ public:
         }
     }
 
-    virtual void applyJT(const core::ConstraintParams */*cparams*/ , Data<InMatrixDeriv>& /*out*/, const Data<OutMatrixDeriv>& /*in*/)
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv>& /*out*/, const Data<OutMatrixDeriv>& /*in*/)
     {
 
     }
@@ -247,7 +247,7 @@ public:
 //        cerr<<"BaseStrainMapping::applyDJT, parentForce after = " << parentForce << endl;
     }
 
-    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
+    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
         if(!this->assembleJ.getValue()) updateJ();
         return &eigenJacobian;

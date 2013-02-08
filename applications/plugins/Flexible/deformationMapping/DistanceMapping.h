@@ -63,7 +63,7 @@ public:
   @author Francois Faure
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API  DistanceMapping : public core::Mapping<TIn, TOut>
+class DistanceMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -127,10 +127,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
 #ifndef SOFA_FLOAT
-//extern template class SOFA_RIGID_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
+//extern template class SOFA_Flexible_API DistanceMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_RIGID_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
+//extern template class SOFA_Flexible_API DistanceMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #endif

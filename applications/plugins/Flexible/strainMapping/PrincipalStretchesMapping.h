@@ -45,7 +45,7 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API PrincipalStretchesMapping : public BaseStrainMappingT<defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> >
+class PrincipalStretchesMapping : public BaseStrainMappingT<defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> BlockType;

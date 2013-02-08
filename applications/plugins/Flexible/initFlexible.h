@@ -25,7 +25,6 @@
 #ifndef INITFlexible_H
 #define INITFlexible_H
 
-
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_Flexible

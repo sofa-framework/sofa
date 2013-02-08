@@ -45,7 +45,7 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API DiagonalStrainMapping : public BaseStrainMappingT<defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> >
+class DiagonalStrainMapping : public BaseStrainMappingT<defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::DiagonalStrainJacobianBlock<TIn,TOut> BlockType;

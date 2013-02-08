@@ -76,7 +76,7 @@ public:
   */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API DisplacementMapping : public core::Mapping<TIn, TOut>
+class DisplacementMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DisplacementMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -131,14 +131,14 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DisplacementMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API DisplacementMapping< Rigid3dTypes, Rigid3dTypes >;
-extern template class SOFA_RIGID_API DisplacementMapping< Vec3dTypes,   Vec3dTypes >;
-extern template class SOFA_RIGID_API DisplacementMapping< Vec6dTypes,   Vec6dTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Vec3dTypes,   Vec3dTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Vec6dTypes,   Vec6dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API DisplacementMapping< Rigid3fTypes, Rigid3fTypes >;
-extern template class SOFA_RIGID_API DisplacementMapping< Vec3fTypes,   Vec3fTypes >;
-extern template class SOFA_RIGID_API DisplacementMapping< Vec6fTypes,   Vec6fTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Vec3fTypes,   Vec3fTypes >;
+extern template class SOFA_Flexible_API DisplacementMapping< Vec6fTypes,   Vec6fTypes >;
 #endif
 
 #endif

@@ -1,8 +1,8 @@
 #ifndef BASESHEPARDSHAPEFUNCTION_H
 #define BASESHEPARDSHAPEFUNCTION_H
 
-#include <initFlexible.h>
-#include <shapeFunction/BaseShapeFunction.h>
+#include "../initFlexible.h"
+#include "BaseShapeFunction.h"
 #include <limits>
 
 namespace sofa

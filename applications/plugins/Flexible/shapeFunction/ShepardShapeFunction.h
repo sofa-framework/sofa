@@ -25,8 +25,8 @@
 #ifndef FLEXIBLE_ShepardShapeFunction_H
 #define FLEXIBLE_ShepardShapeFunction_H
 
-#include <initFlexible.h>
-#include <shapeFunction/BaseShepardShapeFunction.h>
+#include "../initFlexible.h"
+#include "BaseShepardShapeFunction.h"
 #include <limits>
 
 namespace sofa

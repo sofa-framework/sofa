@@ -48,7 +48,7 @@ using helper::OptionsGroup;
 */
 
 template <class _DataTypes>
-class SOFA_Flexible_API VolumePreservationForceField : public BaseMaterialForceFieldT<defaulttype::VolumePreservationMaterialBlock<_DataTypes> >
+class VolumePreservationForceField : public BaseMaterialForceFieldT<defaulttype::VolumePreservationMaterialBlock<_DataTypes> >
 {
 public:
     typedef defaulttype::VolumePreservationMaterialBlock<_DataTypes> BlockType;

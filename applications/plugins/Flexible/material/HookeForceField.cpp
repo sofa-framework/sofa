@@ -28,6 +28,7 @@
 #include "HookeForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/State.inl>
 
 namespace sofa
 {
