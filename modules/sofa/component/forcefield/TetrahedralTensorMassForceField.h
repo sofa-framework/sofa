@@ -171,9 +171,6 @@ public:
         TetrahedralTensorMassForceField<DataTypes>* ff;
     };
 
-    //CUDA Boolean: true if the GPU can handle atomic operations (Cuda version)
-    Data<bool> atomicGPU;
-
 protected:
 
 //    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
