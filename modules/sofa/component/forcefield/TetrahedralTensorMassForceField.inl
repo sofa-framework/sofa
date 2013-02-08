@@ -351,12 +351,6 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
     EdgeRestInformation *einfo;
 
     edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
-    edgeRestInfoVector cudaEdgeInfo;
-    cudaEdgeInfo.resize(edgeInf.size());
-
-
-    for(unsigned int i=0; i<edgeInf.size(); i++)
-        cudaEdgeInfo[i] = edgeInf[i];
 
     Deriv force;
     Coord dp0,dp1,dp;
