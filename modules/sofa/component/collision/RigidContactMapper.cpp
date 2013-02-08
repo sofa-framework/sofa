@@ -43,8 +43,8 @@ ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereCon
 ContactMapperCreator< ContactMapper<OBBModel,Vec3Types> > OBBContactMapperClass("default", true);
 
 
-template class SOFA_BASE_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
-template class SOFA_BASE_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
+template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
 
 } // namespace collision
 

@@ -119,7 +119,7 @@ protected:
 
 };
 
-class DirectionalLight : public Light
+class SOFA_OPENGL_VISUAL_API DirectionalLight : public Light
 {
 public:
     SOFA_CLASS(DirectionalLight, Light);

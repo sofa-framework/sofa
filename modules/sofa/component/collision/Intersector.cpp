@@ -1,5 +1,5 @@
 #include <sofa/component/collision/Intersector.inl>
-#include <component.h>
+#include <sofa/component/component.h>
 
 namespace sofa{
 
