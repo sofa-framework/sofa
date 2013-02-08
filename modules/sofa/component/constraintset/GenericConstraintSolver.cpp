@@ -144,16 +144,16 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 	current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-	MechanicalGetConstraintViolationVisitor(cParams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
+	MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
-	MechanicalGetConstraintResolutionVisitor(cParams /* PARAMS FIRST */, current_cp->constraintsResolutions).execute(context);
+	MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
     if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
 
-    if(unbuilt.getValue())
+    if (unbuilt.getValue())
 	{
 		for (unsigned int i=0;i<constraintCorrections.size();i++)
 		{
@@ -164,51 +164,42 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 		SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
 		Wdiag->resize(numConstraints, numConstraints);
 
-		// for each contact, the pair of constraint correction that is involved with the contact is memorized
-		current_cp->cclist_elem1.resize(numConstraints);
-		current_cp->cclist_elem2.resize(numConstraints);
-                unsigned int nbObjects = 0;
-		for(unsigned int i=0; i<numConstraints;)
-		{
-			nbObjects++;
-			unsigned int l = current_cp->constraintsResolutions[i]->nbLines;
+		// for each contact, the constraint corrections that are involved with the contact are memorized
+		current_cp->cclist_elems.clear();
+		current_cp->cclist_elems.resize(constraintCorrections.size());
+		for (unsigned int i = 0; i < current_cp->cclist_elems.size(); i++)
+			current_cp->cclist_elems[i].resize(numConstraints, NULL);
 
-			bool elem1 = false, elem2 = false;
-			for (unsigned int j=0;j<constraintCorrections.size();j++)
+		unsigned int nbObjects = 0;
+
+		for (unsigned int c_id = 0; c_id < numConstraints;)
+		{
+			bool foundCC = false;
+			nbObjects++;
+			unsigned int l = current_cp->constraintsResolutions[c_id]->nbLines;
+
+
+			for (unsigned int j = 0; j < constraintCorrections.size(); j++)
 			{
 				core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
-				if(cc->hasConstraintNumber(i))
+				
+				if (cc->hasConstraintNumber(c_id))
 				{
-					if(elem1)
-					{
-						current_cp->cclist_elem2[i] = cc;
-						elem2=true;
-					}
-					else
-					{
-						current_cp->cclist_elem1[i] = cc;
-						elem1=true;
-					}
-
+					current_cp->cclist_elems[j][c_id] = cc;
+					cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
+					foundCC = true;
 				}
 			}
 
-			if(elem1)	// for each contact, the pair of constraintcorrection is called to add the contribution
-				current_cp->cclist_elem1[i]->getBlockDiagonalCompliance(Wdiag, i, i+l-1);
-			else
-				serr<<"WARNING: no constraintCorrection found for constraint"<<i<<sendl;
-
-			if(elem2)
-				current_cp->cclist_elem2[i]->getBlockDiagonalCompliance(Wdiag, i, i+l-1);
-			else
-				current_cp->cclist_elem2[i] = (NULL);
+			if (!foundCC)
+				serr << "WARNING: no constraintCorrection found for constraint" << c_id << sendl;
 
 			double** w =  current_cp->getW();
-			for(unsigned int m=i; m<i+l; m++)
-				for(unsigned int n=i; n<i+l; n++)
+			for(unsigned int m = c_id; m < c_id + l; m++)
+				for(unsigned int n = c_id; n < c_id + l; n++)
 					w[m][n] = Wdiag->element(m, n);
 
-			i += l;
+			c_id += l;
 		}
 
 		current_cp->change_sequence = false;
@@ -224,6 +215,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 			core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
 			cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
 		}
+
 		sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
 		if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
 	}
@@ -234,6 +226,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 		sout<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
 		time = (double) timer.getTime();
 	}
+
     return true;
 }
 
@@ -287,7 +280,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 	current_cp->sor = sor.getValue();
 	current_cp->unbuilt = unbuilt.getValue();
 
-	if(unbuilt.getValue())
+	if (unbuilt.getValue())
 	{
 		sofa::helper::AdvancedTimer::stepBegin("ConstraintsUnbuiltGaussSeidel");
 		current_cp->unbuiltGaussSeidel(0, this);
@@ -295,11 +288,11 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 	}
 	else
 	{
-            if(this->f_printLog.getValue())
-            {
-                std::cout << "---> Before Resolution" << std::endl;
-                    afficheLCP(std::cout, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
-            }
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "---> Before Resolution" << std::endl;
+            afficheLCP(std::cout, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+        }
 
 		sofa::helper::AdvancedTimer::stepBegin("ConstraintsGaussSeidel");
 		current_cp->gaussSeidel(0, this);
@@ -312,11 +305,11 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 		time = (double) timer.getTime();
 	}
 
-	if(this->f_printLog.getValue())
-        {
-            std::cout << "---> After Resolution" << std::endl;
-                afficheLCP(std::cout, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
-        }
+    if(this->f_printLog.getValue())
+    {
+        std::cout << "---> After Resolution" << std::endl;
+        afficheLCP(std::cout, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+    }
 	
 	return true;
 }
@@ -606,7 +599,10 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		double dt = (t1 - t0)*timeScale;
 
 		if(timeout && dt > timeout)
+		{
+			std::cout << "TimeOut" << std::endl;
 			return;
+		}
 		else if(allVerified)
 		{
 			if(constraintsAreVerified)
@@ -710,9 +706,6 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 		{
 			constraintsResolutions[i]->init(i, w, force);
 			int nb = constraintsResolutions[i]->nbLines;
-			// TODO : previous forces don't work with multiple constraints
-	//		if(cclist_elem1[i]) cclist_elem1[i]->setConstraintDForce(force, i, i+nb-1, true);
-	//		if(cclist_elem2[i]) cclist_elem2[i]->setConstraintDForce(force, i, i+nb-1, true);
 			i += nb;
 		}
 	}
@@ -761,9 +754,13 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 				errF[l] = force[j+l];
 				d[j+l] = dfree[j+l];
 			}
+
 			//   (b) contribution of forces are added to d
-			if(cclist_elem1[j]) cclist_elem1[j]->addConstraintDisplacement(d, j, j+nb-1);
-			if(cclist_elem2[j]) cclist_elem2[j]->addConstraintDisplacement(d, j, j+nb-1);
+			for (unsigned int cc_index = 0; cc_index < cclist_elems.size(); cc_index++)
+			{
+				if (cclist_elems[cc_index][j] != NULL)
+					cclist_elems[cc_index][j]->addConstraintDisplacement(d, j, j+nb-1);
+			}
 
 			//3. the specific resolution of the constraint(s) is called
 			constraintsResolutions[j]->resolution(j, w, d, force, dfree);
@@ -819,8 +816,11 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 					force[j+l] -= errF[l]; // DForce
 				}
 
-				if(cclist_elem1[j]) cclist_elem1[j]->setConstraintDForce(force, j, j+nb-1, update);
-				if(cclist_elem2[j]) cclist_elem2[j]->setConstraintDForce(force, j, j+nb-1, update);
+				for (unsigned int cc_index = 0; cc_index < cclist_elems.size(); cc_index++)
+				{
+					if (cclist_elems[cc_index][j] != NULL)
+						cclist_elems[cc_index][j]->setConstraintDForce(force, j, j+nb-1, update);
+				}
 
 				for(l=0; l<nb; l++)
 					force[j+l] = tempF[l];

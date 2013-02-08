@@ -66,7 +66,12 @@ public:
 	SparseMatrix<double> Wdiag;
     std::list<unsigned int> constraints_sequence;
 	bool change_sequence;
-	std::vector<core::behavior::BaseConstraintCorrection*> cclist_elem1, cclist_elem2;
+
+	typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+	typedef std::vector< core::behavior::BaseConstraintCorrection* >::iterator ConstraintCorrectionIterator;
+
+	std::vector< ConstraintCorrections > cclist_elems;
+	
 
 	GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
 		, change_sequence(false) {}
