@@ -184,7 +184,7 @@ protected:
 
         // update transform
 
-        Real BB[3][2] = { {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} , {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} , {std::numeric_limits<Real>::max(), std::numeric_limits<Real>::min()} };
+        Real BB[3][2] = { {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} };
 
         if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {

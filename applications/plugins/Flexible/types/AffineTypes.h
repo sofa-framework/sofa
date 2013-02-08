@@ -275,7 +275,6 @@ public:
     template<typename T>
     static void add ( Deriv& c, T x, T y, T z )
     {
-        c.clear();
         c.getVCenter() [0] += ( Real ) x;
         c.getVCenter() [1] += ( Real ) y;
         c.getVCenter() [2] += ( Real ) z;
@@ -301,7 +300,6 @@ public:
     template<typename T>
     static void add ( Coord& c, T x, T y, T z )
     {
-        c.clear();
         c.getCenter() [0] += ( Real ) x;
         c.getCenter() [1] += ( Real ) y;
         c.getCenter() [2] += ( Real ) z;
