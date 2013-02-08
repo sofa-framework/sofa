@@ -77,7 +77,8 @@ public:
 
 
     typedef vector<double> ParamTypes;
-    typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
+	typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
+	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
     Data< ParamTypes > param;

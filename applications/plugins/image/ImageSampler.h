@@ -668,6 +668,7 @@ public:
     /**@{*/
     typedef vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
+	typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
 
     Data<helper::OptionsGroup> method;
     Data< bool > computeRecursive;
