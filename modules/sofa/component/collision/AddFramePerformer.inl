@@ -40,6 +40,7 @@ namespace collision
 template <class DataTypes>
 void AddFramePerformer<DataTypes>::start()
 {
+    std::cout << "Frame1" << std::endl;
     BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
 
@@ -72,6 +73,7 @@ void AddFramePerformer<DataTypes>::start()
 template <class DataTypes>
 void AddFramePerformer<DataTypes>::execute()
 {
+    std::cout << "Frame2" << std::endl;
 };
 
 template <class DataTypes>

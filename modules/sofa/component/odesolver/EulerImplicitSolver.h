@@ -55,8 +55,8 @@ using namespace sofa::defaulttype;
  *
  *   Newton's law is
  *   \f$ M dv = h f(t+h) \f$
- *   \f$ M dv = h ( f(t) + K dx     + (B - r_M M + r_K K) dv )\f$
- *   \f$ M dv = h ( f(t) + K h dv   + (B - r_M M + r_K K) dv )\f$
+ *   \f$ M dv = h ( f(t) + K dx     + (B - r_M M + r_K K) (v+dv) )\f$
+ *   \f$ M dv = h ( f(t) + K h dv   + (B - r_M M + r_K K) (v+dv) )\f$
  *
  *   \f$ M \f$ is the mass matrix.
  *   \f$ K = df/dx \f$ is the stiffness implemented (or not) by the force fields.
@@ -65,7 +65,7 @@ using namespace sofa::defaulttype;
  *
  * This corresponds to the following equation system:
  *
- *   \f$ ( (1+r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + h K dv - r_M M dv )\f$
+ *   \f$ ( (1+r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + (h+r_K) K v - r_M M v )\f$
  *
  * Moreover, the projective constraints filter out the forbidden motions.
  * This is equivalent with multiplying vectors with a projection matrix \f$P\f$.
