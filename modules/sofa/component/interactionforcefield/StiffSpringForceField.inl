@@ -29,13 +29,9 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/SpringForceField.inl>
-#include <cassert>
-#include <sofa/helper/AdvancedTimer.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
-#include <sofa/component/linearsolver/EigenVectorWrapper.h>
+
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
