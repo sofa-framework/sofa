@@ -34,7 +34,7 @@ namespace component
 namespace engine
 {
 
-class SOFA_Flexible_API BaseGaussPointSampler;
+
 
 } // namespace engine
 } // namespace component

@@ -43,7 +43,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-
 template <class TIn, class TOut>
 TriangleStrainAverageMapping<TIn, TOut>::TriangleStrainAverageMapping()
     : Inherit()
@@ -51,6 +50,7 @@ TriangleStrainAverageMapping<TIn, TOut>::TriangleStrainAverageMapping()
     , f_endIndices(initData(&f_endIndices,  "endIndices", "For each node, end index of its triangle list"))
     , f_weights(initData(&f_weights, "weights", "For each node, weight of each triangle in the average"))
 {
+
 }
 
 template <class TIn, class TOut>

@@ -31,13 +31,13 @@ int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix in
 #ifndef SOFA_DOUBLE
         .add< ImageDensityMass<Vec3fTypes,core::behavior::ShapeFunction3f,Mat3x3f> >()
         .add< ImageDensityMass<Vec3fTypes,core::behavior::ShapeFunction2f,Mat3x3f> >()
-        .add< ImageDensityMass<Affine3fTypes,core::behavior::ShapeFunction3d,Affine3fMass> >()
+        .add< ImageDensityMass<Affine3fTypes,core::behavior::ShapeFunction3f,Affine3fMass> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunction3d,Mat3x3d>;
 template class SOFA_Flexible_API ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunction2d,Mat3x3d>;
-template class SOFA_Flexible_API ImageDensityMass<Affine3dTypes,core::behavior::ShapeFunction3f,Affine3dMass>;
+template class SOFA_Flexible_API ImageDensityMass<Affine3dTypes,core::behavior::ShapeFunction3d,Affine3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API ImageDensityMass<Vec3fTypes,core::behavior::ShapeFunction3f,Mat3x3f>;

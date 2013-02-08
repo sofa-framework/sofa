@@ -70,7 +70,7 @@ public:
 @author Maxime Tournier
   */
 template <class TIn, class TOut>
-class SOFA_Flexible_API RelativeRigidMapping : public core::Mapping<TIn, TOut>
+class RelativeRigidMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(RelativeRigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -150,10 +150,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RelativeRigidMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RelativeRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_Flexible_API RelativeRigidMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RelativeRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_Flexible_API RelativeRigidMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #endif

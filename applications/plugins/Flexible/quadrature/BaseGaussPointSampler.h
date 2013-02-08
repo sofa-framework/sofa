@@ -58,7 +58,7 @@ using defaulttype::Vec;
  */
 
 
-class BaseGaussPointSampler : public core::DataEngine
+class SOFA_Flexible_API BaseGaussPointSampler : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;

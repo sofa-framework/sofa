@@ -43,8 +43,6 @@ int TopologyGaussPointSamplerClass = core::RegisterObject("Samples an object rep
         .add<TopologyGaussPointSampler>(true)
         ;
 
-class SOFA_Flexible_API TopologyGaussPointSampler;
-
 } // namespace engine
 } // namespace component
 } // namespace sofa

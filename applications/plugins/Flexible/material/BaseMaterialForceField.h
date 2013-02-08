@@ -59,7 +59,7 @@ public:
 */
 
 template <class MaterialBlockType>
-class SOFA_Flexible_API BaseMaterialForceFieldT : public core::behavior::ForceField<typename MaterialBlockType::T>, public BaseMaterialForceField
+class BaseMaterialForceFieldT : public core::behavior::ForceField<typename MaterialBlockType::T>, public BaseMaterialForceField
 {
 public:
     typedef core::behavior::ForceField<typename MaterialBlockType::T> Inherit;
@@ -188,7 +188,7 @@ public:
     }
 
 
-    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams */*mparams*/)
+    const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
     {
         if( !isCompliance.getValue() ) return NULL; // if seen as a stiffness, then return no compliance matrix
         if(!this->assembleC.getValue()) updateC();
@@ -203,7 +203,7 @@ public:
         return &K;
     }
 
-    const defaulttype::BaseMatrix* getB(const core::MechanicalParams */*mparams*/)
+    const defaulttype::BaseMatrix* getB(const core::MechanicalParams * /*mparams*/)
     {
         if(!this->assembleB.getValue()) updateB();
         return &B;

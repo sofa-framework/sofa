@@ -43,7 +43,7 @@ using helper::vector;
 */
 
 template <class TIn, class TOut>
-class SOFA_Flexible_API InvariantMapping : public BaseStrainMappingT<defaulttype::InvariantJacobianBlock<TIn,TOut> >
+class InvariantMapping : public BaseStrainMappingT<defaulttype::InvariantJacobianBlock<TIn,TOut> >
 {
 public:
     typedef defaulttype::InvariantJacobianBlock<TIn,TOut> BlockType;

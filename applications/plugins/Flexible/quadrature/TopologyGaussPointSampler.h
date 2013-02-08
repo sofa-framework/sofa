@@ -44,7 +44,7 @@ using helper::vector;
  */
 
 
-class TopologyGaussPointSampler : public BaseGaussPointSampler
+class SOFA_Flexible_API TopologyGaussPointSampler : public BaseGaussPointSampler
 {
 public:
     typedef BaseGaussPointSampler Inherited;

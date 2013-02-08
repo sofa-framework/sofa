@@ -28,6 +28,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/core/State.inl>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include "../initFlexible.h"

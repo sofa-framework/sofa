@@ -42,7 +42,7 @@ namespace mapping
 
 /// Decompose the total strain to an elastic strain + a plastic strain
 template <class TStrain>
-class SOFA_Flexible_API PlasticStrainMapping : public BaseStrainMappingT<defaulttype::PlasticStrainJacobianBlock<TStrain> >
+class PlasticStrainMapping : public BaseStrainMappingT<defaulttype::PlasticStrainJacobianBlock<TStrain> >
 {
 public:
 
@@ -108,7 +108,7 @@ protected:
 
     virtual ~PlasticStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams */*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

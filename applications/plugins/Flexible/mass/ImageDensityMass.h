@@ -6,6 +6,7 @@
 #endif
 
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/State.inl>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -17,6 +18,7 @@
 
 #include <Flexible/shapeFunction/BaseShapeFunction.h>
 #include <Flexible/deformationMapping/LinearJacobianBlock.inl>
+#include <Flexible/FlexibleForceField.h>
 
 
 #include <image/ImageTypes.h>

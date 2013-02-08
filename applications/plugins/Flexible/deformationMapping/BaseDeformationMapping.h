@@ -108,7 +108,7 @@ public:
 /** Abstract interface to allow forward/backward mapping of arbitrary points (no need to know exact in/output types)
 */
 template <int spatial_dimensions,typename Real>
-class SOFA_Flexible_API BasePointMapper : public virtual core::objectmodel::BaseObject
+class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
 public:
     typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
@@ -221,7 +221,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
     virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv>& /*out*/, const Data<OutMatrixDeriv>& /*in*/);
 
-    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams */*mparams*/)
+    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
         if(!this->assembleJ.getValue()) updateJ();
         return &eigenJacobian;
