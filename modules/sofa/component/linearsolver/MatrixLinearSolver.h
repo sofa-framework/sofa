@@ -205,6 +205,12 @@ public:
     /// Rebuild the system using a mass and force factor
     virtual void rebuildSystem(double massFactor, double forceFactor);
 
+    /// Set the linear system matrix (only use for bench)
+    void setSystemMatrix(Matrix* matrix) {
+        if (currentGroup==NULL) createGroups(MechanicalParams::defaultInstance());
+        currentGroup->systemMatrix = matrix;
+    }
+
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v);
 
