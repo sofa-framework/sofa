@@ -61,11 +61,13 @@ public:
     typedef defaulttype::Image<Tin> ImageTypes;
     typedef defaulttype::BranchingImage<Tout> BranchingImageTypes;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
-
+    typedef defaulttype::Image<unsigned long> ImageLabelTypes; ///< a component labeling image. The labeling indices are divided in independant blocks, each block corresponding to a coarse voxel. A label index gives the offset in the list of the superimposed voxel at coarse resolution that contains the fine pixel.
 
 
     Data<ImageTypes> inputImage;
     Data<BranchingImageTypes> outputBranchingImage;
+    Data<ImageLabelTypes> outputMappingImage;
+    Data<bool> createMappingImage;
     Data<unsigned> coarseningLevels;
     Data<unsigned> superimpositionType;
 
@@ -78,6 +80,8 @@ public:
     ImageToBranchingImageConverter()    :   Inherited()
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage","Image to coarsen"))
         , outputBranchingImage(initData(&outputBranchingImage,BranchingImageTypes(),"outputBranchingImage","Coarsened BranchingImage"))
+        , outputMappingImage(initData(&outputMappingImage,ImageLabelTypes(),"outputMappingImage","A regular with the same size as inputImage, its associated transform is inputTransform. Each pixel stores the offset of its containing SuperimposedVoxel"))
+        , createMappingImage(initData(&createMappingImage,true,"createMappingImage","Will outputMappingImage be created?"))
         , coarseningLevels(initData(&coarseningLevels,(unsigned)0,"coarseningLevels","How many coarsenings (subdividing x/y/z by 2)?"))
         , superimpositionType(initData(&superimpositionType,(unsigned)0,"superimpositionType","Which value for superimposed voxels? (0->sum (default), 1->average, 2->ratio, 3->count)"))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform","Input Transform"))
@@ -100,7 +104,9 @@ public:
         addInput(&coarseningLevels);
         addInput(&superimpositionType);
         addInput(&inputTransform);
+        addInput(&createMappingImage);
         addOutput(&outputBranchingImage);
+        addOutput(&outputMappingImage);
         addOutput(&outputTransform);
         setDirtyValue();
     }
@@ -118,14 +124,22 @@ protected:
         cleanDirty();
 
         BranchingImageTypes &output = *outputBranchingImage.beginEdit();
+        ImageLabelTypes &labelImages = *outputMappingImage.beginEdit();
         const ImageTypes &input = inputImage.getValue();
         TransformType& transform = *outputTransform.beginEdit();
 
         transform = inputTransform.getValue();
 
+        typename ImageTypes::imCoord labelDimension = input.getDimensions();
+        labelDimension[BranchingImageTypes::DIMENSION_S] = 1;
+        labelImages.setDimensions( labelDimension );
+
         if( coarseningLevels.getValue()<1 )
         {
             output = input; // operator= is performing the conversion without modifying the resolution, so with flat neighbourood
+            if( createMappingImage.getValue() )
+                for( unsigned t=0 ; t<labelDimension[BranchingImageTypes::DIMENSION_T] ; ++t )
+                    labelImages.getCImg(t).fill( 0 );
         }
         else
         {
@@ -148,8 +162,7 @@ protected:
                 typename BranchingImageTypes::BranchingImage3D& output_t = output.imgList[t];
 
                 // a global labeling image, where labels have sens only in small blocks corresponding to the coarse voxels
-                cimg_library::CImg<unsigned long> labelImage;
-                labelImage.resize( input_t.width(), input_t.height(), input_t.depth(), 1  );
+                typename ImageLabelTypes::CImgT& labelImage = labelImages.getCImg(t);
 
                 // FIND SUPERIMPOSED VOXELS
 
@@ -184,7 +197,7 @@ protected:
                     }
                     else // some are empty, some are not -> enforce the label 0 to empty voxels
                     {
-                        unsigned label0;
+                        unsigned label0 = 0;
                         cimg_foroff( subLabelImage, off ) if( !subBinaryImage(off) ) { label0=subLabelImage(off); break; }
                         cimg_foroff( subLabelImage, off ) if( !subBinaryImage(off) ) subLabelImage(off)=0; else if( !subLabelImage(off) ) subLabelImage(off)=label0;
 
@@ -222,7 +235,7 @@ protected:
                                         nbLabelsV++;
                                         for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
                                         {
-                                            assert( voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                            assert( typeid(Tout)==typeid(bool) ||voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
                                             voutput[s] += subImage(subx,suby,subz,s);
                                         }
                                     }
@@ -279,7 +292,7 @@ protected:
                                     {
                                         for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
                                         {
-                                            assert( voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                            assert( typeid(Tout)==typeid(bool) || voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
                                             voutput[s] += subImage(subx,suby,subz,s);
                                         }
                                     }
@@ -370,7 +383,11 @@ protected:
             } // for t
         }
 
+        // delete the label image if no longer wanted
+        if( !createMappingImage.getValue() ) labelImages.clear();
+
         outputTransform.endEdit();
+        outputMappingImage.endEdit();
         outputBranchingImage.endEdit();
 
 

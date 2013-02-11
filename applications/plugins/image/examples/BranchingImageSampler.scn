@@ -19,8 +19,10 @@
 <!--   <ImageViewer template="ImageB" name="viewer2" src="@image2" plane="2 2 2"/> -->
   
 
+   <ImageContainer template="ImageUL" name="image2" image="@coarsener.outputMappingImage" transform="@image.transform" drawBB="false"/>
+   <ImageViewer template="ImageUL" name="viewer2" src="@image2" plane="2 2 2"/>
   
-  
+
  <ImageSampler template="BranchingImageB" name="sampler" src="@branchingImage" param="1" showEdges="false" printLog="true"/>
 
   
