@@ -27,6 +27,7 @@
 #define IMAGE_IMAGEALGORITHMS_H
 
 #include "ImageTypes.h"
+#include "BranchingImage.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/Mat.h>
@@ -48,78 +49,115 @@ int round(real r)
 
 
 /**
-*  Move points in position data to the centroid of their voronoi region
-*  centroid are computed given a (biased) distance measure d as $p + (b)/N \sum_i d(p,p_i)*2/((b)+(b_i))*(p_i-p)/|p_i-p|$
-*  with no bias, we obtain the classical mean $1/N \sum_i p_i$
-* returns true if points have moved
+*  Move points to the centroid of their voronoi region
+*  returns true if points have moved
 */
 
-template<typename real,typename T>
-bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos, std::vector<unsigned int>& voronoiIndex, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::ImageLPTransform<real>& transform,  const CImg<T>* biasFactor=NULL)
+template<typename real>
+bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<unsigned int>& voronoiIndex, CImg<unsigned int>& voronoi)
 {
     typedef sofa::defaulttype::Vec<3,real> Coord;
     unsigned int nbp=pos.size();
     bool moved=false;
 
-    // get rounded point coordinates in image (to check that points do not share the same voxels)
-    std::vector<Coord> P;
-    P.resize(nbp);
-    for (unsigned int i=0; i<nbp; i++) { Coord p = transform.toImage(pos[i]);  for (unsigned int j=0; j<3; j++)  P[i][j]=round(p[j]); }
-
 #ifdef USING_OMP_PRAGMAS
-    #pragma omp parallel for
+#pragma omp parallel for
 #endif
     for (unsigned int i=0; i<nbp; i++)
     {
         // compute centroid
-        Coord c,p,u;
+        Coord C,p;
         unsigned int count=0;
         bool valid=true;
+
         cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==voronoiIndex[i])
         {
-            p=transform.fromImage(Coord(x,y,z));
-            //u=p-pos[i]; u.normalize();
-            //c+=u*distances(x,y,z);
-            c+=p;
+            C+=Coord(x,y,z);
             count++;
         }
         if(!count) goto stop;
-
-        c/=(real)count;
-
-        if (biasFactor)
-        {
-            //                Real stiff=getStiffness(grid.data()[indices[i]]);
-            //                if(biasFactor!=(Real)1.) stiff=(Real)pow(stiff,biasFactor);
-            //                c*=stiff;
-        }
-
-        // c+=pos[i];
+        C/=(real)count;
 
         // check validity
-        p = transform.toImage(c); for (unsigned int j=0; j<3; j++) p[j]=round(p[j]);
-        if (distances(p[0],p[1],p[2])==-1) valid=false; // out of object
-        else { for (unsigned int j=0; j<nbp; j++) if(i!=j) if(P[j][0]==p[0]) if(P[j][1]==p[1]) if(P[j][2]==p[2]) valid=false; } // check occupancy
+        for (unsigned int j=0; j<3; j++) p[j]=round(C[j]);
+        if (voronoi(p[0],p[1],p[2])!=voronoiIndex[i]) valid=false; // out of voronoi
+        else { for (unsigned int j=0; j<nbp; j++) if(i!=j) if(round(pos[j][0])==p[0]) if(round(pos[j][1])==p[1]) if(round(pos[j][2])==p[2]) valid=false; } // check occupancy
 
         while(!valid)  // get closest unoccupied point in voronoi
         {
             real dmin=cimg::type<real>::max();
             cimg_forXYZ(voronoi,x,y,z) if (voronoi(x,y,z)==voronoiIndex[i])
             {
-                Coord pi=transform.fromImage(Coord(x,y,z));
-                real d2=(c-pi).norm2();
+                real d2=(C-Coord(x,y,z)).norm2();
                 if(dmin>d2) { dmin=d2; p=Coord(x,y,z); }
             }
             if(dmin==cimg::type<real>::max()) goto stop;// no point found
-            bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(P[j][0]==p[0]) if(P[j][1]==p[1]) if(P[j][2]==p[2]) val2=false; // check occupancy
+            bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(round(pos[j][0])==p[0]) if(round(pos[j][1])==p[1]) if(round(pos[j][2])==p[2]) val2=false; // check occupancy
             if(val2) valid=true;
             else voronoi(p[0],p[1],p[2])=0;
         }
 
-        if(P[i][0]!=p[0] || P[i][1]!=p[1] || P[i][2]!=p[2]) // set new position if different
+        if(pos[i][0]!=p[0] || pos[i][1]!=p[1] || pos[i][2]!=p[2]) // set new position if different
         {
-            pos[i] = transform.fromImage(p);
-            for (unsigned int j=0; j<3; j++) P[i][j]=p[j];
+            pos[i] = p;
+            moved=true;
+        }
+stop: ;
+    }
+
+    return moved;
+}
+
+
+
+template<typename real>
+bool Lloyd (std::vector<std::pair<unsigned int,unsigned int> > &pos,const std::vector<unsigned int>& voronoiIndex, sofa::defaulttype::BranchingImage<unsigned int>& voronoi)
+{
+    typedef std::pair<unsigned int,unsigned int> voxelIndex;
+    typedef sofa::defaulttype::Vec<3,real> Coord;
+    unsigned int nbp=pos.size();
+    bool moved=false;
+
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for (unsigned int i=0; i<nbp; i++)
+    {
+        // compute centroid
+        Coord C;
+        voxelIndex p;
+        unsigned int count=0;
+        bool valid=false;
+
+        bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi.getValue(off1D,v,c,t)==voronoiIndex[i])
+        {
+            unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
+            C+=Coord(x,y,z);;
+            count++;
+        }
+        if(!count) goto stop;
+        C/=(real)count;
+
+        // check validity
+        while(!valid)  // get closest unoccupied point in voronoi
+        {
+            real dmin=cimg::type<real>::max();
+            bimg_forCVoffT(voronoi,c,v,off1D,t) if(voronoi.getValue(off1D,v,c,t)==voronoiIndex[i])
+            {
+                unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
+                real d2=(C-Coord(x,y,z)).norm2();
+                if(dmin>d2) { dmin=d2; p=voxelIndex(off1D,v); }
+            }
+            if(dmin==cimg::type<real>::max()) goto stop;// no point found
+
+            bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].first==p.first && pos[j].second==p.second)  val2=false;  // check occupancy
+            if(val2) valid=true;
+            else voronoi.getValue(p.first,p.second,0,0)=0;  // discard voxel if already occupied
+        }
+
+        if(p.first!=pos[i].first || p.second!=pos[i].second) // set new position if different
+        {
+            pos[i] = p;
             moved=true;
         }
 stop: ;
@@ -215,30 +253,30 @@ void fastMarching (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &tr
             // update distance on neighbors using their own neighbors
             iCoord v2 = v + offset[i];
             if(v2[0]>=0) if(v2[1]>=0) if(v2[2]>=0) if(v2[0]<dim[0]) if(v2[1]<dim[1]) if(v2[2]<dim[2])
-                                    if(!alive(v2[0],v2[1],v2[2]))
-                                    {
-                                        // get neighboring alive values
-                                        iCoord v3=v2;
-                                        Dist d,d2;
-                                        for (unsigned int j=0; j<3; j++)
-                                        {
-                                            v3[j]--;  if(v3[j]>=0 && alive(v3[0],v3[1],v3[2])) d[2*j]= distances(v3[0],v3[1],v3[2]); else d[2*j]=-1;
-                                            v3[j]--;  if(v3[j]>=0 && alive(v3[0],v3[1],v3[2])) d2[2*j]= distances(v3[0],v3[1],v3[2]); else d2[2*j]=-1;
-                                            v3[j]+=3; if(v3[j]<dim[j] && alive(v3[0],v3[1],v3[2])) d[2*j+1]= distances(v3[0],v3[1],v3[2]); else d[2*j+1]=-1;
-                                            v3[j]++;  if(v3[j]<dim[j] && alive(v3[0],v3[1],v3[2])) d2[2*j+1]= distances(v3[0],v3[1],v3[2]); else d2[2*j+1]=-1;
-                                            v3[j]-=2;
-                                        }
-                                        real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
-                                        real newDist = Eikonal<real>(d,d2,voxelsize,(b1+b2)*0.5);
-                                        real oldDist = distances(v2[0],v2[1],v2[2]);
-                                        if(oldDist>newDist)
-                                        {
-                                            typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
-                                            voronoi(v2[0],v2[1],v2[2])=vor;
-                                            distances(v2[0],v2[1],v2[2])=newDist;
-                                            trial.insert( DistanceToPoint(newDist,v2) );
-                                        }
-                                    }
+                if(!alive(v2[0],v2[1],v2[2]))
+                {
+                    // get neighboring alive values
+                    iCoord v3=v2;
+                    Dist d,d2;
+                    for (unsigned int j=0; j<3; j++)
+                    {
+                        v3[j]--;  if(v3[j]>=0 && alive(v3[0],v3[1],v3[2])) d[2*j]= distances(v3[0],v3[1],v3[2]); else d[2*j]=-1;
+                        v3[j]--;  if(v3[j]>=0 && alive(v3[0],v3[1],v3[2])) d2[2*j]= distances(v3[0],v3[1],v3[2]); else d2[2*j]=-1;
+                        v3[j]+=3; if(v3[j]<dim[j] && alive(v3[0],v3[1],v3[2])) d[2*j+1]= distances(v3[0],v3[1],v3[2]); else d[2*j+1]=-1;
+                        v3[j]++;  if(v3[j]<dim[j] && alive(v3[0],v3[1],v3[2])) d2[2*j+1]= distances(v3[0],v3[1],v3[2]); else d2[2*j+1]=-1;
+                        v3[j]-=2;
+                    }
+                    real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
+                    real newDist = Eikonal<real>(d,d2,voxelsize,(b1+b2)*0.5);
+                    real oldDist = distances(v2[0],v2[1],v2[2]);
+                    if(oldDist>newDist)
+                    {
+                        typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
+                        voronoi(v2[0],v2[1],v2[2])=vor;
+                        distances(v2[0],v2[1],v2[2])=newDist;
+                        trial.insert( DistanceToPoint(newDist,v2) );
+                    }
+                }
         }
     }
 }
@@ -266,13 +304,13 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
 
     // init
     sofa::defaulttype::Vec<27,  iCoord > offset; // image coord offsets related to neighbors
-    sofa::defaulttype::Vec<27,  real > lD;      // precomputed local distances (supposing that the transformation is not projective)
+    sofa::defaulttype::Vec<27,  real > lD;      // precomputed local distances (supposing that the transformation is linear)
     int count=0; for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
-            {
-                offset[count]= iCoord(i,j,k);
-                lD[count]= (voxelsize.linearProduct(offset[count])).norm();
-                count++;
-            }
+    {
+        offset[count]= iCoord(i,j,k);
+        lD[count]= (voxelsize.linearProduct(offset[count])).norm();
+        count++;
+    }
     unsigned int nbOffset=offset.size();
 
     // dijkstra
@@ -290,19 +328,62 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
         {
             iCoord v2 = v + offset[i];
             if(v2[0]>=0) if(v2[1]>=0) if(v2[2]>=0) if(v2[0]<dim[0]) if(v2[1]<dim[1]) if(v2[2]<dim[2])
-                                    //if(!alive(v2[0],v2[1],v2[2]))
-                                {
-                                    real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
-                                    real newDist = distances(v[0],v[1],v[2]) + lD[i]*2.0/(b1+b2);
-                                    real oldDist = distances(v2[0],v2[1],v2[2]);
-                                    if(oldDist>newDist)
-                                    {
-                                        typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
-                                        voronoi(v2[0],v2[1],v2[2]) = vor;
-                                        distances(v2[0],v2[1],v2[2]) = newDist;
-                                        trial.insert( DistanceToPoint(newDist,v2) );
-                                    }
-                                }
+                //if(!alive(v2[0],v2[1],v2[2]))
+            {
+                real b2; if(biasFactor) b2=(real)(*biasFactor)(v2[0],v2[1],v2[2]); else  b2=1.0;
+                real newDist = distances(v[0],v[1],v[2]) + lD[i]*2.0/(b1+b2);
+                real oldDist = distances(v2[0],v2[1],v2[2]);
+                if(oldDist>newDist)
+                {
+                    typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
+                    voronoi(v2[0],v2[1],v2[2]) = vor;
+                    distances(v2[0],v2[1],v2[2]) = newDist;
+                    trial.insert( DistanceToPoint(newDist,v2) );
+                }
+            }
+        }
+    }
+}
+
+
+
+template<typename real,typename T>
+void dijkstra (std::set<std::pair<real,std::pair<unsigned int,unsigned int> > > &trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const sofa::defaulttype::BranchingImage<T>* biasFactor=NULL)
+{
+    typedef std::pair<unsigned int,unsigned int> voxelIndex;
+    typedef std::pair<real,voxelIndex> DistanceToPoint;
+    //std::map<voxelIndex,bool> alive;
+
+    // dijkstra
+    while( !trial.empty() )
+    {
+        DistanceToPoint top = *trial.begin();
+        trial.erase(trial.begin());
+        voxelIndex v = top.second;
+        //alive(v)=true;
+
+        const unsigned int vor = voronoi.getValue(v);
+        std::vector< voxelIndex > nList;
+        std::vector< real > nDist;
+
+        if(biasFactor) biasFactor->getNeighboursAndDistances(nList, nDist, top.second, voxelsize, 0); // time=0;
+        else voronoi.getNeighboursAndDistances(nList, nDist, top.second, voxelsize, 0);
+
+        for (unsigned int i=0; i<nList.size(); i++)
+        {
+            voxelIndex v2 = nList[i];
+            //if(!alive(v2))
+            {
+                const real newDist = distances.getValue(v) + nDist[i];
+                const real oldDist = distances.getValue(v2);
+                if(oldDist>newDist)
+                {
+                    typename std::set<DistanceToPoint>::iterator it=trial.find(DistanceToPoint(oldDist,v2)); if(it!=trial.end()) trial.erase(it);
+                    voronoi.getValue(v2) = vor;
+                    distances.getValue(v2) = newDist;
+                    trial.insert( DistanceToPoint(newDist,v2) );
+                }
+            }
         }
     }
 }
@@ -310,19 +391,17 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
 
 
 /**
-* Initialize null distances and voronoi value (=point index) from a point @param pos
-* and returns list of seed (or trial) points to be used in dijkstra or fast marching algorithms
+* Initialize null distances and voronoi value (=point index) from a position in image coordinates
+* and returns list of seed (=trial) points to be used in dijkstra or fast marching algorithms
 */
 
 template<typename real>
-void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& trial, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::ImageLPTransform<real>& transform, const sofa::defaulttype::Vec<3,real>& pos,  const unsigned int index)
+void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& trial, CImg<real>& distances, CImg<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& pos,  const unsigned int index)
 {
-    typedef sofa::defaulttype::Vec<3,real> Coord;
     typedef sofa::defaulttype::Vec<3,int> iCoord;
     typedef std::pair<real,iCoord > DistanceToPoint;
 
-    Coord p = transform.toImage(pos);
-    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=round(p[j]);
+    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=round(pos[j]);
     if(distances.containsXYZC(P[0],P[1],P[2]))
         if(distances(P[0],P[1],P[2])>=0)
         {
@@ -332,6 +411,20 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
         }
 }
 
+template<typename real>
+void AddSeedPoint (std::set<std::pair<real,std::pair<unsigned int,unsigned int> > >& trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const std::pair<unsigned int,unsigned int>& pos,  const unsigned int index)
+{
+    typedef std::pair<unsigned int,unsigned int> voxelIndex;
+    typedef std::pair<real,voxelIndex > DistanceToPoint;
+
+    if(distances.imgList[0][pos.first].size()) // time 0
+        if(distances.imgList[0][pos.first][pos.second][0]>=0) // first channel
+        {
+            distances.imgList[0][pos.first][pos.second][0]=0;
+            voronoi.imgList[0][pos.first][pos.second][0]=index;
+            trial.insert( DistanceToPoint(0.,pos) );
+        }
+}
 
 
 

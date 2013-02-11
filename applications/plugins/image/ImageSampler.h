@@ -74,6 +74,7 @@ struct ImageSamplerSpecialization
 template <>
 struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 {
+    typedef defaulttype::Image<SReal> DistTypes;
 
     template<class ImageSampler>
     static void init( ImageSampler* )
@@ -176,38 +177,51 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // data access
         typename ImageSampler::raPositions fpos(sampler->fixedPosition);
-        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         typename ImageSampler::waEdges e(sampler->edges);                e.clear();
         typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
         typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
 
+        typename ImageSampler::imCoord dim = in->getDimensions();
+
         // init voronoi and distances
-        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
+        dim[3]=dim[4]=1;
+        CImg<unsigned int>  voronoi(dim[0],dim[1],dim[2],1,0);
         typename ImageSampler::waDist distData(sampler->distances);
-        typename ImageSampler::imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
-        // farthest point sampling using geodesic distances
+        // add fixed points
         vector<unsigned int> fpos_voronoiIndex;
-        vector<unsigned int> pos_voronoiIndex;
+        vector<Coord> fpos_voxelIndex;
+
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
-            AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+            fpos_voxelIndex.push_back(inT->toImage(fpos[i]));
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
         }
-        while(pos.size()<nb)
+        if(fpos.size())
+        {
+            if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+            else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+        }
+
+        // farthest point sampling using geodesic distances
+        vector<unsigned int> pos_voronoiIndex;
+        vector<Coord> pos_voxelIndex;
+        while(pos_voxelIndex.size()<nb)
         {
             Real dmax=0;  Coord pmax;
             cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
             if(dmax)
             {
-                pos_voronoiIndex.push_back(fpos.size()+pos.size()+1);
-                pos.push_back(inT->fromImage(pmax));
-                AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos.back(),pos_voronoiIndex.back());
+                pos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+1);
+                pos_voxelIndex.push_back(pmax);
+                AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex.back(),pos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
@@ -220,12 +234,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         while(!converged)
         {
-            if(Lloyd<Real,T>(pos,pos_voronoiIndex,dist,voronoi,sampler->transform.getValue(),NULL)) // one lloyd iteration
+            if(Lloyd<Real>(pos_voxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
-                for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos[i], pos_voronoiIndex[i]);
+                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;
@@ -233,12 +247,16 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             else converged=true;
         }
 
+        // add 3D points
+        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        for(unsigned int i=0; i<pos_voxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_voxelIndex[i]));
+        sampler->position.endEdit();
+
         if(sampler->f_printLog.getValue())
         {
-            std::cout<<"ImageSampler: Completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
+            std::cout<<sampler->getName()<<": sampling completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
         }
 
-        sampler->position.endEdit();
     }
 
 
@@ -261,49 +279,60 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // data access
         typename ImageSampler::raPositions fpos(sampler->fixedPosition);
-        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         typename ImageSampler::waEdges e(sampler->edges);                e.clear();
         typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
         typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
 
+        typename ImageSampler::imCoord dim = in->getDimensions();
+
         // init voronoi and distances
-        CImg<unsigned int>  voronoi(inimg.width(),inimg.height(),inimg.depth(),1,0);
+        dim[3]=dim[4]=1;
+        CImg<unsigned int>  voronoi(dim[0],dim[1],dim[2],1,0);
         typename ImageSampler::waDist distData(sampler->distances);
-        typename ImageSampler::imCoord dim = in->getDimensions(); dim[3]=dim[4]=1; distData->setDimensions(dim);
+        distData->setDimensions(dim);
         CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
-        // fixed points
+        // add fixed points
         vector<unsigned int> fpos_voronoiIndex;
+        vector<Coord> fpos_voxelIndex;
+
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
-            AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
+            fpos_voxelIndex.push_back(inT->toImage(fpos[i]));
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+        }
+        if(fpos.size())
+        {
+            if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+            else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
         }
 
         // new points
         vector<unsigned int> pos_voronoiIndex;
-        while(pos.size()<nb)
+        vector<Coord> pos_voxelIndex;
+        while(pos_voxelIndex.size()<nb)
         {
-            std::vector<Vec<3,Real> > newpos;
             vector<unsigned int> newpos_voronoiIndex;
+            vector<Coord> newpos_voxelIndex;
 
             // farthest sampling of N points
             unsigned int currentN = N;
-            if(!pos.size()) currentN = 1; // special case at the beginning: we start by adding just one point
-            else if(pos.size()+N>nb) currentN = nb-pos.size();  // when trying to add more vertices than necessary
-            while(newpos.size()<currentN)
+            if(!pos_voxelIndex.size()) currentN = 1; // special case at the beginning: we start by adding just one point
+            else if(pos_voxelIndex.size()+N>nb) currentN = nb-pos_voxelIndex.size();  // when trying to add more vertices than necessary
+            while(newpos_voxelIndex.size()<currentN)
             {
                 Real dmax=0;  Coord pmax;
                 cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
                 if(!dmax) break;
 
-                newpos_voronoiIndex.push_back(fpos.size()+pos.size()+newpos.size()+1);
-                newpos.push_back(inT->fromImage(pmax));
-                AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), newpos.back(),newpos_voronoiIndex.back());
+                newpos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+newpos_voxelIndex.size()+1);
+                newpos_voxelIndex.push_back(pmax);
+                AddSeedPoint<Real>(trial,dist,voronoi, newpos_voxelIndex.back(),newpos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
@@ -314,13 +343,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
             while(!converged)
             {
-                if(Lloyd<Real,T>(newpos,newpos_voronoiIndex,dist,voronoi,sampler->transform.getValue(),NULL))
+                if(Lloyd<Real>(newpos_voxelIndex,newpos_voronoiIndex,voronoi))
                 {
                     // recompute distance from scratch
                     cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                    for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), fpos[i], fpos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<pos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), pos[i], pos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, sampler->transform.getValue(), newpos[i], newpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<pos_voxelIndex.size(); i++)  AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<newpos_voxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, newpos_voxelIndex[i], newpos_voronoiIndex[i]);
                     if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                     else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                     it++; if(it>=lloydIt) converged=true;
@@ -329,8 +358,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
 
             // check neighbors of the new voronoi cell and add graph edges
-            unsigned int nbold = fpos.size()+pos.size();
-            for(unsigned int i=0; i<newpos.size() && pos.size()<nb; i++)
+            unsigned int nbold = fpos_voxelIndex.size()+pos_voxelIndex.size();
+            for(unsigned int i=0; i<newpos_voxelIndex.size() && pos_voxelIndex.size()<nb; i++)
             {
                 std::set<unsigned int> neighb;
                 CImg_3x3x3(I,unsigned int);
@@ -347,18 +376,23 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 for(typename std::set<unsigned int>::iterator itr=neighb.begin(); itr!=neighb.end(); itr++)
                 {
                     g.push_back(Edge(*itr-1,newpos_voronoiIndex[i]-1));
-                    //if(*itr>fpos.size()) g.push_back(Edge(*itr-fpos.size()-1,newpos_voronoiIndex[i]-1));
+                    //if(*itr>fpos_voxelIndex.size()) g.push_back(Edge(*itr-fpos_voxelIndex.size()-1,newpos_voronoiIndex[i]-1));
                 }
-                pos.push_back(newpos[i]);
+                pos_voxelIndex.push_back(newpos_voxelIndex[i]);
                 pos_voronoiIndex.push_back(newpos_voronoiIndex[i]);
             }
 
-            if(newpos.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
+            if(newpos_voxelIndex.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
         }
+
+        // add 3D points
+        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        for(unsigned int i=0; i<pos_voxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_voxelIndex[i]));
+        sampler->position.endEdit();
 
         if(sampler->f_printLog.getValue())
         {
-            std::cout<<"ImageSampler: Completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s "<<std::endl;
+            std::cout<<sampler->getName()<<": sampling completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
         }
 
         sampler->position.endEdit();
@@ -371,6 +405,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <>
 struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 {
+    typedef defaulttype::BranchingImageD DistTypes;
+
     template<class ImageSampler>
     static void init( ImageSampler* sampler )
     {
@@ -508,7 +544,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                         if( alreadyAddedPos.find(hexa[j])==alreadyAddedPos.end() )
                         {
                             alreadyAddedPos[hexa[j]] = true;
-                            pos[hexa[j]] = Coord(x+hexaIndices[j][0],y+hexaIndices[j][1],z+hexaIndices[j][2]);
+                            pos[hexa[j]] = Coord(x+hexaIndices[j][0]-0.5,y+hexaIndices[j][1]-0.5,z+hexaIndices[j][2]-0.5);
                         }
                     }
 
@@ -613,9 +649,119 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
     }
 
     template<class ImageSampler>
-    static void uniformSampling( ImageSampler* sampler,const unsigned int /*nb*/=0,  const bool /*bias*/=false, const unsigned int /*lloydIt*/=100,const bool /*useDijkstra*/=false )
+    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false )
     {
-        sampler->serr<<"ImageSampler::uniformSampling is not yet immplemented for BranchingImage\n";
+        typedef typename ImageSampler::Real Real;
+        typedef typename ImageSampler::Coord Coord;
+        typedef typename ImageSampler::Edge Edge;
+        typedef typename ImageSampler::Hexa Hexa;
+        typedef typename ImageSampler::T T;
+
+        clock_t timer = clock();
+
+        // get tranform and image at time t
+        typename ImageSampler::raImage in(sampler->image);
+        typename ImageSampler::raTransform inT(sampler->transform);
+        const typename ImageSampler::ImageTypes::BranchingImage3D& inimg = in->imgList[sampler->time];
+        const typename ImageSampler::ImageTypes* biasFactor=bias?&in.ref():NULL;
+
+        // data access
+        typename ImageSampler::raPositions fpos(sampler->fixedPosition);
+        typename ImageSampler::waEdges e(sampler->edges);                e.clear();
+        typename ImageSampler::waEdges g(sampler->graphEdges);           g.clear();
+        typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
+
+        typename ImageSampler::ImageTypes::Dimension dim = in->getDimension();
+
+        // init voronoi and distances
+        dim[ImageSampler::ImageTypes::DIMENSION_S]=1;
+        dim[ImageSampler::ImageTypes::DIMENSION_T]=1;
+
+        defaulttype::BranchingImageUI voronoi;
+        voronoi.setDimension(dim);
+        voronoi.imgList[0].cloneTopology<T>(inimg,1,0);
+
+        typename ImageSampler::waDist wadist(sampler->distances);
+        DistTypes& dist = wadist.wref();
+        dist.setDimension(dim);
+        dist.imgList[0].cloneTopology<T> (inimg,1,-1.0);
+
+        bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in->getValue(off1D,v,c,t)) dist.getValue(off1D,v,c,0)=cimg::type<Real>::max();
+
+        // list of seed points
+        typedef typename ImageSampler::ImageTypes::voxelIndex voxelIndex;
+        std::set<std::pair<Real, voxelIndex > > trial;
+
+        // add fixed points
+        vector<unsigned int> fpos_voronoiIndex;
+        vector<voxelIndex> fpos_voxelIndex;
+
+        for(unsigned int i=0; i<fpos.size(); i++)
+        {
+            fpos_voronoiIndex.push_back(i+1);
+            Coord p = inT->toImage(fpos[i]);
+            voxelIndex ind (dist.index3Dto1D(round(p[0]),round(p[1]),round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
+            fpos_voxelIndex.push_back(ind);
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+        }
+        if(fpos.size())
+        {
+            if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+            //else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor );
+        }
+
+        // farthest point sampling using geodesic distances
+        vector<unsigned int> pos_voronoiIndex;
+        vector<voxelIndex> pos_voxelIndex;
+        while(pos_voxelIndex.size()<nb)
+        {
+            Real dmax=0;  voxelIndex indMax;
+            bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)>dmax) { dmax=dist.getValue(off1D,v,c,t); indMax = voxelIndex(off1D,v); }
+            if(dmax)
+            {
+                pos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+1);
+                pos_voxelIndex.push_back(indMax);
+                AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex.back(),pos_voronoiIndex.back());
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
+                //else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+            }
+            else break;
+        }
+
+        unsigned int it=0;
+        bool converged =(it>=lloydIt)?true:false;
+
+        while(!converged)
+        {
+            if(Lloyd<Real>(pos_voxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
+            {
+                // recompute distance from scratch
+                bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)!=-1) dist.getValue(off1D,v,c,t)=cimg::type<Real>::max();
+                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
+                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+//                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                it++; if(it>=lloydIt) converged=true;
+            }
+            else converged=true;
+        }
+
+        // add 3D points
+        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        for(unsigned int i=0; i<pos_voxelIndex.size(); i++)
+        {
+            unsigned x,y,z; dist.index1Dto3D(pos_voxelIndex[i].first,x,y,z);
+            pos.push_back(inT->fromImage(Coord(x,y,z)));
+        }
+        sampler->position.endEdit();
+
+
+        if(sampler->f_printLog.getValue())
+        {
+            std::cout<<sampler->getName()<<": sampling completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<std::endl;
+        }
+
+        voronoi.clear();
     }
 
     template<class ImageSampler>
@@ -699,7 +845,7 @@ public:
 
     //@name distances (may be used for shape function computation)
     /**@{*/
-    typedef defaulttype::Image<Real> DistTypes;
+    typedef typename ImageSamplerSpecialization<ImageTypes::label>::DistTypes DistTypes;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > distances;
@@ -785,7 +931,7 @@ protected:
             bool bias=false;          if(params.size()>1)     bias=(bool)params[1];
             unsigned int lloydIt=100; if(params.size()>2)     lloydIt=(unsigned int)params[2];
             bool Dij=true;            if(params.size()>3)     Dij=(bool)params[3];
-            unsigned int N=1;        //curently does not work// if(params.size()>4)     N=(unsigned int)params[4];
+            unsigned int N=1;         if(params.size()>4)     N=(unsigned int)params[4];
 
             // sampling
             if(!computeRecursive.getValue()) uniformSampling(nb,bias,lloydIt,Dij);
