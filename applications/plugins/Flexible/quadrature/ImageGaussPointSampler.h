@@ -226,7 +226,7 @@ protected:
 
             // fixed points = points set by the user in soft regions.
             // Disabled for now since pos is cleared
-            SeqPositions fpos;
+            SeqPositions fpos_voxelIndex;
             vector<unsigned int> fpos_voronoiIndex;
             for(unsigned int i=0; i<pos.size(); i++)
             {
@@ -236,12 +236,12 @@ protected:
                 {
                     indList l;
                     cimg_forC(indices,v) if(indices(p[0],p[1],p[2],v)) l.insert(indices(p[0],p[1],p[2],v)-1);
-                    if(l.size()>1) { fpos.push_back(pos[i]); fpos_voronoiIndex.push_back(i+1+nbrigid); }
+                    if(l.size()>1) { fpos_voxelIndex.push_back(p); fpos_voronoiIndex.push_back(i+1+nbrigid); }
                 }
             }
 
             // target nb of points
-            unsigned int nb = (fpos.size()+nbrigid>targetNumber.getValue())?fpos.size()+nbrigid:targetNumber.getValue();
+            unsigned int nb = (fpos_voxelIndex.size()+nbrigid>targetNumber.getValue())?fpos_voxelIndex.size()+nbrigid:targetNumber.getValue();
             unsigned int nbsoft = nb-nbrigid;
             if(this->f_printLog.getValue()) std::cout<<this->getName()<<": Number of rigid/soft regions : "<<nbrigid<<"/"<<nbsoft<< std::endl;
 
@@ -249,19 +249,19 @@ protected:
             std::set<std::pair<DistT,sofa::defaulttype::Vec<3,int> > > trial;
 
             // farthest point sampling using geodesic distances
-            SeqPositions newpos;
+            SeqPositions newpos_voxelIndex;
             vector<unsigned int> newpos_voronoiIndex;
 
-            for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, transform.ref(), fpos[i],fpos_voronoiIndex[i]);
-            while(newpos.size()+fpos.size()<nbsoft)
+            for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+            while(newpos_voxelIndex.size()+fpos_voxelIndex.size()<nbsoft)
             {
                 DistT dmax=0;  Coord pmax;
                 cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
                 if(dmax)
                 {
-                    newpos.push_back(transform->fromImage(pmax));
-                    newpos_voronoiIndex.push_back(fpos.size()+nbrigid+newpos.size());
-                    AddSeedPoint<DistT>(trial,dist,regimg, transform.ref(), newpos.back(),newpos_voronoiIndex.back());
+                    newpos_voxelIndex.push_back(pmax);
+                    newpos_voronoiIndex.push_back(fpos_voxelIndex.size()+nbrigid+newpos_voxelIndex.size());
+                    AddSeedPoint<DistT>(trial,dist,regimg, newpos_voxelIndex.back(),newpos_voronoiIndex.back());
                     if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
                     else fastMarching<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
                 }
@@ -273,11 +273,11 @@ protected:
             bool converged =(it>=iterations.getValue())?true:false;
             while(!converged)
             {
-                converged=!(Lloyd<DistT,DistT>(newpos,newpos_voronoiIndex,dist,regimg,this->f_transform.getValue(),NULL));
+                converged=!(Lloyd<DistT>(newpos_voxelIndex,newpos_voronoiIndex,regimg));
                 // recompute voronoi
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<DistT>::max();
-                for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, this->f_transform.getValue(), fpos[i],fpos_voronoiIndex[i]);
-                for(unsigned int i=0; i<newpos.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, this->f_transform.getValue(), newpos[i],newpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<newpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, newpos_voxelIndex[i],newpos_voronoiIndex[i]);
                 if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
                 else fastMarching<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
                 it++; if(it>=iterations.getValue()) converged=true;
@@ -286,21 +286,21 @@ protected:
             if(this->f_printLog.getValue()) std::cout<<this->getName()<<": Completed in "<< it <<" Lloyd iterations"<<std::endl;
 
             // create soft regions and update teir data
-            for(unsigned int i=0; i<fpos.size(); i++)           // Disabled for now since fpos is empty
+            for(unsigned int i=0; i<fpos_voxelIndex.size(); i++)           // Disabled for now since fpos is empty
             {
                 indList l; cimg_forXYZ(regimg,x,y,z) if(regimg(x,y,z)==fpos_voronoiIndex[i]) { cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v)-1); }   // collect indices over the region
                 if(l.size())
                 {
-                    defaulttype::PolynomialFitFactors<Real> reg(l,fpos_voronoiIndex[i]); reg.center=fpos[i];
+                    defaulttype::PolynomialFitFactors<Real> reg(l,fpos_voronoiIndex[i]); reg.center=transform->fromImage(fpos_voxelIndex[i]);
                     Reg.push_back(reg);
                 }
             }
-            for(unsigned int i=0; i<newpos.size(); i++)
+            for(unsigned int i=0; i<newpos_voxelIndex.size(); i++)
             {
                 indList l; cimg_forXYZ(regimg,x,y,z) if(regimg(x,y,z)==newpos_voronoiIndex[i]) { cimg_forC(indices,v) if(indices(x,y,z,v)) l.insert(indices(x,y,z,v)-1); }   // collect indices over the region
                 if(l.size())
                 {
-                    defaulttype::PolynomialFitFactors<Real> reg(l,newpos_voronoiIndex[i]); reg.center=newpos[i];
+                    defaulttype::PolynomialFitFactors<Real> reg(l,newpos_voronoiIndex[i]); reg.center=transform->fromImage(newpos_voxelIndex[i]);
                     Reg.push_back(reg);
                 }
             }
@@ -370,9 +370,9 @@ protected:
 
         cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)==-1) dist(x,y,z)=0; // clean error output image (used as a container for distances)
 
-        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<this->getName()<<": "<< pos.size() <<" generated samples"<<std::endl;
-
         updateMapping();
+
+        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<this->getName()<<": "<< pos.size() <<" generated samples"<<std::endl;
     }
 
 
@@ -458,8 +458,8 @@ protected:
                 if(regimg(x,y,z)==vorindex[0])
         {
             dist(x,y,z)=cimg::type<DistT>::max();
-            Coord p = transform->fromImage(Coord(x,y,z));
-            Real d = (p-Reg[index].center).norm2();
+            Coord p = Coord(x,y,z);
+            Real d = (transform->fromImage(p)-Reg[index].center).norm2();
             if(dmin>d) {dmin=d; pos[0]=p;}
             if(dmax<d) {dmax=d; pos[1]=p;}
         }
@@ -470,17 +470,17 @@ protected:
         unsigned int it=0;
         bool converged =(it>=iterations.getValue())?true:false;
 
-        for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, this->f_transform.getValue(), pos[i],vorindex[i]);
+        for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
         if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
         else fastMarching<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
         //dist.display();
         //regimg.display();
         while(!converged)
         {
-            converged=!(Lloyd<DistT,DistT>(pos,vorindex,dist,regimg,this->f_transform.getValue(),NULL));
+            converged=!(Lloyd<DistT>(pos,vorindex,regimg));
             // recompute voronoi
             cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<DistT>::max();
-            for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, this->f_transform.getValue(), pos[i],vorindex[i]);
+            for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
             if(useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
             else fastMarching<DistT,DistT>(trial,dist, regimg, this->f_transform.getValue().getScale());
             it++; if(it>=iterations.getValue()) converged=true;
@@ -490,12 +490,12 @@ protected:
         defaulttype::PolynomialFitFactors<Real> reg;
         reg.parentsToNodeIndex=Reg[index].parentsToNodeIndex;
         reg.voronoiIndices.insert(vorindex[1]);
-        reg.center=pos[1];
+        reg.center=transform->fromImage(pos[1]);
         reg.nb=0; cimg_foroff(regimg,off)  if(regimg(off) == vorindex[1]) reg.nb++;
         Reg.push_back(reg);
 
         // update old region data
-        Reg[index].center=pos[0];
+        Reg[index].center=transform->fromImage(pos[0]);
         Reg[index].nb=0; cimg_foroff(regimg,off)  if(regimg(off) == vorindex[0]) Reg[index].nb++;
     }
 
