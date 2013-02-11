@@ -146,9 +146,9 @@ public:
             this->transform.unset();
 
         if (this->transform.isSet())
-            std::cout << "Transform is set" << std::endl;
+            sout << "Transform is set" << sendl;
         else
-            std::cout << "Transform is NOT set" << std::endl;
+            sout << "Transform is NOT set" << sendl;
 
         if(!wimage->getCImgList().size())
             if(!load())

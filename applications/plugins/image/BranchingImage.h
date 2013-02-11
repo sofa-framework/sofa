@@ -71,6 +71,22 @@ public:
             neighbours = cv.neighbours;
         }
 
+        /// copy only the topology and initialize value size acoording to spectrum
+        template<typename T2>
+        void cloneTopology( const typename BranchingImage<T2>::ConnectionVoxel& cv, unsigned spectrum, const T defaultValue=(T)0 )
+        {
+            if( value ) delete [] value;
+
+            if( !spectrum || !cv.value ) { value=0; return; }
+
+            value = new T[spectrum];
+            for( unsigned i=0 ; i<spectrum ; ++i ) value[i]=defaultValue;
+
+            //index = cv.index;
+            neighbours = cv.neighbours;
+        }
+
+
         /// alloc or realloc without keeping existing data and without initialization
         void resize( size_t newSize )
         {
@@ -89,11 +105,11 @@ public:
                 for( unsigned i=0 ; i<spectrum ; ++i ) { const double val = (double)abs(value[i]); if (val>res) res = val; }
             } break;
             case 1 : {
-              for( unsigned i=0 ; i<spectrum ; ++i ) res += (double)abs(value[i]);
+                for( unsigned i=0 ; i<spectrum ; ++i ) res += (double)abs(value[i]);
             } break;
             default : {
-              for( unsigned i=0 ; i<spectrum ; ++i ) res += (double)(value[i]*value[i]);
-              res = (double)sqrt(res);
+                for( unsigned i=0 ; i<spectrum ; ++i ) res += (double)(value[i]*value[i]);
+                res = (double)sqrt(res);
             }
             }
             return res;
@@ -209,6 +225,21 @@ public:
             }
         }
 
+        /// copy only the topology and initialize value size acoording to spectrum
+        template<typename T2>
+        void cloneTopology( const typename BranchingImage<T2>::SuperimposedVoxels& other, unsigned spectrum , const T defaultValue=(T)0 )
+        {
+            if( other.empty() ) clear();
+            else
+            {
+                Inherited::resize( other.size());
+                for( unsigned i=0 ; i<this->_size ; ++i )
+                {
+                    this->_array[i].cloneTopology<T2>( other[i], spectrum, defaultValue );
+                }
+            }
+        }
+
         /// equivalent to ==
         bool isEqual( const SuperimposedVoxels& other, unsigned spectrum ) const
         {
@@ -292,7 +323,7 @@ public:
     /// a BranchingImage is a dense image with a vector of SuperimposedVoxels at each pixel
     class BranchingImage3D : public NoPreallocationVector<SuperimposedVoxels>
     {
-     public:
+    public:
 
         typedef NoPreallocationVector<SuperimposedVoxels> Inherited;
 
@@ -305,6 +336,17 @@ public:
             for( unsigned i=0 ; i<this->_size ; ++i )
             {
                 this->_array[i].clone( other._array[i], spectrum );
+            }
+        }
+
+        /// copy only the topology and initialize value size acoording to spectrum
+        template<typename T2>
+        void cloneTopology( const typename BranchingImage<T2>::BranchingImage3D& other, unsigned spectrum, const T defaultValue=(T)0)
+        {
+            resize( other.size() );
+            for( unsigned i=0 ; i<this->_size ; ++i )
+            {
+                this->_array[i].cloneTopology<T2>( other[i], spectrum, defaultValue );
             }
         }
 
@@ -341,6 +383,8 @@ public:
     typedef Vec<NB_DimensionLabel,unsigned int> Dimension; // [x,y,z,s,t]
     typedef Dimension imCoord; // to have a common api with Image
 
+    /// index indentifying a single connectionVoxel= index1D + SuperimposedIndex
+    typedef std::pair<unsigned,unsigned> voxelIndex;
 
     Dimension dimension; ///< the image dimensions [x,y,z,s,t] - @todo maybe this could be implicit?
     unsigned sliceSize; ///< (x,y) slice size
@@ -402,12 +446,12 @@ public:
                 CImg<long double> vect=cimgt.get_vector_at(x,y,z);
                 if( vect.magnitude(1) != 0 )
                 {
-//                    assert( index1D == index3Dto1D(x,y,z) );
+                    //                    assert( index1D == index3Dto1D(x,y,z) );
                     {
                         ConnectionVoxel v( dimension[DIMENSION_S] );
                         for( unsigned c = 0 ; c<dimension[DIMENSION_S] ; ++c )
                             v[c] = cimgt(x,y,z,c);
-//                        v.index = index1D;
+                        //                        v.index = index1D;
                         v.neighbours.clear();
                         imt[index1D].push_back( v, dimension[DIMENSION_S] );
                     }
@@ -443,7 +487,7 @@ public:
             cimg_forXYZ(cimgt,x,y,z)
             {
                 cimg_forC( cimgt, c )
-                    bimt[index1D].toFlatVoxel( cimgt(x,y,z,c), conversionType, c );
+                        bimt[index1D].toFlatVoxel( cimgt(x,y,z,c), conversionType, c );
 
                 ++index1D;
             }
@@ -472,9 +516,9 @@ public:
     /// compute the pixel position from the map key in BranchingImage
     inline void index1Dto3D( unsigned key, unsigned& x, unsigned& y, unsigned& z ) const
     {
-//        x = key % dimension[DIMENSION_X];
-//        y = ( key / dimension[DIMENSION_X] ) % dimension[DIMENSION_Y];
-//        z = key / sliceSize;
+        //        x = key % dimension[DIMENSION_X];
+        //        y = ( key / dimension[DIMENSION_X] ) % dimension[DIMENSION_Y];
+        //        z = key / sliceSize;
         y = key / dimension[DIMENSION_X];
         x = key - y * dimension[DIMENSION_X];
         z = y / dimension[DIMENSION_Y];
@@ -482,26 +526,76 @@ public:
     }
 
     /// \returns the index of the neighbour in the given direction (index in the BranchingImage3D)
-    inline unsigned getNeighbourIndex( NeighbourDirection d, unsigned voxelIndex ) const
+    inline unsigned getNeighbourIndex( NeighbourDirection d, unsigned index1D ) const
     {
         switch(d)
         {
-            case LEFT: return voxelIndex-1; break;
-            case RIGHT: return voxelIndex+1; break;
-            case BOTTOM: return voxelIndex-dimension[DIMENSION_X]; break;
-            case TOP: return voxelIndex+dimension[DIMENSION_X]; break;
-            case BACK: return voxelIndex-sliceSize; break;
-            case FRONT: return voxelIndex+sliceSize; break;
-            default: return 0;
+        case LEFT: return index1D-1; break;
+        case RIGHT: return index1D+1; break;
+        case BOTTOM: return index1D-dimension[DIMENSION_X]; break;
+        case TOP: return index1D+dimension[DIMENSION_X]; break;
+        case BACK: return index1D-sliceSize; break;
+        case FRONT: return index1D+sliceSize; break;
+        default: return 0;
         }
     }
+
+
+    /// \returns the list of connected neighbours of a given voxel
+    void getNeighbours(std::vector< voxelIndex > &list, const voxelIndex& index, const unsigned t=0) const
+    {
+        list.clear();
+        const ConnectionVoxel& voxel = this->imgList[t][index.first][index.second];
+        const typename ConnectionVoxel::Neighbours& neighbours = voxel.neighbours;
+
+        for( unsigned d = 0 ; d < NB_NeighbourDirections ; ++d )
+        {
+            const typename ConnectionVoxel::NeighboursInOneDirection& neighboursOneDirection = neighbours[d];
+            for( unsigned n = 0 ; n < neighboursOneDirection.size() ; ++n )
+            {
+                unsigned neighbourIndex1d = getNeighbourIndex( (NeighbourDirection)d, index.first );
+                list.push_back(voxelIndex(neighbourIndex1d,neighboursOneDirection[n]));
+            }
+        }
+    }
+
+    /// \returns the list of connected neighbours of a given voxel and the corresponding euclidean distances (image transform supposed to be linear)
+    // TO DO: bias the distance using image values (= multiply distance by 2/(v1+v2))
+    // TO DO: bias the distance using a lut (= multiply distance by lut(v1,v2))
+    template<typename real>
+    void getNeighboursAndDistances(std::vector< voxelIndex > &list, std::vector< real > &dist, const voxelIndex& index, const sofa::defaulttype::Vec<3,real>& voxelsize, const unsigned t=0) const
+    {
+        list.clear();
+        dist.clear();
+
+        const ConnectionVoxel& voxel = this->imgList[t][index.first][index.second];
+        const typename ConnectionVoxel::Neighbours& neighbours = voxel.neighbours;
+
+        for( unsigned d = 0 ; d < NB_NeighbourDirections ; ++d )
+        {
+            const typename ConnectionVoxel::NeighboursInOneDirection& neighboursOneDirection = neighbours[d];
+            for( unsigned n = 0 ; n < neighboursOneDirection.size() ; ++n )
+            {
+                unsigned neighbourIndex1d = getNeighbourIndex( (NeighbourDirection)d, index.first );
+                list.push_back(voxelIndex(neighbourIndex1d,neighboursOneDirection[n]));
+                dist.push_back(voxelsize(d/2));
+            }
+        }
+    }
+
+    /// \returns image value at a given voxel index, time and channel
+    /// @warning validity of indices, channel and time not checked
+    inline const T& getValue(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][off1D][v].value[c]; }
+    inline T& getValue(const unsigned& off1D, const unsigned& v, const unsigned c=0, const unsigned t=0) { return this->imgList[t][off1D][v].value[c]; }
+    inline const T& getValue(const voxelIndex& index, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][index.first][index.second].value[c]; }
+    inline T& getValue(const voxelIndex& index, const unsigned c=0, const unsigned t=0) { return this->imgList[t][index.first][index.second].value[c]; }
 
     /// \returns the direction between two neighbour voxels
     /// @warnings the two given voxels are supposed to be neighbours, otherwise NB_NeighbourDirections is returned
     /// example: returning LEFT means neighbourIndex is at the LEFT position of index
-    inline NeighbourDirection getDirection( unsigned index, unsigned neighbourIndex ) const
+    inline NeighbourDirection getDirection( unsigned index1D, unsigned neighbourIndex1D ) const
     {
-        int offset = neighbourIndex - index;
+        int offset = neighbourIndex1D - index1D;
         if( offset==-1 ) return LEFT;
         else if( offset==1 ) return RIGHT;
         else if( offset==-dimension[DIMENSION_X] ) return BOTTOM;
@@ -577,15 +671,16 @@ public:
         {
             int index1d = 0;
             for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
-            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
-            {
-                total += imgList[t][index1d].size();
-                ++index1d;
-            }
+                for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+                    for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+                    {
+                        total += imgList[t][index1d].size();
+                        ++index1d;
+                    }
         }
         return total;
     }
+
 
     /// sum every values (every channels)
     T sum() const
@@ -595,14 +690,14 @@ public:
         {
             int index1d = 0;
             for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
-            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
-            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
-            {
-                for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
-                for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
-                    total += imgList[t][index1d][v][s];
-                ++index1d;
-            }
+                for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+                    for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+                    {
+                        for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
+                            for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                                total += imgList[t][index1d][v][s];
+                        ++index1d;
+                    }
         }
         return total;
     }
@@ -662,7 +757,7 @@ public:
                                     unsigned neighbourIndex = getNeighbourIndex( (NeighbourDirection)d, index1d );
                                     if( neighboursOneDirection[n] >= imt[neighbourIndex].size() )  return 1; // there is nobody where there should be the neighbour
                                     if( !imt[neighbourIndex][neighboursOneDirection[n]].isNeighbour( oppositeDirection((NeighbourDirection)d), imt.getOffset(index1d,voxels[v]) ) ) return 2; // complementary neighbour is no inserted
-//                                    if( imt[neighbourIndex][neighboursOneDirection[n]].index != neighbourIndex || voxels[v].index != index1d ) return false; // a voxel has a good index
+                                    //                                    if( imt[neighbourIndex][neighboursOneDirection[n]].index != neighbourIndex || voxels[v].index != index1d ) return false; // a voxel has a good index
                                 }
                             }
                             if( !totalNeighbours ) return 3;
@@ -674,10 +769,33 @@ public:
         }
         return 0;
     }
-
-
 };
 
+
+/// macros for image loops
+
+#define bimg_for1(bound,i) for (unsigned i = 0; i<bound; ++i)
+#define bimg_forC(img,c) bimg_for1(img.dimension[img.DIMENSION_S],c)
+#define bimg_forX(img,x) bimg_for1(img.dimension[img.DIMENSION_X],x)
+#define bimg_forY(img,y) bimg_for1(img.dimension[img.DIMENSION_Y],y)
+#define bimg_forZ(img,z) bimg_for1(img.dimension[img.DIMENSION_Z],z)
+#define bimg_forT(img,t) bimg_for1(img.dimension[img.DIMENSION_T],t)
+#define bimg_foroff1D(img,off1D)  bimg_for1(img.imageSize,off1D)
+#define bimg_forXY(img,x,y) bimg_forY(img,y) bimg_forX(img,x)
+#define bimg_forXZ(img,x,z) bimg_forZ(img,z) bimg_forX(img,x)
+#define bimg_forYZ(img,y,z) bimg_forZ(img,z) bimg_forY(img,y)
+#define bimg_forXT(img,x,t) bimg_forT(img,t) bimg_forX(img,x)
+#define bimg_forYT(img,y,t) bimg_forT(img,t) bimg_forY(img,y)
+#define bimg_forZT(img,z,t) bimg_forT(img,t) bimg_forZ(img,z)
+#define bimg_forXYZ(img,x,y,z) bimg_forZ(img,z) bimg_forXY(img,x,y)
+#define bimg_forXYT(img,x,y,t) bimg_forT(img,t) bimg_forXY(img,x,y)
+#define bimg_forXZT(img,x,z,t) bimg_forT(img,t) bimg_forXZ(img,x,z)
+#define bimg_forYZT(img,y,z,t) bimg_fort(img,t) bimg_forYZ(img,y,z)
+#define bimg_forXYZT(img,x,y,z,t) bimg_forT(img,t) bimg_forXYZ(img,x,y,z)
+#define bimg_forVXYZT(img,v,x,y,z,t) bimg_forT(img,t) bimg_forXYZ(img,x,y,z) for( unsigned v=0 ; v<img.imgList[t][img.index3Dto1D(x,y,z)].size() ; ++v )
+#define bimg_forCVXYZT(img,c,v,x,y,z,t) bimg_forT(img,t) bimg_forXYZ(img,x,y,z) for( unsigned v=0 ; v<img.imgList[t][img.index3Dto1D(x,y,z)].size() ; ++v ) bimg_forC(img,c)
+#define bimg_forVoffT(img,v,off1D,t) bimg_forT(img,t) bimg_foroff1D(img,off1D) for( unsigned v=0 ; v<img.imgList[t][off1D].size() ; ++v )
+#define bimg_forCVoffT(img,c,v,off1D,t) bimg_forT(img,t) bimg_foroff1D(img,off1D) for( unsigned v=0 ; v<img.imgList[t][off1D].size() ; ++v )  bimg_forC(img,c)
 
 
 typedef BranchingImage<char> BranchingImageC;
