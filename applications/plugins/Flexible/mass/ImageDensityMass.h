@@ -18,7 +18,7 @@
 
 #include <Flexible/shapeFunction/BaseShapeFunction.h>
 #include <Flexible/deformationMapping/LinearJacobianBlock.inl>
-#include <Flexible/FlexibleForceField.h>
+//#include <Flexible/FlexibleForceField.h>
 
 
 #include <image/ImageTypes.h>
