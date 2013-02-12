@@ -143,7 +143,7 @@ protected:
         }
         else
         {
-            unsigned nb = pow( 2, coarseningLevels.getValue() ); // nb fine voxels in a coarse voxel in each direction x/y/z
+            unsigned nb = pow( (float)2, (int)coarseningLevels.getValue() ); // nb fine voxels in a coarse voxel in each direction x/y/z
 
             TransformType::Coord& scale = transform.getScale();
             scale *= nb;
