@@ -111,9 +111,9 @@ stop: ;
 
 
 template<typename real>
-bool Lloyd (std::vector<std::pair<unsigned int,unsigned int> > &pos,const std::vector<unsigned int>& voronoiIndex, sofa::defaulttype::BranchingImage<unsigned int>& voronoi)
+bool Lloyd (std::vector<typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> &pos,const std::vector<unsigned int>& voronoiIndex, sofa::defaulttype::BranchingImage<unsigned int>& voronoi)
 {
-    typedef std::pair<unsigned int,unsigned int> voxelIndex;
+    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
     typedef sofa::defaulttype::Vec<3,real> Coord;
     unsigned int nbp=pos.size();
     bool moved=false;
@@ -125,7 +125,7 @@ bool Lloyd (std::vector<std::pair<unsigned int,unsigned int> > &pos,const std::v
     {
         // compute centroid
         Coord C;
-        voxelIndex p;
+        VoxelIndex p;
         unsigned int count=0;
         bool valid=false;
 
@@ -146,16 +146,16 @@ bool Lloyd (std::vector<std::pair<unsigned int,unsigned int> > &pos,const std::v
             {
                 unsigned x,y,z; voronoi.index1Dto3D(off1D,x,y,z);
                 real d2=(C-Coord(x,y,z)).norm2();
-                if(dmin>d2) { dmin=d2; p=voxelIndex(off1D,v); }
+                if(dmin>d2) { dmin=d2; p=VoxelIndex(off1D,v); }
             }
             if(dmin==cimg::type<real>::max()) goto stop;// no point found
 
-            bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].first==p.first && pos[j].second==p.second)  val2=false;  // check occupancy
+            bool val2=true;  for (unsigned int j=0; j<nbp; j++) if(i!=j) if(pos[j].index1d==p.index1d && pos[j].offset==p.offset)  val2=false;  // check occupancy
             if(val2) valid=true;
-            else voronoi.getValue(p.first,p.second,0,0)=0;  // discard voxel if already occupied
+            else voronoi.getValue(p.index1d,p.offset,0,0)=0;  // discard voxel if already occupied
         }
 
-        if(p.first!=pos[i].first || p.second!=pos[i].second) // set new position if different
+        if(p.index1d!=pos[i].index1d || p.offset!=pos[i].offset) // set new position if different
         {
             pos[i] = p;
             moved=true;
@@ -348,30 +348,28 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
 
 
 template<typename real,typename T>
-void dijkstra (std::set<std::pair<real,std::pair<unsigned int,unsigned int> > > &trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const sofa::defaulttype::BranchingImage<T>* biasFactor=NULL)
+void dijkstra (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> > &trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelsize, const sofa::defaulttype::BranchingImage<T>* biasFactor=NULL)
 {
-    typedef std::pair<unsigned int,unsigned int> voxelIndex;
-    typedef std::pair<real,voxelIndex> DistanceToPoint;
-    //std::map<voxelIndex,bool> alive;
+    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
+    typedef std::pair<real,VoxelIndex> DistanceToPoint;
+    //std::map<VoxelIndex,bool> alive;
 
     // dijkstra
     while( !trial.empty() )
     {
         DistanceToPoint top = *trial.begin();
         trial.erase(trial.begin());
-        voxelIndex v = top.second;
+        VoxelIndex v = top.second;
         //alive(v)=true;
 
         const unsigned int vor = voronoi.getValue(v);
-        std::vector< voxelIndex > nList;
-        std::vector< real > nDist;
 
-        if(biasFactor) biasFactor->getNeighboursAndDistances(nList, nDist, top.second, voxelsize, 0); // time=0;
-        else voronoi.getNeighboursAndDistances(nList, nDist, top.second, voxelsize, 0);
+        std::vector< real > nDist;
+        const typename sofa::defaulttype::BranchingImage<real>::Neighbours& nList = ( biasFactor ? biasFactor->getNeighboursAndDistances(nDist, top.second, voxelsize, 0) : voronoi.getNeighboursAndDistances(nDist, top.second, voxelsize, 0) );
 
         for (unsigned int i=0; i<nList.size(); i++)
         {
-            voxelIndex v2 = nList[i];
+            VoxelIndex v2 = nList[i];
             //if(!alive(v2))
             {
                 const real newDist = distances.getValue(v) + nDist[i];
@@ -412,16 +410,16 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
 }
 
 template<typename real>
-void AddSeedPoint (std::set<std::pair<real,std::pair<unsigned int,unsigned int> > >& trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const std::pair<unsigned int,unsigned int>& pos,  const unsigned int index)
+void AddSeedPoint (std::set<std::pair<real,typename sofa::defaulttype::BranchingImage<real>::VoxelIndex> >& trial, sofa::defaulttype::BranchingImage<real>& distances, sofa::defaulttype::BranchingImage<unsigned int>& voronoi, const typename sofa::defaulttype::BranchingImage<real>::VoxelIndex& pos, const unsigned int index)
 {
-    typedef std::pair<unsigned int,unsigned int> voxelIndex;
-    typedef std::pair<real,voxelIndex > DistanceToPoint;
+    typedef typename sofa::defaulttype::BranchingImage<real>::VoxelIndex VoxelIndex;
+    typedef std::pair<real,VoxelIndex > DistanceToPoint;
 
-    if(distances.imgList[0][pos.first].size()) // time 0
-        if(distances.imgList[0][pos.first][pos.second][0]>=0) // first channel
+    if(distances.imgList[0][pos.index1d].size()) // time 0
+        if(distances.imgList[0][pos.index1d][pos.offset][0]>=0) // first channel
         {
-            distances.imgList[0][pos.first][pos.second][0]=0;
-            voronoi.imgList[0][pos.first][pos.second][0]=index;
+            distances.imgList[0][pos.index1d][pos.offset][0]=0;
+            voronoi.imgList[0][pos.index1d][pos.offset][0]=index;
             trial.insert( DistanceToPoint(0.,pos) );
         }
 }

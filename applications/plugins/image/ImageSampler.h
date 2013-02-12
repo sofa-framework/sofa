@@ -196,13 +196,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // add fixed points
         vector<unsigned int> fpos_voronoiIndex;
-        vector<Coord> fpos_voxelIndex;
+        vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
-            fpos_voxelIndex.push_back(inT->toImage(fpos[i]));
-            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+            fpos_VoxelIndex.push_back(inT->toImage(fpos[i]));
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
         }
         if(fpos.size())
         {
@@ -212,16 +212,16 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // farthest point sampling using geodesic distances
         vector<unsigned int> pos_voronoiIndex;
-        vector<Coord> pos_voxelIndex;
-        while(pos_voxelIndex.size()<nb)
+        vector<Coord> pos_VoxelIndex;
+        while(pos_VoxelIndex.size()<nb)
         {
             Real dmax=0;  Coord pmax;
             cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
             if(dmax)
             {
-                pos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+1);
-                pos_voxelIndex.push_back(pmax);
-                AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex.back(),pos_voronoiIndex.back());
+                pos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+1);
+                pos_VoxelIndex.push_back(pmax);
+                AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex.back(),pos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
@@ -234,12 +234,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         while(!converged)
         {
-            if(Lloyd<Real>(pos_voxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
+            if(Lloyd<Real>(pos_VoxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
-                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
+                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;
@@ -249,7 +249,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // add 3D points
         std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
-        for(unsigned int i=0; i<pos_voxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_voxelIndex[i]));
+        for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
         if(sampler->f_printLog.getValue())
@@ -298,13 +298,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // add fixed points
         vector<unsigned int> fpos_voronoiIndex;
-        vector<Coord> fpos_voxelIndex;
+        vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
-            fpos_voxelIndex.push_back(inT->toImage(fpos[i]));
-            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+            fpos_VoxelIndex.push_back(inT->toImage(fpos[i]));
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
         }
         if(fpos.size())
         {
@@ -314,25 +314,25 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // new points
         vector<unsigned int> pos_voronoiIndex;
-        vector<Coord> pos_voxelIndex;
-        while(pos_voxelIndex.size()<nb)
+        vector<Coord> pos_VoxelIndex;
+        while(pos_VoxelIndex.size()<nb)
         {
             vector<unsigned int> newpos_voronoiIndex;
-            vector<Coord> newpos_voxelIndex;
+            vector<Coord> newpos_VoxelIndex;
 
             // farthest sampling of N points
             unsigned int currentN = N;
-            if(!pos_voxelIndex.size()) currentN = 1; // special case at the beginning: we start by adding just one point
-            else if(pos_voxelIndex.size()+N>nb) currentN = nb-pos_voxelIndex.size();  // when trying to add more vertices than necessary
-            while(newpos_voxelIndex.size()<currentN)
+            if(!pos_VoxelIndex.size()) currentN = 1; // special case at the beginning: we start by adding just one point
+            else if(pos_VoxelIndex.size()+N>nb) currentN = nb-pos_VoxelIndex.size();  // when trying to add more vertices than necessary
+            while(newpos_VoxelIndex.size()<currentN)
             {
                 Real dmax=0;  Coord pmax;
                 cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>dmax) { dmax=dist(x,y,z); pmax =Coord(x,y,z); }
                 if(!dmax) break;
 
-                newpos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+newpos_voxelIndex.size()+1);
-                newpos_voxelIndex.push_back(pmax);
-                AddSeedPoint<Real>(trial,dist,voronoi, newpos_voxelIndex.back(),newpos_voronoiIndex.back());
+                newpos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+newpos_VoxelIndex.size()+1);
+                newpos_VoxelIndex.push_back(pmax);
+                AddSeedPoint<Real>(trial,dist,voronoi, newpos_VoxelIndex.back(),newpos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
                 else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
@@ -343,13 +343,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
             while(!converged)
             {
-                if(Lloyd<Real>(newpos_voxelIndex,newpos_voronoiIndex,voronoi))
+                if(Lloyd<Real>(newpos_VoxelIndex,newpos_voronoiIndex,voronoi))
                 {
                     // recompute distance from scratch
                     cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<Real>::max();
-                    for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<pos_voxelIndex.size(); i++)  AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
-                    for(unsigned int i=0; i<newpos_voxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, newpos_voxelIndex[i], newpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<fpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<pos_VoxelIndex.size(); i++)  AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
+                    for(unsigned int i=0; i<newpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, newpos_VoxelIndex[i], newpos_voronoiIndex[i]);
                     if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                     else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                     it++; if(it>=lloydIt) converged=true;
@@ -358,8 +358,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
 
             // check neighbors of the new voronoi cell and add graph edges
-            unsigned int nbold = fpos_voxelIndex.size()+pos_voxelIndex.size();
-            for(unsigned int i=0; i<newpos_voxelIndex.size() && pos_voxelIndex.size()<nb; i++)
+            unsigned int nbold = fpos_VoxelIndex.size()+pos_VoxelIndex.size();
+            for(unsigned int i=0; i<newpos_VoxelIndex.size() && pos_VoxelIndex.size()<nb; i++)
             {
                 std::set<unsigned int> neighb;
                 CImg_3x3x3(I,unsigned int);
@@ -376,18 +376,18 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 for(typename std::set<unsigned int>::iterator itr=neighb.begin(); itr!=neighb.end(); itr++)
                 {
                     g.push_back(Edge(*itr-1,newpos_voronoiIndex[i]-1));
-                    //if(*itr>fpos_voxelIndex.size()) g.push_back(Edge(*itr-fpos_voxelIndex.size()-1,newpos_voronoiIndex[i]-1));
+                    //if(*itr>fpos_VoxelIndex.size()) g.push_back(Edge(*itr-fpos_VoxelIndex.size()-1,newpos_voronoiIndex[i]-1));
                 }
-                pos_voxelIndex.push_back(newpos_voxelIndex[i]);
+                pos_VoxelIndex.push_back(newpos_VoxelIndex[i]);
                 pos_voronoiIndex.push_back(newpos_voronoiIndex[i]);
             }
 
-            if(newpos_voxelIndex.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
+            if(newpos_VoxelIndex.size()<currentN) break; // check possible failure in point insertion (not enough voxels)
         }
 
         // add 3D points
         std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
-        for(unsigned int i=0; i<pos_voxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_voxelIndex[i]));
+        for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
         if(sampler->f_printLog.getValue())
@@ -461,50 +461,60 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                 Hexa& hexa = h[h.size()-1];
                 hindices[index1d][v] = h.size()-1;
 
-                if( x>0 )
+                for( unsigned n=0 ; n<inimg[index1d][v].neighbours.size() ; ++n )
                 {
-                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::LEFT].size() ; ++n )
+                    const unsigned neighbourIndex = inimg[index1d][v].neighbours[n].index1d;
+
+                    if( neighbourIndex>index1d ) continue; // merge only one way
+
+                    const unsigned neighbourOffset = inimg[index1d][v].neighbours[n].offset;
+
+                    Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
+
+                    typename ImageSampler::ImageTypes::NeighbourDirection dir = in->getDirection( index1d, neighbourIndex );
+
+                    if( dir.isFaceConnection() )
                     {
-                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::LEFT,index1d);
-                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::LEFT][n];
-                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
-                        mergeVertexIndex( h, hexa[0], neighbor[1] );
-                        mergeVertexIndex( h, hexa[4], neighbor[5] );
-                        mergeVertexIndex( h, hexa[7], neighbor[6] );
-                        mergeVertexIndex( h, hexa[3], neighbor[2] );
+                        if( dir[0] ) //LEFT
+                        {
+                            mergeVertexIndex( h, hexa[0], neighbor[1] );
+                            mergeVertexIndex( h, hexa[4], neighbor[5] );
+                            mergeVertexIndex( h, hexa[7], neighbor[6] );
+                            mergeVertexIndex( h, hexa[3], neighbor[2] );
+                        }
+                        else if( dir[1] ) // BOTTOM
+                        {
+                            mergeVertexIndex( h, hexa[0], neighbor[3] );
+                            mergeVertexIndex( h, hexa[1], neighbor[2] );
+                            mergeVertexIndex( h, hexa[4], neighbor[7] );
+                            mergeVertexIndex( h, hexa[5], neighbor[6] );
+                        }
+                        else // BACK
+                        {
+                            mergeVertexIndex( h, hexa[0], neighbor[4] );
+                            mergeVertexIndex( h, hexa[1], neighbor[5] );
+                            mergeVertexIndex( h, hexa[2], neighbor[6] );
+                            mergeVertexIndex( h, hexa[3], neighbor[7] );
+                        }
                     }
-                }
-                if( y>0 )
-                {
-                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BOTTOM].size() ; ++n )
+                    else if( dir.isEdgeConnection() ) // 26-connectivity
                     {
-                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::BOTTOM,index1d);
-                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BOTTOM][n];
-                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
-                        mergeVertexIndex( h, hexa[0], neighbor[3] );
-                        mergeVertexIndex( h, hexa[1], neighbor[2] );
-                        mergeVertexIndex( h, hexa[4], neighbor[7] );
-                        mergeVertexIndex( h, hexa[5], neighbor[6] );
+                        // TODO
                     }
-                }
-                if( z>0 )
-                {
-                    for( unsigned n=0 ; n<inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BACK].size() ; ++n )
+                    else if( dir.isCornerConnection() ) // 26-connectivity
                     {
-                        const unsigned neighbourIndex = in->getNeighbourIndex(ImageSampler::ImageTypes::BACK,index1d);
-                        const unsigned neighbourOffset = inimg[index1d][v].neighbours[ImageSampler::ImageTypes::BACK][n];
-                        Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
-                        mergeVertexIndex( h, hexa[0], neighbor[4] );
-                        mergeVertexIndex( h, hexa[1], neighbor[5] );
-                        mergeVertexIndex( h, hexa[2], neighbor[6] );
-                        mergeVertexIndex( h, hexa[3], neighbor[7] );
+                        // TODO
+                    }
+                    else // on place, 7- or 27-connectivity
+                    {
+                        for( unsigned w=0 ; w<8 ; ++w )
+                            mergeVertexIndex( h, hexa[w], neighbor[w] );
                     }
                 }
             }
             index1d++;
         }
         }
-
 
         {
             // give a continue index from 0 to max (without hole)
@@ -689,20 +699,20 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         bimg_forCVoffT(in.ref(),c,v,off1D,t) if(t==sampler->time) if(in->getValue(off1D,v,c,t)) dist.getValue(off1D,v,c,0)=cimg::type<Real>::max();
 
         // list of seed points
-        typedef typename ImageSampler::ImageTypes::voxelIndex voxelIndex;
-        std::set<std::pair<Real, voxelIndex > > trial;
+        typedef typename ImageSampler::ImageTypes::VoxelIndex VoxelIndex;
+        std::set<std::pair<Real, VoxelIndex > > trial;
 
         // add fixed points
         vector<unsigned int> fpos_voronoiIndex;
-        vector<voxelIndex> fpos_voxelIndex;
+        vector<VoxelIndex> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
             fpos_voronoiIndex.push_back(i+1);
             Coord p = inT->toImage(fpos[i]);
-            voxelIndex ind (dist.index3Dto1D(round(p[0]),round(p[1]),round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
-            fpos_voxelIndex.push_back(ind);
-            AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
+            VoxelIndex ind (dist.index3Dto1D(round(p[0]),round(p[1]),round(p[2])), 0); // take first superimposed voxel    TO DO: identify it from fine resolution
+            fpos_VoxelIndex.push_back(ind);
+            AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
         }
         if(fpos.size())
         {
@@ -712,16 +722,16 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
         // farthest point sampling using geodesic distances
         vector<unsigned int> pos_voronoiIndex;
-        vector<voxelIndex> pos_voxelIndex;
-        while(pos_voxelIndex.size()<nb)
+        vector<VoxelIndex> pos_VoxelIndex;
+        while(pos_VoxelIndex.size()<nb)
         {
-            Real dmax=0;  voxelIndex indMax;
-            bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)>dmax) { dmax=dist.getValue(off1D,v,c,t); indMax = voxelIndex(off1D,v); }
+            Real dmax=0;  VoxelIndex indMax;
+            bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)>dmax) { dmax=dist.getValue(off1D,v,c,t); indMax = VoxelIndex(off1D,v); }
             if(dmax)
             {
-                pos_voronoiIndex.push_back(fpos_voxelIndex.size()+pos_voxelIndex.size()+1);
-                pos_voxelIndex.push_back(indMax);
-                AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex.back(),pos_voronoiIndex.back());
+                pos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+1);
+                pos_VoxelIndex.push_back(indMax);
+                AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex.back(),pos_voronoiIndex.back());
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
                 //else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
             }
@@ -733,12 +743,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
         while(!converged)
         {
-            if(Lloyd<Real>(pos_voxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
+            if(Lloyd<Real>(pos_VoxelIndex,pos_voronoiIndex,voronoi)) // one lloyd iteration
             {
                 // recompute distance from scratch
                 bimg_forCVoffT(dist,c,v,off1D,t) if(dist.getValue(off1D,v,c,t)!=-1) dist.getValue(off1D,v,c,t)=cimg::type<Real>::max();
-                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_voxelIndex[i], fpos_voronoiIndex[i]);
-                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_voxelIndex[i], pos_voronoiIndex[i]);
+                for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
+                for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                 if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
 //                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
                 it++; if(it>=lloydIt) converged=true;
@@ -748,9 +758,9 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
         // add 3D points
         std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
-        for(unsigned int i=0; i<pos_voxelIndex.size(); i++)
+        for(unsigned int i=0; i<pos_VoxelIndex.size(); i++)
         {
-            unsigned x,y,z; dist.index1Dto3D(pos_voxelIndex[i].first,x,y,z);
+            unsigned x,y,z; dist.index1Dto3D(pos_VoxelIndex[i].index1d,x,y,z);
             pos.push_back(inT->fromImage(Coord(x,y,z)));
         }
         sampler->position.endEdit();
