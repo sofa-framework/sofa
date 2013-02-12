@@ -57,8 +57,7 @@ namespace fixture {
           return flatDim == sparseDim;
       }
 
-      // should return true if sparseImg has been built from flatImg
-      static bool imagesAreEqual( const ImageTypes& flatImg, const BranchingImageTypes& sparseImg, bool valueTest = true, bool neighbourTest = false )
+      static int imagesAreEqual( const ImageTypes& flatImg, const BranchingImageTypes& sparseImg, bool valueTest = true, bool neighbourTest = false )
       {
           cimglist_for(flatImg.getCImgList(),l)
           {
@@ -78,34 +77,34 @@ namespace fixture {
 
                     if( voxels.empty()/*iml[index1d].empty()*//*imlxyz == iml.end()*/ ) //the pixel x,y,z is not present in the branching image
                     {
-                        if ( cimgl.get_vector_at(x,y,z).magnitude(1)!=0 ) return false; // if the pixel is present in the flat image, there is a pb
+                        if ( cimgl.get_vector_at(x,y,z).magnitude(1)!=0 ) return 1; // if the pixel is present in the flat image, there is a pb
                         else continue; // no pixel -> nothing to compare, test the next pixel
                     }
 
                     //const typename BranchingImageTypes::Voxels& voxels = imlxyz->second; // look at the superimposed voxels at position x,y,z
 //                    const typename BranchingImageTypes::Voxels& voxels = iml[index1d];
 
-                    if( voxels.size()>1 ) return false; // the branching image has been built from a flat image, so there should be no superimposed voxels
+                    if( voxels.size()>1 ) return 2; // the branching image has been built from a flat image, so there should be no superimposed voxels
 
                     if( valueTest )
                     {
                         for( unsigned c=0 ; c<flatImg.getDimensions()[3] ; ++c ) // for all channels
-                            if( cimgl(x,y,z,c) != voxels[0][c] ) return false; // check that the value is the same
+                            if( cimgl(x,y,z,c) != voxels[0][c] ) return 3; // check that the value is the same
                     }
 
                     if( neighbourTest )
                     {
-                        // test neighbourood connections
-                        if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::LEFT, 0 ) ) ) ) return false;
-                        if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::RIGHT, 0 ) ) ) ) return false;
-                        if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::BOTTOM, 0 ) ) ) ) return false;
-                        if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::TOP, 0 ) ) ) ) return false;
-                        if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::BACK, 0 ) ) ) ) return false;
-                        if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( BranchingImageTypes::FRONT, 0 ) ) ) ) return false;
+                        // test neighbourhood connections
+                        if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d-1,0) ) ) ) ) return 4;
+                        if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d+1,0) ) ) ) ) return 5;
+                        if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d-sparseImg.dimension[BranchingImageTypes::DIMENSION_X],0) ) ) ) ) return 6;
+                        if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d+sparseImg.dimension[BranchingImageTypes::DIMENSION_X],0) ) ) ) ) return 7;
+                        if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d-sparseImg.sliceSize,0) ) ) ) ) return 8;
+                        if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( typename BranchingImageTypes::VoxelIndex(index1d+sparseImg.sliceSize,0) ) ) ) ) return 9;
                     }
                 }
           }
-          return true;
+          return 0;
       }
 
 

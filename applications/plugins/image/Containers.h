@@ -53,6 +53,7 @@ public:
     void operator=( const NoPreallocationVector<T>& c )
     {
         if( _array ) delete [] _array;
+        if( c.empty() ) { _array=0; _size=0; return; }
         _array = new T[c._size];
         _size = c._size;
         memcpy( _array, c._array, _size*sizeof(T) );
@@ -79,7 +80,7 @@ public:
     {
         if( !_array ) // alloc
         {
-            _array = new T[++_size];
+            _array = new T[_size];
         }
         else // realloc
         {
@@ -87,9 +88,9 @@ public:
             memcpy( tmp, _array, _size*sizeof(T) );
             delete [] _array;
             _array = tmp;
-            _array[_size] = v;
-            ++_size;
         }
+        // push back the new element
+        _array[_size++] = v;
     }
 
     /// @warning data is lost
@@ -125,6 +126,14 @@ public:
         for( unsigned i = 0 ; i<_size ; ++i )
             if( _array[i]==v ) return (int)i;
         return -1;
+    }
+
+    /// \return true iff v is present
+    bool isPresent( const T& v ) const
+    {
+        for( unsigned i = 0 ; i<_size ; ++i )
+            if( _array[i]==v ) return true;
+        return false;
     }
 
     /// \return the index of the occurence, if !present \return -1
@@ -166,7 +175,7 @@ protected:
     T* _array; ///< the array where to store the entries
     size_t _size; ///< the array size
 
-};
+}; // class NoPreallocationVector
 
 
 
@@ -311,7 +320,8 @@ protected:
 
     Element* _first; ///< the list first element
 
-};
+}; // class MultiMap_sortedList
+
 
 
 

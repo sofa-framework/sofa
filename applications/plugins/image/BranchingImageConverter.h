@@ -136,7 +136,7 @@ protected:
 
         if( coarseningLevels.getValue()<1 )
         {
-            output = input; // operator= is performing the conversion without modifying the resolution, so with flat neighbourood
+            output = input; // operator= is performing the conversion without modifying the resolution, so with flat neighbourhood
             if( createMappingImage.getValue() )
                 for( unsigned t=0 ; t<labelDimension[BranchingImageTypes::DIMENSION_T] ; ++t )
                     labelImages.getCImg(t).fill( 0 );
@@ -339,10 +339,10 @@ protected:
                                      neighbourCoarseOffset -= 1;
                                      if( fx-1 < finex ) // both are not in the same coarse voxel
                                      {
-                                         const unsigned neighbourCoarseIndex = output.getNeighbourIndex( BranchingImageTypes::LEFT, index1d );
+                                         const unsigned neighbourCoarseIndex = index1d-1;
                                         // connect index grossier de vf et de n
-                                         output_t[index1d][coarseOffset].addNeighbour( BranchingImageTypes::LEFT, neighbourCoarseOffset );
-                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( BranchingImageTypes::RIGHT, coarseOffset );
+                                         output_t[index1d][coarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( neighbourCoarseIndex, neighbourCoarseOffset ) );
+                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( index1d, coarseOffset ) );
                                      }
                                  }
                             }
@@ -354,10 +354,10 @@ protected:
                                      neighbourCoarseOffset -= 1;
                                      if( fy-1 < finey ) // both are not in the same coarse voxel
                                      {
-                                         const unsigned neighbourCoarseIndex = output.getNeighbourIndex( BranchingImageTypes::BOTTOM, index1d );
+                                         const unsigned neighbourCoarseIndex = index1d-outputDimension[BranchingImageTypes::DIMENSION_X];
                                         // connect index grossier de vf et de n
-                                         output_t[index1d][coarseOffset].addNeighbour( BranchingImageTypes::BOTTOM, neighbourCoarseOffset );
-                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( BranchingImageTypes::TOP, coarseOffset );
+                                         output_t[index1d][coarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( neighbourCoarseIndex, neighbourCoarseOffset ) );
+                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( index1d, coarseOffset ) );
                                      }
                                  }
                             }
@@ -369,10 +369,10 @@ protected:
                                      neighbourCoarseOffset -= 1;
                                      if( fz-1 < finez ) // both are not in the same coarse voxel
                                      {
-                                         const unsigned neighbourCoarseIndex = output.getNeighbourIndex( BranchingImageTypes::BACK, index1d );
+                                         const unsigned neighbourCoarseIndex = index1d-output.sliceSize;
                                         // connect index grossier de vf et de n
-                                         output_t[index1d][coarseOffset].addNeighbour( BranchingImageTypes::BACK, neighbourCoarseOffset );
-                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( BranchingImageTypes::FRONT, coarseOffset );
+                                         output_t[index1d][coarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( neighbourCoarseIndex, neighbourCoarseOffset ) );
+                                         output_t[neighbourCoarseIndex][neighbourCoarseOffset].addNeighbour( typename BranchingImageTypes::VoxelIndex( index1d, coarseOffset ) );
                                      }
                                  }
                             }
