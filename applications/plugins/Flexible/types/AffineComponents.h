@@ -10,6 +10,8 @@
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/component/mass/UniformMass.h>
 
+#include <sofa/core/behavior/ForceField.h>
+
 
 
 namespace sofa
@@ -95,6 +97,20 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
 } // namespace component
 
 
+
+namespace core
+{
+
+namespace behavior
+{
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLECOMPATIBLITY_CPP)
+extern template class SOFA_Flexible_API ForceField<defaulttype::Affine3Types>;
+#endif
+
+} // namespace behavior
+
+} // namespace core
 
 
 } // namespace sofa
