@@ -471,7 +471,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 
                     Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
 
-                    typename ImageSampler::ImageTypes::NeighbourDirection dir = in->getDirection( index1d, neighbourIndex );
+                    typename ImageSampler::ImageTypes::NeighbourDirection dir;
+                    if( !in->getDirection( index1d, neighbourIndex, dir ) ) continue; // not close neighbours
 
                     if( dir.isFaceConnection() )
                     {
