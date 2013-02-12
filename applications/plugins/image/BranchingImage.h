@@ -69,6 +69,10 @@ struct BranchingImageNeighbourDirection
 {
     typedef enum { BEFORE=-1, CENTER=0, AFTER=1 } NeighbourOffset;
 
+    /// default constructor
+    /// @warning no initialization
+    BranchingImageNeighbourDirection() {}
+
     BranchingImageNeighbourDirection( const BranchingImageNeighbourDirection& other )
     {
         memcpy( offset, other.offset, 3*sizeof(NeighbourOffset) );
@@ -76,17 +80,25 @@ struct BranchingImageNeighbourDirection
 
     BranchingImageNeighbourDirection( NeighbourOffset xOffset, NeighbourOffset yOffset, NeighbourOffset zOffset )
     {
-        offset[0] = xOffset;
-        offset[1] = yOffset;
-        offset[2] = zOffset;
+        set( xOffset, yOffset, zOffset );
     }
 
     BranchingImageNeighbourDirection( int xOffset, int yOffset, int zOffset )
     {
         assert( xOffset>=-1 && xOffset<=1 && yOffset>=-1 && yOffset<=1 && zOffset>=-1 && zOffset<=1 );
-        offset[0] = (NeighbourOffset)xOffset;
-        offset[1] = (NeighbourOffset)yOffset;
-        offset[2] = (NeighbourOffset)zOffset;
+        set( xOffset, yOffset, zOffset );
+    }
+
+    inline void set( NeighbourOffset xOffset, NeighbourOffset yOffset, NeighbourOffset zOffset )
+    {
+        offset[0] = xOffset;
+        offset[1] = yOffset;
+        offset[2] = zOffset;
+    }
+
+    inline void set( int xOffset, int yOffset, int zOffset )
+    {
+        set( (NeighbourOffset)xOffset, (NeighbourOffset)yOffset, (NeighbourOffset)zOffset );
     }
 
     /// \returns the opposite direction of a given direction  left->right,  right->left
@@ -678,19 +690,19 @@ public:
     inline const T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][index.index1d][index.offset].value[c]; }
     inline T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) { return this->imgList[t][index.index1d][index.offset].value[c]; }
 
-    /// \returns the direction between two neighbour voxels
-    /// @warnings the two given voxels are supposed to be neighbours, otherwise (0,0,0) is returned with an assert
+    /// \returns true iff the two given voxels are neighbours, and fill the direction between two neighbour voxels
+    /// @warnings if the two given voxels are not neighbours, dir is set at (0,0,0)
     /// example: returning (-1,0,0) means neighbourIndex is at the LEFT position of index
-    inline NeighbourDirection getDirection( unsigned index1D, unsigned neighbourIndex1D ) const
+    inline bool getDirection( unsigned index1D, unsigned neighbourIndex1D, NeighbourDirection& dir ) const
     {
         long offset = (long)neighbourIndex1D - (long)index1D;
 
         for( int x=-1 ; x<=1 ; ++x )
         for( int y=-1 ; y<=1 ; ++y )
         for( int z=-1 ; z<=1 ; ++z )
-            if( offset == x+y*(long)dimension[DIMENSION_X]+z*(long)sliceSize ) return NeighbourDirection(x,y,z);
-        assert(false); // they are not neighbours
-        return NeighbourDirection(0,0,0);
+            if( offset == x+y*(long)dimension[DIMENSION_X]+z*(long)sliceSize ) { dir.set(x,y,z); return true; }
+        dir.set(0,0,0);
+        return false;
     }
 
 
