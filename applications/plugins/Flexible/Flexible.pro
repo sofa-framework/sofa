@@ -32,6 +32,7 @@ SOURCES = initFlexible.cpp \
     strainMapping/PrincipalStretchesMapping.cpp \
     strainMapping/InvariantMapping.cpp \
     strainMapping/PlasticStrainMapping.cpp \
+    strainMapping/RelativeStrainMapping.cpp \
     material/HookeForceField.cpp \
     material/MooneyRivlinForceField.cpp \
     #material/OgdenForceField.cpp \
@@ -89,6 +90,8 @@ HEADERS = initFlexible.h \
     strainMapping/InvariantJacobianBlock.inl \
     strainMapping/PlasticStrainMapping.h \
     strainMapping/PlasticStrainJacobianBlock.h \
+    strainMapping/RelativeStrainMapping.h \
+    strainMapping/RelativeStrainJacobianBlock.h \
     material/BaseMaterial.h \
     material/BaseMaterialForceField.h \
     material/HookeForceField.h \
