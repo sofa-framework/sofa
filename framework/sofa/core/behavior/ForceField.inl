@@ -218,11 +218,27 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARA
         addKToMatrix(r.matrix, mparams->kFactor(), r.offset);
     else serr<<"ERROR("<<getClassName()<<"): addKToMatrix found no valid matrix accessor." << sendl;
 }
+
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
     serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
 }
+
+template<class DataTypes>
+void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex )
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r) addSubKToMatrix(r.matrix, subMatrixIndex, mparams->kFactor(), r.offset);
+    else serr<<"ERROR("<<getClassName()<<"): addKToMatrix found no valid matrix accessor." << sendl;
+}
+
+template<class DataTypes>
+void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, double kFact, unsigned int & offset)
+{
+    addKToMatrix(mat,kFact,offset);
+}
+
 
 
 
@@ -237,6 +253,19 @@ template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
 {
 //    serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+}
+
+template<class DataTypes>
+void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex)
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r) addSubBToMatrix(r.matrix, subMatrixIndex, mparams->kFactor() , r.offset);
+}
+
+template<class DataTypes>
+void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, double bFact, unsigned int & offset)
+{
+    addBToMatrix(mat,bFact,offset);
 }
 
 

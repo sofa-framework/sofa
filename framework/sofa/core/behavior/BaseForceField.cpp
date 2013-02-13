@@ -53,6 +53,23 @@ void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FI
         addBToMatrix(mparams /* PARAMS FIRST */, matrix);
 }
 
+void BaseForceField::addSubMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex)
+{
+    if (mparams->kFactor() != 0.0)
+        addSubKToMatrix(mparams /* PARAMS FIRST */, matrix,subMatrixIndex);
+    if (mparams->bFactor() != 0.0)
+        addSubBToMatrix(mparams /* PARAMS FIRST */, matrix,subMatrixIndex);
+}
+
+void BaseForceField::addSubKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & /*subMatrixIndex*/) {
+    addKToMatrix(mparams,matrix);
+}
+
+void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & /*subMatrixIndex*/) {
+    addBToMatrix(mparams,matrix);
+}
+
+
 } // namespace behavior
 
 } // namespace core
