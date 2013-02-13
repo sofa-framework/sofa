@@ -300,6 +300,7 @@ public:
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
     static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
     static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, double kFactor, unsigned int& offset);
+    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, double kFactor, unsigned int& offset);
     static void getRotations(Main* m, VecReal& rotations);
     static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset);
 
@@ -332,7 +333,8 @@ public:
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
     template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
-    template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset);
+    template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
+    template<> void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
 
 
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);

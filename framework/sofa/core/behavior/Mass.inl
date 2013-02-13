@@ -269,6 +269,11 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS F
 }
 
 template<class DataTypes>
+void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> /*subMatrixIndex*/) {
+    addMBKToMatrix(mparams,matrix); // default implementation use full addMFunction
+}
+
+template<class DataTypes>
 void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vid)
 {
     if(this->mstate)

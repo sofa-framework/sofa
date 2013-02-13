@@ -148,6 +148,51 @@ public:
     }
 };
 
+/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene ONLY ON THE subMatrixIndex */
+class SOFA_SIMULATION_COMMON_API MechanicalAddSubMBK_ToMatrixVisitor : public MechanicalVisitor
+{
+public:
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    const helper::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
+
+    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id)
+        : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
+    {
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddSubMBK_ToMatrixVisitor"; }
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/)
+    {
+        //ms->setOffset(offsetOnExit);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+    {
+        if (matrix != NULL)
+        {
+            ff->addSubMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix, subMatrixIndex);
+        }
+
+        return RESULT_CONTINUE;
+    }
+
+    //Masses are now added in the addMBKToMatrix call for all ForceFields
+
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    {
+        if (matrix != NULL)
+        {
+            c->applyConstraint(this->mparams /* PARAMS FIRST */, matrix);
+        }
+
+        return RESULT_CONTINUE;
+    }
+};
+
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorToBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:

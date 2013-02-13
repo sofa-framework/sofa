@@ -479,6 +479,18 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     }
 }
 
+void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, double mFact, double bFact, double kFact)
+{
+    mparams.setMFactor(mFact);
+    mparams.setBFactor(bFact);
+    mparams.setKFactor(kFact);
+    if (matrix != NULL)
+    {
+        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
+        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams /* PARAMS FIRST */, matrix, subMatrixIndex) );
+    }
+}
+
 
 
 void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)

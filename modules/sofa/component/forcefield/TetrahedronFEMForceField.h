@@ -354,6 +354,8 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset);
+
     void draw(const core::visual::VisualParams* vparams);
 
     // Getting the stiffness matrix of index i
