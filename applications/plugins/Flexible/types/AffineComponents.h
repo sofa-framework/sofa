@@ -87,31 +87,9 @@ template <> SOFA_Flexible_API
 double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
 #endif
 
-
-
 } // namespace mass
 
-
-
-
 } // namespace component
-
-
-
-namespace core
-{
-
-namespace behavior
-{
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLECOMPATIBLITY_CPP)
-extern template class SOFA_Flexible_API ForceField<defaulttype::Affine3Types>;
-#endif
-
-} // namespace behavior
-
-} // namespace core
-
 
 } // namespace sofa
 
