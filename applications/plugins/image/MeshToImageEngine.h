@@ -276,7 +276,7 @@ protected:
         tr->update(); // update of internal data
         // update image extents
         unsigned int dim[3];
-        for(unsigned int j=0; j<3; j++) dim[j]=1+ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+        for(unsigned int j=0; j<3; j++) dim[j]=ceil(1+(BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue()); // TODO Matt: why +1?
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
 
 

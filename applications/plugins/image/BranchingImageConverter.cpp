@@ -55,6 +55,8 @@ int ImageToBranchingImageConverterClass = core::RegisterObject("ImageToBranching
         .add<ImageToBranchingImageConverter<unsigned long> >()
         .add<ImageToBranchingImageConverter<float> >()
         .add<ImageToBranchingImageConverter<bool> >()
+        .add<ImageToBranchingImageConverter<bool,unsigned char> >()
+        .add<ImageToBranchingImageConverter<bool,double> >()
 #endif
         ;
 
@@ -72,6 +74,8 @@ template class SOFA_IMAGE_API ImageToBranchingImageConverter<long>;
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<unsigned long>;
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<float>;
 template class SOFA_IMAGE_API ImageToBranchingImageConverter<bool>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<bool,unsigned char>;
+template class SOFA_IMAGE_API ImageToBranchingImageConverter<bool,double>;
 #endif
 
 

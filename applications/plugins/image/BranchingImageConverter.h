@@ -145,9 +145,6 @@ protected:
         {
             unsigned nb = pow( (float)2, (int)coarseningLevels.getValue() ); // nb fine voxels in a coarse voxel in each direction x/y/z
 
-            TransformType::Coord& scale = transform.getScale();
-            scale *= nb;
-
             const typename ImageTypes::imCoord inputDimension = input.getDimensions();
             typename BranchingImageTypes::Dimension outputDimension = inputDimension;
             outputDimension[BranchingImageTypes::DIMENSION_X] = ceil( outputDimension[BranchingImageTypes::DIMENSION_X]/(float)nb );
@@ -155,6 +152,11 @@ protected:
             outputDimension[BranchingImageTypes::DIMENSION_Z] = ceil( outputDimension[BranchingImageTypes::DIMENSION_Z]/(float)nb );
 
             output.setDimension( outputDimension );
+
+            // COARSE TRANSFORM
+            transform.getScale() *= nb;
+            // transform translation is given from the center of the pixel (0,0,0), but we want the corners (0,0,0) to be at the same spatial position
+            transform.getTranslation() += ( transform.getScale() - inputTransform.getValue().getScale() ) / 2.0;
 
             for( unsigned t=0 ; t<outputDimension[BranchingImageTypes::DIMENSION_T] ; ++t )
             {
@@ -189,11 +191,18 @@ protected:
 
                     unsigned nbLabels = subLabelImage.max();
 
-                    // when all voxels are filled, there is only one label==0, replace it by 1
-                    if( !nbLabels && subBinaryImage(0,0,0) )
+
+                    if( !nbLabels )
                     {
-                        nbLabels=1;
-                        subLabelImage.fill(1);
+                        if( subBinaryImage(0,0,0) ) // when all voxels are filled, there is only one label==0, replace it by 1
+                        {
+                            nbLabels=1;
+                            subLabelImage.fill(1);
+                        }
+                        else // all empty
+                        {
+                            nbLabels=0;
+                        }
                     }
                     else // some are empty, some are not -> enforce the label 0 to empty voxels
                     {
@@ -214,90 +223,94 @@ protected:
 
 ///// end improve
 
-                    // a superimposed voxel per independant component
-                    output_t[index1d].resize( nbLabels, outputDimension[BranchingImageTypes::DIMENSION_S] );
-
-
-                    // compute the superimposed values depending on superimpositionType
-                    switch( superimpositionType.getValue() )
+                    if( nbLabels )
                     {
-                        case 1: // average
+
+                        // a superimposed voxel per independant component
+                        output_t[index1d].resize( nbLabels, outputDimension[BranchingImageTypes::DIMENSION_S] );
+
+
+                        // compute the superimposed values depending on superimpositionType
+                        switch( superimpositionType.getValue() )
                         {
-                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                            case 1: // average
                             {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                // count nb pixels==v in subLabelImage
-                                int nbLabelsV = 0;
-                                cimg_forXYZ( subLabelImage, subx,suby,subz )
-                                    if( subLabelImage(subx,suby,subz) == v+1 )
-                                    {
-                                        nbLabelsV++;
-                                        for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
-                                        {
-                                            assert( typeid(Tout)==typeid(bool) ||voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
-                                            voutput[s] += subImage(subx,suby,subz,s);
-                                        }
-                                    }
-                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s ) voutput[s] /= nbLabelsV;
-                            }
-                            break;
-                        }
-                        case 2: // ratio (nb fine in superimposed voxel / total fine)
-                        {
-                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
-                            {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                // count nb pixels==v in subLabelImage
-                                int nbLabelsV = 0;
-                                cimg_foroff( subLabelImage, off )
-                                    if( subLabelImage(off) == v+1 )
-                                    {
-                                        nbLabelsV++;
-                                    }
-                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
                                 {
-                                    voutput[s] = 1.0/(float)nbLabelsV;
-                                }
-                            }
-                            break;
-                        }
-                        case 3: // count (nb fine in superimposed voxel)
-                        {
-                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
-                            {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                // count nb pixels==v in subLabelImage
-                                int nbLabelsV = 0;
-                                cimg_foroff( subLabelImage, off ) if( subLabelImage(off) == v+1 ) nbLabelsV++;
-                                for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
-                                {
-                                    assert( voutput[s] <= std::numeric_limits<Tout>::max()-nbLabelsV );
-                                    voutput[s] = nbLabelsV;
-                                }
-                            }
-                            break;
-                        }
-                        case 0: // sum
-                        default:
-                        {
-                            for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
-                            {
-                                typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
-                                voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
-                                cimg_forXYZ( subLabelImage, subx,suby,subz )
-                                    if( subLabelImage(subx,suby,subz) == v+1 )
-                                    {
-                                        for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                    typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                    voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                    // count nb pixels==v in subLabelImage
+                                    int nbLabelsV = 0;
+                                    cimg_forXYZ( subLabelImage, subx,suby,subz )
+                                        if( subLabelImage(subx,suby,subz) == v+1 )
                                         {
-                                            assert( typeid(Tout)==typeid(bool) || voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
-                                            voutput[s] += subImage(subx,suby,subz,s);
+                                            nbLabelsV++;
+                                            for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                            {
+                                                assert( typeid(Tout)==typeid(bool) ||voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                                voutput[s] += subImage(subx,suby,subz,s);
+                                            }
                                         }
-                                    }
+                                    for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s ) voutput[s] /= nbLabelsV;
+                                }
+                                break;
                             }
-                            break;
+                            case 2: // ratio (nb fine in superimposed voxel / total fine)
+                            {
+                                for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                                {
+                                    typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                    voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                    // count nb pixels==v in subLabelImage
+                                    int nbLabelsV = 0;
+                                    cimg_foroff( subLabelImage, off )
+                                        if( subLabelImage(off) == v+1 )
+                                        {
+                                            nbLabelsV++;
+                                        }
+                                    for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                    {
+                                        voutput[s] = 1.0/(float)nbLabelsV;
+                                    }
+                                }
+                                break;
+                            }
+                            case 3: // count (nb fine in superimposed voxel)
+                            {
+                                for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                                {
+                                    typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                    voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                    // count nb pixels==v in subLabelImage
+                                    int nbLabelsV = 0;
+                                    cimg_foroff( subLabelImage, off ) if( subLabelImage(off) == v+1 ) nbLabelsV++;
+                                    for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                    {
+    //                                    assert( voutput[s] <= std::numeric_limits<Tout>::max()-nbLabelsV );
+                                        voutput[s] = nbLabelsV;
+                                    }
+                                }
+                                break;
+                            }
+                            case 0: // sum
+                            default:
+                            {
+                                for( unsigned v=0 ; v<output_t[index1d].size() ; ++v )
+                                {
+                                    typename BranchingImageTypes::ConnectionVoxel& voutput = output_t[index1d][v];
+                                    voutput.resize( outputDimension[BranchingImageTypes::DIMENSION_S] );
+                                    cimg_forXYZ( subLabelImage, subx,suby,subz )
+                                        if( subLabelImage(subx,suby,subz) == v+1 )
+                                        {
+                                            for( unsigned s=0 ; s<outputDimension[BranchingImageTypes::DIMENSION_S] ; ++s )
+                                            {
+                                                assert( typeid(Tout)==typeid(bool) || voutput[s] <= std::numeric_limits<Tout>::max()-subImage(subx,suby,subz,s) );
+                                                voutput[s] += subImage(subx,suby,subz,s);
+                                            }
+                                        }
+                                }
+                                break;
+                            }
                         }
                     }
 
@@ -390,11 +403,13 @@ protected:
         outputMappingImage.endEdit();
         outputBranchingImage.endEdit();
 
+        //assert( !outputBranchingImage.getValue().isEqual(inputImage.getValue()) );
+
 
         if( f_printLog.getValue() )
         {
             std::cerr<<"ImageToBranchingImageConverter::update - conversion finished ";
-            std::cerr<<"("<<inputImage.getValue().approximativeSizeInBytes()<<" Bytes -> "<<outputBranchingImage.getValue().approximativeSizeInBytes()<<" Bytes -> x"<<inputImage.getValue().approximativeSizeInBytes()/(float)outputBranchingImage.getValue().approximativeSizeInBytes()<<")\n";
+            std::cerr<<"("<<inputImage.getValue().approximativeSizeInBytes()<<" Bytes -> "<<outputBranchingImage.getValue().approximativeSizeInBytes()<<" Bytes -> x"<<outputBranchingImage.getValue().approximativeSizeInBytes()/(float)inputImage.getValue().approximativeSizeInBytes()<<")\n";
         }
     }
 
