@@ -8,11 +8,11 @@ BOOST_AUTO_TEST_CASE( copy )
 }
 BOOST_AUTO_TEST_CASE( conversion )
 {
-    int r = imagesAreEqual(flatImage,branchingImage,true,false);
+    int r = branchingImage.isEqual(flatImage,true,false);
     BOOST_CHECK( !r ); // value test
     if( r ) { std::cerr<<"value test error = "<<r<<std::endl; }
 
-    r = imagesAreEqual(flatImage,branchingImage,false,true);
+    r = branchingImage.isEqual(flatImage,false,true);
     BOOST_CHECK( !r ); // neighbour test
     if( r ) { std::cerr<<"neighbour test error = "<<r<<std::endl; }
 

@@ -64,77 +64,72 @@ struct BranchingImageVoxelIndex
 }; // struct BranchingImageVoxelIndex
 
 
-/// each direction around a voxel
-struct BranchingImageNeighbourDirection
+/// offsets in each direction x/y/z around a voxel
+struct BranchingImageNeighbourOffset
 {
-    typedef enum { BEFORE=-1, CENTER=0, AFTER=1 } NeighbourOffset;
+    typedef enum { FACE=1, EDGE=2, CORNER=3, ONPLACE=0, NOTCLOSE=4 } ConnectionType;
 
     /// default constructor
     /// @warning no initialization
-    BranchingImageNeighbourDirection() {}
+    BranchingImageNeighbourOffset() {}
 
-    BranchingImageNeighbourDirection( const BranchingImageNeighbourDirection& other )
+    BranchingImageNeighbourOffset( const BranchingImageNeighbourOffset& other )
     {
-        memcpy( offset, other.offset, 3*sizeof(NeighbourOffset) );
+        *this = other;
     }
 
-    BranchingImageNeighbourDirection( NeighbourOffset xOffset, NeighbourOffset yOffset, NeighbourOffset zOffset )
+    BranchingImageNeighbourOffset( int xOffset, int yOffset, int zOffset )
     {
         set( xOffset, yOffset, zOffset );
     }
 
-    BranchingImageNeighbourDirection( int xOffset, int yOffset, int zOffset )
+    inline void operator=( const BranchingImageNeighbourOffset& other )
     {
-        assert( xOffset>=-1 && xOffset<=1 && yOffset>=-1 && yOffset<=1 && zOffset>=-1 && zOffset<=1 );
-        set( xOffset, yOffset, zOffset );
+        memcpy( offset, other.offset, 3*sizeof(int) );
     }
 
-    inline void set( NeighbourOffset xOffset, NeighbourOffset yOffset, NeighbourOffset zOffset )
+    inline void set( int xOffset, int yOffset, int zOffset )
     {
         offset[0] = xOffset;
         offset[1] = yOffset;
         offset[2] = zOffset;
     }
 
-    inline void set( int xOffset, int yOffset, int zOffset )
-    {
-        set( (NeighbourOffset)xOffset, (NeighbourOffset)yOffset, (NeighbourOffset)zOffset );
-    }
-
     /// \returns the opposite direction of a given direction  left->right,  right->left
-    inline BranchingImageNeighbourDirection opposite() const
+    inline BranchingImageNeighbourOffset opposite() const
     {
-        BranchingImageNeighbourDirection op( *this );
+        BranchingImageNeighbourOffset op( *this );
         for( unsigned int i=0 ; i<3 ; ++i )
-            if( op[i]==BEFORE ) op[i]=AFTER;
-            else if( op[i]==AFTER ) op[i]=BEFORE;
+            if( op[i] ) op[i] =- op[i];
         return op;
     }
 
-    /// i represent the direction  0->x, 1->y, 2->z
-    inline NeighbourOffset& operator[]( unsigned i ) { assert( i<=2 ); return offset[i]; }
-    inline const NeighbourOffset& operator[]( unsigned i ) const { assert( i<=2 ); return offset[i]; }
+    /// dir represent the direction  0->x, 1->y, 2->z
+    inline int& operator[]( unsigned dir ) { assert( dir<=2 ); return offset[dir]; }
+    inline const int& operator[]( unsigned dir ) const { assert( dir<=2 ); return offset[dir]; }
 
-    bool operator==( const BranchingImageNeighbourDirection& other ) const
+    bool operator==( const BranchingImageNeighbourOffset& other ) const
     {
         return offset[0]==other.offset[0] && offset[1]==other.offset[1] && offset[2]==other.offset[2];
     }
 
-    bool operator!=( const BranchingImageNeighbourDirection& other ) const
+    bool operator!=( const BranchingImageNeighbourOffset& other ) const
     {
         return offset[0]!=other.offset[0] || offset[1]!=other.offset[1] || offset[2]!=other.offset[2];
     }
 
-    inline bool isFaceConnection()    const { return abs(offset[0])+abs(offset[1])+abs(offset[2]) == 1; }
-    inline bool isEdgeConnection()    const { return abs(offset[0])+abs(offset[1])+abs(offset[2]) == 2; }
-    inline bool isCornerConnection()  const { return abs(offset[0])+abs(offset[1])+abs(offset[2]) == 3; }
-    inline bool isOnPlaceConnection() const { return abs(offset[0])+abs(offset[1])+abs(offset[2]) == 0; }
+    ConnectionType connectionType()
+    {
+        for( unsigned int i=0 ; i<3 ; ++i )
+            if( offset[i] < -1 || offset[i] > 1 ) return NOTCLOSE;
+        return ConnectionType( abs(offset[0])+abs(offset[1])+abs(offset[2]) );
+    }
 
 protected:
 
-    NeighbourOffset offset[3]; ///< in each direction x,y,z, the relative offset of the neighour
+    int offset[3]; ///< in each direction x,y,z, the relative offset of the neighour
 
-}; // struct NeighbourDirection
+}; // struct BranchingImageNeighbourOffset
 
 
 
@@ -160,11 +155,11 @@ public:
 
 
     typedef BranchingImageVoxelIndex VoxelIndex;
-    typedef BranchingImageNeighbourDirection NeighbourDirection;
+    typedef BranchingImageNeighbourOffset NeighbourOffset;
 
 
     /// predefined 6-connectivity neighbours
-//    static const NeighbourDirection LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT;
+//    static const NeighbourOffset LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT;
 
 
     /// a list of neighbours is stored as a vector of VoxelIndex
@@ -385,7 +380,7 @@ public:
 
             switch( conversionType )
             {
-            case 1:
+            case 1: // average
                 assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
                 v = (T2)this->_array[0][channel];
                 for( unsigned i=1 ; i<this->_size ; ++i )
@@ -395,11 +390,11 @@ public:
                 }
                 v = (T2)( v / (float)this->_size );
                 break;
-            case 0:
+            case 0: // first
                 assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
                 v = (T2)this->_array[0][channel];
                 break;
-            case 3:
+            case 3: // sum
                 assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
                 v = (T2)this->_array[0][channel];
                 for( unsigned i=1 ; i<this->_size ; ++i )
@@ -408,7 +403,7 @@ public:
                     v += (T2)this->_array[i][channel];
                 }
                 break;
-            case 2:
+            case 2: // count
             default:
                 assert( this->_size <= (unsigned)std::numeric_limits<T2>::max() );
                 v = (T2)this->_size;
@@ -649,8 +644,8 @@ public:
         y = y - z * dimension[DIMENSION_Y];
     }
 
-    /// \returns the index of the neighbour in the given direction (index in the BranchingImage3D)
-    inline unsigned getNeighbourIndex( NeighbourDirection d, unsigned index1D ) const
+    /// \returns the index of the neighbour given by its offset (index in the BranchingImage3D)
+    inline unsigned getNeighbourIndex( const NeighbourOffset& d, unsigned index1D ) const
     {
         return index1D+d[0]+d[1]*dimension[DIMENSION_X]+d[2]*sliceSize;
     }
@@ -690,19 +685,20 @@ public:
     inline const T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) const  { return this->imgList[t][index.index1d][index.offset].value[c]; }
     inline T& getValue(const VoxelIndex& index, const unsigned c=0, const unsigned t=0) { return this->imgList[t][index.index1d][index.offset].value[c]; }
 
-    /// \returns true iff the two given voxels are neighbours, and fill the direction between two neighbour voxels
-    /// @warnings if the two given voxels are not neighbours, dir is set at (0,0,0)
+    /// \returns the offset between two neighbour voxels
     /// example: returning (-1,0,0) means neighbourIndex is at the LEFT position of index
-    inline bool getDirection( unsigned index1D, unsigned neighbourIndex1D, NeighbourDirection& dir ) const
+    inline NeighbourOffset getDirection( unsigned index1D, unsigned neighbourIndex1D ) const
     {
         long offset = (long)neighbourIndex1D - (long)index1D;
 
         for( int x=-1 ; x<=1 ; ++x )
         for( int y=-1 ; y<=1 ; ++y )
         for( int z=-1 ; z<=1 ; ++z )
-            if( offset == x+y*(long)dimension[DIMENSION_X]+z*(long)sliceSize ) { dir.set(x,y,z); return true; }
-        dir.set(0,0,0);
-        return false;
+            if( offset == x+y*(long)dimension[DIMENSION_X]+z*(long)sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
+
+        // not connected neighbours
+        // TODO
+        return NeighbourOffset(0,0,0);
     }
 
 
@@ -860,15 +856,61 @@ public:
         }
         return 0;
     }
+
+    /// \returns 0 iff flatImg==*this otherwise returns an error code
+    template<class T2>
+    int isEqual( const Image<T2>& flatImg, bool valueTest = true, bool neighbourTest = false ) const
+    {
+        cimglist_for(flatImg.getCImgList(),l)
+        {
+              const CImg<T2>& cimgl = flatImg.getCImg(l);
+              const BranchingImage3D& iml = this->imgList[l];
+              unsigned index1d = -1;
+              cimg_forXYZ(cimgl,x,y,z)
+              {
+                  ++index1d;
+
+                  const SuperimposedVoxels& voxels = iml[index1d];
+
+                  if( voxels.empty() ) //the pixel x,y,z is not present in the branching image
+                  {
+                      if ( cimgl.get_vector_at(x,y,z).magnitude(1)!=0 ) return 1; // if the pixel is present in the flat image, there is a pb
+                      else continue; // no pixel -> nothing to compare, test the next pixel
+                  }
+
+                  if( voxels.size()>1 ) return 2; // the branching image has been built from a flat image, so there should be no superimposed voxels
+
+                  if( valueTest )
+                  {
+                      for( unsigned c=0 ; c<flatImg.getDimensions()[3] ; ++c ) // for all channels
+                          if( (T)cimgl(x,y,z,c) != voxels[0][c] ) return 3; // check that the value is the same
+                  }
+
+                  if( neighbourTest )
+                  {
+                      // test neighbourhood connections
+                      if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-1,0) ) ) ) ) return 4;
+                      if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+1,0) ) ) ) ) return 5;
+                      if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-dimension[DIMENSION_X],0) ) ) ) ) return 6;
+                      if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+dimension[DIMENSION_X],0) ) ) ) ) return 7;
+                      if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-sliceSize,0) ) ) ) ) return 8;
+                      if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+sliceSize,0) ) ) ) ) return 9;
+                  }
+              }
+        }
+        return 0;
+    }
+
+
 };
 
 
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::LEFT   = BranchingImage<T>::NeighbourDirection(-1, 0, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::RIGHT  = BranchingImage<T>::NeighbourDirection( 1, 0, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::BOTTOM = BranchingImage<T>::NeighbourDirection( 0,-1, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::TOP    = BranchingImage<T>::NeighbourDirection( 0, 1, 0);
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::BACK   = BranchingImage<T>::NeighbourDirection( 0, 0,-1);
-//template<class T> const typename BranchingImage<T>::NeighbourDirection BranchingImage<T>::FRONT  = BranchingImage<T>::NeighbourDirection( 0, 0, 1);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::LEFT   = BranchingImage<T>::NeighbourOffset(-1, 0, 0);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::RIGHT  = BranchingImage<T>::NeighbourOffset( 1, 0, 0);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::BOTTOM = BranchingImage<T>::NeighbourOffset( 0,-1, 0);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::TOP    = BranchingImage<T>::NeighbourOffset( 0, 1, 0);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::BACK   = BranchingImage<T>::NeighbourOffset( 0, 0,-1);
+//template<class T> const typename BranchingImage<T>::NeighbourOffset BranchingImage<T>::FRONT  = BranchingImage<T>::NeighbourOffset( 0, 0, 1);
 
 
 

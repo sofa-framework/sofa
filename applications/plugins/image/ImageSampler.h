@@ -465,51 +465,80 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                 {
                     const unsigned neighbourIndex = inimg[index1d][v].neighbours[n].index1d;
 
-                    if( neighbourIndex>index1d ) continue; // merge only one way
-
                     const unsigned neighbourOffset = inimg[index1d][v].neighbours[n].offset;
 
                     Hexa& neighbor = h[hindices[neighbourIndex][neighbourOffset]];
 
-                    typename ImageSampler::ImageTypes::NeighbourDirection dir;
-                    if( !in->getDirection( index1d, neighbourIndex, dir ) ) continue; // not close neighbours
+                    typename ImageSampler::ImageTypes::NeighbourOffset dir = in->getDirection( index1d, neighbourIndex );
 
-                    if( dir.isFaceConnection() )
+                    switch( dir.connectionType() )
                     {
-                        if( dir[0] ) //LEFT
+                        case ImageSampler::ImageTypes::NeighbourOffset::FACE:
                         {
-                            mergeVertexIndex( h, hexa[0], neighbor[1] );
-                            mergeVertexIndex( h, hexa[4], neighbor[5] );
-                            mergeVertexIndex( h, hexa[7], neighbor[6] );
-                            mergeVertexIndex( h, hexa[3], neighbor[2] );
+                            if( neighbourIndex < index1d ) // merge only one way (ensure neighbour is only left or bottom or back) -> not enough for 26-connectivity
+                            {
+                                if( dir[0] ) //LEFT
+                                {
+                                    mergeVertexIndex( h, hexa[0], neighbor[1] );
+                                    mergeVertexIndex( h, hexa[4], neighbor[5] );
+                                    mergeVertexIndex( h, hexa[7], neighbor[6] );
+                                    mergeVertexIndex( h, hexa[3], neighbor[2] );
+                                }
+                                else if( dir[1] ) // BOTTOM
+                                {
+                                    mergeVertexIndex( h, hexa[0], neighbor[3] );
+                                    mergeVertexIndex( h, hexa[1], neighbor[2] );
+                                    mergeVertexIndex( h, hexa[4], neighbor[7] );
+                                    mergeVertexIndex( h, hexa[5], neighbor[6] );
+                                }
+                                else // BACK
+                                {
+                                    mergeVertexIndex( h, hexa[0], neighbor[4] );
+                                    mergeVertexIndex( h, hexa[1], neighbor[5] );
+                                    mergeVertexIndex( h, hexa[2], neighbor[6] );
+                                    mergeVertexIndex( h, hexa[3], neighbor[7] );
+                                }
+                            }
+                            break;
                         }
-                        else if( dir[1] ) // BOTTOM
+                        case ImageSampler::ImageTypes::NeighbourOffset::EDGE: // 26-connectivity
                         {
-                            mergeVertexIndex( h, hexa[0], neighbor[3] );
-                            mergeVertexIndex( h, hexa[1], neighbor[2] );
-                            mergeVertexIndex( h, hexa[4], neighbor[7] );
-                            mergeVertexIndex( h, hexa[5], neighbor[6] );
+                        //TODO
+//                            if( !dir[0] ) // BOTTOM-BACK
+//                            {
+//                                mergeVertexIndex( h, hexa[0], neighbor[7] );
+//                                mergeVertexIndex( h, hexa[1], neighbor[6] );
+//                            }
+//                            else if( !dir[1] ) // LEFT-BACK
+//                            {
+//                                mergeVertexIndex( h, hexa[0], neighbor[5] );
+//                                mergeVertexIndex( h, hexa[3], neighbor[6] );
+//                            }
+//                            else // LEFT-BOTTOM
+//                            {
+//                                mergeVertexIndex( h, hexa[0], neighbor[2] );
+//                                mergeVertexIndex( h, hexa[4], neighbor[6] );
+//                            }
+                            break;
                         }
-                        else // BACK
+                        case ImageSampler::ImageTypes::NeighbourOffset::CORNER: // 26-connectivity
                         {
-                            mergeVertexIndex( h, hexa[0], neighbor[4] );
-                            mergeVertexIndex( h, hexa[1], neighbor[5] );
-                            mergeVertexIndex( h, hexa[2], neighbor[6] );
-                            mergeVertexIndex( h, hexa[3], neighbor[7] );
+                        //TODO
+                            //LEFT-BOTTOM-BACK
+//                            mergeVertexIndex( h, hexa[0], neighbor[6] );
+                            break;
                         }
-                    }
-                    else if( dir.isEdgeConnection() ) // 26-connectivity
-                    {
-                        // TODO
-                    }
-                    else if( dir.isCornerConnection() ) // 26-connectivity
-                    {
-                        // TODO
-                    }
-                    else // on place, 7- or 27-connectivity
-                    {
-                        for( unsigned w=0 ; w<8 ; ++w )
-                            mergeVertexIndex( h, hexa[w], neighbor[w] );
+                        case ImageSampler::ImageTypes::NeighbourOffset::ONPLACE: // 7- or 27-connectivity
+                        {
+                            for( unsigned w=0 ; w<8 ; ++w )
+                                mergeVertexIndex( h, hexa[w], neighbor[w] );
+                            break;
+                        }
+                        case ImageSampler::ImageTypes::NeighbourOffset::NOTCLOSE: // a not connected, far neighbour
+                        default:
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -546,16 +575,16 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
             {
                 for( unsigned v=0 ; v<inimg[index1d].size() ; ++v )
                 {
+                    static const Real gap = (Real)-0.5;
+                    static const Real hexaCornerGapFromCenter[8][3] = { {gap,gap,gap},{1+gap,gap,gap},{1+gap,1+gap,gap},{gap,1+gap,gap},{gap,gap,1+gap},{1+gap,gap,1+gap},{1+gap,1+gap,1+gap},{gap,1+gap,1+gap}  };
 
-                    static const int hexaIndices[8][3] = { {0,0,0},{1,0,0},{1,1,0},{0,1,0},{0,0,1},{1,0,1},{1,1,1},{0,1,1}  };
-
-                    Hexa& hexa = h[indexHexa];
+                    Hexa& hexa = h[indexHexa++];
                     for( unsigned j=0 ; j<8 ; ++j )
                     {
                         if( alreadyAddedPos.find(hexa[j])==alreadyAddedPos.end() )
                         {
                             alreadyAddedPos[hexa[j]] = true;
-                            pos[hexa[j]] = Coord(x+hexaIndices[j][0]-0.5,y+hexaIndices[j][1]-0.5,z+hexaIndices[j][2]-0.5);
+                            pos[hexa[j]] = Coord(x+hexaCornerGapFromCenter[j][0],y+hexaCornerGapFromCenter[j][1],z+hexaCornerGapFromCenter[j][2]);
                         }
                     }
 
@@ -631,8 +660,6 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                         alreadyAddedEdge[edge] = true;
                         e.push_back( edge );
                     }
-
-                    ++indexHexa;
                 }
 
                 ++index1d;
