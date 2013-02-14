@@ -479,6 +479,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                             {
                                 if( dir[0] ) //LEFT
                                 {
+                                    assert( dir[0]==-1 );
                                     mergeVertexIndex( h, hexa[0], neighbor[1] );
                                     mergeVertexIndex( h, hexa[4], neighbor[5] );
                                     mergeVertexIndex( h, hexa[7], neighbor[6] );
@@ -486,6 +487,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 }
                                 else if( dir[1] ) // BOTTOM
                                 {
+                                    assert( dir[1]==-1 );
                                     mergeVertexIndex( h, hexa[0], neighbor[3] );
                                     mergeVertexIndex( h, hexa[1], neighbor[2] );
                                     mergeVertexIndex( h, hexa[4], neighbor[7] );
@@ -493,6 +495,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 }
                                 else // BACK
                                 {
+                                    assert( dir[2]==-1 );
                                     mergeVertexIndex( h, hexa[0], neighbor[4] );
                                     mergeVertexIndex( h, hexa[1], neighbor[5] );
                                     mergeVertexIndex( h, hexa[2], neighbor[6] );
@@ -503,29 +506,158 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                         }
                         case ImageSampler::ImageTypes::NeighbourOffset::EDGE: // 26-connectivity
                         {
-                        //TODO
-//                            if( !dir[0] ) // BOTTOM-BACK
-//                            {
-//                                mergeVertexIndex( h, hexa[0], neighbor[7] );
-//                                mergeVertexIndex( h, hexa[1], neighbor[6] );
-//                            }
-//                            else if( !dir[1] ) // LEFT-BACK
-//                            {
-//                                mergeVertexIndex( h, hexa[0], neighbor[5] );
-//                                mergeVertexIndex( h, hexa[3], neighbor[6] );
-//                            }
-//                            else // LEFT-BOTTOM
-//                            {
-//                                mergeVertexIndex( h, hexa[0], neighbor[2] );
-//                                mergeVertexIndex( h, hexa[4], neighbor[6] );
-//                            }
+                            // test only 9 on 12 (they will be treated by the neighbour)...
+                            if( dir[0]==-1 ) // LEFT
+                            {
+                                if( dir[1]==-1 ) // BOTTOM
+                                {
+                                    assert( dir[2]==0 );
+                                    mergeVertexIndex( h, hexa[0], neighbor[2] );
+                                    mergeVertexIndex( h, hexa[4], neighbor[6] );
+                                }
+                                else if( dir[1]==1 ) // TOP
+                                {
+                                    assert( dir[2]==0 );
+                                    mergeVertexIndex( h, hexa[3], neighbor[1] );
+                                    mergeVertexIndex( h, hexa[7], neighbor[5] );
+                                }
+                                if( dir[2]==-1 ) // BACK
+                                {
+                                    assert( dir[1]==0 );
+                                    mergeVertexIndex( h, hexa[0], neighbor[5] );
+                                    mergeVertexIndex( h, hexa[3], neighbor[6] );
+                                }
+                                else // FRONT
+                                {
+                                    assert( dir[2]==1 );
+                                    assert( dir[1]==0 );
+                                    mergeVertexIndex( h, hexa[4], neighbor[1] );
+                                    mergeVertexIndex( h, hexa[7], neighbor[2] );
+                                }
+                            }
+                            else if( dir[0]==1 ) // RIGHT
+                            {
+                                if( dir[1]==-1 ) // BOTTOM
+                                {
+                                    assert( dir[2]==0 );
+                                    mergeVertexIndex( h, hexa[1], neighbor[3] );
+                                    mergeVertexIndex( h, hexa[5], neighbor[7] );
+                                }
+                                else if( dir[1]==1 ) // TOP
+                                {
+                                    assert( dir[2]==0 );
+//                                    mergeVertexIndex( h, hexa[2], neighbor[0] );
+//                                    mergeVertexIndex( h, hexa[6], neighbor[4] );
+                                }
+                                if( dir[2]==-1 ) // BACK
+                                {
+                                    assert( dir[1]==0 );
+//                                    mergeVertexIndex( h, hexa[1], neighbor[4] );
+//                                    mergeVertexIndex( h, hexa[2], neighbor[7] );
+                                }
+                                else // FRONT
+                                {
+                                    assert( dir[2]==1 );
+                                    assert( dir[1]==0 );
+                                    mergeVertexIndex( h, hexa[5], neighbor[0] );
+                                    mergeVertexIndex( h, hexa[6], neighbor[3] );
+                                }
+                            }
+                            else // CENTER
+                            {
+                                assert( dir[0]==0 );
+                                assert( dir[1]!=0 );
+                                assert( dir[2]!=0 );
+
+                                if( dir[1]==-1 ) // BOTTOM
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+                                        assert( dir[1]==0 );
+                                        mergeVertexIndex( h, hexa[0], neighbor[7] );
+                                        mergeVertexIndex( h, hexa[1], neighbor[6] );
+                                    }
+                                    else // FRONT
+                                    {
+                                        assert( dir[2]==1 );
+                                        assert( dir[1]==0 );
+                                        mergeVertexIndex( h, hexa[4], neighbor[3] );
+                                        mergeVertexIndex( h, hexa[5], neighbor[2] );
+                                    }
+                                }
+                                else // TOP
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+                                        assert( dir[1]==0 );
+//                                        mergeVertexIndex( h, hexa[2], neighbor[5] );
+//                                        mergeVertexIndex( h, hexa[3], neighbor[4] );
+                                    }
+                                    else // FRONT
+                                    {
+                                        assert( dir[2]==1 );
+                                        assert( dir[1]==0 );
+                                        mergeVertexIndex( h, hexa[6], neighbor[1] );
+                                        mergeVertexIndex( h, hexa[7], neighbor[0] );
+                                    }
+                                }
+                            }
                             break;
                         }
                         case ImageSampler::ImageTypes::NeighbourOffset::CORNER: // 26-connectivity
                         {
-                        //TODO
-                            //LEFT-BOTTOM-BACK
-//                            mergeVertexIndex( h, hexa[0], neighbor[6] );
+                            // test only 4 on 8
+                            assert( abs(dir[0])==1 && abs(dir[1])==1 && abs(dir[2])==1 );
+                            if( dir[0]==-1 ) // LEFT
+                            {
+                                if( dir[1]==-1 ) // BOTTOM
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+                                        mergeVertexIndex( h, hexa[0], neighbor[6] );
+                                    }
+                                    else // FRONT
+                                    {
+                                        mergeVertexIndex( h, hexa[4], neighbor[2] );
+                                    }
+                                }
+                                else // TOP
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+//                                        mergeVertexIndex( h, hexa[3], neighbor[5] );
+                                    }
+                                    else // FRONT
+                                    {
+                                        mergeVertexIndex( h, hexa[7], neighbor[1] );
+                                    }
+                                }
+                            }
+                            else // RIGHT
+                            {
+                                if( dir[1]==-1 ) // BOTTOM
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+//                                        mergeVertexIndex( h, hexa[1], neighbor[7] );
+                                    }
+                                    else // FRONT
+                                    {
+                                        mergeVertexIndex( h, hexa[5], neighbor[3] );
+                                    }
+                                }
+                                else // TOP
+                                {
+                                    if( dir[2]==-1 ) // BACK
+                                    {
+//                                        mergeVertexIndex( h, hexa[2], neighbor[4] );
+                                    }
+                                    else // FRONT
+                                    {
+//                                        mergeVertexIndex( h, hexa[6], neighbor[0] );
+                                    }
+                                }
+                            }
                             break;
                         }
                         case ImageSampler::ImageTypes::NeighbourOffset::ONPLACE: // 7- or 27-connectivity
