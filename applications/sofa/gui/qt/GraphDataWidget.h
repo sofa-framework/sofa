@@ -178,11 +178,18 @@ public slots:
 #endif
 //MOC_SKIP_END
 
+    bool isCheckedBox() {
+        return checkBox->isChecked();
+    }
+
 protected:
+    unsigned idfile;
     QPushButton* exportGNUPLOTButton;
     QLineEdit *fileGNUPLOTLineEdit;
     QPushButton* findGNUPLOTFile;
+
 #ifdef SOFA_QT4
+    QCheckBox * checkBox;
     QPushButton* exportImageButton;
     QLineEdit *fileImageLineEdit;
     QPushButton* findImageFile;
@@ -409,6 +416,7 @@ public:
     void readFromData(const data_type& d0)
     {
         w->readFromData(d0);
+        if (options->isCheckedBox()) options->exportImage();
     }
     void writeToData(data_type& /*d*/)
     {
