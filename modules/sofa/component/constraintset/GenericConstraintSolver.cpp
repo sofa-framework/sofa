@@ -166,26 +166,24 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 		// for each contact, the constraint corrections that are involved with the contact are memorized
 		current_cp->cclist_elems.clear();
-		current_cp->cclist_elems.resize(constraintCorrections.size());
-		for (unsigned int i = 0; i < current_cp->cclist_elems.size(); i++)
-			current_cp->cclist_elems[i].resize(numConstraints, NULL);
+		current_cp->cclist_elems.resize(numConstraints);
+		int nbCC = constraintCorrections.size();
+		for (unsigned int i = 0; i < numConstraints; i++)
+			current_cp->cclist_elems[i].resize(nbCC, NULL);
 
 		unsigned int nbObjects = 0;
-
 		for (unsigned int c_id = 0; c_id < numConstraints;)
 		{
 			bool foundCC = false;
 			nbObjects++;
 			unsigned int l = current_cp->constraintsResolutions[c_id]->nbLines;
 
-
 			for (unsigned int j = 0; j < constraintCorrections.size(); j++)
 			{
 				core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
-				
 				if (cc->hasConstraintNumber(c_id))
 				{
-					current_cp->cclist_elems[j][c_id] = cc;
+					current_cp->cclist_elems[c_id][j] = cc;
 					cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
 					foundCC = true;
 				}
@@ -756,10 +754,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 			}
 
 			//   (b) contribution of forces are added to d
-			for (unsigned int cc_index = 0; cc_index < cclist_elems.size(); cc_index++)
+			for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
 			{
-				if (cclist_elems[cc_index][j] != NULL)
-					cclist_elems[cc_index][j]->addConstraintDisplacement(d, j, j+nb-1);
+				if(*iter)
+					(*iter)->addConstraintDisplacement(d, j, j+nb-1);
 			}
 
 			//3. the specific resolution of the constraint(s) is called
@@ -816,10 +814,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 					force[j+l] -= errF[l]; // DForce
 				}
 
-				for (unsigned int cc_index = 0; cc_index < cclist_elems.size(); cc_index++)
+				for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
 				{
-					if (cclist_elems[cc_index][j] != NULL)
-						cclist_elems[cc_index][j]->setConstraintDForce(force, j, j+nb-1, update);
+					if(*iter)
+						(*iter)->setConstraintDForce(force, j, j+nb-1, update);
 				}
 
 				for(l=0; l<nb; l++)
