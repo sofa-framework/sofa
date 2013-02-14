@@ -86,6 +86,8 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     QWidget *imageExport=new QWidget(this);
     QHBoxLayout* imageLayout = new QHBoxLayout(imageExport);
 
+    checkBox = new QCheckBox("Check the box to dump the graph at each edit of the data");
+
     exportImageButton = new QPushButton(QString("Image"), imageExport);
     //Create field to enter the base name of the gnuplot files
     fileImageLineEdit = new QLineEdit(imageExport);
@@ -104,7 +106,9 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
 
     connect(exportImageButton, SIGNAL(clicked()), this, SLOT(exportImage()));
     connect(findImageFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
-#endif
+
+    generalLayout->add(checkBox);
+#endif    
 }
 
 void GraphOptionWidget::openFindFileDialog()
@@ -132,7 +136,20 @@ void GraphOptionWidget::exportGNUPlot()
 #ifdef SOFA_QT4
 void GraphOptionWidget::exportImage()
 {
-    graph->exportImage(fileImageLineEdit->text().ascii());
+    const unsigned nbpad=5;
+
+    std::stringstream ss;
+    ss << idfile;
+    std::string idstring = ss.str();
+
+    std::string pad(nbpad-idstring.length(),'0');
+    idfile++;
+    if (idfile>99999) idfile = 0;
+
+    std::string filename = fileImageLineEdit->text().ascii();
+    filename.append(pad);
+    filename.append(idstring);
+    graph->exportImage(filename);
 }
 #endif
 } // namespace qt
