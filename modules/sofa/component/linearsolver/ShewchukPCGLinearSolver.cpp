@@ -61,6 +61,7 @@ template<class TMatrix, class TVector>
 ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
     , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
+    , f_normType( initData(&f_normType, (unsigned) 0,"normType","0: err = R*P-1*RT (best norm in term of error, but convergence depends on the preconditioner). 1: err = R*RT (unknown error! but criteria independs of the preconditioner)") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_update_iteration( initData(&f_update_iteration,(unsigned)0,"update_iteration","Number of CG iterations before next refresh of precondtioner") )
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
@@ -68,7 +69,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
     , f_use_first_precond( initData(&f_use_first_precond,false,"use_first_precond","Use only first precond") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )    
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
@@ -254,12 +255,17 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     x.clear();
     r = b;
     double deltaNew = b.dot(d);
+
+    double err_square;
+    if (f_normType.getValue()==0) err_square = deltaNew;
+    else err_square = r.dot(r);
+
     double delta0 = deltaNew;
     double eps = f_tolerance.getValue() * f_tolerance.getValue() * delta0;
 
-    while ((iter <= f_maxIter.getValue()) && (deltaNew > eps))
+    while ((iter <= f_maxIter.getValue()) && (err_square > eps))
     {
-        graph_error.push_back(sqrt(deltaNew));
+        graph_error.push_back(sqrt(err_square));
 
         q = M * d;
         double dtq = d.dot(q);
@@ -301,8 +307,12 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         }
 
 
-        double deltaOld = deltaNew;
+        double deltaOld = deltaNew;        
         deltaNew = r.dot(s);
+
+        if (f_normType.getValue()==0) err_square = deltaNew;
+        else err_square = r.dot(r);
+
         double beta = deltaNew / deltaOld;
 
         cgstep_beta(d,s,beta);//for (int i=0; i<n; i++) d[i] = r[i] + beta * d[i];
@@ -310,7 +320,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         iter++;
     }
 
-    graph_error.push_back(sqrt(deltaNew));
+    graph_error.push_back(sqrt(err_square));
     next_refresh_iteration=iter;
     sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
 
