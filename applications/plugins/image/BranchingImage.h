@@ -67,7 +67,7 @@ struct BranchingImageVoxelIndex
 /// offsets in each direction x/y/z around a voxel
 struct BranchingImageNeighbourOffset
 {
-    typedef enum { FACE=1, EDGE=2, CORNER=3, ONPLACE=0, NOTCLOSE=4 } ConnectionType;
+    typedef enum { FACE=1, EDGE=2, CORNER=3, ONPLACE=0, NOTCLOSE=4 } ConnectionType; // warning: do not change enum values they are significant
 
     /// default constructor
     /// @warning no initialization
@@ -118,7 +118,7 @@ struct BranchingImageNeighbourOffset
         return offset[0]!=other.offset[0] || offset[1]!=other.offset[1] || offset[2]!=other.offset[2];
     }
 
-    ConnectionType connectionType()
+    ConnectionType connectionType() const
     {
         for( unsigned int i=0 ; i<3 ; ++i )
             if( offset[i] < -1 || offset[i] > 1 ) return NOTCLOSE;
@@ -133,7 +133,7 @@ protected:
 
 
 
-typedef enum { CONNECTIVITY_6=6, CONNECTVITY_7=7, CONNECTVITY_26=26, CONNECTVITY_27=27 } BranchingImageConnectivity;
+typedef enum { CONNECTIVITY_6=6, CONNECTIVITY_26=26 } BranchingImageConnectivity;
 
 
 
@@ -291,7 +291,7 @@ public:
         /// add the given voxel as a neigbour
         /// @warning it is doing only one way (this has to be added as a neighbour of n)
         /// if testUnicity==true, the neighbour is added only if it is not already there
-        void addNeighbour( const VoxelIndex& neighbour, bool testUnicity = false )
+        void addNeighbour( const VoxelIndex& neighbour, bool testUnicity = true )
         {
             if( !testUnicity || !isNeighbour(neighbour) ) neighbours.push_back( neighbour );
         }
@@ -487,6 +487,9 @@ public:
             return this->_array[index1d].getOffset( &v );
         }
 
+        const ConnectionVoxel& operator()( const VoxelIndex& index ) const { return (*this)[index.index1d][index.offset]; }
+              ConnectionVoxel& operator()( const VoxelIndex& index )       { return (*this)[index.index1d][index.offset]; }
+
     private:
 
         /// impossible to copy a ConnectedVoxel without the spectrum size
@@ -495,7 +498,7 @@ public:
         bool operator==( const BranchingImage3D& ) const { assert(false); }
         void push_back( const SuperimposedVoxels& v ) { assert(false); }
 
-    }; // class BranchingImage
+    }; // class BranchingImage3D
 
 
 
@@ -544,14 +547,14 @@ public:
 
 
     /// conversion from flat image to connection image
-    BranchingImage(const Image<T>& img)
+    BranchingImage( const Image<T>& img, BranchingImageConnectivity connectivity )
     {
-        *this = img;
+        this->fromImage( img, connectivity );
     }
 
     /// conversion from flat image to connection image
     template<class T2>
-    BranchingImage<T>& operator=(const Image<T2>& im)
+    void fromImage( const Image<T2>& im, BranchingImageConnectivity connectivity )
     {
         setDimension( im.getDimensions() );
 
@@ -574,16 +577,48 @@ public:
                         v.neighbours.clear();
                         imt[index1D].push_back( v, dimension[DIMENSION_S] );
                     }
+
                     // neighbours
-                    if( x>0 && !imt[index1D-1].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-1, 0 ) ); imt[index1D-1][0].addNeighbour( VoxelIndex( index1D, 0 ) ); }
-                    if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-dimension[DIMENSION_X], 0 ) ); imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( VoxelIndex( index1D, 0 ) ); }
-                    if( z>0 && !imt[index1D-sliceSize].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-sliceSize, 0 ) ); imt[index1D-sliceSize][0].addNeighbour( VoxelIndex( index1D, 0 ) ); }
+
+                    if( connectivity == CONNECTIVITY_6 )
+                    {
+                        // face
+                        if( x>0 && !imt[index1D-1].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-1, 0 ), false ); imt[index1D-1][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
+                        if( y>0 && !imt[index1D-dimension[DIMENSION_X]].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-dimension[DIMENSION_X], 0 ), false ); imt[index1D-dimension[DIMENSION_X]][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
+                        if( z>0 && !imt[index1D-sliceSize].empty() ) { imt[index1D][0].addNeighbour( VoxelIndex( index1D-sliceSize, 0 ), false ); imt[index1D-sliceSize][0].addNeighbour( VoxelIndex( index1D, 0 ), false ); }
+                    }
+                    else
+                    {
+                        // neighbours is all directions
+                        // TODO could be improved by testing only 3/8 face-, 9/12 edge- and 4/8 corner-neighbours (and so not testing unicity while adding the neighbour)
+                        for( int gx = -1 ; gx <= 1 ; ++gx )
+                        {
+                            if( x+gx<0 || x+gx>(int)dimension[DIMENSION_X]-1 ) continue;
+                            for( int gy = -1 ; gy <= 1 ; ++gy )
+                            {
+                                if( y+gy<0 || y+gy>(int)dimension[DIMENSION_Y]-1 ) continue;
+                                for( int gz = -1 ; gz <= 1 ; ++gz )
+                                {
+                                    if( z+gz<0 || z+gz>(int)dimension[DIMENSION_Z]-1 ) continue;
+                                    if( !gx && !gy && !gz ) continue; // do not test with itself
+
+                                    const NeighbourOffset no( gx, gy, gz );
+
+                                    const unsigned neighbourIndex = getNeighbourIndex( no, index1D );
+
+                                    if( !imt[neighbourIndex].empty() )
+                                    {
+                                        imt[index1D][0].addNeighbour( VoxelIndex( neighbourIndex, 0 ), true );
+                                        imt[neighbourIndex][0].addNeighbour( VoxelIndex( index1D, 0 ), true );
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 ++index1D;
             }
         }
-
-        return *this;
     }
 
 
@@ -689,12 +724,10 @@ public:
     /// example: returning (-1,0,0) means neighbourIndex is at the LEFT position of index
     inline NeighbourOffset getDirection( unsigned index1D, unsigned neighbourIndex1D ) const
     {
-        long offset = (long)neighbourIndex1D - (long)index1D;
-
         for( int x=-1 ; x<=1 ; ++x )
         for( int y=-1 ; y<=1 ; ++y )
         for( int z=-1 ; z<=1 ; ++z )
-            if( offset == x+y*(long)dimension[DIMENSION_X]+z*(long)sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
+            if( neighbourIndex1D == index1D+x+y*dimension[DIMENSION_X]+z*sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
 
         // not connected neighbours
         // TODO
@@ -859,7 +892,7 @@ public:
 
     /// \returns 0 iff flatImg==*this otherwise returns an error code
     template<class T2>
-    int isEqual( const Image<T2>& flatImg, bool valueTest = true, bool neighbourTest = false ) const
+    int isEqual( const Image<T2>& flatImg, BranchingImageConnectivity connectivity, bool valueTest = true, bool neighbourTest = false ) const
     {
         cimglist_for(flatImg.getCImgList(),l)
         {
@@ -888,13 +921,38 @@ public:
 
                   if( neighbourTest )
                   {
-                      // test neighbourhood connections
-                      if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-1,0) ) ) ) ) return 4;
-                      if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+1,0) ) ) ) ) return 5;
-                      if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-dimension[DIMENSION_X],0) ) ) ) ) return 6;
-                      if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+dimension[DIMENSION_X],0) ) ) ) ) return 7;
-                      if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-sliceSize,0) ) ) ) ) return 8;
-                      if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+sliceSize,0) ) ) ) ) return 9;
+                      if( connectivity == CONNECTIVITY_6 )
+                      {
+                          // test neighbourhood connections
+                          if( x>0 && ( ( cimgl.get_vector_at(x-1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-1,0) ) ) ) ) return 4;
+                          if( (unsigned)x<flatImg.getDimensions()[0]-1 && ( ( cimgl.get_vector_at(x+1,y,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+1,0) ) ) ) ) return 4;
+                          if( y>0 && ( ( cimgl.get_vector_at(x,y-1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-dimension[DIMENSION_X],0) ) ) ) ) return 4;
+                          if( (unsigned)y<flatImg.getDimensions()[1]-1 && ( ( cimgl.get_vector_at(x,y+1,z).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+dimension[DIMENSION_X],0) ) ) ) ) return 4;
+                          if( z>0 && ( ( cimgl.get_vector_at(x,y,z-1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d-sliceSize,0) ) ) ) ) return 4;
+                          if( (unsigned)z<flatImg.getDimensions()[2]-1 && ( ( cimgl.get_vector_at(x,y,z+1).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(index1d+sliceSize,0) ) ) ) ) return 4;
+                      }
+                      else // CONNECTIVITY_26
+                      {
+                          for( int gx = -1 ; gx <= 1 ; ++gx )
+                          {
+                              if( x+gx<0 || x+gx>(int)dimension[DIMENSION_X]-1 ) continue;
+                              for( int gy = -1 ; gy <= 1 ; ++gy )
+                              {
+                                  if( y+gy<0 || y+gy>(int)dimension[DIMENSION_Y]-1 ) continue;
+                                  for( int gz = -1 ; gz <= 1 ; ++gz )
+                                  {
+                                      if( z+gz<0 || z+gz>(int)dimension[DIMENSION_Z]-1 ) continue;
+                                      if( !gx && !gy && !gz ) continue; // do not test with itself
+
+                                      const NeighbourOffset no( gx, gy, gz );
+
+                                      const unsigned neighbourIndex = getNeighbourIndex( no, index1d );
+
+                                      if( ( cimgl.get_vector_at(x+gx,y+gy,z+gz).magnitude(1)==0 ) == ( voxels[0].isNeighbour( VoxelIndex(neighbourIndex,0) ) ) ) return 4;
+                                  }
+                              }
+                          }
+                      }
                   }
               }
         }

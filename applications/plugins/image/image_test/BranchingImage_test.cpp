@@ -20,7 +20,7 @@ namespace fixture {
       sofa::helper::RandomGenerator randomGenerator;
 
       ImageTypes flatImage, flatImage2;
-      BranchingImageTypes branchingImage, branchingImage2;
+      BranchingImageTypes branchingImage6, branchingImage26, branchingImage2;
 
       BranchingImageFixture()
       {
@@ -37,12 +37,13 @@ namespace fixture {
                   flatImage.getCImg(l)(x,y,z,c) = randomGenerator.random<T>( -1000, 1000 );
 
           // convert the flat image to a sparse branching image
-          branchingImage = flatImage;
+          branchingImage6.fromImage( flatImage, sofa::defaulttype::CONNECTIVITY_6 );
+          branchingImage26.fromImage( flatImage, sofa::defaulttype::CONNECTIVITY_26 );
 
           // cloning
-          branchingImage2 = branchingImage;
+          branchingImage2 = branchingImage6;
 
-          branchingImage.toImage( flatImage2, 0 );
+          branchingImage6.toImage( flatImage2, 0 );
       }
 
       ~BranchingImageFixture()

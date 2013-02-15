@@ -443,12 +443,14 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
         const typename ImageSampler::ImageTypes::Dimension& dim = in->getDimension();
 
 
+
         unsigned index1d = 0;
 
         {
-        std::map< unsigned, std::map<unsigned, unsigned> > hindices; // for each index1d, for each superimposed offset -> hexa index
+        std::map< unsigned, std::map<unsigned, unsigned> > hindices; // for each superimposed voxel (index1d,offset) -> hexa index
 
-        // first add hexa with linked vertex
+        {
+        // add hexa with independant vertices
         unsigned indexVertex = 0;
         for( unsigned z=0 ; z<dim[ImageSampler::ImageTypes::DIMENSION_Z] ; ++z )
         for( unsigned y=0 ; y<dim[ImageSampler::ImageTypes::DIMENSION_Y] ; ++y )
@@ -458,8 +460,21 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
             {
                 h.push_back( Hexa( indexVertex, indexVertex+1, indexVertex+2, indexVertex+3, indexVertex+4, indexVertex+5, indexVertex+6, indexVertex+7 ) );
                 indexVertex += 8;
-                Hexa& hexa = h[h.size()-1];
                 hindices[index1d][v] = h.size()-1;
+            }
+            ++index1d;
+        }
+        }
+
+        // link vertices
+        index1d = 0;
+        for( unsigned z=0 ; z<dim[ImageSampler::ImageTypes::DIMENSION_Z] ; ++z )
+        for( unsigned y=0 ; y<dim[ImageSampler::ImageTypes::DIMENSION_Y] ; ++y )
+        for( unsigned x=0 ; x<dim[ImageSampler::ImageTypes::DIMENSION_X] ; ++x )
+        {
+            for( unsigned v=0 ; v<inimg[index1d].size() ; ++v )
+            {
+                Hexa& hexa = h[hindices[index1d][v]];
 
                 for( unsigned n=0 ; n<inimg[index1d][v].neighbours.size() ; ++n )
                 {
@@ -521,7 +536,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                     mergeVertexIndex( h, hexa[3], neighbor[1] );
                                     mergeVertexIndex( h, hexa[7], neighbor[5] );
                                 }
-                                if( dir[2]==-1 ) // BACK
+                                else if( dir[2]==-1 ) // BACK
                                 {
                                     assert( dir[1]==0 );
                                     mergeVertexIndex( h, hexa[0], neighbor[5] );
@@ -549,7 +564,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
 //                                    mergeVertexIndex( h, hexa[2], neighbor[0] );
 //                                    mergeVertexIndex( h, hexa[6], neighbor[4] );
                                 }
-                                if( dir[2]==-1 ) // BACK
+                                else if( dir[2]==-1 ) // BACK
                                 {
                                     assert( dir[1]==0 );
 //                                    mergeVertexIndex( h, hexa[1], neighbor[4] );
@@ -573,14 +588,11 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 {
                                     if( dir[2]==-1 ) // BACK
                                     {
-                                        assert( dir[1]==0 );
                                         mergeVertexIndex( h, hexa[0], neighbor[7] );
                                         mergeVertexIndex( h, hexa[1], neighbor[6] );
                                     }
                                     else // FRONT
                                     {
-                                        assert( dir[2]==1 );
-                                        assert( dir[1]==0 );
                                         mergeVertexIndex( h, hexa[4], neighbor[3] );
                                         mergeVertexIndex( h, hexa[5], neighbor[2] );
                                     }
@@ -589,14 +601,11 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
                                 {
                                     if( dir[2]==-1 ) // BACK
                                     {
-                                        assert( dir[1]==0 );
 //                                        mergeVertexIndex( h, hexa[2], neighbor[5] );
 //                                        mergeVertexIndex( h, hexa[3], neighbor[4] );
                                     }
                                     else // FRONT
                                     {
-                                        assert( dir[2]==1 );
-                                        assert( dir[1]==0 );
                                         mergeVertexIndex( h, hexa[6], neighbor[1] );
                                         mergeVertexIndex( h, hexa[7], neighbor[0] );
                                     }
@@ -811,6 +820,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
     template<class Hexas>
     static void mergeVertexIndex( Hexas& h, unsigned index0, unsigned index1 )
     {
+        if( index0==index1 ) return;
         for( unsigned i=0 ; i<h.size() ; ++i )
         for( unsigned j=0 ; j<8 ; ++j )
         {
