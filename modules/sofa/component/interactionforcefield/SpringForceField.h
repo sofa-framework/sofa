@@ -206,7 +206,7 @@ public:
 
     virtual bool useMask() const ;
 
-    /// initialization to export kinetic and potential energy to gnuplot files format
+    /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
     virtual void initGnuplot(const std::string path);
 
     /// export kinetic and potential energy state at "time" to a gnuplot file

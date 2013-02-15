@@ -138,7 +138,9 @@ public:
     virtual void addinvMsToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addinvMsToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
-    virtual void addinvMsAndinvMpToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/, defaulttype::BaseVector* /*vector2*/ /*vector*/ )
+    virtual void addinvMsAndinvMpsToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/,
+                                           defaulttype::BaseVector* /*vector2*/, defaulttype::BaseVector* /*vector3*/,
+                                           defaulttype::BaseVector* /*vector4*/  )
     {std::cerr << "addinvMsAndinvMpToVector : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
     /// Add S contribution to global Vector assembling
@@ -152,6 +154,19 @@ public:
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     virtual void addinvMToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {std::cerr << "addinvMToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
+    /// @}
+
+    virtual void addRhoToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    {std::cerr << "addRhoToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
+    /// @}
+    virtual void addPhiToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    {std::cerr << "addPhiToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
+    /// @}
+    virtual void addPhipToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    {std::cerr << "addPhipToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
+    /// @}
+    virtual void addRhopToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    {std::cerr << "addPhipToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
     /// @}
 
 };
