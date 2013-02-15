@@ -707,8 +707,11 @@ public:
         dist.resize( neighbours.size() );
         for( unsigned n = 0 ; n < neighbours.size() ; ++n )
         {
-            // TODO correct that, should we use a chamfer distance?
-            dist[n] = voxelsize(0);
+            NeighbourOffset dir = getDirection( index.index1d, neighbours[n].index1d );
+
+            Vec3d diff( abs(dir[0])*voxelsize[0], abs(dir[1])*voxelsize[1], abs(dir[2])*voxelsize[2] );
+
+            dist[n] = diff.norm();
         }
         return voxel.neighbours;
     }
