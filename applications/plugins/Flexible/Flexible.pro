@@ -38,6 +38,7 @@ SOURCES = initFlexible.cpp \
     #material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
     #forceField/FlexibleTetrahedronFEMForceField.cpp
+    forceField/FlexibleForceField.cpp
 
 
 
