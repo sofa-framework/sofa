@@ -18,7 +18,8 @@ HEADERS += initGraphComponent.h \
            contextobject/Gravity.h \
            misc/PauseAnimation.h \
            misc/PauseAnimationOnEvent.h \
-           misc/RequiredPlugin.h
+           misc/RequiredPlugin.h \
+           configurationsetting/AdaptativeAttachButtonSetting.h
 
 SOURCES += initGraphComponent.cpp \
            configurationsetting/AddFrameButtonSetting.cpp \
@@ -33,7 +34,8 @@ SOURCES += initGraphComponent.cpp \
            contextobject/Gravity.cpp \
            misc/PauseAnimation.cpp \
            misc/PauseAnimationOnEvent.cpp \
-           misc/RequiredPlugin.cpp
+           misc/RequiredPlugin.cpp \
+           configurationsetting/AdaptativeAttachButtonSetting.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

@@ -459,7 +459,6 @@ simulation::Visitor::Result ComplianceSolver::MatrixAssemblyVisitor::doSystemAss
     // ==== mass
     if (node->mass ){
         scoped::timer step("local M");
-
         // TODO: better way to fill the mass matrix
         typedef linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
         Sqmat sqmat(node->mechanicalState->getMatrixSize(),node->mechanicalState->getMatrixSize());

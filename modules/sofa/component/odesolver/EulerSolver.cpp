@@ -32,7 +32,7 @@
 #include <sofa/core/behavior/MultiVec.h>
 #include <math.h>
 #include <iostream>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 //#define SOFA_NO_VMULTIOP
 
@@ -80,9 +80,13 @@ void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doubl
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
     mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
     mop.computeForce(f);
+    sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
 
+    sofa::helper::AdvancedTimer::stepBegin("AccFromF");
     mop.accFromF(acc, f);
+    sofa::helper::AdvancedTimer::stepEnd("AccFromF");
     mop.projectResponse(acc);
 
     mop.solveConstraint(acc, core::ConstraintParams::ACC);

@@ -42,7 +42,8 @@ HEADERS += initUserInteraction.h \
            collision/AddFramePerformer.inl \
     controller/MechanicalStateControllerOmni.h \
 	controller/MechanicalStateControllerOmni.inl \
-    controller/NodeToggleController.h
+    controller/NodeToggleController.h \
+    collision/AdaptativeAttachPerformer.h
 
 
 SOURCES += initUserInteraction.cpp \
@@ -70,7 +71,9 @@ SOURCES += initUserInteraction.cpp \
            collision/CuttingPoint.cpp \
            collision/AddFramePerformer.cpp \
     controller/MechanicalStateControllerOmni.cpp \
-    controller/NodeToggleController.cpp
+    controller/NodeToggleController.cpp \
+    collision/AdaptativeAttachPerformer.cpp \
+    collision/AdaptativeAttachPerformer.inl
 
 
 # Make sure there are no cross-dependencies

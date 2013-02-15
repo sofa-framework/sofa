@@ -402,6 +402,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
     {
         if (m_gnuplotFileEnergy != NULL)
         {
+            m_gnuplotFileEnergy->close();
             delete m_gnuplotFileEnergy;
         }
         m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_PotentialEnergy.txt").c_str() );
