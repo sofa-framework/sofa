@@ -34,6 +34,7 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/visualmodel/ColorMap.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -140,6 +141,11 @@ protected:
     /// Vector of material stiffness of each tetrahedron
     typedef vector<MaterialStiffness> VecMaterialStiffness;
     typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
+
+    /// structures used to compute vonMises stress
+    typedef Mat<4, 4, Real> Mat44;
+    typedef Mat<3, 3, Real> Mat33;
+    typedef Mat<4, 3, Real> Mat43;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
@@ -254,8 +260,29 @@ public:
     Data< bool > drawHeterogeneousTetra;
     Data< bool > drawAsEdges;
 
-    Real minYoung;
-    Real maxYoung;
+    Real minYoung, maxYoung;
+
+    /// to compute vonMises stress for visualization
+    /// two options: either using corotational strain (TODO)
+    ///              or full Green strain tensor (which must be therefore computed for each element and requires some pre-calculations in reinit)
+
+    helper::vector<Real> elemLambda;
+    helper::vector<Real> elemMu;
+    helper::vector<Mat44> elemShapeFun;
+
+    Real prevMaxStress;
+
+
+    Data<int> _computeVonMisesStress;
+    Data<helper::vector<Real> > _vonMises;
+
+    visualmodel::ColorMap::SPtr _showStressColorMapReal;
+    Data<std::string> _showStressColorMap;
+
+    helper::vector<Vec<6,Real> > elemDisplacements;
+
+    bool updateVonMisesStress;
+
 protected:
     TetrahedronFEMForceField()
         : _mesh(NULL)
@@ -275,6 +302,10 @@ protected:
         , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
         , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
+        , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
+        , _vonMises(initData(&_vonMises, "vonMises", "Von Mises Stress"))
+        , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+        , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
     {
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");
@@ -374,7 +405,7 @@ protected:
 
 
     void computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J );
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );        
 
 
     ////////////// small displacements method
@@ -406,6 +437,8 @@ protected:
     {
         needUpdateTopology = true;
     }
+
+    void computeVonMisesStress();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)

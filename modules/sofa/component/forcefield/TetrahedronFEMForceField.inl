@@ -279,6 +279,13 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     materialsStiffnesses[i][3][3] = materialsStiffnesses[i][4][4] = materialsStiffnesses[i][5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
     materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
+
+    if (_computeVonMisesStress.getValue() == 2) {
+        elemLambda[i] = materialsStiffnesses[i][0][1];
+        elemMu[i] = materialsStiffnesses[i][3][3];
+    }
+
+
     /*Real gamma = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
     Real 		mu2 = youngModulus / (1+poissonRatio);
     materialsStiffnesses[i][0][3] = materialsStiffnesses[i][0][4] =	materialsStiffnesses[i][0][5] = 0;
@@ -1467,6 +1474,19 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         _stiffnesses.resize( _initialPoints.getValue().size()*3 );
     }
 
+    /// initialization of structures for vonMises stress computations
+    if (_computeVonMisesStress.getValue() > 0) {
+        elemLambda.resize( _indexedElements->size() );
+        elemMu.resize( _indexedElements->size() );
+
+        helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
+        vM.resize(_indexedElements->size());
+
+        _showStressColorMapReal->initOld(_showStressColorMap.getValue());
+        prevMaxStress = -1.0;
+        updateVonMisesStress = true;
+    }
+
     unsigned int i;
     typename VecElement::const_iterator it;
     switch(method)
@@ -1542,6 +1562,29 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         break;
     }
     }
+
+    if (_computeVonMisesStress.getValue() == 1)
+        elemDisplacements.resize(  _indexedElements->size() );
+
+
+    if (_computeVonMisesStress.getValue() == 2) {
+        helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
+
+        elemShapeFun.resize(_indexedElements->size());
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            Mat44 matVert;
+
+            for (size_t k = 0; k < 4; k++) {
+                Index ix = (*it)[k];
+                matVert[k][0] = 1.0;
+                for (size_t l = 1; l < 4; l++)
+                    matVert[k][l] = X0[ix][l-1];
+            }
+
+            invertMatrix(elemShapeFun[i], matVert);
+        }
+    }
 }
 
 
@@ -1597,9 +1640,10 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
         }
         break;
     }
-    }
-
+    }   
     d_f.endEdit();
+
+    updateVonMisesStress = true;
 }
 
 template<class DataTypes>
@@ -1657,6 +1701,26 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const bool heterogeneous = (drawHeterogeneousTetra.getValue() && minYoung!=maxYoung);
 
     const VecReal & youngModulus = _youngModulus.getValue();
+
+    /// vonMises stress
+    Real minVM = 1e20, maxVM = -1e20;
+    helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
+    if (_computeVonMisesStress.getValue() > 0) {
+        if (updateVonMisesStress)
+            computeVonMisesStress();
+
+        for (size_t i = 0; i < vM.size(); i++) {
+            minVM = (vM[i] < minVM) ? vM[i] : minVM;
+            maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
+        }
+
+        if (maxVM < prevMaxStress)
+            maxVM = prevMaxStress;
+
+        //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
+    }
+
+
     vparams->drawTool()->setLightingEnabled(false);
     if (edges)
     {
@@ -1705,10 +1769,21 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawLines(points[2],1,color4 );
 
                 for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+            } else {
+                if (_computeVonMisesStress.getValue() > 0) {
+                    visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
+                    Vec4f col = evalColor(helper::rabs(vM[i]));
+
+                    vparams->drawTool()->drawLines(points[0],1,col );
+                    vparams->drawTool()->drawLines(points[1],1,col );
+                    vparams->drawTool()->drawLines(points[2],1,col );
+
+                    for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+                }
             }
         }
 
-        if(!heterogeneous)
+        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
             vparams->drawTool()->drawLines(points[0], 1, Vec<4,float>(0.0,0.5,1.0,1.0));
             vparams->drawTool()->drawLines(points[1], 1, Vec<4,float>(0.0,1.0,1.0,1.0));
@@ -1766,11 +1841,23 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 vparams->drawTool()->drawTriangles(points[2],color3 );
                 vparams->drawTool()->drawTriangles(points[3],color4 );
 
-                for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+                for(unsigned int i=0 ; i<4 ; i++) points[i].clear();            
+            } else {
+                if (_computeVonMisesStress.getValue() > 0) {
+                    visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
+                    Vec4f col = evalColor(helper::rabs(vM[i]));
+
+                    vparams->drawTool()->drawTriangles(points[0],col);
+                    vparams->drawTool()->drawTriangles(points[1],col);
+                    vparams->drawTool()->drawTriangles(points[2],col);
+                    vparams->drawTool()->drawTriangles(points[3],col);
+                    for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+                }
             }
+
         }
 
-        if(!heterogeneous)
+        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
             vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
             vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
@@ -2112,6 +2199,87 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
             }
         }
 
+    }
+}
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
+{
+
+    typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
+    this->getContext()->get(mechanicalObject);
+    const VecCoord& X = *mechanicalObject->getX();
+
+    helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
+
+
+    VecCoord U;
+    U.resize(X.size());
+    for (size_t i = 0; i < X0.size(); i++)
+        U[i] = X[i] - X0[i];
+
+    //std::cout << "Displ = " << U << std::endl;
+
+    typename VecElement::const_iterator it;
+    size_t el;
+
+    for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
+    {
+        Vec<6,Real> vStrain;
+
+        if (_computeVonMisesStress.getValue() == 2) {
+            Mat44& shf = elemShapeFun[el];
+
+            /// compute gradU
+            Mat33 gradU;
+            for (size_t k = 0; k < 3; k++) {
+                for (size_t l = 0; l < 3; l++)  {
+                    gradU[k][l] = 0.0;
+                    for (size_t m = 0; m < 4; m++)
+                        gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
+                }
+            }
+            //std::cout << "gradU = " << gradU<< std::endl;
+
+            Mat33 strain = 0.5*(gradU + gradU.transposed() + gradU.transposed()*gradU);
+
+            for (size_t i = 0; i < 3; i++)
+                vStrain[i] = strain[i][i];
+            vStrain[3] = strain[1][2];
+            vStrain[4] = strain[0][2];
+            vStrain[5] = strain[0][1];
+        }
+
+        if (_computeVonMisesStress.getValue() == 1) { /// TODO: real corotational strain
+            //vStrain = elemStrains[el];
+        }
+
+        Real lambda=elemLambda[el];
+        Real mu = elemMu[el];
+
+        /// stress
+        VoigtTensor s;
+
+        Real traceStrain = 0.0;
+        for (size_t k = 0; k < 3; k++) {
+            traceStrain += vStrain[k];
+            s[k] = vStrain[k]*2*mu;
+        }
+
+        for (size_t k = 3; k < 6; k++)
+            s[k] = vStrain[k]*2*mu;
+
+        for (size_t k = 0; k < 3; k++)
+            s[k] += lambda*traceStrain;
+
+        //std::cout << "Stress: " << s << std::endl;
+
+        helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
+        vM[el] = helper::rsqrt(s[0]*s[0] + s[1]*s[1] + s[2]*s[2] - s[0]*s[1] - s[1]*s[2] - s[2]*s[0] + 3*s[3]*s[3] + 3*s[4]*s[4] + 3*s[5]*s[5]);
+
+        updateVonMisesStress=false;
+
+        //std::cout << "Mises: " << vM[el] << std::endl;
     }
 }
 
