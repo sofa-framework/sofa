@@ -275,7 +275,11 @@ public:
 
         /// accessor
         /// @warning index must be less than the spectrum
-        T& operator [] (size_t index) const
+        const T& operator [] (size_t index) const
+        {
+            return value[ index ];
+        }
+        T& operator [] (size_t index)
         {
             return value[ index ];
         }
@@ -960,6 +964,259 @@ public:
               }
         }
         return 0;
+    }
+
+
+
+
+    template<typename F>
+    bool save( const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, const F *const offsetT=0, const F *const scaleT=0, const bool *const isPerspective=0 ) const
+    {
+        if( !dimension[DIMENSION_T] ) return false;
+
+        std::ofstream fileStream (headerFilename, std::ofstream::out);
+        if (!fileStream.is_open())	{	std::cout << "Can not open " << headerFilename << std::endl;	return false; }
+
+        fileStream << "ObjectType = BranchingImage" << std::endl;
+
+        unsigned int nbdims=(dimension[DIMENSION_Z]==1)?3:4; //  for 2-d, we still need z scale dimension
+
+        fileStream << "NDims = " << nbdims << std::endl;
+
+        fileStream << "ElementNumberOfChannels = " << dimension[DIMENSION_S] << std::endl;
+
+        fileStream << "DimSize = "; for(unsigned int i=0;i<nbdims;i++) fileStream << dimension[i] << " "; fileStream << std::endl;
+
+        fileStream << "ElementType = ";
+        if(!strcmp(cimg::type<T>::string(),"char")) fileStream << "MET_CHAR" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"double")) fileStream << "MET_DOUBLE" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"float")) fileStream << "MET_FLOAT" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"int")) fileStream << "MET_INT" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"long")) fileStream << "MET_LONG" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"short")) fileStream << "MET_SHORT" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"unsigned char")) fileStream << "MET_UCHAR" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"unsigned int")) fileStream << "MET_UINT" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"unsigned long")) fileStream << "MET_ULONG" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"unsigned short")) fileStream << "MET_USHORT" << std::endl;
+        else if(!strcmp(cimg::type<T>::string(),"bool")) fileStream << "MET_BOOL" << std::endl;
+        else fileStream << "MET_UNKNOWN" << std::endl;
+
+        if(scale) { fileStream << "ElementSpacing = "; for(unsigned int i=0;i<3;i++) fileStream << scale[i] << " "; if(nbdims==4) fileStream << scaleT; fileStream << std::endl; }
+
+        if(translation) { fileStream << "Position = "; for(unsigned int i=0;i<3;i++) fileStream << translation[i] << " "; if(nbdims==4) fileStream << offsetT; fileStream << std::endl; }
+
+        if(affine) { fileStream << "Orientation = "; for(unsigned int i=0;i<9;i++) fileStream << affine[i] << " "; fileStream << std::endl; }
+
+        if(isPerspective) { fileStream << "isPerpective = " << *isPerspective << std::endl; }
+
+        std::string imageFilename(headerFilename); imageFilename.replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"bia");
+        fileStream << "ElementDataFile = " << imageFilename.c_str() << std::endl;
+        fileStream.close();
+
+
+        fileStream.open( imageFilename.c_str(), std::ofstream::out );
+        if( !fileStream.is_open() ) { std::cout << "Can not open " << imageFilename << std::endl; return false; }
+
+        // each line corresponds to a superimposed voxel list
+        // each superimposed voxel is separated by #
+        // the end of list is given by }
+        // a superimposed has a double for each channels and a list of neighbours stored as 2 unsigned (index, offset)
+
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        {
+            unsigned index1d = 0;
+            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            {
+                for( unsigned v=0 ; v<imgList[t][index1d].size() ; ++v )
+                {
+                    for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                        fileStream << (double)imgList[t][index1d][v][s] << " ";
+
+                    for( unsigned n=0 ; n<imgList[t][index1d][v].neighbours.size() ; ++n )
+                    {
+                        const VoxelIndex& vi = imgList[t][index1d][v].neighbours[n];
+                        fileStream << vi.index1d << " " << vi.offset << " ";
+                    }
+
+                    if( v!=imgList[t][index1d].size()-1 ) fileStream << "#";
+                }
+                fileStream << "}";
+                fileStream << std::endl;
+                ++index1d;
+            }
+        }
+
+        fileStream.close();
+        return true;
+    }
+
+
+    template<typename F>
+    bool load( const char *const headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, bool *const isPerspective=0 )
+    {
+        std::ifstream fileStream(headerFilename, std::ifstream::in);
+        if (!fileStream.is_open())	{ std::cout << "Can not open " << headerFilename << std::endl; clear(); return false; }
+
+        std::string str,str2,imageFilename;
+        unsigned int nbchannels=1,nbdims=4,dim[] = {1,1,1,1}; // 3 spatial dimas + time
+        std::string inputType(cimg::type<T>::string());
+        while(!fileStream.eof())
+        {
+            fileStream >> str;
+
+            if(!str.compare("ObjectType"))
+            {
+                fileStream >> str2; // '='
+                fileStream >> str2;
+                if(str2.compare("BranchingImage")) { std::cout << "BranchingImage::load: not a BranchingImage ObjectType "<<std::endl; clear(); return false;}
+            }
+            else if(!str.compare("ElementDataFile"))
+            {
+                fileStream >> str2; // '='
+                fileStream >> imageFilename;
+            }
+            else if(!str.compare("NDims"))
+            {
+                fileStream >> str2;  // '='
+                fileStream >> nbdims;
+                if(nbdims>4) { std::cout << "BranchingImage::load: dimensions > 4 not supported  "<<std::endl; clear(); return false;}
+            }
+            else if(!str.compare("ElementNumberOfChannels"))
+            {
+                fileStream >> str2;  // '='
+                fileStream >> nbchannels;
+            }
+            else if(!str.compare("DimSize") || !str.compare("dimensions") || !str.compare("dim"))
+            {
+                fileStream >> str2;  // '='
+                for(unsigned int i=0;i<nbdims;i++) fileStream >> dim[i];
+            }
+            else if(!str.compare("ElementSpacing") || !str.compare("spacing") || !str.compare("scale3d") || !str.compare("voxelSize"))
+            {
+                fileStream >> str2; // '='
+                double val[4];
+                for(unsigned int i=0;i<nbdims;i++) fileStream >> val[i];
+                if(scale) for(unsigned int i=0;i<3;i++) if(i<nbdims) scale[i] = (F)val[i];
+                if(scaleT) if(nbdims>3) *scaleT = (F)val[3];
+           }
+            else if(!str.compare("Position") || !str.compare("Offset") || !str.compare("translation") || !str.compare("origin"))
+            {
+                fileStream >> str2; // '='
+                double val[4];
+                for(unsigned int i=0;i<nbdims;i++) fileStream >> val[i];
+                if(translation) for(unsigned int i=0;i<3;i++) if(i<nbdims) translation[i] = (F)val[i];
+                if(offsetT) if(nbdims>3) *offsetT = (F)val[3];
+            }
+            else if(!str.compare("Orientation"))
+            {
+                fileStream >> str2; // '='
+                double val[4*4];
+                for(unsigned int i=0;i<nbdims*nbdims;i++) fileStream >> val[i];
+                if(affine) { for(unsigned int i=0;i<3;i++) if(i<nbdims) for(unsigned int j=0;j<3;j++) if(j<nbdims) affine[i*3+j] = (F)val[i*nbdims+j]; }
+                // to do: handle "CenterOfRotation" Tag
+            }
+            else if(!str.compare("isPerpective")) { fileStream >> str2; bool val; fileStream >> val; if(isPerspective) *isPerspective=val; }
+            else if(!str.compare("ElementType") || !str.compare("voxelType"))  // not used (should be known in advance for template)
+            {
+                fileStream >> str2; // '='
+                fileStream >> str2;
+
+                if(!str2.compare("MET_CHAR"))           inputType=std::string("char");
+                else if(!str2.compare("MET_DOUBLE"))    inputType=std::string("double");
+                else if(!str2.compare("MET_FLOAT"))     inputType=std::string("float");
+                else if(!str2.compare("MET_INT"))       inputType=std::string("int");
+                else if(!str2.compare("MET_LONG"))      inputType=std::string("long");
+                else if(!str2.compare("MET_SHORT"))     inputType=std::string("short");
+                else if(!str2.compare("MET_UCHAR"))     inputType=std::string("unsigned char");
+                else if(!str2.compare("MET_UINT"))      inputType=std::string("unsigned int");
+                else if(!str2.compare("MET_ULONG"))     inputType=std::string("unsigned long");
+                else if(!str2.compare("MET_USHORT"))    inputType=std::string("unsigned short");
+                else if(!str2.compare("MET_BOOL"))      inputType=std::string("bool");
+
+                if(inputType!=std::string(cimg::type<T>::string()))
+                {
+                    std::cout<<"BranchingImage::load: BranchingImage type ( "<< str2 <<" ) is different from "<< cimg::type<T>::string() <<" ) - no conversion available"<<std::endl;
+                    clear();
+                    return false;
+                }
+            }
+        }
+        fileStream.close();
+
+        if(!imageFilename.size()) // no specified file name -> replace .mhd by .bia
+        {
+            imageFilename = std::string(headerFilename);
+            imageFilename .replace(imageFilename.find_last_of('.')+1,imageFilename.size(),"bia");
+        }
+        else // add path to the specified file name
+        {
+            std::string tmp(headerFilename);
+            std::size_t pos=tmp.find_last_of('/');
+            if(pos==std::string::npos) pos=tmp.find_last_of('\\');
+            if(pos!=std::string::npos) {tmp.erase(pos+1); imageFilename.insert(0,tmp);}
+        }
+
+        fileStream.open( imageFilename.c_str(), std::ifstream::in );
+        if( !fileStream.is_open() ) { std::cout << "Can not open " << imageFilename << std::endl; clear(); return false; }
+
+        setDimension( Dimension( dim[0], dim[1], dim[2], nbchannels, dim[3] ) );
+
+        for( unsigned t=0 ; t<dimension[DIMENSION_T] ; ++t )
+        {
+            unsigned index1d = 0;
+            for( unsigned x=0 ; x<dimension[DIMENSION_X] ; ++x )
+            for( unsigned y=0 ; y<dimension[DIMENSION_Y] ; ++y )
+            for( unsigned z=0 ; z<dimension[DIMENSION_Z] ; ++z )
+            {
+
+                char symbol;
+                fileStream >> symbol;
+                while( symbol != '}' ) // end of superimposed voxels
+                {
+                    fileStream.seekg( -1, std::ifstream::cur ); // unread symbol
+
+                    ConnectionVoxel cv( dimension[DIMENSION_S] );
+
+                    for( unsigned s=0 ; s<dimension[DIMENSION_S] ; ++s )
+                    {
+                        double c;
+                        fileStream >> c;
+                        cv[s] = (T)c;
+
+//                        std::cerr<<(T)c<<",";
+                    }
+//                    std::cerr<<"-";
+                    fileStream >> symbol;
+                    while( symbol != '#' && symbol != '}' ) // end of neighbours
+                    {
+                        fileStream.seekg( -1, std::ifstream::cur ); // unread symbol
+
+                        unsigned index, offset;
+                        fileStream >> index;
+                        fileStream >> offset;
+                        cv.addNeighbour( VoxelIndex( index, offset ) );
+
+//                        std::cerr<<index<<"/"<<offset<<",";
+
+                        fileStream >> symbol;
+                    }
+
+                    imgList[t][index1d].push_back( cv, dimension[DIMENSION_S] );
+
+//                    std::cerr<<"#";
+                }
+
+//                std::cerr<<std::endl;
+
+                ++index1d;
+            }
+        }
+
+        fileStream.close();
+
+        return true;
     }
 
 

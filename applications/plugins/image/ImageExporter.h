@@ -28,6 +28,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "BranchingImage.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -56,9 +57,157 @@ using namespace cimg_library;
 using defaulttype::Vec;
 using defaulttype::Mat;
 
+
+
+
+
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct ImageExporterSpecialization
+{
+};
+
+
+/// Specialization for regular Image
+template <>
+struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+    template<class ImageExporter>
+    static void init( ImageExporter& /*exporter*/ )
+    {
+    }
+
+    template<class ImageExporter>
+    static bool write( ImageExporter& exporter )
+    {
+        typedef typename ImageExporter::Real Real;
+        typedef typename ImageExporter::T T;
+
+        if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
+        std::string fname(exporter.m_filename.getFullPath());
+
+        typename ImageExporter::raImage rimage(exporter.image);
+        typename ImageExporter::raTransform rtransform(exporter.transform);
+        if (!rimage->getCImgList()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+
+        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+           || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+        {
+            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+
+            double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
+            double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
+            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
+            Mat<3,3,Real> R;  q.toMatrix(R);
+            double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
+            double offsetT=(double)rtransform->getOffsetT();
+            double scaleT=(double)rtransform->getScaleT();
+            bool isPerspective=rtransform->isPerspective();
+            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective);
+        }
+        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
+        {
+            // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
+            std::ofstream fileStream (fname.c_str(), std::ofstream::out);
+            if (!fileStream.is_open()) { exporter.serr << "GridMaterial, Can not open " << fname << exporter.sendl; return false; }
+            fileStream << "voxelType: " << CImg<T>::pixel_type() << std::endl;
+            fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
+            fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;
+            fileStream << "voxelSize: " << rtransform->getScale()[0] << " " << rtransform->getScale()[1]<< " " << rtransform->getScale()[2]<< std::endl;
+            fileStream.close();
+            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
+            CImg<unsigned char> ucimg = rimage->getCImg(exporter.time);
+            ucimg.save_raw(imgName.c_str());
+        }
+        else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+            rimage->getCImgList().save_cimg(fname.c_str());
+        else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
+            rimage->getCImgList().save_ffmpeg(fname.c_str());
+        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+        {
+            float voxsize[3];
+            for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
+            rimage->getCImg(exporter.time).save_analyze(fname.c_str(),voxsize);
+        }
+        else if (fname.find(".inr")!=std::string::npos)
+        {
+            float voxsize[3];
+            for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
+            rimage->getCImg(exporter.time).save_inr(fname.c_str(),voxsize);
+        }
+        else rimage->getCImg(exporter.time).save(fname.c_str());
+
+        exporter.sout << "Saved image " << fname <<" ("<< rimage->getCImg(exporter.time).pixel_type() <<")"  << exporter.sendl;
+
+        return true;
+    }
+
+};
+
+
+/// Specialization for BranchingImage
+template <>
+struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
+{
+    template<class ImageExporter>
+    static void init( ImageExporter& exporter )
+    {
+        exporter.addAlias( &exporter.image, "outputBranchingImage" );
+        exporter.addAlias( &exporter.image, "branchingImage" );
+    }
+
+    template<class ImageExporter>
+    static bool write( ImageExporter& exporter )
+    {
+        typedef typename ImageExporter::ImageTypes ImageTypes;
+        typedef typename ImageExporter::Real Real;
+        typedef typename ImageExporter::T T;
+
+        if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
+        std::string fname(exporter.m_filename.getFullPath());
+
+        typename ImageExporter::raImage rimage(exporter.image);
+        typename ImageExporter::raTransform rtransform(exporter.transform);
+        if (!rimage->dimension[ImageTypes::DIMENSION_T]) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+
+        // .BIA is for BranchingImageAscii (maybe some day there will be a .BIB, BranchingImageBinary)
+
+        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+           || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
+        {
+            if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+
+            double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
+            double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
+            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
+            Mat<3,3,Real> R;  q.toMatrix(R);
+            double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
+            double offsetT=(double)rtransform->getOffsetT();
+            double scaleT=(double)rtransform->getScaleT();
+            bool isPerspective=rtransform->isPerspective();
+
+            exporter.image.getValue().save( fname.c_str(), scale, translation, affine, &offsetT, &scaleT, &isPerspective );
+
+            exporter.sout << "Saved image " << fname << exporter.sendl;
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
+
+
+
 template <class _ImageTypes>
 class ImageExporter : public virtual core::objectmodel::BaseObject
 {
+    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
     typedef core::objectmodel::BaseObject Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(ImageExporter,_ImageTypes),Inherited);
@@ -103,6 +252,8 @@ public:
         image.setReadOnly(true);
         transform.setReadOnly(true);
         f_listening.setValue(true);
+
+        ImageExporterSpecialization<ImageTypes::label>::init( *this );
     }
 
     virtual ~ImageExporter() {}
@@ -113,68 +264,11 @@ public:
 
 protected:
 
+
     bool write()
     {
-        if (!this->m_filename.isSet()) { serr << "ImageExporter: file not set"<<name<<sendl; return false; }
-        std::string fname(this->m_filename.getFullPath());
-
-        raImage rimage(this->image);
-        raTransform rtransform(this->transform);
-        if (!rimage->getCImgList()) { serr << "ImageExporter: no image "<<name<<sendl; return false; }
-
-        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-           || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
-        {
-            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
-
-            double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
-            double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
-            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
-            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
-            Mat<3,3,Real> R;  q.toMatrix(R);
-            double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
-            double offsetT=(double)rtransform->getOffsetT();
-            double scaleT=(double)rtransform->getScaleT();
-            bool isPerspective=rtransform->isPerspective();
-            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective);
-        }
-        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
-        {
-            // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
-            std::ofstream fileStream (fname.c_str(), std::ofstream::out);
-            if (!fileStream.is_open()) { serr << "GridMaterial, Can not open " << fname << sendl; return false; }
-            fileStream << "voxelType: " << CImg<T>::pixel_type() << std::endl;
-            fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
-            fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;
-            fileStream << "voxelSize: " << rtransform->getScale()[0] << " " << rtransform->getScale()[1]<< " " << rtransform->getScale()[2]<< std::endl;
-            fileStream.close();
-            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-            CImg<unsigned char> ucimg = rimage->getCImg(this->time);
-            ucimg.save_raw(imgName.c_str());
-        }
-        else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-            rimage->getCImgList().save_cimg(fname.c_str());
-        else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
-            rimage->getCImgList().save_ffmpeg(fname.c_str());
-        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-        {
-            float voxsize[3];
-            for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
-            rimage->getCImg(this->time).save_analyze(fname.c_str(),voxsize);
-        }
-        else if (fname.find(".inr")!=std::string::npos)
-        {
-            float voxsize[3];
-            for(unsigned int i=0; i<3; i++) voxsize[i]=(float)rtransform->getScale()[i];
-            rimage->getCImg(this->time).save_inr(fname.c_str(),voxsize);
-        }
-        else rimage->getCImg(this->time).save(fname.c_str());
-
-        sout << "Saved image " << fname <<" ("<< rimage->getCImg(this->time).pixel_type() <<")"  << sendl;
-
-        return true;
+        return ImageExporterSpecialization<ImageTypes::label>::write( *this );
     }
-
 
 
     void handleEvent(sofa::core::objectmodel::Event *event)

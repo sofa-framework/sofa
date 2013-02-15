@@ -1,7 +1,20 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-  <ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -5 0 0 0 0 0.1 0.1 30 0 1 1" drawBB="false"/>
+  <ImageContainer  name="image" filename="test.raw" transform="-5 -5 0 0 0 0 0.1 0.1 30 0 1 1" drawBB="false"/>
   <ImageExporter name="writer" src="@image" filename="test.raw" exportAtBegin="true" />
   <ImageContainer  name="image2" filename="@writer.filename"/>
- <!-- <ImageViewer  name="viewer2" src="@image2" /> -->
+ <ImageViewer  name="viewer2" src="@image2" />
+ 
+ 
+  <ImageToBranchingImageConverter template="ImageUC,BranchingImageUC" name="converter" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="0" superimpositionType="0" printLog="true"/>
+  <BranchingImageContainer template="BranchingImageUC" name="branchingImage" branchingImage="@converter.branchingImage" transform="@converter.transform" drawBB="false"/>
+  <ImageExporter template="BranchingImageUC" name="writerbi" src="@branchingImage" filename="testbi.bia" exportAtBegin="true" />
+  <BranchingImageContainer template="BranchingImageUC" name="branchingImage2" filename="@writerbi.filename"/>
+  
+  <BranchingImageToImageConverter template="BranchingImageUC,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage2.branchingImage" conversionType="0" printLog="true"/>
+  <ImageContainer template="ImageUC" name="imagebi2" image="@imageConverter.image" transform="@branchingImage2.transform" drawBB="false"/>
+  <ImageViewer template="ImageUC" name="viewerbi2" src="@imagebi2"/>
+  
+  
+ 
 </Node>

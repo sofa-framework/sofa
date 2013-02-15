@@ -31,6 +31,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+
+
 namespace sofa
 {
 
@@ -42,6 +48,7 @@ namespace container
 
 using defaulttype::Vec;
 using defaulttype::Vector3;
+using defaulttype::Mat;
 
 /**
    * \brief This component is responsible for loading images
@@ -77,6 +84,9 @@ public:
 
     Data<bool> drawBB;
 
+    // input file
+    sofa::core::objectmodel::DataFileName m_filename;
+
     virtual std::string getTemplateName() const	{ return templateName(this); }
     static std::string templateName(const BranchingImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
@@ -84,6 +94,7 @@ public:
         , branchingImage(initData(&branchingImage,ImageTypes(),"branchingImage","BranchingImage"))
         , transform(initData(&transform, TransformType(), "transform" , "Transform"))
         , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
+        , m_filename(initData(&m_filename,"filename","BranchingImage file"))
     {
         this->addAlias(&branchingImage, "inputBranchingImage");
         this->addAlias(&transform, "inputTransform");
@@ -101,12 +112,62 @@ public:
 
     virtual void init()
     {
+        if( !branchingImage.getValue().dimension[ImageTypes::DIMENSION_T] && !load() )
+            serr << "no input image "<<sendl;
     }
 
 
 
 
 protected:
+
+
+    bool load()
+    {
+        if (!this->m_filename.isSet()) return false;
+
+        std::string fname( this->m_filename.getFullPath() );
+        if( !sofa::helper::system::DataRepository.findFile( fname ) )
+        {
+            serr << "cannot find "<<fname<<sendl;
+            return false;
+        }
+        fname = sofa::helper::system::DataRepository.getFile( fname );
+
+        if( fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+              || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
+        {
+            if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+
+            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+            bool isPerspective=false;
+
+            if( waImage( branchingImage )->load( fname.c_str(), scale, translation, affine, &offsetT, &scaleT, &isPerspective ) )
+            {
+                waTransform wtransform( transform );
+
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+                helper::Quater< Real > q; q.fromMatrix(R);
+                // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
+                if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+                if (!this->transform.isSet()) {
+                    wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getOffsetT()=(Real)offsetT;
+                    wtransform->getScaleT()=(Real)scaleT;
+                    wtransform->isPerspective()=isPerspective;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
 
     void getCorners(Vec<8,Vector3> &c) // get image corners
@@ -170,7 +231,6 @@ protected:
         glBegin(GL_LINE_LOOP);	glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]);	glEnd ();
         glBegin(GL_LINE_LOOP);	glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
         glBegin(GL_LINE_LOOP);	glVertex3d(c[2][0],c[2][1],c[2][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
-
 
         glPopMatrix ();
         glPopAttrib();
