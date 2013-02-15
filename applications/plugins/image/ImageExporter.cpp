@@ -56,6 +56,19 @@ int ImageExporterClass = core::RegisterObject("Save an image")
         .add<ImageExporter<ImageF> >()
         .add<ImageExporter<ImageB> >()
 #endif
+        .add<ImageExporter<BranchingImageUC> >()
+        .add<ImageExporter<BranchingImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageExporter<BranchingImageC> >()
+        .add<ImageExporter<BranchingImageI> >()
+        .add<ImageExporter<BranchingImageUI> >()
+        .add<ImageExporter<BranchingImageS> >()
+        .add<ImageExporter<BranchingImageUS> >()
+        .add<ImageExporter<BranchingImageL> >()
+        .add<ImageExporter<BranchingImageUL> >()
+        .add<ImageExporter<BranchingImageF> >()
+        .add<ImageExporter<BranchingImageB> >()
+#endif
         ;
 
 template class SOFA_IMAGE_API ImageExporter<ImageUC>;
@@ -71,7 +84,19 @@ template class SOFA_IMAGE_API ImageExporter<ImageUL>;
 template class SOFA_IMAGE_API ImageExporter<ImageF>;
 template class SOFA_IMAGE_API ImageExporter<ImageB>;
 #endif
-
+template class SOFA_IMAGE_API ImageExporter<BranchingImageUC>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageExporter<BranchingImageC>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageI>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageUI>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageS>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageUS>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageL>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageUL>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageF>;
+template class SOFA_IMAGE_API ImageExporter<BranchingImageB>;
+#endif
 
 
 } // namespace misc
