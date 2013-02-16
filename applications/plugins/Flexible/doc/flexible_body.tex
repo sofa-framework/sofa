@@ -69,7 +69,34 @@
 
 \section{Overview}
 
-In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator. 
+In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator.
+Figure~\ref{fig modularity mass-spring} shows an example of the increased modularity.
+In \sofa{}, mass-spring systems are traditionally modeled using three components for  state, mass and penalty force. 
+The force component is in charge of computing the distance and its gradient between the two particles, as well as to apply a constitutive law (typically linear viscoelastic).
+In this plugin, we provide new components to split these computations and make the framework more modular.
+In the example shown in fig.\ref{fig mass-spring-flexible}, a mapping is used to compute spring extensions $X_e$ based on particle positions $X_p$. 
+A constitutive law $F_e$ is applied to the extensions.
+This is more modular since the linear viscoelastic constitutive law can be replaced with a different one, while re-using the same mapping from positions to extensions. In the traditional approach, extension computation would have to be re-implemented in the new force field.
+Moreover, in the new approach, the penalty force can also be replaced with a hard constraint, while re-using the same mapping from positions to extensions.
+More generally, complex components are decomposed in simple (and re-usable) ones using series of mappings.
+\begin{figure}
+ \centering
+ \begin{subfigure}[t]{0.36\linewidth} \centering
+   \includegraphics[clip,trim=0mm 285mm 155mm 0mm]{mass-spring.pdf}
+   \caption{Two masses and a spring.} \label{fig mass-spring}
+ \end{subfigure}
+ \begin{subfigure}[t]{0.3\linewidth} \centering
+   \includegraphics[clip,trim=50mm 285mm 130mm 0mm]{mass-spring.pdf}
+   \caption{Traditional \sofa{} scene graph.} \label{fig mass-spring-traditional}
+ \end{subfigure}
+ \begin{subfigure}[t]{0.3\linewidth} \centering
+   \includegraphics[clip,trim=80mm 280mm 100mm 0mm]{mass-spring.pdf}
+   \caption{A more modular data structure.} \label{fig mass-spring-flexible}
+ \end{subfigure}
+ \caption{Improved modularity. $X$ denotes a state component, $M$ is the mass, and $F$ represents a force field, while arrows represent mappings. $X_p$ represents particle positions while $X_e$ represents spring extensions, and $F_s$ represents spring forces while $F_e$ represent extension forces.}
+ \label{fig modularity mass-spring}
+\end{figure}
+
 
 The numerical simulation of continuous deformable objects is based on a discrete number of independent degrees of freedom (DOFs) which we will call the nodes. They are kinematic primitives (can be points, frames, etc.).
 
