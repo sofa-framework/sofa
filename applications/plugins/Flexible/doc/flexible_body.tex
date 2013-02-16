@@ -1,3 +1,5 @@
+\newcommand{\flexible}{\em{Flexible}}
+
 \newcommand{\pos}{\vect{x}}
 \newcommand{\dx}{\vect{\Delta x}}
 \newcommand{\xcur}{\vect{x}_{n}}
@@ -67,18 +69,25 @@
 
 \newcommand{\MappingArrows}{\ensuremath{\left. \begin{array}{c} \stackrel{\JNL}{\longrightarrow} \\ \stackrel{\J}{\longrightarrow} \\ \stackrel{\Jt}{\longleftarrow} \end{array}\right.} }
 
+\begin{abstract}
+This plugin provides a unified approach to the simulation of deformable solids using mass-spring, FEM and mesh-less models.
+New mappings are introduced to compute material deformations based on node positions, and strain from deformations.
+FEM and mesh-less models use different position-deformation mappings. The remaining components (strain measures, constitutive laws) are common to the two approaches.
+\end{abstract}
+
 \section{Overview}
 
 In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator.
 Figure~\ref{fig modularity mass-spring} shows an example of the increased modularity.
 In \sofa{}, mass-spring systems are traditionally modeled using three components for  state, mass and penalty force. 
-The force component is in charge of computing the distance and its gradient between the two particles, as well as to apply a constitutive law (typically linear viscoelastic).
+The force component $F_s$ in fig.\ref{fig mass-spring-traditional} is in charge of computing the distance and its gradient between the two particles, as well as to apply a constitutive law (typically linear viscoelastic).
 In this plugin, we provide new components to split these computations and make the framework more modular.
 In the example shown in fig.\ref{fig mass-spring-flexible}, a mapping is used to compute spring extensions $X_e$ based on particle positions $X_p$. 
-A constitutive law $F_e$ is applied to the extensions.
+A constitutive law $F_e$ is applied to the extensions, and the corresponding force is mapped upward to the particles through the mapping.
 This is more modular since the linear viscoelastic constitutive law can be replaced with a different one, while re-using the same mapping from positions to extensions. In the traditional approach, extension computation would have to be re-implemented in the new force field.
-Moreover, in the new approach, the penalty force can also be replaced with a hard constraint, while re-using the same mapping from positions to extensions.
-More generally, complex components are decomposed in simple (and re-usable) ones using series of mappings.
+Moreover, in the new approach, the penalty force can also be replaced with a hard constraint, while re-using the same mapping (see also the Compliant plugin about soft and hard constraints).
+More generally, complex components cam be decomposed in simple (and re-usable) components using  mappings.
+In Flexible, we have leveraged this property to propose a unified approach to the simulation of deformable solids using mass-spring, FEM and mesh-less models.
 \begin{figure}
  \centering
  \begin{subfigure}[t]{0.36\linewidth} \centering
@@ -93,7 +102,7 @@ More generally, complex components are decomposed in simple (and re-usable) ones
    \includegraphics[clip,trim=80mm 280mm 100mm 0mm]{mass-spring.pdf}
    \caption{A more modular data structure.} \label{fig mass-spring-flexible}
  \end{subfigure}
- \caption{Improved modularity. $X$ denotes a state component, $M$ is the mass, and $F$ represents a force field, while arrows represent mappings. $X_p$ represents particle positions while $X_e$ represents spring extensions, and $F_s$ represents spring forces while $F_e$ represent extension forces.}
+ \caption{Improved modularity. $X$ denotes a state component, $M$ is mass, and $F$ a force field, while arrows represent mappings. $X_p$ represents particle positions while $X_e$ represents spring extensions, and $F_s$ represents spring forces while $F_e$ represent extension forces.}
  \label{fig modularity mass-spring}
 \end{figure}
 
