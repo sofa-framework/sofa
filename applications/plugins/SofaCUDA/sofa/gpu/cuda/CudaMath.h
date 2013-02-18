@@ -531,6 +531,24 @@ public:
         void setCy(CudaVec3<real> v) { x.y = v.x; y.y = v.y; z.y = v.z; }
         void setCz(CudaVec3<real> v) { x.z = v.x; y.z = v.y; z.z = v.z; }
     */
+	
+	static __inline__ __device__ matrix3<real> make(const real& s = .0f)
+	{
+		matrix3<real> M;
+		M.x = CudaVec3<real>::make(s, s, s);
+		M.y = CudaVec3<real>::make(s, s, s);
+		M.z = CudaVec3<real>::make(s, s, s);
+	}
+	
+	__inline__ __device__ matrix3<real>& operator+=(const matrix3<real>& M)
+	{
+		x += M.x;
+		y += M.y;
+		z += M.z;
+		
+		return *this;
+	}
+	
     __device__ CudaVec3<real> operator*(CudaVec3<real> v)
     {
         return CudaVec3<real>::make(dot(x,v),dot(y,v),dot(z,v));
@@ -644,6 +662,17 @@ public:
         writeAoS(data, blockDim.x);
     }
 };
+
+template<typename real>
+__device__ matrix3<real> operator+(const matrix3<real>& lhs, const matrix3<real>& rhs)
+{
+	matrix3<real> R;
+	R.x = lhs.x + rhs.x;
+	R.y = lhs.y + rhs.y;
+	R.z = lhs.z + rhs.z;
+	
+	return R;
+}
 
 template<typename real>
 __device__ matrix3<real> operator*(real s, matrix3<real> M)
