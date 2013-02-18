@@ -56,6 +56,19 @@ int ImageContainerClass = core::RegisterObject ( "Image Container" )
         .add<ImageContainer<ImageF> >()
         .add<ImageContainer<ImageB> >()
 #endif
+        .add<ImageContainer<BranchingImageUC> >()
+        .add<ImageContainer<BranchingImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageContainer<BranchingImageC> >()
+        .add<ImageContainer<BranchingImageI> >()
+        .add<ImageContainer<BranchingImageUI> >()
+        .add<ImageContainer<BranchingImageS> >()
+        .add<ImageContainer<BranchingImageUS> >()
+        .add<ImageContainer<BranchingImageL> >()
+        .add<ImageContainer<BranchingImageUL> >()
+        .add<ImageContainer<BranchingImageF> >()
+        .add<ImageContainer<BranchingImageB> >()
+#endif
         ;
 
 template class SOFA_IMAGE_API ImageContainer<ImageUC>;
@@ -70,6 +83,19 @@ template class SOFA_IMAGE_API ImageContainer<ImageL>;
 template class SOFA_IMAGE_API ImageContainer<ImageUL>;
 template class SOFA_IMAGE_API ImageContainer<ImageF>;
 template class SOFA_IMAGE_API ImageContainer<ImageB>;
+#endif
+template class SOFA_IMAGE_API ImageContainer<BranchingImageUC>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageContainer<BranchingImageC>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageI>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageUI>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageS>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageUS>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageL>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageUL>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageF>;
+template class SOFA_IMAGE_API ImageContainer<BranchingImageB>;
 #endif
 
 } // namespace container

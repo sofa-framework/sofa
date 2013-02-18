@@ -12,7 +12,7 @@
 <!--   <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
   
   	<ImageToBranchingImageConverter template="ImageB,BranchingImageB" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="0" superimpositionType="0" connectivity="26" printLog="false"/>
-  	<BranchingImageContainer template="BranchingImageB" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
+  	<ImageContainer template="BranchingImageB" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="true"/>
 
  	<ImageSampler template="BranchingImageB" name="branchingImageSampler" src="@branchingImage" method="1" param="20" showSamples="true" printLog="true" fixedPosition="0 5 0"/>
 

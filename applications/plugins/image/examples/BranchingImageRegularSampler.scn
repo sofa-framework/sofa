@@ -11,7 +11,7 @@
   
   
   <ImageToBranchingImageConverter template="ImageB,BranchingImageB" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="4" superimpositionType="0" printLog="true"/>
-  <BranchingImageContainer template="BranchingImageB" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="false"/>
+  <ImageContainer template="BranchingImageB" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform" drawBB="false"/>
 
   
 <!--   <BranchingImageToImageConverter template="BranchingImageB,ImageB" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>  -->

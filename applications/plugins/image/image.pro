@@ -47,7 +47,6 @@ HEADERS += \
         ImageAlgorithms.h \
         Containers.h \
         BranchingImage.h \
-        BranchingImageContainer.h \
         BranchingImageConverter.h \
 
 
@@ -70,7 +69,6 @@ SOURCES += \
 	HistogramWidget.cpp \
 #	QImageMouseButtonsWidget.cpp \
     VectorVisualizationWidget.cpp \
-    BranchingImageContainer.cpp \
     BranchingImageConverter.cpp \
 
 

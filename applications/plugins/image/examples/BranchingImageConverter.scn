@@ -11,7 +11,7 @@
 
 <!-- Create a coarse BranchingImage with ramifications - superimpositionType=3 means to count the nb fine voxels per superimposedvoxel so a unsigned int image is needed no to save counting -->
   <ImageToBranchingImageConverter template="ImageUC,BranchingImageUI" name="coarsener" inputImage="@image.image" inputTransform="@image.transform" coarseningLevels="5" superimpositionType="3" printLog="true"/>
-  <BranchingImageContainer template="BranchingImageUI" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform"/>
+  <ImageContainer template="BranchingImageUI" name="branchingImage" branchingImage="@coarsener.branchingImage" transform="@coarsener.transform"/>
 
 <!-- Convert the BranchingImage to a flat Image for visualisation,  conversionType="2" means each voxel color == nb superimposed voxels, there are not much superimposed voxels, so unsigned char is enough -->
   <BranchingImageToImageConverter template="BranchingImageUI,ImageUC" name="imageConverter" inputBranchingImage="@branchingImage.branchingImage" conversionType="2" printLog="true"/>
