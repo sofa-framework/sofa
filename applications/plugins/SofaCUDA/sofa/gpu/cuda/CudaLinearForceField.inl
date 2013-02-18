@@ -49,7 +49,6 @@ class CudaKernelsLinearForceField< CudaRigid3fTypes >
 public:
     static void addForce(unsigned size, const void* indices, const void* forces, void* f)
 	{
-		std::cout << "CudaKernelsLinearForceField " << std::endl;
         LinearForceFieldCudaRigid3f_addForce(size, indices, forces, f);
     }
 }; //CudaKernelsLinearForceField< CudaRigid3fTypes >

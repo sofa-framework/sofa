@@ -645,6 +645,28 @@ public:
     }
 };
 
+template<typename real>
+__device__ matrix3<real> operator*(real s, matrix3<real> M)
+{
+	matrix3<real> R;
+	R.x = s*M.x;
+	R.y = s*M.y;
+	R.z = s*M.z;
+	
+	return R;
+}
+
+template<typename real>
+__device__ matrix3<real> operator*(matrix3<real> M, real s)
+{
+	matrix3<real> R;
+	R.x = M.x*s;
+	R.y = M.y*s;
+	R.z = M.z*s;
+	
+	return R;
+}
+
 template<class real>
 __device__ matrix3<real> toMatrix(CudaVec4<real> q)
 {
