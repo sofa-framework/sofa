@@ -138,7 +138,7 @@ public:
     virtual void addinvMsToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addinvMsToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
-    virtual void addinvMsAndinvMpsToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/,
+    virtual void addinvMsAndinvMpsToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector1*/,
                                            defaulttype::BaseVector* /*vector2*/, defaulttype::BaseVector* /*vector3*/,
                                            defaulttype::BaseVector* /*vector4*/  )
     {std::cerr << "addinvMsAndinvMpToVector : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
@@ -162,10 +162,10 @@ public:
     virtual void addPhiToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {std::cerr << "addPhiToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
     /// @}
-    virtual void addPhipToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    virtual void addPhipToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addPhipToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
     /// @}
-    virtual void addRhopToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
+    virtual void addRhopToVector(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/ )
     {std::cerr << "addPhipToMatrix : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
     /// @}
 
