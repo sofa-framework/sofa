@@ -283,7 +283,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
                 for (size_t dim = 0; dim < 3; dim++)
                     lever[dim] = actualTetraPosition[tetra[ti]][dim]-actualPos[i][dim];
                 out[tetra[ti]] -= cross(lever,torque);
-                std::cout << "Force[" << tetra[ti] << "]: " << out[tetra[ti]] << std::endl;
+                //std::cout << "Force[" << tetra[ti] << "]: " << out[tetra[ti]] << std::endl;
             }
 
 
@@ -585,7 +585,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
             glColor3d(1.0,0,0.0);
             glBegin(GL_POINTS);
             helper::gl::glVertexT(actualPos[i]);
-            std::cout << "DRW " << actualPos[i] << std::endl;
+            //std::cout << "DRW " << actualPos[i] << std::endl;
             glEnd();
 
         }
