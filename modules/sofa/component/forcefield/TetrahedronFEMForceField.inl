@@ -1695,6 +1695,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    if(needUpdateTopology)
+    {
+        reinit();
+        needUpdateTopology = false;
+    }
+
     const VecCoord& x = *this->mstate->getX();
 
     const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
