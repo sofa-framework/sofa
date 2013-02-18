@@ -27,6 +27,7 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
+#include "BranchingImage.h"
 #include <limits.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -60,6 +61,272 @@ using defaulttype::Vector3;
 using defaulttype::Mat;
 using namespace cimg_library;
 
+
+
+
+
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct ImageContainerSpecialization
+{
+};
+
+
+/// Specialization for regular Image
+template <>
+struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+    template<class ImageContainer>
+    static void constructor( ImageContainer* container )
+    {
+        container->f_listening.setValue(true);  // to update camera during animate
+    }
+
+    template<class ImageContainer>
+    static void init( ImageContainer* container )
+    {
+        typedef typename ImageContainer::T T;
+
+        typename ImageContainer::waImage wimage(container->image);
+        if( !wimage->getCImgList().size() )
+            if( !container->load() )
+                if( !container->loadCamera() )
+                {
+                    wimage->getCImgList().push_back(CImg<T>());
+                    container->serr << "no input image" << container->sendl;
+                }
+    }
+
+    template<class ImageContainer>
+    static bool load( ImageContainer* container, std::string fname )
+    {
+        typedef typename ImageContainer::T T;
+        typedef typename ImageContainer::Real Real;
+
+        typename ImageContainer::waImage wimage(container->image);
+        typename ImageContainer::waTransform wtransform(container->transform);
+
+         // read image
+        //Load .inr.gz using ZLib
+        if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
+        {
+            float voxsize[3];
+            float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
+            CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
+            wimage->getCImgList().push_back(img);
+
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
+
+            Mat<3,3,Real> R;
+            R = container->RotVec3DToRotMat3D(rotation);
+            helper::Quater< float > q; q.fromMatrix(R);
+            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            if (!container->transform.isSet()) {
+                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            }
+//			Real t0 = wtransform->getRotation()[0];
+//			Real t1 = wtransform->getRotation()[1];
+//			Real t2 = wtransform->getRotation()[2];
+
+        }
+        else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+                || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+        {
+            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+
+            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+            bool isPerspective=false;
+            wimage->getCImgList().assign(load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
+            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+            helper::Quater< Real > q; q.fromMatrix(R);
+            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            if (!container->transform.isSet()) {
+                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getOffsetT()=(Real)offsetT;
+                wtransform->getScaleT()=(Real)scaleT;
+                wtransform->isPerspective()=isPerspective;
+            }
+        }
+        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
+        {
+            // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
+            std::ifstream fileStream (fname.c_str(), std::ifstream::in);
+            if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
+            std::string str;
+            fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
+            Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+            fileStream.close();
+            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
+            wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
+        }
+        else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+            wimage->getCImgList().load_cimg(fname.c_str());
+        else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
+            wimage->getCImgList().load_parrec(fname.c_str());
+        else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
+            wimage->getCImgList().load_ffmpeg(fname.c_str());
+        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+        {
+            float voxsize[3];
+            wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
+            if (!container->transform.isSet())
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+        }
+        else if (fname.find(".inr")!=std::string::npos)
+        {
+            float voxsize[3];
+            wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
+            if (!container->transform.isSet())
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+        }
+        else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
+
+        if(wimage->getCImgList().size()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+        else return false;
+
+        return true;
+    }
+
+//    template<class ImageContainer>
+//    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
+//    {
+//        typedef typename ImageContainer::T T;
+//        typedef typename ImageContainer::Real Real;
+
+//        typename ImageContainer::waImage wimage(container->image);
+//        typename ImageContainer::waTransform wtransform(container->transform);
+
+//        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+//            wimage->getCImgList().load_cimg(file);
+//        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
+//        {
+//            float voxsize[3];
+//            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
+//            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+//        }
+//        else if (fname.find(".inr")!=std::string::npos)
+//        {
+//            float voxsize[3];
+//            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
+//            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
+//        }
+//        else
+//        {
+//            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
+//        }
+
+//        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+//        else return false;
+
+//        return true;
+//    }
+
+    template<class ImageContainer>
+    static bool loadCamera( ImageContainer* container )
+    {
+        typedef typename ImageContainer::T T;
+
+        if( container->m_filename.isSet() ) return false;
+        if( container->name.getValue().find("CAMERA") == std::string::npos ) return false;
+
+#ifdef cimg_use_opencv
+        typename ImageContainer::waImage wimage(container->image);
+        if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());
+        else wimage->getCImgList()[0].load_camera();
+        if(wimage->getCImgList().size())  return true;  else return false;
+#else
+        return false;
+#endif
+    }
+
+};
+
+
+/// Specialization for regular Image
+template <>
+struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>
+{
+    template<class ImageContainer>
+    static void constructor( ImageContainer* container )
+    {
+        container->addAlias( &container->image, "inputBranchingImage" );
+        container->addAlias( &container->image, "branchingImage" );
+    }
+
+    template<class ImageContainer>
+    static void init( ImageContainer* container )
+    {
+        if( !container->image.getValue().dimension[ImageContainer::ImageTypes::DIMENSION_T] && !container->load() )
+            container->serr << "no input image " << container->sendl;
+    }
+
+    template<class ImageContainer>
+    static bool load( ImageContainer* container, std::string fname )
+    {
+        typedef typename ImageContainer::Real Real;
+
+        if( fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+              || fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)
+        {
+            if(fname.find(".bia")!=std::string::npos || fname.find(".BIA")!=std::string::npos || fname.find(".Bia")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
+
+            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+            bool isPerspective=false;
+
+            if( typename ImageContainer::waImage( container->image )->load( fname.c_str(), scale, translation, affine, &offsetT, &scaleT, &isPerspective ) )
+            {
+                typename ImageContainer::waTransform wtransform( container->transform );
+
+                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+                helper::Quater< Real > q; q.fromMatrix(R);
+                // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
+                if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+                if (!container->transform.isSet()) {
+                    wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getOffsetT()=(Real)offsetT;
+                    wtransform->getScaleT()=(Real)scaleT;
+                    wtransform->isPerspective()=isPerspective;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+//    template<class ImageContainer>
+//    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
+//    {
+//    }
+
+    template<class ImageContainer>
+    static bool loadCamera( ImageContainer* )
+    {
+        return false;
+    }
+
+};
+
+
+
+
+
+
 /**
    * \brief This component is responsible for loading images
    *
@@ -73,6 +340,10 @@ using namespace cimg_library;
 template<class _ImageTypes>
 class ImageContainer : public virtual core::objectmodel::BaseObject
 {
+
+    friend struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+
 public:
     typedef core::objectmodel::BaseObject Inherited;
     SOFA_CLASS( SOFA_TEMPLATE(ImageContainer, _ImageTypes),Inherited);
@@ -123,7 +394,8 @@ public:
         this->addAlias(&nFrames, "nFrames");
         this->transform.setGroup("Transform");
         this->transform.unset();
-        f_listening.setValue(true);  // to update camera during animate
+
+        ImageContainerSpecialization<ImageTypes::label>::constructor( this );
     }
 
 
@@ -150,13 +422,8 @@ public:
         else
             sout << "Transform is NOT set" << sendl;
 
-        if(!wimage->getCImgList().size())
-            if(!load())
-                if(!loadCamera())
-                {
-                    wimage->getCImgList().push_back(CImg<T>());
-                    serr << "ImageContainer: no input image "<<sendl;
-                }
+
+        ImageContainerSpecialization<ImageTypes::label>::init( this );
 
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
         wtransform->update(); // update of internal data
@@ -231,145 +498,17 @@ protected:
 
     bool load(std::string fname)
     {
-        waImage wimage(this->image);
-        waTransform wtransform(this->transform);
-
-		 // read image
-		//Load .inr.gz using ZLib
-		if(fname.size() >= 3 && (fname.substr(fname.size()-7)==".inr.gz" || fname.substr(fname.size()-4)==".inr") )
-		{
-			float voxsize[3];
-			float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
-			CImg<T> img = _load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
-			wimage->getCImgList().push_back(img);
-
-			for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
-
-			Mat<3,3,Real> R;
-			R = RotVec3DToRotMat3D(rotation);
-            helper::Quater< float > q; q.fromMatrix(R);
-            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            if (!this->transform.isSet()) {
-                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
-            }
-//			Real t0 = wtransform->getRotation()[0];
-//			Real t1 = wtransform->getRotation()[1];
-//			Real t2 = wtransform->getRotation()[2];
-
-		}
-        else if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
-                || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
-        {
-            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
-
-            double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
-            bool isPerspective=false;
-            wimage->getCImgList().assign(load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
-            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
-            for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
-            helper::Quater< Real > q; q.fromMatrix(R);
-            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            if (!this->transform.isSet()) {
-                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getOffsetT()=(Real)offsetT;
-                wtransform->getScaleT()=(Real)scaleT;
-                wtransform->isPerspective()=isPerspective;
-            }
-        }
-        else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)
-        {
-            // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
-            std::ifstream fileStream (fname.c_str(), std::ifstream::in);
-            if (!fileStream.is_open()) { serr << "Cannot open " << fname << sendl; return false; }
-            std::string str;
-            fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
-            Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
-            Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-            Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
-            fileStream.close();
-            std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-            wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
-        }
-        else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-            wimage->getCImgList().load_cimg(fname.c_str());
-        else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
-            wimage->getCImgList().load_parrec(fname.c_str());
-        else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
-            wimage->getCImgList().load_ffmpeg(fname.c_str());
-        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
-            if (!this->transform.isSet())
-                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-        }
-        else if (fname.find(".inr")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
-            if (!this->transform.isSet())
-                for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-        }
-        else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
-
-        if(wimage->getCImgList().size()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
-        else return false;
-
-        return true;
+        return ImageContainerSpecialization<ImageTypes::label>::load( this, fname );
     }
 
-    bool load(std::FILE* const file, std::string fname)
-    {
-        waImage wimage(this->image);
-        waTransform wtransform(this->transform);
-
-        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-            wimage->getCImgList().load_cimg(file);
-        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-        }
-        else if (fname.find(".inr")!=std::string::npos)
-        {
-            float voxsize[3];
-            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-        }
-        else
-        {
-            serr << "Error (ImageContainer): Compression is not supported for this filetype: " << fname << sendl;
-        }
-
-        if(wimage->getCImg()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
-        else return false;
-
-        return true;
-
-    }
+//    bool load(std::FILE* const file, std::string fname)
+//    {
+//       return ImageContainerSpecialization<ImageTypes::label>::load( this, file, fname );
+//    }
 
     bool loadCamera()
     {
-        if (this->m_filename.isSet()) return false;
-        if(this->name.getValue().find("CAMERA")==std::string::npos) return false;
-
-#ifdef cimg_use_opencv
-        waImage wimage(this->image);
-        if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());
-        else wimage->getCImgList()[0].load_camera();
-        if(wimage->getCImgList().size())  return true;  else return false;
-#else
-        return false;
-#endif
+        return ImageContainerSpecialization<ImageTypes::label>::loadCamera( this );
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

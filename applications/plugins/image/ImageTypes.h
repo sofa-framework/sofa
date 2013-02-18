@@ -331,7 +331,7 @@ public:
     /// \returns an approximative size in bytes, useful for debugging
     size_t approximativeSizeInBytes() const
     {
-        if( img.empty() ) return 0;
+        if( img.is_empty() ) return 0;
         return img(0).width()*img(0).height()*img(0).depth()*img(0).spectrum()*img.size()*sizeof(T);
     }
 
