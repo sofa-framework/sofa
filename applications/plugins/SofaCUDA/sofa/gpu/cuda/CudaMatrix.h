@@ -63,6 +63,7 @@ private:
     size_type    sizeY;     ///< Current size of the vector
     size_type    pitch_device;     ///< Row alignment on the GPU
     size_type    pitch_host;     ///< Row alignment on the GPU
+    size_type    allocSizeX;  ///< Allocated size
     size_type    allocSizeY;  ///< Allocated size
     void*        devicePointer;  ///< Pointer to the data on the GPU side
     T*           hostPointer;    ///< Pointer to the data on the CPU side
@@ -72,27 +73,105 @@ private:
 public:
 
     CudaMatrix()
-        : sizeX ( 0 ), sizeY( 0 ), pitch_device(0), pitch_host ( 0 ), allocSizeY ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY( 0 ), pitch_device(0), pitch_host(0),  allocSizeX(0), allocSizeY(0), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
         DEBUG_OUT_M(spaceDebug = 0);
     }
 
     CudaMatrix(size_t x, size_t y, size_t size)
-        : sizeX ( 0 ), sizeY ( 0 ), pitch_device(0), pitch_host ( 0 ), allocSizeY ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY ( 0 ), pitch_device(0),pitch_host(0),  allocSizeX(0), allocSizeY(0),  devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
         resize (x,y,size);
         DEBUG_OUT_M(spaceDebug = 0);
     }
 
     CudaMatrix(const CudaMatrix<T>& v )
-        : sizeX ( 0 ), sizeY ( 0 ), pitch_device(0), pitch_host ( 0 ), allocSizeY ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY ( 0 ), pitch_device(0),pitch_host(0),  allocSizeX(0), allocSizeY(0),  devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
         *this = v;
         DEBUG_OUT_M(spaceDebug = 0);
     }
 
-    void clear()
-    {
+    void resize_allocated(size_type x,size_t y,size_t WARP_SIZE) {
+        size_type d_x = x;
+        size_type d_y = y;
+
+        if (WARP_SIZE==0) {
+            d_x = x;
+            d_y = y;
+        } else {
+            d_x = ((d_x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
+            d_y = ((d_y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
+        }
+
+        DEBUG_OUT_M(SPACEN << "Ask resize from " << sizeX << "(" << allocSizeX << ")," << sizeY << "(" << allocSizeY << ")" << " to " << d_x << " " << d_y << std::endl);
+
+        if (d_x < allocSizeX) {
+            //We keep the same pitch!
+
+            if (d_y >= allocSizeY) {
+                DEBUG_OUT_M(SPACEN << "Is in d_y >= allocSizeY" << std::endl);
+
+                allocSizeY = d_y;
+
+                void* prevDevicePointer = devicePointer;
+                T* prevHostPointer = hostPointer;
+
+                size_t newpitch; // newpitch should be = to pitch_device !
+                mycudaMallocPitch(&devicePointer, &newpitch, pitch_device, d_y);
+                MemoryManager::hostAlloc( (void **) &hostPointer, pitch_host*d_y);
+
+                if (sizeX!=0 && sizeY!=0) {
+                    if (deviceIsValid) {
+                        DEBUG_OUT_M(SPACEN << "MemcpyDevice from 0 to " << (pitch_device*sizeY) << std::endl);
+                        MemoryManager::memcpyDeviceToDevice (0, devicePointer, prevDevicePointer, pitch_device*sizeY );
+                    }
+                    if (hostIsValid) {
+                        DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
+                        std::copy ( prevHostPointer, (T*) (((char*)prevHostPointer)+(pitch_host*sizeY)), hostPointer);
+                    }
+                }
+
+                if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+                if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+            }
+        } else { //d_x >= allocSizeX
+            DEBUG_OUT_M(SPACEN << "Is in d_x >= allocSizeX" << std::endl);
+
+            allocSizeX = d_x;
+            if (d_y >= allocSizeY) allocSizeY = d_y;
+
+            void* prevDevicePointer = devicePointer;
+            T* prevHostPointer = hostPointer;
+
+            size_t oldpitch_device = pitch_device;
+            size_t oldpitch_host = pitch_device;
+            pitch_host = d_x * sizeof(T);// new pitch_host biger than oldpitch_host
+
+            mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), allocSizeY);// new pitch_device biger than oldpitch_device
+            MemoryManager::hostAlloc( (void **) &hostPointer, pitch_host*allocSizeY);
+
+            if (sizeX!=0 && sizeY!=0) {
+                if (deviceIsValid) {
+                    for (unsigned j=0;j<sizeY;j++) {
+                        DEBUG_OUT_M(SPACEN << "MemcpyDevice from line " << j << " : from " << (oldpitch_device*j) << " to " << ((oldpitch_device*j) + (sizeX*sizeof(T))) << "(" << (sizeX*sizeof(T)) << " data)" << std::endl);
+                        MemoryManager::memcpyDeviceToDevice (0, ((char*)devicePointer) + (pitch_device*j), ((char*)prevDevicePointer) + (oldpitch_device*j), sizeX * sizeof(T));
+                    }
+                }
+                if (hostIsValid) {
+                    for (unsigned j=0;j<sizeY;j++) {
+                        DEBUG_OUT_M(SPACEN << "MemcpyHost from line " << j << " : from " << (oldpitch_host*j) << " to " << ((oldpitch_host*j) + (sizeX*sizeof(T))) << "(" << (sizeX*sizeof(T)) << " data)" << std::endl);
+                        std::copy ((T*) ((char*)prevHostPointer+ (oldpitch_host*j)), (T*) (((char*)prevHostPointer) + (oldpitch_host*j) + (sizeX*sizeof(T))), (T*) ((char*)hostPointer+ (pitch_host*j)));
+                    }
+                }
+            }
+
+            if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+            if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+        }
+    }
+
+    void clear() {
         DEBUG_OUT_M(SPACEP << "Clear" << std::endl);
         sizeX = 0;
         sizeY = 0;
@@ -101,39 +180,40 @@ public:
         DEBUG_OUT_M(SPACEM << "Clear" << std::endl);
     }
 
-    ~CudaMatrix()
-    {
+    ~CudaMatrix() {
         if (hostPointer!=NULL) mycudaFreeHost(hostPointer);
         if (devicePointer!=NULL) mycudaFree(devicePointer);
     }
 
-    size_type getSizeX() const
-    {
+    size_type getSizeX() const {
         return sizeX;
     }
 
-    size_type getSizeY() const
-    {
+    size_type getSizeY() const {
         return sizeY;
     }
 
-    size_type getPitchDevice() const
-    {
+    size_type getPitchDevice() const {
         return pitch_device;
     }
 
-    size_type getPitchHost() const
-    {
+    size_type getPitchHost() const {
         return pitch_host;
     }
 
-    bool empty() const
-    {
+    bool isHostValid() const {
+        return hostIsValid;
+    }
+
+    bool isDeviceValid() const {
+        return deviceIsValid;
+    }
+
+    bool empty() const {
         return sizeX==0 || sizeY==0;
     }
 
-    void memsetHost(int v = 0)
-    {
+    void memsetHost(int v = 0) {
         DEBUG_OUT_M(SPACEP << "memsetHost" << std::endl);
         MemoryManager::memsetHost(hostPointer,v,pitch_host*sizeY);
         hostIsValid = true;
@@ -141,8 +221,7 @@ public:
         DEBUG_OUT_M(SPACEM << "memsetHost" << std::endl);
     }
 
-    void memsetDevice(int v = 0)
-    {
+    void memsetDevice(int v = 0) {
         DEBUG_OUT_M(SPACEP << "memsetHost" << std::endl);
         MemoryManager::memsetDevice(0,devicePointer, v, pitch_device*sizeY);
         hostIsValid = false;
@@ -150,255 +229,120 @@ public:
         DEBUG_OUT_M(SPACEM << "memsetHost" << std::endl);
     }
 
-    void invalidateDevices()
-    {
+    void invalidateDevices() {
         hostIsValid = true;
         deviceIsValid = false;
     }
 
-    void invalidatehost()
-    {
+    void invalidatehost() {
         hostIsValid = false;
         deviceIsValid = true;
     }
 
-    void fastResize(size_type y,size_type x,size_type WARP_SIZE=MemoryManager::BSIZE)
-    {
-        DEBUG_OUT_M(SPACEP << "fastResize : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
-
-        if ( x==0 || y==0)
-        {
-            clear();
-            DEBUG_OUT_M(SPACEM << std::endl);
-            return;
-        }
-        if ( sizeX==x && sizeY==y)
-        {
-            DEBUG_OUT_M(SPACEM << std::endl);
-            return;
-        }
-
-        size_type d_x = x;
-        size_type d_y = y;
-
-        if (WARP_SIZE==0)
-        {
-            d_x = x;
-            d_y = y;
-        }
-        else
-        {
-            d_x = ((d_x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
-            d_y = ((d_y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
-        }
-        size_type allocSize = d_x*d_y*sizeof(T);
-
-        if ( !sizeX && !sizeY)   //special case anly reserve
-        {
-            DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
-            if (allocSize > pitch_host*allocSizeY || pitch_host < d_x*sizeof(T))
-            {
-                T* prevHostPointer = hostPointer;
-                MemoryManager::hostAlloc( (void **) &hostPointer, allocSize ); pitch_host = d_x*sizeof(T);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((int) hostPointer) << " HostPitch = " << pitch_host << std::endl);
-                if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
-
-                void* prevDevicePointer = devicePointer;
-
-                mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), d_y);
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((int) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
-                if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
-
-                allocSizeY = d_y;
-            }
-        }
-        else if (x*sizeof(T) <= pitch_host)
-        {
-            DEBUG_OUT_M(SPACEN << "Is in (x <= pitch_host)" << std::endl);
-            if (d_y > allocSizeY)   // allocate
-            {
-                DEBUG_OUT_M(SPACEN << "Is in (y > allocSizeY)" << std::endl);
-                T* prevHostPointer = hostPointer;
-                MemoryManager::hostAlloc( (void **) &hostPointer, allocSize);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((int) hostPointer) << " HostPitch = " << pitch_host << std::endl);
-                if (hostIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
-                    std::copy ( prevHostPointer, ((T*) ((char*)prevHostPointer)+(pitch_host*sizeY)), hostPointer);
-                }
-                if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
-
-                void* prevDevicePointer = devicePointer;
-                mycudaMallocPitch(&devicePointer, &pitch_device, pitch_device, d_y); //pitch_device should not be modified
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((int) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
-                if (deviceIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemcpyDevice from 0 to " << (pitch_device*sizeY) << std::endl);
-                    MemoryManager::memcpyDeviceToDevice (0, devicePointer, prevDevicePointer, pitch_device*sizeY );
-                }
-                if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
-
-                allocSizeY = d_y;
-            }
-        }
-        else     //necessary to change layout....
-        {
-            std::cerr << "ERROR : resize column is not implemented in CudaMatrix, you must copy data in another matrix" << std::endl;
-            DEBUG_OUT_M(SPACEM << std::endl);
-            return;
-        }
-
-        sizeX = x; sizeY = y;
-
-        DEBUG_OUT_M(SPACEM << "fastResize" << std::endl);
-    }
-
-    void recreate(int nbRow,int nbCol)
-    {
+    void recreate(int nbRow,int nbCol) {
         clear();
         fastResize(nbRow,nbCol);
     }
 
+    void fastResize(size_type y,size_type x,size_type WARP_SIZE=MemoryManager::BSIZE) {
+        DEBUG_OUT_M(SPACEP << "fastResize : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
 
-    void resize (size_type y,size_type x,size_t WARP_SIZE=MemoryManager::BSIZE)
-    {
-        DEBUG_OUT_M(SPACEP << "reisze : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
-
-        if ((x==0) || (y==0))
-        {
+        if ( x==0 || y==0) {
             clear();
             DEBUG_OUT_M(SPACEM << std::endl);
             return;
         }
-        if ((sizeX==x) && (sizeY==y))
-        {
+
+        if ( sizeX==x && sizeY==y) {
             DEBUG_OUT_M(SPACEM << std::endl);
             return;
         }
 
-        size_type d_x = x;
-        size_type d_y = y;
+        resize_allocated(x,y,WARP_SIZE);
 
-        if (WARP_SIZE==0)
-        {
-            d_x = x;
-            d_y = y;
-        }
-        else
-        {
-            d_x = ((d_x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
-            d_y = ((d_y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
-        }
-        size_type allocSize = d_x*d_y*sizeof(T);
+        sizeX = x;
+        sizeY = y;
 
-        if ( !sizeX && !sizeY)   //special case anly reserve
-        {
-            DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
-            if (allocSize > pitch_host*allocSizeY || pitch_host < d_x*sizeof(T))
-            {
-                T* prevHostPointer = hostPointer;
-                MemoryManager::hostAlloc( (void **) &hostPointer, allocSize ); pitch_host = d_x*sizeof(T);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((unsigned long) hostPointer) << " HostPitch = " << pitch_host << std::endl);
-                if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+        DEBUG_OUT_M(SPACEM << "fastResize" << std::endl);
+    }
 
-                void* prevDevicePointer = devicePointer;
-                mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), d_y);
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((unsigned long) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
-                if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+    void resize (size_type y,size_type x,size_t WARP_SIZE=MemoryManager::BSIZE) {
+        DEBUG_OUT_M(SPACEP << "reisze : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
 
-                allocSizeY = d_y;
-            }
-            else if (pitch_host < d_x*sizeof(T)) pitch_host = d_x*sizeof(T);
-
-            if (hostIsValid)
-            {
-                DEBUG_OUT_M(SPACEN << "MemsetHost from 0 to " << (pitch_host*y) << std::endl);
-                MemoryManager::memsetHost(hostPointer,0,pitch_host*y);
-            }
-            if (deviceIsValid)
-            {
-                DEBUG_OUT_M(SPACEN << "MemsetDevice from 0 to " << (pitch_device*y) << std::endl);
-                MemoryManager::memsetDevice(0,devicePointer, 0, pitch_device*y);
-            }
-        }
-        else if (x*sizeof(T) <= pitch_host)
-        {
-            DEBUG_OUT_M(SPACEN << "Is in (x <= pitch_host)" << std::endl);
-            if (d_y > allocSizeY)   // allocate
-            {
-                DEBUG_OUT_M(SPACEN << "Is in (y > allocSizeY)" << std::endl);
-                T* prevHostPointer = hostPointer;
-                MemoryManager::hostAlloc( (void **) &hostPointer, allocSize);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((unsigned long) hostPointer) << " HostPitch = " << pitch_host << std::endl);
-                if (hostIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
-                    std::copy ( prevHostPointer, ((T*) ((char*)prevHostPointer)+(pitch_host*sizeY)), hostPointer);
-                }
-                if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
-
-                void* prevDevicePointer = devicePointer;
-                mycudaMallocPitch(&devicePointer, &pitch_device, pitch_device, d_y); //pitch_device should not be modified
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((unsigned long) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
-                if (deviceIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemcpyDevice from 0 to " << (pitch_device*sizeY) << std::endl);
-                    MemoryManager::memcpyDeviceToDevice (0, devicePointer, prevDevicePointer, pitch_device*sizeY );
-                }
-                if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
-
-                allocSizeY = d_y;
-            }
-            if (y > sizeY)
-            {
-                DEBUG_OUT_M(SPACEN << "Is in (y > sizeY)" << std::endl);
-                if (hostIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemsetHost from " << pitch_host*sizeY << " to " << (pitch_host*y) << std::endl);
-                    MemoryManager::memsetHost((T*) (((char*)hostPointer)+pitch_host*sizeY),0,pitch_host*(y-sizeY));
-                }
-
-                if (deviceIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemsetDevice from " << pitch_device*sizeY << " to " << (pitch_device*y) << std::endl);
-                    MemoryManager::memsetDevice(0,((char*)devicePointer) + (pitch_device*sizeY), 0, pitch_device*(y-sizeY));
-                }
-            }
-            if (x > sizeX)
-            {
-                DEBUG_OUT_M(SPACEN << "Is in (x > sizeX)" << std::endl);
-                if (hostIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemsetHost for each line from " << (sizeX*sizeof(T)) << " to " << (sizeof(T)*(x-sizeX)) << std::endl);
-                    for (unsigned j=0; j<y; j++) MemoryManager::memsetHost((T*) (((char*)hostPointer)+pitch_host*j+sizeX*sizeof(T)),0,sizeof(T)*(x-sizeX));
-                }
-
-                if (deviceIsValid)
-                {
-                    DEBUG_OUT_M(SPACEN << "MemsetDevice for each line from " << (sizeX*sizeof(T)) << " to " << (sizeof(T)*(x-sizeX)) << std::endl);
-                    for (unsigned j=0; j<y; j++) MemoryManager::memsetDevice(0,((char*)devicePointer)+(pitch_device*j+sizeX*sizeof(T)), 0, sizeof(T)*(x-sizeX));
-                }
-            }
-        }
-        else     //necessary to change layout....
-        {
-            std::cerr << "ERROR : resize column is not implemented in CudaMatrix, you must copy data in another matrix" << std::endl;
-            DEBUG_OUT_M(SPACEM);
+        if ((x==0) || (y==0)) {
+            clear();
+            DEBUG_OUT_M(SPACEM << std::endl);
             return;
         }
 
-        sizeX = x; sizeY = y;
+        if ((sizeX==x) && (sizeY==y)) {
+            DEBUG_OUT_M(SPACEM << std::endl);
+            return;
+        }
+
+        if ( !sizeX && !sizeY) {//special case anly reserve
+            DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
+
+            resize_allocated(x,y,WARP_SIZE);
+
+            if (hostIsValid) {
+                DEBUG_OUT_M(SPACEN << "MemsetHost from 0 to " << (pitch_host*y) << std::endl);
+                //set all the matrix to zero
+                MemoryManager::memsetHost(hostPointer,0,pitch_host*y);
+            }
+
+            if (deviceIsValid) {
+                DEBUG_OUT_M(SPACEN << "MemsetDevice from 0 to " << (pitch_device*y) << std::endl);
+                //set all the matrix to zero
+                MemoryManager::memsetDevice(0,devicePointer, 0, pitch_device*y);
+            }
+        } else { // there is data in the matrix that we want to keep
+            DEBUG_OUT_M(SPACEN << "Is in (x <= pitch)" << std::endl);
+
+            resize_allocated(x,y,WARP_SIZE);
+
+            if (x>sizeX) {
+                if (hostIsValid) {
+                    DEBUG_OUT_M(SPACEN << "MemsetHost from " << pitch_host*sizeY << " to " << (pitch_host*y) << std::endl);
+                    //set all the end of line to Zero
+                    for (unsigned j=0;j<sizeY;j++) MemoryManager::memsetHost((T*) (((char*)hostPointer)+pitch_host*j),0,(x-sizeX)*sizeof(T));
+                }
+
+                if (deviceIsValid) {
+                    DEBUG_OUT_M(SPACEN << "MemsetDevice from " << pitch_device*sizeY << " to " << (pitch_device*y) << std::endl);
+                    //set all the end of line to Zero
+                    for (unsigned j=0;j<sizeY;j++) MemoryManager::memsetDevice(0,((char*)devicePointer) + (pitch_device*j), 0, (x-sizeX)*sizeof(T));
+                }
+            }
+
+            if (y>sizeY) {
+                if (hostIsValid) {
+                    DEBUG_OUT_M(SPACEN << "MemsetHost from " << pitch_host*sizeY << " to " << (pitch_host*y) << std::endl);
+                    //set the end of the matrix to zero
+                    MemoryManager::memsetHost((T*) (((char*)hostPointer)+pitch_host*sizeY),0,pitch_host*(y-sizeY));
+                }
+
+                if (deviceIsValid) {
+                    DEBUG_OUT_M(SPACEN << "MemsetDevice from " << pitch_device*sizeY << " to " << (pitch_device*y) << std::endl);
+                    //set the end of the matrix to zero
+                    MemoryManager::memsetDevice(0,((char*)devicePointer) + (pitch_device*sizeY), 0, pitch_device*(y-sizeY));
+                }
+            }
+        }
+
+        sizeX = x;
+        sizeY = y;
 
         DEBUG_OUT_M(SPACEM << "reisze" << std::endl);
     }
 
-    void swap ( CudaMatrix<T>& v )
-    {
+    void swap ( CudaMatrix<T>& v ) {
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
         VSWAP ( size_type, sizeX );
         VSWAP ( size_type, sizeY );
         VSWAP ( size_type, pitch_device );
         VSWAP ( size_type, pitch_host );
+        VSWAP ( size_type, allocSizeX );
         VSWAP ( size_type, allocSizeY );
         VSWAP ( void*    , devicePointer );
         VSWAP ( T*       , hostPointer );
@@ -407,111 +351,103 @@ public:
 #undef VSWAP
     }
 
-    const void* deviceRead ( int y=0, int x=0 ) const
-    {
+    void operator= ( const CudaMatrix<T,MemoryManager >& m ) {
+        if (&m == this) return;
+
+        std::cerr << "operator= is not handeled, you have to copy data manually" << std::endl;
+//        sizeX = m.sizeX;
+//        sizeY = m.sizeY;
+
+//        if (sizeY*pitch_host<m.sizeY*m.pitch_host)   //simple case, we simply copy data with the same attribute
+//        {
+//            T* prevHostPointer = hostPointer;
+//            MemoryManager::hostAlloc( (void **) &hostPointer, m.pitch_host * sizeY);
+//            if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
+
+//            void* prevDevicePointer = devicePointer;
+//            mycudaMallocPitch(&devicePointer, &pitch_device, m.pitch_device, sizeY);
+//            if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+
+//            allocSizeY = sizeY;
+//        } else {
+//            int allocline = (allocSizeY*pitch_host) / m.pitch_host;
+//            allocSizeY = allocline * m.pitch_host;
+//            // Here it's possible that the allocSizeY is < the the real memory allocated, but it's not a problem, it will we deleted at the next resize;
+//        }
+
+//        pitch_host = m.pitch_host;
+//        pitch_device = m.pitch_device;
+
+//        if (m.hostIsValid) std::copy ( m.hostPointer, ((T*) (((char*) m.hostPointer)+(m.pitch_host*m.sizeY))), hostPointer);
+//        if (m.deviceIsValid) MemoryManager::memcpyDeviceToDevice (0, devicePointer, m.devicePointer, m.pitch_device*m.sizeY );
+
+//        hostIsValid = m.hostIsValid;
+//        deviceIsValid = m.deviceIsValid; /// finally we get the correct device valid
+    }
+
+
+
+
+
+    const void* deviceRead ( int y=0, int x=0 ) const {
         copyToDevice();
         return ((T*) ((char*)devicePointer) + pitch_device*y) + x;
 
     }
 
-    void* deviceWrite ( int y=0, int x=0 )
-    {
+    void* deviceWrite ( int y=0, int x=0 ) {
         copyToDevice();
         hostIsValid = false;
         return ((T*) (((char*)devicePointer) + pitch_device*y)) + x;
     }
 
-    const T* hostRead ( int y=0, int x=0 ) const
-    {
+    const T* hostRead ( int y=0, int x=0 ) const {
         copyToHost();
         return ((const T*) (((char*) hostPointer)+(y*pitch_host))) + x;
     }
 
-    T* hostWrite ( int y=0, int x=0 )
-    {
+    T* hostWrite ( int y=0, int x=0 ) {
         copyToHost();
         deviceIsValid = false;
         return ((T*) (((char*) hostPointer)+(y*pitch_host))) + x;
     }
 
-    bool isHostValid() const
-    {
-        return hostIsValid;
-    }
-
-    bool isDeviceValid() const
-    {
-        return deviceIsValid;
-    }
-
-    const T& operator() (size_type y,size_type x) const
-    {
+    const T& operator() (size_type y,size_type x) const {
+#ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
+#endif
         return hostRead(y,x);
     }
 
-    T& operator() (size_type y,size_type x)
-    {
+    T& operator() (size_type y,size_type x) {
+#ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
+#endif
         return hostWrite(y,x);
     }
 
-    const T* operator[] (size_type y) const
-    {
+    const T* operator[] (size_type y) const {
+#ifdef DEBUG_OUT_MATRIX
         checkIndex (y,0);
+#endif
         return hostRead(y,0);
     }
 
-    T* operator[] (size_type y)
-    {
+    T* operator[] (size_type y) {
+#ifdef DEBUG_OUT_MATRIX
         checkIndex (y,0);
+#endif
         return hostWrite(y,0);
     }
 
-    const T& getCached (size_type y,size_type x) const
-    {
+    const T& getCached (size_type y,size_type x) const {
+#ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
+#endif
         return ((T*) (((char*) hostPointer)+(y*pitch_host))) + x;
     }
 
-    void operator= ( const CudaMatrix<T,MemoryManager >& m )
-    {
-        if (&m == this) return;
-
-        sizeX = m.sizeX;
-        sizeY = m.sizeY;
-
-        if (sizeY*pitch_host<m.sizeY*m.pitch_host)   //simple case, we simply copy data with the same attribute
-        {
-            T* prevHostPointer = hostPointer;
-            MemoryManager::hostAlloc( (void **) &hostPointer, m.pitch_host * sizeY);
-            if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
-
-            void* prevDevicePointer = devicePointer;
-            mycudaMallocPitch(&devicePointer, &pitch_device, m.pitch_device, sizeY);
-            if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
-
-            allocSizeY = sizeY;
-        }
-        else
-        {
-            int allocline = (allocSizeY*pitch_host) / m.pitch_host;
-            allocSizeY = allocline * m.pitch_host;
-            // Here it's possible that the allocSizeY is < the the real memory allocated, but it's not a problem, it will we deleted at the next resize;
-        }
-
-        pitch_host = m.pitch_host;
-        pitch_device = m.pitch_device;
-
-        if (m.hostIsValid) std::copy ( m.hostPointer, ((T*) (((char*) m.hostPointer)+(m.pitch_host*m.sizeY))), hostPointer);
-        if (m.deviceIsValid) MemoryManager::memcpyDeviceToDevice (0, devicePointer, m.devicePointer, m.pitch_device*m.sizeY );
-
-        hostIsValid = m.hostIsValid;
-        deviceIsValid = m.deviceIsValid; /// finally we get the correct device valid
-    }
-
-    friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat )
-    {
+    friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat ) {
         mat.hostRead();
         os << "[\n";
         for (unsigned j=0; j<mat.getSizeY(); j++)
@@ -528,8 +464,7 @@ public:
     }
 
 protected:
-    void copyToHost() const
-    {
+    void copyToHost() const {
         if ( hostIsValid ) return;
         DEBUG_OUT_M(SPACEN << "copyToHost" << std::endl);
 
@@ -540,8 +475,8 @@ protected:
         mycudaMemcpyDeviceToHost2D ( hostPointer, pitch_host, devicePointer, pitch_device, sizeX*sizeof(T), sizeY);
         hostIsValid = true;
     }
-    void copyToDevice() const
-    {
+
+    void copyToDevice() const {
         if ( deviceIsValid ) return;
 
 //#ifndef NDEBUG
@@ -552,18 +487,12 @@ protected:
         deviceIsValid = true;
     }
 
-#ifdef NDEBUG
-    void checkIndex ( size_type,size_type ) const
-    {
-    }
-#else
-    void checkIndex ( size_type y,size_type x) const
-    {
-        assert (x<this->sizeX);
-        assert (y<this->sizeY);
+#ifdef DEBUG_OUT_MATRIX
+    void checkIndex ( size_type y,size_type x) const {
+        if (x>=sizeX) assert(0);
+        if (y>=sizeY) assert(0);
     }
 #endif
-
 };
 
 #ifdef DEBUG_OUT_MATRIX

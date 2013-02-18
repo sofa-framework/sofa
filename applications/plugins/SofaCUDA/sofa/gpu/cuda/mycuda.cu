@@ -165,6 +165,10 @@ cusparseMatDescr_t getCusparseMatTriangularDescr()
     return NULL;
 }
 
+void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t *  	free,size_t *  	total) {
+
+}
+
 #endif //SOFA_GPU_CUBLAS
 
 #else
@@ -458,6 +462,10 @@ cusparseMatDescr_t getCusparseMatTriangularDescr()
     }
 
     return matdescTri;
+}
+
+void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t * free,size_t * total) {
+    cudaMemGetInfo(free,total);
 }
 
 #endif //SOFA_GPU_CUBLAS

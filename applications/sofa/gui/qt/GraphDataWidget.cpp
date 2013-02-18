@@ -108,7 +108,8 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     connect(findImageFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
 
     generalLayout->add(checkBox);
-#endif    
+#endif
+    idfile = 0;
 }
 
 void GraphOptionWidget::openFindFileDialog()
@@ -147,6 +148,7 @@ void GraphOptionWidget::exportImage()
     if (idfile>99999) idfile = 0;
 
     std::string filename = fileImageLineEdit->text().ascii();
+    filename.append("_");
     filename.append(pad);
     filename.append(idstring);
     graph->exportImage(filename);

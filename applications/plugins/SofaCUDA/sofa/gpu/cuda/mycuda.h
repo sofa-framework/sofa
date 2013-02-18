@@ -75,6 +75,9 @@ extern "C" {
 
     extern void SOFA_GPU_CUDA_API displayStack(const char * name);
 
+    extern void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t *  	free,size_t *  	total);
+
+
 #ifdef SOFA_GPU_CUBLAS
     extern cusparseHandle_t SOFA_GPU_CUDA_API getCusparseCtx();
     extern cublasHandle_t SOFA_GPU_CUDA_API getCublasCtx();
