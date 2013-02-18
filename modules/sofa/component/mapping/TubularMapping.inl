@@ -137,15 +137,15 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
 
-    if(out.size() != rotatedPoints.size())
-    {
-        rotatedPoints.resize(out.size());
-    }
-
     unsigned int N = m_nbPointsOnEachCircle.getValue();
 
     out.resize(in.size() * N);
     OutDeriv v,omega;
+
+    if(out.size() != rotatedPoints.size())
+    {
+        rotatedPoints.resize(out.size());
+    }
 
     for (unsigned int i=0; i<in.size(); i++)
     {
