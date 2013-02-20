@@ -113,6 +113,7 @@ public:
 
     Data< bool > flipNormals;
     Data< bool > triangulate;
+    Data< bool > createSubelements;
     Data< bool > onlyAttachedPoints;
 
     Data< Vector3 > translation;
