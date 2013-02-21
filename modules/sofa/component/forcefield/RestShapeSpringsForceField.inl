@@ -320,6 +320,68 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
     }
 }
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex )
+{
+    //      remove to be able to build in parallel
+    // 	const VecIndex& indices = points.getValue();
+    // 	const VecReal& k = stiffness.getValue();
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+    double kFact = mparams->kFactor();
+
+    const int N = Coord::total_size;
+
+    unsigned int curIndex = 0;
+
+    if (k.size()!= m_indices.size() )
+    {
+        const Real k0 = k[0];
+        for (unsigned int index = 0; index < m_indices.size(); index++)
+        {
+            curIndex = m_indices[index];
+
+            bool contains=false;
+            for (unsigned s=0;s<addSubIndex.size() && !contains;s++) if (curIndex==addSubIndex[s]) contains=true;
+            if (!contains) continue;
+
+            for(int i = 0; i < N; i++)
+            {
+
+                //	for (unsigned int j = 0; j < N; j++)
+                //	{
+                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
+                //	}
+
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
+            }
+        }
+    }
+    else
+    {
+        for (unsigned int index = 0; index < m_indices.size(); index++)
+        {
+            curIndex = m_indices[index];
+
+            bool contains=false;
+            for (unsigned s=0;s<addSubIndex.size() && !contains;s++) if (curIndex==addSubIndex[s]) contains=true;
+            if (!contains) continue;
+
+            for(int i = 0; i < N; i++)
+            {
+
+                //	for (unsigned int j = 0; j < N; j++)
+                //	{
+                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
+                //	}
+
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
+            }
+        }
+    }
+}
+
 #ifdef SOFA_HAVE_EIGEN2
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* RestShapeSpringsForceField<DataTypes>::getStiffnessMatrix(const core::MechanicalParams* mparams) {
