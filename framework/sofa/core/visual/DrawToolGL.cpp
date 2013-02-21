@@ -546,6 +546,52 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
+{
+    glBegin( GL_LINES );
+
+    // 0-1
+    glVertex3f( min[0], min[1], min[2] );
+    glVertex3f( max[0], min[1], min[2] );
+    // 2-3
+    glVertex3f( max[0], max[1], min[2] );
+    glVertex3f( min[0], max[1], min[2] );
+    // 4-5
+    glVertex3f( min[0], min[1], max[2] );
+    glVertex3f( max[0], min[1], max[2] );
+    // 6-7
+    glVertex3f( max[0], max[1], max[2] );
+    glVertex3f( min[0], max[1], max[2] );
+    // 0-3
+    glVertex3f( min[0], min[1], min[2] );
+    glVertex3f( min[0], max[1], min[2] );
+    // 1-2
+    glVertex3f( max[0], min[1], min[2] );
+    glVertex3f( max[0], max[1], min[2] );
+    // 4-7
+    glVertex3f( min[0], min[1], max[2] );
+    glVertex3f( min[0], max[1], max[2] );
+    // 5-6
+    glVertex3f( max[0], min[1], max[2] );
+    glVertex3f( max[0], max[1], max[2] );
+    // 0-4
+    glVertex3f( min[0], min[1], min[2] );
+    glVertex3f( min[0], min[1], max[2] );
+    // 1-5
+    glVertex3f( max[0], min[1], min[2] );
+    glVertex3f( max[0], min[1], max[2] );
+    // 2-6
+    glVertex3f( max[0], max[1], min[2] );
+    glVertex3f( max[0], max[1], max[2] );
+    // 3-7
+    glVertex3f( min[0], max[1], min[2] );
+    glVertex3f( min[0], max[1], max[2] );
+
+    glEnd();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void DrawToolGL::setPolygonMode(int _mode, bool _wireframe)
 {
     mPolygonMode=_mode;

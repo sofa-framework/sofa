@@ -89,15 +89,22 @@ void BoundingBox::invalidate()
 bool BoundingBox::isValid() const
 {
     return minBBox().x() <= maxBBox().x() &&
-            minBBox().y() <= maxBBox().y() &&
-            minBBox().z() <= maxBBox().z();
+           minBBox().y() <= maxBBox().y() &&
+           minBBox().z() <= maxBBox().z();
 }
 
 bool BoundingBox::isFlat() const
 {
-    return    minBBox().x() == maxBBox().x() ||
-            minBBox().y() == maxBBox().y() ||
-            minBBox().z() == maxBBox().z();
+    return minBBox().x() == maxBBox().x() ||
+           minBBox().y() == maxBBox().y() ||
+           minBBox().z() == maxBBox().z();
+}
+
+bool BoundingBox::isNull() const
+{
+    return minBBox().x() == maxBBox().x() &&
+           minBBox().y() == maxBBox().y() &&
+           minBBox().z() == maxBBox().z();
 }
 
 BoundingBox::operator bbox_t() const
@@ -204,6 +211,8 @@ void BoundingBox::inflate(const SReal amount)
     minBBox() -= size;
     maxBBox() += size;
 }
+
+
 
 } // namespace defaulttype
 

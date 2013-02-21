@@ -109,6 +109,8 @@ public:
 
     virtual void drawSphere( const Vector3 &p, float radius);
 
+    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max );
+
     virtual void clear();
 
     virtual void setMaterial(const Vec4f &colour, std::string name=std::string());
