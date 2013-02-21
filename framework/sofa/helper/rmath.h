@@ -111,7 +111,7 @@ inline real rabs(real r)
 template<class real>
 inline real rmin(real r, real s)
 {
-    return (r<=s)?r:s;
+    return (r<s)?r:s;
 }
 
 template<class real>
@@ -191,6 +191,12 @@ inline T factorial (T Number)
 //    std::cerr<<msg<<std::endl;
 //    assert(0);
 //}
+
+template<class T>
+inline T rclamp(const T& value, const T& low, const T& high)
+{
+  return value < low ? low : (value > high ? high : value);
+}
 
 
 } // namespace helper

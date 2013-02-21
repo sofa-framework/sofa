@@ -399,17 +399,17 @@ public:
                 v = (T2)this->_array[0][channel];
                 break;
             case 3: // sum
-                assert( this->_array[0][channel] <= std::numeric_limits<T2>::max() );
+                assert( typeid(T)==typeid(bool) || this->_array[0][channel] <= std::numeric_limits<T2>::max() );
                 v = (T2)this->_array[0][channel];
                 for( unsigned i=1 ; i<this->_size ; ++i )
                 {
-                    assert( v <= std::numeric_limits<T2>::max()-this->_array[i][channel] );
+                    assert( typeid(T)==typeid(bool) || v <= std::numeric_limits<T2>::max()-this->_array[i][channel] );
                     v += (T2)this->_array[i][channel];
                 }
                 break;
             case 2: // count
             default:
-                assert( this->_size <= (unsigned)std::numeric_limits<T2>::max() );
+                assert( typeid(T)==typeid(bool) || this->_size <= (unsigned)std::numeric_limits<T2>::max() );
                 v = (T2)this->_size;
                 break;
             }
