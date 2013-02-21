@@ -178,7 +178,7 @@ public:
     }
 
     /// read @warning does nothing for now, just needed to put a NoPreallocationVector in a Data
-    friend std::istream& operator >> ( std::istream& in, NoPreallocationVector<T>& c )
+    friend std::istream& operator >> ( std::istream& in, NoPreallocationVector<T>& /*c*/ )
     {
 //        T t = T();
 //        c.clear();
@@ -188,7 +188,7 @@ public:
     }
 
     /// write @warning does nothing for now, just needed to put a NoPreallocationVector in a Data
-    friend std::ostream& operator << ( std::ostream& out, const NoPreallocationVector<T>& c )
+    friend std::ostream& operator << ( std::ostream& out, const NoPreallocationVector<T>& /*c*/ )
     {
 //        for( unsigned i=0 ; i<c._size-1 ; ++i )
 //        {
