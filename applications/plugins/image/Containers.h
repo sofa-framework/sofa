@@ -27,6 +27,13 @@ public:
 
     /// default constructor, no allocation, no initialization
     NoPreallocationVector() : _array(0), _size(0) {}
+    /// given allocation, no initialization
+    NoPreallocationVector( size_t size )
+    {
+        _size = size;
+        if( !size ) { _array=0; return; }
+        _array = new T[_size];
+    }
     /// default destructor
     ~NoPreallocationVector() { if( _array ) delete [] _array; }
 
@@ -168,6 +175,27 @@ public:
     {
         for( unsigned i=0 ; i<_size ; ++i )
             _array[i] = v;
+    }
+
+    /// read @warning does nothing for now, just needed to put a NoPreallocationVector in a Data
+    friend std::istream& operator >> ( std::istream& in, NoPreallocationVector<T>& c )
+    {
+//        T t = T();
+//        c.clear();
+//        while( in >> t ) c.push_back( t );
+//        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
+
+    /// write @warning does nothing for now, just needed to put a NoPreallocationVector in a Data
+    friend std::ostream& operator << ( std::ostream& out, const NoPreallocationVector<T>& c )
+    {
+//        for( unsigned i=0 ; i<c._size-1 ; ++i )
+//        {
+//            out << c._array[i] << " ";
+//        }
+//        out << c._array[c._size-1];
+        return out;
     }
 
 protected:

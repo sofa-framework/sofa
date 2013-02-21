@@ -42,6 +42,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>
 #include "VectorVis.h"
+#include <sofa/helper/rmath.h>
 
 #if defined(WIN32)
 #define finite(x) (_finite(x))
@@ -395,8 +396,11 @@ public:
     virtual Real fromImage(const Real& ip) const {return ip;}	// image index to time transform
     virtual Coord toImage(const Coord& p) const {return p;}		// space coord to image transform
     virtual Real toImage(const Real& p) const {return p;}		// time to image index transform
+    virtual Coord toImageInt(const Coord& p) const { Coord p2 = toImage(p); return Coord( helper::round(p2.x()),helper::round(p2.y()),helper::round(p2.z()) );}		// space coord to rounded image transform
+    virtual Real toImageInt(const Real& p) const { return helper::round(toImage(p));}		// time to rounded image index transform
 
     virtual void update()=0;
+
 };
 
 
@@ -508,6 +512,7 @@ public:
         }
     }
     virtual Real toImage(const Real& p) const		{ return (p - getOffsetT())/getScaleT(); }
+
 };
 
 

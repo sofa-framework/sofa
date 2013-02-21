@@ -59,6 +59,7 @@ public:
     void invalidate();
     bool isValid() const;
     bool isFlat()  const;
+    bool isNull()  const;
 
     SReal* minBBoxPtr();
     SReal* maxBBoxPtr();

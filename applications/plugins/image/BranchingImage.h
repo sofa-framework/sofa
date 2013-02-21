@@ -769,7 +769,7 @@ public:
             imgList[t].resize( imageSize );
     }
 
-    /// write dimensions
+    /// read dimensions
     inline friend std::istream& operator >> ( std::istream& in, BranchingImage<T>& im )
     {
         Dimension dim;
@@ -778,7 +778,7 @@ public:
         return in;
     }
 
-    /// read dimensions
+    /// write dimensions
     friend std::ostream& operator << ( std::ostream& out, const BranchingImage<T>& im )
     {
         out << im.getDimension();

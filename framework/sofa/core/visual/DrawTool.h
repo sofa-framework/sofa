@@ -118,6 +118,8 @@ public:
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3) = 0 ;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
+
+    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max ) = 0;
     /// @}
 
     /// @name Transformation methods.

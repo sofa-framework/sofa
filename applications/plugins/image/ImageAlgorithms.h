@@ -40,14 +40,6 @@ using namespace cimg_library;
 
 
 
-
-template<typename real>
-int round(real r)
-{
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-}
-
-
 /**
 *  Move points to the centroid of their voronoi region
 *  returns true if points have moved
