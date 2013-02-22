@@ -183,18 +183,29 @@ void OglShaderVisualModel::updateVisual()
 void OglShaderVisualModel::computeRestPositions()
 {
     if (!vrestpositions) return;
-    int counter = m_restPositions.getCounter();
-    if (counter == restPosition_lastUpdate)
-        return;
-    restPosition_lastUpdate = counter;
+//    int counter = m_restPositions.getCounter();
+//    if (counter == restPosition_lastUpdate) return;
+//    restPosition_lastUpdate = counter;
 
-    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > positions = (m_positions.getValue().size() != m_restPositions.getValue().size()) ? m_positions : m_restPositions;
+    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > positions = m_positions;
+    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > restpositions = m_restPositions;
+
+    //Get the position of the new point (should be the rest position to avoid artefact !
+    if (restpositions.size()!=positions.size()) {
+        VecCoord& restVertices = *(m_restPositions.beginEdit());
+        for (unsigned int i=restVertices.size(); i<positions.size(); i++) {
+            restVertices.push_back(positions[i]);
+        }
+        m_restPositions.endEdit();
+    }
+
+
     ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
-    vrestpos.resize ( positions.size() );
+    vrestpos.resize ( restpositions.size() );
 
-    for ( unsigned int i = 0; i < positions.size(); i++ )
+    for ( unsigned int i = 0; i < restpositions.size(); i++ )
     {
-        vrestpos[i] = positions[i];
+        vrestpos[i] = restpositions[i];
     }
 
     vrestpositions->endEdit();
@@ -208,21 +219,21 @@ void OglShaderVisualModel::handleTopologyChange()
 
     if (m_topology && shader)
     {
-        bool update=false;
+//        bool update=false;
         std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
-        while( itBegin != itEnd )
-        {
-            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-            if ((changeType==core::topology::TRIANGLESREMOVED) ||
-                (changeType==core::topology::TRIANGLESADDED) ||
-                (changeType==core::topology::QUADSADDED) ||
-                (changeType==core::topology::QUADSREMOVED))
-                update=true;
-            itBegin++;
-        }
-        if (update)
+//        while( itBegin != itEnd )
+//        {
+//            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+//            if ((changeType==core::topology::TRIANGLESREMOVED) ||
+//                (changeType==core::topology::TRIANGLESADDED) ||
+//                (changeType==core::topology::QUADSADDED) ||
+//                (changeType==core::topology::QUADSREMOVED))
+//            update=true;
+//            itBegin++;
+//        }
+        if (itBegin != itEnd)
         {
             computeRestPositions();
             computeRestNormals();
