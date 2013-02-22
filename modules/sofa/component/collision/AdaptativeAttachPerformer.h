@@ -6,15 +6,8 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-//#include "./applications-dev/plugins/ARPlugin/AdaptativeSpringForceField.h"
-//#include "./../../../../applications-dev/plugins/ARPlugin/AdaptativeStiffSpringForceField.h"
-
-#include "./../../applications-dev/plugins/ARPlugin/AdaptativeStiffSpringForceField.inl"
-#include "./../../applications-dev/plugins/ARPlugin/AdaptativeSpringForceField.inl"
-
-//#include "/home/pierre-luc/Sofa_ssh/Sofa/applications-dev/plugins/ARPlugin/AdaptativeSpringForceField.cpp"
-//#include "/home/pierre-luc/Sofa_ssh/Sofa/applications-dev/plugins/ARPlugin/AdaptativeStiffSpringForceField.cpp"
-
+#include "./../../applications-dev/plugins/ARPlugin/ARPSStiffSpringForceField.inl"
+#include "./../../applications-dev/plugins/ARPlugin/ARPSSpringForceField.inl"
 #include <sofa/component/configurationsetting/AdaptativeAttachButtonSetting.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 
@@ -72,10 +65,6 @@ public:
         int index; //Index of the attached DOF
 
         virtual bool start_partial(const BodyPicked& picked);
-        /*
-        initialise MouseForceField according to template.
-        AdaptativeStiffSpringForceField for Vec3
-        */
         MouseContactMapper  *mapper;
         MouseForceField::SPtr m_forcefield;
 

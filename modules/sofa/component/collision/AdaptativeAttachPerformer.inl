@@ -83,21 +83,21 @@ bool AdaptativeAttachPerformer<DataTypes>::start_partial(const BodyPicked& picke
         }
     }
 
-    using sofa::component::interactionforcefield::AdaptativeStiffSpringForceField;
+    using sofa::component::interactionforcefield::ARPSStiffSpringForceField;
 
-    m_forcefield = sofa::core::objectmodel::New< AdaptativeStiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    AdaptativeStiffSpringForceField< DataTypes >* adaptativestiffspringforcefield = static_cast< AdaptativeStiffSpringForceField< DataTypes >* >(m_forcefield.get());
-    adaptativestiffspringforcefield->setName("Spring-Mouse-Contact");
-    adaptativestiffspringforcefield->setArrowSize((float)this->size);
-    adaptativestiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
+    m_forcefield = sofa::core::objectmodel::New< ARPSStiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    ARPSStiffSpringForceField< DataTypes >* arpsstiffspringforcefield = static_cast< ARPSStiffSpringForceField< DataTypes >* >(m_forcefield.get());
+    arpsstiffspringforcefield->setName("Spring-Mouse-Contact");
+    arpsstiffspringforcefield->setArrowSize((float)this->size);
+    arpsstiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
 
 
-    adaptativestiffspringforcefield->addSpring(0,this->index, stiffness, 0.0, picked.dist);
+    arpsstiffspringforcefield->addSpring(0,this->index, stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        adaptativestiffspringforcefield->addTag(*it);
+        arpsstiffspringforcefield->addTag(*it);
 
-    mstateCollision->getContext()->addObject(adaptativestiffspringforcefield);
+    mstateCollision->getContext()->addObject(arpsstiffspringforcefield);
 
     return true;
 }
@@ -144,9 +144,9 @@ void AdaptativeAttachPerformer<DataTypes>::clear()
 {
     if (m_forcefield)
     {
-        using sofa::component::interactionforcefield::AdaptativeStiffSpringForceField;
-        AdaptativeStiffSpringForceField< DataTypes >* adaptativestiffspringforcefield = static_cast< AdaptativeStiffSpringForceField< DataTypes >* >(m_forcefield.get());
-        adaptativestiffspringforcefield->removeSpringForce(this->index, adaptativestiffspringforcefield->previousForce[0]);
+        using sofa::component::interactionforcefield::ARPSStiffSpringForceField;
+        ARPSStiffSpringForceField< DataTypes >* arpsstiffspringforcefield = static_cast< ARPSStiffSpringForceField< DataTypes >* >(m_forcefield.get());
+        arpsstiffspringforcefield->removeSpringForce(this->index, arpsstiffspringforcefield->previousForce[0]);
 
         m_forcefield->cleanup();
         m_forcefield->getContext()->removeObject(m_forcefield);

@@ -150,9 +150,7 @@ void StiffSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparam
     this->m_potentialEnergy = 0;
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        sofa::helper::AdvancedTimer::stepBegin("addSpringForce");
         this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
-        sofa::helper::AdvancedTimer::stepEnd("addSpringForce");
     }
     data_f1.endEdit();
     data_f2.endEdit();
