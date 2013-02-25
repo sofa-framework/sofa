@@ -43,8 +43,6 @@ HEADERS += initUserInteraction.h \
     controller/MechanicalStateControllerOmni.h \
 	controller/MechanicalStateControllerOmni.inl \
     controller/NodeToggleController.h \
-    collision/AdaptativeAttachPerformer.h \
-    collision/AdaptativeAttachPerformer.inl
 
 
 SOURCES += initUserInteraction.cpp \
@@ -73,7 +71,6 @@ SOURCES += initUserInteraction.cpp \
            collision/AddFramePerformer.cpp \
     controller/MechanicalStateControllerOmni.cpp \
     controller/NodeToggleController.cpp \
-    collision/AdaptativeAttachPerformer.cpp \
 
 
 
