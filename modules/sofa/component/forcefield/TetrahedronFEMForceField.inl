@@ -2247,7 +2247,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             }
             //std::cout << "gradU = " << gradU<< std::endl;
 
-            Mat33 strain = 0.5*(gradU + gradU.transposed() + gradU.transposed()*gradU);
+            Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
             for (size_t i = 0; i < 3; i++)
                 vStrain[i] = strain[i][i];
