@@ -28,6 +28,61 @@ using namespace sofa::core::objectmodel;
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
 
+extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->init();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->bwdInit();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->reinit();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->storeResetState();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->reset();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    obj->cleanup();
+    return Py_BuildValue("i",0);
+}
+
+extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    return SP_BUILD_PYSPTR(obj->getContext());
+}
+
+extern "C" PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    return SP_BUILD_PYSPTR(obj->getMaster());
+}
+
+
 extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
@@ -45,6 +100,15 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
 
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
+SP_CLASS_METHOD(BaseObject,init)
+SP_CLASS_METHOD(BaseObject,bwdInit)
+SP_CLASS_METHOD(BaseObject,reinit)
+SP_CLASS_METHOD(BaseObject,storeResetState)
+SP_CLASS_METHOD(BaseObject,reset)
+SP_CLASS_METHOD(BaseObject,cleanup)
+SP_CLASS_METHOD(BaseObject,getContext)
+SP_CLASS_METHOD(BaseObject,getMaster)
+
 SP_CLASS_METHOD(BaseObject,setSrc)
 SP_CLASS_METHODS_END
 
