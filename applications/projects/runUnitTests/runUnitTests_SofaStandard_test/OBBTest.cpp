@@ -304,7 +304,7 @@ bool TestOBB::vertexVertex(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    std::vector<typename sofa::component::collision::OBB::Coord> vs;
+    std::vector<sofa::component::collision::OBB::Coord> vs;
     obb0.vertices(vs);
     std::cout<<"vertices obb0"<<std::endl;
     for(unsigned int i = 0 ; i < vs.size() ; ++i)
