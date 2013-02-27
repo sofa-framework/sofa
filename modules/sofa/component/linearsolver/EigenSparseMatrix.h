@@ -355,6 +355,7 @@ public:
         }
     }
 
+
     /// compute result += A * data
     void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const
     {
@@ -364,7 +365,7 @@ public:
         // use optimized product if possible
         if(canCast(dat.ref()))
         {
-            map(result) += this->compressedMatrix * map(dat).template cast<Real>();
+            map(res) += this->compressedMatrix * map(dat).template cast<Real>();
             return;
         }
 
