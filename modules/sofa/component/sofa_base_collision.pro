@@ -29,8 +29,6 @@ HEADERS += initBaseCollision.h \
     collision/RigidSphereModel.h \
     collision/RigidSphereModel.inl \
     collision/OBBIntTool.h \
-    collision/Intersector.h \
-    collision/Intersector.inl \
     collision/IntrOBBOBB.h \
     collision/IntrOBBOBB.inl \
     collision/IntrUtility3.h \
@@ -52,9 +50,9 @@ SOURCES += initBaseCollision.cpp \
     collision/RigidSphereModel.cpp \
     collision/OBBModel.cpp \
     collision/OBBIntTool.cpp \
-    collision/Intersector.cpp \
     collision/IntrOBBOBB.cpp \
-    collision/IntrUtility3.cpp
+    collision/IntrUtility3.cpp \
+    collision/IntrCapsuleOBB.cpp
 
 
 

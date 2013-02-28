@@ -345,6 +345,10 @@ void SimpleObjectCreator::AddCollisionModels(simulation::Node::SPtr CollisionNod
             component::collision::CapsuleModel::SPtr capsule = sofa::core::objectmodel::New<component::collision::CapsuleModel>();  capsule->setName("CapsuleCollision");
             CollisionNode->addObject(capsule);
         }
+        else if(elements[i] == "OBB"){
+            component::collision::OBBModel::SPtr obb = sofa::core::objectmodel::New<component::collision::OBBModel>();  obb->setName("OBBCollision");
+            CollisionNode->addObject(obb);
+        }
     }
 }
 

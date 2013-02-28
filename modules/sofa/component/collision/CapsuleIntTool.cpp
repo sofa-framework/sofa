@@ -71,7 +71,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmD
 
         double c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
         double d_proj = (AB * AD)/AB_norm2;
-        double a_proj = b[1];//beta = (-CD*AC)/CD_norm2
+        double a_proj = b[1]/CD_norm2;//beta = (-CD*AC)/CD_norm2
         double b_proj= (CD*CB)/CD_norm2;
 
         if(c_proj >= 0 && c_proj <= 1){//projection of C on AB is lying on AB
@@ -249,6 +249,37 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, Sphere & sph,double alar
 
         return true;
     }
+}
+
+
+bool CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
+    IntrCapsuleOBB intr(cap,obb);
+    //double max_time = helper::rsqrt((alarmDist * alarmDist)/((obb.lvelocity() - cap.velocity()).norm2()));
+    if(/*intr.Find(max_time,cap.velocity(),obb.lvelocity())*/intr.FindStatic(alarmDist)){
+        OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
+        if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
+            return 0;
+
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
+
+        detection->normal = intr.separatingAxis();
+        detection->point[0] = intr.pointOnFirst();
+        detection->point[1] = intr.pointOnSecond();
+
+        if(intr.colliding())
+            detection->value = -helper::rsqrt(dist2) - contactDist;
+        else
+            detection->value = helper::rsqrt(dist2) - contactDist;
+
+        detection->elem.first = cap;
+        detection->elem.second = obb;
+        detection->id = (cap.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? cap.getIndex() : obb.getIndex();
+
+        return 1;
+    }
+
+    return 0;
 }
 
 }

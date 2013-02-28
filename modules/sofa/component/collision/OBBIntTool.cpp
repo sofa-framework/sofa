@@ -13,12 +13,11 @@ bool OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,dou
 //    if((box0.center() - box1.center()).norm2() > r02 + 2*r0*r1 + r12){
 //        return 0;
 //    }
-
     IntrOBBOBB intr(box0,box1);
-    double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
-    if(intr.Find(max_time,box0.lvelocity(),box1.lvelocity())){
+    //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
+    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.FindStatic(alarmDist)){
         OBB::Real dist2 = (intr.GetPointOnFirst() - intr.GetPointOnSecond()).norm2();
-        if(dist2 > alarmDist * alarmDist)
+        if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
 
         contacts->resize(contacts->size()+1);
@@ -28,7 +27,11 @@ bool OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,dou
         detection->point[0] = intr.GetPointOnFirst();
         detection->point[1] = intr.GetPointOnSecond();
 
-        detection->value = helper::rsqrt(dist2) - contactDist;
+        if(intr.colliding())
+            detection->value = -helper::rsqrt(dist2) - contactDist;
+        else
+            detection->value = helper::rsqrt(dist2) - contactDist;
+
         detection->elem.first = box0;
         detection->elem.second = box1;
         detection->id = (box0.getCollisionModel()->getSize() > box1.getCollisionModel()->getSize()) ? box0.getIndex() : box1.getIndex();

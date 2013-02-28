@@ -4,7 +4,7 @@
 #ifndef WM5INTRBOX3BOX3_H
 #define WM5INTRBOX3BOX3_H
 
-#include "Intersector.h"
+//#include "Intersector.h"
 #include <sofa/component/collision/OBBModel.h>
 
 namespace sofa{
@@ -13,7 +13,6 @@ namespace collision{
 
 template <class TDataTypes>
 class TIntrOBBOBB
-    : public Intersector<TDataTypes >
 {
 public:
     typedef typename TDataTypes::Real Real;
@@ -36,8 +35,11 @@ public:
         const Vec<3,Real>& velocity1);
 
     // Dynamic find-intersection query.  The contact set is computed.
-    virtual bool Find (Real tmax, const Vec<3,Real>& velocity0,
+    bool Find (Real tmax, const Vec<3,Real>& velocity0,
         const Vec<3,Real>& velocity1);
+
+    // Dynamic find-intersection query.  The contact set is computed.
+    bool FindStatic (Real dmax);
 
     // The intersection set for dynamic find-intersection.
     int GetQuantity () const;
@@ -58,11 +60,8 @@ public:
         const Vec<3,Real>& rotAxis1);
 
     const Vec<3,Real> & separatingAxis()const;
-
+    bool colliding()const;
 private:
-    void projectIntPoints(const Vec<3,Real> & velocity0,const Vec<3,Real> & velocity1);
-    using Intersector<TDataTypes>::mContactTime;
-
     // Support for dynamic queries.  The inputs are the projection intervals
     // for the boxes onto a potential separating axis, the relative speed of
     // the intervals, and the maximum time for the query.  The outputs are
@@ -92,6 +91,10 @@ private:
     Vec<3,Real> _sep_axis;
     Vec<3,Real> _pt_on_first;
     Vec<3,Real> _pt_on_second;
+    bool _is_colliding;
+
+    int mIntersectionType;
+    Real mContactTime;
 };
 
 typedef TIntrOBBOBB<RigidTypes> IntrOBBOBB;
