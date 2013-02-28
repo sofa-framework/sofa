@@ -59,6 +59,8 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<CapsuleModel,SphereModel, DiscreteIntersection> (this);
     intersectors.add<RigidSphereModel,RigidSphereModel, DiscreteIntersection> (this);
     intersectors.add<OBBModel,OBBModel,DiscreteIntersection>(this);
+    intersectors.add<CapsuleModel,OBBModel,DiscreteIntersection>(this);
+
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
@@ -144,53 +146,21 @@ int DiscreteIntersection::computeIntersection(Capsule & cap, Sphere & sph,Output
 
 
 bool DiscreteIntersection::testIntersection(OBB &,OBB &){
-    //Wm5::IntrOBBOBB intr(box0,box1);
+    return false;
+}
 
+bool DiscreteIntersection::testIntersection(Capsule &,OBB &){
     return false;
 }
 
 int DiscreteIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
-    std::cout<<"so BAAAAAAAAAAAAAAAAAAAAAAAD"<<std::endl;
-    IntrOBBOBB intr(box0,box1);
-    if(/* intr.Test(10,box0.lvelocity(),box1.lvelocity()) &&*/ intr.Find(/*std::numeric_limits<SReal>::max()*/1,box0.lvelocity(),box1.lvelocity())){
-
-        if(intr.GetQuantity() == 1){
-            std::cout<<"so BAAAAAAAAAAAAAAAAAAAAAAAD"<<std::endl;
-            contacts->resize(contacts->size()+1);
-            DetectionOutput *detection = &*(contacts->end()-1);
-
-            detection->normal = intr.separatingAxis();
-            detection->point[0] = intr.GetPointOnFirst();
-            detection->point[1] = intr.GetPointOnSecond();
-
-            detection->value = (detection->point[0] - detection->point[1]).norm();
-            detection->elem.first = box0;
-            detection->elem.second = box1;
-            detection->id = (box0.getCollisionModel()->getSize() > box1.getCollisionModel()->getSize()) ? box0.getIndex() : box1.getIndex();
-
-            return 1;
-        }
-
-        //}
-//        contacts->resize(contacts->size()+1);
-//        DetectionOutput *detection = &*(contacts->end()-1);
-//        detection->normal = dist;
-//        double distSph1Sph2 = detection->normal.norm();
-//        detection->normal /= distSph1Sph2;
-//        detection->point[0] = sph1.center() + detection->normal * sph1.r();
-//        detection->point[1] = sph2.center() - detection->normal * sph2.r();
-
-//        detection->value = distSph1Sph2 - r;
-//        detection->elem.first = sph1;
-//        detection->elem.second = sph2;
-//        detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
-
-        return 1;
-    }
-    std::cout<<"NOT OBB/OBB Inter"<<std::endl;
-
-    return 0;
+    return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
 }
+
+int DiscreteIntersection::computeIntersection(Capsule & cap, OBB & box,OutputVector* contacts){
+    return CapsuleIntTool::computeIntersection(cap,box,cap.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + cap.getProximity() + getContactDistance(),contacts);
+}
+
 
 
 //int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, OutputVector*)

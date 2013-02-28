@@ -35,7 +35,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Intersector.h>
+//#include <sofa/component/collision/Intersector.h>
 
 namespace sofa
 {

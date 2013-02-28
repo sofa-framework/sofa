@@ -4,6 +4,8 @@
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/IntrCapsuleOBB.h>
 #include <cmath>
 
 namespace sofa
@@ -18,6 +20,7 @@ public:
 
     static bool computeIntersection(Capsule&, Capsule&,double alarmDist,double contactDist,OutputVector* contacts);
     static bool computeIntersection(Capsule&, Sphere&,double alarmDist,double contactDist,OutputVector* contacts);
+    static bool computeIntersection(Capsule&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
 };
 
 }

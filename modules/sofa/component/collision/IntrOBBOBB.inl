@@ -15,7 +15,8 @@ TIntrOBBOBB<TDataTypes>::TIntrOBBOBB (const Box& box0,
     const Box& box1)
     :
     mBox0(&box0),
-    mBox1(&box1)
+    mBox1(&box1),
+      _is_colliding(false)
 {
     mQuantity = 0;
 }
@@ -39,7 +40,7 @@ bool TIntrOBBOBB<TDataTypes>::Test ()
     // the cases when at least one pair of axes are parallel.  If this
     // happens, there is no need to test for separation along the
     // Cross(A[i],B[j]) directions.
-    const Real cutoff = (Real)1 - Math<Real>::ZERO_TOLERANCE();
+    const Real cutoff = (Real)1 - IntrUtil<Real>::ZERO_TOLERANCE();
     bool existsParallelPair = false;
     int i;
 
@@ -264,7 +265,7 @@ bool TIntrOBBOBB<TDataTypes>::Test (Real tmax,
     // the cases when at least one pair of axes are parallel.  If this
     // happens, there is no need to include the cross-product axes for
     // separation.
-    const Real cutoff = (Real)1 - Math<Real>::ZERO_TOLERANCE();
+    const Real cutoff = (Real)1 - IntrUtil<Real>::ZERO_TOLERANCE();
     bool existsParallelPair = false;
 
     // convenience variables
@@ -476,7 +477,7 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real tmax, const Vec<3,Real>& velocity0,
 {
     mQuantity = 0;
 
-    mContactTime = (Real)0;//std::numeric_limits<Real>::min();//
+    mContactTime = -std::numeric_limits<Real>::max();
     Real tlast = std::numeric_limits<Real>::max();
 
     // Relative velocity of box1 relative to box0.
@@ -525,20 +526,17 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real tmax, const Vec<3,Real>& velocity0,
 
             // Since all axes are unit length (assumed), then can just compare
             // against a constant (not relative) epsilon.
-            if (axis.norm2() <= Math<Real>::ZERO_TOLERANCE())
+            if (axis.norm2() <= IntrUtil<Real>::ZERO_TOLERANCE())
             {
-                std::cout<<"i0 "<<i0<<std::endl;
-                std::cout<<"i1 "<<i1<<std::endl;
                 // Axis i0 and i1 are parallel.  If any two axes are parallel,
                 // then the only comparisons that needed are between the faces
                 // themselves.  At this time the faces have already been
                 // tested, and without separation, so all further separation
                 // tests will show only overlaps.
-                std::cout<<"chelou CASE"<<std::endl;
                 FindContactSet<TDataTypes>(*mBox0, *mBox1, side, box0Cfg, box1Cfg,
                     velocity0, velocity1, mContactTime, mQuantity, mPoint);
 
-                projectIntPoints(velocity0,velocity1);
+                projectIntPoints(velocity0,velocity1,mContactTime,mPoint,mQuantity,_pt_on_first,_pt_on_second);
 
                 if(_sep_axis.norm2() > 1 + 1e-18 || _sep_axis.norm2() < 1 - 1e-18){
                     _sep_axis.normalize();
@@ -547,8 +545,6 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real tmax, const Vec<3,Real>& velocity0,
                 if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
                     _sep_axis *= -1;
 
-                std::cout<<"_sep_axis "<<_sep_axis<<std::endl;
-                std::cout<<"return TRUE"<<std::endl;
                 return true;
             }
 
@@ -591,23 +587,161 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real tmax, const Vec<3,Real>& velocity0,
             _sep_axis = axis;
     }
 
-    if (mContactTime <= (Real)0 || side == IntrConfiguration<Real>::NONE)
+    if (mContactTime <= (Real)0)
     {
-        return false;
-    }
+        if(side == IntrConfiguration<Real>::NONE)
+            return false;
 
-    std::cout<<"gEneRAl CASE"<<std::endl;
-    std::cout<<"axis !!!! "<<_sep_axis<<std::endl;
-//    FindContactSet<TDataTypes>(*mBox0, *mBox1, side, box0Cfg, box1Cfg,
-//        velocity0, velocity1, mContactTime, mQuantity, _pts_on_first,_pts_on_second);
+        Real max_ext_0 = std::max(mBox0->extent(0),std::max(mBox0->extent(1),mBox0->extent(2)));
+        Real max_ext_1 = std::max(mBox1->extent(0),std::max(mBox1->extent(1),mBox1->extent(2)));
+        Real max_ext = std::max(max_ext_0,max_ext_1);
+
+        if((mContactTime * relVelocity).norm2() < max_ext * max_ext){
+            _is_colliding = true;
+        }
+        else{
+            return false;
+        }
+    }
 
     FindContactSet<TDataTypes>(*mBox0, *mBox1, side, box0Cfg, box1Cfg,
         velocity0, velocity1, mContactTime, mQuantity, mPoint);
-    projectIntPoints(velocity0,velocity1);
+    projectIntPoints(velocity0,velocity1,mContactTime,mPoint,mQuantity,_pt_on_first,_pt_on_second);
 
     if(_sep_axis.norm2() > 1 + 1e-18 || _sep_axis.norm2() < 1 - 1e-18){
         _sep_axis.normalize();
     }
+
+    if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
+        _sep_axis *= -1;
+
+    return true;
+}
+//----------------------------------------------------------------------------
+template <class TDataTypes>
+bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
+{
+    mQuantity = 0;
+
+    mContactTime = -std::numeric_limits<Real>::max();
+
+    int i0, i1;
+    int side = IntrConfiguration<Real>::NONE;
+    IntrConfiguration<Real> box0Cfg, box1Cfg;
+    Vec<3,Real> axis;
+    bool config_modified;
+
+    // box 0 normals
+    for (i0 = 0; i0 < 3; ++i0)
+    {
+        axis = mBox0->axis(i0);
+        IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+            mContactTime, side, box0Cfg,box1Cfg,config_modified);
+
+        if(config_modified){
+            _sep_axis = axis;
+        }
+    }
+
+    // box 1 normals
+    for (i1 = 0; i1 < 3; ++i1)
+    {
+        axis = mBox1->axis(i1);
+        IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+            mContactTime, side, box0Cfg, box1Cfg,config_modified);
+
+        if(config_modified){
+            _sep_axis = axis;
+        }
+    }
+
+    // box 0 edges cross box 1 edges
+    for (i0 = 0; i0 < 3; ++i0)
+    {
+        for (i1 = 0; i1 < 3; ++i1)
+        {
+            axis = (mBox0->axis(i0)).cross(mBox1->axis(i1));
+
+            // Since all axes are unit length (assumed), then can just compare
+            // against a constant (not relative) epsilon.
+            if (axis.norm2() <= IntrUtil<Real>::ZERO_TOLERANCE())
+            {
+                // Axis i0 and i1 are parallel.  If any two axes are parallel,
+                // then the only comparisons that needed are between the faces
+                // themselves.  At this time the faces have already been
+                // tested, and without separation, so all further separation
+                // tests will show only overlaps.
+                FindContactSet<TDataTypes>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
+
+                if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
+                    _sep_axis *= -1;
+
+                return true;
+            }
+
+            axis.normalize();
+
+            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1,
+                dmax, mContactTime, side, box0Cfg, box1Cfg,config_modified);
+
+            if(config_modified){
+                _sep_axis = axis;
+            }
+        }
+    }
+
+    Vec<3,Real> relVelocity = mBox1->lvelocity() - mBox0->lvelocity();
+    // velocity cross box 0 edges
+    for (i0 = 0; i0 < 3; ++i0)
+    {
+        axis = relVelocity.cross(mBox0->axis(i0));
+
+        if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
+            axis.normalize();
+            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+                mContactTime, side, box0Cfg, box1Cfg,config_modified);
+
+            if(config_modified){
+                _sep_axis = axis;
+            }
+        }
+    }
+
+    // velocity cross box 1 edges
+    for (i0 = 0; i0 < 3; ++i0)
+    {
+        axis = relVelocity.cross(mBox1->axis(i0));
+
+        if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
+            axis.normalize();
+            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+                mContactTime, side, box0Cfg, box1Cfg,config_modified);
+
+            if(config_modified){
+                _sep_axis = axis;
+            }
+        }
+    }
+
+    if (mContactTime <= (Real)0)
+    {
+        if(side == IntrConfiguration<Real>::NONE)
+            return false;
+
+        Real max_ext_0 = std::max(mBox0->extent(0),std::max(mBox0->extent(1),mBox0->extent(2)));
+        Real max_ext_1 = std::max(mBox1->extent(0),std::max(mBox1->extent(1),mBox1->extent(2)));
+        Real max_ext = std::max(max_ext_0,max_ext_1);
+
+        if(mContactTime < max_ext){
+            _is_colliding = true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    FindContactSet<TDataTypes>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
 
     if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
         _sep_axis *= -1;
@@ -829,18 +963,8 @@ bool TIntrOBBOBB<TDataTypes>::IsSeparated (Real min0, Real max0, Real min1,
 }
 
 template <class TDataTypes>
-void TIntrOBBOBB<TDataTypes>::projectIntPoints(const Vec<3, Real> & velocity0, const Vec<3, Real> & velocity1){
-    _pt_on_first.set(0,0,0);
-    _pt_on_second.set(0,0,0);
-    Vec<3,Real> v0 = -velocity0 * mContactTime;
-    Vec<3,Real> v1 = -velocity1 * mContactTime;
-    for(int i = 0 ; i < mQuantity ; ++i){
-        _pt_on_first += mPoint[i] + v0;
-        _pt_on_second += mPoint[i] + v1;
-    }
-
-    _pt_on_first /= mQuantity;
-    _pt_on_second /= mQuantity;
+bool TIntrOBBOBB<TDataTypes>::colliding()const{
+    return _is_colliding;
 }
 
 //----------------------------------------------------------------------------

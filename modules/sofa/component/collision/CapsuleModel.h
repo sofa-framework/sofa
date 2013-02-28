@@ -79,6 +79,8 @@ public:
     Coord point2()const;
 
     Real radius() const;
+
+    Deriv velocity()const;
 };
 
 /**
@@ -141,6 +143,8 @@ public:
 
     Real defaultRadius()const;
 
+    Deriv velocity(int index)const;
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -161,6 +165,8 @@ public:
     {
         return DataTypes::Name();
     }
+
+    Data<VecReal > & writeRadii();
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;    
 };

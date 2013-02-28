@@ -3,6 +3,7 @@
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/IntrOBBOBB.h>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <sofa/component/collision/CapsuleModel.h>
 
 namespace sofa{
 namespace component{
