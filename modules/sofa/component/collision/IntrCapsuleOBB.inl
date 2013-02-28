@@ -20,9 +20,9 @@ TIntrCapsuleOBB<TDataTypes,TDataTypes2>::TIntrCapsuleOBB (const IntrCap& segment
     const Box & box)
     :
     _cap(&segment),
-    mBox(&box),
-      _is_colliding(false)
+    mBox(&box)
 {
+    _is_colliding = false;
     mQuantity = 0;
 }
 
@@ -296,26 +296,6 @@ template <typename TDataTypes,typename TDataTypes2>
 const Vec<3,typename TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Real>& TIntrCapsuleOBB<TDataTypes,TDataTypes2>::GetPoint (int i) const
 {
     return mPoint[i];
-}
-
-template <typename TDataTypes,typename TDataTypes2>
-const Vec<3,typename TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Real>& TIntrCapsuleOBB<TDataTypes,TDataTypes2>::pointOnFirst()const{
-    return _pt_on_first;
-}
-
-template <typename TDataTypes,typename TDataTypes2>
-const Vec<3,typename TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Real>& TIntrCapsuleOBB<TDataTypes,TDataTypes2>::pointOnSecond () const{
-    return _pt_on_second;
-}
-
-template <typename TDataTypes,typename TDataTypes2>
-const Vec<3,typename TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Real>& TIntrCapsuleOBB<TDataTypes,TDataTypes2>::separatingAxis()const{
-    return _sep_axis;
-}
-
-template <typename TDataTypes,typename TDataTypes2>
-bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::colliding()const{
-    return _is_colliding;
 }
 
 }

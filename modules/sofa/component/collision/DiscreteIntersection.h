@@ -69,6 +69,7 @@ public:
     bool testIntersection(RigidSphere &,RigidSphere &);
     bool testIntersection(OBB &,OBB &);
     bool testIntersection(Capsule &,OBB &);
+    bool testIntersection(Sphere &,OBB &);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);    
     template <class Sphere>
@@ -80,6 +81,7 @@ public:
     int computeIntersection(RigidSphere&,RigidSphere &,OutputVector* contacts);
     int computeIntersection(OBB &, OBB &,OutputVector* contacts);
     int computeIntersection(Capsule &, OBB &,OutputVector* contacts);
+    int computeIntersection(Sphere &, OBB &,OutputVector* contacts);
 };
 
 } // namespace collision

@@ -1,14 +1,11 @@
-// Geometric Tools, LLC
-// Copyright (c) 1998-2012
-// Distributed under the Boost Software License, Version 1.0.
-// http://www.boost.org/LICENSE_1_0.txt
-// http://www.geometrictools.com/License/Boost/LICENSE_1_0.txt
-//
-// File Version: 5.0.1 (2010/10/01)
+// File modified from GeometricTools
+// http://www.geometrictools.com/
+
 
 #ifndef WM5INTRSEGMENT3BOX3_H
 #define WM5INTRSEGMENT3BOX3_H
 
+#include <sofa/component/collision/Intersector.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/OBBModel.h>
 
@@ -21,7 +18,7 @@ namespace collision{
   *TDataTypes is the capsule type and TDataTypes2 the OBB type.
   */
 template <typename TDataTypes,typename TDataTypes2>
-class TIntrCapsuleOBB
+class TIntrCapsuleOBB : public Intersector<typename TDataTypes::Real>
 {
 public:
     typedef TCapsule<TDataTypes> IntrCap;
@@ -44,11 +41,6 @@ public:
 
     int GetQuantity () const;
     const Vec<3,Real>& GetPoint (int i) const;
-
-    const Vec<3,Real>& pointOnFirst () const;
-    const Vec<3,Real>& pointOnSecond () const;
-    const Vec<3,Real>& separatingAxis() const;
-    bool colliding()const;
 private:
     // The objects to intersect.
     const IntrCap* _cap;
@@ -57,12 +49,11 @@ private:
     // Information about the intersection set.
     int mQuantity;
     Vec<3,Real> mPoint[2];
-    Vec<3,Real> _sep_axis;
-    Vec<3,Real> _pt_on_first;
-    Vec<3,Real> _pt_on_second;
-    bool _is_colliding;
-    Real _distance;
-    Real mContactTime;
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
 };
 
 typedef TIntrCapsuleOBB<Vec3Types,Rigid3Types> IntrCapsuleOBB;

@@ -4,7 +4,7 @@
 #ifndef WM5INTRBOX3BOX3_H
 #define WM5INTRBOX3BOX3_H
 
-//#include "Intersector.h"
+#include <sofa/component/collision/Intersector.h>
 #include <sofa/component/collision/OBBModel.h>
 
 namespace sofa{
@@ -12,7 +12,7 @@ namespace component{
 namespace collision{
 
 template <class TDataTypes>
-class TIntrOBBOBB
+class TIntrOBBOBB : public Intersector<typename TDataTypes::Real>
 {
 public:
     typedef typename TDataTypes::Real Real;
@@ -45,10 +45,6 @@ public:
     int GetQuantity () const;
     const Vec<3,Real>& GetPoint (int i) const;
 
-    const Vec<3,Real>& GetPointOnFirst () const;
-
-    const Vec<3,Real>& GetPointOnSecond () const;
-
     // Dynamic test-intersection query where the boxes have constant linear
     // velocities *and* constant angular velocities.  The length of the
     // rotation axes are the angular speeds.  A differential equation solver
@@ -58,9 +54,6 @@ public:
         const Vec<3,Real>& rotCenter0, const Vec<3,Real>& rotAxis0,
         const Vec<3,Real>& velocity1, const Vec<3,Real>& rotCenter1,
         const Vec<3,Real>& rotAxis1);
-
-    const Vec<3,Real> & separatingAxis()const;
-    bool colliding()const;
 private:
     // Support for dynamic queries.  The inputs are the projection intervals
     // for the boxes onto a potential separating axis, the relative speed of
@@ -88,13 +81,13 @@ private:
     // is a polygon with 8 vertices.
     int mQuantity;
     Vec<3,Real> mPoint[8];
-    Vec<3,Real> _sep_axis;
-    Vec<3,Real> _pt_on_first;
-    Vec<3,Real> _pt_on_second;
-    bool _is_colliding;
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
 
     int mIntersectionType;
-    Real mContactTime;
 };
 
 typedef TIntrOBBOBB<RigidTypes> IntrOBBOBB;

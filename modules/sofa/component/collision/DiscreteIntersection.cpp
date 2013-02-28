@@ -60,6 +60,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidSphereModel,RigidSphereModel, DiscreteIntersection> (this);
     intersectors.add<OBBModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<CapsuleModel,OBBModel,DiscreteIntersection>(this);
+    intersectors.add<SphereModel,OBBModel, DiscreteIntersection> (this);
 
 
     IntersectorFactory::getInstance()->addIntersectors(this);
@@ -153,6 +154,10 @@ bool DiscreteIntersection::testIntersection(Capsule &,OBB &){
     return false;
 }
 
+bool DiscreteIntersection::testIntersection(Sphere &,OBB &){
+    return false;
+}
+
 int DiscreteIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
     return OBBIntTool::computeIntersection(box0,box1,box0.getProximity() + box1.getProximity() + getAlarmDistance(),box0.getProximity() + box1.getProximity() + getContactDistance(),contacts);
 }
@@ -161,7 +166,9 @@ int DiscreteIntersection::computeIntersection(Capsule & cap, OBB & box,OutputVec
     return CapsuleIntTool::computeIntersection(cap,box,cap.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + cap.getProximity() + getContactDistance(),contacts);
 }
 
-
+int DiscreteIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(sph,box,sph.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
+}
 
 //int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, OutputVector*)
 //{

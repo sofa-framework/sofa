@@ -15,9 +15,9 @@ TIntrOBBOBB<TDataTypes>::TIntrOBBOBB (const Box& box0,
     const Box& box1)
     :
     mBox0(&box0),
-    mBox1(&box1),
-      _is_colliding(false)
+    mBox1(&box1)
 {
+    _is_colliding = false;
     mQuantity = 0;
 }
 //----------------------------------------------------------------------------
@@ -761,23 +761,6 @@ const Vec<3,typename TDataTypes::Real>& TIntrOBBOBB<TDataTypes>::GetPoint (int i
     return mPoint[i];
 }
 
-template <class TDataTypes>
-const Vec<3,typename TDataTypes::Real>& TIntrOBBOBB<TDataTypes>::GetPointOnFirst () const
-{
-    return _pt_on_first;
-}
-
-template <class TDataTypes>
-const Vec<3,typename TDataTypes::Real>& TIntrOBBOBB<TDataTypes>::GetPointOnSecond () const
-{
-    return _pt_on_second;
-}
-
-template <class TDataTypes>
-inline const Vec<3,typename TDataTypes::Real> & TIntrOBBOBB<TDataTypes>::separatingAxis()const{
-    return _sep_axis;
-}
-
 //----------------------------------------------------------------------------
 //template <class TDataTypes>
 //bool IntrOBBOBB<TDataTypes>::Test (Real tmax, int numSteps,
@@ -960,11 +943,6 @@ bool TIntrOBBOBB<TDataTypes>::IsSeparated (Real min0, Real max0, Real min1,
     }
 
     return false;
-}
-
-template <class TDataTypes>
-bool TIntrOBBOBB<TDataTypes>::colliding()const{
-    return _is_colliding;
 }
 
 //----------------------------------------------------------------------------
