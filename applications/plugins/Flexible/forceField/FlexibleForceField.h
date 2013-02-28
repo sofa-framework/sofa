@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FLEXIBLECOMPATIBLITY_H
-#define SOFA_FLEXIBLECOMPATIBLITY_H
+#ifndef SOFA_FLEXIBLEFORCEFIELD_H
+#define SOFA_FLEXIBLEFORCEFIELD_H
 
 #include "../initFlexible.h"
 
@@ -40,7 +40,7 @@ namespace core
 namespace behavior
 {
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLECOMPATIBLITY_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_FLEXIBLEFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API ForceField<defaulttype::Affine3Types>;
 #endif
 
@@ -50,4 +50,4 @@ extern template class SOFA_Flexible_API ForceField<defaulttype::Affine3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_FLEXIBLECOMPATIBLITY_H
+#endif // SOFA_FLEXIBLEFORCEFIELD_H

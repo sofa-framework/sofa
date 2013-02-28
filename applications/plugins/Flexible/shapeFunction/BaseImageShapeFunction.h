@@ -32,6 +32,7 @@
 #include <image/ImageTypes.h>
 #include <image/ImageAlgorithms.h>
 
+#include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <algorithm>
 #include <iostream>
@@ -134,7 +135,7 @@ public:
 
         // interpolate weights in neighborhood
         Coord p = inT->toImage(childPosition);
-        Coord P;  for (unsigned int j=0; j<3; j++)  P[j]=round(p[j]);
+		Coord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(p[j]);
         unsigned int order=0;
         /*if(ddw) order=2; else */  // do not use order 2 for local weight interpolation. Order two is used only in weight fitting over regions
         if(dw) order=1;

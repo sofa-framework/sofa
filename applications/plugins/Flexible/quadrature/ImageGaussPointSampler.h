@@ -34,6 +34,8 @@
 #include <image/ImageTypes.h>
 #include <image/ImageAlgorithms.h>
 
+#include <sofa/helper/rmath.h>
+
 #include <set>
 #include <map>
 
@@ -231,7 +233,7 @@ protected:
             for(unsigned int i=0; i<pos.size(); i++)
             {
                 Coord p = transform->toImage(pos[i]);
-                for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
+                for (unsigned int j=0; j<3; j++)  p[j]=sofa::helper::round(p[j]);
                 if(indices.containsXYZC(p[0],p[1],p[2]))
                 {
                     indList l;
@@ -403,7 +405,7 @@ protected:
         for(unsigned int i=0; i<initialPosSize; i++)
         {
             Coord p = transform->toImage(pos[i]);
-            for (unsigned int j=0; j<3; j++)  p[j]=round(p[j]);
+            for (unsigned int j=0; j<3; j++)  p[j]=sofa::helper::round(p[j]);
             if(indices.containsXYZC(p[0],p[1],p[2]))
             {
                 indList l;

@@ -33,6 +33,7 @@
 #include <image/ImageTypes.h>
 #include <image/ImageAlgorithms.h>
 
+#include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <algorithm>
 #include <iostream>
@@ -50,9 +51,11 @@ namespace component
 namespace shapefunction
 {
 
+using sofa::helper::round;
 using core::behavior::BaseShapeFunction;
 using defaulttype::Mat;
 using defaulttype::Vec;
+
 /**
 Voronoi shape functions are natural neighbor interpolants
 there are computed from an image (typically a rasterized object)
