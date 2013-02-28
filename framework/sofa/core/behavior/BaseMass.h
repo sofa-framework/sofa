@@ -142,7 +142,7 @@ public:
                                            defaulttype::BaseVector* /*vector2*/, defaulttype::BaseVector* /*vector3*/,
                                            defaulttype::BaseVector* /*vector4*/  )
     {std::cerr << "addinvMsAndinvMpToVector : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
-    virtual void addinvMpToVector(const core::MechanicalParams */*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/)
+    virtual void addinvMpToVector(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector* /*vector*/)
     {std::cerr << "addinvMpToVector : Implemented in AdaptativeHamiltonianMass for ARPlugin"<<std::endl;}
 
     /// Add S contribution to global Vector assembling

@@ -71,9 +71,9 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
         C/=(real)count;
 
         // check validity
-        for (unsigned int j=0; j<3; j++) p[j]=round(C[j]);
+        for (unsigned int j=0; j<3; j++) p[j]=sofa::helper::round(C[j]);
         if (voronoi(p[0],p[1],p[2])!=voronoiIndex[i]) valid=false; // out of voronoi
-        else { for (unsigned int j=0; j<nbp; j++) if(i!=j) if(round(pos[j][0])==p[0]) if(round(pos[j][1])==p[1]) if(round(pos[j][2])==p[2]) valid=false; } // check occupancy
+        else { for (unsigned int j=0; j<nbp; j++) if(i!=j) if(sofa::helper::round(pos[j][0])==p[0]) if(sofa::helper::round(pos[j][1])==p[1]) if(sofa::helper::round(pos[j][2])==p[2]) valid=false; } // check occupancy
 
         while(!valid)  // get closest unoccupied point in voronoi
         {
@@ -84,7 +84,7 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
                 if(dmin>d2) { dmin=d2; p=Coord(x,y,z); }
             }
             if(dmin==cimg::type<real>::max()) goto stop;// no point found
-            bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(round(pos[j][0])==p[0]) if(round(pos[j][1])==p[1]) if(round(pos[j][2])==p[2]) val2=false; // check occupancy
+            bool val2=true; for (unsigned int j=0; j<nbp; j++) if(i!=j) if(sofa::helper::round(pos[j][0])==p[0]) if(sofa::helper::round(pos[j][1])==p[1]) if(sofa::helper::round(pos[j][2])==p[2]) val2=false; // check occupancy
             if(val2) valid=true;
             else voronoi(p[0],p[1],p[2])=0;
         }
@@ -391,7 +391,7 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
     typedef sofa::defaulttype::Vec<3,int> iCoord;
     typedef std::pair<real,iCoord > DistanceToPoint;
 
-    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=round(pos[j]);
+	iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(pos[j]);
     if(distances.containsXYZC(P[0],P[1],P[2]))
         if(distances(P[0],P[1],P[2])>=0)
         {
