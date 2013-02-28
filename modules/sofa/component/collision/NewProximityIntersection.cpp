@@ -66,6 +66,7 @@ void NewProximityIntersection::init()
     intersectors.add<RigidSphereModel,RigidSphereModel, NewProximityIntersection> (this);
     intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,OBBModel, NewProximityIntersection> (this);
+    intersectors.add<SphereModel,OBBModel, NewProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
@@ -175,6 +176,14 @@ int NewProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVe
 
 
 bool NewProximityIntersection::testIntersection(Capsule&, OBB&){
+    return false;
+}
+
+int NewProximityIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
+    return OBBIntTool::computeIntersection(sph,box,sph.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
+}
+
+bool NewProximityIntersection::testIntersection(Sphere &,OBB &){
     return false;
 }
 

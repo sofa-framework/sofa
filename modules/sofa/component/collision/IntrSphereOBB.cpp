@@ -1,0 +1,21 @@
+#include <sofa/component/collision/IntrSphereOBB.inl>
+
+
+namespace sofa{
+namespace component{
+namespace collision{
+
+//----------------------------------------------------------------------------
+// Explicit instantiation.
+//----------------------------------------------------------------------------
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Vec3dTypes,Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Vec3fTypes,Rigid3fTypes>;
+#endif
+//----------------------------------------------------------------------------
+
+}
+}
+}

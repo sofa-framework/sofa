@@ -1452,13 +1452,11 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
         if (capCfg.mMap == IntrConfiguration<Real>::m11)
         {
             FindContactConfig(axis,segment[capIndex[0]],radius,box,capCfg,side,pt_on_capsule,pt_on_box);
-            //pt_on_capsule += tfirst * axis;
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_box = getPointFromIndex(bIndex[7], box);
             projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
-            //pt_on_capsule = pt_on_box + axis * tfirst;
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -1466,16 +1464,6 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             Vec<3,Real> boxSeg[2],cap_pt;
             boxSeg[0] = getPointFromIndex(bIndex[6], box);
             boxSeg[1] = getPointFromIndex(bIndex[7], box);
-
-//            Vec<3,Real> capSeg[2];
-//            capCfg.leftSegment(segFinal,radius,capSeg);
-
-//            segNearestPoints(capSeg,boxSeg,pt_on_capsule,pt_on_box);
-
-//            capCfg.axis *= -1;
-//            capCfg.have_naxis = true;
-
-//            pt_on_capsule += tfirst * axis;
 
             segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
 
@@ -1531,14 +1519,12 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
         if (capCfg.mMap == IntrConfiguration<Real>::m11)
         {
             FindContactConfig(axis,segment[capIndex[1]],radius,box,capCfg,side,pt_on_capsule,pt_on_box);
-            //pt_on_capsule -= tfirst*axis;
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
         {
 
             pt_on_box = getPointFromIndex(bIndex[0], box);
             projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
-            //pt_on_capsule = pt_on_box - tfirst * axis;
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -1546,15 +1532,6 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             Vec<3,Real> boxSeg[2],cap_pt;
             boxSeg[0] = getPointFromIndex(bIndex[0], box);
             boxSeg[1] = getPointFromIndex(bIndex[1], box);
-
-//            Vec<3,Real> capSeg[2];
-//            capCfg.rightSegment(segFinal,radius,capSeg);
-
-//            segNearestPoints(capSeg,boxSeg,pt_on_capsule,pt_on_box);
-
-//            capCfg.have_naxis = true;
-
-//            pt_on_capsule -= tfirst*axis;
 
             segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
 
@@ -2078,14 +2055,12 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
             pt_on_first = getPointFromIndex(b0Index[0], box0);
             pt_on_second = pt_on_first;
             moveOnBox(box1,pt_on_second);
-            //pt_on_second = pt_on_first - tfirst * axis;
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_second = getPointFromIndex(b1Index[7], box1);
             pt_on_first = pt_on_second;
             moveOnBox(box0,pt_on_first);
-            //pt_on_first = pt_on_second + tfirst * axis;
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -2209,14 +2184,12 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
             pt_on_first = getPointFromIndex(b0Index[7], box0);
             pt_on_second = pt_on_first;
             moveOnBox(box1,pt_on_second);
-            //pt_on_second = pt_on_first + tfirst * axis;
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_second = getPointFromIndex(b1Index[0], box1);
             pt_on_first = pt_on_second;
             moveOnBox(box0,pt_on_first);
-            //pt_on_first = pt_on_second - tfirst * axis;
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {

@@ -32,7 +32,12 @@ HEADERS += initBaseCollision.h \
     collision/IntrOBBOBB.h \
     collision/IntrOBBOBB.inl \
     collision/IntrUtility3.h \
-    collision/IntrUtility3.inl
+    collision/IntrUtility3.inl \
+    collision/IntrSphereOBB.h \
+    collision/IntrCapsuleOBB.h \
+    collision/IntrCapsuleOBB.inl \
+    collision/IntrSphereOBB.inl \
+    collision/Intersector.h
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
@@ -52,7 +57,8 @@ SOURCES += initBaseCollision.cpp \
     collision/OBBIntTool.cpp \
     collision/IntrOBBOBB.cpp \
     collision/IntrUtility3.cpp \
-    collision/IntrCapsuleOBB.cpp
+    collision/IntrCapsuleOBB.cpp \
+    collision/IntrSphereOBB.cpp
 
 
 

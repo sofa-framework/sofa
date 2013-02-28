@@ -268,6 +268,8 @@ public:
         Real tfirst,
         Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second);
 
+    static void moveOnBox(const Box & box,Vec<3,Real> & point);
+
 private:
     // These functions are called when it is known that the features are
     // intersecting.  Consequently, they are specialized versions of the
@@ -311,9 +313,7 @@ private:
 
     static void facesNearestPoints(const Vec<3,Real> first_face[4],const Vec<3,Real> second_face[4],Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second);
 
-    static void faceSegNearestPoints(const Vec<3,Real> face[4],const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg);
-
-    static void moveOnBox(const Box & box,Vec<3,Real> & point);
+    static void faceSegNearestPoints(const Vec<3,Real> face[4],const Vec<3,Real> seg[2],Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg);    
 };
 //----------------------------------------------------------------------------
 

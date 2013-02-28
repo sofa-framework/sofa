@@ -4,7 +4,7 @@
 #include <sofa/component/collision/IntrOBBOBB.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/component/collision/CapsuleModel.h>
-
+#include <sofa/component/collision/IntrSphereOBB.h>
 namespace sofa{
 namespace component{
 namespace collision{
@@ -15,6 +15,7 @@ public:
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
     static bool computeIntersection(OBB&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
+    static bool computeIntersection(Sphere &sphere, OBB &box,double alarmDist,double contactDist,OutputVector* contacts);
 };
 
 }

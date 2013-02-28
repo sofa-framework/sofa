@@ -65,6 +65,8 @@ public:
     bool testIntersection(RigidSphere&, RigidSphere&);
     bool testIntersection(OBB&, OBB&);
     bool testIntersection(Capsule&, OBB&);
+    bool testIntersection(Sphere&, OBB&);
+
 
 
 
@@ -76,6 +78,7 @@ public:
     int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
     int computeIntersection(OBB&, OBB&,OutputVector* contacts);
     int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
+    int computeIntersection(Sphere&,OBB&,OutputVector * contacts);
 
 
     static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);

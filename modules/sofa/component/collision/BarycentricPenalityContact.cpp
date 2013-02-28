@@ -56,6 +56,7 @@ Creator<Contact::Factory, BarycentricPenalityContact<CapsuleModel, SphereModel> 
 Creator<Contact::Factory, BarycentricPenalityContact<RigidSphereModel, RigidSphereModel> > RigidSphereRigidSpherePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<OBBModel, OBBModel> > OBBOBBPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<CapsuleModel, OBBModel> > CapsuleOBBPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<SphereModel, OBBModel> > SphereOBBPenalityContactClass("default",true);
 
 
 } // namespace collision

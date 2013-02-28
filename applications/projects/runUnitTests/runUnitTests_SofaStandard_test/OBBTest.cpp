@@ -108,6 +108,61 @@ struct TestCapOBB{
     bool vertexEdge();
 };
 
+struct TestSphereOBB{
+    typedef sofa::defaulttype::Vec3d Vec3d;
+
+    static sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+                                                                    sofa::simulation::Node::SPtr & father);
+
+    bool vertex();
+    bool edge();
+    bool face();
+};
+
+sofa::component::collision::SphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
+                                                                   sofa::simulation::Node::SPtr & father){
+    //creating node containing OBBModel
+    sofa::simulation::Node::SPtr sph = father->createChild("cap");
+
+    //creating a mechanical object which will be attached to the OBBModel
+    MechanicalObject3d::SPtr sphDOF = New<MechanicalObject3d>();
+
+    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
+    sphDOF->resize(1);
+    Data<MechanicalObject3d::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
+    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
+
+    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
+    positions[0] = center;
+
+    dpositions.endEdit();
+
+    //Editting the velocity of the OBB
+    Data<MechanicalObject3d::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
+
+    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
+    velocities[0] = v;
+    dvelocities.endEdit();
+
+    sph->addObject(sphDOF);
+
+    //creating an OBBModel and attaching it to the same node than obbDOF
+    sofa::component::collision::SphereModel::SPtr sphCollisionModel = New<sofa::component::collision::SphereModel >();
+    sph->addObject(sphCollisionModel);
+
+
+    //editting the OBBModel
+    sphCollisionModel->init();
+    Data<sofa::component::collision::SphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
+    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
+
+    vecReal[0] = radius;
+
+    dVecReal.endEdit();
+
+    return sphCollisionModel;
+}
+
 sofa::component::collision::CapsuleModel::SPtr TestCapOBB::makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
                                                                    sofa::simulation::Node::SPtr & father){
     //creating node containing OBBModel
@@ -631,7 +686,7 @@ bool TestCapOBB::faceEdge(){
 
 //obb's edge 6-5 in intersection with a vertex of the capsule
 bool TestCapOBB::edgeVertex(){
-    //first, we create the transformation to make the first OBB (which is axes aligned)
+    //first, we create the transformation to make the first OBB
     double angles[3];
     int order[3];
     order[0] = 2;
@@ -679,7 +734,7 @@ bool TestCapOBB::edgeVertex(){
 
 //obb's edge 6-5 in intersection parallely with the capsule
 bool TestCapOBB::edgeEdge(){
-    //first, we create the transformation to make the first OBB (which is axes aligned)
+    //first, we create the transformation to make the first OBB
     double angles[3];
     int order[3];
     order[0] = 2;
@@ -728,7 +783,7 @@ bool TestCapOBB::edgeEdge(){
 
 //obb's edge 6-5 in intersection parallely with the capsule
 bool TestCapOBB::vertexEdge(){
-    //first, we create the transformation to make the first OBB (which is axes aligned)
+    //first, we create the transformation to make the first OBB
     double angles[3];
     int order[3];
     order[0] = 2;
@@ -776,7 +831,7 @@ bool TestCapOBB::vertexEdge(){
 
 //obb's edge 6-5 in intersection parallely with the capsule
 bool TestCapOBB::vertexVertex(){
-    //first, we create the transformation to make the first OBB (which is axes aligned)
+    //first, we create the transformation to make the first OBB
     double angles[3];
     int order[3];
     order[0] = 2;
@@ -821,6 +876,140 @@ bool TestCapOBB::vertexVertex(){
     return true;
 }
 
+bool TestSphereOBB::vertex(){
+    //first, we create the transformation to make the first OBB
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = acos(1/sqrt(3));
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+                                        //the center of this OBB is (0,0,-1) and its extent is 1
+
+    //we construct the falling capsule
+    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+
+    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+
+    //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
+    //at its center by the vertex 0 of obb1 (moving)
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    //loooking for an intersection
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestSphereOBB::edge(){
+    //first, we create the transformation to make the first OBB
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = M_PI_2;
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+                                        //the center of this OBB is (0,0,-1) and its extent is 1
+
+    //we construct the falling capsule
+    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+
+    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+
+    //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
+    //at its center by the vertex 0 of obb1 (moving)
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    //loooking for an intersection
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestSphereOBB::face(){
+    //first, we create the transformation to make the first OBB (which is axes aligned)
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+                                        //the center of this OBB is (0,0,-1) and its extent is 1
+
+    //we construct the falling capsule
+    sofa::component::collision::SphereModel::SPtr sphmodel = makeSphere(Vec3d(0,0,1 + 0.01),1,Vec3d(0,0,-10),scn);
+
+    //we construct the OBB and the capsule from the OBBModel and the CapsuleModel
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Sphere sph(sphmodel.get(),0);
+
+    //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
+    //at its center by the vertex 0 of obb1 (moving)
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    //loooking for an intersection
+    if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    //the intersection point of obb (detectionOUTPUT[0].point[0]) should be (0,0,0)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    //the contact response direction (detectionOUTPUT[0].normal) should be (0,0,1)
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
 BOOST_FIXTURE_TEST_SUITE( OBB_OBB_collision_tests, TestOBB);
 BOOST_AUTO_TEST_CASE( face_vertex ) { BOOST_CHECK( faceVertex()); }
 BOOST_AUTO_TEST_CASE( vertex_vertex ) { BOOST_CHECK( vertexVertex()); }
@@ -837,6 +1026,12 @@ BOOST_AUTO_TEST_CASE( edge_vertex ) { BOOST_CHECK( edgeVertex()); }
 BOOST_AUTO_TEST_CASE( edge_edge ) { BOOST_CHECK( edgeEdge()); }
 BOOST_AUTO_TEST_CASE( vertex_edge) { BOOST_CHECK( vertexEdge()); }
 BOOST_AUTO_TEST_CASE( vertex_vertex) { BOOST_CHECK( vertexVertex()); }
+BOOST_AUTO_TEST_SUITE_END();
+
+BOOST_FIXTURE_TEST_SUITE( OBB_Sphere_collision_tests, TestSphereOBB);
+BOOST_AUTO_TEST_CASE( vertex_sphere ) { BOOST_CHECK( vertex()); }
+BOOST_AUTO_TEST_CASE( edge_sphere ) { BOOST_CHECK( edge()); }
+BOOST_AUTO_TEST_CASE( face_sphere ) { BOOST_CHECK( face()); }
 BOOST_AUTO_TEST_SUITE_END();
 
 
