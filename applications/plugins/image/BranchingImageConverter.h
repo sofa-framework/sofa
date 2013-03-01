@@ -66,14 +66,15 @@ public:
 
     Data<ImageTypes> inputImage;
     Data<BranchingImageTypes> outputBranchingImage;
-    Data<ImageLabelTypes> outputMappingImage;
-    Data<bool> createMappingImage;
     Data<unsigned> coarseningLevels;
     Data<unsigned> superimpositionType;
     Data<unsigned> connectivity; // 6 or 26
 
-
     Data<TransformType> inputTransform, outputTransform;
+
+
+    Data<bool> createMappingImage;
+    Data<ImageLabelTypes> outputMappingImage;
 
 
     virtual std::string getTemplateName() const { return templateName(this); }
@@ -81,14 +82,14 @@ public:
 
     ImageToBranchingImageConverter()    :   Inherited()
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage","Image to coarsen"))
-        , outputBranchingImage(initData(&outputBranchingImage,BranchingImageTypes(),"outputBranchingImage","Coarsened BranchingImage"))
-        , outputMappingImage(initData(&outputMappingImage,ImageLabelTypes(),"outputMappingImage","A regular with the same size as inputImage, its associated transform is inputTransform. Each pixel stores the offset of its containing SuperimposedVoxel"))
-        , createMappingImage(initData(&createMappingImage,true,"createMappingImage","Will outputMappingImage be created?"))
+        , outputBranchingImage(initData(&outputBranchingImage,BranchingImageTypes(),"outputBranchingImage","Coarsened BranchingImage"))       
         , coarseningLevels(initData(&coarseningLevels,(unsigned)0,"coarseningLevels","How many coarsenings (subdividing x/y/z by 2)?"))
         , superimpositionType(initData(&superimpositionType,(unsigned)0,"superimpositionType","Which value for superimposed voxels? (0->sum (default), 1->average, 2->ratio, 3->count)"))      
         , connectivity(initData(&connectivity,(unsigned)26,"connectivity","must be 6 or 26 (26 by default or any incorrect value)"))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform","Input Transform"))
         , outputTransform(initData(&outputTransform,TransformType(),"outputTransform","Output Transform"))
+        , createMappingImage(initData(&createMappingImage,true,"createMappingImage","Will outputMappingImage be created?"))
+        , outputMappingImage(initData(&outputMappingImage,ImageLabelTypes(),"outputMappingImage","A regular with the same size as inputImage, its associated transform is inputTransform. Each pixel stores the offset of its containing SuperimposedVoxel"))
     {
         inputImage.setReadOnly(true);
         outputBranchingImage.setReadOnly(true);
@@ -188,7 +189,7 @@ protected:
                     cimg_library::CImg<bool> subBinaryImage = subImage.get_resize( subImage.width(), subImage.height(), subImage.depth(), 1, 3 );
 
 
-////// @todo   improve this part, by implementing a CImg::get_label function that only consider not empty pixels for labelling (and all empty pixels have label=0)
+////// @todo   improve this part, by implementing a CImg::get_label function that only consider not empty pixels for labeling (and all empty pixels have label=0)
 
                     // connected component labeling
                     cimg_library::CImg<unsigned long> subLabelImage = subBinaryImage.get_label( false );

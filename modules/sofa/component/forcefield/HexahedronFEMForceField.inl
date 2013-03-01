@@ -1206,7 +1206,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 // 		Coord ph = (x[h]+center)*percentage;
 
         Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.125;
-        Real percentage = (Real) 0.15;
+        Real percentage = f_drawPercentageOffset.getValue();
         Coord pa = x[a]-(x[a]-center)*percentage;
         Coord pb = x[b]-(x[b]-center)*percentage;
         Coord pc = x[c]-(x[c]-center)*percentage;

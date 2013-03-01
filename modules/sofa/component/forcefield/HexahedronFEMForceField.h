@@ -156,6 +156,7 @@ public:
     Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
     Data<bool> f_drawing;
+    Data<Real> f_drawPercentageOffset;
 
 protected:
     HexahedronFEMForceField()
@@ -170,6 +171,7 @@ protected:
         , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , f_assembling(initData(&f_assembling,false,"assembling",""))
         , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+        , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     {
         _coef[0][0]=-1;
         _coef[1][0]=1;
