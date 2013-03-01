@@ -18,12 +18,8 @@ SOURCES = initFlexible.cpp \
     shapeFunction/ShepardShapeFunction.cpp \
     shapeFunction/BarycentricShapeFunction.cpp \
     deformationMapping/DistanceMapping.cpp \
-    deformationMapping/DisplacementMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
     deformationMapping/LinearMapping.cpp \
-    deformationMapping/LogRigidMapping.cpp \
-    deformationMapping/JointRigidMapping.cpp \
-    deformationMapping/RelativeRigidMapping.cpp \
     deformationMapping/TriangleDeformationMapping.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
@@ -61,17 +57,11 @@ HEADERS = initFlexible.h \
     deformationMapping/BaseDeformationMapping.inl \
     deformationMapping/DistanceMapping.h \
     deformationMapping/DistanceMapping.inl \
-    deformationMapping/DisplacementMapping.h \
-    deformationMapping/DisplacementMapping.inl \
     deformationMapping/ExtensionMapping.h \
     deformationMapping/ExtensionMapping.inl \
     deformationMapping/LinearMapping.h \
     deformationMapping/LinearJacobianBlock.h \
     deformationMapping/LinearJacobianBlock.inl \
-    deformationMapping/LogRigidMapping.h \
-    deformationMapping/LogRigidMapping.inl \
-    deformationMapping/RelativeRigidMapping.h \
-    deformationMapping/RelativeRigidMapping.inl \
     deformationMapping/TriangleDeformationMapping.h \
     deformationMapping/TriangleDeformationMapping.inl \
     deformationMapping/TriangleStrainAverageMapping.h \

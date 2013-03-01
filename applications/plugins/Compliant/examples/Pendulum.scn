@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  printLog="1"  dt="0.04"  >
+	<VisualStyle name="visualStyle0"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
+	
+	<Node 	 name="scene"  printLog="1"  >
+		
+		<!-- euler implicit -->
+		<AssembledSolver />
+		
+		<!-- numerical solver -->
+		<MinresSolver precision="0" relative="false" iterations="100" />
+		
+		<!-- main dofs -->
+		<MechanicalObject template="Rigid" name="arbDOF"  position="-0.5 0 0 0 0 0 1 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+		<!-- second is fixed -->
+		<FixedConstraint indices="1" />
+		
+		<!-- mass properties -->
+		<RigidMass template="Rigid" 
+							 mass = "15.118914645401" 
+							 inertia = "0.0047246608266878 1.2622718841968 1.2622718841968" />
+		
+		<!-- some fancy collision/visual model -->
+		<Node name="collision">
+      <MeshObjLoader name="loader" filename="mesh/cyl.obj" rotation="0 0 90" />
+      <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
+      <MechanicalObject template="Vec3d" position="@loader.position" />
+      <TTriangleModel template="Vec3d" contactStiffness="10000" />
+      <TLineModel contactStiffness="10000" />
+      <TPointModel contactStiffness="10000" />
+      <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
+    </Node>
+		
+		<!-- define joints w.r.t main dofs -->
+		<Node name="joints" >
+			<MechanicalObject template="Rigid" name="mObject5"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  />
+			
+			<!-- this is similar to RigidRigidMapping, but uses assembled
+			     mapping matrices. source is filled as a list of (id rigid_offset) -->
+			<AssembledRigidRigidMapping template="Rigid,Rigid" 
+																	name="displacementMap17"  
+																	source="0 0.5 0 0 0 0 0 1 
+																					1 0 0 0 0 0 0 1" 
+																	input="@../"  output="@./" />
+			
+			<Node name="joint_space" >
+				<MechanicalObject template="Vec6d" name="log_relative1"  position="0 0 0 0 0 0"  />
+				
+				<!-- maps to the joint space. joints are defined by pairs of
+				     parent dofs. more precisely, this maps
+				     (relative_translation, log(relative_orientation) ) for
+				     each pair of indices -->
+				<RigidJointMapping template="Rigid,Vec6d" name="rigid_joint_map1"  
+													 pairs="0 1" 
+													 input="@../"  
+													 output="@./" 
+													 out_joint_angle="true"
+													 />
+
+				<!-- zero translational compliance, very large rotational
+				     compliance (1e-10 stiffness) -->
+				<DiagonalCompliance template="Vec6d" name="diagonalCompliance0"  
+														compliance="0 0 0 
+																				1e10 1e10 1e10" dampingRatio="0"/>
+
+				<!-- there is no easy way to place multiple compliances under
+				     a same node as of yet, so we add an extra mapping -->
+				<Node name="duplicate" >
+					<MechanicalObject template="Vec6d" name="log_relative2"  position="0 0 0 0 0 0"  />
+					<IdentityMapping template="Vec6d, Vec6d"/>
+
+					<!-- adds a force in: f = -\alpha v -->
+					<DampingCompliance template="Vec6d" damping="5" />
+				</Node>
+
+			</Node>
+	
+		</Node>
+	</Node>
+</Node>

@@ -12,7 +12,17 @@ SOURCES = \
     UniformCompliance.cpp \
     DiagonalCompliance.cpp \
     ComplianceSolver.cpp \
-#    MinresSolver.cpp \
+		DampingCompliance.cpp \
+		RigidMass.cpp \
+		UnilateralMask.cpp \
+		RigidJointMapping.cpp \
+		AssembledRigidRigidMapping.cpp \
+		LDLTSolver.cpp \
+		MinresSolver.cpp \
+		AssemblyVisitor.cpp \
+		AssembledSystem.cpp \
+		AssembledSolver.cpp \
+		
 
 HEADERS = \
     initCompliant.h \
@@ -22,7 +32,18 @@ HEADERS = \
     UniformCompliance.h \
     UniformCompliance.inl \
     ComplianceSolver.h \
-#    MinresSolver.h \
+		DampingCompliance.h \
+		RigidMass.h \
+		UnilateralMask.h \
+		RigidJointMapping.h \
+		AssembledRigidRigidMapping.h \
+		KKTSolver.h \
+		LDLTSolver.h \
+		MinresSolver.h \
+		AssemblyVisitor.h \
+		AssembledSystem.h \
+		AssembledSolver.h \
+		
 
 
 README_FILE = Compliant.txt
