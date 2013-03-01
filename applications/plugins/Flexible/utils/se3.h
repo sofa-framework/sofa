@@ -70,8 +70,8 @@ struct SE3 {
 	static twist body(const coord_type& at, const deriv_type& sofa) {
 		twist res;
 
-		quat qT = rotation(at).conjugate();
-
+		quat qT = rotation( at ).conjugate();
+		
 		// orientation
 		res.template tail<3>() = qT * map(sofa.getVOrientation() );
 		res.template head<3>() = qT * map(sofa.getVCenter() );
@@ -111,7 +111,7 @@ struct SE3 {
 	static mat66 sofa(const coord_type& at) { 
 		mat66 res;
 
-		mat33 R = rotation(at).toRotationMatrix();
+		mat33 R = rotation( at ).toRotationMatrix();
 
 		res <<
 			R,  mat33::Zero(),
@@ -189,20 +189,21 @@ struct SE3 {
 
 
 	// SO(3) log
-	static vec3 log(quat q) {
-
+	static vec3 log(const quat& qq) {
+		
+		quat q = qq;
 		q.normalize();
-
+		
 		// flip if needed
-		if( q.w() < 0 ) q.coeffs() = -q.coeffs();
+		// if( q.w() < 0 ) q.coeffs() = -q.coeffs();
 
 		// (half) rotation angle
-		// real theta = std::asin( q.vec().norm() );
+		real theta = std::asin( q.vec().norm() );
 
-		real w = std::min<real>(1.0, q.w());
-		real half_theta = std::acos( w );
+		// real w = std::min<real>(1.0, q.w());
+		// real theta = std::acos( w );
         
-		real theta = 2 * half_theta;
+		// real theta = 2 * half_theta;
         
 		if( std::abs(theta) < epsilon() ) {
 			return q.vec();
