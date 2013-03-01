@@ -1,10 +1,11 @@
-#ifndef MINRESSOLVER_H
-#define MINRESSOLVER_H
+#ifndef KKTSOLVER_H
+#define KKTSOLVER_H
 
-#include "KKTSolver.h"
+#include "initCompliant.h"
 
 #include "AssembledSystem.h"
 #include <sofa/core/objectmodel/BaseObject.h>
+
 
 namespace sofa {
 namespace component {
@@ -15,26 +16,18 @@ namespace linearsolver {
 // all kinds of derived solver (sparse cholesky, minres, qp)
 			
 // TODO: base + derived classes (minres/cholesky/unilateral)
-class SOFA_Compliant_API MinresSolver : public KKTSolver {
+class SOFA_Compliant_API KKTSolver : public virtual core::objectmodel::BaseObject {
   public:
-	SOFA_CLASS(MinresSolver, KKTSolver);
-	
-	MinresSolver();				
-	
+	SOFA_CLASS(KKTSolver, core::objectmodel::BaseObject);
+
 	typedef AssembledSystem::vec vec;
 
 	// solve the KKT system: \mat{ M - h^2 K & J^T \\ J, -C } x = rhs
 	// (watch out for the compliance scaling)
 	virtual void solve(vec& x,
 	                   const AssembledSystem& system,
-	                   const vec& rhs) const;
-				
-  public:
-	Data<SReal> precision;
-	Data<unsigned> iterations;
-	Data<bool> relative;
+	                   const vec& rhs) const = 0;
 
-	Data<bool> verbose;
 };
 
 
