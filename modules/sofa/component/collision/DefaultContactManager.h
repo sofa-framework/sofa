@@ -60,7 +60,7 @@ protected:
     void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact);
 
 public:
-    void createContacts(DetectionOutputMap& outputs);
+    void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec);
 
     void init();
     void draw(const core::visual::VisualParams* vparams);

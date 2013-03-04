@@ -25,14 +25,7 @@
 #ifndef SOFA_CORE_COLLISION_PIPELINE_H
 #define SOFA_CORE_COLLISION_PIPELINE_H
 
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/core/collision/ContactManager.h>
-#include <sofa/core/collision/CollisionGroupManager.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/helper/set.h>
 #include <sofa/helper/vector.h>
@@ -44,8 +37,17 @@ namespace sofa
 namespace core
 {
 
+class CollisionModel;
+
 namespace collision
 {
+
+class BroadPhaseDetection;
+class CollisionGroupManager;
+class ContactManager;
+class Intersection;
+class NarrowPhaseDetection;
+
 
 /**
  * @brief Pipeline component gather list of collision models and control the sequence of computations
@@ -73,7 +75,7 @@ protected:
     CollisionGroupManager* groupManager;
 
 public:
-    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
+//    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
 protected:
     Pipeline();
 

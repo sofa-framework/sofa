@@ -105,8 +105,8 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
 
     /* get the output vector for a TriangleOctreeModel, TriangleOctreeModel Collision*/
     /*Get the cube representing the bounding box of both Models */
-    sofa::core::collision::DetectionOutputVector *& contacts=outputsMap[std::make_pair(tm1, tm2)];
-
+    // sofa::core::collision::DetectionOutputVector *& contacts=outputsMap[std::make_pair(tm1, tm2)];
+    core::collision::DetectionOutputVector*& contacts = this->getDetectionOutputs(tm1, tm2);
 
 
     if (contacts == NULL)
@@ -319,7 +319,9 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     glLineWidth (3);
     glPointSize (5);
 
-    for (DetectionOutputMap::iterator it = outputsMap.begin ();
+    const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
+
+    for (DetectionOutputMap::const_iterator it = outputsMap.begin ();
             it != outputsMap.end (); it++)
     {
         TDetectionOutputVector < TriangleOctreeModel,

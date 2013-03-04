@@ -28,6 +28,9 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Colors.h>
 
+#include <sofa/core/collision/CollisionGroupManager.h>
+#include <sofa/core/collision/ContactManager.h>
+
 namespace sofa
 {
 
