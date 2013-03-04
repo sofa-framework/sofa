@@ -383,6 +383,7 @@ win32{
 # DEFINES += SOFA_HAVE_PLUGIN_CompliantDev  # Alternative formulation of the dynamics (private part). Requires the Compliant plugin.
 # DEFINES += SOFA_HAVE_PLUGIN_ModelHierarchies # Experiments on layered and adaptive models
 # DEFINES += SOFA_HAVE_PLUGIN_optixdetection
+# DEFINES += SOFA_HAVE_ARPLUGIN
 
 ########################################################################
 # Compiler options

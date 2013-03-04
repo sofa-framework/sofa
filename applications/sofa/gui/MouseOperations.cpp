@@ -50,7 +50,9 @@ using namespace component::collision;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3fTypes> >  AddFramePerformerVec3fClass("AddFrame",true);
+#ifdef SOFA_HAVE_ARPLUGIN
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AdaptativeAttachPerformer<defaulttype::Vec3fTypes> >  AdaptativeAttachPerformerVec3fClass("AdaptativeAttach",true);
+#endif
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
@@ -60,7 +62,9 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPe
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
+#ifdef SOFA_HAVE_ARPLUGIN
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AdaptativeAttachPerformer<defaulttype::Vec3dTypes> >  AdaptativeAttachPerformerVec3dClass("AdaptativeAttach",true);
+#endif
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
