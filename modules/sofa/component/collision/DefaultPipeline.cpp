@@ -23,11 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <sofa/core/collision/CollisionGroupManager.h>
+#include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/ObjectFactory.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/common/Visitor.h>
@@ -174,7 +180,7 @@ void DefaultPipeline::doCollisionResponse()
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
     VERBOSE(sout << "Create Contacts "<<contactManager->getName()<<sendl);
-    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
+    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs(), narrowPhaseDetection->getDetectionOutputsVector());
 
     // finally we start the creation of collisionGroup
 

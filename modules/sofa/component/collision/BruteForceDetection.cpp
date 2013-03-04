@@ -258,7 +258,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //if (self)
     //    sout << "SELF: Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<sendl;
 
-    sofa::core::collision::DetectionOutputVector*& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
+    sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
 
     finalintersector->beginIntersect(finalcm1, finalcm2, outputs);
 

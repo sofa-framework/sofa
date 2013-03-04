@@ -28,8 +28,6 @@
 #include <sofa/core/objectmodel/Tag.h>
 
 
-
-
 namespace sofa
 {
 
@@ -86,6 +84,7 @@ void DefaultContactManager::init()
         response.setValue(initializeResponseOptions(pipeline));
     }
 }
+
 void DefaultContactManager::cleanup()
 {
     for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it=contacts.begin(); it!=contacts.end(); ++it)
@@ -99,52 +98,51 @@ void DefaultContactManager::cleanup()
     contactMap.clear();
 }
 
-void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
+void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap, const DetectionOutputVectors &outputsVec)
 {
-    //serr<<"DefaultContactManager::createContacts"<<sendl;
-
-    //outputsMap.clear();
-    //for (sofa::helper::vector<core::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
-    //{
-    //	core::collision::DetectionOutput* o = *it;
-    //	outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
-    //}
+    using core::CollisionModel;
+    using core::collision::Contact;
 
     // Remove any inactive contacts or add any new contact
-    DetectionOutputMap::iterator outputsIt = outputsMap.begin();
-    std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::collision::Contact::SPtr >::iterator contactIt = contactMap.begin();
+    DetectionOutputMap::const_iterator outputsIt = outputsMap.begin();
+    std::map< std::pair< CollisionModel*, CollisionModel* >, Contact::SPtr >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
+
     //static DetectionOutputVector emptyContacts;
-    while (outputsIt!=outputsMap.end() || contactIt!=contactMap.end())
+    while (outputsIt != outputsMap.end() || contactIt != contactMap.end())
     {
-        if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
+        if (outputsIt != outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
             //sout << "Creation new "<<contacttype<<" contact"<<sendl;
-            core::CollisionModel* model1 = outputsIt->first.first;
-            core::CollisionModel* model2 = outputsIt->first.second;
+            CollisionModel* model1 = outputsIt->first.first;
+            CollisionModel* model2 = outputsIt->first.second;
             std::string responseUsed = getContactResponse(model1, model2);
-            if(! responseUsed.compare("null") ) // We can create rules in order to not respond to specific collisions
+
+            // We can create rules in order to not respond to specific collisions
+            if (!responseUsed.compare("null"))
             {
                 ++outputsIt;
                 continue;
             }
-			core::collision::Contact::SPtr contact = core::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod, this->f_printLog.getValue());
+
+			Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod, this->f_printLog.getValue());
+
             if (contact == NULL)
             {
                 std::string model1class = model1->getClassName();
                 std::string model2class = model2->getClassName();
-                int count = ++errorMsgCount[std::make_pair(responseUsed,std::make_pair(model1class,model2class))];
+                int count = ++errorMsgCount[std::make_pair(responseUsed, std::make_pair(model1class, model2class))];
                 if (count <= 10)
                 {
-                    serr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<sendl;
+                    serr << "Contact " << responseUsed << " between " << model1->getClassName() << " and " << model2->getClassName() << " creation failed" << sendl;
                     if (count == 1)
                     {
                         serr << "Supported models for contact " << responseUsed << ":" << sendl;
-                        for (core::collision::Contact::Factory::const_iterator it = core::collision::Contact::Factory::getInstance()->begin(), itend = core::collision::Contact::Factory::getInstance()->end(); it != itend; ++it)
+                        for (Contact::Factory::const_iterator it = Contact::Factory::getInstance()->begin(), itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
                         {
                             if (it->first != responseUsed) continue;
-                            serr << "   " << sofa::helper::gettypename(it->second->type()) << sendl;
+                            serr << "   " << helper::gettypename(it->second->type()) << sendl;
                         }
                         serr << sendl;
                     }
@@ -154,28 +152,26 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             else
             {
                 contactMap[std::make_pair(model1, model2)] = contact;
-                contact->setName(model1->getName()+std::string("-")+model2->getName());
+                contact->setName(model1->getName() + std::string("-") + model2->getName());
                 setContactTags(model1, model2, contact);
                 contact->f_printLog.setValue(this->f_printLog.getValue());
                 contact->init();
-                contact->setDetectionOutputs(outputsIt->second);
                 ++nbContact;
             }
             ++outputsIt;
         }
-        else if (contactIt!=contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
+        else if (contactIt != contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
         {
             // inactive contact
             //sout << "Deleting inactive "<<contacttype<<" contact"<<sendl;
             if (contactIt->second->keepAlive())
             {
-                contactIt->second->setDetectionOutputs(NULL);
                 ++nbContact;
                 ++contactIt;
             }
             else
             {
-                std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::collision::Contact::SPtr >::iterator contactIt2 = contactIt;
+                std::map< std::pair< CollisionModel*, CollisionModel* >, Contact::SPtr >::iterator contactIt2 = contactIt;
                 ++contactIt2;
                 contactIt->second->removeResponse();
                 contactIt->second->cleanup();
@@ -187,34 +183,45 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         else
         {
             // corresponding contact and outputs
-            contactIt->second->setDetectionOutputs(outputsIt->second);
             ++nbContact;
             ++outputsIt;
             ++contactIt;
         }
     }
+
     // now update contactVec
     contacts.clear();
     contacts.reserve(nbContact);
-    contactIt = contactMap.begin();
-    while (contactIt!=contactMap.end())
+
+    // Store contacts in the collision detection saved order (fixes reproducibility problems)
+    DetectionOutputVectors::const_iterator it = outputsVec.begin();
+    while (it != outputsVec.end())
     {
-        contacts.push_back(contactIt->second);
-        ++contactIt;
+        contactIt = contactMap.find(it->first);
+        if (contactIt != contactMap.end())
+        {
+            contactIt->second->setDetectionOutputs(*(it->second));
+            contacts.push_back(contactIt->second);
+        }
+
+        ++it;
     }
+
     // compute number of contacts attached to each collision model
-    std::map<core::CollisionModel*,int> nbContactsMap;
-    for (unsigned int i=0; i<contacts.size(); ++i)
+    std::map< CollisionModel*, int > nbContactsMap;
+    for (unsigned int i = 0; i < contacts.size(); ++i)
     {
-        std::pair< core::CollisionModel*, core::CollisionModel* > cms = contacts[i]->getCollisionModels();
+        std::pair< CollisionModel*, CollisionModel* > cms = contacts[i]->getCollisionModels();
         nbContactsMap[cms.first]++;
         if (cms.second != cms.first)
             nbContactsMap[cms.second]++;
     }
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
-    simulation::Node* context = dynamic_cast<simulation::Node*>(getContext());
-    context->getTreeObjects<core::CollisionModel>(&collisionModels);
-    for (unsigned int i=0; i<collisionModels.size(); ++i)
+
+    helper::vector< CollisionModel* > collisionModels;
+    simulation::Node* context = dynamic_cast< simulation::Node* >(getContext());
+    context->getTreeObjects< CollisionModel >(&collisionModels);
+
+    for (unsigned int i = 0; i < collisionModels.size(); ++i)
     {
         collisionModels[i]->setNumberOfContacts(nbContactsMap[collisionModels[i]]);
     }
@@ -248,7 +255,6 @@ void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
             (*it)->draw(vparams);
     }
 }
-
 
 void DefaultContactManager::removeContacts(const ContactVector &c)
 {

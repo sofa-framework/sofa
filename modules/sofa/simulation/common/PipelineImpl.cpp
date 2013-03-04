@@ -23,7 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/PipelineImpl.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <sofa/core/collision/CollisionGroupManager.h>
+#include <sofa/core/collision/ContactManager.h>
+
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
