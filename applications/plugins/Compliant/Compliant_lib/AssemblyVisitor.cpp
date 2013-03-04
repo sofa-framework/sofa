@@ -5,10 +5,10 @@
 
 #include "UnilateralMask.h"
 
-#include <utils/scoped.h>
-#include <utils/find.h>
-#include <utils/cast.h>
-#include <utils/sparse.h>
+#include "./utils/scoped.h"
+#include "./utils/find.h"
+#include "./utils/cast.h"
+#include "./utils/sparse.h"
 
 
 namespace sofa {
