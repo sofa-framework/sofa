@@ -1,6 +1,6 @@
 load(sofa/pre)
 defineAsPlugin(SensableEmulation)
-######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
+######  GENERAL PLUGIN CONFIGURATION, you shouldnt have to modify it
 
 TEMPLATE = lib
 
@@ -24,9 +24,9 @@ README_FILE = PluginSensableEmulation.txt
 #        LIBS *=
 #}
 
-unix {
-        !macx : LIBS *= -lHD -lHL -lHDU -lHLU
-}
+#unix {
+#        !macx : LIBS *= -lHD -lHL -lHDU -lHLU
+#}
 
 
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
