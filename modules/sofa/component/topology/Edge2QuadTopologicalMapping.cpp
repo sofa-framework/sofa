@@ -72,8 +72,19 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 void Edge2QuadTopologicalMapping::init()
 {
 
+    if (!m_radius.isSet())
+    {
+        this->getContext()->get(m_radiusContainer);
+
+        if(!m_radiusContainer)
+            sout << "No radius defined" << sendl;
+    }
+ 
+
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
+
+    
 
     //sout << "INFO_print : init Edge2QuadTopologicalMapping" << sendl;
 
@@ -144,6 +155,8 @@ void Edge2QuadTopologicalMapping::init()
 
                     for(unsigned int j=0; j<N; ++j)
                     {
+                        if(m_radiusContainer) rho = m_radiusContainer->getPointRadius(j);
+
                         Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
                         to_x[p0*N+j] = x;
                     }
