@@ -598,10 +598,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
 		if(timeout && dt > timeout)
 		{
-            if (solver->f_printLog.getValue())
-            {
-			    std::cout << "TimeOut" << std::endl;
-            }
+			if(solver && solver->f_printLog.getValue())
+				std::cout << "TimeOut" << std::endl;
 
 			return;
 		}
