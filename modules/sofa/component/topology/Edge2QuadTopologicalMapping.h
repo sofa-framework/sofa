@@ -35,6 +35,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 
+#include <sofa/component/container/RadiusContainer.h>
+
 
 namespace sofa
 {
@@ -88,7 +90,8 @@ protected:
            m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
            m_radius( initData(&m_radius, "radius", "Radius of created circles")),
            edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered")),
-           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)")),
+        m_radiusContainer(NULL)
     {
     }
 
@@ -120,6 +123,9 @@ protected:
 
     Data<VecIndex> edgeList;
     Data<bool> flipNormals;
+
+    
+    container::RadiusContainer* m_radiusContainer;
 };
 
 } // namespace topology
