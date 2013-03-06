@@ -54,14 +54,17 @@ using sofa::defaulttype::Vector3;
 
 class DetectionOutputVector
 {
-public:
+protected:
     virtual ~DetectionOutputVector() {}
+public:
     /// Clear the content of this vector
     virtual void clear() = 0;
     /// Current size (number of detected contacts
     virtual unsigned int size() const = 0;
     /// Test if the vector is empty
     bool empty() const { return size()==0; }
+    /// Delete this vector from memory once the contact pair is no longer active
+    virtual void release() { delete this; }
 };
 
 

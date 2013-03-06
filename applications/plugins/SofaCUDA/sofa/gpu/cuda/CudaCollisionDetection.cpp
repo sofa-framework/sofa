@@ -158,7 +158,7 @@ void CudaCollisionDetection::endNarrowPhase()
                 if (test->useGPU())
                 {
                     GPUOutputVector* tresults = &it->second.test->results;
-                    this->outputsMap[it->first] = tresults;
+                    this->getDetectionOutputs(it->first.first, it->first.second) = tresults;
                     int newIndex = 0;
                     for (unsigned int t=0; t<tresults->nbTests(); t++)
                     {
@@ -171,25 +171,7 @@ void CudaCollisionDetection::endNarrowPhase()
             }
     }
 
-    //Inherit::endNarrowPhase();
-
-    DetectionOutputMap::iterator it = outputsMap.begin();
-    while(it!=outputsMap.end())
-    {
-        if (!it->second || it->second->empty())
-        {
-            DetectionOutputMap::iterator it2 = it;
-            ++it2;
-            if (!dynamic_cast<GPUOutputVector*>(it->second))
-                delete it->second;
-            outputsMap.erase(it);
-            it = it2;
-        }
-        else
-        {
-            ++it;
-        }
-    }
+    Inherit::endNarrowPhase();
 }
 
 
