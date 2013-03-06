@@ -109,20 +109,27 @@ public:
         _array = new T[_size];
     }
 
-    /// still-existing data is preserved
+    /// already-existing data is preserved
     void resizeAndKeep( size_t newSize )
     {
         if( !newSize )
         {
             delete [] _array;
             _array = 0;
+            return;
+        }
+
+        if( !_array )
+        {
+            _size = newSize;
+            _array = new T[_size];
         }
         else
         {
             T* tmpArray = new T[newSize];
             memcpy( tmpArray, _array, std::min(newSize,_size)*sizeof(T) );
             _size = newSize;
-            if( _array ) delete [] _array;
+            delete [] _array;
             _array = tmpArray;
         }
     }

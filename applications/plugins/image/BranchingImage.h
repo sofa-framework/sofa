@@ -174,21 +174,16 @@ public:
     public:
 
         /// default constructor = no allocation
-        ConnectionVoxel() : value(0) {}
+        ConnectionVoxel() : value(0), neighbours() {}
         /// with allocation constructor
-        ConnectionVoxel( size_t size ) { value = new T[size]; }
+        ConnectionVoxel( size_t spectrum ) : neighbours() { if( !spectrum ) { value = 0; return; } value = new T[spectrum]; }
         ~ConnectionVoxel() { if( value ) delete [] value; }
 
         /// copy
         /// @warning neighbourhood is copied but impossible to check its validity
         void clone( const ConnectionVoxel& cv, unsigned spectrum )
         {
-            if( value ) delete [] value;
-
-            if( !spectrum || !cv.value ) { value=0; return; }
-
-            value = new T[spectrum];
-            memcpy( value, cv.value, spectrum*sizeof(T) );
+            equal( cv, spectrum ); // copy value
 
             neighbours = cv.neighbours;
 
@@ -284,13 +279,39 @@ public:
             return value[ index ];
         }
 
-        /// equivalent to ==
+        /// ==
         bool isEqual( const ConnectionVoxel& other, unsigned spectrum ) const
         {
             for( unsigned i=0 ; i<spectrum ; ++i )
                 if( value[i] != other.value[i] ) return false;
             return true;
         }
+
+        /// =
+        void equal( const ConnectionVoxel& other, unsigned spectrum )
+        {
+            if( value ) delete [] value;
+
+            if( !spectrum || !other.value ) { value=0; return; }
+
+            value = new T[spectrum];
+            memcpy( value, other.value, spectrum*sizeof(T) );
+        }
+
+        /// +=
+        void addEqual( const ConnectionVoxel& other, unsigned spectrum )
+        {
+            for( unsigned i=0 ; i<spectrum ; ++i )
+                value[i] += other.value[i];
+        }
+
+        /// /=
+        void divideEqual( SReal d, unsigned spectrum )
+        {
+            for( unsigned i=0 ; i<spectrum ; ++i )
+                value[i] /= d;
+        }
+
 
         /// add the given voxel as a neigbour
         /// @warning it is doing only one way (this has to be added as a neighbour of n)
@@ -332,7 +353,23 @@ public:
         /// add a superimposed voxel
         void push_back( const ConnectionVoxel& v, unsigned spectrum )
         {
-            Inherited::resizeAndKeep( this->_size+1 );
+            size_t newSize = this->_size+1;
+
+            if( !this->_array )
+            {
+                this->_size = newSize;
+                this->_array = new ConnectionVoxel[this->_size];
+            }
+            else
+            {
+                ConnectionVoxel* oldArray = this->_array;
+                this->_array = new ConnectionVoxel[newSize];
+                for( size_t i=0 ; i<this->_size ; ++i )
+                    this->_array[i].clone( oldArray[i], spectrum );
+                this->_size = newSize;
+                delete [] oldArray;
+            }
+
             this->last().clone( v, spectrum );
         }
 
@@ -435,12 +472,13 @@ public:
     private :
 
         /// impossible to copy a ConnectedVoxel without the spectrum size
-        void push_back( const ConnectionVoxel& v ) { assert(false); }
-        SuperimposedVoxels( const SuperimposedVoxels& cv ) { assert(false); }
+        void push_back( const ConnectionVoxel& ) { assert(false); }
+        SuperimposedVoxels( const SuperimposedVoxels& ) : Inherited() { assert(false); }
         void operator=( const SuperimposedVoxels& ) { assert(false); }
         bool operator==( const SuperimposedVoxels& ) const { assert(false); }
         void resize( size_t ) { assert(false); }
-        void fill( const T& ) { assert(false); }
+        void resizeAndKeep( size_t ) { assert(false); }
+        void fill( const ConnectionVoxel& ) { assert(false); }
 
     }; // class SuperimposedVoxels
 
@@ -497,10 +535,12 @@ public:
     private:
 
         /// impossible to copy a ConnectedVoxel without the spectrum size
-        BranchingImage3D( const BranchingImage3D& ) { assert(false); }
+        BranchingImage3D( const BranchingImage3D& ) : Inherited() { assert(false); }
         void operator=( const BranchingImage3D& ) { assert(false); }
         bool operator==( const BranchingImage3D& ) const { assert(false); }
-        void push_back( const SuperimposedVoxels& v ) { assert(false); }
+        void push_back( const SuperimposedVoxels& ) { assert(false); }
+        void resizeAndKeep( size_t ) { assert(false); }
+        void fill( const SuperimposedVoxels& ) { assert(false); }
 
     }; // class BranchingImage3D
 
@@ -737,7 +777,7 @@ public:
             if( neighbourIndex1D == index1D+x+y*dimension[DIMENSION_X]+z*sliceSize ) { return NeighbourOffset(x,y,z); } // connected neighbours
 
         // not connected neighbours
-        // TODO
+        // TODO @todo important
         return NeighbourOffset(0,0,0);
     }
 
