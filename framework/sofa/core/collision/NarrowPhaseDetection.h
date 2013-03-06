@@ -96,7 +96,7 @@ public:
 
                 it = m_outputsVec.erase(it);
 
-                delete do_vec;
+                if (do_vec) do_vec->release();
             }
             else
             {

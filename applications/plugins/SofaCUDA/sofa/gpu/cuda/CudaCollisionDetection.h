@@ -94,6 +94,10 @@ struct GPUDetectionOutput
 class GPUDetectionOutputVector : public DetectionOutputVector
 {
 public:
+    ~GPUDetectionOutputVector()
+    {
+    }
+
     sofa::gpu::cuda::CudaVector<GPUContactPoint> results1, results2;
     sofa::gpu::cuda::CudaVector<GPUContact> results;
     struct TestEntry
@@ -106,10 +110,6 @@ public:
         TestEntry() : firstIndex(0), maxSize(0), curSize(0), newIndex(0), elems(std::make_pair(0,0)) {}
     };
     sofa::gpu::cuda::CudaVector< TestEntry > tests;
-
-    ~GPUDetectionOutputVector()
-    {
-    }
 
     unsigned int size() const
     {
@@ -126,6 +126,11 @@ public:
         results2.clear();
         results.clear();
         tests.clear();
+    }
+
+    void release()
+    {
+        // GPU vectors are stored in other data structures, they should not be deleted by the pipeline
     }
 
     unsigned int nbTests() { return tests.size(); }

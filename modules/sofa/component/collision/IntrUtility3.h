@@ -346,7 +346,7 @@ extern template class SOFA_BASE_COLLISION_API IntrAxis<defaulttype::Rigid3dTypes
 extern template class SOFA_BASE_COLLISION_API IntrConfiguration<double>;
 extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const Vec<3,double>&, double, int&,Vec<3,double>*);
 extern template SOFA_BASE_COLLISION_API Vec<3,double> GetPointFromIndex (int, const MyBox<double>& );
-extern template SOFA_BASE_COLLISION_API Vec<3,typename Rigid3dTypes::Real> getPointFromIndex (int, const TOBB<Rigid3dTypes>& );
+extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3dTypes::Real> getPointFromIndex (int, const TOBB<Rigid3dTypes>& );
 extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
 #endif
 #ifndef SOFA_DOUBLE
@@ -355,7 +355,7 @@ extern template class SOFA_BASE_COLLISION_API IntrAxis<defaulttype::Rigid3fTypes
 extern template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
 extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const Vec<3,float>&, float, int&,Vec<3,float>*);
 extern template SOFA_BASE_COLLISION_API Vec<3,float> GetPointFromIndex (int, const MyBox<float>& );
-extern template SOFA_BASE_COLLISION_API Vec<3,typename Rigid3fTypes::Real> getPointFromIndex (int, const TOBB<Rigid3fTypes>& );
+extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3fTypes::Real> getPointFromIndex (int, const TOBB<Rigid3fTypes>& );
 extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
 #endif
 #endif
