@@ -27,6 +27,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 
 namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
@@ -70,6 +71,11 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
+    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::helper::vector< Index > VecIndex;
+
     enum State { INCREASE, DECREASE };
 
 protected:
@@ -79,6 +85,8 @@ protected:
     Data< Real >	m_pressure;					///< Scalar pressure value applied on the surfaces.
     Data< Coord >	m_min;						///< Lower bound of the pressured box.
     Data< Coord >	m_max;						///< Upper bound of the pressured box.
+    Data< VecIndex >	m_triangleIndices;		///< Specify triangles by indices.
+    Data< VecIndex >	m_quadIndices;			///< Specify quads by indices.
     Data< bool >	m_pulseMode;				///< In this mode, the pressure increases (or decreases) from 0 to m_pressure cyclicly.
     Data< Real >	m_pressureLowerBound;		///< In pulseMode, the pressure increases(or decreases) from m_pressureLowerBound to m_pressure cyclicly.
     Data< Real >	m_pressureSpeed;			///< Pressure variation in Pascal by second.
@@ -120,14 +128,14 @@ protected:
      * @brief Triangle based surface pressure computation method.
      * Each vertice receives a force equal to 1/3 of the pressure applied on its belonging triangle.
      */
-    virtual void addTriangleSurfacePressure(VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
+    virtual void addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
 
 
     /**
      * @brief Quad based surface pressure computation method.
      * Each vertice receives a force equal to 1/4 of the pressure applied on its belonging quad.
      */
-    virtual void addQuadSurfacePressure(VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+    virtual void addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
 
 
     /**

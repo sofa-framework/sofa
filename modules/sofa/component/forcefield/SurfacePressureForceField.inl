@@ -51,6 +51,8 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
     m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box")),
     m_max(initData(&m_max, Coord(), "max", "Upper bond of the selection box")),
+    m_triangleIndices(initData(&m_triangleIndices, "triangleIndices", "Indices of affected triangles")),
+    m_quadIndices(initData(&m_quadIndices, "quadIndices", "Indices of affected quads")),
     m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application")),
     m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
     m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
@@ -158,9 +160,36 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
             }
         }
 
-        if (m_topology->getNbTriangles() > 0)
+        // Triangles
+
+        derivTriNormalValues.clear();
+        derivTriNormalValues.resize(x.size());
+        derivTriNormalIndices.clear();
+        derivTriNormalIndices.resize(x.size());
+
+        for (unsigned int i=0; i<x.size(); i++)
         {
-            addTriangleSurfacePressure(m_f,x,v,p, true);
+            derivTriNormalValues[i].clear();
+            derivTriNormalIndices[i].clear();
+        }
+
+        if (m_triangleIndices.getValue().size() > 0)
+        {
+            for (unsigned int i = 0; i < m_triangleIndices.getValue().size(); i++)
+            {
+                addTriangleSurfacePressure(m_triangleIndices.getValue()[i], m_f,x,v,p, true);
+            }
+        }
+        else if (m_topology->getNbTriangles() > 0)
+        {
+            for (unsigned int i = 0; i < (unsigned int)m_topology->getNbTriangles(); i++)
+            {
+                Triangle t = m_topology->getTriangle(i);
+                if ( isInPressuredBox(x[t[0]]) && isInPressuredBox(x[t[1]]) && isInPressuredBox(x[t[2]]) )
+                {
+                    addTriangleSurfacePressure(i, m_f,x,v,p, true);
+                }
+            }
 
             /*
 
@@ -185,10 +214,28 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 
         }
 
-        if (m_topology->getNbQuads() > 0)
+        // Quads
+
+        if (m_quadIndices.getValue().size() > 0)
         {
-            addQuadSurfacePressure(m_f,x,v,p);
+            for (unsigned int i = 0; i < m_quadIndices.getValue().size(); i++)
+            {
+                addQuadSurfacePressure(m_quadIndices.getValue()[i], m_f,x,v,p);
+            }
         }
+        else if (m_topology->getNbQuads() > 0)
+        {
+            for (unsigned int i = 0; i < (unsigned int)m_topology->getNbQuads(); i++)
+            {
+                Quad q = m_topology->getQuad(i);
+
+                if ( isInPressuredBox(x[q[0]]) && isInPressuredBox(x[q[1]]) && isInPressuredBox(x[q[2]]) && isInPressuredBox(x[q[3]]) )
+                {
+                    addQuadSurfacePressure(i, m_f,x,v,p);
+                }
+            }
+        }
+
     }
 
     for(unsigned int i=0;i<m_f.size();i++) f[i]+=m_f[i];
@@ -318,136 +365,85 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
+void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure, bool computeDerivatives)
 {
-    typedef BaseMeshTopology::Triangle Triangle;
+    Triangle t = m_topology->getTriangle(triId);
+
+    Deriv ab = x[t[1]] - x[t[0]];
+    Deriv ac = x[t[2]] - x[t[0]];
+    Deriv bc = x[t[2]] - x[t[1]];
+
+    Deriv p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
 
 
     if(computeDerivatives)
     {
-        derivTriNormalValues.clear();
-        derivTriNormalValues.resize(x.size());
-        derivTriNormalIndices.clear();
-        derivTriNormalIndices.resize(x.size());
+        Mat33 DcrossDA;
+        DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
+        DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
+        DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
 
-        for (unsigned int i=0; i<x.size(); i++)
+        Mat33 DcrossDB;
+        DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
+        DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
+        DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
+
+
+        Mat33 DcrossDC;
+        DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
+        DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
+        DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
+
+        for (unsigned int j=0; j<3; j++)
         {
-            derivTriNormalValues[i].clear();
-            derivTriNormalIndices[i].clear();
+            derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
+            derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
+            derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
+
+            derivTriNormalIndices[t[j]].push_back( t[0] );
+            derivTriNormalIndices[t[j]].push_back( t[1] );
+            derivTriNormalIndices[t[j]].push_back( t[2] );
         }
+
+
 
     }
 
 
 
-    std::cout<<" addTriangleSurfacePressure x.size() = "<<x.size()<<std::endl;
-
-    for (int i = 0; i < m_topology->getNbTriangles(); i++)
+    if (m_mainDirection.getValue() != Deriv())
     {
-
-        Triangle t = m_topology->getTriangle(i);
-
-
-
-
-
-        if ( isInPressuredBox(x[t[0]]) && isInPressuredBox(x[t[1]]) && isInPressuredBox(x[t[2]]) )
-        {
-
-
-            Deriv ab = x[t[1]] - x[t[0]];
-            Deriv ac = x[t[2]] - x[t[0]];
-            Deriv bc = x[t[2]] - x[t[1]];
-
-            Deriv p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-
-
-            if(computeDerivatives)
-            {
-                Mat33 DcrossDA;
-                DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
-                DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
-                DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
-
-                Mat33 DcrossDB;
-                DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
-                DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
-                DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
-
-
-                Mat33 DcrossDC;
-                DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
-                DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
-                DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
-
-                for (unsigned int j=0; j<3; j++)
-                {
-                    derivTriNormalValues[t[j]].push_back( DcrossDA * (pressure / static_cast<Real>(6.0))  );
-                    derivTriNormalValues[t[j]].push_back( DcrossDB * (pressure / static_cast<Real>(6.0))  );
-                    derivTriNormalValues[t[j]].push_back( DcrossDC * (pressure / static_cast<Real>(6.0))  );
-
-                    derivTriNormalIndices[t[j]].push_back( t[0] );
-                    derivTriNormalIndices[t[j]].push_back( t[1] );
-                    derivTriNormalIndices[t[j]].push_back( t[2] );
-                }
-
-
-
-            }
-
-
-
-            if (m_mainDirection.getValue() != Deriv())
-            {
-                Deriv n = ab.cross(ac);
-                n.normalize();
-                Real scal = n * m_mainDirection.getValue();
-                p *= fabs(scal);
-            }
-
-            f[t[0]] += p;
-            f[t[1]] += p;
-            f[t[2]] += p;
-
-
-        }
-
-
-
+        Deriv n = ab.cross(ac);
+        n.normalize();
+        Real scal = n * m_mainDirection.getValue();
+        p *= fabs(scal);
     }
+
+    f[t[0]] += p;
+    f[t[1]] += p;
+    f[t[2]] += p;
 }
 
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
+void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, const Real& pressure)
 {
-    typedef BaseMeshTopology::Quad Quad;
+    Quad q = m_topology->getQuad(quadId);
 
-    std::cout<<" addQuadSurfacePressure "<<std::endl;
+    Deriv ab = x[q[1]] - x[q[0]];
+    Deriv ac = x[q[2]] - x[q[0]];
+    Deriv ad = x[q[3]] - x[q[0]];
 
-    for (int i = 0; i < m_topology->getNbQuads(); i++)
-    {
-        Quad q = m_topology->getQuad(i);
+    Deriv p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+    Deriv p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
 
-        if ( isInPressuredBox(x[q[0]]) && isInPressuredBox(x[q[1]]) && isInPressuredBox(x[q[2]]) && isInPressuredBox(x[q[3]]) )
-        {
-            Deriv ab = x[q[1]] - x[q[0]];
-            Deriv ac = x[q[2]] - x[q[0]];
-            Deriv ad = x[q[3]] - x[q[0]];
+    Deriv p = p1 + p2;
 
-            Deriv p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-            Deriv p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
-
-            Deriv p = p1 + p2;
-
-            f[q[0]] += p;
-            f[q[1]] += p1;
-            f[q[2]] += p;
-            f[q[3]] += p2;
-        }
-
-    }
+    f[q[0]] += p;
+    f[q[1]] += p1;
+    f[q[2]] += p;
+    f[q[3]] += p2;
 }
 
 
