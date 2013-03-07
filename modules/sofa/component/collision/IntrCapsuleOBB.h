@@ -29,26 +29,13 @@ public:
 
     TIntrCapsuleOBB (const IntrCap& capsule, const Box & box);
 
-    // Dynamic find-intersection query.  The first point of contact is
-    // accessed by GetPoint(0), when there is a single contact, or by
-    // GetPoint(0) and GetPoint(1), when the contact is a segment, in which
-    // case the fetched points are the segment endpoints.  The first time of
-    // contact is accessed by GetContactTime().
-    bool Find (Real tmax, const Vec<3,Real>& velocity0,
-        const Vec<3,Real>& velocity1);
-
-    bool FindStatic (Real dmax);
-
-    int GetQuantity () const;
-    const Vec<3,Real>& GetPoint (int i) const;
+    bool Find (Real dmax);
 private:
     // The objects to intersect.
     const IntrCap* _cap;
     const Box * mBox;
 
     // Information about the intersection set.
-    int mQuantity;
-    Vec<3,Real> mPoint[2];
     using Intersector<Real>::_is_colliding;
     using Intersector<Real>::_pt_on_first;
     using Intersector<Real>::_pt_on_second;

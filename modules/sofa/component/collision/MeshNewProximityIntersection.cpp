@@ -66,6 +66,7 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
         intersection->intersectors.add<TriangleModel, TriangleModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<CapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<CapsuleModel, LineModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, OBBModel, MeshNewProximityIntersection>(this);
     }
 }
 
@@ -339,6 +340,14 @@ bool MeshNewProximityIntersection::testIntersection(Capsule&,Triangle&){
 
 bool MeshNewProximityIntersection::testIntersection(Capsule&,Line&){
     return true;
+}
+
+int MeshNewProximityIntersection::computeIntersection(Triangle& tri,OBB& obb,OutputVector* contacts){
+    return MeshIntTool::computeIntersection(tri,obb,tri.getProximity() + obb.getProximity() + intersection->getAlarmDistance(),tri.getProximity() + obb.getProximity() + intersection->getContactDistance(),contacts);
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle&,OBB&){
+    return false;
 }
 
 } // namespace collision

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
+//#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
+//#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
 
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -234,39 +234,6 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
         elems[i].flags = f;
     }
 #endif
-}
-
-template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(int i)
-{
-    int f = 0;
-    sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
-
-    if (i < _topology->getNbTriangles())
-    {
-        if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P1;
-        if (_topology->getTrianglesAroundVertex(t[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P2;
-        if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_P3;
-
-        const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
-
-
-
-        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E12;
-        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E23;
-        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
-            f |= FLAG_E31;
-    }
-    else
-    {
-        /// \TODO flags for quads
-    }
-    return f;
 }
 
 template<class DataTypes>
@@ -883,6 +850,38 @@ void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFil
     m_lmdFilter = lmdFilter;
 }
 
+template<class DataTypes>
+int TTriangleModel<DataTypes>::getTriangleFlags(int i)
+{
+    int f = 0;
+    sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
+
+    if (i < _topology->getNbTriangles())
+    {
+        if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P1;
+        if (_topology->getTrianglesAroundVertex(t[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P2;
+        if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P3;
+
+        const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
+
+
+
+        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E12;
+        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E23;
+        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E31;
+    }
+    else
+    {
+        /// \TODO flags for quads
+    }
+    return f;
+}
 
 } // namespace collision
 
@@ -890,4 +889,4 @@ void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFil
 
 } // namespace sofa
 
-#endif
+//#endif

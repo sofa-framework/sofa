@@ -426,6 +426,37 @@ int MeshIntTool::computeIntersection(Capsule& cap, Triangle& tri,double alarmDis
     return n + old_n;
 }
 
+
+int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts){
+    IntrTriangleOBB intr(tri,obb);
+    if(intr.Find(alarmDist)){
+        OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
+//        if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
+//            return 0;
+
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
+
+        detection->normal = intr.separatingAxis();
+        detection->point[0] = intr.pointOnFirst();
+        detection->point[1] = intr.pointOnSecond();
+
+        if(intr.colliding())
+            detection->value = -helper::rsqrt(dist2) - contactDist;
+        else
+            detection->value = helper::rsqrt(dist2) - contactDist;
+
+        detection->elem.first = tri;
+        detection->elem.second = obb;
+        detection->id = (tri.getCollisionModel()->getSize() > obb.getCollisionModel()->getSize()) ? tri.getIndex() : obb.getIndex();
+
+        return 1;
+    }
+
+    return 0;
+}
+
+
 }
 }
 }

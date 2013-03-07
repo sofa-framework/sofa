@@ -35,25 +35,7 @@ public:
         const Vec<3,Real>& velocity1);
 
     // Dynamic find-intersection query.  The contact set is computed.
-    bool Find (Real tmax, const Vec<3,Real>& velocity0,
-        const Vec<3,Real>& velocity1);
-
-    // Dynamic find-intersection query.  The contact set is computed.
-    bool FindStatic (Real dmax);
-
-    // The intersection set for dynamic find-intersection.
-    int GetQuantity () const;
-    const Vec<3,Real>& GetPoint (int i) const;
-
-    // Dynamic test-intersection query where the boxes have constant linear
-    // velocities *and* constant angular velocities.  The length of the
-    // rotation axes are the angular speeds.  A differential equation solver
-    // is used to predict the intersection.  The input numSteps is the
-    // number of iterations for the numerical ODE solver.
-    bool Test (Real tmax, int numSteps, const Vec<3,Real>& velocity0,
-        const Vec<3,Real>& rotCenter0, const Vec<3,Real>& rotAxis0,
-        const Vec<3,Real>& velocity1, const Vec<3,Real>& rotCenter1,
-        const Vec<3,Real>& rotAxis1);
+    bool Find (Real dmax);
 private:
     // Support for dynamic queries.  The inputs are the projection intervals
     // for the boxes onto a potential separating axis, the relative speed of
@@ -77,17 +59,11 @@ private:
     const Box* mBox0;
     const Box* mBox1;
 
-    // The intersection set for dynamic find-intersection.  The worst case
-    // is a polygon with 8 vertices.
-    int mQuantity;
-    Vec<3,Real> mPoint[8];
     using Intersector<Real>::_is_colliding;
     using Intersector<Real>::_pt_on_first;
     using Intersector<Real>::_pt_on_second;
     using Intersector<Real>::mContactTime;
     using Intersector<Real>::_sep_axis;
-
-    int mIntersectionType;
 };
 
 typedef TIntrOBBOBB<RigidTypes> IntrOBBOBB;

@@ -67,6 +67,8 @@ public:
     const Coord& p2() const;
     const Coord& p3() const;
 
+    const Coord& p(int i)const;
+
     int p1Index() const;
     int p2Index() const;
     int p3Index() const;
@@ -74,6 +76,8 @@ public:
     const Coord& p1Free() const;
     const Coord& p2Free() const;
     const Coord& p3Free() const;
+
+    const Coord& operator[](int i) const;
 
     const Deriv& v1() const;
     const Deriv& v2() const;
@@ -116,7 +120,6 @@ public:
     };
 
     Data<bool> bothSide; // to activate collision on both side of the triangle model
-
 protected:
 #if 0
     struct TriangleInfo
@@ -149,8 +152,8 @@ protected:
     bool needsUpdate;
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
-    int getTriangleFlags(int i);
     virtual void updateNormals();
+    int getTriangleFlags(int i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
@@ -223,7 +226,6 @@ public:
     {
         return DataTypes::Name();
     }
-
 };
 
 template<class DataTypes>
@@ -242,6 +244,14 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][1]]; }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][2]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p(int i) const {
+    return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][i]];
+}
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::operator[](int i) const {
+    return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][i]];
+}
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (*this->model->mstate->getXfree())[(*(this->model->triangles))[this->index][0]]; }

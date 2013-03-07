@@ -29,7 +29,7 @@ public:
       *the sphere center on the OBB and find the intersection point
       *on the OBB. Once we have this point we project it on the sphere.
       */
-    bool FindStatic ();
+    bool Find ();
 
     Real distance()const;
 private:
