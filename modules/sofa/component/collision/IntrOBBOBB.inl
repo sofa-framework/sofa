@@ -18,7 +18,6 @@ TIntrOBBOBB<TDataTypes>::TIntrOBBOBB (const Box& box0,
     mBox1(&box1)
 {
     _is_colliding = false;
-    mQuantity = 0;
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
@@ -472,157 +471,8 @@ bool TIntrOBBOBB<TDataTypes>::Test (Real tmax,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-bool TIntrOBBOBB<TDataTypes>::Find (Real tmax, const Vec<3,Real>& velocity0,
-    const Vec<3,Real>& velocity1)
+bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
 {
-    mQuantity = 0;
-
-    mContactTime = -std::numeric_limits<Real>::max();
-    Real tlast = std::numeric_limits<Real>::max();
-
-    // Relative velocity of box1 relative to box0.
-    Vec<3,Real> relVelocity = velocity1 - velocity0;
-
-    int i0, i1;
-    int side = IntrConfiguration<Real>::NONE;
-    IntrConfiguration<Real> box0Cfg, box1Cfg;
-    Vec<3,Real> axis;
-    bool config_modified;
-
-    // box 0 normals
-    for (i0 = 0; i0 < 3; ++i0)
-    {
-        axis = mBox0->axis(i0);
-        if (!IntrAxis<TDataTypes>::Find(axis, *mBox0, *mBox1, relVelocity, tmax,
-            mContactTime, tlast, side, box0Cfg, box1Cfg,config_modified))
-        {
-            return false;
-        }
-
-        if(config_modified)
-            _sep_axis = axis;
-    }
-
-    // box 1 normals
-    for (i1 = 0; i1 < 3; ++i1)
-    {
-        axis = mBox1->axis(i1);
-        if (!IntrAxis<TDataTypes>::Find(axis, *mBox0, *mBox1, relVelocity, tmax,
-            mContactTime, tlast, side, box0Cfg, box1Cfg,config_modified))
-        {
-            return false;
-        }
-
-        if(config_modified)
-            _sep_axis = axis;
-    }
-
-    // box 0 edges cross box 1 edges
-    for (i0 = 0; i0 < 3; ++i0)
-    {
-        for (i1 = 0; i1 < 3; ++i1)
-        {
-            axis = (mBox0->axis(i0)).cross(mBox1->axis(i1));
-
-            // Since all axes are unit length (assumed), then can just compare
-            // against a constant (not relative) epsilon.
-            if (axis.norm2() <= IntrUtil<Real>::ZERO_TOLERANCE())
-            {
-                // Axis i0 and i1 are parallel.  If any two axes are parallel,
-                // then the only comparisons that needed are between the faces
-                // themselves.  At this time the faces have already been
-                // tested, and without separation, so all further separation
-                // tests will show only overlaps.
-                FindContactSet<TDataTypes>(*mBox0, *mBox1, side, box0Cfg, box1Cfg,
-                    velocity0, velocity1, mContactTime, mQuantity, mPoint);
-
-                projectIntPoints(velocity0,velocity1,mContactTime,mPoint,mQuantity,_pt_on_first,_pt_on_second);
-
-                if(_sep_axis.norm2() > 1 + 1e-18 || _sep_axis.norm2() < 1 - 1e-18){
-                    _sep_axis.normalize();
-                }
-
-                if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
-                    _sep_axis *= -1;
-
-                return true;
-            }
-
-            if (!IntrAxis<TDataTypes>::Find(axis, *mBox0, *mBox1, relVelocity,
-                tmax, mContactTime, tlast, side, box0Cfg, box1Cfg,config_modified))
-            {
-                return false;
-            }
-
-            if(config_modified)
-                _sep_axis = axis;
-        }
-    }
-
-    // velocity cross box 0 edges
-    for (i0 = 0; i0 < 3; ++i0)
-    {
-        axis = relVelocity.cross(mBox0->axis(i0));
-        if (!IntrAxis<TDataTypes>::Find(axis, *mBox0, *mBox1, relVelocity, tmax,
-            mContactTime, tlast, side, box0Cfg, box1Cfg,config_modified))
-        {
-            return false;
-        }
-
-        if(config_modified)
-            _sep_axis = axis;
-    }
-
-    // velocity cross box 1 edges
-    for (i1 = 0; i1 < 3; ++i1)
-    {
-        axis = relVelocity.cross(mBox1->axis(i1));
-        if (!IntrAxis<TDataTypes>::Find(axis, *mBox0, *mBox1, relVelocity, tmax,
-            mContactTime, tlast, side, box0Cfg, box1Cfg,config_modified))
-        {
-            return false;
-        }
-
-        if(config_modified)
-            _sep_axis = axis;
-    }
-
-    if (mContactTime <= (Real)0)
-    {
-        if(side == IntrConfiguration<Real>::NONE)
-            return false;
-
-        Real max_ext_0 = std::max(mBox0->extent(0),std::max(mBox0->extent(1),mBox0->extent(2)));
-        Real max_ext_1 = std::max(mBox1->extent(0),std::max(mBox1->extent(1),mBox1->extent(2)));
-        Real max_ext = std::max(max_ext_0,max_ext_1);
-
-        if((mContactTime * relVelocity).norm2() < max_ext * max_ext){
-            _is_colliding = true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    FindContactSet<TDataTypes>(*mBox0, *mBox1, side, box0Cfg, box1Cfg,
-        velocity0, velocity1, mContactTime, mQuantity, mPoint);
-    projectIntPoints(velocity0,velocity1,mContactTime,mPoint,mQuantity,_pt_on_first,_pt_on_second);
-
-    if(_sep_axis.norm2() > 1 + 1e-18 || _sep_axis.norm2() < 1 - 1e-18){
-        _sep_axis.normalize();
-    }
-
-    if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
-        _sep_axis *= -1;
-
-    return true;
-}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
-{
-    mQuantity = 0;
-
     mContactTime = -std::numeric_limits<Real>::max();
 
     int i0, i1;
@@ -635,7 +485,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
     for (i0 = 0; i0 < 3; ++i0)
     {
         axis = mBox0->axis(i0);
-        IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+        IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
             mContactTime, side, box0Cfg,box1Cfg,config_modified);
 
         if(config_modified){
@@ -647,7 +497,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
     for (i1 = 0; i1 < 3; ++i1)
     {
         axis = mBox1->axis(i1);
-        IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+        IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
             mContactTime, side, box0Cfg, box1Cfg,config_modified);
 
         if(config_modified){
@@ -671,7 +521,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
                 // themselves.  At this time the faces have already been
                 // tested, and without separation, so all further separation
                 // tests will show only overlaps.
-                FindContactSet<TDataTypes>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
+                FindContactSet<Box,Box>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
 
                 if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
                     _sep_axis *= -1;
@@ -681,7 +531,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
 
             axis.normalize();
 
-            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1,
+            IntrAxis<Box>::Find(axis, *mBox0, *mBox1,
                 dmax, mContactTime, side, box0Cfg, box1Cfg,config_modified);
 
             if(config_modified){
@@ -698,7 +548,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
             axis.normalize();
-            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+            IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
                 mContactTime, side, box0Cfg, box1Cfg,config_modified);
 
             if(config_modified){
@@ -714,7 +564,7 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
             axis.normalize();
-            IntrAxis<TDataTypes>::FindStatic(axis, *mBox0, *mBox1, dmax,
+            IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
                 mContactTime, side, box0Cfg, box1Cfg,config_modified);
 
             if(config_modified){
@@ -741,100 +591,15 @@ bool TIntrOBBOBB<TDataTypes>::FindStatic (Real dmax)
     }
 
 
-    FindContactSet<TDataTypes>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
+    FindContactSet<Box,Box>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
 
-    if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
-        _sep_axis *= -1;
+//    if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
+//        _sep_axis *= -1;
+    if(side == IntrConfiguration<Real>::LEFT)
+        _sep_axis *= -1.0;
 
     return true;
 }
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-int TIntrOBBOBB<TDataTypes>::GetQuantity () const
-{
-    return mQuantity;
-}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-const Vec<3,typename TDataTypes::Real>& TIntrOBBOBB<TDataTypes>::GetPoint (int i) const
-{
-    return mPoint[i];
-}
-
-//----------------------------------------------------------------------------
-//template <class TDataTypes>
-//bool IntrOBBOBB<TDataTypes>::Test (Real tmax, int numSteps,
-//    const Vec<3,Real>& velocity0, const Vec<3,Real>& rotCenter0,
-//    const Vec<3,Real>& rotAxis0, const Vec<3,Real>& velocity1,
-//    const Vec<3,Real>& rotCenter1, const Vec<3,Real>& rotAxis1)
-//{
-//    // The time step for the integration.
-//    Real stepsize = tmax/(Real)numSteps;
-
-//    // Initialize subinterval boxes.
-//    Box3<Real> subBox0, subBox1;
-//    subBox0.Center = mBox0->Center;
-//    subBox1.Center = mBox1->Center;
-//    int i;
-//    for (i = 0; i < 3; ++i)
-//    {
-//        subBox0.Axis[i] = mBox0->Axis[i];
-//        subBox0.Extent[i] = mBox0->Extent[i];
-//        subBox1.Axis[i] = mBox1->Axis[i];
-//        subBox1.Extent[i] = mBox1->Extent[i];
-//    }
-
-//    // Integrate the differential equations using Euler's method.
-//    for (int istep = 1; istep <= numSteps; ++istep)
-//    {
-//        // Compute box velocities and test boxes for intersection.
-//        Real subTime = stepsize*(Real)istep;
-//        Vec<3,Real> newRotCenter0 = rotCenter0 + subTime*velocity0;
-//        Vec<3,Real> newRotCenter1 = rotCenter1 + subTime*velocity1;
-//        Vec<3,Real> diff0 = subBox0.Center - newRotCenter0;
-//        Vec<3,Real> diff1 = subBox1.Center - newRotCenter1;
-//        Vec<3,Real> subVelocity0 =
-//            stepsize*(velocity0 + rotAxis0.cross(diff0));
-//        Vec<3,Real> subVelocity1 =
-//            stepsize*(velocity1 + rotAxis1.cross(diff1));
-
-//        IntrOBBOBB calc(subBox0, subBox1);
-//        if (calc.Test(stepsize, subVelocity0, subVelocity1))
-//        {
-//            return true;
-//        }
-
-//        // Update the box centers.
-//        subBox0.Center = subBox0.Center + subVelocity0;
-//        subBox1.Center = subBox1.Center + subVelocity1;
-
-//        // Update the box axes.
-//        for (i = 0; i < 3; ++i)
-//        {
-//            subBox0.Axis[i] = subBox0.Axis[i] +
-//                stepsize*rotAxis0.cross(subBox0.Axis[i]);
-
-//            subBox1.Axis[i] = subBox1.Axis[i] +
-//                stepsize*rotAxis1.cross(subBox1.Axis[i]);
-//        }
-
-//        // Use Gram-Schmidt to orthonormalize the updated axes.  NOTE:  If
-//        // T/N is small and N is small, you can remove this expensive stepsize
-//        // with the assumption that the updated axes are nearly orthonormal.
-//        Vec<3,Real>::Orthonormalize(subBox0.Axis);
-//        Vec<3,Real>::Orthonormalize(subBox1.Axis);
-//    }
-
-//    // NOTE:  If the boxes do not intersect, then the application might want
-//    // to move/rotate the boxes to their new locations.  In this case you
-//    // want to return the final values of subBox0 and subBox1 so that the
-//    // application can set rkBox0 <- subBox0 and rkBox1 <- subBox1.
-//    // Otherwise, the application would have to solve the differential
-//    // equation again or compute the new box locations using the closed form
-//    // solution for the rigid motion.
-
-//    return false;
-//}
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 bool TIntrOBBOBB<TDataTypes>::IsSeparated (Real min0, Real max0, Real min1,

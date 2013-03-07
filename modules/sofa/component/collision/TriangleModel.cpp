@@ -63,4 +63,3 @@ template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
 } // namespace component
 
 } // namespace sofa
-

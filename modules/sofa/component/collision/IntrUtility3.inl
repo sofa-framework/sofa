@@ -80,20 +80,6 @@ CapIntrConfiguration<Real>::CapIntrConfiguration(){
 //----------------------------------------------------------------------------
 //template <class TDataTypes>
 //bool IntrAxis<TDataTypes>::Test (const Coord& axis,
-//    const Vec<3,Real> segment[2], const Box& box,
-//    const Vec<3,Real>& velocity, Real tmax, Real& tfirst, Real& tlast)
-//{
-//    Real min0, max0;
-//    GetProjection(axis, segment, min0, max0);
-
-//    Real min1, max1;
-//    GetProjection(axis, box, min1, max1);
-    
-//    return Test(axis, velocity, min0, max0, min1, max1, tmax, tfirst, tlast);
-//}
-//----------------------------------------------------------------------------
-//template <class TDataTypes>
-//bool IntrAxis<TDataTypes>::Test (const Coord& axis,
 //    const Triangle3<Real>& triangle, const Box& box,
 //    const Vec<3,Real>& velocity, Real tmax, Real& tfirst, Real& tlast)
 //{
@@ -122,122 +108,52 @@ CapIntrConfiguration<Real>::CapIntrConfiguration(){
 //    return Find(axis, velocity, segCfgStart, triCfgStart, tmax, side,
 //        segCfgFinal, triCfgFinal, tfirst, tlast);
 //}
+
+
+//----------------------------------------------------------------------------
+
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-bool IntrAxis<TDataTypes>::Find (const Coord& axis,
-    const Vec<3,Real> segment[2], Real radius,
-    const Box &box, const Vec<3, Real> &velocity, Real tmax,
-    Real& tfirst, Real &tlast, int &side,
-    CapIntrConfiguration<Real>& capCfgFinal, IntrConfiguration<Real> &boxCfgFinal,bool & config_modified)
-{
-    CapIntrConfiguration<Real> capCfgStart;
-    GetConfiguration(axis, segment,radius, capCfgStart);
-
-    IntrConfiguration<Real> boxCfgStart;
-    GetConfiguration(axis, box, boxCfgStart);
-
-    return Find(axis, velocity, capCfgStart, boxCfgStart, tmax, side,
-        capCfgFinal, boxCfgFinal, tfirst, tlast,config_modified);
-}
-//----------------------------------------------------------------------------
-//template <class TDataTypes>
-//bool IntrAxis<TDataTypes>::Find (const Coord& axis,
-//    const Triangle3<Real>& triangle, const Box& box,
-//    const Vec<3,Real>& velocity, Real tmax, Real& tfirst,
-//    Real& tlast, int& side, IntrConfiguration<Real>& segCfgFinal,
-//    IntrConfiguration<Real>& boxCfgFinal)
-//{
-//    IntrConfiguration<Real> triCfgStart;
-//    GetConfiguration(axis, triangle, triCfgStart);
-
-//    IntrConfiguration<Real> boxCfgStart;
-//    GetConfiguration(axis, box, boxCfgStart);
-
-//    return Find(axis, velocity, triCfgStart, boxCfgStart, tmax, side,
-//        segCfgFinal, boxCfgFinal, tfirst, tlast);
-//}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-bool IntrAxis<TDataTypes>::Find (const Coord& axis,
-    const Box& box0, const Box& box1,
-    const Vec<3,Real>& velocity, Real tmax, Real& tfirst,
-    Real& tlast, int& side, IntrConfiguration<Real>& box0CfgFinal,
-    IntrConfiguration<Real>& box1CfgFinal,bool & config_modified)
-{
-    IntrConfiguration<Real> box0CfgStart;
-    GetConfiguration(axis,box0,box0CfgStart);
-
-    IntrConfiguration<Real> box1CfgStart;
-    GetConfiguration(axis,box1,box1CfgStart);
-
-    return Find(axis, velocity, box0CfgStart, box1CfgStart, tmax, side,
-        box0CfgFinal, box1CfgFinal, tfirst, tlast,config_modified);
-}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-void IntrAxis<TDataTypes>::FindStatic (const Coord& axis,
+void IntrAxis<TOBB<TDataTypes> >::Find (const Coord& axis,
     const Box& box0, const Box& box1,
     Real dmax, Real& dfirst,
     int& side, IntrConfiguration<Real>& box0CfgFinal,
     IntrConfiguration<Real>& box1CfgFinal,bool & config_modified)
 {
     IntrConfiguration<Real> box0CfgStart;
-    GetConfiguration(axis,box0,box0CfgStart);
+    IntrConfigManager<Box>::init(axis,box0,box0CfgStart);
 
     IntrConfiguration<Real> box1CfgStart;
-    GetConfiguration(axis,box1,box1CfgStart);
+    IntrConfigManager<Box>::init(axis,box1,box1CfgStart);
 
-    FindStatic(box0CfgStart, box1CfgStart, side,
+    IntrConfigManager<Real>::Find(box0CfgStart, box1CfgStart, side,
         box0CfgFinal, box1CfgFinal, dmax,dfirst, config_modified);
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void IntrAxis<TDataTypes>::FindStatic (const Coord& axis,
+void IntrAxis<TOBB<TDataTypes> >::Find(const Coord& axis,
     const Vec<3,Real> segment[2],Real radius, const Box& box,
     Real dmax, Real& dfirst,
     int& side, CapIntrConfiguration<Real>& capCfgFinal,
     IntrConfiguration<Real>& boxCfgFinal,bool & config_modified)
 {
     CapIntrConfiguration<Real> capCfgStart;
-    GetConfiguration(axis,segment,radius,capCfgStart);
+    IntrConfigManager<Real>::init(axis,segment,radius,capCfgStart);
 
     IntrConfiguration<Real> boxCfgStart;
-    GetConfiguration(axis,box,boxCfgStart);
+    IntrConfigManager<Box>::init(axis,box,boxCfgStart);
 
-    FindStatic(capCfgStart, boxCfgStart, side,
+    IntrConfigManager<Real>::Find(capCfgStart, boxCfgStart, side,
         capCfgFinal, boxCfgFinal, dmax,dfirst, config_modified);
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void IntrAxis<TDataTypes>::GetProjection (const Coord& axis,
-    const Coord segment[2], Real& imin, Real& imax)
-{
-    Real dot[2] =
-    {
-        axis * segment[0],
-        axis * segment[1]
-    };
-
-    imin = dot[0];
-    imax = imin;
-
-    if (dot[1] < imin)
-    {
-        imin = dot[1];
-    }
-    else if (dot[1] > imax)
-    {
-        imax = dot[1];
-    }
-}
-//----------------------------------------------------------------------------
-//template <class TDataTypes>
+//template <class TDataTypes,class BDataTypes>
 //void IntrAxis<TDataTypes>::GetProjection (const Coord& axis,
 //    const Triangle3<Real>& triangle, Real& imin, Real& imax)
 //{
 //    Real dot[3] =
 //    {
-//        axis.dot(triangle.V[0]),
+//        axis.dot(triangle.p(0)),
 //        axis.dot(triangle.V[1]),
 //        axis.dot(triangle.V[2])
 //    };
@@ -264,22 +180,8 @@ void IntrAxis<TDataTypes>::GetProjection (const Coord& axis,
 //    }
 //}
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void IntrAxis<TDataTypes>::GetProjection (const Coord& axis,
-    const Box& box, Real& imin, Real& imax)
-{
-    Real origin = axis * box.center();
-    Real maximumExtent =
-        fabs(box.extent(0)*axis * box.axis(0)) +
-        fabs(box.extent(1)*axis * box.axis(1)) +
-        fabs(box.extent(2)*axis * box.axis(2));
-
-    imin = origin - maximumExtent;
-    imax = origin + maximumExtent;
-}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
+template <typename Real>
+void IntrConfigManager<Real>::init (const Vec<3,Real>& axis,
     const Vec<3,Real> segment[2], IntrConfiguration<Real>& cfg)
 {
     Real dot[2] =
@@ -312,10 +214,10 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
         cfg.mIndex[1] = 0;
     }
 }
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
-    const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> &cfg)
+
+template <typename Real>
+void IntrConfigManager<Real>::init(const Vec<3,Real> & axis,
+                                const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> &cfg)
 {
     cfg.axis = axis;
 
@@ -350,136 +252,11 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
     }
 }
 //----------------------------------------------------------------------------
-//template <class TDataTypes>
-//void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
-//    const Triangle3<Real>& triangle, IntrConfiguration<Real>& cfg)
-//{
-//    // Find projections of vertices onto potential separating axis.
-//    Real d0 = axis.dot(triangle.V[0]);
-//    Real d1 = axis.dot(triangle.V[1]);
-//    Real d2 = axis.dot(triangle.V[2]);
 
-//    // Explicit sort of vertices to construct a IntrConfiguration.
-//    if (d0 <= d1)
-//    {
-//        if (d1 <= d2) // D0 <= D1 <= D2
-//        {
-//            if (d0 != d1)
-//            {
-//                if (d1 != d2)
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m111;
-//                }
-//                else
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m12;
-//                }
-//            }
-//            else // ( D0 == D1 )
-//            {
-//                if (d1 != d2)
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m21;
-//                }
-//                else
-//                {
-//                    cfg.mMap = IntrConfiguration<Real>::m3;
-//                }
-//            }
-//            cfg.mIndex[0] = 0;
-//            cfg.mIndex[1] = 1;
-//            cfg.mIndex[2] = 2;
-//            cfg.mMin = d0;
-//            cfg.mMax = d2;
-//        }
-//        else if (d0 <= d2) // D0 <= D2 < D1
-//        {
-//            if (d0 != d2)
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m111;
-//                cfg.mIndex[0] = 0;
-//                cfg.mIndex[1] = 2;
-//                cfg.mIndex[2] = 1;
-//            }
-//            else
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m21;
-//                cfg.mIndex[0] = 2;
-//                cfg.mIndex[1] = 0;
-//                cfg.mIndex[2] = 1;
-//            }
-//            cfg.mMin = d0;
-//            cfg.mMax = d1;
-//        }
-//        else // D2 < D0 <= D1
-//        {
-//            if (d0 != d1)
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m111;
-//            }
-//            else
-//            {
-//                cfg.mMap = IntrConfiguration<Real>::m12;
-//            }
-
-//            cfg.mIndex[0] = 2;
-//            cfg.mIndex[1] = 0;
-//            cfg.mIndex[2] = 1;
-//            cfg.mMin = d2;
-//            cfg.mMax = d1;
-//        }
-//    }
-//    else if (d2 <= d1) // D2 <= D1 < D0
-//    {
-//        if (d2 != d1)
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m111;
-//            cfg.mIndex[0] = 2;
-//            cfg.mIndex[1] = 1;
-//            cfg.mIndex[2] = 0;
-//        }
-//        else
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m21;
-//            cfg.mIndex[0] = 1;
-//            cfg.mIndex[1] = 2;
-//            cfg.mIndex[2] = 0;
-
-//        }
-//        cfg.mMin = d2;
-//        cfg.mMax = d0;
-//    }
-//    else if (d2 <= d0) // D1 < D2 <= D0
-//    {
-//        if (d2 != d0)
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m111;
-//        }
-//        else
-//        {
-//            cfg.mMap = IntrConfiguration<Real>::m12;
-//        }
-
-//        cfg.mIndex[0] = 1;
-//        cfg.mIndex[1] = 2;
-//        cfg.mIndex[2] = 0;
-//        cfg.mMin = d1;
-//        cfg.mMax = d0;
-//    }
-//    else // D1 < D0 < D2
-//    {
-//        cfg.mMap = IntrConfiguration<Real>::m111;
-//        cfg.mIndex[0] = 1;
-//        cfg.mIndex[1] = 0;
-//        cfg.mIndex[2] = 2;
-//        cfg.mMin = d1;
-//        cfg.mMax = d2;
-//    }
-//}
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
-    const Box& box, IntrConfiguration<Real>& cfg)
+void IntrConfigManager<TOBB<TDataTypes> >::init (const Vec<3,Real> & axis,
+    const Box & box, IntrConfiguration<Real>& cfg)
 {
     // Description of coordinate ordering scheme for IntrConfiguration.mIndex.
     //
@@ -526,7 +303,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
 
             // faces have normals along axis[2]
             if (axes[2] > (Real)0)
-            {       
+            {
                 cfg.mIndex[0] = 0;
                 cfg.mIndex[1] = 1;
                 cfg.mIndex[2] = 3;
@@ -558,7 +335,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             maxProjectedExtent = absAxes[1]*box.extent(1);
 
             // faces have normals along axis[1]
-            if (axes[1] > (Real)0) 
+            if (axes[1] > (Real)0)
             {
                 cfg.mIndex[0] = 4;
                 cfg.mIndex[1] = 5;
@@ -594,7 +371,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             // axis 0 is perpendicular to axis
             if (axes[1] > (Real)0)
             {
-                if (axes[2] > (Real)0) 
+                if (axes[2] > (Real)0)
                 {
                     cfg.mIndex[0] = 0;
                     cfg.mIndex[1] = 1;
@@ -602,7 +379,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
                     cfg.mIndex[6] = 6;
                     cfg.mIndex[7] = 7;
                 }
-                else 
+                else
                 {
                     cfg.mIndex[0] = 4;
                     cfg.mIndex[1] = 5;
@@ -679,7 +456,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             // axis 1 is perpendicular to axis
             if (axes[0] > (Real)0)
             {
-                if (axes[2] > (Real)0) 
+                if (axes[2] > (Real)0)
                 {
                     cfg.mIndex[0] = 0;
                     cfg.mIndex[1] = 2;
@@ -687,7 +464,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
                     cfg.mIndex[6] = 5;
                     cfg.mIndex[7] = 7;
                 }
-                else 
+                else
                 {
                     cfg.mIndex[0] = 4;
                     cfg.mIndex[1] = 6;
@@ -717,7 +494,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             }
         }
     }
-    
+
     else if (absAxes[2] < IntrUtil<Real>::ZERO_TOLERANCE())
     {
         // only axis2 less than zero
@@ -730,7 +507,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
         // axis 2 is perpendicular to axis
         if (axes[0] > (Real)0)
         {
-            if (axes[1] > (Real)0) 
+            if (axes[1] > (Real)0)
             {
                 cfg.mIndex[0] = 0;
                 cfg.mIndex[1] = 4;
@@ -738,7 +515,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
                 cfg.mIndex[6] = 3;
                 cfg.mIndex[7] = 7;
             }
-            else 
+            else
             {
                 cfg.mIndex[0] = 2;
                 cfg.mIndex[1] = 6;
@@ -767,7 +544,7 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             }
         }
     }
-  
+
     else // no axis is equal to zero
     {
         // point-point (unique maximal and minimal vertex)
@@ -777,9 +554,9 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
             absAxes[1]*box.extent(1) + absAxes[2]*box.extent(2);
 
         // only these two vertices matter, the rest are irrelevant
-        cfg.mIndex[0] = 
-            (axes[0] > (Real)0.0 ? 0 : 1) + 
-            (axes[1] > (Real)0.0 ? 0 : 2) + 
+        cfg.mIndex[0] =
+            (axes[0] > (Real)0.0 ? 0 : 1) +
+            (axes[1] > (Real)0.0 ? 0 : 2) +
             (axes[2] > (Real)0.0 ? 0 : 4);
         // by ordering the vertices this way, opposite corners add up to 7
         cfg.mIndex[7] = 7 - cfg.mIndex[0];
@@ -790,175 +567,9 @@ void IntrAxis<TDataTypes>::GetConfiguration (const Coord& axis,
     cfg.mMin = origin - maxProjectedExtent;
     cfg.mMax = origin + maxProjectedExtent;
 }
-
 //----------------------------------------------------------------------------
-template <class TDataTypes> template <class Config0,class Config1>
-bool IntrAxis<TDataTypes>::Find(const Coord& axis,
-    const Vec<3,Real>& velocity, const Config0& cfg0Start,
-    const Config1& cfg1Start, Real tmax, int& side,
-    Config0& cfg0Final, Config1& cfg1Final,
-    Real& tfirst, Real& tlast,bool & config_modified)
-{
-    config_modified = false;
-    // Constant velocity separating axis test.  The configurations cfg0Start
-    // and cfg1Start are the current potential configurations for contact,
-    // and cfg0Final and cfg1Final are improved configurations.
-    Real t;
-    Real speed = axis * velocity;
-
-    if (cfg1Start.mMax < cfg0Start.mMin) // object1 left of object0
-    {
-        if (speed <= (Real)0) // object1 moving away from object0
-        {
-            return false;
-        }
-
-        // find first time of contact on this axis
-        t = (cfg0Start.mMin - cfg1Start.mMax)/speed;
-
-        // If this is the new maximum first time of contact, set side and
-        // configuration.
-        if (t > tfirst)
-        {
-            tfirst = t;
-            side = IntrConfiguration<Real>::LEFT;
-            cfg0Final = cfg0Start;
-            cfg1Final = cfg1Start;
-            config_modified = true;
-        }
-
-        // quick out: intersection after desired interval
-        if (tfirst > tmax)
-        {
-            return false;
-        }
-
-        // find last time of contact on this axis
-        t = (cfg0Start.mMax - cfg1Start.mMin)/speed;
-        if (t < tlast)
-        {
-            tlast = t;
-        }
-
-        // quick out: intersection before desired interval
-        if (tfirst > tlast)
-        {
-            return false;
-        }
-    }
-    else if (cfg0Start.mMax < cfg1Start.mMin)  // obj1 right of obj0
-    {
-        if (speed >= (Real)0) // object1 moving away from object0
-        {
-            return false;
-        }
-
-        // find first time of contact on this axis
-        t = (cfg0Start.mMax - cfg1Start.mMin)/speed;
-
-        // If this is the new maximum first time of contact,  set side and
-        // configuration.
-        if (t > tfirst)
-        {
-            tfirst = t;
-            side = IntrConfiguration<Real>::RIGHT;
-            cfg0Final = cfg0Start;
-            cfg1Final = cfg1Start;
-            config_modified = true;
-        }
-
-        // quick out: intersection after desired interval
-        if (tfirst > tmax)
-        {
-            return false;
-        }
-
-        // find last time of contact on this axis
-        t = (cfg0Start.mMin - cfg1Start.mMax)/speed;
-        if (t < tlast)
-        {
-            tlast = t;
-        }
-
-        // quick out: intersection before desired interval
-        if (tfirst > tlast)
-        {
-            return false;
-        }
-    }
-    else // object1 and object0 on overlapping interval
-    {
-        if (speed > (Real)0)
-        {
-            if(cfg1Start.mMax < cfg0Start.mMax){
-                // find first time of contact on this axis
-                t = (cfg0Start.mMin - cfg1Start.mMax)/speed;
-
-                // If this is the new maximum first time of contact, set side and
-                // configuration.
-                if (t > tfirst)
-                {
-                    tfirst = t;
-                    side = IntrConfiguration<Real>::LEFT;
-                    cfg0Final = cfg0Start;
-                    cfg1Final = cfg1Start;
-                    config_modified = true;
-                }
-            }
-
-            // find last time of contact on this axis
-            t = (cfg0Start.mMax - cfg1Start.mMin)/speed;
-            if (t < tlast)
-            {
-                tlast = t;
-            }
-
-            // quick out: intersection before desired interval
-            if (tfirst > tlast)
-            {
-                return false;
-            }
-        }
-        else if (speed < (Real)0)
-        {
-            if(cfg0Start.mMin < cfg1Start.mMin){
-                // find first time of contact on this axis
-                t = (cfg0Start.mMax - cfg1Start.mMin)/speed;
-
-                // If this is the new maximum first time of contact,  set side and
-                // configuration.
-                if (t > tfirst)
-                {
-                    tfirst = t;
-                    side = IntrConfiguration<Real>::RIGHT;
-                    cfg0Final = cfg0Start;
-                    cfg1Final = cfg1Start;
-                    config_modified = true;
-                }
-            }
-
-            // find last time of contact on this axis
-            t = (cfg0Start.mMin - cfg1Start.mMax)/speed;
-            if (t < tlast)
-            {
-                tlast = t;
-            }
-
-            // quick out: intersection before desired interval
-            if (tfirst > tlast)
-            {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-
-
-template <class TDataTypes> template <class Config0,class Config1>
-void IntrAxis<TDataTypes>::FindStatic(const Config0& cfg0Start,
+template <typename Real> template <class Config0,class Config1>
+void IntrConfigManager<Real>::Find (const Config0& cfg0Start,
     const Config1& cfg1Start, int& side,
     Config0& cfg0Final, Config1& cfg1Final,
     Real dmax,Real& dfirst,bool & config_modified)
@@ -1069,7 +680,7 @@ void IntrAxis<TDataTypes>::FindStatic(const Config0& cfg0Start,
 //    // Move the triangle to its new position.
 //    Vec<3,Real> triFinal[3] =
 //    {
-//        triangle.V[0] + tfirst*triVelocity,
+//        triangle.p(0) + tfirst*triVelocity,
 //        triangle.V[1] + tfirst*triVelocity,
 //        triangle.V[2] + tfirst*triVelocity
 //    };
@@ -1130,99 +741,7 @@ void IntrAxis<TDataTypes>::FindStatic(const Config0& cfg0Start,
 //}
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2],
-    const Box& box, int side, const IntrConfiguration<Real>& segCfg,
-    const IntrConfiguration<Real>& boxCfg, const Vec<3,Real>& segVelocity,
-    const Vec<3,Real>& boxVelocity, Real tfirst, int& quantity,
-    Vec<3,Real>* P)
-{
-    // Move the segment to its new position.
-    Vec<3,Real> segFinal[2] =
-    {
-        segment[0] + tfirst*segVelocity,
-        segment[1] + tfirst*segVelocity
-    };
-
-    // Move the box to its new position.
-    MyBox<Real> boxFinal;
-    boxFinal.Center = box.center() + tfirst*boxVelocity;
-    for (int i = 0; i < 3; ++i)
-    {
-        boxFinal.Axis[i] = box.axis(i);
-        boxFinal.Extent[i] = box.extent(i);
-    }
-
-    const int* sIndex = segCfg.mIndex;
-    const int* bIndex = boxCfg.mIndex;
-
-    if (side == IntrConfiguration<Real>::LEFT)
-    {
-        // box on left of seg
-        if (segCfg.mMap == IntrConfiguration<Real>::m11)
-        {
-            quantity = 1;
-            P[0] = segFinal[sIndex[0]];
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(bIndex[7], boxFinal);
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            // segment-segment intersection
-            Vec<3,Real> boxSeg[2];
-            boxSeg[0] = GetPointFromIndex(bIndex[6], boxFinal);
-            boxSeg[1] = GetPointFromIndex(bIndex[7], boxFinal);
-            SegmentSegment(segFinal, boxSeg, quantity, P);
-        }
-        else // boxCfg.mMap == IntrConfiguration<Real>::m44
-        {
-            // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
-            boxFace[0] = GetPointFromIndex(bIndex[4], boxFinal);
-            boxFace[1] = GetPointFromIndex(bIndex[5], boxFinal);
-            boxFace[2] = GetPointFromIndex(bIndex[6], boxFinal);
-            boxFace[3] = GetPointFromIndex(bIndex[7], boxFinal);
-            CoplanarSegmentRectangle(segFinal, boxFace, quantity, P);
-        }
-    }
-    else // side == RIGHT
-    {
-        // box on right of seg
-        if (segCfg.mMap == IntrConfiguration<Real>::m11)
-        {
-            quantity = 1;
-            P[0] = segFinal[sIndex[1]];
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(bIndex[0], boxFinal);
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            // segment-segment intersection
-            Vec<3,Real> boxSeg[2];
-            boxSeg[0] = GetPointFromIndex(bIndex[0], boxFinal);
-            boxSeg[1] = GetPointFromIndex(bIndex[1], boxFinal);
-            SegmentSegment(segFinal, boxSeg, quantity, P);
-        }
-        else // boxCfg.mMap == IntrConfiguration<Real>::m44
-        {
-            // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
-            boxFace[0] = GetPointFromIndex(bIndex[0], boxFinal);
-            boxFace[1] = GetPointFromIndex(bIndex[1], boxFinal);
-            boxFace[2] = GetPointFromIndex(bIndex[2], boxFinal);
-            boxFace[3] = GetPointFromIndex(bIndex[3], boxFinal);
-            CoplanarSegmentRectangle(segFinal, boxFace, quantity, P);
-        }
-    }
-}
-
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::FindContactConfig(const Vec<3,Real> & axis,const Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
+void FindContactSet<TOBB<TDataTypes> >::FindContactConfig(const Vec<3,Real> & axis,const Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
     int side,Vec<3, Real> & pt_on_capsule, Vec<3, Real> &pt_on_box){
     bool adjust = false;
     pt_on_box = box.center();
@@ -1268,169 +787,10 @@ void FindContactSet<TDataTypes>::FindContactConfig(const Vec<3,Real> & axis,cons
     capCfg.have_naxis = true;
 }
 
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::FindContactPoint (const Vec<3,Real> & segP0, Real radius,CapIntrConfiguration<Real> &capCfg,const MyBox<Real> &boxFinal,
-    const Vec<3,Real>& boxVelocity,const Vec<3,Real> & capVelocity,
-    Real & tfirst, Vec<3,Real>* P)
-{
-    bool adjust = false;
-    P[0] = boxFinal.Center;
-
-    Real coord_i;
-    Vec<3,Real> centered_seg = segP0 - boxFinal.Center;
-
-    for(int i = 0 ; i < 3 ; ++i){
-        coord_i = boxFinal.Axis[i] * (centered_seg);
-
-        if(coord_i < -boxFinal.Extent[i] - IntrUtil<Real>::ZERO_TOLERANCE()){
-            adjust = true;
-            coord_i = -boxFinal.Extent[i];
-        }
-        else if(coord_i > boxFinal.Extent[i] + IntrUtil<Real>::ZERO_TOLERANCE()){
-            coord_i = boxFinal.Extent[i];
-            adjust = true;
-        }
-
-        P[0] += coord_i * boxFinal.Axis[i];
-    }
-
-    if(adjust){
-        Vec<3,Real> segPP0n(P[0] - segP0);
-        IntrUtil<Real>::normalize(segPP0n);
-
-        Vec<3,Real> PCap(segP0 + radius * segPP0n);
-        Vec<3,Real> PCapP0 = (P[0] - PCap);
-
-        Vec<3,Real> relVelocity = boxVelocity - capVelocity;
-
-        Real deltaT = fabs(PCapP0.norm2() / (relVelocity * PCapP0));
-
-        P[0] += deltaT * boxVelocity;
-        tfirst += deltaT;
-
-        capCfg.axis = segPP0n;
-    }
-
-    capCfg.have_naxis = true;
-}
-
-template <class TDataTypes>
-FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real radius,
-    const Box& box, int side, CapIntrConfiguration<Real>& capCfg,
-    const IntrConfiguration<Real>& boxCfg, const Vec<3,Real>& segVelocity,
-    const Vec<3,Real>& boxVelocity, Real &tfirst, int& quantity,
-    Vec<3,Real>* P)
-{
-    // Move the segment to its new position.
-    Vec<3,Real> segFinal[2] =
-    {
-        segment[0] + tfirst*segVelocity,
-        segment[1] + tfirst*segVelocity
-    };
-
-    // Move the box to its new position.
-    MyBox<Real> boxFinal;
-    boxFinal.Center = box.center() + tfirst*boxVelocity;
-    for (int i = 0; i < 3; ++i)
-    {
-        boxFinal.Axis[i] = box.axis(i);
-        boxFinal.Extent[i] = box.extent(i);
-    }
-
-    const int* bIndex = boxCfg.mIndex;
-    const int* capIndex = capCfg.mIndex;
-
-    if (side == IntrConfiguration<Real>::LEFT)
-    {
-        // box on left of seg
-        if (capCfg.mMap == IntrConfiguration<Real>::m11)
-        {
-            quantity = 1;
-            //P[0] = segFinal[sIndex[0]];
-
-            if(capCfg.mMap == IntrConfiguration<Real>::m11){
-                FindContactPoint(segFinal[capIndex[0]],radius,capCfg,boxFinal,boxVelocity,segVelocity,tfirst,P);
-            }
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(bIndex[7], boxFinal);
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            // segment-segment intersection
-            Vec<3,Real> boxSeg[2];            
-            boxSeg[0] = GetPointFromIndex(bIndex[6], boxFinal);
-            boxSeg[1] = GetPointFromIndex(bIndex[7], boxFinal);
-
-            Vec<3,Real> capSeg[2];
-            capCfg.leftSegment(segFinal,radius,capSeg);
-
-            SegmentSegment(capSeg, boxSeg, quantity, P);
-        }
-        else // boxCfg.mMap == IntrConfiguration<Real>::m44
-        {
-            // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
-            boxFace[0] = GetPointFromIndex(bIndex[4], boxFinal);
-            boxFace[1] = GetPointFromIndex(bIndex[5], boxFinal);
-            boxFace[2] = GetPointFromIndex(bIndex[6], boxFinal);
-            boxFace[3] = GetPointFromIndex(bIndex[7], boxFinal);
-
-            Vec<3,Real> capSeg[2];
-            capCfg.leftSegment(segFinal,radius,capSeg);
-
-            CoplanarSegmentRectangle(capSeg, boxFace, quantity, P);
-        }
-    }
-    else // side == RIGHT
-    {
-        // box on right of seg
-        if (capCfg.mMap == IntrConfiguration<Real>::m11)
-        {
-            quantity = 1;
-            FindContactPoint(segFinal[capIndex[1]],radius,capCfg,boxFinal,boxVelocity,segVelocity,tfirst,P);
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-
-            quantity = 1;
-            P[0] = GetPointFromIndex(bIndex[0], boxFinal);
-        }
-        else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            // segment-segment intersection
-            Vec<3,Real> boxSeg[2];
-            boxSeg[0] = GetPointFromIndex(bIndex[0], boxFinal);
-            boxSeg[1] = GetPointFromIndex(bIndex[1], boxFinal);
-            Vec<3,Real> capSeg[2];
-            capCfg.rightSegment(segFinal,radius,capSeg);
-
-            SegmentSegment(capSeg, boxSeg, quantity, P);
-
-            capCfg.have_naxis = true;
-        }
-        else // boxCfg.mMap == IntrConfiguration<Real>::m44
-        {
-            // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
-            boxFace[0] = GetPointFromIndex(bIndex[0], boxFinal);
-            boxFace[1] = GetPointFromIndex(bIndex[1], boxFinal);
-            boxFace[2] = GetPointFromIndex(bIndex[2], boxFinal);
-            boxFace[3] = GetPointFromIndex(bIndex[3], boxFinal);
-
-            Vec<3,Real> capSeg[2];
-            capCfg.rightSegment(segFinal,radius,capSeg);
-
-            CoplanarSegmentRectangle(capSeg, boxFace, quantity, P);
-        }
-    }
-}
  //IL FAUT FAIRE CA
 //HA !
 template <class TDataTypes>
-FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real radius,const Box& box,const Vec<3,Real> & axis,
+FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2], Real radius,const Box& box,const Vec<3,Real> & axis,
     int side, CapIntrConfiguration<Real> &capCfg,
     const IntrConfiguration<Real>& boxCfg,
     Real tfirst, Vec<3,Real> & pt_on_capsule,Vec<3,Real> & pt_on_box){
@@ -1456,7 +816,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_box = getPointFromIndex(bIndex[7], box);
-            projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
+            IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -1465,7 +825,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             boxSeg[0] = getPointFromIndex(bIndex[6], box);
             boxSeg[1] = getPointFromIndex(bIndex[7], box);
 
-            segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
+            IntrUtil<Real>::segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
 
             capCfg.axis = pt_on_box - cap_pt;
             IntrUtil<Real>::normalize(capCfg.axis);
@@ -1486,17 +846,17 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             capCfg.leftSegment(segFinal,radius,capSeg);
 
             Vec<3,Real> P[2];
-            CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
+            IntrUtil<Real>::CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
 
             if(quantity != 0){
-                projectIntPoints(axis,tfirst,P,quantity,pt_on_capsule);
+                IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_capsule);
                 pt_on_box = pt_on_capsule - axis * tfirst;
                 capCfg.axis *= -1;
                 capCfg.have_naxis = true;
             }
             else{
                 Vec<3,Real> cap_pt;
-                faceSegNearestPoints(boxFace,segment,pt_on_box,cap_pt);
+                IntrUtil<Real>::faceSegNearestPoints(boxFace,segment,pt_on_box,cap_pt);
 
                 capCfg.axis = pt_on_box - cap_pt;
                 IntrUtil<Real>::normalize(capCfg.axis);
@@ -1524,7 +884,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
         {
 
             pt_on_box = getPointFromIndex(bIndex[0], box);
-            projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
+            IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(pt_on_box,segment,radius,capCfg,pt_on_capsule);
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -1533,7 +893,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             boxSeg[0] = getPointFromIndex(bIndex[0], box);
             boxSeg[1] = getPointFromIndex(bIndex[1], box);
 
-            segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
+            IntrUtil<Real>::segNearestPoints(segment,boxSeg,cap_pt,pt_on_box);
 
             capCfg.axis = pt_on_box - cap_pt;
             IntrUtil<Real>::normalize(capCfg.axis);
@@ -1554,17 +914,17 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
             capCfg.rightSegment(segFinal,radius,capSeg);
 
             Vec<3,Real> P[2];
-            CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
+            IntrUtil<Real>::CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
 
 
             if(quantity != 0){
-                projectIntPoints(-axis,tfirst,P,quantity,pt_on_capsule);
+                IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_capsule);
                 pt_on_box = pt_on_capsule + axis * tfirst;
                 capCfg.have_naxis = true;
             }
             else{
                 Vec<3,Real> cap_pt;
-                faceSegNearestPoints(boxFace,segment,pt_on_box,cap_pt);
+                IntrUtil<Real>::faceSegNearestPoints(boxFace,segment,pt_on_box,cap_pt);
 
                 capCfg.axis = pt_on_box - cap_pt;
                 IntrUtil<Real>::normalize(capCfg.axis);
@@ -1578,8 +938,8 @@ FindContactSet<TDataTypes>::FindContactSet (const Vec<3,Real> segment[2], Real r
 
 
 
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q)
+template <typename Real>
+void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q)
 {
     const Vec<3,Real> AB = p[1]-p[0];
     const Vec<3,Real> CD = q[1]-q[0];
@@ -1725,17 +1085,16 @@ void FindContactSet<TDataTypes>::segNearestPoints(const Vec<3,Real> * p, const V
 }
 
 ////----------------------------------------------------------------------------
-//template <class TDataTypes>
-//FindContactSet<Real>::FindContactSet (const Triangle3<Real>& triangle,
+//template <class TDataTypes1,class TDataTypes2>
+//FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const IntrTri& triangle,
 //    const Box& box, int side, const IntrConfiguration<Real>& triCfg,
-//    const IntrConfiguration<Real>& boxCfg, const Vec<3,Real>& triVelocity,
-//    const Vec<3,Real>& boxVelocity, Real tfirst, int& quantity,
-//    Vec<3,Real>* P)
+//    const IntrConfiguration<Real>& boxCfg,
+//    Vec<3,Real> pt_on_tri,Vec<3,Real> pt_on_box)
 //{
 //    // Move the triangle to its new position.
 //    Vec<3,Real> triFinal[3] =
 //    {
-//        triangle.V[0] + tfirst*triVelocity,
+//        triangle.p(0) + tfirst*triVelocity,
 //        triangle.V[1] + tfirst*triVelocity,
 //        triangle.V[2] + tfirst*triVelocity,
 //    };
@@ -1874,169 +1233,10 @@ void FindContactSet<TDataTypes>::segNearestPoints(const Vec<3,Real> * p, const V
 //        }
 //    }
 //}
+
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
-    const Box& box1, int side, const IntrConfiguration<Real>& box0Cfg,
-    const IntrConfiguration<Real>& box1Cfg, const Vec<3,Real>& box0Velocity,
-    const Vec<3,Real>& box1Velocity, Real tfirst, int& quantity,
-    Vec<3,Real>* P)
-{
-    // Move the boxes to their new positions.
-    MyBox<Real> box0Final, box1Final;
-    box0Final.Center = box0.center() + tfirst*box0Velocity;
-    box1Final.Center = box1.center() + tfirst*box1Velocity;
-    for (int i = 0; i < 3; ++i)
-    {
-        box0Final.Axis[i] = box0.axis(i);
-        box0Final.Extent[i] = box0.extent(i);
-        box1Final.Axis[i] = box1.axis(i);
-        box1Final.Extent[i] = box1.extent(i);
-    }
-
-    const int* b0Index = box0Cfg.mIndex;
-    const int* b1Index = box1Cfg.mIndex;
-
-    if (side == IntrConfiguration<Real>::LEFT)
-    {
-        // box1 on left of box0
-        if (box0Cfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(b0Index[0], box0Final);
-        }
-        else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(b1Index[7], box1Final);
-        }
-        else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
-            {
-                // box0edge-box1edge intersection
-                Vec<3,Real> edge0[2], edge1[2];
-                edge0[0] = GetPointFromIndex(b0Index[0], box0Final);
-                edge0[1] = GetPointFromIndex(b0Index[1], box0Final);
-                edge1[0] = GetPointFromIndex(b1Index[6], box1Final);
-                edge1[1] = GetPointFromIndex(b1Index[7], box1Final);
-                SegmentSegment(edge0, edge1, quantity, P);
-            }
-            else // box1Cfg.mMap == IntrConfiguration<Real>::m44
-            {
-                // box0edge-box1face intersection
-                Vec<3,Real> edge0[2], face1[4];
-                edge0[0] = GetPointFromIndex(b0Index[0], box0Final);
-                edge0[1] = GetPointFromIndex(b0Index[1], box0Final); 
-                face1[0] = GetPointFromIndex(b1Index[4], box1Final); 
-                face1[1] = GetPointFromIndex(b1Index[5], box1Final); 
-                face1[2] = GetPointFromIndex(b1Index[6], box1Final); 
-                face1[3] = GetPointFromIndex(b1Index[7], box1Final); 
-                CoplanarSegmentRectangle(edge0, face1, quantity, P);
-            }
-        }
-        else // box0Cfg.mMap == IntrConfiguration<Real>::m44
-        {
-            if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
-            {
-                // box0face-box1edge intersection
-                Vec<3,Real> face0[4], edge1[2];
-                face0[0] = GetPointFromIndex(b0Index[0], box0Final);
-                face0[1] = GetPointFromIndex(b0Index[1], box0Final);
-                face0[2] = GetPointFromIndex(b0Index[2], box0Final);
-                face0[3] = GetPointFromIndex(b0Index[3], box0Final);
-                edge1[0] = GetPointFromIndex(b1Index[6], box1Final);
-                edge1[1] = GetPointFromIndex(b1Index[7], box1Final);
-                CoplanarSegmentRectangle(edge1, face0, quantity, P);
-            }
-            else
-            {
-                // box0face-box1face intersection
-                Vec<3,Real> face0[4], face1[4];
-                face0[0] = GetPointFromIndex(b0Index[0], box0Final);
-                face0[1] = GetPointFromIndex(b0Index[1], box0Final);
-                face0[2] = GetPointFromIndex(b0Index[2], box0Final);
-                face0[3] = GetPointFromIndex(b0Index[3], box0Final);
-                face1[0] = GetPointFromIndex(b1Index[4], box1Final);
-                face1[1] = GetPointFromIndex(b1Index[5], box1Final);
-                face1[2] = GetPointFromIndex(b1Index[6], box1Final);
-                face1[3] = GetPointFromIndex(b1Index[7], box1Final);
-                CoplanarRectangleRectangle(face0, face1, quantity, P);
-            }
-        }
-    }
-    else // side == RIGHT 
-    {
-        // box1 on right of box0
-        if (box0Cfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(b0Index[7], box0Final);
-        }
-        else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
-        {
-            quantity = 1;
-            P[0] = GetPointFromIndex(b1Index[0], box1Final);
-        }
-        else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
-        {
-            if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
-            {
-                // box0edge-box1edge intersection
-                Vec<3,Real> edge0[2], edge1[2];
-                edge0[0] = GetPointFromIndex(b0Index[6], box0Final);
-                edge0[1] = GetPointFromIndex(b0Index[7], box0Final);
-                edge1[0] = GetPointFromIndex(b1Index[0], box1Final);
-                edge1[1] = GetPointFromIndex(b1Index[1], box1Final);
-                SegmentSegment(edge0,edge1,quantity,P);
-            }
-            else // box1Cfg.mMap == IntrConfiguration<Real>::m44
-            {
-                // box0edge-box1face intersection
-                Vec<3,Real> edge0[2], face1[4];
-                edge0[0] = GetPointFromIndex(b0Index[6], box0Final);
-                edge0[1] = GetPointFromIndex(b0Index[7], box0Final);
-                face1[0] = GetPointFromIndex(b1Index[0], box1Final);
-                face1[1] = GetPointFromIndex(b1Index[1], box1Final);
-                face1[2] = GetPointFromIndex(b1Index[2], box1Final);
-                face1[3] = GetPointFromIndex(b1Index[3], box1Final);
-                CoplanarSegmentRectangle(edge0, face1, quantity, P);
-            }
-        }
-        else // box0Cfg.mMap == IntrConfiguration<Real>::m44
-        {
-            if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
-            {
-                // box0face-box1edge intersection
-                Vec<3,Real> face0[4], edge1[2];
-                face0[0] = GetPointFromIndex(b0Index[4], box0Final);
-                face0[1] = GetPointFromIndex(b0Index[5], box0Final);
-                face0[2] = GetPointFromIndex(b0Index[6], box0Final);
-                face0[3] = GetPointFromIndex(b0Index[7], box0Final);
-                edge1[0] = GetPointFromIndex(b1Index[0], box1Final);
-                edge1[1] = GetPointFromIndex(b1Index[1], box1Final);
-                CoplanarSegmentRectangle(edge1, face0, quantity, P);
-            }
-            else // box1Cfg.mMap == IntrConfiguration<Real>::m44
-            {
-                // box0face-box1face intersection
-                Vec<3,Real> face0[4], face1[4];
-                face0[0] = GetPointFromIndex(b0Index[4], box0Final);
-                face0[1] = GetPointFromIndex(b0Index[5], box0Final);
-                face0[2] = GetPointFromIndex(b0Index[6], box0Final);
-                face0[3] = GetPointFromIndex(b0Index[7], box0Final);
-                face1[0] = GetPointFromIndex(b1Index[0], box1Final);
-                face1[1] = GetPointFromIndex(b1Index[1], box1Final);
-                face1[2] = GetPointFromIndex(b1Index[2], box1Final);
-                face1[3] = GetPointFromIndex(b1Index[3], box1Final);
-                CoplanarRectangleRectangle(face0, face1, quantity, P);
-            }
-        }
-    }
-}
-//----------------------------------------------------------------------------
-template <class TDataTypes>
-FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
+FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
     const Box& box1,const Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& box0Cfg,
     const IntrConfiguration<Real>& box1Cfg,
     Real tfirst,Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second)
@@ -2054,13 +1254,13 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
         {
             pt_on_first = getPointFromIndex(b0Index[0], box0);
             pt_on_second = pt_on_first;
-            moveOnBox(box1,pt_on_second);
+            IntrUtil<Box>::project(pt_on_second,box1);
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_second = getPointFromIndex(b1Index[7], box1);
             pt_on_first = pt_on_second;
-            moveOnBox(box0,pt_on_first);
+            IntrUtil<Box>::project(pt_on_first,box0);
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -2073,7 +1273,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 edge1[0] = getPointFromIndex(b1Index[6], box1);
                 edge1[1] = getPointFromIndex(b1Index[7], box1);
 
-                segNearestPoints(edge0,edge1,pt_on_first,pt_on_second);
+                IntrUtil<Real>::segNearestPoints(edge0,edge1,pt_on_first,pt_on_second);
             }
             else // box1Cfg.mMap == IntrConfiguration<Real>::m44
             {
@@ -2094,9 +1294,9 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 face1[2] = GetPointFromIndex(b1Index[6], box1Final);
                 face1[3] = GetPointFromIndex(b1Index[7], box1Final);
 
-                CoplanarSegmentRectangle(edge0, face1, quantity, P);
+                IntrUtil<Real>::CoplanarSegmentRectangle(edge0, face1, quantity, P);
                 if(quantity != 0){
-                    projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second + axis * tfirst;
                 }
                 else{
@@ -2105,7 +1305,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                     face1[2] = getPointFromIndex(b1Index[6], box1);
                     face1[3] = getPointFromIndex(b1Index[7], box1);
 
-                    faceSegNearestPoints(face1,edge0,pt_on_second,pt_on_first);
+                    IntrUtil<Real>::faceSegNearestPoints(face1,edge0,pt_on_second,pt_on_first);
                 }
             }
         }
@@ -2130,16 +1330,16 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 edge1[0] = GetPointFromIndex(b1Index[6], box1Final);
                 edge1[1] = GetPointFromIndex(b1Index[7], box1Final);
 
-                CoplanarSegmentRectangle(edge1, face0, quantity, P);
+                IntrUtil<Real>::CoplanarSegmentRectangle(edge1, face0, quantity, P);
                 if(quantity != 0){
-                    projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second + axis * tfirst;
                 }
                 else{
                     edge1[0] = getPointFromIndex(b1Index[6], box1);
                     edge1[1] = getPointFromIndex(b1Index[7], box1);
 
-                    faceSegNearestPoints(face0,edge1,pt_on_first,pt_on_second);
+                    IntrUtil<Real>::faceSegNearestPoints(face0,edge1,pt_on_first,pt_on_second);
                 }
 
             }
@@ -2164,13 +1364,13 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 face1[2] = GetPointFromIndex(b1Index[6], box1Final);
                 face1[3] = GetPointFromIndex(b1Index[7], box1Final);
 
-                CoplanarRectangleRectangle(face0, face1, quantity, P);                
+                IntrUtil<Real>::CoplanarRectangleRectangle(face0, face1, quantity, P);
                 if(quantity == 0){
-                    facesNearestPoints(face0,face1,pt_on_first,pt_on_second);
+                    IntrUtil<Real>::facesNearestPoints(face0,4,face1,4,pt_on_first,pt_on_second);
                     pt_on_second -= tfirst * axis;
                 }
                 else{
-                    projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second + axis * tfirst;
                 }
             }
@@ -2183,13 +1383,13 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
         {
             pt_on_first = getPointFromIndex(b0Index[7], box0);
             pt_on_second = pt_on_first;
-            moveOnBox(box1,pt_on_second);
+            IntrUtil<Box>::project(pt_on_second,box1);
         }
         else if (box1Cfg.mMap == IntrConfiguration<Real>::m1_1)
         {
             pt_on_second = getPointFromIndex(b1Index[0], box1);
             pt_on_first = pt_on_second;
-            moveOnBox(box0,pt_on_first);
+            IntrUtil<Box>::project(pt_on_first,box0);
         }
         else if (box0Cfg.mMap == IntrConfiguration<Real>::m2_2)
         {
@@ -2202,7 +1402,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 edge1[0] = getPointFromIndex(b1Index[0], box1);
                 edge1[1] = getPointFromIndex(b1Index[1], box1);
 
-                segNearestPoints(edge0,edge1,pt_on_first,pt_on_second);
+                IntrUtil<Real>::segNearestPoints(edge0,edge1,pt_on_first,pt_on_second);
             }
             else // box1Cfg.mMap == IntrConfiguration<Real>::m44
             {
@@ -2223,9 +1423,9 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 face1[2] = GetPointFromIndex(b1Index[2], box1Final);
                 face1[3] = GetPointFromIndex(b1Index[3], box1Final);
 
-                CoplanarSegmentRectangle(edge0, face1, quantity, P);                
+                IntrUtil<Real>::CoplanarSegmentRectangle(edge0, face1, quantity, P);
                 if(quantity != 0){
-                    projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second - axis * tfirst;
                 }
                 else{
@@ -2234,7 +1434,7 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                     face1[2] = getPointFromIndex(b1Index[2], box1);
                     face1[3] = getPointFromIndex(b1Index[3], box1);
 
-                    faceSegNearestPoints(face1,edge0,pt_on_second,pt_on_first);
+                    IntrUtil<Real>::faceSegNearestPoints(face1,edge0,pt_on_second,pt_on_first);
                 }
             }
         }
@@ -2259,16 +1459,16 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 edge1[0] = GetPointFromIndex(b1Index[0], box1Final);
                 edge1[1] = GetPointFromIndex(b1Index[1], box1Final);
 
-                CoplanarSegmentRectangle(edge1, face0, quantity, P);
+                IntrUtil<Real>::CoplanarSegmentRectangle(edge1, face0, quantity, P);
                 if(quantity != 0){
-                    projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second - axis * tfirst;
                 }
                 else{
                     edge1[0] = getPointFromIndex(b1Index[0], box1);
                     edge1[1] = getPointFromIndex(b1Index[1], box1);
 
-                    faceSegNearestPoints(face0,edge1,pt_on_first,pt_on_second);
+                    IntrUtil<Real>::faceSegNearestPoints(face0,edge1,pt_on_first,pt_on_second);
                 }
             }
             else // box1Cfg.mMap == IntrConfiguration<Real>::m44
@@ -2292,14 +1492,14 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
                 face1[2] = GetPointFromIndex(b1Index[2], box1Final);
                 face1[3] = GetPointFromIndex(b1Index[3], box1Final);
 
-                CoplanarRectangleRectangle(face0, face1, quantity, P);
+                IntrUtil<Real>::CoplanarRectangleRectangle(face0, face1, quantity, P);
 
                 if(quantity == 0){
-                    facesNearestPoints(face0,face1,pt_on_first,pt_on_second);
+                    IntrUtil<Real>::facesNearestPoints(face0,4,face1,4,pt_on_first,pt_on_second);
                     pt_on_second += tfirst * axis;
                 }
                 else{
-                    projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
+                    IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_second);
                     pt_on_first = pt_on_second - axis * tfirst;
                 }
             }
@@ -2307,8 +1507,8 @@ FindContactSet<TDataTypes>::FindContactSet (const Box& box0,
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::ColinearSegments (const Vec<3,Real> segment0[2],
+template <typename Real>
+void IntrUtil<Real>::ColinearSegments (const Vec<3,Real> segment0[2],
     const Vec<3,Real> segment1[2], int& quantity, Vec<3,Real>* P)
 {
     // The potential intersection is initialized to segment0 and clipped
@@ -2330,8 +1530,8 @@ void FindContactSet<TDataTypes>::ColinearSegments (const Vec<3,Real> segment0[2]
     ClipConvexPolygonAgainstPlane(V, c, quantity, P);
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::SegmentThroughPlane (
+template <typename Real>
+void IntrUtil<Real>::SegmentThroughPlane (
     const Vec<3,Real> segment[2], const Vec<3,Real>& planeOrigin,
     const Vec<3,Real>& planeNormal, int& quantity, Vec<3,Real>* P)
 {
@@ -2348,8 +1548,8 @@ void FindContactSet<TDataTypes>::SegmentThroughPlane (
     P[0] = segment[0] + ratio*(segment[1] - segment[0]);
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::SegmentSegment (const Vec<3,Real> segment0[2],
+template <typename Real>
+void IntrUtil<Real>::SegmentSegment (const Vec<3,Real> segment0[2],
     const Vec<3,Real> segment1[2], int& quantity, Vec<3,Real>* P)
 {
     Vec<3,Real> dir0 = segment0[1] - segment0[0];
@@ -2371,8 +1571,8 @@ void FindContactSet<TDataTypes>::SegmentSegment (const Vec<3,Real> segment0[2],
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::ColinearSegmentTriangle (
+template <typename Real>
+void IntrUtil<Real>::ColinearSegmentTriangle (
     const Vec<3,Real> segment[2], const Vec<3,Real> triangle[3],
     int& quantity, Vec<3,Real>* P)
 {
@@ -2402,8 +1602,8 @@ void FindContactSet<TDataTypes>::ColinearSegmentTriangle (
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::CoplanarSegmentRectangle (
+template <typename Real>
+void IntrUtil<Real>::CoplanarSegmentRectangle (
     const Vec<3,Real> segment[2], const Vec<3,Real> rectangle[4],
     int& quantity, Vec<3,Real>* P)
 {
@@ -2423,8 +1623,8 @@ void FindContactSet<TDataTypes>::CoplanarSegmentRectangle (
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::CoplanarTriangleRectangle (
+template <typename Real>
+void IntrUtil<Real>::CoplanarTriangleRectangle (
     const Vec<3,Real> triangle[3], const Vec<3,Real> rectangle[4],
     int& quantity, Vec<3,Real>* P)
 {
@@ -2444,8 +1644,8 @@ void FindContactSet<TDataTypes>::CoplanarTriangleRectangle (
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::CoplanarRectangleRectangle (
+template <typename Real>
+void IntrUtil<Real>::CoplanarRectangleRectangle (
     const Vec<3,Real> rectangle0[4], const Vec<3,Real> rectangle1[4],
     int& quantity, Vec<3,Real>* P)
 {
@@ -2465,8 +1665,8 @@ void FindContactSet<TDataTypes>::CoplanarRectangleRectangle (
     }
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::projectIntPoints(const Vec<3, Real> &velocity, Real contactTime, const Vec<3, Real> *points, int n, Vec<3, Real> &proj_pt){
+template <typename Real>
+void IntrUtil<Real>::projectIntPoints(const Vec<3, Real> &velocity, Real contactTime, const Vec<3, Real> *points, int n, Vec<3, Real> &proj_pt){
     proj_pt.set(0,0,0);
     Vec<3,Real> v0 = velocity * contactTime;
     for(int i = 0 ; i < n ; ++i){
@@ -2476,8 +1676,8 @@ void FindContactSet<TDataTypes>::projectIntPoints(const Vec<3, Real> &velocity, 
     proj_pt /= n;
 }
 //----------------------------------------------------------------------------
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & pt,const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,Vec<3,Real> & pt_on_capsule){
+template <typename Real>
+void IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & pt,const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,Vec<3,Real> & pt_on_capsule){
     Vec<3,Real> dir(segment[1] - segment[0]);
     Real alpha = dir * (pt - segment[0]) / dir.norm2();
 
@@ -2497,15 +1697,18 @@ void FindContactSet<TDataTypes>::projectPointOnCapsuleAndFindCapNormal(const Vec
     pt_on_capsule = segP + radius*segPpt;
 }
 
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::facesNearestPoints(const Vec<3,Real> first_face[4],const Vec<3,Real> second_face[4],Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second){
+template <typename Real>
+void IntrUtil<Real>::facesNearestPoints(const Vec<3,Real> *first_face,int first_size,const Vec<3,Real> *second_face,int second_size, Vec<3,Real> &pt_on_first, Vec<3,Real> &pt_on_second){
     Real min1 = std::numeric_limits<Real>::max();
     Real min2 = std::numeric_limits<Real>::max();
     Real new_min;
-    int first_index1,first_index2,second_index1,second_index2;
+    int first_index1 = -1;//only to not have unuseful warning
+    int first_index2 = -1;
+    int second_index1= -1;
+    int second_index2= -1;
 
-    for(int i = 0 ; i < 4 ; ++i){
-        for(int j = 0 ; j < 4 ; ++j){
+    for(int i = 0 ; i < first_size ; ++i){
+        for(int j = 0 ; j < second_size ; ++j){
             new_min = (first_face[i] - second_face[j]).norm2();
             if(min1 > new_min){
                 min2 = min1;
@@ -2534,16 +1737,22 @@ void FindContactSet<TDataTypes>::facesNearestPoints(const Vec<3,Real> first_face
     }
 }
 
-template <class TDataTypes>
-void FindContactSet<TDataTypes>::faceSegNearestPoints(const Vec<3,Real> face[4],const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+template <typename Real>
+double IntrUtil<Real>::faceSegNearestPoints(const Vec<3,Real> face[4],const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+    return faceSegNearestPoints(face,4,seg,pt_on_face,pt_on_seg);
+}
+
+
+template <typename Real>
+double IntrUtil<Real>::faceSegNearestPoints(const Vec<3,Real> * face,int n,const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
     Real min = std::numeric_limits<Real>::max();
     Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
     Vec<3,Real> face_seg[2];
     Real new_min;
 
-    for(int j = 0 ; j < 4 ; ++j){
+    for(int j = 0 ; j < n ; ++j){
         face_seg[0] = face[j];
-        if(j < 3){
+        if(j < n - 1){
             face_seg[1] = face[j + 1];
         }
         else{
@@ -2558,11 +1767,27 @@ void FindContactSet<TDataTypes>::faceSegNearestPoints(const Vec<3,Real> face[4],
             pt_on_seg = cur_pt_on_seg;
         }
     }
+
+    return min;
 }
 
+template <typename Real>
+bool IntrUtil<Real>::nequal(Real a,Real b){
+    return a < b - ZERO_TOLERANCE() || b < a - ZERO_TOLERANCE();
+}
+
+template <typename Real>
+bool IntrUtil<Real>::strInf(Real a,Real b){
+    return a < b - ZERO_TOLERANCE();
+}
+
+template <typename Real>
+bool IntrUtil<Real>::inf(Real a,Real b){
+    return a < b + ZERO_TOLERANCE();
+}
 
 template <class TDataTypes>
-void FindContactSet<TDataTypes>::moveOnBox(const Box & box,Vec<3,Real> & point){
+void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
     Vec<3,Real> centeredPt = point - box.center();
     point = box.center();
 
@@ -2579,6 +1804,11 @@ void FindContactSet<TDataTypes>::moveOnBox(const Box & box,Vec<3,Real> & point){
 
         point += coord_i * box.axis(i);
     }
+}
+
+template <typename Real>
+bool IntrUtil<Real>::equal(const Vec<3,Real> & vec0,const Vec<3,Real> & vec1){
+    return (vec0 - vec1).norm2() < SQ_ZERO_TOLERANCE();
 }
 
 //----------------------------------------------------------------------------
@@ -2843,21 +2073,6 @@ void MyBox<TReal>::showVertices()const{
     for(int i = 0 ; i < 8 ; ++i){
         std::cout<<"    "<<vs[i]<<std::endl;
     }
-}
-
-template <class Real>
-void projectIntPoints(const Vec<3, Real> & velocity0, const Vec<3, Real> & velocity1,Real contactTime,const Vec<3,Real> * points,int n,Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second){
-    pt_on_first.set(0,0,0);
-    pt_on_second.set(0,0,0);
-    Vec<3,Real> v0 = -velocity0 * contactTime;
-    Vec<3,Real> v1 = -velocity1 * contactTime;
-    for(int i = 0 ; i < n ; ++i){
-        pt_on_first += points[i] + v0;
-        pt_on_second += points[i] + v1;
-    }
-
-    pt_on_first /= n;
-    pt_on_second /= n;
 }
 
 }

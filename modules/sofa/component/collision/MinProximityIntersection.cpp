@@ -93,11 +93,11 @@ int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*
 }
 
 int MinProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
+    return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
 }
 
 int MinProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
+    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance() + cap.getProximity() + sph.getProximity(),getContactDistance()+ cap.getProximity() + sph.getProximity(),contacts);
 }
 
 /*

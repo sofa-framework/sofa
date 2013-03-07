@@ -2,10 +2,12 @@
 #define MESHINTTOOL_H
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/IntrTriangleOBB.h>
 
 namespace sofa
 {
@@ -38,6 +40,8 @@ public:
     static int doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems = false);
 
     static int computeIntersection(Capsule& cap, Triangle& tri,double alarmDist,double contactDist,OutputVector* contacts);
+
+    static int computeIntersection(Triangle& tri,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts);
 };
 
 }

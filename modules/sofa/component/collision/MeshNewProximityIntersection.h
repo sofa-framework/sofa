@@ -66,6 +66,8 @@ public:
     bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Capsule&,Triangle&);
     bool testIntersection(Capsule&,Line&);
+    bool testIntersection(Triangle&,OBB&);
+
 
     int computeIntersection(Point&, Point&, OutputVector*);
     template <class Sphere>
@@ -81,6 +83,8 @@ public:
     int computeIntersection(Triangle&, Triangle&, OutputVector*);
     inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
     inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
+    int computeIntersection(Triangle&,OBB&,OutputVector* contacts);
+
 
     static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id);
 

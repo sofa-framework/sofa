@@ -10,7 +10,7 @@ template <class TDataTypes,class TDataTypes2>
 TIntrSphereOBB<TDataTypes,TDataTypes2>::TIntrSphereOBB (const IntrSph& sphere, const Box & box) : _sph(&sphere),mBox(&box){this->_is_colliding = false;}
 
 template <class TDataTypes,class TDataTypes2>
-bool TIntrSphereOBB<TDataTypes,TDataTypes2>::FindStatic(){
+bool TIntrSphereOBB<TDataTypes,TDataTypes2>::Find(){
     _is_colliding = true;
 
     _pt_on_second = mBox->center();

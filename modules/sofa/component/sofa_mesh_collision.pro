@@ -37,7 +37,11 @@ HEADERS += initMeshCollision.h \
            collision/LineLocalMinDistanceFilter.h \
            collision/TriangleLocalMinDistanceFilter.h \
            collision/LocalMinDistanceFilter.h \
-    collision/MeshIntTool.h
+    collision/MeshIntTool.h \
+    collision/IntrTriangleOBB.h \
+    collision/IntrTriangleOBB.inl \
+    collision/IntrMeshUtility.h \
+    collision/IntrMeshUtility.inl
 
 
 SOURCES += initMeshCollision.cpp \
@@ -59,7 +63,9 @@ SOURCES += initMeshCollision.cpp \
            collision/TriangleLocalMinDistanceFilter.cpp \
            collision/LocalMinDistanceFilter.cpp \
     collision/MeshIntTool.cpp \
-    collision/RigidContactMapper.cpp
+    collision/RigidContactMapper.cpp \
+    collision/IntrTriangleOBB.cpp \
+    collision/IntrMeshUtility.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

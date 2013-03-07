@@ -144,7 +144,7 @@ int NewProximityIntersection::computeIntersection(RigidSphere& e1, RigidSphere& 
 
 
 int NewProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(e1,e2,getAlarmDistance(),getContactDistance(),contacts);
+    return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
 }
 
 int NewProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
@@ -171,7 +171,7 @@ int NewProximityIntersection::computeIntersection(OBB & box0, OBB & box1,OutputV
 
 
 int NewProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVector * contacts){
-    return CapsuleIntTool::computeIntersection(cap,obb,cap.getProximity() + obb.getProximity() + getAlarmDistance(),cap.getProximity() + obb.getProximity(),contacts);
+    return CapsuleIntTool::computeIntersection(cap,obb,cap.getProximity() + obb.getProximity() + getAlarmDistance(),cap.getProximity() + obb.getProximity() + getContactDistance(),contacts);
 }
 
 

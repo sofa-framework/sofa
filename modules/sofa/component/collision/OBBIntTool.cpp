@@ -15,7 +15,7 @@ bool OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,dou
 //    }
     IntrOBBOBB intr(box0,box1);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
-    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.FindStatic(alarmDist)){
+    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
@@ -46,7 +46,7 @@ bool OBBIntTool::computeIntersection(OBB & box0, OBB & box1,double alarmDist,dou
 bool OBBIntTool::computeIntersection(Sphere & sphere,OBB & box,double alarmDist,double contactDist,OutputVector* contacts){
     IntrSphereOBB intr(sphere,box);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
-    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.FindStatic()){
+    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find()){
         OBB::Real dist = intr.distance();
         if((!intr.colliding()) && dist > alarmDist)
             return 0;

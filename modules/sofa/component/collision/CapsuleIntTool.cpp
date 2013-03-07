@@ -139,6 +139,29 @@ bool CapsuleIntTool::computeIntersection(Capsule & e1,Capsule & e2,double alarmD
         }
     }
 
+    if(alpha < 0){
+        alpha = 0;
+        beta = (CD * (A - C))/CD_norm2;
+    }
+    else if(alpha > 1){
+        alpha = 1;
+        beta = (CD * (B - C))/CD_norm2;
+    }
+
+    if(beta < 0){
+        beta = 0;
+        alpha = (AB * (C - A))/AB_norm2;
+    }
+    else if(beta > 1){
+        beta = 1;
+        alpha = (AB * (D - A))/AB_norm2;
+    }
+
+    if(alpha < 0)
+        alpha = 0;
+    else if (alpha > 1)
+        alpha = 1;
+
     P = A + AB * alpha;
     Q = C + CD * beta;
     PQ = Q-P;
@@ -255,7 +278,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, Sphere & sph,double alar
 bool CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
     IntrCapsuleOBB intr(cap,obb);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((obb.lvelocity() - cap.velocity()).norm2()));
-    if(/*intr.Find(max_time,cap.velocity(),obb.lvelocity())*/intr.FindStatic(alarmDist)){
+    if(/*intr.Find(max_time,cap.velocity(),obb.lvelocity())*/intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
