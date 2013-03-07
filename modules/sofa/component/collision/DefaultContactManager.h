@@ -60,7 +60,10 @@ protected:
     void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::Contact::SPtr contact);
 
 public:
-    void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec);
+
+    /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
+    /// if not given, it is still working but with eventual reproducibility problems
+    void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec = DetectionOutputVectors(0) );
 
     void init();
     void draw(const core::visual::VisualParams* vparams);

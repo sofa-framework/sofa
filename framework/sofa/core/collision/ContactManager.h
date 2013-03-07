@@ -61,7 +61,10 @@ protected:
     /// Destructor
     virtual ~ContactManager() { }
 public:
-    virtual void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec) = 0;
+
+    /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
+    /// if not given, it is still working but with eventual reproducibility problems
+    virtual void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec = DetectionOutputVectors(0) ) = 0;
 
     virtual const ContactVector& getContacts() { return contacts; }
 
