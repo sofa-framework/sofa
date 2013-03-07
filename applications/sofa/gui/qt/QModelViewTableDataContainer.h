@@ -39,6 +39,8 @@
 #include <QTableView>
 #include <QStandardItemModel>
 
+#include <sofa/helper/deque.h>
+
 namespace sofa
 {
 
@@ -817,6 +819,46 @@ public:
     }
 };
 
+
+
+////////////////////////////////////////////////////////////////
+/// deques support
+////////////////////////////////////////////////////////////////
+
+template<class T>
+class vector_data_trait < std::deque<T> >
+{
+public:
+    typedef std::deque<T> data_type;
+    typedef T value_type;
+    enum { NDIM = 1 };
+    static int size(const data_type& d) { return d.size(); }
+    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    {
+        return NULL;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+    }
+    static void set( const value_type& v, data_type& d, int i = 0)
+    {
+        if ((unsigned)i < (unsigned)size(d))
+            d[i] = v;
+    }
+    static void resize(int s, data_type& d)
+    {
+        d.resize(s);
+    }
+};
+
+
+
+
+template<class T>
+class vector_data_trait < sofa::helper::deque<T> > : public vector_data_trait< std::deque<T> >
+{
+};
 
 } // namespace qt
 

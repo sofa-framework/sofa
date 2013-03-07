@@ -18,6 +18,7 @@ DEPENDPATH += $$ROOT_SRC_DIR/framework
 HEADERS += helper.h \
     ArgumentParser.h \
     BackTrace.h \
+	deque.h \
     DualQuat.inl \
     DualQuat.h \
     fixed_array.h \
