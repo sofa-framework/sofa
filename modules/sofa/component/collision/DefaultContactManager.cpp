@@ -100,6 +100,8 @@ void DefaultContactManager::cleanup()
 
 void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap, const DetectionOutputVectors &outputsVec)
 {
+    bool vectorIsNotFilled = outputsMap.size() != outputsVec.size();
+
     using core::CollisionModel;
     using core::collision::Contact;
 
@@ -156,6 +158,9 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap,
                 setContactTags(model1, model2, contact);
                 contact->f_printLog.setValue(this->f_printLog.getValue());
                 contact->init();
+
+                if( vectorIsNotFilled ) contact->setDetectionOutputs(outputsIt->second);
+
                 ++nbContact;
             }
             ++outputsIt;
@@ -183,6 +188,9 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap,
         else
         {
             // corresponding contact and outputs
+
+            if( vectorIsNotFilled ) contactIt->second->setDetectionOutputs(outputsIt->second);
+
             ++nbContact;
             ++outputsIt;
             ++contactIt;
@@ -193,19 +201,33 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap,
     contacts.clear();
     contacts.reserve(nbContact);
 
-    // Store contacts in the collision detection saved order (fixes reproducibility problems)
-    DetectionOutputVectors::const_iterator it = outputsVec.begin();
-    while (it != outputsVec.end())
-    {
-        contactIt = contactMap.find(it->first);
-        if (contactIt != contactMap.end())
-        {
-            contactIt->second->setDetectionOutputs(*(it->second));
-            contacts.push_back(contactIt->second);
-        }
 
-        ++it;
+    if( vectorIsNotFilled )
+    {
+        contactIt = contactMap.begin();
+        while (contactIt!=contactMap.end())
+        {
+            contacts.push_back(contactIt->second);
+            ++contactIt;
+        }
     }
+    else
+    {
+        // Store contacts in the collision detection saved order (fixes reproducibility problems)
+        DetectionOutputVectors::const_iterator it = outputsVec.begin();
+        while (it != outputsVec.end())
+        {
+            contactIt = contactMap.find(it->first);
+            if (contactIt != contactMap.end())
+            {
+                contactIt->second->setDetectionOutputs(*(it->second));
+                contacts.push_back(contactIt->second);
+            }
+
+            ++it;
+        }
+    }
+
 
     // compute number of contacts attached to each collision model
     std::map< CollisionModel*, int > nbContactsMap;

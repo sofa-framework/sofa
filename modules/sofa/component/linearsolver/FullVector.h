@@ -77,28 +77,33 @@ protected:
 public:
 
     FullVector()
-        : data(NULL), cursize(0), allocsize(0)
+        : defaulttype::BaseVector()
+        , data(NULL), cursize(0), allocsize(0)
     {
     }
 
-	FullVector(const FullVector& vect)
-		: data(NULL), cursize(0), allocsize(0)
+    FullVector(const FullVector& vect)
+        : defaulttype::BaseVector()
+        , data(NULL), cursize(0), allocsize(0)
 	{
 		(*this) = vect;
 	}
 
     explicit FullVector(Index n)
-        : data(new T[n]), cursize(n), allocsize(n)
+        : defaulttype::BaseVector()
+        , data(new T[n]), cursize(n), allocsize(n)
     {
     }
 
     FullVector(T* ptr, Index n)
-        : data(ptr), cursize(n), allocsize(-n)
+        : defaulttype::BaseVector()
+        , data(ptr), cursize(n), allocsize(-n)
     {
     }
 
     FullVector(T* ptr, Index n, Index nmax)
-        : data(ptr), cursize(n), allocsize(-nmax)
+        : defaulttype::BaseVector()
+        , data(ptr), cursize(n), allocsize(-nmax)
     {
     }
 
