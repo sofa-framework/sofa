@@ -108,8 +108,55 @@ public:
         return random<T>( std::numeric_limits<T>::min(), std::numeric_limits<T>::max() );
     }
 
+private:
+	static const unsigned long RANDOM_BASE_MAX;
 
 };
+
+///////////////////////
+
+// specialization for long
+template<>
+inline long RandomGenerator::random( long min, long max )
+{
+	return (min + ((max - min)*randomBase())/RANDOM_BASE_MAX);
+}
+
+// specialization for double
+template<>
+inline double RandomGenerator::random( double min, double max )
+{
+	return min + (max - min)*((double)randomBase()/(double)RANDOM_BASE_MAX);
+}
+
+// specialization for float
+template<>
+inline float RandomGenerator::random( float min, float max )
+{
+	return min + (max - min)*((float)randomBase()/(float)RANDOM_BASE_MAX);
+}
+
+// specialization for bool
+template<>
+inline bool RandomGenerator::random( bool, bool )
+{
+	return random<long>( 0, 2 ) != 0;
+}
+
+
+// specialization for double with limited range
+template<>
+inline double RandomGenerator::random()
+{
+	return random<double>( -(double)RANDOM_BASE_MAX, (double)RANDOM_BASE_MAX );
+}
+
+// specialization for float with limited range
+template<>
+inline float RandomGenerator::random()
+{
+	return random<float>( -(float)RANDOM_BASE_MAX, (float)RANDOM_BASE_MAX );
+}
 
 }
 

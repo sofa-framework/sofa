@@ -14,7 +14,7 @@ namespace component
 {
 namespace collision
 {
-class CapsuleIntTool{
+class SOFA_BASE_COLLISION_API CapsuleIntTool{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
