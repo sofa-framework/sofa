@@ -376,9 +376,9 @@ bool TestOBB::faceVertex(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+	angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     //we construct OBBs from OBBModels
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
@@ -416,12 +416,12 @@ bool TestOBB::vertexVertex(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = createScene();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(3)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -501,7 +501,7 @@ bool TestOBB::faceEdge(){
     angles[0] = 0;
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -535,8 +535,8 @@ bool TestOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = createScene();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -570,15 +570,15 @@ bool TestOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = createScene();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     order[0] = 2;
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
+    sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
@@ -698,7 +698,7 @@ bool TestCapOBB::edgeVertex(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -746,7 +746,7 @@ bool TestCapOBB::edgeEdge(){
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
-            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+            TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -790,11 +790,11 @@ bool TestCapOBB::vertexEdge(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -838,11 +838,11 @@ bool TestCapOBB::vertexVertex(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -884,11 +884,11 @@ bool TestSphereOBB::vertex(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-    angles[1] = acos(1/sqrt(3));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
@@ -935,7 +935,7 @@ bool TestSphereOBB::edge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule

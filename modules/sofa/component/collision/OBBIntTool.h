@@ -9,7 +9,7 @@ namespace sofa{
 namespace component{
 namespace collision{
 
-class OBBIntTool{
+class SOFA_BASE_COLLISION_API OBBIntTool{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
