@@ -1,0 +1,4 @@
+includeOnce($$_FILE_) {
+	declare(sofaGTest, applications/projects/sofaGTest, sofa_eigen2_solver sofa_component sofa_base_collision)
+	enable(sofaGTest)
+}

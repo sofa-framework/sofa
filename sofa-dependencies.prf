@@ -504,6 +504,7 @@ contains(DEFINES, SOFA_HAVE_ARPLUGIN)                { usePlugin(ARPlugin, appli
 useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
 #useApp(runUnitTests,   applications/projects/runUnitTests  )
 contains(DEFINES, SOFA_PROJECT_runUnitTests) { useApp(runUnitTests, applications/projects/runUnitTests ) }
+contains(DEFINES, SOFA_PROJECT_GTEST) { useApp(sofaGTest, applications/projects/sofaGTest ) }
 
 
 }
