@@ -355,6 +355,7 @@ Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataT
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API IntrUtil<double>;
+extern template class SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3dTypes> >;
 extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3dTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3dTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrConfiguration<double>;
@@ -367,6 +368,7 @@ extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_COLLISION_API IntrUtil<float>;
+extern template class SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
