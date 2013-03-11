@@ -8,7 +8,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-class UnilateralMask  : public virtual core::objectmodel::BaseObject {
+class SOFA_Compliant_API UnilateralMask  : public virtual core::objectmodel::BaseObject {
 	typedef helper::vector<SReal > mask_type;
 
 	// 1 or -1  is positive (geq) or negative (leq)
