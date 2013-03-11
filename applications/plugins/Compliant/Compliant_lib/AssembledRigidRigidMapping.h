@@ -28,31 +28,14 @@
 #include "AssembledMapping.h"
 #include "initCompliant.h"
 
-#include "utils/se3.h"
+#include "utils/se3.h" 
+#include "utils/pair.h" 
+
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace helper
-{
-
-template<class First, class Second>
-std::ostream& operator<<(std::ostream& out,
-        const std::pair<First, Second>& p)
-{
-    return out << p.first << " " << p.second;
-}
-
-
-template<class First, class Second>
-std::istream& operator>>(std::istream& in,
-        std::pair<First, Second>& p)
-{
-    return in >> p.first >> p.second;
-}
-
-}
 
 namespace component
 {
