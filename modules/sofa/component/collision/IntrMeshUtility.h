@@ -81,11 +81,13 @@ public:
 extern template class SOFA_MESH_COLLISION_API IntrUtil<TTriangle<Vec3dTypes> >;
 extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<Vec3dTypes>,TOBB<Rigid3dTypes> >;
 extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
+extern template class SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<Vec3dTypes> >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_MESH_COLLISION_API IntrUtil<TTriangle<Vec3fTypes> >;
 extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<Vec3fTypes>,TOBB<Rigid3fTypes> >;
 extern template class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<Vec3fTypes>,TOBB<defaulttype::Rigid3fTypes> >;
+extern template class SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<Vec3fTypes> >;
 #endif
 #endif
 
