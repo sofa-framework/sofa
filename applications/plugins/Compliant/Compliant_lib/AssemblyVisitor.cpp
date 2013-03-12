@@ -194,6 +194,8 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 			unsigned cols = p->getMatrixSize(); 
 			
 			std::string msg("zero mapping block for " + mapping_name(node) + " (is mapping matrix assembled ?)" );
+			assert( false ); 
+			
 			throw std::logic_error(msg);
 		}
 				
