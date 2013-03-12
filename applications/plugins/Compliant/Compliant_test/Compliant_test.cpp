@@ -25,6 +25,8 @@
 /** \file Compliant test suite main file */
 // Francois Faure,
 
+#include <gtest/gtest.h>
+
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -77,7 +79,7 @@ using sofa::helper::vector;
 /** Test suite for matrix assembly of class sofa::component::odesolver::ComplianceSolver.
 The unit tests are defined in group  \ref ComplianceSolver_Unit_Tests
  */
-class CompliantTestFixture
+class CompliantTestFixture : public ::testing::Test
 {
 protected:
     typedef SReal Real;
@@ -1046,103 +1048,76 @@ public:
 
 
 /** \page Page_CompliantTestSuite Compliant plugin test suite
-  This test suite uses the Boost Unit Testing Framework. http://www.boost.org/doc/libs/1_49_0/libs/test/doc/html/index.html
-  A good introduction can be found in: http://www.ibm.com/developerworks/aix/library/au-ctools1_boost/
+  This test suite uses the google test Framework
 
   The test suite is run from file Compliant_test.cpp .
-  The main() function is actually in an external library. Installatations instructions can be found on the web, e.g.:
-  - for linux: http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/
-  - for windows: http://www.beroux.com/english/articles/boost_unit_testing/
+  The main() function is actually in an external library.
 
  Currently all the tests are based on the unit test methods defined in class CompliantTestFixture.
 
   */
-#define BOOST_TEST_DYN_LINK
-#ifdef WIN32
-#define BOOST_TEST_INCLUDED
-#endif
-#include <boost/test/unit_test.hpp>
-#include <boost/test/unit_test_log.hpp>
-#if BOOST_WORKAROUND(  __GNUC__, < 3 )
-#include <boost/test/output_test_stream.hpp>
-typedef boost::test_tools::output_test_stream onullstream_type;
-#else
-#include <boost/test/utils/nullstream.hpp>
-typedef boost::onullstream onullstream_type;
-#endif
-namespace ut = boost::unit_test;
 
-
-BOOST_FIXTURE_TEST_SUITE( ts1, CompliantTestFixture );
-
-BOOST_AUTO_TEST_CASE( test_CompliantSolver_assembly )
+TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
 {
-    ut::unit_test_log.set_stream( std::cerr );
-
-
-
-
     unsigned numParticles=3;
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles");
+	::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles";
     testHardString(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles attached using a projective constraint (FixedConstraint)");
+    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a projective constraint (FixedConstraint)";
     testAttachedHardString(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
     numParticles=4;
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles attached using a distance constraint");
+    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a distance constraint";
     testConstrainedHardString(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
     numParticles=2;
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle");
+    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
     testExternallyConstrainedHardString(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
     numParticles=3;
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard strings of " << numParticles << " particles connected using a MultiMapping");
+    ::testing::Message() << "CompliantTestFixture: hard strings of " << numParticles << " particles connected using a MultiMapping";
     testAttachedConnectedHardStrings(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
     numParticles=2;
-    BOOST_TEST_MESSAGE( "CompliantTestFixture: hard string of " << numParticles << " particles connected to a rigid");
+    ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles connected to a rigid";
     testRigidConnectedToString(numParticles);
-    BOOST_CHECK(matricesAreEqual( expected.M, complianceSolver->M() ));
-    BOOST_CHECK(matricesAreEqual( expected.P, complianceSolver->P() ));
-    BOOST_CHECK(matricesAreEqual( expected.J, complianceSolver->J() ));
-    BOOST_CHECK(matricesAreEqual( expected.C, complianceSolver->C() ));
-    BOOST_CHECK(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-    BOOST_CHECK(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 }
-
-BOOST_AUTO_TEST_SUITE_END();
 
 
 
