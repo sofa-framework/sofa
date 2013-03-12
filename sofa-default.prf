@@ -42,8 +42,7 @@ DEFINES += SOFA_GUI_GLUT
 # Options
 ########################################################################
 
-#DEFINES += SOFA_PROJECT_runUnitTests  # uncomment to compile a project which perform low-level tests on Sofa classes using boost test
-#DEFINES += SOFA_PROJECT_GTEST  # uncomment to compile a project which perform low-level tests on Sofa classes using google test
+#DEFINES += SOFA_PROJECT_TEST  # uncomment to compile a project which perform low-level tests on Sofa classes using google test
 
 # Uncomment if you want to hide the recorder from the Qt GUI to save space
 # DEFINES += SOFA_GUI_QT_NO_RECORDER

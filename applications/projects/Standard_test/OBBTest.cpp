@@ -1013,7 +1013,7 @@ bool TestSphereOBB::face(){
 }
 
 TEST_F(TestOBB, face_vertex ) { ASSERT_TRUE( faceVertex()); }
-/*TEST_F(TestOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
+TEST_F(TestOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestOBB, face_face ) { ASSERT_TRUE( faceFace()); }
 TEST_F(TestOBB, face_edge ) { ASSERT_TRUE( faceEdge()); }
 TEST_F(TestOBB, edge_edge ) { ASSERT_TRUE( edgeEdge()); }
@@ -1028,4 +1028,4 @@ TEST_F(TestCapOBB, vertex_vertex) { ASSERT_TRUE( vertexVertex()); }
 
 TEST_F(TestSphereOBB, vertex_sphere ) { ASSERT_TRUE( vertex()); }
 TEST_F(TestSphereOBB, edge_sphere ) { ASSERT_TRUE( edge()); }
-TEST_F(TestSphereOBB, face_sphere ) { ASSERT_TRUE( face()); }*/
+TEST_F(TestSphereOBB, face_sphere ) { ASSERT_TRUE( face()); }
