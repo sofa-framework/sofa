@@ -1,43 +1,43 @@
-BOOST_AUTO_TEST_CASE( creation )
+TEST_F( BranchingImage, creation )
 {
-    BOOST_CHECK( dimensionsAreEqual(flatImage.getDimensions(),branchingImage6.getDimension()) );
+    ASSERT_TRUE( dimensionsAreEqual(flatImage.getDimensions(),branchingImage6.getDimension()) );
 }
-BOOST_AUTO_TEST_CASE( copy )
+TEST_F( BranchingImage, copy )
 {
-    BOOST_CHECK( branchingImage6 == branchingImage2 );
+    ASSERT_TRUE( branchingImage6 == branchingImage2 );
 }
-BOOST_AUTO_TEST_CASE( conversion )
+TEST_F( BranchingImage, conversion )
 {
     int r = branchingImage6.isEqual(flatImage,sofa::defaulttype::CONNECTIVITY_6,true,false);
-    BOOST_CHECK( !r ); // value test
+    ASSERT_TRUE( !r ); // value test
     if( r ) { std::cerr<<"6-connectivity value test error = "<<r<<std::endl; }
 
     r = branchingImage6.isEqual(flatImage,sofa::defaulttype::CONNECTIVITY_6,false,true);
-    BOOST_CHECK( !r ); // neighbour test
+    ASSERT_TRUE( !r ); // neighbour test
     if( r ) { std::cerr<<"6-connectivity neighbour test error = "<<r<<std::endl; }
 
     r = branchingImage26.isEqual(flatImage,sofa::defaulttype::CONNECTIVITY_26,true,false);
-    BOOST_CHECK( !r ); // value test
+    ASSERT_TRUE( !r ); // value test
     if( r ) { std::cerr<<"26-connectivity value test error = "<<r<<std::endl; }
 
     r = branchingImage26.isEqual(flatImage,sofa::defaulttype::CONNECTIVITY_26,false,true);
-    BOOST_CHECK( !r ); // neighbour test
+    ASSERT_TRUE( !r ); // neighbour test
     if( r ) { std::cerr<<"26-connectivity neighbour test error = "<<r<<std::endl; }
 
-    BOOST_CHECK( flatImage == flatImage2 );
+    ASSERT_TRUE( flatImage == flatImage2 );
 }
-BOOST_AUTO_TEST_CASE( neighbourhoodValidity )
+TEST_F( BranchingImage, neighbourhoodValidity )
 {
     int r = branchingImage6.isNeighbourhoodValid();
-    BOOST_CHECK( !r );
+    ASSERT_TRUE( !r );
     if( r ) { std::cerr<<"6-connectivity Neighbourhood error = "<<r<<std::endl; }
 
     r = branchingImage2.isNeighbourhoodValid();
-    BOOST_CHECK( !r );
+    ASSERT_TRUE( !r );
     if( r ) { std::cerr<<"6-connectivity copy Neighbourhood error = "<<r<<std::endl; }
 
     r = branchingImage26.isNeighbourhoodValid();
-    BOOST_CHECK( !r );
+    ASSERT_TRUE( !r );
     if( r ) { std::cerr<<"26-connectivity Neighbourhood error = "<<r<<std::endl; }
 }
 

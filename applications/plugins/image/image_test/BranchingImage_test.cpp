@@ -1,6 +1,4 @@
-// #define BOOST_TEST_MODULE BranchingImage
- 
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include "../BranchingImage.h"
 #include <sofa/helper/RandomGenerator.h>
@@ -12,7 +10,7 @@ namespace fixture {
 
 
   template< class T >
-  struct BranchingImageFixture {
+  struct BranchingImageFixture : public ::testing::Test {
 
       typedef sofa::defaulttype::Image<T> ImageTypes;
       typedef sofa::defaulttype::BranchingImage<T> BranchingImageTypes;
@@ -64,11 +62,11 @@ namespace fixture {
 
 
 typedef fixture::BranchingImageFixture<bool> BranchingImageFixtureB;
-BOOST_FIXTURE_TEST_SUITE( BranchingImageB, BranchingImageFixtureB );
+#define BranchingImage BranchingImageFixtureB
 #include "BranchingImage_test.inl"
-BOOST_AUTO_TEST_SUITE_END()
+#undef BranchingImage
 
 typedef fixture::BranchingImageFixture<double> BranchingImageFixtureD;
-BOOST_FIXTURE_TEST_SUITE( BranchingImageD, BranchingImageFixtureD );
+#define BranchingImage BranchingImageFixtureD
 #include "BranchingImage_test.inl"
-BOOST_AUTO_TEST_SUITE_END()
+#undef BranchingImage
