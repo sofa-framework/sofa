@@ -22,30 +22,44 @@ UnilateralMask::UnilateralMask()
 unsigned UnilateralMask::write(SReal* out) const {
 
 	const mask_type& m = mask.getValue();
-
-	for( unsigned i = 0, n = m.size(); i < n; ++i) {
-		*(out++) = m[i];
+	
+	unsigned n = getContext()->getMechanicalState()->getMatrixSize();
+	
+	if( m.empty() ) {
+		
+		for( unsigned i = 0; i < n; ++i) {
+			*(out++) = value.getValue();
+		}
+		
+		return n;
+	} else {
+		assert( m.size() == n );
+		
+		for( unsigned i = 0, n = m.size(); i < n; ++i) {
+			*(out++) = m[i];
+		}
+		
+		return m.size();
 	}
-
-	return m.size();
+	
 }
 
 void UnilateralMask::init() {
-	mask_type* m = mask.beginEdit();
+	// mask_type* m = mask.beginEdit();
 	
-	if( m->empty() ) {
+	// if( m->empty() ) {
 
 		// find dofs/dimension
-		core::behavior::BaseMechanicalState* state = getContext()->getMechanicalState();
-		if( !state ) throw std::logic_error( getName() + " did not find an mstate");
-
-		unsigned size = state->getMatrixSize();
-		
-		// resize dimension
-		m->resize( size, value.getValue() );
-	}
+	core::behavior::BaseMechanicalState* state = getContext()->getMechanicalState();
+	if( !state ) throw std::logic_error( getName() + " did not find an mstate");
 	
-	mask.endEdit();
+	// 	unsigned size = state->getMatrixSize();
+		
+	// 	// resize dimension
+	// 	m->resize( size, value.getValue() );
+	// }
+	
+	// mask.endEdit();
 }
 
 }
