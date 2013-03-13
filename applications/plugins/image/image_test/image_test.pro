@@ -1,23 +1,18 @@
 load(sofa/pre)
 
-TEMPLATE = lib
+TEMPLATE = app
+TARGET = image_test
 
 CONFIG += console
 
-DEFINES += SOFA_BUILD_Image_test
-
-HEADERS += initImage_test.h \
-           BranchingImage_test.inl \
-
-
-SOURCES += initImage_test.cpp \
-           BranchingImage_test.cpp \
-
-
-
-
+LIBS += -lgtest \
+		-lgtest_main
 
 INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
+		
+HEADERS += BranchingImage_test.inl
+
+SOURCES += BranchingImage_test.cpp
 
 contains(DEFINES, SOFA_IMAGE_HAVE_OPENCV) { # should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
     INCLUDEPATH += $$SOFA_OPENCV_PATH
@@ -32,13 +27,12 @@ contains(DEFINES, SOFA_HAVE_LIBFREENECT) {
 
 unix {
     LIBS += -ldl
-    LIBS *= -l$${BOOST_PREFIX}boost_unit_test_framework$$BOOST_SUFFIX
 }
 
 win32 {
-	LIBS *= -lboost_unit_test_framework$$BOOST_SUFFIX
+	QMAKE_CXXFLAGS_RELEASE += /MT
+	QMAKE_CXXFLAGS_DEBUG += /MT
 }
-
 
 load(sofa/post)
 

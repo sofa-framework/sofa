@@ -9,6 +9,8 @@ CONFIG += console
 
 LIBS += -lgtest \
 		-lgtest_main
+		
+INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
 
 HEADERS += \
     Matrix_test.inl

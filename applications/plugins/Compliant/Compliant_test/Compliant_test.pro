@@ -9,6 +9,8 @@ LIBS += -lsofagraph$$LIBSUFFIX \
 		-lgtest \
 		-lgtest_main
 
+INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
+		
 SOURCES = Compliant_test.cpp
 
 macx {
