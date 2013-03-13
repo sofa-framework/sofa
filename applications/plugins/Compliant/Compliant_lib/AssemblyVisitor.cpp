@@ -75,7 +75,12 @@ AssemblyVisitor::AssemblyVisitor(const core::MechanicalParams* mparams)
 { }
 		
 AssemblyVisitor::chunk::chunk() 
-	: offset(0), size(0), damping(0), mechanical(false),  vertex(-1), dofs(0) {
+	: offset(0), 
+	  size(0), 
+	  damping(0), 
+	  mechanical(false), 
+	  vertex(-1), 
+	  dofs(0) {
 	
 }
 
@@ -409,7 +414,9 @@ AssemblyVisitor::vec AssemblyVisitor::unilateral(simulation::Node* node) {
 	
 	if( mask ) {
 		res.resize( node->mechanicalState->getMatrixSize() );
-		mask->write( res.data() );
+		unsigned written = mask->write( res.data() );
+		assert( written == res.size() );
+		
 		return res;
 	}
 	
@@ -487,6 +494,8 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 				
 				edge e;
 				e.data = &it->second;
+				
+				// the edge is child -> parent
 				boost::add_edge(c.vertex, parent.vertex, e, graph); 
 			}
 		}
@@ -572,7 +581,7 @@ void AssemblyVisitor::distribute(core::VecId id, const vec& data) {
 }
 
  
-
+// this is used to propagate mechanical flag upwards mappings
 struct AssemblyVisitor::propagation {
 
 	chunks_type& chunks;
@@ -722,7 +731,9 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_m = off_m;
 	size_c = off_c;
 		
-	utils::prefix(graph, propagation(chunks));
+	// propagate mechanical flags
+	utils::postfix(graph, propagation(chunks));
+	
 
 	// utils::postfix(graph, process_helper(res, chunks));
 	// return res;
