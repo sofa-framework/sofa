@@ -49,15 +49,10 @@
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/collision/MeshIntTool.h>
 
-struct TestOBB : public ::testing::Test
-{
+struct TestOBB : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
-
-    /**
-      *\brief Just returns an empty node that will contain the OBBs that collide.
-      */
-    static sofa::simulation::Node::SPtr createScene();
 
     /**
       *\brief Rotates around x axis vectors x,y and z which here is a frame.
@@ -94,8 +89,7 @@ struct TestOBB : public ::testing::Test
 };
 
 
-struct TestCapOBB : public ::testing::Test
-{
+struct TestCapOBB  : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
     static sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3d & p0,const Vec3d & p1,double radius,const Vec3d & v,
@@ -109,8 +103,7 @@ struct TestCapOBB : public ::testing::Test
     bool vertexEdge();
 };
 
-struct TestSphereOBB : public ::testing::Test
-{
+struct TestSphereOBB : public ::testing::Test{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
     static sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3d & center,double radius,const Vec3d & v,
@@ -119,6 +112,24 @@ struct TestSphereOBB : public ::testing::Test
     bool vertex();
     bool edge();
     bool face();
+};
+
+
+struct TestTriOBB : public ::testing::Test{
+    typedef sofa::defaulttype::Vec3d Vec3d;
+
+    static sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d &v, sofa::simulation::Node::SPtr &father);
+
+    bool faceVertex();
+    bool vertexVertex();
+    bool faceFace();
+    bool faceEdge();
+    bool edgeFace();
+    bool edgeEdge();
+    bool edgeEdge2();
+    bool edgeVertex();
+    bool vertexFace();
+    bool vertexEdge();
 };
 
 sofa::component::collision::SphereModel::SPtr TestSphereOBB::makeSphere(const Vec3d & center,double radius,const Vec3d & v,
@@ -216,59 +227,107 @@ sofa::component::collision::CapsuleModel::SPtr TestCapOBB::makeCap(const Vec3d &
     return capCollisionModel;
 }
 
-sofa::simulation::Node::SPtr TestOBB::createScene()
-{
-    sofa::simulation::Node::SPtr groot = New<sofa::simulation::tree::GNode>();
-//    // The graph root node
-//    std::cout<<"ici0"<<std::endl;
-//    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-//    std::cout<<"ici1"<<std::endl;
-//    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-//    std::cout<<"ici2"<<std::endl;
-//    groot->setGravity( Coord3(0,0,0) );
-//    std::cout<<"ici3"<<std::endl;
 
-//    // One solver for all the graph
-//    sofa::component::odesolver::EulerSolver::SPtr solver = sofa::core::objectmodel::New<sofa::component::odesolver::EulerSolver>();
-//    std::cout<<"ici4"<<std::endl;
-//    solver->setName("solver");
-//    solver->f_printLog.setValue(false);
-//    std::cout<<"ici5"<<std::endl;
-//    groot->addObject(solver);
-//    std::cout<<"ici6"<<std::endl;
+sofa::component::collision::TriangleModel::SPtr TestTriOBB::makeTri(const Vec3d & p0,const Vec3d & p1,const Vec3d & p2,const Vec3d & v, sofa::simulation::Node::SPtr &father){
+    //creating node containing TriangleModel
+    sofa::simulation::Node::SPtr tri = father->createChild("tri");
 
-    // One node to define the particle
-//    sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
-//    // The particule, i.e, its degrees of freedom : a point with a velocity
-//    MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
-//    particle->setName("particle");
-//    particule_node->addObject(particle);
-//    particle->resize(1);
-//    // get write access the particle positions vector
-//    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
-//    positions[0] = Coord3(0,0,0);
-//    // get write access the particle velocities vector
-//    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
-//    velocities[0] = Deriv3(0,0,0);
+    //creating a mechanical object which will be attached to the OBBModel
+    MechanicalObject3d::SPtr triDOF = New<MechanicalObject3d>();
 
-//    // Its properties, i.e, a simple mass node
-//    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
-//    mass->setName("mass");
-//    particule_node->addObject(mass);
-//    mass->setMass( 1 );
+    //editing DOF related to the TriangleModel to be created, size is 3 (3 points) because it contains just one Triangle
+    triDOF->resize(3);
+    Data<MechanicalObject3d::VecCoord> & dpositions = *triDOF->write( sofa::core::VecId::position() );
+    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
 
-//    // Display Flags
-//    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
-//    groot->addObject(style);
-//    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
-//    flags.setShowBehaviorModels(true);
-//    style->displayFlags.endEdit();
+    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
+    positions[0] = p0;
+    positions[1] = p1;
+    positions[2] = p2;
 
-//    sofa::simulation::tree::getSimulation()->init(groot.get());
-//    groot->setAnimate(false);
+    dpositions.endEdit();
 
-    return groot;
+    //Editting the velocity of the OBB
+    Data<MechanicalObject3d::VecDeriv> & dvelocities = *triDOF->write( sofa::core::VecId::velocity() );
+
+    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
+    velocities[0] = v;
+    velocities[1] = v;
+    velocities[2] = v;
+
+    dvelocities.endEdit();
+
+    tri->addObject(triDOF);
+
+    //creating a topology necessary for capsule
+    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
+    bmt->addTriangle(0,1,2);
+    tri->addObject(bmt);
+
+    //creating an OBBModel and attaching it to the same node than obbDOF
+    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel >();
+    tri->addObject(triCollisionModel);
+
+
+    //editting the OBBModel
+    triCollisionModel->init();
+
+    return triCollisionModel;
 }
+
+//sofa::simulation::Node::SPtr TestOBB::createScene()
+//{
+//    sofa::simulation::Node::SPtr groot = New<sofa::simulation::tree::GNode>();
+////    // The graph root node
+////    std::cout<<"ici0"<<std::endl;
+////    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+////    std::cout<<"ici1"<<std::endl;
+////    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
+////    std::cout<<"ici2"<<std::endl;
+////    groot->setGravity( Coord3(0,0,0) );
+////    std::cout<<"ici3"<<std::endl;
+
+////    // One solver for all the graph
+////    sofa::component::odesolver::EulerSolver::SPtr solver = sofa::core::objectmodel::New<sofa::component::odesolver::EulerSolver>();
+////    std::cout<<"ici4"<<std::endl;
+////    solver->setName("solver");
+////    solver->f_printLog.setValue(false);
+////    std::cout<<"ici5"<<std::endl;
+////    groot->addObject(solver);
+////    std::cout<<"ici6"<<std::endl;
+
+//    // One node to define the particle
+////    sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
+////    // The particule, i.e, its degrees of freedom : a point with a velocity
+////    MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
+////    particle->setName("particle");
+////    particule_node->addObject(particle);
+////    particle->resize(1);
+////    // get write access the particle positions vector
+////    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
+////    positions[0] = Coord3(0,0,0);
+////    // get write access the particle velocities vector
+////    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
+////    velocities[0] = Deriv3(0,0,0);
+
+////    // Its properties, i.e, a simple mass node
+////    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
+////    mass->setName("mass");
+////    particule_node->addObject(mass);
+////    mass->setMass( 1 );
+
+////    // Display Flags
+////    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+////    groot->addObject(style);
+////    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+////    flags.setShowBehaviorModels(true);
+////    style->displayFlags.endEdit();
+
+////    sofa::simulation::tree::getSimulation()->init(groot.get());
+////    groot->setAnimate(false);
+
+//    return groot;
+//}
 
 sofa::component::collision::OBBModel::SPtr TestOBB::makeOBB(const Vec3d & p,const double *angles,const int *order,const Vec3d &v,const Vec3d &extents, sofa::simulation::Node::SPtr &father){
     //creating node containing OBBModel
@@ -369,7 +428,7 @@ bool TestOBB::faceVertex(){
     //first, we create the transformation to make the first OBB (which is axes aligned)
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -378,7 +437,7 @@ bool TestOBB::faceVertex(){
     order[1] = 1;
     order[2] = 0;
     angles[0] = 0;
-	angles[1] = acos(1/sqrt(3.0));
+    angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
@@ -421,43 +480,24 @@ bool TestOBB::vertexVertex(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(3.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    std::vector<sofa::component::collision::OBB::Coord> vs;
-    obb0.vertices(vs);
-    std::cout<<"vertices obb0"<<std::endl;
-    for(unsigned int i = 0 ; i < vs.size() ; ++i)
-        std::cout<<vs[i]<<std::endl;
-
-    vs.clear();
-    obb1.vertices(vs);
-    std::cout<<"vertices obb1"<<std::endl;
-    for(unsigned int i = 0 ; i < vs.size() ; ++i)
-        std::cout<<vs[i]<<std::endl;
-
     sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT)){
-        std::cout<<"FALSE"<<std::endl;
         return false;
     }
-
-    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
-
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-7)
-//        return false;
 
     return true;
 }
@@ -466,7 +506,7 @@ bool TestOBB::vertexVertex(){
 bool TestOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,1,1.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
@@ -494,7 +534,7 @@ bool TestOBB::faceFace(){
 bool TestOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     order[0] = 2;
@@ -536,7 +576,7 @@ bool TestOBB::edgeEdge(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3d(0,0,sqrt(2.0) + 0.01),angles,order,Vec3d(0,0,-10),Vec3d(1,1,1),scn);
 
@@ -548,14 +588,11 @@ bool TestOBB::edgeEdge(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0)).norm() > 1e-6)
         return false;
 
-    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0.01)).norm() > 1e-6)
         return false;
-
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6) //
-//        return false;
 
     return true;
 }
@@ -571,7 +608,7 @@ bool TestOBB::edgeVertex(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = createScene();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
 
     order[0] = 2;
@@ -590,18 +627,11 @@ bool TestOBB::edgeVertex(){
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-    //std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-
-    std::cout<<"(detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() "<<(detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm()<<std::endl;
-    std::cout<<"(detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() "<<(detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm()<<std::endl;
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
 
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
-
-//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
-//        return false;
 
     return true;
 }
@@ -1012,6 +1042,352 @@ bool TestSphereOBB::face(){
     return true;
 }
 
+bool TestTriOBB::faceFace(){
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::faceEdge(){
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::faceVertex(){
+    double angles[3] = {0,0,0};
+    int order[3] = {0,1,2};
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-1),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,2),Vec3d(0,2,2),Vec3d(0,0,0.01),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::edgeFace(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = M_PI_2;
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::edgeEdge(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = M_PI_2;
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,-2,0.01),Vec3d(0,2,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::edgeEdge2(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = M_PI_2;
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+        return false;
+
+//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//        return false;
+
+    return true;
+}
+
+bool TestTriOBB::edgeVertex(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = M_PI_2;
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(2.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+        return false;
+
+//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::vertexFace(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = acos(1/sqrt(3.0));
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-2,-2,0.01),Vec3d(-2,2,0.01),Vec3d(2,0,0.01),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+        return false;
+
+//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//        return false;
+
+    return true;
+}
+
+
+bool TestTriOBB::vertexEdge(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = acos(1/sqrt(3.0));
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(-1,0,0.01),Vec3d(1,0,0.01),Vec3d(2,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(1,0,0.01)).norm() > 1e-6 && (detectionOUTPUT[0].point[0] - Vec3d(-1,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(1,0,0)).norm() > 1e-6 && (detectionOUTPUT[0].point[1] - Vec3d(-1,0,0)).norm() > 1e-6)
+        return false;
+
+//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//        return false;
+
+    return true;
+}
+
+bool TestTriOBB::vertexVertex(){
+    double angles[3];
+    int order[3];
+    order[0] = 2;
+    order[1] = 1;
+    order[2] = 0;
+    angles[0] = 0;
+    angles[1] = acos(1/sqrt(3.0));
+    angles[2] = M_PI_4;
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::component::collision::OBBModel::SPtr obbmodel = TestOBB::makeOBB(Vec3d(0,0,-sqrt(3.0)),angles,order,Vec3d(0,0,0),Vec3d(1,1,1),scn);
+
+    int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
+    sofa::component::collision::TriangleModel::SPtr trimodel = makeTri(Vec3d(0,0,0.01),Vec3d(1,0,2),Vec3d(-1,0,2),Vec3d(0,0,-10),scn);
+
+    sofa::component::collision::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::Triangle tri(trimodel.get(),0);
+
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+
+    if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
+        return false;
+
+    if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
+        return false;
+
+    if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0)).norm() > 1e-6)
+        return false;
+
+//    if((detectionOUTPUT[0].normal.cross(Vec3d(0,0,1))).norm() > 1e-6)
+//        return false;
+
+    return true;
+}
+
 TEST_F(TestOBB, face_vertex ) { ASSERT_TRUE( faceVertex()); }
 TEST_F(TestOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestOBB, face_face ) { ASSERT_TRUE( faceFace()); }
@@ -1029,3 +1405,14 @@ TEST_F(TestCapOBB, vertex_vertex) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestSphereOBB, vertex_sphere ) { ASSERT_TRUE( vertex()); }
 TEST_F(TestSphereOBB, edge_sphere ) { ASSERT_TRUE( edge()); }
 TEST_F(TestSphereOBB, face_sphere ) { ASSERT_TRUE( face()); }
+
+TEST_F(TestTriOBB, face_face ) { ASSERT_TRUE( faceFace()); }
+TEST_F(TestTriOBB, face_edge ) { ASSERT_TRUE( faceEdge()); }
+TEST_F(TestTriOBB, face_vertex ) { ASSERT_TRUE( faceVertex()); }
+TEST_F(TestTriOBB, edge_face ) { ASSERT_TRUE( edgeFace()); }
+TEST_F(TestTriOBB, edge_edge ) { ASSERT_TRUE( edgeEdge()); }
+TEST_F(TestTriOBB, edge_edge_2 ) { ASSERT_TRUE( edgeEdge2()); }
+TEST_F(TestTriOBB, edge_vertex ) { ASSERT_TRUE( edgeVertex()); }
+TEST_F(TestTriOBB, vertex_face ) { ASSERT_TRUE( vertexFace()); }
+TEST_F(TestTriOBB, vertex_edge ) { ASSERT_TRUE( vertexEdge()); }
+TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }

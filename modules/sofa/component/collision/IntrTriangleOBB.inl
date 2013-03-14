@@ -11,12 +11,12 @@ TIntrTriangleOBB<TDataTypes,TDataTypes2>::TIntrTriangleOBB (const IntrTri& tri, 
 }
 
 template <typename TDataTypes,typename TDataTypes2>
-bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
+bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 {
     bool config_modified;
 
-    mContactTime = (Real)0;
-    int tri_flg = _tri->flags();
+    mContactTime = -std::numeric_limits<Real>::max();
+
     //int tri_flg = _tri->getCollisionModel()->getTriangleFlags(_tri->getIndex());
     //int tri_flg = _tri->getCollisionModel()->getTriangleFlags(_tri->getIndex());
     //((TTriangleModel<TDataTypes> *)(_tri->getCollisionModel()))->bidon();
@@ -32,8 +32,9 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         _tri->p1() - _tri->p3()
     };
 
-    IntrAxis<IntrTri,Box>::Find(_tri->n(), *_tri, *mBox, dmax,
-        mContactTime, side, triContact, boxContact,config_modified);
+    if(!IntrAxis<IntrTri,Box>::Find(_tri->n(), *_tri, *mBox, dmax,
+        mContactTime, side, triContact, boxContact,config_modified))
+        return false;
 
     if(config_modified)
         _sep_axis = _tri->n();
@@ -44,8 +45,9 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
     for (i0 = 0; i0 < 3; ++i0)
     {
         axis = mBox->axis(i0);
-        IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-            dmax, mContactTime,side, triContact, boxContact,config_modified);
+        if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+            dmax, mContactTime,side, triContact, boxContact,config_modified))
+            return false;
 
         if(config_modified)
             _sep_axis = axis;
@@ -55,10 +57,18 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         Real NdA = (_tri->n()) * axis;
 //        Real NdN = (_tri->n()).SquaredLength();
 //        Real AdA = axis.SquaredLength();
-        if (NdA < IntrUtil<Real>::ZERO_TOLERANCE())
+//        if (NdA < IntrUtil<Real>::ZERO_TOLERANCE())
+//        {
+//            coplanar = i0;
+//        }        Real NdA = triNorm.Dot(axis);
+        Real sn = fabs((Real)1 -NdA);
+        if (sn < IntrUtil<Real>::ZERO_TOLERANCE())
         {
             coplanar = i0;
         }
+
+
+
     }
 
     if (coplanar == -1)
@@ -69,47 +79,58 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
 
             if(tri_flg&TriangleModel::FLAG_E12){
                 axis = edge[0].cross(mBox->axis(i0));
-                IntrUtil<Real>::normalize(axis);
+                if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
+                    IntrUtil<Real>::normalize(axis);
 
-                IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                    dmax, mContactTime,side, triContact, boxContact,config_modified);
+                    if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                        dmax, mContactTime,side, triContact, boxContact,config_modified))
+                        return false;
 
-                if(config_modified)
-                    _sep_axis = axis;
+                    if(config_modified)
+                        _sep_axis = axis;
+                }
             }
 
             if(tri_flg&TriangleModel::FLAG_E23){
                 axis = edge[1].cross(mBox->axis(i0));
-                IntrUtil<Real>::normalize(axis);
+                if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
+                    IntrUtil<Real>::normalize(axis);
 
-                IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                    dmax, mContactTime,side, triContact, boxContact,config_modified);
+                    if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                        dmax, mContactTime,side, triContact, boxContact,config_modified))
+                        return false;
 
-                if(config_modified)
-                    _sep_axis = axis;
+                    if(config_modified)
+                        _sep_axis = axis;
+                }
             }
 
             if(tri_flg&TriangleModel::FLAG_E31){
                 axis = edge[2].cross(mBox->axis(i0));
-                IntrUtil<Real>::normalize(axis);
+                if(axis.norm2() > IntrUtil<Real>::ZERO_TOLERANCE()){
+                    IntrUtil<Real>::normalize(axis);
 
-                IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                    dmax, mContactTime,side, triContact, boxContact,config_modified);
+                    if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                        dmax, mContactTime,side, triContact, boxContact,config_modified))
+                        return false;
 
-                if(config_modified)
-                    _sep_axis = axis;
+                    if(config_modified)
+                        _sep_axis = axis;
+                }
             }
         }
     }
-    else
+      else
+        //if()
     {
         // Test triedges cross coplanar box axis.
         if(tri_flg&TriangleModel::FLAG_E12){
             axis = edge[0].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
-            IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                dmax, mContactTime,side, triContact, boxContact,config_modified);
+            if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                dmax, mContactTime,side, triContact, boxContact,config_modified))
+                return false;
 
             if(config_modified)
                 _sep_axis = axis;
@@ -119,8 +140,9 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
             axis = edge[1].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
-            IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                dmax, mContactTime,side, triContact, boxContact,config_modified);
+            if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                dmax, mContactTime,side, triContact, boxContact,config_modified))
+                return false;
 
             if(config_modified)
                 _sep_axis = axis;
@@ -130,27 +152,14 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
             axis = edge[2].cross(_tri->n());
             IntrUtil<Real>::normalize(axis);
 
-            IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-                dmax, mContactTime,side, triContact, boxContact,config_modified);
+            if(!IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
+                dmax, mContactTime,side, triContact, boxContact,config_modified))
+                return false;
 
             if(config_modified)
                 _sep_axis = axis;
         }
     }
-
-//    Vec3 relVelocity = mBox->lvelocity() - (_tri->v1() + _tri->v2() + _tri->v3())/3.0;
-//    // Test velocity cross box faces.
-//    for (i0 = 0; i0 < 3; ++i0)
-//    {
-//        axis = relVelocity.cross(mBox->axis(i0));
-//        IntrUtil<Real>::normalize(axis);
-
-//        IntrAxis<IntrTri,Box>::Find(axis, *_tri, *mBox,
-//            dmax, mContactTime,side, triContact, boxContact,config_modified);
-
-//        if(config_modified)
-//            _sep_axis = axis;
-//    }
 
     if (side == IntrConfiguration<Real>::NONE)
     {
@@ -176,6 +185,8 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
 }
 
 
+template <typename TDataTypes,typename TDataTypes2>
+inline bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find(Real tmax){return Find(tmax,_tri->flags());}
 
 }
 }

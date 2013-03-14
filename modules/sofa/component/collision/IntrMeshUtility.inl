@@ -306,7 +306,7 @@ double IntrUtil<TTriangle<DataType> >::project(Vec<3,Real> & pt,const TTriangle<
 
 
 template <class TDataTypes1,class TDataTypes2>
-void IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::Find (const Coord& axis,
+bool IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::Find (const Coord& axis,
     const IntrTri & triangle, const Box& box,
     Real dmax, Real& tfirst,
     int& side, IntrConfiguration<Real>& triCfgFinal,
@@ -318,7 +318,7 @@ void IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::Find (const Coord& axi
     IntrConfiguration<Real> boxCfgStart;
     IntrConfigManager<Box>::init(axis, box, boxCfgStart);
 
-    IntrConfigManager<Real>::Find(triCfgStart, boxCfgStart, side,
+    return IntrConfigManager<Real>::Find(triCfgStart, boxCfgStart, side,
         triCfgFinal, boxCfgFinal, dmax,tfirst, config_modified);
 }
 
@@ -645,9 +645,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                     pt_on_box = pt_on_tri - tfirst * axis;
                 }
                 else{
-                    triSeg[0] = tri.p(tIndex[0]);
-                    triSeg[1] = tri.p(tIndex[1]);
+//                    triSeg[0] = tri.p(tIndex[0]);
+//                    triSeg[1] = tri.p(tIndex[1]);
+//                    IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
+                    pt_on_tri += tfirst * axis;
                 }
             }
         }
@@ -756,9 +758,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                     pt_on_box = pt_on_tri + tfirst * axis;
                 }
                 else{
-                    triSeg[0] = tri[tIndex[1]];
-                    triSeg[1] = tri[tIndex[2]];
+//                    triSeg[0] = tri[tIndex[1]];
+//                    triSeg[1] = tri[tIndex[2]];
+//                    IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
+                    pt_on_tri -=tfirst * axis;
                 }
             }
         }
