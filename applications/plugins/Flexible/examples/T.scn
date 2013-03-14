@@ -3,7 +3,7 @@
     <RequiredPlugin pluginName="sofaimage"/>
     <RequiredPlugin pluginName="Flexible"/>
 
-    <VisualStyle displayFlags="hideWireframe  " />
+    <VisualStyle displayFlags="hideWireframe  showBehaviorModels" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 

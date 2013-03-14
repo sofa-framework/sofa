@@ -3,6 +3,8 @@
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="sofaimage"/>
 
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
@@ -49,6 +51,7 @@
     </Node>
 
 	    <Node 	name="collision"   >
+	    	<VisualStyle displayFlags="showVisual hideBehaviorModels" />
 		<MeshObjLoader name="mesh" filename="mesh/beam_100-40-1.obj" triangulate="1"/>
 		<Mesh name="mesh" src="@mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />

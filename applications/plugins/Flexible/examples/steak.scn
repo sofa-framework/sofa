@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" dt="0.03"  >
+<Node 	name="Root" gravity="0 0 0" dt="0.05"  >
     <RequiredPlugin pluginName="sofaimage"/>
     <RequiredPlugin pluginName="Flexible"/>
+
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
 
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -15,8 +17,11 @@
   <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 20000 254 5000 255 15000000000"/>
 <!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
 
+  <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 0.01"/>
+
+
   <EulerImplicitSolver rayleighStiffness="0.05"  rayleighMass="0.05" />
-  <CGLinearSolver template="GraphScattered" iterations="3"  threshold="1e-008" />
+  <CGLinearSolver template="GraphScattered" iterations="10"  threshold="1e-008" />
 
  <Node 	name="Flexible"   >
 		
@@ -28,6 +33,8 @@
     <VoronoiShapeFunction name="SF" template="ShapeFunction3d,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
    	<!--   <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>  -->
 	<!--   <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>   -->
+
+   <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
 
     <Node 	name="behavior"   >
 
@@ -48,10 +55,10 @@
 		
     </Node>
 		<Node name="Collision">
+		        <VisualStyle displayFlags="hideBehaviorModels" />
 			<MeshObjLoader name="MeshLoader" filename="mesh/steak.obj"/>
 			<Mesh src="@MeshLoader" /> 
-			<MechanicalObject  name="PointSet" useMask="0"/>
-			<UniformMass totalMass="1000" />		
+			<MechanicalObject  name="PointSet" useMask="1" />
 			<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
 		</Node>
 
