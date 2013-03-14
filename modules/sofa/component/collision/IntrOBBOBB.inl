@@ -485,8 +485,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
     for (i0 = 0; i0 < 3; ++i0)
     {
         axis = mBox0->axis(i0);
-        IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
-            mContactTime, side, box0Cfg,box1Cfg,config_modified);
+        if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
+            mContactTime, side, box0Cfg,box1Cfg,config_modified))
+            return false;
 
         if(config_modified){
             _sep_axis = axis;
@@ -497,8 +498,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
     for (i1 = 0; i1 < 3; ++i1)
     {
         axis = mBox1->axis(i1);
-        IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
-            mContactTime, side, box0Cfg, box1Cfg,config_modified);
+        if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
+            mContactTime, side, box0Cfg, box1Cfg,config_modified))
+                return false;
 
         if(config_modified){
             _sep_axis = axis;
@@ -531,8 +533,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
 
             axis.normalize();
 
-            IntrAxis<Box>::Find(axis, *mBox0, *mBox1,
-                dmax, mContactTime, side, box0Cfg, box1Cfg,config_modified);
+            if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1,
+                dmax, mContactTime, side, box0Cfg, box1Cfg,config_modified))
+                return false;
 
             if(config_modified){
                 _sep_axis = axis;
@@ -548,8 +551,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
             axis.normalize();
-            IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
-                mContactTime, side, box0Cfg, box1Cfg,config_modified);
+            if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
+                mContactTime, side, box0Cfg, box1Cfg,config_modified))
+               return false;
 
             if(config_modified){
                 _sep_axis = axis;
@@ -564,8 +568,9 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
             axis.normalize();
-            IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
-                mContactTime, side, box0Cfg, box1Cfg,config_modified);
+            if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
+                mContactTime, side, box0Cfg, box1Cfg,config_modified))
+               return false;
 
             if(config_modified){
                 _sep_axis = axis;

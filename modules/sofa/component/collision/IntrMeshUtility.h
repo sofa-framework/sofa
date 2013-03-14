@@ -39,7 +39,7 @@ public:
     // the contact configuration and the ordering of the projections (the
     // contact side).
 
-        static void Find (const Coord& axis,
+        static bool Find (const Coord& axis,
                           const IntrTri & triangle, const Box& box,
                           Real dmax, Real& tfirst,
                           int& side, IntrConfiguration<Real>& triCfgFinal,

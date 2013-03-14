@@ -42,7 +42,13 @@ public:
     static int computeIntersection(Capsule& cap, Triangle& tri,double alarmDist,double contactDist,OutputVector* contacts);
 
     static int computeIntersection(Triangle& tri,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts);
+
+    static int computeIntersection(Triangle& tri,int flags,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts);
 };
+
+inline int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,double alarmDist,double contactDist,OutputVector* contacts){
+    return computeIntersection(tri,tri.flags(),obb,alarmDist,contactDist,contacts);
+}
 
 }
 }

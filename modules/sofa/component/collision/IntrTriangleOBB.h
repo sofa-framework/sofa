@@ -25,6 +25,8 @@ public:
 
     TIntrTriangleOBB (const IntrTri& tri, const Box & box);
 
+    bool Find(Real tmax,int tri_flg);
+
     bool Find(Real tmax);
 
     Real distance()const;

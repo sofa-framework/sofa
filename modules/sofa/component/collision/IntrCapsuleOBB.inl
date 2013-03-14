@@ -53,8 +53,10 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
     for (i = 0; i < 3; ++i)
     {
         axis = mBox->axis(i);
-        IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
-            mContactTime, side, capContact, boxContact,config_modified);
+        if(!IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
+            mContactTime, side, capContact, boxContact,config_modified))
+            return false;
+
 
         if(config_modified){
             _sep_axis = axis;
@@ -69,8 +71,9 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         axis = mBox->axis(i).cross(cap_direction);
         IntrUtil<Real>::normalize(axis);
 
-        IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
-            mContactTime, side, capContact, boxContact,config_modified);
+        if(!IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
+            mContactTime, side, capContact, boxContact,config_modified))
+            return false;
 
         if(config_modified){
             _sep_axis = axis;
@@ -84,8 +87,9 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         axis = relVelocity.cross(mBox->axis(i));
         IntrUtil<Real>::normalize(axis);
 
-        IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
-            mContactTime, side, capContact, boxContact,config_modified);
+        if(!IntrAxis<Box>::Find(axis, segment,radius, *mBox, dmax,
+            mContactTime, side, capContact, boxContact,config_modified))
+            return false;
 
         if(config_modified){
             _sep_axis = axis;

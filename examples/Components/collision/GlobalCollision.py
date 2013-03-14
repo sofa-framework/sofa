@@ -39,9 +39,9 @@ def createRigidCapsule(parentNode,name,x,y,z):
 	meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1')
 	mass = node.createObject('UniformMass',name='mass',totalMass=1)
 
-	x_rand=random.uniform(-2,2)
-	y_rand=random.uniform(-2,2)
-	z_rand=random.uniform(-2,2)
+	x_rand=random.uniform(-0.5,0.5)
+	y_rand=random.uniform(-0.5,0.5)
+	z_rand=random.uniform(-0.5,0.5)
 
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x_rand)+' '+str(y_rand)+' '+str(z_rand)+' '+str(-x_rand)+' '+str(-y_rand)+' '+str(-z_rand))
@@ -52,13 +52,28 @@ def createRigidCapsule(parentNode,name,x,y,z):
 	return 0
 
 
+
+def createOBB(parentNode,name,x,y,z):
+	node = parentNode.createChild(name)
+	a=random.uniform(0.5,1.5)
+	b=random.uniform(0.5,1.5)
+	c=random.uniform(0.5,1.5)
+
+	meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1')
+	mass = node.createObject('UniformMass',name='mass',totalMass=1)
+
+	node.createObject('TOBBModel',template='Rigid',name='OBB_model',extents=str(a)+' '+str(b)+' '+str(c))
+
+	return 0
+
+
 def createFlexCapsule(parentNode,name,x,y,z):
 	node = parentNode.createChild(name)
 	radius=random.uniform(1,3)
 
-	x_rand=random.uniform(-2,2)
-	y_rand=random.uniform(-2,2)
-	z_rand=random.uniform(-2,2)
+	x_rand=random.uniform(-0.5,0.5)
+	y_rand=random.uniform(-0.5,0.5)
+	z_rand=random.uniform(-0.5,0.5)
 
 	node = node.createChild('Surf')
 	node.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x + x_rand)+' '+str(y + y_rand)+' '+str(z + z_rand + 20)+' '+str(x - x_rand)+' '+str(y - y_rand)+' '+str(z - z_rand))
@@ -99,7 +114,7 @@ def createSphere(parentNode,name,x,y,z):
 ############################################################################################
 
 
-class CapsuleCollision(Sofa.PythonScriptController):
+class GlobalCollision(Sofa.PythonScriptController):
 
 	# optionnally, script can create a graph...
 	def createGraph(self,node):
@@ -131,12 +146,15 @@ class CapsuleCollision(Sofa.PythonScriptController):
 			x=(10.0*(cos(t1) + cos(t2))/2.0).real
 			y=(10.0*(sin(t1) + sin(t2))/2.0).real
 
-			choice = random.randint(1,2)
+			choice = random.randint(1,3)
 
 			if choice == 1:
 				createSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height)
 			elif choice == 2:
 				createCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height)
+			elif choice == 3:
+				createOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height)
+
 
 			self.nb_prim +=1
 			self.current_height += 5
