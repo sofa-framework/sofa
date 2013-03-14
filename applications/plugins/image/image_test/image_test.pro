@@ -8,7 +8,10 @@ CONFIG += console
 LIBS += -lgtest \
 		-lgtest_main
 
-INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs
+INCLUDEPATH  += $$SOFA_INSTALL_INC_DIR/extlibs
+INCLUDEPATH  += $$SOFA_INSTALL_INC_DIR/extlibs/gtest/include
+
+QMAKE_LIBDIR += $$SOFA_INSTALL_INC_DIR/extlibs/gtest/lib
 		
 HEADERS += BranchingImage_test.inl
 
