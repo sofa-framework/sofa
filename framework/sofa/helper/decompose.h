@@ -234,49 +234,49 @@ private:
 
 
 
-    /** @internal useful for polarDecomposition
-      * Set MadjT to transpose of inverse of M times determinant of M
-      */
-    static void adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT);
+//    /** @internal useful for polarDecomposition
+//      * Set MadjT to transpose of inverse of M times determinant of M
+//      */
+//    static void adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT);
 
-    /** @internal useful for polarDecomposition
-      * Compute the infinity norm of M
-      */
-    static Real norm_inf(const defaulttype::Mat<3,3,Real>& M);
+//    /** @internal useful for polarDecomposition
+//      * Compute the infinity norm of M
+//      */
+//    static Real norm_inf(const defaulttype::Mat<3,3,Real>& M);
 
-    /** @internal useful for polarDecomposition
-      * Compute the 1 norm of M
-      */
-    static Real norm_one(const defaulttype::Mat<3,3,Real>& M);
+//    /** @internal useful for polarDecomposition
+//      * Compute the 1 norm of M
+//      */
+//    static Real norm_one(const defaulttype::Mat<3,3,Real>& M);
 
-    /** @internal useful for polarDecomposition
-      * Return index of column of M containing maximum abs entry, or -1 if M=0
-      */
-    static int find_max_col(const defaulttype::Mat<3,3,Real>& M);
+//    /** @internal useful for polarDecomposition
+//      * Return index of column of M containing maximum abs entry, or -1 if M=0
+//      */
+//    static int find_max_col(const defaulttype::Mat<3,3,Real>& M);
 
-    /** @internal useful for polarDecomposition
-      * Setup u for Household reflection to zero all v components but first
-      */
-    static void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u);
+//    /** @internal useful for polarDecomposition
+//      * Setup u for Household reflection to zero all v components but first
+//      */
+//    static void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u);
 
-    /** @internal useful for polarDecomposition
-      * Apply Householder reflection represented by u to column vectors of M
-      */
-    static void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
-    /** @internal useful for polarDecomposition
-      * Apply Householder reflection represented by u to row vectors of M
-      */
-    static void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
+//    /** @internal useful for polarDecomposition
+//      * Apply Householder reflection represented by u to column vectors of M
+//      */
+//    static void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
+//    /** @internal useful for polarDecomposition
+//      * Apply Householder reflection represented by u to row vectors of M
+//      */
+//    static void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
 
-    /** @internal useful for polarDecomposition
-      * Find orthogonal factor Q of rank 1 (or less) M
-      */
-    static void do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q);
+//    /** @internal useful for polarDecomposition
+//      * Find orthogonal factor Q of rank 1 (or less) M
+//      */
+//    static void do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q);
 
-    /** @internal useful for polarDecomposition
-      * Find orthogonal factor Q of rank 2 (or less) M using adjoint transpose
-      */
-    static void do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q);
+//    /** @internal useful for polarDecomposition
+//      * Find orthogonal factor Q of rank 2 (or less) M using adjoint transpose
+//      */
+//    static void do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q);
 
     /** @internal useful for polarDecompositionGradient
       * \returns M such as Mu = cross( v, u ), note that M is antisymmetric
