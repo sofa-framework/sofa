@@ -71,6 +71,44 @@ template class SOFA_Flexible_API HookeForceField< D332Types >;
 template class SOFA_Flexible_API HookeForceField< U331Types >;
 template class SOFA_Flexible_API HookeForceField< U321Types >;
 
+
+
+
+SOFA_DECL_CLASS(HookeOrthotropicForceField);
+
+using namespace defaulttype;
+
+// Register in the Factory
+int HookeOrthotropicForceFieldClass = core::RegisterObject("Hooke's Law for Orthotropic homogeneous materials")
+
+        .add< HookeOrthotropicForceField< E331Types > >(true)
+        .add< HookeOrthotropicForceField< E321Types > >()
+        .add< HookeOrthotropicForceField< E332Types > >()
+        .add< HookeOrthotropicForceField< E333Types > >()
+        ;
+
+template class SOFA_Flexible_API HookeOrthotropicForceField< E331Types >;
+template class SOFA_Flexible_API HookeOrthotropicForceField< E321Types >;
+template class SOFA_Flexible_API HookeOrthotropicForceField< E332Types >;
+template class SOFA_Flexible_API HookeOrthotropicForceField< E333Types >;
+
+
+SOFA_DECL_CLASS(HookeTransverseForceField);
+
+using namespace defaulttype;
+
+// Register in the Factory
+int HookeTransverseForceFieldClass = core::RegisterObject("Hooke's Law for Transversely isotropic homogeneous materials (symmetry about X axis)")
+
+        .add< HookeTransverseForceField< E331Types > >(true)
+        .add< HookeTransverseForceField< E332Types > >()
+        .add< HookeTransverseForceField< E333Types > >()
+        ;
+
+template class SOFA_Flexible_API HookeTransverseForceField< E331Types >;
+template class SOFA_Flexible_API HookeTransverseForceField< E332Types >;
+template class SOFA_Flexible_API HookeTransverseForceField< E333Types >;
+
 }
 }
 }

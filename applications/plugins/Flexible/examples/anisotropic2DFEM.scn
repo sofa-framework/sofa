@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.02" >
+    <RequiredPlugin pluginName="Flexible"/>
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields showWireframe" />
+
+    <Node 	name="GreenLagrange" >
+        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <!--parametrizable mesh-->
+        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
+        <MeshTopology name="mesh" src="@loader" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <BarycentricShapeFunction template="ShapeFunction2d"  />
+
+        <UniformMass  name="mass" totalMass="100"/>
+
+<BoxROI box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
+<ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
+<BoxROI box="-0.005 0.995 -0.005    1.005 1.005 0.005  " />
+<ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+
+<BoxROI box="-0.005 -0.005 -0.005    0.005 1.005 0.005  " />
+<ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " />
+<ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+
+        <Node name="deformationNode" >
+            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
+            <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false" showDeformationGradientScale="0.05"/>
+            <Node name="StrainNode">
+                <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+                <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+	        <HookeOrthotropicForceField  template="E321" name="ff" youngModulusX="100" youngModulusY="10" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" assembleK="false" assembleB="false"/>	        
+	    </Node>
+        </Node>
+
+	<Node name="Visual"  >
+            <VisualModel  />
+            <IdentityMapping />
+        </Node>
+
+
+    </Node>
+
+
+</Node>
