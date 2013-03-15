@@ -685,7 +685,33 @@ inline real determinant(const Mat<3,2,real>& m)
     return m(0,0)*m(1,1) - m(1,0)*m(0,1) - ( m(0,0)*m(2,1) - m(2,0)*m(0,1) ) + m(1,0)*m(2,1) - m(2,0)*m(1,1);
 }
 
+// one-norm of a 3 x 3 matrix
+template<class real>
+inline real oneNorm(const Mat<3,3,real>& A)
+{
+    real norm = 0.0;
+    for (int i=0; i<3; i++)
+    {
+        real columnAbsSum = helper::rabs(A(0,i)) + helper::rabs(A(1,i)) + helper::rabs(A(2,i));
+        if (columnAbsSum > norm)
+            norm = columnAbsSum;
+    }
+    return norm;
+}
 
+// inf-norm of a 3 x 3 matrix
+template<class real>
+inline real infNorm(const Mat<3,3,real>& A)
+{
+    real norm = 0.0;
+    for (int i=0; i<3; i++)
+    {
+        real rowSum = helper::rabs(A(i,0)) + helper::rabs(A(i,1)) + helper::rabs(A(i,2));
+        if (rowSum > norm)
+            norm = rowSum;
+    }
+    return norm;
+}
 
 /// trace of a square matrix
 template<int N, class real>
