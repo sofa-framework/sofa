@@ -12,7 +12,10 @@ void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,c
     Real min1 = std::numeric_limits<Real>::max();
     Real min2 = std::numeric_limits<Real>::max();
     Real new_min;
-    int first_index1,first_index2,second_index1,second_index2;
+    int first_index1 = -1;
+    int first_index2 = -1;
+    int second_index1 = -1;
+    int second_index2 = -1;
 
     for(int i = 0 ; i < 3 ; ++i){
         for(int j = 0 ; j < second_size ; ++j){

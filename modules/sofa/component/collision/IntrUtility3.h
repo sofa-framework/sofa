@@ -89,7 +89,7 @@ struct IntrUtil;
 template <typename Real>
 struct IntrUtil{
 public:
-    inline static Real ZERO_TOLERANCE(){return 1e-6;}
+    inline static Real ZERO_TOLERANCE(){return (Real)(1e-6);}
     inline static Real SQ_ZERO_TOLERANCE(){return ZERO_TOLERANCE() * ZERO_TOLERANCE();}
 
     inline static void normalize(Vec<3,Real> & vec){
@@ -264,8 +264,6 @@ public:
         const IntrConfiguration<Real>& box1Cfg,
         Real tfirst,
         Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second);
-
-    static void moveOnBox(const Box & box,Vec<3,Real> & point);
 
 private:
 

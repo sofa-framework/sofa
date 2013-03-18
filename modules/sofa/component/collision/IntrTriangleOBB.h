@@ -28,8 +28,6 @@ public:
     bool Find(Real tmax,int tri_flg);
 
     bool Find(Real tmax);
-
-    Real distance()const;
 private:
     using Intersector<Real>::_is_colliding;
     using Intersector<Real>::_pt_on_first;

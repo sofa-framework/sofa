@@ -535,8 +535,8 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
     }
     else // object1 and object0 on overlapping interval
     {
-        Real midpoint0 = (cfg0Start.mMin + cfg0Start.mMax)/2.0;
-        Real midpoint1 = (cfg1Start.mMin + cfg1Start.mMax)/2.0;
+        Real midpoint0 = (cfg0Start.mMin + cfg0Start.mMax)/((Real)(2.0));
+        Real midpoint1 = (cfg1Start.mMin + cfg1Start.mMax)/((Real)(2.0));
         if (midpoint1 < midpoint0)
         {
             // find first time of contact on this axis
