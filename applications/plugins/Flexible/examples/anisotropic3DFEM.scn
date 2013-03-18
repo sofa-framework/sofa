@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 0 0" dt="0.05">
-    <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
+    <VisualStyle displayFlags="showVisualModels hideBehaviorModels showForceFields hideWireframe" />
 
     <Node name="Hexa" >
         <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
@@ -29,9 +29,9 @@
                 <CubeTopology nx="50" ny="20" nz="20" min="0 0 0" max="1 1 1" />
                 <MechanicalObject  />
                 <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" />
-		<SurfacePressureForceField pressure="100"  drawForceScale="0.5" volumeConservationMode="1"/> 
+		<SurfacePressureForceField pressure="100"  drawForceScale="1" volumeConservationMode="1"/> 
 		<Node name="Visual"  >
-		    <VisualModel  />
+		    <VisualModel color="0.5 0.5 0.5 0.5" />
 		    <IdentityMapping />
 		</Node>
             </Node>

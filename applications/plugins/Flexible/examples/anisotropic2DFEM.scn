@@ -1,37 +1,42 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.02" >
     <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="SofaPython"/>
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
 
     <Node 	name="Tri" >
-        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+        <EulerImplicitSolver /> 
+	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->
-        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="2" rotation="0 0 0 " scale="1 1 0" />
+        <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
-        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <MechanicalObject src="@loader" />
         <BarycentricShapeFunction template="ShapeFunction2d"  orientation="0 0 25" useLocalOrientation="0"/>
 
-        <UniformMass  name="mass" totalMass="100"/>
+        <UniformMass  totalMass="100"/>
 
-<BoxROI box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
-<BoxROI box="-0.005 0.995 -0.005    1.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-
-<BoxROI box="-0.005 -0.005 -0.005    0.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
+	<BoxROI box="-0.005 0.995 -0.005    1.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="-0.005 -0.005 -0.005    0.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
-            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" />
-            <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false" showDeformationGradientScale="0.05" showDeformationGradientStyle="1"/>
+            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" method="0" order="1" />
+            <MechanicalObject template="F321"  />
+            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">
-                <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+                <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
-	        <HookeOrthotropicForceField  template="E321" name="ff" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" assembleK="false" assembleB="false"/>	        
+	        <HookeOrthotropicForceField  template="E321" name="ff" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0"/>	        
+
+		<Node name="VonMisesVisu">
+		    <TriangleSetTopologyContainer name="mesh" src="@../../../loader" />
+		    <PythonScriptController filename="VonMisesStressTri" classname="Visualizer"/> 
+		    <ColorMap colorScheme="Blue to Red" />
+		    <IdentityMapping input="@../../.." output="@."/>
+		</Node>
+
 	    </Node>
         </Node>
 
@@ -39,37 +44,44 @@
             <VisualModel  />
             <IdentityMapping />
         </Node>
+
+
     </Node>
 
     <Node 	name="Quad" >
-        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+        <EulerImplicitSolver /> 
+	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->
-        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="0" rotation="0 0 0 " translation="2 0 0 " scale="1 1 0" />
+        <GridMeshCreator name="loader" filename="nofile" resolution="11 11" trianglePattern="0" rotation="0 0 0 " translation="2 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
-        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <MechanicalObject src="@loader" />
         <BarycentricShapeFunction template="ShapeFunction2d" orientation="0 0 25" useLocalOrientation="0"/>
 
-        <UniformMass  name="mass" totalMass="100"/>
+        <UniformMass totalMass="100"/>
 
-<BoxROI box="1.995 -0.005 -0.005    3.005 0.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
-<BoxROI box="1.995 0.995 -0.005    3.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-
-<BoxROI box="1.995 -0.005 -0.005    2.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
-<BoxROI box="2.995 -0.005 -0.005    3.005 1.005 0.005  " />
-<ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="1.995 -0.005 -0.005    3.005 0.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 -10 0" arrowSizeCoef="0.02"/>
+	<BoxROI box="1.995 0.995 -0.005    3.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="0 10 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="1.995 -0.005 -0.005    2.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="-10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
+	<BoxROI box="2.995 -0.005 -0.005    3.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
-            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="2" />
-            <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false" showDeformationGradientScale="0.05" showDeformationGradientStyle="1"/>
+            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" method="0" order="2" />
+            <MechanicalObject template="F321"  />
+            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">
-                <MechanicalObject template="E321"  name="VoigtStrainDOF" />
+                <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
-	        <HookeOrthotropicForceField  template="E321" name="ff" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" assembleK="false" assembleB="false"/>	        
+	        <HookeOrthotropicForceField  template="E321" name="ff" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" />	        
+
+		<Node name="VonMisesVisu">
+		    <GridMeshCreator name="loader" filename="nofile" resolution="@../../../loader.resolution" trianglePattern="1" rotation="@../../../loader.rotation" translation="@../../../loader.translation" scale="@../../../loader.scale" />
+		    <TriangleSetTopologyContainer name="mesh" src="@loader" />
+		    <PythonScriptController filename="VonMisesStressQuad" classname="Visualizer"/> 
+		    <ColorMap colorScheme="Blue to Red" />
+		    <IdentityMapping input="@../../.." output="@."/>
+		</Node>
+
 	    </Node>
         </Node>
 
