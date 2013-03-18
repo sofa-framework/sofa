@@ -15,7 +15,7 @@ goto params
 
 :noqt
 echo No Qt found. Either install a pre-compiled Qt version and set QTDIR variable, or uncompress a Sofa dependency package providing Qt
-exit 1
+@goto end
 
 :qtlocal
 set QMAKEPATH=%CD%\tools\qt4win
@@ -26,6 +26,7 @@ set PATH=%QMAKEPATH%\bin;%PATH%
 if "%1" == "VC8" goto vc8
 if "%1" == "VC9" goto vc9
 if "%1" == "VC10" goto vc10
+if "%1" == "VC10_BS" goto vc10_bs
 if "%1" == "VC9_X64" goto vc9_x64
 if "%1" == "VC10_X64" goto vc10_x64
 if "%1" == "clean" goto clean
@@ -66,6 +67,17 @@ call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR:\=/%"
 echo Copying external dlls.
 xcopy .\bin\dll_x86\*.* .\bin\ /y /q
+goto common
+
+:vc10_bs
+set QMAKESPEC=win32-msvc2010
+@echo on
+@echo Making Visual project 10
+call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" x86
+echo Copying external dlls.
+xcopy .\bin\dll_x86\*.* .\bin\ /y /q
+qmake -recursive Sofa.pro QT_INSTALL_PREFIX="%QTDIR:\=/%"
+nmake
 goto common
 
 :vc9_x64
