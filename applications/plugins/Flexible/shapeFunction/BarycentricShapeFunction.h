@@ -74,6 +74,12 @@ public:
     typedef Mat<spatial_dimensions,spatial_dimensions,Real> BasesType;
     sofa::helper::vector<BasesType> bases;
 
+    /** @name orientation data */
+    //@{
+    Data< VCoord > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
+    Data< bool > f_useLocalOrientation;
+    //@}
+
     void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
         M=MaterialToSpatial();
@@ -119,12 +125,8 @@ public:
                 {
                     ref[0]=edges[index][0]; ref[1]=edges[index][1];
                     // local frame
-                    Coord u[3];
-                    u[0] = parent[edges[index][1]]-parent[edges[index][0]]; u[0].normalize();
-                    u[1] = Coord(1,0,0); if(dot(u[0],u[1])==1.) u[1] = Coord(0,1,0); if(dot(u[0],u[1])==1.) u[1] = Coord(0,0,1);
-                    u[2] = cross(u[0],u[1]); u[2].normalize();
-                    u[1]=cross(u[2],u[0]);
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    BasesType R=getLocalFrame1D(parent[ref[0]],parent[ref[1]]); // orientation = local element frame (no user input for 1D elements)
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=R[i][j];
                     // weights
                     w[0]=(Real)1.-coefs[0]; w[1]=coefs[0];
                     if(dw) {  (*dw)[0]=-bases[index][0]; (*dw)[1]=bases[index][0]; }
@@ -149,13 +151,11 @@ public:
                 if ( index!=-1 && index<c0 ) // addPointInTriangle
                 {
                     ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
-                    // local frame
-                    Coord u[3];
-                    u[0] = parent[triangles[index][1]]-parent[triangles[index][0]]; u[0].normalize();
-                    u[1] = parent[triangles[index][2]]-parent[triangles[index][0]];
-                    u[2] = cross(u[0],u[1]); u[2].normalize();
-                    u[1]=cross(u[2],u[0]);
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    // compute local orientation given user input and local element frame
+                    BasesType U=getUserOrientation(index),R=getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[2]]),A;
+                    if(this->f_useLocalOrientation.getValue()) A=this->reorientGlobalOrientation(R*U,R);
+                    else A=this->reorientGlobalOrientation(U,R);
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
                     // weights
                     w[0]=(Real)1.-coefs[0]-coefs[1];                     w[1]=coefs[0];               w[2]=coefs[1];
                     if(dw) {  (*dw)[0]=-bases[index][0]-bases[index][1]; (*dw)[1]=bases[index][0];    (*dw)[2]=bases[index][1]; }
@@ -167,13 +167,11 @@ public:
                     Gradient dfx=bases[index-c0][0],dfy=bases[index-c0][1];
                     Gradient dgx=-dfx,dgy=-dfy;
                     for ( unsigned int i = 0; i < 4; i++ ) ref[i]=quads[index-c0][i];
-                    // local frame
-                    Coord u[3];
-                    u[0] = parent[quads[index-c0][1]]-parent[quads[index-c0][0]]; u[0].normalize();
-                    u[1] = parent[quads[index-c0][3]]-parent[quads[index-c0][0]];
-                    u[2] = cross(u[0],u[1]); u[2].normalize();
-                    u[1]=cross(u[2],u[0]);
-                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=u[j][i];
+                    // compute local orientation given user input and local element frame
+                    BasesType U=getUserOrientation(index-c0),R=getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[3]]),A;
+                    if(this->f_useLocalOrientation.getValue()) A=this->reorientGlobalOrientation(R*U,R);
+                    else A=this->reorientGlobalOrientation(U,R);
+                    for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
                     // weights
                     w[0]=gx*gy; w[1]=fx*gy; w[2]=fx*fy; w[3]=gx*fy;
                     if(dw)
@@ -205,13 +203,20 @@ public:
             int c0 = tetrahedra.size();
             for ( unsigned int i = 0; i < cubes.size(); i++ )
             {
-                Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );
+                //Coord v = bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
+                Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; this->computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-(Real)1. ),std::max ( v[1]-1,v[2]-(Real)1. ) ) );
                 if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
             }
             if ( index!=-1 && index<c0 ) // addPointInTet
             {
                 ref[0]=tetrahedra[index][0];                                         ref[1]=tetrahedra[index][1];  ref[2]=tetrahedra[index][2];    ref[3]=tetrahedra[index][3];
+                // compute local orientation given user input and local element frame
+                BasesType U=getUserOrientation(index),A;
+                if(this->f_useLocalOrientation.getValue()) A=getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[2]])*U;
+                else A=U;
+                for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
+                // weights
                 w[0]=(Real)1.-coefs[0]-coefs[1]-coefs[2];                            w[1]=coefs[0];                w[2]=coefs[1];                  w[3]=coefs[2];
                 if(dw) {  (*dw)[0]=-bases[index][0]-bases[index][1]-bases[index][2]; (*dw)[1]=bases[index][0];     (*dw)[2]=bases[index][1];       (*dw)[3]=bases[index][2];  }
             }
@@ -222,6 +227,11 @@ public:
                 Gradient dfx=bases[index-c0][0],dfy=bases[index-c0][1],dfz=bases[index-c0][2];
                 Gradient dgx=-dfx,dgy=-dfy,dgz=-dfz;
                 for ( unsigned int i = 0; i < 8; i++ ) ref[i]=cubes[index-c0][i];
+                // compute local orientation given user input and local element frame
+                BasesType U=getUserOrientation(index),A;
+                if(this->f_useLocalOrientation.getValue()) A=getLocalFrame2D(parent[ref[0]],parent[ref[1]],parent[ref[4]])*U;
+                else A=U;
+                for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=0; j<material_dimensions; j++) M[i][j]=A[i][j];
                 w[0]=gx*gy*gz;
                 w[1]=fx*gy*gz;
                 w[2]=fx*fy*gz;
@@ -319,9 +329,6 @@ public:
                     m[2] = cross ( m[0],m[1] );
                     mt.transpose ( m );
                     bases[t].invert ( mt );
-//                    cerr<<"BarycentricShapeFunctio::init(), parent[triangles[t][1]]-parent[triangles[t][0]] = " << parent[triangles[t][1]]-parent[triangles[t][0]] << endl;
-//                    cerr<<"BarycentricShapeFunctio::init(), parent[triangles[t][2]]-parent[triangles[t][0]] = " << parent[triangles[t][2]]-parent[triangles[t][0]] << endl;
-//                    cerr<<"BarycentricShapeFunctio::init(), m = " << m << endl;
                 }
                 int c0 = triangles.size();
                 for ( unsigned int c = 0; c < quads.size(); c++ )
@@ -367,12 +374,94 @@ protected:
     BarycentricShapeFunction()
         : Inherit()
         , parentTopology( NULL )
+        , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
+        , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
     {
     }
 
     virtual ~BarycentricShapeFunction()
     {
 
+    }
+
+    // local coordinate systems
+    inline BasesType getLocalFrame1D(const Coord &p1,const Coord &p2) const
+    {
+        BasesType R;
+        R(0) = p2-p1; R(0).normalize();
+        R(1) = Coord(1,0,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,1,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,0,1);
+        R(2) = cross(R(0),R(1)); R(2).normalize();
+        R(1) = cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+    inline BasesType getLocalFrame2D(const Coord &p1,const Coord &p2,const Coord &p3) const
+    {
+        BasesType R;
+        R(0) = p2-p1; R(0).normalize();
+        R(1) = p3-p1;
+        R(2) = cross(R(0),R(1)); R(2).normalize();
+        R(1)=cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+
+    // user provided orientation
+    inline BasesType getUserOrientation(const unsigned int index) const
+    {
+    Coord orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
+    helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
+    BasesType R; q.toMatrix(R);
+    return R;
+    }
+
+    // align user provided global orientation to 2D manifold (to required for 1D and 3D cells)
+    inline BasesType reorientGlobalOrientation(const BasesType& Global, const BasesType& Local) const
+    {
+        BasesType R;
+        R(2)=Local.transposed()(2); // third axis = face normal
+        R(0)=Global.transposed()(0) - R(2)*dot(R(2),Global.transposed()(0)); R(0).normalize();
+        R(1)= cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+
+
+    /// computes w such that x= p0*(1-wx)*(1-wz)*(1-wy) + p1*wx*(1-wz)*(1-wy) + p5*wx*wz*(1-wy) + p4*(1-wx)*wz*(1-wy) + p3*(1-wx)*(1-wz)*wy + p2*wx*(1-wz)*wy + p6*wx*wz*wy + p7*(1-wx)*wz*wy
+    /// using Newton method
+    void computeHexaTrilinearWeights(Coord &w, const Coord p[8], const Coord &x,const Real &tolerance)
+    {
+        w[0]=0.5; w[1]=0.5; w[2]=0.5; // initial guess
+        static const unsigned int MAXIT=20;
+        static const Real MIN_DETERMINANT = 1.0e-100;
+        unsigned int it=0;
+        while( it < MAXIT)
+        {
+            Coord g(1.-w[0],1.-w[1],1.-w[2]);
+            Coord f = p[0]*g[0]*g[2]*g[1] + p[1]*w[0]*g[2]*g[1] + p[5]*w[0]*w[2]*g[1] + p[4]*g[0]*w[2]*g[1] + p[3]*g[0]*g[2]*w[1] + p[2]*w[0]*g[2]*w[1] + p[6]*w[0]*w[2]*w[1] + p[7]*g[0]*w[2]*w[1] - x; // function to minimize
+            if(f.norm2()<tolerance) {  return; }
+
+            Mat<3,3,Real> df;
+            df[0] = - p[0]*g[2]*g[1] + p[1]*g[2]*g[1] + p[5]*w[2]*g[1] - p[4]*w[2]*g[1] - p[3]*g[2]*w[1] + p[2]*g[2]*w[1] + p[6]*w[2]*w[1] - p[7]*w[2]*w[1];
+            df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[5]*w[0]*w[2] - p[4]*g[0]*w[2] + p[3]*g[0]*g[2] + p[2]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
+            df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[5]*w[0]*g[1] + p[4]*g[0]*g[1] - p[3]*g[0]*w[1] - p[2]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
+
+            Real det=determinant(df);
+            if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
+            Mat<3,3,Real> dfinv;
+            dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;
+            dfinv(0,1)= (df(1,2)*df(2,0) - df(2,2)*df(1,0))/det;
+            dfinv(0,2)= (df(1,0)*df(2,1) - df(2,0)*df(1,1))/det;
+            dfinv(1,0)= (df(2,1)*df(0,2) - df(0,1)*df(2,2))/det;
+            dfinv(1,1)= (df(2,2)*df(0,0) - df(0,2)*df(2,0))/det;
+            dfinv(1,2)= (df(2,0)*df(0,1) - df(0,0)*df(2,1))/det;
+            dfinv(2,0)= (df(0,1)*df(1,2) - df(1,1)*df(0,2))/det;
+            dfinv(2,1)= (df(0,2)*df(1,0) - df(1,2)*df(0,0))/det;
+            dfinv(2,2)= (df(0,0)*df(1,1) - df(1,0)*df(0,1))/det;
+
+            w -= dfinv*f;
+            it++;
+        }
     }
 };
 

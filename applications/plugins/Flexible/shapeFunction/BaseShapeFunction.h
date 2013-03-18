@@ -197,13 +197,13 @@ struct ShapeFunctionTypes
     typedef Real_ Real;
 	typedef vector<unsigned int> VRef;
 	typedef vector<Real> VReal;
-	typedef Vec<spatial_dimensions,Real> Coord;                          ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef Vec<spatial_dimensions,Real> Coord;                          ///< Spatial coordinates in world space
 	typedef vector<Coord> VCoord;
-	typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in material space
+    typedef Vec<spatial_dimensions,Real> Gradient;                       ///< Gradient of a scalar value in world space
 	typedef vector<Gradient> VGradient;
-	typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in material space
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
 	typedef vector<Hessian> VHessian;
-	typedef Mat<spatial_dimensions,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space = linear for now..
+    typedef Mat<spatial_dimensions,material_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
 	typedef vector<MaterialToSpatial> VMaterialToSpatial;
 
 	typedef vector<VRef> VecVRef;

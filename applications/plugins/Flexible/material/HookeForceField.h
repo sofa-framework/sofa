@@ -104,7 +104,7 @@ protected:
     HookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
-        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0.45),"poissonRatio","Poisson Ratio"))
+        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio"))
         , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
@@ -223,9 +223,9 @@ protected:
         , _youngModulusX(initData(&_youngModulusX,vector<Real>((int)1,(Real)5000),"youngModulusX","Young Modulus along X"))
         , _youngModulusY(initData(&_youngModulusY,vector<Real>((int)1,(Real)5000),"youngModulusY","Young Modulus along Y"))
         , _youngModulusZ(initData(&_youngModulusZ,vector<Real>((int)1,(Real)5000),"youngModulusZ","Young Modulus along Z"))
-        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0.45),"poissonRatioXY","Poisson Ratio about XY plane"))
-        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0.45),"poissonRatioYZ","Poisson Ratio about YZ plane"))
-        , _poissonRatioZX(initData(&_poissonRatioZX,vector<Real>((int)1,(Real)0.45),"poissonRatioZX","Poisson Ratio about ZX plane"))
+        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane"))
+        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane"))
+        , _poissonRatioZX(initData(&_poissonRatioZX,vector<Real>((int)1,(Real)0),"poissonRatioZX","Poisson Ratio about ZX plane"))
         , _shearModulusXY(initData(&_shearModulusXY,vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _shearModulusYZ(initData(&_shearModulusYZ,vector<Real>((int)1,(Real)1500),"shearModulusYZ","Shear Modulus about YZ plane"))
         , _shearModulusZX(initData(&_shearModulusZX,vector<Real>((int)1,(Real)1500),"shearModulusZX","Shear Modulus about ZX plane"))
@@ -311,8 +311,8 @@ protected:
         : Inherit(mm)
         , _youngModulusX(initData(&_youngModulusX,vector<Real>((int)1,(Real)5000),"youngModulusX","Young Modulus along X"))
         , _youngModulusY(initData(&_youngModulusY,vector<Real>((int)1,(Real)5000),"youngModulusY","Young Modulus along Y"))
-        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0.45),"poissonRatioXY","Poisson Ratio about XY plane"))
-        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0.45),"poissonRatioYZ","Poisson Ratio about YZ plane"))
+        , _poissonRatioXY(initData(&_poissonRatioXY,vector<Real>((int)1,(Real)0),"poissonRatioXY","Poisson Ratio about XY plane"))
+        , _poissonRatioYZ(initData(&_poissonRatioYZ,vector<Real>((int)1,(Real)0),"poissonRatioYZ","Poisson Ratio about YZ plane"))
         , _shearModulusXY(initData(&_shearModulusXY,vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _viscosity(initData(&_viscosity,vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
