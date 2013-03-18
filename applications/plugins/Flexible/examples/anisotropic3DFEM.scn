@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Node name="" gravity="0 0 0" dt="0.05">
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
+
+    <Node name="Hexa" >
+        <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+
+        <RegularGridTopology name="grid" n="4 4 4" min="0 0 0" max="1 1 1"  />
+        <MechanicalObject name="DOF" />
+        <UniformMass  totalMass="100" />
+
+        <BarycentricShapeFunction nbRef='8' orientation="0 0 45" useLocalOrientation="0"/>
+
+            <Node 	name="behavior"   >
+                <TopologyGaussPointSampler name="sampler" inPosition="@../DOF.rest_position" method="0" order="2"/>
+                <MechanicalObject  template="F331" name="F"  />
+                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
+
+                <Node 	name="Strain"   >
+                    <MechanicalObject  template="E331" name="E"  />
+                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" method="large" />
+	            <HookeTransverseForceField  template="E331" name="ff" youngModulusX="200" youngModulusY="50" poissonRatioXY="0" poissonRatioYZ="0" shearModulusXY="100" viscosity="20" />	        
+<!--	            <HookeOrthotropicForceField  template="E331" name="ff" youngModulusX="200" youngModulusY="50" youngModulusZ="10" poissonRatioXY="0" poissonRatioYZ="0" poissonRatioZX="0" shearModulusXY="100" shearModulusYZ="100" shearModulusZX="100" viscosity="20" />	        -->
+                </Node>
+            </Node>
+
+            <Node 	name="behavior"   >
+                <CubeTopology nx="50" ny="20" nz="20" min="0 0 0" max="1 1 1" />
+                <MechanicalObject  />
+                <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" />
+		<SurfacePressureForceField pressure="100"  drawForceScale="0.5" volumeConservationMode="1"/> 
+		<Node name="Visual"  >
+		    <VisualModel  />
+		    <IdentityMapping />
+		</Node>
+            </Node>
+
+    </Node>
+</Node>

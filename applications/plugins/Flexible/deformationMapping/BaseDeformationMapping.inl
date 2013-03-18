@@ -68,16 +68,20 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , extTriangles(0)
     , extvertPosIdx(0)
     , showDeformationGradientScale(initData(&showDeformationGradientScale, (float)0.0, "showDeformationGradientScale", "Scale for deformation gradient display"))
+    , showDeformationGradientStyle ( initData ( &showDeformationGradientStyle,"showDeformationGradientStyle","Visualization style for deformation gradients" ) )
     , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
             ,"1 - trace(F^T.F)-3"
-            ,"2 - sqrt(det(F^T.F))-1"
-                                      );
+            ,"2 - sqrt(det(F^T.F))-1");
     methodOptions.setSelectedItem(0);
     showColorOnTopology.setValue(methodOptions);
 
+    helper::OptionsGroup styleOptions(2,"0 - All axis"
+            ,"1 - First axis");
+    styleOptions.setSelectedItem(0);
+    showDeformationGradientStyle.setValue(styleOptions);
 }
 
 
@@ -671,7 +675,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         //                glPushAttrib ( GL_LIGHTING_BIT );
         //                glDisable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
-        Vec<4,float> col( 0.8, 0.8, 0.0, 1.0 );
+        Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
         MaterialToSpatial F;
         Coord p;
         for(unsigned i=0; i<out.size(); i++ )
@@ -679,11 +683,17 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             if(OutDataTypesInfo<Out>::FMapped) Fwrapper<Out,MaterialToSpatial>::getF(F,out[i]); else F=f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
+            if(showDeformationGradientStyle.getValue().getSelectedId()==0)
             for(int j=0; j<material_dimensions; j++)
             {
                 Coord u=F.transposed()(j)*0.5*scale;
-                vparams->drawTool()->drawCylinder(p-u,p+u,0.02*scale,col,3);
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
             }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
+                {
+                    Coord u=F.transposed()(0)*0.5*scale;
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                }
         }
         //                glPopAttrib();
     }

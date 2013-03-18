@@ -90,9 +90,9 @@ public:
 
 protected:
     TopologyGaussPointSampler()    :   Inherited()
-        , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
-        , parentTopology( 0 )
-        , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
+      , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
+      , parentTopology( 0 )
+      , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
     {
     }
 
@@ -168,6 +168,34 @@ protected:
                         vol[i+c0].resize(1); vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
                         cel[i+c0] = i+c0;
                         // to do : volume integrals for elastons
+                    }
+                }
+                else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
+                {
+                    pos.resize ( 4*quads.size() );
+                    vol.resize ( pos.size() );
+                    cel.resize ( pos.size() );
+
+                    // 4 points per quad at [ +-1/sqrt(3), +-1/sqrt(3)], weight = volume/4
+                    const Real offset = 0.5/sqrt(3.0);
+                    unsigned int count=0;
+                    for ( unsigned int i = 0; i < quads.size(); i++ )
+                    {
+                        const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
+                        Coord u=(p2-p1),v=(p4-p1);
+                        const Real V=u.norm()*v.norm()*0.25;
+                        u*=offset; v*=offset;
+                        const Coord c = (p1+p2+p3+p4)*0.25;
+                        for (int gx2=-1; gx2<=1; gx2+=2)
+                            for (int gx3=-1; gx3<=1; gx3+=2)
+                            {
+                                pos[count] = c + u*gx3 + v*gx2;
+                                vol[count].resize(1); vol[count][0] = V;
+                                cel[count] = i;
+                                //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
+                                //
+                                count++;
+                            }
                     }
                 }
                 else serr<<"Requested quadrature method not yet implemented"<<sendl;

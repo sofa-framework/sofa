@@ -302,6 +302,7 @@ protected:
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
     Data< float > showDeformationGradientScale;
+    Data< helper::OptionsGroup > showDeformationGradientStyle;
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
 };
