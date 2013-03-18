@@ -44,7 +44,8 @@
 
 
 using std::cout;
-
+using std::cerr;
+using std::endl;
 
 
 /** Sparse matrix test suite.
@@ -195,7 +196,7 @@ struct TestSparseMatrices : public ::testing::Test
         {
             for( unsigned i=0; i<NCOLS; i++)
             {
-                Real random = randomGenerator.random<Real>( (Real) -100000, (Real) 100000 );
+                Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
                 crsMultiplier.set( i, j, random );
                 fullMultiplier.set( i, j, random );
                 matMultiplier(i,j) = random;
@@ -206,6 +207,7 @@ struct TestSparseMatrices : public ::testing::Test
         matMultiplication = mat * matMultiplier;
         crs1.mul( crsMultiplication, crsMultiplier );
         fullMat.mul( fullMultiplication, fullMultiplier );
+//        if( !matricesAreEqual(matMultiplication,fullMultiplication) ) throw "not matricesAreEqual(matMultiplication,fullMultiplication)";
 
         matTransposeMultiplication = mat.multTranspose( mat );
         crs1.mulTranspose( crsTransposeMultiplication, crs1 );
@@ -215,25 +217,39 @@ struct TestSparseMatrices : public ::testing::Test
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
     template<typename Matrix1, typename Matrix2>
-    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<float>::epsilon())
+    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
     {
-        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) return false;
+        bool result = true;
+        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) result = false;
         for(unsigned i=0; i<m1.rowSize(); i++)
             for(unsigned j=0; j<m1.colSize(); j++)
-                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) return false;
+                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) result = false;
 
-        return true;
+//        if( result == false ){
+//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
+//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
+//        }
+        return result;
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
     template<int M, int N, typename Real, typename Matrix2>
-    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
     {
-        if(M!=m2.rowSize() || N!=m2.colSize()) return false;
+        bool result = true;
+        if(M!=m2.rowSize() || N!=m2.colSize()) result= false;
         for( unsigned i=0; i<M; i++ )
             for( unsigned j=0; j<N; j++ )
-                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) return false;
-        return true;
+                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) {
+//                    cout<<"matricesAreEqual is false, difference = "<< fabs(m1(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
+                    result= false;
+                }
+
+//        if( result == false ){
+//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
+//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
+//        }
+        return result;
     }
 
 
@@ -342,6 +358,10 @@ struct TestSparseMatrices : public ::testing::Test
     }
 };
 
+
+///////////////////
+// double precision
+///////////////////
 // trivial blocs
 typedef TestSparseMatrices<double,4,8,4,8> Ts4848;
 #define TestMatrix Ts4848
@@ -365,8 +385,37 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 #include "Matrix_test.inl"
 #undef TestMatrix
 
-// not fitted blocs
+/// not fitted blocs
 //typedef TestSparseMatrices<double,4,8,2,3> Ts4823;
 //#define TestMatrix Ts4823
 //#include "Matrix_test.inl"
 //#undef TestMatrix
+
+
+
+///////////////////
+// simple precision
+///////////////////
+// trivial blocs
+typedef TestSparseMatrices<float,4,8,4,8> Ts4848f;
+#define TestMatrix Ts4848f
+#include "Matrix_test.inl"
+#undef TestMatrix
+
+// semi-trivial blocs
+typedef TestSparseMatrices<float,4,8,4,2> Ts4842f;
+#define TestMatrix Ts4842f
+#include "Matrix_test.inl"
+#undef TestMatrix
+
+typedef TestSparseMatrices<float,4,8,1,8> Ts4818f;
+#define TestMatrix Ts4818f
+#include "Matrix_test.inl"
+#undef TestMatrix
+
+/// well-fitted blocs
+typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
+#define TestMatrix Ts4822f
+#include "Matrix_test.inl"
+#undef TestMatrix
+
