@@ -27,7 +27,10 @@
 
 #include "../initFlexible.h"
 #include "../deformationMapping/BaseDeformationMapping.inl"
-#include "../deformationMapping/LinearJacobianBlock.inl"
+#include "../deformationMapping/LinearJacobianBlock_point.inl"
+#include "../deformationMapping/LinearJacobianBlock_rigid.inl"
+#include "../deformationMapping/LinearJacobianBlock_affine.inl"
+#include "../deformationMapping/LinearJacobianBlock_quadratic.inl"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/State.inl>
 

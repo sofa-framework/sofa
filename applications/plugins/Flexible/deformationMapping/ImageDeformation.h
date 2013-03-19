@@ -204,7 +204,7 @@ protected:
                             if(p[0] || p[1] || p[2])  // discard non mapped points
                             {
                                 Coord po = outT->toImage(p);
-                                p[0]=round(po[0]); p[1]=round(po[1]); p[2]=round(po[2]);
+                                p[0]=sofa::helper::round(po[0]); p[1]=sofa::helper::round(po[1]); p[2]=sofa::helper::round(po[2]);
                                 if(p[0]>=0) if(p[1]>=0) if(p[2]>=0) if(p[0]<outImg.width()) if(p[1]<outImg.height()) if(p[2]<outImg.depth())
                                                         cimg_forC(img,c) outImg(p[0],p[1],p[2],c) = img(x,y,z,c);
                             }
@@ -269,7 +269,7 @@ protected:
                                                                         if(w[2]>=-tolerance) if(w[2]<=1+tolerance)
                                                                             {
                                                                                 Coord pi(x+w[0]-0.5,y+w[1]-0.5,z+w[2]-0.5);
-                                                                                if(interp==0)        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.atXYZ(round((double)pi[0]),round((double)pi[1]),round((double)pi[2]),c));
+                                                                                if(interp==0)        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.atXYZ(sofa::helper::round((double)pi[0]),sofa::helper::round((double)pi[1]),sofa::helper::round((double)pi[2]),c));
                                                                                 else if(interp==2)   cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max()));
                                                                                 else                        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.linear_atXYZ(pi[0],pi[1],pi[2],c,0));
                                                                             }
@@ -307,7 +307,7 @@ protected:
                             pi = inT->toImage(p0);
                             if(pi[0]>=0) if(pi[1]>=0) if(pi[2]>=0) if(pi[0]<img.width()) if(pi[1]<img.height()) if(pi[2]<img.depth())
                                                 {
-                                                    if(interp==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(round((double)pi[0]),round((double)pi[1]),round((double)pi[2]),c);
+                                                    if(interp==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(sofa::helper::round((double)pi[0]),sofa::helper::round((double)pi[1]),sofa::helper::round((double)pi[2]),c);
                                                     else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max());
                                                     else                        cimg_forC(img,c) outImg(x,y,z,c) = img.linear_atXYZ(pi[0],pi[1],pi[2],c,0);
                                                 }

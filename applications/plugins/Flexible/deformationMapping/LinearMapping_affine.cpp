@@ -22,71 +22,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_LinearJacobianBlock_H
-#define FLEXIBLE_LinearJacobianBlock_H
+#define SOFA_COMPONENT_MAPPING_LINEARMAPPING_affine_CPP
 
-#include "../BaseJacobian.h"
+#include "../initFlexible.h"
+#include "../deformationMapping/LinearMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include "../types/AffineTypes.h"
+#include "../types/QuadraticTypes.h"
+#include "../types/DeformationGradientTypes.h"
 
 namespace sofa
 {
-
-namespace defaulttype
+namespace component
+{
+namespace mapping
 {
 
-/** Template class used to implement one jacobian block for linearMapping */
-template<class TIn, class TOut>
-class LinearJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+SOFA_DECL_CLASS(LinearMapping_affine);
+
+using namespace defaulttype;
+
+// Register in the Factory
+int LinearMappingClass_affine = core::RegisterObject("Map child positions as a linear combination of parents.")
+        .add< LinearMapping< Affine3Types, Vec3Types > >()
+        .add< LinearMapping< Affine3Types, ExtVec3fTypes > >()
+        .add< LinearMapping< Affine3Types, F331Types > >()
+        .add< LinearMapping< Affine3Types, F321Types > >()
+        .add< LinearMapping< Affine3Types, F311Types > >()
+        .add< LinearMapping< Affine3Types, F332Types > >()
+        .add< LinearMapping< Affine3Types, Affine3Types > >()
+        ;
+
+template class SOFA_Flexible_API LinearMapping< Affine3Types, Vec3Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F331Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F332Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F321Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, F311Types >;
+template class SOFA_Flexible_API LinearMapping< Affine3Types, Affine3Types >;
 
 
-//////////////////////////////////////////////////////////////////////////////////
-////  macros
-//////////////////////////////////////////////////////////////////////////////////
-#define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
-#define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
-#define F331(type)  DefGradientTypes<3,3,0,type>
-#define F321(type)  DefGradientTypes<3,2,0,type>
-#define F311(type)  DefGradientTypes<3,1,0,type>
-#define F332(type)  DefGradientTypes<3,3,1,type>
-#define Rigid3(type)  StdRigidTypes<3,type>
-#define Affine3(type)  StdAffineTypes<3,type>
-#define Quadratic3(type)  StdQuadraticTypes<3,type>
-
-//////////////////////////////////////////////////////////////////////////////////
-////  helpers
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class Real1, class Real2,  int Dim1, int Dim2>
-inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Real2>& v2)
-{
-    Mat<Dim1, Dim2, Real2> res;
-    for ( unsigned int i = 0; i < Dim1; ++i)
-        for ( unsigned int j = 0; j < Dim2; ++j)
-        {
-            res[i][j] = (Real2)v1[i] * v2[j];
-        }
-    return res;
-}
-
-template<class _Real>
-inline Mat<3, 3, _Real> crossProductMatrix(const Vec<3,_Real>& v)
-{
-    Mat<3, 3, _Real> res;
-    res[0][0]=0;
-    res[0][1]=-v[2];
-    res[0][2]=v[1];
-    res[1][0]=v[2];
-    res[1][1]=0;
-    res[1][2]=-v[0];
-    res[2][0]=-v[1];
-    res[2][1]=v[0];
-    res[2][2]=0;
-    return res;
-}
-
-
-} // namespace defaulttype
+} // namespace mapping
+} // namespace component
 } // namespace sofa
 
-
-
-#endif
