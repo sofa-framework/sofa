@@ -31,7 +31,7 @@ SOURCES = initFlexible.cpp \
     strainMapping/RelativeStrainMapping.cpp \
     material/HookeForceField.cpp \
     material/MooneyRivlinForceField.cpp \
-    #material/OgdenForceField.cpp \
+    material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
     #forceField/FlexibleTetrahedronFEMForceField.cpp \
 	forceField/FlexibleForceField.cpp
@@ -91,8 +91,8 @@ HEADERS = initFlexible.h \
     material/MooneyRivlinForceField.h \
     material/MooneyRivlinMaterialBlock.h \
     material/MooneyRivlinMaterialBlock.inl \
-    #material/OgdenForceField.h \
-    #material/OgdenMaterialBlock.h \
+    material/OgdenForceField.h \
+    material/OgdenMaterialBlock.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \

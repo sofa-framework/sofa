@@ -204,6 +204,18 @@ bool isClamped(const T& value, const T& low, const T& high)
   return value >= low && value <= high;
 }
 
+template<class T>
+T sign( const T& v )
+{
+    return v<0 ? (T)-1 : (T)1;
+}
+
+template<class T>
+T sign0( const T& v )
+{
+    return v<0 ? (T)-1 : ( v>0 ? (T)1 : 0 );
+}
+
 
 } // namespace helper
 

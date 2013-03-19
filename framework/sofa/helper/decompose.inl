@@ -663,13 +663,10 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     defaulttype::Mat<3,3,Real> MadjTk;
 
     // row 2 x row 3
-//    crossProduct(&(Mk[3]), &(Mk[6]), &(MadjTk[0]));
     MadjTk[0] = cross( Mk[1], Mk[2] );
     // row 3 x row 1
-//    crossProduct(&(Mk[6]), &(Mk[0]), &(MadjTk[3]));
     MadjTk[1] = cross( Mk[2], Mk[0] );
     // row 1 x row 2
-//    crossProduct(&(Mk[0]), &(Mk[3]), &(MadjTk[6]));
     MadjTk[2] = cross( Mk[0], Mk[1] );
 
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
@@ -702,7 +699,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
   // Q = Mk^T
   Q.transpose( Mk );
 
-  return (det);
+  return det;
 }
 
 

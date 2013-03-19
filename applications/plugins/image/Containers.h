@@ -164,13 +164,13 @@ public:
     const T& operator[]( size_t index ) const { /*assert( index < _size );*/ return _array[ index ]; }
 
     /// first entry accessor
-    T& first() { /*assert(_size>0);*/ return _array[0]; }
+    T& first() { assert(_size>0); return _array[0]; }
     /// first entry const accessor
-    const T& first() const { /*assert(_size>0);*/ return _array[0]; }
+    const T& first() const { assert(_size>0); return _array[0]; }
     /// last entry accessor
-    T& last() { /*assert(_size>0);*/ return _array[_size-1]; }
+    T& last() { assert(_size>0); return _array[_size-1]; }
     /// last entry const accessor
-    const T& last() const { /*assert(_size>0);*/ return _array[_size-1]; }
+    const T& last() const { assert(_size>0); return _array[_size-1]; }
 
     /// @returns the entry number (effective and allocated)
     inline size_t size() const { return _size; }
