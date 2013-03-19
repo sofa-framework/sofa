@@ -135,7 +135,6 @@ public:
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
         void clear()  { MyVec::clear(); for(unsigned int i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
-        //static const unsigned int total_size = VSize;
         typedef Real value_type;
 
         /// point

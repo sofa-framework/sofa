@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_LINEARMAPPING_CPP
+#define SOFA_COMPONENT_MAPPING_LINEARMAPPING_rigid_CPP
 
 #include "../initFlexible.h"
 #include "../deformationMapping/LinearMapping.h"
@@ -41,44 +41,13 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping);
+SOFA_DECL_CLASS(LinearMapping_rigid);
 
 using namespace defaulttype;
 
 // Register in the Factory
-int LinearMappingClass = core::RegisterObject("Map child positions as a linear combination of parents.")
-
-        .add< LinearMapping< Vec3Types, Vec3Types > >(true)
-        .add< LinearMapping< Vec3Types, ExtVec3fTypes > >()
-        .add< LinearMapping< Vec3Types, F331Types > >()
-        .add< LinearMapping< Vec3Types, F332Types > >()
-        .add< LinearMapping< Vec3Types, F321Types > >()
-        .add< LinearMapping< Vec3Types, F311Types > >()
-
-        .add< LinearMapping< Affine3Types, Vec3Types > >()
-        .add< LinearMapping< Affine3Types, ExtVec3fTypes > >()
-        .add< LinearMapping< Affine3Types, F331Types > >()
-        .add< LinearMapping< Affine3Types, F321Types > >()
-        .add< LinearMapping< Affine3Types, F311Types > >()
-        .add< LinearMapping< Affine3Types, F332Types > >()
-        .add< LinearMapping< Affine3Types, Affine3Types > >()
-        ;
-
-template class SOFA_Flexible_API LinearMapping< Vec3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, F331Types >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, F332Types >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, F321Types >;
-template class SOFA_Flexible_API LinearMapping< Vec3Types, F311Types >;
-
-template class SOFA_Flexible_API LinearMapping< Affine3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, F331Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, F332Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, F321Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, F311Types >;
-template class SOFA_Flexible_API LinearMapping< Affine3Types, Affine3Types >;
-
+int LinearMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
+       ;
 
 } // namespace mapping
 } // namespace component

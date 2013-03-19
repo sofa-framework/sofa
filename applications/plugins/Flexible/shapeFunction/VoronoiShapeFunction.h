@@ -145,7 +145,7 @@ public:
         for(unsigned int i=0; i<parent.size(); i++)
         {
             Coord p = inT->toImage(parent[i]);
-            parentiCoord.push_back(iCoord(round(p[0]),round(p[1]),round(p[2])));
+            parentiCoord.push_back(iCoord(sofa::helper::round(p[0]),sofa::helper::round(p[1]),sofa::helper::round(p[2])));
         }
 
         // compute voronoi and distances based on nodes

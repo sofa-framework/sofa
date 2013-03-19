@@ -10,8 +10,7 @@ SOURCES = initFlexible.cpp \
     types/DeformationGradientTypes.cpp \
     types/StrainTypes.cpp \
     types/AffineComponents.cpp \
-    #types/AffineMass.cpp \
-    types/QuadraticTypes.cpp \
+    types/QuadraticComponents.cpp \
     quadrature/BaseGaussPointSampler.cpp \
     quadrature/TopologyGaussPointSampler.cpp \
     shapeFunction/BaseShapeFunction.cpp \
@@ -19,7 +18,10 @@ SOURCES = initFlexible.cpp \
     shapeFunction/BarycentricShapeFunction.cpp \
     deformationMapping/DistanceMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
-    deformationMapping/LinearMapping.cpp \
+    deformationMapping/LinearMapping_point.cpp \
+    deformationMapping/LinearMapping_affine.cpp \
+    deformationMapping/LinearMapping_rigid.cpp \
+    deformationMapping/LinearMapping_quadratic.cpp \
     deformationMapping/TriangleDeformationMapping.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
@@ -45,8 +47,8 @@ HEADERS = initFlexible.h \
     types/StrainTypes.h \
     types/AffineTypes.h \
     types/AffineComponents.h \
-    #types/AffineMass.h \
     types/QuadraticTypes.h \
+    types/QuadraticComponents.h \
     types/PolynomialBasis.h \
     quadrature/BaseGaussPointSampler.h \
     quadrature/TopologyGaussPointSampler.h \
@@ -61,7 +63,10 @@ HEADERS = initFlexible.h \
     deformationMapping/ExtensionMapping.inl \
     deformationMapping/LinearMapping.h \
     deformationMapping/LinearJacobianBlock.h \
-    deformationMapping/LinearJacobianBlock.inl \
+    deformationMapping/LinearJacobianBlock_point.inl \
+    deformationMapping/LinearJacobianBlock_affine.inl \
+    deformationMapping/LinearJacobianBlock_rigid.inl \
+    deformationMapping/LinearJacobianBlock_quadratic.inl \
     deformationMapping/TriangleDeformationMapping.h \
     deformationMapping/TriangleDeformationMapping.inl \
     deformationMapping/TriangleStrainAverageMapping.h \

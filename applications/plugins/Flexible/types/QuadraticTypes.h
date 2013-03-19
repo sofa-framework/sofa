@@ -28,8 +28,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #ifdef SOFA_SMP
@@ -47,14 +45,16 @@ namespace defaulttype
 using std::endl;
 using sofa::helper::vector;
 
-/** DOF types for moving frames which generate a quadratic displacement field, with 30 scalar DOFs
+/** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
 template<int _spatial_dimensions, typename _Real>
 class StdQuadraticTypes
 {
 public:
     static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions*spatial_dimensions;  // number of entries
+    static const unsigned int num_cross_terms =  spatial_dimensions==1? 0 : ( spatial_dimensions==2? 1 : spatial_dimensions==3? 3 : 0);
+    static const unsigned int num_quadratic_terms =  2*spatial_dimensions + num_cross_terms;
+    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * num_quadratic_terms;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -62,18 +62,24 @@ public:
 
     // ------------    Types and methods defined for easier data access
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Vec<spatial_dimensions*spatial_dimensions, Real> QuadraticCoord;                   ///< Position or velocity of a point, and its second-degree polynomial values
+    typedef Vec<num_quadratic_terms, Real> QuadraticCoord;                   ///< Position or velocity of a point, and its second-degree polynomial values
+    typedef Mat<spatial_dimensions,num_cross_terms,Real> CrossM;
     typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;
-    typedef Mat<spatial_dimensions,spatial_dimensions*spatial_dimensions, Real> Frame;
+    typedef Mat<spatial_dimensions,num_quadratic_terms, Real> Frame;
 
-    class Deriv
+    typedef SpatialCoord CPos;
+    typedef SpatialCoord DPos;
+
+    class Deriv : public Vec<VSize,Real>
     {
-        Vec<VSize,Real> v;
+        typedef Vec<VSize,Real> MyVec;
     public:
-        Deriv() { clear(); }
-        Deriv( const Vec<VSize,Real>& d):v(d) {}
+        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
+
+        Deriv() { MyVec::clear(); }
+        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
         Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVQuadratic()=a;}
-        Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const Affine &crossterms=Affine())
+        Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getVCenter() = center;
             for(unsigned int i=0; i<spatial_dimensions; ++i)
@@ -82,79 +88,37 @@ public:
                 {
                     Frame& quadratic=getVQuadratic();
                     quadratic[i][j]=affine[i][j];
-                    quadratic[i][j+3]=square[i][j];
-                    quadratic[i][j+6]=crossterms[i][j];
+                    quadratic[i][j+spatial_dimensions]=square[i][j];
+                }
+            }
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            {
+                for(unsigned int j=0; j<num_cross_terms; ++j)
+                {
+                    Frame& quadratic=getVQuadratic();
+                    quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
                 }
             }
         }
 
-        void clear() { v.clear(); }
-
-        static const unsigned int total_size = VSize;
         typedef Real value_type;
 
-        static unsigned int size() { return VSize; }
-
-        /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
-
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
-
         /// point
-        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
+        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
 
         /// local frame
-        Frame& getVQuadratic() { return *reinterpret_cast<Frame*>(&v[spatial_dimensions]); }
-        const Frame& getVQuadratic() const { return *reinterpret_cast<const Frame*>(&v[spatial_dimensions]); }
+        Frame& getVQuadratic() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
+        const Frame& getVQuadratic() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
+
 
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < 3; ++i)
-                for (unsigned int j = 0; j < 3; ++j)
+            for (unsigned int i = 0; i < spatial_dimensions; ++i)
+                for (unsigned int j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getVQuadratic()[i][j];
             return  m;
-        }
-
-
-        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v); }
-        void operator +=(const Deriv& a) { v+=a.v; }
-
-        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v); }
-        void operator -=(const Deriv& a) { v-=a.v; }
-
-
-        template<typename real2>
-        Deriv operator *(real2 a) const { return Deriv(v*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; }
-
-        template<typename real2>
-        void operator /=(real2 a) { v /= a; }
-
-        Deriv operator - () const { return Deriv(-v); }
-
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Deriv& a) const    { return v*a.v; }
-
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
-        {
-            out<<c.getVCenter()<<" "<<c.getVQuadratic();
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
-        {
-            in>>c.getVCenter()>>c.getVQuadratic();
-            return in;
         }
 
         /// project to a rigid motion
@@ -164,24 +128,22 @@ public:
             // first matrix is skew-symmetric
             for(unsigned i=0; i<spatial_dimensions; i++) q[i][i] = 0.0;
             for(unsigned i=0; i<spatial_dimensions; i++)
-            {
                 for(unsigned j=i+1; j<spatial_dimensions; j++)
                 {
                     q[i][j] = (q[i][j] - q[j][i]) *(Real)0.5;
                     q[j][i] = - q[i][j];
                 }
-            }
-            // the rest is null (?)
+
+            // the rest is null
             for(unsigned i=0; i<spatial_dimensions; i++)
-            {
-                for(unsigned j=spatial_dimensions; j<spatial_dimensions*spatial_dimensions; j++)
-                {
+                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
                     q[i][j] = 0.;
-                }
-            }
         }
 
-
+        template< int N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< int N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef vector<Deriv> VecDeriv;
@@ -196,14 +158,18 @@ public:
     }
 
 
-    class Coord
+    class Coord : public Vec<VSize,Real>
     {
-        Vec<VSize,Real> v;
+        typedef Vec<VSize,Real> MyVec;
+
     public:
+
+        enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
+
         Coord() { clear(); }
-        Coord( const Vec<VSize,Real>& d):v(d) {}
+        Coord( const Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getQuadratic()=a;}
-        Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const Affine &crossterms=Affine())
+        Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getCenter() = center;
             for(unsigned int i=0; i<spatial_dimensions; ++i)
@@ -212,70 +178,39 @@ public:
                 {
                     Frame& quadratic=getQuadratic();
                     quadratic[i][j]=affine[i][j];
-                    quadratic[i][j+3]=square[i][j];
-                    quadratic[i][j+6]=crossterms[i][j];
+                    quadratic[i][j+spatial_dimensions]=square[i][j];
+                }
+            }
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            {
+                for(unsigned int j=0; j<num_cross_terms; ++j)
+                {
+                    Frame& quadratic=getQuadratic();
+                    quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
                 }
             }
         }
-        void clear() { v.clear(); for(unsigned i=0; i<spatial_dimensions; i++) getQuadratic()[i][i]=(Real)1.;  } // init affine part to identity
+        void clear() { MyVec::clear(); for(unsigned i=0; i<spatial_dimensions; i++) getQuadratic()[i][i]=(Real)1.0;  } // init affine part to identity
 
-        static const unsigned int total_size = VSize;
         typedef Real value_type;
 
-        static unsigned int size() { return VSize; }
-
-        /// seen as a vector
-        Vec<VSize,Real>& getVec() { return v; }
-        const Vec<VSize,Real>& getVec() const { return v; }
-
-        Real* ptr() { return v.ptr(); }
-        const Real* ptr() const { return v.ptr(); }
-
-        Real& operator[](int i) { return v[i]; }
-        const Real& operator[](int i) const    { return v[i]; }
-
-
         /// point
-        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&this->elems[0]); }
+        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&this->elems[0]); }
 
         /// local frame
-        Frame& getQuadratic() { return *reinterpret_cast<Frame*>(&v[spatial_dimensions]); }
-        const Frame& getQuadratic() const { return *reinterpret_cast<const Frame*>(&v[spatial_dimensions]); }
+        Frame& getQuadratic() { return *reinterpret_cast<Frame*>(&this->elems[spatial_dimensions]); }
+        const Frame& getQuadratic() const { return *reinterpret_cast<const Frame*>(&this->elems[spatial_dimensions]); }
 
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < 3; ++i)
-                for (unsigned int j = 0; j < 3; ++j)
+            for (unsigned int i = 0; i < spatial_dimensions; ++i)
+                for (unsigned int j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getQuadratic()[i][j];
             return  m;
         }
 
-
-        Coord operator +(const Coord& a) const { return Coord(v+a.v); }
-        void operator +=(const Coord& a) { v+=a.v; }
-
-        Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
-        void operator +=(const Deriv& a) { v+=a.getVec(); }
-
-        Coord operator -(const Coord& a) const { return Coord(v-a.v); }
-        void operator -=(const Coord& a) { v-=a.v; }
-
-
-        template<typename real2>
-        Coord operator *(real2 a) const { return Coord(v*a); }
-        template<typename real2>
-        void operator *=(real2 a) { v *= a; }
-
-        template<typename real2>
-        void operator /=(real2 a) { v /= a; }
-
-        Coord operator - () const { return Coord(-v); }
-
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        Real operator*(const Coord& a) const    { return v*a.v;    }
 
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
@@ -316,15 +251,18 @@ public:
         /// Project a point from the child frame to the parent frame
         SpatialCoord pointToParent( const SpatialCoord& v ) const
         {
-            return getQuadratic()*v + getCenter();
+            return getQuadratic()*convertToQuadraticCoord(v) + getCenter();
         }
 
         /// Project a point from the parent frame to the child frame
         SpatialCoord pointToChild( const SpatialCoord& v ) const
         {
-            Frame QuadraticInv;
-            QuadraticInv.invert( getQuadratic() );
-            return QuadraticInv * (v-getCenter());
+            Coord QuadraticInv = inverse(this);
+            return QuadraticInv.pointToParent(v);
+
+//            Frame QuadraticInv;
+//            QuadraticInv.invert( getQuadratic() );
+//            return QuadraticInv * (v-getCenter());
         }
 
 
@@ -333,31 +271,19 @@ public:
         {
             Frame& q = getQuadratic();
             // first matrix is pure rotation
-            Affine a = getAffine(), rotation;
-            polarDecomposition(a, rotation);
+            Affine rotation;
+            polarDecomposition(getAffine(), rotation);
             for(unsigned i=0; i<spatial_dimensions; i++)
-            {
                 for(unsigned j=0; j<spatial_dimensions; j++)
-                {
                     q[i][j] = rotation[i][j];
-                }
-            }
-            // the rest is null (?)
+
+            // the rest is null
             for(unsigned i=0; i<spatial_dimensions; i++)
-            {
-                for(unsigned j=spatial_dimensions; j<spatial_dimensions*spatial_dimensions; j++)
-                {
+                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
                     q[i][j] = 0.;
-                }
-            }
         }
     };
 
-
-    static QuadraticCoord convertToQuadraticCoord(const SpatialCoord& p)
-    {
-        return QuadraticCoord( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
-    }
 
     typedef vector<Coord> VecCoord;
 
@@ -453,6 +379,26 @@ public:
 
 };
 
+
+template<typename Real>
+static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[0]*p[0]);
+}
+
+template<typename Real>
+static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
+}
+
+template<typename Real>
+static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
+{
+    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+}
+
+
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
 typedef StdQuadraticTypes<3, float> Quadratic3fTypes;
 
@@ -497,32 +443,186 @@ template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static 
 template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
 
 /// \endcond
+
+
+
+// ====================================================================
+// QuadraticMass
+
+
+using std::endl;
+using helper::vector;
+
+/** Mass associated with an Quadratic deformable frame */
+template<int _spatial_dimensions,typename _Real>
+class QuadraticMass : public Mat<StdQuadraticTypes<_spatial_dimensions,_Real>::deriv_total_size, StdQuadraticTypes<_spatial_dimensions,_Real>::deriv_total_size, _Real>
+{
+public:
+    typedef _Real Real;
+
+    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const unsigned int VSize = StdQuadraticTypes<spatial_dimensions,Real>::deriv_total_size;
+
+    typedef Mat<VSize, VSize, Real> MassMatrix;
+
+
+    QuadraticMass() : MassMatrix(), m_invMassMatrix(NULL)
+    {
+    }
+
+    /// build a uniform, diagonal matrix
+    QuadraticMass( Real m ) : MassMatrix(), m_invMassMatrix(NULL)
+    {
+        setValue( m );
+    }
+
+
+    ~QuadraticMass()
+    {
+        if( m_invMassMatrix )
+        {
+            delete m_invMassMatrix;
+            m_invMassMatrix = NULL;
+        }
+    }
+
+    /// make a null inertia matrix
+    void clear()
+    {
+        MassMatrix::clear();
+        if( m_invMassMatrix ) m_invMassMatrix->clear();
+    }
+
+
+    static const char* Name();
+
+    /// @returns the invert of the mass matrix
+    const MassMatrix& getInverse() const
+    {
+        // optimization: compute the mass invert only once (needed by explicit solvers)
+        if( !m_invMassMatrix )
+        {
+            m_invMassMatrix = new MassMatrix;
+            m_invMassMatrix->invert( *this );
+        }
+        return *m_invMassMatrix;
+    }
+
+    /// set a uniform, diagonal matrix
+    virtual void setValue( Real m )
+    {
+        for( unsigned i=0 ; i<VSize ; ++i ) (*this)(i,i) = m;
+        updateInverse();
+    }
+
+
+    /// copy
+    void operator= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) = m;
+        updateInverse();
+    }
+
+    /// this += m
+    void operator+= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) += m;
+        updateInverse();
+    }
+
+    /// this -= m
+    void operator-= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) -= m;
+        updateInverse();
+    }
+
+    /// this *= m
+    void operator*= ( const MassMatrix& m )
+    {
+        *((MassMatrix*)this) *= m;
+        updateInverse();
+    }
+
+    /// apply a factor to the mass matrix
+    void operator*= ( Real m )
+    {
+        *((MassMatrix*)this) *= m;
+        updateInverse();
+    }
+
+    /// apply a factor to the mass matrix
+    void operator/= ( Real m )
+    {
+        *((MassMatrix*)this) /= m;
+        updateInverse();
+    }
+
+
+
+    /// operator to cast to const Real, supposing the mass is uniform (and so diagonal)
+    operator const Real() const
+    {
+        return (*this)(0,0);
+    }
+
+
+    /// @todo overload these functions so they can be able to update 'm_invMassMatrix' after modifying 'this'
+    //void fill(real r)
+    // transpose
+    // transpose(m)
+    // addtranspose
+   //subtranspose
+
+
+
+protected:
+
+    mutable MassMatrix *m_invMassMatrix; ///< a pointer to the inverse of the mass matrix
+
+    /// when the mass matrix is changed, if the inverse exists, it has to be updated
+    /// @warning there are certainly cases (non overloaded functions or non virtual) that modify 'this' without updating 'm_invMassMatrix'. Another solution = keep a copy of 'this' each time the inversion is done, and when getInverse, if copy!=this -> update
+    void updateInverse()
+    {
+        if( m_invMassMatrix ) m_invMassMatrix->invert( *this );
+    }
+};
+
+template<int _spatial_dimensions,typename _Real>
+inline typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv operator/(const typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv& d, const QuadraticMass<_spatial_dimensions, _Real>& m)
+{
+    return m.getInverse() * d;
+}
+
+template<int _spatial_dimensions,typename _Real>
+inline typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv operator*(const QuadraticMass<_spatial_dimensions, _Real>& m,const typename StdQuadraticTypes<_spatial_dimensions,_Real>::Deriv& d)
+{
+    return d * m;
+}
+
+typedef QuadraticMass<3, double> Quadratic3dMass;
+typedef QuadraticMass<3, float> Quadratic3fMass;
+
+
+#ifdef SOFA_FLOAT
+typedef Quadratic3fMass Quadratic3Mass;
+#else
+typedef Quadratic3dMass Quadratic3Mass;
+#endif
+
+
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
+template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
+
+/// \endcond
+
+
+
 } // namespace defaulttype
-
-
-// ==========================================================================
-// Mechanical Object
-
-namespace component
-{
-
-namespace container
-{
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_QuadraticTYPES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Quadratic3dTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Quadratic3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::Quadratic3fTypes>;
-extern template class SOFA_Flexible_API MechanicalObject<defaulttype::Quadratic3fTypes>;
-#endif
-#endif
-
-} // namespace container
-
-} // namespace component
 
 
 
