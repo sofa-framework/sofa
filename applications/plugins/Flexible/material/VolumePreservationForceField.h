@@ -44,7 +44,7 @@ using helper::vector;
 using helper::OptionsGroup;
 
 /** Apply VolumePreservation's Law for isotropic homogeneous incompressible materials.
-  * The energy is : k/2 ln( I3^1/2 )^2
+  * The energy is : k/2 ln( I3^1/2 )^2 = k/2 ln( (U1*U2*U3)^1/2 )^2
 */
 
 template <class _DataTypes>

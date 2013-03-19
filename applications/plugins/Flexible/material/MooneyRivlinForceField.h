@@ -42,7 +42,7 @@ namespace forcefield
 using helper::vector;
 
 /** Apply MooneyRivlin's Law for isotropic homogeneous incompressible materials.
-  * The energy is : C1 ( I1/ I3^1/3  - 3)  + C2 ( I2/ I3^2/3  - 3)
+  * The energy is : C1 ( I1/ I3^1/3  - 3)  + C2 ( I2/ I3^2/3  - 3) + bulk/2 (I3-1)^2
 */
 
 template <class _DataTypes>
@@ -60,16 +60,18 @@ public:
     //@{
     Data<vector<Real> > f_C1;
     Data<vector<Real> > f_C2;
+    Data<vector<Real> > f_bulk;
     //@}
 
     virtual void reinit()
     {
-        Real C1=0,C2=0;
+        Real C1=0,C2=0,bulk=0;
         for(unsigned int i=0; i<this->material.size(); i++)
         {
             if(i<f_C1.getValue().size()) C1=f_C1.getValue()[i]; else if(f_C1.getValue().size()) C1=f_C1.getValue()[0];
             if(i<f_C2.getValue().size()) C2=f_C2.getValue()[i]; else if(f_C2.getValue().size()) C2=f_C2.getValue()[0];
-            this->material[i].init( C1, C2 );
+            if(i<f_bulk.getValue().size()) bulk=f_bulk.getValue()[i]; else if(f_bulk.getValue().size()) bulk=f_bulk.getValue()[0];
+            this->material[i].init( C1, C2, bulk );
         }
         Inherit::reinit();
     }
@@ -78,7 +80,7 @@ public:
     {
         if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
         {
-            if(f_C1.isDirty() || f_C2.isDirty()) reinit();
+            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty()) reinit();
         }
     }
 
@@ -88,6 +90,7 @@ protected:
         : Inherit(mm)
         , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
         , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
+        , f_bulk(initData(&f_bulk,vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);

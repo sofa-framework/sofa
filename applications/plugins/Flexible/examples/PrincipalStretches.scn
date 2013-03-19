@@ -77,7 +77,7 @@
 
 	     <Node 	name="Strain"   >
 		<MechanicalObject  template="U331" name="E"  />
-	    	<PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" />
+	    	<PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" asStrain="true" />
                 <HookeForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assembleK="false" assembleB="false"/>
 	    </Node>
 		
@@ -157,7 +157,7 @@
 	
         <Node name="StrainNode">
             <MechanicalObject template="U321"  name="VoigtStrainDOF" />
-	    <PrincipalStretchesMapping template="Mapping&lt;F321,U321&gt;" assembleJ="false" />
+	    <PrincipalStretchesMapping template="Mapping&lt;F321,U321&gt;" assembleJ="false" asStrain="true"/>
             <HookeForceField template="U321" youngModulus="10" poissonRatio="0.2" />
 	  </Node>
 	 

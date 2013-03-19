@@ -96,11 +96,11 @@ public:
         Vec<material_dimensions,Real> S; // principal stretches
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
 
+        helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
+
         // order 0
         for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += S[i] - 1;
-
-        helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
+            result.getStrain()[i] += S[i] - 1; // strain = principal stretches - Id
 
         if( order > 0 )
         {

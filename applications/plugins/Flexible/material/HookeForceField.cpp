@@ -73,7 +73,6 @@ template class SOFA_Flexible_API HookeForceField< U321Types >;
 
 
 
-
 SOFA_DECL_CLASS(HookeOrthotropicForceField);
 
 using namespace defaulttype;

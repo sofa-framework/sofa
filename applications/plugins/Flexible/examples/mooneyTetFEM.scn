@@ -11,7 +11,7 @@
 <!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
 
 
-    <Node 	name="Flexible"   >
+    <Node 	name="FlexibleI" activated="1"  >
       
       <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
       
@@ -32,8 +32,7 @@
 		<Node 	name="I"   >
 		    <MechanicalObject  template="I331" name="I"  />
 		    <InvariantMapping template="Mapping&lt;F331,I331&gt;" assembleJ="false" assembleK="false" deviatoric="true"/>
-		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100"  assembleK="false"  assembleC="false"/> 
-		    <VolumePreservationForceField  template="I331" k="1000" assembleK="false"  assembleC="false"/> 
+		    <MooneyRivlinForceField  template="I331" C1="1000" C2="100" bulk="1000"  assembleK="false"  assembleC="false"/> 
 		</Node>
 	    </Node>
 
@@ -50,7 +49,47 @@
     </Node>
 
 
-    <Node 	name="FEM"   >
+
+
+    <Node 	name="FlexibleU" activated="1"  >
+      
+      <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+      
+	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	    <BarycentricShapeFunction  />
+
+	    <Node 	name="behavior"   >
+		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false" />
+		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+		<Node 	name="U"   >
+		    <MechanicalObject  template="U331" name="U"  />
+		    <PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" asStrain="false" assembleJ="false" assembleK="false"/>
+		    <MooneyRivlinForceField  template="U331" C1="1000" C2="100" bulk="1000" assembleK="false"  assembleC="false"/> 
+		</Node>
+	    </Node>
+
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position" />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.2 1" />
+	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assembleJ="false"/>
+	    </Node>
+    </Node>
+    
+    
+    <Node 	name="FEM"  activated="1" >
       
       <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
       
@@ -63,7 +102,7 @@
 
 	<UniformMass totalMass="250" />
 
-	    <!-- <StandardTetrahedralFEMForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 1000 100" />  -->
+<!-- 	    <StandardTetrahedralFEMForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 1000 100" />  -->
 	  <MJEDTetrahedralForceField name="ff" materialName="MooneyRivlin" ParameterSet="1000 100 1000" /> 
 
 	    <Node 	name="visual"   >
