@@ -44,10 +44,6 @@ namespace defaulttype
 //#define I333(type)  InvariantStrainTypes<3,3,2,type>
 #define U331(type)  PrincipalStretchesStrainTypes<3,3,0,type>
 
-//////////////////////////////////////////////////////////////////////////////////
-////  helpers
-//////////////////////////////////////////////////////////////////////////////////
-
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -197,9 +193,9 @@ public:
 
     void addForce( Deriv& f, const Coord& x, const Deriv& /*v*/) const
     {
-        Real U1 = x.getStrain()[0];
-        Real U2 = x.getStrain()[1];
-        Real U3 = x.getStrain()[2];
+        const Real& U1 = x.getStrain()[0];
+        const Real& U2 = x.getStrain()[1];
+        const Real& U3 = x.getStrain()[2];
 
 //        Real squareU[3] = { x.getStrain()[0]*x.getStrain()[0], x.getStrain()[1]*x.getStrain()[1], x.getStrain()[2]*x.getStrain()[2] };
 
@@ -215,41 +211,50 @@ public:
         // there are a lot of redondencies between computation of f and K
 
         Real t1 =  U1 *  U2;
-        Real t2 = t1 *  U3; if( helper::rabs(t2)<MIN_DETERMINANT() ) t2=helper::sign(t2)*MIN_DETERMINANT();
-        Real t3 = pow(t2, -0.2e1 / 0.3e1);
+
+        Real J = t1 * U3; if( helper::rabs(J)<MIN_DETERMINANT() ) J=helper::sign(J)*MIN_DETERMINANT();
+        Real Jm1 = J-1;
+
+        Real Jm23 = pow(J,-2.0/3.0);
+        Real Jm43 = pow(J,-4.0/3.0);
+        Real Jm53 = pow(J,-5.0/3.0);
+        Real Jm73 = pow(J,-7.0/3.0);
+        Real Jm83 = pow(J,-8.0/3.0);
+        Real Jm103 = pow(J,-10.0/3.0);
+
+        Real t3 = Jm23;
         Real t4 =  U3 *  U3;
         Real t5 =  U2 *  U2;
         Real t6 =  U1 *  U1;
         Real t7 = -0.2e1 / 0.3e1;
         Real t8 = 2 * U1;
-        t7 = t7 * (t6 + t5 + t4) * pow(t2, -0.5e1 / 0.3e1);
-        Real t9 = pow(t2, -0.4e1 / 0.3e1);
+        t7 = t7 * (t6 + t5 + t4) * Jm53;
+        Real t9 = Jm43;
         Real t10 = t6 + t5;
         Real t11 = -0.4e1 / 0.3e1;
-        t11 = t11 * (t10 * t4 + t6 * t5) * pow(t2, -0.7e1 / 0.3e1);
-        t2 = bulkVol * (t2 - 0.1e1);
+        t11 = t11 * (t10 * t4 + t6 * t5) * Jm73;
+        Real t2 = bulkVol * (Jm1);
         Real t12 = 2 * U2;
         Real t13 = 2 * U3;
         f.getStrain()[0] -= C1Vol * ( t8 * t3 + t7 *  U2 *  U3) + C2Vol * ( t8 * (t5 + t4) * t9 + t11 *  U2 *  U3) + t2 *  U2 *  U3;
         f.getStrain()[1] -= C1Vol * ( t12 * t3 + t7 *  U1 *  U3) + C2Vol * ( t12 * (t6 + t4) * t9 + t11 *  U1 *  U3) + t2 *  U1 *  U3;
         f.getStrain()[2] -= C1Vol * ( t13 * t3 + t7 * t1) + C2Vol * ( t13 * t10 * t9 + t11 * t1) + t2 * t1;
 
-        t2 = t1 *  U3; if( helper::rabs(t2)<MIN_DETERMINANT() ) t2=helper::sign(t2)*MIN_DETERMINANT();
-        t3 = pow(t2, -0.5e1 / 0.3e1);
+        t3 = Jm53;
         t7 = t6 + t5 + t4;
-        t8 = pow(t2, -0.8e1 / 0.3e1);
+        t8 = Jm83;
         t9 =  U2 * U3;
-        t10 = 0.2e1 * pow(t2, -0.2e1 / 0.3e1);
+        t10 = 0.2e1 * Jm23;
         t11 = t5 + t4;
         t12 = 2 * t11;
-        t13 = pow(t2, -0.4e1 / 0.3e1);
+        t13 = Jm43;
         Real t14 = t12 * U1;
-        Real t15 = pow(t2, -0.7e1 / 0.3e1);
+        Real t15 = Jm73;
         Real t16 = t6 + t5;
         Real t17 = t16 * t4 + t6 * t5;
-        Real t18 = pow(t2, -0.10e2 / 0.3e1);
+        Real t18 = Jm103;
         Real t19 = bulkVol * t5;
-        Real t20 = (0.10e2 / 0.9e1 * t2 * t8 - 0.2e1 / 0.3e1 * t3) * t7;
+        Real t20 = (0.10e2 / 0.9e1 * J * t8 - 0.2e1 / 0.3e1 * t3) * t7;
         Real t21 = t6 + t4;
         Real t22 = 2 * t21;
         Real t23 = t22 * U2;
@@ -257,7 +262,7 @@ public:
         Real t25 = 0.28e2 / 0.9e1 * t17 * t18;
         Real t26 = t14 * U1;
         Real t27 = t23 * U2;
-        t2 = 0.2e1 * t2 - 0.1e1;
+        t2 = 0.2e1 * Jm1;
         Real t28 = bulkVol * U3 * t2 + C1Vol * U3 * (t20 - 0.4e1 / 0.3e1 * t3 * t16) + C2Vol * (-0.4e1 / 0.3e1 * ( t26 +  t27 + t17) * U3 * t15 + t1 * (t24 + t25 * t4));
         t16 = 0.2e1 * t16;
         Real t29 = t16 * U3;
