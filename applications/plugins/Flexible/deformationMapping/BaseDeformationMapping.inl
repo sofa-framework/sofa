@@ -78,8 +78,10 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     methodOptions.setSelectedItem(0);
     showColorOnTopology.setValue(methodOptions);
 
-    helper::OptionsGroup styleOptions(2,"0 - All axis"
-            ,"1 - First axis");
+    helper::OptionsGroup styleOptions(4,"0 - All axis"
+            ,"1 - First axis"
+            ,"2 - Second axis"
+            ,"3 - Third axis");
     styleOptions.setSelectedItem(0);
     showDeformationGradientStyle.setValue(styleOptions);
 }
@@ -692,6 +694,16 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
                 {
                     Coord u=F.transposed()(0)*0.5*scale;
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
+                {
+                    Coord u=F.transposed()(1)*0.5*scale;
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
+                }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
+                {
+                    Coord u=F.transposed()(2)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
                 }
         }
