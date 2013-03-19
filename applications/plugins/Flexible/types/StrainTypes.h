@@ -495,6 +495,8 @@ template<> struct DataTypeName< defaulttype::U321dTypes::Coord > { static const 
 
 /// \endcond
 
+
+
 // ==========================================================================
 // Helpers
 
@@ -651,6 +653,10 @@ static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N
     }
     return B;
 }
+
+
+
+
 
 
 } // namespace defaulttype

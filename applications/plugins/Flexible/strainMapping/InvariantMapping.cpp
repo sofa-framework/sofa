@@ -48,11 +48,14 @@ int InvariantMappingClass = core::RegisterObject("Map deformation gradients to t
         .add< InvariantMapping< F331Types, I331Types > >(true)
 //.add< InvariantMapping< F332Types, I332Types > >()
 //.add< InvariantMapping< F332Types, I333Types > >()
+
+//        .add< InvariantMapping< U331Types, I331Types > >()
         ;
 
 template class SOFA_Flexible_API InvariantMapping< F331Types, I331Types >;
 //template class SOFA_Flexible_API InvariantMapping< F332Types, I332Types >;
 //template class SOFA_Flexible_API InvariantMapping< F332Types, I333Types >;
+//template class SOFA_Flexible_API InvariantMapping< U331Types, I331Types >;
 
 } // namespace mapping
 } // namespace component

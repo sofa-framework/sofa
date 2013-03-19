@@ -183,10 +183,10 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
     static void constructor( BaseImageShapeFunction* bisf )
     {
         bisf->addAlias( &bisf->image, "branchingImage" );
-
-        // @todo need the mapping from fine regular image to coarse branching image to compute space to image coord
     }
 
+
+    // @TODO implemented without any verifications -> needs to be checked when really used
     template<class BaseImageShapeFunction>
     static void computeShapeFunction( BaseImageShapeFunction* bisf, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& M, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL )
     {

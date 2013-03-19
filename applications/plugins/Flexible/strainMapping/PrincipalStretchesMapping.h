@@ -40,9 +40,15 @@ namespace mapping
 
 using helper::vector;
 
+
 /** Deformation Gradient to Principal Stretches mapping.
-  @warning this is more precisely (principal stretches - Id) i.e the diagonalized lagrangian strain
 */
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  F -> U
+//////////////////////////////////////////////////////////////////////////////////
 
 template <class TIn, class TOut>
 class PrincipalStretchesMapping : public BaseStrainMappingT<defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> >
@@ -53,18 +59,27 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(PrincipalStretchesMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
+    Data<bool> asStrain;
+
+    virtual void reinit()
+    {
+        for(unsigned int i=0; i<this->jacobian.size(); i++) this->jacobian[i]._asStrain = asStrain.getValue();
+        Inherit::reinit();
+    }
 
 
 protected:
 
     PrincipalStretchesMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
+        , asStrain(initData(&asStrain,false,"asStrain","compute principal stretches - 1"))
     {
     }
 
     virtual ~PrincipalStretchesMapping() { }
 
 };
+
 
 
 } // namespace mapping

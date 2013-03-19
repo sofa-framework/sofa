@@ -43,6 +43,13 @@ namespace defaulttype
 {
 
 
+#define F331(type)  defaulttype::DefGradientTypes<3,3,0,type>
+#define U331(type)  defaulttype::PrincipalStretchesStrainTypes<3,3,0,type>
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  F -> U
+//////////////////////////////////////////////////////////////////////////////////
 
 /** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
 template<class TIn, class TOut>
@@ -92,15 +99,25 @@ public:
 
     bool _degenerated;
 
+    bool _asStrain;
+
     void addapply( OutCoord& result, const InCoord& data )
     {
         StrainVec S; // principal stretches
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
 
-        for( int i=0 ; i<material_dimensions ; ++i )
-            result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
-
         helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
+
+        if( _asStrain )
+        {
+            for( int i=0 ; i<material_dimensions ; ++i )
+                result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
+        }
+        else
+        {
+            for( int i=0 ; i<material_dimensions ; ++i )
+                result.getStrain()[i] += S[i];
+        }
 
         computeJ();
     }
@@ -119,7 +136,6 @@ public:
             for( int j=0 ; j<material_dimensions ; ++j )
                 for( int k=0 ; k<material_dimensions ; ++k )
                     result.getF()[i][j] += _J[k][i*material_dimensions+j] * data.getStrain()[k];
-
     }
 
     void computeJ()
@@ -163,6 +179,7 @@ public:
         df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
     }
 };
+
 
 
 
