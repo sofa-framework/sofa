@@ -26,7 +26,6 @@ SOURCES = initFlexible.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
     strainMapping/CorotationalStrainMapping.cpp \
-    strainMapping/DiagonalStrainMapping.cpp \
     strainMapping/PrincipalStretchesMapping.cpp \
     strainMapping/InvariantMapping.cpp \
     strainMapping/PlasticStrainMapping.cpp \
@@ -77,8 +76,6 @@ HEADERS = initFlexible.h \
     strainMapping/CorotationalStrainMapping.h \
     strainMapping/CorotationalStrainJacobianBlock.h \
     strainMapping/CorotationalStrainJacobianBlock.inl \
-    strainMapping/DiagonalStrainMapping.h \
-    strainMapping/DiagonalStrainJacobianBlock.h \
     strainMapping/PrincipalStretchesMapping.h \
     strainMapping/PrincipalStretchesJacobianBlock.h \
     strainMapping/InvariantMapping.h \
@@ -95,7 +92,6 @@ HEADERS = initFlexible.h \
     material/HookeMaterialBlock.inl \
     material/MooneyRivlinForceField.h \
     material/MooneyRivlinMaterialBlock.h \
-    material/MooneyRivlinMaterialBlock.inl \
     material/OgdenForceField.h \
     material/OgdenMaterialBlock.h \
     material/VolumePreservationForceField.h \

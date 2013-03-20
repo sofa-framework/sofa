@@ -27,7 +27,7 @@
 
 #include "../initFlexible.h"
 #include "../material/BaseMaterialForceField.h"
-#include "../material/MooneyRivlinMaterialBlock.inl"
+#include "../material/MooneyRivlinMaterialBlock.h"
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>

@@ -43,6 +43,41 @@
 	    </Node>
     </Node>
     
+    <Node name="FlexibleD" activated="1"  >
+      
+      <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+      
+	 <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
 
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	    <BarycentricShapeFunction  />
+
+	    <Node 	name="behavior"   >
+		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamples="false" />
+		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>
+
+		<Node 	name="D"   >
+		    <MechanicalObject  template="D331" name="D"  />
+		    <PrincipalStretchesMapping template="Mapping&lt;F331,D331&gt;" asStrain="false" assembleJ="false" assembleK="false"/>
+		    <OgdenForceField  template="D331" mu1="10000" mu2="1000" mu3="1000" alpha1="2" alpha2="3" alpha3="2" d1="1" d2="1" d3="1" assembleK="false"  assembleC="false"/> 
+		</Node>
+	    </Node>
+
+	<Node 	name="mass"   >
+	     <MechanicalObject position="@../mesh.position" />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assembleJ="false"/>
+        </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 0.2 1 1" />
+	    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assembleJ="false"/>
+	    </Node>
+    </Node>
 	  
 </Node>
