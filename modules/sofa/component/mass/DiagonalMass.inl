@@ -619,6 +619,7 @@ void DiagonalMass<DataTypes, MassType>::init()
         MassVector &masses= *f_mass.beginEdit();
         unsigned int i = masses.size()-1;
         unsigned int n = (unsigned)this->mstate->getSize();
+        masses.reserve(n);
         while (masses.size() < n)
             masses.push_back(masses[i]);
         f_mass.endEdit();
