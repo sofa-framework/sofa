@@ -47,12 +47,14 @@ int MooneyRivlinForceFieldClass = core::RegisterObject("MooneyRivlin's Law for i
 //.add< MooneyRivlinForceField< I332Types > >()
 //.add< MooneyRivlinForceField< I333Types > >()
         .add< MooneyRivlinForceField< U331Types > >()
+        .add< MooneyRivlinForceField< D331Types > >()
         ;
 
 template class SOFA_Flexible_API MooneyRivlinForceField< I331Types >;
 //template class SOFA_Flexible_API MooneyRivlinForceField< I332Types >;
 //template class SOFA_Flexible_API MooneyRivlinForceField< I333Types >;
 template class SOFA_Flexible_API MooneyRivlinForceField< U331Types >;
+template class SOFA_Flexible_API MooneyRivlinForceField< D331Types >;
 
 }
 }

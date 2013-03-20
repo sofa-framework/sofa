@@ -43,8 +43,184 @@ namespace defaulttype
 {
 
 
-#define F331(type)  defaulttype::DefGradientTypes<3,3,0,type>
-#define U331(type)  defaulttype::PrincipalStretchesStrainTypes<3,3,0,type>
+//////////////////////////////////////////////////////////////////////////////////
+//// default implementation for strain matrices  F -> D, F -> E (@warning for E, asStrain should be always true)
+//////////////////////////////////////////////////////////////////////////////////
+
+
+template<class TIn, class TOut>
+class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
+{
+public:
+
+    typedef TIn In;
+    typedef TOut Out;
+
+    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef typename Inherit::InCoord InCoord;
+    typedef typename Inherit::InDeriv InDeriv;
+    typedef typename Inherit::OutCoord OutCoord;
+    typedef typename Inherit::OutDeriv OutDeriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::KBlock KBlock;
+    typedef typename Inherit::Real Real;
+
+    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
+    typedef typename Out::StrainVec StrainVec;  ///< Vec representing a strain
+    enum { material_dimensions = In::material_dimensions };
+    enum { spatial_dimensions = In::spatial_dimensions };
+    enum { strain_size = Out::strain_size };
+    enum { order = Out::order };
+    enum { frame_size = spatial_dimensions*material_dimensions };
+
+    typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
+    typedef Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
+
+    /**
+    Mapping:   \f$ E = Ut.F.V\f$
+               \f$ E_k = Ut.F_k.V\f$
+    where:  U/V are the spatial and material rotation parts of F and E is diagonal
+    Jacobian:  \f$  dE = Ut.dF.V \f$ Note that dE is not diagonal
+               \f$  dE_k = Ut.dF_k.V \f$
+    */
+
+    static const bool constantJ = false;
+
+    SpatialMaterialMat _U;  ///< Spatial Rotation
+    MaterialMaterialMat _V; ///< Material Rotation
+
+    Mat<frame_size,frame_size,Real> _dUOverdF;
+    Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
+
+    bool _degenerated;
+
+    bool _asStrain;
+
+
+    void addapply( OutCoord& result, const InCoord& data )
+    {
+        Vec<material_dimensions,Real> S; // principal stretches
+        _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
+
+        if( !_degenerated ) helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
+
+        // order 0
+        if( _asStrain )
+        {
+            for( int i=0 ; i<material_dimensions ; ++i )
+                result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
+        }
+        else
+        {
+            for( int i=0 ; i<material_dimensions ; ++i )
+            {
+                if( S[i]<0.6 ) S[i]=0.6; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small) @todo maybe this should be a parameter?
+                result.getStrain()[i] += S[i];
+            }
+        }
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getStrainGradient(k) += StrainMatToVoigt( cauchyStrainTensor( _U.multTranspose( data.getGradientF( k ) * _V ) ) );
+            }
+        }
+    }
+
+    void addmult( OutDeriv& result,const InDeriv& data )
+    {
+        //order 0
+        result.getStrain() = StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getStrainGradient(k) += StrainMatToVoigt( _U.multTranspose( data.getGradientF(k) * _V ) );
+            }
+        }
+    }
+
+    void addMultTranspose( InDeriv& result, const OutDeriv& data )
+    {
+        // order 0
+        result.getF() += _U * StressVoigtToMat( data.getStrain() ).multTransposed( _V );
+
+        if( order > 0 )
+        {
+            // order 1
+            for(unsigned int k=0; k<spatial_dimensions; k++)
+            {
+                result.getGradientF(k) += _U * StressVoigtToMat( data.getStrainGradient(k) ).multTransposed( _V );
+            }
+        }
+    }
+
+    // TODO requires to write (Ut.dp.V) as a matrix-vector product J.dp
+    MatBlock getJ()
+    {
+        return MatBlock();
+    }
+
+
+    // TODO requires to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) as a matrix-vector product K.dp
+    KBlock getK(const OutDeriv& /*childForce*/)
+    {
+        return KBlock();
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        if( _degenerated ) return;
+
+        SpatialMaterialMat dU;
+        MaterialMaterialMat dV;
+
+        // order 0
+        //helper::Decompose<Real>::SVDGradient_dUdV( _U, _S, _V, dx.getF(), dU, dV );
+        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                {
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+
+                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+                }
+
+        df.getF() += dU * StressVoigtToMat( childForce.getStrain() ) * _V * kfactor;
+        df.getF() += _U * StressVoigtToMat( childForce.getStrain() ) * dV * kfactor;
+
+        if( order > 0 )
+        {
+            // order 1
+            // TODO
+            /*for(unsigned int g=0;g<spatial_dimensions;g++)
+            {
+                for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                {
+                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+
+                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getGradientF(g)[k][l];
+                }
+
+                df.getGradientF(g) += dU * StressVoigtToMat( childForce.getStrainGradient(g) ) * _V * kfactor;
+                df.getGradientF(g) += _U * StressVoigtToMat( childForce.getStrainGradient(g) ) * dV * kfactor;
+            }*/
+        }
+    }
+};
+
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -52,13 +228,14 @@ namespace defaulttype
 //////////////////////////////////////////////////////////////////////////////////
 
 /** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
-template<class TIn, class TOut>
-class PrincipalStretchesJacobianBlock : public BaseJacobianBlock< TIn,TOut >
+template<class InReal, class OutReal, int MaterialDimension>
+class PrincipalStretchesJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
+           : public BaseJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
 {
 public:
 
-    typedef TIn In;
-    typedef TOut Out;
+    typedef DefGradientTypes<3,MaterialDimension,0,InReal> In;
+    typedef PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
     typedef typename Inherit::InCoord InCoord;
@@ -106,7 +283,7 @@ public:
         StrainVec S; // principal stretches
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
 
-        helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
+        if( !_degenerated ) helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
 
         if( _asStrain )
         {
@@ -116,7 +293,10 @@ public:
         else
         {
             for( int i=0 ; i<material_dimensions ; ++i )
+            {
+                if( S[i]<0.6 ) S[i]=0.6; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small) @todo maybe this should be a parameter?
                 result.getStrain()[i] += S[i];
+            }
         }
 
         computeJ();
@@ -179,6 +359,7 @@ public:
         df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
     }
 };
+
 
 
 

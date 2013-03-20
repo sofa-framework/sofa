@@ -43,9 +43,11 @@ using namespace defaulttype;
 // Register in the Factory
 int OgdenForceFieldClass = core::RegisterObject("Ogden's Law for isotropic homogeneous materials")
         .add< OgdenForceField< U331Types > >(true)
+        .add< OgdenForceField< D331Types > >()
         ;
 
 template class SOFA_Flexible_API OgdenForceField< U331Types >;
+template class SOFA_Flexible_API OgdenForceField< D331Types >;
 
 }
 }

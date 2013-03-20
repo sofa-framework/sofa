@@ -298,7 +298,9 @@ template<> struct DataTypeName< defaulttype::E333dTypes::Coord > { static const 
 
 // ==========================================================================
 // Specialization for diagonalized strain (3 principal stretches + additional terms to store anisotropy)
-// It is basically the same as the regular StrainTypes 'E' but where we know that all non-diagonal term of the Strain Vector (DiagonalizedStrainTypes::Coord) are null.
+// It is basically the same as the regular principal stretches 'U' but stored as diagional tensor (like 'E' with null non-diagonal terms).
+// The stress tensor is not diagonal (like 'E')
+// @todo store Coord as 3 principal stretches rather than diagional tensor
 
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real, char _name='D' >
