@@ -81,7 +81,7 @@
 <!-- param = DESIRED NUMBER OF FRAMES -->
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />	
+	    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />	
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
 
 	    <Node 	name="behavior"   >
@@ -90,7 +90,7 @@
 		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="100"/>
 
 		<MechanicalObject template="F332" name="F" />
-	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Quadratic,F332&gt;" assembleJ="false"/>
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E332" name="E"  /> 
@@ -103,7 +103,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     <UniformMass totalMass="10" />
-	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Quadratic,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
 	    <Node 	name="collision"   >
@@ -117,57 +117,13 @@
       		 <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  /> 
        		<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 0 0.05"/> 
 
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
 
-<!--
-  <Node name="frame" >
-		<GridMaterial name="gridmaterial" template="Material3" 
-				imageFile="test.raw" 
-				labelToStiffnessPairs="	1 1000"  
-				labelToDensityPairs="1 0.01"  
-				labelToPoissonRatioPairs="1 0"
-				distanceType="Geodesic"
-				biasDistances="true"
-				showVoxelData="None" 
-				/>
-
-		<MechanicalObject name="DOFs" template="Affine" showObject="true" position="0 0 -1 [1 0 0,0 1 0,0 0 1] -0.02 -0.08 -0.79 [1 0 0,0 1 0,0 0 1] 0.01 -0.08 0.89 [1 0 0,0 1 0,0 0 1] -0.08 0.04 0.17 [1 0 0,0 1 0,0 0 1] 0.04 -0.08 -0.46 [1 0 0,0 1 0,0 0 1] 0.1 -0.02 0.35 [1 0 0,0 1 0,0 0 1] -0.02 0.1 0.74 [1 0 0,0 1 0,0 0 1] -0.05 0.1 -0.55 [1 0 0,0 1 0,0 0 1] -0.05 -0.11 -0.13 [1 0 0,0 1 0,0 0 1] 0.04 0.1 -0.13 [1 0 0,0 1 0,0 0 1] -0.08 -0.08 0.53 [1 0 0,0 1 0,0 0 1]"/>
-		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="1"/>
-	        <FixedConstraint indices="0" /> 
-
-		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="PointSet" template="DeformationGradient331" useMask="0"  showObject="0" showObjectScale="0.5"/>
- 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" 
-				input="@../DOFs"  output="@PointSet"  
-				targetFrameNumber="10"
-				targetSampleNumber="200"
-				/>
-			<CorotationalForceField template="DeformationGradient331"  printLog="0"/>  
-		</Node>
-
-		<Node name="Visual" >
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
-		</Node>
-
-		<Node name="Collision">
-			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
-      			<Mesh name="mesh" src="@MeshLoader"  /> 
-      			<MechanicalObject  name="PointSet"/>
-      			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" showStrain="false"/>
-
-			<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
-			<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -0.5 0"/> 
-
-		</Node>
-  </Node>
--->
 </Node>

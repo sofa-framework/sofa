@@ -77,14 +77,14 @@
 <!-- param = DESIRED NUMBER OF FRAMES -->
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="50" fixedPosition="0 0 -0.99 0.19 0.19 -0.99 -0.19 0.19 -0.99 0.19 -0.19 -0.99 -0.19 -0.19 -0.99  -0.19 0 -0.99  0 -0.19 -0.99  0.19 0 -0.99  0 0.19 -0.99" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
+	    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />
 
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />
 <!--    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/>  -->
 
 
- <!-- 	    <FixedConstraint indices="0 1 2 3 4 5 6 7 8" />  -->
-           <PartialFixedConstraint indices="0 1 2 3 4 5 6 7 8" fixedDirections="1 1 1 1 1 0 1 1 0 1 1 0" /> 
+  	    <FixedConstraint indices="0 1 2 3 4 5 6 7 8" />  
+<!--           <PartialFixedConstraint indices="0 1 2 3 4 5 6 7 8" fixedDirections="1 1 1 1 1 0 1 1 0 1 1 0" /> -->
 
 	    <Node 	name="behavior"   >
 <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
@@ -93,7 +93,7 @@
 <!--   <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 6 30"/> -->
 <!--   <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 6 30"/> -->
 		<MechanicalObject template="F332" name="F"  />
-	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Quadratic,F332&gt;" assembleJ="false"/>
 
 		<Node 	name="E"   >
 		    <VisualStyle displayFlags="hideBehaviorModels " />
@@ -108,7 +108,7 @@
        	     <VisualStyle displayFlags="hideBehaviorModels " />
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     <UniformMass totalMass="10" />
-	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Quadratic,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
 	    <Node 	name="collision"   >
@@ -120,12 +120,12 @@
 		<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
 		<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8"/>
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
 
@@ -143,7 +143,7 @@
 <!-- param = DESIRED NUMBER OF FRAMES -->
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.99 0 0 0.99" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
+	    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />
 
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />
 <!--    	    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/>  -->
@@ -154,12 +154,12 @@
 
 	    <Node 	name="behavior"   >
 <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="15"/>
 
 <!--   <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 6 30"/> -->
 <!--   <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 6 30"/> -->
 		<MechanicalObject template="F332" name="F"  />
-	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+	    	<LinearMapping template="Mapping&lt;Quadratic,F332&gt;" assembleJ="false"/>
 
 		<Node 	name="E"   >
 		    <VisualStyle displayFlags="hideBehaviorModels " />
@@ -174,7 +174,7 @@
        	     <VisualStyle displayFlags="hideBehaviorModels " />
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     <UniformMass totalMass="10" />
-	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;" assembleJ="false"/>
+	     <LinearMapping template="Mapping&lt;Quadratic,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
 	    <Node 	name="collision"   >
@@ -186,12 +186,12 @@
 		<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
 		<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8"/>
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
 </Node>
