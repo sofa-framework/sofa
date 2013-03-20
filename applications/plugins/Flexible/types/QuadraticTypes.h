@@ -251,7 +251,7 @@ public:
         /// Project a point from the child frame to the parent frame
         SpatialCoord pointToParent( const SpatialCoord& v ) const
         {
-            return getQuadratic()*convertToQuadraticCoord(v) + getCenter();
+            return getQuadratic()*convertSpatialToQuadraticCoord(v) + getCenter();
         }
 
         /// Project a point from the parent frame to the child frame
@@ -264,6 +264,7 @@ public:
 //            QuadraticInv.invert( getQuadratic() );
 //            return QuadraticInv * (v-getCenter());
         }
+
 
 
         /// project to a rigid motion
@@ -397,6 +398,38 @@ static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
 {
     return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
 }
+
+
+// returns dp^* / dp
+
+template<typename Real>
+static Mat<2,1,Real> SpatialToQuadraticCoordGradient(const Vec<1,Real>& p)
+{
+    Mat<2,1,Real> M;
+    M(0,0)=1;     M(1,0)=2*p[0];
+    return M;
+}
+
+template<typename Real>
+static Mat<5,2,Real> SpatialToQuadraticCoordGradient(const Vec<2,Real>& p)
+{
+    Mat<5,2,Real> M;
+    for(unsigned int i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
+    M(4,0)=p[1];     M(4,1)=p[0];
+    return M;
+}
+
+template<typename Real>
+static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
+{
+    Mat<9,3,Real> M;
+    for(unsigned int i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
+    M(6,0)=p[1]; M(6,1)=p[0];
+    M(7,1)=p[2]; M(7,2)=p[1];
+    M(8,0)=p[2]; M(8,2)=p[0];
+    return M;
+}
+
 
 
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
