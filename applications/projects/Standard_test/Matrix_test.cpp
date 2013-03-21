@@ -28,8 +28,8 @@
 
 
 #include <gtest/gtest.h>
+#include "Sofa_test.h"
 
-//#include "EigenSparseMatrix.h"
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
@@ -48,6 +48,7 @@ using std::cerr;
 using std::endl;
 
 
+
 /** Sparse matrix test suite.
 
   Creates matrices of different types, sets their entries and checks that all the matrices are the same.
@@ -55,7 +56,7 @@ using std::endl;
   Perform matrix-vector products and compare the results.
   */
 template <typename _Real, unsigned NumRows, unsigned NumCols, unsigned BlockRows, unsigned BlockCols>
-struct TestSparseMatrices : public ::testing::Test
+struct TestSparseMatrices : public Sofa_test<_Real>
 {
     sofa::helper::RandomGenerator randomGenerator;
 
@@ -215,64 +216,6 @@ struct TestSparseMatrices : public ::testing::Test
 
     }
 
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    template<typename Matrix1, typename Matrix2>
-    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
-    {
-        bool result = true;
-        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) result = false;
-        for(unsigned i=0; i<m1.rowSize(); i++)
-            for(unsigned j=0; j<m1.colSize(); j++)
-                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) result = false;
-
-//        if( result == false ){
-//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
-//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
-//        }
-        return result;
-    }
-
-    /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    template<int M, int N, typename Real, typename Matrix2>
-    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
-    {
-        bool result = true;
-        if(M!=m2.rowSize() || N!=m2.colSize()) result= false;
-        for( unsigned i=0; i<M; i++ )
-            for( unsigned j=0; j<N; j++ )
-                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) {
-//                    cout<<"matricesAreEqual is false, difference = "<< fabs(m1(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
-                    result= false;
-                }
-
-//        if( result == false ){
-//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
-//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
-//        }
-        return result;
-    }
-
-
-    /// return true if the vectors have same size and all their entries are equal within the given tolerance
-    template< typename Vector1, typename Vector2>
-    static bool vectorsAreEqual( const Vector1& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
-    {
-        if( m1.size()!=m2.size() ) return false;
-        for( unsigned i=0; i<m1.size(); i++ )
-            if( fabs(m1.element(i)-m2.element(i))>tolerance  ) return false;
-        return true;
-    }
-
-
-    /// return true if the vectors have same size and all their entries are equal within the given tolerance
-    template< int N, typename Real, typename Vector2>
-    static bool vectorsAreEqual( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
-    {
-        if( N!=m2.size() ) return false;
-        for( unsigned i=0; i<N; i++ )
-            if( fabs(m1[i]-m2.element(i))>tolerance  ) return false;
-        return true;
-    }
 
 
 

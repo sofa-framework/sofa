@@ -1,4 +1,4 @@
 includeOnce($$_FILE_) {
-	declare(Standard_test, applications/projects/Standard_test, sofa_eigen2_solver sofa_component sofa_base_collision)
+	declare(Standard_test, applications/projects/Standard_test, sofa_eigen2_solver sofa_component sofa_base_collision sofagraph)
 	enable(Standard_test)
 }
