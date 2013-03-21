@@ -10,6 +10,8 @@
 #include <Eigen/Geometry>
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/Quat.h>
+
 #include <limits>
 
 // TODO include boost::math in sofa or implement SE3::sinc more precisely
@@ -48,14 +50,21 @@ struct SE3 {
 	}
 
 
-	// rotation quaternion
-	static quat rotation(const coord_type& at) {
-		return quat(at.getOrientation()[3],
-		            at.getOrientation()[0],
-		            at.getOrientation()[1],
-		            at.getOrientation()[2]);
+
+	//  quaternion conversion
+	static quat coord(const ::sofa::helper::Quater<real>& at) {
+		return quat(at[3],
+		            at[0],
+		            at[1],
+		            at[2]);
 	}
 
+	// rotation quaternion
+	static quat rotation(const coord_type& at) {
+		return coord(at.getOrientation() );
+	}
+
+	
 	// translation vector
 	static vec3 translation(const coord_type& at) {
 		return map( at.getCenter() );
