@@ -31,6 +31,9 @@ SOURCES = initFlexible.cpp \
     strainMapping/PlasticStrainMapping.cpp \
     strainMapping/RelativeStrainMapping.cpp \
     material/HookeForceField.cpp \
+    material/StabilizedHookeForceField.cpp \
+    material/NeoHookeanForceField.cpp \
+    material/StabilizedNeoHookeanForceField.cpp \
     material/MooneyRivlinForceField.cpp \
     material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
@@ -90,6 +93,12 @@ HEADERS = initFlexible.h \
     material/HookeForceField.h \
     material/HookeMaterialBlock.h \
     material/HookeMaterialBlock.inl \
+    material/StabilizedHookeForceField.h \
+    material/StabilizedHookeMaterialBlock.h \
+    material/NeoHookeanForceField.h \
+    material/NeoHookeanMaterialBlock.h \
+    material/StabilizedNeoHookeanForceField.h \
+    material/StabilizedNeoHookeanMaterialBlock.h \
     material/MooneyRivlinForceField.h \
     material/MooneyRivlinMaterialBlock.h \
     material/OgdenForceField.h \

@@ -47,7 +47,7 @@ using helper::vector;
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  F -> U, F -> D, F -> E (@warning for E, asStrain should be always true)
+////  F -> U, F -> D
 //////////////////////////////////////////////////////////////////////////////////
 
 template <class TIn, class TOut>
@@ -60,10 +60,16 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PrincipalStretchesMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
     Data<bool> asStrain;
+    Data<SReal> threshold;
+
 
     virtual void reinit()
     {
-        for(unsigned int i=0; i<this->jacobian.size(); i++) this->jacobian[i]._asStrain = asStrain.getValue();
+        for(unsigned int i=0; i<this->jacobian.size(); i++)
+        {
+            this->jacobian[i]._asStrain = asStrain.getValue();
+            this->jacobian[i]._threshold = threshold.getValue();
+        }
         Inherit::reinit();
     }
 
@@ -73,6 +79,7 @@ protected:
     PrincipalStretchesMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
         , asStrain(initData(&asStrain,false,"asStrain","compute principal stretches - 1"))
+        , threshold(initData(&threshold,-std::numeric_limits<SReal>::max(),"threshold","threshold the principal stretches to ensure detF=J=U1*U2*U3 is not too close or < 0"))
     {
     }
 

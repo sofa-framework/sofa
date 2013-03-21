@@ -31,6 +31,8 @@
 #include "../types/StrainTypes.h"
 #include "../material/BaseMaterial.h"
 
+#include <sofa/helper/decompose.h>
+
 namespace sofa
 {
 
@@ -39,7 +41,7 @@ namespace defaulttype
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  default implementation for U331 D331
+////  default implementation for U331
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class _T>
@@ -67,12 +69,13 @@ public:
     static const bool constantK=true;
 
     Real mu1Volonalpha1, mu2Volonalpha2, mu3Volonalpha3, alpha1, alpha2, alpha3, volond1, volond2, volond3;
+    bool stabilization;
 
     mutable MatBlock _K;
 
     static const Real MIN_DETERMINANT() {return 0.001;} ///< threshold to clamp J to avoid undefined deviatoric expressions
 
-    void init( Real mu1, Real mu2, Real mu3, Real _alpha1, Real _alpha2, Real _alpha3, Real d1, Real d2, Real d3 )
+    void init( Real mu1, Real mu2, Real mu3, Real _alpha1, Real _alpha2, Real _alpha3, Real d1, Real d2, Real d3, bool _stabilization )
     {
         alpha1=_alpha1;
         alpha2=_alpha2;
@@ -85,6 +88,8 @@ public:
         volond1 = vol/d1;
         volond2 = vol/d2;
         volond3 = vol/d3;
+
+        stabilization = _stabilization;
     }
 
     Real getPotentialEnergy(const Coord& x) const
@@ -164,16 +169,19 @@ public:
         _K[2][1] = _K[1][2];
         _K[2][2] = mu1Volonalpha1 * (pow(Jm13 * U1, alpha1) * alpha1 * alpha1 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha1) * alpha1 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha1) * alpha1 * alpha1 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha1) * alpha1 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha1) * alpha1 * alpha1 * pow(-Jm43 * J / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha1) * alpha1 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha1) * alpha1 * (-Jm43 * J / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha1) * alpha1 * (-Jm43 * J / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + mu2Volonalpha2 * (pow(Jm13 * U1, alpha2) * alpha2 * alpha2 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha2) * alpha2 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha2) * alpha2 * alpha2 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha2) * alpha2 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha2) * alpha2 * alpha2 * pow(-Jm43 * J / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha2) * alpha2 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha2) * alpha2 * (-Jm43 * J / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha2) * alpha2 * (-Jm43 * J / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + mu3Volonalpha3 * (pow(Jm13 * U1, alpha3) * alpha3 * alpha3 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha3) * alpha3 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha3) * alpha3 * alpha3 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha3) * alpha3 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha3) * alpha3 * alpha3 * pow(-Jm43 * J / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha3) * alpha3 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha3) * alpha3 * (-Jm43 * J / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha3) * alpha3 * (-Jm43 * J / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + 0.2e1 * volond1 * U1 * U1 * U2 * U2 + 0.12e2 * volond2 * pow(Jm1, 0.2e1) * U1 * U1 * U2 * U2 + 0.30e2 * volond3 * pow(Jm1, 0.4e1) * U1 * U1 * U2 * U2;
 
+        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
     {
-        df.getStrain() = -_K * dx.getStrain() * kfactor;
+        df.getStrain() -= _K * dx.getStrain() * kfactor;
     }
 
     MatBlock getK() const
     {
-        return _K;
+        return -_K;
     }
 
     MatBlock getC() const
