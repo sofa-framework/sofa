@@ -44,7 +44,7 @@ namespace defaulttype
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//// default implementation for strain matrices  F -> D, F -> E (@warning for E, asStrain should be always true)
+//// default implementation for strain matrices  F -> D
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -95,14 +95,13 @@ public:
     bool _degenerated;
 
     bool _asStrain;
+    Real _threshold;
 
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         Vec<material_dimensions,Real> S; // principal stretches
         _degenerated = helper::Decompose<Real>::SVD_stable( data.getF(), _U, S, _V );
-
-        if( !_degenerated ) helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
 
         // order 0
         if( _asStrain )
@@ -114,10 +113,12 @@ public:
         {
             for( int i=0 ; i<material_dimensions ; ++i )
             {
-                if( S[i]<0.6 ) S[i]=0.6; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small) @todo maybe this should be a parameter?
+                if( S[i]<_threshold ) S[i]=_threshold; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small)
                 result.getStrain()[i] += S[i];
             }
         }
+
+        if( !_degenerated ) _degenerated = !helper::Decompose<Real>::SVDGradient_dUdVOverdM( _U, S, _V, _dUOverdF, _dVOverdF );
 
         if( order > 0 )
         {
@@ -277,6 +278,7 @@ public:
     bool _degenerated;
 
     bool _asStrain;
+    Real _threshold;
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -294,7 +296,7 @@ public:
         {
             for( int i=0 ; i<material_dimensions ; ++i )
             {
-                if( S[i]<0.6 ) S[i]=0.6; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small) @todo maybe this should be a parameter?
+                if( S[i]<_threshold) S[i]=_threshold; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small)
                 result.getStrain()[i] += S[i];
             }
         }

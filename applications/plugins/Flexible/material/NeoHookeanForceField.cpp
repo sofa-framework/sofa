@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_OgdenFORCEFIELD_CPP
+#define SOFA_NeoHookeanFORCEFIELD_CPP
 
 #include "../initFlexible.h"
-#include "../material/OgdenForceField.h"
+#include "../material/NeoHookeanForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 
@@ -36,16 +36,19 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(OgdenForceField);
+SOFA_DECL_CLASS(NeoHookeanForceField);
 
 using namespace defaulttype;
 
 // Register in the Factory
-int OgdenForceFieldClass = core::RegisterObject("Ogden's Law for isotropic homogeneous materials")
-        .add< OgdenForceField< U331Types > >(true)
+int NeoHookeanForceFieldClass = core::RegisterObject("NeoHookean's Law for isotropic homogeneous materials")
+
+        .add< NeoHookeanForceField< I331Types > >(true)
+        .add< NeoHookeanForceField< U331Types > >()
         ;
 
-template class SOFA_Flexible_API OgdenForceField< U331Types >;
+template class SOFA_Flexible_API NeoHookeanForceField< I331Types >;
+template class SOFA_Flexible_API NeoHookeanForceField< U331Types >;
 
 }
 }

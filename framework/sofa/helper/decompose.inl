@@ -27,6 +27,7 @@
 
 #include "decompose.h"
 
+#include <limits>
 
 namespace sofa
 {
@@ -1886,10 +1887,11 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaultty
 }
 
 
-template<class Real>
-void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM )
-{
+#define TIKHONOV_REGULARIZATION
 
+template<class Real>
+bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM )
+{
     Mat< 3,3, Mat<3,3,Real> > omegaU, omegaV;
 
     for( int i=0 ; i<3 ; ++i ) // line of dM
@@ -1910,12 +1912,16 @@ void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &
                 }
                 else
                 {
+#ifndef TIKHONOV_REGULARIZATION
+                    return false;
+#else
                     // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
                     defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
                     AtA[0][0] += (Real)1;
                     AtA[1][1] += (Real)1;
                     invA.invert( AtA );
                     w = invA.multTransposed( A ) * v;
+#endif
                 }
 
                 //dU[k*3+l][i*3+j] = w[0]; dU[l*3+k][i*3+j] = -w[0];
@@ -1962,12 +1968,14 @@ void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &
 //                    dU[i][j] += dUOverdM[i*3+j][k*3+l] * dM[k][l];
 //            }
 
+    return true;
+
 }
 
 
 
 template<class Real>
-void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM )
+bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM )
 {
     Mat< 3,2, Mat<3,2,Real> > dUdMij;
     Mat< 3,2, Mat<2,2,Real> > dVdMij;
@@ -1988,12 +1996,16 @@ void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &
             }
             else
             {
+#ifndef TIKHONOV_REGULARIZATION
+                    return false;
+#else
                 // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
                 defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
                 AtA[0][0] += (Real)1;
                 AtA[1][1] += (Real)1;
                 invA.invert( AtA );
                 w = invA.multTransposed( A ) * v;
+#endif
             }
 
             omegaU[0][1] = w[0]; omegaU[1][0] = -w[0];
@@ -2014,11 +2026,13 @@ void Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &
                 for( int i=0 ; i<2 ; ++i )
                     dVOverdM[i*2+j][k*2+l] = dVdMij[k][l][i][j];
             }
+
+    return true;
 }
 
 
 template<class Real>
-void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV )
+bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV )
 {
     defaulttype::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
     defaulttype::Mat<3,3,Real> omegaU, omegaV;
@@ -2038,12 +2052,16 @@ void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, con
         }
         else
         {
+#ifndef TIKHONOV_REGULARIZATION
+                    return false;
+#else
             // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
             defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
             AtA[0][0] += (Real)1;
             AtA[1][1] += (Real)1;
             invA.invert( AtA );
             w = invA.multTransposed( A ) * v;
+#endif
         }
 
         omegaU[i][j] = w[0]; omegaU[j][i] = -w[0];
@@ -2052,11 +2070,13 @@ void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, con
 
     dU = U * omegaU;
     dV = omegaV * V;
+
+    return true;
 }
 
 
 template<class Real>
-void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV )
+bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV )
 {
     defaulttype::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
     defaulttype::Mat<2,2,Real> omegaU;
@@ -2074,12 +2094,16 @@ void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, con
     }
     else
     {
+#ifndef TIKHONOV_REGULARIZATION
+                    return false;
+#else
         // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
         defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
         AtA[0][0] += (Real)1;
         AtA[1][1] += (Real)1;
         invA.invert( AtA );
         w = invA.multTransposed( A ) * v;
+#endif
     }
 
     omegaU[0][1] = w[0]; omegaU[1][0] = -w[0];
@@ -2087,6 +2111,488 @@ void Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, con
 
     dU = U * omegaU;
     dV = omegaV * V;
+
+    return true;
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////
+
+
+// Numerical diagonalization of 3x3 matrcies
+// Copyright (C) 2006  Joachim Kopp
+// http://www.mpi-hd.mpg.de/personalhomes/globes/3x3/
+
+static const double M_SQRT3 = 1.73205080756887729352744634151;   // sqrt(3)
+
+template <class Real>
+int dsyevc3( const defaulttype::Mat<3,3,Real> &A, defaulttype::Vec<3,Real> &w)
+// ----------------------------------------------------------------------------
+// Calculates the eigenvalues of a symmetric 3x3 matrix A using Cardano's
+// analytical algorithm.
+// Only the diagonal and upper triangular parts of A are accessed. The access
+// is read-only.
+// ----------------------------------------------------------------------------
+// Parameters:
+//   A: The symmetric input matrix
+//   w: Storage buffer for eigenvalues
+// ----------------------------------------------------------------------------
+// Return value:
+//   0: Success
+//  -1: Error
+// ----------------------------------------------------------------------------
+{
+  Real m, c1, c0;
+
+  // Determine coefficients of characteristic poynomial. We write
+  //       | a   d   f  |
+  //  A =  | d*  b   e  |
+  //       | f*  e*  c  |
+  Real de = A[0][1] * A[1][2];                                    // d * e
+  Real dd = helper::SQR(A[0][1]);                                         // d^2
+  Real ee = helper::SQR(A[1][2]);                                         // e^2
+  Real ff = helper::SQR(A[0][2]);                                         // f^2
+  m  = A[0][0] + A[1][1] + A[2][2];
+  c1 = (A[0][0]*A[1][1] + A[0][0]*A[2][2] + A[1][1]*A[2][2])        // a*b + a*c + b*c - d^2 - e^2 - f^2
+          - (dd + ee + ff);
+  c0 = A[2][2]*dd + A[0][0]*ee + A[1][1]*ff - A[0][0]*A[1][1]*A[2][2]
+            - 2.0 * A[0][2]*de;                                     // c*d^2 + a*e^2 + b*f^2 - a*b*c - 2*f*d*e)
+
+  Real p, sqrt_p, q, c, s, phi;
+  p = helper::SQR(m) - 3.0*c1;
+  q = m*(p - (3.0/2.0)*c1) - (27.0/2.0)*c0;
+  sqrt_p = sqrt(fabs(p));
+
+  phi = 27.0 * ( 0.25*helper::SQR(c1)*(p - c1) + c0*(q + 27.0/4.0*c0));
+  phi = (1.0/3.0) * atan2(sqrt(fabs(phi)), q);
+
+  c = sqrt_p*cos(phi);
+  s = (1.0/M_SQRT3)*sqrt_p*sin(phi);
+
+  w[1]  = (1.0/3.0)*(m - c);
+  w[2]  = w[1] + s;
+  w[0]  = w[1] + c;
+  w[1] -= s;
+
+  return 0;
+}
+
+
+
+
+
+template <class Real>
+inline void dsytrd3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &d, defaulttype::Vec<3,Real> &e)
+// ----------------------------------------------------------------------------
+// Reduces a symmetric 3x3 matrix to tridiagonal form by applying
+// (unitary) Householder transformations:
+//            [ d[0]  e[0]       ]
+//    A = Q . [ e[0]  d[1]  e[1] ] . Q^T
+//            [       e[1]  d[2] ]
+// The function accesses only the diagonal and upper triangular parts of
+// A. The access is read-only.
+// ---------------------------------------------------------------------------
+{
+  const int n = 3;
+  Real u[n], q[n];
+  Real omega, f;
+  Real K, h, g;
+
+  // Initialize Q to the identitity matrix
+#ifndef EVALS_ONLY
+  for (int i=0; i < n; i++)
+  {
+    Q[i][i] = 1.0;
+    for (int j=0; j < i; j++)
+      Q[i][j] = Q[j][i] = 0.0;
+  }
+#endif
+
+  // Bring first row and column to the desired form
+  h = helper::SQR(A[0][1]) + helper::SQR(A[0][2]);
+  if (A[0][1] > 0)
+    g = -sqrt(h);
+  else
+    g = sqrt(h);
+  e[0] = g;
+  f    = g * A[0][1];
+  u[1] = A[0][1] - g;
+  u[2] = A[0][2];
+
+  omega = h - f;
+  if (omega > 0.0)
+  {
+    omega = 1.0 / omega;
+    K     = 0.0;
+    for (int i=1; i < n; i++)
+    {
+      f    = A[1][i] * u[1] + A[i][2] * u[2];
+      q[i] = omega * f;                  // p
+      K   += u[i] * f;                   // u* A u
+    }
+    K *= 0.5 * helper::SQR(omega);
+
+    for (int i=1; i < n; i++)
+      q[i] = q[i] - K * u[i];
+
+    d[0] = A[0][0];
+    d[1] = A[1][1] - 2.0*q[1]*u[1];
+    d[2] = A[2][2] - 2.0*q[2]*u[2];
+
+    // Store inverse Householder transformation in Q
+#ifndef EVALS_ONLY
+    for (int j=1; j < n; j++)
+    {
+      f = omega * u[j];
+      for (int i=1; i < n; i++)
+        Q[i][j] = Q[i][j] - f*u[i];
+    }
+#endif
+
+    // Calculate updated A[1][2] and store it in e[1]
+    e[1] = A[1][2] - q[1]*u[2] - u[1]*q[2];
+  }
+  else
+  {
+    for (int i=0; i < n; i++)
+      d[i] = A[i][i];
+    e[1] = A[1][2];
+  }
+}
+
+
+template <class Real>
+int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w)
+// ----------------------------------------------------------------------------
+// Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
+// matrix A using the QL algorithm with implicit shifts, preceded by a
+// Householder reduction to tridiagonal form.
+// The function accesses only the diagonal and upper triangular parts of A.
+// The access is read-only.
+// ----------------------------------------------------------------------------
+// Parameters:
+//   A: The symmetric input matrix
+//   Q: Storage buffer for eigenvectors
+//   w: Storage buffer for eigenvalues
+// ----------------------------------------------------------------------------
+// Return value:
+//   0: Success
+//  -1: Error (no convergence)
+{
+  const int n = 3;
+  defaulttype::Vec<3,Real> e;                   // The third element is used only as temporary workspace
+  Real g, r, p, f, b, s, c, t; // Intermediate storage
+  int nIter;
+  int m;
+
+  // Transform A to real tridiagonal form by the Householder method
+  dsytrd3(A, Q, w, e);
+
+  // Calculate eigensystem of the remaining real symmetric tridiagonal matrix
+  // with the QL method
+  //
+  // Loop over all off-diagonal elements
+  for (int l=0; l < n-1; l++)
+  {
+    nIter = 0;
+    while (1)
+    {
+      // Check for convergence and exit iteration loop if off-diagonal
+      // element e(l) is zero
+      for (m=l; m <= n-2; m++)
+      {
+        g = fabs(w[m])+fabs(w[m+1]);
+        if (fabs(e[m]) + g == g)
+          break;
+      }
+      if (m == l)
+        break;
+
+      if (nIter++ >= 30)
+        return -1;
+
+      // Calculate g = d_m - k
+      g = (w[l+1] - w[l]) / (e[l] + e[l]);
+      r = sqrt(g*g + 1.0);
+      if (g > 0)
+        g = w[m] - w[l] + e[l]/(g + r);
+      else
+        g = w[m] - w[l] + e[l]/(g - r);
+
+      s = c = 1.0;
+      p = 0.0;
+      for (int i=m-1; i >= l; i--)
+      {
+        f = s * e[i];
+        b = c * e[i];
+        if (fabs(f) > fabs(g))
+        {
+          c      = g / f;
+          r      = sqrt(c*c + 1.0);
+          e[i+1] = f * r;
+          c     *= (s = 1.0/r);
+        }
+        else
+        {
+          s      = f / g;
+          r      = sqrt(s*s + 1.0);
+          e[i+1] = g * r;
+          s     *= (c = 1.0/r);
+        }
+
+        g = w[i+1] - p;
+        r = (w[i] - g)*s + 2.0*c*b;
+        p = s * r;
+        w[i+1] = g + p;
+        g = c*r - b;
+
+        // Form eigenvectors
+#ifndef EVALS_ONLY
+        for (int k=0; k < n; k++)
+        {
+          t = Q[k][i+1];
+          Q[k][i+1] = s*Q[k][i] + c*t;
+          Q[k][i]   = c*Q[k][i] - s*t;
+        }
+#endif
+      }
+      w[l] -= p;
+      e[l]  = g;
+      e[m]  = 0.0;
+    }
+  }
+
+  return 0;
+}
+
+
+
+
+
+template<class Real>
+int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w )
+// ----------------------------------------------------------------------------
+// originally named dsyevh3
+// Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
+// matrix A using Cardano's method for the eigenvalues and an analytical
+// method based on vector cross products for the eigenvectors. However,
+// if conditions are such that a large error in the results is to be
+// expected, the routine falls back to using the slower, but more
+// accurate QL algorithm. Only the diagonal and upper triangular parts of A need
+// to contain meaningful values. Access to A is read-only.
+// ----------------------------------------------------------------------------
+// Parameters:
+//   A: The symmetric input matrix
+//   Q: Storage buffer for eigenvectors
+//   w: Storage buffer for eigenvalues
+// ----------------------------------------------------------------------------
+// Return value:
+//   0: Success
+//  -1: Error
+// ----------------------------------------------------------------------------
+// Dependencies:
+//   dsyevc3(), dsytrd3(), dsyevq3()
+// ----------------------------------------------------------------------------
+// Version history:
+//   v1.1: Simplified fallback condition --> speed-up
+//   v1.0: First released version
+// ----------------------------------------------------------------------------
+{
+#ifndef EVALS_ONLY
+  Real norm;          // Squared norm or inverse norm of current eigenvector
+//  Real n0, n1;        // Norm of first and second columns of A
+  Real error;         // Estimated maximum roundoff error
+  Real t, u;          // Intermediate storage
+  int j;                // Loop counter
+#endif
+
+  // Calculate eigenvalues
+  dsyevc3(A, w);
+
+#ifndef EVALS_ONLY
+//  n0 = SQR(A[0][0]) + SQR(A[0][1]) + SQR(A[0][2]);
+//  n1 = SQR(A[0][1]) + SQR(A[1][1]) + SQR(A[1][2]);
+
+  t = fabs(w[0]);
+  if ((u=fabs(w[1])) > t)
+    t = u;
+  if ((u=fabs(w[2])) > t)
+    t = u;
+  if (t < 1.0)
+    u = t;
+  else
+    u = helper::SQR(t);
+  error = 256.0 * std::numeric_limits<Real>::epsilon() * helper::SQR(u);
+//  error = 256.0 * std::numeric_limits<Real>::epsilon() * (n0 + u) * (n1 + u);
+
+  Q[0][1] = A[0][1]*A[1][2] - A[0][2]*A[1][1];
+  Q[1][1] = A[0][2]*A[0][1] - A[1][2]*A[0][0];
+  Q[2][1] = SQR(A[0][1]);
+
+  // Calculate first eigenvector by the formula
+  //   v[0] = (A - w[0]).e1 x (A - w[0]).e2
+  Q[0][0] = Q[0][1] + A[0][2]*w[0];
+  Q[1][0] = Q[1][1] + A[1][2]*w[0];
+  Q[2][0] = (A[0][0] - w[0]) * (A[1][1] - w[0]) - Q[2][1];
+  norm    = helper::SQR(Q[0][0]) + helper::SQR(Q[1][0]) + helper::SQR(Q[2][0]);
+
+  // If vectors are nearly linearly dependent, or if there might have
+  // been large cancellations in the calculation of A[i][i] - w[0], fall
+  // back to QL algorithm
+  // Note that this simultaneously ensures that multiple eigenvalues do
+  // not cause problems: If w[0] = w[1], then A - w[0] * I has rank 1,
+  // i.e. all columns of A - w[0] * I are linearly dependent.
+  if (norm <= error)
+    return dsyevq3(A, Q, w);
+  else                      // This is the standard branch
+  {
+    norm = sqrt(1.0 / norm);
+    for (j=0; j < 3; j++)
+      Q[j][0] = Q[j][0] * norm;
+  }
+
+  // Calculate second eigenvector by the formula
+  //   v[1] = (A - w[1]).e1 x (A - w[1]).e2
+  Q[0][1]  = Q[0][1] + A[0][2]*w[1];
+  Q[1][1]  = Q[1][1] + A[1][2]*w[1];
+  Q[2][1]  = (A[0][0] - w[1]) * (A[1][1] - w[1]) - Q[2][1];
+  norm     = helper::SQR(Q[0][1]) + helper::SQR(Q[1][1]) + helper::SQR(Q[2][1]);
+  if (norm <= error)
+    return dsyevq3(A, Q, w);
+  else
+  {
+    norm = sqrt(1.0 / norm);
+    for (j=0; j < 3; j++)
+      Q[j][1] = Q[j][1] * norm;
+  }
+
+  // Calculate third eigenvector according to
+  //   v[2] = v[0] x v[1]
+  Q[0][2] = Q[1][0]*Q[2][1] - Q[2][0]*Q[1][1];
+  Q[1][2] = Q[2][0]*Q[0][1] - Q[0][0]*Q[2][1];
+  Q[2][2] = Q[0][0]*Q[1][1] - Q[1][0]*Q[0][1];
+#endif
+
+  return 0;
+}
+
+
+
+/// project a symetric 3x3 matrix to the nearest SSPD (symetric semi-positive definite)
+template<class Real>
+void Decompose<Real>::SSPDProjection( defaulttype::Mat<3,3,Real> &A )
+{
+    defaulttype::Mat<3,3,Real> Q;
+    defaulttype::Vec<3,Real> w;
+    if( !symetricDiagonalization( A, Q, w ) )
+    {
+        bool modified = false;
+        for( int i=0 ; i<3 ; ++i )
+            if( w[i] < 0 ){ w[i] = 0; modified = true; }
+
+        if( modified )
+        {
+//            defaulttype::Mat<3,3,Real> invQ; invQ.invert( Q );
+//            A = Q.multDiagonal( w )*invQ;
+            A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T
+        }
+    }
+}
+
+
+template<class Real>
+inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
+                   Real &cs, Real &sn)
+// ----------------------------------------------------------------------------
+// Calculates the eigensystem of a real symmetric 2x2 matrix
+//    [ A  B ]
+//    [ B  C ]
+// in the form
+//    [ A  B ]  =  [ cs  -sn ] [ rt1   0  ] [  cs  sn ]
+//    [ B  C ]     [ sn   cs ] [  0   rt2 ] [ -sn  cs ]
+// where rt1 >= rt2. Note that this convention is different from the one used
+// in the LAPACK routine DLAEV2, where |rt1| >= |rt2|.
+// ----------------------------------------------------------------------------
+{
+  Real sm = A + C;
+  Real df = A - C;
+  Real rt = sqrt(helper::SQR(df) + 4.0*B*B);
+  Real t;
+
+  if (sm > 0.0)
+  {
+    rt1 = 0.5 * (sm + rt);
+    t = 1.0/rt1;
+    rt2 = (A*t)*C - (B*t)*B;
+  }
+  else if (sm < 0.0)
+  {
+    rt2 = 0.5 * (sm - rt);
+    t = 1.0/rt2;
+    rt1 = (A*t)*C - (B*t)*B;
+  }
+  else       // This case needs to be treated separately to avoid div by 0
+  {
+    rt1 = 0.5 * rt;
+    rt2 = -0.5 * rt;
+  }
+
+  // Calculate eigenvectors
+  if (df > 0.0)
+    cs = df + rt;
+  else
+    cs = df - rt;
+
+  if (fabs(cs) > 2.0*fabs(B))
+  {
+    t   = -2.0 * B / cs;
+    sn = 1.0 / sqrt(1.0 + helper::SQR(t));
+    cs = t * sn;
+  }
+  else if (fabs(B) == 0.0)
+  {
+    cs = 1.0;
+    sn = 0.0;
+  }
+  else
+  {
+    t   = -0.5 * cs / B;
+    cs = 1.0 / sqrt(1.0 + helper::SQR(t));
+    sn = t * cs;
+  }
+
+  if (df > 0.0)
+  {
+    t   = cs;
+    cs = -sn;
+    sn = t;
+  }
+}
+
+
+
+
+/// project a symetric 2x2 matrix to the nearest SSPD (symetric semi-positive definite)
+template<class Real>
+void Decompose<Real>::SSPDProjection( defaulttype::Mat<2,2,Real> &A )
+{
+    defaulttype::Mat<2,2,Real> Q;
+    defaulttype::Vec<2,Real> w;
+    dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
+
+    bool modified = false;
+    for( int i=0 ; i<2 ; ++i )
+        if( w[i] < 0 ){ w[i] = 0; modified = true; }
+
+    if( modified )
+    {
+        Q[1][1] = Q[0][0];
+        Q[0][1] = -Q[1][0];
+
+        A = Q.multDiagonal( w ).multTransposed( Q ); // A = Q*wId*Q^T
+    }
 }
 
 

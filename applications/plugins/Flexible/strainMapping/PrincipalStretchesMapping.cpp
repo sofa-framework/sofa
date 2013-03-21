@@ -51,10 +51,6 @@ int PrincipalStretchesMappingClass = core::RegisterObject("Map Deformation Gradi
         .add< PrincipalStretchesMapping< F331Types, D331Types > >()
         .add< PrincipalStretchesMapping< F321Types, D321Types > >()
         .add< PrincipalStretchesMapping< F332Types, D332Types > >()
-
-        .add< PrincipalStretchesMapping< F331Types, E331Types > >()
-        .add< PrincipalStretchesMapping< F321Types, E321Types > >()
-        .add< PrincipalStretchesMapping< F332Types, E332Types > >()
         ;
 
 template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, U331Types >;
@@ -63,10 +59,6 @@ template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, U321Types
 template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, D331Types >;
 template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, D321Types >;
 template class SOFA_Flexible_API PrincipalStretchesMapping< F332Types, D332Types >;
-
-template class SOFA_Flexible_API PrincipalStretchesMapping< F331Types, E331Types >;
-template class SOFA_Flexible_API PrincipalStretchesMapping< F321Types, E321Types >;
-template class SOFA_Flexible_API PrincipalStretchesMapping< F332Types, E332Types >;
 
 
 } // namespace mapping

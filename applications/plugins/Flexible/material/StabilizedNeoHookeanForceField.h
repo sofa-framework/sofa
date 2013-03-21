@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MooneyRivlinFORCEFIELD_H
-#define SOFA_MooneyRivlinFORCEFIELD_H
+#ifndef SOFA_StabilizedNeoHookeanFORCEFIELD_H
+#define SOFA_StabilizedNeoHookeanFORCEFIELD_H
 
 #include "../initFlexible.h"
 #include "../material/BaseMaterialForceField.h"
-#include "../material/MooneyRivlinMaterialBlock.h"
+#include "../material/StabilizedNeoHookeanMaterialBlock.h"
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -41,38 +41,37 @@ namespace forcefield
 
 using helper::vector;
 
-/** Apply MooneyRivlin's Law for isotropic homogeneous incompressible materials.
-  * The energy is : C1 ( I1/ I3^1/3  - 3)  + C2 ( I2/ I3^2/3  - 3) + bulk/2 (I3-1)^2
+/** Apply stabilized NeoHookean's Law for isotropic homogeneous incompressible materials from principal stretches.
+  * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12
+  *
+  * W = mu/2(I1-3)-mu.ln(J)+lambda/2(ln(J))^2
 */
 
 template <class _DataTypes>
-class MooneyRivlinForceField : public BaseMaterialForceFieldT<defaulttype::MooneyRivlinMaterialBlock<_DataTypes> >
+class StabilizedNeoHookeanForceField : public BaseMaterialForceFieldT<defaulttype::StabilizedNeoHookeanMaterialBlock<_DataTypes> >
 {
 public:
-    typedef defaulttype::MooneyRivlinMaterialBlock<_DataTypes> BlockType;
+    typedef defaulttype::StabilizedNeoHookeanMaterialBlock<_DataTypes> BlockType;
     typedef BaseMaterialForceFieldT<BlockType> Inherit;
 
-    SOFA_CLASS(SOFA_TEMPLATE(MooneyRivlinForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceFieldT, BlockType));
+    SOFA_CLASS(SOFA_TEMPLATE(StabilizedNeoHookeanForceField,_DataTypes),SOFA_TEMPLATE(BaseMaterialForceFieldT, BlockType));
 
     typedef typename Inherit::Real Real;
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_C1;
-    Data<vector<Real> > f_C2;
-    Data<vector<Real> > f_bulk;
-    Data<bool > f_SSPDStabilization;
+    Data<vector<Real> > _youngModulus;
+    Data<vector<Real> > _poissonRatio;
     //@}
 
     virtual void reinit()
     {
-        Real C1=0,C2=0,bulk=0;
+        Real ym=0,pr=0;
         for(unsigned int i=0; i<this->material.size(); i++)
         {
-            if(i<f_C1.getValue().size()) C1=f_C1.getValue()[i]; else if(f_C1.getValue().size()) C1=f_C1.getValue()[0];
-            if(i<f_C2.getValue().size()) C2=f_C2.getValue()[i]; else if(f_C2.getValue().size()) C2=f_C2.getValue()[0];
-            if(i<f_bulk.getValue().size()) bulk=f_bulk.getValue()[i]; else if(f_bulk.getValue().size()) bulk=f_bulk.getValue()[0];
-            this->material[i].init( C1, C2, bulk, f_SSPDStabilization.getValue() );
+            if(i<_youngModulus.getValue().size()) ym=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) ym=_youngModulus.getValue()[0];
+            if(i<_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[0];
+            this->material[i].init( ym, pr );
         }
         Inherit::reinit();
     }
@@ -81,24 +80,22 @@ public:
     {
         if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
         {
-            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty() || f_SSPDStabilization.isDirty() ) reinit();
+            if(_youngModulus.isDirty() || _poissonRatio.isDirty() ) reinit();
         }
     }
 
 
 protected:
-    MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
+    StabilizedNeoHookeanForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
-        , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
-        , f_bulk(initData(&f_bulk,vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
-        , f_SSPDStabilization(initData(&f_SSPDStabilization,false,"SSPDStabilization","project stiffness matrix to its nearest symetric semi-positive definite matrix"))
+        , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
+        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);
     }
 
-    virtual ~MooneyRivlinForceField()     {    }
+    virtual ~StabilizedNeoHookeanForceField()     {    }
 
 };
 
