@@ -1,0 +1,209 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program; if not, write to the Free Software Foundation, Inc., 51  *
+* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+*******************************************************************************
+*                            SOFA :: Applications                             *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
+
+#include "Sofa_test.h"
+#include <sofa/component/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/defaulttype/VecTypes.h>
+//#include <sofa/defaulttype/RigidTypes.h>
+
+//#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+//#include <sofa/component/linearsolver/SparseMatrix.h>
+//#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+//#include <sofa/component/linearsolver/FullMatrix.h>
+//#include <sofa/component/linearsolver/FullVector.h>
+//#include <sofa/defaulttype/Mat.h>
+//#include <sofa/defaulttype/Vec.h>
+//#include <sofa/defaulttype/VecTypes.h>
+//#include <sofa/helper/RandomGenerator.h>
+
+//#include <ctime>
+
+
+using std::cout;
+using std::cerr;
+using std::endl;
+using namespace sofa;
+using namespace sofa::component;
+using namespace sofa::defaulttype;
+
+
+
+/**  Test suite for ProjectToPlaneConstraint
+  */
+template <typename _DataTypes>
+struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Real>
+{
+    typedef _DataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::CPos CPos;
+    typedef typename Coord::value_type Real;
+    typedef projectiveconstraintset::ProjectToPlaneConstraint<DataTypes> ProjectToPlaneConstraint;
+    typedef typename ProjectToPlaneConstraint::Indices Indices;
+    typedef topology::PointSetTopologyContainer PointSetTopologyContainer;
+    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+
+    simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
+
+    unsigned numNodes;                         ///< number of particles used for the test
+    Indices indices;                           ///< indices of the nodes to project
+    CPos origin;                               ///< origin of the plane to project to
+    CPos normal;                               ///< normal of the plane to project to
+    typename ProjectToPlaneConstraint::SPtr projection;
+    typename MechanicalObject::SPtr dofs;
+
+    /// Create the context for the matrix tests.
+    ProjectToPlaneConstraint_test()
+    {        
+        cerr<<"begin ProjectToPlaneConstraint_test::init"<<endl;
+        sofa::component::init();
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+
+        /// Create the scene
+        root = simulation->createNewGraph("root");
+
+        PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+        root->addObject(topology);
+
+        dofs = New<MechanicalObject>();
+        root->addObject(dofs);
+
+        projection = New<ProjectToPlaneConstraint>();
+        root->addObject(projection);
+
+        /// Set the values
+        numNodes = 3;
+        dofs->resize(numNodes);
+
+
+        origin = CPos(0,0,0);
+        projection->f_origin.setValue(origin);
+        normal = CPos(1,1,1);
+        projection->f_normal.setValue(normal);
+        indices.push_back(1);
+        projection->f_indices.setValue(indices);
+        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
+
+        /// Init
+        sofa::simulation::getSimulation()->init(root.get());
+
+    }
+
+    bool test_projectPosition()
+    {
+       VecCoord xprev(numNodes);
+       typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
+       for (unsigned i=0; i<numNodes; i++){
+           xprev[i] = x[i] = CPos(i,0,0);
+       }
+       cerr<<"test_projectPosition, x before = " << x << endl;
+       projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       cerr<<"test_projectPosition, x after = " << x << endl;
+
+       bool succeed=true;
+       typename Indices::const_iterator it = indices.begin(); // must be sorted
+       for(unsigned i=0; i<numNodes; i++ )
+       {
+           if( i==*it )  // constrained particle
+           {
+              Real scal = (x[i]-origin)*normal; // null if x is in the plane
+              cerr<<"scal = "<< scal << endl;
+              if( !isSmall(scal,100) )
+                  succeed = false;
+               it++;
+           }
+           else           // unconstrained particle: check that it has not changed
+           {
+              CPos dx = x[i]-xprev[i];
+              Real scal = dx*dx;
+              cerr<<"scal gap = "<< scal << endl;
+              if( !isSmall(scal,100) )
+                  succeed = false;
+           }
+
+       }
+       if(succeed) cerr<<"succeed ! "<< endl;
+       else cerr<<"failed…"<<endl;
+       return succeed;
+    }
+
+    bool test_projectVelocity()
+    {
+       VecDeriv vprev(numNodes);
+       typename MechanicalObject::WriteVecDeriv v = dofs->writeVelocities();
+       for (unsigned i=0; i<numNodes; i++){
+           vprev[i] = v[i] = CPos(i,0,0);
+       }
+       cerr<<"test_projectVelocity, v before = " << v << endl;
+       projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
+       cerr<<"test_projectVelocity, v after = " << v << endl;
+
+       bool succeed=true;
+       typename Indices::const_iterator it = indices.begin(); // must be sorted
+       for(unsigned i=0; i<numNodes; i++ )
+       {
+           if( i==*it )  // constrained particle
+           {
+              Real scal = v[i]*normal; // null if v is in the plane
+              cerr<<"scal = "<< scal << endl;
+              if( !isSmall(scal,100) )
+                  succeed = false;
+               it++;
+           }
+           else           // unconstrained particle: check that it has not changed
+           {
+              CPos dv = v[i]-vprev[i];
+              Real scal = dv*dv;
+              cerr<<"scal gap = "<< scal << endl;
+              if( !isSmall(scal,100) )
+                  succeed = false;
+           }
+
+       }
+
+       if(succeed) cerr<<"succeed ! "<< endl;
+       else cerr<<"failed…"<<endl;
+       return succeed;
+    }
+
+
+ };
+
+
+/// well-fitted blocs
+typedef ProjectToPlaneConstraint_test<Vec3dTypes> ProjectToPlaneConstraint_test3d;
+TEST_F(ProjectToPlaneConstraint_test3d, projectPosition ) { ASSERT_TRUE(  test_projectPosition() ); }
+TEST_F(ProjectToPlaneConstraint_test3d, projectVelocity ) { ASSERT_TRUE(  test_projectVelocity() ); }
+

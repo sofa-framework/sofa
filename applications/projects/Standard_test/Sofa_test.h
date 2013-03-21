@@ -1,0 +1,114 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program; if not, write to the Free Software Foundation, Inc., 51  *
+* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+*******************************************************************************
+*                            SOFA :: Applications                             *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef SOFA_STANDARDTEST_Sofa_test_H
+#define SOFA_STANDARDTEST_Sofa_test_H
+
+
+
+#include <gtest/gtest.h>
+#include <sofa/defaulttype/Mat.h>
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
+/** Base class for all Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
+  */
+template <typename _Real>
+struct Sofa_test : public ::testing::Test
+{
+    typedef _Real Real; ///< Scalar type
+
+    /// true if the magnitude of r is less than ratio*numerical precision
+    static bool isSmall(Real r, Real factor=1. ){
+        return fabs(r) < factor * std::numeric_limits<Real>::epsilon();
+    }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<typename Matrix1, typename Matrix2>
+    static bool matricesAreEqual( const Matrix1& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100)
+    {
+        bool result = true;
+        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()) result = false;
+        for(unsigned i=0; i<m1.rowSize(); i++)
+            for(unsigned j=0; j<m1.colSize(); j++)
+                if(abs(m1.element(i,j)-m2.element(i,j))>tolerance) result = false;
+
+//        if( result == false ){
+//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
+//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
+//        }
+        return result;
+    }
+
+    /// return true if the matrices have same size and all their entries are equal within the given tolerance
+    template<int M, int N, typename Real, typename Matrix2>
+    static bool matricesAreEqual( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2, double tolerance=std::numeric_limits<Real>::epsilon()*100 )
+    {
+        bool result = true;
+        if(M!=m2.rowSize() || N!=m2.colSize()) result= false;
+        for( unsigned i=0; i<M; i++ )
+            for( unsigned j=0; j<N; j++ )
+                if( fabs(m1(i,j)-m2.element(i,j))>tolerance  ) {
+//                    cout<<"matricesAreEqual is false, difference = "<< fabs(m1(i,j)-m2.element(i,j)) << " is larger than " << tolerance << endl;
+                    result= false;
+                }
+
+//        if( result == false ){
+//            cout<<"matricesAreEqual is false, matrix 1 = "<< m1 <<endl;
+//            cout<<"matricesAreEqual is false, matrix 2 = "<< m2 <<endl;
+//        }
+        return result;
+    }
+
+
+    /// return true if the vectors have same size and all their entries are equal within the given tolerance
+    template< typename Vector1, typename Vector2>
+    static bool vectorsAreEqual( const Vector1& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if( m1.size()!=m2.size() ) return false;
+        for( unsigned i=0; i<m1.size(); i++ )
+            if( fabs(m1.element(i)-m2.element(i))>tolerance  ) return false;
+        return true;
+    }
+
+
+    /// return true if the vectors have same size and all their entries are equal within the given tolerance
+    template< int N, typename Real, typename Vector2>
+    static bool vectorsAreEqual( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
+    {
+        if( N!=m2.size() ) return false;
+        for( unsigned i=0; i<N; i++ )
+            if( fabs(m1[i]-m2.element(i))>tolerance  ) return false;
+        return true;
+    }
+
+};
+
+#endif
+
+
+
+
