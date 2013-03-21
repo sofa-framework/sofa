@@ -58,6 +58,7 @@ public:
     enum {material_dimensions = OutDataTypes::spatial_dimensions};
     static const bool positionMapped=true; ///< tells if spatial positions are included in output state
     static const bool FMapped=false;        ///< tells if deformation gradients are included in output state
+    static Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
@@ -67,6 +68,8 @@ public:
     enum {material_dimensions = _material_dimensions};
     static const bool positionMapped=false;
     static const bool FMapped=true;
+    typedef defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> inherit;
+    static typename inherit::Frame getF(const typename inherit::Deriv & outC)  { return outC.getF(); }
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -76,6 +79,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
+    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -85,6 +89,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
+    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 

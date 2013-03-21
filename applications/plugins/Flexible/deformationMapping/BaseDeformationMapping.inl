@@ -103,9 +103,13 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
     engine::BaseGaussPointSampler* sampler;
     this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
+    bool restPositionSet=false;
+    helper::ReadAccessor<Data< OutVecCoord > >  rest(*this->toModel->read(core::ConstVecCoordId::restPosition()));
+
     if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
     {
         size = sampler->getNbSamples();
+        if(rest.size()==size) restPositionSet=true;
         this->toModel->resize(size);
         pos0.resize(size);  for(unsigned int i=0; i<size; i++) pos0[i]=sampler->getSample(i);
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
@@ -127,6 +131,14 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         // interpolate weights at sample positions
         _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
         this->f_index.endEdit();     this->f_F0.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
+
+        // use custom rest positions (to set material directions or set residual deformations)
+        if(restPositionSet)
+        {
+            helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+            for(unsigned int i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+        }
     }
 
     // init jacobians
@@ -616,27 +628,6 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
 }
 
 
-
-/** Fwrapper Class: used to retrieve defo gradients from outCoords during visualization (need abstract class to be compatible with various outDataTypes) **/
-
-template< class DataType, class Frame>
-class Fwrapper
-{
-public:
-    static void getF(Frame&,const typename DataType::Coord&) {}
-};
-
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-class Fwrapper< defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> , defaulttype::Mat<_spatial_dimensions,_material_dimensions,_Real> >
-{
-public:
-    typedef defaulttype::Mat<_spatial_dimensions,_material_dimensions,_Real> Frame;
-    typedef typename defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real>::Coord Coord;
-    static void getF(Frame& F,const Coord& x) {F=x.getF();}
-};
-
-
-
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
@@ -682,7 +673,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         Coord p;
         for(unsigned i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) Fwrapper<Out,MaterialToSpatial>::getF(F,out[i]); else F=f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
@@ -716,7 +707,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         MaterialToSpatial F;
         for(unsigned i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) Fwrapper<Out,MaterialToSpatial>::getF(F,out[i]); else F=f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
             if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
             else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
