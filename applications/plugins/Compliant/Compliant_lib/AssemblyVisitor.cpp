@@ -195,10 +195,10 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 		if( js ) c.J = convert( (*js)[i] );
 				
-		if( zero(c.J) ) {
+		if( empty(c.J) ) {
 			unsigned cols = p->getMatrixSize(); 
 			
-			std::string msg("zero mapping block for " + mapping_name(node) + " (is mapping matrix assembled ?)" );
+			std::string msg("empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled ?)" );
 			assert( false ); 
 			
 			throw std::logic_error(msg);

@@ -5,6 +5,7 @@
 
 namespace sparse {
 
+
 template<class U, class F>
 void fill(Eigen::SparseMatrix<U, Eigen::RowMajor>& res, unsigned nnz,
           const F& f) {
