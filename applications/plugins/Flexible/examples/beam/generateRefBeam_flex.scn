@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <VisualStyle displayFlags="hideWireframe showBehaviorModels" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+
+  <Node name="hexaFEM"  >
+    <VisualStyle displayFlags="showWireframe hideBehaviorModels" />
+    <StaticSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" />
+       <RegularGrid 
+                   n="21 21 41"
+                   min="-0.2 -0.2  -1"
+                   max=" 0.2  0.2   1"/> 
+
+        <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" />
+        <FixedConstraint indices="@[-1].indices" />
+
+       <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  drawBoxes="0" /> 
+       <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+
+	<UniformMass totalMass="10" />
+
+	<HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="beam.obj"  color="blue" />
+	     <BarycentricMapping input="@.." output="@." />
+	</Node>
+  </Node>
+
+
+</Node>

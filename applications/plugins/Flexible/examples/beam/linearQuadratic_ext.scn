@@ -4,8 +4,6 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-  <MeshObjLoader name="mesh" filename="mesh/beam.obj" triangulate="1"/>
-
   <Node name="hexaFEM"  >
     <VisualStyle displayFlags="showWireframe hideBehaviorModels" />
     <EulerImplicitSolver />
@@ -31,7 +29,7 @@
 	<HexahedronFEMForceField youngModulus="1.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
 
 	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/beam.obj"  color="blue" />
+	     <VisualModel  fileMesh="beam.obj"  color="blue" />
 	     <BarycentricMapping input="@.." output="@." />
 	</Node>
   </Node>
@@ -70,46 +68,38 @@
 
 
     <Node 	name="Flexible"   >
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+        
+        <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
+        <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
+        <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/> 
+        <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+	<MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />	
+	<VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
 
-    <EulerImplicitSolver />
-    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+	<Node 	name="behavior"   >
+	    <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="100"/>
+            <MechanicalObject template="F332" name="F" />
+	    <LinearMapping template="Mapping&lt;Quadratic,F332&gt;" assembleJ="false"/>
 
-
-          <!--  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.02" padSize="1" rotateImage="true" />-->
-	    <ImageContainer template="ImageUC" name="image" filename="mesh/beam.raw" drawBB="false"/>
-
-<!-- param = DESIRED NUMBER OF FRAMES -->
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/> 
-            <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />	
-	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
-
-	    <Node 	name="behavior"   >
-
-<!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="100"/>
-
-		<MechanicalObject template="F332" name="F" />
-	    	<LinearMapping template="Mapping&lt;Quadratic,F332&gt;" assembleJ="false"/>
-
-		<Node 	name="E"   >
-		    <MechanicalObject  template="E332" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false" method="polar" />
-		    <HookeForceField  template="E332" name="ff" youngModulus="1" poissonRatio="0" viscosity="0"/>
-		</Node>
-
+	    <Node 	name="E"   >
+		<MechanicalObject  template="E332" name="E"  /> 
+		<CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" assembleJ="false" method="polar" />
+		<HookeForceField  template="E332" name="ff" youngModulus="1" poissonRatio="0" viscosity="0"/>
 	    </Node>
+        </Node>
 
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
-	     <UniformMass totalMass="10" />
+	     
 	     <LinearMapping template="Mapping&lt;Quadratic,Vec3d&gt;" assembleJ="false"/>
         </Node>
 
 	    <Node 	name="collision"   >
-		<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
-		<Mesh name="mesh" src="@MeshLoader" /> 
+		<Mesh name="mesh" src="@../mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<UniformMass totalMass="10" />
 
        		 <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" />
       		 <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 0 -0.05"/> 
@@ -121,9 +111,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="1 0.8 0.8 "/>
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="MechanicalMapping&lt;Quadratic,ExtVec3f&gt;"/>
 	    </Node>
     </Node>
-
 </Node>

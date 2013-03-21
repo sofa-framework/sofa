@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -10 0 " dt="0.001"  >
+    <VisualStyle displayFlags="hideWireframe showBehaviorModels showInteractionForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+  <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
+
+<MechanicalObject position="0 0 3 1 0 3" name="fixed points" />
+<FixedConstraint indices="0 1" />
+
+    <Node 	name="Flexible"   >
+
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+          <!--  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.02" padSize="1" rotateImage="true" />-->
+	    <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
+
+<!-- param = DESIRED NUMBER OF FRAMES -->
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="1" printLog="false"/> 
+            <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+	    <MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" src="@merged" />	
+	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
+<!--
+	    <Node 	name="behavior"   >
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="false" printLog="false" targetNumber="10"/>
+		<MechanicalObject template="F331" name="F" />
+	    	<LinearMapping template="Mapping&lt;Rigid,F331&gt;" assembleJ="false"/>
+		<Node 	name="E"   >
+		    <MechanicalObject  template="E331" name="E"  /> 
+		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
+		    <HookeForceField  template="E331" name="ff" youngModulus="1" poissonRatio="0" viscosity="0"/>
+		</Node>
+	    </Node>
+-->
+
+	    <Node 	name="collision"   >
+		<Mesh name="mesh" src="@../../mesh" /> 
+		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<UniformMass totalMass="3" />
+	       	<StiffSpringForceField spring="0 2 100 0 0"  object1="@../.."  object2="@." />
+	    	<LinearMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
+	    </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8 "/>
+	    	<LinearMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
+	    </Node>
+    </Node>
+
+
+
+
+    <Node 	name="Rigid"   >
+
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+	    <MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" position="1 0 0 0 0 0 1" />	
+
+	    <Node 	name="collision"   >
+		<Mesh name="mesh" src="@../../mesh" /> 
+		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<UniformMass totalMass="3" />
+	       	<StiffSpringForceField spring="1 2 100 0 0"  object1="@../.."  object2="@." />
+	    	<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
+	    </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.8 1 0.8 "/>
+	    	<RigidMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
+	    </Node>
+    </Node>
+
+</Node>
