@@ -56,10 +56,25 @@
 #include <sofa/component/collision/CapsuleModel.h>
 
 //Including Visual Models
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/component/visualmodel/OglModel.h>
 
 namespace sofa
 {
+
+using namespace helper;
+using helper::vector;
+using namespace simulation;
+using namespace core::objectmodel;
+using namespace component::odesolver;
+using namespace component::container;
+using namespace component::topology;
+using namespace component::collision;
+using namespace component::visualmodel;
+using namespace component::mapping;
+using namespace component::forcefield;
+
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 simulation::Node::SPtr SimpleObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
 {
@@ -351,5 +366,119 @@ void SimpleObjectCreator::AddCollisionModels(simulation::Node::SPtr CollisionNod
         }
     }
 }
+
+template<class Component>
+typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
+{
+    typename Component::SPtr component = New<Component>();
+    parentNode->addObject(component);
+    component->setName(parentNode->getName()+"_"+name);
+    return component;
+}
+
+
+/// Create an assembly of a siff hexahedral grid with other objects
+simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue, double dampingRatio )
+{
+    // The graph root node
+    Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
+    root->setGravity( Coord3(0,-1,0) );
+    root->setAnimate(false);
+    root->setDt(0.01);
+    addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
+
+    Node::SPtr simulatedScene = root->createChild("simulatedScene");
+
+    EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
+    simulatedScene->addObject( eulerImplicitSolver );
+    CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
+    simulatedScene->addObject(cgLinearSolver);
+
+    // The rigid object
+    Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
+    MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
+    UniformMassRigid3d::SPtr rigid_mass = addNew<UniformMassRigid3d>(rigidNode,"mass");
+
+    // Particles mapped to the rigid object
+    Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
+    MechanicalObject3d::SPtr mappedParticles_dof = addNew< MechanicalObject3d>(mappedParticles,"dof");
+    RigidMappingRigid3d_to_3d::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3d_to_3d>(mappedParticles,"mapping");
+    mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
+
+    // The independent particles
+    Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
+    MechanicalObject3d::SPtr independentParticles_dof = addNew< MechanicalObject3d>(independentParticles,"dof");
+
+    // The deformable grid, connected to its parents using a MultiMapping
+    Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid");
+
+    RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
+    deformableGrid_grid->setNumVertices(numX,numX,numZ);
+    deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
+
+    MechanicalObject3d::SPtr deformableGrid_dof = addNew< MechanicalObject3d>(deformableGrid,"dof");
+
+    SubsetMultiMapping3d_to_3d::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3d_to_3d>(deformableGrid,"mapping");
+    deformableGrid_mapping->addInputModel(independentParticles_dof.get());
+    deformableGrid_mapping->addInputModel(mappedParticles_dof.get());
+    deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
+
+    UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
+    mass->mass.setValue( totalMass/(numX*numY*numZ) );
+
+    RegularGridSpringForceField3::SPtr spring = addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
+    spring->setLinesStiffness(stiffnessValue);
+    spring->setLinesDamping(dampingRatio);
+
+
+    // ======  Set up the multimapping and its parents, based on its child
+    // initialize the grid, so that the particles are located in space
+    deformableGrid_grid->init();
+    deformableGrid_dof->init();
+    cerr<<"size = "<< deformableGrid_dof->getSize() << endl;
+    MechanicalObject3::ReadVecCoord  xgrid = deformableGrid_dof->readPositions();
+    cerr<<"xgrid = " << xgrid << endl;
+
+    // find the particles attached to the rigid object: x=xMin
+    BoxROI3d::SPtr deformableGrid_boxRoi = addNew<BoxROI3d>(deformableGrid,"boxROI");
+    deformableGrid_boxRoi->f_X0.setValue(xgrid.ref()); // consider initial positions only
+    double eps = (endPoint[0]-startPoint[0])/(numX*2);
+    write(deformableGrid_boxRoi->boxes).resize(1);
+    write(deformableGrid_boxRoi->boxes).push_back(
+       Vec6d(
+         startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps,
+         startPoint[0]+eps,endPoint[1]+eps,endPoint[2]-eps
+        )
+    ); //  find particles such that x=xMin
+    deformableGrid_boxRoi->init();
+    helper::vector<unsigned> indices = deformableGrid_boxRoi->f_indices.getValue();
+    cerr<<"Indices of the grid in the box: " << indices << endl;
+    std::sort(indices.begin(),indices.end());
+
+    // copy each grid particle either in the mapped parent, or in the independent parent, depending on its index
+    mappedParticles_dof->resize(indices.size());
+    independentParticles_dof->resize( numX*numY*numZ - indices.size() );
+    MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
+    MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
+    assert(indices.size()>0);
+    unsigned mappedIndex=0,independentIndex=0;
+    for( unsigned i=0; i<xgrid.size(); i++ )
+    {
+        if( mappedIndex<indices.size() && i==indices[mappedIndex] ){ // mapped particle
+            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),i);
+            xmapped[mappedIndex] = xgrid[i];
+            mappedIndex++;
+        }
+        else { // independent particle
+            deformableGrid_mapping->addPoint(independentParticles_dof.get(),i);
+            xindependent[independentIndex] = xgrid[i];
+            independentIndex++;
+        }
+    }
+
+    return root;
+
+}
+
 
 }

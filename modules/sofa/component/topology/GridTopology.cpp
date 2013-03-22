@@ -146,6 +146,7 @@ void GridTopology::GridUpdate::updateHexas()
 GridTopology::GridTopology()
     : n(initData(&n,Vec3i(2,2,2),"n","grid resolution"))
 {
+    setSize();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
@@ -168,10 +169,16 @@ GridTopology::GridTopology( Vec3i np )
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
+//    std::cerr<<"GridTopology::setSize(int nx, int ny, int nz), n = "<< n.getValue() << std::endl;
     if (nx == this->n.getValue()[0] && ny == this->n.getValue()[1] && nz == this->n.getValue()[2])
         return;
     this->n.setValue(Vec3i(nx,ny,nz));
     setSize();
+}
+
+void GridTopology::setNumVertices(int nx, int ny, int nz)
+{
+    setSize(nx,ny,nz);
 }
 
 void GridTopology::setNumVertices(Vec3i n)

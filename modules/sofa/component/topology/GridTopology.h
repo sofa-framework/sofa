@@ -72,6 +72,8 @@ public:
     void setSize(int nx, int ny, int nz);
     /// set grid resolution, given the number of vertices
     void setNumVertices( Vec3i nXnYnZ );
+    /// Set grid resolution, given the number of vertices
+    void setNumVertices(int nx, int ny, int nz);
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
