@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-# compile flags
-if(CMAKE_HOST_WIN32)
-	set_target_properties(${name} PROPERTIES COMPILE_FLAGS "/bigobj")
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/post-config.cmake)
 
 message("> ${PROJECT_NAME} : Done\n")
