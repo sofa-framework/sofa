@@ -694,7 +694,18 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     ///////// new : precalcul des liste d'indice ///////
     Vec_I_list_dof.clear(); // clear = the list is filled during the block compliance computation
-    Vec_I_list_dof.resize(nbConstraints);
+
+	// Resize   
+    unsigned int maxIdConstraint = 0;
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const unsigned int indexC = rowIt.index(); // id constraint
+        if (indexC > maxIdConstraint) // compute the max of the Id
+            maxIdConstraint = indexC;
+    }
+
+    Vec_I_list_dof.resize(maxIdConstraint + 1);
+
     last_disp = 0;
     last_force = nbConstraints - 1;
     _new_force = false;
