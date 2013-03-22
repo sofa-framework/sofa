@@ -149,8 +149,10 @@ protected:
 
     MousePosition             mousePosition;
 
+#ifndef SOFA_NO_OPENGL
     sofa::helper::gl::FrameBufferObject _fbo;
     sofa::helper::gl::fboParameters     _fboParams;
+#endif
 
     ComponentMouseInteraction *interaction;
     std::vector< ComponentMouseInteraction *> instanceComponents;

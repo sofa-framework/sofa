@@ -222,7 +222,7 @@ void ExtrudeSurface<DataTypes>::update()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-
+#ifndef SOFA_NO_OPENGL
     const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
 
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
@@ -288,6 +288,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glEnable(GL_LIGHTING);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

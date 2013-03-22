@@ -200,6 +200,7 @@ void TextureInterpolation<DataTypes>::resetGraph()
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     // to force update. getX() must have call to endEdit()
     _outputCoord.getValue();
 
@@ -293,9 +294,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
 
         }
     }
-
-
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -70,8 +70,9 @@ void initComponentGeneral()
     initSparseSolver();
 #endif
     initPreconditioner();
+#ifndef SOFA_NO_OPENGL
     initOpenGLVisual();
-
+#endif
 }
 
 

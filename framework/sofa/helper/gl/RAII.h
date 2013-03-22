@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_RAII_H
 #define SOFA_HELPER_GL_RAII_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/helper.h>
 
@@ -88,5 +90,7 @@ struct Disable
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

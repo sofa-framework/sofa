@@ -4,7 +4,6 @@
 #include "LennardJonesForceField.h"
 #include "Sofa/Components/Scene.h"
 #include <math.h>
-#include <GL/gl.h>
 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::init()

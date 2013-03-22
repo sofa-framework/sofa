@@ -226,6 +226,7 @@ void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanica
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
@@ -264,6 +265,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
     gl::glVertexT(m_P2.getValue());
     gl::glVertexT(m_P3.getValue());
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

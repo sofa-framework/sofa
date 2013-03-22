@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_TEMPLATE_H
 #define SOFA_HELPER_GL_TEMPLATE_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/helper.h>
 
@@ -315,5 +317,7 @@ inline void glMultMatrix(const double* p)
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

@@ -322,6 +322,7 @@ void WarpPreconditioner<DataTypes>::freezeSystemMatrix()
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
+#ifndef SOFA_NO_OPENGL
     if (f_draw_rotations_scale.getValue() <= 0.0) return;
     if (Rcur.colSize()==0) return;
     if (Rcur.rowSize()==0) return;
@@ -345,6 +346,7 @@ void WarpPreconditioner<DataTypes>::draw(const core::visual::VisualParams* /*vpa
         q.fromMatrix(RotMat);
         helper::gl::Axis::draw(DataTypes::getCPos(x[e]), q, this->f_draw_rotations_scale.getValue());
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace linearsolver

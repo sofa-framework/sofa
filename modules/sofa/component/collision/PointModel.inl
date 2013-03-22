@@ -145,6 +145,7 @@ void TPointModel<DataTypes>::init()
 template<class DataTypes>
 void TPointModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 {
+#ifndef SOFA_NO_OPENGL
     TPoint<DataTypes> p(this,index);
     if (!p.activated())
         return;
@@ -158,6 +159,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
         helper::gl::glVertexT(p.p()+normals[index]*0.1f);
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>

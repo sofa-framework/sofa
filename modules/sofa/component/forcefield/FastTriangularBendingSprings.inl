@@ -505,6 +505,7 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::Ba
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
@@ -535,6 +536,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     glEnd();
 
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

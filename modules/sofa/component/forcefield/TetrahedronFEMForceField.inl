@@ -1482,7 +1482,10 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         helper::WriteAccessor<Data<helper::vector<Real> > > vM =  _vonMises;
         vM.resize(_indexedElements->size());
 
+#ifndef SOFA_NO_OPENGL
         _showStressColorMapReal->initOld(_showStressColorMap.getValue());
+#endif
+
         prevMaxStress = -1.0;
         updateVonMisesStress = true;
     }
@@ -1692,6 +1695,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -1911,6 +1915,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
 
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>

@@ -239,6 +239,7 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
@@ -276,8 +277,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     gl::glVertexT(m_x1.getValue());
     gl::glVertexT(m_x1.getValue()+m_dx1.getValue()*0.1);
     glEnd();
-
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

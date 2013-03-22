@@ -880,6 +880,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || !m_rotations.getValue())
         return;
 
@@ -934,6 +935,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         q.fromMatrix(RotMat);
         helper::gl::Axis::draw(DataTypes::getCPos(x[i]), q, this->debugViewFrameScale.getValue());
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

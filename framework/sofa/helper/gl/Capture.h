@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_CAPTURE_H
 #define SOFA_HELPER_GL_CAPTURE_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/system/gl.h>
 
 #include <sofa/helper/io/Image.h>
@@ -69,5 +71,7 @@ public:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

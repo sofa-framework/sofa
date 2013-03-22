@@ -275,6 +275,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
@@ -322,6 +323,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glEnable(GL_LIGHTING);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

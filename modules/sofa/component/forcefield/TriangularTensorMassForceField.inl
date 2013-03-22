@@ -402,6 +402,7 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
@@ -433,6 +434,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

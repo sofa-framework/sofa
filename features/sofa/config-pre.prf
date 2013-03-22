@@ -37,6 +37,13 @@ contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 }
 DEFINES += EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 
+contains(DEFINES, SOFA_NO_OPENGL) {
+	DEFINES -= SOFA_HAVE_GLEW
+	DEFINES -= SOFA_GUI_GLUT
+	DEFINES -= SOFA_GUI_QTVIEWER
+	DEFINES -= SOFA_GUI_QGLVIEWER
+	DEFINES -= SOFA_GUI_QT
+}
 
 ########################################################################
 # System-specific configuration

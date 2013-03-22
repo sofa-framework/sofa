@@ -457,6 +457,7 @@ void SphereROI<DataTypes>::update()
 template <class DataTypes>
 void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
@@ -587,6 +588,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

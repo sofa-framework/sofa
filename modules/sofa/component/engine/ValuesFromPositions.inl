@@ -434,6 +434,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 template <class DataTypes>
 void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     if (p_drawVectors.getValue())
     {
         glDisable(GL_LIGHTING);
@@ -468,6 +469,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
         glEnd();
 
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

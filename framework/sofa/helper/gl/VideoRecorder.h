@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_VIDEORECORDER_H
 #define SOFA_HELPER_GL_VIDEORECORDER_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/helper.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/io/ImageBMP.h>
@@ -108,5 +110,7 @@ protected:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif //SOFA_HELPER_GL_VIDEORECORDER_H

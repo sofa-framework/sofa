@@ -2474,6 +2474,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
@@ -2570,6 +2571,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
     }
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 #ifdef SOFA_SMP

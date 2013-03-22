@@ -95,6 +95,7 @@ void TetrahedronModel::handleTopologyChange()
 
 void TetrahedronModel::draw(const core::visual::VisualParams* vparams,int index)
 {
+#ifndef SOFA_NO_OPENGL
     Tetrahedron t(this,index);
     glBegin(GL_TRIANGLES);
     Coord p1 = t.p1();
@@ -149,10 +150,12 @@ void TetrahedronModel::draw(const core::visual::VisualParams* vparams,int index)
         helper::gl::glVertexT(p+n4*0.1);
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (mstate && _topology && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -181,6 +184,7 @@ void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
     }
     if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
+#endif /* SOFA_NO_OPENGL */
 }
 
 void TetrahedronModel::computeBoundingTree(int maxDepth)

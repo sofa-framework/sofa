@@ -1195,6 +1195,7 @@ void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, def
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
@@ -1263,6 +1264,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

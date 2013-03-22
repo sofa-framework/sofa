@@ -193,8 +193,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-
-
+#ifndef SOFA_NO_OPENGL
     if (vparams->displayFlags().getShowForceFields())
         //return;  /// \todo put this in the parent class
     {
@@ -271,7 +270,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
             vparams->drawTool()->drawLines(points,5,springColor.getValue());
         }
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 
@@ -379,6 +378,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
@@ -412,6 +412,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 #endif // SOFA_DOUBLE
@@ -449,6 +450,7 @@ else
 template<>
 void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
@@ -474,6 +476,7 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
 
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 

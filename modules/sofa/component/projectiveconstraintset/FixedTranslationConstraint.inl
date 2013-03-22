@@ -199,6 +199,7 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -222,6 +223,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         }
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<>

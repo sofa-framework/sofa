@@ -49,6 +49,7 @@ using namespace sofa::helper;
 template <>
 void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -59,10 +60,12 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualPara
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         gl::glVertexT(x[*it].getCenter());
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 template <>
 void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -73,12 +76,14 @@ void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         gl::glVertexT(Vec<3,double>(x[*it][0], x[*it][1], x[*it][2]));
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 #ifndef SOFA_DOUBLE
 template <>
 void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -89,10 +94,12 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualPara
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         gl::glVertexT(x[*it].getCenter());
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 template <>
 void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -103,6 +110,7 @@ void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 

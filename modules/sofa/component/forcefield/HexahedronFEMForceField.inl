@@ -1146,6 +1146,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
     {
         this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
@@ -1297,6 +1298,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if(_sparseGrid )
         glDisable(GL_BLEND);
+#endif /* SOFA_NO_OPENGL */
 }
 
 

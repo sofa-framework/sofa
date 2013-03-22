@@ -501,7 +501,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-
+#ifndef SOFA_NO_OPENGL
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
@@ -594,7 +594,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         }
     }
 
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

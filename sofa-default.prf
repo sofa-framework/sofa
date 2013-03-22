@@ -111,6 +111,9 @@ DEFINES += SOFA_HAVE_PNG
 # on some configs, one must use a specific version of libpng
 # PNG_LIB = png12
 
+# Uncomment if you want to build Sofa without any OpenGL dependency.
+# DEFINES += SOFA_NO_OPENGL
+
 # Uncomment if you want to use GLEW to handle OpenGL extensions
 DEFINES += SOFA_HAVE_GLEW
 

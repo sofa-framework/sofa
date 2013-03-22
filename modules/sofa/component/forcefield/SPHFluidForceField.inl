@@ -544,6 +544,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
@@ -631,6 +632,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     glEnd();
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

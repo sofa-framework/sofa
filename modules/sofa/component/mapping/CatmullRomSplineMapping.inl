@@ -278,6 +278,7 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& par
 template <class TIn, class TOut>
 void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowMappings()) return;
 
     const typename Out::VecCoord& xto = *this->toModel->getX();
@@ -303,6 +304,7 @@ void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* 
     glEnd();
 
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -1452,7 +1452,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     union
     {
         int i;
-        GLubyte b[4];
+        unsigned char b[4];
     } color;
 
     int coord0 = 0;

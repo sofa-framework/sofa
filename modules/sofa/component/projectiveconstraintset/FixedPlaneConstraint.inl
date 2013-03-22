@@ -197,6 +197,7 @@ void FixedPlaneConstraint<DataTypes>::init()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
@@ -208,6 +209,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         helper::gl::glVertexT(x[*it]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraint

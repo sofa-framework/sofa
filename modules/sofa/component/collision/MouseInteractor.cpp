@@ -116,6 +116,7 @@ void BaseMouseInteractor::updatePosition( double )
 
 void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)
         (*it)->draw(vparams);
@@ -140,6 +141,7 @@ void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
         glColor4f(1,1,1,1);
         glLineWidth(1);
     }
+#endif /* SOFA_NO_OPENGL */
 }
 }
 }

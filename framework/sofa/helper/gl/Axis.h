@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_AXIS_H
 #define SOFA_HELPER_GL_AXIS_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
@@ -100,5 +102,7 @@ public:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

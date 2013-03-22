@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_GLSLSHADER_H
 #define SOFA_HELPER_GL_GLSLSHADER_H
 
+#ifdef SOFA_HAVE_GLEW
+
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
@@ -236,4 +238,6 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_HAVE_GLEW */
+
+#endif /* SOFA_HELPER_GL_GLSLSHADER_H */

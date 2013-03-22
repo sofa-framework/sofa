@@ -713,6 +713,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
     if (masses.empty()) return;
@@ -751,6 +752,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <class DataTypes, class MassType>

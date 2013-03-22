@@ -378,6 +378,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
 {
+#ifndef SOFA_NO_OPENGL
     if (!p_showForces.getValue())
         return;
 
@@ -403,7 +404,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
         helper::gl::glVertexT(p + f);
     }
     glEnd();
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

@@ -411,6 +411,7 @@ void PlaneROI<DataTypes>::update()
 template <class DataTypes>
 void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
@@ -559,6 +560,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

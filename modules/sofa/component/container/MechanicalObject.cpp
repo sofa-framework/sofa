@@ -225,6 +225,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
@@ -287,6 +288,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
         }
     }
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 #endif
@@ -427,6 +429,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (showIndices.getValue())
     {
         glColor3f(1.0,1.0,1.0);
@@ -488,6 +491,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             vparams->drawTool()->popMatrix();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 #endif
@@ -495,6 +499,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (showIndices.getValue())
     {
         glColor3f(1.0,1.0,1.0);
@@ -554,6 +559,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
             vparams->drawTool()->popMatrix();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 }

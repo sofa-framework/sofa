@@ -357,6 +357,7 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive()
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
 //	return; // TEMP
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!vparams->isSupported(sofa::core::visual::API_OpenGL)) return;
@@ -410,6 +411,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
 
         glLineWidth(1);
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraintset

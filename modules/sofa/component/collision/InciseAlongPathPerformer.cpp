@@ -221,6 +221,7 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
 
 void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     if (firstBody.body == NULL) return;
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
@@ -291,9 +292,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
     }
 
     glEnd();
-
-
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

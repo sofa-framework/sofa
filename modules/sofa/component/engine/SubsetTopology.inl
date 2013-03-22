@@ -594,6 +594,7 @@ void SubsetTopology<DataTypes>::update()
 template <class DataTypes>
 void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
@@ -713,6 +714,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <class DataTypes>

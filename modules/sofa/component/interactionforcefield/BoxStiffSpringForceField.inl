@@ -157,6 +157,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 template <class DataTypes>
 void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
@@ -250,6 +251,7 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
     glVertex3d(Xmax2,Ymax2,Zmax2);
 
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -67,6 +67,7 @@ void CuttingPoint::setPoint(unsigned int p)
 
 void CuttingPoint::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     if (!mstate) return;
     glDisable (GL_LIGHTING);
     if (lastPos != pos)
@@ -148,6 +149,7 @@ void CuttingPoint::draw(const core::visual::VisualParams* )
         glLineWidth(1);
     }
     */
+#endif /* SOFA_NO_OPENGL */
 }
 
 } //collision

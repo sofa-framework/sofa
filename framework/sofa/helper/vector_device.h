@@ -85,7 +85,9 @@ protected:
 #endif
     mutable size_type      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
     T*            hostPointer;    ///< Pointer to the data on the CPU side
+#ifndef SOFA_NO_OPENGL
     GLuint        bufferObject;   ///< Optionnal associated OpenGL buffer ID
+#endif
     mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
     mutable bool  bufferIsRegistered;  ///< True if the OpenGL buffer is registered with CUDA
@@ -566,6 +568,7 @@ public:
     }
 
     /// Get the OpenGL Buffer Object ID for reading
+#ifndef SOFA_NO_OPENGL
     GLuint bufferRead(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
@@ -582,8 +585,10 @@ public:
         }
         return 0;
     }
+#endif
 
     /// Get the OpenGL Buffer Object ID for writing
+#ifndef SOFA_NO_OPENGL
     GLuint bufferWrite(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
@@ -602,6 +607,7 @@ public:
         }
         else return 0;
     }
+#endif
 
     void push_back ( const T& t )
     {

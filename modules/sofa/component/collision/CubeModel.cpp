@@ -145,6 +145,7 @@ void CubeModel::updateCubes()
 
 void CubeModel::draw(const core::visual::VisualParams* , int index)
 {
+#ifndef SOFA_NO_OPENGL
     const Vector3& vmin = elems[index].minBBox;
     const Vector3& vmax = elems[index].maxBBox;
 
@@ -178,6 +179,7 @@ void CubeModel::draw(const core::visual::VisualParams* , int index)
         glVertex3d(vmax[0], vmax[1], vmax[2]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 void CubeModel::draw(const core::visual::VisualParams* vparams)

@@ -51,7 +51,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::component::topology;
 using std::queue;
-using sofa::helper::gl::GlText;
 using sofa::core::loader::VoxelLoader;
 
 
@@ -716,6 +715,7 @@ void Distances< DataTypes >::getNeighbors ( const HexaID& hexaID, helper::set<He
 template<class DataTypes>
 void Distances< DataTypes >::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
@@ -725,10 +725,10 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
             Vector3 tmpPt = Vector3 ( point[0], point[1], point[2] );
-            GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
         }
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

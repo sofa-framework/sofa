@@ -244,6 +244,7 @@ void RigidDistanceGridCollisionModel::updateGrid()
 
 void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!isActive()) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -262,10 +263,12 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
     }
     if (getPrevious()!=NULL)
         getPrevious()->draw(vparams);
+#endif /* SOFA_NO_OPENGL */
 }
 
 void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
+#ifndef SOFA_NO_OPENGL
     const bool flipped = isFlipped();
 
     if (elems[index].isTransformed)
@@ -413,6 +416,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,in
     {
         glPopMatrix();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -723,6 +727,7 @@ FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel
 
 void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!isActive()) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -739,10 +744,12 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
     }
     if (getPrevious()!=NULL)
         getPrevious()->draw(vparams);
+#endif /* SOFA_NO_OPENGL */
 }
 
 void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
 {
+#ifndef SOFA_NO_OPENGL
     //DistanceGrid* grid = getGrid(index);
     DeformedCube& cube = getDeformCube( index );
     //glEnable(GL_BLEND);
@@ -823,6 +830,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         }
     }
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 //template <class DataTypes>

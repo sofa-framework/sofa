@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_TEXTURE_H
 #define SOFA_HELPER_GL_TEXTURE_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/helper.h>
 #include <sofa/helper/io/Image.h>
@@ -81,5 +83,7 @@ private:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

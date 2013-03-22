@@ -24,6 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_GL_GLTEXT_INL
 #define SOFA_HELPER_GL_GLTEXT_INL
+
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/gl/glText.h>
 
 #include <sofa/helper/system/gl.h>
@@ -158,5 +161,7 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position, const d
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

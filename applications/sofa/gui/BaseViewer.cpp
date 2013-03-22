@@ -40,7 +40,9 @@ BaseViewer::BaseViewer()
     , _video(false)
     , _axis(false)
     , backgroundColour(Vector3())
+#ifndef SOFA_NO_OPENGL
     , texLogo(NULL)
+#endif
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
     , pick(NULL)
@@ -53,11 +55,13 @@ BaseViewer::BaseViewer()
 
 BaseViewer::~BaseViewer()
 {
-    if(texLogo)
+#ifndef SOFA_NO_OPENGL
+   if(texLogo)
     {
         delete texLogo;
         texLogo = NULL;
     }
+#endif
 }
 
 sofa::simulation::Node* BaseViewer::getScene()
@@ -83,7 +87,9 @@ void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
                 sofa::helper::system::DataRepository.getFirstPath().c_str())
         + std::string("/share/screenshots/") + file
         + std::string("_");
+#ifndef SOFA_NO_OPENGL
     capture.setPrefix(screenshotPrefix);
+#endif
 #ifdef SOFA_HAVE_FFMPEG
     videoRecorder.setPrefix(screenshotPrefix);
 #endif //SOFA_HAVE_FFMPEG
@@ -122,17 +128,25 @@ void BaseViewer::configure(sofa::component::configurationsetting::ViewerSetting*
 //Fonctions needed to take a screenshot
 const std::string BaseViewer::screenshotName()
 {
+#ifndef SOFA_NO_OPENGL
     return capture.findFilename().c_str();
+#else
+	return "";
+#endif
 }
 
 void BaseViewer::setPrefix(const std::string filename)
 {
+#ifndef SOFA_NO_OPENGL
     capture.setPrefix(filename);
+#endif
 }
 
 void BaseViewer::screenshot(const std::string filename, int compression_level)
 {
+#ifndef SOFA_NO_OPENGL
     capture.saveScreen(filename, compression_level);
+#endif
 }
 
 void BaseViewer::getView(Vec3d& pos, Quat& ori) const
@@ -208,6 +222,7 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
     if( sofa::helper::system::DataRepository.findFile(imageFileName) )
     {
         backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
+#ifndef SOFA_NO_OPENGL
         std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
         std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
         if(texLogo)
@@ -227,9 +242,8 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         {
             texLogo = new helper::gl::Texture( image );
             texLogo->init();
-
         }
-
+#endif
     }
 }
 

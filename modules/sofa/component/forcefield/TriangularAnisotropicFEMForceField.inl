@@ -313,6 +313,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     glPolygonOffset(1.0, 2.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
     Inherited::draw(vparams);
@@ -364,6 +365,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
         glEnd();
     }
     localFiberDirection.endEdit();
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

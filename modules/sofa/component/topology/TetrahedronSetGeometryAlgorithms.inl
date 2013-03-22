@@ -551,6 +551,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     //Draw tetra indices
@@ -651,7 +652,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             glEnd();
         }
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

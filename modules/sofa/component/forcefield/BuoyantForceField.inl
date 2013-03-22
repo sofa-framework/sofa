@@ -393,6 +393,7 @@ int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const V
 template<class DataTypes>
 void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!this->mstate) return;
 
     glPushAttrib( GL_ALL_ATTRIB_BITS);
@@ -587,6 +588,7 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         }
 
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

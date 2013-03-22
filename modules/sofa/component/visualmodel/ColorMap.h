@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
 #define SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -155,5 +157,7 @@ public:
 } // namespace component
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

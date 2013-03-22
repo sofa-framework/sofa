@@ -61,6 +61,7 @@ TriangleOctreeModel::TriangleOctreeModel ()
 
 void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     TriangleModel::draw(vparams);
     if (isActive () && vparams->displayFlags().getShowCollisionModels ())
     {
@@ -85,6 +86,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
         if (vparams->displayFlags().getShowWireFrame ())
             glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)

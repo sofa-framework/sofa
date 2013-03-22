@@ -70,6 +70,7 @@ template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6fTypes
 template <>
 void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -93,12 +94,14 @@ void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualPara
         }
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 #ifndef SOFA_DOUBLE
 template <>
 void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -122,6 +125,7 @@ void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualPara
         }
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 } // namespace projectiveconstraintset

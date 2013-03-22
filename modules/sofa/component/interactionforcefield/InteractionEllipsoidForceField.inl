@@ -367,6 +367,7 @@ double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnerg
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!bDraw.getValue()) return;
     Real1 cx2=0, cy2=0, cz2=0;
@@ -438,6 +439,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
             glPopMatrix();
         }*/
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

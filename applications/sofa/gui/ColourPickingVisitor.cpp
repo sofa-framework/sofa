@@ -119,8 +119,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
 
 void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleModel * tmodel)
 {
-
-
+#ifndef SOFA_NO_OPENGL
     using namespace sofa::core::collision;
     using namespace sofa::defaulttype;
     glDisable(GL_LIGHTING);
@@ -176,16 +175,13 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     default: assert(false);
     }
     vparams->drawTool()->drawTriangles(points,normals,colours);
-
-
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereModel * smodel)
 {
-
+#ifndef SOFA_NO_OPENGL
     typedef Sphere::Coord Coord;
-
 
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
 
@@ -226,7 +222,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 
         glPopMatrix();
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

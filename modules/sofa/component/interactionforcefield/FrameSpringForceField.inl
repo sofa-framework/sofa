@@ -185,6 +185,7 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if ( ! ( ( this->mstate1 == this->mstate2 ) ?vparams->displayFlags().getShowForceFields() :vparams->displayFlags().getShowInteractionForceFields() ) ) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
@@ -223,6 +224,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         //*/
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

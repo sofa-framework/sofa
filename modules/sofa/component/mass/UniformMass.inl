@@ -432,6 +432,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int /* index */
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
@@ -501,6 +502,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes, class MassType>

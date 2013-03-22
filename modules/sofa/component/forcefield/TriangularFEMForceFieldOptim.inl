@@ -88,7 +88,9 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , _topology(NULL)
-    , showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+#ifndef SOFA_NO_OPENGL
+	, showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+#endif
     , f_poisson(initData(&f_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
@@ -233,8 +235,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     vi.resize(nbPoints);
     vertexInfo.endEdit();
 
+#ifndef SOFA_NO_OPENGL
     // TODO: This is deprecated. Use ColorMap as a component.
     showStressColorMapReal->initOld(showStressColorMap.getValue());
+#endif
 
     data.reinit(this);
 }
@@ -528,6 +532,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigne
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!_topology || !this->mstate) return;
 
     if (!vparams->displayFlags().getShowForceFields())
@@ -817,7 +822,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         vparams->drawTool()->drawLines(points[2], 1, c2);
         vparams->drawTool()->drawLines(points[3], 1, c3);
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

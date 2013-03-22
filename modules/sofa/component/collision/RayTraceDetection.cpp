@@ -310,6 +310,7 @@ void RayTraceDetection::addCollisionPair (const std::pair <
 
 void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!bDraw.getValue ())
         return;
 
@@ -348,6 +349,7 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
     glLineWidth (1);
     glPointSize (1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 }				// namespace collision

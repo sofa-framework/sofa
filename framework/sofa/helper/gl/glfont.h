@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_GLFONT_H
 #define SOFA_HELPER_GL_GLFONT_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -45,5 +47,7 @@ SOFA_HELPER_API void glfntClose(void);
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

@@ -106,6 +106,7 @@ void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams
 template <>
 void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
@@ -123,6 +124,7 @@ void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams
             gl::glVertexT(x[*it].getCenter());
     glEnd();
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 
@@ -151,6 +153,7 @@ void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams
 template <>
 void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -166,6 +169,7 @@ void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams
             gl::glVertexT(x[*it].getCenter());
     glEnd();
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 #endif
 
