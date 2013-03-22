@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaDefaultType")
 
-include(../../../cmake/pre.cmake)
+include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 set(headers
 
@@ -50,5 +50,5 @@ target_link_libraries(${PROJECT_NAME} SofaHelper)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_DEFAULTTYPE")
 
-include(../../../cmake/post.cmake)
+include(${SOFA_CMAKE_DIR}/post.cmake)
 

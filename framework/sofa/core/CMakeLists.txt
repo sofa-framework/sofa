@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaCore")
 
-include(../../../cmake/pre.cmake)
+include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 set(headers
 
@@ -242,11 +242,11 @@ endif()
 if(SOFA_SUPPORT_MOVING_FRAMES)
 	list(APPEND headers "behavior/InertiaForce.h")
 endif()
- 
+
 add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
 target_link_libraries(${PROJECT_NAME} SofaDefaultType)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_CORE")
 	
-include(../../../cmake/post.cmake)
+include(${SOFA_CMAKE_DIR}/post.cmake)
 
