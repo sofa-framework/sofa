@@ -93,7 +93,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-    helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -142,19 +141,12 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     }
 
     // init jacobians
-    jacobian.resize(size);
-    for(unsigned int i=0; i<size; i++ )
-    {
-        unsigned int nbref=this->f_index.getValue()[i].size();
-        jacobian[i].resize(nbref);
-        for(unsigned int j=0; j<nbref; j++ )
-        {
-            unsigned int index=this->f_index.getValue()[i][j];
-            jacobian[i][j].init( in[index],out[i],pos0[i],f_F0.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
-        }
-    }
+    initJacobianBlocks();
+
     // clear forces
     if(this->toModel->write(core::VecDerivId::force())) { helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear(); }
+    // clear velocities
+    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(unsigned int i=0;i<vel.size();i++) vel[i].clear(); }
 
     reinit();
 }
@@ -166,7 +158,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-    helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -187,17 +178,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
 
     // init jacobians
-    jacobian.resize(size);
-    for(unsigned int i=0; i<size; i++ )
-    {
-        unsigned int nbref=this->f_index.getValue()[i].size();
-        jacobian[i].resize(nbref);
-        for(unsigned int j=0; j<nbref; j++ )
-        {
-            unsigned int index=this->f_index.getValue()[i][j];
-            jacobian[i][j].init( in[index],out[i],pos0[i],f_F0.getValue()[i],f_w.getValue()[i][j],f_dw.getValue()[i][j],f_ddw.getValue()[i][j]);
-        }
-    }
+    initJacobianBlocks();
 
     // clear forces
     if(this->toModel->write(core::VecDerivId::force())) { helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear(); }

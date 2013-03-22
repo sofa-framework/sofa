@@ -26,6 +26,7 @@
 #define FLEXIBLE_VolumePreservationMaterialBlock_INL
 
 #include "../material/VolumePreservationMaterialBlock.h"
+#include "BaseJacobian.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
@@ -37,13 +38,6 @@ namespace sofa
 namespace defaulttype
 {
 
-//////////////////////////////////////////////////////////////////////////////////
-////  macros
-//////////////////////////////////////////////////////////////////////////////////
-#define I331(type)  InvariantStrainTypes<3,3,0,type>
-//#define I332(type)  InvariantStrainTypes<3,3,1,type>
-//#define I333(type)  InvariantStrainTypes<3,3,2,type>
-#define U331(type)  PrincipalStretchesStrainTypes<3,3,0,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  I331

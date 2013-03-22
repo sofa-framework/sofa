@@ -38,15 +38,6 @@ namespace sofa
 namespace defaulttype
 {
 
-//////////////////////////////////////////////////////////////////////////////////
-////  macros
-//////////////////////////////////////////////////////////////////////////////////
-#define F331(type)  DefGradientTypes<3,3,0,type>
-//#define F332(type)  DefGradientTypes<3,3,1,type>
-#define I331(type)  InvariantStrainTypes<3,3,0,type>
-//#define I332(type)  InvariantStrainTypes<3,3,1,type>
-//#define I333(type)  InvariantStrainTypes<3,3,2,type>
-#define U331(type)  PrincipalStretchesStrainTypes<3,3,0,type>
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
