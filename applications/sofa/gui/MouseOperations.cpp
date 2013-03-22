@@ -321,15 +321,6 @@ void AddFrameOperation::configurePerformer(sofa::component::collision::Interacti
 
 //*******************************************************************************************
 
-//****************************************ARPLUGIN*******************************************
-
-std::string AdaptativeAttachOperation::defaultPerformerType() { return "AdaptativeAttach"; }
-
-void AdaptativeAttachOperation::configurePerformer(sofa::component::collision::InteractionPerformer* p)
-{
-    Operation::configurePerformer(p);
-}
-
 //*******************************************************************************************
 std::string AddSutureOperation::defaultPerformerType() { return "SuturePoints"; }
 

@@ -160,15 +160,6 @@ protected:
     virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
 };
 
-class SOFA_SOFAGUI_API AdaptativeAttachOperation : public Operation
-{
-public:
-    static std::string getDescription() {return "Attach an object to the mouse using ARPSStiffSpringForceField";}
-protected:
-    virtual std::string defaultPerformerType();
-    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
-};
-
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:

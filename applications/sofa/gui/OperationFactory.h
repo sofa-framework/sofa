@@ -95,7 +95,7 @@ public:
 
 };
 
-class RegisterOperation
+class SOFA_SOFAGUI_API RegisterOperation
 {
 public:
     std::string name;
