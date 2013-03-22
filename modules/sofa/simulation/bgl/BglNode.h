@@ -69,10 +69,6 @@ protected:
     LinkParents l_parents;
 
     BglNode(const std::string& name="");
-    /**
-       \param sg the SOFA scene containing a bgl graph
-       \param n the node of the bgl graph corresponding to this
-    */
     ~BglNode();
 
 public:

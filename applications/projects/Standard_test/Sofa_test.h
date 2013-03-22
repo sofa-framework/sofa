@@ -41,9 +41,47 @@ struct Sofa_test : public ::testing::Test
 {
     typedef _Real Real; ///< Scalar type
 
+    static Real epsilon(){ return std::numeric_limits<Real>::epsilon(); }
+
     /// true if the magnitude of r is less than ratio*numerical precision
     static bool isSmall(Real r, Real factor=1. ){
         return fabs(r) < factor * std::numeric_limits<Real>::epsilon();
+    }
+
+    /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
+    template<typename Matrix1, typename Matrix2>
+    static Real matrixCompare( const Matrix1& m1, const Matrix2& m2 )
+    {
+        Real result = 0;
+        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()){
+            ADD_FAILURE() << "Comparison between matrices of different sizes";
+            return std::numeric_limits<Real>::infinity();
+        }
+        for(unsigned i=0; i<m1.rowSize(); i++)
+            for(unsigned j=0; j<m1.colSize(); j++){
+                Real diff = abs(m1.element(i,j)-m2.element(i,j));
+                if(diff>result)
+                    result = diff;
+            }
+        return result;
+    }
+
+    /// return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
+    template<int M, int N, typename Real, typename Matrix2>
+    static Real matrixCompare( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
+    {
+        Real result = 0;
+        if(M!=m2.rowSize() || m2.colSize()!=N){
+            ADD_FAILURE() << "Comparison between matrices of different sizes";
+            return std::numeric_limits<Real>::infinity();
+        }
+        for(unsigned i=0; i<M; i++)
+            for(unsigned j=0; j<N; j++){
+                Real diff = abs(m1.element(i,j)-m2.element(i,j));
+                if(diff>result)
+                    result = diff;
+            }
+        return result;
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
@@ -95,6 +133,23 @@ struct Sofa_test : public ::testing::Test
     }
 
 
+    /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
+    template< typename Vector1, typename Vector2>
+    static Real vectorCompare( const Vector1& m1, const Vector2& m2 )
+    {
+        if( m1.size()!=m2.size() ) {
+            ADD_FAILURE() << "Comparison between vectors of different sizes";
+            return std::numeric_limits<Real>::infinity();
+        }
+        Real result = 0;
+        for( unsigned i=0; i<m1.size(); i++ ){
+            Real diff = fabs(m1.element(i)-m2.element(i));
+            if( diff>result  ) result=diff;
+        }
+        return result;
+    }
+
+
     /// return true if the vectors have same size and all their entries are equal within the given tolerance
     template< int N, typename Real, typename Vector2>
     static bool vectorsAreEqual( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
@@ -103,6 +158,22 @@ struct Sofa_test : public ::testing::Test
         for( unsigned i=0; i<N; i++ )
             if( fabs(m1[i]-m2.element(i))>tolerance  ) return false;
         return true;
+    }
+
+    /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
+    template< int N, typename Real, typename Vector2>
+    static Real vectorCompare( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
+    {
+        if( N !=m2.size() ) {
+            ADD_FAILURE() << "Comparison between vectors of different sizes";
+            return std::numeric_limits<Real>::infinity();
+        }
+        Real result = 0;
+        for( unsigned i=0; i<N; i++ ){
+            Real diff = fabs(m1.element(i)-m2.element(i));
+            if( diff>result  ) result=diff;
+        }
+        return result;
     }
 
 };

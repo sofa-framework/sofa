@@ -315,6 +315,52 @@ simulation::Node::SPtr createStiffString(simulation::Node::SPtr parent, Vec3 sta
 
 }
 
+///// Create a stiff hexehedral FEM grid
+//simulation::Node::SPtr createStiffGrid(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 )
+//{
+//    static unsigned numObject = 1;
+//    std::ostringstream oss;
+//    oss << "string_" << numObject++;
+//    SReal totalLength = (endPoint-startPoint).norm();
+
+//    //--------
+//    Node::SPtr  string_node = parent->createChild(oss.str());
+
+//    MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+//    string_node->addObject(DOF);
+//    DOF->setName(oss.str()+"_DOF");
+
+//    UniformMass3::SPtr mass = New<UniformMass3>();
+//    string_node->addObject(mass);
+//    mass->setName(oss.str()+"_mass");
+//    mass->mass.setValue( totalMass/numX );
+
+//    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
+//    string_node->addObject(spring);
+//    spring->setName(oss.str()+"_spring");
+
+
+
+//    //--------
+//    // create the particles and the springs
+//    DOF->resize(numX);
+//    MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+//    for( unsigned i=0; i<numX; i++ )
+//    {
+//        double alpha = (double)i/(numX-1);
+//        x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
+//        if(i>0)
+//        {
+//            spring->addSpring(i-1,i,stiffnessValue,dampingRatio,totalLength/(numX-1));
+//         }
+//    }
+
+//    return string_node;
+
+//}
+
+
+
 /// Create the stiff string composed of three parts
 simulation::Node::SPtr createStiffScene()
 {

@@ -209,7 +209,7 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
     // fill the jacobian in ascending order
     Indices::const_iterator it = tmp.begin();
     unsigned i = 0;
-    while( i < numBlocks && it != tmp.end())
+    while( i < numBlocks ) // (FF) do not stop after the last constrained particle, for the remainder of the diagonal would be null, while it must be identity.
     {
         jacobian.beginBlockRow(i);
         if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
