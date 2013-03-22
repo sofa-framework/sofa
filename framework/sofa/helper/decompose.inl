@@ -617,8 +617,8 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     Real MadjT_inf = infNorm(MadjTk);
 
     Real gamma = sqrt(sqrt((MadjT_one * MadjT_inf) / (M_oneNorm * M_infNorm)) / fabs(det));
-    Real g1 = gamma * 0.5;
-    Real g2 = 0.5 / (gamma * det);
+    Real g1 = gamma * static_cast<Real>(0.5);
+    Real g2 = static_cast<Real>(0.5) / (gamma * det);
 
     for(int i=0; i<9; i++)
     {
@@ -640,7 +640,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
   // S must be symmetric; enforce the symmetry
   for (int i=0; i<3; i++)
     for (int j=i; j<3; j++)
-        S(i,j) = S(j,i) = 0.5 * (S(i,j) + S(j,i));
+        S(i,j) = S(j,i) = static_cast<Real>(0.5) * (S(i,j) + S(j,i));
 
   return det;
 }
@@ -681,8 +681,8 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     Real MadjT_inf = infNorm(MadjTk);
 
     Real gamma = sqrt(sqrt((MadjT_one * MadjT_inf) / (M_oneNorm * M_infNorm)) / fabs(det));
-    Real g1 = gamma * 0.5;
-    Real g2 = 0.5 / (gamma * det);
+    Real g1 = gamma * static_cast<Real>(0.5);
+    Real g2 = static_cast<Real>(0.5) / (gamma * det);
 
     for(int i=0; i<9; i++)
     {
@@ -2158,20 +2158,20 @@ int dsyevc3( const defaulttype::Mat<3,3,Real> &A, defaulttype::Vec<3,Real> &w)
   c1 = (A[0][0]*A[1][1] + A[0][0]*A[2][2] + A[1][1]*A[2][2])        // a*b + a*c + b*c - d^2 - e^2 - f^2
           - (dd + ee + ff);
   c0 = A[2][2]*dd + A[0][0]*ee + A[1][1]*ff - A[0][0]*A[1][1]*A[2][2]
-            - 2.0 * A[0][2]*de;                                     // c*d^2 + a*e^2 + b*f^2 - a*b*c - 2*f*d*e)
+            - static_cast<Real>(2.0) * A[0][2]*de;                                     // c*d^2 + a*e^2 + b*f^2 - a*b*c - 2*f*d*e)
 
   Real p, sqrt_p, q, c, s, phi;
-  p = helper::SQR(m) - 3.0*c1;
-  q = m*(p - (3.0/2.0)*c1) - (27.0/2.0)*c0;
+  p = helper::SQR(m) - static_cast<Real>(3.0) * c1;
+  q = m*(p - static_cast<Real>(3.0/2.0)*c1) - static_cast<Real>(27.0/2.0)*c0;
   sqrt_p = sqrt(fabs(p));
 
-  phi = 27.0 * ( 0.25*helper::SQR(c1)*(p - c1) + c0*(q + 27.0/4.0*c0));
-  phi = (1.0/3.0) * atan2(sqrt(fabs(phi)), q);
+  phi = static_cast<Real>(27.0 * ( 0.25*helper::SQR(c1)*(p - c1) + c0*(q + 27.0/4.0*c0)));
+  phi = static_cast<Real>(1.0/3.0) * atan2(sqrt(fabs(phi)), q);
 
   c = sqrt_p*cos(phi);
-  s = (1.0/M_SQRT3)*sqrt_p*sin(phi);
+  s = static_cast<Real>(1.0/M_SQRT3)*sqrt_p*sin(phi);
 
-  w[1]  = (1.0/3.0)*(m - c);
+  w[1]  = static_cast<Real>(1.0/3.0)*(m - c);
   w[2]  = w[1] + s;
   w[0]  = w[1] + c;
   w[1] -= s;
@@ -2224,7 +2224,7 @@ inline void dsytrd3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Re
   omega = h - f;
   if (omega > 0.0)
   {
-    omega = 1.0 / omega;
+    omega = static_cast<Real>(1.0) / omega;
     K     = 0.0;
     for (int i=1; i < n; i++)
     {
@@ -2232,14 +2232,14 @@ inline void dsytrd3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Re
       q[i] = omega * f;                  // p
       K   += u[i] * f;                   // u* A u
     }
-    K *= 0.5 * helper::SQR(omega);
+    K *= static_cast<Real>(0.5) * helper::SQR(omega);
 
     for (int i=1; i < n; i++)
       q[i] = q[i] - K * u[i];
 
     d[0] = A[0][0];
-    d[1] = A[1][1] - 2.0*q[1]*u[1];
-    d[2] = A[2][2] - 2.0*q[2]*u[2];
+    d[1] = A[1][1] - static_cast<Real>(2.0)*q[1]*u[1];
+    d[2] = A[2][2] - static_cast<Real>(2.0)*q[2]*u[2];
 
     // Store inverse Householder transformation in Q
 #ifndef EVALS_ONLY
@@ -2315,7 +2315,7 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
 
       // Calculate g = d_m - k
       g = (w[l+1] - w[l]) / (e[l] + e[l]);
-      r = sqrt(g*g + 1.0);
+      r = sqrt(g*g + static_cast<Real>(1.0));
       if (g > 0)
         g = w[m] - w[l] + e[l]/(g + r);
       else
@@ -2330,20 +2330,20 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
         if (fabs(f) > fabs(g))
         {
           c      = g / f;
-          r      = sqrt(c*c + 1.0);
+          r      = sqrt(c*c + static_cast<Real>(1.0));
           e[i+1] = f * r;
-          c     *= (s = 1.0/r);
+          c     *= (s = static_cast<Real>(1.0)/r);
         }
         else
         {
           s      = f / g;
-          r      = sqrt(s*s + 1.0);
+          r      = sqrt(s*s + static_cast<Real>(1.0));
           e[i+1] = g * r;
-          s     *= (c = 1.0/r);
+          s     *= (c = static_cast<Real>(1.0)/r);
         }
 
         g = w[i+1] - p;
-        r = (w[i] - g)*s + 2.0*c*b;
+        r = (w[i] - g)*s + static_cast<Real>(2.0)*c*b;
         p = s * r;
         w[i+1] = g + p;
         g = c*r - b;
@@ -2424,7 +2424,7 @@ int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &
     u = t;
   else
     u = helper::SQR(t);
-  error = 256.0 * std::numeric_limits<Real>::epsilon() * helper::SQR(u);
+  error = static_cast<Real>(256.0) * std::numeric_limits<Real>::epsilon() * helper::SQR(u);
 //  error = 256.0 * std::numeric_limits<Real>::epsilon() * (n0 + u) * (n1 + u);
 
   Q[0][1] = A[0][1]*A[1][2] - A[0][2]*A[1][1];
@@ -2448,7 +2448,7 @@ int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &
     return dsyevq3(A, Q, w);
   else                      // This is the standard branch
   {
-    norm = sqrt(1.0 / norm);
+    norm = sqrt(static_cast<Real>(1.0) / norm);
     for (j=0; j < 3; j++)
       Q[j][0] = Q[j][0] * norm;
   }
@@ -2463,7 +2463,7 @@ int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &
     return dsyevq3(A, Q, w);
   else
   {
-    norm = sqrt(1.0 / norm);
+    norm = sqrt(static_cast<Real>(1.0) / norm);
     for (j=0; j < 3; j++)
       Q[j][1] = Q[j][1] * norm;
   }
@@ -2518,25 +2518,25 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 {
   Real sm = A + C;
   Real df = A - C;
-  Real rt = sqrt(helper::SQR(df) + 4.0*B*B);
+  Real rt = sqrt(helper::SQR(df) + static_cast<Real>(4.0)*B*B);
   Real t;
 
   if (sm > 0.0)
   {
-    rt1 = 0.5 * (sm + rt);
-    t = 1.0/rt1;
+    rt1 = static_cast<Real>(0.5) * (sm + rt);
+    t = static_cast<Real>(1.0)/rt1;
     rt2 = (A*t)*C - (B*t)*B;
   }
   else if (sm < 0.0)
   {
-    rt2 = 0.5 * (sm - rt);
-    t = 1.0/rt2;
+    rt2 = static_cast<Real>(0.5) * (sm - rt);
+    t = static_cast<Real>(1.0)/rt2;
     rt1 = (A*t)*C - (B*t)*B;
   }
   else       // This case needs to be treated separately to avoid div by 0
   {
-    rt1 = 0.5 * rt;
-    rt2 = -0.5 * rt;
+    rt1 = static_cast<Real>(0.5) * rt;
+    rt2 = static_cast<Real>(-0.5) * rt;
   }
 
   // Calculate eigenvectors
@@ -2547,8 +2547,8 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 
   if (fabs(cs) > 2.0*fabs(B))
   {
-    t   = -2.0 * B / cs;
-    sn = 1.0 / sqrt(1.0 + helper::SQR(t));
+    t   = static_cast<Real>(-2.0) * B / cs;
+    sn = static_cast<Real>(1.0 / sqrt(1.0 + helper::SQR(t)));
     cs = t * sn;
   }
   else if (fabs(B) == 0.0)
@@ -2558,8 +2558,8 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
   }
   else
   {
-    t   = -0.5 * cs / B;
-    cs = 1.0 / sqrt(1.0 + helper::SQR(t));
+    t   = static_cast<Real>(-0.5) * cs / B;
+    cs = static_cast<Real>(1.0 / sqrt(1.0 + helper::SQR(t)));
     sn = t * cs;
   }
 
