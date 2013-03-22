@@ -187,6 +187,7 @@ BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
 
 BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 {
+#ifndef SOFA_NO_OPENGL
     GLint viewport[4];
     GLdouble modelview[16];
     GLdouble projection[16];
@@ -205,6 +206,9 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
     return Vec3(posX, posY, posZ);
+#else
+	return Vec3(0,0,0);
+#endif /* SOFA_NO_OPENGL */
 }
 
 void BaseCamera::getOpenGLMatrix(double mat[16])

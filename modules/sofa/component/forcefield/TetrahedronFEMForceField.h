@@ -276,7 +276,10 @@ public:
     Data<int> _computeVonMisesStress;
     Data<helper::vector<Real> > _vonMises;
 
-    visualmodel::ColorMap::SPtr _showStressColorMapReal;
+#ifndef SOFA_NO_OPENGL
+	visualmodel::ColorMap::SPtr _showStressColorMapReal;
+#endif
+
     Data<std::string> _showStressColorMap;
 
     helper::vector<Vec<6,Real> > elemDisplacements;
@@ -304,7 +307,9 @@ protected:
         , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
         , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
         , _vonMises(initData(&_vonMises, "vonMises", "Von Mises Stress"))
+#ifndef SOFA_NO_OPENGL
         , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+#endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
     {
         data.initPtrData(this);

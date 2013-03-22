@@ -361,6 +361,7 @@ bool ClusteringEngine<DataTypes>::save()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord& currentPositions = *this->mstate->getX();
@@ -397,7 +398,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
         glPopAttrib();
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 

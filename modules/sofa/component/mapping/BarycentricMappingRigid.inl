@@ -523,6 +523,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+#ifndef SOFA_NO_OPENGL
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
@@ -611,6 +612,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace mapping

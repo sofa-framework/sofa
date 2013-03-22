@@ -194,6 +194,7 @@ void VaccumSphereForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Eve
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!active.getValue()) return;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -212,6 +213,7 @@ void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* v
     glPopMatrix();
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 

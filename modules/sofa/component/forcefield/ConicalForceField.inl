@@ -165,6 +165,7 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 template<class DataTypes>
 void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
@@ -209,6 +210,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     glDisable(GL_BLEND) ;
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>

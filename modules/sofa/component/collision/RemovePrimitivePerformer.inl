@@ -666,6 +666,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 template <class DataTypes>
 void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     if (picked.body == NULL) return;
 
     if (mstateCollision == NULL) return;
@@ -759,6 +760,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

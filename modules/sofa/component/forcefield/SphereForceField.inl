@@ -180,6 +180,7 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 template<class DataTypes>
 void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
@@ -196,6 +197,7 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     glPopMatrix();
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 

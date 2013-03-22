@@ -67,6 +67,7 @@ template class SOFA_CONSTRAINT_API FixedLMConstraint<Rigid3fTypes>;
 template <>
 void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *constrainedObject1->getX();
@@ -77,6 +78,7 @@ void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpa
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         gl::glVertexT(x[*it].getCenter());
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 #endif

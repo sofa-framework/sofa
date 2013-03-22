@@ -156,7 +156,10 @@ protected:
 
     std::string sceneFileName;
 
+#ifndef SOFA_NO_OPENGL
     sofa::helper::gl::Capture capture;
+    sofa::helper::gl::Texture* texLogo;
+#endif
 
 #ifdef SOFA_HAVE_FFMPEG
     sofa::helper::gl::VideoRecorder videoRecorder;
@@ -169,7 +172,6 @@ protected:
     bool initTexturesDone;
 
     Vector3 backgroundColour;
-    sofa::helper::gl::Texture* texLogo;
     std::string backgroundImageFile;
 
     Vector3 ambientColour;

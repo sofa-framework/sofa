@@ -237,6 +237,7 @@ public:
 
     virtual void draw()
     {
+#ifndef SOFA_NO_OPENGL
         if (!showPlane.getValue()) return;
         defaulttype::Vec3d normal; normal = planeNormal.getValue();
 
@@ -276,6 +277,7 @@ public:
         glDisable(GL_CULL_FACE);
 
         glColor4f(1,0,0,1);
+#endif /* SOFA_NO_OPENGL */
     }
 };
 

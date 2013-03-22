@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_TEXT_H
 #define SOFA_HELPER_GL_TEXT_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -99,5 +101,7 @@ private:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

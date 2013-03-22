@@ -424,6 +424,7 @@ double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->getIndexedElements()->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw(vparams);
 
@@ -439,6 +440,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         helper::gl::glVertexT(x[i]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

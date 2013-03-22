@@ -547,7 +547,7 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const double dx, const double dy, const double dz)
 {
-    Vector3 d((GLfloat)dx,(GLfloat)dy,(GLfloat)dz);
+    Coord d((Real)dx,(Real)dy,(Real)dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -590,9 +590,9 @@ void VisualModelImpl::applyScale(const double sx, const double sy, const double 
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        x[i][0] *= (GLfloat) sx;
-        x[i][1] *= (GLfloat) sy;
-        x[i][2] *= (GLfloat) sz;
+		x[i][0] *= (Real) sx;
+		x[i][1] *= (Real) sy;
+		x[i][2] *= (Real) sz;
     }
 
     d_x->endEdit();
@@ -605,8 +605,8 @@ void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-        vtexcoords[i][0] += (GLfloat) dU;
-        vtexcoords[i][1] += (GLfloat) dV;
+		vtexcoords[i][0] += (Real) dU;
+		vtexcoords[i][1] += (Real) dV;
     }
     m_vtexcoords.endEdit();
 }
@@ -616,8 +616,8 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
-        vtexcoords[i][0] *= (GLfloat) scaleU;
-        vtexcoords[i][1] *= (GLfloat) scaleV;
+		vtexcoords[i][0] *= (Real) scaleU;
+		vtexcoords[i][1] *= (Real) scaleV;
     }
     m_vtexcoords.endEdit();
 }

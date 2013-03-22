@@ -771,6 +771,7 @@ void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -862,6 +863,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     glEnd();
 
     ////
+#endif /* SOFA_NO_OPENGL */
 }
 
 

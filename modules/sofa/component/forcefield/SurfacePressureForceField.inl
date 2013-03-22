@@ -505,6 +505,7 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
 template<class DataTypes>
 void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -562,7 +563,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
         }
         vparams->drawTool()->drawLines(points, 1, color);
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

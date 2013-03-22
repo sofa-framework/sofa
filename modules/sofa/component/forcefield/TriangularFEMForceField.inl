@@ -1749,6 +1749,7 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
 template<class DataTypes>
 void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
@@ -1952,6 +1953,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     triangleInfo.endEdit();
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

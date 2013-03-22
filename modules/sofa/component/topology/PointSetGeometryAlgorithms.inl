@@ -180,7 +180,7 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* )
 {
-
+#ifndef SOFA_NO_OPENGL
     if (showPointIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
@@ -229,6 +229,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

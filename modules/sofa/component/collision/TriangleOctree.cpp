@@ -66,6 +66,7 @@ TriangleOctree::~TriangleOctree()
 
 void TriangleOctree::draw (const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     Vector3 center;
     if ( objects.size ())
     {
@@ -81,6 +82,7 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
         if (childVec[i])
             childVec[i]->draw(vparams);
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 void TriangleOctree::insert (double _x, double _y, double _z,

@@ -190,6 +190,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
 template<class DataTypes>
 void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
@@ -225,6 +226,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     glEnd();
     glDisable(GL_BLEND);
     glDepthMask(1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

@@ -382,6 +382,7 @@ void SolidTypes<R>::Transform::writeOpenGlMatrix( double *m ) const
 template<class R>
 void SolidTypes<R>::Transform::glDraw() const
 {
+#ifndef SOFA_NO_OPENGL
     glPushAttrib( GL_COLOR_BUFFER_BIT );
     glColor3f(1,0,0);
     glVertex3f( 0,0,0 );
@@ -393,6 +394,7 @@ void SolidTypes<R>::Transform::glDraw() const
     glVertex3f( 0,0,0 );
     glVertex3f( 0,0,1 );
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 template<class R>

@@ -144,7 +144,6 @@ HEADERS += \
 	visual/VisualModel.h \
 	visual/VisualManager.h \
 	visual/DrawTool.h \
-	visual/DrawToolGL.h \
 	visual/Shader.h \
 	ObjectFactory.h \
 	SofaLibrary.h \
@@ -221,10 +220,17 @@ SOURCES += \
 	loader/VoxelLoader.cpp \
 	loader/SceneLoader.cpp \
 	visual/DisplayFlags.cpp \
-	visual/DrawToolGL.cpp \
 	visual/VisualParams.cpp \
     objectmodel/HapticDeviceEvent.cpp \
     objectmodel/GUIEvent.cpp
+
+!contains(DEFINES, SOFA_NO_OPENGL) {
+	HEADERS += \
+		visual/DrawToolGL.h
+
+	SOURCES += \
+		visual/DrawToolGL.cpp
+}	
 
 contains(DEFINES,SOFA_HAVE_BOOST) {
 

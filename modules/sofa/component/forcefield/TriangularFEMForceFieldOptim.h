@@ -303,7 +303,9 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    visualmodel::ColorMap::SPtr showStressColorMapReal;
+#ifndef SOFA_NO_OPENGL
+	visualmodel::ColorMap::SPtr showStressColorMapReal;
+#endif
 
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);

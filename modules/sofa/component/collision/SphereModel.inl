@@ -116,6 +116,7 @@ void TSphereModel<DataTypes>::init()
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 {
+#ifndef SOFA_NO_OPENGL
     TSphere<DataTypes> t(this,index);
 
     Vector3 p = t.p();
@@ -123,6 +124,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
     glTranslated(p[0], p[1], p[2]);
     glutSolidSphere(t.r(), 32, 16);
     glPopMatrix();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

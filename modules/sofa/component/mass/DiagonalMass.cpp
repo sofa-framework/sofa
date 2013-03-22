@@ -78,8 +78,8 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::
 
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
-
 {
+#ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -125,6 +125,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPar
         helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <>
@@ -288,8 +289,8 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
-
 {
+#ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
@@ -335,6 +336,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPar
         helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()

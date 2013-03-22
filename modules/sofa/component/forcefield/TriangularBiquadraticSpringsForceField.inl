@@ -530,6 +530,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -560,6 +561,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif /* SOFA_NO_OPENGL */ 
 }
 
 } // namespace forcefield

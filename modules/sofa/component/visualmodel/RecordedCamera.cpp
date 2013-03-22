@@ -466,6 +466,7 @@ void RecordedCamera::drawRotation()
 
 void RecordedCamera::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     if(p_drawRotation.getValue())
     {
         if (m_rotationPoints.empty())
@@ -496,6 +497,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* )
         }
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

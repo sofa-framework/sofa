@@ -150,6 +150,7 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 template<class DataTypes>
 void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
@@ -169,6 +170,7 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_SYSTEM_GL_H
 #define SOFA_HELPER_SYSTEM_GL_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/system/config.h>
 
 #if defined (SOFA_HAVE_GLEW)
@@ -40,5 +42,7 @@
 extern const char* GetGlExtensionsList();
 
 extern bool CanUseGlExtension(char* ext);
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

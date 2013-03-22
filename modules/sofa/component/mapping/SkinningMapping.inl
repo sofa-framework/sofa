@@ -556,6 +556,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
     unsigned int nbref = this->nbRef.getValue()[0];
@@ -642,6 +643,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     }
 
     glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

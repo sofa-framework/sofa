@@ -344,11 +344,14 @@ enable(sofa_constraint)
 enable(sofa_haptics)
 enable(sofa_dense_solver)
 enable(sofa_preconditioner)
-enable(sofa_opengl_visual)
 enable(sofa_eulerian_fluid)
 enable(sofa_sph_fluid)
 enable(sofa_volumetric_data)
 enable(sofa_non_uniform_fem)
+
+!contains(DEFINES, SOFA_NO_OPENGL) {
+    enable(sofa_opengl_visual)
+}
 
 contains(DEFINES, SOFA_HAVE_EIGEN2) {
     enable(eigen)
@@ -373,7 +376,9 @@ enable(sofa_misc_solver)
 enable(sofa_misc)
 
 enable(sofagui)
-enable(sofaguiqt)
+contains(DEFINES, SOFA_GUI_QT) {
+	enable(sofaguiqt)
+}
 enable(sofaguimain)
 
 enable(runSofa)
@@ -386,7 +391,10 @@ enable(sofaInitTimer)
 enable(sofaVerification)
 enable(sofaInfo)
 enable(sofaBatch)
-enable(sofaobjectcreator)  # used in verification programs
+
+!contains(DEFINES, SOFA_NO_OPENGL) { # creates an OglModel
+	enable(sofaobjectcreator)  # used in verification programs
+}
 
 contains(DEFINES, SOFA_HAVE_BOOST) {
 	enable(sofatests)
@@ -501,7 +509,9 @@ contains(DEFINES, SOFA_HAVE_ARPLUGIN)					{ usePlugin(ARPlugin, applications/plu
 # Projects
 ######################################################################
 
-useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
+!contains(DEFINES, SOFA_NO_OPENGL) { # has a glut gui
+	useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
+}
 
 contains(DEFINES, SOFA_PROJECT_TEST) { useApp(Standard_test, applications/projects/Standard_test ) }
 

@@ -219,6 +219,7 @@ void EvalPointsDistance<DataTypes>::draw(const core::visual::VisualParams* )
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x2)
 {
+#ifndef SOFA_NO_OPENGL
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     int s1 = x1.size()-n;
     int s2 = x2.size()-n;
@@ -231,6 +232,7 @@ void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x
         helper::gl::glVertexT(x2[s2+i]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 //-------------------------------- handleEvent ------------------------------------

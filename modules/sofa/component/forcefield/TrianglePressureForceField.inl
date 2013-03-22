@@ -213,6 +213,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!p_showForces.getValue())
         return;
 
@@ -239,6 +240,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

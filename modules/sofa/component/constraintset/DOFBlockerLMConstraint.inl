@@ -182,6 +182,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
 
@@ -205,6 +206,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
                     showSizeAxis.getValue()*0.03);
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraintset

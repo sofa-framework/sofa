@@ -25,8 +25,12 @@
 #include "Main.h"
 #include "GUIManager.h"
 #include "BatchGUI.h"
+#if defined(SOFA_GUI_QTVIEWER) || defined(SOFA_GUI_QGLVIEWER)
 #include "qt/RealGUI.h"
+#endif
+#ifdef SOFA_GUI_GLUT
 #include "glut/SimpleGUI.h"
+#endif
 #ifdef SOFA_HAVE_BOOST
 #include "glut/MultithreadGUI.h"
 #endif

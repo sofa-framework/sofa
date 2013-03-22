@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_BASICSHAPES_H
 #define SOFA_HELPER_GL_BASICSHAPES_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/glu.h>
 #include <math.h>
@@ -133,4 +135,7 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
 }
 }
 }
+
+#endif /* SOFA_NO_OPENGL */
+
 #endif

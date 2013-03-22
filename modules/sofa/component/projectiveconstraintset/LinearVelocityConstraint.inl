@@ -344,6 +344,7 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -359,6 +360,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
         }
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraint

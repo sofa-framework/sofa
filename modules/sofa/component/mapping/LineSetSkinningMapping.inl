@@ -199,6 +199,7 @@ void LineSetSkinningMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowMappings()) return;
     glDisable (GL_LIGHTING);
     glLineWidth(1);
@@ -228,6 +229,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
     }
 
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <class TIn, class TOut>

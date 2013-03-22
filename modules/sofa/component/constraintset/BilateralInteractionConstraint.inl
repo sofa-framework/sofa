@@ -419,6 +419,7 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
@@ -437,6 +438,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     }
     glEnd();
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraintset

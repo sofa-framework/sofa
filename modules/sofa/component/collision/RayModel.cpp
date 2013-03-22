@@ -108,6 +108,7 @@ int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal leng
 
 void RayModel::draw(const core::visual::VisualParams* vparams,int index)
 {
+#ifndef SOFA_NO_OPENGL
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
     Ray r(this, index);
@@ -117,10 +118,12 @@ void RayModel::draw(const core::visual::VisualParams* vparams,int index)
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p2);
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 void RayModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
     if (vparams->displayFlags().getShowCollisionModels())
@@ -134,6 +137,7 @@ void RayModel::draw(const core::visual::VisualParams* vparams)
     }
     if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
+#endif /* SOFA_NO_OPENGL */
 }
 
 void RayModel::computeBoundingTree(int maxDepth)

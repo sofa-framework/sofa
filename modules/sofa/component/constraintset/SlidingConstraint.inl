@@ -163,6 +163,7 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
@@ -185,6 +186,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     helper::gl::glVertexT((*this->mstate2->getX())[m2b.getValue()]);
     glEnd();
     glPointSize(1);
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraintset

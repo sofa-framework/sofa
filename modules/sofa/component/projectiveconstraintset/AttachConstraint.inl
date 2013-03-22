@@ -768,6 +768,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 template <class DataTypes>
 void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
@@ -795,6 +796,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
         gl::glVertexT(x2[indices2[i]]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraint

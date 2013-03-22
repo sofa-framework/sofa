@@ -312,6 +312,7 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
@@ -349,7 +350,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         //	if (showExtraTorsion.getValue())
         //		helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
     }
-
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace interactionforcefield

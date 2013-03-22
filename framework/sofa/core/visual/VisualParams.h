@@ -69,9 +69,7 @@ enum
 class SOFA_CORE_API VisualParams : public ExecParams
 {
 public:
-
-    typedef sofa::helper::fixed_array<GLint,4> Viewport;
-
+	typedef sofa::helper::fixed_array<int, 4> Viewport;
 
     /// The enumeration used to describe each step of the rendering.
     enum Pass
@@ -158,15 +156,16 @@ public:
     const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
 
     /// Store the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
-    void setModelViewMatrix( const GLdouble m[16] ) { for(unsigned i=0; i<16; i++ ) m_modelViewMatrix[i] = m[i]; }
+    void setModelViewMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_modelViewMatrix[i] = m[i]; }
+
     /// Get the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
-    void getModelViewMatrix( GLdouble m[16] ) const { for(unsigned i=0; i<16; i++ ) m[i] = m_modelViewMatrix[i]; }
+    void getModelViewMatrix( double m[16] ) { for(unsigned i=0; i<16; i++) m[i] = m_modelViewMatrix[i]; }
 
     /// Store the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
-    void setProjectionMatrix( const GLdouble m[16] ) { for(unsigned i=0; i<16; i++ ) m_projectionMatrix[i] = m[i]; }
-    /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
-    void getProjectionMatrix( GLdouble m[16] ) const { for(unsigned i=0; i<16; i++ ) m[i] = m_projectionMatrix[i]; }
+    void setProjectionMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_projectionMatrix[i] = m[i]; }
 
+    /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
+    void getProjectionMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = m_projectionMatrix[i]; }
 
     /// @todo clarify what this is with respect to ModelView and Perspective matrices
     sofa::helper::gl::Transformation& sceneTransform() { return m_sceneTransform; }
@@ -204,10 +203,8 @@ protected:
     /// Mask of supported graphics API
     unsigned int m_supportedAPIs;
 
-
-    GLdouble m_modelViewMatrix[16];  ///< model view matrix.
-    GLdouble m_projectionMatrix[16]; ///< projection matrix.
-
+    double m_modelViewMatrix[16];  ///< model view matrix.
+    double m_projectionMatrix[16]; ///< projection matrix.
 };
 
 } // namespace visual

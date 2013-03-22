@@ -26,17 +26,6 @@ HEADERS += helper.h \
     Factory.inl \
     FnDispatcher.h \
     FnDispatcher.inl \
-    gl/Axis.h \
-    gl/BasicShapes.h \
-    gl/Capture.h \
-    gl/Color.h \
-    gl/Cylinder.h \
-    gl/glfont.h \
-    gl/glText.inl \
-    gl/glText.h \
-    gl/RAII.h \
-    gl/template.h \
-    gl/Texture.h \
     gl/Trackball.h \
     gl/Transformation.h \
     io/Image.h \
@@ -114,13 +103,6 @@ SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
     DualQuat.cpp \
     Factory.cpp \
-    gl/Axis.cpp \
-    gl/Capture.cpp \
-    gl/Color.cpp \
-    gl/Cylinder.cpp \
-    gl/glfont.cpp \
-    gl/glText.cpp \
-    gl/Texture.cpp \
     gl/Trackball.cpp \
     gl/Transformation.cpp \
     io/Image.cpp \
@@ -142,7 +124,6 @@ SOURCES += ArgumentParser.cpp \
     decompose.cpp \
     Quater.cpp \
     RandomGenerator.cpp \
-    system/gl.cpp \
     system/SetDirectory.cpp \
     system/FileRepository.cpp \
     system/thread/CTime.cpp \
@@ -162,12 +143,38 @@ SOURCES += ArgumentParser.cpp \
     Polynomial_LD.cpp\
     UnitTest.cpp
 
+!contains(DEFINES, SOFA_NO_OPENGL) {
+	HEADERS += \
+		gl/Axis.h \
+		gl/BasicShapes.h \
+		gl/Capture.h \
+		gl/Color.h \
+		gl/Cylinder.h \
+		gl/glfont.h \
+		gl/glText.inl \
+		gl/glText.h \
+		gl/RAII.h \
+		gl/template.h \
+		gl/Texture.h
+
+	SOURCES += \
+		gl/Axis.cpp \
+		gl/Capture.cpp \
+		gl/Color.cpp \
+		gl/Cylinder.cpp \
+		gl/glfont.cpp \
+		gl/glText.cpp \
+		gl/Texture.cpp \
+		system/gl.cpp
+
 #contains(DEFINES,SOFA_HAVE_GLEW) {    # seems to be built without GLEW since we include glext.h from helper/system/gl.h
     HEADERS += gl/FrameBufferObject.h \  # FrameBufferObject is used in SOFA even if we disable GLEW (see PickHandler and OglViewport)... have to review?
         gl/GLSLShader.h
     SOURCES += gl/FrameBufferObject.cpp \
         gl/GLSLShader.cpp
 #}
+
+}
 
 contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     HEADERS += \

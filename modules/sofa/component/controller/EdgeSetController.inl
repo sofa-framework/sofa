@@ -592,6 +592,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
 template <class DataTypes>
 void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     glDisable(GL_LIGHTING);
@@ -621,6 +622,7 @@ void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparam
         		glPointSize(1);
         */
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -551,6 +551,7 @@ void MeshROI<DataTypes>::update()
 template <class DataTypes>
 void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
@@ -813,6 +814,7 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glEnd();
         glLineWidth(1);
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace engine

@@ -2618,6 +2618,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 void MeshTopology::draw(const core::visual::VisualParams* )
 {
+#ifndef SOFA_NO_OPENGL
     //Draw edges
     if (_drawEdges.getValue())
     {
@@ -2655,6 +2656,7 @@ void MeshTopology::draw(const core::visual::VisualParams* )
             glEnd();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace topology

@@ -721,6 +721,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;
     //     if (!this->_object)
@@ -752,6 +753,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_COLOR_H
 #define SOFA_HELPER_GL_COLOR_H
 
+#ifndef SOFA_NO_OPENGL
+
 #include <sofa/helper/helper.h>
 
 
@@ -54,5 +56,7 @@ public:
 } // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_NO_OPENGL */
 
 #endif

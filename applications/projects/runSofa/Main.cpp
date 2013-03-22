@@ -157,7 +157,9 @@ int main(int argc, char** argv)
     a1::Community com = a1::System::join_community( ac, av);
 #endif /* SOFA_SMP */
 
+#ifndef SOFA_NO_OPENGL
     if(gui!="batch") glutInit(&argc,argv);
+#endif
 
 #ifdef SOFA_HAVE_BGL
     if (simulationType == "dag")

@@ -79,7 +79,8 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
 
 void BVHJoint::display(int frameNum)
 {
-    glPushMatrix();
+#ifndef SOFA_NO_OPENGL
+	glPushMatrix();
     glDisable(GL_LIGHTING);
     glColor3f(0.0, 0.0, 0.0);
     glBegin(GL_LINES);
@@ -129,10 +130,12 @@ void BVHJoint::display(int frameNum)
     }
 
     glPopMatrix();
+#endif /* SOFA_NO_OPENGL */
 }
 
 void BVHJoint::displayInGlobalFrame(void)
 {
+#ifndef SOFA_NO_OPENGL
     glPushMatrix();
     glLoadIdentity();
     glTranslatef(0.0,0.0,-4.0);
@@ -146,6 +149,7 @@ void BVHJoint::displayInGlobalFrame(void)
     {
         children[i]->displayInGlobalFrame();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

@@ -24,9 +24,14 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_SYSTEM_GLU_H
 #define SOFA_HELPER_SYSTEM_GLU_H
+
+#ifndef SOFA_NO_OPENGL
+
 #if defined (__APPLE__)
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
 #endif
 #endif
+
+#endif /* SOFA_NO_OPENGL */

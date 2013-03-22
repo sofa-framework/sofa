@@ -208,6 +208,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
@@ -257,6 +258,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
         helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 
@@ -315,6 +317,7 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::Me
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
@@ -344,6 +347,7 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
         helper::gl::glVertexT(p + R.col(2)*len[2]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <> SOFA_BASE_MECHANICS_API
@@ -565,6 +569,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
@@ -604,6 +609,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPara
         helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
         glEnd();
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 template <> SOFA_BASE_MECHANICS_API
@@ -659,6 +665,7 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::Me
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
@@ -688,6 +695,7 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
         helper::gl::glVertexT(p + R.col(2)*len[2]);
     }
     glEnd();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

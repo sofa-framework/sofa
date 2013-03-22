@@ -351,6 +351,7 @@ bool is_point_in_quad(const Coord& p,
 template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Quads indices
@@ -475,6 +476,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             glEnd();
         }
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 

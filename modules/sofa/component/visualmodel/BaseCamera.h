@@ -143,6 +143,7 @@ public:
 
     double getHorizontalFieldOfView()
     {
+#ifndef SOFA_NO_OPENGL
         GLint viewport[4];
         glGetIntegerv( GL_VIEWPORT, viewport );
         float screenwidth = (float)viewport[2];
@@ -151,6 +152,9 @@ public:
         float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
         float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
         return hor_fov_radian*(180/M_PI);
+#else
+	    return 0.0;
+#endif /* SOFA_NO_OPENGL */
     }
 
     int getCameraType() const

@@ -707,6 +707,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
@@ -732,6 +733,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
         q.fromMatrix(RotMat);
         helper::gl::Axis::draw(DataTypes::getCPos(x[pid]), q, this->draw_rotations_scale.getValue());
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace linearsolver

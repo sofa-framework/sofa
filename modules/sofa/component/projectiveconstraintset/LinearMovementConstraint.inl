@@ -384,6 +384,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
     if (showMovement.getValue())
@@ -417,6 +418,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         }
         vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace constraint
