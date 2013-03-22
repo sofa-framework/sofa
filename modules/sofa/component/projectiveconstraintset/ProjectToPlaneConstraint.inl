@@ -201,21 +201,23 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
     // get the indices sorted
     Indices tmp = f_indices.getValue();
     std::sort(tmp.begin(),tmp.end());
+//    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), indices = " << tmp << endl;
 
     // resize the jacobian
     unsigned numBlocks = this->mstate->getSize();
     unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
-    // fill the jacobian is ascending order
+    // fill the jacobian in ascending order
     unsigned i=0;
     Indices::const_iterator it = tmp.begin();
-    while( i<numBlocks && it != tmp.end())
+    while( i<numBlocks )
     {
         jacobian.beginBlockRow(i);
         if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.createBlock(i,bProjection); // only one block to create
+//            cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), constrain index " << i << endl;
             it++;
         }
         else           // unconstrained particle: set diagonal to identity block
@@ -245,7 +247,9 @@ template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
+//    cerr<< "ProjectToPlaneConstraint<DataTypes>::projectResponse input  = "<< endl << res.ref() << endl;
     jacobian.mult(res.wref(),res.ref());
+//    cerr<< "ProjectToPlaneConstraint<DataTypes>::projectResponse output = "<< endl << res.wref() << endl;
 }
 
 template <class DataTypes>
@@ -275,6 +279,7 @@ void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::Mechanical
 //        x[indices[i]] -= n * ((x[indices[i]]-o)*n);
         const CPos xi = DataTypes::getCPos( x[indices[i]] );
         DataTypes::setCPos( x[indices[i]], xi - n * ((xi-o)*n) );
+//        cerr<<"ProjectToPlaneConstraint<DataTypes>::projectPosition particle  "<<indices[i]<<endl;
     }
 
     xData.endEdit();

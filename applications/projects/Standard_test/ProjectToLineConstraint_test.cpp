@@ -29,7 +29,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.h>
+#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -44,11 +44,11 @@ using namespace sofa::defaulttype;
 
 
 
-/**  Test suite for ProjectToPlaneConstraint.
+/**  Test suite for ProjectToLineConstraint.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,8 +57,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef projectiveconstraintset::ProjectToPlaneConstraint<DataTypes> ProjectToPlaneConstraint;
-    typedef typename ProjectToPlaneConstraint::Indices Indices;
+    typedef projectiveconstraintset::ProjectToLineConstraint<DataTypes> ProjectToLineConstraint;
+    typedef typename ProjectToLineConstraint::Indices Indices;
     typedef topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -68,8 +68,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     unsigned numNodes;                         ///< number of particles used for the test
     Indices indices;                           ///< indices of the nodes to project
     CPos origin;                               ///< origin of the plane to project to
-    CPos normal;                               ///< normal of the plane to project to
-    typename ProjectToPlaneConstraint::SPtr projection;
+    CPos direction;                            ///< direction of the line to project to
+    typename ProjectToLineConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the matrix tests.
@@ -88,7 +88,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
         dofs = New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = New<ProjectToPlaneConstraint>();
+        projection = New<ProjectToLineConstraint>();
         root->addObject(projection);
 
         /// Set the values
@@ -98,8 +98,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
         origin = CPos(0,0,0);
         projection->f_origin.setValue(origin);
-        normal = CPos(1,1,1);
-        projection->f_normal.setValue(normal);
+        direction = CPos(1,1,1);
+        projection->f_direction.setValue(direction);
 
     }
 
@@ -153,7 +153,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
            if( i==*it )  // constrained particle
            {
-              Real scal = (x[i]-origin)*normal; // null if x is in the plane
+              CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
+              Real scal = crossprod*crossprod; // null if x is on the line
 //              cerr<<"scal = "<< scal << endl;
               if( !isSmall(scal,100) ){
                   succeed = false;
@@ -193,7 +194,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
            if( i==*it )  // constrained particle
            {
-              Real scal = v[i]*normal; // null if v is in the plane
+              CPos crossprod = v[i].cross(direction); // should be parallel
+              Real scal = crossprod.norm(); // null if v is ok
 //              cerr<<"scal = "<< scal << endl;
               if( !isSmall(scal,100) ){
                   succeed = false;
@@ -235,16 +237,16 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ProjectToPlaneConstraint_test, DataTypes);
+TYPED_TEST_CASE(ProjectToLineConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
+TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 {
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 // next test case
-TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
+TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
 {
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );

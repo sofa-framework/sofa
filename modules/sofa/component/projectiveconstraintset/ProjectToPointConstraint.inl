@@ -244,7 +244,8 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
     //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-    //serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
+//    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse  input  = "<<endl<<res<<endl;
+//    serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
@@ -261,9 +262,10 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
                 ++it)
         {
             res[*it] = Deriv();
+//            cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse fix particle  "<<*it<<endl;
         }
     }
-    //cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
+//    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse  output = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -328,6 +330,7 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
                 ++it)
         {
             res[*it] = f_point.getValue();
+//            cerr<<"ProjectToPointConstraint<DataTypes>::projectPosition fix particle  "<<*it<<endl;
         }
     }
 }
