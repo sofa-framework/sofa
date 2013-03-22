@@ -29,6 +29,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {

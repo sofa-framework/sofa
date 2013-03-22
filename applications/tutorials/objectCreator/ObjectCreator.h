@@ -42,6 +42,11 @@ namespace sofa
 class SimpleObjectCreator
 {
 public:
+
+    typedef SReal Scalar;
+    typedef Vec<3,SReal> Vec3;
+    typedef Vec<1,SReal> Vec1;
+
     static simulation::Node::SPtr CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string &responseType=std::string("default"));
     static simulation::Node::SPtr CreateEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
@@ -66,6 +71,9 @@ public:
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
     static simulation::Node::SPtr CreateVisualNodeRigid(simulation::Node::SPtr parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
+
+    static simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue=1.0, double dampingRatio=0 );
+
 
 private:
     static void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);

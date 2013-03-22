@@ -214,7 +214,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
     while( i<numBlocks )
     {
         jacobian.beginBlockRow(i);
-        if( i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
+        if(  it!=tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.createBlock(i,bProjection); // only one block to create
 //            cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), constrain index " << i << endl;
