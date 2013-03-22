@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <VisualStyle displayFlags="showVisual showWireframe " />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="100"/>
+
+<!--     <Node 	name="FEM"   >-->
+<!--	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />-->
+<!--	      <Mesh name="mesh" src="@loader" />-->
+<!--	      <MechanicalObject template="Vec3d" name="parent" />-->
+
+<!--             <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>-->
+<!--             <FixedConstraint indices="@FixedROI.indices" />-->
+
+<!--	     <UniformMass totalMass="250" />-->
+
+<!--	     <!--TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/--> -->
+<!--	  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  -->
+
+<!--	    <Node 	name="visual"   >-->
+<!--		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>-->
+<!--	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>-->
+<!--	    </Node>-->
+<!--    </Node>-->
+
+
+
+    <Node 	name="Flexible"   >
+	    <MeshObjLoader name="surf" filename="mesh/torus.obj" triangulate="1"/>
+            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@surf" voxelSize="0.1" padSize="1" rotateImage="true" />
+	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="100" fixedPosition="" showSamples="true"/> 
+            <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+	    <MechanicalObject template="Vec3d" name="dof" src="@merged"/>
+<!--
+	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+            <Mesh name="mesh" src="@loader" />
+	    <MechanicalObject template="Vec3d" name="dof" />
+-->
+	    <UniformMass totalMass="250" />
+
+            <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@dof.position" name="FixedROI"/>
+<!--            <FixedConstraint indices="@FixedROI.indices" />-->
+
+<!--	    <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />-->
+<!--	    <ShepardShapeFunction name="SF" position="@dof.rest_position" src="@image" power="2" nbRef="5" />-->
+	    <HatShapeFunction name="SF" position="@dof.rest_position" src="@image" param="2 2 3" nbRef="5" />
+
+<!--	    <Node 	name="behavior"   >-->
+<!--		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="false" targetNumber="200" />-->
+<!--		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="0" showObjectScale="0.05" />-->
+<!--	    	<MLSMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false"/>-->
+
+<!--		<Node 	name="E"   >-->
+<!--		    <MechanicalObject  template="E331" name="E"  /> -->
+<!--		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />-->
+<!--		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>-->
+<!--		</Node>-->
+
+<!--	    </Node>-->
+
+	    <Node 	name="collision"   >
+		<Mesh name="mesh" src="@../surf" /> 
+		<MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
+	    	<MLSMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;"/>
+		<Node 	name="visual" >
+			<VisualModel />
+			<IdentityMapping />
+		</Node>
+	    </Node>
+
+<!--	    <Node 	name="visual"   >-->
+<!--		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>-->
+<!--	    	<MLSMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>-->
+<!--	    </Node>-->
+
+    </Node>
+
+</Node>

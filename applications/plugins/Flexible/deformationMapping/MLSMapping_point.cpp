@@ -22,26 +22,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_LinearJacobianBlock_H
-#define FLEXIBLE_LinearJacobianBlock_H
+#define SOFA_COMPONENT_MAPPING_MLSMAPPING_point_CPP
 
-#include "../BaseJacobian.h"
+#include "../initFlexible.h"
+#include "../deformationMapping/MLSMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include "../types/DeformationGradientTypes.h"
 
 namespace sofa
 {
-
-namespace defaulttype
+namespace component
+{
+namespace mapping
 {
 
-/** Template class used to implement one jacobian block for linearMapping */
-template<class TIn, class TOut>
-class LinearJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+SOFA_DECL_CLASS(MLSMapping_point);
 
+using namespace defaulttype;
 
+// Register in the Factory
+int MLSMappingClass_point = core::RegisterObject("Map child positions using moving least squares.")
 
-} // namespace defaulttype
+        .add< MLSMapping< Vec3Types, Vec3Types > >(true)
+//        .add< MLSMapping< Vec3Types, ExtVec3fTypes > >()
+//        .add< MLSMapping< Vec3Types, F331Types > >()
+//        .add< MLSMapping< Vec3Types, F332Types > >()
+//        .add< MLSMapping< Vec3Types, F321Types > >()
+//        .add< MLSMapping< Vec3Types, F311Types > >()
+        ;
+
+template class SOFA_Flexible_API MLSMapping< Vec3Types, Vec3Types >;
+//template class SOFA_Flexible_API MLSMapping< Vec3Types, ExtVec3fTypes >;
+//template class SOFA_Flexible_API MLSMapping< Vec3Types, F331Types >;
+//template class SOFA_Flexible_API MLSMapping< Vec3Types, F332Types >;
+//template class SOFA_Flexible_API MLSMapping< Vec3Types, F321Types >;
+//template class SOFA_Flexible_API MLSMapping< Vec3Types, F311Types >;
+
+} // namespace mapping
+} // namespace component
 } // namespace sofa
 
-
-
-#endif

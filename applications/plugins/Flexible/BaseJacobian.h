@@ -26,6 +26,7 @@
 #define FLEXIBLE_BaseJacobian_H
 
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/MatSym.h>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
@@ -75,6 +76,29 @@ public:
 
 protected:
 
+
+    //////////////////////////////////////////////////////////////////////////////////
+    ////  macros
+    //////////////////////////////////////////////////////////////////////////////////
+    #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
+    #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
+
+    #define Rigid3(type)  StdRigidTypes<3,type>
+    #define Affine3(type)  StdAffineTypes<3,type>
+    #define Quadratic3(type)  StdQuadraticTypes<3,type>
+
+    #define F331(type)  DefGradientTypes<3,3,0,type>
+    #define F321(type)  DefGradientTypes<3,2,0,type>
+    #define F311(type)  DefGradientTypes<3,1,0,type>
+
+    #define F332(type)  DefGradientTypes<3,3,1,type>
+
+    #define E321(type)  StrainTypes<3,2,0,type>
+    #define E311(type)  StrainTypes<3,1,0,type>
+
+    #define I331(type)  InvariantStrainTypes<3,3,0,type>
+
+    #define U331(type)  PrincipalStretchesStrainTypes<3,3,0,type>
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -156,6 +180,46 @@ protected:
 };
 
 
+
+template<class Real1, class Real2,  int Dim1, int Dim2>
+inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Real2>& v2)
+{
+    Mat<Dim1, Dim2, Real2> res;
+    for ( unsigned int i = 0; i < Dim1; ++i)
+        for ( unsigned int j = 0; j < Dim2; ++j)
+        {
+            res[i][j] = (Real2)v1[i] * v2[j];
+        }
+    return res;
+}
+
+template<class Real,  int Dim>
+inline MatSym<Dim, Real> covN(const Vec<Dim,Real>& v)
+{
+    MatSym<Dim, Real> res;
+    for ( unsigned int i = 0; i < Dim; ++i)
+        for ( unsigned int j = i; j < Dim; ++j)
+        {
+            res(i,j) = v[i] * v[j];
+        }
+    return res;
+}
+
+template<class _Real>
+inline Mat<3, 3, _Real> crossProductMatrix(const Vec<3,_Real>& v)
+{
+    Mat<3, 3, _Real> res;
+    res[0][0]=0;
+    res[0][1]=-v[2];
+    res[0][2]=v[1];
+    res[1][0]=v[2];
+    res[1][1]=0;
+    res[1][2]=-v[0];
+    res[2][0]=-v[1];
+    res[2][1]=v[0];
+    res[2][2]=0;
+    return res;
+}
 
 
 

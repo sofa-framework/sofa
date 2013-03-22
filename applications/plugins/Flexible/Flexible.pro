@@ -15,6 +15,7 @@ SOURCES = initFlexible.cpp \
     quadrature/TopologyGaussPointSampler.cpp \
     shapeFunction/BaseShapeFunction.cpp \
     shapeFunction/ShepardShapeFunction.cpp \
+    shapeFunction/HatShapeFunction.cpp \
     shapeFunction/BarycentricShapeFunction.cpp \
     deformationMapping/DistanceMapping.cpp \
     deformationMapping/ExtensionMapping.cpp \
@@ -22,6 +23,7 @@ SOURCES = initFlexible.cpp \
     deformationMapping/LinearMapping_affine.cpp \
     deformationMapping/LinearMapping_rigid.cpp \
     deformationMapping/LinearMapping_quadratic.cpp \
+    deformationMapping/MLSMapping_point.cpp \
     deformationMapping/TriangleDeformationMapping.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
@@ -56,6 +58,7 @@ HEADERS = initFlexible.h \
     quadrature/TopologyGaussPointSampler.h \
     shapeFunction/BaseShapeFunction.h \
     shapeFunction/ShepardShapeFunction.h \
+    shapeFunction/HatShapeFunction.h \
     shapeFunction/BarycentricShapeFunction.h \
     deformationMapping/BaseDeformationMapping.h \
     deformationMapping/BaseDeformationMapping.inl \
@@ -69,6 +72,9 @@ HEADERS = initFlexible.h \
     deformationMapping/LinearJacobianBlock_affine.inl \
     deformationMapping/LinearJacobianBlock_rigid.inl \
     deformationMapping/LinearJacobianBlock_quadratic.inl \
+    deformationMapping/MLSMapping.h \
+    deformationMapping/MLSJacobianBlock.h \
+    deformationMapping/MLSJacobianBlock_point.inl \
     deformationMapping/TriangleDeformationMapping.h \
     deformationMapping/TriangleDeformationMapping.inl \
     deformationMapping/TriangleStrainAverageMapping.h \
@@ -107,7 +113,6 @@ HEADERS = initFlexible.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
     #forceField/FlexibleTetrahedronFEMForceField.h \
-    shapeFunction/BaseShepardShapeFunction.h \
     forceField/FlexibleForceField.h 
 
 

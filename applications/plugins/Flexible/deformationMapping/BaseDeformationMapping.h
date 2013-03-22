@@ -291,6 +291,7 @@ protected:
     bool KdTreeDirty;              ///< tells if kdtree need to be updated (to speed up closest point search)
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
+    virtual void initJacobianBlocks()=0;
 
     helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements

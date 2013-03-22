@@ -138,9 +138,6 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
 
     basis.resize(dim);  for (j=0; j<dim; j++) basis[j]=0;
 
-    Coord p2;    for (j=0; j<3; j++) p2[j]=p[j]*p[j];
-    Coord p3;    for (j=0; j<3; j++) p3[j]=p2[j]*p[j];
-
     unsigned int count=0;
     // order 0
     basis[count]=1;
@@ -161,6 +158,7 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
     }
     if (count==dim) return;
     // order 3
+    Coord p2;    for (j=0; j<3; j++) p2[j]=p[j]*p[j];
     basis[count]=p[0]*p[1]*p[2];
     count++;
     for (j=0; j<3; j++) for (k=0; k<3; k++)
@@ -170,6 +168,7 @@ inline void getCompleteBasis(vector<real>& basis, const Vec<3,real>& p,const uns
     }
     if (count==dim) return;
     // order 4
+    Coord p3;    for (j=0; j<3; j++) p3[j]=p2[j]*p[j];
     for (j=0; j<3; j++) for (k=j; k<3; k++)
     {
         basis[count]=p2[j]*p2[k];
@@ -339,8 +338,6 @@ inline void getCompleteBasisHessian(vector<MatSym<3,real> >& basisDeriv, const V
 
     basisDeriv.resize(dim);    for (k=0; k<dim; k++) basisDeriv[k].fill(0);
 
-    Coord p2;  for (j=0; j<3; j++) p2[j]=p[j]*p[j];
-
     unsigned int count=0;
     // order 0
     count++;
@@ -369,6 +366,7 @@ inline void getCompleteBasisHessian(vector<MatSym<3,real> >& basisDeriv, const V
     }
     if (count==dim) return;
     // order 4
+    Coord p2;  for (j=0; j<3; j++) p2[j]=p[j]*p[j];
     for (j=0; j<3; j++) for (k=j; k<3; k++)
     {
         basisDeriv[count](k,j)=4*p[j]*p[k];

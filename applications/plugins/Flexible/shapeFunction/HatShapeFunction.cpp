@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,32 +16,36 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_LinearJacobianBlock_H
-#define FLEXIBLE_LinearJacobianBlock_H
+#define FLEXIBLE_HatShapeFunction_CPP
 
-#include "../BaseJacobian.h"
+#include "../initFlexible.h"
+#include "../shapeFunction/HatShapeFunction.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
-namespace defaulttype
+namespace component
+{
+namespace shapefunction
 {
 
-/** Template class used to implement one jacobian block for linearMapping */
-template<class TIn, class TOut>
-class LinearJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+SOFA_DECL_CLASS(HatShapeFunction)
 
+// Register in the Factory
+int HatShapeFunctionClass = core::RegisterObject("Computes compactly supported hat shape functions")
 
+        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction3f> >(true)
+        .add< HatShapeFunction<sofa::core::behavior::ShapeFunction3d> >(true)
+        ;
 
-} // namespace defaulttype
-} // namespace sofa
-
-
-
-#endif
+template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction3f>;
+template class SOFA_Flexible_API HatShapeFunction<sofa::core::behavior::ShapeFunction3d>;
+}
+}
+}
