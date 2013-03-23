@@ -163,7 +163,7 @@ simulation::Node::SPtr  SimpleObjectCreator::CreateEulerSolverNode(simulation::N
 
 
 simulation::Node::SPtr SimpleObjectCreator::CreateObstacle(simulation::Node::SPtr  parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
-        const Deriv3& translation, const Deriv3 &rotation)
+                                                           const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  nodeFixed = parent->createChild("Fixed");
 
@@ -208,7 +208,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateObstacle(simulation::Node::SPt
 
 
 simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof, const std::string &filename, const std::vector<std::string> &elements,
-        const Deriv3& translation, const Deriv3 &rotation)
+                                                                    const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
     simulation::Node::SPtr  CollisionNode = parent->createChild("Collision");
@@ -241,7 +241,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeVec3(simulation::
 }
 
 simulation::Node::SPtr SimpleObjectCreator::CreateVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
-        const Deriv3& translation, const Deriv3 &rotation)
+                                                                 const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  VisualNode =parent->createChild("Visu");
 
@@ -269,7 +269,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateVisualNodeVec3(simulation::Nod
 
 
 simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
-        const Deriv3& translation, const Deriv3 &rotation)
+                                                                     const Deriv3& translation, const Deriv3 &rotation)
 {
     const std::string refdofRigid = "@../" + dofRigid->getName();
     const std::string dofSurfName = "CollisionObject";
@@ -285,12 +285,12 @@ simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeRigid(simulation:
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
-//    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
+    //    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     meshTorus_surf->setSrc("", loader_surf.get());
     CollisionNode->addObject(meshTorus_surf);
 
     MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>(); dof_surf->setName(dofSurfName);
-//    dof_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
+    //    dof_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     dof_surf->setTranslation(translation[0],translation[1],translation[2]);
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
@@ -307,7 +307,7 @@ simulation::Node::SPtr SimpleObjectCreator::CreateCollisionNodeRigid(simulation:
 }
 
 simulation::Node::SPtr SimpleObjectCreator::CreateVisualNodeRigid(simulation::Node::SPtr  parent, MechanicalObjectRigid3::SPtr  dofRigid,  const std::string &filename, const std::string& color,
-        const Deriv3& translation, const Deriv3 &rotation)
+                                                                  const Deriv3& translation, const Deriv3 &rotation)
 {
     simulation::Node::SPtr  RigidVisualNode =parent->createChild("Visu");
 
@@ -380,6 +380,8 @@ typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
 /// Create an assembly of a siff hexahedral grid with other objects
 simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue, double dampingRatio )
 {
+    using helper::vector;
+
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord3(0,-10,0) );
@@ -430,6 +432,8 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
 
     RegularGridSpringForceField3::SPtr spring = addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
     spring->setLinesStiffness(stiffnessValue);
+    spring->setQuadsStiffness(stiffnessValue);
+    spring->setCubesStiffness(stiffnessValue);
     spring->setLinesDamping(dampingRatio);
 
 
@@ -437,56 +441,119 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     // initialize the grid, so that the particles are located in space
     deformableGrid_grid->init();
     deformableGrid_dof->init();
-//    cerr<<"SimpleObjectCreator::createGridScene size = "<< deformableGrid_dof->getSize() << endl;
+    //    cerr<<"SimpleObjectCreator::createGridScene size = "<< deformableGrid_dof->getSize() << endl;
     MechanicalObject3::ReadVecCoord  xgrid = deformableGrid_dof->readPositions();
-//    cerr<<"SimpleObjectCreator::createGridScene xgrid = " << xgrid << endl;
+    //    cerr<<"SimpleObjectCreator::createGridScene xgrid = " << xgrid << endl;
 
-    // find the particles attached to the rigid object: x=xMin
+
+    // create the rigid frames and their bounding boxes
+    unsigned numRigid = 2;
+    vector<BoundingBox> boxes(numRigid);
+    vector< vector<unsigned> > indices(numRigid); // indices of the particles in each box
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
-    Vec3d boxMin(startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps);
-    Vec3d boxMax(startPoint[0]+eps,endPoint[1]+eps,  endPoint[2]+eps);
-    BoundingBox bbox0(boxMin,boxMax);
-    helper::vector<unsigned> indices;
+
+    // first box, x=xmin
+    boxes[0] = BoundingBox(Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+
+    // second box, x=xmax
+    boxes[1] = BoundingBox(Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    rigid_dof->resize(numRigid);
+    MechanicalObjectRigid3d::WriteVecCoord xrigid = rigid_dof->writePositions();
+    xrigid[0].getCenter()=Vec3d(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+    xrigid[1].getCenter()=Vec3d(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+
+    // find the particles in each box
+    vector<bool> isFree(xgrid.size(),true);
+    unsigned numMapped = 0;
     for(unsigned i=0; i<xgrid.size(); i++){
-        if(bbox0.contains(xgrid[i]))
-            indices.push_back(i);
+        for(unsigned b=0; b<numRigid; b++ )
+        {
+            if( isFree[i] && boxes[b].contains(xgrid[i]) )
+            {
+                indices[b].push_back(i); // associate the particle with the box
+                isFree[i] = false;
+                numMapped++;
+            }
+        }
     }
 
-//    BoxROI3d::SPtr deformableGrid_boxRoi = addNew<BoxROI3d>(deformableGrid,"boxROI");
-//    deformableGrid_boxRoi->f_X0.setValue(xgrid.ref()); // consider initial positions only
-//    write(deformableGrid_boxRoi->boxes)[0]=
-//       Vec6d(
-//         boxMin[0],boxMin[1],boxMin[2],
-//         boxMax[0],boxMax[1],boxMax[2]
-//        )
-//    ; //  find particles such that x=xMin
-////    cerr<<"SimpleObjectCreator::createGridScene boxes = " << deformableGrid_boxRoi->boxes << endl;
-//    deformableGrid_boxRoi->init();
-//    helper::vector<unsigned> indices = deformableGrid_boxRoi->f_indices.getValue();
-////    cerr<<"SimpleObjectCreator::createGridScene Indices of the grid in the box: " << indices << endl;
-
-    std::sort(indices.begin(),indices.end());
-
-    // copy each grid particle either in the mapped parent, or in the independent parent, depending on its index
-    mappedParticles_dof->resize(indices.size());
-    independentParticles_dof->resize( numX*numY*numZ - indices.size() );
+    // distribute the particles to the different solids. One solid for each box.
+    mappedParticles_dof->resize(numMapped);
+    independentParticles_dof->resize( numX*numY*numZ - numMapped );
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
+    mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-    assert(indices.size()>0);
-    unsigned mappedIndex=0,independentIndex=0;
-    for( unsigned i=0; i<xgrid.size(); i++ )
-    {
-        if( mappedIndex<indices.size() && i==indices[mappedIndex] ){ // mapped particle
-            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),mappedIndex);
-            xmapped[mappedIndex] = xgrid[i];
-            mappedIndex++;
-        }
-        else { // independent particle
-            deformableGrid_mapping->addPoint(independentParticles_dof.get(),independentIndex);
+    vector< pair<MechanicalObject3d*,unsigned> > parentParticles(xgrid.size());
+
+    // independent particles
+    unsigned independentIndex=0;
+    for( unsigned i=0; i<xgrid.size(); i++ ){
+        if( isFree[i] ){
+            parentParticles[i]=make_pair(independentParticles_dof.get(),independentIndex);
             xindependent[independentIndex] = xgrid[i];
             independentIndex++;
         }
     }
+
+    // mapped particles
+    unsigned mappedIndex=0;
+    vector<unsigned>* pointsPerFrame = mappedParticles_mapping->pointsPerFrame.beginEdit();
+    for( unsigned b=0; b<numRigid; b++ )
+    {
+        const vector<unsigned>& ind = indices[b];
+        pointsPerFrame->push_back(ind.size()); // tell the mapping the number of points associated with this frame
+        for(unsigned i=0; i<ind.size(); i++)
+        {
+            parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
+            xmapped[mappedIndex] = xgrid[ ind[i] ];
+            mappedIndex++;
+
+        }
+    }
+    mappedParticles_mapping->pointsPerFrame.endEdit();
+
+    // now add all the particles to the multimapping
+    for( unsigned i=0; i<xgrid.size(); i++ )
+    {
+        deformableGrid_mapping->addPoint( parentParticles[i].first, parentParticles[i].second );
+    }
+
+
+
+//    // find the particles attached to the first rigid object: x=xMin
+//    Vec3d boxMin(startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps);
+//    Vec3d boxMax(startPoint[0]+eps,endPoint[1]+eps,  endPoint[2]+eps);
+//    BoundingBox bbox0(boxMin,boxMax);
+//    helper::vector<unsigned> indices;
+//    for(unsigned i=0; i<xgrid.size(); i++){
+//        if(bbox0.contains(xgrid[i]))
+//            indices.push_back(i);
+//    }
+
+//    std::sort(indices.begin(),indices.end());
+
+//    // copy each grid particle either in the mapped parent, or in the independent parent, depending on its index
+//    mappedParticles_dof->resize(indices.size());
+//    independentParticles_dof->resize( numX*numY*numZ - indices.size() );
+//    MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
+//    MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
+//    assert(indices.size()>0);
+//    unsigned mappedIndex=0,independentIndex=0;
+//    for( unsigned i=0; i<xgrid.size(); i++ )
+//    {
+//        if( mappedIndex<indices.size() && i==indices[mappedIndex] ){ // mapped particle
+//            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),mappedIndex);
+//            xmapped[mappedIndex] = xgrid[i];
+//            mappedIndex++;
+//        }
+//        else { // independent particle
+//            deformableGrid_mapping->addPoint(independentParticles_dof.get(),independentIndex);
+//            xindependent[independentIndex] = xgrid[i];
+//            independentIndex++;
+//        }
+//    }
 
     return root;
 

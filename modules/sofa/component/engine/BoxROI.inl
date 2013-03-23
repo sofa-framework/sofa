@@ -36,6 +36,9 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 
+using std::cerr;
+using std::endl;
+
 namespace sofa
 {
 
@@ -207,6 +210,9 @@ bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p =  DataTypes::getCPos((*x0)[pid]);
+//    cerr<<"BoxROI<DataTypes>::isPointInBox, p= "<<p<<endl;
+//    cerr<<"BoxROI<DataTypes>::isPointInBox, box= "<<b<<endl;
+//    if(isPointInBox(p,b)) cerr<<"BoxROI<DataTypes>::isPointInBox, point is in box"<< endl;
     return ( isPointInBox(p,b) );
 }
 

@@ -60,9 +60,9 @@ void SubsetMultiMapping<TIn, TOut>::init()
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
 
-
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
-    vector<linearsolver::EigenSparseMatrix<TIn,TOut>*> jacobians( this->getFrom().size() );
+    vector<Jacobian*> jacobians( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
@@ -70,14 +70,20 @@ void SubsetMultiMapping<TIn, TOut>::init()
     }
 
     // fill the jacobians
+    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
     for(unsigned i=0; i<indexPairs.size(); i++)
     {
+        unsigned parent = indexPairs[i].first;
+        Jacobian* jacobian = jacobians[parent];
+        unsigned& brow = rowIndex[parent];
+        unsigned bcol = indexPairs[i].second;
         for(unsigned k=0; k<Nin; k++ )
         {
 //            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
-            jacobians[ indexPairs[i].first ]->beginRow(Nout*i+k);
-            jacobians[ indexPairs[i].first ]->insertBack( Nout*i+k, Nin*indexPairs[i].second +k, (SReal)1. );
+            jacobian->beginRow(Nout*brow+k);
+            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
         }
+        brow++;
     }
 
     // finalize the jacobians
@@ -134,7 +140,9 @@ void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const ve
     {
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i].first << ", " << indexPairs[i].second <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i].first]) << endl;
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, out = "<< out << endl;
-        out[i] = (*inPos[indexPairs[i].first])[indexPairs[i].second];
+        out[i] =
+                (*inPos[indexPairs[i].first])
+                [indexPairs[i].second];
     }
 
 }
