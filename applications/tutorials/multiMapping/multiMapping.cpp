@@ -136,7 +136,7 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
 
     //=================================================
-    sofa::simulation::Node::SPtr groot = SimpleObjectCreator::createGridScene(Vec3(0,0,0), Vec3(1,1,1), 2,2,2, 1.0 );
+    sofa::simulation::Node::SPtr groot = SimpleObjectCreator::createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0, 100 );
     //=================================================
 
     sofa::simulation::getSimulation()->init(groot.get());
