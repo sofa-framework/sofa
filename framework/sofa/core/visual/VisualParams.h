@@ -159,7 +159,7 @@ public:
     void setModelViewMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_modelViewMatrix[i] = m[i]; }
 
     /// Get the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
-    void getModelViewMatrix( double m[16] ) { for(unsigned i=0; i<16; i++) m[i] = m_modelViewMatrix[i]; }
+    void getModelViewMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = m_modelViewMatrix[i]; }
 
     /// Store the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
     void setProjectionMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_projectionMatrix[i] = m[i]; }
