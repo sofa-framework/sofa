@@ -382,7 +382,7 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
 {
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-1,0) );
+    root->setGravity( Coord3(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -398,6 +398,7 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
     MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
     UniformMassRigid3d::SPtr rigid_mass = addNew<UniformMassRigid3d>(rigidNode,"mass");
+    FixedConstraintRigid3d::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3d>(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
     Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
@@ -409,18 +410,19 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
     MechanicalObject3d::SPtr independentParticles_dof = addNew< MechanicalObject3d>(independentParticles,"dof");
 
-    // The deformable grid, connected to its parents using a MultiMapping
-    Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid");
+    // The deformable grid, connected to its 2 parents using a MultiMapping
+    Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
+    mappedParticles->addChild(deformableGrid);                                       // second parent
 
     RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
-    deformableGrid_grid->setNumVertices(numX,numX,numZ);
+    deformableGrid_grid->setNumVertices(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     MechanicalObject3d::SPtr deformableGrid_dof = addNew< MechanicalObject3d>(deformableGrid,"dof");
 
     SubsetMultiMapping3d_to_3d::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3d_to_3d>(deformableGrid,"mapping");
-    deformableGrid_mapping->addInputModel(independentParticles_dof.get());
-    deformableGrid_mapping->addInputModel(mappedParticles_dof.get());
+    deformableGrid_mapping->addInputModel(independentParticles_dof.get()); // first parent
+    deformableGrid_mapping->addInputModel(mappedParticles_dof.get());      // second parent
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
     UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
@@ -435,24 +437,34 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     // initialize the grid, so that the particles are located in space
     deformableGrid_grid->init();
     deformableGrid_dof->init();
-    cerr<<"size = "<< deformableGrid_dof->getSize() << endl;
+//    cerr<<"SimpleObjectCreator::createGridScene size = "<< deformableGrid_dof->getSize() << endl;
     MechanicalObject3::ReadVecCoord  xgrid = deformableGrid_dof->readPositions();
-    cerr<<"xgrid = " << xgrid << endl;
+//    cerr<<"SimpleObjectCreator::createGridScene xgrid = " << xgrid << endl;
 
     // find the particles attached to the rigid object: x=xMin
-    BoxROI3d::SPtr deformableGrid_boxRoi = addNew<BoxROI3d>(deformableGrid,"boxROI");
-    deformableGrid_boxRoi->f_X0.setValue(xgrid.ref()); // consider initial positions only
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
-    write(deformableGrid_boxRoi->boxes).resize(1);
-    write(deformableGrid_boxRoi->boxes).push_back(
-       Vec6d(
-         startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps,
-         startPoint[0]+eps,endPoint[1]+eps,endPoint[2]-eps
-        )
-    ); //  find particles such that x=xMin
-    deformableGrid_boxRoi->init();
-    helper::vector<unsigned> indices = deformableGrid_boxRoi->f_indices.getValue();
-    cerr<<"Indices of the grid in the box: " << indices << endl;
+    Vec3d boxMin(startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps);
+    Vec3d boxMax(startPoint[0]+eps,endPoint[1]+eps,  endPoint[2]+eps);
+    BoundingBox bbox0(boxMin,boxMax);
+    helper::vector<unsigned> indices;
+    for(unsigned i=0; i<xgrid.size(); i++){
+        if(bbox0.contains(xgrid[i]))
+            indices.push_back(i);
+    }
+
+//    BoxROI3d::SPtr deformableGrid_boxRoi = addNew<BoxROI3d>(deformableGrid,"boxROI");
+//    deformableGrid_boxRoi->f_X0.setValue(xgrid.ref()); // consider initial positions only
+//    write(deformableGrid_boxRoi->boxes)[0]=
+//       Vec6d(
+//         boxMin[0],boxMin[1],boxMin[2],
+//         boxMax[0],boxMax[1],boxMax[2]
+//        )
+//    ; //  find particles such that x=xMin
+////    cerr<<"SimpleObjectCreator::createGridScene boxes = " << deformableGrid_boxRoi->boxes << endl;
+//    deformableGrid_boxRoi->init();
+//    helper::vector<unsigned> indices = deformableGrid_boxRoi->f_indices.getValue();
+////    cerr<<"SimpleObjectCreator::createGridScene Indices of the grid in the box: " << indices << endl;
+
     std::sort(indices.begin(),indices.end());
 
     // copy each grid particle either in the mapped parent, or in the independent parent, depending on its index
@@ -465,12 +477,12 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     for( unsigned i=0; i<xgrid.size(); i++ )
     {
         if( mappedIndex<indices.size() && i==indices[mappedIndex] ){ // mapped particle
-            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),i);
+            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[i];
             mappedIndex++;
         }
         else { // independent particle
-            deformableGrid_mapping->addPoint(independentParticles_dof.get(),i);
+            deformableGrid_mapping->addPoint(independentParticles_dof.get(),independentIndex);
             xindependent[independentIndex] = xgrid[i];
             independentIndex++;
         }
