@@ -521,40 +521,6 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
     }
 
 
-
-//    // find the particles attached to the first rigid object: x=xMin
-//    Vec3d boxMin(startPoint[0]-eps,startPoint[1]-eps,startPoint[2]-eps);
-//    Vec3d boxMax(startPoint[0]+eps,endPoint[1]+eps,  endPoint[2]+eps);
-//    BoundingBox bbox0(boxMin,boxMax);
-//    helper::vector<unsigned> indices;
-//    for(unsigned i=0; i<xgrid.size(); i++){
-//        if(bbox0.contains(xgrid[i]))
-//            indices.push_back(i);
-//    }
-
-//    std::sort(indices.begin(),indices.end());
-
-//    // copy each grid particle either in the mapped parent, or in the independent parent, depending on its index
-//    mappedParticles_dof->resize(indices.size());
-//    independentParticles_dof->resize( numX*numY*numZ - indices.size() );
-//    MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
-//    MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-//    assert(indices.size()>0);
-//    unsigned mappedIndex=0,independentIndex=0;
-//    for( unsigned i=0; i<xgrid.size(); i++ )
-//    {
-//        if( mappedIndex<indices.size() && i==indices[mappedIndex] ){ // mapped particle
-//            deformableGrid_mapping->addPoint(mappedParticles_dof.get(),mappedIndex);
-//            xmapped[mappedIndex] = xgrid[i];
-//            mappedIndex++;
-//        }
-//        else { // independent particle
-//            deformableGrid_mapping->addPoint(independentParticles_dof.get(),independentIndex);
-//            xindependent[independentIndex] = xgrid[i];
-//            independentIndex++;
-//        }
-//    }
-
     return root;
 
 }

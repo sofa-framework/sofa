@@ -206,7 +206,7 @@ declare(mixedPendulum,       			applications/tutorials/mixedPendulum, sofa_compo
 declare(oneParticule,        			applications/tutorials/oneParticule,  sofa_component sofaguimain)
 declare(oneParticuleWithSofaTypedefs,   applications/tutorials/oneParticuleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,  sofa_component sofaguimain)
-declare(multiMapping,  applications/tutorials/multiMapping, sofa_component sofaguimain sofagraph sofaobjectcreator )
+declare(compositeObject,  applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph )
 
 
 #contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
@@ -420,7 +420,7 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(oneParticule)
 #	enable(oneParticuleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
-        enable(multiMapping)
+        enable(compositeObject)
 }
 
 #contains (DEFINES, SOFA_HAVE_PYTHON) {
