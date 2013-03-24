@@ -1,9 +1,9 @@
 load(sofa/pre)
 
 TEMPLATE = app
-TARGET = multiMapping
+TARGET = compositeObject
 
-SOURCES = multiMapping.cpp
+SOURCES = compositeObject.cpp
 HEADERS =
 
 load(sofa/post)
