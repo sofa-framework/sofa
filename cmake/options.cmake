@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 
+## compiler to use
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_LINK_EXECUTABLE  "g++")
+
 # hide unused default cmake variables
 set(CMAKE_INSTALL_PREFIX "${SOFA_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 
 # plugins (auto-search)
 file(GLOB pluginPathes "${SOFA_APPLICATIONS_PLUGINS_DIR}/*")
 foreach(pluginPath ${pluginPathes})
-	if(IS_DIRECTORY ${pluginPath})
+        if(IS_DIRECTORY ${pluginPath} AND EXISTS ${pluginPath}/CMakeLists.txt)
 		file(RELATIVE_PATH pluginName ${SOFA_APPLICATIONS_PLUGINS_DIR} ${pluginPath})
 		string(TOUPPER ${pluginName} pluginName)
 		set("SOFA_PLUGIN_PATH_${pluginName}" ${pluginPath} CACHE INTERNAL "Path to ${pluginName}")
@@ -22,7 +27,7 @@ endforeach()
 # dev-plugins (auto-search)
 file(GLOB devPluginPathes "${SOFA_APPLICATIONS_DEV_PLUGINS_DIR}/*")
 foreach(devPluginPath ${devPluginPathes})
-	if(IS_DIRECTORY ${devPluginPath})
+        if(IS_DIRECTORY ${devPluginPath} AND EXISTS ${devPluginPath}/CMakeLists.txt)
 		file(RELATIVE_PATH devPluginName ${SOFA_APPLICATIONS_DEV_PLUGINS_DIR} ${devPluginPath})
 		string(TOUPPER ${devPluginName} devPluginName)
 		set("SOFA_DEV_PLUGIN_PATH_${devPluginName}" ${devPluginPath} CACHE INTERNAL "Path to ${devPluginName}")

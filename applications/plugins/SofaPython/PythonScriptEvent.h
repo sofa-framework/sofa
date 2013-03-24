@@ -25,7 +25,7 @@
 #ifndef PYTHONSCRIPTEVENT_H
 #define PYTHONSCRIPTEVENT_H
 
-#include <initSofaPython.h>
+#include "initSofaPython.h"
 #include "ScriptEvent.h"
 
 #include <Python.h>
