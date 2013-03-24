@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-## compiler to use
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_LINK_EXECUTABLE  "g++")
-
 # hide unused default cmake variables
 set(CMAKE_INSTALL_PREFIX "${SOFA_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 
