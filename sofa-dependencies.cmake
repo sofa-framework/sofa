@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/csparse")
+add_subdirectory("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 
 # sofa projects
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/helper")
