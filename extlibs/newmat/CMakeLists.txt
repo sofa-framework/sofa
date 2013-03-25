@@ -44,9 +44,8 @@ set(sources
 	)
 
 add_library(${PROJECT_NAME} STATIC ${headers} ${sources})
-#target_link_libraries(${PROJECT_NAME})
 
-#set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};use_namespace")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};use_namespace")
 	
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
