@@ -4,7 +4,7 @@ project("SofaSimulationBGL")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	bgl.h 
 	bfs_adapter.h 
@@ -18,7 +18,7 @@ set(headers
 	GetObjectsVisitor.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	BglNode.cpp 
 	BglMultiMappingElement.cpp 
@@ -28,11 +28,11 @@ set(sources
 	)
 
 if(SOFA_SMP)
-	list(APPEND headers "SMPBglSimulation.h")
-	list(APPEND sources "SMPBglSimulation.cpp")
+	list(APPEND HEADER_FILES "SMPBglSimulation.h")
+	list(APPEND SOURCE_FILES "SMPBglSimulation.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulation)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_BGL")

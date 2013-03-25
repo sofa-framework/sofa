@@ -4,7 +4,7 @@ project("SofaSimulationTree")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	tree.h
 	ExportDotVisitor.h
@@ -14,7 +14,7 @@ set(headers
 	TreeSimulation.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	ExportDotVisitor.cpp
 	GNode.cpp
@@ -24,11 +24,11 @@ set(sources
 	)
 
 if(SOFA_SMP)
-	list(APPEND headers "SMPSimulation.h")
-	list(APPEND sources "SMPSimulation.cpp")
+	list(APPEND HEADER_FILES "SMPSimulation.h")
+	list(APPEND SOURCE_FILES "SMPSimulation.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulation)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_TREE")

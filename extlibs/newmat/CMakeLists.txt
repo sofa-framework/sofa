@@ -4,7 +4,7 @@ project("newmat")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
     newmat/include.h
     newmat/newmat.h
@@ -17,7 +17,7 @@ set(headers
     newmat/precisio.h 
 	)
 
-set(sources
+set(SOURCE_FILES
 
     newmat/newmat1.cpp
     newmat/newmat2.cpp
@@ -43,7 +43,7 @@ set(sources
     newmat/svd.cpp 
 	)
 
-add_library(${PROJECT_NAME} STATIC ${headers} ${sources})
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};use_namespace")
 	

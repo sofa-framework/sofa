@@ -4,7 +4,7 @@ project("SofaSimulation")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	common.h
 	Node.h
@@ -80,7 +80,7 @@ set(headers
 	SceneLoaderFactory.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	Node.cpp
 	AnimateBeginEvent.cpp
@@ -145,13 +145,13 @@ set(sources
 	)
 
 if(SOFA_SMP)
-	list(APPEND headers "ChangeListener.h")
-	list(APPEND headers "ParallelMechanicalVisitor.h")
-	list(APPEND sources "ChangeListener.cpp")
-	list(APPEND sources "ParallelMechanicalVisitor.cpp")
+	list(APPEND HEADER_FILES "ChangeListener.h")
+	list(APPEND HEADER_FILES "ParallelMechanicalVisitor.h")
+	list(APPEND SOURCE_FILES "ChangeListener.cpp")
+	list(APPEND SOURCE_FILES "ParallelMechanicalVisitor.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore tinyxml)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_COMMON")

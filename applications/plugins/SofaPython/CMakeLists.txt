@@ -8,7 +8,7 @@ include(${SOFA_CMAKE_DIR}/pre.cmake)
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-set(headers
+set(HEADER_FILES
 
 	initSofaPython.h
     ScriptController.h
@@ -39,7 +39,7 @@ set(headers
     ScriptEnvironment.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	initSofaPython.cpp
     ScriptController.cpp
@@ -70,7 +70,7 @@ set(sources
     ScriptEnvironment.cpp
 	)
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulation SofaTypedefs ${PYTHON_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SOFAPYTHON")
