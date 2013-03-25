@@ -5,26 +5,25 @@ project(${SOLUTION_NAME})
 
 include(cmake/pre.cmake)
 
-message("")
-message("--------------------------------------------")
-message("-------- CONFIGURING SOFA FRAMEWORK --------")
-message("--------------------------------------------")
-message("")
+message(STATUS "--------------------------------------------")
+message(STATUS "-------- CONFIGURING SOFA FRAMEWORK --------")
+message(STATUS "--------------------------------------------")
+message(STATUS "")
 
 # SOFA DEPENDENCIES
 include(sofa-dependencies.cmake)
 
 # PRINT REPORT
 if(SOFA_ERROR_MESSAGE)
-	message("Final report : ${SOFA_ERROR_MESSAGE}")
+	message(SEND_ERROR "Final report : ${SOFA_ERROR_MESSAGE}")
 else()
-	message("Final report : \n- Everything's OK !")
+	message(STATUS "Final report : \n- Everything's OK !")
 endif()
 
-message("")
-message("--------------------------------------------")
-message("----- DONE CONFIGURING SOFA FRAMEWORK ------")
-message("--------------------------------------------")
-message("")
+message(STATUS "")
+message(STATUS "--------------------------------------------")
+message(STATUS "----- DONE CONFIGURING SOFA FRAMEWORK ------")
+message(STATUS "--------------------------------------------")
+message(STATUS "")
 
 include(cmake/post.cmake)
