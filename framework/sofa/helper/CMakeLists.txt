@@ -4,7 +4,7 @@ project("SofaHelper")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	helper.h
     ArgumentParser.h
@@ -104,7 +104,7 @@ set(headers
 	gl/GLSLShader.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	ArgumentParser.cpp
     BackTrace.cpp
@@ -162,22 +162,19 @@ set(sources
 	gl/GLSLShader.cpp
 	)
 
-groupFiles(headers  ".+\\\\.(h|hpp|inl)$" ${SOFA_HEADER_FILE_FILTER_NAME})
-groupFiles(sources  ".+\\\\.(c|cpp)$" ${SOFA_CPP_FILE_FILTER_NAME})
-
 if(SOFA_HAVE_BOOST)
-	list(APPEND headers "system/thread/TimeoutWatchdog.h")
+	list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")
 	
-	list(APPEND sources "system/thread/TimeoutWatchdog.cpp")
+	list(APPEND SOURCE_FILES "system/thread/TimeoutWatchdog.cpp")
 endif()
 
 if(SOFA_HAVE_FFMPEG)
-	list(APPEND headers "gl/VideoRecorder.h ")
+	list(APPEND HEADER_FILES "gl/VideoRecorder.h ")
 	
-	list(APPEND sources "gl/VideoRecorder.cpp ")
+	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp ")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_HELPER")

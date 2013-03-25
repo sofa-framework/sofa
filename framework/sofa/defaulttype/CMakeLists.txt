@@ -4,7 +4,7 @@ project("SofaDefaultType")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	defaulttype.h	
 	BaseMatrix.h	
@@ -33,7 +33,7 @@ set(headers
 	Vec3Types.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	BaseMatrix.cpp
 	BoundingBox.cpp
@@ -42,10 +42,7 @@ set(sources
 	SolidTypes.cpp
 	)
 
-groupFiles(headers  ".+\\\\.(h|hpp|inl)$" ${SOFA_HEADER_FILE_FILTER_NAME})
-groupFiles(sources  ".+\\\\.(c|cpp)$" ${SOFA_CPP_FILE_FILTER_NAME})
-
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaHelper)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_DEFAULTTYPE")
