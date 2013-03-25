@@ -59,6 +59,7 @@ using helper::vector;
 using defaulttype::Vec;
 using defaulttype::Mat;
 using cimg_library::CImg;
+using namespace sofa::helper;
 
 
 
