@@ -4,13 +4,13 @@ project("tinyxml")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
     tinystr.h
     tinyxml.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
     tinystr.cpp
     tinyxml.cpp
@@ -18,7 +18,7 @@ set(sources
     tinyxmlparser.cpp
 	)
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 #target_link_libraries(${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_TINYXML")

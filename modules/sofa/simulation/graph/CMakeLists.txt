@@ -4,7 +4,7 @@ project("SofaSimulationGraph")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	graph.h 
 	DAGNode.h 
@@ -13,7 +13,7 @@ set(headers
 	DAGSubGraphNode.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	DAGNode.cpp 
 	DAGNodeMultiMappingElement.cpp 
@@ -21,7 +21,7 @@ set(sources
 	DAGSubGraphNode.cpp
 	)
 
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulation)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_GRAPH")

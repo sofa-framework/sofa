@@ -4,22 +4,21 @@ project("SofaBaseAnimationLoop")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	initBaseAnimationLoop.h
     animationloop/MultiStepAnimationLoop.h
     animationloop/MultiTagAnimationLoop.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	initBaseAnimationLoop.cpp
     animationloop/MultiStepAnimationLoop.cpp
     animationloop/MultiTagAnimationLoop.cpp
 	)
 
-include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationTree)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_BASE_ANIMATION_LOOP")

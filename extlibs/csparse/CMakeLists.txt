@@ -4,20 +4,20 @@ project("csparse")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
     csparse.h 
     ldl.h 
     UFconfig.h 
 	)
 
-set(sources
+set(SOURCE_FILES
 
     csparse.c 
     ldl.c 
 	)
 
-add_library(${PROJECT_NAME} STATIC ${headers} ${sources})
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};use_namespace")
 	
