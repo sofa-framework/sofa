@@ -43,8 +43,8 @@ if(SOFA_SMP)
 endif()
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseLinearSolver)
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_BASE_MECHANICS")
-    
+
+set(COMPILE_DEFINES "SOFA_BUILD_BASE_MECHANICS")
+set(LINK_DEPENDENCIES SofaBaseTopology SofaBaseLinearSolver)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)

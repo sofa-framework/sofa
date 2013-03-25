@@ -241,9 +241,9 @@ if(SOFA_SUPPORT_MOVING_FRAMES)
 endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaDefaultType)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_CORE")
+set(COMPILE_DEFINES "SOFA_BUILD_CORE")
+set(LINK_DEPENDENCIES SofaDefaultType)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

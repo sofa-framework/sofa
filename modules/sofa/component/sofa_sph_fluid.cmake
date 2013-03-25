@@ -33,8 +33,8 @@ set(SOURCE_FILES
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics )
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SPH_FLUID")
-    
+
+set(COMPILE_DEFINES "SOFA_BUILD_SPH_FLUID")
+set(LINK_DEPENDENCIES SofaBaseMechanics)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)
