@@ -28,7 +28,7 @@
 
 
 #include "../material/BaseMaterial.h"
-#include "BaseJacobian.h"
+#include "../BaseJacobian.h"
 #include "MooneyRivlinMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
