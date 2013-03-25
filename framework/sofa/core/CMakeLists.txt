@@ -4,7 +4,7 @@ project("SofaCore")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-set(headers
+set(HEADER_FILES
 
 	core.h
 	VecId.h
@@ -141,7 +141,7 @@ set(headers
 	objectmodel/GUIEvent.h
 	)
 
-set(sources
+set(SOURCE_FILES
 
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp
@@ -217,36 +217,33 @@ set(sources
 	objectmodel/GUIEvent.cpp
 	)
 
-groupFiles(headers  ".+\\\\.(h|hpp|inl)$" ${SOFA_HEADER_FILE_FILTER_NAME})
-groupFiles(sources  ".+\\\\.(c|cpp)$" ${SOFA_CPP_FILE_FILTER_NAME})
-
 if(SOFA_HAVE_BOOST)
-	list(APPEND headers "objectmodel/AspectPool.h")
+	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
 	
-	list(APPEND sources "objectmodel/AspectPool.cpp")
+	list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")
 endif()
 
 if(SOFA_SMP)
-	list(APPEND headers "CallContext.h")
-	list(APPEND headers "objectmodel/BaseObjectTasks.h")
-	list(APPEND headers "ParallelCollisionModel.h")
-	list(APPEND headers "behavior/ParallelMultiVec.h")
-	list(APPEND headers "collision/ParallelPipeline.h")
-	list(APPEND headers "collision/ParallelNarrowPhaseDetection.h")
+	list(APPEND HEADER_FILES "CallContext.h")
+	list(APPEND HEADER_FILES "objectmodel/BaseObjectTasks.h")
+	list(APPEND HEADER_FILES "ParallelCollisionModel.h")
+	list(APPEND HEADER_FILES "behavior/ParallelMultiVec.h")
+	list(APPEND HEADER_FILES "collision/ParallelPipeline.h")
+	list(APPEND HEADER_FILES "collision/ParallelNarrowPhaseDetection.h")
 	
-	list(APPEND sources "CallContext.cpp")
-	list(APPEND sources "collision/ParallelPipeline.cpp")
-	list(APPEND sources "objectmodel/BaseObjectTasks.cpp")
+	list(APPEND SOURCE_FILES "CallContext.cpp")
+	list(APPEND SOURCE_FILES "collision/ParallelPipeline.cpp")
+	list(APPEND SOURCE_FILES "objectmodel/BaseObjectTasks.cpp")
 endif()
 
 if(SOFA_SUPPORT_MOVING_FRAMES)
-	list(APPEND headers "behavior/InertiaForce.h")
+	list(APPEND HEADER_FILES "behavior/InertiaForce.h")
 endif()
-
-add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+	
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaDefaultType)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_CORE")
-	
+
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

@@ -76,14 +76,7 @@ else()
 endif()
 
 # developer convenience
-option(CONVENIENCE_SPLIT_HEADERS_AND_SOURCES "Split headers and sources in different filters (virtual folders)" ON)
-
-set(SOFA_HEADER_FILE_FILTER_NAME "")
-set(SOFA_CPP_FILE_FILTER_NAME "")
-if(CONVENIENCE_SPLIT_HEADERS_AND_SOURCES)
-	set(SOFA_HEADER_FILE_FILTER_NAME	"Header Files")
-	set(SOFA_CPP_FILE_FILTER_NAME		"Source Files")
-endif()
+#option(CONVENIENCE_ "" ON)
 
 # optionnal features
 option(SIMULATION_GRAPH_DAG "Directed acyclic graph" ON)
