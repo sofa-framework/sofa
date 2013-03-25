@@ -8,10 +8,13 @@ if(EXTERNAL_HAVE_CSPARSE)
 endif()
 if(EXTERNAL_HAVE_EIGEN2)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
-	include_directories("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 endif()
 if(EXTERNAL_HAVE_FLOWVR)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/miniFlowVR")
+endif()
+
+if(EXTERNAL_HAVE_ZLIB)
+#todo
 endif()
 
 # sofa projects
