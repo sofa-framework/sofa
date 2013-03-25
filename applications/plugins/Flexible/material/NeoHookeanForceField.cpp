@@ -45,10 +45,12 @@ int NeoHookeanForceFieldClass = core::RegisterObject("NeoHookean's Law for isotr
 
         .add< NeoHookeanForceField< I331Types > >(true)
         .add< NeoHookeanForceField< U331Types > >()
+        .add< NeoHookeanForceField< U321Types > >()
         ;
 
 template class SOFA_Flexible_API NeoHookeanForceField< I331Types >;
 template class SOFA_Flexible_API NeoHookeanForceField< U331Types >;
+template class SOFA_Flexible_API NeoHookeanForceField< U321Types >;
 
 }
 }

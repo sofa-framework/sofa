@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="0.2"  >
+<Node 	name="Root" gravity="0 -1 0 " dt="0.15"  >
   
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="SofaMJEDFEM"/>
@@ -111,5 +111,39 @@
 	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
 	    </Node>
     </Node> 
+    
+    
+    
+    
+    <Node name="Flexible 2D" >
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BarycentricShapeFunction template="ShapeFunction2d"  />
+
+    <BoxConstraint box="5.9 -1 -1    6.1 1 6 " />
+    <UniformMass  name="mass" totalMass="1"/>
+
+    <Node name="deformationNode" >
+ 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamples="false" method="0" order="1" /> 
+        <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+   	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;" assembleJ="false"/> 
+	
+        <Node name="StrainNode">
+            <MechanicalObject template="U321"  name="U" />
+	    <PrincipalStretchesMapping template="Mapping&lt;F321,U321&gt;" asStrain="false" threshold="0.6" assembleJ="false" />
+            <MooneyRivlinForceField  template="U321" C1="1000" C2="100" bulk="1000" SSPDStabilization="true" assembleK="false"  assembleC="false"/> 
+	  </Node>
+	 
+	
+    </Node>
+
+	<Node name="Visual" >
+	     <VisualModel  color="0.2 1 0.2 1"/>
+             <IdentityMapping />
+	</Node>
+
+    </Node>
 	  
 </Node>

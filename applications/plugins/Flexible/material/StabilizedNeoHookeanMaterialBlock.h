@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
 #include <sofa/helper/decompose.h>
+#include "../BaseJacobian.h"
 
 namespace sofa
 {
@@ -61,7 +62,7 @@ public:
       * DOFs: principal stretches U1,U2,U3   J=U1*U2*U3
       *
       * classic Neo-Hookean
-      *     - W = vol * [ C1 ( (U1^2+U2^2+U3^2)/J^{2/3} - 3)  + bulk/2 (J-1)^2]
+      *     - W = mu/2(I1-3)-mu.ln(J)+lambda/2(ln(J))^2
       * see maple file ./doc/StabilizedNeoHookean_principalStretches.mw for derivative
       */
 
@@ -128,6 +129,112 @@ public:
         _K[2][0] = _K[0][2];
         _K[2][1] = _K[1][2];;
         _K[2][2] = t5 * t2 * lambdaVol + (0.1e1 + t5) * muVol;
+
+
+        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        helper::Decompose<Real>::SSPDProjection( _K );
+    }
+
+    void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
+    {
+        df.getStrain() -= _K * dx.getStrain() * kfactor;
+    }
+
+    MatBlock getK() const
+    {
+        return -_K;
+    }
+
+    MatBlock getC() const
+    {
+        MatBlock C = MatBlock();
+        C.invert( _K );
+        return C;
+    }
+
+    MatBlock getB() const
+    {
+        return MatBlock();
+    }
+};
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  specialization for U321
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class _Real>
+class StabilizedNeoHookeanMaterialBlock< U321(_Real) >:
+    public  BaseMaterialBlock< U321(_Real) >
+{
+public:
+    typedef U321(_Real) T;
+
+    typedef BaseMaterialBlock<T> Inherit;
+    typedef typename Inherit::Coord Coord;
+    typedef typename Inherit::Deriv Deriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::Real Real;
+
+    /**
+      * DOFs: principal stretches U1,U2   J=U1*U2
+      *
+      * classic Neo-Hookean
+      *     - W = mu/2(U1^2+U2^1-2)-mu.ln(J)+lambda/2(ln(J))^2
+      * see maple file ./doc/StabilizedNeoHookean_principalStretches.mw for derivative
+      */
+
+    static const bool constantK=true;
+
+    Real lambdaVol;  ///<  0.5 * first coef * volume
+    Real muVol;   ///<  0.5 * volume coef * volume
+
+    mutable MatBlock _K;
+
+    void init(const Real &youngM,const Real &poissonR)
+    {
+        Real vol=1.;
+        if(this->volume) vol=(*this->volume)[0];
+
+        lambdaVol = vol * youngM*poissonR/((1-2*poissonR)*(1+poissonR)) ;
+        muVol = vol * 0.5 * youngM/(1+poissonR);
+    }
+
+    Real getPotentialEnergy(const Coord& x) const
+    {
+        const Real& U1 = x.getStrain()[0];
+        const Real& U2 = x.getStrain()[1];
+
+        const Real J = U1*U2;
+        const Real logJ = log(J);
+        const Real squareU[2] = { U1*U1, U2*U2 };
+
+        return muVol*0.5*(squareU[0]+squareU[1]-2) - muVol*logJ + 0.5*lambdaVol*logJ*logJ;
+    }
+
+    void addForce( Deriv& f, const Coord& x, const Deriv& /*v*/) const
+    {
+        const Real& U1 = x.getStrain()[0];
+        const Real& U2 = x.getStrain()[1];
+
+        const Real invU[2] = { 1.0/U1, 1.0/U2 };
+        const Real invSquareU[2] = { 1.0/(U1*U1), 1.0/(U2*U2) };
+
+        const Real J = U1 *  U2;
+        const Real logJ = log(J);
+
+        Real t1 = -muVol + lambdaVol * logJ;
+        f.getStrain()[0] -= t1 * invU[0] + muVol * U1;
+        f.getStrain()[1] -= t1 * invU[1] + muVol * U2;
+
+
+        Real lambdaLogJ = lambdaVol * logJ;
+
+        _K[0][0] = muVol + (muVol+lambdaVol-lambdaLogJ)*invSquareU[0];
+        _K[0][1] = lambdaVol / J;
+        _K[1][0] = _K[0][1];
+        _K[1][1] = muVol + (muVol+lambdaVol-lambdaLogJ)*invSquareU[1];
 
 
         // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]

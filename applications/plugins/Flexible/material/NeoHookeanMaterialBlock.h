@@ -180,6 +180,126 @@ public:
 };
 
 
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  specialization for U321
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class _Real>
+class NeoHookeanMaterialBlock< U321(_Real) >:
+    public  BaseMaterialBlock< U321(_Real) >
+{
+public:
+    typedef U321(_Real) T;
+
+    typedef BaseMaterialBlock<T> Inherit;
+    typedef typename Inherit::Coord Coord;
+    typedef typename Inherit::Deriv Deriv;
+    typedef typename Inherit::MatBlock MatBlock;
+    typedef typename Inherit::Real Real;
+
+    /**
+      * DOFs: principal stretches U1,U2   J=U1*U2
+      *
+      * classic Neo-Hookean
+      *     - W = vol * [ mu/2 ( (U1^2+U2^2+1)/J^{2/3} - 3)  + bulk/2 (J-1)^2]
+      * see maple file ./doc/NeoHookean_principalStretches.mw for derivative
+      */
+
+    static const bool constantK=true;
+
+    Real mimuVol;  ///< 0.5 * shear modulus * volume
+    Real mibulkVol;   ///<  bulk modulus * volume
+    bool stabilization;
+
+    mutable MatBlock _K;
+
+    void init(const Real &youngM,const Real &poissonR, bool _stabilization)
+    {
+        Real vol=1.;
+        if(this->volume) vol=(*this->volume)[0];
+
+        Real mu = 0.5* youngM/(1+poissonR);
+        Real bulk = youngM/(3*(1-2*poissonR));
+
+        mimuVol = mu*0.5*vol;
+        mibulkVol = bulk*0.5*vol;
+        stabilization = _stabilization;
+    }
+
+    Real getPotentialEnergy(const Coord& x) const
+    {
+        const Real& U1 = x.getStrain()[0];
+        const Real& U2 = x.getStrain()[1];
+
+        Real J = U1*U2;
+        Real Jm1 = J-1;
+        Real squareU[2] = { U1*U1, U2*U2 };
+        return mimuVol*((squareU[0]+squareU[1]+1)*pow(J,-2.0/3.0)-(Real)3.) +
+                0.5*mibulkVol*Jm1*Jm1;
+    }
+
+    void addForce( Deriv& f, const Coord& x, const Deriv& /*v*/) const
+    {
+        const Real& U1 = x.getStrain()[0];
+        const Real& U2 = x.getStrain()[1];
+
+        Real squareU[2] = { U1*U1, U2*U2 };
+
+        const Real J =  U1 *  U2;
+        const Real Jm1 = J-1;
+
+        const Real Jm23 = pow(J,-2.0/3.0);
+        const Real Jm53 = pow(J,-5.0/3.0);
+        const Real Jm83 = pow(J,-8.0/3.0);
+
+        const Real I1 = squareU[0] + squareU[1] + 1;
+
+        Real firstInv = 2 * Jm23;
+        Real secondInv = -2.0/3.0 * I1 * Jm53;
+        Real thirdInv = mibulkVol * Jm1;
+
+        f.getStrain()[0] -= mimuVol * (firstInv * U1 + secondInv * U2) + thirdInv * U2;
+        f.getStrain()[1] -= mimuVol * (firstInv * U2 + secondInv * U1) + thirdInv * U1;
+
+
+        firstInv += -8.0/3.0 * J * Jm53;
+        secondInv = 10.0/9.0 * I1 * Jm83;
+
+        _K[0][0] = mimuVol * ( firstInv + secondInv*squareU[1] ) + mibulkVol * squareU[1];
+        _K[0][1] = mimuVol * ( -4.0/3.0 * Jm53 * ( squareU[0] + squareU[1] + 0.5*I1 ) + secondInv*J ) + mibulkVol * J;
+        _K[1][0] = _K[0][1];
+        _K[1][1] = mimuVol * ( firstInv + secondInv*squareU[0] ) + mibulkVol * squareU[0];
+
+        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+    }
+
+    void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
+    {
+        df.getStrain() -= _K * dx.getStrain() * kfactor;
+    }
+
+    MatBlock getK() const
+    {
+        return -_K;
+    }
+
+    MatBlock getC() const
+    {
+        MatBlock C = MatBlock();
+        C.invert( _K );
+        return C;
+    }
+
+    MatBlock getB() const
+    {
+        return MatBlock();
+    }
+};
+
+
 //////////////////////////////////////////////////////////////////////////////////
 ////  I331
 //////////////////////////////////////////////////////////////////////////////////

@@ -43,9 +43,11 @@ using namespace defaulttype;
 // Register in the Factory
 int StabilizedNeoHookeanForceFieldClass = core::RegisterObject("StabilizedNeoHookean's Law for isotropic homogeneous materials")
         .add< StabilizedNeoHookeanForceField< U331Types > >(true)
+        .add< StabilizedNeoHookeanForceField< U321Types > >()
         ;
 
 template class SOFA_Flexible_API StabilizedNeoHookeanForceField< U331Types >;
+template class SOFA_Flexible_API StabilizedNeoHookeanForceField< U321Types >;
 
 }
 }
