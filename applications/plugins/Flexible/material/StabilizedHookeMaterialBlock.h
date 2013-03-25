@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
-
+#include "../BaseJacobian.h"
 #include <sofa/helper/decompose.h>
 
 namespace sofa
@@ -43,7 +43,7 @@ namespace defaulttype
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  default implementation for U D
+////  default implementation for U331
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class _T>
@@ -58,6 +58,9 @@ public:
     typedef typename Inherit::Deriv Deriv;
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::Real Real;
+
+
+
 
     /**
       * DOFs: principal stretches U1,U2,U3   J=U1*U2*U3
@@ -150,6 +153,11 @@ public:
         return MatBlock();
     }
 };
+
+
+
+
+
 
 
 } // namespace defaulttype

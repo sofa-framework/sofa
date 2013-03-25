@@ -99,6 +99,7 @@ protected:
     #define I331(type)  InvariantStrainTypes<3,3,0,type>
 
     #define U331(type)  PrincipalStretchesStrainTypes<3,3,0,type>
+    #define U321(type)  PrincipalStretchesStrainTypes<3,2,0,type>
 
 
     //////////////////////////////////////////////////////////////////////////////////
