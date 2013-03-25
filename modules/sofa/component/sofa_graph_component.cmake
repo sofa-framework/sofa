@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 2.8)
+
+project("SofaGraphComponent")
+
+include(${SOFA_CMAKE_DIR}/pre.cmake)
+
+set(HEADER_FILES
+
+    initGraphComponent.h 
+    configurationsetting/AddFrameButtonSetting.h 
+#   configurationsetting/CompliantAttachButtonSetting.h 
+    configurationsetting/AttachBodyButtonSetting.h 
+    configurationsetting/BackgroundSetting.h 
+    configurationsetting/FixPickedParticleButtonSetting.h 
+    configurationsetting/MouseButtonSetting.h 
+    configurationsetting/SofaDefaultPathSetting.h 
+    configurationsetting/StatsSetting.h 
+    configurationsetting/ViewerSetting.h 
+    contextobject/Gravity.h 
+    misc/PauseAnimation.h 
+    misc/PauseAnimationOnEvent.h 
+    misc/RequiredPlugin.h
+
+    )
+    
+set(SOURCE_FILES
+
+    initGraphComponent.cpp 
+    configurationsetting/AddFrameButtonSetting.cpp 
+#   configurationsetting/CompliantAttachButtonSetting.cpp 
+    configurationsetting/AttachBodyButtonSetting.cpp 
+    configurationsetting/BackgroundSetting.cpp 
+    configurationsetting/FixPickedParticleButtonSetting.cpp 
+    configurationsetting/MouseButtonSetting.cpp 
+    configurationsetting/SofaDefaultPathSetting.cpp 
+    configurationsetting/StatsSetting.cpp 
+    configurationsetting/ViewerSetting.cpp 
+    contextobject/Gravity.cpp 
+    misc/PauseAnimation.cpp 
+    misc/PauseAnimationOnEvent.cpp 
+    misc/RequiredPlugin.cpp 
+
+    )
+    
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaSimulationTree )
+    
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_GRAPH_COMPONENT")
+    
+include(${SOFA_CMAKE_DIR}/post.cmake)
