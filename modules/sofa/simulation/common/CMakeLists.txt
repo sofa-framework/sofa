@@ -1,0 +1,161 @@
+cmake_minimum_required(VERSION 2.8)
+
+project("SofaSimulation")
+
+include(${SOFA_CMAKE_DIR}/pre.cmake)
+
+set(headers
+
+	common.h
+	Node.h
+	AnimateBeginEvent.h
+	AnimateEndEvent.h
+	AnimateVisitor.h   
+	BehaviorUpdatePositionVisitor.h
+	CactusStackStorage.h  
+	ClassSystem.h  
+	CleanupVisitor.h
+	CollisionAnimationLoop.h
+	CollisionBeginEvent.h
+	CollisionEndEvent.h
+	CollisionVisitor.h  
+	Colors.h
+	CopyAspectVisitor.h
+	DeactivatedNodeVisitor.h
+	DefaultAnimationLoop.h
+	DefaultVisualManagerLoop.h
+	DeleteVisitor.h
+	ExportGnuplotVisitor.h
+	ExportOBJVisitor.h
+	FindByTypeVisitor.h
+	InitVisitor.h  
+	IntegrateBeginEvent.h
+	IntegrateEndEvent.h
+	LocalStorage.h
+	MechanicalComputeEnergyVisitor.h
+	MechanicalMatrixVisitor.h
+	 MechanicalOperations.h
+	MechanicalVPrintVisitor.h
+	MechanicalVisitor.h
+	MutationListener.h
+	ParallelVisitorScheduler.h
+	PauseEvent.h
+	PipelineImpl.h
+	PositionEvent.h
+	PrintVisitor.h
+	PropagateEventVisitor.h
+	ReleaseAspectVisitor.h
+	ResetVisitor.h
+	Simulation.h
+	SolveVisitor.h
+	StateChangeVisitor.h
+	TopologyChangeVisitor.h
+	TransformationVisitor.h
+	UpdateBoundingBoxVisitor.h
+	UpdateContextVisitor.h
+	UpdateLinksVisitor.h
+	UpdateMappingEndEvent.h
+	UpdateMappingVisitor.h
+	VectorOperations.h
+	VelocityThresholdVisitor.h
+	Visitor.h
+	VisitorExecuteFunc.h
+	VisitorScheduler.h
+	VisualVisitor.h
+	WriteStateVisitor.h
+	XMLPrintVisitor.h
+	xml/BaseElement.h
+	xml/ElementNameHelper.h
+	xml/Element.h
+	xml/Element.inl
+	xml/initXml.h
+	xml/NodeElement.h
+	xml/ObjectElement.h
+	xml/BaseMultiMappingElement.h
+	xml/AttributeElement.h
+	xml/DataElement.h
+	xml/XML.h   
+	SceneLoaderXML.h
+	SceneLoaderPHP.h
+	SceneLoaderFactory.h
+	)
+
+set(sources
+
+	Node.cpp
+	AnimateBeginEvent.cpp
+	AnimateEndEvent.cpp
+	AnimateVisitor.cpp
+	BehaviorUpdatePositionVisitor.cpp
+	CactusStackStorage.cpp
+	CleanupVisitor.cpp
+	CollisionAnimationLoop.cpp
+	CollisionVisitor.cpp
+	CopyAspectVisitor.cpp
+	DeactivatedNodeVisitor.cpp
+	DefaultAnimationLoop.cpp
+	DefaultVisualManagerLoop.cpp
+	DeleteVisitor.cpp
+	ExportGnuplotVisitor.cpp
+	ExportOBJVisitor.cpp
+	InitVisitor.cpp   
+	MechanicalComputeEnergyVisitor.cpp
+	MechanicalOperations.cpp
+	MechanicalMatrixVisitor.cpp
+	MechanicalVPrintVisitor.cpp
+	MechanicalVisitor.cpp   
+	MutationListener.cpp 
+	ParallelVisitorScheduler.cpp
+	PauseEvent.cpp
+	PipelineImpl.cpp
+	PositionEvent.cpp
+	PrintVisitor.cpp
+	PropagateEventVisitor.cpp
+	ReleaseAspectVisitor.cpp
+	ResetVisitor.cpp
+	Simulation.cpp  
+	SolveVisitor.cpp
+	TopologyChangeVisitor.cpp
+	StateChangeVisitor.cpp   
+	TransformationVisitor.cpp
+	UpdateBoundingBoxVisitor.cpp
+	UpdateContextVisitor.cpp
+	UpdateLinksVisitor.cpp
+	UpdateMappingEndEvent.cpp
+	UpdateMappingVisitor.cpp
+	VectorOperations.cpp
+	VelocityThresholdVisitor.cpp
+	Visitor.cpp
+	VisitorScheduler.cpp
+	VisualVisitor.cpp
+	WriteStateVisitor.cpp
+	XMLPrintVisitor.cpp
+	xml/BaseElement.cpp
+	xml/ElementNameHelper.cpp
+	xml/initXml.cpp
+	xml/NodeElement.cpp
+	xml/ObjectElement.cpp
+	xml/BaseMultiMappingElement.cpp
+	xml/AttributeElement.cpp
+	xml/DataElement.cpp
+	xml/XML.cpp 
+	SceneLoaderFactory.cpp
+	SceneLoaderXML.cpp
+	SceneLoaderPHP.cpp
+	)
+
+if(SOFA_SMP)
+	list(APPEND headers "ChangeListener.h")
+	list(APPEND headers "ParallelMechanicalVisitor.h")
+	list(APPEND sources "ChangeListener.cpp")
+	list(APPEND sources "ParallelMechanicalVisitor.cpp")
+endif()
+
+include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
+add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
+target_link_libraries(${PROJECT_NAME} SofaCore tinyxml)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_COMMON")
+	
+include(${SOFA_CMAKE_DIR}/post.cmake)
+

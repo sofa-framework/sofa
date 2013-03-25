@@ -65,6 +65,16 @@ if(EXTERNAL_HAVE_GLEW)
 	list(APPEND GLOBAL_DEFINES SOFA_HAVE_GLEW)
 endif()
 
+## XML
+option(XML_PARSER_LIBXML "Use LibXML instead of built-in TinyXML" OFF)
+if(XML_PARSER_LIBXML)
+	set(SOFA_XML_PARSER_LIBXML 1)
+	list(APPEND GLOBAL_DEFINES SOFA_XML_PARSER_LIBXML)
+else()
+	set(SOFA_XML_PARSER_TINYXML 1)
+	list(APPEND GLOBAL_DEFINES SOFA_XML_PARSER_TINYXML)
+endif()
+
 # developer convenience
 option(CONVENIENCE_SPLIT_HEADERS_AND_SOURCES "Split headers and sources in different filters (virtual folders)" ON)
 
@@ -74,6 +84,17 @@ if(CONVENIENCE_SPLIT_HEADERS_AND_SOURCES)
 	set(SOFA_HEADER_FILE_FILTER_NAME	"Header Files")
 	set(SOFA_CPP_FILE_FILTER_NAME		"Source Files")
 endif()
+
+# optionnal features
+option(SIMULATION_GRAPH_DAG "Directed acyclic graph" ON)
+if(SIMULATION_GRAPH_DAG)
+	list(APPEND GLOBAL_DEFINES SOFA_HAVE_DAG)
+endif()
+option(SIMULATION_GRAPH_BGL "Boost graph library" OFF)
+if(SIMULATION_GRAPH_BGL)
+	list(APPEND GLOBAL_DEFINES SOFA_HAVE_BGL)
+endif()
+
 
 # miscellaneous
 file(GLOB applicationDevExist "${SOFA_APPLICATIONS_DEV_DIR}")
@@ -85,3 +106,5 @@ endif()
 option(MISC_USE_DEV_PROJECTS "Build and use the applications-dev projects (dev-plugins may need them)" ${MISC_USE_DEV_PROJECTS_MODE})
 
 option(MISC_USE_UNIT_TESTS "Build and use unit tests" OFF)
+
+
