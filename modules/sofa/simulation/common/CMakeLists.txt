@@ -152,9 +152,9 @@ if(SOFA_SMP)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore tinyxml)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMULATION_COMMON")
-	
+set(COMPILE_DEFINES "SOFA_BUILD_SIMULATION_COMMON")
+set(LINK_DEPENDENCIES SofaCore tinyxml)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

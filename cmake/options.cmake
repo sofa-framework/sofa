@@ -107,6 +107,14 @@ if(SIMULATION_GRAPH_BGL)
 	list(APPEND GLOBAL_DEFINES SOFA_HAVE_BGL)
 endif()
 
+# unit tests
+option(UNIT-TESTS_USE "Build and use unit tests" ON)
+if(WIN32)
+	set(UNIT-TESTS_BUILD_GTEST_MODE OFF)
+else()
+	set(UNIT-TESTS_BUILD_GTEST_MODE ON)
+endif()
+option(UNIT-TESTS_BUILD_GTEST "Build google test framework (not needed on Windows)" ${UNIT-TESTS_BUILD_GTEST_MODE})
 
 # miscellaneous
 file(GLOB applicationDevExist "${SOFA_APPLICATIONS_DEV_DIR}")
@@ -116,7 +124,5 @@ else()
 	set(MISC_USE_DEV_PROJECTS_MODE "OFF")
 endif()
 option(MISC_USE_DEV_PROJECTS "Build and use the applications-dev projects (dev-plugins may need them)" ${MISC_USE_DEV_PROJECTS_MODE})
-
-option(MISC_USE_UNIT_TESTS "Build and use unit tests" OFF)
 
 

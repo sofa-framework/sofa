@@ -20,8 +20,8 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/defaulttype")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
 
 # modules
-add_subdirectory(${SOFA_MODULES_DIR}/sofa/simulation)
-add_subdirectory(${SOFA_MODULES_DIR}/sofa/component)
+add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
+add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 
 # plugins
 foreach(plugin ${SOFA_PLUGINS})

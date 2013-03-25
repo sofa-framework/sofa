@@ -106,8 +106,8 @@ set(SOURCE_FILES
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimulationTree)
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_BASE_TOPOLOGY")
-    
+
+set(COMPILE_DEFINES "SOFA_BUILD_BASE_TOPOLOGY")
+set(LINK_DEPENDENCIES SofaSimulationTree)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)
