@@ -6,3 +6,5 @@ include("sofa_base_linear_solver.cmake")
 #include("sofa_base_mechanics.cmake")
 #include("sofa_base_collision.cmake")
 #include("sofa_base_visual.cmake")
+
+#include("sofa_sph_fluid.cmake")
