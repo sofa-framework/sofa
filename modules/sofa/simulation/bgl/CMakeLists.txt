@@ -32,7 +32,6 @@ if(SOFA_SMP)
 	list(APPEND sources "SMPBglSimulation.cpp")
 endif()
 
-include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
 add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
 target_link_libraries(${PROJECT_NAME} SofaSimulation)
 

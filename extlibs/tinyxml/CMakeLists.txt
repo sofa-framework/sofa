@@ -21,7 +21,7 @@ set(sources
 add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
 #target_link_libraries(${PROJECT_NAME})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_TINYXML;TIXML_USE_STL")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_TINYXML")
 	
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

@@ -71,6 +71,8 @@ if(XML_PARSER_LIBXML)
 	list(APPEND GLOBAL_DEFINES SOFA_XML_PARSER_LIBXML)
 else()
 	list(APPEND GLOBAL_DEFINES SOFA_XML_PARSER_TINYXML)
+	list(APPEND GLOBAL_DEFINES TIXML_USE_STL)
+	include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
 endif()
 
 # developer convenience
