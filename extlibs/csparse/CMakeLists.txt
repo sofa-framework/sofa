@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 2.8)
+
+project("csparse")
+
+include(${SOFA_CMAKE_DIR}/pre.cmake)
+
+set(headers
+
+    csparse.h 
+    ldl.h 
+    UFconfig.h 
+	)
+
+set(sources
+
+    csparse.c 
+    ldl.c 
+	)
+
+add_library(${PROJECT_NAME} STATIC ${headers} ${sources})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};use_namespace")
+	
+include(${SOFA_CMAKE_DIR}/post.cmake)
+

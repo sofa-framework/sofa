@@ -18,8 +18,9 @@ set(sources
     animationloop/MultiTagAnimationLoop.cpp
 	)
 
+include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
 add_library(${PROJECT_NAME} SHARED ${headers} ${sources})
-target_link_libraries(${PROJECT_NAME} SofaTree)
+target_link_libraries(${PROJECT_NAME} SofaSimulationTree)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_BASE_ANIMATION_LOOP")
 	
