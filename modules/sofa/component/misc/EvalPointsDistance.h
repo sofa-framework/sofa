@@ -62,6 +62,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename defaulttype::Vector3 Vec3;
 
     /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;
@@ -150,6 +151,9 @@ protected:
     std::ofstream* outfile;
     /// time value for the distance computations
     double lastTime;
+
+    sofa::defaulttype::BoundingBox box1;
+    sofa::defaulttype::BoundingBox box2;
 };
 
 } // namespace misc

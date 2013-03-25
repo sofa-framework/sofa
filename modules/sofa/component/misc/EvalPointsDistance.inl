@@ -64,6 +64,8 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
 {
     mstate1.setPath("@./"); // default path: state in the same node
     mstate2.setPath("@./"); // default path: state in the same node
+    box1 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+    box2 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 }
 
 template<class DataTypes>
@@ -81,11 +83,13 @@ void EvalPointsDistance<DataTypes>::init()
     if (!mstate1 )
     {
         mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        box1 = mstate1->f_bbox.getValue();
         serr << " Mechanical State object1 not found, this will be taken in the same context " << sendl;
     }
     if (!mstate2)
     {
         mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        this->box2 = mstate1->f_bbox.getValue();
         serr << " Mechanical State object2 not found, this will be taken in the same context " << sendl;
     }
 
@@ -161,6 +165,10 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     Real rd2 = 0.0;
     int rn=0;
     Coord dx0 = x2[s2]-x0[s1];
+
+    const Vec3 minBox = box1.minBBox();
+    const Vec3 maxBox = box1.maxBBox();
+    Real meanRefSize = ((maxBox[0]-minBox[0])+(maxBox[1]-minBox[1])+(maxBox[2]-minBox[2]))/3.0;
     helper::vector<Real> &distances = *dist.beginEdit();
     distances.resize(n);
     for (int i=0; i<n; ++i)
@@ -172,7 +180,8 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
         if (i==0 || d < dmin) dmin = d;
         if (i==0 || d > dmax) dmax = d;
         //Real d0 = (Real)(x1[s1+i]-x0[s1+i]).norm();
-        Real d0 = (Real)(x2[s2+i]-x0[s1+i]-dx0).norm();
+        //Real d0 = (Real)(x2[s2+i]-x0[s1+i]-dx0).norm();
+        Real d0 = meanRefSize;
         if (d0 > 1.0e-6)
         {
             Real rd = d/d0;
