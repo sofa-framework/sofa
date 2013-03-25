@@ -301,9 +301,9 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FI
     if (m_gnuplotFileEnergy!=NULL)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
-                <<"\t"<< this->getPotentialEnergy(mparams)
-                <<"\t"<< this->getPotentialEnergy(mparams)
-                +this->getKineticEnergy(mparams)<< std::endl;
+                               <<"\t"<< this->getPotentialEnergy(mparams)
+                              <<"\t"<< this->getPotentialEnergy(mparams)
+                                +this->getKineticEnergy(mparams)<< std::endl;
     }
 }
 
