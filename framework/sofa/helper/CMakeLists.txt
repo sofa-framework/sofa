@@ -162,13 +162,13 @@ set(SOURCE_FILES
 	gl/GLSLShader.cpp
 	)
 
-if(SOFA_HAVE_BOOST)
+if(EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")
 	
 	list(APPEND SOURCE_FILES "system/thread/TimeoutWatchdog.cpp")
 endif()
 
-if(SOFA_HAVE_FFMPEG)
+if(EXTERNAL_HAVE_FFMPEG)
 	list(APPEND HEADER_FILES "gl/VideoRecorder.h ")
 	
 	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp ")
