@@ -43,14 +43,14 @@ link_directories("${SOFA_LIB_OS_DIR}")
 # packages and libraries
 
 ## opengl / glew / glut
+find_package(OPENGL REQUIRED)
+find_package(GLEW REQUIRED)
 if(WIN32)
-	set(OPENGL_LIBRARIES "opengl32")
-	set(GLEW_LIBRARIES "glew")
+	#set(OPENGL_LIBRARIES "opengl32")
+	#set(GLEW_LIBRARIES "glew")
 	set(GLUT_LIBRARIES "glut32")
 	set(PNG_LIBRARIES "libpng")
 else()
-	find_library(OPENGL_LIBRARIES "opengl")
-	find_package(GLEW REQUIRED)
 	find_library(GLUT_LIBRARIES "glut")
 	find_library(PNG_LIBRARIES "png")
 endif()
