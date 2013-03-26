@@ -92,6 +92,11 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     const unsigned& max_iter = f_maxIter.getValue();
 
 
+    std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+    sofa::helper::vector<double>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
+    graph_error.clear();
+    graph_error.push_back(1);
+
     double eps(std::numeric_limits<double>::epsilon());
     int istop(0);
     unsigned itn(0);
@@ -275,6 +280,8 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             double test1(0.0), test2(0.0);
             test1  = rnorm/(Anorm*ynorm); // ||r||/(||A|| ||x||)
             test2  = root/ Anorm;         // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
+
+            graph_error.push_back(test1);
 
             // Estimate cond(A)
             /*
