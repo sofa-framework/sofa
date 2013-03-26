@@ -28,7 +28,9 @@ HEADERS += initBaseLinearSolver.h \
            linearsolver/MatrixLinearSolver.h \
            linearsolver/MatrixExpr.h \
            linearsolver/matrix_bloc_traits.h \
-           linearsolver/BlocMatrixWriter.h
+           linearsolver/BlocMatrixWriter.h \
+           linearsolver/MinResLinearSolver.h \
+           linearsolver/MinResLinearSolver.inl \
 
 SOURCES += initBaseLinearSolver.cpp \
            linearsolver/CGLinearSolver.cpp \
@@ -38,7 +40,8 @@ SOURCES += initBaseLinearSolver.cpp \
            linearsolver/GraphScatteredTypes.cpp \
            linearsolver/DefaultMultiMatrixAccessor.cpp \
            linearsolver/MatrixLinearSolver.cpp \
-           linearsolver/SingleMatrixAccessor.cpp
+           linearsolver/SingleMatrixAccessor.cpp \
+           linearsolver/MinResLinearSolver.cpp \
 
 
 # Make sure there are no cross-dependencies

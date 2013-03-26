@@ -43,6 +43,7 @@ void initBaseLinearSolver()
 }
 
 SOFA_LINK_CLASS(CGLinearSolver)
+SOFA_LINK_CLASS(MinResLinearSolver)
 SOFA_LINK_CLASS(CholeskySolver)
 SOFA_LINK_CLASS(BTDLinearSolver)
 
