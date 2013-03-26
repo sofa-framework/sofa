@@ -26,6 +26,7 @@ include("sofa_rigid.cmake")
 include("sofa_eigen2_solver.cmake")         #needs: eigen-unsupported ? (what is that?)
 include("sofa_boundary_condition.cmake")
 include("sofa_dense_solver.cmake")
+include("sofa_misc_topology.cmake")
 
 
 #include("sofa_opengl_visual.cmake") #link
