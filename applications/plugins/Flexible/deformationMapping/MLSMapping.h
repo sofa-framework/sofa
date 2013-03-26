@@ -27,11 +27,14 @@
 
 #include "../initFlexible.h"
 #include "../deformationMapping/BaseDeformationMapping.inl"
+#include "../deformationMapping/MLSJacobianBlock.h"
 #include "../deformationMapping/MLSJacobianBlock_point.inl"
-//#include "../deformationMapping/MLSJacobianBlock_affine.inl"
-//#include "../deformationMapping/MLSJacobianBlock_quadratic.inl"
+#include "../deformationMapping/MLSJacobianBlock_affine.inl"
+#include "../deformationMapping/MLSJacobianBlock_rigid.inl"
+#include "../deformationMapping/MLSJacobianBlock_quadratic.inl"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/State.inl>
+
 
 namespace sofa
 {
@@ -43,7 +46,6 @@ namespace mapping
 using helper::vector;
 using defaulttype::Mat;
 using defaulttype::MatSym;
-
 
 
 /** Generic moving least squares mapping, from a variety of input types to a variety of output types.
@@ -65,7 +67,9 @@ public:
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
     typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
+    typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VHessian VHessian;
 
     typedef defaulttype::MLSJacobianBlock<TIn,defaulttype::Vec3Types> PointMapperType;
@@ -84,95 +88,177 @@ protected:
 
     virtual ~MLSMapping()     { }
 
+    typedef defaulttype::InInfo<TIn> ininfo;
+    typedef defaulttype::MLSInfo< ininfo::dim, ininfo::order, typename ininfo::Real > mlsinfo;
+    typedef typename mlsinfo::basis basis;
+    typedef typename mlsinfo::moment moment;
+
+    ///< Compute the moment matrix \f$ M = sum w_i.xi*.xi*^T \f$ and its spatial derivatives (xi is the initial spatial position of node i)
+    void computeMLSMatrices(moment& M, Vec<spatial_dimensions, moment>& dM, Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
+                                const VRef& index, const InVecCoord& in, const VReal& w, const VGradient& dw, const VHessian& ddw)
+    {
+        M=moment();
+        for(unsigned int k=0; k<spatial_dimensions; k++ ) dM(k)=moment();
+        for(unsigned int i=0; i<spatial_dimensions; i++ ) for(unsigned int k=0; k<spatial_dimensions; k++ ) ddM(i,k)=moment();
+
+        for(unsigned int j=0; j<index.size(); j++ )
+        {
+            moment XXT=mlsinfo::getCov(ininfo::getCenter(in[index[j]]));
+            M += XXT * w[j];
+            if(j<dw.size()) for(unsigned int k=0; k<spatial_dimensions; k++ ) dM(k)+=XXT * dw[j][k];
+            if(j<ddw.size()) for(unsigned int i=0; i<spatial_dimensions; i++ ) for(unsigned int k=0; k<spatial_dimensions; k++ ) ddM(i,k)+=XXT * ddw[j](i,k);
+        }
+    }
+
+    void invertMomentMatrix(moment& Minv,const moment& M)
+    {
+        // Minv.invert(M);
+        static const unsigned int bdim=mlsinfo::bdim;
+        Eigen::Matrix<Real,bdim,bdim>  eM;
+        for(unsigned int k=0; k<bdim; k++ ) for(unsigned int l=0; l<bdim; l++ ) eM(k,l)=M(k,l);
+        Eigen::Matrix<Real,bdim,bdim>  eMinv = eM.inverse();
+        for(unsigned int k=0; k<bdim; k++ ) for(unsigned int l=0; l<bdim; l++ ) Minv(k,l)=eMinv(k,l);
+    }
+
+
+    ///< Compute the mls coordinates \f$ C = w.x*.x*^T M^{-1} p* \f$ and its spatial derivatives (p is the initial spatial position of a material point and x the initial spatial position of a node)
+    void computeMLSCoordinates(basis& P, Vec<spatial_dimensions, basis>& dP, Mat<spatial_dimensions,spatial_dimensions, basis>& ddP,
+                               const moment& Minv, const Vec<spatial_dimensions, moment>& dM, const Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
+                               const Coord& p0, const InCoord& in, const Real& w, const Gradient& dw, const Hessian& ddw)
+    {
+        moment XXT=mlsinfo::getCov(ininfo::getCenter(in));
+
+        basis P0 = mlsinfo::getBasis(defaulttype::InInfo<Coord>::getCenter(p0));
+        Vec<spatial_dimensions, basis> dP0; for(unsigned int k=0; k<spatial_dimensions; k++ ) dP0[k]=mlsinfo::getBasisGradient(defaulttype::InInfo<Coord>::getCenter(p0),k);
+        Mat<spatial_dimensions,spatial_dimensions, basis> ddP0; for(unsigned int j=0; j<spatial_dimensions; j++ ) for(unsigned int k=0; k<spatial_dimensions; k++ ) ddP0(j,k)=mlsinfo::getBasisHessian(defaulttype::InInfo<Coord>::getCenter(p0),j,k);
+
+        // P = w.x*.x*^T M^{-1} p0*
+        P = XXT*(Minv * P0) * w;
+
+        // dP(i) = x*.x*^T M^{-1} [p0*.dw(i) + w.dp0*(i) - w.dM(i) M^{-1} p0* ]
+        for(unsigned int i=0; i<spatial_dimensions; i++ )
+        {
+            dP[i]= XXT*(Minv * (P0*dw[i] +  (dP0[i] - dM[i]*(Minv*P0))*w ));
+        }
+
+        // ddP(i,j) = x*.x*^T M^{-1} [  p0*.ddw(i,j) + w.ddp0*(i,j) + w(j).dp0*(i) + dp0*(j).dw(i)
+        //                              - w *dM(i) M^{-1} p0*(j) - w * dM(j) M^{-1} dp0*(i)
+        //                              + w.( dM(j) M^{-1} dM(i) + dM(i) M^{-1} dM(j) ).M^{-1} p0*
+        //                              - dM(j) M^{-1} p0*.dw(i)     - dM(i) M^{-1} p0*.dw(j)
+        //                              - w *ddM(i,j) M^{-1} p0* ]
+        for(unsigned int i=0; i<spatial_dimensions; i++ ) for(unsigned int j=i; j<spatial_dimensions; j++ )
+        {
+            ddP(i,j)= XXT*(Minv * ( P0*ddw(i,j) + ddP0(i,j)*w + dP0[i]*dw[j] + dP0[j]*dw[i]
+                                    -  dM[i]*(Minv*dP0[j])*w -  dM[j]*(Minv*dP0[i])*w
+                                    +  dM[j]*(Minv*(dM[i]*(Minv*P0)))*w +  dM[i]*(Minv*(dM[j]*(Minv*P0)))*w
+                                    - dM[j]*(Minv*P0)*dw[i]   - dM[i]*(Minv*P0)*dw[j]
+                                    - ddM(i,j)*(Minv*P0)*w));
+            if(j!=i) ddP(j,i)=ddP(i,j);
+        }
+    }
+
+
+
 
     virtual void initJacobianBlocks()
     {
-        std::cout<<"MLS: initJacobianBlocks"<<std::endl;
-
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
         unsigned int size=this->f_pos0.getValue().size();
         this->jacobian.resize(size);
 
-        static const unsigned int bdim=defaulttype::MLSInfo<InCoord>::bdim; // size of polynomial basis
+        moment M,Minv;
+        Vec<spatial_dimensions, moment > dM;
+        Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+
+        basis P;
+        Vec<spatial_dimensions, basis> dP;
+        Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
 
         for(unsigned int i=0; i<size; i++ )
         {
             unsigned int nbref=this->f_index.getValue()[i].size();
             this->jacobian[i].resize(nbref);
 
-            // compute moment matrix
-            MatSym<bdim,Real> M;
-            Vec<spatial_dimensions, MatSym<bdim,Real> > dM;
+            computeMLSMatrices(M,dM,ddM,this->f_index.getValue()[i],in.ref(),this->f_w.getValue()[i],this->f_dw.getValue()[i],this->f_ddw.getValue()[i]);
+            invertMomentMatrix(Minv,M);
 
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                MatSym<bdim,Real> XXT=defaulttype::MLSInfo<InCoord>::getCov(in[index]);
-                M += XXT * this->f_w.getValue()[i][j];
-                for(unsigned int k=0; k<spatial_dimensions; k++ ) dM[k]+=XXT * this->f_dw.getValue()[i][j][k];
-            }
-
-            MatSym<bdim,Real> Minv;
-            // Minv.invert(M);
-
-            Eigen::Matrix<Real,bdim,bdim>  eM;
-            for(unsigned int k=0; k<bdim; k++ ) for(unsigned int l=0; l<bdim; l++ ) eM(k,l)=M(k,l);
-            Eigen::Matrix<Real,bdim,bdim>  eMinv = eM.inverse();
-            for(unsigned int k=0; k<bdim; k++ ) for(unsigned int l=0; l<bdim; l++ ) Minv(k,l)=eMinv(k,l);
-
-            for(unsigned int j=0; j<nbref; j++ )
-            {
-                unsigned int index=this->f_index.getValue()[i][j];
-                this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j],Minv,dM);
+                computeMLSCoordinates(P,dP,ddP,Minv,dM,ddM,this->f_pos0.getValue()[i],in[index],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
+                this->jacobian[i][j].init(in[index] ,out[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],P,dP,ddP);
             }
         }
     }
 
 
 
-    virtual void mapPosition(Coord& /*p*/,const Coord &/*p0*/, const VRef& /*ref*/, const VReal& /*w*/)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
     {
-//        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-//        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
-//        PointMapperType mapper;
+        PointMapperType mapper;
 
-//        // empty variables (not used in init)
-//        typename PointMapperType::OutCoord o(defaulttype::NOINIT);
-//        typename PointMapperType::MaterialToSpatial M0(defaulttype::NOINIT);
-//        VGradient dw(1);
-//        VHessian ddw(1);
+        // empty variables (not used in init)
+        typename PointMapperType::OutCoord o(defaulttype::NOINIT);
+        typename PointMapperType::MaterialToSpatial MtoS0(defaulttype::NOINIT);
 
-//        p=Coord();
-//        for(unsigned int j=0; j<ref.size(); j++ )
-//        {
-//            unsigned int index=ref[j];
-//            mapper.init( in0[index],o,p0,M0,w[j],dw[0],ddw[0]);
-//            mapper.addapply(p,in[index]);
-//        }
+        VGradient dw(1);
+        VHessian ddw(1);
+
+        moment M,Minv;
+        Vec<spatial_dimensions, moment > dM;
+        Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+        basis P;
+        Vec<spatial_dimensions, basis> dP;
+        Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
+
+        computeMLSMatrices(M,dM,ddM,ref,in0.ref(),w,dw,ddw);
+        invertMomentMatrix(Minv,M);
+
+        p=Coord();
+        for(unsigned int j=0; j<ref.size(); j++ )
+        {
+            unsigned int index=ref[j];
+            computeMLSCoordinates(P,dP,ddP,Minv,dM,ddM,p0,in0[index],w[j],dw[0],ddw[0]);
+            mapper.init( in0[index],o,p0,MtoS0,P,dP,ddP);
+            mapper.addapply(p,in[index]);
+        }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& /*F*/, const Coord &/*p0*/, const MaterialToSpatial& /*M*/, const VRef& /*ref*/, const VReal& /*w*/, const VGradient& /*dw*/)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& MtoS, const VRef& ref, const VReal& w, const VGradient& dw)
     {
-//        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-//        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
-//        DeformationGradientMapperType mapper;
+        DeformationGradientMapperType mapper;
 
-//        // empty variables (not used in init)
-//        typename DeformationGradientMapperType::OutCoord o;
-//        VHessian ddw(1);
+        // empty variables (not used in init)
+        typename DeformationGradientMapperType::OutCoord o;
+        VHessian ddw(1);
 
-//        typename DeformationGradientMapperType::OutCoord Fc;
-//        for(unsigned int j=0; j<ref.size(); j++ )
-//        {
-//            unsigned int index=ref[j];
-//            mapper.init( in0[index],o,p0,M,w[j],dw[j],ddw[0]);
-//            mapper.addapply(Fc,in[index]);
-//        }
-//        F=Fc.getF();
+        moment M,Minv;
+        Vec<spatial_dimensions, moment > dM;
+        Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+        basis P;
+        Vec<spatial_dimensions, basis> dP;
+        Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
+
+        computeMLSMatrices(M,dM,ddM,ref,in0.ref(),w,dw,ddw);
+        invertMomentMatrix(Minv,M);
+
+        typename DeformationGradientMapperType::OutCoord Fc;
+        for(unsigned int j=0; j<ref.size(); j++ )
+        {
+            unsigned int index=ref[j];
+            computeMLSCoordinates(P,dP,ddP,Minv,dM,ddM,p0,in0[index],w[j],dw[j],ddw[0]);
+            mapper.init( in0[index],o,p0,MtoS,P,dP,ddP);
+            mapper.addapply(Fc,in[index]);
+        }
+        F=Fc.getF();
     }
 
 };

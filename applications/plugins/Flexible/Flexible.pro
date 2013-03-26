@@ -24,6 +24,9 @@ SOURCES = initFlexible.cpp \
     deformationMapping/LinearMapping_rigid.cpp \
     deformationMapping/LinearMapping_quadratic.cpp \
     deformationMapping/MLSMapping_point.cpp \
+    deformationMapping/MLSMapping_affine.cpp \
+    deformationMapping/MLSMapping_rigid.cpp \
+    deformationMapping/MLSMapping_quadratic.cpp \
     deformationMapping/TriangleDeformationMapping.cpp \
     deformationMapping/TriangleStrainAverageMapping.cpp \
     strainMapping/GreenStrainMapping.cpp \
@@ -75,6 +78,9 @@ HEADERS = initFlexible.h \
     deformationMapping/MLSMapping.h \
     deformationMapping/MLSJacobianBlock.h \
     deformationMapping/MLSJacobianBlock_point.inl \
+    deformationMapping/MLSJacobianBlock_affine.inl \
+    deformationMapping/MLSJacobianBlock_rigid.inl \
+    deformationMapping/MLSJacobianBlock_quadratic.inl \
     deformationMapping/TriangleDeformationMapping.h \
     deformationMapping/TriangleDeformationMapping.inl \
     deformationMapping/TriangleStrainAverageMapping.h \

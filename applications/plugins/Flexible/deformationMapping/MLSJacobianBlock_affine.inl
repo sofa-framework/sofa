@@ -22,13 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FLEXIBLE_MLSJacobianBlock_point_INL
-#define FLEXIBLE_MLSJacobianBlock_point_INL
+#ifndef FLEXIBLE_MLSJacobianBlock_affine_INL
+#define FLEXIBLE_MLSJacobianBlock_affine_INL
 
 #include "MLSJacobianBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include "../types/AffineTypes.h"
+#include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
 
 namespace sofa
@@ -38,15 +41,15 @@ namespace defaulttype
 {
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> Vec3
+////  Affine3 -> Vec3
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , V3(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , V3(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , V3(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , V3(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef V3(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -68,45 +71,52 @@ public:
     typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
-    Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
+    Mapping:   \f$ p = w.t + A.A0^{-1}.(p*-w.t0) + w.p0- p*   = w.t + A.q0 + C \f$
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
 
-    Jacobian:    \f$ dp = w.dt \f$
+    Jacobian:    \f$ dp = w.dt + dA.q0\f$
       */
 
     static const bool constantJ=true;
 
-    OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
+    OutCoord Pa;   ///< =  q0      =  dp/dA
+    OutCoord C;   ///< =  w.p0- p*      =  constant term
+
 
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Basis& p, const Gradient& /*dp*/, const Hessian& /*ddp*/)
     {
         Pt=p[0];
-        C=(SPos-InPos)*Pt;
+        Pa=In::inverse(InPos).getAffine()*(BasisToCoord(p)-InPos.getCenter()*Pt);
+        C=SPos*Pt-BasisToCoord(p);
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result +=  data * Pt + C;
+        result +=  data.getCenter() * Pt + data.getAffine() * Pa + C;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result += data * Pt ;
+        result += data.getVCenter() * Pt + data.getVAffine() * Pa;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data * Pt ;
+        result.getVCenter() += data * Pt ;
+        for (unsigned int j = 0; j < dim; ++j) result.getVAffine()[j] += Pa * data[j];
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J(j,i+(j+1)*dim)=Pa[i];
         return J;
     }
 
@@ -115,16 +125,18 @@ public:
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
+
+
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> ExtVec3   same as Vec3 -> Factorize using partial instanciation ?
+////  Affine3 -> ExtVec3   same as Vec3 -> Factorize using partial instanciation ?
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , EV3(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , EV3(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , EV3(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , EV3(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef EV3(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -146,45 +158,52 @@ public:
     typedef Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
-    Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
+    Mapping:   \f$ p = w.t + A.A0^{-1}.(p*-w.t0) + w.p0- p*   = w.t + A.q0 + C \f$
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
 
-    Jacobian:    \f$ dp = w.dt \f$
+    Jacobian:    \f$ dp = w.dt + dA.q0\f$
       */
 
     static const bool constantJ=true;
 
-    OutCoord C;   ///< =  w.(p0-t0)  =  constant term
     Real Pt;      ///< =   w         =  dp/dt
+    OutCoord Pa;   ///< =  q0      =  dp/dA
+    OutCoord C;   ///< =  w.p0- p*      =  constant term
+
 
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Basis& p, const Gradient& /*dp*/, const Hessian& /*ddp*/)
     {
         Pt=p[0];
-        C=(SPos-InPos)*Pt;
+        Pa=In::inverse(InPos).getAffine()*(BasisToCoord(p)-InPos.getCenter()*Pt);
+        C=SPos*Pt-BasisToCoord(p);
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result +=  data * Pt + C;
+        result +=  data.getCenter() * Pt + data.getAffine() * Pa + C;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result += data * Pt ;
+        result += data.getVCenter() * Pt + data.getVAffine() * Pa;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data * Pt ;
+        result.getVCenter() += data * Pt ;
+        for (unsigned int j = 0; j < dim; ++j) result.getVAffine()[j] += Pa * data[j];
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
+        for(unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) J(j,i+(j+1)*dim)=Pa[i];
         return J;
     }
 
@@ -195,15 +214,15 @@ public:
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> F331
+////  Affine3 -> F331
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , F331(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F331(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , F331(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , F331(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef F331(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -227,51 +246,65 @@ public:
 
     typedef Vec<mdim,Real> mGradient;
 
+
+
     /**
-    Mapping:
-        - \f$ F = grad p . M = (t+p0-t0).grad w.M + w.M  \f$
+    Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w.M \f$
+        - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0).M\f$
       */
+
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
-    mGradient Ft;  ///< =   grad w.M     =  d F/dt
+    mGradient Ft;       ///< =   grad w.M     =  d F/dt
+    OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
+    OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
-        C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+          SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
+          Ft=M.transposed()*dw;
+          Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+          PFa.getF()=In::inverse(InPos).getAffine()*(gradps* M - covMN(InPos.getCenter(),Ft) );
+          Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+          C.getF()=covMN(SPos,Ft) + (wI-gradps)*M ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getF() +=  covMN(data,Ft) + C.getF();
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getF() + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getF() += covMN(data,Ft) ;
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getF();
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getF() * Ft ;
+        result.getVCenter() += data.getF() * Ft ;
+
+        for (unsigned int j = 0; j < dim; ++j)
+        {
+            result.getVAffine()[j] += PFa.getF() * (data.getF()[j]);
+        }
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFa.getF()[i][j];
         return J;
     }
+
 
     // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
@@ -280,15 +313,15 @@ public:
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> F321   same as F331 -> Factorize using partial instanciation ?
+////  Affine3 -> F321  same as F331 -> Factorize using partial instanciation ?
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , F321(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F321(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , F321(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , F321(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef F321(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -312,51 +345,65 @@ public:
 
     typedef Vec<mdim,Real> mGradient;
 
+
+
     /**
-    Mapping:
-        - \f$ F = grad p . M = (t+p0-t0).grad w.M + w.M  \f$
+    Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w.M \f$
+        - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0).M\f$
       */
+
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
-    mGradient Ft;  ///< =   grad w.M     =  d F/dt
+    mGradient Ft;       ///< =   grad w.M     =  d F/dt
+    OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
+    OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
-        C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+          SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
+          Ft=M.transposed()*dw;
+          Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+          PFa.getF()=In::inverse(InPos).getAffine()*(gradps* M - covMN(InPos.getCenter(),Ft) );
+          Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+          C.getF()=covMN(SPos,Ft) + (wI-gradps)*M ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getF() +=  covMN(data,Ft) + C.getF();
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getF() + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getF() += covMN(data,Ft) ;
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getF();
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getF() * Ft ;
+        result.getVCenter() += data.getF() * Ft ;
+
+        for (unsigned int j = 0; j < dim; ++j)
+        {
+            result.getVAffine()[j] += PFa.getF() * (data.getF()[j]);
+        }
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFa.getF()[i][j];
         return J;
     }
+
 
     // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
@@ -365,15 +412,15 @@ public:
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> F311   same as F331 -> Factorize using partial instanciation ?
+////  Affine3 -> F311  same as F331 -> Factorize using partial instanciation ?
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , F311(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F311(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , F311(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , F311(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef F311(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -397,68 +444,81 @@ public:
 
     typedef Vec<mdim,Real> mGradient;
 
+
+
     /**
-    Mapping:
-        - \f$ F = grad p . M = (t+p0-t0).grad w.M + w.M  \f$
+    Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
         - grad denotes spatial derivatives
     Jacobian:
-        - \f$ d F = dt.grad w.M \f$
+        - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0).M\f$
       */
+
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M   =  constant term
-    mGradient Ft;  ///< =   grad w.M     =  d F/dt
+    mGradient Ft;       ///< =   grad w.M     =  d F/dt
+    OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
+    OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& /*ddP*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
-        C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+          SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
+          Ft=M.transposed()*dw;
+          Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+          PFa.getF()=In::inverse(InPos).getAffine()*(gradps* M - covMN(InPos.getCenter(),Ft) );
+          Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+          C.getF()=covMN(SPos,Ft) + (wI-gradps)*M ;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getF() +=  covMN(data,Ft) + C.getF();
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFa.getF() + C.getF();
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getF() += covMN(data,Ft) ;
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFa.getF();
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getF() * Ft ;
+        result.getVCenter() += data.getF() * Ft ;
+
+        for (unsigned int j = 0; j < dim; ++j)
+        {
+            result.getVAffine()[j] += PFa.getF() * (data.getF()[j]);
+        }
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFa.getF()[i][j];
         return J;
     }
+
 
     // no geometric striffness (constant J)
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
 
-
 //////////////////////////////////////////////////////////////////////////////////
-////  Vec3 -> F332
+////  Affine3 -> F332
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class InReal,class OutReal>
-class MLSJacobianBlock< V3(InReal) , F332(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F332(OutReal) >
+class MLSJacobianBlock< Affine3(InReal) , F332(OutReal) > :
+    public  BaseJacobianBlock< Affine3(InReal) , F332(OutReal) >
 {
 public:
-    typedef V3(InReal) In;
+    typedef Affine3(InReal) In;
     typedef F332(OutReal) Out;
 
     typedef BaseJacobianBlock<In,Out> Inherit;
@@ -482,71 +542,92 @@ public:
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
+
+
     /**
     Mapping:
-        - \f$ F = grad p.M = (t+p0-t0).grad w.M + w.M  \f$
-        - \f$ (grad F)_k = ( (t+p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w] ).M \f$ the second term can be removed because \f$ \sum_i grad w_i =0\f$
+        - \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
+        - \f$ (grad F)_k = t.(grad2 w)_k^T.M + A.A0^{-1}.[ grad2(p*)_k - t0.grad2(w)_k].M   +  ( I_k.grad w + p0.(grad2 w)_k + (grad w)_k.I - (grad2 p*)_k).M
     where :
-        - t0 is t in the reference configuration,
+        - (A0,t0) are the frame orientation and position (A,t) in the reference configuration,
         - p0 is the position of p in the reference configuration.
+        - p* is the mls coordinate
+        - w is the mls weight (first value of basis)
         - grad denotes spatial derivatives
         - _k denotes component/column k
     Jacobian:
-        - \f$ d F = dt.grad w.M \f$
-        - \f$ d (grad F)_k = dt.(grad2 w)_k^T.M \f$
+        - \f$ d F = dt.grad w.M + dA.A0^{-1}.grad(p*-w.t0).M\f$
+        - \f$ d(grad F)_k = dt.(grad2 w)_k^T.M + dA.A0^{-1}.[ grad2(p*)_k - t0.grad2(w)_k].M
       */
+
+
 
     static const bool constantJ=true;
 
-    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I,  (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]   =  constant term
-    Real Pt;           ///< =   w     =  dp/dt
-    mGradient Ft;  ///< =   grad w.M     =  d F/dt
-    mHessian dFt;  ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
+    mGradient Ft;       ///< =   grad w.M     =  d F/dt
+    mHessian dFt;      ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
+    OutCoord PFdFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M, [A0^{-1}.[ grad2(p*)_k - t0.grad2(w)_k].M]   =  dF/dA , d (grad F)_k/dA
+    OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M , [( I_k.grad w + p0.(grad2 w)_k + (grad w)_k.I - (grad2 p*)_k).M ]       =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dP, const Hessian& ddP)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& ddp)
     {
-        SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dP[i][0];
-        Ft=M.transposed()*dw;
-        C.getF()=covMN(SPos-InPos,Ft);
-        C.getF()+=M*p[0];
+        Mat<dim,dim,Real> A0inv=In::inverse(InPos).getAffine();
 
-        Mat<dim,dim,Real> ddw;
-        for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddP(i,j)[0];
+        SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
+        Ft=M.transposed()*dw;
+        Mat<dim,dim,Real> gradps; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) gradps(i,j)=dp[j][i+1];
+        PFdFa.getF()=A0inv*(gradps* M - covMN(InPos.getCenter(),Ft) );
+        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        C.getF()=covMN(SPos,Ft) + (wI-gradps)*M ;
+
+        Mat<dim,dim,Real> ddw; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddp(i,j)[0];
         dFt=ddw.transposed()*M;
+
         for (unsigned int k = 0; k < dim; ++k)
         {
-            C.getGradientF(k)=covMN(SPos-InPos,dFt[k]);
+            for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) gradps(i,j)=ddp(j,k)[i+1];
+            PFdFa.getGradientF(k) = A0inv*(gradps* M - covMN(InPos.getCenter(),dFt[k]) );
+            for (unsigned int j = 0; j < dim; ++j) wI(j,j)=dw[k];
+            SpatialCoord one; one[k]=1;
+            C.getGradientF(k)=covMN(SPos,dFt[k]) + covMN(one,Ft) + (wI-gradps)*M ;
         }
     }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
-        result.getF() +=  covMN(data,Ft) + C.getF();
-        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data, dFt[k]) + C.getGradientF(k);
+        result.getF() +=  covMN(data.getCenter(),Ft) + data.getAffine()*PFdFa.getF() + C.getF();
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN( data.getCenter(), dFt[k]) + data.getAffine() * PFdFa.getGradientF(k) + C.getGradientF(k) ;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result.getF() += covMN(data,Ft) ;
-        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data,dFt[k]) ;
+        result.getF() += covMN(data.getVCenter(),Ft) + data.getVAffine()*PFdFa.getF();
+        for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(data.getVCenter(),dFt[k]) + data.getVAffine() * PFdFa.getGradientF(k);
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data.getF() * Ft ;
-        for (unsigned int k = 0; k < dim; ++k) result += data.getGradientF(k) * dFt[k] ;
+        result.getVCenter() += data.getF() * Ft ;
+        for (unsigned int k = 0; k < dim; ++k) result.getVCenter() += data.getGradientF(k) * dFt[k] ;
+
+        for (unsigned int j = 0; j < dim; ++j)
+        {
+            result.getVAffine()[j] += PFdFa.getF() * (data.getF()[j]);
+            for (unsigned int k = 0; k < dim; ++k) result.getVAffine()[j] += PFdFa.getGradientF(k) * (data.getGradientF(k)[j]);
+        }
     }
 
     MatBlock getJ()
     {
         MatBlock J = MatBlock();
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
-        unsigned int offset=mdim*dim;
-        for (unsigned int k = 0; k < dim; ++k)
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
+        for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+l*mdim,i+dim+l*dim)=PFdFa.getF()[i][j];
+        unsigned int offset=dim*mdim;
+        for(unsigned int k=0; k<dim; ++k)
         {
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; i++) J(j+offset+i*mdim,i)=dFt[k][j];
-            offset+=mdim*dim;
+            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
+            for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) for(unsigned int l=0; l<dim; ++l)    J(j+offset+l*mdim,i+dim+l*dim)=PFdFa.getGradientF(k)[i][j];
+            offset+=dim*mdim;
         }
         return J;
     }
@@ -555,7 +636,6 @@ public:
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
 };
-
 
 
 } // namespace defaulttype
