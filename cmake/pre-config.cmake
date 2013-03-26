@@ -9,6 +9,7 @@ include_directories("${SOFA_INC_DIR}")
 include_directories("${SOFA_FRAMEWORK_DIR}")
 include_directories("${SOFA_MODULES_DIR}")
 include_directories("${SOFA_APPLICATIONS_DIR}")
+include_directories("${SOFA_EXTLIBS_DIR}")
 
 if(MISC_USE_DEV_PROJECTS)
 	include_directories("${SOFA_APPLICATIONS_DEV_DIR}")
