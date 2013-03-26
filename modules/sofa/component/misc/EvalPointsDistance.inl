@@ -32,6 +32,8 @@
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/helper/gl/template.h>
 
+#include <iomanip>
+
 #include <fstream>
 
 namespace sofa
@@ -120,8 +122,13 @@ void EvalPointsDistance<DataTypes>::reinit()
             outfile = NULL;
         }
         else
-            (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
-    } else {
+        {
+            (*outfile) << "# name\t\t\ttime\t\tmean\t\tmin\t\tmax\t\tdev\t\tmean(%)\t\tmin(%)\t\tmax(%)\t\tdev(%)" << std::endl;
+            std::cout << "OutputFile " << filename << " created" << std::endl;
+        }
+    }
+    else
+    {
         outfile = NULL;
     }
 
@@ -249,9 +256,9 @@ template<class DataTypes>
 void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (!mstate1 || !mstate2)
-        return;
-    std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
-    if (dynamic_cast<simulation::UpdateMappingEndEvent*>(event))
+            return;
+    // std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
+    if (dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
         double time = getContext()->getTime();
         // write the state using a period
@@ -259,11 +266,21 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         {
             eval();
             if (outfile==NULL)
+            {
                 sout << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
-            (*out) << this->getName() << "\t" << time
-                    << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
-                    << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
-                    << sendl;
+                sout << this->getName() << "\t" << time
+                     << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
+                     << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
+                     <<  sendl;
+            }
+            else
+            {
+                (*outfile) << std::setfill(' ') << std::setw(10) << this->getName() << "\t" << std::setw(10) << time
+                           << "\t" << std::setw(10) << distMean.getValue() << "\t" << std::setw(10) << distMin.getValue() << "\t" << std::setw(10) << distMax.getValue()
+                           << "\t" << std::setw(10) << distDev.getValue()  << "\t" << std::setw(10) << 100*rdistMean.getValue() << "\t" << std::setw(10) << 100*rdistMin.getValue()
+                           << "\t" << std::setw(10) << 100*rdistMax.getValue() << "\t" << std::setw(10) << 100*rdistDev.getValue()
+                           << std::endl;
+            }
             lastTime = time;
         }
     }
