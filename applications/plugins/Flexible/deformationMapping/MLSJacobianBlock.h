@@ -46,112 +46,195 @@ class MLSJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
 
 
 
-/** Class to compute covariance matrix from a variety of input types (needed by MLS moment matrix)
+
+
+/** Helper to retrieve coordinates and MLS order from a variety of input types
 */
 
 template< class Coord>
-class MLSInfo
+class InInfo
 {
 public:
     enum {dim = Coord::spatial_dimensions};
-    static const unsigned int bdim = 1+dim; ///< size of complete basis
     typedef typename Coord::value_type Real;
+    static const unsigned int order = 0;
+    static Vec<dim,Real> getCenter(const Coord& x)    { return x; }
+};
 
-    // returns X: the complete polynomial basis of order 1
-    static Vec<bdim,Real> getBasis(const Coord& x)
+template<class TCoord, class TDeriv, class TReal>
+class InInfo<defaulttype::StdVectorTypes<TCoord, TDeriv, TReal> >
+{
+public:
+    enum {dim = TCoord::spatial_dimensions};
+    typedef typename TCoord::value_type Real;
+    static const unsigned int order = 0;
+    static Vec<dim,Real> getCenter(const TCoord& x)    { return x; }
+};
+
+template<int _dim, typename _Real>
+class InInfo<defaulttype::StdAffineTypes<_dim, _Real> >
+{
+public:
+    typedef typename defaulttype::StdAffineTypes<_dim, _Real> T;
+    enum {dim =_dim};
+    typedef _Real Real;
+    static const unsigned int order = 1;
+    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+};
+
+template<int _dim, typename _Real>
+class InInfo<defaulttype::StdRigidTypes<_dim, _Real> >
+{
+public:
+    typedef typename defaulttype::StdRigidTypes<_dim, _Real> T;
+    enum {dim =_dim};
+    typedef _Real Real;
+    static const unsigned int order = 1;
+    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+};
+
+
+template<int _dim,typename _Real>
+class InInfo<defaulttype::StdQuadraticTypes<_dim, _Real> >
+{
+public:
+    typedef typename defaulttype::StdQuadraticTypes<_dim, _Real> T;
+    enum {dim =_dim};
+    typedef _Real Real;
+    static const unsigned int order = 2;
+    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+};
+
+/** Class to compute basis and covariance matrix from a variety of input types (needed by MLS moment matrix)
+  order=0 corresponds to MLS for points
+  order=1 corresponds to GMLS for linear frames (affine, rigid)
+  order=2 corresponds to GMLS for quadratic frames
+*/
+
+template<unsigned int dim,unsigned int order,typename _Real>
+class MLSInfo  {};
+
+template<unsigned int dim,typename _Real>
+class MLSInfo<dim,0,_Real>
+{
+public:
+    static const unsigned int bdim = 1+dim; ///< size of complete basis
+    typedef _Real Real;
+    typedef Vec<dim,Real> coord;
+    typedef Vec<bdim,Real> basis;
+    typedef MatSym<bdim,Real> moment;
+
+    static basis getBasis(const coord& x)
     {
-        Vec<bdim,Real> basis;
-        basis[0]=1; for(unsigned int i=0;i<dim;i++) basis[i+1]=x[i];
-        return basis;
+        basis b;
+        b[0]=1; for(unsigned int i=0;i<dim;i++) b[i+1]=x[i];
+        return b;
     }
 
-    // returns B.B^T
-    static MatSym<bdim,Real> getCov(const Coord& x)
+    static basis getBasisGradient(const coord& ,const unsigned int axis)
+    {
+        basis b;
+        b[1+axis]=1.;
+        return b;
+    }
+
+    static basis getBasisHessian(const coord& ,const unsigned int ,const unsigned int )
+    {
+        basis b;
+        return b;
+    }
+
+    static moment getCov(const coord& x)
     {
         return covN(getBasis(x));
     }
 };
 
-template<unsigned int dim, typename _Real>
-class MLSInfo<defaulttype::StdAffineTypes<dim, _Real> >
+template<unsigned int dim,typename _Real>
+class MLSInfo<dim,1,_Real>
 {
-    typedef defaulttype::StdAffineTypes<3, _Real> Coord;
+public:
     static const unsigned int bdim = 1+dim; ///< size of complete basis
     typedef _Real Real;
+    typedef Vec<dim,Real> coord;
+    typedef Vec<bdim,Real> basis;
+    typedef MatSym<bdim,Real> moment;
 
-    static Vec<bdim,Real> getBasis(const Coord& x)
+    static basis getBasis(const coord& x)
+    { return MLSInfo<dim,0,Real>::getBasis(x); }
+
+    static basis getBasisGradient(const coord& x,const unsigned int axis)
+    { return MLSInfo<dim,0,Real>::getBasisGradient(x,axis); }
+
+    static basis getBasisHessian(const coord& x,const unsigned int axis1,const unsigned int axis2)
+    { return MLSInfo<dim,0,Real>::getBasisHessian(x,axis1,axis2); }
+
+    static moment getCov(const coord& x)
     {
-        Vec<bdim,Real> basis;
-        basis[0]=1; for(unsigned int i=0;i<dim;i++) basis[i+1]=x.getCenter()[i];
-        return basis;
-    }
-
-    static MatSym<bdim,Real> getCov(const Coord& x)
-    {
-        MatSym<bdim,Real> M = covN(getBasis(x));
-        for(unsigned int i=1;i<bdim;i++) M(i,i)+=1.; // GMLS term corresponding to first derivatives
-        return M;
-    }
-};
-
-// same as affine
-template<unsigned int dim, typename _Real>
-class MLSInfo<defaulttype::StdRigidTypes<dim, _Real> >
-{
-    typedef defaulttype::StdRigidTypes<3, _Real> Coord;
-    static const unsigned int bdim = 1+dim; ///< size of complete basis
-    typedef _Real Real;
-
-    static Vec<bdim,Real> getBasis(const Coord& x)
-    {
-        Vec<bdim,Real> basis;
-        basis[0]=1; for(unsigned int i=0;i<dim;i++) basis[i+1]=x.getCenter()[i];
-        return basis;
-    }
-
-    static MatSym<bdim,Real> getCov(const Coord& x)
-    {
-        MatSym<bdim,Real> M = covN(getBasis(x));
-        for(unsigned int i=1;i<bdim;i++) M(i,i)+=1.; // GMLS term corresponding to first derivatives
+        moment M = covN(getBasis(x));
+        for(unsigned int i=1;i<bdim;i++) M(i,i)+=1.; // GMLS term corresponding to first derivatives = sum Gradient.Gradient^T
         return M;
     }
 };
 
 
 template<unsigned int dim,typename _Real>
-class MLSInfo<defaulttype::StdQuadraticTypes<dim, _Real> >
+class MLSInfo<dim,2,_Real>
 {
-    typedef defaulttype::StdQuadraticTypes<dim, _Real> Coord;
-    static const unsigned int bdim = 1 + Coord::num_quadratic_terms; ///< size of complete basis
+public:
+    typedef defaulttype::StdQuadraticTypes<dim, _Real> Qtypes;
+    static const unsigned int bdim = 1 + Qtypes::num_quadratic_terms; ///< size of complete basis
     typedef _Real Real;
+    typedef Vec<dim,Real> coord;
+    typedef Vec<bdim,Real> basis;
+    typedef MatSym<bdim,Real> moment;
 
-    static Vec<bdim,Real> getBasis(const Coord& x)
+    static basis getBasis(const coord& x)
     {
-        Vec<bdim-1,Real> x2 = defaulttype::convertSpatialToQuadraticCoord(x.getCenter());
-        Vec<bdim,Real> basis;
-        basis[0]=1;
-        for(unsigned int i=1;i<bdim;i++) basis[i]=x2[i-1];
-        return basis;
+        Vec<bdim-1,Real> x2 = defaulttype::convertSpatialToQuadraticCoord(x);
+        basis b;
+        b[0]=1;
+        for(unsigned int i=1;i<bdim;i++) b[i]=x2[i-1];
+        return b;
     }
 
-    static MatSym<bdim,Real> getCov(const Coord& x)
+    static basis getBasisGradient(const coord& x,const unsigned int axis)
     {
-        MatSym<bdim,Real> M = covN(getBasis(x));
+        Vec<bdim-1,Real> grad = defaulttype::SpatialToQuadraticCoordGradient(x).col(axis);
+        basis b;
+        for(unsigned int i=1;i<bdim;i++) b[i]=grad[i-1];
+        return b;
+    }
 
-        // GMLS term corresponding to first derivatives
-        Mat<bdim-1,dim,Real> grad = defaulttype::SpatialToQuadraticCoordGradient(x.getCenter());
+    static basis getBasisHessian(const coord& x,const unsigned int axis1,const unsigned int axis2)
+    {
+        basis b;
+        if(axis1==axis2) {b[1+dim+axis1]=2.; return b;}
+        if(axis2==axis1+1 || (dim==axis1+1 && axis2==0) )  {b[1+2*dim+axis1]=1.; return b;}
+        return  getBasisHessian(x,axis2,axis1);
+    }
+
+    static moment getCov(const coord& x)
+    {
+        moment M = covN(getBasis(x));
+
+        // GMLS term corresponding to first derivatives = sum Gradient.Gradient^T
         for(unsigned int j=0;j<dim;j++)
         {
-            Vec<bdim,Real> b; for(unsigned int i=1;i<bdim;i++) b[i]=grad[i-1][j];
+            Vec<bdim,Real> b = getBasisGradient(x,j);
             M+=covN(b);
         }
-        // GMLS term corresponding to second derivatives
+        // GMLS term corresponding to second derivatives = sum(i,j) Hessian(i,j).Hessian(i,j)^T
         for(unsigned int i=dim+1;i<2*dim+1;i++) M(i,i)+=2.; // square terms
-        for(unsigned int i=2*dim+1;i<bdim;i++) M(i,i)+=1.; // cross terms
+        for(unsigned int i=2*dim+1;i<bdim;i++) M(i,i)+=2.; // cross terms
 
         return M;
     }
 };
+
+
+template<class basis>
+const Vec<basis::spatial_dimensions-1,typename basis::value_type>& BasisToCoord(const basis& v) { return *reinterpret_cast<const Vec<basis::spatial_dimensions-1,typename basis::value_type>*>(&v[1]); }
 
 
 
