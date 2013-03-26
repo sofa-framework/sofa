@@ -26,7 +26,12 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 
-# projects
+# applications
+
+## gui
+#add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
+
+## projects
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMapping")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMulti2MappingChain")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMultiMappingChain")
@@ -45,7 +50,6 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may ne
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
-
 
 # plugins
 foreach(plugin ${SOFA_PLUGINS})
