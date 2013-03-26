@@ -63,7 +63,7 @@ set(SOURCE_FILES
 
     )
     
-if( SOFA_HAVE_EIGEN2 )
+if( EXTERNAL_HAVE_EIGEN2 )
 	list(APPEND HEADER_FILES "collision/BarycentricDistanceLMConstraintContact.h")
 	list(APPEND HEADER_FILES "collision/BarycentricDistanceLMConstraintContact.inl")
 	list(APPEND HEADER_FILES "constraintset/DOFBlockerLMConstraint.h")
