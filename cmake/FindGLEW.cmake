@@ -24,22 +24,26 @@ if (NOT DEFINED GLEW_FOUND)
 
 	if(UNIX)
 		if(APPLE)
-			# on Mac, use the dependency package
+			# on Mac, GLEW is in the dependency package
 			set(GLEW_LIBRARIES "${SOFA_LIB_OS_DIR}/libglew.dylib")
 			set(GLEW_INCLUDE_DIR "${SOFA_INC_DIR}")
 		else(APPLE)
 			find_path(GLEW_INCLUDE_DIR GL/glew.h)
-			find_library(GLEW_LIBRARIES "glew")
+			find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
 		endif(APPLE)
 	endif(UNIX)
+
+
 
 	if(EXISTS "${GLEW_INCLUDE_DIR}/GL/glew.h" AND EXISTS ${GLEW_LIBRARIES})
 		message(STATUS "GLEW Lib found: ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIR}")
 		set(GLEW_FOUND SHARED INTERNAL TRUE)
 	else()
-		message(FATAL_ERROR "GLEW NOT FOUND")
+		message(FATAL_ERROR "GLEW NOT FOUND ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIR}")
 		set(GLUE_FOUND FALSE)
 	endif()
+
+
 
 endif(NOT DEFINED GLEW_FOUND)
 
