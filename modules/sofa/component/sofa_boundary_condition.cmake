@@ -112,8 +112,8 @@ if(SOFA_HAVE_EIGEN2)
 endif()    
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver)
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_BOUNDARY_CONDITION")
-    
+
+set(COMPILER_DEFINES "SOFA_BUILD_BOUNDARY_CONDITION")
+set(LINKER_DEPENDENCIES SofaBaseTopology SofaEigen2Solver)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)

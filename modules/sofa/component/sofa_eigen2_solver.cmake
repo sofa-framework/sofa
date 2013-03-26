@@ -26,8 +26,8 @@ set(SOURCE_FILES
 include_directories("${SOFA_EXTLIBS_DIR}/newmat")    
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILE_DEFINES "SOFA_BUILD_EIGEN2_SOLVER")
-set(LINK_DEPENDENCIES SofaDenseSolver)   #eigen-unsupported??
+set(COMPILER_DEFINES "SOFA_BUILD_EIGEN2_SOLVER")
+set(LINKER_DEPENDENCIES SofaDenseSolver)   #eigen-unsupported??
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

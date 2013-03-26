@@ -41,8 +41,8 @@ set(SOURCE_FILES
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaEigen2Solver )
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_RIGID")
+
+set(COMPILER_DEFINES "SOFA_BUILD_RIGID")
+set(LINKER_DEPENDENCIES SofaBaseMechanics SofaEigen2Solver)
     
 include(${SOFA_CMAKE_DIR}/post.cmake)

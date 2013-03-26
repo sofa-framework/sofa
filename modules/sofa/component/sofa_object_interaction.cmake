@@ -32,8 +32,8 @@ set(SOURCE_FILES
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaDeformable )
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_OBJECT_INTERACTION")
-    
+
+set(COMPILER_DEFINES "SOFA_BUILD_OBJECT_INTERACTION")
+set(LINKER_DEPENDENCIES SofaDeformable)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)

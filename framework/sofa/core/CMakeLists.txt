@@ -242,8 +242,8 @@ endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILE_DEFINES "SOFA_BUILD_CORE")
-set(LINK_DEPENDENCIES SofaDefaultType)
+set(COMPILER_DEFINES "SOFA_BUILD_CORE")
+set(LINKER_DEPENDENCIES SofaDefaultType)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
