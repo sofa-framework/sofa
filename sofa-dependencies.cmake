@@ -17,7 +17,7 @@ if(EXTERNAL_HAVE_ZLIB)
 #todo
 endif()
 
-# sofa projects
+# framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/helper")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/defaulttype")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
@@ -25,6 +25,9 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
 # modules
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
+
+# projects
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 
 # plugins
 foreach(plugin ${SOFA_PLUGINS})

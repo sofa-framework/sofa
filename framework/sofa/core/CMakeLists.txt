@@ -217,7 +217,7 @@ set(SOURCE_FILES
 	objectmodel/GUIEvent.cpp
 	)
 
-if(SOFA_HAVE_BOOST)
+if(EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
 	
 	list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")

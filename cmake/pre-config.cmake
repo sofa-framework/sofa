@@ -16,8 +16,10 @@ if(MISC_USE_DEV_PROJECTS)
 	include_directories("${SOFA_APPLICATIONS_DEV_DIR}")
 endif()
 
-if(SOFA_BOOST_PATH)
-	include_directories("${SOFA_BOOST_PATH}")
+if(EXTERNAL_BOOST_PATH)
+	include_directories("${EXTERNAL_BOOST_PATH}")
+else()
+	include_directories("${SOFA_EXTLIBS_DIR}/miniBoost")
 endif()
 
 if(EXTERNAL_HAVE_EIGEN2)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-# sofa useful pathes
+# useful pathes
 set(SOFA_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Path to the Sofa cmake directory")
 get_filename_component(SOFA_DIR ${SOFA_CMAKE_DIR} PATH)
 set(SOFA_DIR ${SOFA_DIR} CACHE INTERNAL "Path to the Sofa root directory")
@@ -16,10 +16,13 @@ set(SOFA_APPLICATIONS_DEV_DIR "${SOFA_DIR}/applications-dev" CACHE INTERNAL "Pat
 set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications plugins directory")
 set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugin directory")
 
-# os-specific
+## os-specific
 if(WIN32)
 	list(APPEND GLOBAL_COMPILER_DEFINES "UNICODE")
 	set(SOFA_LIB_OS_DIR "${SOFA_LIB_DIR}/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
 elseif(APPLE)
 	set(SOFA_LIB_OS_DIR "${SOFA_LIB_DIR}/macx" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
 endif()
+
+# cached variables
+set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} CACHE INTERNAL "Global Compiler Defines" FORCE)

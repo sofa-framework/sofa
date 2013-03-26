@@ -37,15 +37,14 @@ endforeach()
 
 # extlibs
 
-## boost (do not raise SOFA_HAVE_BOOST if we use our mini-boost version)
-set(SOFA_MINI_BOOST "${SOFA_EXTLIBS_DIR}/miniBoost")
-set(EXTERNAL_BOOST_PATH ${SOFA_MINI_BOOST} CACHE PATH "Use our minimal boost or type in the path of a full boost version")
-set(SOFA_BOOST_PATH "${EXTERNAL_BOOST_PATH}")
-if((NOT EXTERNAL_BOOST_PATH STREQUAL "") AND (NOT EXTERNAL_BOOST_PATH STREQUAL ${SOFA_MINI_BOOST}))
-	set(SOFA_HAVE_BOOST 1)
+## boost
+set(EXTERNAL_BOOST_PATH "" CACHE PATH "Use Boost full version (must contain the compiled libraries)")
+if(EXTERNAL_BOOST_PATH STREQUAL "")
+	unset(EXTERNAL_HAVE_BOOST CACHE)
+else()
+	set(EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use a full and compiled version of boost" FORCE)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_BOOST)
 endif()
-
 
 ## zlib
 option(EXTERNAL_HAVE_ZLIB "Use the ZLib library" ON)
@@ -65,21 +64,27 @@ if(EXTERNAL_HAVE_GLEW)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_GLEW)
 endif()
 
+## glew
+option(EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" ON)
+if(EXTERNAL_HAVE_FFMPEG)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_FFMPEG)
+endif()
+
 ## CSPARSE
-option(EXTERNAL_HAVE_CSPARSE "use csparse external lib" ON)
+option(EXTERNAL_HAVE_CSPARSE "Use CSparse" ON)
 if(EXTERNAL_HAVE_CSPARSE)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_CSPARSE)
 endif()
 
 ## FLOWVR
-option(EXTERNAL_HAVE_FLOWVR "use miniFlowVR external lib" ON)
+option(EXTERNAL_HAVE_FLOWVR "Use MiniFlowVR" ON)
 if(EXTERNAL_HAVE_FLOWVR)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_FLOWVR)
 	list(APPEND GLOBAL_COMPILER_DEFINES MINI_FLOWVR)
 endif()
 
 ## EIGEN
-option(EXTERNAL_HAVE_EIGEN2 "use eigen external lib" ON)
+option(EXTERNAL_HAVE_EIGEN2 "Use Eigen" ON)
 if(EXTERNAL_HAVE_EIGEN2)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_EIGEN2)
 endif()
@@ -109,12 +114,9 @@ endif()
 
 # unit tests
 option(UNIT-TESTS_USE "Build and use unit tests" ON)
-if(WIN32)
-	set(UNIT-TESTS_BUILD_GTEST_MODE OFF)
-else()
-	set(UNIT-TESTS_BUILD_GTEST_MODE ON)
+if(NOT WIN32)
+	option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
 endif()
-option(UNIT-TESTS_BUILD_GTEST "Build google test framework (not needed on Windows)" ${UNIT-TESTS_BUILD_GTEST_MODE})
 
 # miscellaneous
 file(GLOB applicationDevExist "${SOFA_APPLICATIONS_DEV_DIR}")
