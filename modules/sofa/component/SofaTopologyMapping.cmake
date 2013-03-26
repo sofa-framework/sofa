@@ -28,6 +28,21 @@ set(HEADER_FILES
     
 set(SOURCE_FILES
 
+    initTopologyMapping.cpp 
+    mapping/Mesh2PointMechanicalMapping.cpp 
+    mapping/SimpleTesselatedTetraMechanicalMapping.cpp 
+    topology/CenterPointTopologicalMapping.cpp 
+    topology/Edge2QuadTopologicalMapping.cpp 
+    topology/Hexa2QuadTopologicalMapping.cpp 
+    topology/Hexa2TetraTopologicalMapping.cpp 
+    topology/Mesh2PointTopologicalMapping.cpp  
+    topology/Quad2TriangleTopologicalMapping.cpp 
+    topology/SimpleTesselatedHexaTopologicalMapping.cpp 
+    topology/SimpleTesselatedTetraTopologicalMapping.cpp 
+    topology/Tetra2TriangleTopologicalMapping.cpp 
+    topology/Triangle2EdgeTopologicalMapping.cpp 
+    topology/IdentityTopologicalMapping.cpp 
+    topology/SubsetTopologicalMapping.cpp
 
     )
     

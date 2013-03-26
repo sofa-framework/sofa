@@ -47,7 +47,7 @@ include("SofaLoader.cmake")
 
 #include("SofaOpenglVisual.cmake") #link needs: SofaSimulation
 #include("SofaSimpleFem.cmake") #needs: SofaOpenglVisual
-#include("SofaTopologyMapping.cmake")
+include("SofaTopologyMapping.cmake")
 #include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
 #include("SofaComponentCommon.cmake") #needs: sofa_loader sofa_simple_fem
 #include("SofaComponent.cmake") #needs: sofa_component_base
