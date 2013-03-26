@@ -27,28 +27,32 @@ include("SofaEigen2Solver.cmake")         #needs: eigen-unsupported ? (what is t
 include("SofaBoundaryCondition.cmake")
 include("SofaDenseSolver.cmake")
 include("SofaMiscTopology.cmake")
-#include("SofaUserInteraction.cmake") #needs: sofa_mesh_collision sofa_topology_mapping sofa_deformable sofa_boundary_condition
-#include("SofaConstraint.cmake") #needs: sofa_mesh_collision sofa_simple_fem sofa_eigen2_solver eigen sofa_user_interaction
-#include("SofaHaptics.cmake") #needs: sofa_constraint
+#include("SofaUserInteraction.cmake") #needs: SofaTopologyMapping
+#include("SofaConstraint.cmake") #needs: SofaSimpleFem SofaUserInteraction
+#include("SofaHaptics.cmake") #needs: SofaConstraint
 #include("SofaSparseSolver.cmake") #needs: metis 
-#include("SofaPreconditioner.cmake") #needs: sofa_sparse_solver sofa_simple_fem
-#include("SofaVolumetricData.cmake") #needs: sofa_user_interaction sofa_mesh_collision
-#include("SofaNonUniformFem.cmake") #needs: sofa_volumetric_data sofa_opengl_visual sofa_simple_fem
-#include("SofaMiscForcefield.cmake") #needs: sofa_misc_topology
-#include("SofaMiscFem.cmake") #needs: sofa_simple_fem
-#include("SofaMiscEngine.cmake") #needs: sofa_non_uniform_fem
-#include("SofaMiscCollision.cmake") #needs: sofa_constriant sofa_volumetric_data
-#include("SofaMisc.cmake") #needs: sofa_misc_topology sofa_topology_mapping
-#include("SofaValidation.cmake") #needs: sofa_loader
+#include("SofaPreconditioner.cmake") #needs: SofaSparseSolver SofaSimpleFem
+#include("SofaVolumetricData.cmake") #needs: SofaUserInteraction 
+#include("SofaNonUniformFem.cmake") #needs: SofaVolumetricData SofaOpenglVisual SofaSimpleFem
+include("SofaMiscForcefield.cmake") 
+#include("SofaMiscFem.cmake") #needs: SofaSimpleFem
+#include("SofaMiscEngine.cmake") #needs: SofaNonUniformFem
+#include("SofaMiscCollision.cmake") #needs: SofaConstriant SofaVolumetricData
+#include("SofaMisc.cmake") #needs: SofaTopologyMapping
+include("SofaValidation.cmake") 
+include("SofaExporter.cmake") 
+include("SofaLoader.cmake")
+#include("SofaMiscMapping.cmake") #needs: SofaSimpleFem SofaOpenglVisual SofaUserInteraction #missing automatic compiler optimization flags
+#include("SofaTaucsSolver.cmake") #missing LIBS *= -lblas_win32_MT, etc..
 
-#include("SofaOpenglVisual.cmake") #link
-#include("SofaSimpleFem.cmake") #needs: sofa_opengl_visual
+#include("SofaOpenglVisual.cmake") #link needs: SofaSimulation
+#include("SofaSimpleFem.cmake") #needs: SofaOpenglVisual
 #include("SofaTopologyMapping.cmake")
 #include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
-#include("SofaComponentCommon.cmake") #needs: sofa_loader
+#include("SofaComponentCommon.cmake") #needs: sofa_loader sofa_simple_fem
 #include("SofaComponent.cmake") #needs: sofa_component_base
 #include("SofaComponentGeneral.cmake") #needs: a lot of stuff
-#include("SofaComponentMisc.cmake") #needs: all sofa_misc_*
+#include("SofaComponentMisc.cmake") #needs: all SofaMisc*
 
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
