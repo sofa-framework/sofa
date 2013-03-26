@@ -56,6 +56,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SIMPLE_FEM")
-set(LINKER_DEPENDENCIES SofaBaseTopology SofaOpenglVisual)
+set(LINKER_DEPENDENCIES SofaBaseTopology SofaOpenglVisual newmat)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

@@ -69,6 +69,6 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_OPENGL_VISUAL")
-set(LINKER_DEPENDENCIES SofaBaseVisual SofaSimulation)
+set(LINKER_DEPENDENCIES SofaBaseVisual SofaSimulationCommon)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

@@ -16,8 +16,8 @@ set(HEADER_FILES
     
 set(SOURCE_FILES
 
-    initMiscFEM.cpp \
-    forcefield/FastTetrahedralCorotationalForceField.cpp \
+    initMiscFEM.cpp 
+    forcefield/FastTetrahedralCorotationalForceField.cpp 
     forcefield/TetrahedralTensorMassForceField.cpp 
  
     )
