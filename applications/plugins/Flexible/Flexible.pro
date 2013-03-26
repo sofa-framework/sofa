@@ -137,6 +137,7 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
                 shapeFunction/BaseImageShapeFunction.h \
                 shapeFunction/VoronoiShapeFunction.h \
                 shapeFunction/DiffusionShapeFunction.h \
+                shapeFunction/ShapeFunctionDiscretizer.h \
                 deformationMapping/ImageDeformation.h \
                 mass/ImageDensityMass.h \
                 mass/ImageDensityMass.inl \
@@ -144,6 +145,7 @@ contains(DEFINES, SOFA_HAVE_IMAGE) {
     SOURCES += quadrature/ImageGaussPointSampler.cpp \
                shapeFunction/VoronoiShapeFunction.cpp \
                shapeFunction/DiffusionShapeFunction.cpp \
+               shapeFunction/ShapeFunctionDiscretizer.cpp \
                deformationMapping/ImageDeformation.cpp \
                mass/ImageDensityMass.cpp \
 
