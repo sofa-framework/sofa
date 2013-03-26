@@ -538,6 +538,7 @@ public:
 		M.x = CudaVec3<real>::make(s, s, s);
 		M.y = CudaVec3<real>::make(s, s, s);
 		M.z = CudaVec3<real>::make(s, s, s);
+        return M;
 	}
 	
 	__inline__ __device__ matrix3<real>& operator+=(const matrix3<real>& M)

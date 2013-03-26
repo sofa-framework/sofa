@@ -120,14 +120,14 @@ void CudaTetrahedronTLEDForceField::reinit()
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
-        int nz = 1;
+//        int nz = 1;
         {
             component::topology::GridTopology* grid = dynamic_cast<component::topology::GridTopology*>(topology);
             if (grid != NULL)
             {
                 nx = grid->getNx()-1;
                 ny = grid->getNy()-1;
-                nz = grid->getNz()-1;
+//                nz = grid->getNz()-1;
             }
         }
 
