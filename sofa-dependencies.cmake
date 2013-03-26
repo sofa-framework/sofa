@@ -28,6 +28,7 @@ add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 
 # projects
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
 
 # plugins
 foreach(plugin ${SOFA_PLUGINS})
