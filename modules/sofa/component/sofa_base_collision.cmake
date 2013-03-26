@@ -70,6 +70,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_BASE_COLLISION")
-set(LINKER_DEPENDENCIES SofaBaseMechanics SofaRigid MiniFlowVR SofaSphFluid)
+set(LINKER_DEPENDENCIES SofaBaseMechanics SofaRigid miniFlowVR SofaSphFluid)
     
 include(${SOFA_CMAKE_DIR}/post.cmake)
