@@ -150,7 +150,7 @@ SReal EvalPointsDistance<DataTypes>::eval()
 
 //-------------------------------- doEval------------------------------------
 template<class DataTypes>
-SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
+SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& /*x0*/)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     int s1 = x1.size()-n;
@@ -164,7 +164,7 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     Real rdmax = 0.0;
     Real rd2 = 0.0;
     int rn=0;
-    Coord dx0 = x2[s2]-x0[s1];
+//    Coord dx0 = x2[s2]-x0[s1];
 
     const Vec3 minBox = box1.minBBox();
     const Vec3 maxBox = box1.maxBBox();
