@@ -9,7 +9,6 @@ include_directories("${SOFA_INC_DIR}")
 include_directories("${SOFA_FRAMEWORK_DIR}")
 include_directories("${SOFA_MODULES_DIR}")
 include_directories("${SOFA_APPLICATIONS_DIR}")
-include_directories("${SOFA_EXTLIBS_DIR}")
 
 if(MISC_USE_DEV_PROJECTS)
 	include_directories("${SOFA_APPLICATIONS_DEV_DIR}")
@@ -23,6 +22,15 @@ if(EXTERNAL_HAVE_EIGEN2)
 	include_directories("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 endif()
 
+## Zlib
+if(EXTERNAL_HAVE_ZLIB)
+	if(WIN32)
+		set(ZLIB_LIBRARIES "zlib")
+	else()
+		find_library(ZLIB_LIBRARIES "z")
+	endif()
+	set(ZLIB_LIBRARIES ${ZLIB_LIBRARIES} CACHE INTERNAL "ZLib Library")
+endif()
 
 # lib dir
 link_directories("${SOFA_LIB_DIR}")
@@ -46,6 +54,7 @@ set(OPENGL_LIBRARIES ${OPENGL_LIBRARIES} CACHE INTERNAL "OpenGL Library")
 set(GLEW_LIBRARIES ${GLEW_LIBRARIES} CACHE INTERNAL "GLEW Library")
 set(GLUT_LIBRARIES ${GLUT_LIBRARIES} CACHE INTERNAL "GLUT Library")
 set(PNG_LIBRARIES ${PNG_LIBRARIES} CACHE INTERNAL "PNG Library")
+
 
 # target location
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SOFA_BIN_DIR}")
