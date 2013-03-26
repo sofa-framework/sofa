@@ -18,11 +18,11 @@ include("SofaBoundaryCondition.cmake")
 #include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
 include("SofaComponentCommon.cmake")
 #include("SofaComponent.cmake") #needs: SofaComponentBase
-#include("SofaComponentGeneral.cmake") #needs: SofaConstraint SofaHaptics SofaSparseSolver SofaPreconditioner
+#include("SofaComponentGeneral.cmake") #needs: SofaSparseSolver SofaPreconditioner
 #include("SofaComponentMisc.cmake") #needs: all SofaMisc*
 #include("SofaComponentBase.cmake") #needs: SofaVolumetricData SofaNonUniformFem
 
-#include("SofaConstraint.cmake") #having eigen problems?
+include("SofaConstraint.cmake") #having eigen problems?
 include("SofaDeformable.cmake")
 include("SofaDenseSolver.cmake")
 include("SofaEigen2Solver.cmake")         #needs: eigen-unsupported ? (what is that?)
@@ -31,7 +31,7 @@ include("SofaEulerianFluid.cmake")
 include("SofaExplicitOdeSolver.cmake")
 include("SofaExporter.cmake") 
 include("SofaGraphComponent.cmake")
-#include("SofaHaptics.cmake") #needs: SofaConstraint
+include("SofaHaptics.cmake") 
 include("SofaImplicitOdeSolver.cmake")
 include("SofaLoader.cmake")
 include("SofaMeshCollision.cmake")
