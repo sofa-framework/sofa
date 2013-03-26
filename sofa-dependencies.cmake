@@ -27,18 +27,24 @@ add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 
 # projects
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMapping")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMulti2MappingChain")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMultiMappingChain")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/subsetMultimapping")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/meshconv")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")       #may need to add RC_FILE and some Path stuff
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
 
 
 # plugins
