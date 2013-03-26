@@ -10,7 +10,7 @@ set(SOURCE_FILES
  
     )
     
-add_executabl(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain )
 
