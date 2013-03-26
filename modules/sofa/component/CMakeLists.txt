@@ -21,14 +21,14 @@ include("SofaMiscSolver.cmake")
 include("SofaObjectInteraction.cmake")
 include("SofaMeshCollision.cmake")
 include("SofaEngine.cmake")
-#include("SofaPardisoSolver.cmake") 
+include("SofaPardisoSolver.cmake") 
 include("SofaRigid.cmake")
 include("SofaEigen2Solver.cmake")         #needs: eigen-unsupported ? (what is that?)
 include("SofaBoundaryCondition.cmake")
 include("SofaDenseSolver.cmake")
 include("SofaMiscTopology.cmake")
 include("SofaUserInteraction.cmake")
-#include("SofaConstraint.cmake") 
+#include("SofaConstraint.cmake") #having eigen problems?
 #include("SofaHaptics.cmake") #needs: SofaConstraint
 #include("SofaSparseSolver.cmake") #needs: metis 
 #include("SofaPreconditioner.cmake") #needs: SofaSparseSolver 
@@ -42,17 +42,20 @@ include("SofaMisc.cmake")
 include("SofaValidation.cmake") 
 include("SofaExporter.cmake") 
 include("SofaLoader.cmake")
-#include("SofaMiscMapping.cmake") #missing automatic compiler optimization flags
+include("SofaMiscMapping.cmake") #missing automatic compiler optimization flags
 #include("SofaTaucsSolver.cmake") #missing LIBS *= -lblas_win32_MT, etc..
 include("SofaTopologyMapping.cmake")
-
 include("SofaOpenglVisual.cmake")
 include("SofaSimpleFem.cmake") 
+
+#All the SofaComponent* may need something equivalent to addToBuildGroup(..) in sofa-dependencies.prf
+
 #include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
-#include("SofaComponentCommon.cmake") #needs: sofa_loader sofa_simple_fem
-#include("SofaComponent.cmake") #needs: sofa_component_base
-#include("SofaComponentGeneral.cmake") #needs: a lot of stuff
+include("SofaComponentCommon.cmake")
+#include("SofaComponent.cmake") #needs: SofaComponentBase
+#include("SofaComponentGeneral.cmake") #needs: SofaConstraint SofaHaptics SofaSparseSolver SofaPreconditioner
 #include("SofaComponentMisc.cmake") #needs: all SofaMisc*
+#include("SofaComponentBase.cmake") #needs: SofaVolumetricData SofaNonUniformFem
 
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
