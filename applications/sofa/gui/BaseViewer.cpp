@@ -39,10 +39,10 @@ BaseViewer::BaseViewer()
     , currentCamera(NULL)
     , _video(false)
     , _axis(false)
-    , backgroundColour(Vector3())
 #ifndef SOFA_NO_OPENGL
     , texLogo(NULL)
 #endif
+    , backgroundColour(Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
     , pick(NULL)
