@@ -26,7 +26,9 @@ set(HEADER_FILES
     linearsolver/MatrixExpr.h 
     linearsolver/matrix_bloc_traits.h 
     linearsolver/BlocMatrixWriter.h
-    
+    linearsolver/MinResLinearSolver.h
+    linearsolver/MinResLinearSolver.inl
+
     )
     
 set(SOURCE_FILES
@@ -40,6 +42,7 @@ set(SOURCE_FILES
     linearsolver/DefaultMultiMatrixAccessor.cpp 
     linearsolver/MatrixLinearSolver.cpp 
     linearsolver/SingleMatrixAccessor.cpp
+    linearsolver/MinResLinearSolver.cpp
 
     )
     
