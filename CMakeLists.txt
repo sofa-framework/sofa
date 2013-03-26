@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+
+cmake_policy(SET CMP0015 OLD)
+
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
