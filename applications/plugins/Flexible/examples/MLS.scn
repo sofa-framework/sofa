@@ -18,7 +18,7 @@
 	     <UniformMass totalMass="250" />
 
 	     <!--TetrahedralCorotationalFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="polar"/ -->
-	  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  
+	     <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
@@ -33,27 +33,25 @@
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@surf" voxelSize="0.1" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="250" fixedPosition="" showSamples="false"/> 
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="150" fixedPosition="" showSamples="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
 	    <MechanicalObject template="Vec3d" name="dof" src="@merged" showObject="1" showObjectScale="5"/>
-<!--
-	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-            <Mesh name="mesh" src="@loader" />
-	    <MechanicalObject template="Vec3d" name="dof" />
--->
 
-<!--            <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@dof.position" name="FixedROI"/>-->
-<!--            <FixedConstraint indices="@FixedROI.indices" />-->
-
-<!--	    <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />-->
-<!--	    <ShepardShapeFunction name="SF" position="@dof.rest_position" power="2" nbRef="8" />-->
+<!--	    <ShepardShapeFunction name="SF" position="@dof.rest_position" power="2" nbRef="6" />-->
 	    <HatShapeFunction name="SF" position="@dof.rest_position" param="1 2 3" nbRef="6" />
 
+	    <ShapeFunctionDiscretizer name="SF3D" src="@image" />
+<!--    <ImageViewer template="ImageUI" name="viewer" image="@SF3D.indices" transform="@SF3D.transform" plane="6 -1 -1"/> -->
+<!--    <ImageViewer template="ImageD" name="viewer" image="@SF3D.weights" transform="@SF3D.transform" plane="6 -1 -1"/> -->
+
 	    <Node 	name="behavior"   >
-<!--		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="false" targetNumber="200" />-->
-        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	<Mesh name="mesh" src="@loader" />
-	    <TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamples="false" method="0" order="1" />
+		<!-- use automatically sampled points -->
+		<ImageGaussPointSampler name="sampler" indices="@../SF3D.indices" weights="@../SF3D.weights" transform="@../SF3D.transform" method="2" order="1" showSamples="false" targetNumber="300" />
+
+		<!-- use tet centers and volumes -->
+<!--        	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />-->
+<!--		<Mesh name="mesh" src="@loader" />-->
+<!--	    	<TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamples="false" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
 	    	<MLSMapping template="Mapping&lt;Vec3d,F331&gt;" assembleJ="false" showDeformationGradientScale="0.1"/>
