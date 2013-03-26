@@ -11,7 +11,6 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAPYTHON")
 set(LINKER_DEPENDENCIES SofaGuiMain SofaComponent)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
