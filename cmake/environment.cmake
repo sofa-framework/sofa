@@ -18,7 +18,7 @@ set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CAC
 
 # os-specific
 if(WIN32)
-	list(APPEND GLOBAL_DEFINES "UNICODE")
+	list(APPEND GLOBAL_COMPILER_DEFINES "UNICODE")
 	set(SOFA_LIB_OS_DIR "${SOFA_LIB_DIR}/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
 elseif(APPLE)
 	set(SOFA_LIB_OS_DIR "${SOFA_LIB_DIR}/macx" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
