@@ -26,3 +26,6 @@ endif()
 
 # cached variables
 set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} CACHE INTERNAL "Global Compiler Defines" FORCE)
+
+# cmake modules path, for our FindXXX.cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR})

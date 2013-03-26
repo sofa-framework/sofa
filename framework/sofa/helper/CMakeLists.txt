@@ -169,9 +169,9 @@ if(EXTERNAL_HAVE_BOOST)
 endif()
 
 if(EXTERNAL_HAVE_FFMPEG)
-	list(APPEND HEADER_FILES "gl/VideoRecorder.h ")
+	list(APPEND HEADER_FILES "gl/VideoRecorder.h")
 	
-	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp ")
+	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
