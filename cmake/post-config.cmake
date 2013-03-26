@@ -14,7 +14,7 @@ endforeach()
 if(TARGET ${PROJECT_NAME})
 
 	# compile definitions
-	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};${COMPILE_DEFINES}")
+	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};${COMPILER_DEFINES}")
 
 	# compile flags
 	if(WIN32)
@@ -22,6 +22,6 @@ if(TARGET ${PROJECT_NAME})
 	endif()
 
 	# link dependencies
-	target_link_libraries(${PROJECT_NAME} ${LINK_DEPENDENCIES})
+	target_link_libraries(${PROJECT_NAME} ${LINKER_DEPENDENCIES})
 
 endif()

@@ -44,7 +44,7 @@ endif()
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILE_DEFINES "SOFA_BUILD_BASE_MECHANICS")
-set(LINK_DEPENDENCIES SofaBaseTopology SofaBaseLinearSolver)
+set(COMPILER_DEFINES "SOFA_BUILD_BASE_MECHANICS")
+set(LINKER_DEPENDENCIES SofaBaseTopology SofaBaseLinearSolver)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

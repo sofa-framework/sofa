@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 
 # useful variables
-set(COMPILE_DEFINES "")
-set(LINK_DEPENDENCIES "")
+set(COMPILER_DEFINES "")
+set(COMPILER_FLAGS "")
+set(LINKER_DEPENDENCIES "")
+set(LINKER_FLAGS "")
 
 # include dir
 include_directories("${SOFA_INC_DIR}")

@@ -54,8 +54,8 @@ set(SOURCE_FILES
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaOpenglVisual )
-    
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_DEFINES};SOFA_BUILD_SIMPLE_FEM")
-    
+
+set(COMPILER_DEFINES "SOFA_BUILD_SIMPLE_FEM")
+set(LINKER_DEPENDENCIES SofaBaseTopology SofaOpenglVisual)
+
 include(${SOFA_CMAKE_DIR}/post.cmake)
