@@ -13,10 +13,6 @@ if(EXTERNAL_HAVE_FLOWVR)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/miniFlowVR")
 endif()
 
-if(EXTERNAL_HAVE_ZLIB)
-#todo
-endif()
-
 # framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/helper")
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/defaulttype")
