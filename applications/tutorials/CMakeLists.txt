@@ -10,7 +10,7 @@ include(${SOFA_CMAKE_DIR}/pre.cmake)
 #add_subdirectory("houseOfCards")
 #add_subdirectory("mixedPendulum")
 #add_subdirectory("objectCreator")
-add_subdirectory("oneParticle")
+#add_subdirectory("oneParticle")
 #add_subdirectory("oneParticleWithSofaTypedefs")
 #add_subdirectory("oneTetrahedron")
 
