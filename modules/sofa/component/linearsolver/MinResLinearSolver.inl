@@ -98,7 +98,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     graph_error.push_back(1);
 
     double eps(std::numeric_limits<double>::epsilon());
-    int istop(0);
+//    int istop(0);
     unsigned itn(0);
     double Anorm(0.0), Acond(0.0)/*, Arnorm(0.0)*/;
     double rnorm(0.0), ynorm(0.0);
@@ -113,32 +113,28 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
     const core::ExecParams* params = core::ExecParams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, A, x, b);
-    Vector& r1 = *vtmp.createTempVector();
-    Vector& y  = *vtmp.createTempVector();
-    Vector& w  = *vtmp.createTempVector();
-    Vector& w1 = *vtmp.createTempVector();
-    Vector& w2 = *vtmp.createTempVector();
-    Vector& r2 = *vtmp.createTempVector();
+    Vector* r1 =  vtmp.createTempVector();
+    Vector* r2 =  vtmp.createTempVector();
+    Vector* y  =  vtmp.createTempVector();
+    Vector* w  =  vtmp.createTempVector();
+    Vector* w2 =  vtmp.createTempVector();
     Vector& v  = *vtmp.createTempVector();
 
 
-    r1 = A * x;
+    *r1 = A * x;
 //    r1 = b - r1;
-    r1 *= -1;
-    r1 += b;
+    *r1 *= -1;
+    *r1 += b;
 
-
-    y = r1;
 
     double beta1(0.0);
-    beta1 = r1.dot( y );
+    beta1 = r1->dot( *r1 );
 
     // Test for an indefined preconditioner
     // If b = 0 exactly stop with x = x0.
 
     if(beta1 < 0.0)
     {
-        istop = 9;
         done = true;
     }
     else
@@ -148,7 +144,12 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             done = true;
         }
         else
+        {
             beta1 = sqrt(beta1); // Normalize y to get v1 later
+
+            *y = *r1;
+            *r2 = *r1;
+        }
     }
 
     // TODO: port symmetry checks for A
@@ -159,167 +160,155 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     double qrnorm(beta1), phi(0.0), phibar(beta1), rhs1(beta1);
     double rhs2(0.0), tnorm2(0.0), ynorm2(0.0);
     double cs(-1.0), sn(0.0);
-    double gmax(0.0), gmin(std::numeric_limits<double>::max( ));
+    double gmax(0.0), gmin(std::numeric_limits<double>::max());
     double alpha(0.0), gamma(0.0);
     double delta(0.0), gbar(0.0);
     double z(0.0);
 
 
-//    ( w ) = (* w1 ) = ( w2 ) = 0.0;
-    r2 = r1;
-
 
     /* Main Iteration */
-    if(!done)
+
+    for(itn = 0; itn < max_iter && !done; ++itn)
     {
-        for(itn = 0; itn < max_iter; ++itn)
+        // STEP 3
+        /*
+        -----------------------------------------------------------------
+        Obtain quantities for the next Lanczos vector vk+1, k = 1, 2,...
+        The general iteration is similar to the case k = 1 with v0 = 0:
+
+        p1      = Operator * v1  -  beta1 * v0,
+        alpha1  = v1'p1,
+        q2      = p2  -  alpha1 * v1,
+        beta2^2 = q2'q2,
+        v2      = (1/beta2) q2.
+
+        Again, y = betak P vk,  where  P = C**(-1).
+        .... more description needed.
+        -----------------------------------------------------------------
+         */
+        double s(1./beta); //Normalize previous vector (in y)
+        v  = *y;
+        v *= s;         // v = vk if P = I
+
+        *y = A * v;
+        if(itn) y->peq( *r1, -beta/oldb );
+
+        alpha = v.dot( *y );	// alphak
+        y->peq( *r2, -alpha/beta ); // y += -a/b * r2
+
+        std::swap( r1, r2 ); // save a copy by swaping pointers
+        *r2 = *y;
+
+        oldb = beta; //oldb = betak
+        beta = r2->dot( *r2 );
+
+        if(beta < 0)
         {
-            // STEP 3
-            /*
-            -----------------------------------------------------------------
-            Obtain quantities for the next Lanczos vector vk+1, k = 1, 2,...
-            The general iteration is similar to the case k = 1 with v0 = 0:
-
-            p1      = Operator * v1  -  beta1 * v0,
-            alpha1  = v1'p1,
-            q2      = p2  -  alpha1 * v1,
-            beta2^2 = q2'q2,
-            v2      = (1/beta2) q2.
-
-            Again, y = betak P vk,  where  P = C**(-1).
-            .... more description needed.
-            -----------------------------------------------------------------
-             */
-            double s(1./beta); //Normalize previous vector (in y)
-            v  = y;
-            v *= s;         // v = vk if P = I
-
-            y = A * v;
-            if(itn) y.peq( r1, -beta/oldb );
-
-            alpha = v.dot( y );	// alphak
-            y.peq( r2, -alpha/beta ); // y += -a/b * r2
-            r1 = r2;
-            r2 = y;
-            y = r2;
-
-            oldb = beta; //oldb = betak
-            beta = r2.dot( y );
-
-            if(beta < 0)
-            {
-                istop = 9;
-                break;
-            }
-
-            beta = sqrt(beta);
-            tnorm2 += alpha*alpha + oldb*oldb + beta*beta;
-
-            if(itn == 0)	//Initialize a few things
-            {
-                if(beta/beta1 < 10.0*eps)
-                    istop = 10;
-            }
-
-            // Apply previous rotation Q_{k-1} to get
-            // [delta_k epsln_{k+1}] = [cs sn]  [dbar_k 0]
-            // [gbar_k   dbar_{k+1}]   [sn -cs] [alpha_k beta_{k+1}].
-            oldeps = epsln;
-            delta  = cs*dbar + sn*alpha;
-            gbar   = sn*dbar - cs*alpha;
-            epsln  =           sn*beta;
-            dbar   =         - cs*beta;
-            double root(sqrt(gbar*gbar + dbar*dbar));
-            //Arnorm = phibar * root; // ||Ar_{k-1}||
-
-            // Compute next plane rotation Q_k
-            gamma = sqrt(gbar*gbar + beta*beta); // gamma_k
-            gamma = std::max(gamma, eps);
-            cs = gbar/gamma;                     // c_k
-            sn = beta/gamma;                     // s_k
-            phi = cs*phibar;                     // phi_k
-            phibar = sn*phibar;                  // phibar_{k+1}
-
-
-            // Update x
-            double denom(1./gamma);
-            w1 = w2;
-            w2 = w;
-
-            // add(-oldeps, w1, -delta, w2, w);
-            w = w1;
-            w *= -oldeps;
-            w.peq( w2, -delta );
-//            add(denom, v, w, w);
-            w *= denom;
-            w.peq( v, denom );
-//            add(x, phi, w, x);
-            x.peq( w, phi );
-
-            // go round again
-            gmax    = std::max(gmax, gamma);
-            gmin    = std::min(gmin, gamma);
-            z       = rhs1/gamma;
-            rhs1    = rhs2 - delta*z;
-            rhs2    =      - epsln*z;
-
-            // Estimate various norms
-
-            Anorm = sqrt(tnorm2);
-            ynorm2 = x.dot( x );
-            ynorm = sqrt(ynorm2);
-            double epsa(Anorm*eps);
-            double epsx(epsa*ynorm);
-//            double epsr(Anorm*ynorm*tol);
-            double diag(gbar);
-            if(0 == diag)
-                diag = epsa;
-
-            qrnorm = phibar;
-            rnorm  = qrnorm;
-            double test1(0.0), test2(0.0);
-            test1  = rnorm/(Anorm*ynorm); // ||r||/(||A|| ||x||)
-            test2  = root/ Anorm;         // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
-
-            graph_error.push_back(test1);
-
-            // Estimate cond(A)
-            /*
-             In this version we look at the diagonals of  R  in the
-             factorization of the lower Hessenberg matrix,  Q * H = R,
-             where H is the tridiagonal matrix from Lanczos with one
-             extra row, beta(k+1) e_k^T.
-             */
-            Acond = gmax/gmin;
-
-            //See if any of the stopping criteria is satisfied
-            if(0 == istop)
-            {
-                double t1(1.0+test1), t2(1.0+test2); //This test work if tol < eps
-                if(t2 <= 1.) istop = 2;
-                if(t1 <= 1.) istop = 1;
-
-                if(itn >= max_iter-1) istop = 6;
-                if(Acond >= .1/eps) istop = 4;
-                if(epsx >= beta1)   istop = 3;
-                if(test2 <= tol  )  istop = 2;
-                if(test1 <= tol)    istop = 1;
-            }
-
-            if(0 != istop)
-                break;
-
+            done = true;
+            break;
         }
 
-        vtmp.deleteTempVector(&r1);
-        vtmp.deleteTempVector(&y);
-        vtmp.deleteTempVector(&w);
-        vtmp.deleteTempVector(&w1);
-        vtmp.deleteTempVector(&w2);
-        vtmp.deleteTempVector(&r2);
-        vtmp.deleteTempVector(&v);
+        beta = sqrt(beta);
+        tnorm2 += alpha*alpha + oldb*oldb + beta*beta;
+
+        if(itn == 0)	//Initialize a few things
+        {
+            if(beta/beta1 < 10.0*eps)
+                done = true;
+        }
+
+        // Apply previous rotation Q_{k-1} to get
+        // [delta_k epsln_{k+1}] = [cs sn]  [dbar_k 0]
+        // [gbar_k   dbar_{k+1}]   [sn -cs] [alpha_k beta_{k+1}].
+        oldeps = epsln;
+        delta  = cs*dbar + sn*alpha;
+        gbar   = sn*dbar - cs*alpha;
+        epsln  =           sn*beta;
+        dbar   =         - cs*beta;
+        double root(sqrt(gbar*gbar + dbar*dbar));
+        //Arnorm = phibar * root; // ||Ar_{k-1}||
+
+        // Compute next plane rotation Q_k
+        gamma = sqrt(gbar*gbar + beta*beta); // gamma_k
+        gamma = std::max(gamma, eps);
+        cs = gbar/gamma;                     // c_k
+        sn = beta/gamma;                     // s_k
+        phi = cs*phibar;                     // phi_k
+        phibar = sn*phibar;                  // phibar_{k+1}
+
+
+        // Update x
+        double denom(1./gamma);
+
+        std::swap( w, w2 );
+
+        *w *= -oldeps;
+        w->peq( *w2, -delta );
+//            add(denom, v, w, w);
+        *w *= denom;
+        w->peq( v, denom );
+//            add(x, phi, w, x);
+        x.peq( *w, phi );
+
+        // go round again
+        gmax    = std::max(gmax, gamma);
+        gmin    = std::min(gmin, gamma);
+        z       = rhs1/gamma;
+        rhs1    = rhs2 - delta*z;
+        rhs2    =      - epsln*z;
+
+        // Estimate various norms
+
+        Anorm = sqrt(tnorm2);
+        ynorm2 = x.dot( x );
+        ynorm = sqrt(ynorm2);
+        double epsa(Anorm*eps);
+        double epsx(epsa*ynorm);
+//            double epsr(Anorm*ynorm*tol);
+        double diag(gbar);
+        if(0 == diag)
+            diag = epsa;
+
+        qrnorm = phibar;
+        rnorm  = qrnorm;
+        double test1(0.0), test2(0.0);
+        test1  = rnorm / (Anorm*ynorm); // ||r||/(||A|| ||x||)
+        test2  = root / Anorm;         // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
+
+        graph_error.push_back(test1);
+
+        // Estimate cond(A)
+        /*
+         In this version we look at the diagonals of  R  in the
+         factorization of the lower Hessenberg matrix,  Q * H = R,
+         where H is the tridiagonal matrix from Lanczos with one
+         extra row, beta(k+1) e_k^T.
+         */
+        Acond = gmax/gmin;
+
+        //See if any of the stopping criteria is satisfied
+        if( !done )
+        {
+            double t1(1.0+test1), t2(1.0+test2); //This test work if tol < eps
+            if(t2 <= 1. ||
+            t1 <= 1.||
+            itn >= max_iter-1||
+            Acond >= .1/eps||
+            epsx >= beta1  ||
+            test2 <= tol   ||
+            test1 <= tol  ) done = true;
+        }
     }
+
+    vtmp.deleteTempVector(r1);
+    vtmp.deleteTempVector(r2);
+    vtmp.deleteTempVector(y);
+    vtmp.deleteTempVector(w);
+    vtmp.deleteTempVector(w2);
+    vtmp.deleteTempVector(&v);
 }
+
 
 } // namespace linearsolver
 
