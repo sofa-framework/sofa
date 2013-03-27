@@ -39,7 +39,7 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/meshconv")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")       #may need to add RC_FILE and some Path stuff
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration/exec")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
