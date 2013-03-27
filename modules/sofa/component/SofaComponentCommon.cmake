@@ -6,19 +6,21 @@ include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 set(HEADER_FILES
 
+    init.h
     initComponentCommon.h
 
     )
     
 set(SOURCE_FILES
 
+    init.cpp
     initComponentCommon.cpp
 
     )
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_COMMON")
-set(LINKER_DEPENDENCIES SofaLoader SofaDeformable SofaSimpleFem SofaObjectInteraction SofaExplicitOdeSolver SofaImplicitOdeSolver SofaEigen2Solver SofaMeshCollision)
+set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_COMMON;SOFA_BUILD_COMPONENT")
+set(LINKER_DEPENDENCIES SofaLoader SofaDeformable SofaSimpleFem SofaObjectInteraction SofaExplicitOdeSolver SofaImplicitOdeSolver SofaEigen2Solver SofaMeshCollision SofaComponentBase SofaComponentMisc SofaComponentGeneral SofaComponentAdvanced)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

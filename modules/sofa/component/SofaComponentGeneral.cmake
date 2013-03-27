@@ -19,6 +19,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_GENERAL" )
-set(LINKER_DEPENDENCIES SofaValidation SofaExporter SofaEngine SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaUserInteraction SofaConstraint SofaHaptics SofaDenseSolver SofaSparseSolver SofaPreconditioner SofaOpenglVisual )
-    
+set(LINKER_DEPENDENCIES SofaValidation SofaExporter SofaEngine SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaUserInteraction SofaConstraint SofaHaptics SofaDenseSolver SofaPreconditioner SofaOpenglVisual )
+# SofaSparseSolver dependency commented out
+
 include(${SOFA_CMAKE_DIR}/post.cmake)

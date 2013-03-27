@@ -35,7 +35,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUI")
-set(LINKER_DEPENDENCIES SofaComponent SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaAdvancedInteraction SofaBaseVisual)
+set(LINKER_DEPENDENCIES SofaComponentCommon SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
