@@ -22,10 +22,12 @@ include("SofaComponentCommon.cmake")
 #include("SofaComponentMisc.cmake") #needs: all SofaMisc*
 #include("SofaComponentBase.cmake") #needs: SofaVolumetricData SofaNonUniformFem
 
-include("SofaConstraint.cmake") #having eigen problems?
+include("SofaConstraint.cmake")
 include("SofaDeformable.cmake")
 include("SofaDenseSolver.cmake")
-include("SofaEigen2Solver.cmake")         #needs: eigen-unsupported ? (what is that?)
+if(EXTERNAL_HAVE_EIGEN2)
+    include("SofaEigen2Solver.cmake")
+endif(EXTERNAL_HAVE_EIGEN2)
 include("SofaEngine.cmake")
 include("SofaEulerianFluid.cmake")
 include("SofaExplicitOdeSolver.cmake")
@@ -46,11 +48,15 @@ include("SofaMiscTopology.cmake")
 #include("SofaNonUniformFem.cmake") #needs: SofaVolumetricData 
 include("SofaObjectInteraction.cmake")
 include("SofaOpenglVisual.cmake")
-include("SofaPardisoSolver.cmake") 
-#include("SofaPreconditioner.cmake") #needs: SofaSparseSolver 
+if(OPTION_PARDISO)
+    include("SofaPardisoSolver.cmake")
+endif(OPTION_PARDISO)
+#include("SofaPreconditioner.cmake") #needs: SofaSparseSolver
 include("SofaRigid.cmake")
 include("SofaSimpleFem.cmake") 
-#include("SofaSparseSolver.cmake") #needs: metis 
+if(EXTERNAL_HAVE_CSPARSE)
+    #include("SofaSparseSolver.cmake") #needs: metis
+endif(EXTERNAL_HAVE_CSPARSE)
 include("SofaSphFluid.cmake")
 #include("SofaTaucsSolver.cmake") #missing LIBS *= -lblas_win32_MT, etc..
 include("SofaTopologyMapping.cmake")
