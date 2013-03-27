@@ -63,6 +63,7 @@ public:
 
     virtual void v_clear(core::MultiVecId v) = 0; ///< v=0
     virtual void v_eq(core::MultiVecId v, core::MultiVecId a) = 0; ///< v=a
+    virtual void v_eq(core::MultiVecId v, core::MultiVecId a, double f) = 0; ///< v=f*a
     virtual void v_peq(core::MultiVecId v, core::MultiVecId a, double f=1.0) = 0; ///< v+=f*a
 #ifdef SOFA_SMP
     virtual void v_peq(core::MultiVecId v, core::MultiVecId a, Shared<double> &fSh, double f=1.0) = 0; ///< v+=f*a

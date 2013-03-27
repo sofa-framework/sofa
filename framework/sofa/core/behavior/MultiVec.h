@@ -106,6 +106,12 @@ public:
         vop->v_eq(v, a);
     }
 
+    /// v = a*f
+    void eq(MyMultiVecId a, double f)
+    {
+        vop->v_eq(v, a, f);
+    }
+
     /// v += a*f
     void peq(AllMultiVecId a, double f=1.0)
     {

@@ -92,6 +92,12 @@ void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a) 
 {
     executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, ConstMultiVecId::null(), 1.0) );
 }
+
+void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f) // v=f*a
+{
+    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, ConstMultiVecId::null(), a, f) );
+}
+
 #ifndef SOFA_SMP
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
 {
