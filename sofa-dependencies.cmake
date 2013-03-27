@@ -28,10 +28,7 @@ add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
 
 ## projects
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMapping")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMulti2MappingChain")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMultiMappingChain")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/subsetMultimapping")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
