@@ -1,0 +1,39 @@
+cmake_minimum_required(VERSION 2.8)
+
+project("SofaMeshStepLoader")
+
+include(${SOFA_CMAKE_DIR}/pre.cmake)
+
+##plugin external dependencies
+find_package(SofaMeshStepLooaderLibs REQUIRED)
+include_directories(${SOFAMESHSTEPLOADER_INCLUDE_DIRS})
+
+set(HEADER_FILES
+
+    MeshSTEPLoader.h
+    ParametricTriangleTopologyContainer.h 
+    SingleComponent.inl
+    SingleComponent.h 
+    STEPShapeMapping.h 
+    initMeshSTEPLoader.h
+
+	)
+
+set(SOURCE_FILES
+
+    MeshSTEPLoader.cpp 
+    ParametricTriangleTopologyContainer.cpp 
+    SingleComponent.cpp 
+    STEPShapeMapping.cpp 
+    initMeshSTEPLoader.cpp
+
+	)
+
+set(README_FILE PluginMeshSTEPLoader.txt )	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+set(COMPILER_DEFINES "SOFA_BUILD_MESHSTEPLOADERPLUGIN")
+set(LINKER_DEPENDENCIES SofaBaseTopology )
+
+include(${SOFA_CMAKE_DIR}/post.cmake)
