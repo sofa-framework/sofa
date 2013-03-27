@@ -15,12 +15,12 @@ include("SofaBoundaryCondition.cmake")
 
 #All the SofaComponent* may need something equivalent to addToBuildGroup(..) in sofa-dependencies.prf
 
-#include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
+include("SofaComponentAdvanced.cmake") #needs: SofaVolumetricData
 include("SofaComponentCommon.cmake")
 #include("SofaComponent.cmake") #needs: SofaComponentBase
-#include("SofaComponentGeneral.cmake") #needs: SofaSparseSolver SofaPreconditioner
-#include("SofaComponentMisc.cmake") #needs: all SofaMisc*
-#include("SofaComponentBase.cmake") #needs: SofaVolumetricData SofaNonUniformFem
+include("SofaComponentGeneral.cmake") #needs: SofaSparseSolver SofaPreconditioner
+include("SofaComponentMisc.cmake") #needs: all SofaMisc*
+include("SofaComponentBase.cmake") #needs: SofaVolumetricData SofaNonUniformFem
 
 include("SofaConstraint.cmake")
 include("SofaDeformable.cmake")
@@ -51,7 +51,7 @@ include("SofaOpenglVisual.cmake")
 if(OPTION_PARDISO)
     include("SofaPardisoSolver.cmake")
 endif(OPTION_PARDISO)
-#include("SofaPreconditioner.cmake") #needs: SofaSparseSolver
+include("SofaPreconditioner.cmake") #needs: SofaSparseSolver
 include("SofaRigid.cmake")
 include("SofaSimpleFem.cmake") 
 if(EXTERNAL_HAVE_CSPARSE)
