@@ -37,6 +37,29 @@ endforeach()
 
 # extlibs
 
+## qt
+set(QTDIR $ENV{QTDIR})
+if(NOT QTDIR STREQUAL "")
+	file(GLOB QTDIR "${QTDIR}") # check if the QTDIR contains a correct path
+endif()
+
+if(WIN32)
+	# convenience : try to find a valid QT path
+	if(QTDIR STREQUAL "")
+		set(QTDIR "${SOFA_TOOLS_DIR}/qt4win")
+		file(GLOB QTDIR "${QTDIR}")
+		if(QTDIR STREQUAL "")
+			string(SUBSTRING "${SOFA_DIR}" 0 1 DISK_LETTER)
+			file(GLOB QTDIRS "${DISK_LETTER}:/Qt*")
+			list(GET QTDIRS 0 QTDIR)
+		endif()
+	endif()
+	set(ENV{QTDIR} "${QTDIR}")
+endif()
+# on Windows (and maybe also on Linux and Mac) the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
+set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
+option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3)" ON)
+
 ## boost
 set(EXTERNAL_BOOST_PATH "" CACHE PATH "Use Boost full version (must contain the compiled libraries)")
 if(EXTERNAL_BOOST_PATH STREQUAL "")
@@ -135,6 +158,9 @@ option(SIMULATION_GRAPH_BGL "Boost graph library" OFF)
 if(SIMULATION_GRAPH_BGL)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_BGL)
 endif()
+
+option(GUI_USE_QTVIEWER "Use QT Viewer" ON)
+option(GUI_USE_QGLVIEWER "Use QT Viewer" ON)
 
 # unit tests
 option(UNIT-TESTS_USE "Build and use unit tests" ON)

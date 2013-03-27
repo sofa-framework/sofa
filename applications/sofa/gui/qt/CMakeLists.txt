@@ -97,39 +97,33 @@ if(SOFA_DUMP_VISITOR_INFO)
 	list(APPEND FORM_FILES VisitorGUI.ui)
 endif()
 
-set(SOFA_QT4 1) # TODO: remove this line
-if(SOFA_QT4)
-	find_package(Qt4 PATHS "C:/QtLibx64SP1" REQUIRED)
+if(EXTERNAL_USE_QT4)
+	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED QUIET)
 	
 	QT4_WRAP_CPP(MOC_HEADER_FILES ${HEADER_FILES})
 	QT4_WRAP_UI(FORM_HEADER_FILES ${FORM_FILES})
 	
 	#CONFIG += qt uic uic3
-	SET(QT_USE_QTOPENGL TRUE)
-	SET(QT_USE_QT3SUPPORT TRUE)
-	SET(QT_USE_QTXML TRUE)
-	#QT += opengl qt3support xml
 else()
-	find_package(Qt3 PATHS "C:/QtLibx64SP1" REQUIRED)
+	find_package(Qt3 COMPONENTS qtopengl REQUIRED QUIET)
 	
 	QT3_WRAP_CPP(MOC_HEADER_FILES ${HEADER_FILES})
 	QT3_WRAP_UI(FORM_HEADER_FILES ${FORM_FILES})
 
 	#CONFIG += qt
-	SET(QT_USE_QTOPENGL TRUE)
 endif()
+set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
 include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-if(SOFA_GUI_QTVIEWER)
+if(GUI_USE_QTVIEWER)
 	list(APPEND HEADER_FILES viewer/qt/QtViewer.h)
 	
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
 endif()
 
-if(SOFA_GUI_QGLVIEWER)
+if(GUI_USE_QGLVIEWER)
 	list(APPEND HEADER_FILES viewer/qgl/QtGLViewer.h)
 	
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
@@ -137,7 +131,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIQT")
+set(COMPILER_DEFINES "${QT_DEFINITIONS};SOFA_BUILD_SOFAGUIQT")
 set(LINKER_DEPENDENCIES SofaGUICommon SofaGUIQt SofaGUIGlut ${QT_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

@@ -15,6 +15,7 @@ set(SOFA_APPLICATIONS_DIR "${SOFA_DIR}/applications" CACHE INTERNAL "Path to the
 set(SOFA_APPLICATIONS_DEV_DIR "${SOFA_DIR}/applications-dev" CACHE INTERNAL "Path to the Sofa applications-dev directory")
 set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications plugins directory")
 set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugin directory")
+set(SOFA_TOOLS_DIR "${SOFA_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 
 ## os-specific
 if(WIN32)

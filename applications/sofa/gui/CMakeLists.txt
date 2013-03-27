@@ -9,6 +9,6 @@ include("SofaGUICommon.cmake")
 include("SofaGUIMain.cmake")
 
 add_subdirectory("qt")
-#add_subdirectory("glut")
+add_subdirectory("glut")
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
