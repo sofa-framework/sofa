@@ -1,29 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(SOLUTION_NAME "Sofa")
-project(${SOLUTION_NAME})
+project("oneParticle")
 
-include(cmake/pre.cmake)
+include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-message(STATUS "--------------------------------------------")
-message(STATUS "-------- CONFIGURING SOFA FRAMEWORK --------")
-message(STATUS "--------------------------------------------")
-message(STATUS "")
+set(SOURCE_FILES
 
-# SOFA DEPENDENCIES
-include(sofa-dependencies.cmake)
+    oneParticle.cpp
 
-# PRINT REPORT
-if(SOFA_ERROR_MESSAGE)
-	message(SEND_ERROR "Final report : ${SOFA_ERROR_MESSAGE}")
-else()
-	message(STATUS "Final report : \n- Everything's OK !")
-endif()
+    )
 
-message(STATUS "")
-message(STATUS "--------------------------------------------")
-message(STATUS "----- DONE CONFIGURING SOFA FRAMEWORK ------")
-message(STATUS "--------------------------------------------")
-message(STATUS "")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-include(cmake/post.cmake)
+set(LINKER_DEPENDENCIES SofaCore )
+
+include(${SOFA_CMAKE_DIR}/post.cmake)
+

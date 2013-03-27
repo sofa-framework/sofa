@@ -15,7 +15,7 @@
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol>kdevsubversion</versioncontrol>
-    <projectname>oneParticule</projectname>
+    <projectname>oneParticle</projectname>
   </general>
   <kdevfileview>
     <groups>
@@ -98,7 +98,7 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>../../../bin/oneParticule</mainprogram>
+      <mainprogram>../../../bin/oneParticle</mainprogram>
       <programargs>-f Data/demo6.scn </programargs>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
