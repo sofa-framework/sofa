@@ -25,7 +25,7 @@ add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 # applications
 
 ## gui
-#add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
 
 ## projects
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel/applications/centerOfMassMapping")
