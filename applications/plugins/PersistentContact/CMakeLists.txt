@@ -1,0 +1,44 @@
+cmake_minimum_required(VERSION 2.8)
+
+project("SofaPersistentContact")
+
+include(${SOFA_CMAKE_DIR}/pre.cmake)
+
+##plugin external dependencies
+#find_package( REQUIRED)
+#include_directories(${})
+
+set(HEADER_FILES
+
+    PersistentContact.h 
+	PersistentContactMapping.h 
+	PersistentFrictionContact.h 
+	PersistentFrictionContact.inl 
+	PersistentUnilateralInteractionConstraint.h 
+	PersistentUnilateralInteractionConstraint.inl 
+	PersistentContactBarycentricMapping.h 
+	PersistentContactBarycentricMapping.inl 
+	PersistentContactRigidMapping.h 
+	PersistentContactRigidMapping.inl
+
+	)
+
+set(SOURCE_FILES
+
+    PersistentContactMapping.cpp 
+	PersistentFrictionContact.cpp 
+	PersistentUnilateralInteractionConstraint.cpp 
+	PersistentContactBarycentricMapping.cpp 
+	PersistentContactRigidMapping.cpp 
+    initPersistentContact.cpp
+
+	)
+
+set(README_FILE PersistentContact.txt )	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+set(COMPILER_DEFINES "SOFA_BUILD_PERSISTENTCONTACT")
+set(LINKER_DEPENDENCIES SofaHelper SofaMeshCollision SofaConstraint )
+
+include(${SOFA_CMAKE_DIR}/post.cmake)
