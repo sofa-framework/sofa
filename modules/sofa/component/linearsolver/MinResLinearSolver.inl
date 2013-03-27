@@ -98,10 +98,9 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     graph_error.push_back(1);
 
     double eps(std::numeric_limits<double>::epsilon());
-//    int istop(0);
     unsigned itn(0);
-    double Anorm(0.0), Acond(0.0)/*, Arnorm(0.0)*/;
-    double rnorm(0.0), ynorm(0.0);
+    double Anorm(0.0);
+    double ynorm(0.0);
     bool done(false);
 
     // Step 1
@@ -122,9 +121,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
 
     *r1 = A * x;
-//    r1 = b - r1;
-    *r1 *= -1;
-    *r1 += b;
+    r1->eq( b, *r1, -1.0 );   //  r1 = b - r1;
 
 
     double beta1(0.0);
@@ -155,15 +152,13 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
     // STEP 2
     /* Initialize other quantities */
-    double oldb(0.0), beta(beta1), dbar(0.0), epsln(0.0), oldeps(0.0);
-    double qrnorm(beta1), phi(0.0), phibar(beta1), rhs1(beta1);
-    double rhs2(0.0), tnorm2(0.0), ynorm2(0.0);
+    double oldb(0.0), beta(beta1), dbar(0.0), epsln(0.0), oldeps;
+    double phi, phibar(beta1);
+    double tnorm2(0.0);
     double cs(-1.0), sn(0.0);
     double gmax(0.0), gmin(std::numeric_limits<double>::max());
-    double alpha(0.0), gamma(0.0);
-    double delta(0.0), gbar(0.0);
-    double z(0.0);
-
+    double alpha, gamma;
+    double delta, gbar;
 
     if( !done )
     {
@@ -190,8 +185,9 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             *r2 = y;
 
             double s(1./beta); //Normalize previous vector (in y)
-            v  = y;
-            v *= s;         // v = vk if P = I
+            v.eq( y, s ); // v = vk if P = I
+//            v  = y;
+//            v *= s;         // v = vk if P = I
 
             y = A * v;
             if(itn) y.peq( *r1, -beta/oldb );
@@ -204,20 +200,10 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             oldb = beta; //oldb = betak
             beta = y.dot( y );
 
-
-            if(beta < 0)
-            {
-                break;
-            }
+            if(beta < 0) break;
 
             beta = sqrt(beta);
             tnorm2 += alpha*alpha + oldb*oldb + beta*beta;
-
-            if(itn == 0)	//Initialize a few things
-            {
-                if(beta/beta1 < 10.0*eps)
-                    done = true;
-            }
 
             // Apply previous rotation Q_{k-1} to get
             // [delta_k epsln_{k+1}] = [cs sn]  [dbar_k 0]
@@ -248,38 +234,28 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
             *w *= -oldeps;
             w->peq( *w2, -delta );
-        //            add(denom, v, w, w);
+            //      w = denom*(v+w)
+            *w += v;
             *w *= denom;
-            w->peq( v, denom );
-        //            add(x, phi, w, x);
             x.peq( *w, phi );
+
+
+            if( itn == 0 && beta/beta1 < 10.0*eps ) break;
+
+
+            // Estimate various norms
+            Anorm = sqrt( tnorm2 );
+            ynorm = sqrt( x.dot( x ) );
+
+            double test1 = phibar / (Anorm*ynorm); // ||r||/(||A|| ||x||)
+            graph_error.push_back(test1);
+
+
+
 
             // go round again
             gmax    = std::max(gmax, gamma);
             gmin    = std::min(gmin, gamma);
-            z       = rhs1*denom;
-            rhs1    = rhs2 - delta*z;
-            rhs2    =      - epsln*z;
-
-            // Estimate various norms
-
-            Anorm = sqrt(tnorm2);
-            ynorm2 = x.dot( x );
-            ynorm = sqrt(ynorm2);
-            double epsa(Anorm*eps);
-            double epsx(epsa*ynorm);
-        //            double epsr(Anorm*ynorm*tol);
-            double diag(gbar);
-            if(0 == diag)
-                diag = epsa;
-
-            qrnorm = phibar;
-            rnorm  = qrnorm;
-            double test1(0.0), test2(0.0);
-            test1  = rnorm / (Anorm*ynorm); // ||r||/(||A|| ||x||)
-            test2  = root / Anorm;         // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
-
-            graph_error.push_back(test1);
 
             // Estimate cond(A)
             /*
@@ -288,18 +264,17 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
              where H is the tridiagonal matrix from Lanczos with one
              extra row, beta(k+1) e_k^T.
              */
-            Acond = gmax/gmin;
+//            Acond = gmax/gmin;
 
-            if( done ) break;
+            double test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
 
             //See if any of the stopping criteria is satisfied
-            double t1(1.0+test1), t2(1.0+test2); //This test work if tol < eps
-            if( t2 <= 1. ||
-                t1 <= 1.||
+            if( test1 <= 0. ||  //This test work if tol < eps
+                test2 <= 0.||
                 itn >= max_iter-1||
-                Acond >= .1/eps||
-                epsx >= beta1  ||
-                test2 <= tol   ||
+                /*Acond*/ gmax/gmin >= .1/eps||
+                Anorm*eps*ynorm >= beta1  ||
+                test2 <= tol   ||  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
                 test1 <= tol  ) break;
         }
     }

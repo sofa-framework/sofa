@@ -260,6 +260,22 @@ public:
             (*this)[i] -= (Real)a[i];
     }
 
+    /// v = a*f
+    template<typename Real2,typename Real3>
+    void eq(const FullVector<Real2>& a, Real3 f)
+    {
+        for(int i=0; i<cursize; ++i)
+            (*this)[i] = (Real)(a[i]*f);
+    }
+
+    /// v = a+b*f
+    template<typename Real2,typename Real3>
+    void eq(const FullVector<Real2>& a, const FullVector<Real2>& b, Real3 f=1.0)
+    {
+        for(int i=0; i<cursize; ++i)
+            (*this)[i] = (Real)(a[i]+b[i]*f);
+    }
+
     /// v += a*f
     template<typename Real2,typename Real3>
     void peq(const FullVector<Real2>& a, Real3 f)
