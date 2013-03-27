@@ -62,6 +62,6 @@ include("SofaSphFluid.cmake")
 include("SofaTopologyMapping.cmake")
 include("SofaUserInteraction.cmake")
 include("SofaValidation.cmake") 
-#include("SofaVolumetricData.cmake") #needs: SofaFlowVR
+include("SofaVolumetricData.cmake")
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

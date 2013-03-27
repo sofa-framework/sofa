@@ -29,6 +29,10 @@ if(EXTERNAL_HAVE_EIGEN2)
 endif()
 include_directories("${SOFA_EXTLIBS_DIR}/newmat")
 
+if(EXTERNAL_HAVE_FLOWVR)
+	include_directories("${SOFA_EXTLIBS_DIR}/miniFlowVR/include")
+endif()
+
 ## Zlib
 if(EXTERNAL_HAVE_ZLIB)
 	if(WIN32)
