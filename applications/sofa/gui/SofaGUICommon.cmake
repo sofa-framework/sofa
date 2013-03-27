@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaGUICommon")
+project("SofaGuiCommon")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
@@ -14,7 +14,7 @@ set(HEADER_FILES
 	OperationFactory.h
 	PickHandler.h
 	FilesRecentlyOpenedManager.h
-	SofaGUI.h
+	SofaGui.h
 	ViewerFactory.h
 	GUIManager.h
 	)
@@ -35,7 +35,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUI")
-set(LINKER_DEPENDENCIES SofaComponentCommon SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual)
+set(LINKER_DEPENDENCIES SofaComponentMain SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

@@ -19,6 +19,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_ADVANCED")
-set(LINKER_DEPENDENCIES SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUnionFem SofaEigen2Solver)
+set(LINKER_DEPENDENCIES SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem SofaEigen2Solver)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

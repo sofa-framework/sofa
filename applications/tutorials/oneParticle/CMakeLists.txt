@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaSimulationTree SofaGUICommon SofaComponent)
+set(LINKER_DEPENDENCIES SofaSimulationTree SofaGuiCommon SofaComponentMain)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

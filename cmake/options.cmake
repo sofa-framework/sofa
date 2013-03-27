@@ -54,10 +54,10 @@ if(WIN32)
 			list(GET QTDIRS 0 QTDIR)
 		endif()
 	endif()
-	set(ENV{QTDIR} "${QTDIR}")
 endif()
 # on Windows (and maybe also on Linux and Mac) the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
+set(ENV{QTDIR} "${EXTERNAL_QT_PATH}")
 option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3)" ON)
 
 ## boost
