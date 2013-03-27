@@ -233,14 +233,16 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             // Compute next plane rotation Q_k
             gamma = sqrt(gbar*gbar + beta*beta); // gamma_k
             gamma = std::max(gamma, eps);
-            cs = gbar/gamma;                     // c_k
-            sn = beta/gamma;                     // s_k
+
+            double denom(1./gamma);
+
+            cs = gbar*denom;                     // c_k
+            sn = beta*denom;                     // s_k
             phi = cs*phibar;                     // phi_k
             phibar = sn*phibar;                  // phibar_{k+1}
 
 
             // Update x
-            double denom(1./gamma);
 
             std::swap( w, w2 );
 
@@ -255,7 +257,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             // go round again
             gmax    = std::max(gmax, gamma);
             gmin    = std::min(gmin, gamma);
-            z       = rhs1/gamma;
+            z       = rhs1*denom;
             rhs1    = rhs2 - delta*z;
             rhs2    =      - epsln*z;
 
