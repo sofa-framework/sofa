@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaGUIQt")
+project("SofaGuiQt")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
@@ -20,7 +20,7 @@ set(HEADER_FILES
 	MaterialDataWidget.h
 	ModifyObject.h
 	SimpleDataWidget.h
-	SofaGUIQt.h
+	SofaGuiQt.h
 	StructDataWidget.h
 	TableDataWidget.h
 	WDoubleLineEdit.h 
@@ -132,7 +132,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "${QT_DEFINITIONS};SOFA_BUILD_SOFAGUIQT")
-set(LINKER_DEPENDENCIES SofaGUICommon SofaGUIQt SofaGUIGlut ${QT_LIBRARIES})
+set(LINKER_DEPENDENCIES SofaGuiCommon SofaGuiQt SofaGuiGlut ${QT_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

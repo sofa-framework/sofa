@@ -26,6 +26,6 @@ set(README_FILE PluginHaption.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_HAPTIONPLUGIN")
-set(LINKER_DEPENDENCIES SofaComponentCommon )
+set(LINKER_DEPENDENCIES SofaComponentMain )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
