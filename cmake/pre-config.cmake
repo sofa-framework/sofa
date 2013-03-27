@@ -27,6 +27,7 @@ endif()
 if(EXTERNAL_HAVE_EIGEN2)
 	include_directories("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 endif()
+include_directories("${SOFA_EXTLIBS_DIR}/newmat")
 
 ## Zlib
 if(EXTERNAL_HAVE_ZLIB)
