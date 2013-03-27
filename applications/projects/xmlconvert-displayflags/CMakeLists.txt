@@ -19,7 +19,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES  )
+#set(LINKER_DEPENDENCIES  )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
