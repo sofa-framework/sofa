@@ -47,6 +47,11 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
 
+## tutorials
+if(OPTION_TUTORIALS)
+        add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
+endif()
+
 # plugins
 foreach(plugin ${SOFA_PLUGINS})
 	add_subdirectory("${${plugin}}")

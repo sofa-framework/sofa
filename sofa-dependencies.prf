@@ -203,8 +203,8 @@ declare(sofaobjectcreator,   			applications/tutorials/objectCreator, sofa_compo
 declare(chainHybrid,         			applications/tutorials/chainHybrid, sofa_component sofaguimain sofaobjectcreator)
 declare(houseOfCards,        			applications/tutorials/houseOfCards, sofa_component sofaguimain sofaobjectcreator)
 declare(mixedPendulum,       			applications/tutorials/mixedPendulum, sofa_component sofaguimain)
-declare(oneParticule,        			applications/tutorials/oneParticule,  sofa_component sofaguimain)
-declare(oneParticuleWithSofaTypedefs,   applications/tutorials/oneParticuleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
+declare(oneParticle,        			applications/tutorials/oneParticle,  sofa_component sofaguimain)
+declare(oneParticleWithSofaTypedefs,   applications/tutorials/oneParticleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,  sofa_component sofaguimain)
 declare(compositeObject,  applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph )
 
@@ -417,8 +417,8 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(chainHybrid)
 	enable(houseOfCards)
 	enable(mixedPendulum)
-	enable(oneParticule)
-#	enable(oneParticuleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
+	enable(oneParticle)
+#	enable(oneParticleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
         enable(compositeObject)
 }
