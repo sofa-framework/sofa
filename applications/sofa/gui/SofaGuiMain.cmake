@@ -17,7 +17,10 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_GUIMAIN")
-set(LINKER_DEPENDENCIES SofaGuiCommon SofaGuiQt SofaGuiGlut)
+set(LINKER_DEPENDENCIES SofaGuiCommon SofaGuiQt)
+if(GUI_USE_GLUT)
+    list(APPEND LINKER_DEPENDENCIES SofaGuiGlut)
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

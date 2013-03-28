@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaModeler")
+project("Modeler")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain )
+set(LINKER_DEPENDENCIES SofaModeler SofaComponentMain )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
