@@ -24,6 +24,7 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
 # modules
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
+add_subdirectory("${SOFA_MODULES_DIR}/sofa/filemanager/sofapml")
 
 # applications
 
