@@ -18,7 +18,6 @@ set(HEADER_FILES
     linearsolver/WarpPreconditioner.inl 
     linearsolver/PrecomputedWarpPreconditioner.h 
     linearsolver/PrecomputedWarpPreconditioner.inl
-
     )
     
 set(SOURCE_FILES
@@ -30,11 +29,7 @@ set(SOURCE_FILES
     linearsolver/SSORPreconditioner.cpp 
     linearsolver/WarpPreconditioner.cpp 
     linearsolver/PrecomputedWarpPreconditioner.cpp
- 
     )
-    
-
-include_directories("${SOFA_EXTLIBS_DIR}/csparse")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
