@@ -80,6 +80,6 @@ set(README_FILE frame.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_FRAME")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaSparseSolver SofaEigen2Solver)
+set(LINKER_DEPENDENCIES SofaGUIQt SofaSparseSolver SofaEigen2Solver)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
