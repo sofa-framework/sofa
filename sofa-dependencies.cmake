@@ -12,6 +12,9 @@ endif()
 if(EXTERNAL_HAVE_FLOWVR)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/miniFlowVR")
 endif()
+if(GUI_USE_QGLVIEWER)
+	add_subdirectory("${SOFA_EXTLIBS_DIR}/libQGLViewer-2.3.3/QGLViewer")
+endif()
 
 # framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/helper")
@@ -33,10 +36,13 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/meshconv")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")       #may need to add RC_FILE and some Path stuff
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration")
+if(GUI_USE_QTVIEWER OR GUI_USE_QGLVIEWER OR GUI_USE_QTOGREVIEWER)	#GUI_USE_QTOGREVIEWER not defined yet... relicate of qmake script
+	#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration") "# not yet converted" commenbt in the qmake scripts...
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/lib")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")
+endif()
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")

@@ -54,7 +54,7 @@ else()
     list(APPEND SOURCE_FILES "QComponentLibrary.cpp")
 endif()
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain )
 
