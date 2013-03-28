@@ -33,6 +33,9 @@ set(SOURCE_FILES
  
     )
     
+
+include_directories("${SOFA_EXTLIBS_DIR}/csparse")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_PRECONDITIONER" )

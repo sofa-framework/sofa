@@ -51,11 +51,11 @@ include("SofaOpenglVisual.cmake")
 if(OPTION_PARDISO)
     include("SofaPardisoSolver.cmake")
 endif(OPTION_PARDISO)
-include("SofaPreconditioner.cmake") #needs: SofaSparseSolver
 include("SofaRigid.cmake")
 include("SofaSimpleFem.cmake") 
 if(EXTERNAL_HAVE_CSPARSE)
     include("SofaSparseSolver.cmake") #needs: metis
+    include("SofaPreconditioner.cmake")
 endif(EXTERNAL_HAVE_CSPARSE)
 include("SofaSphFluid.cmake")
 #include("SofaTaucsSolver.cmake") #missing LIBS *= -lblas_win32_MT, etc..
