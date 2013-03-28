@@ -16,7 +16,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-    initHaption.cpp \
+    initHaption.cpp 
     HaptionDriver.cpp
 
 	)

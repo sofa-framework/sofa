@@ -39,7 +39,7 @@ if(SOFA_HAVE_IMAGE)
         find_package(SofaOpenCVLibs REQUIRED)
         include_directories(${SOFAOPENCV_INCLUDE_DIR})
 
-    end()
+    endif()
     
     include_directories(${SOFAIMAGE_INCLUDE_DIRS})
     
