@@ -36,8 +36,7 @@ set(SOURCE_FILES
 
     )
 
-if(SOFA_QT4)
-
+if(EXTERNAL_USE_QT4)
     list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
     list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
     list(APPEND HEADER_FILES "QComponentTreeLibrary.h")
@@ -45,9 +44,7 @@ if(SOFA_QT4)
     list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
     list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
-
 else()
-
     list(APPEND HEADER_FILES "QSofaLibrary.h")
     list(APPEND HEADER_FILES "QCategoryLibrary.h")
     list(APPEND HEADER_FILES "QComponentLibrary.h")
@@ -55,9 +52,7 @@ else()
     list(APPEND SOURCE_FILES "QSofaLibrary.cpp")
     list(APPEND SOURCE_FILES "QCategoryLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentLibrary.cpp")
-
 endif()
-
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
