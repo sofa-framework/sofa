@@ -39,6 +39,10 @@ include_directories("${SOFA_EXTLIBS_DIR}/csparse")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_PRECONDITIONER" )
-set(LINKER_DEPENDENCIES SofaDenseSolver SofaSparseSolver SofaImplicitOdeSolver SofaSimpleFem )
+set(LINKER_DEPENDENCIES SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
+if(EXTERNAL_HAVE_CSPARSE)
+    include_directories("${SOFA_EXTLIBS_DIR}/csparse")
+    list(LINKER_DEPENDENCIES APPEND SofaSparseSolver)
+endif()
     
 include(${SOFA_CMAKE_DIR}/post.cmake)
