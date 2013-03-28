@@ -45,6 +45,7 @@ struct Sofa_test : public ::testing::Test
     typedef _Real Real; ///< Scalar type
 
     static Real epsilon(){ return std::numeric_limits<Real>::epsilon(); }
+    static Real infinity(){ return std::numeric_limits<Real>::infinity(); }
 
     /// true if the magnitude of r is less than ratio*numerical precision
     static bool isSmall(Real r, Real factor=1. ){
@@ -58,7 +59,7 @@ struct Sofa_test : public ::testing::Test
         Real result = 0;
         if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()){
             ADD_FAILURE() << "Comparison between matrices of different sizes";
-            return std::numeric_limits<Real>::infinity();
+            return infinity();
         }
         for(unsigned i=0; i<m1.rowSize(); i++)
             for(unsigned j=0; j<m1.colSize(); j++){
