@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaGuiMain SofaGpuOpenCL )
+set(LINKER_DEPENDENCIES SofaGUIMain SofaGpuOpenCL )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
