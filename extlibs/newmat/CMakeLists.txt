@@ -43,7 +43,7 @@ set(SOURCE_FILES
     newmat/svd.cpp 
 	)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "use_namespace")
 	
