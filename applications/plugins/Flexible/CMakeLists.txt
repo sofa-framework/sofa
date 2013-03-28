@@ -161,6 +161,6 @@ set(README_FILE Flexible.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_Flexible")
-set(LINKER_DEPENDENCIES SofaGUIQt )
+set(LINKER_DEPENDENCIES SofaGuiQt )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
