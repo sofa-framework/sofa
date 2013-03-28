@@ -39,7 +39,7 @@ set(SOURCE_FILES
 	)
 
 include_directories("include")
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};MINI_FLOWVR")
 	
 include(${SOFA_CMAKE_DIR}/post.cmake)
