@@ -26,12 +26,17 @@ set(SOURCE_FILES
     linearsolver/SparseLDLSolver.cpp
  
     )
-    
+	
 include_directories("${SOFA_EXTLIBS_DIR}/csparse")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SPARSE_SOLVER" )
-set(LINKER_DEPENDENCIES SofaBaseLinearSolver SofaImplicitOdeSolver csparse metis )
+set(LINKER_DEPENDENCIES SofaBaseLinearSolver SofaImplicitOdeSolver csparse)
+
+if(EXTERNAL_HAVE_METIS)
+	include_directories("${SOFA_EXTLIBS_DIR}/metis")
+	list(APPEND LINKER_DEPENDENCIES metis)
+endif()
     
 include(${SOFA_CMAKE_DIR}/post.cmake)
