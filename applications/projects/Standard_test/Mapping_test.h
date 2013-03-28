@@ -37,7 +37,12 @@ using std::endl;
 using namespace core;
 
 
-
+/** Base class for the Mapping tests.
+  The derived classes just need to create a mapping with an input and an output, set input positions and compute the expected output positions.
+  This class provides the following:
+  - test_apply() compare the actual output positions with the expected ones
+  - test_applyJ() using small changes of the input
+  */
 
 template <typename _InDataTypes, typename _OutDataTypes>
 struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
@@ -112,14 +117,15 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
     virtual bool test_applyJ( Real perturbation=1000, Real maxError=10 )
     {
         const MechanicalParams* mparams = MechanicalParams::defaultInstance();
-
+        bool result = true;
+        const unsigned Nin=fromModel->getSize(), Nout=toModel->getSize();
 
         // save current child positions
         OutVecCoord currentXout;
         {
             ReadOutVecCoord readCurrentXout = toModel->readPositions();
-            currentXout.resize(readCurrentXout.size());
-            for( unsigned i=0; i<readCurrentXout.size(); i++ )
+            currentXout.resize(Nin);
+            for( unsigned i=0; i<Nin; i++ )
                 currentXout[i] = readCurrentXout[i];
             // the ReadOutVecCoord will be destroyed
         }
@@ -128,9 +134,10 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         // increment parent positions
         WriteInVecCoord xIn = fromModel->writePositions();
         WriteInVecDeriv dxIn = fromModel->writeVelocities();
-        for( unsigned i=0; i<xIn.size(); i++ )
+        InVecDeriv dxIn2(Nout);
+        for( unsigned i=0; i<Nin; i++ )
         {
-            dxIn[i] = In::randomDeriv( this->epsilon() * perturbation );
+            dxIn[i] = dxIn2[i] = In::randomDeriv( this->epsilon() * perturbation );
             xIn[i] += dxIn[i];
         }
 
@@ -138,10 +145,10 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         mapping->apply( mparams, core::VecCoordId::position(), core::VecCoordId::position() );
 
         // compute the difference
-        OutVecCoord dxOut(currentXout.size());
+        OutVecCoord dxOut(Nout);
         ReadOutVecCoord readCurrentXout = toModel->readPositions();
 //        cerr<<"new Xout = " << readCurrentXout << endl;
-        for(unsigned i=0; i<currentXout.size(); i++ )
+        for(unsigned i=0; i<Nout; i++ )
             dxOut[i] = readCurrentXout[i] - currentXout[i];
 //        cerr<<"dxOut = " << dxOut << endl;
 
@@ -149,24 +156,33 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         mapping->applyJ( mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
 
         // compare
-        bool result = true;
         ReadOutVecDeriv vOut= toModel->readVelocities();
-//        cerr<<"difference: ";
-        Real maxdiff = 0;
-        for(unsigned i=0; i<currentXout.size(); i++ ){
-            cerr<< dxOut[i]-vOut[i] << " ";
-            if( (dxOut[i]-vOut[i]).norm()>maxdiff )
-                maxdiff = (dxOut[i]-vOut[i]).norm();
-        }
-        cerr<<endl;
-//        cerr<<"epsilon = "<<this->epsilon() <<", Max diff = " << maxdiff << endl;
-        if( maxdiff>this->epsilon()*maxError )
+        Real maxdiff = maxDiff(dxOut,vOut);
+        if( maxdiff>this->epsilon()*maxError ){
             result = false;
+            ADD_FAILURE() << "applyJ test failed";
+        }
+
+//        // test getJs()
+//        const vector<sofa::defaulttype::BaseMatrix*>* jacobians = mapping->getJs();
+//        if( jacobians->size() != 1 ){
+////            FAIL()<< "Mapping->getJs() should have size == 1";
+//            return false;
+//        }
+//        OutVecDeriv Jv(Nout);
+//        (*jacobians)[0]->opMulV( &Jv, &dxIn2);
+//        Real maxdiffJv = maxDiff(Jv,vOut);
+//        if( maxdiffJv>this->epsilon()*maxError ){
+//            result = false;
+//            ADD_FAILURE() << "getJs() test failed";
+//        }
 
 
         return result;
     }
 
+
+protected:
     /// To be done by the derived class after the mapping is created and connected to its input and output.
     void setMapping( typename core::Mapping<In,Out>::SPtr m )
     {
@@ -179,6 +195,23 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         if(!toModel){
             ADD_FAILURE() << "Could not find toModel";
         }
+    }
+
+    template<class C1, class C2>
+    Real maxDiff( const C1& c1, const C2& c2 )
+    {
+        if( c1.size()!=c2.size() ){
+            ADD_FAILURE() << "containers have different sizes";
+            return this->infinity();
+        }
+
+        Real maxdiff = 0;
+        for(unsigned i=0; i<c1.size(); i++ ){
+            cerr<< c2[i]-c1[i] << " ";
+            if( (c1[i]-c2[i]).norm()>maxdiff )
+                maxdiff = (c1[i]-c2[i]).norm();
+        }
+        return maxdiff;
     }
 
 private:
