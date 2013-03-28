@@ -59,6 +59,9 @@ endif()
 set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
 set(ENV{QTDIR} "${EXTERNAL_QT_PATH}")
 option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3)" ON)
+if (EXTERNAL_USE_QT4)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_QT4)
+endif()
 
 ## boost
 set(EXTERNAL_BOOST_PATH "" CACHE PATH "Use Boost full version (must contain the compiled libraries)")
@@ -166,7 +169,22 @@ if(SIMULATION_GRAPH_BGL)
 endif()
 
 option(GUI_USE_QTVIEWER "Use QT Viewer" ON)
-option(GUI_USE_QGLVIEWER "Use QT Viewer" ON)
+if(GUI_USE_QTVIEWER)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_GUI_QTVIEWER)
+endif()
+option(GUI_USE_QGLVIEWER "Use QT Viewer" OFF)
+if(GUI_USE_QGLVIEWER)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_GUI_QGLVIEWER)
+endif()
+option(GUI_USE_GLUT "Use GLUT interface" ON)
+if(GUI_USE_GLUT)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_GUI_GLUT)
+endif()
+option(GUI_USE_INTERACTION "enable interaction mode" OFF)
+if(GUI_USE_INTERACTION)
+	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_GUI_INTERACTION)
+endif()
+
 
 # unit tests
 option(UNIT-TESTS_USE "Build and use unit tests" ON)
