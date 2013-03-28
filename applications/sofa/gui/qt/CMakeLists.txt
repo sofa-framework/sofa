@@ -20,7 +20,7 @@ set(HEADER_FILES
 	MaterialDataWidget.h
 	ModifyObject.h
 	SimpleDataWidget.h
-	SofaGuiQt.h
+	SofaGUIQt.h
 	StructDataWidget.h
 	TableDataWidget.h
 	WDoubleLineEdit.h 

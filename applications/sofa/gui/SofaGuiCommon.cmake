@@ -14,7 +14,7 @@ set(HEADER_FILES
 	OperationFactory.h
 	PickHandler.h
 	FilesRecentlyOpenedManager.h
-	SofaGui.h
+	SofaGUI.h
 	ViewerFactory.h
 	GUIManager.h
 	)
