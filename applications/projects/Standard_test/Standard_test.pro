@@ -16,14 +16,15 @@ INCLUDEPATH  += $$SOFA_INSTALL_INC_DIR/extlibs/gtest/include
 QMAKE_LIBDIR += $$SOFA_INSTALL_INC_DIR/extlibs/gtest/lib
 
 HEADERS += Sofa_test.h \
-    Matrix_test.inl
+    Matrix_test.inl \
+    Mapping_test.h \
 
 SOURCES += \
     RigidMapping_test.cpp \
-    Matrix_test.cpp \
-    OBBTest.cpp \
-    ProjectToPlaneConstraint_test.cpp \
-    ProjectToLineConstraint_test.cpp \
+#    Matrix_test.cpp \
+#    OBBTest.cpp \
+#    ProjectToPlaneConstraint_test.cpp \
+#    ProjectToLineConstraint_test.cpp \
 
 win32 {
 	QMAKE_CXXFLAGS_RELEASE += /MT

@@ -32,6 +32,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
+#include <cstdlib>
 
 namespace sofa
 {
@@ -203,6 +204,7 @@ public:
         return VecAll(vCenter, vOrientation);
     }
 
+    /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
     Vec3 velocityAtRotatedPoint(const Vec3& p) const
     {
         return vCenter - cross(p, vOrientation);
@@ -299,6 +301,7 @@ const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
     return v.getAngular();
 }
 
+/// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename T, typename R>
 Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const Vec<3,T>& p)
 {
@@ -739,6 +742,18 @@ public:
         z = (T)c.getCenter()[2];
     }
 
+    // set linear and angular velocities
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T z, T rx, T ry, T rz )
+    {
+        c.getLinear()[0] = (Real)x;
+        c.getLinear()[1] = (Real)y;
+        c.getLinear()[2] = (Real)z;
+        c.getAngular()[0] = (Real)rx;
+        c.getAngular()[1] = (Real)ry;
+        c.getAngular()[2] = (Real)rz;
+    }
+
     template<typename T>
     static void add(Coord& c, T x, T y, T z)
     {
@@ -772,6 +787,14 @@ public:
     }
 
     static const char* Name();
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real maxValue )
+    {
+        Deriv result;
+        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        return result;
+    }
 
     static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
     {
@@ -886,7 +909,7 @@ public:
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
     typedef Vec<2,Real> Vec2;
-    typedef Vec<3,Real> VecAll; // do we really need this ?
+    typedef Vec<3,Real> VecAll;
 
 private:
     Vec2 vCenter;
@@ -1019,6 +1042,7 @@ public:
         return VecAll(vCenter, vOrientation);
     }
 
+    /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
     Vec2 velocityAtRotatedPoint(const Vec2& p) const
     {
         return vCenter + Vec2(-p[1], p[0]) * vOrientation;
@@ -1066,6 +1090,7 @@ public:
     }
 };
 
+/// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename R, typename T>
 Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const Vec<2,R>& p)
 {
@@ -1508,11 +1533,28 @@ public:
         z = (T)0;
     }
 
+    // Set linear and angular velocities, in 6D for uniformity with 3D
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T, T vrot, T, T )
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+        c.getVOrientation() = (Real) vrot;
+    }
+
     template<typename T>
     static void add(Deriv& c, T x, T y, T)
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;
+    }
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real maxValue )
+    {
+        Deriv result;
+        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        return result;
     }
 
     static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)

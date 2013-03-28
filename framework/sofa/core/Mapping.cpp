@@ -51,6 +51,8 @@ template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3dTypes >;
 template class SOFA_CORE_API Mapping< Vec3dTypes, Vec1dTypes >;
 template class SOFA_CORE_API Mapping< Vec3fTypes, Vec1fTypes >;
 
+template class SOFA_CORE_API Mapping< Rigid2fTypes, Vec2fTypes >;
+template class SOFA_CORE_API Mapping< Rigid2dTypes, Vec2dTypes >;
 
 } // namespace core
 
