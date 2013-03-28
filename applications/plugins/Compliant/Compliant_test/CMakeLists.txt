@@ -17,6 +17,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "")
-set(LINKER_DEPENDENCIES SofaGUIQt SofaEigen2Solver SofaFlexible)
+set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
