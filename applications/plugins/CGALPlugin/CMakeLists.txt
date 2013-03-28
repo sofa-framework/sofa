@@ -31,6 +31,6 @@ set(README_FILE  CGALPlugin.txt)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_CGALPLUGIN")
-set(LINKER_DEPENDENCIES SofaGuiQt cgal boost )
+set(LINKER_DEPENDENCIES SofaGUIQt cgal boost )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

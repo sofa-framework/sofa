@@ -28,6 +28,6 @@ set(README_FILE PluginSensable.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SENSABLEPLUGIN")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaComponentGeneral SofaHaptics )
+set(LINKER_DEPENDENCIES SofaGUIQt SofaComponentGeneral SofaHaptics )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
