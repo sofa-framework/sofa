@@ -51,7 +51,12 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/MeshIntTool.h>
 
-struct TestOBB : public ::testing::Test{
+#include "Sofa_test.h"
+
+
+namespace sofa {
+
+struct TestOBB : public Sofa_test<double>{
     typedef sofa::defaulttype::Vec3d Vec3d;
 
     /**
@@ -1416,3 +1421,6 @@ TEST_F(TestTriOBB, edge_vertex ) { ASSERT_TRUE( edgeVertex()); }
 TEST_F(TestTriOBB, vertex_face ) { ASSERT_TRUE( vertexFace()); }
 TEST_F(TestTriOBB, vertex_edge ) { ASSERT_TRUE( vertexEdge()); }
 TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
+
+
+} // namespace sofa

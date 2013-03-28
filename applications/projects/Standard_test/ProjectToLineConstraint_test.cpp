@@ -35,12 +35,13 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
+namespace sofa {
+
 using std::cout;
 using std::cerr;
 using std::endl;
-using namespace sofa;
-using namespace sofa::component;
-using namespace sofa::defaulttype;
+using namespace component;
+using namespace defaulttype;
 
 
 
@@ -252,4 +253,7 @@ TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
+
+
+} // namespace sofa
 

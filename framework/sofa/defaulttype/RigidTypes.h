@@ -315,7 +315,9 @@ public:
     typedef helper::Quater<Real> Rot;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
-    typedef RigidDeriv<3,real> Deriv;
+    typedef RigidDeriv<3,Real> Deriv;
+    typedef Mat<4,4,Real> HomogeneousMat;
+    typedef Vec<4,Real> HomogeneousVec;
 
 protected:
     Vec3 center;
@@ -501,6 +503,18 @@ public:
         m[2][3] = center[2];
     }
 
+    /// create a homogeneous vector from a 3d vector
+    template <typename V>
+    static HomogeneousVec toHomogeneous( V v, real r=1. ){
+        return HomogeneousVec( v[0], v[1], v[2], r );
+    }
+    /// create a 3d vector from a homogeneous vector
+    template <typename V>
+    static Vec3 fromHomogeneous( V v ){
+        return Vec3( v[0], v[1], v[2] );
+    }
+
+
     template<class Mat>
     void writeRotationMatrix( Mat& m) const
     {
@@ -578,6 +592,7 @@ public:
         else
             return this->orientation[i-3];
     }
+
 };
 
 template<typename real>
@@ -829,6 +844,9 @@ public:
         return cross( a, cross( b,c ));
     }
 
+    /// create a rotation from Euler angles. For homogeneity with 2D.
+    static Quat rotationEuler( Real x, Real y, Real z){ return Quat::fromEuler(x,y,z); }
+
 };
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
@@ -868,7 +886,7 @@ public:
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
     typedef Vec<2,Real> Vec2;
-    typedef Vec<3,Real> VecAll;
+    typedef Vec<3,Real> VecAll; // do we really need this ?
 
 private:
     Vec2 vCenter;
@@ -1065,6 +1083,8 @@ public:
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
     typedef Vec<2,Real> Vec2;
+    typedef Mat<3,3,Real> HomogeneousMat;
+    typedef Vec<3,Real> HomogeneousVec;
 private:
     Vec2 center;
     Real orientation;
@@ -1216,6 +1236,19 @@ public:
         m[0][2] = center[0];
         m[1][2] = center[1];
     }
+
+
+    /// create a homogeneous vector from a 2d vector
+    template <typename V>
+    static HomogeneousVec toHomogeneous( V v, real r=1. ){
+        return HomogeneousVec( v[0], v[1], r );
+    }
+    /// create a 2d vector from a homogeneous vector
+    template <typename V>
+    static Vec2 fromHomogeneous( V v ){
+        return Vec2( v[0], v[1] );
+    }
+
 
     /// Write the OpenGL transformation matrix
     void writeOpenGlMatrix( float m[16] ) const
@@ -1521,6 +1554,10 @@ public:
     {
         return OP * omega * (-dtheta);
     }
+
+    /// create a rotation from Euler angles (only the first is used). For homogeneity with 3D.
+    static CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
+
 
 };
 

@@ -29,10 +29,13 @@
 
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/simulation/common/Node.h>
 #include <iostream>
 using std::cout;
 using std::cerr;
 using std::endl;
+
+namespace sofa {
 
 /** Base class for all Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
   */
@@ -176,7 +179,23 @@ struct Sofa_test : public ::testing::Test
         return result;
     }
 
+
+
 };
+
+/// helper for more compact component creation
+template<class Component>
+typename Component::SPtr addNew( sofa::simulation::Node::SPtr parentNode, std::string name="component" )
+{
+    typename Component::SPtr component = sofa::core::objectmodel::New<Component>();
+    parentNode->addObject(component);
+    component->setName(parentNode->getName()+"_"+name);
+    return component;
+}
+
+
+
+}
 
 #endif
 

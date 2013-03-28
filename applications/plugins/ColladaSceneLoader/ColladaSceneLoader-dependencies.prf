@@ -1,5 +1,5 @@
 includeOnce($$_FILE_) {
-	declare(ColladaSceneLoader, applications/plugins/ColladaSceneLoader, sofa_loader sofasimulation sofa_base_mechanics sofa_rigid sofa_boundary_condition sofa_base_topology sofa_base_visual sofa_opengl_visual)
+        declare(ColladaSceneLoader, applications/plugins/ColladaSceneLoader, sofa_loader sofasimulation sofa_base_mechanics sofa_rigid sofa_boundary_condition sofa_base_topology sofa_base_visual sofa_opengl_visual assimp)
 	
 	enable(ColladaSceneLoader)
 }
