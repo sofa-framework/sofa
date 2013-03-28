@@ -22,7 +22,8 @@ win32 {
 	LIBS += assimp/lib/assimp.lib
 }
 unix {
-	LIBS += -lassimp
+    INCLUDEPATH *= assimp/
+    LIBS += -lassimp
 }
 
 load(sofa/post)

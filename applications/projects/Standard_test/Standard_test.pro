@@ -3,7 +3,7 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = Standard_test
 
-DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
+#DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
 
 CONFIG += console
 
@@ -19,6 +19,7 @@ HEADERS += Sofa_test.h \
     Matrix_test.inl
 
 SOURCES += \
+    RigidMapping_test.cpp \
     Matrix_test.cpp \
     OBBTest.cpp \
     ProjectToPlaneConstraint_test.cpp \
@@ -28,6 +29,8 @@ win32 {
 	QMAKE_CXXFLAGS_RELEASE += /MT
 	QMAKE_CXXFLAGS_DEBUG += /MT
 }
+
+LIBS *= -L/opt/cuda/lib64
 
 load(sofa/post)
 

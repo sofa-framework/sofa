@@ -43,6 +43,7 @@
 #include <ctime>
 
 
+namespace sofa {
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -361,4 +362,7 @@ typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
 #define TestMatrix Ts4822f
 #include "Matrix_test.inl"
 #undef TestMatrix
+
+
+}// namespace sofa
 

@@ -38,6 +38,7 @@ declare(metis,      extlibs/metis)
 declare(taucs,      extlibs/taucs, cilk metis system-metis blas)
 declare(taucs_mt,   extlibs/taucs_mt, metis system-metis blas)
 declare(colladadom, extlibs/colladadom, tinyxml)
+declare(assimp, extlibs/assimp)
 declare(vrpn_quat,        extlibs/VRPN/quat/quat.pro)
 declare(vrpn_client,        extlibs/VRPN/vrpn_client.pro, vrpn_quat)
 declare(vrpn_atmellib,        extlibs/VRPN/vrpn/atmellib/vrpn_atmellib.pro, vrpn_quat)
@@ -219,7 +220,7 @@ declare(compositeObject,  applications/tutorials/compositeObject, sofa_component
 #}
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_COLLADA) {
-    declare(ColladaSceneLoader, applications/plugins/ColladaSceneLoader, sofa_loader sofasimulation sofa_base_mechanics sofa_rigid sofa_boundary_condition sofa_base_topology sofa_base_visual sofa_opengl_visual)
+    declare(ColladaSceneLoader, applications/plugins/ColladaSceneLoader, sofa_loader sofasimulation sofa_base_mechanics sofa_rigid sofa_boundary_condition sofa_base_topology sofa_base_visual sofa_opengl_visual assimp)
     enable(ColladaSceneLoader)
 }
 
