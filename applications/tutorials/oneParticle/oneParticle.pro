@@ -1,7 +1,7 @@
 load(sofa/pre)
 
 TEMPLATE = app
-TARGET = oneParticule
+TARGET = oneParticle
 
 SOURCES = oneParticle.cpp
 HEADERS =
