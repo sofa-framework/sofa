@@ -418,7 +418,7 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(chainHybrid)
 	enable(houseOfCards)
 	enable(mixedPendulum)
-	enable(oneParticle)
+        enable(oneParticle)
 #	enable(oneParticleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
         enable(compositeObject)

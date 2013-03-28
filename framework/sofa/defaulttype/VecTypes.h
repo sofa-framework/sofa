@@ -33,6 +33,7 @@
 #include <iostream>
 #include <algorithm>
 #include <memory>
+#include <cstdlib>
 
 
 namespace sofa
@@ -84,6 +85,14 @@ public:
         x = (c.size() > 0) ? (T) c[0] : (T) 0.0;
         y = (c.size() > 1) ? (T) c[1] : (T) 0.0;
         z = (c.size() > 2) ? (T) c[2] : (T) 0.0;
+    }
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real maxValue )
+    {
+        Deriv result;
+        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        return result;
     }
 
     template<typename T>

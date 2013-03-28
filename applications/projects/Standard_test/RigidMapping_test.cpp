@@ -23,34 +23,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+/* Francois Faure, 2013 */
 
-#include "Sofa_test.h"
+#include "Mapping_test.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
-//#include <sofa/core/MechanicalParams.h>
-//#include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa {
 
 using std::cout;
 using std::cerr;
 using std::endl;
+using namespace core;
 using namespace component;
-//using namespace defaulttype;
 using defaulttype::Vec;
 using defaulttype::Mat;
-
 
 
 /**  Test suite for RigidMapping.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _RigidMapping>
-struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
+struct RigidMapping_test : public Mapping_test<typename _RigidMapping::In, typename _RigidMapping::Out>
 {
 
     typedef _RigidMapping RigidMapping;
@@ -63,14 +62,11 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
     typedef container::MechanicalObject<InDataTypes> InMechanicalObject;
     typedef typename InMechanicalObject::ReadVecCoord  ReadInVecCoord;
     typedef typename InMechanicalObject::WriteVecCoord WriteInVecCoord;
-//    typedef typename InDataTypes::CPos InCPos;
+    typedef typename InMechanicalObject::WriteVecDeriv WriteInVecDeriv;
     typedef typename InCoord::Pos Translation;
     typedef typename InCoord::Rot Rotation;
     typedef typename InDataTypes::Real InReal;
-//    enum {inSpatialDimensions = InDataTypes::spatial_dimensions};
     typedef Mat<InDataTypes::spatial_dimensions,InDataTypes::spatial_dimensions,InReal> RotationMatrix;
-//    typedef typename InCoord::HomogeneousVec HomogeneousVec;
-//    typedef typename InCoord::HomogeneousMat TransformMatrix;
 
 
     typedef typename RigidMapping::Out OutDataTypes;
@@ -80,7 +76,9 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
     typedef typename OutDataTypes::Deriv OutDeriv;
     typedef container::MechanicalObject<OutDataTypes> OutMechanicalObject;
     typedef typename OutMechanicalObject::WriteVecCoord WriteOutVecCoord;
+    typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
+    typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
@@ -88,11 +86,12 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
     typename RigidMapping::SPtr rigidMapping;
     typename InMechanicalObject::SPtr inDofs;
     typename OutMechanicalObject::SPtr outDofs;
-    OutVecCoord expectedChildCoords;   ///< expected child positions after apply
+//    OutVecCoord expectedChildCoords;   ///< expected child positions after apply
+//    OutVecDeriv expectedChildVels;     ///< expected child velocities after apply
 
     /// Create the context for the matrix tests.
     void SetUp()
-    {        
+    {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -106,6 +105,7 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
         outDofs = addNew<OutMechanicalObject>(childNode);
         rigidMapping = addNew<RigidMapping>(root);
         rigidMapping->setModels(inDofs.get(),outDofs.get());
+        this->setMapping(rigidMapping);
 
 
     }
@@ -118,29 +118,42 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
     */
     void init_oneRigid_fourParticles_localCoords()
     {
-        // these are defined in the parent frame, since rigidMapping-globalToLocalCoords
+        inDofs->resize(1);
         outDofs->resize(4);
+
+        // child positions
         rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
         WriteOutVecCoord xout = outDofs->writePositions();
+        WriteOutVecDeriv vout = outDofs->writeVelocities();
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
+//        OutDataTypes::set( vout[0] ,0.,0.,0.);
         OutDataTypes::set( xout[1] ,1.,0.,0.);
+//        OutDataTypes::set( vout[1] ,1.,0.,0.);
         OutDataTypes::set( xout[2] ,0.,1.,0.);
+//        OutDataTypes::set( vout[2] ,0.,1.,0.);
         OutDataTypes::set( xout[3] ,0.,0.,1.);
+//        OutDataTypes::set( vout[3] ,0.,0.,1.);
 
-
-        // arbitrary parent position
-        inDofs->resize(1);
+        // parent position
         WriteInVecCoord xin = inDofs->writePositions();
-        Translation trans(1.,-2.,3.);
+        InDataTypes::set( xin[0], 1.,-2.,3. );
         Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
-        xin[0] = InCoord( trans, rot );
+        InDataTypes::setCRot( xin[0], rot );
+
+//        // parent velocity
+//        WriteInVecDeriv vin = inDofs->writeVelocities();
+
+        // expected mapped values
+        this->expectedChildCoords.resize(xout.size());
+//        expectedChildVels.  resize(xout.size());
         RotationMatrix m;
         xin[0].writeRotationMatrix(m);
-
-        expectedChildCoords.resize(xout.size());
-        for(unsigned i=0; i<xout.size(); i++ ){
-            expectedChildCoords[i] = trans + m * xout[i];
+        for(unsigned i=0; i<xout.size(); i++ )
+        {
+            // note that before init, xout is still in relative coordinates
+            this->expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
+//            expectedChildVels  [i] = vin[0].velocityAtRotatedPoint( m*xout[i] );
         }
 
 
@@ -153,41 +166,23 @@ struct RigidMapping_test : public Sofa_test<typename _RigidMapping::InReal>
     ///@}
 
 
-    bool test_apply()
-    {
-       // apply has been done in the init();
-       ReadInVecCoord xin   = inDofs->readPositions();
-       ReadOutVecCoord xout = outDofs->readPositions();
-
-       bool succeed=true;
-       for( unsigned i=0; i<xout.size(); i++ )
-       {
-           OutCoord difference = xout[i] - expectedChildCoords[i];
-           if( !isSmall(  difference.norm() ) ) {
-               ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildCoords[i];
-               succeed = false;
-           }
-       }
-
-       return succeed;
-    }
 
     void TearDown()
     {
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
+        //        cerr<<"tearing down"<<endl;
     }
 
 
- };
+};
 
 
-// Define the list of DataTypes to instanciate
+// Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using testing::Types;
 typedef Types<
-    mapping::RigidMapping<defaulttype::Rigid3fTypes,defaulttype::Vec3fTypes>,
-    mapping::RigidMapping<defaulttype::Rigid3dTypes,defaulttype::Vec3dTypes>
+mapping::RigidMapping<defaulttype::Rigid2fTypes,defaulttype::Vec2fTypes>,
+mapping::RigidMapping<defaulttype::Rigid3dTypes,defaulttype::Vec3dTypes>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
@@ -197,6 +192,7 @@ TYPED_TEST( RigidMapping_test , oneRigid_fourParticles_localCoords )
 {
     this->init_oneRigid_fourParticles_localCoords();
     ASSERT_TRUE(  this->test_apply() );
+    ASSERT_TRUE(  this->test_applyJ() );
 }
 //// next test case
 //TYPED_TEST( RigidMapping_test , allParticlesConstrained )
