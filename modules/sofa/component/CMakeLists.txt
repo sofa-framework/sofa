@@ -54,7 +54,7 @@ endif(OPTION_PARDISO)
 include("SofaRigid.cmake")
 include("SofaSimpleFem.cmake") 
 if(EXTERNAL_HAVE_CSPARSE)
-    include("SofaSparseSolver.cmake") #needs: metis
+    include("SofaSparseSolver.cmake")
 endif(EXTERNAL_HAVE_CSPARSE)
 include("SofaPreconditioner.cmake")
 include("SofaSphFluid.cmake")
