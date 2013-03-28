@@ -39,9 +39,9 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.h 
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl 
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h 
-    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl 
+    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl 
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h 
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.inl 
+    #sofa/gpu/cuda/CudaHexahedronTLEDForceField.inl 
     sofa/gpu/cuda/CudaPlaneForceField.h 
     sofa/gpu/cuda/CudaPlaneForceField.inl 
     sofa/gpu/cuda/CudaSphereForceField.h 
