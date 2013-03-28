@@ -41,6 +41,7 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
+#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")    #Not sure how to have it add only when ! SOFA_NO_OPENGL
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
