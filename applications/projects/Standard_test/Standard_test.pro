@@ -21,10 +21,10 @@ HEADERS += Sofa_test.h \
 
 SOURCES += \
     RigidMapping_test.cpp \
-#    Matrix_test.cpp \
-#    OBBTest.cpp \
-#    ProjectToPlaneConstraint_test.cpp \
-#    ProjectToLineConstraint_test.cpp \
+    Matrix_test.cpp \
+    OBBTest.cpp \
+    ProjectToPlaneConstraint_test.cpp \
+    ProjectToLineConstraint_test.cpp \
 
 win32 {
 	QMAKE_CXXFLAGS_RELEASE += /MT

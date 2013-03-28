@@ -124,8 +124,8 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         OutVecCoord currentXout;
         {
             ReadOutVecCoord readCurrentXout = toModel->readPositions();
-            currentXout.resize(Nin);
-            for( unsigned i=0; i<Nin; i++ )
+            currentXout.resize(Nout);
+            for( unsigned i=0; i<Nout; i++ )
                 currentXout[i] = readCurrentXout[i];
             // the ReadOutVecCoord will be destroyed
         }
@@ -134,7 +134,7 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         // increment parent positions
         WriteInVecCoord xIn = fromModel->writePositions();
         WriteInVecDeriv dxIn = fromModel->writeVelocities();
-        InVecDeriv dxIn2(Nout);
+        InVecDeriv dxIn2(Nin);
         for( unsigned i=0; i<Nin; i++ )
         {
             dxIn[i] = dxIn2[i] = In::randomDeriv( this->epsilon() * perturbation );
@@ -207,7 +207,7 @@ protected:
 
         Real maxdiff = 0;
         for(unsigned i=0; i<c1.size(); i++ ){
-            cerr<< c2[i]-c1[i] << " ";
+//            cerr<< c2[i]-c1[i] << " ";
             if( (c1[i]-c2[i]).norm()>maxdiff )
                 maxdiff = (c1[i]-c2[i]).norm();
         }
