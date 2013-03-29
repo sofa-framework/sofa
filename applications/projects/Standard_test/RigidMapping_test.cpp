@@ -192,7 +192,7 @@ TYPED_TEST( RigidMapping_test , oneRigid_fourParticles_localCoords )
 {
     this->init_oneRigid_fourParticles_localCoords();
     ASSERT_TRUE(  this->test_apply() );
-    ASSERT_TRUE(  this->test_applyJ() );
+    ASSERT_TRUE(  this->test_Jacobian() );
 }
 //// next test case
 //TYPED_TEST( RigidMapping_test , allParticlesConstrained )

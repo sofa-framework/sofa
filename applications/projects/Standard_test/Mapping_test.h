@@ -1,4 +1,4 @@
-/******************************************************************************
+ /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
@@ -28,6 +28,8 @@
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/component/linearsolver/FullVector.h>
+#include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
 namespace sofa {
 
@@ -39,9 +41,14 @@ using namespace core;
 
 /** Base class for the Mapping tests.
   The derived classes just need to create a mapping with an input and an output, set input positions and compute the expected output positions.
-  This class provides the following:
-  - test_apply() compare the actual output positions with the expected ones
-  - test_applyJ() using small changes of the input
+  Then test_apply() compares the actual output positions with the expected ones.
+  The jacobians are tested automatically in test_Jacobian() :
+  - A small change of the input positions dxIn is randomly chosen and added to the current position. The same is set as velocity.
+  - mapping->apply is called, and the difference dXout between the new output positions and the previous positions is computed
+  - to validate mapping->applyJ, dXin is converted to input velocity vIn and mapping->applyJ is called. dXout and the output velocity vOut must be the same (up to linear approximations errors, thus we apply a very small change of position).
+  - to validate mapping->getJs, we use it to get the Jacobian, then we check that J.vIn = vOut
+  - to validate mapping->applyJT, we apply it after setting the child force fc=vOut, then we check that parent force fp = J^T.fc
+
   */
 
 template <typename _InDataTypes, typename _OutDataTypes>
@@ -50,6 +57,7 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
     typedef _InDataTypes In;
     typedef core::State<In> InState;
     typedef typename InState::Real  Real;
+    typedef typename InState::Deriv  InDeriv;
     typedef typename InState::VecCoord  InVecCoord;
     typedef typename InState::VecDeriv  InVecDeriv;
     typedef typename InState::ReadVecCoord  ReadInVecCoord;
@@ -70,6 +78,8 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
     typedef typename OutState::WriteVecDeriv WriteOutVecDeriv;
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
+
+    typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
     OutVecCoord expectedChildCoords;   ///< expected child positions after apply
 
@@ -114,7 +124,7 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
     \param perturbation The maximum magnitude of the perturbation of each scalar value is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     \param maxError The test is successfull if the difference (Linf norm of dc - J.dp) is less than  maxError * numeric_limits<Real>::epsilon
 */
-    virtual bool test_applyJ( Real perturbation=1000, Real maxError=10 )
+    virtual bool test_Jacobian( Real perturbation=1000, Real maxError=10 )
     {
         const MechanicalParams* mparams = MechanicalParams::defaultInstance();
         bool result = true;
@@ -131,13 +141,16 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         }
 //        cerr<<"currentXout = " << currentXout << endl;
 
+        // ================ test applyJ
+        // propagate a small change of positions, and compare with the same propagated as a velocity
+
         // increment parent positions
         WriteInVecCoord xIn = fromModel->writePositions();
         WriteInVecDeriv dxIn = fromModel->writeVelocities();
-        InVecDeriv dxIn2(Nin);
+        InVecDeriv vIn(Nin);
         for( unsigned i=0; i<Nin; i++ )
         {
-            dxIn[i] = dxIn2[i] = In::randomDeriv( this->epsilon() * perturbation );
+            dxIn[i] = vIn[i] = In::randomDeriv( this->epsilon() * perturbation );
             xIn[i] += dxIn[i];
         }
 
@@ -163,19 +176,54 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
             ADD_FAILURE() << "applyJ test failed";
         }
 
-//        // test getJs()
-//        const vector<sofa::defaulttype::BaseMatrix*>* jacobians = mapping->getJs();
-//        if( jacobians->size() != 1 ){
-////            FAIL()<< "Mapping->getJs() should have size == 1";
-//            return false;
-//        }
-//        OutVecDeriv Jv(Nout);
-//        (*jacobians)[0]->opMulV( &Jv, &dxIn2);
-//        Real maxdiffJv = maxDiff(Jv,vOut);
-//        if( maxdiffJv>this->epsilon()*maxError ){
-//            result = false;
-//            ADD_FAILURE() << "getJs() test failed";
-//        }
+        // ================ test getJs()
+
+        // check that J.vp = vc
+        const vector<sofa::defaulttype::BaseMatrix*>* jacobians = mapping->getJs();
+        if( jacobians->size() != 1 ){
+//            FAIL()<< "Mapping->getJs() should have size == 1";
+            return false;
+        }
+        EigenSparseMatrix* eiJacobian = dynamic_cast<EigenSparseMatrix*>((*jacobians)[0] );
+        if( eiJacobian == NULL ){
+            ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
+            return false;
+        }
+        OutVecDeriv Jv(Nout);
+        eiJacobian->mult(Jv,vIn);
+        Real maxdiffJv = maxDiff(Jv,vOut);
+//        cerr<<"Jv = " << Jv << endl;
+//        cerr<<"vOut = " << vOut << endl;
+        if( maxdiffJv>this->epsilon()*maxError ){
+            result = false;
+            ADD_FAILURE() << "getJs() test failed";
+        }
+
+        // ================ test applyJT()
+        // set fc = vOut, applyJt and check that parent force fp = J^T fc
+
+        {WriteOutVecDeriv fc =   toModel->writeForces();
+        for( unsigned i=0; i<Nout; i++ )
+            fc[i]=vOut[i];
+        }
+        // set fp to zero before applyJt
+        {WriteInVecDeriv  fp = fromModel->writeForces();
+        for( unsigned i=0; i<Nin; i++ )
+            fp[i]=InDeriv();  // null value
+        }
+        mapping->applyJT( mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        InVecDeriv jfp(Nin);
+        eiJacobian->addMultTranspose(jfp,vOut.ref());
+        ReadInVecDeriv fp = fromModel->readForces();
+//        cerr<<"jfp = " << jfp << endl;
+//        cerr<<" fp = " << fp << endl;
+        Real maxdiffFp = maxDiff(jfp,fp);
+        if( maxdiffFp>this->epsilon()*maxError ){
+            result = false;
+            ADD_FAILURE() << "applyJT test failed";
+        }
+
+        // ================ test applyDJT()
 
 
         return result;

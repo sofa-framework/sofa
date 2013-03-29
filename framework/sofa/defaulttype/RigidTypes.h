@@ -33,6 +33,7 @@
 #include <sofa/helper/rmath.h>
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 
 namespace sofa
 {
@@ -188,6 +189,14 @@ public:
                 +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
                 +vOrientation[2]*a.vOrientation[2];
     }
+
+
+    /// Euclidean norm
+    real norm() const
+    {
+        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+    }
+
 
     Vec3& getVCenter() { return vCenter; }
     Vec3& getVOrientation() { return vOrientation; }
@@ -432,13 +441,18 @@ public:
                 +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
     }
 
-    /// Squared norm
+    /** Squared norm. For the rotation we use the xyz components of the quaternion.
+    Note that this is not equivalent to the angle, so a 2d rotation and the equivalent 3d rotation have different norms.
+      */
     real norm2() const
     {
-        real r = (this->center).elems[0]*(this->center).elems[0];
-        for (int i=1; i<3; i++)
-            r += (this->center).elems[i]*(this->center).elems[i];
-        return r;
+//        real r = (this->center).elems[0]*(this->center).elems[0];
+//        for (int i=1; i<3; i++)
+//            r += (this->center).elems[i]*(this->center).elems[i];
+        return center*center
+                + orientation[0]*orientation[0]
+                + orientation[1]*orientation[1]
+                + orientation[2]*orientation[2]; // xyzw quaternion has null x,y,z if rotation is null
     }
 
     /// Euclidean norm
@@ -1027,6 +1041,12 @@ public:
                 +vOrientation*a.vOrientation;
     }
 
+    /// Euclidean norm
+    Real norm() const
+    {
+        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+    }
+
     Vec2& getVCenter() { return vCenter; }
     Real& getVOrientation() { return vOrientation; }
     const Vec2& getVCenter() const { return vCenter; }
@@ -1185,7 +1205,8 @@ public:
     /// Squared norm
     real norm2() const
     {
-        return center[0]*center[0]+center[1]*center[1];
+        real angle = fmod( orientation, (M_PI*2) );
+        return center*center + angle*angle;
     }
 
     /// Euclidean norm
