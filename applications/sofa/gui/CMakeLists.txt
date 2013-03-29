@@ -8,7 +8,10 @@ include(${SOFA_CMAKE_DIR}/pre.cmake)
 include("SofaGuiCommon.cmake")
 include("SofaGuiMain.cmake")
 
-add_subdirectory("qt")
+if(GUI_USE_QTVIEWER)
+	add_subdirectory("qt")
+endif()
+
 if(GUI_USE_GLUT)
 	add_subdirectory("glut")
 endif()

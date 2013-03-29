@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
 # group files
-macro(GroupFiles fileGroup)
+macro(GroupFiles fileGroup topGroup)	
 	string(REPLACE "_" " " fileGroupName ${fileGroup})
 	string(TOLOWER ${fileGroupName} fileGroupName)
 	string(REGEX MATCHALL "([^ ]+)" fileGroupNameSplit ${fileGroupName})
+	
 	set(finalFileGroupName)
 	foreach(fileGroupNameWord ${fileGroupNameSplit})
 		string(SUBSTRING ${fileGroupNameWord} 0 1 firstLetter)
@@ -15,6 +16,7 @@ macro(GroupFiles fileGroup)
 		endif()
 		set(finalFileGroupName "${finalFileGroupName}${firstLetter}${otherLetters}")
 	endforeach()
+	
 	foreach(currentFile ${${fileGroup}})
 		set(folder ${currentFile})
 		get_filename_component(filename ${folder} NAME)
@@ -25,8 +27,21 @@ macro(GroupFiles fileGroup)
 			string(REPLACE "/" "\\" baseFolder ${baseFolder})
 			set(groupName "${groupName}\\${baseFolder}")
 		endif()
+		if(NOT topGroup STREQUAL "")
+			set(groupName "${topGroup}\\${groupName}")
+		endif()
 		source_group("${groupName}" FILES ${currentFile})
 	endforeach()
+endmacro()
+
+# make relative path for a set of files
+macro(ToRelativePath outFiles fromDirectory inFiles)
+	foreach(inFile ${inFiles})
+		file(RELATIVE_PATH outFile "${fromDirectory}" "${inFile}")
+		list(APPEND tmpFiles "${outFile}")
+	endforeach()
+	
+	set(${outFiles} ${tmpFiles})
 endmacro()
 
 # gather files
