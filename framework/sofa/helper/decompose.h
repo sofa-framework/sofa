@@ -238,6 +238,7 @@ public:
 
     /// project a symetric 2x2 matrix to the nearest SSPD (symetric semi-positive definite)
     static void SSPDProjection( defaulttype::Mat<2,2,Real> &A );
+    static void SSPDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
 
     /** @} */
 
