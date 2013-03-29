@@ -167,8 +167,8 @@ public:
         _K[2][1] = _K[1][2];
         _K[2][2] = mu1Vol * (pow(Jm13 * U1, alpha1) * alpha1 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha1) * alpha1 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha1) * alpha1 * alpha1 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha1) * alpha1 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha1) * alpha1 * alpha1 * pow(-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha1) * alpha1 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha1) * alpha1 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha1) * alpha1 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + mu2Vol * (pow(Jm13 * U1, alpha2) * alpha2 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha2) * alpha2 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha2) * alpha2 * alpha2 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha2) * alpha2 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha2) * alpha2 * alpha2 * pow(-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha2) * alpha2 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha2) * alpha2 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha2) * alpha2 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + mu3Vol * (pow(Jm13 * U1, alpha3) * alpha3 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U1, alpha3) * alpha3 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U2, alpha3) * alpha3 * alpha3 * pow(U3, -0.2e1) / 0.9e1 + pow(Jm13 * U2, alpha3) * alpha3 * pow(U3, -0.2e1) / 0.3e1 + pow(Jm13 * U3, alpha3) * alpha3 * alpha3 * pow(-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13, 0.2e1) * J23 * pow(U3, -0.2e1) + pow(Jm13 * U3, alpha3) * alpha3 * (0.4e1 / 0.9e1 * Jm73 * U1 * U1 * U2 * U2 * U3 - 0.2e1 / 0.3e1 * Jm43 * U1 * U2) * J13 / U3 + pow(Jm13 * U3, alpha3) * alpha3 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * Jm23 / U3 * U1 * U2 / 0.3e1 - pow(Jm13 * U3, alpha3) * alpha3 * (-Jm43 * U1 * U2 * U3 / 0.3e1 + Jm13) * J13 * pow(U3, -0.2e1)) + 0.2e1 * volond1 * U1 * U1 * U2 * U2 + 0.12e2 * volond2 * squareJm1 * U1 * U1 * U2 * U2 + 0.30e2 * volond3 * fourJm1 * U1 * U1 * U2 * U2;
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+        /// ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
 
     }
 
@@ -352,8 +352,8 @@ public:
         _K[1][1] = U1 * U1 * t31 + mu1Vol * t35 * ((t5 + (t9 - t36 + t12 * J23 * t6) * t6) * t11 + t12 * t8 / 0.9e1 + t8 * t200) + mu2Vol * t35 * ((t5 + (t9 - t36 + t23 * J23 * t6) * t6) * t22 + t23 * t15 / 0.9e1 + t200 * t15) + mu3Vol * t35 * ((t5 + (t9 - t36 + t28 * J23 * t6) * t6) * t10 + t28 * t2 / 0.9e1 + t200 * t2);
 
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
 
     }
 

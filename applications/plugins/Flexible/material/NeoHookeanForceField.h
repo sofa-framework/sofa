@@ -60,7 +60,7 @@ public:
     //@{
     Data<vector<Real> > _youngModulus;
     Data<vector<Real> > _poissonRatio;
-    Data<bool > f_SSPDStabilization;
+    Data<bool > f_PSDStabilization;
     //@}
 
     virtual void reinit()
@@ -70,7 +70,7 @@ public:
         {
             if(i<_youngModulus.getValue().size()) ym=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) ym=_youngModulus.getValue()[0];
             if(i<_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) pr=_poissonRatio.getValue()[0];
-            this->material[i].init( ym, pr, f_SSPDStabilization.getValue() );
+            this->material[i].init( ym, pr, f_PSDStabilization.getValue() );
         }
         Inherit::reinit();
     }
@@ -79,7 +79,7 @@ public:
     {
         if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
         {
-            if(_youngModulus.isDirty() || _poissonRatio.isDirty() || f_SSPDStabilization.isDirty() ) reinit();
+            if(_youngModulus.isDirty() || _poissonRatio.isDirty() || f_PSDStabilization.isDirty() ) reinit();
         }
     }
 
@@ -89,7 +89,7 @@ protected:
         : Inherit(mm)
         , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
         , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility"))
-        , f_SSPDStabilization(initData(&f_SSPDStabilization,false,"SSPDStabilization","project stiffness matrix to its nearest symetric semi-positive definite matrix"))
+        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);

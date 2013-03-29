@@ -339,7 +339,7 @@ public:
     }
 
 
-    bool isSymetric() const
+    bool isSymmetric() const
     {
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)

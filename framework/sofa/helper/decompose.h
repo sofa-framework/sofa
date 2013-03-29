@@ -228,17 +228,17 @@ public:
       * @{
       */
 
-    /// Diagonalization of a symetric 3x3 matrix
+    /// Diagonalization of a symmetric 3x3 matrix
     /// A = Q.w.Q^{-1} with w the eigenvalues and Q the eigenvectors
-    static int symetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w );
+    static int symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w );
 
 
-    /// project a symetric 3x3 matrix to the nearest SSPD (symetric semi-positive definite)
-    static void SSPDProjection( defaulttype::Mat<3,3,Real> &A );
+    /// project a symmetric 3x3 matrix to the nearest PSD (symmetric, positive semi-definite)
+    static void PSDProjection( defaulttype::Mat<3,3,Real> &A );
 
-    /// project a symetric 2x2 matrix to the nearest SSPD (symetric semi-positive definite)
-    static void SSPDProjection( defaulttype::Mat<2,2,Real> &A );
-    static void SSPDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
+    /// project a symmetric 2x2 matrix to the nearest PSD (symmetric, positive semi-definite)
+    static void PSDProjection( defaulttype::Mat<2,2,Real> &A );
+    static void PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
 
     /** @} */
 

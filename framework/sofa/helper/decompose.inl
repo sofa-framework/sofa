@@ -2372,7 +2372,7 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
 
 
 template<class Real>
-int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w )
+int Decompose<Real>::symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w )
 // ----------------------------------------------------------------------------
 // originally named dsyevh3
 // Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
@@ -2480,13 +2480,13 @@ int Decompose<Real>::symetricDiagonalization( const defaulttype::Mat<3,3,Real> &
 
 
 
-/// project a symetric 3x3 matrix to the nearest SSPD (symetric semi-positive definite)
+/// project a symmetric 3x3 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
-void Decompose<Real>::SSPDProjection( defaulttype::Mat<3,3,Real> &A )
+void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
 {
     defaulttype::Mat<3,3,Real> Q;
     defaulttype::Vec<3,Real> w;
-    if( !symetricDiagonalization( A, Q, w ) )
+    if( !symmetricDiagonalization( A, Q, w ) )
     {
         bool modified = false;
         for( int i=0 ; i<3 ; ++i )
@@ -2574,9 +2574,9 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 
 
 
-/// project a symetric 2x2 matrix to the nearest SSPD (symetric semi-positive definite)
+/// project a symmetric 2x2 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
-void Decompose<Real>::SSPDProjection( defaulttype::Mat<2,2,Real> &A )
+void Decompose<Real>::PSDProjection( defaulttype::Mat<2,2,Real> &A )
 {
     defaulttype::Mat<2,2,Real> Q;
     defaulttype::Vec<2,Real> w;
@@ -2598,7 +2598,7 @@ void Decompose<Real>::SSPDProjection( defaulttype::Mat<2,2,Real> &A )
 
 
 template<class Real>
-void Decompose<Real>::SSPDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
+void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
 {
     defaulttype::Mat<2,2,Real> Q;
     defaulttype::Vec<2,Real> w;

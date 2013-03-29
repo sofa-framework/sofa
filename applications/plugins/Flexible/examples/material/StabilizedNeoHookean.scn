@@ -113,7 +113,7 @@
         <Node name="StrainNode">
             <MechanicalObject template="U321"  name="U" />
 	    <PrincipalStretchesMapping template="Mapping&lt;F321,U321&gt;" asStrain="false" threshold="0.6" assembleJ="false" />
-            <NeoHookeanForceField  template="U321" youngModulus="1000" poissonRatio="0.3" SSPDStabilization="true" assembleK="false"  assembleC="false"/> 
+            <NeoHookeanForceField  template="U321" youngModulus="1000" poissonRatio="0.3" PSDStabilization="true" assembleK="false"  assembleC="false"/> 
 	  </Node>
 	 
 	

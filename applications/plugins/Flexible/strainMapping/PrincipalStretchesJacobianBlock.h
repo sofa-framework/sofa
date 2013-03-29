@@ -285,13 +285,13 @@ public:
 
     bool _asStrain;
     Real _threshold;
-    bool _SSPDStabilization;
+    bool _PSDStabilization;
 
-    void init( bool asStrain, Real threshold/*, bool SSPDStabilization*/ )
+    void init( bool asStrain, Real threshold/*, bool PSDStabilization*/ )
     {
         _asStrain = asStrain;
         _threshold = threshold;
-//        _SSPDStabilization = SSPDStabilization;
+//        _PSDStabilization = PSDStabilization;
     }
 
     void addapply( OutCoord& result, const InCoord& data )
@@ -359,9 +359,9 @@ public:
     {
         if( _degenerated ) return;
 
-//        if( _SSPDStabilization )
+//        if( _PSDStabilization )
 //        {
-//            // to be able to perform the SSPD stabilization, the stiffness matrix needs to be built
+//            // to be able to perform the PSD stabilization, the stiffness matrix needs to be built
 //            KBlock K;
 //            compute_K( K, childForce );
 //            df.getVec() += K * dx.getVec() * kfactor;
@@ -475,14 +475,14 @@ public:
         K[8][7] = K[7][8]; //_dUOverdF[6][8] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[7][8] * childForce.getStrain()[1] * _V[1][1] + _dUOverdF[8][8] * childForce.getStrain()[2] * _V[2][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][8] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[4][8] + _U[2][2] * childForce.getStrain()[2] * _dVOverdF[7][8];
         K[8][8] = _dUOverdF[6][8] * childForce.getStrain()[0] * _V[0][2] + _dUOverdF[7][8] * childForce.getStrain()[1] * _V[1][2] + _dUOverdF[8][8] * childForce.getStrain()[2] * _V[2][2] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[2][8] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[5][8] + _U[2][2] * childForce.getStrain()[2] * _dVOverdF[8][8];
 
-//        if( _SSPDStabilization )
+//        if( _PSDStabilization )
 //        {
 //              K *= -1;
-//            // stabilized K by projecting sub-matrices to their closest SSPD like in [Teran05]
+//            // stabilized K by projecting sub-matrices to their closest PSD like in [Teran05]
 //            // warning the index order to build the sub-matrices is { 0,4,8,1,3,2,6,5,7 };
-//            helper::Decompose<Real>::SSPDProjection( K[1][1], K[1][3], K[3][1], K[3][3];
-//            helper::Decompose<Real>::SSPDProjection( K[2][2], K[2][6], K[6][2], K[6][6];
-//            helper::Decompose<Real>::SSPDProjection( K[5][5], K[5][7], K[7][5], K[7][7];
+//            helper::Decompose<Real>::PSDProjection( K[1][1], K[1][3], K[3][1], K[3][3];
+//            helper::Decompose<Real>::PSDProjection( K[2][2], K[2][6], K[6][2], K[6][6];
+//            helper::Decompose<Real>::PSDProjection( K[5][5], K[5][7], K[7][5], K[7][7];
 //              K *= -1;
 //        }
     }

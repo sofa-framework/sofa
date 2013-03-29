@@ -502,7 +502,7 @@ template<> struct DataTypeName< defaulttype::U321dTypes::Coord > { static const 
 // ==========================================================================
 // Helpers
 
-/// Convert a symetric strain matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
+/// Convert a symmetric strain matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
 template<int material_dimensions, typename Real>
 static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
 {
@@ -575,7 +575,7 @@ static inline Mat<1,1, Real> StrainVoigtToMat( const Vec<1, Real>& s )
 }
 
 
-/// Convert a symetric stress matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2
+/// Convert a symmetric stress matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2
 template<int material_dimensions, typename Real>
 static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StressMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
 {
