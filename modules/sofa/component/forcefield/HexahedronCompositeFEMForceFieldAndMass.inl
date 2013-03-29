@@ -1451,7 +1451,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        // 		  serr<<"K is sym : "<<K.isSymetric()<<sendl;
+        // 		  serr<<"K is sym : "<<K.isSymmetric()<<sendl;
 
 
 

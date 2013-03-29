@@ -67,12 +67,12 @@ public:
     Data<vector<Real> > f_d1;
     Data<vector<Real> > f_d2;
     Data<vector<Real> > f_d3;
-    Data<bool > f_SSPDStabilization;
+    Data<bool > f_PSDStabilization;
     //@}
 
     virtual void reinit()
     {
-        Real mu1,mu2,mu3,alpha1,alpha2,alpha3,d1,d2,d3;
+        Real mu1=0,mu2=0,mu3=0,alpha1=0,alpha2=0,alpha3=0,d1=0,d2=0,d3=0;
         for(unsigned int i=0; i<this->material.size(); i++)
         {
             if(i<f_mu1.getValue().size()) mu1=f_mu1.getValue()[i]; else if(f_mu1.getValue().size()) mu1=f_mu1.getValue()[0];
@@ -84,7 +84,7 @@ public:
             if(i<f_d1.getValue().size()) d1=f_d1.getValue()[i]; else if(f_d1.getValue().size()) d1=f_d1.getValue()[0];
             if(i<f_d2.getValue().size()) d2=f_d2.getValue()[i]; else if(f_d2.getValue().size()) d2=f_d2.getValue()[0];
             if(i<f_d3.getValue().size()) d3=f_d3.getValue()[i]; else if(f_d3.getValue().size()) d3=f_d3.getValue()[0];
-            this->material[i].init( mu1,mu2,mu3,alpha1,alpha2,alpha3,d1,d2,d3,f_SSPDStabilization.getValue() );
+            this->material[i].init( mu1,mu2,mu3,alpha1,alpha2,alpha3,d1,d2,d3,f_PSDStabilization.getValue() );
         }
         Inherit::reinit();
     }
@@ -96,7 +96,7 @@ public:
             if( f_mu1.isDirty() || f_mu2.isDirty() || f_mu3.isDirty() ||
                  f_alpha1.isDirty() || f_alpha2.isDirty() || f_alpha3.isDirty() ||
                     f_d1.isDirty() || f_d2.isDirty() || f_d3.isDirty() ||
-                    f_SSPDStabilization.isDirty() ) reinit();
+                    f_PSDStabilization.isDirty() ) reinit();
         }
     }
 
@@ -113,7 +113,7 @@ protected:
         , f_d1(initData(&f_d1,vector<Real>((int)1,(Real)1000),"d1",""))
         , f_d2(initData(&f_d2,vector<Real>((int)1,(Real)1000),"d2",""))
         , f_d3(initData(&f_d3,vector<Real>((int)1,(Real)1000),"d3",""))
-        , f_SSPDStabilization(initData(&f_SSPDStabilization,false,"SSPDStabilization","project stiffness matrix to its nearest symetric semi-positive definite matrix"))
+        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
     {
         this->f_listening.setValue(true);
     }

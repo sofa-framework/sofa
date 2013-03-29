@@ -61,7 +61,7 @@ public:
     Data<vector<Real> > f_C1;
     Data<vector<Real> > f_C2;
     Data<vector<Real> > f_bulk;
-    Data<bool > f_SSPDStabilization;
+    Data<bool > f_PSDStabilization;
     //@}
 
     virtual void reinit()
@@ -72,7 +72,7 @@ public:
             if(i<f_C1.getValue().size()) C1=f_C1.getValue()[i]; else if(f_C1.getValue().size()) C1=f_C1.getValue()[0];
             if(i<f_C2.getValue().size()) C2=f_C2.getValue()[i]; else if(f_C2.getValue().size()) C2=f_C2.getValue()[0];
             if(i<f_bulk.getValue().size()) bulk=f_bulk.getValue()[i]; else if(f_bulk.getValue().size()) bulk=f_bulk.getValue()[0];
-            this->material[i].init( C1, C2, bulk, f_SSPDStabilization.getValue() );
+            this->material[i].init( C1, C2, bulk, f_PSDStabilization.getValue() );
         }
         Inherit::reinit();
     }
@@ -81,7 +81,7 @@ public:
     {
         if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
         {
-            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty() || f_SSPDStabilization.isDirty() ) reinit();
+            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty() || f_PSDStabilization.isDirty() ) reinit();
         }
     }
 
@@ -92,7 +92,7 @@ protected:
         , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
         , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
         , f_bulk(initData(&f_bulk,vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
-        , f_SSPDStabilization(initData(&f_SSPDStabilization,false,"SSPDStabilization","project stiffness matrix to its nearest symetric semi-positive definite matrix"))
+        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);

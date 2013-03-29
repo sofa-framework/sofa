@@ -181,8 +181,8 @@ public:
         _K[2][1] = _K[1][2];
         _K[2][2] = ( C1Vol * (t1 * ( t21 * U3 + 0.10e2 / 0.9e1 * t1 * t7 * t8) + t10) + C2Vol * (t1 * (-0.8e1 / 0.3e1 * t29 * t15 + t25 * t1) + t16 * t13) + t19 * t6 );
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
@@ -316,8 +316,8 @@ public:
         _K[1][1] = C1Vol * (t8 + (-0.8e1 / 0.3e1 * Jm53 *  U2 + t7 *  U1) *  U1) + C2Vol * ( (2 * squareU[0] + 2) * Jm43 + (-0.8e1 / 0.3e1 *  t12 * Jm73 + t14 *  U1) *  U1) + bulkVol *  squareU[0];
 
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        if( stabilization ) helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const

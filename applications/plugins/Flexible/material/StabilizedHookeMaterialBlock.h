@@ -127,8 +127,8 @@ public:
             }
         }
 
-        // ensure _K is symetric semi-positive definite as suggested in [Teran05]
-        helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric, positive semi-definite as suggested in [Teran05]
+        helper::Decompose<Real>::PSDProjection( _K );
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const

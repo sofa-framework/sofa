@@ -133,7 +133,7 @@ protected:
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef Mat<12, 12, Real> StiffnessMatrix;
 
-    /// Symetrical tensor written as a vector following the Voigt notation
+    /// Symmetrical tensor written as a vector following the Voigt notation
     typedef VecNoInit<6,Real> VoigtTensor;
 
     /// @}

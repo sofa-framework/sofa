@@ -131,8 +131,8 @@ public:
         _K[2][2] = t5 * t2 * lambdaVol + (0.1e1 + t5) * muVol;
 
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric, positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        helper::Decompose<Real>::PSDProjection( _K );
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
@@ -237,8 +237,8 @@ public:
         _K[1][1] = muVol + (muVol+lambdaVol-lambdaLogJ)*invSquareU[1];
 
 
-        // ensure _K is symetric semi-positive definite (even if it is not as good as positive definite) as suggested in [Teran05]
-        helper::Decompose<Real>::SSPDProjection( _K );
+        // ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
+        helper::Decompose<Real>::PSDProjection( _K );
     }
 
     void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
