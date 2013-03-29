@@ -15,7 +15,7 @@
             <Node 	name="behavior"   >
                 <TopologyGaussPointSampler name="sampler" inPosition="@../DOF.rest_position" method="0" order="2"/>
                 <MechanicalObject  template="F331" name="F"  />
-                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
+                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />

@@ -2596,6 +2596,34 @@ void Decompose<Real>::SSPDProjection( defaulttype::Mat<2,2,Real> &A )
 }
 
 
+
+template<class Real>
+void Decompose<Real>::SSPDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
+{
+    defaulttype::Mat<2,2,Real> Q;
+    defaulttype::Vec<2,Real> w;
+    dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
+
+    bool modified = false;
+    for( int i=0 ; i<2 ; ++i )
+        if( w[i] < 0 ){ w[i] = 0; modified = true; }
+
+    if( modified )
+    {
+        Q[1][1] = Q[0][0];
+        Q[0][1] = -Q[1][0];
+
+        defaulttype::Mat<2,2,Real> tmp = Q.multDiagonal( w );
+
+        // A = Q*wId*Q^T
+
+        A00 = Q[0][0]*tmp[0][0] + Q[0][1]*tmp[0][1];
+        A01 = A10 = Q[1][0]*tmp[0][0] + Q[1][1]*tmp[1][1];
+        A11 = Q[1][0]*tmp[1][0] + Q[1][1]*tmp[1][1];
+    }
+}
+
+
 } // namespace helper
 
 } // namespace sofa
