@@ -1,20 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
 
-    OpenCLUniformMass.h 
-	OpenCLUniformMass.inl
+list(APPEND HEADER_FILES "OpenCLUniformMass.h")
+list(APPEND HEADER_FILES "OpenCLUniformMass.inl")
 
-    )
+list(APPEND SOURCE_FILES "OpenCLUniformMass.cpp")
 
-set(SOURCE_FILES
-
-    OpenCLUniformMass.cpp
-
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLUniformMass.cl
-
-    )    
+list(APPEND OTHER_FILES "kernels/OpenCLUniformMass.cl")

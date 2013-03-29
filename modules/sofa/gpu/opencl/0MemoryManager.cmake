@@ -1,19 +1,7 @@
 set(OBJECT_DIR "OpenCLMemoryManager" )
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLMemoryManager.h")
 
-    OpenCLMemoryManager.h
+list(APPEND SOURCE_FILES "OpenCLMemoryManager.cpp")
 
-    )
-
-set(SOURCE_FILES
-
-    OpenCLMemoryManager.cpp
-    
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLMemoryManager.cl
-    
-    )
+list(APPEND OTHER_FILES "kernels/OpenCLMemoryManager.cl")

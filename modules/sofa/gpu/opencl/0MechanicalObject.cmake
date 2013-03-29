@@ -2,21 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 set(OBJECT_DIR "OpenCLMechanicalObject" )
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLMechanicalObject.h")
+list(APPEND HEADER_FILES "OpenCLMechanicalObject.inl")
 
-    OpenCLMechanicalObject.h 
-	OpenCLMechanicalObject.inl
-	
-    )
+list(APPEND SOURCE_FILES "OpenCLMechanicalObject.cpp")
 
-set(SOURCE_FILES
-
-    OpenCLMechanicalObject.cpp
-
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLMechanicalObject.cl
-
-    )
+list(APPEND OTHER_FILES "kernels/OpenCLMechanicalObject.cl")
