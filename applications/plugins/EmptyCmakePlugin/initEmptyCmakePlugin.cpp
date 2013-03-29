@@ -33,12 +33,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_EmptyPlugin_API void initExternalModule();
-    SOFA_EmptyPlugin_API const char* getModuleName();
-    SOFA_EmptyPlugin_API const char* getModuleVersion();
-    SOFA_EmptyPlugin_API const char* getModuleLicense();
-    SOFA_EmptyPlugin_API const char* getModuleDescription();
-    SOFA_EmptyPlugin_API const char* getModuleComponentList();
+    SOFA_EmptyCmakePlugin_API void initExternalModule();
+    SOFA_EmptyCmakePlugin_API const char* getModuleName();
+    SOFA_EmptyCmakePlugin_API const char* getModuleVersion();
+    SOFA_EmptyCmakePlugin_API const char* getModuleLicense();
+    SOFA_EmptyCmakePlugin_API const char* getModuleDescription();
+    SOFA_EmptyCmakePlugin_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
