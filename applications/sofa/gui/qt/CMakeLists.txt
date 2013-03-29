@@ -177,7 +177,6 @@ set(FORM_FILES_GROUP "Generated")
 
 include_directories("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
-message("${FORM_FILES}")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "${QT_DEFINITIONS};SOFA_BUILD_SOFAGUIQT")
