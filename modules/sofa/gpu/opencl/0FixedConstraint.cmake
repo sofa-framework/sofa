@@ -1,20 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLFixedConstraint.h")
+list(APPEND HEADER_FILES "OpenCLFixedConstraint.inl")
 
-    OpenCLFixedConstraint.h 
-	OpenCLFixedConstraint.inl
-    
-    )
+list(APPEND SOURCE_FILES "OpenCLFixedConstraint.cpp")
 
-set(SOURCE_FILES
-
-    OpenCLFixedConstraint.cpp
-    
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLFixedConstraint.cl
-    
-    )
+list(APPEND OTHER_FILES "kernels/OpenCLFixedConstraint.cl")

@@ -1,21 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLPlaneForceField.h")
+list(APPEND HEADER_FILES "OpenCLPlaneForceField.inl")
 
-    OpenCLPlaneForceField.h 
-	OpenCLPlaneForceField.inl
-	
-    )
+list(APPEND SOURCE_FILES "OpenCLPlaneForceField.cpp")
 
-set(SOURCE_FILES
-
-    OpenCLPlaneForceField.cpp
-
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLGenericParticleForceField.cl 
-	kernels/OpenCLGenericParticleForceField_Plane.macrocl
-
-)
+list(APPEND OTHER_FILES "kernels/OpenCLGenericParticleForceField.cl")
+list(APPEND OTHER_FILES "kernels/OpenCLGenericParticleForceField_Plane.macrocl")

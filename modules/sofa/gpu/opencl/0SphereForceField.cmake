@@ -1,21 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLSphereForceField.h")
+list(APPEND HEADER_FILES "OpenCLSphereForceField.inl")
 
-    OpenCLSphereForceField.h 
-	OpenCLSphereForceField.inl
+list(APPEND SOURCE_FILES "OpenCLSphereForceField.cpp")
 
-    )
-
-set(SOURCE_FILES
-
-    OpenCLSphereForceField.cpp
-
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLGenericParticleForceField.cl 
-	kernels/OpenCLGenericParticleForceField_Sphere.macrocl 
-
-    )    
+list(APPEND OTHER_FILES "kernels/OpenCLGenericParticleForceField.cl")
+list(APPEND OTHER_FILES "kernels/OpenCLGenericParticleForceField_Sphere.macrocl")

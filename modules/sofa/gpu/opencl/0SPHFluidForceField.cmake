@@ -1,24 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
+list(APPEND HEADER_FILES "OpenCLSPHFluidForceField.h")
+list(APPEND HEADER_FILES "OpenCLSPHFluidForceField.inl")
+list(APPEND HEADER_FILES "CPUSPHFluidForceField.h")
+list(APPEND HEADER_FILES "CPUSPHFluidForceFieldWithOpenCL.h")
 
-    OpenCLSPHFluidForceField.h 
-    OpenCLSPHFluidForceField.inl 
-    CPUSPHFluidForceField.h 
-    CPUSPHFluidForceFieldWithOpenCL.h
+list(APPEND SOURCE_FILES "OpenCLSPHFluidForceField.cpp")
+list(APPEND SOURCE_FILES "CPUSPHFluidForceField.cpp")
+list(APPEND SOURCE_FILES "CPUSPHFluidForceFieldWithOpenCL.cpp")
 
-    )
-
-set(SOURCE_FILES
-
-    OpenCLSPHFluidForceField.cpp 
-    CPUSPHFluidForceField.cpp 
-    CPUSPHFluidForceFieldWithOpenCL.cpp
-
-    )
-    
-set(OTHER_FILES
-
-    kernels/OpenCLSPHFluidForceField.cl
-
-    )    
+list(APPEND OTHER_FILES "kernels/OpenCLSPHFluidForceField.cl")
