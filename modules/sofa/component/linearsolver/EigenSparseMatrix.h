@@ -704,32 +704,32 @@ public:
     }
 
 
-//    /// compute result = A * data
-//    void mult( OutVecDeriv& result, const InVecDeriv& data ) const
-//    {
-//        // use optimized product if possible
-//        if(canCast(data)){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
-//            r = this->compressedMatrix * d;
-//        }
-//        else {
+    /// compute result = A * data
+    void mult( OutVecDeriv& result, const InVecDeriv& data ) const
+    {
+        // use optimized product if possible
+        if(canCast(data)){
+            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nin);
+            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nout);
+            r = this->compressedMatrix * d;
+        }
+        else {
 
-//            // convert the data to Eigen type
-//            VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
-//            for(unsigned i=0; i<data.size();i++){
-//                for(unsigned j=0; j<Nin; j++)
-//                    aux1[Nin* i+j] = data[i][j];
-//            }
-//            // compute the product
-//            aux2 = this->compressedMatrix * aux1;
-//            // convert the result back to the Sofa type
-//            for(unsigned i=0; i<result.size();i++){
-//                for(unsigned j=0; j<Nout; j++)
-//                    result[i][j] = aux2[Nout* i+j];
-//            }
-//        }
-//    }
+            // convert the data to Eigen type
+            VectorEigen aux1(this->colSize(),1), aux2(this->rowSize(),1);
+            for(unsigned i=0; i<data.size();i++){
+                for(unsigned j=0; j<Nin; j++)
+                    aux1[Nin* i+j] = data[i][j];
+            }
+            // compute the product
+            aux2 = this->compressedMatrix * aux1;
+            // convert the result back to the Sofa type
+            for(unsigned i=0; i<result.size();i++){
+                for(unsigned j=0; j<Nout; j++)
+                    result[i][j] = aux2[Nout* i+j];
+            }
+        }
+    }
 
 
 
@@ -856,31 +856,31 @@ public:
 //        }
 //    }
 
-//    /// compute result += A^T * data
-//    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const
-//    {
-//        // use optimized product if possible
-//        if(canCast(result)){
-//            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
-//            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
-//            r += this->compressedMatrix.transpose() * d;
-//            return;
-//        }
+    /// compute result += A^T * data
+    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const
+    {
+        // use optimized product if possible
+        if(canCast(result)){
+            const Eigen::Map<VectorEigen> d(const_cast<Real*>(&data[0][0]),data.size()*Nout);
+            Eigen::Map<VectorEigen> r(&result[0][0],result.size()*Nin);
+            r += this->compressedMatrix.transpose() * d;
+            return;
+        }
 
-//        // convert the data to Eigen type
-//        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
-//        for(unsigned i=0; i<data.size();i++){
-//            for(unsigned j=0; j<Nout; j++)
-//                aux1[Nout* i+j] = data[i][j];
-//        }
-//        // compute the product
-//        aux2 = this->compressedMatrix.transpose() * aux1;
-//        // convert the result back to the Sofa type
-//        for(unsigned i=0; i<result.size();i++){
-//            for(unsigned j=0; j<Nin; j++)
-//                result[i][j] += aux2[Nin* i+j];
-//        }
-//    }
+        // convert the data to Eigen type
+        VectorEigen aux1(this->rowSize()),aux2(this->colSize());
+        for(unsigned i=0; i<data.size();i++){
+            for(unsigned j=0; j<Nout; j++)
+                aux1[Nout* i+j] = data[i][j];
+        }
+        // compute the product
+        aux2 = this->compressedMatrix.transpose() * aux1;
+        // convert the result back to the Sofa type
+        for(unsigned i=0; i<result.size();i++){
+            for(unsigned j=0; j<Nin; j++)
+                result[i][j] += aux2[Nin* i+j];
+        }
+    }
 
     /// compute result += A^T * data
     void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const
