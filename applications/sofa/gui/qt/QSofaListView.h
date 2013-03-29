@@ -31,23 +31,23 @@
 #include <Q3ListViewItem>
 #include <Q3Header>
 #include <QPushButton>
+
+typedef Q3ListView QListView;
+typedef Q3ListViewItem QListViewItem;
 #else
 #include <qwidget.h>
 #include <qlistview.h>
 #include <qheader.h>
 #include <qpushbutton.h>
+
+typedef QListView Q3ListView;
+typedef QListViewItem Q3ListViewItem;
 #endif
 
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-
-#endif
 #include <map>
 
 namespace sofa

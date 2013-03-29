@@ -15,6 +15,12 @@ endif()
 if(GUI_USE_QGLVIEWER)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/libQGLViewer-2.3.3/QGLViewer")
 endif()
+add_subdirectory("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
+
+## google test
+#if(UNIT-TESTS_BUILD_GTEST)
+#	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+#endif()
 
 # framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/helper")
