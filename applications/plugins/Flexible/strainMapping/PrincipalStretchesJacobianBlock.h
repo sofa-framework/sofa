@@ -97,6 +97,11 @@ public:
     bool _asStrain;
     Real _threshold;
 
+    void init( bool asStrain, Real threshold/*, bool*/ )
+    {
+        _asStrain = asStrain;
+        _threshold = threshold;
+    }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -280,6 +285,14 @@ public:
 
     bool _asStrain;
     Real _threshold;
+    bool _SSPDStabilization;
+
+    void init( bool asStrain, Real threshold/*, bool SSPDStabilization*/ )
+    {
+        _asStrain = asStrain;
+        _threshold = threshold;
+//        _SSPDStabilization = SSPDStabilization;
+    }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
@@ -346,37 +359,37 @@ public:
     {
         if( _degenerated ) return;
 
-        SpatialMaterialMat dU;
-        MaterialMaterialMat dV;
+//        if( _SSPDStabilization )
+//        {
+//            // to be able to perform the SSPD stabilization, the stiffness matrix needs to be built
+//            KBlock K;
+//            compute_K( K, childForce );
+//            df.getVec() += K * dx.getVec() * kfactor;
+//        }
+//        else
+        {
+            SpatialMaterialMat dU;
+            MaterialMaterialMat dV;
 
-        for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
-            for( int l=0 ; l<material_dimensions ; ++l ) // col of df
-                for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
-                {
-                    for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
-                        dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+            for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
+                    for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+                    {
+                        for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                            dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
 
-                    for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
-                        dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
-                }
+                        for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                            dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
+                    }
 
-        df.getF() += dU.multDiagonal( childForce.getStrain() ) * _V * kfactor;
-        df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
-
-
-//        KBlock K;
-//        compute_K( K, childForce );
-//        df.getVec() += K * dx.getVec() * kfactor;
-
+            df.getF() += dU.multDiagonal( childForce.getStrain() ) * _V * kfactor;
+            df.getF() += _U.multDiagonal( childForce.getStrain() ) * dV * kfactor;
+        }
     }
 
 
 
-
-
-
     /// @ todo find a general algorithm to compute K for any dimensions
-    /// @ todo stabilize K by projecting sub-matrices to their closest SSPD like in [Teran05] - warning the index order is not the same as in the article
     // see the maple file doc/principalStretches_geometricStiffnessMatrix.mw
     void compute_K( Mat<9,9,Real>& K, const OutDeriv& childForce ) // for spatial=3 material=3
     {
@@ -461,47 +474,58 @@ public:
         K[8][6] = K[6][8]; //_dUOverdF[6][8] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[7][8] * childForce.getStrain()[1] * _V[1][0] + _dUOverdF[8][8] * childForce.getStrain()[2] * _V[2][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][8] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][8] + _U[2][2] * childForce.getStrain()[2] * _dVOverdF[6][8];
         K[8][7] = K[7][8]; //_dUOverdF[6][8] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[7][8] * childForce.getStrain()[1] * _V[1][1] + _dUOverdF[8][8] * childForce.getStrain()[2] * _V[2][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][8] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[4][8] + _U[2][2] * childForce.getStrain()[2] * _dVOverdF[7][8];
         K[8][8] = _dUOverdF[6][8] * childForce.getStrain()[0] * _V[0][2] + _dUOverdF[7][8] * childForce.getStrain()[1] * _V[1][2] + _dUOverdF[8][8] * childForce.getStrain()[2] * _V[2][2] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[2][8] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[5][8] + _U[2][2] * childForce.getStrain()[2] * _dVOverdF[8][8];
+
+//        if( _SSPDStabilization )
+//        {
+//              K *= -1;
+//            // stabilized K by projecting sub-matrices to their closest SSPD like in [Teran05]
+//            // warning the index order to build the sub-matrices is { 0,4,8,1,3,2,6,5,7 };
+//            helper::Decompose<Real>::SSPDProjection( K[1][1], K[1][3], K[3][1], K[3][3];
+//            helper::Decompose<Real>::SSPDProjection( K[2][2], K[2][6], K[6][2], K[6][6];
+//            helper::Decompose<Real>::SSPDProjection( K[5][5], K[5][7], K[7][5], K[7][7];
+//              K *= -1;
+//        }
     }
 
 
     void compute_K( Mat<6,6,Real>& K, const OutDeriv& childForce )  // for spatial=3 material=2
     {
-        K[0][0] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
-        K[0][1] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
-        K[0][2] = _dUOverdF[2][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][0] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
-        K[0][3] = _dUOverdF[2][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][0] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
-        K[0][4] = _dUOverdF[4][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][0] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
-        K[0][5] = _dUOverdF[4][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][0] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
+        K[0][0] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
+        K[0][1] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
+        K[0][2] =  _dUOverdF[2][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][0] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
+        K[0][3] =  _dUOverdF[2][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][0] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
+        K[0][4] =  _dUOverdF[4][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][0] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
+        K[0][5] =  _dUOverdF[4][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][0] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][0];
         K[1][0] = K[0][1]; //_dUOverdF[0][1] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][1] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][1] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][1];
-        K[1][1] = _dUOverdF[0][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][1] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
-        K[1][2] = _dUOverdF[2][1] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][1] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][1] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][1];
-        K[1][3] = _dUOverdF[2][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][1] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
-        K[1][4] = _dUOverdF[4][1] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][1] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][1] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][1];
-        K[1][5] = _dUOverdF[4][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][1] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
+        K[1][1] =  _dUOverdF[0][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][1] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
+        K[1][2] =  _dUOverdF[2][1] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][1] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][1] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][1];
+        K[1][3] =  _dUOverdF[2][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][1] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
+        K[1][4] =  _dUOverdF[4][1] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][1] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][1] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][1];
+        K[1][5] =  _dUOverdF[4][1] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][1] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][1] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][1];
         K[2][0] = K[0][2]; //_dUOverdF[0][2] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][2] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][2] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][2];
         K[2][1] = K[1][2]; //_dUOverdF[0][2] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][2] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][2] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][2];
-        K[2][2] = _dUOverdF[2][2] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][2] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][2] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][2];
-        K[2][3] = _dUOverdF[2][2] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][2] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][2] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][2];
-        K[2][4] = _dUOverdF[4][2] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][2] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][2] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][2];
-        K[2][5] = _dUOverdF[4][2] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][2] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][2] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][2];
+        K[2][2] =  _dUOverdF[2][2] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][2] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][2] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][2];
+        K[2][3] =  _dUOverdF[2][2] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][2] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][2] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][2];
+        K[2][4] =  _dUOverdF[4][2] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][2] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][2] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][2];
+        K[2][5] =  _dUOverdF[4][2] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][2] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][2] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][2];
         K[3][0] = K[0][3]; //_dUOverdF[0][3] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][3] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][3] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][3];
         K[3][1] = K[1][3]; //_dUOverdF[0][3] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][3] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][3] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][3];
         K[3][2] = K[2][3]; //_dUOverdF[2][3] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][3] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][3] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][3];
-        K[3][3] = _dUOverdF[2][3] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][3] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][3] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][3];
-        K[3][4] = _dUOverdF[4][3] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][3] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][3] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][3];
-        K[3][5] = _dUOverdF[4][3] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][3] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][3] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][3];
+        K[3][3] =  _dUOverdF[2][3] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][3] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][3] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][3];
+        K[3][4] =  _dUOverdF[4][3] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][3] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][3] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][3];
+        K[3][5] =  _dUOverdF[4][3] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][3] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][3] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][3];
         K[4][0] = K[0][4]; //_dUOverdF[0][4] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][4] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][4] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][4];
         K[4][1] = K[1][4]; //_dUOverdF[0][4] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][4] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][4] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][4];
         K[4][2] = K[2][4]; //_dUOverdF[2][4] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][4] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][4] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][4];
         K[4][3] = K[3][4]; //_dUOverdF[2][4] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][4] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][4] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][4];
-        K[4][4] = _dUOverdF[4][4] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][4] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][4] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][4];
-        K[4][5] = _dUOverdF[4][4] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][4] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][4] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][4];
+        K[4][4] =  _dUOverdF[4][4] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][4] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][4] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][4];
+        K[4][5] =  _dUOverdF[4][4] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][4] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][4] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][4];
         K[5][0] = K[0][5]; //_dUOverdF[0][5] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][5] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][5] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][5];
         K[5][1] = K[1][5]; //_dUOverdF[0][5] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][5] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][5] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][5];
         K[5][2] = K[2][5]; //_dUOverdF[2][5] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[3][5] * childForce.getStrain()[1] * _V[1][0] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[0][5] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[2][5];
         K[5][3] = K[3][5]; //_dUOverdF[2][5] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[3][5] * childForce.getStrain()[1] * _V[1][1] + _U[1][0] * childForce.getStrain()[0] * _dVOverdF[1][5] + _U[1][1] * childForce.getStrain()[1] * _dVOverdF[3][5];
         K[5][4] = K[4][5]; //_dUOverdF[4][5] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[5][5] * childForce.getStrain()[1] * _V[1][0] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[0][5] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[2][5];
-        K[5][5] = _dUOverdF[4][5] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][5] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][5] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][5];
+        K[5][5] =  _dUOverdF[4][5] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[5][5] * childForce.getStrain()[1] * _V[1][1] + _U[2][0] * childForce.getStrain()[0] * _dVOverdF[1][5] + _U[2][1] * childForce.getStrain()[1] * _dVOverdF[3][5];
     }
 
 
