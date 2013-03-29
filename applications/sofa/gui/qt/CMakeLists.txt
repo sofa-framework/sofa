@@ -82,7 +82,7 @@ set(SOURCE_FILES
 	ImageQt.cpp 
 	)
 	
-set(FORM_FILES
+set(UI_FILES
 
 	GUI.ui
 	BaseGenGraphForm.ui
@@ -109,7 +109,7 @@ if(SOFA_DUMP_VISITOR_INFO)
 		 PieWidget.cpp
 		 )
 	
-	list(APPEND FORM_FILES VisitorGUI.ui)
+	list(APPEND UI_FILES VisitorGUI.ui)
 endif()
 
 if(GUI_USE_QTVIEWER)
@@ -125,6 +125,8 @@ if(GUI_USE_QGLVIEWER)
 endif()
 
 if(EXTERNAL_USE_QT4)
+	set(ENV{CONFIG} "qt;uic;uic3")
+	
 	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
 	
 	list(APPEND HEADER_FILES
@@ -133,11 +135,11 @@ if(EXTERNAL_USE_QT4)
 		 QModelViewTableUpdater.h
 		 )		 
 	
-	set(ENV{CONFIG} "qt;uic;uic3")
-	
 	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	QT4_WRAP_UI(FORM_HEADER_FILES ${FORM_FILES})
+	QT4_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 else()
+	set(ENV{CONFIG} "qt")
+	
 	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
 	
 	list(APPEND HEADER_FILES
@@ -145,11 +147,9 @@ else()
 		 QTableDataContainer.h
 		 QTableUpdater.h
 		 )
-		 
-	set(ENV{CONFIG} "qt")
 	
 	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	QT3_WRAP_UI(FORM_HEADER_FILES ${FORM_FILES})
+	QT3_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 endif()
 set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
@@ -164,6 +164,7 @@ endforeach()
 
 # make mocced header files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
+ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
@@ -172,10 +173,12 @@ list(APPEND HEADER_FILES
 	)
 
 set(MOC_FILES_GROUP "Generated")
+set(FORM_FILES_GROUP "Generated")
 
 include_directories("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
+message("${FORM_FILES}")
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "${QT_DEFINITIONS};SOFA_BUILD_SOFAGUIQT")
 set(LINKER_DEPENDENCIES SofaGuiCommon Qwt ${QT_LIBRARIES} SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)

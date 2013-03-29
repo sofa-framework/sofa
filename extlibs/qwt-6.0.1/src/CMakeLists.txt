@@ -36,6 +36,56 @@ set(HEADER_FILES
     qwt_text_engine.h
     qwt_text_label.h
     qwt_text.h
+	
+	# QwtPlot
+	qwt_curve_fitter.h
+	qwt_event_pattern.h
+	qwt_legend.h
+	qwt_legend_item.h
+	qwt_legend_itemmanager.h
+	qwt_plot.h
+	qwt_plot_renderer.h
+	qwt_plot_curve.h
+	qwt_plot_dict.h
+	qwt_plot_directpainter.h
+	qwt_plot_grid.h
+	qwt_plot_histogram.h
+	qwt_plot_item.h
+	qwt_plot_intervalcurve.h
+	qwt_plot_layout.h
+	qwt_plot_marker.h
+	qwt_plot_rasteritem.h
+	qwt_plot_spectrogram.h
+	qwt_plot_spectrocurve.h
+	qwt_plot_scaleitem.h
+	qwt_plot_seriesitem.h
+	qwt_plot_canvas.h
+	qwt_plot_panner.h
+	qwt_plot_picker.h
+	qwt_plot_zoomer.h
+	qwt_plot_magnifier.h
+	qwt_plot_rescaler.h
+	qwt_raster_data.h
+	qwt_matrix_raster_data.h
+	qwt_sampling_thread.h
+	qwt_series_data.h
+	qwt_scale_widget.h 
+	
+	# QwtWidgets
+	qwt_abstract_slider.h
+	qwt_abstract_scale.h
+	qwt_arrow_button.h
+	qwt_analog_clock.h
+	qwt_compass.h
+	qwt_compass_rose.h
+	qwt_counter.h
+	qwt_dial.h
+	qwt_dial_needle.h
+	qwt_double_range.h
+	qwt_knob.h
+	qwt_slider.h
+	qwt_thermo.h
+	qwt_wheel.h
 	)
 
 set(SOURCE_FILES
@@ -68,6 +118,56 @@ set(SOURCE_FILES
     qwt_scale_engine.cpp
     qwt_symbol.cpp
     qwt_system_clock.cpp
+	
+	# QwtPlot
+	qwt_curve_fitter.cpp
+	qwt_legend.cpp
+	qwt_legend_item.cpp
+	qwt_plot.cpp
+	qwt_plot_renderer.cpp
+	qwt_plot_xml.cpp
+	qwt_plot_axis.cpp
+	qwt_plot_curve.cpp
+	qwt_plot_dict.cpp
+	qwt_plot_directpainter.cpp
+	qwt_plot_grid.cpp
+	qwt_plot_histogram.cpp
+	qwt_plot_item.cpp
+	qwt_plot_intervalcurve.cpp
+	qwt_plot_spectrogram.cpp
+	qwt_plot_spectrocurve.cpp
+	qwt_plot_scaleitem.cpp
+	qwt_plot_seriesitem.cpp
+	qwt_plot_marker.cpp
+	qwt_plot_layout.cpp
+	qwt_plot_canvas.cpp
+	qwt_plot_panner.cpp
+	qwt_plot_rasteritem.cpp
+	qwt_plot_picker.cpp
+	qwt_plot_zoomer.cpp
+	qwt_plot_magnifier.cpp
+	qwt_plot_rescaler.cpp
+	qwt_raster_data.cpp
+	qwt_matrix_raster_data.cpp
+	qwt_sampling_thread.cpp
+	qwt_series_data.cpp
+	qwt_scale_widget.cpp 
+	
+	# QwtWidgets
+	qwt_abstract_slider.cpp
+	qwt_abstract_scale.cpp
+	qwt_arrow_button.cpp
+	qwt_analog_clock.cpp
+	qwt_compass.cpp
+	qwt_compass_rose.cpp
+	qwt_counter.cpp
+	qwt_dial.cpp
+	qwt_dial_needle.cpp
+	qwt_double_range.cpp
+	qwt_knob.cpp
+	qwt_slider.cpp
+	qwt_thermo.cpp
+	qwt_wheel.cpp
 	)
 	
 if(EXTERNAL_USE_QT4)
@@ -104,6 +204,7 @@ set(MOC_FILES_GROUP "Generated")
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
+set(COMPILER_DEFINES "${QT_DEFINITIONS};QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
 set(LINKER_DEPENDENCIES ${QT_LIBRARIES}) # need -lrt on linux (but not on mac)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
