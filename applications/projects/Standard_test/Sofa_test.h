@@ -30,6 +30,7 @@
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
+#include <time.h>
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -46,6 +47,11 @@ struct Sofa_test : public ::testing::Test
 
     static Real epsilon(){ return std::numeric_limits<Real>::epsilon(); }
     static Real infinity(){ return std::numeric_limits<Real>::infinity(); }
+
+    Sofa_test()
+    {
+        srand (time(NULL)); // comment out if you want to generate always the same sequence of pseudo-random numbers
+    }
 
     /// true if the magnitude of r is less than ratio*numerical precision
     static bool isSmall(Real r, Real factor=1. ){
@@ -130,7 +136,10 @@ struct Sofa_test : public ::testing::Test
     template< typename Vector1, typename Vector2>
     static bool vectorsAreEqual( const Vector1& m1, const Vector2& m2, double tolerance=std::numeric_limits<double>::epsilon() )
     {
-        if( m1.size()!=m2.size() ) return false;
+        if( m1.size()!=m2.size() ) {
+            ADD_FAILURE() << "Comparison between vectors of different sizes";
+            return false;
+        }
         for( unsigned i=0; i<m1.size(); i++ )
             if( fabs(m1.element(i)-m2.element(i))>tolerance  ) return false;
         return true;

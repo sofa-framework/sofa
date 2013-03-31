@@ -3,8 +3,6 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = Standard_test
 
-#DEFINES += SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
-
 CONFIG += console
 
 LIBS += -lgtest \

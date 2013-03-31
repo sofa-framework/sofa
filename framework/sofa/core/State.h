@@ -105,6 +105,8 @@ public:
     WriteVecDeriv writeVelocities()      { return WriteVecDeriv(*this->write(core::VecDerivId::velocity())); }
     ReadVecDeriv  readForces() const     { return ReadVecDeriv (*this->read (core::ConstVecDerivId::force())); }
     WriteVecDeriv writeForces()          { return WriteVecDeriv(*this->write(core::VecDerivId::force())); }
+    ReadVecDeriv  readDx() const         { return ReadVecDeriv (*this->read (core::ConstVecDerivId::dx())); }
+    WriteVecDeriv writeDx()              { return WriteVecDeriv(*this->write(core::VecDerivId::dx())); }
     ReadVecDeriv  readNormals() const    { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
     //@}
 
