@@ -124,36 +124,28 @@ struct RigidMapping_test : public Mapping_test<typename _RigidMapping::In, typen
         // child positions
         rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
         WriteOutVecCoord xout = outDofs->writePositions();
-        WriteOutVecDeriv vout = outDofs->writeVelocities();
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
-//        OutDataTypes::set( vout[0] ,0.,0.,0.);
         OutDataTypes::set( xout[1] ,1.,0.,0.);
-//        OutDataTypes::set( vout[1] ,1.,0.,0.);
         OutDataTypes::set( xout[2] ,0.,1.,0.);
-//        OutDataTypes::set( vout[2] ,0.,1.,0.);
         OutDataTypes::set( xout[3] ,0.,0.,1.);
-//        OutDataTypes::set( vout[3] ,0.,0.,1.);
 
         // parent position
         WriteInVecCoord xin = inDofs->writePositions();
         InDataTypes::set( xin[0], 1.,-2.,3. );
         Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
+//        Rotation rot = InDataTypes::rotationEuler(0,0,0);
         InDataTypes::setCRot( xin[0], rot );
 
-//        // parent velocity
-//        WriteInVecDeriv vin = inDofs->writeVelocities();
 
         // expected mapped values
         this->expectedChildCoords.resize(xout.size());
-//        expectedChildVels.  resize(xout.size());
         RotationMatrix m;
         xin[0].writeRotationMatrix(m);
         for(unsigned i=0; i<xout.size(); i++ )
         {
             // note that before init, xout is still in relative coordinates
             this->expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
-//            expectedChildVels  [i] = vin[0].velocityAtRotatedPoint( m*xout[i] );
         }
 
 

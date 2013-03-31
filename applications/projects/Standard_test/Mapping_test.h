@@ -34,7 +34,7 @@
 namespace sofa {
 
 using std::cout;
-using std::cerr;
+using std::cout;
 using std::endl;
 using namespace core;
 
@@ -86,12 +86,12 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
     /** This tests assumes that init() has been applied,
       and that the expected output positions have been written in variable expectedChildCoords.
       It compares the actual output positions to the expected output positions.
+      The velocities are not tested, they will be in test_Jacobian()
     */
     virtual bool test_apply()
     {
         // apply has been done in the init();
         ReadOutVecCoord xout = toModel->readPositions();
-//        ReadOutVecDeriv vout = outDofs->readVelocities();
 
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
@@ -101,129 +101,154 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildCoords[i];
                 succeed = false;
             }
-//            OutDeriv vdiff = vout[i] - expectedChildVels[i];
-//            if( !isSmall(  vdiff.norm() ) ) {
-//                ADD_FAILURE() << "Velocity of mapped particle " << i << " is wrong: " << vout[i] <<", expected: " << expectedChildVels[i];
-//                succeed = false;
-//            }
         }
 
         return succeed;
     }
 
 
-    /** Test applyJ by comparing its result with a small displacement.
-        This tests generate a small random perturbation dp of the parent positions,
-        and checks that the change of child positions dc is accurately computed using the Jacobian: dc = J.dp
+
+
+    /** Test all the uses of the Jacobian of the mapping.
+        applyJ is tested by comparing its result with a the consequence of a small displacement.
+
+        The Jacobian matrix J is obtained using getJs(), and validated by comparison of its product with the result of applyJ().
+
+        Matrix J is then used to validate applyJT.
+
+        Function applyDJT() is validated by comparing the parent forces created by the same child forces, before and after the small displacement.
+
+        The small displacement and the child forces are generated using random numbers.
 
         If the sensitivity of the mapping is high (i.e. a small change of input generates a large change of output),
         and the mapping is nonlinear,
         then this test may return false even if applyJ works correctly.
         To avoid this, choose examples where the output changes have the same order of magnitude as the input changes.
 
-    \param perturbation The maximum magnitude of the perturbation of each scalar value is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
-    \param maxError The test is successfull if the difference (Linf norm of dc - J.dp) is less than  maxError * numeric_limits<Real>::epsilon
+    \param perturbation The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    \param maxError The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 */
     virtual bool test_Jacobian( Real perturbation=1000, Real maxError=10 )
     {
-        const MechanicalParams* mparams = MechanicalParams::defaultInstance();
+        MechanicalParams mparams;
+        mparams.setKFactor(1.0);
+        mparams.setSymmetricMatrix(false);
         bool result = true;
-        const unsigned Nin=fromModel->getSize(), Nout=toModel->getSize();
+        const unsigned Np=fromModel->getSize(), Nc=toModel->getSize();
 
-        // save current child positions
-        OutVecCoord currentXout;
-        {
-            ReadOutVecCoord readCurrentXout = toModel->readPositions();
-            currentXout.resize(Nout);
-            for( unsigned i=0; i<Nout; i++ )
-                currentXout[i] = readCurrentXout[i];
-            // the ReadOutVecCoord will be destroyed
+        InVecCoord xp(Np),xp1(Np);
+        InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);
+        OutVecCoord xc(Nc),xc1(Nc);
+        OutVecDeriv vc(Nc),fc(Nc);
+
+        // get position data
+        copyFromData( xp,fromModel->readPositions() );
+        copyFromData( xc,  toModel->readPositions() ); // positions and have already been propagated
+//        cout<<"parent positions xp = "<< xp << endl;
+//        cout<<"child  positions xc = "<< xc << endl;
+
+        // set random child forces and propagate them to the parent
+        for( unsigned i=0; i<Nc; i++ ){
+            fc[i] = Out::randomDeriv( 1.0 );
         }
-//        cerr<<"currentXout = " << currentXout << endl;
+//        cout<<"random child forces  fc = "<<fc<<endl;
+        copyToData( toModel->writeForces(), fc );
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        copyFromData( fp, fromModel->readForces() );
+//        cout<<"parent forces fp = "<<fp<<endl;
 
-        // ================ test applyJ
-        // propagate a small change of positions, and compare with the same propagated as a velocity
-
-        // increment parent positions
-        WriteInVecCoord xIn = fromModel->writePositions();
-        WriteInVecDeriv dxIn = fromModel->writeVelocities();
-        InVecDeriv vIn(Nin);
-        for( unsigned i=0; i<Nin; i++ )
-        {
-            dxIn[i] = vIn[i] = In::randomDeriv( this->epsilon() * perturbation );
-            xIn[i] += dxIn[i];
+        // set small parent velocities and use them to update the child
+        for( unsigned i=0; i<Np; i++ ){
+            vp[i] = In::randomDeriv( this->epsilon() * perturbation );
         }
+//        cout<<"parent velocities vp = " << vp << endl;
+        for( unsigned i=0; i<Np; i++ ){             // and small displacements
+            xp1[i] = xp[i] + vp[i];
+        }
+//        cout<<"new parent positions xp1 = " << xp1 << endl;
 
-        // update child positions
-        mapping->apply( mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        // propagate small velocity
+        copyToData( fromModel->writeVelocities(), vp );
+        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        copyFromData( vc, toModel->readVelocities() );
+//        cout<<"child velocity vc = " << vc << endl;
 
-        // compute the difference
-        OutVecCoord dxOut(Nout);
-        ReadOutVecCoord readCurrentXout = toModel->readPositions();
-//        cerr<<"new Xout = " << readCurrentXout << endl;
-        for(unsigned i=0; i<Nout; i++ )
-            dxOut[i] = readCurrentXout[i] - currentXout[i];
-//        cerr<<"dxOut = " << dxOut << endl;
 
-        // compute the difference using a linear approximation
-        mapping->applyJ( mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        // apply geometric stiffness
+        copyToData( fromModel->writeDx(), vp );
+        dfp.fill( InDeriv() );
+        copyToData( fromModel->writeForces(), dfp );
+        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        copyFromData( dfp, fromModel->readForces() ); // fp + df due to geometric stiffness
+//        cout<<"dfp = " << dfp << endl;
 
-        // compare
-        ReadOutVecDeriv vOut= toModel->readVelocities();
-        Real maxdiff = maxDiff(dxOut,vOut);
-        if( maxdiff>this->epsilon()*maxError ){
+        // Jacobian will be obsolete after applying new positions
+        EigenSparseMatrix* J = getMatrix(mapping->getJs());
+//        cout<<"J = "<< endl << *J << endl;
+        OutVecDeriv Jv(Nc);
+        J->mult(Jv,vp);
+
+        // ================ test applyJT()
+        InVecDeriv jfc( (long)Np,InDeriv());
+        J->addMultTranspose(jfc,fc);
+//        cout<<"jfc = " << jfc << endl;
+//        cout<<" fp = " << fp << endl;
+        if( this->maxDiff(jfc,fp)>this->epsilon()*maxError ){
             result = false;
-            ADD_FAILURE() << "applyJ test failed";
+            ADD_FAILURE() << "applyJT test failed";
         }
-
         // ================ test getJs()
-
         // check that J.vp = vc
-        const vector<sofa::defaulttype::BaseMatrix*>* jacobians = mapping->getJs();
-        if( jacobians->size() != 1 ){
-//            FAIL()<< "Mapping->getJs() should have size == 1";
-            return false;
-        }
-        EigenSparseMatrix* eiJacobian = dynamic_cast<EigenSparseMatrix*>((*jacobians)[0] );
-        if( eiJacobian == NULL ){
-            ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
-            return false;
-        }
-        OutVecDeriv Jv(Nout);
-        eiJacobian->mult(Jv,vIn);
-        Real maxdiffJv = maxDiff(Jv,vOut);
-//        cerr<<"Jv = " << Jv << endl;
-//        cerr<<"vOut = " << vOut << endl;
-        if( maxdiffJv>this->epsilon()*maxError ){
+//        cout<<"vp = " << vp << endl;
+//        cout<<"Jvp = " << Jv << endl;
+//        cout<<"vc  = " << vc << endl;
+        if( this->maxDiff(Jv,vc)>this->epsilon()*maxError ){
             result = false;
             ADD_FAILURE() << "getJs() test failed";
         }
 
-        // ================ test applyJT()
-        // set fc = vOut, applyJt and check that parent force fp = J^T fc
 
-        {WriteOutVecDeriv fc =   toModel->writeForces();
-        for( unsigned i=0; i<Nout; i++ )
-            fc[i]=vOut[i];
+        // propagate small displacement
+        copyToData( fromModel->writePositions(), xp1 );
+//        cout<<"new parent positions xp1 = " << xp1 << endl;
+        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        copyFromData( xc1, toModel->readPositions() );
+//        cout<<"new child positions xc1 = " << xc1 << endl;
+
+        // ================ test applyJ: compute the difference between propagated displacements and velocities
+        OutVecCoord dxc(Nc),dxcv(Nc);
+        for(unsigned i=0; i<Nc; i++ ){
+            dxc[i] = xc1[i] - xc[i];
+            dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
-        // set fp to zero before applyJt
-        {WriteInVecDeriv  fp = fromModel->writeForces();
-        for( unsigned i=0; i<Nin; i++ )
-            fp[i]=InDeriv();  // null value
-        }
-        mapping->applyJT( mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        InVecDeriv jfp(Nin);
-        eiJacobian->addMultTranspose(jfp,vOut.ref());
-        ReadInVecDeriv fp = fromModel->readForces();
-//        cerr<<"jfp = " << jfp << endl;
-//        cerr<<" fp = " << fp << endl;
-        Real maxdiffFp = maxDiff(jfp,fp);
-        if( maxdiffFp>this->epsilon()*maxError ){
+//        cout<<"dxc = " << dxc << endl;
+        if( this->maxDiff(dxc,dxcv)>this->epsilon()*maxError ){
             result = false;
-            ADD_FAILURE() << "applyJT test failed";
+            ADD_FAILURE() << "applyJ test failed";
         }
+
+
+        // update parent force based on the same child forces
+        fp2.fill( InDeriv() );
+        copyToData( fromModel->writeForces(), fp2 );  // reset parent forces before accumulating child forces
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        copyFromData( fp2, fromModel->readForces() );
+//        cout<<"updated parent forces fp2 = "<< fp2 << endl;
+        InVecDeriv fp12(Np);
+        for(unsigned i=0; i<Np; i++){
+            fp12[i] = fp2[i]-fp[i];       // fp2 - fp
+        }
+//        cout<<"fp2 - fp = " << fp12 << endl;
+
+
 
         // ================ test applyDJT()
+        if( this->maxDiff(dfp,fp12)>this->epsilon()*maxError ){
+            result = false;
+            ADD_FAILURE() << "applyDJT test failed" << endl <<
+                             "dfp    = " << dfp << endl <<
+                             "fp2-fp = " << fp12 << endl;
+        }
 
 
         return result;
@@ -255,11 +280,40 @@ protected:
 
         Real maxdiff = 0;
         for(unsigned i=0; i<c1.size(); i++ ){
-//            cerr<< c2[i]-c1[i] << " ";
+//            cout<< c2[i]-c1[i] << " ";
             if( (c1[i]-c2[i]).norm()>maxdiff )
                 maxdiff = (c1[i]-c2[i]).norm();
         }
         return maxdiff;
+    }
+
+    /// Resize the Vector and copy it from the Data
+    template<class Vector, class ReadData>
+    void copyFromData( Vector& v, const ReadData& d){
+        v.resize(d.size());
+        for( unsigned i=0; i<v.size(); i++)
+            v[i] = d[i];
+    }
+
+    /// Copy the Data from the Vector. They must have the same size.
+    template<class WriteData, class Vector>
+    void copyToData( WriteData d, const Vector& v){
+        for( unsigned i=0; i<d.size(); i++)
+            d[i] = v[i];
+    }
+
+    /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
+    static EigenSparseMatrix* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    {
+        if( matrices->size() != 1 ){
+            ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
+//            return 0;
+        }
+        EigenSparseMatrix* ei = dynamic_cast<EigenSparseMatrix*>((*matrices)[0] );
+        if( ei == NULL ){
+            ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
+        }
+        return ei;
     }
 
 private:

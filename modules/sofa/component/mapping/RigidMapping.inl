@@ -45,6 +45,9 @@
 #include <string.h>
 #include <iostream>
 #include <cassert>
+using std::cout;
+using std::endl;
+using std::cerr;
 
 namespace sofa
 {
@@ -62,7 +65,7 @@ extern void rigidMappingDummyFunction(); ///< Used for setting breakpoints, sinc
 
 template <class TIn, class TOut>
 class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
-    public helper::io::SphereLoader
+        public helper::io::SphereLoader
 {
 public:
 
@@ -75,7 +78,7 @@ public:
     {
     }
     virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal,
-            SReal, SReal, bool, bool)
+                         SReal, SReal, bool, bool)
     {
         Coord c;
         Out::set(c, px, py, pz);
@@ -96,13 +99,13 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
     points.endEdit();
 
     if (strlen(filename) > 4
-        && !strcmp(filename + strlen(filename) - 4, ".xs3"))
+            && !strcmp(filename + strlen(filename) - 4, ".xs3"))
     {
         Loader loader(this);
         loader.helper::io::MassSpringLoader::load(filename);
     }
     else if (strlen(filename) > 4
-            && !strcmp(filename + strlen(filename) - 4, ".sph"))
+             && !strcmp(filename + strlen(filename) - 4, ".sph"))
     {
         Loader loader(this);
         loader.helper::io::SphereLoader::load(filename);
@@ -119,9 +122,9 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
             for (unsigned int i = 0; i < mesh->getVertices().size(); i++)
             {
                 Out::set(points[i],
-                        mesh->getVertices()[i][0],
-                        mesh->getVertices()[i][1],
-                        mesh->getVertices()[i][2]);
+                         mesh->getVertices()[i][0],
+                         mesh->getVertices()[i][1],
+                         mesh->getVertices()[i][2]);
             }
             delete mesh;
         }
@@ -218,7 +221,7 @@ void RigidMapping<TIn, TOut>::reinit()
                     for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
                     {
                         points[cpt]
-                            = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+                                = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
                     }
                 }
                 break;
@@ -228,7 +231,7 @@ void RigidMapping<TIn, TOut>::reinit()
                     for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
                     {
                         points[cpt]
-                            = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
+                                = xFrom[i].inverseRotate(xTo[cpt] - xFrom[i].getCenter());
                     }
                 }
                 break;
@@ -313,7 +316,7 @@ void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
-        unsigned int> values)
+                                             unsigned int> values)
 {
     vector<unsigned int>& rep = *this->pointsPerFrame.beginEdit();
     rep.clear();
@@ -339,7 +342,7 @@ const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getP
         else
             serr
                     << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings."
-                            << sendl;
+                    << sendl;
     }
     return points.getValue();
 }
@@ -409,8 +412,8 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
         in[inIdx].writeRotationMatrix(rotation);
 
         for (unsigned iOutput = 0;
-                iOutput < outputPerInput;
-                ++iOutput, ++outIdx)
+             iOutput < outputPerInput;
+             ++iOutput, ++outIdx)
         {
             rotatedPoints[outIdx] = rotation * pts[outIdx];
             out[outIdx] = rotatedPoints[outIdx];
@@ -483,8 +486,8 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
         }
 
         for (unsigned iOutput = 0;
-                iOutput < outputPerInput && !(isMaskInUse && it == indices->end());
-                ++iOutput, ++outIdx)
+             iOutput < outputPerInput && !(isMaskInUse && it == indices->end());
+             ++iOutput, ++outIdx)
         {
             if (isMaskInUse)
             {
@@ -559,8 +562,8 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
         }
 
         for (unsigned iInput = 0;
-                iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
-                ++iInput, ++inIdx)
+             iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
+             ++iInput, ++inIdx)
         {
             if (isMaskInUse)
             {
@@ -627,7 +630,11 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
     helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
     helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent displacements = "<< parentDisplacements << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent forces = "<< parentForces << endl;
+
     InReal kfactor = (InReal)mparams->kFactor();
+    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, kfactor = "<< kfactor << endl;
 
     const VecCoord& pts = this->getPoints();
 
@@ -641,6 +648,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
         serr << "Error : mapping dofs repartition is not correct" << sendl;
         return;
     }
+
 
     unsigned parentIdxBegin;
     unsigned parentIdxEnd;
@@ -677,8 +685,8 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
         }
 
         for (unsigned iInput = 0;
-                iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
-                ++iInput, ++childIdx)
+             iInput < inputPerOutput && !(isMaskInUse && it == indices->end());
+             ++iInput, ++childIdx)
         {
             if (isMaskInUse)
             {
@@ -693,12 +701,12 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
             //                        const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
             const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
             parentTorque -=  torqueDecrement;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentRotation = "<< parentRotation << endl;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT,  kfactor = "<<  kfactor << endl;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque increment = "<< -torqueDecrement << endl;
-            //                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque = "<< parentTorque << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentRotation = "<< parentRotation << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT,  kfactor = "<<  kfactor << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque increment = "<< -torqueDecrement << endl;
+//            cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque = "<< parentTorque << endl;
 
 
 
@@ -833,7 +841,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
                 bool needToInsert = false;
 
                 for (unsigned int r = 0; r < pointsPerFrame.getValue()[ito] && colIt
-                        != colItEnd; r++, cpt++)
+                     != colItEnd; r++, cpt++)
                 {
                     if (colIt.index() != cpt)
                         continue;
@@ -873,11 +881,11 @@ template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
     const MatrixType* crsJacobian = dynamic_cast<const MatrixType*>(getJ());
-//    cerr<<"RigidMapping<TIn, TOut>::getJs(), J = " << *crsJacobian << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::getJs(), J = " << *crsJacobian << endl;
     assert(crsJacobian);
     eigenJacobian.copyFrom( *crsJacobian );
-//    eigenJacobian.setIdentity();
-//    cerr<<"RigidMapping<TIn, TOut>::getJs(), J copied = " << eigenJacobian << endl;
+    //    eigenJacobian.setIdentity();
+    //    cerr<<"RigidMapping<TIn, TOut>::getJs(), J copied = " << eigenJacobian << endl;
     return &eigenJacobians;
 }
 #endif
@@ -894,8 +902,8 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
     {
         updateJ = false;
         if (matrixJ.get() == 0 ||
-            matrixJ->rowBSize() != out.size() ||
-            matrixJ->colBSize() != in.size())
+                matrixJ->rowBSize() != out.size() ||
+                matrixJ->colBSize() != in.size())
         {
             matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
         }
@@ -953,8 +961,8 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
             }
 
             for (unsigned iOutput = 0;
-                    iOutput < outputPerInput; // iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
-                    ++iOutput, ++outIdx)
+                 iOutput < outputPerInput; // iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
+                 ++iOutput, ++outIdx)
             {
                 //                if (isMaskInUse)
                 //                {
@@ -977,7 +985,7 @@ struct RigidMappingMatrixHelper<2, Real>
 {
     template <class Matrix, class Vector>
     static void setMatrix(Matrix& mat,
-            const Vector& vec)
+                          const Vector& vec)
     {
         mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;
         mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;
@@ -990,7 +998,7 @@ struct RigidMappingMatrixHelper<3, Real>
 {
     template <class Matrix, class Vector>
     static void setMatrix(Matrix& mat,
-            const Vector& vec)
+                          const Vector& vec)
     {
         // out = J in
         // J = [ I -OM^ ]
@@ -1006,7 +1014,7 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
-//    cerr<<"RigidMapping<TIn, TOut>::setJMatrixBlock, outIdx = " << outIdx << ", inIdx = " << inIdx << endl;
+    //    cerr<<"RigidMapping<TIn, TOut>::setJMatrixBlock, outIdx = " << outIdx << ", inIdx = " << inIdx << endl;
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }
@@ -1026,7 +1034,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7,
-            Vec<4, float>(1, 1, 0,1));
+                                    Vec<4, float>(1, 1, 0,1));
 }
 
 } // namespace mapping
