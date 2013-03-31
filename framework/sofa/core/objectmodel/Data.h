@@ -523,7 +523,7 @@ bool TData<bool>::read( const std::string& str );
 /// General case for printing default value
 template<class T>
 inline
-void TData<T>::printValue( std::ostream& out=std::cout ) const
+void TData<T>::printValue( std::ostream& out) const
 {
     out << virtualGetValue() << " ";
 }
