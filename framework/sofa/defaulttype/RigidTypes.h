@@ -1203,9 +1203,9 @@ public:
     }
 
     /// Squared norm
-    real norm2() const
+    Real norm2() const
     {
-        real angle = fmod( orientation, (M_PI*2) );
+        Real angle = fmod( (Real) orientation, (Real) M_PI*2 );
         return center*center + angle*angle;
     }
 

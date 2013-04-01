@@ -254,15 +254,15 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
 #ifndef NDEBUG
-    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;
+//    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;
 #endif
 
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
 #ifndef NDEBUG
-        std::string name = (*it_engines_rev)->getName();
-        std::cout << "DEBUG: engine name: " << name << std::endl;
-        std::cout << "DEBUG: engine: " << (*it_engines_rev) << std::endl;
+//        std::string name = (*it_engines_rev)->getName();
+//        std::cout << "DEBUG: engine name: " << name << std::endl;
+//        std::cout << "DEBUG: engine: " << (*it_engines_rev) << std::endl;
 #endif
         bool find = false;
 
