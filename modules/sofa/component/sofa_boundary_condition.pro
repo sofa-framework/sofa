@@ -95,8 +95,10 @@ SOURCES += initBoundaryCondition.cpp \
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += projectiveconstraintset/ProjectToLineConstraint.h \
            projectiveconstraintset/ProjectToLineConstraint.inl \
-		   projectiveconstraintset/ProjectToPlaneConstraint.h \
+           projectiveconstraintset/ProjectToPlaneConstraint.h \
            projectiveconstraintset/ProjectToPlaneConstraint.inl \
+           projectiveconstraintset/ProjectToPlaneUnilateralConstraint.h \
+           projectiveconstraintset/ProjectToPlaneUnilateralConstraint.inl \
            projectiveconstraintset/ProjectToPointConstraint.h \
            projectiveconstraintset/ProjectToPointConstraint.inl \
            projectiveconstraintset/ProjectDirectionConstraint.h \
@@ -105,6 +107,7 @@ HEADERS += projectiveconstraintset/ProjectToLineConstraint.h \
 
 SOURCES += projectiveconstraintset/ProjectToLineConstraint.cpp \
            projectiveconstraintset/ProjectToPlaneConstraint.cpp \
+           projectiveconstraintset/ProjectToPlaneUnilateralConstraint.cpp \
            projectiveconstraintset/ProjectToPointConstraint.cpp \
            projectiveconstraintset/ProjectDirectionConstraint.cpp
 }
