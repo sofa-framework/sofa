@@ -10,9 +10,25 @@ set(SOURCE_FILES
 
     )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+if(APPLE)
+
+    set(RC_FILES "runSOFA.icns")
+
+else()
+
+    set(RC_FILES "sofa.rc")
+
+endif()
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 set(LINKER_DEPENDENCIES SofaComponentMain )
+
+if(UNIX)
+
+    list(APPEND LINKER_DEPENDENCIES "dl")
+
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

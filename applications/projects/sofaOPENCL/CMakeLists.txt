@@ -9,8 +9,14 @@ set(SOURCE_FILES
     Main.cpp
 
     )
+    
+set(RC_FILES
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    sofa.rc
+
+    )
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain SofaGpuOpenCL )
 

@@ -19,7 +19,29 @@ set(SOURCE_FILES
 
     )
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+if(APPLE)
+
+    set(RC_FILES "sofaConfiguration.icns")
+
+else()
+
+    set(RC_FILES "sofa.rc")
+
+endif()
+
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES})
+
+if(WIN32)
+
+    set(LINKER_DEPENDENCIES "shell32")
+
+endif()
+
+if(APPLE)
+
+    set(LINKER_DEPENDENCIES "CoreFoundation")
+    
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

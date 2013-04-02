@@ -9,8 +9,18 @@ set(SOURCE_FILES
     Main.cpp
 
     )
+    
+if(APPLE)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    set(RC_FILES "Modeler.icns")
+    
+else
+    
+    set(RC_FILES "sofa.rc")    
+
+endif()
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 set(LINKER_DEPENDENCIES SofaModeler SofaComponentMain )
 
