@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-if(false)
+
 # extlibs
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
@@ -74,7 +74,6 @@ endforeach()
 foreach(devPlugin ${SOFA_DEV_PLUGINS})
 	add_subdirectory("${${devPlugin}}")
 endforeach()
-endif()
 
 # copy external shared objects (.dll) to the Sofa bin directory
 if(WIN32)
