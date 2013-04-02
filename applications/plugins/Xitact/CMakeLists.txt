@@ -32,6 +32,6 @@ set(README_FILE PluginXitact.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_XITACTPLUGIN")
-set(LINKER_DEPENDENCIES SofaComponentMain SofaGui SofaGuiQt)
+set(LINKER_DEPENDENCIES SofaComponentMain SofaGui SofaGuiQt XiRobot)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

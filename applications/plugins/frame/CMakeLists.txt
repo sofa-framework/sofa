@@ -75,11 +75,24 @@ set(SOURCE_FILES
 
 	)
 
+
+if(SOFA_GPU_CUDA)
+    
+#    list(APPEND HEADER_FILES "HexaRemover.h")
+#    list(APPEND HEADER_FILES "HexaRemover.inl")
+#    list(APPEND SOURCE_FILES "HexaRemover.cpp")
+
+endif()
+
 set(README_FILE frame.txt )	
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_FRAME")
 set(LINKER_DEPENDENCIES SofaGuiQt SofaSparseSolver SofaEigen2Solver)
+
+if(UNIX)
+    list(APPEND LINKER_DEPENDENCIES "X11")
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

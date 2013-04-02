@@ -5,8 +5,8 @@ project("SofaMeshStepLoader")
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 ##plugin external dependencies
-find_package(SofaMeshStepLooaderLibs REQUIRED)
-include_directories(${SOFAMESHSTEPLOADER_INCLUDE_DIRS})
+#find_package(SofaMeshStepLooaderLibs REQUIRED)
+#include_directories(${SOFAMESHSTEPLOADER_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
@@ -35,5 +35,14 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_MESHSTEPLOADERPLUGIN")
 set(LINKER_DEPENDENCIES SofaBaseTopology )
+
+if(UNIX)
+    list(APPEND LINKER_DEPENDENCIES "TK")
+    list(APPEND LINKER_DEPENDENCIES "GL")
+endif()
+
+if(WIN32)
+    list(APPEND LINKER_DEPENDENCIES "OpenCascade" )
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

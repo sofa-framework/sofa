@@ -57,6 +57,6 @@ set(README_FILE Compliant.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_Compliant")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible)
+set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible amd lapack blas camd colamd cholmod)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

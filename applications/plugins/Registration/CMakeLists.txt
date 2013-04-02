@@ -32,16 +32,6 @@ set(SOURCE_FILES
 	)
 	
 if(SOFA_HAVE_IMAGE)
-
-    if(SOFA_IMAGE_HAVE_OPENCV)
-    
-        ##plugin external dependencies
-        find_package(SofaOpenCVLibs REQUIRED)
-        include_directories(${SOFAOPENCV_INCLUDE_DIR})
-
-    endif()
-    
-    include_directories(${SOFAIMAGE_INCLUDE_DIRS})
     
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
@@ -55,5 +45,19 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_REGISTRATION")
 set(LINKER_DEPENDENCIES SofaGuiQt )
+
+if(SOFA_HAVE_IMAGE)
+
+    if(SOFA_IMAGE_HAVE_OPENCV)
+    
+        list(APPEND LINKER_DEPENDENCIES "ml")
+        list(APPEND LINKER_DEPENDENCIES "cvaux")
+        list(APPEND LINKER_DEPENDENCIES "highgui")
+        list(APPEND LINKER_DEPENDENCIES "cv")
+        list(APPEND LINKER_DEPENDENCIES "cxcore")
+
+    endif()
+
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

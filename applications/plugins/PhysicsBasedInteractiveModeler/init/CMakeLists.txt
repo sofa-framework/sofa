@@ -5,8 +5,8 @@ project("SofaPhysicsBaseInteractiveModeler")
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 ##plugin external dependencies
-find_package(SofaPhysicsBasedInteractiveModelerLibs REQUIRED)
-include_directories(${SOFAPHYSICSBASEDINTERAVTIVEMODELER_INCLUDE_DIRS})
+#find_package(SofaPhysicsBasedInteractiveModelerLibs REQUIRED)
+#include_directories(${SOFAPHYSICSBASEDINTERAVTIVEMODELER_INCLUDE_DIRS})
 
 set(SOURCE_FILES
 
@@ -19,6 +19,6 @@ set(README_FILE PhysicsBasedInteractiveModeler.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_PIM")
-#set(LINKER_DEPENDENCIES )
+#set(LINKER_DEPENDENCIES SofaSimulationCommon SofaComponentLinearSolver SofaComponentOdeSolver SofaComponentMass SofaComponentForcefield SofaComponentCollision SofaComponentConstraint SofaComponentMisc SofaComponentBase SofaComponentMapping SofaComponentEngine SofaComponentVisualModel SofaPim SofaPimGuiQt SofaGuiQt)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

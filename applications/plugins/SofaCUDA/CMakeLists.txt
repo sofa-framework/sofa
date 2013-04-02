@@ -182,7 +182,7 @@ set(README_FILE SofaCUDA.txt )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
+set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA ; CUDPP_STATIC_LIB")
 set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData cudpp thrust)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
