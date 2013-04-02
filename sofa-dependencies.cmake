@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-
+if(false)
 # extlibs
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
@@ -71,6 +71,22 @@ foreach(plugin ${SOFA_PLUGINS})
 endforeach()
 
 # dev-plugins
-foreach(devplugin ${SOFA_DEV_PLUGINS})
-	add_subdirectory("${${devplugin}}")
+foreach(devPlugin ${SOFA_DEV_PLUGINS})
+	add_subdirectory("${${devPlugin}}")
 endforeach()
+endif()
+
+# copy external shared objects (.dll) to the Sofa bin directory
+if(WIN32)
+	## common external dlls
+	file(GLOB sharedObjects "${SOFA_BIN_DIR}/dll_x86/*.dll")
+	foreach(sharedObject ${sharedObjects})
+		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+	endforeach()
+	
+	## qt dlls
+	file(GLOB sharedObjects "${EXTERNAL_QT_PATH}/bin/*.dll")
+	foreach(sharedObject ${sharedObjects})
+		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+	endforeach()
+endif()
