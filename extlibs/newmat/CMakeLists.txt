@@ -46,7 +46,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 # fix link errors when linked with shared libraries
-if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64_32")
+if(${CMAKE_COMPILER_IS_GNUCC}))
     set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 endif()
 
