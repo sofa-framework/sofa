@@ -43,7 +43,7 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 # fix link errors when linked with shared libraries
 if(${CMAKE_COMPILER_IS_GNUCC})
-    set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
+    set(COMPILER_FLAGS "-fPIC")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};MINI_FLOWVR")
