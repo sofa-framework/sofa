@@ -42,7 +42,7 @@ include_directories("include")
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
 # fix link errors when linked with shared libraries
-if(${CMAKE_COMPILER_IS_GNUCC}))
+if(${CMAKE_COMPILER_IS_GNUCC})
     set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 endif()
 
