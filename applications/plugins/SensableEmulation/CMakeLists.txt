@@ -5,8 +5,8 @@ project("SofaSensableEmulation")
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 ##plugin external dependencies
-find_package(SofaSensableEmulationLibs REQUIRED)
-include_directories(${SOFASENSABLEEMULATION_INCLUDE_DIRS})
+#find_package(SofaSensableEmulationLibs REQUIRED)
+#include_directories(${SOFASENSABLEEMULATION_INCLUDE_DIRS})
 
 set(HEADER_FILES
 

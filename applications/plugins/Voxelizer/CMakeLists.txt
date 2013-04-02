@@ -5,8 +5,8 @@ project("SofaVoxelizer")
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 ##plugin external dependencies
-find_package( SofaVoxelizerLibs REQUIRED)
-include_directories(${SOFAVOXELIZER_INCLUDE_DIRS})
+#find_package( SofaVoxelizerLibs REQUIRED)
+#include_directories(${SOFAVOXELIZER_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
@@ -28,6 +28,6 @@ set(README_FILE Voxelizer.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_VOXELIZER")
-#set(LINKER_DEPENDENCIES )
+set(LINKER_DEPENDENCIES SofaGpuCuda)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)

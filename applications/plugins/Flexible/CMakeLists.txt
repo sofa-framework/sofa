@@ -5,8 +5,8 @@ project("SofaFlexible")
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
 ##plugin external dependencies
-find_package( REQUIRED)
-include_directories(${})
+#find_package( REQUIRED)
+#include_directories(${})
 
 set(HEADER_FILES
 
@@ -130,13 +130,6 @@ set(SOURCE_FILES
 	)
 
 if(SOFA_HAVE_IMAGE)
-
-    if(SOFA_IMAGE_HAVE_OPENCV) #should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
-        find_package( SofaOpenCVLibs REQUIRED)
-        include_directories(${SOFAOPENCV_INCLUDE_DIR})
-    endif()
-    
-    include_directories(${SOFAFLEXIBLE_INCLUDE_DIR})
         
    	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
    	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
@@ -163,4 +156,17 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set(COMPILER_DEFINES "SOFA_BUILD_Flexible")
 set(LINKER_DEPENDENCIES SofaGuiQt )
 
+
+if(SOFA_HAVE_IMAGE)
+
+    if(SOFA_IMAGE_HAVE_OPENCV) #should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
+
+        list(APPEND LINKER_DEPENDENCIES "ml")
+        list(APPEND LINKER_DEPENDENCIES "cvaux")
+        list(APPEND LINKER_DEPENDENCIES "highgui")
+        list(APPEND LINKER_DEPENDENCIES "cv")
+        list(APPEND LINKER_DEPENDENCIES "cxcore")
+
+    endif()
+endif()
 include(${SOFA_CMAKE_DIR}/post.cmake)

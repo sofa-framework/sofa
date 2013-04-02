@@ -28,6 +28,6 @@ set(README_FILE ColladaSceneLoader.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_COLLADASCENELOADER")
-set(LINKER_DEPENDENCIES SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual)
+set(LINKER_DEPENDENCIES SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual assimp)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
