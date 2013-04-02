@@ -40,6 +40,12 @@ set(SOURCE_FILES
 
 include_directories("include")
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+
+# fix link errors when linked with shared libraries
+IF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
+ENDIF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};MINI_FLOWVR")
 	
 include(${SOFA_CMAKE_DIR}/post.cmake)
