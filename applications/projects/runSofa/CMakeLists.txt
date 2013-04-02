@@ -9,6 +9,10 @@ set(SOURCE_FILES
 	Main.cpp
 	)
 
+if(GUI_USE_QTVIEWER)
+	UseQt()
+endif()
+	
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain)

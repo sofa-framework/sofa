@@ -124,11 +124,8 @@ if(GUI_USE_QGLVIEWER)
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
+UseQt()
 if(EXTERNAL_USE_QT4)
-	set(ENV{CONFIG} "qt;uic;uic3")
-	
-	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
-	
 	list(APPEND HEADER_FILES
 	
 		 QModelViewTableDataContainer.h
@@ -138,10 +135,6 @@ if(EXTERNAL_USE_QT4)
 	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 	QT4_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 else()
-	set(ENV{CONFIG} "qt")
-	
-	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
-	
 	list(APPEND HEADER_FILES
 	
 		 QTableDataContainer.h
@@ -151,16 +144,6 @@ else()
 	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 	QT3_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 endif()
-set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
-
-include(${QT_USE_FILE})
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/*")
-foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
-	include_directories(${QT_INCLUDE_SUBDIR})
-endforeach()
 
 # make mocced header files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
@@ -179,8 +162,8 @@ include_directories("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "${QT_DEFINITIONS};SOFA_BUILD_SOFAGUIQT")
-set(LINKER_DEPENDENCIES SofaGuiCommon Qwt ${QT_LIBRARIES} SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIQT")
+set(LINKER_DEPENDENCIES SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 
 if(GUI_USE_QGLVIEWER)
     list(APPEND LINKER_DEPENDENCIES QGLViewer)
