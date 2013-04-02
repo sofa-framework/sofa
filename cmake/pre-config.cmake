@@ -8,6 +8,10 @@ set(COMPILER_FLAGS "")
 set(LINKER_DEPENDENCIES "")
 set(LINKER_FLAGS "")
 
+## internal
+set(ADDITIONAL_COMPILER_DEFINES "")
+set(ADDITIONAL_LINKER_DEPENDENCIES "")
+
 # include dir
 include_directories("${SOFA_INC_DIR}")
 include_directories("${SOFA_FRAMEWORK_DIR}")
@@ -81,3 +85,15 @@ else()
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_DIR}")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_DIR}")
 endif()
+
+## qt
+if(EXTERNAL_USE_QT4)
+	set(ENV{CONFIG} "qt;uic;uic3")
+	
+	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
+else()
+	set(ENV{CONFIG} "qt")
+	
+	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
+endif()
+set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")

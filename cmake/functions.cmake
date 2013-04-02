@@ -70,7 +70,9 @@ macro(QT4_UIC3_WRAP_UI outfiles )
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} ${infile} -o ${outHeaderFile}
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
 							MAIN_DEPENDENCY ${infile})
-		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile})
+		
+		QT4_WRAP_CPP(outMocFile ${outHeaderFile})
+		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
 	endforeach()
 endmacro()
 
@@ -87,6 +89,22 @@ macro(QT3_UIC3_WRAP_UI outfiles )
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} ${infile} -o ${outHeaderFile}
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
 							MAIN_DEPENDENCY ${infile})
-		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile})
+							
+		QT3_WRAP_CPP(outMocFile ${outHeaderFile})
+		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
 	endforeach()
 endmacro()
+
+function(UseQt)
+	include(${QT_USE_FILE})
+	include_directories(${QT_INCLUDE_DIR})
+	include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+	file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/*")
+	foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
+		include_directories(${QT_INCLUDE_SUBDIR})
+	endforeach()
+	
+	set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} PARENT_SCOPE)
+	set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
+endfunction()
