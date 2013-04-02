@@ -14,7 +14,7 @@ if(APPLE)
 
     set(RC_FILES "Modeler.icns")
     
-else
+else()
     
     set(RC_FILES "sofa.rc")    
 

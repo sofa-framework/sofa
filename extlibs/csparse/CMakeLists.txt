@@ -19,6 +19,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 
+# fix link errors when linked with shared libraries
+if(${CMAKE_COMPILER_IS_GNUCC})
+    set(COMPILER_FLAGS "-fPIC")
+endif()
+
 set(COMPILER_DEFINES "use_namespace")
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
