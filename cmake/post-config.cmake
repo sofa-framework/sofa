@@ -14,6 +14,15 @@ endforeach()
 
 if(TARGET ${PROJECT_NAME})
 
+	set(linkerDependencies ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
+	foreach(linkerDependency ${linkerDependencies})
+		if(TARGET ${linkerDependency})
+			get_property(dependenceIncludeDirs TARGET ${linkerDependency} PROPERTY INCLUDE_DIRECTORIES)
+			list(REMOVE_DUPLICATES dependenceIncludeDirs)
+			include_directories(${dependenceIncludeDirs})
+		endif()
+	endforeach()
+
 	# compile definitions
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};${ADDITIONAL_COMPILER_DEFINES};${COMPILER_DEFINES}")
 
