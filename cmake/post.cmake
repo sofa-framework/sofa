@@ -7,3 +7,4 @@ if(NOT PROJECT_NAME STREQUAL "${SOLUTION_NAME}")
 else()
 	message(STATUS "> ${PROJECT_NAME} : Done\n")
 endif()
+
