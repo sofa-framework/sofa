@@ -14,17 +14,20 @@ endforeach()
 
 if(TARGET ${PROJECT_NAME})
 
+	set(allDependenciesIncludeDirs)
+
 	set(linkerDependencies ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
 	foreach(linkerDependency ${linkerDependencies})
 		if(TARGET ${linkerDependency})
-			get_target_property(dependenceIncludeDirs ${linkerDependency} INCLUDE_DIRECTORIES)
-			if(NOT dependenceIncludeDirs STREQUAL "")
-				list(REMOVE_DUPLICATES dependenceIncludeDirs)
-				include_directories(${dependenceIncludeDirs})
-				message("${dependenceIncludeDirs}")
-			endif()
+			get_target_property(dependencyIncludeDirs ${linkerDependency} INCLUDE_DIRECTORIES)
+			set(allDependenciesIncludeDirs ${allDependenciesIncludeDirs} ${dependencyIncludeDirs})
 		endif()
 	endforeach()
+	list(LENGTH allDependenciesIncludeDirs allDependenceIncludeDirsCount)
+	if(NOT allDependenceIncludeDirsCount EQUAL 0)
+		list(REMOVE_DUPLICATES allDependenciesIncludeDirs)
+		include_directories(${allDependenciesIncludeDirs})
+	endif()
 
 	# compile definitions
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};${ADDITIONAL_COMPILER_DEFINES};${COMPILER_DEFINES}")

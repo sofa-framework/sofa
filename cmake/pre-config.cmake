@@ -81,7 +81,6 @@ else()
 	
 	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
 endif()
-include(${QT_USE_FILE})
 set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
 # target location
