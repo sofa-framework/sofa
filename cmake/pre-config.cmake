@@ -71,6 +71,18 @@ set(GELW_LIBRARIES ${GELW_LIBRARIES} CACHE INTERNAL "GLEW Library")
 set(GLUT_LIBRARIES ${GLUT_LIBRARIES} CACHE INTERNAL "GLUT Library")
 set(PNG_LIBRARIES ${PNG_LIBRARIES} CACHE INTERNAL "PNG Library")
 
+## qt
+if(EXTERNAL_USE_QT4)
+	set(ENV{CONFIG} "qt;uic;uic3")
+
+	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
+else()
+	set(ENV{CONFIG} "qt")
+	
+	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
+endif()
+include(${QT_USE_FILE})
+set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
 # target location
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SOFA_BIN_DIR}")
@@ -85,18 +97,6 @@ else()
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_DIR}")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_DIR}")
 endif()
-
-## qt
-if(EXTERNAL_USE_QT4)
-	set(ENV{CONFIG} "qt;uic;uic3")
-	
-	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
-else()
-	set(ENV{CONFIG} "qt")
-	
-	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
-endif()
-set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
 # out of source build support
 set(CMAKE_INCLUDE_CURRENT_DIR 1)
