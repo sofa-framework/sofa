@@ -146,7 +146,11 @@ if(OPTION_TUTORIALS)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_TUTORIALS)
 endif()
 
-
+## PML
+option(OPTION_PML "PML support" OFF)
+if(OPTION_PML)
+        list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_PML)
+endif()
 
 ## XML
 option(XML_PARSER_LIBXML "Use LibXML instead of built-in TinyXML" OFF)

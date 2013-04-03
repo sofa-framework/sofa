@@ -16,20 +16,8 @@ if(TARGET ${PROJECT_NAME})
 
 	set(allDependenciesIncludeDirs)
 
-	set(linkerDependencies ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
-#	foreach(linkerDependency ${linkerDependencies})
-#		if(TARGET ${linkerDependency})
-#			get_target_property(dependencyIncludeDirs ${linkerDependency} INCLUDE_DIRECTORIES)
-#			set(allDependenciesIncludeDirs ${allDependenciesIncludeDirs} ${dependencyIncludeDirs})
-#		endif()
-#	endforeach()
-#	list(LENGTH allDependenciesIncludeDirs allDependenceIncludeDirsCount)
-#	if(NOT allDependenceIncludeDirsCount EQUAL 0)
-#		list(REMOVE_DUPLICATES allDependenciesIncludeDirs)
-#		include_directories(${allDependenciesIncludeDirs})
-#	endif()
-
         # put includes inside a CACHE variable
+        set(linkerDependencies ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
         # includes from this target
         unset(${PROJECT_NAME}_INCLUDE_PATH)
         get_directory_property(${PROJECT_NAME}_INCLUDE_PATH INCLUDE_DIRECTORIES)
