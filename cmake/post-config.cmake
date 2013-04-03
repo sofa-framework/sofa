@@ -31,22 +31,26 @@ if(TARGET ${PROJECT_NAME})
 
         # put includes inside a CACHE variable
         # includes from this target
-        get_directory_property(${PROJECT_NAME}_INCLUDES INCLUDE_DIRECTORIES)
-        list(APPEND ${PROJECT_NAME}_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
+        unset(${PROJECT_NAME}_INCLUDE_PATH)
+        get_directory_property(${PROJECT_NAME}_INCLUDE_PATH INCLUDE_DIRECTORIES)
+        #message(STATUS "Private include path for ${PROJECT_NAME} : ${PROJECT_NAME}_INCLUDE_PATH = ${${PROJECT_NAME}_INCLUDE_PATH}")
+        list(APPEND ${PROJECT_NAME}_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
         # includes from dependencies
         foreach(linkerDependency ${linkerDependencies})
-                #message(STATUS "Checking variable ${linkerDependency}_INCLUDES = ${${linkerDependency}_INCLUDES}")
+                #message(STATUS "Checking variable ${linkerDependency}_INCLUDE_PATH = ${${linkerDependency}_INCLUDE_PATH}")
                 if(TARGET ${linkerDependency})
-                        if(DEFINED ${linkerDependency}_INCLUDES)
-                                #message(STATUS "dependency include found for ${PROJECT_NAME} : ${linkerDependency}")
-                                list(APPEND ${PROJECT_NAME}_INCLUDES "${${linkerDependency}_INCLUDES}")
-                                list(REMOVE_DUPLICATES ${PROJECT_NAME}_INCLUDES)
-                        endif()
-                endif()
+                        #message(STATUS "Checking variable ${linkerDependency}_INCLUDE_PATH")
+                        if(DEFINED ${linkerDependency}_INCLUDE_PATH)
+                                #message(STATUS "dependency include found for ${PROJECT_NAME} : ${linkerDependency}_INCLUDE_PATH = ${${linkerDependency}_INCLUDE_PATH}")
+                                list(APPEND ${PROJECT_NAME}_INCLUDE_PATH "${${linkerDependency}_INCLUDE_PATH}")
+                                list(REMOVE_DUPLICATES ${PROJECT_NAME}_INCLUDE_PATH)
+                        endif(DEFINED ${linkerDependency}_INCLUDE_PATH)
+                endif(TARGET ${linkerDependency})
         endforeach()
-        set(${PROJECT_NAME}_INCLUDES ${${PROJECT_NAME}_INCLUDES} CACHE INTERNAL "${PROJECT_NAME} include path")
-        #message(STATUS "Include path for ${PROJECT_NAME} : ${PROJECT_NAME}_INCLUDES = ${${PROJECT_NAME}_INCLUDES}")
-        include_directories(${PROJECT_NAME}_INCLUDES)
+        set(${PROJECT_NAME}_INCLUDE_PATH ${${PROJECT_NAME}_INCLUDE_PATH} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
+
+        #message(STATUS "Include path for ${PROJECT_NAME} : ${PROJECT_NAME}_INCLUDE_PATH = ${${PROJECT_NAME}_INCLUDE_PATH}")
+        include_directories(${${PROJECT_NAME}_INCLUDE_PATH})
 
 	# compile definitions
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};${ADDITIONAL_COMPILER_DEFINES};${COMPILER_DEFINES}")
