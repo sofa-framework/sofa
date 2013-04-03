@@ -7,9 +7,9 @@ include(${SOFA_CMAKE_DIR}/pre.cmake)
 set(SOURCE_FILES
 
     Main.cpp
-
     )
     
+UseQt()
 if(APPLE)
 
     set(RC_FILES "Modeler.icns")

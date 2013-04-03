@@ -145,7 +145,7 @@ else()
 	QT3_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 endif()
 
-# make mocced header files path from absolute to relative
+# make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 

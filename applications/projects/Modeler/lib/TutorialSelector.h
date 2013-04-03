@@ -28,6 +28,7 @@
 #ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
+typedef Q3ListViewItem QListViewItem;
 #include <QKeyEvent>
 #else
 #include <qlistview.h>

@@ -35,7 +35,15 @@ set(SOURCE_FILES
     ../../../sofa/gui/qt/SofaPluginManager.cpp 
 
     )
+	
+set(UI_FILES
 
+	Modeler.ui
+	DialogAddPreset.ui
+	../../../sofa/gui/qt/PluginManager.ui
+	)
+
+UseQt()
 if(EXTERNAL_USE_QT4)
     list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
     list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
@@ -44,6 +52,9 @@ if(EXTERNAL_USE_QT4)
     list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
     list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
+	
+	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	QT4_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 else()
     list(APPEND HEADER_FILES "QSofaLibrary.h")
     list(APPEND HEADER_FILES "QCategoryLibrary.h")
@@ -52,11 +63,21 @@ else()
     list(APPEND SOURCE_FILES "QSofaLibrary.cpp")
     list(APPEND SOURCE_FILES "QCategoryLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentLibrary.cpp")
+	
+	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	QT3_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
 endif()
 
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+# make mocced header / form files path from absolute to relative
+ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
+ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 
-set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain )
+set(MOC_FILES_GROUP "Generated")
+set(FORM_FILES_GROUP "Generated")
+
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+
+set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain)
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
