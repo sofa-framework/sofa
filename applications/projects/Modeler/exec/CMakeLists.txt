@@ -12,7 +12,7 @@ set(SOURCE_FILES
 UseQt()
 if(APPLE)
 
-    set(RC_FILES "Modeler.icns")
+    set(RC_FILES "../Modeler.icns")
     
 else()
     
