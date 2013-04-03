@@ -40,6 +40,9 @@ endforeach()
 ## qt
 set(QTDIR $ENV{QTDIR})
 if(NOT QTDIR STREQUAL "")
+	if(WIN32)
+		file(TO_CMAKE_PATH ${QTDIR} QTDIR) # GLOB will fail with pathes containing backslashes.
+	endif()
 	file(GLOB QTDIR "${QTDIR}") # check if the QTDIR contains a correct path
 endif()
 
