@@ -97,3 +97,6 @@ else()
 	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
 endif()
 set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
+
+# out of source build support
+set(CMAKE_INCLUDE_CURRENT_DIR 1)
