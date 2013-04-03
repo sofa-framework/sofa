@@ -39,7 +39,10 @@ add_subdirectory("${SOFA_MODULES_DIR}/sofa/gpu/opencl")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
 
 ## projects
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
+if(SIMULATION_GRAPH_BGL)
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
+endif()
+
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
