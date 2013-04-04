@@ -347,7 +347,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& tri,OBB& obb,Out
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle&,OBB&){
-    return false;
+    return true;
 }
 
 } // namespace collision

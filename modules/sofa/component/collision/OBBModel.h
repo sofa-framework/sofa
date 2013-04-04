@@ -105,7 +105,7 @@ public:
     /**
       *Returns linear velocity.
       */
-    const Coord & lvelocity()const;
+    const Coord & v()const;
 
     /**
       *Returns the coordinates of c (in general coordinate system) in the local frame.
@@ -149,10 +149,10 @@ public:
 
     typedef TOBB<DataTypes> Element;
     friend class TOBB<DataTypes>;
-protected:
-    Data<VecCoord> _ext;
-    Data<Real> _default_ext;
 
+    Data<VecCoord> ext;
+    Data<Real> default_ext;
+protected:
     TOBBModel();
     TOBBModel(core::behavior::MechanicalState<TDataTypes>* mstate );
 public:

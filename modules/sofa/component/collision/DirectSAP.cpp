@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
@@ -22,17 +23,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
+#include <sofa/component/collision/DirectSAP.inl>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/CapsuleModel.h>
+#include <sofa/component/collision/Sphere.h>
+#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/Line.h>
+#include <sofa/component/collision/Point.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/core/ObjectFactory.h>
+#include <map>
+#include <queue>
+#include <stack>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/component/component.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
-#include <set>
-
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {
@@ -43,53 +48,28 @@ namespace component
 namespace collision
 {
 
+bool SAPBox::overlaps(const SAPBox &other) const{return overlaps(other,0) && overlaps(other,1) && overlaps(other,2);}
+
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
+using namespace collision;
 
-class SOFA_BASE_COLLISION_API BruteForceDetection :
-    public core::collision::BroadPhaseDetection,
-    public core::collision::NarrowPhaseDetection
-{
-public:
-    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+SOFA_DECL_CLASS(DirectSap)
 
-private:
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
-    Data<bool> bDraw;
+int DirectSAPClassSofaVector = core::RegisterObject("Collision detection using sweep and prune")
+        .add< TDirectSAP<helper::vector,helper::CPUMemoryManager> >()
+        ;
 
-    Data< helper::fixed_array<Vector3,2> > box;
-
-    CubeModel::SPtr boxModel;
+int DirectSAPClassStdVector = core::RegisterObject("Collision detection using sweep and prune")
+        .add< TDirectSAP<std::vector,std::allocator> >()
+        ;
 
 
-protected:
-    BruteForceDetection();
-
-    ~BruteForceDetection();
-public:
-    void setDraw(bool val) { bDraw.setValue(val); }
-
-    void init();
-    void reinit();
-
-    void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
-
-    virtual void beginBroadPhase()
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
-
-    /* for debugging */
-    void draw(const core::visual::VisualParams* vparams);
-
-    inline virtual bool needsDeepBoundingTree()const{return true;}
-};
-
+template class SOFA_BASE_COLLISION_API TDirectSAP<helper::vector,helper::CPUMemoryManager>;
+template class SOFA_BASE_COLLISION_API TDirectSAP<std::vector,std::allocator>;
 } // namespace collision
 
 } // namespace component
 
 } // namespace sofa
 
-#endif

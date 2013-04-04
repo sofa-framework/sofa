@@ -250,7 +250,7 @@ typename TCapsuleModel<DataTypes>::Deriv TCapsuleModel<DataTypes>::velocity(int 
                                                                                        (*(_mstate->getV()))[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
-typename TCapsule<DataTypes>::Deriv TCapsule<DataTypes>::velocity() const {return this->model->velocity(this->index);}
+typename TCapsule<DataTypes>::Deriv TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
 Data<typename TCapsuleModel<DataTypes>::VecReal > & TCapsuleModel<DataTypes>::writeRadii(){

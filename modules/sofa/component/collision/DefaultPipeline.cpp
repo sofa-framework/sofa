@@ -121,11 +121,14 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
             VERBOSE(sout << "DefaultPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<sendl);
             if (!(*it)->isActive()) continue;
 
+            int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? depth.getValue() : 0;
+
             if (continuous)
-                (*it)->computeContinuousBoundingTree(dt, depth.getValue());
+                (*it)->computeContinuousBoundingTree(dt, used_depth);
             else
-                (*it)->computeBoundingTree(depth.getValue());
-            vectBoundingVolume.push_back ((*it)->getFirst());
+                (*it)->computeBoundingTree(used_depth);
+
+                vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
         sofa::helper::AdvancedTimer::stepEnd("BBox");

@@ -37,16 +37,16 @@ using namespace helper;
 
 template<class DataTypes>
 TOBBModel<DataTypes>::TOBBModel():
-    _ext(initData(&_ext,"extents","Extents in x,y and z directions")),
-    _default_ext(initData(&_default_ext,(Real)(1.0), "defaultExtent","Default extent")),
+    ext(initData(&ext,"extents","Extents in x,y and z directions")),
+    default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
     _mstate(NULL)
 {
 }
 
 template<class DataTypes>
 TOBBModel<DataTypes>::TOBBModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    _ext(initData(&_ext, "extents","Extents in x,y and z directions")),
-    _default_ext(initData(&_default_ext,(Real)(1.0), "defaultExtent","Default extent")),
+    ext(initData(&ext, "extents","Extents in x,y and z directions")),
+    default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
     _mstate(mstate)
 {
 }
@@ -72,19 +72,19 @@ template<class DataTypes>
 void TOBBModel<DataTypes>::resize(int size){
     this->core::CollisionModel::resize(size);
 
-    VecCoord & ext = *(_ext.beginEdit());
+    VecCoord & vext = *(ext.beginEdit());
 
-    if ((int)ext.size() < size)
+    if ((int)vext.size() < size)
     {
-        while((int)ext.size() < size)
-            ext.push_back(Coord(_default_ext.getValue(),_default_ext.getValue(),_default_ext.getValue()));
+        while((int)vext.size() < size)
+            vext.push_back(Coord(default_ext.getValue(),default_ext.getValue(),default_ext.getValue()));
     }
     else
     {
-        ext.reserve(size);
+        vext.reserve(size);
     }
 
-    _ext.endEdit();
+    ext.endEdit();
 }
 
 
@@ -239,7 +239,7 @@ inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::lveloc
 }
 
 template <class DataTypes>
-inline const typename TOBB<DataTypes>::Coord & TOBB<DataTypes>::lvelocity()const{
+inline const typename TOBB<DataTypes>::Coord & TOBB<DataTypes>::v()const{
     return this->model->lvelocity(this->index);
 }
 
@@ -357,12 +357,12 @@ inline const typename TOBBModel<DataTypes>::Quaternion & TOBBModel<DataTypes>::o
 
 template<class DataTypes>
 inline typename TOBBModel<DataTypes>::Real TOBBModel<DataTypes>::extent(int index,int dim)const{
-    return ((_ext.getValue())[index])[dim];
+    return ((ext.getValue())[index])[dim];
 }
 
 template<class DataTypes>
 inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::extents(int index)const{
-    return (_ext.getValue())[index];
+    return (ext.getValue())[index];
 }
 
 template<class DataTypes>
@@ -391,7 +391,7 @@ inline const typename TOBB<DataTypes>::Quaternion & TOBB<DataTypes>::orientation
 }
 
 template <class DataTypes>
-inline Data<typename TOBBModel<DataTypes>::VecCoord> & TOBBModel<DataTypes>::writeExtents(){return _ext;}
+inline Data<typename TOBBModel<DataTypes>::VecCoord> & TOBBModel<DataTypes>::writeExtents(){return ext;}
 
 template <class DataTypes>
 inline void TOBB<DataTypes>::vertices(std::vector<Coord> & vs)const{return this->model->vertices(this->index,vs);}

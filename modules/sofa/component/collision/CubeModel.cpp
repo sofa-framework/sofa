@@ -269,36 +269,11 @@ bool CubeModel::isLeaf( int index ) const
     return elems[index].children.first.valid();
 }
 
-class CubeModel::CubeSortPredicate
-{
-    int axis;
-public:
-    CubeSortPredicate(int axis) : axis(axis) {}
-    bool operator()(const CubeData& c1,const CubeData& c2) const
-    {
-        double v1 = c1.minBBox[axis]+c1.maxBBox[axis];
-        double v2 = c2.minBBox[axis]+c2.maxBBox[axis];
-        return v1 < v2;
-    }
-    template<int Axis>
-    static int sortCube(const void* p1, const void* p2)
-    {
-        const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
-        const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
-        double v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
-        double v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
-
-        if (v1 < v2)
-            return -1;
-        else if (v1 > v2)
-            return 1;
-        else
-            return 0;
-    }
-};
-
 void CubeModel::computeBoundingTree(int maxDepth)
 {
+    if(maxDepth <= 0)
+        return;
+
     //sout << ">CubeModel::computeBoundingTree("<<maxDepth<<")"<<sendl;
     std::list<CubeModel*> levels;
     levels.push_front(createPrevious<CubeModel>());

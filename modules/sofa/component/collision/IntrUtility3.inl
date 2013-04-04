@@ -541,11 +541,11 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
         {
             // find first time of contact on this axis
             d = (cfg0Start.mMin - cfg1Start.mMax);
-            assert(d < 0);
+            assert(d <= 0);
 
             // If this is the new maximum first time of contact, set side and
             // configuration.
-            if (-d < dmax && d > dfirst)
+            if (/*-d < dmax && */d > dfirst)
             {
                 dfirst = d;
                 side = IntrConfiguration<Real>::LEFT;
@@ -562,7 +562,7 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
 
             // If this is the new maximum first time of contact,  set side and
             // configuration.
-            if (-d < dmax && d > dfirst)
+            if (/*-d < dmax &&*/ d > dfirst)
             {
                 dfirst = d;
                 side = IntrConfiguration<Real>::RIGHT;

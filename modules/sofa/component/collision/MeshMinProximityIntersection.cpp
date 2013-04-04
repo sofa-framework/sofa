@@ -280,6 +280,12 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
             return 0;
+//        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+//        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+//        if (alpha < 0 ||
+//            beta  < 0 ||
+//            alpha + beta  > 1)
+//            return 0;
     }
 
     Vector3 P,Q,QP; //PQ

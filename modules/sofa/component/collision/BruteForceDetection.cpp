@@ -240,11 +240,11 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     if (cm1->empty() || cm2->empty())
         return;
 
-    core::CollisionModel *finalcm1 = cm1->getLast();
+    core::CollisionModel *finalcm1 = cm1->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = cm2->getLast();
     //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
     bool swapModels = false;
-    core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);
+    core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
     if (finalintersector == NULL)
         return;
     if (swapModels)
@@ -260,7 +260,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
 
-    finalintersector->beginIntersect(finalcm1, finalcm2, outputs);
+    finalintersector->beginIntersect(finalcm1, finalcm2, outputs);//creates outputs if null
 
     if (finalcm1 == cm1 || finalcm2 == cm2)
     {
@@ -303,12 +303,13 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         TestPair root = externalCells.front();
         externalCells.pop();
 
-        if (cm1 != root.first.first.getCollisionModel() || cm2 != root.second.first.getCollisionModel())
+        if (cm1 != root.first.first.getCollisionModel() || cm2 != root.second.first.getCollisionModel())//if the CollisionElements do not belong to cm1 and cm2, update cm1 and cm2
         {
             cm1 = root.first.first.getCollisionModel();
             cm2 = root.second.first.getCollisionModel();
             if (!cm1 || !cm2) continue;
             intersector = intersectionMethod->findIntersector(cm1, cm2, swapModels);
+
             if (intersector == NULL)
             {
                 sout << "BruteForceDetection: Error finding intersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName()<<sendl;

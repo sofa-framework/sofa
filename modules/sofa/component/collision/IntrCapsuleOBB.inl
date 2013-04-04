@@ -80,7 +80,7 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         }
     }
 
-    Vec<3,Real> relVelocity = mBox->lvelocity() - _cap->velocity();
+    Vec<3,Real> relVelocity = mBox->v() - _cap->v();
     // Test velocity cross box-faces.
     for (i = 0; i < 3; i++)
     {

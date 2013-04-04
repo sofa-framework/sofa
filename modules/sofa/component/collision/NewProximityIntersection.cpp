@@ -162,7 +162,7 @@ bool NewProximityIntersection::testIntersection(RigidSphere&, RigidSphere&){
 }
 
 bool NewProximityIntersection::testIntersection(OBB&, OBB&){
-    return false;
+    return true;
 }
 
 int NewProximityIntersection::computeIntersection(OBB & box0, OBB & box1,OutputVector* contacts){
@@ -176,7 +176,7 @@ int NewProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVe
 
 
 bool NewProximityIntersection::testIntersection(Capsule&, OBB&){
-    return false;
+    return true;
 }
 
 int NewProximityIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
@@ -184,7 +184,7 @@ int NewProximityIntersection::computeIntersection(Sphere & sph, OBB & box,Output
 }
 
 bool NewProximityIntersection::testIntersection(Sphere &,OBB &){
-    return false;
+    return true;
 }
 
 } // namespace collision

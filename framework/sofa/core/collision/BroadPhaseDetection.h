@@ -72,6 +72,8 @@ public:
     /// Get the potentially colliding pairs detected
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
 
+    /// Returns true because it needs a deep bounding tree i.e. a depth that can be superior to 1.
+    inline virtual bool needsDeepBoundingTree()const{return true;}
 protected:
 
     /// Potentially colliding pairs
