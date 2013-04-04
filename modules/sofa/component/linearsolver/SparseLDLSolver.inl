@@ -61,7 +61,7 @@ SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver() {}
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) this->getMatrixInvertData(&M);
 
     B.resize(data->n);
 
@@ -94,7 +94,7 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) this->getMatrixInvertData(&M);
     //remplir A avec M
     data->n = M.colSize();// number of columns
     data->Mfiltered.clear();
@@ -110,14 +110,14 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     data->colptr.resize(data->n+1);
     data->D.resize(data->n);
 
-    LDL_ordering(data->n,Mcolptr,Mrowind,&data->perm[0],&data->invperm[0]);
-    LDL_symbolic(data->n,Mcolptr,Mrowind,&data->colptr[0],&data->perm[0],&data->invperm[0]);
+    this->LDL_ordering(data->n,Mcolptr,Mrowind,&data->perm[0],&data->invperm[0]);
+    this->LDL_symbolic(data->n,Mcolptr,Mrowind,&data->colptr[0],&data->perm[0],&data->invperm[0]);
 
     data->nnz = data->colptr[data->n];
     data->rowind.resize(data->nnz);
     data->values.resize(data->nnz);
 
-    LDL_numeric(data->n,Mcolptr,Mrowind,Mvalues,&data->colptr[0],&data->rowind[0],&data->values[0],&data->D[0],&data->perm[0],&data->invperm[0]);
+    this->LDL_numeric(data->n,Mcolptr,Mrowind,Mvalues,&data->colptr[0],&data->rowind[0],&data->values[0],&data->D[0],&data->perm[0],&data->invperm[0]);
 }
 
 } // namespace linearsolver
