@@ -112,9 +112,11 @@ if(EXTERNAL_HAVE_CSPARSE)
 endif()
 
 ## FLOWVR
-option(EXTERNAL_HAVE_FLOWVR "Use FlowVR" ON)
+option(EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF)
 if(EXTERNAL_HAVE_FLOWVR)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_FLOWVR)
+#TODO port features/sofa/flowvr.prf
+else()
 	list(APPEND GLOBAL_COMPILER_DEFINES MINI_FLOWVR)
 endif()
 
