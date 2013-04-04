@@ -61,8 +61,6 @@ class SOFA_BASE_COLLISION_API CubeModel : public core::CollisionModel
 public:
     SOFA_CLASS(CubeModel,sofa::core::CollisionModel);
 
-protected:
-
     struct CubeData
     {
         Vector3 minBBox, maxBBox;
@@ -70,7 +68,37 @@ protected:
         std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
     };
 
-    class CubeSortPredicate;
+    class CubeSortPredicate
+    {
+        int axis;
+    public:
+        CubeSortPredicate(int axis) : axis(axis) {}
+        bool operator()(const CubeData& c1,const CubeData& c2) const
+        {
+            double v1 = c1.minBBox[axis]+c1.maxBBox[axis];
+            double v2 = c2.minBBox[axis]+c2.maxBBox[axis];
+            return v1 < v2;
+        }
+        template<int Axis>
+        static int sortCube(const void* p1, const void* p2)
+        {
+            const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
+            const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
+            double v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
+            double v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
+
+            if (v1 < v2)
+                return -1;
+            else if (v1 > v2)
+                return 1;
+            else
+                return 0;
+        }
+    };
+
+protected:
+
+    //class CubeSortPredicate;
 
     sofa::helper::vector<CubeData> elems;
     sofa::helper::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
@@ -110,6 +138,8 @@ public:
     {
         return elems[index].children.second.getIndex();
     }
+
+    const CubeData & getCubeData(int index)const{return elems[index];}
 
     // -- CollisionModel interface
 

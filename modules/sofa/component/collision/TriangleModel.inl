@@ -680,67 +680,67 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 
     const bool calcNormals = computeNormals.getValue();
 
-    if (maxDepth == 0)
-    {
-        // no hierarchy
-        if (empty())
-            cubeModel->resize(0);
-        else
-        {
-            cubeModel->resize(1);
-            minElem = x[0];
-            maxElem = x[0];
-            for (unsigned i=1; i<x.size(); i++)
-            {
-                const Vector3& pt1 = x[i];
-                if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
-                else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
-                if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
-                else if (pt1[1] < minElem[1]) minElem[1] = pt1[1];
-                if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
-                else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
-            }
-            const SReal distance = (SReal)this->proximity.getValue();
-            for (int c = 0; c < 3; c++)
-            {
-                minElem[c] -= distance;
-                maxElem[c] += distance;
-            }
-            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
-            if (calcNormals)
-                for (int i=0; i<size; i++)
-                {
-                    Element t(this,i);
-                    const Vector3& pt1 = x[t.p1Index()];
-                    const Vector3& pt2 = x[t.p2Index()];
-                    const Vector3& pt3 = x[t.p3Index()];
+//    if (maxDepth == 0)
+//    {
+//        // no hierarchy
+//        if (empty())
+//            cubeModel->resize(0);
+//        else
+//        {
+//            cubeModel->resize(1);
+//            minElem = x[0];
+//            maxElem = x[0];
+//            for (unsigned i=1; i<x.size(); i++)
+//            {
+//                const Vector3& pt1 = x[i];
+//                if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
+//                else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
+//                if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
+//                else if (pt1[1] < minElem[1]) minElem[1] = pt1[1];
+//                if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
+//                else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
+//            }
+//            const SReal distance = (SReal)this->proximity.getValue();
+//            for (int c = 0; c < 3; c++)
+//            {
+//                minElem[c] -= distance;
+//                maxElem[c] += distance;
+//            }
+//            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
+//            if (calcNormals)
+//                for (int i=0; i<size; i++)
+//                {
+//                    Element t(this,i);
+//                    const Vector3& pt1 = x[t.p1Index()];
+//                    const Vector3& pt2 = x[t.p2Index()];
+//                    const Vector3& pt3 = x[t.p3Index()];
 
-                    /*for (int c = 0; c < 3; c++)
-                    {
-                    if (i==0)
-                    {
-                    minElem[c] = pt1[c];
-                    maxElem[c] = pt1[c];
-                    }
-                    else
-                    {
-                    if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
-                    else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
-                    }
-                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
-                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
-                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
-                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
-                    }*/
+//                    /*for (int c = 0; c < 3; c++)
+//                    {
+//                    if (i==0)
+//                    {
+//                    minElem[c] = pt1[c];
+//                    maxElem[c] = pt1[c];
+//                    }
+//                    else
+//                    {
+//                    if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
+//                    else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
+//                    }
+//                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+//                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+//                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+//                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+//                    }*/
 
-                    // Also recompute normal vector
-                    t.n() = cross(pt2-pt1,pt3-pt1);
-                    t.n().normalize();
-                }
-        }
-    }
-    else
-    {
+//                    // Also recompute normal vector
+//                    t.n() = cross(pt2-pt1,pt3-pt1);
+//                    t.n().normalize();
+//                }
+//        }
+//    }
+//    else
+//    {
 
         cubeModel->resize(size);  // size = number of triangles
         if (!empty())
@@ -774,7 +774,7 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
             }
             cubeModel->computeBoundingTree(maxDepth);
         }
-    }
+    //}
 
     if (m_lmdFilter != 0)
     {

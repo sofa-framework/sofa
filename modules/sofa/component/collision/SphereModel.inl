@@ -189,7 +189,6 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
             const Coord maxElem = p.center() + Coord(r,r,r);
 
             cubeModel->setParentOf(i, minElem, maxElem);
-
         }
         cubeModel->computeBoundingTree(maxDepth);
     }

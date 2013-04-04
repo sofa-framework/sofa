@@ -255,8 +255,6 @@ public:
     }
     /// @}
 
-
-protected:
     Model* model;   ///< CollisionModel containing the referenced element.
 };
 

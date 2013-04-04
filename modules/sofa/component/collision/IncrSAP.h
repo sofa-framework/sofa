@@ -22,17 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
+#ifndef INCRSAP_H
+#define INCRSAP_H
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/component/component.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/component/collision/EndPoint.h>
 #include <set>
-
+#include <map>
+#include <deque>
 
 namespace sofa
 {
@@ -43,28 +46,75 @@ namespace component
 namespace collision
 {
 
+class EndPointID;
+
+class SAPBox{
+public:
+    SAPBox(Cube c) : cube(c){}
+
+    void update(int axis);
+
+    bool overlaps(const SAPBox & other,int axis)const;
+
+    bool overlaps(const SAPBox &other)const;
+
+    inline void show()const{
+        std::cout<<"MIN "<<cube.minVect()<<std::endl;
+        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
+    }
+
+    bool moving(int axis)const;
+
+    void init(int boxID = -1);
+
+    Cube cube;
+    EndPointID * min[3];
+    EndPointID * max[3];
+};
+
+
 using namespace sofa::defaulttype;
 
-class SOFA_BASE_COLLISION_API BruteForceDetection :
+template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
+class SOFA_BASE_COLLISION_API TIncrSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(SOFA_TEMPLATE2(TIncrSAP,List,Allocator), core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+
+    typedef List<EndPoint*,Allocator<EndPoint*> > EndPointList;
 
 private:
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
+    //void
+    int greatestVarianceAxis()const;
+
+    bool added(core::CollisionModel * cm)const;
+
+    void add(core::CollisionModel * cm);
+
+    /**
+      *Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
+      */
+    void update();
+
     Data<bool> bDraw;
 
     Data< helper::fixed_array<Vector3,2> > box;
 
     CubeModel::SPtr boxModel;
 
+    std::vector<SAPBox> _boxes;
+    EndPointList _end_points[3];
+    int _cur_axis;
 
+    std::set<core::CollisionModel*> collisionModels;
 protected:
-    BruteForceDetection();
+    TIncrSAP();
 
-    ~BruteForceDetection();
+    helper::vector<Cube> & cubes(const CubeModel* cm);
+
+    ~TIncrSAP();
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
@@ -72,19 +122,28 @@ public:
     void reinit();
 
     void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
 
-    virtual void beginBroadPhase()
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
+    /**
+      *Unuseful methods because all is done in addCollisionModel
+      */
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
+    void addCollisionPairs (std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+
+    virtual void beginNarrowPhase();
+
 
     /* for debugging */
-    void draw(const core::visual::VisualParams* vparams);
+    inline void draw(const core::visual::VisualParams*){}
 
-    inline virtual bool needsDeepBoundingTree()const{return true;}
+    inline virtual bool needsDeepBoundingTree()const{return false;}
 };
+
+typedef TIncrSAP<std::vector,std::allocator> DirectSAP;
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+extern template class SOFA_BASE_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+extern template class SOFA_BASE_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+#endif
 
 } // namespace collision
 
@@ -92,4 +151,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // INCRSAP_H

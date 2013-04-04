@@ -80,7 +80,7 @@ public:
 
     Real radius() const;
 
-    Deriv velocity()const;
+    Deriv v()const;
 };
 
 /**

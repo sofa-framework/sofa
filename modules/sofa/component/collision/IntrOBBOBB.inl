@@ -525,13 +525,16 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
                 // tests will show only overlaps.
                 FindContactSet<Box,Box>(*mBox0,*mBox1,_sep_axis,side,box0Cfg,box1Cfg,mContactTime,_pt_on_first,_pt_on_second);
 
-                if((_pt_on_first - mBox0->center()) * _sep_axis < 0)
-                    _sep_axis *= -1;
+                if(side == IntrConfiguration<Real>::LEFT)
+                    _sep_axis *= -1.0;
+
+                if(mContactTime < 0)
+                    _is_colliding = true;
 
                 return true;
             }
 
-            axis.normalize();
+            IntrUtil<Real>::normalize(axis);
 
             if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1,
                 dmax, mContactTime, side, box0Cfg, box1Cfg,config_modified))
@@ -543,14 +546,14 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
         }
     }
 
-    Vec<3,Real> relVelocity = mBox1->lvelocity() - mBox0->lvelocity();
+    Vec<3,Real> relVelocity = mBox1->v() - mBox0->v();
     // velocity cross box 0 edges
     for (i0 = 0; i0 < 3; ++i0)
     {
         axis = relVelocity.cross(mBox0->axis(i0));
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
-            axis.normalize();
+            IntrUtil<Real>::normalize(axis);
             if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
                 mContactTime, side, box0Cfg, box1Cfg,config_modified))
                return false;
@@ -567,7 +570,7 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
         axis = relVelocity.cross(mBox1->axis(i0));
 
         if(axis.norm2() > IntrUtil<Real>::SQ_ZERO_TOLERANCE()){
-            axis.normalize();
+            IntrUtil<Real>::normalize(axis);
             if(!IntrAxis<Box>::Find(axis, *mBox0, *mBox1, dmax,
                 mContactTime, side, box0Cfg, box1Cfg,config_modified))
                return false;
@@ -583,16 +586,17 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
         if(side == IntrConfiguration<Real>::NONE)
             return false;
 
-        Real max_ext_0 = std::max(mBox0->extent(0),std::max(mBox0->extent(1),mBox0->extent(2)));
-        Real max_ext_1 = std::max(mBox1->extent(0),std::max(mBox1->extent(1),mBox1->extent(2)));
-        Real max_ext = std::max(max_ext_0,max_ext_1);
+        _is_colliding = true;
+//        Real max_ext_0 = std::max(mBox0->extent(0),std::max(mBox0->extent(1),mBox0->extent(2)));
+//        Real max_ext_1 = std::max(mBox1->extent(0),std::max(mBox1->extent(1),mBox1->extent(2)));
+//        Real max_ext = std::max(max_ext_0,max_ext_1);
 
-        if(mContactTime < max_ext){
-            _is_colliding = true;
-        }
-        else{
-            return false;
-        }
+//        if(mContactTime < max_ext){
+//            _is_colliding = true;
+//        }
+//        else{
+//            return false;
+//        }
     }
 
 

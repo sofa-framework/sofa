@@ -22,74 +22,76 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-
-#include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/component/component.h>
-#include <sofa/component/collision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
-#include <set>
-
+#ifndef INCRSAP_INL
+#define INCRSAP_INL
+#include <sofa/component/collision/IncrSAP.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace collision
 {
 
-using namespace sofa::defaulttype;
+inline void SAPBox::init(int boxID){
+    for(int i = 0 ; i < 3 ; ++i){
+        min[i]->setMin();
+        max[i]->setMax();
+        min[i]->setBoxID(boxID);
+        max[i]->setBoxID(boxID);
+    }
+}
 
-class SOFA_BASE_COLLISION_API BruteForceDetection :
-    public core::collision::BroadPhaseDetection,
-    public core::collision::NarrowPhaseDetection
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::endBroadPhase()
 {
-public:
-    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    BroadPhaseDetection::endBroadPhase();
 
-private:
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
-    Data<bool> bDraw;
+    std::vector<CubeModel*> cube_models;
+    cube_models.reserve(_new_cm.size());
 
-    Data< helper::fixed_array<Vector3,2> > box;
-
-    CubeModel::SPtr boxModel;
-
-
-protected:
-    BruteForceDetection();
-
-    ~BruteForceDetection();
-public:
-    void setDraw(bool val) { bDraw.setValue(val); }
-
-    void init();
-    void reinit();
-
-    void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
-
-    virtual void beginBroadPhase()
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
+    int n = 0;
+    for(unsigned int i = 0 ; i < _new_cm.size() ; ++i){
+        n += _new_cm[i]->getSize();
+        cube_models.push_back(dynamic_cast<CubeModel*>(_new_cm[i]->getPrevious()));
     }
 
-    /* for debugging */
-    void draw(const core::visual::VisualParams* vparams);
+    _boxes.reserve(_boxes.size() + n);
+    EndPoint * end_pts = new EndPoint[2*n];
+    _to_del.push_back(end_pts);
 
-    inline virtual bool needsDeepBoundingTree()const{return true;}
-};
+    int cur_EndPtID = 0;
+    int cur_boxID = _boxes.size();
+    for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
+        CubeModel * cm = cube_models[i];
+        for(int j = 0 ; j < cm->getSize() ; ++j){
+            EndPoint * min = &end_pts[cur_EndPtID];
+            ++cur_EndPtID;
+            EndPoint * max = &end_pts[cur_EndPtID];
+            ++cur_EndPtID;
 
-} // namespace collision
+            min->setBoxID(cur_boxID);
+            max->setBoxID(cur_boxID);
+            max->setMax();
 
-} // namespace component
+            _end_points.push_back(min);
+            _end_points.push_back(max);
 
-} // namespace sofa
+            _boxes.push_back(SAPBox(Cube(cm,j),min,max));
+            ++cur_boxID;
+        }
+    }
 
-#endif
+    _new_cm.clear();
+}
+
+
+
+
+
+
+}
+}
+}
+#endif // INCRSAP_INL

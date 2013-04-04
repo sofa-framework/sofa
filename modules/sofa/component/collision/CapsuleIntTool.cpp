@@ -277,8 +277,7 @@ bool CapsuleIntTool::computeIntersection(Capsule & cap, Sphere & sph,double alar
 
 bool CapsuleIntTool::computeIntersection(Capsule& cap, OBB& obb,double alarmDist,double contactDist,OutputVector* contacts){
     IntrCapsuleOBB intr(cap,obb);
-    //double max_time = helper::rsqrt((alarmDist * alarmDist)/((obb.lvelocity() - cap.velocity()).norm2()));
-    if(/*intr.Find(max_time,cap.velocity(),obb.lvelocity())*/intr.Find(alarmDist)){
+    if(intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;
