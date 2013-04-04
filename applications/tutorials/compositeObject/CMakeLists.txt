@@ -13,6 +13,13 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaSimulationTree SofaComponentMain SofaGuiMain)
+if(SIMULATION_GRAPH_DAG)
+    list(APPEND LINKER_DEPENDENCIES SofaSimulationGraph)
+endif()
+if(SIMULATION_GRAPH_BGL)
+    list(APPEND LINKER_DEPENDENCIES SofaSimulationBGL)
+endif()
+
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
