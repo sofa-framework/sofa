@@ -24,6 +24,10 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
+if(UNIT-TESTS_BUILD_GTEST)
+    include_directories("${SOFA_EXTLIBS_DIR}/gtest")
+endif()
+
 set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
 set(LINKER_DEPENDENCIES SofaEigen2Solver SofaComponent SofaBaseCollision SofaGraph gtest gtest_main )
 
