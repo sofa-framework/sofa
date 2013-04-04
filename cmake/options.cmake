@@ -152,6 +152,12 @@ if(OPTION_PML)
         list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_PML)
 endif()
 
+## GPU OpenCL
+option(OPTION_GPU_OPENCL "OpenCL GPU support" OFF)
+if(OPTION_GPU_OPENCL)
+        list(APPEND GLOBAL_COMPILER_DEFINES SOFA_GPU_OPENCL)
+endif()
+
 ## XML
 option(XML_PARSER_LIBXML "Use LibXML instead of built-in TinyXML" OFF)
 if(XML_PARSER_LIBXML)
@@ -194,9 +200,11 @@ endif()
 
 
 # unit tests
-option(UNIT-TESTS_USE "Build and use unit tests" ON)
-if(NOT WIN32)
-	option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
+option(UNIT-TESTS_USE "Build and use unit tests" OFF)
+if(UNIT-TESTS_USE)
+        if(NOT WIN32)
+                option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
+        endif()
 endif()
 
 # miscellaneous
