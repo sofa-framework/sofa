@@ -11,7 +11,7 @@ add_subdirectory("houseOfCards")
 add_subdirectory("mixedPendulum")
 add_subdirectory("objectCreator")
 add_subdirectory("oneParticle")
-add_subdirectory("oneParticleWithSofaTypedefs")
+#add_subdirectory("oneParticleWithSofaTypedefs") # temporarily discarded since it can not compile with the Flexible plugin
 add_subdirectory("oneTetrahedron")
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
