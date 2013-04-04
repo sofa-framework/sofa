@@ -44,12 +44,12 @@ if(SOFA_SMP)
 	list(APPEND SOURCE_FILES "collision/ParallelCollisionPipeline.cpp")
 endif()
     
-if(SOFA_HAVE_BGL)
+if(SIMULATION_GRAPH_BGL)
 	list(APPEND HEADER_FILES "collision/BglCollisionGroupManager.h")
 	list(APPEND SOURCE_FILES "collision/BglCollisionGroupManager.cpp")
 endif()
 
-if(SOFA_HAVE_EIGEN2)
+if(EXTERNAL_HAVE_EIGEN2)
 	list(APPEND SOURCE_FILES "collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp")
 	list(APPEND SOURCE_FILES "collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp")
 endif()
@@ -58,5 +58,13 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_MISC_COLLISION" )
 set(LINKER_DEPENDENCIES SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver )
+
+if(SIMULATION_GRAPH_BGL)
+    list(APPEND LINKER_DEPENDENCIES SofaSimulationBGL)
+endif()
+
+#if(EXTERNAL_HAVE_EIGEN2)
+#    list(APPEND LINKER_DEPENDENCIES eigen)
+#endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
