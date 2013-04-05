@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 # extlibs
 add_subdirectory("${SOFA_EXTLIBS_DIR}/ARTrack") 
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
+add_subdirectory("${SOFA_EXTLIBS_DIR}/LML")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
 if(EXTERNAL_HAVE_CSPARSE)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/csparse")
