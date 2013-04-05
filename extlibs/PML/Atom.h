@@ -22,7 +22,7 @@
 
 
 #include "Structure.h"
-#include "AtomProperties.h"
+#include "PhysicalProperties/AtomProperties.h"
 #include <RenderingMode.h>  
 #include <cstring>
 #include <sofa/helper/system/config.h>

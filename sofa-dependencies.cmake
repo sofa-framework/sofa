@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 add_subdirectory("${SOFA_EXTLIBS_DIR}/ARTrack") 
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/LML")
+add_subdirectory("${SOFA_EXTLIBS_DIR}/PML")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
 if(EXTERNAL_HAVE_CSPARSE)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/csparse")
@@ -69,6 +70,7 @@ if(OPTION_GPU_OPENCL)
     add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
 endif()
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")    #Not sure how to have it add only when ! SOFA_NO_OPENGL
+add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaProjectExample") 
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 if(UNIT-TESTS_USE)

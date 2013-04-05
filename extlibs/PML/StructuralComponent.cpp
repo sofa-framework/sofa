@@ -19,7 +19,7 @@
 
 #include "StructuralComponent.h"
 #include "Structure.h"
-#include "StructuralComponentProperties.h"
+#include "PhysicalProperties/StructuralComponentProperties.h"
 #include "Cell.h"
 #include "Atom.h"
 #include <RenderingMode.h>

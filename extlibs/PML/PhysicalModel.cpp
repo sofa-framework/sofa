@@ -26,7 +26,7 @@
 //#include "Object3D.h"
 #include "Atom.h"
 #include "Cell.h"
-#include "CellProperties.h"
+#include "PhysicalProperties/CellProperties.h"
 #include "MultiComponent.h"
 #include "StructuralComponent.h"
 

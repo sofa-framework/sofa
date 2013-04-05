@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "CellProperties.h"
+#include "PhysicalProperties/CellProperties.h"
 #include "Cell.h"
 #include "PhysicalModel.h"
 

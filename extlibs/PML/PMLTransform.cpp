@@ -5,9 +5,9 @@
 #include "MultiComponent.h"
 #include "StructuralComponent.h"
 #include "Atom.h"
-#include <CellProperties.h>
-#include <AtomProperties.h>
-#include <StructuralComponentProperties.h>
+#include <PhysicalProperties/CellProperties.h>
+#include <PhysicalProperties/AtomProperties.h>
+#include <PhysicalProperties/StructuralComponentProperties.h>
 
 #include <iostream>
 #include <string>
