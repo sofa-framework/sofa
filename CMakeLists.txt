@@ -10,6 +10,17 @@ message(STATUS "")
 
 include(cmake/pre.cmake)
 
+# build flags
+
+# disable partial inlining under gcc 4.6
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    EXECUTE_PROCESS( COMMAND g++ -dumpversion OUTPUT_VARIABLE GCXX_VERSION )
+    if(${GCXX_VERSION} VERSION_EQUAL 4.6)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-partial-inlining")
+    endif()
+endif()
+
+
 # SOFA DEPENDENCIES
 include(sofa-dependencies.cmake)
 
