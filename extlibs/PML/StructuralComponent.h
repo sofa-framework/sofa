@@ -35,7 +35,7 @@
 
 #include <sofa/helper/system/config.h>
 class Object3D;
-#include <StructuralComponentProperties.h>
+#include <PhysicalProperties/StructuralComponentProperties.h>
 
 // other includes
 #include <cstring>
