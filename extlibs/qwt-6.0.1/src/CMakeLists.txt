@@ -189,9 +189,11 @@ include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/*")
+file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
 foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
-	include_directories(${QT_INCLUDE_SUBDIR})
+    if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
+        include_directories(${QT_INCLUDE_SUBDIR})
+    endif()
 endforeach()
 
 # make mocced header files path from absolute to relative
