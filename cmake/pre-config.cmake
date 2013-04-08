@@ -63,7 +63,11 @@ if(WIN32)
 	set(PNG_LIBRARIES "libpng")
 else()
 	find_library(GLUT_LIBRARIES "glut")
-	find_library(PNG_LIBRARIES "png")
+        if(EXTERNAL_PNG_SPECIFIC_VERSION)
+            set(PNG_LIBRARIES "${EXTERNAL_PNG_VERSION}")
+        else()
+            find_library(PNG_LIBRARIES "png")
+        endif()
 endif()
 
 
