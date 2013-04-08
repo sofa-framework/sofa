@@ -8,6 +8,8 @@ message(STATUS "-------- CONFIGURING SOFA FRAMEWORK --------")
 message(STATUS "--------------------------------------------")
 message(STATUS "")
 
+include(cmake/environment.cmake)
+
 include(cmake/pre.cmake)
 
 # build flags
