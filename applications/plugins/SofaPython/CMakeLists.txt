@@ -73,7 +73,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SOFAPYTHON")
-set(LINKER_DEPENDENCIES SofaCore SofaSimulationCommon SofaTypedefs ${PYTHON_LIBRARIES})
+set(LINKER_DEPENDENCIES SofaCore SofaSimulationCommon ${PYTHON_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 
