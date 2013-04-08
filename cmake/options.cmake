@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # hide unused default cmake variables
-set(CMAKE_INSTALL_PREFIX "${SOFA_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
+set(CMAKE_INSTALL_PREFIX "${SOFA_BIN_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 
 # plugins (auto-search)
 file(GLOB pluginPathes "${SOFA_APPLICATIONS_PLUGINS_DIR}/*")
@@ -52,7 +52,7 @@ if(WIN32)
 		set(QTDIR "${SOFA_TOOLS_DIR}/qt4win")
 		file(GLOB QTDIR "${QTDIR}")
 		if(QTDIR STREQUAL "")
-			string(SUBSTRING "${SOFA_DIR}" 0 1 DISK_LETTER)
+                        string(SUBSTRING "${SOFA_SRC_DIR}" 0 1 DISK_LETTER)
 			file(GLOB QTDIRS "${DISK_LETTER}:/Qt*")
 			list(GET QTDIRS 0 QTDIR)
 		endif()
