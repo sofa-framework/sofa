@@ -34,3 +34,8 @@ set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} CACHE INTERNAL "Global Co
 
 # cmake modules path, for our FindXXX.cmake modules
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR}) #moved to pre.cmake
+
+# NDEBUG preprocessor macro
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+    list(APPEND GLOBAL_COMPILER_DEFINES "NDEBUG")
+endif()

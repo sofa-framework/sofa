@@ -8,12 +8,6 @@ message(STATUS "-------- CONFIGURING SOFA FRAMEWORK --------")
 message(STATUS "--------------------------------------------")
 message(STATUS "")
 
-include(cmake/environment.cmake)
-
-include(cmake/pre.cmake)
-
-# build flags
-
 
 #   release/debug
 # unless cmake is called with CMAKE_BUILD_TYPE=Debug, release build is forced
@@ -21,6 +15,13 @@ if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
+
+
+include(cmake/environment.cmake)
+
+include(cmake/pre.cmake)
+
+# build flags
 
 
 
