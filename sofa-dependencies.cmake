@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 2.8)
 # extlibs
 add_subdirectory("${SOFA_EXTLIBS_DIR}/ARTrack") 
 add_subdirectory("${SOFA_EXTLIBS_DIR}/newmat")
-add_subdirectory("${SOFA_EXTLIBS_DIR}/LML")
-add_subdirectory("${SOFA_EXTLIBS_DIR}/PML")
 add_subdirectory("${SOFA_EXTLIBS_DIR}/tinyxml")
 if(EXTERNAL_HAVE_CSPARSE)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/csparse")
@@ -18,7 +16,6 @@ endif()
 if(GUI_USE_QGLVIEWER)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/libQGLViewer-2.3.3/QGLViewer")
 endif()
-add_subdirectory("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
 ## google test
 if(UNIT-TESTS_BUILD_GTEST)
@@ -34,6 +31,8 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}/sofa/core")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 if(OPTION_PML)
+    add_subdirectory("${SOFA_EXTLIBS_DIR}/LML")
+    add_subdirectory("${SOFA_EXTLIBS_DIR}/PML")
     add_subdirectory("${SOFA_MODULES_DIR}/sofa/filemanager/sofapml")
 endif()
 if(OPTION_GPU_OPENCL)
@@ -58,6 +57,7 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
 if(GUI_USE_QTVIEWER OR GUI_USE_QGLVIEWER OR GUI_USE_QTOGREVIEWER)	#GUI_USE_QTOGREVIEWER not defined yet... relicate of qmake script
 	#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration") "# not yet converted" commenbt in the qmake scripts...
+    add_subdirectory("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/lib")
 	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")
 endif()
@@ -70,7 +70,7 @@ if(OPTION_GPU_OPENCL)
     add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
 endif()
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")    #Not sure how to have it add only when ! SOFA_NO_OPENGL
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaProjectExample") 
+#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaProjectExample") 
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 if(UNIT-TESTS_USE)
