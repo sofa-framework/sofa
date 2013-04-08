@@ -100,9 +100,11 @@ function(UseQt)
 	include_directories(${QT_INCLUDE_DIR})
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-	file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/*")
+        file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
 	foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
+            if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
 		include_directories(${QT_INCLUDE_SUBDIR})
+            endif()
 	endforeach()
 	
 	set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} PARENT_SCOPE)
