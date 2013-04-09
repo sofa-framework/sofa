@@ -200,6 +200,15 @@ bool MeshVTKLoader::setInputsMesh()
             ++poly;
         }
     }
+    /*else if (reader->inputLines) {
+        const int* inFP = (const int*) reader->inputLines->getData();
+
+        std::cout << "DS: " << reader->inputLines->dataSize << " NDS: " << reader->inputLines->nestedDataSize << std::endl;
+
+        int nbf = reader->numberOfLines;
+
+
+    }*/
     else if (reader->inputCells && reader->inputCellTypes)
     {
         const int* inFP = (const int*) reader->inputCells->getData();
@@ -381,7 +390,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     sout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << sendl;
     //VTKDataIO<double>* inputPointsDouble = NULL;
     VTKDataIO<int>* inputPolygonsInt = NULL;
-    VTKDataIO<int>* inputCellsInt = NULL;
+    VTKDataIO<int>* inputCellsInt = NULL;    
     VTKDataIO<int>* inputCellTypesInt = NULL;
     inputCellOffsets = NULL;
 
@@ -421,9 +430,25 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             ln >> n >> ni;
             std::cout << "Found " << n << " cells" << std::endl;
             inputCells = new VTKDataIO<int>;
+            inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCells);
+            if (!inputCells->read(inVTKFile, ni, binary)) return false;
+            numberOfCells = nbf = n;
+        }
+         else if (kw == "LINES")
+        {
+            int n, ni;
+            ln >> n >> ni;
+            std::cout << "Found " << n << " lines" << std::endl;
+            inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCellsInt);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
             numberOfCells = nbf = n;
+
+            inputCellTypes = new VTKDataIO<int>;
+            inputCellTypesInt = dynamic_cast<VTKDataIO<int>* > (inputCellTypes);
+            inputCellTypesInt->resize(n);
+            for (int i = 0; i < n; i++)
+                inputCellTypesInt->data[i] = 4;
         }
         else if (kw == "CELL_TYPES")
         {
@@ -444,6 +469,8 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             std::string dataStructure, dataName, dataType;
             lnData >> dataStructure;
 
+            std::cout << "Data structure: " << dataStructure << std::endl;
+
             if (dataStructure == "SCALARS") {
                 inputCellDataVector.resize(1);
                 lnData >> dataName;
@@ -457,11 +484,34 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                 if (!inputCellDataVector[0]->read(inVTKFile,n, binary)) return false;
                 inputCellDataVector[0]->name = dataName;
                 std::cout << "Read cell data: " << inputCellDataVector[0]->dataSize << std::endl;
-            } else  /// TODO
+            }
+            else if (dataStructure == "FIELD") {
+                std::getline(inVTKFile,line);
+                if (line.empty()) continue;
+                /// line defines the type and name such as SCALAR dataset
+                std::istringstream lnData(line);
+                std::string dataStructure;
+                lnData >> dataStructure;
+
+                if (dataStructure == "Topology") {
+                    int perCell, cells;
+                    lnData >> perCell >> cells;
+                    std::cout << "Reading topology for lines: "<< perCell << " " << cells << std::endl;
+
+                    inputCellDataVector.resize(1);
+                    inputCellDataVector[0] = newVTKDataIO("int");
+                    if (!inputCellDataVector[0]->read(inVTKFile,perCell*cells, binary)) return false;
+                    inputCellDataVector[0]->name = "Topology";
+                }
+            }
+            else  /// TODO
                 std::cerr << "WARNING: reading vector data not implemented" << std::endl;
         }
         else if (!kw.empty())
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
+
+        std::cout << "LNG: " << inputCellDataVector.size() << std::endl;
+
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes && inputCellDataVector.size() > 0) break; // already found the mesh description, skip the rest
     }
