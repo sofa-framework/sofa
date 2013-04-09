@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaFlexible")
+project("Flexible")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
@@ -154,11 +154,9 @@ set(README_FILE Flexible.txt )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_Flexible")
-set(LINKER_DEPENDENCIES SofaGuiQt )
-
+set(LINKER_DEPENDENCIES SofaGuiQt)
 
 if(SOFA_HAVE_IMAGE)
-
     if(SOFA_IMAGE_HAVE_OPENCV) #should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
 
         list(APPEND LINKER_DEPENDENCIES "ml")

@@ -169,45 +169,22 @@ set(SOURCE_FILES
 	qwt_thermo.cpp
 	qwt_wheel.cpp
 	)
-	
-if(EXTERNAL_USE_QT4)
-	find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED) 
-	
-	set(ENV{CONFIG} "qt")
-	
+
+UseQt()
+if(EXTERNAL_USE_QT4)	
 	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-else()
-	find_package(Qt3 COMPONENTS qtopengl REQUIRED)
-	
-	set(ENV{CONFIG} "qt")
-	
+else()	
 	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 endif()
-set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
-
-include(${QT_USE_FILE})
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
-foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
-    if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
-        include_directories(${QT_INCLUDE_SUBDIR})
-    endif()
-endforeach()
 
 # make mocced header files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
-# these header files do not need MOCcing
-#list(APPEND HEADER_FILES "")
-
 set(MOC_FILES_GROUP "Generated")
-	
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "${QT_DEFINITIONS};QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
-set(LINKER_DEPENDENCIES ${QT_LIBRARIES}) # need -lrt on linux (but not on mac)
+set(COMPILER_DEFINES "QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

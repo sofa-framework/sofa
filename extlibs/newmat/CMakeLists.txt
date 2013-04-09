@@ -4,6 +4,8 @@ project("newmat")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
+include_directories("${SOFA_BIN_DIR}")
+
 set(HEADER_FILES
 
     newmat/include.h

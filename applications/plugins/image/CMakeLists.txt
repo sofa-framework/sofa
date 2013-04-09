@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaImage")
+project("image")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
@@ -81,7 +81,7 @@ set(LINKER_DEPENDENCIES SofaGuiQt )
 if(SOFA_IMAGE_HAVE_OPENCV)
 
     list(APPEND LINKER_DEPENDENCIES "ml")
-    list(APPEND LINKER_DEPENDENCIES ""cvaux)
+    list(APPEND LINKER_DEPENDENCIES "cvaux")
     list(APPEND LINKER_DEPENDENCIES "highgui")
     list(APPEND LINKER_DEPENDENCIES "cv")
     list(APPEND LINKER_DEPENDENCIES "cxcore")

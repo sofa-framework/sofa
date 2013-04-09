@@ -8,6 +8,10 @@ message(STATUS "-------- CONFIGURING SOFA FRAMEWORK --------")
 message(STATUS "--------------------------------------------")
 message(STATUS "")
 
+set(GENERATED_FROM_MAIN_SOLUTION 1 CACHE INTERNAL "Projects generated from the main sofa solution")
+
+# init dependencies
+include("cmake/initDependencies.cmake")
 
 #   release/debug
 # unless cmake is called with CMAKE_BUILD_TYPE=Debug, release build is forced
@@ -49,6 +53,11 @@ endif()
 # SOFA DEPENDENCIES
 include(sofa-dependencies.cmake)
 
+include(cmake/post.cmake)
+
+# compute dependencies
+include("${SOFA_CMAKE_DIR}/computeDependencies.cmake")
+
 # PRINT REPORT
 if(SOFA_ERROR_MESSAGE)
 	message(SEND_ERROR "Final report : ${SOFA_ERROR_MESSAGE}")
@@ -56,8 +65,6 @@ else()
 	message(STATUS "Final report : \n- Everything's OK !")
 endif()
 message(STATUS "")
-
-include(cmake/post.cmake)
 
 message(STATUS "--------------------------------------------")
 message(STATUS "----- DONE CONFIGURING SOFA FRAMEWORK ------")
