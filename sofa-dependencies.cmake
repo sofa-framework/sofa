@@ -19,7 +19,7 @@ endif()
 
 ## google test
 if(UNIT-TESTS_BUILD_GTEST)
-        add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
 endif()
 
 # framework
@@ -79,7 +79,7 @@ endif()
 
 ## tutorials
 if(OPTION_TUTORIALS)
-        add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
 endif()
 
 # plugins

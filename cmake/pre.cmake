@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
 if(NOT PROJECT_NAME STREQUAL "${SOLUTION_NAME}")
-	message(STATUS "  > ${PROJECT_NAME} : Generating Project")
+	message(STATUS "  > ${PROJECT_NAME} : Configuring Project")
 else()
-	message(STATUS "> ${PROJECT_NAME} : Generating Solution\n")
+	message(STATUS "> ${PROJECT_NAME} : Configuring Solution\n")
 endif()
 
 # cmake modules path, for our FindXXX.cmake modules

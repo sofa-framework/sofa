@@ -12,33 +12,16 @@ foreach(property ${properties})
 	endif()
 endforeach()
 
+# if there is no cachefile, create one
+CreateCacheFile()
+
 if(TARGET ${PROJECT_NAME})
+	# include directories
+	include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
-	set(allDependenciesIncludeDirs)
-
-        # put includes inside a CACHE variable
-        set(linkerDependencies ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
-        # includes from this target
-        unset(${PROJECT_NAME}_INCLUDE_PATH)
-        get_directory_property(${PROJECT_NAME}_INCLUDE_PATH INCLUDE_DIRECTORIES)
-        #message(STATUS "Private include path for ${PROJECT_NAME} : ${PROJECT_NAME}_INCLUDE_PATH = ${${PROJECT_NAME}_INCLUDE_PATH}")
-        list(APPEND ${PROJECT_NAME}_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-        # includes from dependencies
-        foreach(linkerDependency ${linkerDependencies})
-                #message(STATUS "Checking variable ${linkerDependency}_INCLUDE_PATH = ${${linkerDependency}_INCLUDE_PATH}")
-                if(TARGET ${linkerDependency})
-                        #message(STATUS "Checking variable ${linkerDependency}_INCLUDE_PATH")
-                        if(DEFINED ${linkerDependency}_INCLUDE_PATH)
-                                #message(STATUS "dependency include found for ${PROJECT_NAME} : ${linkerDependency}_INCLUDE_PATH = ${${linkerDependency}_INCLUDE_PATH}")
-                                list(APPEND ${PROJECT_NAME}_INCLUDE_PATH "${${linkerDependency}_INCLUDE_PATH}")
-                                list(REMOVE_DUPLICATES ${PROJECT_NAME}_INCLUDE_PATH)
-                        endif(DEFINED ${linkerDependency}_INCLUDE_PATH)
-                endif(TARGET ${linkerDependency})
-        endforeach()
-        set(${PROJECT_NAME}_INCLUDE_PATH ${${PROJECT_NAME}_INCLUDE_PATH} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
-
-        #message(STATUS "Include path for ${PROJECT_NAME} : ${PROJECT_NAME}_INCLUDE_PATH = ${${PROJECT_NAME}_INCLUDE_PATH}")
-        include_directories(${${PROJECT_NAME}_INCLUDE_PATH})
+	get_directory_property(${PROJECT_NAME}_INCLUDE_DIR INCLUDE_DIRECTORIES)
+	## put includes inside a CACHE variable for further uses
+	set(${PROJECT_NAME}_INCLUDE_DIR ${${PROJECT_NAME}_INCLUDE_DIR} CACHE INTERNAL "${PROJECT_NAME} include path" FORCE)
 
 	# compile definitions
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS "${GLOBAL_COMPILER_DEFINES};${ADDITIONAL_COMPILER_DEFINES};${COMPILER_DEFINES}")
@@ -52,6 +35,9 @@ if(TARGET ${PROJECT_NAME})
 
 	# link dependencies
 	target_link_libraries(${PROJECT_NAME} ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
+	
+	# store dependencies for further uses
+	RegisterProjectDependencies(${PROJECT_NAME} ${ADDITIONAL_LINKER_DEPENDENCIES} ${LINKER_DEPENDENCIES})
 
 	#link flags
 	set(LINKER_FLAGS_OS_SPECIFIC "")
@@ -59,5 +45,4 @@ if(TARGET ${PROJECT_NAME})
 		set(LINKER_FLAGS_OS_SPECIFIC "")
 	endif()
 	set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_OS_SPECIFIC} ${LINKER_FLAGS}")
-
 endif()
