@@ -10,19 +10,8 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-	if(APPLE)
-		# on Mac, GLEW is in the dependency package
-	#	set(GLEW_LIBRARIES "${SOFA_LIB_OS_DIR}/libglew.dylib")
-	#	set(GLEW_INCLUDE_DIR "${SOFA_INC_DIR}")
-	# TEMP
-		find_path(GLEW_INCLUDE_DIR GL/glew.h)
-		find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
-	
-	else(APPLE)
-		find_path(GLEW_INCLUDE_DIR GL/glew.h)
-		find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
-	endif(APPLE)
-
+        find_path(GLEW_INCLUDE_DIR GL/glew.h)
+        find_library(GLEW_LIBRARIES NAMES glew64 GLEW glew glew32)
 
 	if(EXISTS "${GLEW_INCLUDE_DIR}/GL/glew.h" AND EXISTS ${GLEW_LIBRARIES})
 		if (NOT DEFINED GLEW_FOUND)
