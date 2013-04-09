@@ -68,7 +68,7 @@ protected:
             virtual const void* getData() = 0;
             virtual void swap() = 0;
 
-            virtual core::objectmodel::BaseData* createSofaData() = 0;
+            virtual core::objectmodel::BaseData* createSofaData() = 0;            
         };
 
         template<class T>
@@ -350,14 +350,14 @@ protected:
     public:
         BaseVTKDataIO* inputPoints;
         BaseVTKDataIO* inputPolygons;
-        BaseVTKDataIO* inputCells;
+        BaseVTKDataIO* inputCells;        
         BaseVTKDataIO* inputCellOffsets;
         BaseVTKDataIO* inputCellTypes;
         helper::vector<BaseVTKDataIO*> inputPointDataVector;
         helper::vector<BaseVTKDataIO*> inputCellDataVector;
         bool isLittleEndian;
 
-        int numberOfPoints, numberOfCells;
+        int numberOfPoints, numberOfCells, numberOfLines;
 
 
         BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL), inputCellOffsets(NULL), inputCellTypes(NULL),
