@@ -16,16 +16,11 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-
 include(cmake/environment.cmake)
 
 include(cmake/pre.cmake)
 
-# build flags
-
-
-
-    
+# BUILD FLAGS    
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     #message(STATUS "Building Debug")
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
@@ -50,9 +45,6 @@ elseif(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
 elseif(CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
     #message(STATUS "Building MinSizeRel")
 endif()
-
-
-
 
 # SOFA DEPENDENCIES
 include(sofa-dependencies.cmake)
