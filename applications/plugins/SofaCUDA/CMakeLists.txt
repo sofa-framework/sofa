@@ -4,9 +4,7 @@ project("SofaCUDA")
 
 include(${SOFA_CMAKE_DIR}/pre.cmake)
 
-##plugin external dependencies
-#find_package( REQUIRED)
-#include_directories(${})
+find_package(CUDA REQUIRED)
 
 set(HEADER_FILES
 
@@ -178,11 +176,23 @@ set(CUDA_SOURCES
     
     )
 
+if (CUDA_VERBOSE_PTXAS)
+set(VERBOSE_PTXAS --ptxas-options=-v)
+endif (CUDA_VERBOSE_PTXAS)
+
 set(README_FILE SofaCUDA.txt )	
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} OPTIONS ${VERBOSE_PTXAS})
 
 set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA ; CUDPP_STATIC_LIB")
-set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData cudpp thrust)
+set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
+
+if(SOFA_HAVE_CUDPP)
+	list(APPEND LINKER_DEPENDENCIES cudpp)
+endif()
+
+if(SOFA_HAVE_THRUST)
+	list(APPEND LINKER_DEPENDENCIES thrust)
+endif()
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
