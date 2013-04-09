@@ -13,7 +13,9 @@ set(ADDITIONAL_COMPILER_DEFINES "")
 set(ADDITIONAL_LINKER_DEPENDENCIES "")
 
 # include dir
-include_directories("${SOFA_INC_DIR}")
+if(WIN32)
+    include_directories("${SOFA_INC_DIR}")
+endif()
 include_directories("${SOFA_FRAMEWORK_DIR}")
 include_directories("${SOFA_MODULES_DIR}")
 include_directories("${SOFA_APPLICATIONS_DIR}")

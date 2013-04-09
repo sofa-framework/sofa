@@ -86,10 +86,6 @@ else() # configuring from main solution
 option(EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
 if(EXTERNAL_HAVE_PNG)
 	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_PNG)
-	option(EXTERNAL_PNG_SPECIFIC_VERSION "On some systems, a specific version is needed (ex: MacOS)" OFF)
-	if(EXTERNAL_PNG_SPECIFIC_VERSION)
-                set(EXTERNAL_PNG_VERSION "png12" CACHE STRING "PNG specific version")
-	endif()
 endif()
 
 	## glew
