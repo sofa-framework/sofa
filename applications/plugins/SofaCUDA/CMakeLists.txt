@@ -182,9 +182,19 @@ endif (CUDA_VERBOSE_PTXAS)
 
 set(README_FILE SofaCUDA.txt )	
 
+#Give current directory to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+#Make these compiler definition available to nvcc
+add_definitions("-DSOFA_BUILD_GPU_CUDA")
+if(EXTERNAL_HAVE_GLEW)
+	add_definitions("-DSOFA_HAVE_GLEW")
+endif()
+
+#Get nvcc compiler to build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} OPTIONS ${VERBOSE_PTXAS})
+
+set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
 
 set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
