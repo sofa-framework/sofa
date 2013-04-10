@@ -95,14 +95,14 @@ endforeach()
 # copy external shared objects (.dll) to the Sofa bin directory
 if(WIN32)
 	## common external dlls
-	file(GLOB sharedObjects "${SOFA_BIN_DIR}/dll_x86/*.dll")
+        file(GLOB sharedObjects "${SOFA_SRC_DIR}/bin/dll_x86/*.dll")
 	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+                file(COPY ${sharedObject} DESTINATION "${SOFA_SRC_DIR}/bin")
 	endforeach()
 	
 	## qt dlls
 	file(GLOB sharedObjects "${EXTERNAL_QT_PATH}/bin/*.dll")
 	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+                file(COPY ${sharedObject} DESTINATION "${SOFA_SRC_DIR}/bin")
 	endforeach()
 endif()
