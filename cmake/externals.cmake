@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+cmake_policy(SET CMP0015 OLD)
+
 # include dirs
 if(WIN32)
     list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_INC_DIR}")
