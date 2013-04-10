@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaTaucsSolver")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -31,4 +31,4 @@ set(COMPILER_DEFINES "SOFA_BUILD_TAUCS_SOLVER" )
 set(LINKER_DEPENDENCIES  )
 
     
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -92,6 +92,15 @@ foreach(devPlugin ${SOFA_DEV_PLUGINS})
 	add_subdirectory("${${devPlugin}}")
 endforeach()
 
+# retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
+message(STATUS "> Computing Dependencies : In progress")
+set(projectNames ${GLOBAL_DEPENDENCIES})
+foreach(projectName ${projectNames})
+	ComputeDependencies(${projectName} false "")
+endforeach()
+message(STATUS "> Computing Dependencies : Done")
+message(STATUS "")
+
 # copy external shared objects (.dll) to the Sofa bin directory
 if(WIN32)
 	## common external dlls

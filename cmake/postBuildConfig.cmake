@@ -1,23 +1,20 @@
 cmake_minimum_required(VERSION 2.8)
 
-# group files (headers, sources, etc.)
-get_cmake_property(properties VARIABLES)
-foreach(property ${properties})
-	if(NOT property STREQUAL "")
-		string(REGEX MATCH ".+_FILES$" fileGroup ${property})
-		set(fileTopGroup "${${fileGroup}_GROUP}")
-		if(fileGroup)
-			GroupFiles("${fileGroup}" "${fileTopGroup}")
-		endif()
-	endif()
-endforeach()
-
-# if there is no cachefile, create one
-CreateCacheFile()
-
 if(TARGET ${PROJECT_NAME})
+	# group files (headers, sources, etc.)
+	get_cmake_property(properties VARIABLES)
+	foreach(property ${properties})
+		if(NOT property STREQUAL "")
+			string(REGEX MATCH ".+_FILES$" fileGroup ${property})
+			set(fileTopGroup "${${fileGroup}_GROUP}")
+			if(fileGroup)
+				GroupFiles("${fileGroup}" "${fileTopGroup}")
+			endif()
+		endif()
+	endforeach()
+
 	# include directories
-	include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+	include_directories(${GLOBAL_INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 	get_directory_property(${PROJECT_NAME}_INCLUDE_DIR INCLUDE_DIRECTORIES)
 	## put includes inside a CACHE variable for further uses

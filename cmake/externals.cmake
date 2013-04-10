@@ -1,42 +1,30 @@
 cmake_minimum_required(VERSION 2.8)
 
-cmake_policy(SET CMP0015 OLD)
-
-# useful variables
-set(COMPILER_DEFINES "")
-set(COMPILER_FLAGS "")
-set(LINKER_DEPENDENCIES "")
-set(LINKER_FLAGS "")
-
-## internal
-set(ADDITIONAL_COMPILER_DEFINES "")
-set(ADDITIONAL_LINKER_DEPENDENCIES "")
-
-# include dir
+# include dirs
 if(WIN32)
-    include_directories("${SOFA_INC_DIR}")
+    list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_INC_DIR}")
 endif()
-include_directories("${SOFA_FRAMEWORK_DIR}")
-include_directories("${SOFA_MODULES_DIR}")
-include_directories("${SOFA_APPLICATIONS_DIR}")
+list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_FRAMEWORK_DIR}")
+list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_MODULES_DIR}")
+list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_APPLICATIONS_DIR}")
 
 if(MISC_USE_DEV_PROJECTS)
-	include_directories("${SOFA_APPLICATIONS_DEV_DIR}")
+	list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_APPLICATIONS_DEV_DIR}")
 endif()
 
 if(EXTERNAL_BOOST_PATH)
-	include_directories("${EXTERNAL_BOOST_PATH}")
+	list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${EXTERNAL_BOOST_PATH}")
 else()
-	include_directories("${SOFA_EXTLIBS_DIR}/miniBoost")
+	list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_EXTLIBS_DIR}/miniBoost")
 endif()
 
 if(EXTERNAL_HAVE_EIGEN2)
-	include_directories("${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
+	list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 endif()
-include_directories("${SOFA_EXTLIBS_DIR}/newmat")
+list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_EXTLIBS_DIR}/newmat")
 
 if(EXTERNAL_HAVE_FLOWVR)
-	include_directories("${SOFA_EXTLIBS_DIR}/miniFlowVR/include")
+	list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA_EXTLIBS_DIR}/miniFlowVR/include")
 endif()
 
 ## Zlib (EXTERNAL_HAVE_ZLIB)
@@ -56,19 +44,19 @@ link_directories("${SOFA_LIB_OS_DIR}")
 
 ## opengl / glew / glut
 find_package(OPENGL REQUIRED)
-find_package(GLEW REQUIRED)
 if(WIN32)
 	#set(OPENGL_LIBRARIES "opengl32")
-	#set(GLEW_LIBRARIES "glew")
+	set(GLEW_LIBRARIES "glew32")
 	set(GLUT_LIBRARIES "glut32")
 	set(PNG_LIBRARIES "libpng")
 else()
+	find_package(GLEW REQUIRED)
 	find_library(GLUT_LIBRARIES "glut")
-        if(EXTERNAL_PNG_SPECIFIC_VERSION)
-            set(PNG_LIBRARIES "${EXTERNAL_PNG_VERSION}")
-        else()
-            find_library(PNG_LIBRARIES "png")
-        endif()
+	if(EXTERNAL_PNG_SPECIFIC_VERSION)
+		set(PNG_LIBRARIES "${EXTERNAL_PNG_VERSION}")
+	else()
+		find_library(PNG_LIBRARIES "png")
+	endif()
 endif()
 
 ## GLU
@@ -104,20 +92,3 @@ endif()
 set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 #message("${QT_LIBRARIES}")
 #RegisterDependencies(${QT_LIBRARIES})
-
-# target location
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SOFA_BIN_DIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_DIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_DIR}")
-if(UNIX)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${SOFA_LIB_DIR}")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${SOFA_LIB_DIR}")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${SOFA_LIB_DIR}")
-else()
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${SOFA_BIN_DIR}")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${SOFA_BIN_DIR}")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${SOFA_BIN_DIR}")
-endif()
-
-# out of source build support
-set(CMAKE_INCLUDE_CURRENT_DIR 1)

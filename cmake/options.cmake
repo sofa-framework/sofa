@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 if(NOT GENERATED_FROM_MAIN_SOLUTION) # configuring from sub-project
 	# load cache
-	load_cache("${SOFA_DIR}")
+	load_cache("${SOFA_ROOT_DIR}" INCLUDE_INTERNALS SOFA_SRC_DIR SOFA_BUILD_DIR)
+	message(STATUS " - ${SOFA_ROOT_DIR} - ${SOFA_SRC_DIR} - ${SOFA_BUILD_DIR}")
 else() # configuring from main solution
 	# hide unused default cmake variables
-	set(CMAKE_INSTALL_PREFIX "${SOFA_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
+	set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 
 	# plugins (auto-search)
 	file(GLOB pluginPathes "${SOFA_APPLICATIONS_PLUGINS_DIR}/*")
@@ -52,18 +53,10 @@ else() # configuring from main solution
 		file(GLOB QTDIR "${QTDIR}") # check if the QTDIR contains a correct path
 	endif()
 
-	if(WIN32)
-		# convenience : try to find a valid QT path
-		if(QTDIR STREQUAL "")
-                        string(SUBSTRING "${SOFA_SRC_DIR}" 0 1 DISK_LETTER)
-			file(GLOB QTDIRS "${DISK_LETTER}:/Qt*")
-			list(GET QTDIRS 0 QTDIR)
-		endif()
-	endif()
-	# on Windows (and maybe also on Linux and Mac) the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
+	### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 	set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
 	option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3)" ON)
-	if (EXTERNAL_USE_QT4)
+	if(EXTERNAL_USE_QT4)
 		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_QT4)
 	endif()
 
@@ -82,11 +75,11 @@ else() # configuring from main solution
 		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_ZLIB)
 	endif()
 
-## libpng
-option(EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
-if(EXTERNAL_HAVE_PNG)
-	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_PNG)
-endif()
+	## libpng
+	option(EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
+	if(EXTERNAL_HAVE_PNG)
+		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_PNG)
+	endif()
 
 	## glew
 	option(EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
@@ -112,14 +105,14 @@ endif()
 		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_CSPARSE)
 	endif()
 
-## FLOWVR
-option(EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF)
-if(EXTERNAL_HAVE_FLOWVR)
-	list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_FLOWVR)
-#TODO port features/sofa/flowvr.prf
-else()
-	list(APPEND GLOBAL_COMPILER_DEFINES MINI_FLOWVR)
-endif()
+	## FLOWVR
+	option(EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF)
+	if(EXTERNAL_HAVE_FLOWVR)
+		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_HAVE_FLOWVR)
+	#TODO port features/sofa/flowvr.prf
+	else()
+		list(APPEND GLOBAL_COMPILER_DEFINES MINI_FLOWVR)
+	endif()
 
 	## EIGEN
 	option(EXTERNAL_HAVE_EIGEN2 "Use Eigen" ON)

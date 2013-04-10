@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaCompliantPluginTest")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies
 find_package( SofaCompliantPluginTestLibs REQUIRED)
@@ -29,4 +29,4 @@ if(UNIX)
     list(APPEND LINKER_DEPENDENCIES "dl")
 endif()
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

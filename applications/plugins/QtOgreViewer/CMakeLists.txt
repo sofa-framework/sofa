@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaQtOgreViewer")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies
 find_package( SofaQtOgreViewerLibs REQUIRED)
@@ -67,4 +67,4 @@ if(WIN32)
     list(APPEND LINKER_DEPENDENCIES "OgreMain")
 endif()
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

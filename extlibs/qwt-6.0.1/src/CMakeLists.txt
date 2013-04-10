@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("Qwt")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -186,5 +186,5 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

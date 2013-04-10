@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaMiscMapping")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -63,4 +63,4 @@ set(COMPILER_DEFINES "SOFA_BUILD_MISC_MAPPING" )
 set(LINKER_DEPENDENCIES SofaSimpleFem SofaRigid SofaEigen2Solver )
 
     
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

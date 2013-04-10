@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("newmat")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 include_directories("${SOFA_BIN_DIR}")
 
@@ -54,6 +54,6 @@ if(${CMAKE_COMPILER_IS_GNUCC})
     set(COMPILER_FLAGS "-fPIC")
 endif()
 	
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
 
