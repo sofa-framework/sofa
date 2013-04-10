@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaConfiguration")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -43,5 +43,5 @@ if(APPLE)
 
 endif()
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

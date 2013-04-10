@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaPimGUIQt")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies
 find_package( SofaPimGUIQtLibs REQUIRED)
@@ -25,4 +25,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set(COMPILER_DEFINES "SOFA_BUILD_PIMGUIQT")
 set(LINKER_DEPENDENCIES SofaPimGui SofaComponentCollision SofaPim)
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

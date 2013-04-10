@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaComponentMisc")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -22,4 +22,4 @@ set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_MISC" )
 set(LINKER_DEPENDENCIES SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMiscFem SofaMiscEngine SofaMiscCollision SofaMiscSolver SofaMisc )
 
     
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

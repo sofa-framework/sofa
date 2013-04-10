@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaInfo")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 
 
@@ -16,5 +16,5 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain )
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

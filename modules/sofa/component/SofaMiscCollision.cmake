@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaMiscCollision")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -67,4 +67,4 @@ endif()
 #    list(APPEND LINKER_DEPENDENCIES eigen)
 #endif()
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaGpuOpenCL")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES  )
 set(SOURCE_FILES  )
@@ -30,4 +30,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${OTHER_FILES} ${SOURCE_FILES
 set(COMPILER_DEFINES "SOFA_BUILD_GPU_OPENCL")
 set(LINKER_DEPENDENCIES SofaHelper SofaEngine SofaSphFluid SofaUserInteraction opencl csparse taucs taucs_mt system-taucs)
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

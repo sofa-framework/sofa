@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaPreconditioner")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -41,4 +41,4 @@ if(EXTERNAL_HAVE_CSPARSE)
     list(APPEND LINKER_DEPENDENCIES SofaSparseSolver)
 endif()
     
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)

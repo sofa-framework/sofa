@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 set(SOLUTION_NAME "SofaComponent")
 project(${SOLUTION_NAME})
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preSolution.cmake)
 
 include("SofaBaseAnimationLoop.cmake")
 include("SofaBaseCollision.cmake")
@@ -64,4 +64,4 @@ include("SofaUserInteraction.cmake")
 include("SofaValidation.cmake") 
 include("SofaVolumetricData.cmake")
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postSolution.cmake)

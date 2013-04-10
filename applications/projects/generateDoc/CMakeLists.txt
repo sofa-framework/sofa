@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("GenerateDoc")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     
@@ -21,5 +21,5 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaComponentMain )
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

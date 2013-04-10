@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("csparse")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
@@ -26,5 +26,5 @@ endif()
 
 set(COMPILER_DEFINES "use_namespace")
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("SofaXitact")
 
-include(${SOFA_CMAKE_DIR}/pre.cmake)
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies
 find_package( SofaXitactLibs REQUIRED)
@@ -34,4 +34,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set(COMPILER_DEFINES "SOFA_BUILD_XITACTPLUGIN")
 set(LINKER_DEPENDENCIES SofaComponentMain SofaGui SofaGuiQt XiRobot)
 
-include(${SOFA_CMAKE_DIR}/post.cmake)
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
