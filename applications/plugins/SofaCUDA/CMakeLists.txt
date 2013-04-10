@@ -182,9 +182,10 @@ endif (CUDA_VERBOSE_PTXAS)
 
 set(README_FILE SofaCUDA.txt )	
 
+cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} OPTIONS ${VERBOSE_PTXAS})
 
-set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA ; CUDPP_STATIC_LIB")
 set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
 if(SOFA_HAVE_CUDPP)
