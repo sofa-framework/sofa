@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.8)
 
 # group files
 macro(GroupFiles fileGroup topGroup)	
@@ -214,11 +214,11 @@ function(ComputeDependencies projectName forceEnable offset)
 			# retrieve its dependencies and intersect with the known ones (which may be currently disabled)
 			listIntersection(dependencies GLOBAL_PROJECT_DEPENDENCIES_${projectName} GLOBAL_DEPENDENCIES)
 			
-			message(STATUS "${offset} + ${projectName}")
+                        #message(STATUS "${offset} + ${projectName}")
 			foreach(dependency ${dependencies})
 				ComputeDependencies(${dependency} true "${offset} ")
 			endforeach()
-			message(STATUS "${offset} - ${projectName}")
+                        #message(STATUS "${offset} - ${projectName}")
 			
 			# retrieve include directories
 			list(APPEND includeDirs ${${projectName}_INCLUDE_DIR})
@@ -235,11 +235,6 @@ function(ComputeDependencies projectName forceEnable offset)
 			if(TARGET ${projectName})
 				#set_property(TARGET ${projectName} PROPERTY INCLUDE_DIRECTORIES ${${projectName}_INCLUDE_DIR})
 				set_target_properties(${projectName} PROPERTIES INCLUDE_DIRECTORIES "${${projectName}_INCLUDE_DIR}")
-				if(projectName STREQUAL "SofaVolumetricData")
-                                        get_target_property(dirs ${projectName} INCLUDE_DIRECTORIES)
-                                        message(STATUS "${projectName}_INCLUDE_DIR = ${${projectName}_INCLUDE_DIR}")
-                                        message(STATUS "INCLUDE_DIRECTORIES = ${dirs}")
-                                endif()
 			endif()
 		endif()
 	endif()
