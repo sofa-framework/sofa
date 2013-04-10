@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+# cmake modules path, for our FindXXX.cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR})
+
 # useful pathes
 set(SOFA_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Path to the Sofa cmake directory")
 
