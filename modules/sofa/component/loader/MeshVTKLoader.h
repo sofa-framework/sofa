@@ -204,7 +204,7 @@ protected:
                     std::string line;
                     while(i < dataSize && !in.eof() && !in.bad())
                     {
-                        std::getline(in, line);
+                        std::getline(in, line);                        
                         std::istringstream ln(line);
                         while (i < n && ln >> data[i])
                             ++i;

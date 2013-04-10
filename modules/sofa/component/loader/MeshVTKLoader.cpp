@@ -217,6 +217,8 @@ bool MeshVTKLoader::setInputsMesh()
 
         const int* dataT = (int*)(reader->inputCellTypes->getData());
 
+        helper::vector<int> numSubPolyLines;
+
         int nbf = reader->numberOfCells;
         int i = 0;
         for (int c = 0; c < nbf; ++c)
@@ -231,7 +233,7 @@ bool MeshVTKLoader::setInputsMesh()
             else
             {
                 nv = inFP[i]; ++i;
-            }
+            }           
 
             switch (t)
             {
@@ -243,8 +245,11 @@ bool MeshVTKLoader::setInputsMesh()
                 addEdge(&my_edges, inFP[i+0], inFP[i+1]);
                 break;
             case 4: // POLY_LINE
-                for (int v = 0; v < nv-1; ++v)
+                numSubPolyLines.push_back(nv);
+                for (int v = 0; v < nv-1; ++v) {
                     addEdge(&my_edges, inFP[i+v+0], inFP[i+v+1]);
+                    //std::cout << " c = " << c << " i = " << i <<  " v = " << v << "  edge: " << inFP[i+v+0] << " " << inFP[i+v+1] << std::endl;
+                }
                 break;
             case 5: // TRIANGLE
                 addTriangle(&my_triangles,inFP[i+0], inFP[i+1], inFP[i+2]);
@@ -284,6 +289,24 @@ bool MeshVTKLoader::setInputsMesh()
             if (!offsets)
                 i += nv;
         }
+
+        if (numSubPolyLines.size() > 0) {
+            unsigned int sz = reader->inputCellDataVector.size();
+            reader->inputCellDataVector.resize(sz+1);
+            reader->inputCellDataVector[sz] = reader->newVTKDataIO("int");
+
+            BaseVTKReader::VTKDataIO<int>* cellData = dynamic_cast<BaseVTKReader::VTKDataIO<int>* > (reader->inputCellDataVector[sz]);
+
+            if (cellData == NULL) return false;
+
+            cellData->resize(numSubPolyLines.size());
+
+            for (size_t ii = 0;  ii < numSubPolyLines.size(); ii++)
+                cellData->data[ii] = numSubPolyLines[ii];
+
+            cellData->name = "PolyLineSubEdges";
+        }
+
     }
     if (reader->inputPoints) delete reader->inputPoints;
     if (reader->inputPolygons) delete reader->inputPolygons;
@@ -472,18 +495,20 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             std::cout << "Data structure: " << dataStructure << std::endl;
 
             if (dataStructure == "SCALARS") {
-                inputCellDataVector.resize(1);
-                lnData >> dataName;
-                lnData >> dataType;
+                unsigned int sz = inputCellDataVector.size();
 
-                inputCellDataVector[0] = newVTKDataIO(dataType);
-                if (inputCellDataVector[0] == NULL) return false;
+                inputCellDataVector.resize(sz+1);
+                lnData >> dataName;
+                lnData >> dataType;                                
+
+                inputCellDataVector[sz] = newVTKDataIO(dataType);
+                if (inputCellDataVector[sz] == NULL) return false;
                 /// one more getline to read LOOKUP_TABLE line, not used here
                 std::getline(inVTKFile, line);
 
-                if (!inputCellDataVector[0]->read(inVTKFile,n, binary)) return false;
-                inputCellDataVector[0]->name = dataName;
-                std::cout << "Read cell data: " << inputCellDataVector[0]->dataSize << std::endl;
+                if (!inputCellDataVector[sz]->read(inVTKFile,n, binary)) return false;
+                inputCellDataVector[sz]->name = dataName;
+                std::cout << "Read cell data: " << inputCellDataVector[sz]->dataSize << std::endl;
             }
             else if (dataStructure == "FIELD") {
                 std::getline(inVTKFile,line);
@@ -498,10 +523,15 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                     lnData >> perCell >> cells;
                     std::cout << "Reading topology for lines: "<< perCell << " " << cells << std::endl;
 
-                    inputCellDataVector.resize(1);
-                    inputCellDataVector[0] = newVTKDataIO("int");
-                    if (!inputCellDataVector[0]->read(inVTKFile,perCell*cells, binary)) return false;
-                    inputCellDataVector[0]->name = "Topology";
+                    unsigned int sz = inputCellDataVector.size();
+
+                    inputCellDataVector.resize(sz+1);
+                    inputCellDataVector[sz] = newVTKDataIO("int");
+
+                    if (!inputCellDataVector[sz]->read(inVTKFile,perCell*cells, binary))
+                        return false;
+
+                    inputCellDataVector[sz]->name = "Topology";
                 }
             }
             else  /// TODO
