@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compliant plugin</title>
   
@@ -184,8 +185,11 @@ Installation:<br>
 
 <ul>
 
+  <li>The solver uses external libraries for linear algebra sparse matrix factoring: including blas and cholmod. On ubuntu 12.04, they are packed in <span style="font-style: italic;">libsuitesparse-metis-dev.deb</span><br>
+</li>
   <li>The test suite requires the installation of the Boost.Test
 library. Installatations instructions can be found on the web, e.g.:</li>
+
   <ul>
     <li>for linux: <a href="http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/">http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/</a>
     </li>
@@ -199,7 +203,10 @@ Doxyfile</span> in the <span style="font-family: monospace;">doc/</span>
 directory.</li>
 </ul>Troubleshooting:<br>
 <ul>
-  <li>The run and test executables require plugins <span style="font-style: italic;">Compliant</span> and <span style="font-style: italic;">Flexible</span>. For some reason, the order they are declared in the dependency file <span style="font-style: italic;">Sofa-dependencies.prf</span> matters. I had to put Flexible before Compliant otherwise I got a strange run-time crash on not-really-valid component pointers. (FF, linux, 06/2012)<br>
+  <li>The run and test executables require plugins <span style="font-style: italic;">Compliant</span> and <span style="font-style: italic;">Flexible</span>. For some reason, the order they are declared in the dependency file <span style="font-style: italic;">Sofa-dependencies.prf</span>
+matters. I had to put Flexible before Compliant otherwise I got a
+strange run-time crash on not-really-valid component pointers. (FF,
+linux, 06/2012)<br>
   </li>
 </ul>
 
@@ -279,5 +286,6 @@ and <span style="font-weight: bold;">\]</span>&nbsp; .<br>
 <br>
 
 <br>
+
 
 </body></html>
