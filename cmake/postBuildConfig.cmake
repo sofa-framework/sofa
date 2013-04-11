@@ -38,8 +38,5 @@ if(TARGET ${PROJECT_NAME})
 
 	#link flags
 	set(LINKER_FLAGS_OS_SPECIFIC "")
-	if(WIN32)
-		set(LINKER_FLAGS_OS_SPECIFIC "")
-	endif()
 	set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${LINKER_FLAGS_OS_SPECIFIC} ${LINKER_FLAGS}")
 endif()
