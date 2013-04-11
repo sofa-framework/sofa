@@ -195,19 +195,16 @@ else() # configuring from main solution
 	# unit tests
 	option(UNIT-TESTS_USE "Build and use unit tests" OFF)
 	if(UNIT-TESTS_USE)
-			if(NOT WIN32)
-					option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
-			endif()
+		if(NOT WIN32)
+			option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
+		endif()
 	endif()
 
 	# miscellaneous
-	file(GLOB applicationDevExist "${SOFA_APPLICATIONS_DEV_DIR}")
-	if(applicationDevExist)
-		set(MISC_USE_DEV_PROJECTS_MODE "ON")
-	else()
-		set(MISC_USE_DEV_PROJECTS_MODE "OFF")
+	option(MISC_USE_DEVELOPER_MODE "Build and use the applications-dev projects (dev-plugins may need them)" OFF)
+	if(MISC_USE_DEVELOPER_MODE)
+		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_DEV)
 	endif()
-	option(MISC_USE_DEV_PROJECTS "Build and use the applications-dev projects (dev-plugins may need them)" ${MISC_USE_DEV_PROJECTS_MODE})
 endif()
 
 
