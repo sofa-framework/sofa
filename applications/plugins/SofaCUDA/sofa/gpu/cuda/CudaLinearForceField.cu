@@ -67,6 +67,8 @@ __global__ void LinearForceFieldCudaRigid3t_addForce_kernel(unsigned size, const
 
 void LinearForceFieldCudaRigid3f_addForce(unsigned size, const void* indices, const void* forces, void* f)
 {
+	float* fv = (float*)forces;
+// 	mycudaPrintf("Add : %f %f %f %f %f %f\n", fv[0], fv[1], fv[2], fv[3], fv[4], fv[5]);
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     LinearForceFieldCudaRigid3t_addForce_kernel<float>

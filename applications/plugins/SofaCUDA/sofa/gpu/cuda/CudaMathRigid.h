@@ -181,6 +181,40 @@ __device__ CudaRigidCoord3<real> operator+(CudaRigidCoord3<real> a, CudaRigidDer
     return x;
 }
 
+template<typename real>
+__device__ CudaRigidDeriv3<real> operator*(CudaRigidDeriv3<real> lhs, real rhs)
+{
+	CudaRigidDeriv3<real> r = lhs;
+	
+	r.pos.x *= rhs;
+	r.pos.y *= rhs;
+	r.pos.z *= rhs;
+	
+	r.rot.x *= rhs;
+	r.rot.y *= rhs;
+	r.rot.z *= rhs;
+	r.rot.w *= rhs;
+
+	return r;
+}
+
+template<typename real>
+__device__ CudaRigidDeriv3<real> operator*(real lhs, CudaRigidDeriv3<real> rhs)
+{
+	CudaRigidDeriv3<real> r = rhs;
+	
+	r.pos.x *= lhs;
+	r.pos.y *= lhs;
+	r.pos.z *= lhs;
+	
+	r.rot.x *= lhs;
+	r.rot.y *= lhs;
+	r.rot.z *= lhs;
+	r.rot.w *= lhs;
+
+	return r;
+}
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 struct rigidcoord3d

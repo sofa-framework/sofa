@@ -70,6 +70,16 @@ void UniformMass<gpu::cuda::CudaVec3f1Types, float>::accFromF(const core::Mechan
 template <>
 void UniformMass<gpu::cuda::CudaVec3f1Types, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
+//CudaRigid3f
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addMDx(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &f, const DataVecDeriv &dx, double factor);
+
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::accFromF(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &a, const DataVecDeriv &f);
+
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addForce(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v);
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // -- Mass interface

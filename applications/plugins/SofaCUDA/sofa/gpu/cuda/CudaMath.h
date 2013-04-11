@@ -496,7 +496,7 @@ template<class real>
 __device__ __inline__ CudaVec4<real> quatInverse(const CudaVec4<real>& q)
 {
 	CudaVec4<real> r;
-	real qn = rsqrt(norm2(q));
+	real qn = sqrt(norm2(q));
 	
 	qn = qn > 0.0f ? 1/qn : 0.0f;
 	
