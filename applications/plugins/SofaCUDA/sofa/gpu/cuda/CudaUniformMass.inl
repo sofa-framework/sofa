@@ -48,6 +48,10 @@ extern "C"
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
     void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
 
+	void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
+	void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx);
+	void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f);
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx);
@@ -151,6 +155,48 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
 
     d_f.endEdit();
 }
+
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addMDx(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &f, const DataVecDeriv &dx, double factor)
+{
+//	std::cout << "addMDx CudaRigid3f " << std::endl;
+	VecDeriv& _f = *f.beginEdit();
+	const VecDeriv& _dx = dx.getValue();
+
+//	for(int i = 0 ; i < _f.size() ; ++i)
+//		std::cout << "CPU "<< i << "  : " << _f[i] << std::endl;
+
+	UniformMassCudaRigid3f_addMDx(_dx.size(), (float)(mass.getValue().mass*factor), _f.deviceWrite(), _dx.deviceRead());
+
+	f.endEdit();
+}
+
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::accFromF(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &a, const DataVecDeriv &f)
+{
+//	std::cout << "addMDx CudaRigid3f " << std::endl;
+	VecDeriv& _a = *a.beginEdit();
+	VecDeriv _f = f.getValue();
+
+	UniformMassCudaRigid3f_accFromF(_a.size(), mass.getValue().mass, _a.deviceWrite(), _f.deviceRead());
+
+	a.endEdit();
+}
+
+template<>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::addForce(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+{
+	VecDeriv& _f = *f.beginEdit();
+	Vec3d g(this->getContext()->getGravity());
+
+	float m = mass.getValue().mass;
+	const float mg[] = { m*g(0), m*g(1), m*g(2) };
+	UniformMassCudaRigid3f_addForce(_f.size(), mg, _f.deviceWrite());
+
+	f.endEdit();
+
+}
+
 
 template <>
 double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const

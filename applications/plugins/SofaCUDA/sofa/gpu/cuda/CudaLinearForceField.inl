@@ -102,7 +102,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
 
     Real cT = (Real) m->getContext()->getTime();
 
-    if (m->keyTimes.getValue().size() != 0 && cT >= *m->keyTimes.getValue().begin() && cT <= *m->keyTimes.getValue().end())
+	if (m->keyTimes.getValue().size() != 0 && cT >= *m->keyTimes.getValue().begin() && cT <= *m->keyTimes.getValue().rbegin())
     {
         m->nextT = *m->keyTimes.getValue().begin();
         m->prevT = m->nextT;

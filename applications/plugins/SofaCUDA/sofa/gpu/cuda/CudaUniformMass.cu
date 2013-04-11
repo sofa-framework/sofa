@@ -24,7 +24,10 @@
 ******************************************************************************/
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "CudaMathRigid.h"
 #include "cuda.h"
+
+#include <cstdio>
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
@@ -44,6 +47,10 @@ extern "C"
     void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const void* dx);
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
     void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
+	
+	void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
+	void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx);
+	void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
@@ -104,6 +111,21 @@ __global__ void UniformMassCuda3t1_addMDx_kernel(int size, const real mass, Cuda
 }
 
 template<class real>
+__global__ void UniformMassCudaRigid3t_addMDx_kernel(const unsigned int size, const real mass, real* res, const real* dx)
+{
+	int gid = BSIZE*blockIdx.x + threadIdx.x;
+	
+	if( gid < size )
+	{
+		real dxi = dx[gid];
+		real ri = res[gid];
+		ri += dxi * mass;
+		res[gid] = ri;
+// 		printf("%d : dx = %f - ri = %f\n", gid, dxi, ri);
+	}
+}
+
+template<class real>
 __global__ void UniformMassCuda1t_accFromF_kernel(int size, const real inv_mass, real* a, const real* f)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
@@ -139,6 +161,19 @@ __global__ void UniformMassCuda3t1_accFromF_kernel(int size, const real inv_mass
         fi.z *= inv_mass;
         a[index] = fi;
     }
+}
+
+
+template<class real>
+__global__ void UniformMassCudaRigid3t_accFromF_kernel(const unsigned int size, const real inv_mass, real* a, const real* f)
+{
+	unsigned int gid = BSIZE*blockIdx.x + threadIdx.x;
+	
+	if( gid < size )
+	{
+		real fi = f[gid] * inv_mass;
+		a[gid] = fi;		
+	}
 }
 
 template<class real>
@@ -196,6 +231,39 @@ __global__ void UniformMassCuda3t1_addForce_kernel(int size, real mg_x, real mg_
     }
 }
 
+template<class real>
+__global__ void UniformMassCudaRigid3t_addForce_kernel(const unsigned int size, const real mg_x, const real mg_y, const real mg_z, real* f)
+{
+	__shared__ real sf[6*BSIZE];
+	unsigned int gid = BSIZE*blockIdx.x + threadIdx.x;
+	
+	sf[threadIdx.x] = f[gid];
+	sf[BSIZE+threadIdx.x] = f[BSIZE+gid];
+	sf[2*BSIZE+threadIdx.x] = f[2*BSIZE+gid];
+	sf[3*BSIZE+threadIdx.x] = f[3*BSIZE+gid];
+	sf[4*BSIZE+threadIdx.x] = f[4*BSIZE+gid];
+	sf[5*BSIZE+threadIdx.x] = f[5*BSIZE+gid];
+	
+	__syncthreads();
+	
+	if( gid < size  )
+	{
+		sf[6*threadIdx.x] += mg_x;
+		sf[6*threadIdx.x+1] += mg_y;
+		sf[6*threadIdx.x+2] += mg_z;
+	}
+	
+	__syncthreads();
+	
+
+	f[gid] = sf[threadIdx.x];
+	f[BSIZE+gid] = sf[BSIZE+threadIdx.x];
+	f[2*BSIZE+gid] = sf[2*BSIZE+threadIdx.x];
+	f[3*BSIZE+gid] = sf[3*BSIZE+threadIdx.x];
+	f[4*BSIZE+gid] = sf[4*BSIZE+threadIdx.x];
+	f[5*BSIZE+gid] = sf[5*BSIZE+threadIdx.x];
+}
+
 //////////////////////
 // CPU-side methods //
 //////////////////////
@@ -218,6 +286,16 @@ void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const v
     //UniformMassCuda1t_addMDx_kernel<float><<< grid, threads >>>(4*size, mass, (float*)res, (const float*)dx);
 }
 
+void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((6*size+BSIZE-1)/BSIZE,1);
+	
+	UniformMassCudaRigid3t_addMDx_kernel<float><<< grid, threads >>>(6*size, mass, (float*)res, (float*)dx);
+	
+	mycudaDebugError("UniformMassCudaRigid3t_addMDx_kernel<float>");
+}
+
 void UniformMassCuda3f_accFromF(unsigned int size, float mass, void* a, const void* f)
 {
     dim3 threads(BSIZE,1);
@@ -236,6 +314,16 @@ void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const v
     //UniformMassCuda1t_accFromF_kernel<float><<< grid, threads >>>(4*size, 1.0f/mass, (float*)a, (const float*)f);
 }
 
+void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid(6*(size+BSIZE-1)/BSIZE,1);
+	
+	UniformMassCudaRigid3t_accFromF_kernel<float><<< grid, threads >>>(6*size, 1.0f/mass, (float*)a, (float*)dx);
+	
+	mycudaDebugError("UniformMassCudaRigid3f_accFromF");
+}
+
 void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
@@ -248,6 +336,16 @@ void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {UniformMassCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<float>*)f); mycudaDebugError("UniformMassCuda3t1_addForce_kernel<float>");}
+}
+
+void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+// 	sofa::gpu::cuda::mycudaPrintf("mg = %f %f %f\n", mg[0], mg[1], mg[2]);
+	UniformMassCudaRigid3t_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (float*)f);
+	
+	mycudaDebugError("UniformMassCudaRigid3f_addForce");
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
