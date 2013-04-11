@@ -73,7 +73,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
     typename ProjectToLineConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
-    /// Create the context for the matrix tests.
+    /// Create the context for the tests.
     void SetUp()
     {        
         sofa::component::init();
