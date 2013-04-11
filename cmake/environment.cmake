@@ -40,6 +40,7 @@ if(WIN32)
 endif()
 
 # cached variables
+unset(GLOBAL_DEPENDENCIES CACHE) # reset the dependency database (used to compute interdependencies)
 set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} CACHE INTERNAL "Global Compiler Defines" FORCE)
 set(GLOBAL_INCLUDE_DIRECTORIES ${GLOBAL_INCLUDE_DIRECTORIES} CACHE INTERNAL "Global Compiler Defines" FORCE)
 

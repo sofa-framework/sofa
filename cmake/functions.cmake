@@ -208,8 +208,8 @@ function(ComputeDependencies projectName forceEnable offset)
 			# mark project as "processed", doing this now avoid dead-lock during recursion in case of circular dependency
 			set(GLOBAL_PROJECT_DEPENDENCIES_COMPLETE_${projectName} 1 CACHE INTERNAL "${projectName} know all its dependencies status" FORCE)
 		
-			# retrieve its dependencies and intersect with the known ones (which may be currently disabled)
-			listIntersection(dependencies GLOBAL_PROJECT_DEPENDENCIES_${projectName} GLOBAL_DEPENDENCIES)
+			# retrieve its dependencies
+			set(dependencies ${GLOBAL_PROJECT_DEPENDENCIES_${projectName}})
 			
 			#message(STATUS "${offset} + ${projectName}")
 			foreach(dependency ${dependencies})
@@ -239,7 +239,7 @@ endfunction()
 # create a cache file
 function(CreateCacheFile)
 	if(GENERATED_FROM_MAIN_SOLUTION)
-		set(cacheFilename "${CMAKE_CURRENT_SOURCE_DIR}/CMakeCache.txt")
+		set(cacheFilename "${CMAKE_CURRENT_BINARY_DIR}/CMakeCache.txt")
 		file(GLOB cacheFile "${cacheFilename}")
 		if(cacheFile STREQUAL "")
 			file(WRITE "${cacheFilename}" "SOFA_CMAKE_DIR:INTERNAL=${SOFA_CMAKE_DIR}")
