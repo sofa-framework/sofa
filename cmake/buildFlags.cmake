@@ -33,3 +33,13 @@ elseif(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
 elseif(CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
 	#message(STATUS "Building MinSizeRel")
 endif()
+
+
+# NDEBUG preprocessor macro
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+    list(APPEND GLOBAL_COMPILER_DEFINES "NDEBUG")
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    list(APPEND GLOBAL_COMPILER_DEFINES "SOFA_DEBUG")
+endif()

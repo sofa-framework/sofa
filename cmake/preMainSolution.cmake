@@ -13,7 +13,7 @@ if(FIRST_CONFIGURE_DONE)
 	message(STATUS "")
 	
 	include(${CMAKE_CURRENT_LIST_DIR}/externals.cmake)
-	include(${CMAKE_CURRENT_LIST_DIR}/buildFlags.cmake)
+        include(${CMAKE_CURRENT_LIST_DIR}/buildFlags.cmake)
 else()
 	message("")      
         message("SOFA framework pre-configuration complete")
