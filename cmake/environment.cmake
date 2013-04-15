@@ -46,12 +46,3 @@ set(GLOBAL_INCLUDE_DIRECTORIES ${GLOBAL_INCLUDE_DIRECTORIES} CACHE INTERNAL "Glo
 
 # cmake modules path, for our FindXXX.cmake modules
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR}) #moved to preProject.cmake
-
-# NDEBUG preprocessor macro
-if(CMAKE_BUILD_TYPE MATCHES "Release")
-    list(APPEND GLOBAL_COMPILER_DEFINES "NDEBUG")
-endif()
-
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    list(APPEND GLOBAL_COMPILER_DEFINES "SOFA_DEBUG")
-endif()
