@@ -172,9 +172,9 @@ set(SOURCE_FILES
 
 UseQt()
 if(EXTERNAL_USE_QT4)	
-	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 else()	
-	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	SOFA_QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 endif()
 
 # make mocced header files path from absolute to relative

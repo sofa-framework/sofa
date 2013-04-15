@@ -53,8 +53,8 @@ if(EXTERNAL_USE_QT4)
     list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
 	
-	QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	QT4_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
+	SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
 else()
     list(APPEND HEADER_FILES "QSofaLibrary.h")
     list(APPEND HEADER_FILES "QCategoryLibrary.h")
@@ -64,8 +64,8 @@ else()
     list(APPEND SOURCE_FILES "QCategoryLibrary.cpp")
     list(APPEND SOURCE_FILES "QComponentLibrary.cpp")
 	
-	QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-	QT3_UIC3_WRAP_UI(FORM_FILES ${UI_FILES})
+	SOFA_QT3_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+	SOFA_QT3_WRAP_UI(FORM_FILES ${UI_FILES})
 endif()
 
 # make mocced header / form files path from absolute to relative
