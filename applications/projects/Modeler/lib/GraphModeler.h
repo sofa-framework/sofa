@@ -46,7 +46,6 @@
 #ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
-typedef Q3ListViewItem QListViewItem;
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
 #include <Q3Header>

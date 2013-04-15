@@ -29,7 +29,6 @@
 #include "SofaGUIQt.h"
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
-typedef Q3ListViewItem QListViewItem;
 #else
 #include <qlistview.h>
 #endif
