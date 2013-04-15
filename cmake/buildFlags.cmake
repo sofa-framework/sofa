@@ -34,12 +34,18 @@ elseif(CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
 	#message(STATUS "Building MinSizeRel")
 endif()
 
+set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
+if(WIN32)
+	list(APPEND compilerDefines "UNICODE")
+endif()
 
 # NDEBUG preprocessor macro
 if(CMAKE_BUILD_TYPE MATCHES "Release")
-    list(APPEND GLOBAL_COMPILER_DEFINES "NDEBUG")
+    list(APPEND compilerDefines "NDEBUG")
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    list(APPEND GLOBAL_COMPILER_DEFINES "SOFA_DEBUG")
+    list(APPEND compilerDefines "SOFA_DEBUG")
 endif()
+
+set(GLOBAL_COMPILER_DEFINES ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)

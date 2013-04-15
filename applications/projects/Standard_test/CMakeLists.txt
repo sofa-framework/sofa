@@ -9,7 +9,6 @@ set(HEADER_FILES
     Sofa_test.h 
     Matrix_test.inl
     Mapping_test.h
-    
     )
 
 set(SOURCE_FILES
@@ -19,17 +18,17 @@ set(SOURCE_FILES
     OBBTest.cpp 
     ProjectToPlaneConstraint_test.cpp 
     ProjectToLineConstraint_test.cpp 
-    
     )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-if(UNIT-TESTS_BUILD_GTEST)
-    include_directories("${SOFA_EXTLIBS_DIR}/gtest")
+if(UNIT-TESTS_BUILD_GTEST OR WIN32)
+    include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 endif()
 
 set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
-set(LINKER_DEPENDENCIES SofaEigen2Solver SofaComponent SofaBaseCollision SofaGraph gtest gtest_main )
+set(LINKER_DEPENDENCIES SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph gtest gtest_main)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

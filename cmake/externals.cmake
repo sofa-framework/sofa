@@ -94,3 +94,8 @@ endif()
 set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 #message("${QT_LIBRARIES}")
 #RegisterDependencies(${QT_LIBRARIES})
+
+# unit tests
+if(UNIT-TESTS_USE)
+	enable_testing()
+endif()

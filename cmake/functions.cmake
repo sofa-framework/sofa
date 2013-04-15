@@ -57,8 +57,46 @@ macro(GatherProjectFiles files directories filter) # group)
 	endforeach()
 endmacro()
 
+# generate mocced headers from Qt4 moccable headers
+macro(SOFA_QT4_WRAP_CPP outfiles )
+	# get include dirs
+	QT4_GET_MOC_FLAGS(moc_flags)
+	QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+
+	set(defines)
+	foreach(it ${GLOBAL_COMPILER_DEFINES})
+		list(APPEND defines "-D${it}")
+	endforeach()
+
+	foreach(it ${moc_files})
+	get_filename_component(it ${it} ABSOLUTE)
+	QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+	QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
+	set(${outfiles} ${${outfiles}} ${outfile})
+	endforeach()
+endmacro()
+
+# generate mocced headers from Qt3 moccable headers
+macro(SOFA_QT3_WRAP_CPP outfiles )
+	# get include dirs
+	QT3_GET_MOC_FLAGS(moc_flags)
+	QT3_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+
+	set(defines)
+	foreach(it ${GLOBAL_COMPILER_DEFINES})
+		list(APPEND defines "-D${it}")
+	endforeach()
+
+	foreach(it ${moc_files})
+	get_filename_component(it ${it} ABSOLUTE)
+	QT3_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+	QT3_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
+	set(${outfiles} ${${outfiles}} ${outfile})
+	endforeach()
+endmacro()
+
 # generate .h / .cpp from Qt3 .ui for Qt4
-macro(QT4_UIC3_WRAP_UI outfiles )
+macro(SOFA_QT4_WRAP_UI outfiles )
 	QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
 
 	foreach(it ${ui_files})
@@ -71,13 +109,13 @@ macro(QT4_UIC3_WRAP_UI outfiles )
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
 							MAIN_DEPENDENCY ${infile})
 		
-		QT4_WRAP_CPP(outMocFile ${outHeaderFile})
+		SOFA_QT4_WRAP_CPP(outMocFile ${outHeaderFile})
 		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
 	endforeach()
 endmacro()
 
 # generate .h / .cpp from Qt3 .ui for Qt3
-macro(QT3_UIC3_WRAP_UI outfiles )
+macro(SOFA_QT3_WRAP_UI outfiles )
 	QT3_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
 
 	foreach(it ${ui_files})
@@ -90,7 +128,7 @@ macro(QT3_UIC3_WRAP_UI outfiles )
 							COMMAND ${QT_UIC3_EXECUTABLE} ${ui_options} "-impl" ${outHeaderFile} ${infile} -o ${outSourceFile}
 							MAIN_DEPENDENCY ${infile})
 							
-		QT3_WRAP_CPP(outMocFile ${outHeaderFile})
+		SOFA_QT3_WRAP_CPP(outMocFile ${outHeaderFile})
 		set(${outfiles} ${${outfiles}} ${outHeaderFile} ${outSourceFile} ${outMocFile})
 	endforeach()
 endmacro()
@@ -111,55 +149,68 @@ function(UseQt)
 	set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
 endfunction()
 
-# RegisterDependencies(<lib0> [lib1 [lib2 ...]] [OPTION <optionName> [<path>]])
+# RegisterDependencies(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS SOFA_HAVE_BGL] [PATH <path>])
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration
 # to add include directories from dependencies and to enable dependencies / plugins
 # libN is a list of library using the same OPTION to be enabled (opengl/glu for instance)
 # optionName is the name of the OPTION used to enable / disable the module (for instance EXTERNAL_HAVE_GLEW)
+# compiler definitions is the preprocessor macro that has to be globally setted if the project is enabled
 # path parameter is the path to the cmake project if any (may be needed to enable the project)
 function(RegisterDependencies)
 	set(dependencies)
-	set(mode 0)
-	set(optionName "")
-	set(projectPath "")
+	set(optionName)
+	set(compilerDefinitions)
+	set(projectPath)
 	
+	set(mode 0)
 	foreach(arg ${ARGV})
-		if(${mode} EQUAL 0)	# libN parameters
-			if(${arg} STREQUAL "OPTION")
-				set(mode 1)
-			else()
-				list(FIND GLOBAL_DEPENDENCIES ${arg} index)
-				if(index EQUAL -1)
-					set(dependencies ${dependencies} ${arg})
-				endif()
-			endif()
-		elseif(${mode} EQUAL 1) # OPTION arguments
+		if(${arg} STREQUAL "OPTION")
+			set(mode 1)
+		elseif(${arg} STREQUAL "COMPILE_DEFINITIONS")
 			set(mode 2)
-			set(optionName ${arg})
-		elseif(${mode} EQUAL 2) # PATH parameter
+		elseif(${arg} STREQUAL "PATH")
 			set(mode 3)
-			set(projectPath ${arg})
-		elseif(${mode} EQUAL 3) # too many arguments
-			message(SEND_ERROR "RegisterDependencies(${ARGV}) : too many arguments")
-			break()
+		else()
+			if(${mode} EQUAL 0)	# libN parameters
+				set(dependencies ${dependencies} ${arg})
+			elseif(${mode} EQUAL 1) # OPTION parameter
+				set(mode 4)
+				set(optionName ${arg})
+			elseif(${mode} EQUAL 2) # COMPILE_DEFINITIONS parameter
+				set(mode 4)
+				set(compilerDefinitions ${compilerDefinitions} ${arg})
+			elseif(${mode} EQUAL 3) # PATH parameter
+				set(mode 4)
+				set(projectPath ${arg})
+			elseif(${mode} EQUAL 4) # too many arguments
+				message(SEND_ERROR "RegisterDependencies(${ARGV}) : too many arguments")
+				break()
+			endif()
 		endif()
 	endforeach()
 
 	foreach(dependency ${dependencies})
 		unset(GLOBAL_PROJECT_DEPENDENCIES_COMPLETE_${dependency} CACHE) # if this flag is raised, it means this dependency is up-to-date regarding its dependencies and theirs include directories
-		set(GLOBAL_DEPENDENCIES ${GLOBAL_DEPENDENCIES} ${dependency} CACHE INTERNAL "Global checked dependencies" FORCE)
+		list(FIND GLOBAL_DEPENDENCIES ${dependency} index)
+		if(index EQUAL -1)
+			set(GLOBAL_DEPENDENCIES ${GLOBAL_DEPENDENCIES} ${dependency} CACHE INTERNAL "Global dependencies" FORCE)
+		endif()
 		if(NOT optionName STREQUAL "")
 			set(GLOBAL_PROJECT_OPTION_${dependency} ${optionName} CACHE INTERNAL "${dependency} options" FORCE)
-			if(NOT projectPath STREQUAL "")
-				set(GLOBAL_PROJECT_PATH_${dependency} ${projectPath} CACHE INTERNAL "${dependency} path" FORCE)
-			endif()
+		endif()
+		if(NOT projectPath STREQUAL "")
+			set(GLOBAL_PROJECT_PATH_${dependency} ${projectPath} CACHE INTERNAL "${dependency} path" FORCE)
+		endif()
+		if(NOT compilerDefinitions STREQUAL "")
+			set(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency} ${compilerDefinitions} CACHE INTERNAL "${dependency} compiler definitions" FORCE)
 		endif()
 	endforeach()
 endfunction()
 
-# RegisterProjectDependencies(<projectName> [lib0 [lib1 [lib2 ...]]])
+# RegisterProjectDependencies(<projectName>)
 # register a target and its dependencies
 function(RegisterProjectDependencies projectName)
+	# dependencies
 	set(projectDependencies ${ARGN})
 	list(LENGTH projectDependencies projectDependenciesNum)
 	if(NOT projectDependenciesNum EQUAL 0)
@@ -167,6 +218,21 @@ function(RegisterProjectDependencies projectName)
 		list(REMOVE_ITEM projectDependencies "debug" "optimized" "general") # remove cmake keywords from dependencies
 	endif()
 	set(GLOBAL_PROJECT_DEPENDENCIES_${projectName} ${projectDependencies} CACHE INTERNAL "${projectName} Dependencies" FORCE)
+	
+	# retrieve compile definitions
+	get_target_property(compilerDefines ${projectName} COMPILE_DEFINITIONS)
+	set(GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName} ${compilerDefines} CACHE INTERNAL "${projectName} compile definitions" FORCE)
+	
+	# also register compiler definitions - will be added to every projects at the end of the projects configuration
+	set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "Global Compiler Defines" FORCE)
+
+	# if we manually added an optional project to be generated, we must set its option to ON
+	if(GLOBAL_PROJECT_OPTION_${projectName})
+		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
+			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
+			set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)	
+		endif()
+	endif()	
 	
 	RegisterDependencies(${projectName})
 endfunction()
@@ -233,6 +299,19 @@ function(ComputeDependencies projectName forceEnable offset)
 				set_target_properties(${projectName} PROPERTIES INCLUDE_DIRECTORIES "${${projectName}_INCLUDE_DIR}")
 			endif()
 		endif()
+	endif()
+endfunction()
+
+# ApplyGlobalCompilerDefinitions(<projectName>)
+# set global compiler definitions to a specific project
+# <projectName> the project to compute
+function(ApplyGlobalCompilerDefinitions projectName)
+	# process the project
+	if(TARGET ${projectName})		
+		set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
+		list(APPEND compilerDefines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
+		list(REMOVE_DUPLICATES compilerDefines)
+		set_target_properties(${projectName} PROPERTIES COMPILE_DEFINITIONS "${compilerDefines}")
 	endif()
 endfunction()
 
