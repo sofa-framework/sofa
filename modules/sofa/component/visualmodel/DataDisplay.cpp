@@ -23,7 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <cmath>
+#if defined(WIN32)
+# include <float.h>
+# define isnan(x)  (_isnan(x))
+#else
+# include <cmath>
+# define isnan(x) (std::isnan(x))
+#endif
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -136,7 +142,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glBegin(GL_TRIANGLES);
         for (int i=0; i<nbTriangles; i++)
         {
-            Vec4f color = std::isnan(clData[i])
+            Vec4f color = isnan(clData[i])
                 ? f_colorNaN.getValue()
                 : eval(clData[i]);
             Triangle tri = tt->getTriangle(i);
@@ -154,7 +160,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glBegin(GL_POINTS);
         for (unsigned int i=0; i<x.size(); ++i)
         {
-            Vec4f color = std::isnan(ptData[i])
+            Vec4f color = isnan(ptData[i])
                 ? f_colorNaN.getValue()
                 : eval(ptData[i]);
             vparams->drawTool()->drawPoint(x[i], color);
@@ -170,7 +176,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             const Triangle &t = topology->getTriangle(i);
             Vec4f color[3];
             for (int j=0; j<3; j++) {
-                color[j] = std::isnan(ptData[t[j]])
+                color[j] = isnan(ptData[t[j]])
                     ? f_colorNaN.getValue()
                     : eval(ptData[t[j]]);
             }
@@ -185,7 +191,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             const Quad &q = topology->getQuad(i);
             for (int j=0; j<4; j++) {
-                Vec4f color = std::isnan(ptData[q[j]])
+                Vec4f color = isnan(ptData[q[j]])
                     ? f_colorNaN.getValue()
                     : eval(ptData[q[j]]);
                 glColor4f(color[0], color[1], color[2], color[3]);
