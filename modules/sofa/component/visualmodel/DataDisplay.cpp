@@ -84,8 +84,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         } else {
             bDrawPointData = true;
         }
-    }
-    if (clData.size() > 0) {
+    } else if (clData.size() > 0) {
         if (!topology || !tt) {
             serr << "Triangular topology is necessary for drawing cell data" << sendl;
         } else if ((int)clData.size() != tt->getNbTriangles()) {
@@ -96,78 +95,85 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    Real ptMin=0.0, ptMax=0.0;
+    Real min=0.0, max=0.0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
-        ptMin = *i;
-        ptMax = *i;
+        min = *i;
+        max = *i;
         while (++i != ptData.end()) {
-            if (ptMin > *i) ptMin = *i;
-            if (ptMax < *i) ptMax = *i;
+            if (min > *i) min = *i;
+            if (max < *i) max = *i;
         }
     }
 
     // Range for cells
-    Real clMin=0.0, clMax=0.0;
     if (bDrawCellData) {
         VecCellData::const_iterator i = clData.begin();
-        clMin = *i;
-        clMax = *i;
+        min = *i;
+        max = *i;
         while (++i != clData.end()) {
-            if (clMin > *i) clMin = *i;
-            if (clMax < *i) clMax = *i;
+            if (min > *i) min = *i;
+            if (max < *i) max = *i;
         }
     }
+    if (max > oldMax) oldMax = max;
+    if (min < oldMin) oldMin = min;
 
-    glDisable(GL_LIGHTING);
+    if (f_maximalRange.getValue()) {
+        max = oldMax;
+        min = oldMin;
+    }
+
+    vparams->drawTool()->setLightingEnabled(false);
 
     if (bDrawCellData) {
         // Triangles
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(clMin, clMax);
+        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
         int nbTriangles = tt->getNbTriangles();
         glBegin(GL_TRIANGLES);
         for (int i=0; i<nbTriangles; i++)
         {
-            Vec4f color = eval(clData[i]);
-            glColor4f(color[0], color[1], color[2], color[3]);
+            Vec4f color = isnan(clData[i])
+                ? f_colorNaN.getValue()
+                : eval(clData[i]);
             Triangle tri = tt->getTriangle(i);
-            glVertex3f(x[ tri[0] ][0], x[ tri[0] ][1], x[ tri[0] ][2]);
-            glVertex3f(x[ tri[1] ][0], x[ tri[1] ][1], x[ tri[1] ][2]);
-            glVertex3f(x[ tri[2] ][0], x[ tri[2] ][1], x[ tri[2] ][2]);
+            vparams->drawTool()->drawTriangle(
+                x[ tri[0] ], x[ tri[1] ], x[ tri[2] ],
+                Vector3(0,0,0), color);
         }
         glEnd();
     }
 
     if ((bDrawCellData || !topology) && bDrawPointData) {
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(ptMin, ptMax);
+        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
         // Just the points
         glPointSize(10);
         glBegin(GL_POINTS);
         for (unsigned int i=0; i<x.size(); ++i)
         {
-            Vec4f color = eval(ptData[i]);
-            glColor4f(color[0], color[1], color[2], color[3]);
-            //glColor4f(1.0, 1.0, 1.0, 1.0);
-            glVertex3f(x[i][0], x[i][1], x[i][2]);
+            Vec4f color = isnan(ptData[i])
+                ? f_colorNaN.getValue()
+                : eval(ptData[i]);
+            vparams->drawTool()->drawPoint(x[i], color);
         }
         glEnd();
 
     } else if (bDrawPointData) {
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(ptMin, ptMax);
+        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
         // Triangles
         glBegin(GL_TRIANGLES);
         for (int i=0; i<topology->getNbTriangles(); ++i)
         {
             const Triangle &t = topology->getTriangle(i);
+            Vec4f color[3];
             for (int j=0; j<3; j++) {
-                Vec4f color = eval(ptData[t[j]]);
-                glColor4f(color[0], color[1], color[2], color[3]);
-                //glColor4f(1.0, 1.0, 1.0, 1.0);
-                glVertex3f(
-                    x[ t[j] ][0],
-                    x[ t[j] ][1],
-                    x[ t[j] ][2]);
+                color[j] = isnan(ptData[t[j]])
+                    ? f_colorNaN.getValue()
+                    : eval(ptData[t[j]]);
             }
+            vparams->drawTool()->drawTriangle(
+                x[ t[0] ], x[ t[1] ], x[ t[2] ],
+                Vector3(0,0,0), color[0], color[1], color[2]);
         }
         glEnd();
         // Quads
@@ -176,7 +182,9 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             const Quad &q = topology->getQuad(i);
             for (int j=0; j<4; j++) {
-                Vec4f color = eval(ptData[q[j]]);
+                Vec4f color = isnan(ptData[q[j]])
+                    ? f_colorNaN.getValue()
+                    : eval(ptData[q[j]]);
                 glColor4f(color[0], color[1], color[2], color[3]);
                 //glColor4f(1.0, 1.0, 1.0, 1.0);
                 glVertex3f(
