@@ -308,27 +308,6 @@ void TDirectSAP<List,Allocator>::update(){
 }
 
 
-double elapsed(const rusage & start,const rusage & end){
-    double time,t;
-    timeval timeS, timeE;
-
-    timeS = start.ru_stime; // system time
-    t = (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
-    timeS = start.ru_utime; // user time
-    t = t + (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
-
-    timeE = end.ru_stime; // system time
-    time = (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
-    timeE = end.ru_utime; // user time
-    time = time + (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
-
-    return time - t;
-}
-
-double elapsed(const timeval & t0,const timeval & t1){
-    return fabs(t1.tv_sec - t0.tv_sec) * 1000.0 + fabs(t1.tv_usec - t0.tv_usec)/1000.0;
-}
-
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TDirectSAP<List,Allocator>::beginNarrowPhase()
 {
