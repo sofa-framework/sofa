@@ -149,6 +149,8 @@ public:
 
     //virtual const char* getTypeName() const { return "Line"; }
 
+    Deriv velocity(int index)const;
+
     LineLocalMinDistanceFilter *getFilter() const;
 
     //template< class TFilter >
@@ -251,6 +253,10 @@ inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].i2]; }
+
+
+template<class DataTypes>
+inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[elems[index].i1] + (*mstate->getV())[elems[index].i2])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }

@@ -440,6 +440,7 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     ffdRGrid = NULL;
     ffdSGrid = NULL;
     addAlias(&fileFFDDistanceGrid,"filename");
+    enum_type = FFDDISTANCE_GRIDE_TYPE;
 }
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()

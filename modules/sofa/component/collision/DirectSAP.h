@@ -37,6 +37,7 @@
 #include <set>
 #include <map>
 #include <deque>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -56,15 +57,15 @@ class EndPoint;
   *min and max are updated with the method update(int i), so min and max have
   *min/max values on the i-th axis after the method update(int i).
   */
-class SAPBox{
+class DSAPBox{
 public:
-    SAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
+    DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
 
     void update(int axis);
 
-    bool overlaps(const SAPBox & other,int axis)const;
+    bool overlaps(const DSAPBox & other,int axis)const;
 
-    bool overlaps(const SAPBox &other)const;
+    bool overlaps(const DSAPBox &other)const;
 
     inline void show()const{
         std::cout<<"MIN "<<cube.minVect()<<std::endl;
@@ -93,6 +94,7 @@ public:
 
     typedef List<EndPoint*,Allocator<EndPoint*> > EndPointList;
 
+    typedef DSAPBox SAPBox;
 private:
     /**
       *Returns the axis number which have the greatest variance for the primitive end points.
@@ -117,7 +119,7 @@ private:
 
     CubeModel::SPtr boxModel;
 
-    std::vector<SAPBox> _boxes;//boxes
+    std::vector<DSAPBox> _boxes;//boxes
     EndPointList _end_points;//end points of _boxes
     int _cur_axis;//the current greatest variance axis
 
@@ -125,8 +127,6 @@ private:
     std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
 protected:
     TDirectSAP();
-
-    helper::vector<Cube> & cubes(const CubeModel* cm);
 
     ~TDirectSAP();
 

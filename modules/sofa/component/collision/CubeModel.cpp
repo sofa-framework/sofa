@@ -50,6 +50,7 @@ int CubeModelClass = core::RegisterObject("Collision model representing a cube")
 
 CubeModel::CubeModel()
 {
+    enum_type = AABB_TYPE;
 }
 
 void CubeModel::resize(int size)

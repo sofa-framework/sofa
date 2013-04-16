@@ -55,6 +55,7 @@ int TetrahedronModelClass = core::RegisterObject("collision model using a tetrah
 TetrahedronModel::TetrahedronModel()
     : tetra(NULL), mstate(NULL)
 {
+    enum_type = TETRAHEDRON_TYPE;
 }
 
 void TetrahedronModel::resize(int size)

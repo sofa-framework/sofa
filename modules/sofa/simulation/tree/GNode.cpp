@@ -335,6 +335,7 @@ bool GNode::hasAncestor(const BaseContext* context) const
     return false;
 }
 
+
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
 void GNode::doExecuteVisitor(simulation::Visitor* action)
@@ -343,6 +344,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
     action->setNode(this);
     action->printInfo(getContext(), true);
 #endif
+
     if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
     {
         for(unsigned int i = 0; i<child.size(); ++i)
@@ -352,6 +354,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
     }
 
     action->processNodeBottomUp(this);
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     action->printInfo(getContext(), false);
 #endif

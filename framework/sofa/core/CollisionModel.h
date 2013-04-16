@@ -69,6 +69,19 @@ class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
 
+    enum{
+        AABB_TYPE,
+        OBB_TYPE,
+        CAPSULE_TYPE,
+        SPHERE_TYPE,
+        TRIANGLE_TYPE,
+        LINE_TYPE,
+        POINT_TYPE,
+        TETRAHEDRON_TYPE,
+        RDISTANCE_GRIDE_TYPE,
+        FFDDISTANCE_GRIDE_TYPE
+    };
+
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
     typedef sofa::defaulttype::Vector3::value_type Real;
@@ -404,6 +417,11 @@ public:
     void setProximity       (const double a)      { proximity.setValue(a)        ;} ;
     void setContactResponse (const std::string &a) { contactResponse.setValue(a)  ;} ;
 
+    /// Returns an int corresponding to the type of this.
+    /// Useful for optimizations involoving static_cast.
+    int getEnumType()const{
+        return enum_type;
+    }
 
 protected:
     /// flag indicating if this collision model is active and should be included in default
@@ -443,6 +461,7 @@ protected:
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK> next;
 
+    int enum_type;
 };
 
 } // namespace core

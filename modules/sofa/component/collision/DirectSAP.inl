@@ -42,6 +42,10 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 
+#include <time.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 namespace sofa
 {
 
@@ -51,12 +55,12 @@ namespace component
 namespace collision
 {
 
-inline void SAPBox::update(int axis){
+inline void DSAPBox::update(int axis){
     min->value = (cube.minVect())[axis];
     max->value = (cube.maxVect())[axis];
 }
 
-inline bool SAPBox::overlaps(const SAPBox &other, int axis) const{
+inline bool DSAPBox::overlaps(const DSAPBox &other, int axis) const{
     const Vector3 & min0 = this->cube.minVect();
     const Vector3 & max0 = this->cube.maxVect();
     const Vector3 & min1 = other.cube.minVect();
@@ -89,7 +93,7 @@ TDirectSAP<List,Allocator>::~TDirectSAP()
 //    }
 
     for(unsigned int i = 0 ; i < _to_del.size() ; ++i)
-        delete _to_del[i];
+        delete[] _to_del[i];
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
@@ -173,7 +177,7 @@ void TDirectSAP<List,Allocator>::endBroadPhase()
             _end_points.push_back(min);
             _end_points.push_back(max);
 
-            _boxes.push_back(SAPBox(Cube(cm,j),min,max));
+            _boxes.push_back(DSAPBox(Cube(cm,j),min,max));
             ++cur_boxID;
         }
     }
@@ -303,29 +307,53 @@ void TDirectSAP<List,Allocator>::update(){
     }
 }
 
-struct CompPEndPoint{
-    bool operator()(const EndPoint * ep1,const EndPoint * ep2)const{
-        if(ep1->value != ep2->value)
-            return ep1->value < ep2->value;
-        else if(ep1->boxID() == ep2->boxID())
-            return ep2->max();
-        else
-            return ep1->boxID() < ep2->boxID();
-    }
-};
+
+double elapsed(const rusage & start,const rusage & end){
+    double time,t;
+    timeval timeS, timeE;
+
+    timeS = start.ru_stime; // system time
+    t = (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
+    timeS = start.ru_utime; // user time
+    t = t + (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
+
+    timeE = end.ru_stime; // system time
+    time = (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
+    timeE = end.ru_utime; // user time
+    time = time + (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
+
+    return time - t;
+}
+
+double elapsed(const timeval & t0,const timeval & t1){
+    return fabs(t1.tv_sec - t0.tv_sec) * 1000.0 + fabs(t1.tv_usec - t0.tv_usec)/1000.0;
+}
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TDirectSAP<List,Allocator>::beginNarrowPhase()
 {
+//    timeval time1,time2;
+//    gettimeofday(&time1,NULL);
+//    rusage start, end;
+//    getrusage(RUSAGE_SELF,&start);
+
     core::collision::NarrowPhaseDetection::beginNarrowPhase();
     update();
 
     CompPEndPoint comp;
+
+    sofa::helper::AdvancedTimer::stepBegin("Direct SAP std::sort");
     std::sort(_end_points.begin(),_end_points.end(),comp);
+    sofa::helper::AdvancedTimer::stepEnd("Direct SAP std::sort");
+
+    //getrusage(RUSAGE_SELF,&end);
+
+    //std::cout<<"sort time "<<elapsed(start,end)<<std::endl;
 
     int axis1 = (1  << _cur_axis) & 3;
     int axis2 = (1  << axis1) & 3;
 
+    //getrusage(RUSAGE_SELF,&start);
 //    std::cout<<"sorted"<<std::endl;
 //    for(int i = 0 ; i < _end_points.size() ; ++i){
 //        //std::cout<<"boxID "<<(_end_points[i]->boxID())<<std::endl;
@@ -339,6 +367,7 @@ void TDirectSAP<List,Allocator>::beginNarrowPhase()
 //        std::cout<<"value "<<(_end_points[i]->value)<<std::endl;
 //        std::cout<<"==="<<std::endl;
 //    }
+    sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
 
     std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
@@ -354,11 +383,11 @@ void TDirectSAP<List,Allocator>::beginNarrowPhase()
             active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
         }
         else{//we encounter a min possible intersection between it and active_boxes
-            int new_box = (**it).boxID();            
+            int new_box = (**it).boxID();
 
-            SAPBox & box0 = _boxes[new_box];
+            DSAPBox & box0 = _boxes[new_box];
             for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
-                SAPBox & box1 = _boxes[active_boxes[i]];
+                DSAPBox & box1 = _boxes[active_boxes[i]];
 
                 core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
                 core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
@@ -419,7 +448,128 @@ void TDirectSAP<List,Allocator>::beginNarrowPhase()
             active_boxes.push_back(new_box);
         }
     }
+    sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+
+    //gettimeofday(&time2,NULL);
+    //getrusage(RUSAGE_SELF,&end);
+
+    //std::cout<<"instersection time "<<elapsed(start,end)<<std::endl<<"===="<<std::endl;
 }
+
+
+//template <template<class T,class Allocator> class List,template <class T> class Allocator>
+//void TDirectSAP<List,Allocator>::beginNarrowPhase()
+//{
+//    core::collision::NarrowPhaseDetection::beginNarrowPhase();
+//    update();
+
+//    CompPEndPoint comp;
+//    sofa::helper::AdvancedTimer::stepBegin("Direct SAP std::sort");
+//    std::sort(_end_points.begin(),_end_points.end(),comp);
+//    sofa::helper::AdvancedTimer::stepEnd("Direct SAP std::sort");
+
+
+//    int axis1 = (1  << _cur_axis) & 3;
+//    int axis2 = (1  << axis1) & 3;
+
+////    std::cout<<"sorted"<<std::endl;
+////    for(int i = 0 ; i < _end_points.size() ; ++i){
+////        //std::cout<<"boxID "<<(_end_points[i]->boxID())<<std::endl;
+////        std::cout<<"nice index "<<(_boxes[_end_points[i]->boxID()].cube.getIndex())<<std::endl;
+////        std::cout<<"collision model "<<(_boxes[_end_points[i]->boxID()].cube.getCollisionModel())<<std::endl;
+////        if(_end_points[i]->max())
+////            std::cout<<"max"<<std::endl;
+////        else
+////            std::cout<<"min"<<std::endl;
+
+////        std::cout<<"value "<<(_end_points[i]->value)<<std::endl;
+////        std::cout<<"==="<<std::endl;
+////    }
+
+//    sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
+//    std::set<int> active_boxes;  //active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+//                                 //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
+//                                 //                                                                                                      b1_min---------------------b1_max
+//                                 //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+//                                 //so the rule is : -every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
+//                                 //                  the active boxes.
+//                                 //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
+//                                 //                  so, we delete the owner box, of this max end point from the active boxes
+//    for(typename EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
+//        if((**it).max()){//erase it from the active_boxes
+//            //assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
+//            //active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
+//            active_boxes.erase((**it).boxID());
+//        }
+//        else{//we encounter a min possible intersection between it and active_boxes
+//            int new_box = (**it).boxID();
+
+//            SAPBox & box0 = _boxes[new_box];
+//            for(std::set<int>::iterator i = active_boxes.begin() ; i != active_boxes.end() ; ++i){
+//                SAPBox & box1 = _boxes[(*i)];
+
+//                core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+//                core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
+//                if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
+//                        (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,axis1) && box0.overlaps(box1,axis2))){//intersection on all axes
+//                    //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
+////                    std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
+////                    std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
+////                    std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+
+//                    bool swapModels = false;
+//                    core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
+
+//                    assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
+//                    assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
+
+//                    if((!swapModels) && finalcm1->getClass() == finalcm2->getClass() && finalcm1 > finalcm2)//we do that to have only pair (p1,p2) without having (p2,p1)
+//                        swapModels = true;
+
+////                    std::cout<<"COLLISION"<<std::endl;
+////                    std::cout<<"\t"<<finalcm1<<" "<<finalcm2<<std::endl;
+////                    std::cout<<"\t"<<box0.cube.getIndex()<<" "<<box1.cube.getIndex()<<std::endl;
+////                    std::cout<<"\t nice indices "<<new_box<<" "<<active_boxes[i]<<std::endl;
+
+//                    if(finalintersector != 0x0){
+////                        std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+//                        if(swapModels){
+//                            sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm2, finalcm1);
+//                            finalintersector->beginIntersect(finalcm2, finalcm1, outputs);//creates outputs if null
+
+//                            if(finalintersector->intersect(box1.cube.getExternalChildren().first,box0.cube.getExternalChildren().first,outputs)){
+//                                //std::cout<<"\tREAL contact"<<std::endl;
+//                            }
+//                            else{
+//                                //std::cout<<"\tFALSE contact"<<std::endl;
+//                            }
+
+//                        }
+//                        else{
+//                            sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
+
+//                            finalintersector->beginIntersect(finalcm1, finalcm2, outputs);//creates outputs if null
+
+//                            if(finalintersector->intersect(box0.cube.getExternalChildren().first,box1.cube.getExternalChildren().first,outputs)){
+//                                //std::cout<<"\tREAL contact"<<std::endl;
+//                            }
+//                            else{
+//                                //std::cout<<"\tFALSE contact"<<std::endl;
+//                            }
+//                        }
+//                    }
+//                    else{
+////                        std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+////                        std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
+//                    }
+//                }
+//            }
+//            active_boxes.insert(new_box);
+//        }
+//    }
+
+//    sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+//}
 
 
 } // namespace collision

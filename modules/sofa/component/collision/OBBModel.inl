@@ -41,6 +41,7 @@ TOBBModel<DataTypes>::TOBBModel():
     default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
     _mstate(NULL)
 {
+    enum_type = OBB_TYPE;
 }
 
 template<class DataTypes>
@@ -49,6 +50,7 @@ TOBBModel<DataTypes>::TOBBModel(core::behavior::MechanicalState<DataTypes>* msta
     default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
     _mstate(mstate)
 {
+    enum_type = OBB_TYPE;
 }
 
 

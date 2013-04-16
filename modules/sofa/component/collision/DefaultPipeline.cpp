@@ -96,9 +96,34 @@ void DefaultPipeline::doCollisionReset()
     }
 }
 
+#include<sys/time.h>
+#include<time.h>
+#include <sys/resource.h>
+
+double elapsed(const rusage & start,const rusage & end){
+    double time,t;
+    timeval timeS, timeE;
+
+    timeS = start.ru_stime; // system time
+    t = (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
+    timeS = start.ru_utime; // user time
+    t = t + (double)timeS.tv_sec*1000.0 + (double) timeS.tv_usec / 1000.0;
+
+    timeE = end.ru_stime; // system time
+    time = (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
+    timeE = end.ru_utime; // user time
+    time = time + (double)timeE.tv_sec*1000.0 + (double) timeE.tv_usec / 1000.0;
+
+    return time - t;
+}
+
+double elapsed(const timespec & start,const timespec & end){
+    return (end.tv_sec - start.tv_sec) * 1000000000 - start.tv_nsec + end.tv_nsec;
+}
+
 void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels)
 {
-
+    sofa::helper::AdvancedTimer::stepBegin("doCollisionDetection");
     VERBOSE(sout << "DefaultPipeline::doCollisionDetection, Compute Bounding Trees"<<sendl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
@@ -175,6 +200,8 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("NarrowPhase");
 #endif
+
+    sofa::helper::AdvancedTimer::stepEnd("doCollisionDetection");
 }
 
 void DefaultPipeline::doCollisionResponse()
@@ -222,7 +249,6 @@ void DefaultPipeline::doCollisionResponse()
         VERBOSE(sout << "Create Groups "<<groupManager->getName()<<sendl);
         groupManager->createGroups(scene, notStaticContacts);
     }
-
 }
 
 helper::set< std::string > DefaultPipeline::getResponseList() const

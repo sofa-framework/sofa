@@ -117,6 +117,8 @@ public:
 
     Real getRadius(const int i) const;
 
+    const Coord & velocity(int index)const;
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -189,6 +191,9 @@ inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const {
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
+
+template<class DataTypes>
+inline const typename TSphereModel<DataTypes>::Coord& TSphereModel<DataTypes>::velocity(int index) const { return (*mstate->getV())[index];}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }

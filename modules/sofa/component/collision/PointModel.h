@@ -138,6 +138,8 @@ public:
 
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
+    const Deriv& velocity(int index) const;
+
     Data<bool> bothSide; // to activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
@@ -208,6 +210,9 @@ inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }
+
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return (*mstate->getV())[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

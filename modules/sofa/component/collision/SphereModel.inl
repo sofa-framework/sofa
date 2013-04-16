@@ -64,6 +64,7 @@ TSphereModel<DataTypes>::TSphereModel()
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , mstate(NULL)
 {
+    enum_type = SPHERE_TYPE;
 }
 
 template<class DataTypes>
@@ -72,6 +73,7 @@ TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , mstate(_mstate)
 {
+    enum_type = SPHERE_TYPE;
 }
 
 

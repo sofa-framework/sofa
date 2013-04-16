@@ -98,7 +98,6 @@ void DefaultAnimationLoop::setNode( simulation::Node* n )
     gnode=n;
 }
 
-
 void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 {
     if (dt == 0)

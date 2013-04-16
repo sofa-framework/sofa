@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef ENDPOINT_H
-#define ENDPOINT_H
+#include <sofa/component/collision/IncrSAP.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -34,68 +34,42 @@ namespace component
 namespace collision
 {
 
-class EndPoint{
-public:
-    EndPoint() : data(0){}
+double ISAPBox::tolerance = (double)(1e-7);
 
-    double value;
+bool ISAPBox::overlaps(const ISAPBox & other) const{
+    const Vector3 & min_vect0 = cube.minVect();
+    const Vector3 & max_vect0 = cube.minVect();
+    const Vector3 & min_vect1 = other.cube.minVect();
+    const Vector3 & max_vect1 = other.cube.minVect();
 
-    void setMax();
-    void setMin();
-
-    //CAUTION, always first setBoxID then setMax and setMin
-    void setBoxID(int ID);
-    int boxID()const;
-    bool max()const;
-    bool min()const;
-private:
-    int data;//box ID | MinMax flag;
-};
-
-inline void EndPoint::setBoxID(int ID){
-    data = ID<<1;
-}
-
-inline int EndPoint::boxID()const{
-   return data>>1;
-}
-
-inline bool EndPoint::min()const{
-    return !(data&1);
-}
-
-inline bool EndPoint::max() const{
-    return data&1;
-}
-
-inline void EndPoint::setMax(){
-    data |= 1;
-}
-
-inline void EndPoint::setMin(){
-    data >>= 1;
-    data <<= 1;
-}
-
-
-class EndPointID : public EndPoint{
-public:
-    int ID;//index of end point in an list
-};
-
-
-struct CompPEndPoint{
-    bool operator()(const EndPoint * ep1,const EndPoint * ep2)const{
-        if(ep1->value != ep2->value)
-            return ep1->value < ep2->value;
-        else if(ep1->boxID() == ep2->boxID())
-            return ep2->max();
-        else
-            return ep1->boxID() < ep2->boxID();
+    for(int i = 0 ; i < 3 ; ++i){
+        if(max_vect0[i] < min_vect1[i] || max_vect1[i] < min_vect0[i])
+            return false;
     }
-};
 
+    return true;
 }
-}
-}
-#endif // ENDPOINT_H
+
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+using namespace collision;
+
+SOFA_DECL_CLASS(IncrSap)
+
+int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
+        .add< TIncrSAP<helper::vector,helper::CPUMemoryManager> >()
+        ;
+
+int IncrSAPClassStdVector = core::RegisterObject("Collision detection using incremental sweep and prune")
+        .add< TIncrSAP<std::vector,std::allocator> >()
+        ;
+
+
+template class SOFA_BASE_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+template class SOFA_BASE_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+} // namespace collision
+
+} // namespace component
+
+} // namespace sofa
+
