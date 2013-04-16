@@ -57,6 +57,7 @@ TLineModel<DataTypes>::TLineModel()
     , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
+    enum_type = LINE_TYPE;
 }
 
 //LineMeshModel::LineMeshModel()

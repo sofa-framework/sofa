@@ -40,9 +40,8 @@ HEADERS += initBaseCollision.h \
     collision/Intersector.h \
     collision/DirectSAP.h \
     collision/DirectSAP.inl \
-    collision/IncrSAP.h \
     collision/EndPoint.h \
-    collision/IncrSAP.inl
+    collision/CollisionPM.h
 
 
 SOURCES += initBaseCollision.cpp \

@@ -60,6 +60,7 @@ TTriangleModel<DataTypes>::TTriangleModel()
     , m_lmdFilter(NULL)
 {
     triangles = &mytriangles;
+    enum_type = TRIANGLE_TYPE;
 }
 
 template<class DataTypes>

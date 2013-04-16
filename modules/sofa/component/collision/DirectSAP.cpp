@@ -48,7 +48,7 @@ namespace component
 namespace collision
 {
 
-bool SAPBox::overlaps(const SAPBox &other) const{return overlaps(other,0) && overlaps(other,1) && overlaps(other,2);}
+bool DSAPBox::overlaps(const DSAPBox &other) const{return overlaps(other,0) && overlaps(other,1) && overlaps(other,2);}
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;

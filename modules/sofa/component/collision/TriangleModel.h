@@ -206,6 +206,8 @@ public:
 
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 
+    Deriv velocity(int index)const;
+
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -285,6 +287,9 @@ inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangle
 template<class DataTypes>
 inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
+template<class DataTypes>
+inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[(*(triangles))[index][0]] + (*mstate->getV())[(*(triangles))[index][1]] +
+                                                                                                (*mstate->getV())[(*(triangles))[index][2]])/((Real)(3.0)); }
 typedef TTriangleModel<Vec3Types> TriangleModel;
 typedef TTriangle<Vec3Types> Triangle;
 

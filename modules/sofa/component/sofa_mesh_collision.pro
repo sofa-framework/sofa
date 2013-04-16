@@ -41,7 +41,9 @@ HEADERS += initMeshCollision.h \
     collision/IntrTriangleOBB.h \
     collision/IntrTriangleOBB.inl \
     collision/IntrMeshUtility.h \
-    collision/IntrMeshUtility.inl
+    collision/IntrMeshUtility.inl \
+    collision/IncrSAP.h \
+    collision/IncrSAP.inl
 
 
 SOURCES += initMeshCollision.cpp \
@@ -65,7 +67,8 @@ SOURCES += initMeshCollision.cpp \
     collision/MeshIntTool.cpp \
     collision/RigidContactMapper.cpp \
     collision/IntrTriangleOBB.cpp \
-    collision/IntrMeshUtility.cpp
+    collision/IntrMeshUtility.cpp \
+    collision/IncrSAP.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

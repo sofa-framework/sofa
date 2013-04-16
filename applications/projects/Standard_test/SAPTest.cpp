@@ -52,15 +52,14 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/MeshIntTool.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/collision/IncrSAP.h>
 #include <stdlib.h>
 
 
 using namespace sofa::component::collision;
 
-struct SAPTest: public ::testing::Test{
+struct DirectSAPTest: public ::testing::Test{
     static double getExtent(){return extent;}
-
-    static void getSAPBoxes(sofa::core::CollisionModel * cm,std::vector<SAPBox> & sap_boxes);
 
     static bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2 = 0x0);
     static bool genOBBTest(std::vector<Vector3> & obb1,std::vector<Vector3> & obb2);
@@ -76,21 +75,40 @@ struct SAPTest: public ::testing::Test{
     static bool randDense();
     static bool randTest3();
 
-    static sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father);
-    static SphereModel::SPtr makeSphereModel(std::vector<Vector3> & centers,sofa::simulation::Node::SPtr & father);
-
-
     static double extent;
-
-    static Vector3 randVect(const Vector3 & min,const Vector3 & max);
 
     static bool randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max);
 };
 
-double SAPTest::extent = 1.2;
+double DirectSAPTest::extent = 1.2;
 
 
-void SAPTest::getSAPBoxes(sofa::core::CollisionModel * cm,std::vector<SAPBox> & sap_boxes){
+struct IncrSAPTest: public ::testing::Test{
+    static double getExtent(){return extent;}
+
+    static bool randSparse();
+    static bool randDense();
+    static bool randTest3();
+
+    static double extent;
+
+    static bool randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max);
+};
+
+double IncrSAPTest::extent = 1.2;
+
+//intersection method used for the narrow phase
+DiscreteIntersection::SPtr discreteIntersection = New<DiscreteIntersection>();
+
+
+//GENERAL FUNCTIONS
+template<class Detection>
+bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection);
+
+static Vector3 randVect(const Vector3 & min,const Vector3 & max);
+
+template <class SAPBox>
+void getSAPBoxes(sofa::core::CollisionModel * cm,std::vector<SAPBox> & sap_boxes){
     CubeModel * cbm = dynamic_cast<CubeModel*>(cm->getFirst());
     assert(cbm != 0x0);
 
@@ -98,6 +116,32 @@ void SAPTest::getSAPBoxes(sofa::core::CollisionModel * cm,std::vector<SAPBox> & 
         sap_boxes.push_back(SAPBox(Cube(cbm,i)));
 }
 
+sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
+
+void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Vector3 & max_vect){
+    OBBModel * obbm = dynamic_cast<OBBModel*>(cm->getLast());
+    MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
+
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
+
+    //Editting the velocity of the OBB
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
+    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
+
+
+    for(int i = 0 ; i < dof->getSize() ; ++i){
+        if(rand() < RAND_MAX/2.0){//make it move !
+            velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
+            positions[i] = Rigid3dTypes::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
+        }
+    }
+
+    dvelocities.endEdit();
+    dpositions.endEdit();
+}
+
+//CLASS FUNCTIONS
 
 struct CItCompare{
     void rearrenge(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2,sofa::core::CollisionElementIterator & e11,
@@ -166,21 +210,18 @@ struct CItCompare{
     }
 };
 
-
-bool SAPTest::genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2){
+template<class Detection>
+bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection){
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
-    DirectSAP::SPtr psap = New<DirectSAP>();
-    DirectSAP & sap = *psap;
-    DiscreteIntersection::SPtr di = New<DiscreteIntersection>();
 
-    sap.setIntersectionMethod(di.get());
+    col_detection.setIntersectionMethod(discreteIntersection.get());
 
-    sap.addCollisionModel(cm1);
+    col_detection.addCollisionModel(cm1);
     if(cm2 != 0x0)
-        sap.addCollisionModel(cm2);
+        col_detection.addCollisionModel(cm2);
 
-    std::vector<SAPBox> boxes;
+    std::vector<typename Detection::SAPBox> boxes;
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > brutInter;
 
     getSAPBoxes(cm1,boxes);
@@ -215,36 +256,36 @@ bool SAPTest::genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionMode
 //    }
 //    std::cout<<"========SORTED BRUTE"<<std::endl;
 
-    sap.beginBroadPhase();
-    sap.addCollisionModel(cm1);
+    col_detection.beginBroadPhase();
+    col_detection.addCollisionModel(cm1);
     if(cm2)
-        sap.addCollisionModel(cm2);
+        col_detection.addCollisionModel(cm2);
 
-    sap.endBroadPhase();
-    sap.beginNarrowPhase();
-    sap.endNarrowPhase();
+    col_detection.endBroadPhase();
+    col_detection.beginNarrowPhase();
+    col_detection.endNarrowPhase();
 
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > SAPInter;
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(sap.getDetectionOutputs(cm1,cm1));
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm1));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             SAPInter.push_back(((*res)[i]).elem);
 
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(sap.getDetectionOutputs(cm1,cm2));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm2));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             SAPInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(sap.getDetectionOutputs(cm2,cm1));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm1));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             SAPInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(sap.getDetectionOutputs(cm2,cm2));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm2));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             SAPInter.push_back(((*res)[i]).elem);
@@ -281,57 +322,17 @@ bool SAPTest::genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionMode
 }
 
 
-SphereModel::SPtr SAPTest::makeSphereModel(std::vector<Vector3> & centers,sofa::simulation::Node::SPtr & father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr sph = father->createChild("sphereModel");
+bool DirectSAPTest::genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2){
+    cm1->setSelfCollision(true);
+    cm2->setSelfCollision(true);
+    DirectSAP::SPtr psap = New<DirectSAP>();
+    DirectSAP & sap = *psap;
 
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3d::SPtr sphDOF = New<MechanicalObject3d>();
-
-    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
-    int n = centers.size();
-    sphDOF->resize(n);
-    Data<MechanicalObject3d::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
-    MechanicalObject3d::VecCoord & positions = *dpositions.beginEdit();
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    for(int i = 0 ; i < n ; ++i)
-        positions[i] = centers[i];
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-//    Data<MechanicalObject3d::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
-
-//    MechanicalObject3d::VecDeriv & velocities = *dvelocities.beginEdit();
-//    velocities[0] = v;
-//    dvelocities.endEdit();
-
-    sph->addObject(sphDOF);
-
-    //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereModel::SPtr sphCollisionModel = New<sofa::component::collision::SphereModel >();
-    sph->addObject(sphCollisionModel);
-
-
-    //editting the OBBModel
-    sphCollisionModel->init();
-    Data<sofa::component::collision::SphereModel::VecReal> & dVecReal = sphCollisionModel->radius;
-    sofa::component::collision::CapsuleModel::VecReal & vecReal = *(dVecReal.beginEdit());
-
-    for(int i = 0 ; i < n ; ++i)
-        vecReal[i] = getExtent();
-
-    dVecReal.endEdit();
-
-
-    sphCollisionModel->computeBoundingTree(0);
-
-    return sphCollisionModel;
+    return GENTest(cm1,cm2,sap);
 }
 
 
-sofa::component::collision::OBBModel::SPtr SAPTest::makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father){
+sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent){
     int n = p.size();
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
@@ -366,7 +367,7 @@ sofa::component::collision::OBBModel::SPtr SAPTest::makeOBBModel(const std::vect
 
     //editting the OBBModel
     typename OBBModel::Real & def_ext = *(obbCollisionModel->default_ext.beginEdit());
-    def_ext = getExtent();
+    def_ext = default_extent;
 
     obbCollisionModel->default_ext.endEdit();
 
@@ -379,16 +380,16 @@ sofa::component::collision::OBBModel::SPtr SAPTest::makeOBBModel(const std::vect
     return obbCollisionModel;
 }
 
-bool SAPTest::genOBBTest(std::vector<Vector3> & obb1,std::vector<Vector3> & obb2){
+bool DirectSAPTest::genOBBTest(std::vector<Vector3> & obb1,std::vector<Vector3> & obb2){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     OBBModel::SPtr obbm1,obbm2;
-    obbm1 = makeOBBModel(obb1,scn);
-    obbm2 = makeOBBModel(obb2,scn);
+    obbm1 = makeOBBModel(obb1,scn,getExtent());
+    obbm2 = makeOBBModel(obb2,scn,getExtent());
 
     return genTest(obbm1.get(),obbm2.get());
 }
 
-bool SAPTest::test1(){
+bool DirectSAPTest::test1(){
     extent = 1.2;
     std::vector<Vector3> obb1;
     std::vector<Vector3> obb2;
@@ -404,7 +405,7 @@ bool SAPTest::test1(){
     return genOBBTest(obb1,obb2);
 }
 
-bool SAPTest::test2(){
+bool DirectSAPTest::test2(){
     extent = 1.2;
     std::vector<Vector3> obb1;
     std::vector<Vector3> obb2;
@@ -421,7 +422,7 @@ bool SAPTest::test2(){
 }
 
 
-Vector3 SAPTest::randVect(const Vector3 & min,const Vector3 & max){
+Vector3 randVect(const Vector3 & min,const Vector3 & max){
     Vector3 ret;
     Vector3 extents = max - min;
 
@@ -432,7 +433,7 @@ Vector3 SAPTest::randVect(const Vector3 & min,const Vector3 & max){
     return ret;
 }
 
-bool SAPTest::randTest(int seed,int nb1,int nb2, const Vector3 &min, const Vector3 &max){
+bool DirectSAPTest::randTest(int seed,int nb1,int nb2, const Vector3 &min, const Vector3 &max){
     srand(seed);
 
     std::vector<Vector3> firstCollision;
@@ -448,7 +449,63 @@ bool SAPTest::randTest(int seed,int nb1,int nb2, const Vector3 &min, const Vecto
 }
 
 
-bool SAPTest::randDense(){
+bool IncrSAPTest::randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max){
+    srand(seed);
+
+    std::vector<Vector3> firstCollision;
+    std::vector<Vector3> secondCollision;
+
+    for(int i = 0 ; i < nb1 ; ++i)
+        firstCollision.push_back(randVect(min,max));
+
+    for(int i = 0 ; i < nb2 ; ++i)
+        secondCollision.push_back(randVect(min,max));
+
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    OBBModel::SPtr obbm1,obbm2;
+    obbm1 = makeOBBModel(firstCollision,scn,getExtent());
+    obbm2 = makeOBBModel(secondCollision,scn,getExtent());
+
+    obbm1->setSelfCollision(true);
+    obbm2->setSelfCollision(true);
+    IncrSAP::SPtr psap = New<IncrSAP>();
+    IncrSAP & sap = *psap;
+
+    if(!GENTest(obbm1.get(),obbm2.get(),sap))
+        return false;
+
+    randMoving(obbm1.get(),min,max);
+    randMoving(obbm2.get(),min,max);
+
+    return GENTest(obbm1.get(),obbm2.get(),sap);
+}
+
+
+bool IncrSAPTest::randDense(){
+    ////*!randTest(i,20,20,Vector3(-5,-5,-5),Vector3(5,5,5))*/
+    for(int i = 0 ; i < 100 ; ++i){
+        if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,Vector3(-5,-5,-5),Vector3(5,5,5))){
+            //std::cout<<"FAIL seed number "<<i<<std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool IncrSAPTest::randSparse(){
+    for(int i = 0 ; i < 100 ; ++i){
+        if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,2,Vector3(-5,-5,-5),Vector3(5,5,5))){
+            //std::cout<<"FAIL seed number "<<i<<std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+bool DirectSAPTest::randDense(){
     ////*!randTest(i,20,20,Vector3(-5,-5,-5),Vector3(5,5,5))*/
     for(int i = 0 ; i < 100 ; ++i){
         if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,Vector3(-5,-5,-5),Vector3(5,5,5))){
@@ -461,7 +518,7 @@ bool SAPTest::randDense(){
 }
 
 
-bool SAPTest::randSparse(){
+bool DirectSAPTest::randSparse(){
     for(int i = 0 ; i < 100 ; ++i){
         if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,2,Vector3(-5,-5,-5),Vector3(5,5,5))){
 //            std::cout<<"FAIL seed number "<<i<<std::endl;
@@ -472,7 +529,9 @@ bool SAPTest::randSparse(){
     return true;
 }
 
-TEST_F(SAPTest, test_1 ) { ASSERT_TRUE( test1()); }
-TEST_F(SAPTest, test_2 ) { ASSERT_TRUE( test2()); }
-TEST_F(SAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
-TEST_F(SAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(DirectSAPTest, test_1 ) { ASSERT_TRUE( test1()); }
+TEST_F(DirectSAPTest, test_2 ) { ASSERT_TRUE( test2()); }
+TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
+TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }

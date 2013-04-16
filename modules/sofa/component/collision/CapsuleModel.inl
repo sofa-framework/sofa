@@ -34,6 +34,7 @@ TCapsuleModel<DataTypes>::TCapsuleModel():
       _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
       _mstate(NULL)
 {
+    enum_type = CAPSULE_TYPE;
 }
 
 template<class DataTypes>
@@ -42,6 +43,7 @@ TCapsuleModel<DataTypes>::TCapsuleModel(core::behavior::MechanicalState<DataType
     _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
     _mstate(mstate)
 {
+    enum_type = CAPSULE_TYPE;
 }
 
 template<class DataTypes>

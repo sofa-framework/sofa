@@ -36,6 +36,14 @@
 #include <set>
 #include <map>
 #include <deque>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/CapsuleModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/CollisionPM.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -48,15 +56,14 @@ namespace collision
 
 class EndPointID;
 
-class SAPBox{
+class ISAPBox{
 public:
-    SAPBox(Cube c) : cube(c){}
+    ISAPBox(){}
 
-    void update(int axis);
+    ISAPBox(Cube c) : cube(c){}
 
-    bool overlaps(const SAPBox & other,int axis)const;
-
-    bool overlaps(const SAPBox &other)const;
+    bool overlaps(const ISAPBox & other,int axis)const;//we use here end points
+    bool overlaps(const ISAPBox & other)const;//we use min and max vect of the field cube
 
     inline void show()const{
         std::cout<<"MIN "<<cube.minVect()<<std::endl;
@@ -65,11 +72,24 @@ public:
 
     bool moving(int axis)const;
 
-    void init(int boxID = -1);
+    bool moving()const;
+
+    void init(int boxID,EndPointID ** endPts);
+
+    void update();
+
+    const core::CollisionElementIterator finalElement()const;
+
+    EndPointID & min(int dim);
+    const EndPointID & min(int dim)const;
+    EndPointID & max(int dim);
+    const EndPointID & max(int dim)const;
 
     Cube cube;
-    EndPointID * min[3];
-    EndPointID * max[3];
+    EndPointID * _min[3];
+    EndPointID * _max[3];
+
+    static double tolerance;
 };
 
 
@@ -83,7 +103,8 @@ class SOFA_BASE_COLLISION_API TIncrSAP :
 public:
     SOFA_CLASS2(SOFA_TEMPLATE2(TIncrSAP,List,Allocator), core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
-    typedef List<EndPoint*,Allocator<EndPoint*> > EndPointList;
+    typedef ISAPBox SAPBox;
+    typedef List<EndPointID*,Allocator<EndPointID*> > EndPointList;
 
 private:
     //void
@@ -91,12 +112,23 @@ private:
 
     bool added(core::CollisionModel * cm)const;
 
-    void add(core::CollisionModel * cm);
+    bool add(core::CollisionModel * cm);
 
     /**
       *Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
       */
-    void update();
+    void updateEndPoints();
+    void setEndPointsID();
+
+
+    void boxPrune();
+    void updateMovingBoxes();
+    void updateBox(int boxID);
+    void addIfCollide(int boxID1,int boxID2,int axis1,int axis2);
+    void removeCollision(int a,int b);
+    void reinitDetection();
+    void purge();
+
 
     Data<bool> bDraw;
 
@@ -104,9 +136,12 @@ private:
 
     CubeModel::SPtr boxModel;
 
-    std::vector<SAPBox> _boxes;
+    std::vector<ISAPBox> _boxes;
     EndPointList _end_points[3];
+    CollidingPM _colliding_elems;
+
     int _cur_axis;
+    bool _nothing_added;
 
     std::set<core::CollisionModel*> collisionModels;
 protected:
@@ -114,7 +149,8 @@ protected:
 
     helper::vector<Cube> & cubes(const CubeModel* cm);
 
-    ~TIncrSAP();
+    virtual ~TIncrSAP();
+
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
@@ -138,7 +174,7 @@ public:
     inline virtual bool needsDeepBoundingTree()const{return false;}
 };
 
-typedef TIncrSAP<std::vector,std::allocator> DirectSAP;
+typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 extern template class SOFA_BASE_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;

@@ -73,6 +73,7 @@ TPointModel<DataTypes>::TPointModel()
     , m_lmdFilter( NULL )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
+    enum_type = POINT_TYPE;
 }
 
 template<class DataTypes>

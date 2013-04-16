@@ -1396,11 +1396,11 @@ Real IntrUtil<Real>::facesNearestPoints(const Vec<3,Real> *first_face,int first_
             }
 
             if(j == second_size - 1)
-                delete seg2;
+                delete[] seg2;
         }
 
         if(i == first_size - 1)
-            delete seg1;
+            delete[] seg1;
     }
 
     return min;
