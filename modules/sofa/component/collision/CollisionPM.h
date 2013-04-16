@@ -103,7 +103,7 @@ namespace collision
         }
 
         void intersect(core::collision::NarrowPhaseDetection * phase){
-            for(typename umap_collision::iterator it = _coll_pairs.begin() ; it != _coll_pairs.end() ; ++it){
+            for(umap_collision::iterator it = _coll_pairs.begin() ; it != _coll_pairs.end() ; ++it){
                 it->second.intersect(phase);
             }
         }
