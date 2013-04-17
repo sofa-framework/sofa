@@ -30,7 +30,7 @@ if(EXTERNAL_HAVE_FLOWVR)
 endif()
 
 ## Zlib (EXTERNAL_HAVE_ZLIB)
-if(WIN32)
+if(WIN32 OR XBOX)
 	set(ZLIB_LIBRARIES "zlib")
 else()
 	find_library(ZLIB_LIBRARIES "z")

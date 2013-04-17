@@ -28,6 +28,9 @@ if(TARGET ${PROJECT_NAME})
 	if(WIN32)
 		set(COMPILER_FLAGS_OS_SPECIFIC "-wd4250 -wd4251 -wd4275 -wd4675 -wd4996 /bigobj")
 	endif()
+	if(XBOX)
+		set(COMPILER_FLAGS_OS_SPECIFIC "-wd4250 -wd4231 /GR /EHsc /bigobj")
+	endif()
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILER_FLAGS_OS_SPECIFIC} ${COMPILER_FLAGS}")
 
 	# link dependencies
