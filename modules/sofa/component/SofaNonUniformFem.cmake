@@ -50,6 +50,6 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_NON_UNIFORM_FEM" )
-set(LINKER_DEPENDENCIES SofaSimpleFem SofaOpenglVisual SofaDenseSolver SofaVolumetricData )
+set(LINKER_DEPENDENCIES SofaSimpleFem ${SOFA_VISUAL_LIB} SofaDenseSolver SofaVolumetricData )
         
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
