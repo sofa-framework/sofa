@@ -96,7 +96,7 @@ public:
 using namespace sofa::defaulttype;
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
-class SOFA_BASE_COLLISION_API TIncrSAP :
+class TIncrSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
