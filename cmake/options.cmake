@@ -225,6 +225,19 @@ else() # configuring from main solution
 	endif()
 	
 	set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${compilerDefines} CACHE INTERNAL "Global Compiler Defines" FORCE)
+	
+	# os-specific
+	if(XBOX)
+		if(EXTERNAL_HAVE_BOOST)
+			# we use EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
+			unset(EXTERNAL_HAVE_BOOST CACHE)
+			list(REMOVEITEM compilerDefines SOFA_HAVE_BOOST)
+		endif()
+		if (EXTERNAL_HAVE_EIGEN2)
+			# cpuid identification code does not exist on the platform, it's cleaner to disable it here.
+			list(APPEND GLOBAL_COMPILER_DEFINES EIGEN_NO_CPUID)
+		endif()
+	endif()
 endif()
 
 
