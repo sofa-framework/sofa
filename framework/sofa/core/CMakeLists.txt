@@ -132,7 +132,6 @@ set(HEADER_FILES
 	visual/VisualModel.h
 	visual/VisualManager.h
 	visual/DrawTool.h
-	visual/DrawToolGL.h
 	visual/Shader.h
 	ObjectFactory.h
 	SofaLibrary.h
@@ -211,12 +210,17 @@ set(SOURCE_FILES
 	loader/VoxelLoader.cpp
 	loader/SceneLoader.cpp
 	visual/DisplayFlags.cpp
-	visual/DrawToolGL.cpp
 	visual/VisualParams.cpp
 	objectmodel/HapticDeviceEvent.cpp
 	objectmodel/GUIEvent.cpp
 	)
 
+if(NOT OPTION_NO_OPENGL)
+  list(APPEND HEADER_FILES "visual/DrawToolGL.h")
+	
+	list(APPEND SOURCE_FILES "visual/DrawToolGL.cpp")
+endif()  
+  
 if(EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
 	

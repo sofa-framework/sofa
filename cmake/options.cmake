@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+include(CMakeDependentOption)
+
 if(NOT GENERATED_FROM_MAIN_SOLUTION) # configuring from sub-project
 	# load cache
 	load_cache("${SOFA_ROOT_DIR}" INCLUDE_INTERNALS SOFA_SRC_DIR SOFA_BUILD_DIR)
@@ -132,8 +134,18 @@ else() # configuring from main solution
 	option(OPTION_NO_OPENGL "Disable OpenGL" OFF)
 	if(OPTION_NO_OPENGL)
 		list(APPEND compilerDefines SOFA_NO_OPENGL)
+		list(REMOVE_ITEM GLOBAL_COMPILER_DEFINES SOFA_HAVE_GLEW)
+		set(SOFA_VISUAL_LIB SofaBaseVisual)
+	else()
+		set(SOFA_VISUAL_LIB SofaOpenglVisual)
 	endif()
 
+	## NO QT
+	option(OPTION_NO_QT "Disable QT" OFF)
+	if(OPTION_NO_QT)
+		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_NO_QT)
+	endif()
+  
 	## Tutorials
 	option(OPTION_TUTORIALS "Build SOFA tutorials" ON)
 	if(OPTION_TUTORIALS)
@@ -178,15 +190,18 @@ else() # configuring from main solution
 	endif()
 	RegisterDependencies(SofaSimulationBGL OPTION "SIMULATION_GRAPH_BGL" COMPILE_DEFINITIONS "SOFA_HAVE_BGL" PATH "${SOFA_MODULES_DIR}/sofa/simulation/bgl")
 
-	option(GUI_USE_QTVIEWER "Use QT Viewer" ON)
+	CMAKE_DEPENDENT_OPTION(GUI_USE_QTVIEWER "Use QT Viewer" ON
+		"NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
 	if(GUI_USE_QTVIEWER)
 		list(APPEND compilerDefines SOFA_GUI_QTVIEWER)
 	endif()
-	option(GUI_USE_QGLVIEWER "Use QGLViewer" OFF)
+	CMAKE_DEPENDENT_OPTION(GUI_USE_QGLVIEWER "Use QGLViewer" OFF
+		"NOT OPTION_NO_OPENGL; NOT OPTION_NO_QT" OFF)
 	if(GUI_USE_QGLVIEWER)
 		list(APPEND compilerDefines SOFA_GUI_QGLVIEWER)
 	endif()
-	option(GUI_USE_GLUT "Use GLUT interface" ON)
+	CMAKE_DEPENDENT_OPTION(GUI_USE_GLUT "Use GLUT interface" ON
+		"NOT OPTION_NO_OPENGL" OFF)
 	if(GUI_USE_GLUT)
 		list(APPEND compilerDefines SOFA_GUI_GLUT)
 	endif()

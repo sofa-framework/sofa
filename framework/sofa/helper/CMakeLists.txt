@@ -17,17 +17,6 @@ set(HEADER_FILES
     Factory.inl
     FnDispatcher.h
     FnDispatcher.inl
-    gl/Axis.h
-    gl/BasicShapes.h
-    gl/Capture.h
-    gl/Color.h
-    gl/Cylinder.h
-    gl/glfont.h
-    gl/glText.inl
-    gl/glText.h
-    gl/RAII.h
-    gl/template.h
-    gl/Texture.h
     gl/Trackball.h
     gl/Transformation.h
     io/Image.h
@@ -99,9 +88,6 @@ set(HEADER_FILES
     SortedPermutation.h
     kdTree.inl
     kdTree.h
-	
-	gl/FrameBufferObject.h
-	gl/GLSLShader.h
 	)
 
 set(SOURCE_FILES
@@ -110,13 +96,6 @@ set(SOURCE_FILES
     BackTrace.cpp
     DualQuat.cpp
     Factory.cpp
-    gl/Axis.cpp
-    gl/Capture.cpp
-    gl/Color.cpp
-    gl/Cylinder.cpp
-    gl/glfont.cpp
-    gl/glText.cpp
-    gl/Texture.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     io/Image.cpp
@@ -138,7 +117,6 @@ set(SOURCE_FILES
     decompose.cpp
     Quater.cpp
     RandomGenerator.cpp
-    system/gl.cpp
     system/SetDirectory.cpp
     system/FileRepository.cpp
     system/thread/CTime.cpp
@@ -157,15 +135,43 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     Polynomial_LD.cpp
     UnitTest.cpp
-	
-	gl/FrameBufferObject.cpp
-	gl/GLSLShader.cpp
 	)
 
 if(EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")
 	
 	list(APPEND SOURCE_FILES "system/thread/TimeoutWatchdog.cpp")
+endif()
+
+if(NOT OPTION_NO_OPENGL)
+	list(APPEND HEADER_FILES
+    gl/Axis.h
+    gl/BasicShapes.h
+    gl/Capture.h
+    gl/Color.h
+    gl/Cylinder.h
+    gl/glfont.h
+    gl/glText.inl
+    gl/glText.h
+    gl/RAII.h
+    gl/template.h
+    gl/Texture.h
+    gl/FrameBufferObject.h
+    gl/GLSLShader.h
+  )
+	
+	list(APPEND SOURCE_FILES
+    gl/Axis.cpp
+    gl/Capture.cpp
+    gl/Color.cpp
+    gl/Cylinder.cpp
+    gl/glfont.cpp
+    gl/glText.cpp
+    gl/Texture.cpp
+    system/gl.cpp
+    gl/FrameBufferObject.cpp
+    gl/GLSLShader.cpp
+    )
 endif()
 
 if(EXTERNAL_HAVE_FFMPEG)
