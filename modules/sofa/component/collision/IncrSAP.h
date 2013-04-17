@@ -176,9 +176,9 @@ public:
 
 typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-extern template class SOFA_BASE_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+extern template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+extern template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
 #endif
 
 } // namespace collision
