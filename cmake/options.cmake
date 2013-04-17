@@ -134,7 +134,9 @@ else() # configuring from main solution
 	option(OPTION_NO_OPENGL "Disable OpenGL" OFF)
 	if(OPTION_NO_OPENGL)
 		list(APPEND compilerDefines SOFA_NO_OPENGL)
-		list(REMOVE_ITEM GLOBAL_COMPILER_DEFINES SOFA_HAVE_GLEW)
+		if (EXTERNAL_HAVE_GLEW)
+			list(REMOVE_ITEM compilerDefines SOFA_HAVE_GLEW)
+		endif()
 		set(SOFA_VISUAL_LIB SofaBaseVisual)
 	else()
 		set(SOFA_VISUAL_LIB SofaOpenglVisual)
@@ -143,7 +145,7 @@ else() # configuring from main solution
 	## NO QT
 	option(OPTION_NO_QT "Disable QT" OFF)
 	if(OPTION_NO_QT)
-		list(APPEND GLOBAL_COMPILER_DEFINES SOFA_NO_QT)
+		list(APPEND compilerDefines SOFA_NO_QT)
 	endif()
   
 	## Tutorials
@@ -151,6 +153,9 @@ else() # configuring from main solution
 	if(OPTION_TUTORIALS)
 		list(APPEND compilerDefines SOFA_HAVE_TUTORIALS)
 	endif()
+	
+	## Applications
+	option(OPTION_APPLICATIONS "Build SOFA applications (the various tools and editors using the libraries)" ON)
 
 	## PML
 	option(OPTION_PML "PML support" OFF)
@@ -231,7 +236,7 @@ else() # configuring from main solution
 		if(EXTERNAL_HAVE_BOOST)
 			# we use EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
 			unset(EXTERNAL_HAVE_BOOST CACHE)
-			list(REMOVEITEM compilerDefines SOFA_HAVE_BOOST)
+			list(REMOVE_ITEM compilerDefines SOFA_HAVE_BOOST)
 		endif()
 		if (EXTERNAL_HAVE_EIGEN2)
 			# cpuid identification code does not exist on the platform, it's cleaner to disable it here.

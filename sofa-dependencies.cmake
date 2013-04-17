@@ -49,30 +49,35 @@ if(SIMULATION_GRAPH_BGL)
 	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
 endif()
 
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/meshconv")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
-if(GUI_USE_QTVIEWER OR GUI_USE_QGLVIEWER OR GUI_USE_QTOGREVIEWER)	#GUI_USE_QTOGREVIEWER not defined yet... relicate of qmake script
-	#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration") "# not yet converted" commenbt in the qmake scripts...
-    add_subdirectory("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
-	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/lib")
-	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")
+if(OPTION_APPLICATIONS)
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/GenerateRigid")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/generateTypedefs")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/meshconv")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/runSofa")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")          #may need to add RC_FILE
+	if(GUI_USE_QTVIEWER OR GUI_USE_QGLVIEWER OR GUI_USE_QTOGREVIEWER)	#GUI_USE_QTOGREVIEWER not defined yet... relicate of qmake script
+		#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration") "# not yet converted" commenbt in the qmake scripts...
+		add_subdirectory("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
+		add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/lib")
+		add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")
+	endif()
+	if(EXTERNAL_HAVE_FLOWVR)
+		add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
+	endif()
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
+	if(OPTION_GPU_OPENCL)
+		add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
+	endif()
+	if(NOT OPTION_NO_OPENGL)
+		add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")
+	endif()
+	#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaProjectExample") 
+	add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
+	#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
 endif()
-if(EXTERNAL_HAVE_FLOWVR)
-    add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
-endif()
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
-if(OPTION_GPU_OPENCL)
-    add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")         #may need to add RC_FILE
-endif()
-#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")    #Not sure how to have it add only when ! SOFA_NO_OPENGL
-#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaProjectExample") 
-add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
-#add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/xmlconvert-displayflags")  #not actually declared in sofa-dependencies.prf
+
 if(UNIT-TESTS_USE)
     add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
 endif()
