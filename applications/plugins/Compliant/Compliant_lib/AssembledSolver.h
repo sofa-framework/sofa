@@ -76,6 +76,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 	// velocities from system solution 
 	virtual kkt_type::vec velocity(const system_type& sys, const kkt_type::vec& x) const;
 
+	// constraint forces from system solution
+	virtual kkt_type::vec lambda(const system_type& sys, const kkt_type::vec& x) const;
+	
 	// solve velocity dynamics ?
 	Data<bool> use_velocity, warm_start;
 

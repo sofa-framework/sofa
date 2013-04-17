@@ -160,6 +160,15 @@ AssembledSolver::kkt_type::vec AssembledSolver::velocity(const system_type& sys,
 	else return sys.P * (sys.v + sys.dt * x.head( sys.m ));
 }
 
+AssembledSolver::kkt_type::vec AssembledSolver::lambda(const system_type& sys,
+                                                       const kkt_type::vec& x) const {
+	if( use_velocity.getValue() ) return x.tail( sys.n ) / sys.dt;
+	else return x.tail( sys.n );
+
+}
+
+
+
 		
 void AssembledSolver::solve(const core::ExecParams* params, 
                             double dt, 
@@ -192,8 +201,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		scoped::timer step("system solve");
 		kkt->solve(x, sys, rhs( sys ) );
 	}
+	
 	// distribute (projected) velocities
-	vis.distribute( core::VecId::velocity(), velocity(sys, x) );
+	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
+	if( sys.n ) vis.distribute_compliant( core::VecId::force(), lambda(sys, x) );
 	
 	// update positions TODO use xResult/vResult
 	integrate( &mparams );

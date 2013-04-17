@@ -557,15 +557,16 @@ void AssemblyVisitor::debug() const {
 }
 
 
-
-void AssemblyVisitor::distribute(core::VecId id, const vec& data) {
+// TODO copypasta !!
+void AssemblyVisitor::distribute_master(core::VecId id, const vec& data) {
 	// scoped::timer step("solution distribution");
 			
 	unsigned off = 0;
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
 				
 		// TODO optimize map lookup by saving prefix independent state
-		// list
+		// list 
+		// TODO or: save offsets in chunks ?
 		const chunk& c = find(chunks, prefix[i]);
 
 		// paranoia
@@ -575,8 +576,34 @@ void AssemblyVisitor::distribute(core::VecId id, const vec& data) {
 			vector(prefix[i], id, data.segment(off, c.size) );
 			off += c.size;
 		}
+		
 	}
 
+	assert( data.size() == off );
+}
+
+// TODO copypasta !!
+void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
+	// scoped::timer step("solution distribution");
+			
+	unsigned off = 0;
+	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+				
+		// TODO optimize map lookup by saving prefix independent state
+		// list 
+		// TODO or: save offsets in chunks ?
+		const chunk& c = find(chunks, prefix[i]);
+
+		// paranoia
+		// c.check();
+		
+		if( c.compliant() ) {
+			vector(prefix[i], id, data.segment(off, c.size) );
+			off += c.size;
+		}
+		
+	}
+	
 	assert( data.size() == off );
 }
 
