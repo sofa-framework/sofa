@@ -42,10 +42,6 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 
-#include <time.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-
 namespace sofa
 {
 
