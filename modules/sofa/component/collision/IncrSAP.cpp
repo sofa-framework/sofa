@@ -65,8 +65,8 @@ int IncrSAPClassStdVector = core::RegisterObject("Collision detection using incr
         ;
 
 
-template class SOFA_BASE_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-template class SOFA_BASE_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
 } // namespace collision
 
 } // namespace component
