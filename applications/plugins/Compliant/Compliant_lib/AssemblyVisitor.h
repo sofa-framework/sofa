@@ -63,8 +63,11 @@ public:
 	system_type assemble() const;
 			
 
-	// distribute result over independent dofs
-	void distribute(core::VecId id, const vec& data);
+	// distribute data over master dofs
+	void distribute_master(core::VecId id, const vec& data);
+
+	// distribute data over compliant dofs
+	void distribute_compliant(core::VecId id, const vec& data);
 			
 	// outputs data to std::cout
 	void debug() const; 
@@ -98,7 +101,10 @@ public:
 
 		// this is to remove f*cking mouse dofs
 		bool mechanical;
+		
 		bool master() const { return mechanical && map.empty(); }
+		bool compliant() const { return mechanical && phi.size(); }
+		
 		unsigned vertex;
 		
 		dofs_type* dofs;
