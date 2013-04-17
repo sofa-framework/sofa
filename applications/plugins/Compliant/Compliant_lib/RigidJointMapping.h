@@ -22,6 +22,10 @@ namespace mapping
     \[ f(p, c) = \log\left( p^{-1} c) \]
     
     this is mostly used to place a compliance on the end
+
+    @author maxime.tournier@inria.fr
+
+    TODO add a multimapping version 
  */
 
 template <class TIn, class TOut >
@@ -47,7 +51,20 @@ public:
 protected:
 	
 	typedef SE3< typename TIn::Real > se3;
+	typedef typename se3::coord_type coord_type;
+
+
+	static coord_type delta(const coord_type& p, const coord_type& c) {
+		coord_type res;
+
+		res.getOrientation() = p.getOrientation().inverse() * c.getOrientation();
+		res.getCenter() = c.getCenter() - p.getCenter();
+		
+		return res;
+	}
 	
+
+
 	typedef RigidJointMapping self;
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
@@ -60,37 +77,47 @@ protected:
 		pairs_type& p = *pairs.beginEdit();
 
 		typedef typename se3::mat66 mat66;
+		typedef typename se3::mat33 mat33;
+
 		std::vector< mat66 > blocks(2);			
 
+		blocks[0] = -mat66::Identity();
+		blocks[1] = mat66::Identity();
+		
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 
-			// FIXME this means the lowest index is always the parent, derp
-			if( p[i][1] < p[i][0] ) std::swap( p[i][1], p[i][0] );
-			
-			typename se3::coord_type diff = se3::prod( se3::inv( in_pos[ p[i][0] ] ), 
-			                                           in_pos[ p[i][1] ] );
-			
-			mat66 dlog = mat66::Zero();
-			
-			dlog.template topLeftCorner<3, 3>() = se3::rotation(diff).toRotationMatrix();
-			dlog.template bottomRightCorner<3, 3>() = se3::dlog( se3::rotation(diff) );
-			
-			if( skip_rotation.getValue() ) dlog.template bottomRows<3>().setZero();
-			
-			blocks[0] = -dlog * se3::Ad( se3::inv(diff) ) * se3::body(in_pos[ p[i][0] ]);
-			blocks[1] = dlog * se3::body(in_pos[ p[i][1]]);
-			
+			typename se3::coord_type diff = delta(in_pos[ p[i][0] ],
+			                                      in_pos[ p[i][1] ] );
+			mat33 dlog = se3::dlog( se3::rotation(diff) );
+				
+			if( skip_rotation.getValue() ) {
+				blocks[0].template bottomRows<3>().setZero();
+				blocks[1].template bottomRows<3>().setZero();
+			} else {
+				mat33 Rp = se3::Ad(in_pos[ p[i][0]].getOrientation());
+				mat33 Rc = se3::Ad(in_pos[ p[i][1]].getOrientation());
+
+				blocks[0].template bottomRightCorner<3, 3>() = -dlog * Rc.transpose();
+				blocks[1].template bottomRightCorner<3, 3>() = dlog * Rc.transpose();
+	
+			}
+
+			// insert child block first ?
+			bool reverse =  p[i][0] > p[i][1];
+
 			for( unsigned u = 0; u < 6; ++u) {
 				unsigned row = 6 * i + u;
 				J.startVec( row );
 					
 				for( unsigned j = 0; j < 2; ++j) {
-						
-					unsigned index = p[i][j];					
+
+					unsigned ordered = reverse ? 1 - j : j;
+					
+					unsigned index = p[i][ ordered ];					
 						
 					for( unsigned v = 0; v < 6; ++v) {
-						unsigned col = 6 * index + v;
-						J.insertBack(row, col) = blocks[j](u, v);
+						unsigned col = 6 * index + v; 
+						J.insertBack(row, col) = blocks[ ordered ](u, v);
 					}
 				} 
 			}		 
@@ -109,11 +136,14 @@ protected:
 
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 			
-			// FIXME this means the lowest index is always the parent, derp
-			if( p[i][1] < p[i][0] ) std::swap( p[i][1], p[i][0] );
+			// // FIXME this means the lowest index is always the parent, derp
+			// if( p[i][1] < p[i][0] ) std::swap( p[i][1], p[i][0] );
 			
-			out[i] = se3::product_log( se3::prod( se3::inv( in[ p[i][0] ] ), 
-			                                      in[ p[i][1] ] ) ).getVAll();
+			// out[i] = se3::product_log( se3::prod( se3::inv( in[ p[i][0] ] ), 
+			//                                       in[ p[i][1] ] ) ).getVAll();
+			
+			out[i] = se3::product_log( delta(in[ p[i][0] ],
+			                                 in[ p[i][1] ] ) ).getVAll();
 			
 			if( out_joint_angle.getValue() ) output( out[i] );
 			                                             

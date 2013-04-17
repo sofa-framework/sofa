@@ -164,6 +164,12 @@ struct SE3 {
 		return res;
 	}
 
+
+	//  SO(3) adjoint map quaternion -> matrix conversion
+	static mat33 Ad(const ::sofa::helper::Quater<real>& at) {
+		return coord(at).toRotationMatrix();
+	}
+	
 	// SE(3) adjoint, matrix version
 	static mat66 Ad(const coord_type& at) {
 
