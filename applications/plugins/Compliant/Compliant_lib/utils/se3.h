@@ -59,6 +59,13 @@ struct SE3 {
 		            at[2]);
 	}
 
+	static ::sofa::helper::Quater<real> coord(const quat& at) {
+		return ::sofa::helper::Quater<real>(at.coeffs()(1),
+		                                    at.coeffs()(2),
+		                                    at.coeffs()(3),
+		                                    at.coeffs()(0));
+	}
+	
 	// rotation quaternion
 	static quat rotation(const coord_type& at) {
 		return coord(at.getOrientation() );

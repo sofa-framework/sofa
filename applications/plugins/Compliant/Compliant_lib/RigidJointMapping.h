@@ -21,11 +21,17 @@ namespace mapping
 
     \[ f(p, c) = \log\left( p^{-1} c) \]
     
-    this is mostly used to place a compliance on the end
+    this is mostly used to place a compliance on the end. Use
+    @rotation and @translation data to restrict mapping to rotation
+    and translation parts, in case you only want to apply a compliance
+    on these.
 
     @author maxime.tournier@inria.fr
 
+    TODO @rotation / @translation should be set per output dofs
     TODO add a multimapping version 
+    TODO specialize for vec3 output dofs in case (rotation ^ translation) is set ?
+    
  */
 
 template <class TIn, class TOut >
@@ -37,12 +43,13 @@ public:
 	typedef vector< index_pair > pairs_type;
 	
 	Data< pairs_type > pairs;
-	Data< bool > skip_rotation;
+	Data< bool > rotation, translation;
 	Data< bool > out_joint_angle;
 	
 	RigidJointMapping() 
 		: pairs(initData(&pairs, "pairs", "pairs of rigid frames defining joint in source dofs" )),
-		  skip_rotation(initData(&skip_rotation, false, "skip_rotation", "leaves rotation part zero" )),
+		  rotation(initData(&rotation, true, "rotation", "compute relative rotation" )),
+		  translation(initData(&translation, true, "translation", "compute relative translation" )),
 		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)"))
 		{
 			
@@ -81,8 +88,13 @@ protected:
 
 		std::vector< mat66 > blocks(2);			
 
-		blocks[0] = -mat66::Identity();
-		blocks[1] = mat66::Identity();
+		if( translation.getValue() ) {
+			blocks[0] = -mat66::Identity();
+			blocks[1] = mat66::Identity();
+		} else {
+			blocks[0] = mat66::Zero();
+			blocks[1] = mat66::Zero();
+		}
 		
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 
@@ -90,18 +102,17 @@ protected:
 			                                      in_pos[ p[i][1] ] );
 			mat33 dlog = se3::dlog( se3::rotation(diff) );
 				
-			if( skip_rotation.getValue() ) {
-				blocks[0].template bottomRows<3>().setZero();
-				blocks[1].template bottomRows<3>().setZero();
-			} else {
+			if( rotation.getValue() ) {
 				mat33 Rp = se3::Ad(in_pos[ p[i][0]].getOrientation());
 				mat33 Rc = se3::Ad(in_pos[ p[i][1]].getOrientation());
-
+				
 				blocks[0].template bottomRightCorner<3, 3>() = -dlog * Rc.transpose();
 				blocks[1].template bottomRightCorner<3, 3>() = dlog * Rc.transpose();
-	
-			}
-
+			} else {
+				blocks[0].template bottomRows<3>().setZero();
+				blocks[1].template bottomRows<3>().setZero();
+			} 
+			
 			// insert child block first ?
 			bool reverse =  p[i][0] > p[i][1];
 
@@ -142,16 +153,24 @@ protected:
 			// out[i] = se3::product_log( se3::prod( se3::inv( in[ p[i][0] ] ), 
 			//                                       in[ p[i][1] ] ) ).getVAll();
 			
+			
 			out[i] = se3::product_log( delta(in[ p[i][0] ],
 			                                 in[ p[i][1] ] ) ).getVAll();
 			
 			if( out_joint_angle.getValue() ) output( out[i] );
 			                                             
-			if( skip_rotation.getValue() ) {
+			if( !rotation.getValue() ) {
 				out[i][3] = 0;
 				out[i][4] = 0;
 				out[i][5] = 0;
 			}
+
+			if( !translation.getValue() ) {
+				out[i][0] = 0;
+				out[i][1] = 0;
+				out[i][2] = 0;
+			}
+			
 		}
 		 
 		pairs.endEdit();
