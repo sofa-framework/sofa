@@ -13,5 +13,6 @@ add_subdirectory("objectCreator")
 add_subdirectory("oneParticle")
 #add_subdirectory("oneParticleWithSofaTypedefs") # temporarily discarded since it can not compile with the Flexible plugin
 add_subdirectory("oneTetrahedron")
+add_subdirectory("anatomyModelling")
 
 include(${SOFA_CMAKE_DIR}/postSolution.cmake)
