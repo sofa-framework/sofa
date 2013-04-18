@@ -360,16 +360,23 @@ list(APPEND SOFA_LIBS_NAME
 
 # To use VERBOSE macro (print only if VAR or default VERBOSE_CMAKE is set to true
 include(find_lib)
-
+if (WIN32) 
+  if (CMAKE_CL_64) 
+      set(ARCH_DIR "win32") 
+  else() 
+      set(ARCH_DIR "win64") 
+  endif() 
+endif()
 list(APPEND SEARCH_LIB_PATHS
     ${SOFA_DIR}/lib
     ${SOFA_DIR}/lib/linux
     ${SOFA_DIR}/lib/linux/sofa-plugins
-    ${SOFA_DIR}/lib/win32
-    ${SOFA_DIR}/lib/win32/Common
-    ${SOFA_DIR}/lib/win32/ReleaseVC7
-    ${SOFA_DIR}/lib/win32/ReleaseVC8
-    ${SOFA_DIR}/lib/win32/ReleaseVC9
+    ${SOFA_DIR}/lib/${ARCH_DIR}
+    ${SOFA_DIR}/lib/${ARCH_DIR}/Common
+    ${SOFA_DIR}/lib/${ARCH_DIR}/ReleaseVC7
+    ${SOFA_DIR}/lib/${ARCH_DIR}/ReleaseVC8
+    ${SOFA_DIR}/lib/${ARCH_DIR}/ReleaseVC9
+    ${SOFA_DIR}/lib/${ARCH_DIR}/ReleaseVC10
     #${SOFA_DIR}/bin
 )
 
