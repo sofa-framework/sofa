@@ -1,11 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-  
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>Composite Object</title>
 
   
-</head><body>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Composite Object</title></head><body>
 <h1 style="text-align: center;">Creating a composite object using a
 SubsetMultiMapping</h1>
 
@@ -105,7 +102,7 @@ The implementation in SOFA requires to address some issues:<br>
 match tree structures. A directed acyclic graph (DAG) is required,
 therefore the sofa::simulation::Simulation must be an instance of
 DAGSimulation. This requires to uncheck the following line in you
-sofa-local.cfg file:<code>&nbsp;&nbsp;&nbsp; DEFINES += SOFA_HAVE_DAG</code></li>
+sofa-local.prf file:<code>&nbsp;&nbsp;&nbsp; DEFINES += SOFA_HAVE_DAG</code></li>
   <li>DAG structures can not currently be parsed from xml files. Such a
 simulation must be created in C++, as given in this directory, or in
 Python (no example available yet).<br>

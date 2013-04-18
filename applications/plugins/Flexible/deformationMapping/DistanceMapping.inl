@@ -154,12 +154,13 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
             gap[0]=1.0;  // arbitrary unit vector
         }
 
-        jacobian.beginRow(i);
+//        jacobian.beginRow(i);
         for(unsigned j=0; j<Nout; j++)
         {
             for(unsigned k=0; k<Nin; k++ )
             {
                 jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
+//                jacobian.add( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
 

@@ -143,14 +143,14 @@ void ProjectToPlaneUnilateralConstraint<DataTypes>::projectPosition(const core::
 
     const CPos& n = f_normal.getValue();
     const CPos& o = f_origin.getValue();
-//    cerr<<"ProjectToPlaneUnilateralConstraint<DataTypes>::projectPosition, origin = "<<o <<", normal = " << n << endl;
+    //    cerr<<"ProjectToPlaneUnilateralConstraint<DataTypes>::projectPosition, origin = "<<o <<", normal = " << n << endl;
 
     for(unsigned i=0; i<x.size(); i++ )
     {
         // replace the point with its projection to the plane
         Real distance = (x[i]-o)*n ;
         if( distance < 0 ){ // negative side of the plane
-//            cerr<<"ProjectToPlaneUnilateralConstraint<DataTypes>::projectPosition particle  "<<i<<", pos = "<<x[i]<<", distance = "<< distance << endl;
+            //            cerr<<"ProjectToPlaneUnilateralConstraint<DataTypes>::projectPosition particle  "<<i<<", pos = "<<x[i]<<", distance = "<< distance << endl;
             DataTypes::setCPos( x[i], x[i] - n * distance );
             isActive[i] = true;
         }
@@ -281,7 +281,7 @@ void ProjectToPlaneUnilateralConstraint<DataTypes>::draw(const core::visual::Vis
         points.push_back( o+(-t1+t2)* f_drawPlane.getValue() );
         points.push_back( o+(-t1-t2)* f_drawPlane.getValue() );
         points.push_back( o+( t1-t2)* f_drawPlane.getValue() );
-        vparams->drawTool()->drawTriangleFan(points,normals, Vec<4,Real>(0.4,0,0,1));
+        vparams->drawTool()->drawTriangleFan(points,normals, Vec<4,float>(0.4,0,0,1));
     }
 #endif /* SOFA_NO_OPENGL */
 }

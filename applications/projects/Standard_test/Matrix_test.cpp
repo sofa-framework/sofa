@@ -160,8 +160,9 @@ struct TestSparseMatrices : public Sofa_test<_Real>
                 mapMat.set(i,j,valij);
                 eiBlock1.add(i,j,valij);
                 eiBase.add(i,j,valij);
-                BlockMN& bb = eiBlock2.wBlock(i/BROWS,j/BCOLS);
-                bb[i%BROWS][j%BCOLS] = valij;
+                eiBlock2.add(i,j,valij);
+//                BlockMN& bb = eiBlock2.wBlock(i/BROWS,j/BCOLS);
+//                bb[i%BROWS][j%BCOLS] = valij;
                 mat(i,j) = valij;
             }
         }
@@ -262,30 +263,31 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     /** Check the filling of EigenMatrix per rows of blocks. Return true if the test succeeds.*/
     bool checkEigenMatrixBlockRowFilling()
     {
-        EigenBlockMatrix ma,mb;
+        EigenBlockMatrix mb;
+        FullMatrix ma;
         unsigned br=3, bc=3;
-        ma.resizeBlocks(br,bc);
+        ma.resize(br*BROWS,bc*BCOLS);
         mb.resizeBlocks(br,bc);
         for( unsigned i=0; i<br; i++ )
         {
             mb.beginBlockRow(i);
             if( i%2==0 ) // leave some rows empty
             {
-                for( int j=bc-1; j>=0; j--) // set the blocs in reverse order
+                for( int j=bc-1; j>=0; j--) // set the blocs in reverse order, for fun.
                 {
                     // create a block and give it some value
                     BlockMN b;
-                    for( unsigned k=0; k<BROWS && k<BCOLS; k++ )
+                    for( unsigned k=0; k<BROWS && k<BCOLS; k++ ){
                         b[k][k] = i+j;
+                        ma.set(i*BROWS+k, j*BCOLS+k, i+j);
+                    }
 
-                    // insert the block in the two matrices
+                    // insert the block in the matrix
                     mb.createBlock(j,b);
-                    ma.wBlock(i,j) = b;
                 }
             }
             mb.endBlockRow();
         }
-        ma.compress();
         mb.compress();
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, mb = " << mb << endl;

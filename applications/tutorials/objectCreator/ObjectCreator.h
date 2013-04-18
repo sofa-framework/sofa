@@ -84,6 +84,42 @@ public:
 private:
     static void AddCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 };
+
+namespace modeling {
+
+using namespace simulation;
+
+/** Create a simulation graph root */
+Node::SPtr newRoot();
+
+/** Create a string composed of particles (at least 2) and springs */
+Node::SPtr massSpringString
+(
+        simulation::Node::SPtr parent,
+        double x0, double y0, double z0, // start point,
+        double x1, double y1, double z1, // end point
+        unsigned numParticles,
+        double totalMass,
+        double stiffnessValue=1.0,
+        double dampingRatio=0
+        );
+
+
+/// helper for more compact component creation
+template<class Component>
+typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
+{
+    typename Component::SPtr component = core::objectmodel::New<Component>();
+    parentNode->addObject(component);
+    component->setName(parentNode->getName()+"_"+name);
+    return component;
 }
+
+
+
+
+}// modeling
+
+}// sofa
 
 #endif

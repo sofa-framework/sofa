@@ -38,8 +38,9 @@ void UniformCompliance<DataTypes>::reinit()
     matC.resize(state->getMatrixSize(),state->getMatrixSize());
     for(unsigned i=0; i<state->getMatrixSize(); i++)
     {
-        matC.beginRow(i);
-        matC.insertBack(i,i,c);
+//        matC.beginRow(i);
+//        matC.insertBack(i,i,c);
+        matC.add(i,i,c);
     }
     matC.compress();
 }

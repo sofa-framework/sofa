@@ -43,6 +43,7 @@ DEFINES += SOFA_GUI_GLUT
 ########################################################################
 
 #DEFINES += SOFA_PROJECT_TEST  # uncomment to compile a project which perform low-level tests on Sofa classes using google test
+#DEFINES += SOFA_PROJECT_Debug_test  # uncomment to compile a project which perform low-level tests (used for quickly trying tests)
 
 # Uncomment if you want to hide the recorder from the Qt GUI to save space
 # DEFINES += SOFA_GUI_QT_NO_RECORDER

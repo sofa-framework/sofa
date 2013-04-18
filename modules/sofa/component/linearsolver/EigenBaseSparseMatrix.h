@@ -32,11 +32,6 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <map>
 #include <Eigen/Sparse>
-//#include <Eigen/Core>
-//#include <Eigen/SparseCholesky>
-//#ifdef SOFA_HAVE_EIGEN_UNSUPPORTED_AND_CHOLMOD
-//#include <Eigen/CholmodSupport>
-//#endif
 using std::cerr;
 using std::endl;
 
@@ -76,24 +71,31 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 template<class TReal>
 class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
 {
+    /** Impossible using this class
+    */
+    void set(int /*i*/, int /*j*/, double /*v*/)
+    {
+        assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
+    }
+
+
 public:
 
     typedef TReal Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
     typedef EigenBaseSparseMatrix<TReal> ThisMatrix;
+    typedef Eigen::Triplet<Real> Triplet;
 
-protected:
-    // the auxiliary matrix used for random access
-    typedef std::map<int,TReal> RowMap;   ///< Map which represents one row of the matrix. The index represents the column index of an entry.
-    typedef std::map<int,RowMap> MatMap;  ///< Map which represents a matrix. The index represents the index of a row.
-    MatMap incoming;                      ///< To store data before it is compressed in optimized format.
-    CompressedMatrix compressedIncoming;            ///< auxiliary matrix to store the compressed version of the incoming matrix
+private:
+
+    vector<Triplet> incoming;             ///< Scheduled additions
+
 
 public:
 
-
     CompressedMatrix compressedMatrix;    ///< the compressed matrix
+
 
     EigenBaseSparseMatrix(int nbRow=0, int nbCol=0)
     {
@@ -111,21 +113,34 @@ public:
         compress();
     }
 
+    /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress() .
+    void add( int row, int col, SReal value ){
+        incoming.push_back( Triplet(row,col,value) );
+    }
+
+    /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
+    void insertBack( int row, int col, Real value){
+        compressedMatrix.insert(row,col) = value;
+    }
+
+    /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
+    Real& coeffRef( int i, int j ){
+        return compressedMatrix.coeffRef(i,j);
+    }
+
     /** Clear and resize this to (m.rows,nbCol) and initialize it with the given matrix, columns shifted of the given value: this(i,j+shift) = m(i,j).
       @precond nbCol >= m.cols + shift
       */
     void copy(const EigenBaseSparseMatrix& m, unsigned nbCol, unsigned shift)
     {
         resize(m.rowSize(),nbCol);
-
         const CompressedMatrix& im = m.compressedMatrix;
         for(int i=0; i<im.rows(); i++)
         {
-            compressedMatrix.startVec(i);
             for(typename CompressedMatrix::InnerIterator j(im,i); j; ++j)
-                compressedMatrix.insertBack(i,shift+j.col())= j.value();
+                add(i,shift+j.col(),j.value());
         }
-        compressedMatrix.finalize();
+        compress();
     }
 
 
@@ -154,129 +169,18 @@ public:
         return compressedMatrix.coeff(i,j);
     }
 
-    void add(int i, int j, double v)
-    {
-        if( v!=0.0 )
-        {
-            incoming[i][j]+=(Real)v;
-            //            cerr<<"EigenBaseSparseMatrix::set, size = "<< this->rowSize()<<", "<< this->colSize() <<", entry: "<< i <<", "<<j<<" = "<< incoming[i][j] << endl;
-        }
-    }
 
-    /// Converts the incoming matrix to compressedIncoming and clears the incoming matrix.
-    /// Insert Method inspired by the following tutorial : http://eigen.tuxfamily.org/dox/TutorialSparse.html
-    void compress_incoming()
-    {
-        compressedIncoming.resize( compressedMatrix.rows(),compressedMatrix.cols() );
-        if( incoming.empty() ) return;
-        for( typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end(); r!=rend; r++ )
-        {
-            int row = (*r).first;
-            //            compressedIncoming.startVec(row);
-            for( typename RowMap::const_iterator c=(*r).second.begin(),cend=(*r).second.end(); c!=cend; c++ )
-            {
-                int col = (*c).first;
-                Real val = (*c).second;
-                //                compressedIncoming.insertBack(row,col) = val;
-                compressedIncoming.insert(row, col) = val; //modified
-            }
-        }
-        compressedIncoming.makeCompressed(); //modified
-        //        compressedIncoming.finalize();
-        incoming.clear();
-    }
 
     /// Add the values from the scheduled list, and clears the schedule list. @sa set(int i, int j, double v).
     void compress()
     {
         if( incoming.empty() ) return;
-        compress_incoming();
-        compressedMatrix += compressedIncoming;
+        CompressedMatrix m(compressedMatrix.rows(),compressedMatrix.cols());
+        m.setFromTriplets( incoming.begin(), incoming.end() );
+        compressedMatrix += m;
+        incoming.clear();
     }
 
-    /// must be called before inserting any element in the given row
-    void beginRow( int i )
-    {
-        compressedMatrix.startVec(i);
-    }
-
-    /// This is efficient only if done in storing order: line, row
-    void insertBack(int i, int j, double v)
-    {
-        if( v!=0.0 )
-            compressedMatrix.insertBack(i,j) = (Real)v;
-        //        cerr<<"EigenBaseSparseMatrix::set, size = "<< eigenMatrix.rows()<<", "<< eigenMatrix.cols()<<", entry: "<< i <<", "<<j<<" = "<< v << endl;
-    }
-
-    /** Schedule the replacement of the current value at row i and column j with value v. The replacement is effective only after method compress() is applied.
-      If this method is used several times before compress() is applied, only the last value is used. @sa compress()
-    */
-    void set(int /*i*/, int /*j*/, double /*v*/)
-    {
-        cerr<<"EigenBaseSparseMatrix::set" << endl;
-        assert( false && "EigenBaseSparseMatrix::set(int i, int j, double v) is not implemented !");
-    }
-
-    //    /// Clears the matrix, sets the values from the scheduled list, and clears the replacement schedule list. @sa set(int i, int j, double v).
-    //    virtual void compressReplace()
-    //    {
-    //        if( incoming.empty() ) return;
-
-    //        Matrix cpy = eigenMatrix;
-    //        eigenMatrix.resize(eigenMatrix.rows(),eigenMatrix.cols());
-
-    //        typename MatMap::const_iterator r=incoming.begin(),rend=incoming.end();
-    //        for(int i=0; i<cpy.rows(); i++)
-    //        {
-    //            eigenMatrix.startVec(i);
-    //            while( r!=rend && (*r).first<i) r++; // find incoming values in the current row
-    //            if( r!=rend && (*r).first==i )
-    //            {
-    //                // there are incoming values in the current row, so interleave
-    //                typename Matrix::InnerIterator j(cpy,i);         // iterator on the previous matrix value
-    //                typename RowMap::const_iterator jj = (*r).second.begin(); // iterator on the incoming line
-    //                while( j && jj!=(*r).second.end() )
-    //                {
-    //                    if( j.col()<(*jj).first )   // value already present
-    //                    {
-    //                        eigenMatrix.insertBack(i,j.col())= j.value();
-    //                        ++j;
-    //                    }
-    //                    else    // incoming entry is inserted, or replace the current one
-    //                    {
-    //                        eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
-    //                        if(j.col()==(*jj).first) // replacement
-    //                            ++j;
-    //                        else
-    //                            jj++;
-    //                    }
-    //                }
-    //                // interleaving is over. One of the two lists may be not finished yet.
-    //                for(;j;++j)
-    //                    eigenMatrix.insertBack(i,j.col())= j.value();
-    //                for(;jj!=(*r).second.end();jj++)
-    //                    eigenMatrix.insertBack(i,(*jj).first) = (*jj).second;
-    //            }
-    //            else // no new values to insert, just copy the previous values
-    //            {
-    //                for(typename Matrix::InnerIterator j(cpy,i); j; ++j)
-    //                    eigenMatrix.insertBack(i,j.col())= j.value();
-    //            }
-    //        }
-    //        eigenMatrix.finalize();
-    //        incoming.clear();
-    //    }
-
-
-    //    void endEdit(){
-    ////        compress();
-    //        compressedMatrix.finalize();
-    //    }
-
-    //    void clear(int i, int j)
-    //    {
-    //        compressedMatrix.coeffRef(i,j) = (Real)0;
-    //    }
 
     /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
     void clearRow(int i)
@@ -451,16 +355,6 @@ public:
     /// Get a view of this matrix as a MultiMatrix
     MatrixAccessor getAccessor() { return MatrixAccessor(this); }
 
-
-    //    /// Multiply the matrix by vector v and put the result in vector result
-    //    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
-    //    {
-    //        result->resize(this->rowSize());
-    //        // map the vectors and perform the product on the maps
-    //        Eigen::Map<VectorEigen> vm( &((*v)[0]), v->size() );
-    //        Eigen::Map<VectorEigen> rm( &((*result)[0]), result->size() );
-    //        rm = eigenMatrix * vm;
-    //    }
 
 
 

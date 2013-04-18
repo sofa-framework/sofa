@@ -66,25 +66,37 @@ void SubsetMultiMapping<TIn, TOut>::init()
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
-        jacobians[i]->resize(Nout*indexPairs.size(),Nin*this->fromModels[i]->readPositions().size() );
+        jacobians[i]->resize(Nout*indexPairs.size(),Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
     }
 
     // fill the jacobians
-    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
     for(unsigned i=0; i<indexPairs.size(); i++)
     {
         unsigned parent = indexPairs[i].first;
         Jacobian* jacobian = jacobians[parent];
-        unsigned& brow = rowIndex[parent];
-        unsigned bcol = indexPairs[i].second;
+        unsigned bcol = indexPairs[i].second;  // parent particle
         for(unsigned k=0; k<Nin; k++ )
         {
-//            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
-            jacobian->beginRow(Nout*brow+k);
-            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
+            unsigned row = i*Nout + k;
+            jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
         }
-        brow++;
     }
+//    // fill the jacobians
+//    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
+//    for(unsigned i=0; i<indexPairs.size(); i++)
+//    {
+//        unsigned parent = indexPairs[i].first;
+//        Jacobian* jacobian = jacobians[parent];
+//        unsigned& brow = rowIndex[parent];
+//        unsigned bcol = indexPairs[i].second;  // parent particle
+//        for(unsigned k=0; k<Nin; k++ )
+//        {
+////            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
+//            jacobian->beginRow(Nout*brow+k);
+//            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
+//        }
+//        brow++;
+//    }
 
     // finalize the jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
@@ -161,6 +173,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename Subset
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
 {
+    cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << endl;
 }
 
 
