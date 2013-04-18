@@ -1,0 +1,10 @@
+[Bb]in
+obj
+[Dd]ebug
+[Rr]elease
+*.user
+*.aps
+*.eto
+ClientBin
+GeneratedArtifacts
+_Pvt_Extensions

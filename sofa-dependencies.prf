@@ -33,16 +33,16 @@ declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer, qtgui)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)
 declare(csparse,    extlibs/csparse)
 declare(cudpp,      extlibs/cudpp, cuda)
-#declare(cudpp-svn,     extlibs/cudpp-svn/cudpp.pro, cuda)
+#declare(cudpp-svn, extlibs/cudpp-svn/cudpp.pro, cuda)
 declare(metis,      extlibs/metis)
 declare(taucs,      extlibs/taucs, cilk metis system-metis blas)
 declare(taucs_mt,   extlibs/taucs_mt, metis system-metis blas)
 declare(colladadom, extlibs/colladadom, tinyxml)
 declare(assimp, extlibs/assimp)
-declare(vrpn_quat,        extlibs/VRPN/quat/quat.pro)
-declare(vrpn_client,        extlibs/VRPN/vrpn_client.pro, vrpn_quat)
-declare(vrpn_atmellib,        extlibs/VRPN/vrpn/atmellib/vrpn_atmellib.pro, vrpn_quat)
-declare(vrpn_server,        extlibs/VRPN/vrpn_server.pro, vrpn_quat vrpn_atmellib)
+declare(vrpn_quat,  extlibs/VRPN/quat/quat.pro)
+declare(vrpn_client, extlibs/VRPN/vrpn_client.pro, vrpn_quat)
+declare(vrpn_atmellib, extlibs/VRPN/vrpn/atmellib/vrpn_atmellib.pro, vrpn_quat)
+declare(vrpn_server, extlibs/VRPN/vrpn_server.pro, vrpn_quat vrpn_atmellib)
 
 ######################################################################
 # Framework
@@ -115,7 +115,6 @@ declare(sofa_misc_engine, modules/sofa/component/sofa_misc_engine.pro, sofa_non_
 declare(sofa_misc_collision, modules/sofa/component/sofa_misc_collision.pro, sofa_mesh_collision sofa_constraint sofa_volumetric_data sofa_explicit_ode_solver sofa_implicit_ode_solver)
 declare(sofa_misc_solver, modules/sofa/component/sofa_misc_solver.pro, sofatree)
 declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision sofa_misc_topology sofa_topology_mapping)
-
 
 declare(sofa_component_base, modules/sofa/component/sofa_component_base.pro, sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)
 
@@ -205,9 +204,10 @@ declare(chainHybrid,         			applications/tutorials/chainHybrid, sofa_compone
 declare(houseOfCards,        			applications/tutorials/houseOfCards, sofa_component sofaguimain sofaobjectcreator)
 declare(mixedPendulum,       			applications/tutorials/mixedPendulum, sofa_component sofaguimain)
 declare(oneParticle,        			applications/tutorials/oneParticle,  sofa_component sofaguimain)
-declare(oneParticleWithSofaTypedefs,   applications/tutorials/oneParticleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
+declare(oneParticleWithSofaTypedefs,	applications/tutorials/oneParticleWithSofaTypedefs,    sofa_component sofaguimain sofaTypedefs)
 declare(oneTetrahedron,      			applications/tutorials/oneTetrahedron,  sofa_component sofaguimain)
-declare(compositeObject,  applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph )
+declare(compositeObject,				applications/tutorials/compositeObject, sofa_component sofaguimain sofagraph )
+declare(anatomyModelling,				applications/tutorials/anatomyModelling, sofa_component sofaguimain sofagraph image Flexible)
 
 
 #contains(DEFINES, SOFA_HAVE_PLUGIN_ModelHierarchies) {
@@ -418,10 +418,11 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 	enable(chainHybrid)
 	enable(houseOfCards)
 	enable(mixedPendulum)
-        enable(oneParticle)
+	enable(oneParticle)
 #	enable(oneParticleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
-        enable(compositeObject)
+    enable(compositeObject)
+    enable(anatomyModelling)
 }
 
 #contains (DEFINES, SOFA_HAVE_PYTHON) {
