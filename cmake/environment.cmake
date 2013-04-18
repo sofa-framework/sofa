@@ -36,7 +36,12 @@ unset(GLOBAL_INCLUDE_DIRECTORIES CACHE)
 
 ## os-specific
 if(WIN32)
-	set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
+if (CMAKE_CL_64) 
+      set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win64/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
+  else() 
+     set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
+  endif() 
+	
 endif()
 if(XBOX)
 	set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/xbox/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
