@@ -37,7 +37,7 @@ namespace collision
             intersector = inter;
         }
 
-        bool intersect(core::collision::NarrowPhaseDetection * phase){
+        int intersect(core::collision::NarrowPhaseDetection * phase){
             sofa::core::collision::DetectionOutputVector*& output = phase->getDetectionOutputs(elem1.getCollisionModel(),elem2.getCollisionModel());
             intersector->beginIntersect(elem1.getCollisionModel(),elem2.getCollisionModel(),output);
             return intersector->intersect(elem1,elem2,output);
