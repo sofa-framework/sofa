@@ -123,7 +123,6 @@ private:
 
     void boxPrune();
     void updateMovingBoxes();
-    void updateBox(int boxID);
     void addIfCollide(int boxID1,int boxID2,int axis1,int axis2);
     void removeCollision(int a,int b);
     void reinitDetection();
@@ -146,8 +145,6 @@ private:
     std::set<core::CollisionModel*> collisionModels;
 protected:
     TIncrSAP();
-
-    helper::vector<Cube> & cubes(const CubeModel* cm);
 
     virtual ~TIncrSAP();
 
