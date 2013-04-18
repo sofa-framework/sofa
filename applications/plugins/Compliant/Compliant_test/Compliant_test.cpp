@@ -689,7 +689,7 @@ public:
         multimapping->addInputModel( string1->getMechanicalState() );
         multimapping->addInputModel( outOfScope->getMechanicalState() );
         multimapping->addOutputModel( mappedDOF.get() );
-        multimapping->addPoint( string1->getMechanicalState(), 0 ); // first particle of string1
+        multimapping->addPoint( string1->getMechanicalState(), 0 );      // first particle of string1
         multimapping->addPoint( outOfScope->getMechanicalState(), 0 );   // with out of scope particle
         commonChild->addObject(multimapping);
 
@@ -885,6 +885,9 @@ public:
 
 
         sofa::simulation::getSimulation()->init(root.get());
+//        for( unsigned i=0; i<multimapping->getJs()->size(); i++ ){
+//            cerr<<"multimapping Jacobian " << i << ": " << endl << *(*multimapping->getJs())[i] << endl;
+//        }
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
         // actual results
@@ -1098,7 +1101,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
 
-    numParticles=3;
+    numParticles=2;
     ::testing::Message() << "CompliantTestFixture: hard strings of " << numParticles << " particles connected using a MultiMapping";
     testAttachedConnectedHardStrings(numParticles);
     ASSERT_TRUE(matricesAreEqual( expected.M, complianceSolver->M() ));

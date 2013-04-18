@@ -525,5 +525,67 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
 
 }
 
+simulation::Node::SPtr newRoot()
+{
+    return simulation::getSimulation()->createNewGraph("root");
+}
+
+
+/// Create a stiff string
+simulation::Node::SPtr massSpringString
+(
+        simulation::Node::SPtr parent,
+        double x0, double y0, double z0, // start point,
+        double x1, double y1, double z1, // end point
+        unsigned numParticles,
+        double totalMass,
+        double stiffnessValue,
+        double dampingRatio
+        )
+{
+    static unsigned numObject = 1;
+    std::ostringstream oss;
+    oss << "string_" << numObject++;
+
+    Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
+    SReal totalLength = (endPoint-startPoint).norm();
+
+    //--------
+    Node::SPtr  string_node = parent->createChild(oss.str());
+
+    MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+    string_node->addObject(DOF);
+    DOF->setName(oss.str()+"_DOF");
+
+    UniformMass3::SPtr mass = New<UniformMass3>();
+    string_node->addObject(mass);
+    mass->setName(oss.str()+"_mass");
+    mass->mass.setValue( totalMass/numParticles );
+
+    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
+    string_node->addObject(spring);
+    spring->setName(oss.str()+"_spring");
+
+
+
+    //--------
+    // create the particles and the springs
+    DOF->resize(numParticles);
+    MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+    for( unsigned i=0; i<numParticles; i++ )
+    {
+        double alpha = (double)i/(numParticles-1);
+        x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
+        if(i>0)
+        {
+            spring->addSpring(i-1,i,stiffnessValue,dampingRatio,totalLength/(numParticles-1));
+         }
+    }
+
+    return string_node;
+
+}
+
+
 
 }

@@ -126,7 +126,7 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
         }
 
         // insert in increasing row and column order
-        jacobian.beginRow(i);
+//        jacobian.beginRow(i);
         if( links[i][1]<links[i][0])
         {
             for(unsigned j=0; j<Nout; j++)
@@ -134,9 +134,11 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
                 for(unsigned k=0; k<Nin; k++ )
                 {
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
+//                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
                 for(unsigned k=0; k<Nin; k++ )
                 {
+//                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
             }
@@ -147,10 +149,12 @@ void ExtensionMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams
             {
                 for(unsigned k=0; k<Nin; k++ )
                 {
+//                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
                 for(unsigned k=0; k<Nin; k++ )
                 {
+//                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
             }

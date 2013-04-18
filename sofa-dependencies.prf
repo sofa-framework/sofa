@@ -422,6 +422,8 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 #	enable(oneParticleWithSofaTypedefs)  # temporarily discarded since it can not compile with the Flexible plugin
 	enable(oneTetrahedron)
     enable(compositeObject)
+}
+contains (DEFINES, SOFA_HAVE_anatomyModelling) {
     enable(anatomyModelling)
 }
 
@@ -517,6 +519,11 @@ contains(DEFINES, SOFA_HAVE_ARPLUGIN)					{ usePlugin(ARPlugin, applications/plu
 	useApp(SofaPhysicsAPI, applications/projects/SofaPhysicsAPI)
 }
 
-contains(DEFINES, SOFA_PROJECT_TEST) { useApp(Standard_test, applications/projects/Standard_test ) }
+contains(DEFINES, SOFA_PROJECT_TEST) {
+        useApp(Standard_test, applications/projects/Standard_test )
+}
+contains(DEFINES, SOFA_PROJECT_Debug_test) {
+        useApp(Debug_test, applications/projects/Debug_test, sofaobjectcreator )
+}
 
 }

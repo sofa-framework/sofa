@@ -614,10 +614,10 @@ public:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
-extern template class SOFA_IMAGE_API MeshToImageEngine<ImageB>;
-extern template class SOFA_IMAGE_API MeshToImageEngine<ImageUC>;
-extern template class SOFA_IMAGE_API MeshToImageEngine<ImageUS>;
-extern template class SOFA_IMAGE_API MeshToImageEngine<ImageD>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageB>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUC>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUS>;
+extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageD>;
 #endif
 
 

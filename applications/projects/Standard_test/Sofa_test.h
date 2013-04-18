@@ -40,7 +40,7 @@ namespace sofa {
 
 /** Base class for all Sofa test fixtures, to provide helper functions to compare vectors, matrices, etc.
   */
-template <typename _Real>
+template <typename _Real=double>
 struct Sofa_test : public ::testing::Test
 {
     typedef _Real Real; ///< Scalar type
