@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/misc/TopologicalChangeProcessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -38,7 +37,7 @@
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
-
+#include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/simulation/common/Simulation.h>
 
 #include <time.h>
@@ -410,7 +409,55 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
             std::istringstream Sin(*it);
 
-            if ( EleType == "Triangle" || EleType == "Triangles")
+            if ( EleType == "PointInTriangle" || EleType == "PointsInTriangle")
+            {
+                sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
+                
+                if(!topoMod)
+                {
+                    serr << "No PointSetTopologyModifier available" << sendl;
+                    continue;
+                }
+                
+                helper::vector< Vector2 > baryCoords;
+                baryCoords.resize(nbElements);
+                helper::vector < unsigned int > triangles;
+                triangles.resize(nbElements);
+
+                for(unsigned int i=0;i<nbElements;++i)
+                {
+                    Sin >> triangles[i];
+                    Vector2& baryCoord = baryCoords[i];
+                    Sin >> baryCoord[0] >> baryCoord[1];
+                }
+                
+
+                helper::vector< helper::vector< unsigned int > > p_ancestors(nbElements);
+                sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
+                for(unsigned int i=0; i<nbElements; ++i)
+                {
+                    helper::vector<unsigned int>& ancestor = p_ancestors[i];
+                    ancestor.resize(3);
+                    const topology::Triangle& t = m_topology->getTriangle( triangles[i] );
+                    ancestor[0] = t[0];
+                    ancestor[1] = t[1];
+                    ancestor[2] = t[2];
+                    helper::vector<double>& baryCoef = p_baryCoefs[i];
+                    baryCoef.resize(3);
+                    baryCoef[0] = baryCoords[i][0];
+                    baryCoef[1] = baryCoords[i][1];
+                    baryCoef[2] = 1 - baryCoef[0] - baryCoef[1];
+                }
+                // Warn for the creation of all the points registered to be created
+                topoMod->addPointsWarning(nbElements, p_ancestors, p_baryCoefs,true);
+                topoMod->addPointsProcess(nbElements);
+                
+                topoMod->notifyEndingEvent();
+                topoMod->propagateTopologicalChanges();
+            }
+
+            else if ( EleType == "Triangle" || EleType == "Triangles")
             {
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
