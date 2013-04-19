@@ -206,10 +206,7 @@ public:
     virtual void rebuildSystem(double massFactor, double forceFactor);
 
     /// Set the linear system matrix (only use for bench)
-    void setSystemMatrix(Matrix* matrix) {
-        if (currentGroup==NULL) createGroups(MechanicalParams::defaultInstance());
-        currentGroup->systemMatrix = matrix;
-    }
+    void setSystemMatrix(Matrix* matrix);
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v);
@@ -581,6 +578,20 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
     currentGroup->systemRHVector->resize(n);
     if (!currentGroup->systemLHVector) currentGroup->systemLHVector = createPersistentVector();
     currentGroup->systemLHVector->resize(n);
+    currentGroup->needInvert = true;
+}
+
+template<class Matrix, class Vector>
+void MatrixLinearSolver<Matrix,Vector>::setSystemMatrix(Matrix * matrix)
+{
+    if (currentGroup==NULL) currentGroup=&defaultGroup;
+    currentGroup->systemMatrix = matrix;
+    if (matrix!=NULL) {
+        if (!currentGroup->systemRHVector) currentGroup->systemRHVector = createPersistentVector();
+        currentGroup->systemRHVector->resize(matrix->colSize());
+        if (!currentGroup->systemLHVector) currentGroup->systemLHVector = createPersistentVector();
+        currentGroup->systemLHVector->resize(matrix->colSize());
+    }
     currentGroup->needInvert = true;
 }
 
