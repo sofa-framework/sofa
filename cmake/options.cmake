@@ -5,12 +5,13 @@ include(CMakeDependentOption)
 if(NOT GENERATED_FROM_MAIN_SOLUTION) # configuring from sub-project
 	# load cache
 	load_cache("${SOFA_ROOT_DIR}" INCLUDE_INTERNALS SOFA_SRC_DIR SOFA_BUILD_DIR)
-	message(STATUS " - ${SOFA_ROOT_DIR} - ${SOFA_SRC_DIR} - ${SOFA_BUILD_DIR}")
 else() # configuring from main solution
-	set(compilerDefines)
+	include(${CMAKE_CURRENT_LIST_DIR}/configuration.cmake)
 	
 	# hide unused default cmake variables
 	set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
+	
+	set(compilerDefines)
 
 	# plugins (auto-search)
 	file(GLOB pluginPathes "${SOFA_APPLICATIONS_PLUGINS_DIR}/*")
@@ -23,7 +24,7 @@ else() # configuring from main solution
 			RegisterDependencies(${pluginOriginalName} OPTION "PLUGIN_${pluginName}" COMPILE_DEFINITIONS "SOFA_HAVE_PLUGIN_${pluginName}" PATH "${SOFA_PLUGIN_PATH_${pluginName}}")
 			set("SOFA_HAVE_PLUGIN_${pluginName}" "${PLUGIN_${pluginName}}")
 			if("${SOFA_HAVE_PLUGIN_${pluginName}}")
-				list(APPEND SOFA_PLUGINS "SOFA_PLUGIN_PATH_${pluginName}") # TODO: avoid this, it won't work with the dependency solver
+				list(APPEND SOFA_PLUGINS "SOFA_PLUGIN_PATH_${pluginName}")
 			endif()
 		endif()
 	endforeach()
@@ -39,7 +40,7 @@ else() # configuring from main solution
 			RegisterDependencies(${devPluginOriginalName} OPTION "PLUGIN-DEV_${devPluginName}" COMPILE_DEFINITIONS "SOFA_HAVE_DEVPLUGIN_${devPluginName}" PATH "${SOFA_DEV_PLUGIN_PATH_${devPluginName}}")
 			set("SOFA_DEV_HAVE_PLUGIN_${devPluginName}" "${PLUGIN-DEV_${devPluginName}}")
 			if("${SOFA_DEV_HAVE_PLUGIN_${devPluginName}}")
-				list(APPEND SOFA_DEV_PLUGINS "SOFA_DEV_PLUGIN_PATH_${devPluginName}") # TODO: avoid this, it won't work with the dependency solver
+				list(APPEND SOFA_DEV_PLUGINS "SOFA_DEV_PLUGIN_PATH_${devPluginName}")
 			endif()
 		endif()
 	endforeach()
@@ -57,7 +58,7 @@ else() # configuring from main solution
 
 	### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 	set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
-	option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3)" ON)
+	option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3) if Qt is needed" ON)
 	if(EXTERNAL_USE_QT4)
 		list(APPEND compilerDefines SOFA_QT4)
 	endif()
@@ -72,19 +73,19 @@ else() # configuring from main solution
 	endif()
 
 	## zlib
-	option(EXTERNAL_HAVE_ZLIB "Use the ZLib library" ON)
+	option(EXTERNAL_HAVE_ZLIB "Use the ZLib library" OFF)
 	if(EXTERNAL_HAVE_ZLIB)
 		list(APPEND compilerDefines SOFA_HAVE_ZLIB)
 	endif()
 
 	## libpng
-	option(EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
+	option(EXTERNAL_HAVE_PNG "Use the LibPNG library" OFF)
 	if(EXTERNAL_HAVE_PNG)
 		list(APPEND compilerDefines SOFA_HAVE_PNG)
 	endif()
 
 	## glew
-	option(EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
+	option(EXTERNAL_HAVE_GLEW "Use the GLEW library" OFF)
 	if(EXTERNAL_HAVE_GLEW)
 		list(APPEND compilerDefines SOFA_HAVE_GLEW)
 	endif()
@@ -102,7 +103,7 @@ else() # configuring from main solution
 	endif()
 
 	## CSPARSE
-	option(EXTERNAL_HAVE_CSPARSE "Use CSparse" ON)
+	option(EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
 	if(EXTERNAL_HAVE_CSPARSE)
 		list(APPEND compilerDefines SOFA_HAVE_CSPARSE)
 	endif()
@@ -149,13 +150,13 @@ else() # configuring from main solution
 	endif()
   
 	## Tutorials
-	option(OPTION_TUTORIALS "Build SOFA tutorials" ON)
+	option(OPTION_TUTORIALS "Build SOFA tutorials" OFF)
 	if(OPTION_TUTORIALS)
 		list(APPEND compilerDefines SOFA_HAVE_TUTORIALS)
 	endif()
 	
 	## Applications
-	option(OPTION_APPLICATIONS "Build SOFA applications (the various tools and editors using the libraries)" ON)
+	option(OPTION_APPLICATIONS "Build SOFA applications (the various tools and editors using the libraries)" OFF)
 
 	## PML
 	option(OPTION_PML "PML support" OFF)
@@ -183,7 +184,7 @@ else() # configuring from main solution
 	#option(CONVENIENCE_ "" ON)
 
 	# optionnal features
-	option(SIMULATION_GRAPH_DAG "Directed acyclic graph" ON)
+	option(SIMULATION_GRAPH_DAG "Directed acyclic graph" OFF)
 	if(SIMULATION_GRAPH_DAG)
 		list(APPEND compilerDefines SOFA_HAVE_DAG)
 	endif()
@@ -195,8 +196,7 @@ else() # configuring from main solution
 	endif()
 	RegisterDependencies(SofaSimulationBGL OPTION "SIMULATION_GRAPH_BGL" COMPILE_DEFINITIONS "SOFA_HAVE_BGL" PATH "${SOFA_MODULES_DIR}/sofa/simulation/bgl")
 
-	CMAKE_DEPENDENT_OPTION(GUI_USE_QTVIEWER "Use QT Viewer" ON
-		"NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
+	CMAKE_DEPENDENT_OPTION(GUI_USE_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
 	if(GUI_USE_QTVIEWER)
 		list(APPEND compilerDefines SOFA_GUI_QTVIEWER)
 	endif()
@@ -210,7 +210,7 @@ else() # configuring from main solution
 	if(GUI_USE_GLUT)
 		list(APPEND compilerDefines SOFA_GUI_GLUT)
 	endif()
-	option(GUI_USE_INTERACTION "enable interaction mode" OFF)
+	option(GUI_USE_INTERACTION "Enable interaction mode" OFF)
 	if(GUI_USE_INTERACTION)
 		list(APPEND compilerDefines SOFA_GUI_INTERACTION)
 	endif()
@@ -219,7 +219,7 @@ else() # configuring from main solution
 	option(UNIT-TESTS_USE "Build and use unit tests" OFF)
 	if(UNIT-TESTS_USE)
 		if(NOT WIN32)
-			option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
+			option(UNIT-TESTS_BUILD_GTEST "Build google test framework" OFF)
 		endif()
 	endif()
 

@@ -158,8 +158,6 @@ list(APPEND HEADER_FILES
 set(MOC_FILES_GROUP "Generated")
 set(FORM_FILES_GROUP "Generated")
 
-include_directories("${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIQT")

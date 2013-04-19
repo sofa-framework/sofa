@@ -35,7 +35,7 @@ set(SOURCE_FILES
 	quaternion.cpp 
 	vec.cpp
 
-	}
+	)
 
 # AHEM.... todo later :-)
 

@@ -29,11 +29,6 @@ set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTER
 set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugin directory")
 set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 
-# clear cached variables that we regenerate each time
-unset(GLOBAL_DEPENDENCIES CACHE) # reset the dependency database (used to compute interdependencies)
-unset(GLOBAL_COMPILER_DEFINES CACHE)
-unset(GLOBAL_INCLUDE_DIRECTORIES CACHE)
-
 ## os-specific
 if(WIN32)
 if (CMAKE_CL_64) 
@@ -49,3 +44,13 @@ endif()
 
 # cmake modules path, for our FindXXX.cmake modules
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SOFA_CMAKE_DIR}) #moved to preProject.cmake
+
+# disable every pre-enabled modules
+foreach(dependency ${GLOBAL_DEPENDENCIES})
+	unset(GLOBAL_PROJECT_ENABLED_${dependency} CACHE)
+endforeach()
+
+# clear cached variables that we regenerate each time
+unset(GLOBAL_DEPENDENCIES CACHE) # reset the dependency database (used to compute interdependencies)
+unset(GLOBAL_COMPILER_DEFINES CACHE)
+unset(GLOBAL_INCLUDE_DIRECTORIES CACHE)

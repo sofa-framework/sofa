@@ -41,8 +41,7 @@ if (EXTERNAL_HAVE_ZLIB)
 else()
   set(ZLIB_LIBRARIES_OPTIONAL "" CACHE INTERNAL "ZLib Library (optional)")
 endif()
-RegisterDependencies(${ZLIB_LIBRARIES} OPTION EXTERNAL_HAVE_ZLIB)
-
+RegisterDependencies(${ZLIB_LIBRARIES} OPTION EXTERNAL_HAVE_ZLIB COMPILE_DEFINITIONS SOFA_HAVE_ZLIB)
 # lib dir
 link_directories("${SOFA_LIB_DIR}")
 link_directories("${SOFA_LIB_OS_DIR}")
@@ -88,27 +87,24 @@ set(GLUT_LIBRARIES ${GLUT_LIBRARIES} CACHE INTERNAL "GLUT Library")
 set(PNG_LIBRARIES ${PNG_LIBRARIES} CACHE INTERNAL "PNG Library")
 
 RegisterDependencies(${OPENGL_LIBRARIES})
-RegisterDependencies(${GLEW_LIBRARIES} OPTION EXTERNAL_HAVE_GLEW)
+RegisterDependencies(${GLEW_LIBRARIES} OPTION EXTERNAL_HAVE_GLEW COMPILE_DEFINITIONS SOFA_HAVE_GLEW)
 RegisterDependencies(${GLUT_LIBRARIES})
-RegisterDependencies(${PNG_LIBRARIES} OPTION EXTERNAL_HAVE_PNG)
+RegisterDependencies(${PNG_LIBRARIES} OPTION EXTERNAL_HAVE_PNG COMPILE_DEFINITIONS SOFA_HAVE_PNG)
 
 ## qt
 if (NOT OPTION_NO_QT)
 	set(ENV{QTDIR} "${EXTERNAL_QT_PATH}")
 	if(EXTERNAL_USE_QT4)
 		set(ENV{CONFIG} "qt;uic;uic3")
-
 		find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
 	else()
 		set(ENV{CONFIG} "qt")
-	
 		find_package(Qt3 COMPONENTS qtopengl REQUIRED)
 	endif()
 	set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 	#message("${QT_LIBRARIES}")
 	#RegisterDependencies(${QT_LIBRARIES})
 endif()
-
 
 # unit tests
 if(UNIT-TESTS_USE)
