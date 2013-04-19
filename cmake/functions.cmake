@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 # group files
-macro(GroupFiles fileGroup topGroup)	
+macro(GroupFiles fileGroup topGroup baseDir)	
 	string(REPLACE "_" " " fileGroupName ${fileGroup})
 	string(TOLOWER ${fileGroupName} fileGroupName)
 	string(REGEX MATCHALL "([^ ]+)" fileGroupNameSplit ${fileGroupName})
@@ -22,6 +22,11 @@ macro(GroupFiles fileGroup topGroup)
 		get_filename_component(filename ${folder} NAME)
 		string(REPLACE "${filename}" "" folder ${folder})
 		set(groupName "${finalFileGroupName}")
+		if(NOT baseDir STREQUAL "")
+			get_filename_component(finalBaseDir "${baseDir}" ABSOLUTE)
+			get_filename_component(folder "${folder}" ABSOLUTE)
+			file(RELATIVE_PATH folder ${finalBaseDir} ${folder})
+		endif()
 		if(NOT folder STREQUAL "")
 			string(REGEX REPLACE "/+$" "" baseFolder ${folder})
 			string(REPLACE "/" "\\" baseFolder ${baseFolder})
@@ -138,18 +143,18 @@ function(UseQt)
 	include_directories(${QT_INCLUDE_DIR})
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-        file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
+    file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
 	foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
-            if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
-		include_directories(${QT_INCLUDE_SUBDIR})
-            endif()
+		if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
+			include_directories(${QT_INCLUDE_SUBDIR})
+		endif()
 	endforeach()
 	
 	set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} PARENT_SCOPE)
 	set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
 endfunction()
 
-# RegisterDependencies(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS SOFA_HAVE_BGL] [PATH <path>])
+# RegisterDependencies(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS <compileDefinition0> [compileDefinition1 [compileDefinition2 ...]] [PATH <path>])
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration
 # to add include directories from dependencies and to enable dependencies / plugins
 # libN is a list of library using the same OPTION to be enabled (opengl/glu for instance)
@@ -159,6 +164,7 @@ endfunction()
 function(RegisterDependencies)
 	set(dependencies)
 	set(optionName)
+	set(noOptionName)
 	set(compilerDefinitions)
 	set(projectPath)
 	
@@ -166,23 +172,27 @@ function(RegisterDependencies)
 	foreach(arg ${ARGV})
 		if(${arg} STREQUAL "OPTION")
 			set(mode 1)
-		elseif(${arg} STREQUAL "COMPILE_DEFINITIONS")
+		elseif(${arg} STREQUAL "NO_OPTION")
 			set(mode 2)
-		elseif(${arg} STREQUAL "PATH")
+		elseif(${arg} STREQUAL "COMPILE_DEFINITIONS")
 			set(mode 3)
+		elseif(${arg} STREQUAL "PATH")
+			set(mode 4)
 		else()
 			if(${mode} EQUAL 0)	# libN parameters
 				set(dependencies ${dependencies} ${arg})
 			elseif(${mode} EQUAL 1) # OPTION parameter
-				set(mode 4)
+				set(mode 5)
 				set(optionName ${arg})
-			elseif(${mode} EQUAL 2) # COMPILE_DEFINITIONS parameter
-				set(mode 4)
+			elseif(${mode} EQUAL 2) # OPTION parameter
+				set(mode 5)
+				set(noOptionName ${arg})
+			elseif(${mode} EQUAL 3) # COMPILE_DEFINITIONS parameter
 				set(compilerDefinitions ${compilerDefinitions} ${arg})
-			elseif(${mode} EQUAL 3) # PATH parameter
-				set(mode 4)
+			elseif(${mode} EQUAL 4) # PATH parameter
+				set(mode 5)
 				set(projectPath ${arg})
-			elseif(${mode} EQUAL 4) # too many arguments
+			elseif(${mode} EQUAL 5) # too many arguments
 				message(SEND_ERROR "RegisterDependencies(${ARGV}) : too many arguments")
 				break()
 			endif()
@@ -198,13 +208,38 @@ function(RegisterDependencies)
 		if(NOT optionName STREQUAL "")
 			set(GLOBAL_PROJECT_OPTION_${dependency} ${optionName} CACHE INTERNAL "${dependency} options" FORCE)
 		endif()
+		if(NOT noOptionName STREQUAL "")
+			set(GLOBAL_PROJECT_NO_OPTION_${dependency} ${noOptionName} CACHE INTERNAL "${dependency} options to disable if this project is active" FORCE)
+		endif()
 		if(NOT projectPath STREQUAL "")
-			set(GLOBAL_PROJECT_PATH_${dependency} ${projectPath} CACHE INTERNAL "${dependency} path" FORCE)
+			get_filename_component(extension "${GLOBAL_PROJECT_PATH_${dependency}}" EXT)
+			if(extension STREQUAL ".cmake") # *.cmake subproject are not allowed, we must use a CMakeLists.txt
+				message(SEND_ERROR "Including project ${dependency} from a *project_file*.cmake is not supported, you must use a CMakeLists.txt")
+			else()
+				set(GLOBAL_PROJECT_PATH_${dependency} ${projectPath} CACHE INTERNAL "${dependency} path" FORCE)
+			endif()
 		endif()
 		if(NOT compilerDefinitions STREQUAL "")
 			set(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${dependency} ${compilerDefinitions} CACHE INTERNAL "${dependency} compiler definitions" FORCE)
 		endif()
 	endforeach()
+endfunction()
+
+# EnableProject(<projectName>)
+# enable a project to be generated
+# projectName is the name of a registered project
+function(EnableProject projectName)
+	if(NOT projectName STREQUAL "")
+		#list(FIND GLOBAL_DEPENDENCIES ${projectName} index)
+		#if(NOT index EQUAL -1)
+			message(STATUS " - ${projectName} : Enabled")
+			set(GLOBAL_PROJECT_ENABLED_${projectName} 1 CACHE INTERNAL "${projectName} Enabled Status" FORCE)
+		#else()
+		#	message(AUTHOR_WARNING 	"Trying to enable a non registered project : ${projectName}")
+		#endif()
+	else()
+		message(AUTHOR_WARNING "EnableProject error : The project name is empty")
+	endif()
 endfunction()
 
 # RegisterProjectDependencies(<projectName>)
@@ -222,19 +257,26 @@ function(RegisterProjectDependencies projectName)
 	# retrieve compile definitions
 	get_target_property(compilerDefines ${projectName} COMPILE_DEFINITIONS)
 	set(GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName} ${compilerDefines} CACHE INTERNAL "${projectName} compile definitions" FORCE)
-	
-	# also register compiler definitions - will be added to every projects at the end of the projects configuration
-	set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "Global Compiler Defines" FORCE)
-
+		
 	# if we manually added an optional project to be generated, we must set its option to ON
 	if(GLOBAL_PROJECT_OPTION_${projectName})
 		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
 			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
 			set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)	
 		endif()
-	endif()	
+	endif()
+	
+	# if we manually added an optional project to be generated, we must set its no option to OFF
+	if(GLOBAL_PROJECT_NO_OPTION_${projectName})
+		if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
+			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
+			set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)	
+		endif()
+	endif()
 	
 	RegisterDependencies(${projectName})
+	
+	set(GLOBAL_PROJECT_ENABLED_${projectName} 1 CACHE INTERNAL "${projectName} Enabled Status" FORCE)
 endfunction()
 
 # ComputeDependencies(<projectName>)
@@ -246,9 +288,15 @@ endfunction()
 function(ComputeDependencies projectName forceEnable offset)
 	set(check 1)
 	# check if the project is enabled or not
-	if((NOT ${forceEnable}) AND GLOBAL_PROJECT_OPTION_${projectName})
-		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
-			set(check 0)
+	if(NOT ${forceEnable})
+		if(NOT GLOBAL_PROJECT_ENABLED_${projectName})
+			if(GLOBAL_PROJECT_OPTION_${projectName})
+				if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
+					set(check 0)
+				endif()
+			else()
+				set(check 0)
+			endif()
 		endif()
 	endif()
 	# process the project
@@ -261,13 +309,28 @@ function(ComputeDependencies projectName forceEnable offset)
 					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
 					set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)
 					message(STATUS " - Adding needed option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
-					# add the current project
-					if(GLOBAL_PROJECT_PATH_${projectName})
-						if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")							
-							add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
-						endif()
-					endif()
-					# TODO: if there is no path try a find_package / find_library
+				endif()
+			endif()
+			
+			# disable the no option
+			if(GLOBAL_PROJECT_NO_OPTION_${projectName})
+				if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
+					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
+					set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)
+					message(STATUS " - Disabling option : ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
+				endif()
+			endif()
+			
+			# also register global compiler definitions - will be added to every projects at the end of the projects configuration
+			if(GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName})
+				set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} ${GLOBAL_PROJECT_OPTION_COMPILER_DEFINITIONS_${projectName}} CACHE INTERNAL "Global Compiler Defines" FORCE)
+			endif()
+			
+			# add the current project
+			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
+				if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")
+					message(STATUS " - Adding project from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+					add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
 				endif()
 			endif()
 			
@@ -283,7 +346,7 @@ function(ComputeDependencies projectName forceEnable offset)
 			endforeach()
 			#message(STATUS "${offset} - ${projectName}")
 			
-			# retrieve include directories
+			# retrieve include directories from the current project and its dependencies
 			list(APPEND includeDirs ${${projectName}_INCLUDE_DIR})
 			#list(REMOVE_DUPLICATES includeDirs)
 			foreach(dependency ${dependencies})
@@ -294,6 +357,8 @@ function(ComputeDependencies projectName forceEnable offset)
 					endif()
 				endif()
 			endforeach()
+			
+			# set the updated include directories of the current project
 			set(${projectName}_INCLUDE_DIR ${includeDirs} CACHE INTERNAL "${projectName} include path" FORCE)
 			if(TARGET ${projectName})
 				set_target_properties(${projectName} PROPERTIES INCLUDE_DIRECTORIES "${${projectName}_INCLUDE_DIR}")
@@ -307,7 +372,7 @@ endfunction()
 # <projectName> the project to compute
 function(ApplyGlobalCompilerDefinitions projectName)
 	# process the project
-	if(TARGET ${projectName})		
+	if(TARGET ${projectName})
 		set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
 		list(APPEND compilerDefines ${GLOBAL_PROJECT_COMPILER_DEFINITIONS_${projectName}})
 		list(REMOVE_DUPLICATES compilerDefines)

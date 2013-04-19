@@ -5,7 +5,7 @@ project(${SOLUTION_NAME})
 
 include(cmake/preMainSolution.cmake)
 
-if(FIRST_CONFIGURE_DONE)
+if(PRECONFIGURE_DONE)
 	
 	include(cmake/preSolution.cmake)
 

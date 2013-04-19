@@ -4,17 +4,12 @@ project("ARTrack")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-##plugin external dependencies
-find_package(ARTrackLibs REQUIRED)
-include_directories(${ARTRACKLIBS_INCLUDE_DIRS})
-
 set(HEADER_FILES
 
     ARTrackDriver.h 
     ARTrackEvent.h 
     ARTrackController.h 
     ARTrackController.inl
-
 	)
 
 set(SOURCE_FILES
@@ -23,12 +18,11 @@ set(SOURCE_FILES
     initARTrack.cpp 
     ARTrackEvent.cpp 
     ARTrackController.cpp
-
 	)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_ARTRACKPLUGIN")
-#set(LINKER_DEPENDENCIES )
+set(LINKER_DEPENDENCIES ARTrackLib) # include dirs will be automatically added (take a look at the ComputeDependencies function)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -1,19 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("ARTrackLibs")
+project("ARTrackLib")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
     dtracklib.h
- 
 	)
 
 set(SOURCE_FILES
 
     mainTracker.cpp
-
 	)
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("oneParticleWithSofaTypedefs")
+project("OneParticleWithSofaTypedefs")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
