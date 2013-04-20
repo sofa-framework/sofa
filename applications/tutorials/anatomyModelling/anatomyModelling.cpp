@@ -75,6 +75,10 @@
 #include <strainMapping/CorotationalStrainMapping.h>
 #endif
 
+#ifdef SOFA_HAVE_SOHUSIM
+#include <forcefield\StiffSpringLink.h>
+#endif
+
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -106,7 +110,6 @@ typedef sofa::component::engine::ImageSampler<ImageUC> ImageSampler_ImageUC;
 
 // TypeDef pour les type du plugin Flexible
 #ifdef SOFA_HAVE_PLUGIN_Flexible
-
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
@@ -134,13 +137,15 @@ typedef sofa::component::engine::ImageSampler<ImageUC> ImageSampler_ImageUC;
 //////////////////////////////////////////////////////////////////////////////////
 
 // mapping
+typedef sofa::component::container::MechanicalObject< E332(double) > MechanicalObjectE332d;
+typedef sofa::component::container::MechanicalObject< F332(double) > MechanicalObjectF332d;
 typedef sofa::component::container::MechanicalObject< Affine3(double) > MechanicalObjectAffine3d;
 
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , V3(double) > LinearMapping_Affine_Vec3d;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , EV3(float) > LinearMapping_Affine_ExtVec3f;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , F332(double) > LinearMapping_Affine_F332;
 
-typedef sofa::component::mapping::CorotationalStrainMapping< E332(double) , F332(double) > CorotationalStrainMapping_E332_F332;
+typedef sofa::component::mapping::CorotationalStrainMapping< F332(double), E332(double) > CorotationalStrainMapping_F332_E332;
 
 // sampler
 typedef sofa::component::engine::ImageGaussPointSampler<ImageD> ImageGaussPointSampler_ImageD;
@@ -149,7 +154,7 @@ typedef sofa::component::engine::ImageGaussPointSampler<ImageD> ImageGaussPointS
 typedef sofa::component::forcefield::HookeForceField< E332(double) > HookeForceField_E332;
 
 // shape function
-typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageD> VoronoiShapeFunction;
+typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageUC> VoronoiShapeFunction;
 
 // Uniform Mass
 typedef sofa::component::mass::UniformMass< Affine3(double), double > UniformMass_Affine;
@@ -168,7 +173,7 @@ typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
 {
     typename Component::SPtr component = New<Component>();
     parentNode->addObject(component);
-    component->setName(parentNode->getName()+"_"+name);
+    component->setName(name);
     return component;
 }
 
@@ -193,7 +198,7 @@ simulation::Node::SPtr createScene()
 	// *********************************************************************************
     Node::SPtr mainScene = root->createChild("main");
 	
-	// ********************************* Rigid Node  ***********************************
+	/********************************** Rigid Node  ***********************************/
 	// Bones gravity center - rigid node which contains bones, articuated system and ...
     Node::SPtr rigidNode = mainScene->createChild("rigidNode");
     MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
@@ -348,9 +353,9 @@ simulation::Node::SPtr createScene()
     RigidMappingRigid3d_to_Ext3f::SPtr r_handMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_handNode,"mapping");
     r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
 	r_handMapping->index.setValue(4);
-
 	
-	// ************************** Deformable Structure Node  ***************************
+	
+	/*************************** Deformable Structure Node  ***************************/
     Node::SPtr musclesNode = mainScene->createChild("muscles");
 	
 	// ==================================r_bicep_med  ==================================
@@ -363,10 +368,10 @@ simulation::Node::SPtr createScene()
     loader->load();
 	
 	// add rasterizer
-	sofa::helper::vector<double> voxelSize; voxelSize.resize(1); voxelSize[0]=0.001;
+	sofa::helper::vector<double> vSize; vSize.push_back(0.001);
 	MeshToImageEngine_ImageUC::SPtr rasterizer = addNew< MeshToImageEngine_ImageUC >(rbicepmedNode, "rasterizer");
 	rasterizer->setSrc("",loader.get());
-	rasterizer->voxelSize.setValue(voxelSize);
+	rasterizer->voxelSize.setValue(vSize);
 	rasterizer->padSize.setValue(1);
 	rasterizer->rotateImage.setValue(0);
 
@@ -376,183 +381,87 @@ simulation::Node::SPtr createScene()
 	image->drawBB.setValue(0);
 
 	// sampler for automatically positioning control frames
-	sofa::helper::vector<double> frameNumber; frameNumber.resize(1); frameNumber[0]=3;
 	ImageSampler_ImageUC::SPtr sampler = addNew<ImageSampler_ImageUC> (rbicepmedNode, "sampler");
+	helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) ","1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)");
+    methodOptions.setSelectedItem(1);
+	sampler->method.setValue(methodOptions);
+	helper::WriteAccessor< Data< vector<double> > > p(sampler->param); 	p.push_back(3); 
 	sampler->setSrc("", image.get());
-	sampler->method.setValue(1);
-	sampler->param.setValue(frameNumber);
 
 	// define frame container
-	MechanicalObjectAffine3d::SPtr frameDof = addNew<MechanicalObjectAffine3d> (rbicepmedNode, "dof");
-	frameDof->setSrc("", sampler.get());	
+	MechanicalObjectAffine3d::SPtr frameDof = addNew<MechanicalObjectAffine3d>(rbicepmedNode, "dof");
+	frameDof->showObject.setValue(true);
+	frameDof->showObjectScale.setValue(0.05);
+	frameDof->setSrc("", sampler.get());
 
-	// Voronoi shape function
-	VoronoiShapeFunction::SPtr shapeFunction = addNew<VoronoiShapeFunction> (rbicepmedNode, "shapeFunction");
-	shapeFunction->setSrc("", image.get());
-	helper::WriteAccessor< Data<vector<Vec<3,double> > > > pos(shapeFunction->f_position);
-	pos.resize(frameDof->getSize());
-	for(unsigned int i=0; i<pos.size(); ++i) StdVectorTypes< Vec<3,double>,Vec<3,double> >::set( pos[i], frameDof->getPX(i),frameDof->getPY(i),frameDof->getPZ(i) );
+	// Voronoi shape functions
+	VoronoiShapeFunction::SPtr shapeFunction = addNew<VoronoiShapeFunction>(rbicepmedNode, "shapeFunction");
 	shapeFunction->useDijkstra.setValue(1);
-	shapeFunction->f_nbRef.setValue(8);
+	shapeFunction->f_nbRef.setValue(3);
 	shapeFunction->method.setValue(0);
-	
-	/*** Passive Behavior Node  ***/
+	shapeFunction->setSrc("",image.get());
+	shapeFunction->f_position.setParent("@"+frameDof->getName()+".rest_position");
+		
+	/**** Passive Behavior Node  ****/
 	Node::SPtr passiveBehaviorNode = rbicepmedNode->createChild("passiveBehavior");
 
 	// Gauss Sampler
-	ImageGaussPointSampler_ImageD::SPtr gaussPoints = addNew<ImageGaussPointSampler_ImageD>(passiveBehaviorNode, "sampler");
-	gaussPoints->setSrc("", shapeFunction.get());
-	gaussPoints->f_method.setValue(2);
-	gaussPoints->f_order.setValue(4);
-	gaussPoints->targetNumber.setValue(100);
+	ImageGaussPointSampler_ImageD::SPtr gaussPtsSampler = addNew<ImageGaussPointSampler_ImageD>(passiveBehaviorNode, "sampler");
+	gaussPtsSampler->f_w.setParent("@../"+shapeFunction->getName()+".weights");
+	gaussPtsSampler->f_index.setParent("@../"+shapeFunction->getName()+".indices");
+	gaussPtsSampler->f_transform.setParent("@../"+shapeFunction->getName()+".transform");
+	helper::OptionsGroup gaussPtsSamplerMethodOptions(3,"0 - Gauss-Legendre", "1 - Newton-Cotes", "2 - Elastons");
+    gaussPtsSamplerMethodOptions.setSelectedItem(2);
+	gaussPtsSampler->f_method.setValue(gaussPtsSamplerMethodOptions);
+	gaussPtsSampler->f_order.setValue(4);
+	gaussPtsSampler->targetNumber.setValue(100);
+	
+	//// define gauss point container
+	MechanicalObjectF332d::SPtr F = addNew<MechanicalObjectF332d>(passiveBehaviorNode, "F");
+	F->setSrc("", gaussPtsSampler.get());
+
+	// mapping between frame and gauss points
+	LinearMapping_Affine_F332::SPtr FG = addNew<LinearMapping_Affine_F332>(passiveBehaviorNode, "Mapping");
+	FG->setModels(frameDof.get(), F.get());
+
+	/** strain E **/
+	Node::SPtr ENode = passiveBehaviorNode->createChild("E");
+	// strain container
+	MechanicalObjectE332d::SPtr E = addNew<MechanicalObjectE332d>(ENode, "E");
+
+	// Mapping
+	CorotationalStrainMapping_F332_E332::SPtr EF = addNew<CorotationalStrainMapping_F332_E332>(ENode, "mapping");
+	EF->setModels(F.get(), E.get());
+
+	// Material property	
+	sofa::helper::vector<double> v_youngModulus; v_youngModulus.push_back(1.0E6);
+	sofa::helper::vector<double> v_poissonRatio; v_poissonRatio.push_back(0.499);
+	HookeForceField_E332::SPtr material = addNew<HookeForceField_E332>(ENode, "ff");
+	material->_youngModulus.setValue(v_youngModulus);
+	material->_poissonRatio.setValue(v_poissonRatio);
+
+	/**** Mass Node  ****/
+	Node::SPtr massNode = rbicepmedNode->createChild("mass");
+	MechanicalObject3d::SPtr particles_dof = addNew< MechanicalObject3d>(massNode,"dof");
+	particles_dof->x.setParent("@../"+passiveBehaviorNode->getName()+"/"+gaussPtsSampler->getName()+".position");
+	
+	UniformMass3::SPtr particles_mass = addNew<UniformMass3>(massNode,"mass");
+    particles_mass->totalMass.setValue(0.25);
+
+	LinearMapping_Affine_Vec3d::SPtr mass_mapping = addNew<LinearMapping_Affine_Vec3d>(massNode, "mapping");
+	mass_mapping->setModels(frameDof.get(), particles_dof.get());
+		
+	/**** Visual Node  ****/
+	Node::SPtr muscleVisuNode = rbicepmedNode->createChild("visual");    
+	component::visualmodel::OglModel::SPtr m_visual = addNew< component::visualmodel::OglModel >(muscleVisuNode,"visual");
+	m_visual->setSrc("", loader.get());
+	m_visual->setColor(0.75f, 0.25f, 0.25f, 1.0f);
+	LinearMapping_Affine_ExtVec3f::SPtr m_visualMapping = addNew<LinearMapping_Affine_ExtVec3f>(muscleVisuNode,"mapping");
+    m_visualMapping->setModels(frameDof.get(), m_visual.get());
 
 	return root;
 }
 
-/// Create an assembly of a siff hexahedral grid with other objects
-simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned numX, unsigned numY, unsigned numZ, double totalMass, double stiffnessValue, double dampingRatio=0.0 )
-{
-    using helper::vector;
-
-    // The graph root node
-    Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-10,0) );
-    root->setAnimate(false);
-    root->setDt(0.01);
-    addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
-
-    Node::SPtr simulatedScene = root->createChild("simulatedScene");
-
-    EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
-    simulatedScene->addObject( eulerImplicitSolver );
-    CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
-    simulatedScene->addObject(cgLinearSolver);
-
-    // The rigid object
-    Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
-    MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
-    UniformMassRigid3d::SPtr rigid_mass = addNew<UniformMassRigid3d>(rigidNode,"mass");
-    FixedConstraintRigid3d::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3d>(rigidNode,"fixedConstraint");
-
-    // Particles mapped to the rigid object
-    Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
-    MechanicalObject3d::SPtr mappedParticles_dof = addNew< MechanicalObject3d>(mappedParticles,"dof");
-    RigidMappingRigid3d_to_3d::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3d_to_3d>(mappedParticles,"mapping");
-    mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
-
-    // The independent particles
-    Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
-    MechanicalObject3d::SPtr independentParticles_dof = addNew< MechanicalObject3d>(independentParticles,"dof");
-
-    // The deformable grid, connected to its 2 parents using a MultiMapping
-    Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
-    mappedParticles->addChild(deformableGrid);                                       // second parent
-
-    RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
-    deformableGrid_grid->setNumVertices(numX,numY,numZ);
-    deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
-
-    MechanicalObject3d::SPtr deformableGrid_dof = addNew< MechanicalObject3d>(deformableGrid,"dof");
-
-    SubsetMultiMapping3d_to_3d::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3d_to_3d>(deformableGrid,"mapping");
-    deformableGrid_mapping->addInputModel(independentParticles_dof.get()); // first parent
-    deformableGrid_mapping->addInputModel(mappedParticles_dof.get());      // second parent
-    deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
-
-    UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
-    mass->mass.setValue( totalMass/(numX*numY*numZ) );
-
-    HexahedronFEMForceField3d::SPtr hexaFem = addNew<HexahedronFEMForceField3d>(deformableGrid, "hexaFEM");
-    hexaFem->f_youngModulus.setValue(1000);
-    hexaFem->f_poissonRatio.setValue(0.4);
-
-
-    // ======  Set up the multimapping and its parents, based on its child
-    deformableGrid_grid->init();  // initialize the grid, so that the particles are located in space
-    deformableGrid_dof->init();   // create the state vectors
-    MechanicalObject3::ReadVecCoord  xgrid = deformableGrid_dof->readPositions(); //    cerr<<"xgrid = " << xgrid << endl;
-
-
-    // create the rigid frames and their bounding boxes
-    unsigned numRigid = 2;
-    vector<BoundingBox> boxes(numRigid);
-    vector< vector<unsigned> > indices(numRigid); // indices of the particles in each box
-    double eps = (endPoint[0]-startPoint[0])/(numX*2);
-
-    // first box, x=xmin
-    boxes[0] = BoundingBox(Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
-
-    // second box, x=xmax
-    boxes[1] = BoundingBox(Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
-    rigid_dof->resize(numRigid);
-    MechanicalObjectRigid3d::WriteVecCoord xrigid = rigid_dof->writePositions();
-    xrigid[0].getCenter()=Vec3d(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
-    xrigid[1].getCenter()=Vec3d(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
-
-    // find the particles in each box
-    vector<bool> isFree(xgrid.size(),true);
-    unsigned numMapped = 0;
-    for(unsigned i=0; i<xgrid.size(); i++){
-        for(unsigned b=0; b<numRigid; b++ )
-        {
-            if( isFree[i] && boxes[b].contains(xgrid[i]) )
-            {
-                indices[b].push_back(i); // associate the particle with the box
-                isFree[i] = false;
-                numMapped++;
-            }
-        }
-    }
-
-    // distribution of the grid particles to the different parents (independent particle or solids.
-    vector< pair<MechanicalObject3d*,unsigned> > parentParticles(xgrid.size());
-
-    // Copy the independent particles to their parent DOF
-    independentParticles_dof->resize( numX*numY*numZ - numMapped );
-    MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions(); // parent positions
-    unsigned independentIndex=0;
-    for( unsigned i=0; i<xgrid.size(); i++ ){
-        if( isFree[i] ){
-            parentParticles[i]=make_pair(independentParticles_dof.get(),independentIndex);
-            xindependent[independentIndex] = xgrid[i];
-            independentIndex++;
-        }
-    }
-
-    // Mapped particles. The RigidMapping requires to cluster the particles based on their parent frame.
-    mappedParticles_dof->resize(numMapped);
-    MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions(); // parent positions
-    mappedParticles_mapping->globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
-    vector<unsigned>* pointsPerFrame = mappedParticles_mapping->pointsPerFrame.beginEdit(); // to set how many particles are attached to each frame
-    unsigned mappedIndex=0;
-    for( unsigned b=0; b<numRigid; b++ )
-    {
-        const vector<unsigned>& ind = indices[b];
-        pointsPerFrame->push_back(ind.size()); // Tell the mapping the number of points associated with this frame. One box per frame
-        for(unsigned i=0; i<ind.size(); i++)
-        {
-            parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
-            xmapped[mappedIndex] = xgrid[ ind[i] ];
-            mappedIndex++;
-
-        }
-    }
-    mappedParticles_mapping->pointsPerFrame.endEdit();
-
-    // Declare all the particles to the multimapping
-    for( unsigned i=0; i<xgrid.size(); i++ )
-    {
-        deformableGrid_mapping->addPoint( parentParticles[i].first, parentParticles[i].second );
-    }
-
-    return root;
-}
-
-/**********************************************************/
-/************ Main function which will be call ************/
-/**********************************************************/
 int main(int argc, char** argv)
 {
 
