@@ -16,6 +16,8 @@ QMAKE_LIBDIR += $$SOFA_INSTALL_INC_DIR/extlibs/gtest/lib
 HEADERS += Sofa_test.h \
     Matrix_test.inl \
     Mapping_test.h \
+    Solver_test.h
+
 
 SOURCES += \
     RigidMapping_test.cpp \
@@ -23,7 +25,8 @@ SOURCES += \
     OBBTest.cpp \
     SAPTest.cpp \
     ProjectToPlaneConstraint_test.cpp \
-    ProjectToLineConstraint_test.cpp
+    ProjectToLineConstraint_test.cpp \
+    EulerImplicit_test.cpp \
 
 win32 {
 	QMAKE_CXXFLAGS_RELEASE += /MT

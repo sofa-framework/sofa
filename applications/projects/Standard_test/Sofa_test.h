@@ -190,6 +190,19 @@ struct Sofa_test : public ::testing::Test
     }
 
 
+    /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
+    template< int N, typename Real>
+    static Real vectorCompare( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
+    {
+        Real result = 0;
+        for( unsigned i=0; i<N; i++ ){
+            Real diff = fabs(m1[i]-m2[i]);
+            if( diff>result  ) result=diff;
+        }
+        return result;
+    }
+
+
 
 };
 
