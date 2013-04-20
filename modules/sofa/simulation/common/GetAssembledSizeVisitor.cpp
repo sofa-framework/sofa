@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Implementation: GetVectorVisitor
+// C++ Implementation: GetAssembledSizeVisitor
 //
 // Description:
 //
@@ -32,7 +32,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/common/GetVectorVisitor.h>
+#include <sofa/simulation/common/GetAssembledSizeVisitor.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa
@@ -42,18 +42,21 @@ namespace simulation
 {
 
 
-GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, defaulttype::BaseVector* vec, core::ConstVecId src )
-    : Visitor(params), vec(vec), src(src), offset(0)
+GetAssembledSizeVisitor::GetAssembledSizeVisitor( const sofa::core::ExecParams* params )
+    : Visitor(params)
+    , xsize(0)
+    , vsize(0)
 {}
 
-GetVectorVisitor::~GetVectorVisitor()
+GetAssembledSizeVisitor::~GetAssembledSizeVisitor()
 {}
 
-Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
+Visitor::Result GetAssembledSizeVisitor::processNodeTopDown( simulation::Node* gnode )
 {
     if (gnode->mechanicalState != NULL) // independent DOFs
     {
-        gnode->mechanicalState->copyToBaseVector(vec,src,offset);
+        xsize += gnode->mechanicalState->getSize() * gnode->mechanicalState->getCoordDimension();
+        vsize += gnode->mechanicalState->getMatrixSize();
     }
     return Visitor::RESULT_CONTINUE;
 }

@@ -39,7 +39,8 @@ HEADERS += common.h \
            ExportOBJVisitor.h \
            FindByTypeVisitor.h \
            GetVectorVisitor.h \
-           InitVisitor.h \  
+           GetAssembledSizeVisitor.h \
+           InitVisitor.h \
            IntegrateBeginEvent.h \
            IntegrateEndEvent.h \
            LocalStorage.h \
@@ -107,6 +108,7 @@ SOURCES += Node.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
            GetVectorVisitor.cpp \
+           GetAssembledSizeVisitor.cpp \
            InitVisitor.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 		   MechanicalOperations.cpp \
