@@ -28,7 +28,8 @@ set(HEADER_FILES
 	ExportGnuplotVisitor.h
 	ExportOBJVisitor.h
 	FindByTypeVisitor.h
-	GetVectorVisitor.h
+	GetVectorVisitor.cpp
+	GetAssembledSizeVisitor.cpp
 	InitVisitor.h  
 	IntegrateBeginEvent.h
 	IntegrateEndEvent.h
@@ -100,6 +101,7 @@ set(SOURCE_FILES
 	ExportGnuplotVisitor.cpp
 	ExportOBJVisitor.cpp
 	GetVectorVisitor.cpp
+	GetAssembledSizeVisitor.cpp
 	InitVisitor.cpp   
 	MechanicalComputeEnergyVisitor.cpp
 	MechanicalOperations.cpp

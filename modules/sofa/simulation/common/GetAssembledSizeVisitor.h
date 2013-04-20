@@ -23,17 +23,27 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Implementation: GetVectorVisitor
+// C++ Interface: GetAssembledSizeVisitor
 //
 // Description:
 //
 //
+// Author: Francois Faure, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/common/GetVectorVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#ifndef SOFA_SIMULATION_GetAssembledSizeVisitor_H
+#define SOFA_SIMULATION_GetAssembledSizeVisitor_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/defaulttype/BaseVector.h>
+
 
 namespace sofa
 {
@@ -41,24 +51,29 @@ namespace sofa
 namespace simulation
 {
 
-
-GetVectorVisitor::GetVectorVisitor( const sofa::core::ExecParams* params, defaulttype::BaseVector* vec, core::ConstVecId src )
-    : Visitor(params), vec(vec), src(src), offset(0)
-{}
-
-GetVectorVisitor::~GetVectorVisitor()
-{}
-
-Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
+/** Compute the size of the assembled position vector and velocity vector.
+  Only the independent DOFs are considered.
+  The two values may be different, such as for rigid objects.
+    Francois Faure, 2013
+*/
+class SOFA_SIMULATION_COMMON_API GetAssembledSizeVisitor: public Visitor
 {
-    if (gnode->mechanicalState != NULL) // independent DOFs
-    {
-        gnode->mechanicalState->copyToBaseVector(vec,src,offset);
-    }
-    return Visitor::RESULT_CONTINUE;
-}
+public:
+    GetAssembledSizeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */=core::MechanicalParams::defaultInstance() );
+    virtual ~GetAssembledSizeVisitor();
+
+    virtual Result processNodeTopDown( simulation::Node*  );
+    virtual const char* getClassName() const { return "GetAssembledSizeVisitor"; }
+
+    unsigned positionSize() const { return xsize; }
+    unsigned velocitySize() const { return vsize; }
+
+protected:
+    unsigned xsize;
+    unsigned vsize;
+};
 
 } // namespace simulation
-
 } // namespace sofa
 
+#endif

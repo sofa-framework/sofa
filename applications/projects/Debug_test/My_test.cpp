@@ -32,8 +32,10 @@
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/GetVectorVisitor.h>
+#include <sofa/simulation/common/GetAssembledSizeVisitor.h>
 
 using std::cout;
 using std::cerr;
@@ -46,34 +48,129 @@ using namespace simulation;
 using namespace modeling;
 using namespace component;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-
+typedef component::linearsolver::FullVector<SReal> FullVector;
 
 
 struct My_test : public Sofa_test<>
 {
-    Node::SPtr root;
 
     My_test()
+    {
+        //*******
+        initSofa();
+        //*******
+        // begin create scene under the root node
+
+        modeling::addNew<odesolver::EulerImplicitSolver>(root,"odesolver" );
+        modeling::addNew<CGLinearSolver>(root,"linearsolver");
+
+        Node::SPtr string = massSpringString(
+                    getRoot(),
+                    0,0,0, // first endpoint
+                    1,0,0, // second endpoint
+                    2,     // number of particles
+                    2.0,    // total mass
+                    1.0,   // stiffness
+                    0.1    // damping ratio
+                    );
+        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string,"fixedConstraint");
+        fixed->addConstraint(0);
+
+        // end create scene
+        //*********
+        initScene();
+        //*********
+
+        FullVector x0, x1, v0, v1;
+        getAssembledPositionVector(&x0);
+        cerr<<"My_test, initial positions : " << x0 << endl;
+        getAssembledVelocityVector(&v0);
+        cerr<<"My_test, initial velocities: " << v0 << endl;
+
+        Real dx, dv;
+        do {
+            sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+            getAssembledPositionVector(&x1);
+            cerr<<"My_test, new positions : " << x1 << endl;
+            getAssembledVelocityVector(&v1);
+            cerr<<"My_test, new velocities: " << v1 << endl;
+
+            dx = this->vectorCompare(x0,x1);
+            dv = this->vectorCompare(v0,v1);
+            x0 = x1;
+            v0 = v1;
+
+        } while( dx>1.e-3 || dv>1.e-3 );
+
+    }
+
+    /** Initialize the sofa library and create the root of the scene graph
+      */
+    void initSofa()
     {
         setSimulation(new graph::DAGSimulation());
         sofa::component::init();
         root = modeling::newRoot();
-
-        massSpringString(
-                    root,
-                    0,0,0,
-                    1,0,0,
-                    2,
-                    2.0
-                    );
-        modeling::addNew<odesolver::EulerImplicitSolver>(root,"odesolver" );
-        modeling::addNew<CGLinearSolver>(root,"linearsolver");
-
-        sofa::simulation::getSimulation()->init(root.get());
-        sofa::simulation::getSimulation()->animate(root.get(),1.0);
-
-
     }
+
+    /** Initialize the scene graph and compute the size of the assembled vectors
+      */
+    void initScene()
+    {
+        sofa::simulation::getSimulation()->init(root.get());
+
+        GetAssembledSizeVisitor getSizeVisitor;
+        root->execute(getSizeVisitor);
+        xsize = getSizeVisitor.positionSize();
+        vsize = getSizeVisitor.velocitySize();
+    }
+
+    /** size of assembled position vector
+    @pre the scene must be initialized
+    @sa initScene()
+    */
+    unsigned xSize() const { return xsize; }
+
+    /** size of assembled velocity or force vector
+    @pre the scene must be initialized
+    @sa initScene()
+    */
+    unsigned vSize() const { return vsize; }
+
+
+    /** fill the vector with the positions.
+      @param x the position vector
+      */
+    void getAssembledPositionVector( FullVector* x )
+    {
+        x->resize(xSize());
+        GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), x, core::VecCoordId::position());
+        getRoot()->execute(getVec);
+    }
+
+    /** fill the vector with the velocities.
+      @param v the velocity vector
+      */
+    void getAssembledVelocityVector( FullVector* v )
+    {
+        v->resize(vSize());
+        GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), v, core::VecDerivId::velocity());
+        getRoot()->execute(getVec);
+    }
+
+    /** Get the root of the scene graph
+      @pre The scene must be initialized
+      @sa initScene()
+      */
+    Node::SPtr getRoot(){ return root; }
+
+
+private:
+    Node::SPtr root;
+    unsigned xsize; ///< size of assembled position vector, computed in initScene()
+    unsigned vsize; ///< size of assembled velocity vector, computed in initScene()
+
 };
 
 TEST_F( My_test, my_test )
