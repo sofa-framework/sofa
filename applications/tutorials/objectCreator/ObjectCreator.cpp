@@ -525,6 +525,8 @@ simulation::Node::SPtr SimpleObjectCreator::createGridScene(Vec3 startPoint, Vec
 
 }
 
+namespace modeling {
+
 simulation::Node::SPtr newRoot()
 {
     return simulation::getSimulation()->createNewGraph("root");
@@ -586,6 +588,6 @@ simulation::Node::SPtr massSpringString
 
 }
 
-
+}
 
 }

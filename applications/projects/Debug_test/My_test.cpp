@@ -26,7 +26,15 @@
 
 #include <gtest/gtest.h>
 #include "../Standard_test/Sofa_test.h"
+#include <sofa/component/init.h>
 #include "../../tutorials/objectCreator/ObjectCreator.h"
+#include <sofa/simulation/graph/DAGSimulation.h>
+
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/GetVectorVisitor.h>
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -35,9 +43,37 @@ using std::endl;
 namespace sofa
 {
 using namespace simulation;
+using namespace modeling;
+using namespace component;
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+
+
 
 struct My_test : public Sofa_test<>
 {
+    Node::SPtr root;
+
+    My_test()
+    {
+        setSimulation(new graph::DAGSimulation());
+        sofa::component::init();
+        root = modeling::newRoot();
+
+        massSpringString(
+                    root,
+                    0,0,0,
+                    1,0,0,
+                    2,
+                    2.0
+                    );
+        modeling::addNew<odesolver::EulerImplicitSolver>(root,"odesolver" );
+        modeling::addNew<CGLinearSolver>(root,"linearsolver");
+
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+
+    }
 };
 
 TEST_F( My_test, my_test )

@@ -106,15 +106,26 @@ Node::SPtr massSpringString
 
 
 /// helper for more compact component creation
-template<class Component>
-typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
+//template<class Component>
+//typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
+//{
+//    typename Component::SPtr component = core::objectmodel::New<Component>();
+//    parentNode->addObject(component);
+//    component->setName(parentNode->getName()+"_"+name);
+//    return component;
+//}
+template<class T>
+class addNew : public objectmodel::New<T>
 {
-    typename Component::SPtr component = core::objectmodel::New<Component>();
-    parentNode->addObject(component);
-    component->setName(parentNode->getName()+"_"+name);
-    return component;
-}
+    typedef typename T::SPtr SPtr;
+public:
+    addNew( Node::SPtr parent, const char* name="")
+    {
+        parent->addObject(*this);
+        (*this)->setName(name);
+    }
 
+};
 
 
 

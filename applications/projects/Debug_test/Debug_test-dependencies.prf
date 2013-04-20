@@ -1,4 +1,4 @@
 includeOnce($$_FILE_) {
-	declare(Debug_test, applications/projects/Debug_test, sofa_eigen2_solver sofa_component sofa_base_collision sofagraph)
+        declare(Debug_test, applications/projects/Debug_test, sofaobjectcreator sofa_eigen2_solver sofa_component sofa_base_collision sofagraph)
 	enable(Debug_test)
 }
