@@ -195,11 +195,11 @@ struct Sofa_test : public ::testing::Test
 
 /// helper for more compact component creation
 template<class Component>
-typename Component::SPtr addNew( sofa::simulation::Node::SPtr parentNode, std::string name="component" )
+typename Component::SPtr addNew( sofa::simulation::Node::SPtr parentNode, const char* name="component" )
 {
     typename Component::SPtr component = sofa::core::objectmodel::New<Component>();
     parentNode->addObject(component);
-    component->setName(parentNode->getName()+"_"+name);
+    component->setName(parentNode->getName()+"_"+std::string(name));
     return component;
 }
 
