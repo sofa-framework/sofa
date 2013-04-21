@@ -28,40 +28,45 @@
 
 namespace sofa {
 
-struct EulerImplicit_test_2particles : public Simulation_test
+/** Test convergence to a static solution.
+ * Mass-spring string composed of two particles in gravity, one is fixed.
+ * Francois Faure, 2013.
+ */
+struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
 {
-    EulerImplicit_test_2particles()
+    EulerImplicit_test_2_particles_to_equilibrium()
     {
         //*******
         initSofa();
         //*******
         // begin create scene under the root node
 
-        modeling::addNew<odesolver::EulerImplicitSolver>(getRoot(),"odesolver" );
-        modeling::addNew<CGLinearSolver>(getRoot(),"linearsolver");
+        modeling::addNew<odesolver::EulerImplicitSolver> (getRoot(),"odesolver" );
+        modeling::addNew<CGLinearSolver>                 (getRoot(),"linearsolver");
 
         Node::SPtr string = massSpringString(
-                    getRoot(),
-                    0,0,0, // first endpoint
-                    1,0,0, // second endpoint
-                    2,     // number of particles
+                    getRoot(), // attached to root node
+                    0,1,0,     // first particle position
+                    0,0,0,     // last  particle position
+                    2,      // number of particles
                     2.0,    // total mass
-                    1000.0,   // stiffness
-                    0.1    // damping ratio
+                    1000.0, // stiffness
+                    0.1     // damping ratio
                     );
         FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string,"fixedConstraint");
-        fixed->addConstraint(0);
+        fixed->addConstraint(0);      // attach first particle
+
+        Vec3d expected(0,-0.00981,0); // expected position of second particle after relaxation
 
         // end create scene
         //*********
         initScene();
         //*********
+        // run simulation
 
         FullVector x0, x1, v0, v1;
-        getAssembledPositionVector(&x0);
-//        cerr<<"My_test, initial positions : " << x0 << endl;
-        getAssembledVelocityVector(&v0);
-//        cerr<<"My_test, initial velocities: " << v0 << endl;
+        getAssembledPositionVector(&x0); // cerr<<"My_test, initial positions : " << x0 << endl;
+        getAssembledVelocityVector(&v0); // cerr<<"My_test, initial velocities: " << v0 << endl;
 
         Real dx, dv;
         unsigned n=0;
@@ -70,10 +75,8 @@ struct EulerImplicit_test_2particles : public Simulation_test
         do {
             sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
 
-            getAssembledPositionVector(&x1);
-//            cerr<<"My_test, new positions : " << x1 << endl;
-            getAssembledVelocityVector(&v1);
-//            cerr<<"My_test, new velocities: " << v1 << endl;
+            getAssembledPositionVector(&x1); // cerr<<"My_test, new positions : " << x1 << endl;
+            getAssembledVelocityVector(&v1); // cerr<<"My_test, new velocities: " << v1 << endl;
 
             dx = this->vectorCompare(x0,x1);
             dv = this->vectorCompare(v0,v1);
@@ -81,8 +84,11 @@ struct EulerImplicit_test_2particles : public Simulation_test
             v0 = v1;
             n++;
 
-        } while( (dx>1.e-4 || dv>1.e-4) && n<nMax );
+        } while(
+                (dx>1.e-4 || dv>1.e-4) // not converged
+                && n<nMax );           // give up if not converging
 
+        // end simulation
         // test convergence
         if( n==nMax )
             ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << endl
@@ -92,7 +98,7 @@ struct EulerImplicit_test_2particles : public Simulation_test
                           <<" current v  = " << v1 << endl;
 
         // test position of the second particle
-        Vec3d expected(0,-1.00981,0), actual( x0[3],x0[4],x0[5]);
+        Vec3d actual( x0[3],x0[4],x0[5]); // position of second particle after relaxation
         if( vectorCompare(expected,actual)>precision )
             ADD_FAILURE() << "Solver test has not converged to the expected position" <<
                              " expected: " << expected << endl <<
@@ -102,7 +108,7 @@ struct EulerImplicit_test_2particles : public Simulation_test
 
 };
 
-TEST_F( EulerImplicit_test_2particles, myEulerImplicit_test_2particles ){}
+TEST_F( EulerImplicit_test_2_particles_to_equilibrium,  ){}
 
 }// namespace sofa
 

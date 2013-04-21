@@ -51,7 +51,7 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
 typedef component::linearsolver::FullVector<SReal> FullVector;
 
 
-struct Simulation_test : public Sofa_test<SReal>
+struct Solver_test : public Sofa_test<SReal>
 {
 
 
@@ -124,9 +124,9 @@ private:
 };
 
 
-struct EulerImplicit_test_2particles : public Simulation_test
+struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
 {
-    EulerImplicit_test_2particles()
+    EulerImplicit_test_2_particles_to_equilibrium()
     {
         //*******
         initSofa();
@@ -198,7 +198,7 @@ struct EulerImplicit_test_2particles : public Simulation_test
 
 };
 
-TEST_F( EulerImplicit_test_2particles, myEulerImplicit_test_2particles )
+TEST_F( EulerImplicit_test_2_particles_to_equilibrium, myEulerImplicit_test_2particles )
 {
 }
 

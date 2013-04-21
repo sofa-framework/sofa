@@ -24,7 +24,6 @@
 ******************************************************************************/
 
 
-#include <gtest/gtest.h>
 #include "Sofa_test.h"
 #include <sofa/component/init.h>
 #include "../../tutorials/objectCreator/ObjectCreator.h"
@@ -50,11 +49,9 @@ using namespace component;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::linearsolver::FullVector<SReal> FullVector;
 
-
-struct Simulation_test : public Sofa_test<SReal>
+/** Helpers for testing Solvers */
+struct Solver_test : public Sofa_test<SReal>
 {
-
-
     /** Initialize the sofa library and create the root of the scene graph
       */
     void initSofa()
