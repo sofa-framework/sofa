@@ -274,8 +274,6 @@ namespace container
 
 // ==========================================================================
 // Draw Specializations
-
-
 template <> SOFA_Flexible_API
 void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vparams)
 {
@@ -358,9 +356,6 @@ void MechanicalObject<Affine3Types>::draw(const core::visual::VisualParams* vpar
     }
 }
 
-
-
-
 // ==========================================================================
 // Instanciation
 
@@ -376,7 +371,6 @@ template class SOFA_Flexible_API MechanicalObject<Affine3Types>;
 
 
 } // namespace container
-
 
 namespace mass
 {
@@ -413,8 +407,6 @@ namespace mass
 //    }
 //}
 //#endif
-
-
 
 #ifndef SOFA_FLOAT
 template <> SOFA_Flexible_API
@@ -491,7 +483,6 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
 }
 #endif
 
-
     // ==========================================================================
     // Instanciation
 
@@ -506,11 +497,6 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
     template class SOFA_Flexible_API UniformMass<Affine3Types,Affine3Mass>;
 
 } // namespace mass
-
-
-
-
-
 
 namespace misc
 {
@@ -529,16 +515,10 @@ int AffineExtraMonitorClass = core::RegisterObject("Monitoring of particles")
         .add< ExtraMonitor<defaulttype::Affine3Types> >();
 template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3Types>;
 
-
-
 } // namespace misc
-
-
-
 
 namespace constraintset
 {
-
 
 template<> SOFA_Flexible_API
 void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
@@ -574,23 +554,16 @@ void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
     compliance.setValue(usedComp);
 }
 
-
-
-
 SOFA_DECL_CLASS( AffineUncoupledConstraintCorrection )
 // Register in the Factory
 int AffineUncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
         .add< UncoupledConstraintCorrection<defaulttype::Affine3Types> >();
 template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affine3Types>;
 
-
 } // namespace constraintset
-
-
 
 namespace mapping
 {
-
 
 SOFA_DECL_CLASS(AffineIdentityMapping)
 
@@ -614,10 +587,10 @@ int AffineSubsetMultiMappingClass = core::RegisterObject("Compute a subset of th
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Affine3dTypes, Affine3dTypes >;
+template class SOFA_Flexible_API SubsetMultiMapping< Affine3dTypes, Affine3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Affine3fTypes, Affine3fTypes >;
+template class SOFA_Flexible_API SubsetMultiMapping< Affine3fTypes, Affine3fTypes >;
 #endif
 
 
