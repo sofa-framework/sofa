@@ -51,6 +51,7 @@
 #include <sofa/component/constraintset/UncoupledConstraintCorrection.inl>
 
 #include <sofa/component/mapping/IdentityMapping.inl>
+#include <sofa/component/mapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
 
@@ -602,6 +603,22 @@ int AffineIdentityMappingClass = core::RegisterObject("Special case of mapping w
 
 template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::Vec3Types >;
 template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::ExtVec3fTypes >;
+
+int AffineSubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
+#ifndef SOFA_FLOAT
+    .add< SubsetMultiMapping< Affine3dTypes, Affine3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< SubsetMultiMapping< Affine3fTypes, Affine3fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Affine3dTypes, Affine3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Affine3fTypes, Affine3fTypes >;
+#endif
 
 
 } // namespace mapping
