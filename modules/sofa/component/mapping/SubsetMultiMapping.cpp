@@ -26,6 +26,7 @@
 
 #include <sofa/component/mapping/SubsetMultiMapping.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 using namespace sofa::defaulttype;
@@ -44,18 +45,22 @@ SOFA_DECL_CLASS(SubsetMultiMapping)
 // Register in the Factory
 int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT
-        .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
+    .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
+    .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
+    .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
+    .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 } // namespace mapping
