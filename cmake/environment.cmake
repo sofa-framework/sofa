@@ -29,6 +29,9 @@ set(SOFA_APPLICATIONS_PLUGINS_DIR "${SOFA_APPLICATIONS_DIR}/plugins" CACHE INTER
 set(SOFA_APPLICATIONS_DEV_PLUGINS_DIR "${SOFA_APPLICATIONS_DEV_DIR}/plugins" CACHE INTERNAL "Path to the Sofa applications-dev plugin directory")
 set(SOFA_TOOLS_DIR "${SOFA_SRC_DIR}/tools" CACHE INTERNAL "Path to the Sofa tools directory")
 
+# useful settings
+set(SOFA_VERSION_NUM "1_0" CACHE STRING "Version number for this build.")
+
 ## os-specific
 if(WIN32)
 if (CMAKE_CL_64) 
