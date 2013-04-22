@@ -151,6 +151,11 @@ public:
         return 0;
     }
 
+    void resize( int ){
+        std::cerr<<"WARNING : resize is not supported in MultiVector"<<std::endl;
+        assert(false);
+    }
+
     friend class GraphScatteredMatrix;
 
     void operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr)
