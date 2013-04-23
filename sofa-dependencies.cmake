@@ -31,12 +31,13 @@ RegisterDependencies("QGLViewer" OPTION GUI_USE_QGLVIEWER COMPILE_DEFINITIONS SO
 #endif()
 
 ## google test
-if(NOT WIN32)
-	RegisterDependencies("gtest" OPTION UNIT-TESTS_BUILD_GTEST PATH "${SOFA_EXTLIBS_DIR}/gtest")
-endif()
-#if(UNIT-TESTS_BUILD_GTEST)
-#	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+#if(NOT WIN32)
+# RegisterDependencies won't work with the standard gtest CMakeLists, let's do it the old way...
+#	RegisterDependencies("gtest" OPTION UNIT-TESTS_BUILD_GTEST PATH "${SOFA_EXTLIBS_DIR}/gtest")
 #endif()
+if(UNIT-TESTS_BUILD_GTEST)
+        add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+endif()
 
 # framework
 RegisterDependencies("SofaHelper" PATH "${SOFA_FRAMEWORK_DIR}/sofa/helper")
