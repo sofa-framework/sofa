@@ -449,16 +449,34 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     baryCoef[1] = baryCoords[i][1];
                     baryCoef[2] = 1 - baryCoef[0] - baryCoef[1];
                 }
-                // Warn for the creation of all the points registered to be created
-                topoMod->addPointsWarning(nbElements, p_ancestors, p_baryCoefs,true);
                 topoMod->addPointsProcess(nbElements);
                 
-                topoMod->notifyEndingEvent();
+                topoMod->addPointsWarning(nbElements, p_ancestors, p_baryCoefs,true);
+                
                 topoMod->propagateTopologicalChanges();
             }
 
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
+
+                helper::vector<helper::vector<unsigned int> >  p_ancestors(nbElements);
+                helper::vector<helper::vector<double> >        p_baryCoefs(nbElements);
+                
+                if(!str.eof() )
+                {
+                    std::string token;
+                    str >> token;
+                    if(token == "Ancestors" || token == "Ancestor")
+                    {
+                        for(unsigned int i = 0; i<nbElements; ++i)
+                        {
+                            helper::vector<unsigned int>& ancestor = p_ancestors[i];
+                            ancestor.resize(1);
+                            str >> ancestor[0];
+                        }
+                    }
+                }
+                
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
@@ -475,7 +493,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
 
                 //std::cout << "SIN: " << vitems << std::endl;
-                topoMod->addTriangles(vitems);
+                if(!p_ancestors.empty())
+                {
+                    topoMod->addTriangles(vitems,p_ancestors,p_baryCoefs);
+                }
+                else
+                {
+                    topoMod->addTriangles(vitems);
+                }
             }
             else if ( EleType == "Quad" || EleType == "Quads")
             {
