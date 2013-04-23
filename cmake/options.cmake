@@ -219,7 +219,7 @@ else() # configuring from main solution
 	option(UNIT-TESTS_USE "Build and use unit tests" OFF)
 	if(UNIT-TESTS_USE)
 		if(NOT WIN32)
-			option(UNIT-TESTS_BUILD_GTEST "Build google test framework" OFF)
+                        option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
 		endif()
 	endif()
 
