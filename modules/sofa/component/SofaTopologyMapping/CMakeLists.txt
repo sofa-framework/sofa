@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaTopologyMapping")
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES

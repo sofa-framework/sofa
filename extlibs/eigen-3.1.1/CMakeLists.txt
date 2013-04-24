@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("eigen")
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 file(GLOB_RECURSE HEADER_FILES "*.h")
