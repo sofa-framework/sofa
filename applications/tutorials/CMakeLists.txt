@@ -5,7 +5,7 @@ project(${SOLUTION_NAME})
 
 include(${SOFA_CMAKE_DIR}/preSolution.cmake)
 
-RegisterDependencies("Standard_test" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
+RegisterDependencies("ChainHybrid" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
 RegisterDependencies("CompositeObject" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
 RegisterDependencies("HouseOfCards" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/houseOfCards")
 RegisterDependencies("MixedPendulum" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/mixedPendulum")
@@ -13,7 +13,7 @@ RegisterDependencies("ObjectCreator" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRE
 RegisterDependencies("OneParticle" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticle")
 #RegisterDependencies("OneParticleWithSofaTypedefs" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
 RegisterDependencies("OneTetrahedron" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
-#RegisterDependencies("anatomyModelling" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
+#RegisterDependencies("AnatomyModelling" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
 
 #add_subdirectory("chainHybrid")
 #add_subdirectory("compositeObject")
