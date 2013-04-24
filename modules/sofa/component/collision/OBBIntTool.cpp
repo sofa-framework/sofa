@@ -73,6 +73,8 @@ bool OBBIntTool::computeIntersection(Sphere & sphere,OBB & box,double alarmDist,
     return 0;
 }
 
+class SOFA_BASE_COLLISION_API OBBIntTool;
+
 }
 }
 }

@@ -17,7 +17,7 @@ namespace collision
 {
 
 
-class MeshIntTool
+class SOFA_MESH_COLLISION_API MeshIntTool
 {
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
