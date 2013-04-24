@@ -456,6 +456,8 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,double al
     return 0;
 }
 
+class SOFA_MESH_COLLISION_API MeshIntTool;
+
 }
 }
 }
