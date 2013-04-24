@@ -28,7 +28,7 @@ if(UNIT-TESTS_BUILD_GTEST OR WIN32)
 endif()
 
 set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
-set(LINKER_DEPENDENCIES SofaObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph gtest gtest_main)
+set(LINKER_DEPENDENCIES SofaObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
