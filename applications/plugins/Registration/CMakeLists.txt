@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaRegistration")
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ##plugin external dependencies

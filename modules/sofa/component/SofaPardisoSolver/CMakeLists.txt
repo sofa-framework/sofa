@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaPardisoSolver")
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 if(SOFA_HAVE_PARDISO)

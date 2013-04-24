@@ -136,16 +136,6 @@ RegisterDependencies("Standard_test" OPTION UNIT-TESTS_USE PATH "${SOFA_APPLICAT
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
 #endif()
 
-# plugins
-foreach(plugin ${SOFA_PLUGINS})
-	add_subdirectory("${${plugin}}")
-endforeach()
-
-# dev-plugins
-foreach(devPlugin ${SOFA_DEV_PLUGINS})
-	add_subdirectory("${${devPlugin}}")
-endforeach()
-
 # retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
 message(STATUS "> Computing Dependencies : In progress")
 set(projectNames ${GLOBAL_DEPENDENCIES})
