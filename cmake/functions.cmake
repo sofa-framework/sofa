@@ -329,7 +329,7 @@ function(ComputeDependencies projectName forceEnable offset)
 			# add the current project
 			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
 				if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")
-					message(STATUS " - Adding project from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+					message(STATUS " - Adding project '${projectName}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
 					add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
 				endif()
 			endif()

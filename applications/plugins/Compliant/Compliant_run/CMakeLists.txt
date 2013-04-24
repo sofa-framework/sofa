@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("SofaCompliantPluginRun")
+project("Compliant_run")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
