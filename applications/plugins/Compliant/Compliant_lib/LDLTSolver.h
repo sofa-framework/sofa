@@ -28,10 +28,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 	                   const vec& rhs) const;
 
 	// performs factorization
-	virtual void factor(const AssembledSystem& system) const;
-
-	// needs to factor first
-	virtual void resolve(vec& x, const vec& rhs) const;
+	virtual void factor(const AssembledSystem& system);
 
 	LDLTSolver();
 	~LDLTSolver();
@@ -54,6 +51,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 
 	
 	mutable thread_local<pimpl_type> pimpl;
+	
 	Data<SReal> damping;
 };
 

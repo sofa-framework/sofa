@@ -28,6 +28,8 @@ class SOFA_Compliant_API MinresSolver : public KKTSolver {
 	virtual void solve(vec& x,
 	                   const AssembledSystem& system,
 	                   const vec& rhs) const;
+
+	virtual void factor(const AssembledSystem& system);
 				
   public:
 	Data<SReal> precision;
