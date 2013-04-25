@@ -95,10 +95,10 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
-    const unsigned int nbPTotal = m_container->getNbPoints();
+    const unsigned int startIndex = m_container->getNbPoints()-nPoints;
     sofa::helper::vector <unsigned int> indices; indices.resize(nPoints);
     for(unsigned int i=0; i<nPoints; ++i)
-        indices[i] = nbPTotal + i;
+        indices[i] = startIndex+i;
 
     if(addDOF)
     {
@@ -112,6 +112,23 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     this->addTopologyChange(e);
 }
 
+void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
+                                         const bool addDOF)
+{
+    addPointsProcess(nPoints);
+    addPointsWarning(nPoints, addDOF);
+    propagateTopologicalChanges();
+}
+
+void PointSetTopologyModifier::addPoints(const unsigned int nPoints,
+     const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+     const sofa::helper::vector< sofa::helper::vector< double> >& coefs,
+     const bool addDOF)
+{
+    addPointsProcess(nPoints);
+    addPointsWarning(nPoints, ancestors, coefs, addDOF);
+    propagateTopologicalChanges();
+}
 
 void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <unsigned int>& id,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,

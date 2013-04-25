@@ -79,11 +79,27 @@ public:
             const bool addDOF = true);
 
 
-    /** \brief Add some points to this topology.
+    /** \brief Extend the point container storage by nPoints.
     *
     * \sa addPointsWarning
     */
     virtual void addPointsProcess(const unsigned int nPoints);
+
+    /** \brief Add a set of points
+    * 
+    * \sa addPoints
+    */
+    virtual void addPoints(const unsigned int nPoints, const bool addDOF = true);
+ 
+    /** \brief Add a set of points
+    * 
+    * \sa addPoints
+    */
+    virtual void addPoints(const unsigned int nPoints,
+                           const sofa::helper::vector< sofa::helper::vector< unsigned int> >& ancestors,
+                           const sofa::helper::vector< sofa::helper::vector< double      > >& coefs,
+                           const bool addDOF = true);
+
 
     /** \brief Sends a message to warn that some points are about to be deleted.
     *
