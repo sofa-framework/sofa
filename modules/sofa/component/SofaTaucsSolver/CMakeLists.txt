@@ -17,7 +17,7 @@ set(SOURCE_FILES
  
     )
     
-if(SOFA_EXTLIBS_TAUCS_MT)
+if(SOFA-EXTERNAL_TAUCS_MT)
 	list(APPEND HEADER_FILES "linearsolver/SparseTAUCSLLtSolver.h")
 
 	list(APPEND SOURCE_FILES "linearsolver/SparseTAUCSLLtSolver.cpp")

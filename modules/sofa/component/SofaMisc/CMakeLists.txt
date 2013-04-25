@@ -16,7 +16,7 @@ set(SOURCE_FILES
   
     )
 
-if(SOFA_SMP)
+if(SOFA-MISC_HAVE_SMP)
 	list(APPEND HEADER_FILES "../linearsolver/ParallelCGLinearSolver.h")
 	list(APPEND HEADER_FILES "../linearsolver/ParallelCGLinearSolver.inl")
 

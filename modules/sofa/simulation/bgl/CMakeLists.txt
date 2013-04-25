@@ -25,7 +25,7 @@ set(SOURCE_FILES
 	GetObjectsVisitor.cpp
 	)
 
-if(SOFA_SMP)
+if(SOFA-MISC_HAVE_SMP)
 	list(APPEND HEADER_FILES "SMPBglSimulation.h")
 	list(APPEND SOURCE_FILES "SMPBglSimulation.cpp")
 endif()
