@@ -34,6 +34,7 @@
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
@@ -449,13 +450,31 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     baryCoef[1] = baryCoords[i][1];
                     baryCoef[2] = 1 - baryCoef[0] - baryCoef[1];
                 }
-                topoMod->addPointsProcess(nbElements);
-                
-                topoMod->addPointsWarning(nbElements, p_ancestors, p_baryCoefs,true);
-                
-                topoMod->propagateTopologicalChanges();
-            }
+                topoMod->addPoints(nbElements, p_ancestors, p_baryCoefs, true);
 
+            }
+            else if ( EleType == "Edge" || EleType == "Edges")
+            {
+                sofa::component::topology::EdgeSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
+
+                if (!topoMod)
+                {
+                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    continue;
+                }
+
+                helper::vector<core::topology::Topology::Edge > vitems;
+                vitems.resize (nbElements);
+
+                for (unsigned int i = 0; i<nbElements; ++i)
+                    Sin >> vitems[i][0] >> vitems[i][1];
+
+                //std::cout << "SIN: " << vitems << std::endl;
+
+                topoMod->addEdges(vitems);
+            
+            }
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
 
