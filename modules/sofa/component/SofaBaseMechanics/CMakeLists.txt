@@ -36,7 +36,7 @@ set(SOURCE_FILES
     
     )
     
-if(SOFA_SMP)
+if(SOFA-MISC_HAVE_SMP)
     list(APPEND HEADER_FILES "../container/MechanicalObjectTasks.inl")
 endif()
 
