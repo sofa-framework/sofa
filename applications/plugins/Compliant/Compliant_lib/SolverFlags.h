@@ -15,7 +15,7 @@ class SOFA_Compliant_API SolverFlags  : public virtual core::objectmodel::BaseOb
 	typedef unsigned value_type;
 	typedef helper::vector< value_type > flags_type;
 	
-  protected:
+  public:
 	
 	// per-dof flags, usually hanging around compliant dofs
 	Data< flags_type > flags;
