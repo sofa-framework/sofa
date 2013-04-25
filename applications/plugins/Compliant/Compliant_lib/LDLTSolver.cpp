@@ -59,7 +59,7 @@ static AssembledSystem::mat shift_right(unsigned off, unsigned size, unsigned to
 }
 
 
-void LDLTSolver::factor(const AssembledSystem& sys) const {
+void LDLTSolver::factor(const AssembledSystem& sys) {
 	
 	pimpl->H = sys.H.selfadjointView<Eigen::Upper>();
 	
@@ -96,7 +96,8 @@ void LDLTSolver::factor(const AssembledSystem& sys) const {
 }
 
 
-void LDLTSolver::resolve(AssembledSystem::vec& res,
+void LDLTSolver::solve(AssembledSystem::vec& res,
+                         const AssembledSystem& system,
                          const AssembledSystem::vec& rhs) const {
 	assert( res.size() == pimpl->m + pimpl->n);
 	assert( rhs.size() == pimpl->m + pimpl->n);
@@ -122,14 +123,7 @@ void LDLTSolver::resolve(AssembledSystem::vec& res,
 	
 } 
 
-void LDLTSolver::solve(AssembledSystem::vec& res,
-                       const AssembledSystem& system,
-                       const AssembledSystem::vec& rhs) const {
 
-	factor( system );
-	resolve(res, rhs);
-
-}
 }
 }
 }

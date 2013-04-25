@@ -199,6 +199,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	
 	{
 		scoped::timer step("system solve");
+		kkt->factor( sys );
 		kkt->solve(x, sys, rhs( sys ) );
 	}
 	

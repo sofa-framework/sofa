@@ -24,10 +24,13 @@ class SOFA_Compliant_API KKTSolver : public virtual core::objectmodel::BaseObjec
 
 	// solve the KKT system: \mat{ M - h^2 K & J^T \\ J, -C } x = rhs
 	// (watch out for the compliance scaling)
+	
+	virtual void factor(const AssembledSystem& system) = 0;
+	
 	virtual void solve(vec& x,
 	                   const AssembledSystem& system,
 	                   const vec& rhs) const = 0;
-
+	
 };
 
 

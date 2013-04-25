@@ -72,6 +72,8 @@ struct kkt {
 }
 			
 			
+void MinresSolver::factor(const AssembledSystem& ) { }
+
 void MinresSolver::solve(AssembledSystem::vec& x,
                       const AssembledSystem& system,
                       const AssembledSystem::vec& b) const {
