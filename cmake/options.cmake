@@ -54,11 +54,9 @@ else() # configuring from main solution
 	endif()
 
 	## boost
-	set(EXTERNAL_BOOST_PATH "" CACHE PATH "Use Boost full version (must contain the compiled libraries)")
-	if(EXTERNAL_BOOST_PATH STREQUAL "")
-		unset(EXTERNAL_HAVE_BOOST CACHE)
-	else()
-		set(EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use a full and compiled version of boost" FORCE)
+	option(EXTERNAL_HAVE_BOOST "Use the system boost library instead of extlib/miniBoost" OFF)
+	if(EXTERNAL_HAVE_BOOST)
+		set(EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
 		list(APPEND compilerDefines SOFA_HAVE_BOOST)
 	endif()
 
