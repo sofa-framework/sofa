@@ -80,7 +80,7 @@ protected:
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
 
 
-  	// some helpers to ease mapping to eigen types, lvalue and rvalue
+  	// some helpers to ease mapping from/to eigen types, lvalue and rvalue
 	  template<class VecDeriv>
 	  struct map_traits {
 		  typedef typename VecDeriv::value_type value_type;
@@ -128,6 +128,11 @@ protected:
 		   return map_traits<VecDeriv>::map(&data[0][0], data.size());
 	  }
 	
+
+	template<class LHS, class RHS>
+	static bool alias(const LHS& lhs, const RHS& rhs) {
+		return (void*)(&lhs[0][0]) == (void*)(&rhs[0][0]);
+	}
 
 public:
 
@@ -215,7 +220,7 @@ public:
 
 
     // max: added template real type to work around the mess between
-    // mapping ::Real types (sometimes it's In::Real, sometimes it's
+    // mapping ::Real member types (sometimes it's In::Real, sometimes it's
     // Out::Real, see e.g. BarycentricMapping/RigidMapping)
 
     /** Set from a CompressedRowSparseMatrix. @pre crs must be compressed
@@ -266,217 +271,169 @@ public:
     }
 
 
-    /// compute result = A * data
-    void mult( OutVecDeriv& result, const InVecDeriv& data ) const
-    {
-        // use optimized product if possible
-        if(canCast(data))
-        {
-	          Eigen::Map<const VectorEigenIn> d( (const InReal*)(&data[0][0]),data.size()*Nin);
-              Eigen::Map<VectorEigenOut> r(&result[0][0],result.size()*Nout);
-	          r = this->compressedMatrix * d.template cast<Real>();
-        }
-        else
-        {
 
-            // convert the data to Eigen type
-            VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
-            for(unsigned i=0; i<data.size(); i++)
-            {
-                for(unsigned j=0; j<Nin; j++)
-                    aux1[Nin* i+j] = data[i][j];
-            }
-            // compute the product
-            aux2 = this->compressedMatrix * aux1;
-            // convert the result back to the Sofa type
-            for(unsigned i=0; i<result.size(); i++)
-            {
-                for(unsigned j=0; j<Nout; j++)
-                    result[i][j] = aux2[Nout* i+j];
-            }
-        }
+protected:
+
+	// max: factored out the two exact same implementations for
+	// VecDeriv/Data<VecDeriv>
+	
+	template<class OutType, class InType>
+	void mult_impl(OutType& result, const InType& data) const {
+		 
+		// use optimized product if possible
+		if(canCast(data)) {
+
+			if( alias(result, data) ) {
+				this->map(result) = (this->compressedMatrix * this->map(data).template cast<Real>()).template cast<OutReal>();
+			} else {
+				this->map(result).noalias() = (this->compressedMatrix * this->map(data).template cast<Real>()).template cast<OutReal>();
+			}
+			
+			return;
+		}
+
+		// convert the data to Eigen type
+		VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
+		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nin; ++j) {
+				aux1[Nin * i + j] = data[i][j];
+			}
+		}
+		
+		// compute the product
+		aux2.noalias() = this->compressedMatrix * aux1;
+		// convert the result back to the Sofa type
+		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nout; ++j) {
+				result[i][j] = aux2[Nout * i + j];
+			}
+		}
+	}
+
+
+	template<class OutType, class InType>
+	void addMult_impl( OutType& result, const InType& data, OutReal fact) const {
+		
+		// use optimized product if possible
+		if( canCast(data) ) {
+
+			// TODO multiply the smallest dimension by fact
+
+			if( alias(result, data) ) {
+				map(result) += (this->compressedMatrix * map(data).template cast<Real>() * fact).template cast<OutReal>();
+			} else {
+				map(result).noalias() += (this->compressedMatrix * map(data).template cast<Real>() * fact).template cast<OutReal>();
+			}
+			return;
+		}
+
+		// convert the data to Eigen type
+		VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
+		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nin; ++j) {
+				aux1[Nin * i + j] = data[i][j];
+			}
+		}
+        
+		// compute the product
+		aux2.noalias() = this->compressedMatrix * aux1;
+        
+		// convert the result back to the Sofa type
+		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nout; ++j) {
+				result[i][j] += aux2[Nout * i + j] * fact;
+			}
+		}
+	}
+
+	template<class InType, class OutType>
+	void addMultTranspose_impl( InType& result, const OutType& data ) const {
+
+		// use optimized product if possible
+		if(canCast(result)) {
+
+			if( alias(result, data) ) {
+				map(result) += (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+			} else {
+				map(result).noalias() += (this->compressedMatrix.transpose() * map(data).template cast<Real>()).template cast<InReal>();
+			}
+			
+			return;
+		}
+
+		// convert the data to Eigen type
+		VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
+
+		for(unsigned i = 0, n = data.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nout; ++j) {
+				aux1[Nout * i + j] = data[i][j];
+			}
+		}
+		
+		// compute the product
+		aux2.noalias() = this->compressedMatrix.transpose() * aux1;
+		
+		// convert the result back to the Sofa type
+		for(unsigned i = 0, n = result.size(); i < n; ++i) {
+			for(unsigned j = 0; j < Nin; ++j) {
+				result[i][j] += aux2[Nin * i + j];
+			}
+		}
+	}
+
+	
+public:
+
+    /// compute result = A * data
+    void mult( OutVecDeriv& result, const InVecDeriv& data ) const {
+	    mult_impl(result, data);
     }
 
 
-
     /// compute result = A * data
-    void mult( Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data ) const
-    {
+    void mult( Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data ) const {
         helper::WriteAccessor<Data<OutVecDeriv> > result (_result);
         helper::ReadAccessor<Data<InVecDeriv> > data (_data);
 
-        // use optimized product if possible
-        if(canCast(data.ref()))
-        {
-	        this->map(result) = this->compressedMatrix * this->map(data).template cast<Real>();
-            //            cerr<<"EigenSparseMatrix::mult using maps, in = "<< data << endl;
-            //            cerr<<"EigenSparseMatrix::mult using maps, map<in> = "<< d.transpose() << endl;
-            //            cerr<<"EigenSparseMatrix::mult using maps, out = "<< result << endl;
-            //            cerr<<"EigenSparseMatrix::mult using maps, map<out> = "<< r.transpose() << endl;
-            return;
-        }
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
-        for(unsigned i=0; i<data.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                aux1[Nin* i+j] = data[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<result.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                result[i][j] = aux2[Nout* i+j];
-        }
+        mult_impl(result, data);
     }
 
     /// compute result += A * data
-    void addMult( OutVecDeriv& result, const InVecDeriv& data ) const
-    {
-        // use optimized product if possible
-        if(canCast(data))
-        {
-	          map(result) += this->compressedMatrix * map(data).template cast<Real>();
-            return;
-        }
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
-        for(unsigned i=0; i<data.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                aux1[Nin* i+j] = data[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<result.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                result[i][j] += aux2[Nout* i+j];
-        }
+    void addMult( OutVecDeriv& result, const InVecDeriv& data ) const {
+	    addMult_impl(result, data, 1.0);
     }
-
+      
 
     /// compute result += A * data
-    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const
-    {
+    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const {
         helper::WriteAccessor<Data<OutVecDeriv> > res (result);
         helper::ReadAccessor<Data<InVecDeriv> > dat (data);
 
-        // use optimized product if possible
-        if(canCast(dat.ref()))
-        {
-            map(res) += this->compressedMatrix * map(dat).template cast<Real>();
-            return;
-        }
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
-        for(unsigned i=0; i<dat.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                aux1[Nin* i+j] = dat[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<res.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                res[i][j] += aux2[Nout* i+j];
-        }
+        addMult_impl(res, dat, 1.0);
     }
-
+	
+   
     /// compute result += A * data * fact
-    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data, const OutReal fact) const
-    {
+    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data, const OutReal fact) const {
         helper::WriteAccessor<Data<OutVecDeriv> > res (result);
         helper::ReadAccessor<Data<InVecDeriv> > dat (data);
 
-        // use optimized product if possible
-        if(canCast(dat.ref()))
-        {
-	          map(res) += this->compressedMatrix * map(dat).template cast<Real>() * fact;
-            return;
-        }
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
-        for(unsigned i=0; i<dat.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                aux1[Nin* i+j] = dat[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<res.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                res[i][j] += aux2[Nout* i+j]*fact;
-        }
+        addMult_impl(res, dat, fact);
     }
+    
+	
 
     /// compute result += A^T * data
-    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const
-    {
-        // use optimized product if possible
-        if(canCast(result))
-        {
-	          map(result) += (this->compressedMatrix.transpose() * map(data)).template cast<InReal>();
-            return;
-        }
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->rowSize()),aux2(this->colSize());
-        for(unsigned i=0; i<data.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                aux1[Nout* i+j] = data[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix.transpose() * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<result.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                result[i][j] += aux2[Nin* i+j];
-        }
+    void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const {
+	    addMultTranspose_impl(result, data);
     }
+     
     /// compute result += A^T * data
-    void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const
-    {
+    void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const {
         helper::WriteAccessor<Data<InVecDeriv> > res (result);
         helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
 
-
-        // use optimized product if possible
-        if(canCast(res.wref()))
-        {
-   	        map(res) += (this->compressedMatrix.transpose() * map(dat)).template cast<InReal>();
-            return;
-        }
-
-
-        // convert the data to Eigen type
-        VectorEigenOut aux1(this->rowSize()),aux2(this->colSize());
-        for(unsigned i=0; i<dat.size(); i++)
-        {
-            for(unsigned j=0; j<Nout; j++)
-                aux1[Nout* i+j] = dat[i][j];
-        }
-        // compute the product
-        aux2 = this->compressedMatrix.transpose() * aux1;
-        // convert the result back to the Sofa type
-        for(unsigned i=0; i<res.size(); i++)
-        {
-            for(unsigned j=0; j<Nin; j++)
-                res[i][j] += aux2[Nin* i+j];
-        }
+        addMultTranspose_impl(res, dat);
     }
 
 
@@ -490,18 +447,40 @@ private:
     vector<Block> blocks;
     //@}
 
-    bool canCast( const InVecDeriv& v ) const
-    {
-        //        cerr<<"canCast, size = " << v.size() << endl;
-        //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
-        //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
-        //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
-        //        cerr<<"canCast,  diff = " << diff << endl;
-        if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(OutReal)) // contiguous
-            return true;
-        else return false;
+	
+	template<class T>
+	bool canCast( const T& v ) const { 
+		// is it contiguous ?
+		typedef typename T::value_type value_type;
+		typedef typename value_type::value_type scalar_type;
+		return  (v.size() - 1) * sizeof(value_type) == (&v[v.size() - 1][0] - &v[0][0]) * sizeof(scalar_type); 
+	}
+	
+	
+    // {
+    //     //        cerr<<"canCast, size = " << v.size() << endl;
+    //     //        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
+    //     //        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
+    //     //        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
+    //     //        cerr<<"canCast,  diff = " << diff << endl;
+    //     if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(OutReal)) // contiguous
+    //         return true;
+    //     else return false;
 
-    }
+    // }
+
+
+	// bool canCast( const Data<InVecDeriv>& v ) const
+	// 	{
+	// 		//        cerr<<"canCast, size = " << v.size() << endl;
+	// 		//        cerr<<"canCast, length = " << &v[v.size()-1][0] - &v[0][0] << endl;
+	// 		//        cerr<<"canCast, (v.size()-1)*sizeof(InDeriv) = " << (v.size()-1)*sizeof(InDeriv) << endl;
+	// 		//        int diff = (&v[v.size()-1][0]-&v[0][0]) * sizeof(Real);
+	// 		//        cerr<<"canCast,  diff = " << diff << endl;
+	// 		if(  (v.size()-1)*sizeof(InDeriv) ==  (&v[v.size()-1][0]-&v[0][0]) * sizeof(OutReal)) // contiguous
+	// 			return true;
+	// 		else return false;
+	// 	}
 
 //    /// Converts the incoming matrix to compreddedIncoming and clears the incoming matrix.
 //    void compress_incomingBlocks()
