@@ -110,20 +110,20 @@ if(SOFA_DUMP_VISITOR_INFO)
 	list(APPEND UI_FILES VisitorGUI.ui)
 endif()
 
-if(GUI_USE_QTVIEWER)
+if(SOFA-LIB_GUI_QTVIEWER)
 	list(APPEND HEADER_FILES viewer/qt/QtViewer.h)
 	
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
 endif()
 
-if(GUI_USE_QGLVIEWER)
+if(SOFA-LIB_GUI_QGLVIEWER)
 	list(APPEND HEADER_FILES viewer/qgl/QtGLViewer.h)
 	
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
 UseQt()
-if(EXTERNAL_USE_QT4)
+if(SOFA-EXTERNAL_PREFER_QT4)
 	list(APPEND HEADER_FILES
 	
 		 QModelViewTableDataContainer.h
@@ -161,7 +161,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${
 set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIQT")
 set(LINKER_DEPENDENCIES SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 
-if(GUI_USE_QGLVIEWER)
+if(SOFA-LIB_GUI_QGLVIEWER)
     list(APPEND LINKER_DEPENDENCIES QGLViewer)
 endif()
 

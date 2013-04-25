@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-if(SOFA_HAVE_PARDISO)
 set(HEADER_FILES
 
     ../SparsePARDISOSolver.h
@@ -13,7 +12,6 @@ set(SOURCE_FILES
     ../SparsePARDISOSolver.cpp
 
     )
-endif()
 
 set(GROUP_BASE_DIR "..")
 

@@ -34,7 +34,7 @@ set(SOURCE_FILES
 
     )
     
-if(EXTERNAL_HAVE_GLEW)
+if(SOFA-EXTERNAL_HAVE_GLEW)
 	list(APPEND HEADER_FILES "../visualmodel/OglAttribute.h")
 	list(APPEND HEADER_FILES "../visualmodel/OglAttribute.inl")
 	list(APPEND HEADER_FILES "../visualmodel/OglShader.h")

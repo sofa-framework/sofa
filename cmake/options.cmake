@@ -5,9 +5,7 @@ include(CMakeDependentOption)
 if(NOT GENERATED_FROM_MAIN_SOLUTION) # configuring from sub-project
 	# load cache
 	load_cache("${SOFA_ROOT_DIR}" INCLUDE_INTERNALS SOFA_SRC_DIR SOFA_BUILD_DIR)
-else() # configuring from main solution
-	include(${CMAKE_CURRENT_LIST_DIR}/configuration.cmake)
-	
+else() # configuring from main solution	
 	# hide unused default cmake variables
 	set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 	
@@ -21,12 +19,12 @@ else() # configuring from main solution
 			string(TOUPPER ${pluginName} pluginToUpperName)
 			file(GLOB_RECURSE pluginPathes "${pluginDir}/*CMakeLists.txt") # WARNING: this wildcard expression can catch "example/badCMakeLists.txt"
 			if(NOT pluginPathes STREQUAL "")
-				option("PLUGIN_${pluginToUpperName}" "Enable plugin ${pluginProjectName}" OFF)
+				option("SOFA-PLUGIN_${pluginToUpperName}" "Enable plugin ${pluginProjectName}" OFF)
 				foreach(pluginPath ${pluginPathes})
 					get_filename_component(projectFilename ${pluginPath} NAME)
 					string(REPLACE "/${projectFilename}" "" pluginFolder ${pluginPath})
 					get_filename_component(pluginProjectName ${pluginFolder} NAME)
-					RegisterDependencies(${pluginProjectName} OPTION "PLUGIN_${pluginToUpperName}" COMPILE_DEFINITIONS "SOFA_HAVE_PLUGIN_${pluginToUpperName}" PATH "${pluginFolder}")
+					RegisterDependencies(${pluginProjectName} OPTION "SOFA-PLUGIN_${pluginToUpperName}" COMPILE_DEFINITIONS "SOFA_HAVE_PLUGIN_${pluginToUpperName}" PATH "${pluginFolder}")
 				endforeach()
 			endif()
 		endif()
@@ -40,12 +38,12 @@ else() # configuring from main solution
 			string(TOUPPER ${devPluginName} devPluginToUpperName)
 			file(GLOB_RECURSE devPluginPathes "${devPluginDir}/*CMakeLists.txt") # WARNING: this wildcard expression can catch "example/badCMakeLists.txt"
 			if(NOT devPluginPathes STREQUAL "")
-				option("PLUGIN-DEV_${devPluginToUpperName}" "Enable dev plugin ${devPluginProjectName}" OFF)
+				option("SOFA-DEVPLUGIN_${devPluginToUpperName}" "Enable dev plugin ${devPluginProjectName}" OFF)
 				foreach(pluginPath ${pluginPathes})
 					get_filename_component(devProjectFilename ${pluginPath} NAME)
 					string(REPLACE "/${devProjectFilename}" "" devPluginFolder ${pluginPath})
 					get_filename_component(devPluginProjectName ${devPluginFolder} NAME)
-					RegisterDependencies(${devPluginProjectName} OPTION "PLUGIN-DEV_${devPluginToUpperName}" COMPILE_DEFINITIONS "SOFA_HAVE_DEVPLUGIN_${devPluginToUpperName}" PATH "${devPluginFolder}")
+					RegisterDependencies(${devPluginProjectName} OPTION "SOFA-DEVPLUGIN_${devPluginToUpperName}" COMPILE_DEFINITIONS "SOFA_HAVE_DEVPLUGIN_${devPluginToUpperName}" PATH "${devPluginFolder}")
 				endforeach()
 			endif()
 		endif()
@@ -63,173 +61,242 @@ else() # configuring from main solution
 	endif()
 
 	### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
-	set(EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
-	option(EXTERNAL_USE_QT4 "Use QT4 (else Sofa will use QT3) if Qt is needed" ON)
-	if(EXTERNAL_USE_QT4)
+	set(SOFA-EXTERNAL_QT_PATH "${QTDIR}" CACHE PATH "Qt dir path")
+	option(SOFA-EXTERNAL_PREFER_QT4 "Prefer Qt4 instead of Qt3 if Qt is needed" ON)
+	if(SOFA-EXTERNAL_PREFER_QT4)
 		list(APPEND compilerDefines SOFA_QT4)
 	endif()
 
 	## boost
-	option(EXTERNAL_HAVE_BOOST "Use the system boost library instead of extlib/miniBoost" OFF)
-	if(EXTERNAL_HAVE_BOOST)
-		set(EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
+	option(SOFA-EXTERNAL_HAVE_BOOST "Use the system boost library instead of extlib/miniBoost" OFF)
+	if(SOFA-EXTERNAL_HAVE_BOOST)
+		set(SOFA-EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
 		list(APPEND compilerDefines SOFA_HAVE_BOOST)
 	endif()
 
 	## zlib
-	option(EXTERNAL_HAVE_ZLIB "Use the ZLib library" OFF)
-	if(EXTERNAL_HAVE_ZLIB)
+	option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" OFF)
+	if(SOFA-EXTERNAL_HAVE_ZLIB)
 		list(APPEND compilerDefines SOFA_HAVE_ZLIB)
 	endif()
 
 	## libpng
-	option(EXTERNAL_HAVE_PNG "Use the LibPNG library" OFF)
-	if(EXTERNAL_HAVE_PNG)
+	option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" OFF)
+	if(SOFA-EXTERNAL_HAVE_PNG)
 		list(APPEND compilerDefines SOFA_HAVE_PNG)
 	endif()
 
 	## glew
-	option(EXTERNAL_HAVE_GLEW "Use the GLEW library" OFF)
-	if(EXTERNAL_HAVE_GLEW)
+	option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" OFF)
+	if(SOFA-EXTERNAL_HAVE_GLEW)
 		list(APPEND compilerDefines SOFA_HAVE_GLEW)
 	endif()
 
 	## ffmpeg
-	option(EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF)
-	if(EXTERNAL_HAVE_FFMPEG)
+	option(SOFA-EXTERNAL_HAVE_FFMPEG "Use the FFMPEG library" OFF)
+	if(SOFA-EXTERNAL_HAVE_FFMPEG)
 		list(APPEND compilerDefines SOFA_HAVE_FFMPEG)
 	endif()
 
 	## METIS
-	option(EXTERNAL_HAVE_METIS "Use Metis" OFF)
-	if(EXTERNAL_HAVE_METIS)
+	option(SOFA-EXTERNAL_HAVE_METIS "Use Metis" OFF)
+	if(SOFA-EXTERNAL_HAVE_METIS)
 		list(APPEND compilerDefines SOFA_HAVE_METIS)
 	endif()
 
 	## CSPARSE
-	option(EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
-	if(EXTERNAL_HAVE_CSPARSE)
-		list(APPEND compilerDefines SOFA_HAVE_CSPARSE)
-	endif()
+	option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
+	option(SOFA-EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF) #TODO port features/sofa/flowvr.prf
+	option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" ON)
 
-	## FLOWVR
-	option(EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF)
-	if(EXTERNAL_HAVE_FLOWVR)
-		list(APPEND compilerDefines SOFA_HAVE_FLOWVR)
-	#TODO port features/sofa/flowvr.prf
-	else()
-		list(APPEND compilerDefines MINI_FLOWVR)
-	endif()
+	# Miscellaneous features
 
-	## EIGEN
-	option(EXTERNAL_HAVE_EIGEN2 "Use Eigen" ON)
-	if(EXTERNAL_HAVE_EIGEN2)
-		list(APPEND compilerDefines SOFA_HAVE_EIGEN2)
-	endif()
-
-	# Optionnal features
-
-	## PARDISO
-	option(OPTION_PARDISO "Use Pardiso" OFF)
-	if(OPTION_PARDISO)
-		list(APPEND compilerDefines SOFA_HAVE_PARDISO)
-	endif()
-
-	## NO OPENGL
-	option(OPTION_NO_OPENGL "Disable OpenGL" OFF)
-	if(OPTION_NO_OPENGL)
+	## no opengl
+	option(SOFA-MISC_NO_OPENGL "Disable OpenGL" OFF)
+	if(SOFA-MISC_NO_OPENGL)
 		list(APPEND compilerDefines SOFA_NO_OPENGL)
-		if (EXTERNAL_HAVE_GLEW)
+		if (SOFA-EXTERNAL_HAVE_GLEW)
 			list(REMOVE_ITEM compilerDefines SOFA_HAVE_GLEW)
 		endif()
 		set(SOFA_VISUAL_LIB SofaBaseVisual)
 	else()
 		set(SOFA_VISUAL_LIB SofaOpenglVisual)
 	endif()
-
-	## NO QT
-	option(OPTION_NO_QT "Disable QT" OFF)
-	if(OPTION_NO_QT)
-		list(APPEND compilerDefines SOFA_NO_QT)
-	endif()
-  
-	## Tutorials
-	option(OPTION_TUTORIALS "Build SOFA tutorials" OFF)
-	if(OPTION_TUTORIALS)
-		list(APPEND compilerDefines SOFA_HAVE_TUTORIALS)
-	endif()
 	
-	## Applications
-	option(OPTION_APPLICATIONS "Build SOFA applications (the various tools and editors using the libraries)" OFF)
+	## application
+	option(SOFA-APPLICATION_GENERATE_DOC "Build GenerateCoc application " OFF)
+	option(SOFA-APPLICATION_GENERATE_RIGID "Build GenerateRigid application " OFF)
+	option(SOFA-APPLICATION_GENERATE_TYPEDEFS "Build GenerateTypedefs application " OFF)
+	option(SOFA-APPLICATION_MESH_CONV "Build MeshConv application " OFF)
+	option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " ON)
+	option(SOFA-APPLICATION_SOFA_BATCH "Build SofaBatch application " ON)
+	#option(SOFA-APPLICATION_SOFA_CONFIGURATION "Build SofaConfiguration application " OFF)
+	option(SOFA-APPLICATION_MODELER "Build Modeler application " ON)
+	option(SOFA-APPLICATION_SOFA_FLOWVR "Build SofaFlowVR application " OFF)
+	option(SOFA-APPLICATION_SOFA_INFO "Build SofaInfo application " OFF)
+	option(SOFA-APPLICATION_SOFA_INIT_TIMER "Build SofaInitTimer application " OFF)
+	option(SOFA-APPLICATION_SOFA_OPENCL "Build SofaOpenCL application " OFF)
+	option(SOFA-APPLICATION_SOFA_VERIFICATION "Build SofaVerification application " OFF)
+  
+	## tutorial
+	option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" ON)
+	option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" ON)
+	option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" ON)
+	option(SOFA-TUTORIAL_MIXED_PENDULUM "Build Mixed Pendulum tutorial" ON)
+	option(SOFA-TUTORIAL_OBJECT_CREATOR "Build Object creator tutorial" OFF)
+	option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" ON)
+	#option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF)
+	option(SOFA-TUTORIAL_ONE_TETRAHEDRON "Build One tetrahedron tutorial" ON)
+	#option(SOFA-TUTORIAL_ANATOMY_MODELLING "Build Anatomy modelling tutorial" OFF)
 
-	## PML
-	option(OPTION_PML "PML support" OFF)
-	if(OPTION_PML)
-		list(APPEND compilerDefines SOFA_HAVE_PML)
-	endif()
+	# core
+	option(SOFA-LIB_CORE "" ON)
+	option(SOFA-LIB_DEFAULTTYPE "" ON)
+	option(SOFA-LIB_HELPER "" ON)
+	
+	# component
+	option(SOFA-LIB_COMPONENT_BASE_ANIMATION_LOOP "" ON)
+	option(SOFA-LIB_COMPONENT_BASE_COLLISION "" ON)
+	option(SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER "" ON)
+	option(SOFA-LIB_COMPONENT_BASE_MECHANICS "" ON)
+	option(SOFA-LIB_COMPONENT_BASE_TOPOLOGY "" ON)
+	option(SOFA-LIB_COMPONENT_BASE_VISUAL "" ON)
+	option(SOFA-LIB_COMPONENT_BOUNDARY_CONDITION "" ON)
 
-	## GPU OpenCL
-	option(OPTION_GPU_OPENCL "OpenCL GPU support" OFF)
-	if(OPTION_GPU_OPENCL)
-		list(APPEND compilerDefines SOFA_GPU_OPENCL)
-	endif()
+	option(SOFA-LIB_COMPONENT_COMPONENT_ADVANCED "" ON)
+	option(SOFA-LIB_COMPONENT_COMPONENT_COMMON "" ON)
+	option(SOFA-LIB_COMPONENT_COMPONENT_GENERAL "" ON)
+	option(SOFA-LIB_COMPONENT_COMPONENT_MISC "" ON)
+	option(SOFA-LIB_COMPONENT_COMPONENT_BASE "" ON)
+	option(SOFA-LIB_COMPONENT_COMPONENT_MAIN "" ON)
 
-	## XML
-	option(XML_PARSER_LIBXML "Use LibXML instead of built-in TinyXML" OFF)
-	if(XML_PARSER_LIBXML)
-		list(APPEND compilerDefines SOFA_XML_PARSER_LIBXML)
-	else()
-		list(APPEND compilerDefines SOFA_XML_PARSER_TINYXML)
-		list(APPEND compilerDefines TIXML_USE_STL)
-		include_directories("${SOFA_EXTLIBS_DIR}/tinyxml")
-	endif()
+	option(SOFA-LIB_COMPONENT_CONSTRAINT "" ON)
+	option(SOFA-LIB_COMPONENT_DEFORMABLE "" ON)
+	option(SOFA-LIB_COMPONENT_DENSE_SOLVER "" ON)
+	option(SOFA-LIB_COMPONENT_EIGEN2_SOLVER "" OFF)
+
+	option(SOFA-LIB_COMPONENT_ENGINE "" ON)
+	option(SOFA-LIB_COMPONENT_EULERIAN_FLUID "" ON)
+	option(SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER "" ON)
+	option(SOFA-LIB_COMPONENT_EXPORTER "" ON)
+	option(SOFA-LIB_COMPONENT_GRAPH_COMPONENT "" ON)
+	option(SOFA-LIB_COMPONENT_HAPTICS "" ON)
+	option(SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER "" ON)
+	option(SOFA-LIB_COMPONENT_LOADER "" ON)
+	option(SOFA-LIB_COMPONENT_MESH_COLLISION "" ON)
+	option(SOFA-LIB_COMPONENT_MISC "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_COLLISION "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_ENGINE "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_FEM "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_FORCEFIELD "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_MAPPING "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_SOLVER "" ON)
+	option(SOFA-LIB_COMPONENT_MISC_TOPOLOGY "" ON)
+	option(SOFA-LIB_COMPONENT_NON_UNIFORM_FEM "" ON)
+	option(SOFA-LIB_COMPONENT_OBJECT_INTERACTION "" ON)
+	option(SOFA-LIB_COMPONENT_OPENGL_VISUAL "" ON)
+	option(SOFA-LIB_COMPONENT_PARDISO_SOLVER "" OFF)
+	option(SOFA-LIB_COMPONENT_RIGID "" ON)
+	option(SOFA-LIB_COMPONENT_SIMPLE_FEM "" ON)
+	option(SOFA-LIB_COMPONENT_SPARSE_SOLVER "" OFF)
+
+	option(SOFA-LIB_COMPONENT_PRECONDITIONER "" ON)
+	option(SOFA-LIB_COMPONENT_SPH_FLUID "" ON)
+	option(SOFA-LIB_COMPONENT_TAUCS_SOLVER "" OFF)
+	option(SOFA-LIB_COMPONENT_TOPOLOGY_MAPPING "" ON)
+	option(SOFA-LIB_COMPONENT_USER_INTERACTION "" ON)
+	option(SOFA-LIB_COMPONENT_VALIDATION "" ON)
+	option(SOFA-LIB_COMPONENT_VOLUMETRIC_DATA "" ON)
+	
+	option(SOFA-LIB_COMPONENT_SOFA_PML "" OFF)
+
+	option(SOFA-LIB_COMPONENT_GPU_OPENCL "" OFF)	
+	
+if(false)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_ANIMATION_LOOP)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_COLLISION)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_MECHANICS)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_TOPOLOGY)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BASE_VISUAL)
+	mark_as_advanced(SOFA-LIB_COMPONENT_BOUNDARY_CONDITION)
+
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_ADVANCED)
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_COMMON)
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_GENERAL)
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_MISC)
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_BASE)
+	mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_MAIN)
+
+	mark_as_advanced(SOFA-LIB_COMPONENT_CONSTRAINT)
+	mark_as_advanced(SOFA-LIB_COMPONENT_DEFORMABLE)
+	mark_as_advanced(SOFA-LIB_COMPONENT_DENSE_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
+
+	mark_as_advanced(SOFA-LIB_COMPONENT_ENGINE)
+	mark_as_advanced(SOFA-LIB_COMPONENT_EULERIAN_FLUID)
+	mark_as_advanced(SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_EXPORTER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_GRAPH_COMPONENT)
+	mark_as_advanced(SOFA-LIB_COMPONENT_HAPTICS)
+	mark_as_advanced(SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_LOADER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MESH_COLLISION)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_COLLISION)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_ENGINE)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_FEM)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_FORCEFIELD)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_MAPPING)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_MISC_TOPOLOGY)
+	mark_as_advanced(SOFA-LIB_COMPONENT_NON_UNIFORM_FEM)
+	mark_as_advanced(SOFA-LIB_COMPONENT_OBJECT_INTERACTION)
+	mark_as_advanced(SOFA-LIB_COMPONENT_OPENGL_VISUAL)
+	mark_as_advanced(SOFA-LIB_COMPONENT_PARDISO_SOLVER)
+	mark_as_advanced(SOFA-LIB_COMPONENT_RIGID)
+	mark_as_advanced(SOFA-LIB_COMPONENT_SIMPLE_FEM)
+	mark_as_advanced(SOFA-LIB_COMPONENT_SPARSE_SOLVER)
+
+	mark_as_advanced(SOFA-LIB_PRECONDITIONER)
+	mark_as_advanced(SOFA-LIB_SPH_FLUID)
+	mark_as_advanced(SOFA-LIB_TAUCS_SOLVER)
+	mark_as_advanced(SOFA-LIB_TOPOLOGY_MAPPING)
+	mark_as_advanced(SOFA-LIB_USER_INTERACTION)
+	mark_as_advanced(SOFA-LIB_VALIDATION)
+	mark_as_advanced(SOFA-LIB_VOLUMETRIC_DATA)
+	
+	mark_as_advanced(SOFA-LIB_COMPONENT_SOFA_PML)
+
+	mark_as_advanced(SOFA-LIB_COMPONENT_GPU_OPENCL)
+endif()
+	
+	# simulation
+	option(SOFA-LIB_SIMULATION_GRAPH_DAG "Directed acyclic graph" OFF)
+	option(SOFA-LIB_SIMULATION_GRAPH_BGL "Boost graph library" OFF)
 
 	# developer convenience
 	#option(CONVENIENCE_ "" ON)
 
 	# optionnal features
-	option(SIMULATION_GRAPH_DAG "Directed acyclic graph" OFF)
-	if(SIMULATION_GRAPH_DAG)
-		list(APPEND compilerDefines SOFA_HAVE_DAG)
-	endif()
-	RegisterDependencies(SofaSimulationGraph OPTION "SIMULATION_GRAPH_DAG" COMPILE_DEFINITIONS "SOFA_HAVE_DAG" PATH "${SOFA_MODULES_DIR}/sofa/simulation/graph")
-	
-	option(SIMULATION_GRAPH_BGL "Boost graph library" OFF)
-	if(SIMULATION_GRAPH_BGL)
-		list(APPEND compilerDefines SOFA_HAVE_BGL)
-	endif()
-	RegisterDependencies(SofaSimulationBGL OPTION "SIMULATION_GRAPH_BGL" COMPILE_DEFINITIONS "SOFA_HAVE_BGL" PATH "${SOFA_MODULES_DIR}/sofa/simulation/bgl")
-
-	CMAKE_DEPENDENT_OPTION(GUI_USE_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
-	if(GUI_USE_QTVIEWER)
-		list(APPEND compilerDefines SOFA_GUI_QTVIEWER)
-	endif()
-	CMAKE_DEPENDENT_OPTION(GUI_USE_QGLVIEWER "Use QGLViewer" OFF
-		"NOT OPTION_NO_OPENGL; NOT OPTION_NO_QT" OFF)
-	if(GUI_USE_QGLVIEWER)
-		list(APPEND compilerDefines SOFA_GUI_QGLVIEWER)
-	endif()
-	CMAKE_DEPENDENT_OPTION(GUI_USE_GLUT "Use GLUT interface" ON
-		"NOT OPTION_NO_OPENGL" OFF)
-	if(GUI_USE_GLUT)
-		list(APPEND compilerDefines SOFA_GUI_GLUT)
-	endif()
-	option(GUI_USE_INTERACTION "Enable interaction mode" OFF)
-	if(GUI_USE_INTERACTION)
-		list(APPEND compilerDefines SOFA_GUI_INTERACTION)
-	endif()
+	CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
+	CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QGLVIEWER "Use QGLViewer" OFF
+		"NOT SOFA-MISC_NO_OPENGL; NOT SOFA-MISC_NO_QT" OFF)
+	CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_GLUT "Use GLUT interface" ON
+		"NOT SOFA-MISC_NO_OPENGL" OFF)
+	option(SOFA-LIB_GUI_INTERACTION "Enable interaction mode" OFF)
 
 	# unit tests
-	option(UNIT-TESTS_USE "Build and use unit tests" OFF)
-	if(UNIT-TESTS_USE)
+	option(SOFA-MISC_TESTS "Build and use unit tests" OFF)
+	if(SOFA-MISC_TESTS)
 		if(NOT WIN32)
-                        option(UNIT-TESTS_BUILD_GTEST "Build google test framework" ON)
+			option(SOFA-MISC_BUILD_GTEST "Build google test framework" ON)
 		endif()
 	endif()
 
 	# miscellaneous
-	option(MISC_USE_DEVELOPER_MODE "Build and use the applications-dev projects (dev-plugins may need them)" OFF)
-	if(MISC_USE_DEVELOPER_MODE)
+	option(SOFA-MISC_DEVELOPER_MODE "Build and use the applications-dev projects (dev-plugins may need them)" OFF)
+	if(SOFA-MISC_DEVELOPER_MODE)
 		list(APPEND compilerDefines SOFA_DEV)
 	endif()
 	
@@ -237,12 +304,12 @@ else() # configuring from main solution
 	
 	# os-specific
 	if(XBOX)
-		if(EXTERNAL_HAVE_BOOST)
-			# we use EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
-			unset(EXTERNAL_HAVE_BOOST CACHE)
+		if(SOFA-EXTERNAL_HAVE_BOOST)
+			# we use SOFA-EXTERNAL_BOOST_PATH but don't have the full boost and thus can't compile the code this normally enables.
+			unset(SOFA-EXTERNAL_HAVE_BOOST CACHE)
 			list(REMOVE_ITEM compilerDefines SOFA_HAVE_BOOST)
 		endif()
-		if (EXTERNAL_HAVE_EIGEN2)
+		if (SOFA-EXTERNAL_HAVE_EIGEN2)
 			# cpuid identification code does not exist on the platform, it's cleaner to disable it here.
 			list(APPEND GLOBAL_COMPILER_DEFINES EIGEN_NO_CPUID)
 		endif()

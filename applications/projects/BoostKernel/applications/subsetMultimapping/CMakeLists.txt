@@ -10,7 +10,7 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaComponentMain SofaObjectCreator SofaGuiMain SofaSimulationBGL)
+set(LINKER_DEPENDENCIES SofaComponentMain ObjectCreator SofaGuiMain SofaSimulationBGL)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

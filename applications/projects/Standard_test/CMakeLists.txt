@@ -26,7 +26,7 @@ if(UNIT-TESTS_BUILD_GTEST OR WIN32)
 endif()
 
 set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
-set(LINKER_DEPENDENCIES SofaObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
+set(LINKER_DEPENDENCIES ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
 
 if(WIN32)
 	set(COMPILER_FLAGS ${COMPILER_FLAGS} "/MT")

@@ -5,24 +5,14 @@ project(${SOLUTION_NAME})
 
 include(${SOFA_CMAKE_DIR}/preSolution.cmake)
 
-RegisterDependencies("ChainHybrid" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
-RegisterDependencies("CompositeObject" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
-RegisterDependencies("HouseOfCards" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/houseOfCards")
-RegisterDependencies("MixedPendulum" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/mixedPendulum")
-RegisterDependencies("ObjectCreator" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
-RegisterDependencies("OneParticle" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticle")
-#RegisterDependencies("OneParticleWithSofaTypedefs" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
-RegisterDependencies("OneTetrahedron" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
-#RegisterDependencies("AnatomyModelling" OPTION OPTION_TUTORIALS PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
-
-#add_subdirectory("chainHybrid")
-#add_subdirectory("compositeObject")
-#add_subdirectory("houseOfCards")
-#add_subdirectory("mixedPendulum")
-#add_subdirectory("objectCreator")
-#add_subdirectory("oneParticle")
-##add_subdirectory("oneParticleWithSofaTypedefs") # temporarily discarded since it can not compile with the Flexible plugin
-#add_subdirectory("oneTetrahedron")
-##add_subdirectory("anatomyModelling") # currently there is no CMakeLists.txt
+RegisterDependencies("ChainHybrid" OPTION "SOFA-TUTORIAL_CHAIN_HYBRID" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
+RegisterDependencies("CompositeObject" OPTION "SOFA-TUTORIAL_COMPOSITE_OBJECT" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
+RegisterDependencies("HouseOfCards" OPTION "SOFA-TUTORIAL_HOUSE_OF_CARDS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/houseOfCards")
+RegisterDependencies("MixedPendulum" OPTION "SOFA-TUTORIAL_MIXED_PENDULUM" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/mixedPendulum")
+RegisterDependencies("ObjectCreator" OPTION "SOFA-TUTORIAL_OBJECT_CREATOR" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
+RegisterDependencies("OneParticle" OPTION "SOFA-TUTORIAL_ONE_PARTICLE" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticle")
+#RegisterDependencies("OneParticleWithSofaTypedefs" OPTION "SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
+RegisterDependencies("OneTetrahedron" OPTION "SOFA-TUTORIAL_ONE_TETRAHEDRON" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
+#RegisterDependencies("AnatomyModelling" OPTION "SOFA-TUTORIAL_ANATOMY_MODELLING" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
 
 include(${SOFA_CMAKE_DIR}/postSolution.cmake)

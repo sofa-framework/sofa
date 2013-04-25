@@ -12,7 +12,7 @@ set(SOURCE_FILES
 	SimpleGUI.cpp
 	)
 
-if(EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES MultithreadGUI.h)
 	
 	list(APPEND SOURCE_FILES MultithreadGUI.cpp)

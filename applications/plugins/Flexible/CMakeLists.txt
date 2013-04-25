@@ -123,7 +123,7 @@ set(SOURCE_FILES
 
 	)
 
-if(PLUGIN_IMAGE)
+if(SOFA-PLUGIN_IMAGE)
         
    	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
    	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
@@ -148,8 +148,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set(COMPILER_DEFINES "SOFA_BUILD_Flexible")
 set(LINKER_DEPENDENCIES SofaGuiQt)
 
-if(PLUGIN_IMAGE)
-    if(PLUGIN_OPENCV)
+if(SOFA-PLUGIN_IMAGE)
+    if(SOFA-PLUGIN_OPENCV)
 	
         list(APPEND LINKER_DEPENDENCIES "ml")
         list(APPEND LINKER_DEPENDENCIES "cvaux")

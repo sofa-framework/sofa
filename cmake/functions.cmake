@@ -139,6 +139,16 @@ macro(SOFA_QT3_WRAP_UI outfiles )
 endmacro()
 
 function(UseQt)
+	set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
+	if(SOFA-EXTERNAL_PREFER_QT4)
+		set(ENV{CONFIG} "qt;uic;uic3")
+		find_package(Qt4 COMPONENTS qtopengl qt3support qtxml REQUIRED)
+	else()
+		set(ENV{CONFIG} "qt")
+		find_package(Qt3 COMPONENTS qtopengl REQUIRED)
+	endif()
+	set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
+	
 	include(${QT_USE_FILE})
 	include_directories(${QT_INCLUDE_DIR})
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -158,7 +168,7 @@ endfunction()
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration
 # to add include directories from dependencies and to enable dependencies / plugins
 # libN is a list of library using the same OPTION to be enabled (opengl/glu for instance)
-# optionName is the name of the OPTION used to enable / disable the module (for instance EXTERNAL_HAVE_GLEW)
+# optionName is the name of the OPTION used to enable / disable the module (for instance SOFA-EXTERNAL_HAVE_GLEW)
 # compiler definitions is the preprocessor macro that has to be globally setted if the project is enabled
 # path parameter is the path to the cmake project if any (may be needed to enable the project)
 function(RegisterDependencies)
@@ -285,13 +295,17 @@ endfunction()
 # <projectName> the project to compute
 # <forceEnable> if true : this dependency is needed in a project and we need to enable it even if the user disabled it
 #				if false : this dependency is not needed for now and the user choose to disable, we skip it
+# <fromProject>	for log purpose only, the name of the project needing the processed dependency
 # <offset>		for log purpose only, add characters before outputting a line in the log (useful for tree visualization)
-function(ComputeDependencies projectName forceEnable offset)
+function(ComputeDependencies projectName forceEnable fromProject offset)
 	set(check 1)
 	# check if the project is enabled or not
 	if(NOT ${forceEnable})
 		if(NOT GLOBAL_PROJECT_ENABLED_${projectName})
 			if(GLOBAL_PROJECT_OPTION_${projectName})
+				if(NOT DEFINED ${GLOBAL_PROJECT_OPTION_${projectName}})
+					message(FATAL_ERROR "The option : '${GLOBAL_PROJECT_OPTION_${projectName}}' has been used to register a project but does not exist")
+				endif()
 				if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
 					set(check 0)
 				endif()
@@ -330,7 +344,7 @@ function(ComputeDependencies projectName forceEnable offset)
 			# add the current project
 			if(GLOBAL_PROJECT_PATH_${projectName}) # TODO: if there is no path try a find_package / find_library
 				if(NOT ${GLOBAL_PROJECT_PATH_${projectName}} STREQUAL "")
-					message(STATUS " - Adding project '${projectName}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
+					message(STATUS " - Adding dependency '${projectName}' for '${fromProject}' from : ${GLOBAL_PROJECT_PATH_${projectName}}")
 					add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
 				endif()
 			endif()
@@ -343,7 +357,7 @@ function(ComputeDependencies projectName forceEnable offset)
 			
 			#message(STATUS "${offset} + ${projectName}")
 			foreach(dependency ${dependencies})
-				ComputeDependencies(${dependency} true "${offset} ")
+				ComputeDependencies(${dependency} true "${projectName}" "${offset} ")
 			endforeach()
 			#message(STATUS "${offset} - ${projectName}")
 			
