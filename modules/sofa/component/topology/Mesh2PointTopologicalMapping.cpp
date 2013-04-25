@@ -112,7 +112,6 @@ void Mesh2PointTopologicalMapping::init()
                 for (int i=0; i<fromModel->getNbPoints(); i++)
                 {
                     toModelLastPointIndex+=addInputPoint(i);
-                    
                 }
             }
 
@@ -344,14 +343,16 @@ void Mesh2PointTopologicalMapping::init()
 
 size_t Mesh2PointTopologicalMapping::addInputPoint(unsigned int i)
 {
-    assert(i<pointsMappedFrom[POINT].size());
-    unsigned int toModelLastPointIndex = toModel.size() == 0 ? 0 : toModel.size()-1;
+    if( pointsMappedFrom[POINT].size() < i+1)
+        pointsMappedFrom[POINT].resize(i+1);
+    else
+        pointsMappedFrom[POINT][i].clear();
+    
     for (unsigned int j=0; j<pointBaryCoords.getValue().size(); j++)
     {
+        pointsMappedFrom[POINT][i].push_back(toModel->getNbPoints() );
         toModel->addPoint(fromModel->getPX(i)+pointBaryCoords.getValue()[j][0], fromModel->getPY(i)+pointBaryCoords.getValue()[j][1], fromModel->getPZ(i)+pointBaryCoords.getValue()[j][2]);
-        pointsMappedFrom[POINT][i].push_back(toModelLastPointIndex);
         pointSource.push_back(std::make_pair(POINT,i));
-        ++toModelLastPointIndex;
     }
 
     return pointBaryCoords.getValue().size();
@@ -460,12 +461,10 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::POINTSADDED:
             {
                 const sofa::helper::vector<unsigned int>& tab= ( static_cast< const PointsAdded *>( *changeIt ) )->pointIndexArray;
-                pointsMappedFrom[POINT].resize( pointsMappedFrom[POINT].size() + tab.size() );
                 for (int i=0; i<tab.size(); i++)
                 {
                     addInputPoint(tab[i]);
                 }
-
                 /// @TODO
 //				sout << "INPUT ADD POINTS " << sendl;
                 break;
