@@ -28,7 +28,7 @@ namespace sofa {
 					C.resize(n, n);
 					phi = vec::Zero(n); 
 
-					unilateral = vec::Zero( n );
+					flags.setConstant(n, SolverFlags::NO_FLAG);
 				}
 				
 			}

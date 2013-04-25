@@ -93,9 +93,11 @@ public:
 		typedef std::map< dofs_type*, mapped> map_type;
 		map_type map;
 				
+		// TODO only expose sofa data through eigen maps ?
+
 		// TODO lambda ?
 		vec f, v, phi;
-		vec unilateral;
+		system_type::flags_type flags;
 
 		real damping;
 
@@ -126,7 +128,8 @@ public:
 	chunk::map_type mapping(simulation::Node* node);
 			
 	vec force(simulation::Node* node);
-	vec unilateral(simulation::Node* node);
+	system_type::flags_type flags(simulation::Node* node);
+	
 	vec vel(simulation::Node* node);
 	vec rhs(simulation::Node* node);
 	real damping(simulation::Node* node);

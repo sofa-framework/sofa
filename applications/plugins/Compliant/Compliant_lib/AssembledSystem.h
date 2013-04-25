@@ -1,6 +1,8 @@
 #ifndef ASSEMBLED_SYSTEM_H
 #define ASSEMBLED_SYSTEM_H
 
+#include "SolverFlags.h"
+
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
@@ -41,8 +43,16 @@ public:
 	// force, velocity and deformation vectors
 	vec p, f, v, phi; 					// should we have lambda ?
 	
-	// unilateral flags
-	vec unilateral;
+	// only for compliant dofs for now
+	typedef Eigen::Matrix< SolverFlags::value_type, Eigen::Dynamic, 1> flags_type;
+	flags_type flags;
+	
+	struct block {
+		unsigned offset, size;
+	};
+
+	typedef std::vector<block> blocks_type;
+	blocks_type blocks;
 };
 
 
