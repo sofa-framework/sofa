@@ -931,7 +931,11 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			
 	// result system
 	system_type res(p.size_m, p.size_c);
-			
+	
+	// TODO tighter
+	unsigned n_blocks = prefix.size();
+	res.blocks.reserve( n_blocks );
+	
 	res.dt = mparams->dt();
 			
 	// master/compliant offsets
@@ -1030,7 +1034,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 			}					
 					
 			// compliant dofs: fill compliance matrix/rhs
-			if( !empty(c.C) ) {
+			if( c.compliant() ) { // !empty(c.C)
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
 				
@@ -1058,6 +1062,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				
 				// unilateral mask
 				if( c.flags.size() ) res.flags.segment(off_c, c.size) = c.flags;
+				
+				// add a block
+				AssembledSystem::block block;
+				block.offset = off_c;
+				block.size = c.size;
+				
+				res.blocks.push_back( block );
 				
 				off_c += c.size;
 			}
