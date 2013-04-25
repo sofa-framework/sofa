@@ -14,6 +14,10 @@ namespace linearsolver {
 // Assembly of all the relevant data in the scene graph. Used by
 // KKTSolver and AssemblyVisitor.
 
+// TODO it might be more efficient to store column-major only,
+// especially store JT as a column-major matrix, as we sometimes have
+// to compute Hinv * JT which requires converting back and forth.
+
 class AssembledSystem {
 public:
 	typedef SReal real;
