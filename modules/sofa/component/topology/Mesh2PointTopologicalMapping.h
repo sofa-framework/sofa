@@ -144,6 +144,7 @@ protected:
 
     std::set<unsigned int> pointsToRemove;
 
+    size_t addInputPoint(unsigned int i); ///< Returns the number of points added inside the output topology. 
     void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod);
     void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod);
 
