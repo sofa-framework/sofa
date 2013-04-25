@@ -14,7 +14,8 @@ SOURCES = \
     ComplianceSolver.cpp \
 		DampingCompliance.cpp \
 		RigidMass.cpp \
-		UnilateralMask.cpp \
+#		UnilateralMask.cpp \
+		SolverFlags.cpp \
 		RigidJointMapping.cpp \
 		AssembledRigidRigidMapping.cpp \
 		LDLTSolver.cpp \
@@ -34,7 +35,8 @@ HEADERS = \
     ComplianceSolver.h \
 		DampingCompliance.h \
 		RigidMass.h \
-		UnilateralMask.h \
+#		UnilateralMask.h \
+		SolverFlags.h \
 		RigidJointMapping.h \
 		AssembledRigidRigidMapping.h \
 		KKTSolver.h \

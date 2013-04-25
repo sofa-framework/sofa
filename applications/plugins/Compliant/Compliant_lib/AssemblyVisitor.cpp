@@ -3,7 +3,7 @@
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 
-#include "UnilateralMask.h"
+#include "SolverFlags.h"
 
 #include "./utils/scoped.h"
 #include "./utils/find.h"
@@ -404,17 +404,17 @@ AssemblyVisitor::vec AssemblyVisitor::rhs(simulation::Node* node) {
 	return res;
 }
 
-AssemblyVisitor::vec AssemblyVisitor::unilateral(simulation::Node* node) {
+AssembledSystem::flags_type AssemblyVisitor::flags(simulation::Node* node) {
 	assert( node->mechanicalState );
 	
-	component::linearsolver::UnilateralMask* mask = 
-		node->mechanicalState->getContext()->get<component::linearsolver::UnilateralMask>(core::objectmodel::BaseContext::Local);
+	component::linearsolver::SolverFlags* flags = 
+		node->mechanicalState->getContext()->get<component::linearsolver::SolverFlags>(core::objectmodel::BaseContext::Local);
 	
-	vec res;
+	AssembledSystem::flags_type res;
 	
-	if( mask ) {
+	if( flags ) {
 		res.resize( node->mechanicalState->getMatrixSize() );
-		unsigned written = mask->write( res.data() );
+		unsigned written = flags->write( res.data() );
 		assert( written == res.size() );
 		
 		return res;
@@ -466,7 +466,7 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 		if( !empty(c.C) ) {
 			c.phi = rhs( node );
 			c.damping = damping( node );
-			c.unilateral = unilateral( node );
+			c.flags = flags( node );
 
 			c.mechanical = true;
 			c.vertex = boost::add_vertex(v, graph);
@@ -1057,7 +1057,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				// res.damping.segment(off_c, c.size).setConstant( c.damping );
 				
 				// unilateral mask
-				if( c.unilateral.size() ) res.unilateral.segment(off_c, c.size) = c.unilateral;
+				if( c.flags.size() ) res.flags.segment(off_c, c.size) = c.flags;
 				
 				off_c += c.size;
 			}
@@ -1088,7 +1088,7 @@ bool AssemblyVisitor::chunk::check() const {
 		if(!empty(C)) {
 			assert( phi.size() == int(size) );
 			assert( damping >= 0 );
-			assert( !unilateral.size() || unilateral.size() == int(size) );
+			assert( !flags.size() || flags.size() == int(size) );
 		}
 
 	}
