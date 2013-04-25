@@ -1,76 +1,47 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -10 0 " dt="0.001"  >
-    <VisualStyle displayFlags="hideWireframe showBehaviorModels showInteractionForceFields" />
-    <DefaultAnimationLoop />
-    <DefaultVisualManagerLoop />
-
-  <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
-
-<MechanicalObject position="0 0 3 1 0 3" name="fixed points" />
-<FixedConstraint indices="0 1" />
-
-    <Node 	name="Flexible"   >
-
-    <EulerImplicitSolver />
-    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
-
-          <!--  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@../mesh" voxelSize="0.02" padSize="1" rotateImage="true" />-->
-	    <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
-
-<!-- param = DESIRED NUMBER OF FRAMES -->
-	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="1" printLog="false"/> 
-            <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" src="@merged" />	
-	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
-<!--
-	    <Node 	name="behavior"   >
-		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamples="false" printLog="false" targetNumber="10"/>
-		<MechanicalObject template="F331" name="F" />
-	    	<LinearMapping template="Mapping&lt;Rigid,F331&gt;" assembleJ="false"/>
-		<Node 	name="E"   >
-		    <MechanicalObject  template="E331" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
-		    <HookeForceField  template="E331" name="ff" youngModulus="1" poissonRatio="0" viscosity="0"/>
+<Node 	 name="Root"  gravity="0 -10 0"  dt="0.001"  >
+	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showInteractionForceFields hideWireframe" />
+	<DefaultAnimationLoop name="defaultAnimationLoop1" />
+	<DefaultVisualManagerLoop name="defaultVisualManagerLoop1" />
+	<MeshObjLoader name="mesh"  filename="beam.obj"  triangulate="1" />
+	<MechanicalObject template="Vec3d" name="fixed points"  position="0 0 3 1 0 3"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+	<FixedConstraint template="Vec3d" name="fixedConstraint1"  indices="0 1" />
+	<Node 	 name="Flexible"  >
+		<EulerImplicitSolver name="eulerImplicitSolver1" />
+		<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="200"  tolerance="1e-15"  threshold="1e-15" />
+		<ImageContainer template="ImageUC" name="image"  listening="1"  filename="beam.raw"  drawBB="0" />
+		<ImageSampler template="ImageUC" name="sampler"  printLog="0"  listening="1"  image="@image.image"  transform="@image.transform"  method="1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"  param="1" />
+		<MergeMeshes template="Vec3d" name="merged"  nbMeshes="2"  position1="@sampler.fixedPosition"  position2="@sampler.position" />
+		<MechanicalObject template="Rigid" name="parent"  useMask="0"  position="@merged.position"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
+		<VoronoiShapeFunction template="ShapeFunction3d,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
+		<Node 	 name="collision"  >
+			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
+			<MechanicalObject template="Vec3d" name="pts"  useMask="0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+			<UniformMass template="Vec3d" name="uniformMass1"  totalmass="3" />
+			<LinearMapping template="Rigid,Vec3d" name="linearMap1"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
+			<StiffSpringForceField template="Vec3d" name="stiffSpringFF1"  spring="0 2 100 0 0
+"  object1="@../.."  object2="@." />
 		</Node>
-	    </Node>
--->
-
-	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../../mesh" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-		<UniformMass totalMass="3" />
-	       	<StiffSpringForceField spring="0 2 100 0 0"  object1="@../.."  object2="@." />
-	    	<LinearMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
-	    </Node>
-
-	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
-	    </Node>
-    </Node>
-
-
-
-
-    <Node 	name="Rigid"   >
-
-    <EulerImplicitSolver />
-    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
-
-	    <MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" position="1 0 0 0 0 0 1" />	
-
-	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../../mesh" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-		<UniformMass totalMass="3" />
-	       	<StiffSpringForceField spring="1 2 100 0 0"  object1="@../.."  object2="@." />
-	    	<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
-	    </Node>
-
-	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.8 1 0.8 "/>
-	    	<RigidMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
-	    </Node>
-    </Node>
-
+		<Node 	 name="visual"  >
+			<OglModel template="ExtVec3f" name="Visual"  fileMesh="beam.obj"  material="Default Diffuse 1 1 0.8 0.8 1 Ambient 1 0.2 0.16 0.16 1 Specular 0 1 0.8 0.8 1 Emissive 0 1 0.8 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<LinearMapping template="Rigid,ExtVec3f" name="linearMap2"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
+		</Node>
+	</Node>
+	<Node 	 name="Rigid"  >
+		<EulerImplicitSolver name="eulerImplicitSolver2" />
+		<CGLinearSolver template="GraphScattered" name="cGLinearSolver2"  iterations="200"  tolerance="1e-15"  threshold="1e-15" />
+		<MechanicalObject template="Rigid" name="parent"  useMask="0"  position="1 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
+		<Node 	 name="collision"  >
+			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
+			<MechanicalObject template="Vec3d" name="pts"  useMask="0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+			<UniformMass template="Vec3d" name="uniformMass2"  totalmass="3" />
+			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
+			<StiffSpringForceField template="Vec3d" name="stiffSpringFF2"  spring="1 2 100 0 0
+"  object1="@../.."  object2="@." />
+		</Node>
+		<Node 	 name="visual"  >
+			<OglModel template="ExtVec3f" name="Visual"  fileMesh="beam.obj"  material="Default Diffuse 1 0.8 1 0.8 1 Ambient 1 0.16 0.2 0.16 1 Specular 0 0.8 1 0.8 1 Emissive 0 0.8 1 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<RigidMapping template="Rigid,ExtVec3f" name="rigidMap2"  input="@../"  output="@./" />
+		</Node>
+	</Node>
 </Node>
