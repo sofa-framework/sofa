@@ -213,19 +213,19 @@ set(SOURCE_FILES
 	objectmodel/GUIEvent.cpp
 	)
 
-if(NOT OPTION_NO_OPENGL)
+if(NOT SOFA-MISC_NO_OPENGL)
   list(APPEND HEADER_FILES "visual/DrawToolGL.h")
 	
 	list(APPEND SOURCE_FILES "visual/DrawToolGL.cpp")
 endif()  
   
-if(EXTERNAL_HAVE_BOOST)
+if(SOFA-EXTERNAL_HAVE_BOOST)
 	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
 	
 	list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")
 endif()
 
-if(SOFA_SMP)
+if(SOFA-MISC_HAVE_SMP)
 	list(APPEND HEADER_FILES "CallContext.h")
 	list(APPEND HEADER_FILES "objectmodel/BaseObjectTasks.h")
 	list(APPEND HEADER_FILES "ParallelCollisionModel.h")
@@ -238,7 +238,7 @@ if(SOFA_SMP)
 	list(APPEND SOURCE_FILES "objectmodel/BaseObjectTasks.cpp")
 endif()
 
-if(SOFA_SUPPORT_MOVING_FRAMES)
+if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
 	list(APPEND HEADER_FILES "behavior/InertiaForce.h")
 endif()
 	

@@ -185,7 +185,7 @@ cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 #Make these compiler definition available to nvcc
 add_definitions("-DSOFA_BUILD_GPU_CUDA")
-if(EXTERNAL_HAVE_GLEW)
+if(SOFA-EXTERNAL_HAVE_GLEW)
 	add_definitions("-DSOFA_HAVE_GLEW")
 endif()
 
@@ -196,11 +196,11 @@ set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
 
 set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
-if(SOFA_HAVE_CUDPP)
+if(SOFA-MISC_HAVE_CUDPP)
 	list(APPEND LINKER_DEPENDENCIES cudpp)
 endif()
 
-if(SOFA_HAVE_THRUST)
+if(SOFA-MISC_HAVE_THRUST)
 	list(APPEND LINKER_DEPENDENCIES thrust)
 endif()
 

@@ -42,7 +42,7 @@ set(UI_FILES
 	)
 
 UseQt()
-if(EXTERNAL_USE_QT4)
+if(SOFA-EXTERNAL_PREFER_QT4)
     list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
     list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
     list(APPEND HEADER_FILES "QComponentTreeLibrary.h")

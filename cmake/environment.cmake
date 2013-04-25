@@ -34,12 +34,11 @@ set(SOFA_VERSION_NUM "1_0" CACHE STRING "Version number for this build.")
 
 ## os-specific
 if(WIN32)
-if (CMAKE_CL_64) 
-      set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win64/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
-  else() 
-     set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
-  endif() 
-	
+	if(CMAKE_CL_64) 
+		set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win64/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
+	else() 
+		set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/win32/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")
+	endif() 
 endif()
 if(XBOX)
 	set(SOFA_LIB_OS_DIR "${SOFA_SRC_DIR}/lib/xbox/Common" CACHE INTERNAL "Path to the Sofa os-dependent lib directory")

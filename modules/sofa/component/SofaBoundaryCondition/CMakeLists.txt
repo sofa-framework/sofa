@@ -93,7 +93,7 @@ set(SOURCE_FILES
     ../projectiveconstraintset/SkeletalMotionConstraint.cpp
     )
     
-if(EXTERNAL_HAVE_EIGEN2)
+if(SOFA-EXTERNAL_HAVE_EIGEN2)
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToLineConstraint.h")
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToLineConstraint.inl")
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToPlaneConstraint.h")
