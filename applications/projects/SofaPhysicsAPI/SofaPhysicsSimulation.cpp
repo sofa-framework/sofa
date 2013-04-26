@@ -16,13 +16,19 @@
 #include <sofa/component/init.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
+#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
+#include <sofa/helper/system/glut.h>
+
+#include <sofa/gui/qt/RealGUI.h>
+
 #include "fakegui.h"
 
 #include <math.h>
 #include <iostream>
 
-SofaPhysicsSimulation::SofaPhysicsSimulation()
-    : impl(new Impl)
+SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI)
+    : impl(new Impl(useGUI))
 {
 }
 
@@ -145,13 +151,30 @@ using namespace sofa::helper::gl;
 
 static sofa::core::ObjectFactory::ClassEntry* classVisualModel = NULL;
 
-SofaPhysicsSimulation::Impl::Impl()
+SofaPhysicsSimulation::Impl::Impl(bool useGUI_) :
+useGUI(useGUI_)
 {
     static bool first = true;
     if (first)
     {
-        // FakeGUI to be able to receive messages
-        FakeGUI::Create();
+        if ( !useGUI ) {
+          // FakeGUI to be able to receive messages
+          FakeGUI::Create();
+        } else {
+          sofa::gui::initMain();
+
+          int argc= 1;
+          char* argv[]= { "a" };
+          glutInit(&argc,argv);
+
+          if (int err = sofa::gui::GUIManager::Init(argv[0],"qt"))
+            printf ( "Error sofa::gui::GUIManager::Init\n" );
+
+          if (int err=sofa::gui::GUIManager::createGUI(NULL))
+            printf ( "Error sofa::gui::GUIManager::Init\n" );
+
+          sofa::gui::GUIManager::SetDimension(1,600);
+        }
         first = false;
     }
 
@@ -187,6 +210,17 @@ SofaPhysicsSimulation::Impl::~Impl()
         if (it->second) delete it->second;
     }
     outputMeshMap.clear();
+
+    if ( useGUI ) {
+      // GUI Cleanup
+      //groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
+
+      //if (groot!=NULL)
+      //  sofa::simulation::getSimulation()->unload(groot);
+
+
+      //sofa::gui::GUIManager::closeGUI();
+    }
 }
 
 bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
@@ -205,6 +239,10 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
         std::cout << "INIT" << std::endl;
         m_Simulation->init(m_RootNode.get());
         updateOutputMeshes();
+
+        if ( useGUI ) {
+          sofa::gui::GUIManager::SetScene(m_RootNode.get(),cfilename);
+        }
     }
     else
     {
@@ -335,6 +373,10 @@ void SofaPhysicsSimulation::Impl::step()
     beginStep();
     getSimulation()->animate(groot);
     getSimulation()->updateVisual(groot);
+    if ( useGUI ) {
+      sofa::gui::qt::RealGUI* gui= static_cast<sofa::gui::qt::RealGUI*>(sofa::gui::GUIManager::getGUI());
+      gui->stepMainLoop();
+    }
     endStep();
 }
 

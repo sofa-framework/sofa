@@ -256,6 +256,8 @@ private:
 
 //-----------------METHODS------------------------{
 public:
+    void stepMainLoop ();
+
     virtual int mainLoop();
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();

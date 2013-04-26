@@ -655,6 +655,12 @@ void RealGUI::lmlOpen ( const char* filename )
 
 
 //======================= METHODS ========================= {
+
+void RealGUI::stepMainLoop () {
+    //QCoreApplication::sendPostedEvents ( application, 0 );
+    application->processEvents();
+}
+
 int RealGUI::mainLoop()
 {
     int retcode;
