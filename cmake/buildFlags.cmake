@@ -40,10 +40,11 @@ if(WIN32)
 endif()
 
 # NDEBUG preprocessor macro
-if(CMAKE_BUILD_TYPE MATCHES "Release")
+if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "NDEBUG")
 endif()
 
+# SOFA_DEBUG preprocessor macro
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "SOFA_DEBUG")
 endif()
