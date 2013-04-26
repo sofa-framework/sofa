@@ -14,7 +14,7 @@ typedef void* ID;           ///< Type used for IDs
 class SofaPhysicsSimulation
 {
 public:
-    SofaPhysicsSimulation();
+    SofaPhysicsSimulation(bool useGUI = false);
     ~SofaPhysicsSimulation();
 
     /// Load an XML file containing the main scene description

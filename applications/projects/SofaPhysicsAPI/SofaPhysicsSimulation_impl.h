@@ -17,7 +17,7 @@
 class SofaPhysicsSimulation::Impl
 {
 public:
-    Impl();
+    Impl(bool useGUI_ = false);
     ~Impl();
 
     bool load(const char* filename);
@@ -74,6 +74,7 @@ protected:
     GLint lastViewport[4];
     bool initGLDone;
     bool initTexturesDone;
+    bool useGUI;
     sofa::core::visual::VisualParams* vparams;
     sofa::core::visual::DrawToolGL   drawTool;
 
