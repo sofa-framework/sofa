@@ -7,7 +7,8 @@ if(NOT GENERATED_FROM_MAIN_SOLUTION) # configuring from sub-project
 	load_cache("${SOFA_ROOT_DIR}" INCLUDE_INTERNALS SOFA_SRC_DIR SOFA_BUILD_DIR)
 else() # configuring from main solution	
 	# hide unused default cmake variables
-	set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
+	# CHG: disable as this breaks build of external applications
+	# set(CMAKE_INSTALL_PREFIX "${SOFA_BUILD_DIR}" CACHE INTERNAL "Sofa install path (not used yet)")
 	
 	set(compilerDefines)
 
