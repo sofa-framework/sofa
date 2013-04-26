@@ -85,6 +85,8 @@ public:
     Data< double > forceCoef;
     //Data< double > momentCoef;
 
+    Data< double > solverTimeout;
+
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const SolidTypes<SReal>::Transform &world_H_tool, const SolidTypes<SReal>::SpatialVector &V_tool_world, SolidTypes<SReal>::SpatialVector &W_tool_world );
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces);
