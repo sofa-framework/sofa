@@ -125,6 +125,8 @@ namespace controller
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
 : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
+  solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints.")),
+
   mState(NULL),
   mNextBufferId(0),
   mCurBufferId(0),
@@ -244,7 +246,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         }
 
         // Solving constraints
-        cp->solveTimed(cp->tolerance * 0.001, 100, 0.0008);	// tol, maxIt, timeout
+        cp->solveTimed(cp->tolerance * 0.001, 100, solverTimeout.getValue());	// tol, maxIt, timeout
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
@@ -295,6 +297,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         return;
 
     component::constraintset::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
+    
     if (!new_cp)
         return;
 
