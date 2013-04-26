@@ -341,54 +341,84 @@ void Mesh2PointTopologicalMapping::init()
 }
 
 
-size_t Mesh2PointTopologicalMapping::addInputPoint(unsigned int i)
+size_t Mesh2PointTopologicalMapping::addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod)
 {
     if( pointsMappedFrom[POINT].size() < i+1)
         pointsMappedFrom[POINT].resize(i+1);
     else
         pointsMappedFrom[POINT][i].clear();
-    
-    for (unsigned int j=0; j<pointBaryCoords.getValue().size(); j++)
-    {
-        pointsMappedFrom[POINT][i].push_back(toModel->getNbPoints() );
-        toModel->addPoint(fromModel->getPX(i)+pointBaryCoords.getValue()[j][0], fromModel->getPY(i)+pointBaryCoords.getValue()[j][1], fromModel->getPZ(i)+pointBaryCoords.getValue()[j][2]);
-        pointSource.push_back(std::make_pair(POINT,i));
-    }
 
+    const vector< Vec3d > &pBaryCoords = pointBaryCoords.getValue();
+
+    if (toPointMod)
+    {
+        toPointMod->addPointsProcess(pBaryCoords.size());
+    }
+    else
+    {
+        for (unsigned int j = 0; j < pBaryCoords.size(); j++)
+        {        
+            toModel->addPoint(fromModel->getPX(i) + pBaryCoords[j][0], fromModel->getPY(i) + pBaryCoords[j][1], fromModel->getPZ(i) + pBaryCoords[j][2]);
+        }
+    }
+    
+    for (unsigned int j = 0; j < pBaryCoords.size(); j++)
+    {        
+        pointsMappedFrom[POINT][i].push_back(pointSource.size());
+        pointSource.push_back(std::make_pair(POINT, i));
+    }
+    
+    if (toPointMod)
+    {  
+        helper::vector< helper::vector< unsigned int > > ancestors;
+        helper::vector< helper::vector< double       > > coefs;
+        toPointMod->addPointsWarning(pBaryCoords.size(), ancestors, coefs);
+    }
+    
     return pointBaryCoords.getValue().size();
 
 }
 
 void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod)
 {
-    if (pointsMappedFrom[EDGE].size() < i+1)
-        pointsMappedFrom[EDGE].resize(i+1);
+    if (pointsMappedFrom[EDGE].size() < i + 1)
+        pointsMappedFrom[EDGE].resize(i + 1);
     else
         pointsMappedFrom[EDGE][i].clear();
 
     Edge e = fromModel->getEdge(i);
+    const vector< Vec3d > &eBaryCoords = edgeBaryCoords.getValue();
 
     Vec3d p0(fromModel->getPX(e[0]), fromModel->getPY(e[0]), fromModel->getPZ(e[0]));
     Vec3d p1(fromModel->getPX(e[1]), fromModel->getPY(e[1]), fromModel->getPZ(e[1]));
 
-    if (toPointMod)
+    for (unsigned int j = 0; j < eBaryCoords.size(); j++)
     {
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
-        sofa::helper::vector< sofa::helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(edgeBaryCoords.getValue().size(), ancestors, coefs);
+        pointsMappedFrom[EDGE][i].push_back(pointSource.size());
+        pointSource.push_back(std::make_pair(EDGE, i));
     }
 
-    for (unsigned int j=0; j<edgeBaryCoords.getValue().size(); j++)
+    if (toPointMod)
     {
-        double fx = edgeBaryCoords.getValue()[j][0];
+        toPointMod->addPointsProcess(eBaryCoords.size());
+    }
+    else
+    {
+        for (unsigned int j = 0; j < eBaryCoords.size(); j++)
+        {
+            double fx = eBaryCoords[j][0];
 
-        Vec3d result = p0 * (1-fx)
-                + p1 * fx;
+            Vec3d result = p0 * (1 - fx) + p1 * fx;
 
-        toModel->addPoint(result[0], result[1], result[2]);
+            toModel->addPoint(result[0], result[1], result[2]);
+        }
+    }
 
-        pointsMappedFrom[EDGE][i].push_back(pointSource.size());
-        pointSource.push_back(std::make_pair(EDGE,i));
+    if (toPointMod)
+    {
+        helper::vector< helper::vector< unsigned int > > ancestors;
+        helper::vector< helper::vector< double       > > coefs;
+        toPointMod->addPointsWarning(eBaryCoords.size(), ancestors, coefs);
     }
 }
 
@@ -400,31 +430,40 @@ void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, PointSetTopo
         pointsMappedFrom[TRIANGLE][i].clear();
 
     Triangle t = fromModel->getTriangle(i);
+    const vector< Vec3d > &tBaryCoords = triangleBaryCoords.getValue();
 
     Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
     Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
     Vec3d p2(fromModel->getPX(t[2]), fromModel->getPY(t[2]), fromModel->getPZ(t[2]));
 
-    if (toPointMod)
+    for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
-        sofa::helper::vector< sofa::helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(triangleBaryCoords.getValue().size(), ancestors, coefs);
-    }
-
-    for (unsigned int j=0; j<triangleBaryCoords.getValue().size(); j++)
-    {
-        double fx = triangleBaryCoords.getValue()[j][0];
-        double fy = triangleBaryCoords.getValue()[j][1];
-
-        Vec3d result =  p0 * (1-fx-fy)
-                + p1 * fx
-                + p2 * fy;
-
-        toModel->addPoint(result[0], result[1], result[2]);
-
         pointsMappedFrom[TRIANGLE][i].push_back(pointSource.size());
         pointSource.push_back(std::make_pair(TRIANGLE,i));
+    }
+
+    if (toPointMod)
+    {
+        toPointMod->addPointsProcess(tBaryCoords.size());
+    }
+    else
+    {
+        for (unsigned int j = 0; j < tBaryCoords.size(); j++)
+        {
+            double fx = tBaryCoords[j][0];
+            double fy = tBaryCoords[j][1];
+
+            Vec3d result =  p0 * (1-fx-fy) + p1 * fx + p2 * fy;         
+
+            toModel->addPoint(result[0], result[1], result[2]);
+        }
+    }
+
+    if (toPointMod)
+    {
+        helper::vector< helper::vector< unsigned int > > ancestors;
+        helper::vector< helper::vector< double       > > coefs;
+        toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
     }
 }
 
@@ -463,7 +502,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                 const sofa::helper::vector<unsigned int>& tab= ( static_cast< const PointsAdded *>( *changeIt ) )->pointIndexArray;
                 for (int i=0; i<tab.size(); i++)
                 {
-                    addInputPoint(tab[i]);
+                    addInputPoint(tab[i], toPointMod);
                 }
                 /// @TODO
 //				sout << "INPUT ADD POINTS " << sendl;
