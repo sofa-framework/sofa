@@ -182,6 +182,9 @@ set(README_FILE SofaCUDA.txt )
 
 #Give current directory to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+cuda_include_directories(${SOFA_FRAMEWORK_DIR})
+cuda_include_directories(${SOFA_EXTLIBS_DIR})
+cuda_include_directories(${SOFA_INC_DIR})
 
 #Make these compiler definition available to nvcc
 add_definitions("-DSOFA_BUILD_GPU_CUDA")
