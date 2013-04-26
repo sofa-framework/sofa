@@ -40,7 +40,7 @@ namespace component
 namespace controller
 {
 
-class PythonScriptController : public ScriptController
+class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 {
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
