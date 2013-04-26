@@ -30,8 +30,8 @@ class SOFA_Compliant_API SolverFlags  : public virtual core::objectmodel::BaseOb
 		NO_FLAG = 0x0,
 		UNILATERAL_FLAG = 0x1,			// unilateral constraint
 		NEGATIVE_FLAG = 0x10, 			// negative unilateral constraint
-		
-		USER_FLAG = 0x100				// start of user-defined flags
+		FRICTION_FLAG = 0x100,
+		USER_FLAG = 0x10000000				// start of user-defined flags
 	};
 	
 	SOFA_CLASS(SolverFlags, sofa::core::objectmodel::BaseObject);
