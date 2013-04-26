@@ -26,8 +26,26 @@
 #define PYTHONVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
+#if defined(_MSC_VER)
+// undefine _DEBUG since we want to always link to the release version of
+// python and pyconfig.h automatically links debug version if _DEBUG is
+// defined.
+#ifdef _DEBUG
+#define _DEBUG_UNDEFED
+#undef _DEBUG
+#endif
+#endif
+#if defined(__APPLE__) && defined(__MACH__)
+#include <Python/Python.h>
+#else
 #include <Python.h>
-
+#endif
+#if defined(_MSC_VER)
+// redefine _DEBUG if it was undefed
+#ifdef _DEBUG_UNDEFED
+#define _DEBUG
+#endif
+#endif
 namespace sofa
 {
 

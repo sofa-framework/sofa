@@ -25,12 +25,39 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
-#include <Python.h>
 #include <boost/intrusive_ptr.hpp>
+
+#if defined(_MSC_VER)
+// undefine _DEBUG since we want to always link to the release version of
+// python and pyconfig.h automatically links debug version if _DEBUG is
+// defined.
+#ifdef _DEBUG
+#define _DEBUG_UNDEFED
+#undef _DEBUG
+#endif
+#endif
+#if defined(__APPLE__) && defined(__MACH__)
+#include <Python/Python.h>
+#else
+#include <Python.h>
+#endif
+#if defined(_MSC_VER)
+// redefine _DEBUG if it was undefed
+#ifdef _DEBUG_UNDEFED
+#define _DEBUG
+#endif
+#endif
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+
+
+
+#include "initSofaPython.h"
+
+
+
 using namespace sofa::core::objectmodel;
 
 
@@ -93,7 +120,7 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
 // nouvelle version, retournant automatiquement le type Python de plus haut niveau possible,
 // en fonction du type de l'objet Cpp
 // afin de permettre l'utilisation de fonctions des sous-classes de Base
-PyObject* SP_BUILD_PYSPTR(Base* obj);
+SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(Base* obj);
 
 
 
@@ -235,7 +262,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 */
 
 // déclaration, .h
-#define SP_DECLARE_CLASS_TYPE(Type) extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
+#define SP_DECLARE_CLASS_TYPE(Type) SOFA_SOFAPYTHON_API extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
 
 // définition générique (macro intermédiaire)
 #define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc)   \

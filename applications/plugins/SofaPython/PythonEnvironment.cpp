@@ -52,6 +52,7 @@ void PythonEnvironment::Init()
     //std::cout<<"<SofaPython> Initializing python framework..."<<std::endl;
     std::cout<<"<SofaPython> Python framework version: "<<Py_GetVersion()<<std::endl;
 //    PyEval_InitThreads();
+    //std::cout<<"<SofaPython> Py_Initialize();"<<std::endl;
     Py_Initialize();
     //std::cout<<"<SofaPython> Registering Sofa bindings..."<<std::endl;
 
