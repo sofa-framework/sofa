@@ -55,7 +55,7 @@ link_directories("${SOFA_LIB_OS_DIR}")
 # packages and libraries
 
 ## opengl / glew / glut
-if (NOT OPTION_NO_OPENGL)
+if (NOT SOFA-MISC_NO_OPENGL)
 	find_package(OPENGL REQUIRED)
 	if(WIN32)
 		#set(OPENGL_LIBRARIES "opengl32")
