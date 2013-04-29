@@ -105,6 +105,8 @@ template<class DataTypes>
 class ARTrackController : public virtual component::controller::Controller
 {
 public:
+	SOFA_CLASS(SOFA_TEMPLATE(ARTrackController, DataTypes), component::controller::Controller);
+
     typedef typename DataTypes::VecCoord VecCoord;
     /**
      * @brief Default Constructor.
@@ -153,7 +155,7 @@ public:
 
 protected:
     core::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
-    vector<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations;
+    vector<sofa::component::container::Articulation*> articulations;
     bool leftPressed, rightPressed, wheel;
     Vec3d beginLocalPosition,endLocalPosition;
 };

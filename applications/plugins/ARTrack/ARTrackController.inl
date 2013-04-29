@@ -50,7 +50,7 @@ void ARTrackController<DataTypes>::init()
 template <>
 void ARTrackController<Vec1dTypes>::init()
 {
-    getContext()->get<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation>(&articulations);
+    getContext()->get<sofa::component::container::Articulation>(&articulations);
 }
 
 template <>
