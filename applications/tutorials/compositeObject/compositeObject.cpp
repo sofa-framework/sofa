@@ -32,7 +32,8 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-//#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
@@ -254,7 +255,13 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
+#if defined(SOFA_HAVE_DAG)
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+#elif defined(SOFA_HAVE_BGL)
+    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+#else
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#endif
 
     sofa::component::init();
 
