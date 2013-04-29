@@ -19,7 +19,7 @@ SolverFlags::SolverFlags()
 }
 
 
-unsigned SolverFlags::write(value_type* out) const {
+unsigned SolverFlags::write_flags(value_type* out) const {
 	
 	const flags_type& f = flags.getValue();
 	
@@ -36,7 +36,7 @@ unsigned SolverFlags::write(value_type* out) const {
 	} else {
 		assert( f.size() == n );
 		
-		for( unsigned i = 0, n = f.size(); i < n; ++i) {
+		for( unsigned i = 0; i < n; ++i) {
 			*(out++) = f[i];
 		}
 		
@@ -44,6 +44,27 @@ unsigned SolverFlags::write(value_type* out) const {
 	}
 	
 }
+
+
+
+
+unsigned SolverFlags::write_data(data_value_type* out) const {
+	
+	// use default value ?
+	if( data.empty() ) return 0;
+
+	unsigned n = getContext()->getMechanicalState()->getMatrixSize();
+	
+	assert( data.size() == n );
+	
+	for( unsigned i = 0; i < n; ++i) {
+		*(out++) = data[i];
+	}
+	
+	return data.size();
+}
+
+
 
 void SolverFlags::init() {
 	

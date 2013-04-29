@@ -47,9 +47,14 @@ public:
 	// force, velocity and deformation vectors
 	vec p, f, v, phi; 					// should we have lambda ?
 	
+
+
 	// only for compliant dofs for now
 	typedef Eigen::Matrix< SolverFlags::value_type, Eigen::Dynamic, 1> flags_type;
 	flags_type flags;
+	
+	typedef Eigen::Matrix< SolverFlags::data_value_type , Eigen::Dynamic, 1> data_type;
+	data_type data;
 	
 	struct block {
 		unsigned offset, size;
