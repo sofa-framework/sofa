@@ -395,17 +395,6 @@ function(ApplyGlobalCompilerDefinitions projectName)
 	endif()
 endfunction()
 
-# create a cache file
-function(CreateCacheFile)
-	if(GENERATED_FROM_MAIN_SOLUTION)
-		set(cacheFilename "${CMAKE_CURRENT_BINARY_DIR}/CMakeCache.txt")
-		file(GLOB cacheFile "${cacheFilename}")
-		if(cacheFile STREQUAL "")
-			file(WRITE "${cacheFilename}" "SOFA_CMAKE_DIR:INTERNAL=${SOFA_CMAKE_DIR}")
-		endif()
-	endif()
-endfunction()
-
 # low-level function computing an intersection between two lists
 macro(listIntersection outList inList0 inList1)
 	set(${outList})
