@@ -55,6 +55,7 @@ RegisterDependencies("SofaFlowVR" OPTION SOFA-APPLICATION_SOFA_FLOWVR COMPILE_DE
 RegisterDependencies("SofaInfo" OPTION SOFA-APPLICATION_SOFA_INFO PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaInfo")
 RegisterDependencies("SofaInitTimer" OPTION SOFA-APPLICATION_SOFA_INIT_TIMER PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaInitTimer")
 RegisterDependencies("SofaOpenCL" OPTION SOFA-APPLICATION_SOFA_OPENCL COMPILE_DEFINITIONS SOFA_GPU_OPENCL PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaOPENCL")
+RegisterDependencies("SofaTypedefs" OPTION SOFA-APPLICATION_SOFA_TYPEDEFS PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaTypedefs")
 RegisterDependencies("SofaVerification" OPTION SOFA-APPLICATION_SOFA_VERIFICATION PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaVerification")
 
 #add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/SofaPhysicsAPI")    #Not sure how to have it add only when ! SOFA_NO_OPENGL
@@ -69,6 +70,7 @@ add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
 
 # retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
 message(STATUS "> Computing Dependencies : In progress")
+message(STATUS "")
 set(projectNames ${GLOBAL_DEPENDENCIES})
 foreach(projectName ${projectNames})
 	ComputeDependencies(${projectName} false "${PROJECT_NAME}" "")
@@ -91,12 +93,14 @@ if(WIN32)
 	## common external dlls
 	file(GLOB sharedObjects "${SOFA_SRC_DIR}/bin/dll_x86/*.dll")
 	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_SRC_DIR}/bin")
+		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}/bin")
 	endforeach()
 	
 	## qt dlls
-	file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
-	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_SRC_DIR}/bin")
-	endforeach()
+	if(NOT SOFA-EXTERNAL_QT_PATH STREQUAL "")
+		file(GLOB sharedObjects "${SOFA-EXTERNAL_QT_PATH}/bin/*.dll")
+		foreach(sharedObject ${sharedObjects})
+			file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}/bin")
+		endforeach()
+	endif()
 endif()

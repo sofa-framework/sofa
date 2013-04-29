@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(GENERATED_FROM_MAIN_SOLUTION 1)
-
 include(${CMAKE_CURRENT_LIST_DIR}/environment.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/functions.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/options.cmake)
