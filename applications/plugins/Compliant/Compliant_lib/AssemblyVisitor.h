@@ -16,6 +16,9 @@ namespace simulation {
 // data, and actual system assembly is performed using
 // ::assemble(), yielding an AssembledSystem
 		
+// TODO preallocate global vectors for all members to avoid multiple,
+// small allocs during visit (or tweak allocator ?)
+
 // TODO callgrind reports that some performance gains can be
 // obtained during the fetching of mass/projection matrices (but
 // mass, mainly), as the eigen/sofa matrix wrapper uses lots of
@@ -97,7 +100,13 @@ public:
 
 		// TODO lambda ?
 		vec f, v, phi;
-		system_type::flags_type flags;
+
+		struct flags_type {
+			system_type::flags_type value;
+			system_type::data_type data;
+		};
+		
+		flags_type flags;
 
 		real damping;
 
@@ -128,7 +137,9 @@ public:
 	chunk::map_type mapping(simulation::Node* node);
 			
 	vec force(simulation::Node* node);
-	system_type::flags_type flags(simulation::Node* node);
+	
+
+	chunk::flags_type flags(simulation::Node* node);
 	
 	vec vel(simulation::Node* node);
 	vec rhs(simulation::Node* node);
