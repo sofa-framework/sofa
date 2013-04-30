@@ -26,7 +26,7 @@
 ******************************************************************/
 #include <ftl/type.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_XBOX)
 #include <string.h>
 #define strcasecmp stricmp
 #define atoll atoi
