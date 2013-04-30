@@ -592,7 +592,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
         bufCP1 = !bufCP1;
     }
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_XBOX)
     if (_realTimeCompensation.getValue())
     {
         if (timer == 0)

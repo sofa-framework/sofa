@@ -27,11 +27,13 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef WIN32
-#include <unistd.h>
-#else
+#if defined(WIN32)
 #include <windows.h>
 #include <direct.h>
+#elif defined(_XBOX)
+#include <xtl.h>
+#else
+#include <unistd.h>
 #endif
 
 #include <string.h>
@@ -47,17 +49,21 @@ namespace helper
 
 namespace system
 {
-#if defined (WIN32)
+#if defined (WIN32) || defined (_XBOX)
 FileRepository PluginRepository("SOFA_PLUGIN_PATH","../bin");
 #else
 FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib");
 #endif
-#if defined (WIN32)
+#if defined (WIN32) || defined (_XBOX)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
 #else
 FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation");
+#endif
+
+#ifdef _XBOX
+char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 #endif
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath)

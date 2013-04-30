@@ -39,7 +39,7 @@ namespace component
 namespace loader
 {
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_XBOX)
 #define strcasecmp stricmp
 #endif
 

@@ -37,6 +37,8 @@
 #include <bits/atomicity.h>
 #elif defined(WIN32)
 #include <windows.h>
+#elif defined(_XBOX)
+#include <xtl.h>
 #else
 #error atomic operations are not supported on your platform
 #endif
@@ -232,7 +234,7 @@ public:
     static const char* getImplName() { return "GLIBC"; }
 };
 
-#elif defined(WIN32)
+#elif defined(WIN32) || defined(_XBOX)
 
 /// Small class used for multi-process reference counting
 template<> class atomic<int>

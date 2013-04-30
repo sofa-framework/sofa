@@ -24,10 +24,10 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#if !defined(WIN32)
+#if !defined(WIN32) && !defined(_XBOX)
 #include <signal.h>
 #endif
-#if !defined(WIN32) && !defined(__APPLE__)
+#if !defined(WIN32) && !defined(_XBOX) && !defined(__APPLE__)
 #include <execinfo.h>
 #include <unistd.h>
 #endif
@@ -48,7 +48,7 @@ namespace helper
 /// Currently only works on Linux. NOOP on other architectures.
 void BackTrace::dump()
 {
-#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(_XBOX)
     void *array[128];
     int size = backtrace(array, sizeof(array) / sizeof(array[0]));
     if (size > 0)
@@ -112,7 +112,7 @@ void BackTrace::dump()
 /// Currently only works on Linux. NOOP on other architectures
 void BackTrace::autodump()
 {
-#if !defined(WIN32)
+#if !defined(WIN32) && !defined(_XBOX)
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
     signal(SIGFPE, BackTrace::sig);
@@ -124,7 +124,7 @@ void BackTrace::autodump()
 
 void BackTrace::sig(int sig)
 {
-#if !defined(WIN32)
+#if !defined(WIN32) && !defined(_XBOX)
     fprintf(stderr,"\n########## SIG %d ##########\n",sig);
     dump();
     signal(sig,SIG_DFL);
