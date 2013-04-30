@@ -52,6 +52,18 @@ extern "C" long __cdecl InterlockedExchangeAdd( long*, long );
 # define BOOST_INTERLOCKED_EXCHANGE_POINTER(dest,exchange) \
     ((void*)BOOST_INTERLOCKED_EXCHANGE((long*)(dest),(long)(exchange)))
 
+#elif defined(_XBOX)
+
+# include <xtl.h>
+
+# define BOOST_INTERLOCKED_INCREMENT InterlockedIncrement
+# define BOOST_INTERLOCKED_DECREMENT InterlockedDecrement
+# define BOOST_INTERLOCKED_COMPARE_EXCHANGE InterlockedCompareExchange
+# define BOOST_INTERLOCKED_EXCHANGE InterlockedExchange
+# define BOOST_INTERLOCKED_EXCHANGE_ADD InterlockedExchangeAdd
+# define BOOST_INTERLOCKED_COMPARE_EXCHANGE_POINTER InterlockedCompareExchangePointer
+# define BOOST_INTERLOCKED_EXCHANGE_POINTER InterlockedExchangePointer
+
 #elif defined( BOOST_MSVC ) || defined( BOOST_INTEL_WIN )
 
 #if defined( BOOST_MSVC ) && BOOST_MSVC >= 1600
