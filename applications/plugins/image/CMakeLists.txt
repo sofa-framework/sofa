@@ -83,6 +83,10 @@ list(APPEND HEADER_FILES
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 set(MOC_FILES_GROUP "Generated")
+
+if(NOT SOFA-EXTERNAL_HAVE_ZLIB)
+	message(AUTHOR_WARNING "Image plugin should build without zlib  but it currently doesn't. Hence we advise you to enable zlib")
+endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 

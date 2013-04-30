@@ -124,7 +124,7 @@ set(SOURCE_FILES
 	)
 
 if(SOFA-PLUGIN_IMAGE)
-        
+    
    	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
    	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
    	list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
@@ -140,16 +140,20 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-        
+    
+	include_directories("${SOFA_EXTLIBS_DIR}")
+	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_Flexible")
+set(COMPILER_DEFINES "SOFA_BUILD_Flexible" "EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET")
 set(LINKER_DEPENDENCIES SofaGuiQt)
 
 if(SOFA-PLUGIN_IMAGE)
     if(SOFA-PLUGIN_OPENCV)
+	
+		include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/opencv")
 	
         list(APPEND LINKER_DEPENDENCIES "ml")
         list(APPEND LINKER_DEPENDENCIES "cvaux")
@@ -159,4 +163,13 @@ if(SOFA-PLUGIN_IMAGE)
 		
     endif()
 endif()
+
+if(WIN32)
+	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/SuiteSparse/cholmod/Include")
+
+	list(APPEND COMPILER_DEFINES "EIGEN_DONT_ALIGN")
+else()
+	include_directories("/usr/include/suitesparse/")
+endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
