@@ -24,11 +24,13 @@
 ******************************************************************************/
 #include <sofa/helper/system/SetDirectory.h>
 
-#ifndef WIN32
-#include <unistd.h>
-#else
+#ifdef WIN32
 #include <windows.h>
 #include <direct.h>
+#elif defined(_XBOX)
+#include <xtl.h>
+#else
+#include <unistd.h>
 #endif
 #if defined (__APPLE__)
 #include <sys/param.h>
@@ -46,6 +48,15 @@ namespace helper
 namespace system
 {
 
+#if defined(WIN32)
+	#define chdir _chdir
+	#define getcwd _getcwd
+#elif defined(_XBOX)
+	int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
+	char* getcwd(char *buffer, int maxlen) { return NULL; } // NOT IMPLEMENTED
+#else
+#endif
+
 SetDirectory::SetDirectory(const char* filename)
 {
     directory = GetParentDir(filename);
@@ -53,12 +64,8 @@ SetDirectory::SetDirectory(const char* filename)
     {
 //         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
-#ifndef WIN32
         if (chdir(directory.c_str()) != 0)
             std::cerr <<"Error: can't change directory." << std::endl;
-#else
-        _chdir(directory.c_str());
-#endif
     }
 }
 
@@ -69,12 +76,8 @@ SetDirectory::SetDirectory(const std::string& filename)
     {
 //         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
-#ifndef WIN32
         if (chdir(directory.c_str()) != 0)
             std::cerr <<"Error: can't change directory." << std::endl;
-#else
-        _chdir(directory.c_str());
-#endif
     }
 }
 
@@ -83,12 +86,8 @@ SetDirectory::~SetDirectory()
     if (!directory.empty() && !previousDir.empty())
     {
 //         std::cout << "<chdir("<<directory<<")"<<std::endl;
-#ifndef WIN32
         if (chdir(previousDir.c_str()) != 0)
             std::cerr <<"Error: can't change directory." << std::endl;
-#else
-        _chdir(previousDir.c_str());
-#endif
     }
 }
 
@@ -108,12 +107,8 @@ std::string SetDirectory::GetCurrentDir()
 {
     char dir[1024];
     memset(dir,0,sizeof(dir));
-#ifndef WIN32
     if (getcwd(dir, sizeof(dir)) == NULL)
         std::cerr <<"Error: can't get current directory." << std::endl;
-#else
-    _getcwd(dir, sizeof(dir));
-#endif
     return dir;
 }
 

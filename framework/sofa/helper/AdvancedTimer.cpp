@@ -38,6 +38,9 @@ namespace sofa
 
 namespace helper
 {
+#ifdef _XBOX
+char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
+#endif
 
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;

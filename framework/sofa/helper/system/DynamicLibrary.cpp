@@ -25,6 +25,8 @@
 #include <sofa/helper/system/DynamicLibrary.h>
 #ifdef WIN32
 #include <Windows.h>
+#elif defined(_XBOX)
+#include <xtl.h>
 #else
 #include <dlfcn.h>
 #endif
@@ -74,6 +76,8 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
         (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
         (*errlog) << std::endl;
     }
+#elif defined(_XBOX)
+	return NULL; // not supported
 #else
     handle = ::dlopen(name.c_str(), RTLD_NOW);
     if (!handle)
@@ -101,6 +105,8 @@ void * DynamicLibrary::getSymbol(const std::string & symbol, std::ostream* errlo
 
 #ifdef WIN32
     symbolAddress =  ::GetProcAddress((HMODULE)m_handle, symbol.c_str());
+#elif defined(_XBOX)
+	return NULL; // not supported
 #else
     symbolAddress =  ::dlsym(m_handle, symbol.c_str());
 #endif

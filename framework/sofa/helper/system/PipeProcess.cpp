@@ -34,6 +34,8 @@
 typedef int ssize_t;
 typedef HANDLE fd_t;
 typedef SOCKET socket_t;
+#elif defined(_XBOX)
+#include <xtl.h>
 #else
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -78,6 +80,9 @@ PipeProcess::~PipeProcess()
 
 bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &filenameStdin, std::string & outString, std::string & errorString)
 {
+#ifdef _XBOX
+	return false; // not supported
+#else
     std::string fileIN = filenameStdin;
 
     //Remove this line below when Windows will be able to read file as stdin
@@ -358,6 +363,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         errorString = errorStream.str();
         return (status == 0);
     }
+#endif
 }
 
 }
