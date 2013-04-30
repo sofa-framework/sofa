@@ -80,6 +80,7 @@ message(STATUS "")
 
 # set the global compiler definitions to all projects now since some new dependencies might appear from ComputeDependencies adding their own compiler definitions in the global compiler definitions variable
 # for instance if you add a project using the image plugin we want every projects to be aware that the image plugin is available defining its own SOFA_HAVE_IMAGE preprocessor macro
+# TODO: do the same for include directories
 message(STATUS "> Applying global compiler definitions : In progress")
 set(projectNames ${GLOBAL_DEPENDENCIES})
 foreach(projectName ${projectNames})

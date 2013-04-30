@@ -82,9 +82,12 @@ if(SOFA_GPU_CUDA)
 
 endif()
 
-set(README_FILE frame.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	frame.txt
+	)	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_FRAME")
 set(LINKER_DEPENDENCIES SofaGuiQt SofaSparseSolver SofaEigen2Solver)

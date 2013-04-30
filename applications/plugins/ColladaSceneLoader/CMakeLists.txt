@@ -21,9 +21,12 @@ set(SOURCE_FILES
 
 	)
 	
-set(README_FILE ColladaSceneLoader.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	ColladaSceneLoader.txt
+	)	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_COLLADASCENELOADER")
 set(LINKER_DEPENDENCIES SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual assimp)

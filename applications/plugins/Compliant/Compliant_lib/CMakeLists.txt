@@ -50,9 +50,12 @@ set(SOURCE_FILES
 
 	)
 
-set(README_FILE Compliant.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	Compliant.txt
+	)	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_Compliant")
 set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible amd lapack blas camd colamd cholmod)
