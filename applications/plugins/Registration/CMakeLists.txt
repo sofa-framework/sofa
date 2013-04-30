@@ -37,9 +37,12 @@ if(SOFA_HAVE_IMAGE)
     
 endif()	
 
-set(README_FILE registration.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	registration.txt
+	)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_REGISTRATION")
 set(LINKER_DEPENDENCIES SofaGuiQt )

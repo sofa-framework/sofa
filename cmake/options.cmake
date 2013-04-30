@@ -65,10 +65,12 @@ if(SOFA-EXTERNAL_PREFER_QT4)
 endif()
 
 ## boost
-option(SOFA-EXTERNAL_HAVE_BOOST "Use the system boost library instead of extlib/miniBoost" OFF)
-if(SOFA-EXTERNAL_HAVE_BOOST)
-	set(SOFA-EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
+set(SOFA-EXTERNAL_BOOST_PATH "" CACHE PATH "Boost full version path (must contain the compiled libraries)")
+if(EXISTS ${SOFA-EXTERNAL_BOOST_PATH})
+	set(SOFA-EXTERNAL_HAVE_BOOST 1 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 	list(APPEND compilerDefines SOFA_HAVE_BOOST)
+else()
+	set(SOFA-EXTERNAL_HAVE_BOOST 0 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 endif()
 
 ## zlib

@@ -19,9 +19,12 @@ set(SOURCE_FILES
 
 	)
 
-set(README_FILE PluginHaption.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	PluginHaption.txt
+	)	
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_HAPTIONPLUGIN")
 set(LINKER_DEPENDENCIES SofaComponentMain )

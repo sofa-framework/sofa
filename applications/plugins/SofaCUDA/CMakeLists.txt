@@ -79,7 +79,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaSPHFluidForceField.inl
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.h 
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
-    
     )
 
 set(SOURCE_FILES
@@ -171,14 +170,16 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSpatialGridContainer.cu 
     sofa/gpu/cuda/CudaSPHFluidForceField.cu
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
-    
     )
 
 if (CUDA_VERBOSE_PTXAS)
-set(VERBOSE_PTXAS --ptxas-options=-v)
+	set(VERBOSE_PTXAS --ptxas-options=-v)
 endif (CUDA_VERBOSE_PTXAS)
 
-set(README_FILE SofaCUDA.txt )	
+set(README_FILES
+
+	SofaCUDA.txt
+	)
 
 #Give current directory to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -193,7 +194,7 @@ if(SOFA-EXTERNAL_HAVE_GLEW)
 endif()
 
 #Get nvcc compiler to build the library
-cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} OPTIONS ${VERBOSE_PTXAS})
+cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
 
 set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
 

@@ -32,9 +32,11 @@ set(SOURCE_FILES
 
 	)
 
-set(README_FILE PersistentContact.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	PersistentContact.txt)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_PERSISTENTCONTACT")
 set(LINKER_DEPENDENCIES SofaHelper SofaMeshCollision SofaConstraint )

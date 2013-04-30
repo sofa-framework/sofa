@@ -21,7 +21,7 @@ if(UNIX)
 		include_directories(${GLEW_INCLUDE_DIR})
 	else()
 		message(FATAL_ERROR "GLEW NOT FOUND ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIR}")
-		set(GLUE_FOUND FALSE)
+		set(GLEW_FOUND FALSE)
 	endif()
 
 endif(UNIX)

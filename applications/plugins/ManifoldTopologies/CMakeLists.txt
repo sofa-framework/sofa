@@ -38,9 +38,12 @@ set(SOURCE_FILES
 
 	)
 
-set(README_FILE ManifoldTopologies.txt )	
+set(README_FILES
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+	ManifoldTopologies.txt
+	)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_MANIFOLDTOPOLOGIES")
 set(LINKER_DEPENDENCIES SofaBaseTopology )

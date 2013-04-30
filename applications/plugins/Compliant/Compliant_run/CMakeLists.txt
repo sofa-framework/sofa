@@ -24,9 +24,6 @@ if(APPLE)
 
 endif()
 
-
-set(README_FILE  )	
-
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "")
