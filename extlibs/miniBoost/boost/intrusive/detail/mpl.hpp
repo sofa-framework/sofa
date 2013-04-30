@@ -130,7 +130,7 @@ struct identity
 #define BOOST_INTRUSIVE_TT_DECL 
 #endif
 
-#if defined(_MSC_EXTENSIONS) && !defined(__BORLAND__) && !defined(_WIN64)
+#if defined(_MSC_EXTENSIONS) && !defined(__BORLAND__) && !defined(_WIN64) && !defined(_XBOX)
 #define BOOST_INTRUSIVE_TT_TEST_MSC_FUNC_SIGS
 #endif
 
