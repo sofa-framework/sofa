@@ -46,6 +46,8 @@ using namespace sofa::defaulttype;
 class ARTrackVirtualTimeController : public Controller
 {
 public:
+	SOFA_CLASS(ARTrackVirtualTimeController, Controller);
+
     /**
      * @brief Default Constructor.
      */

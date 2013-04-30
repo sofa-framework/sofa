@@ -55,8 +55,9 @@ using namespace sofa::defaulttype;
 
 class ARTrackDriver : public core::behavior::BaseController
 {
-
 public:
+	SOFA_CLASS(ARTrackDriver, core::behavior::BaseController);
+
     ARTrackDriver();
     virtual ~ARTrackDriver() {}
 
