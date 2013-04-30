@@ -25,7 +25,6 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
-#include <boost/intrusive_ptr.hpp>
 
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of
@@ -47,6 +46,8 @@
 #define _DEBUG
 #endif
 #endif
+
+#include <boost/intrusive_ptr.hpp>
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
