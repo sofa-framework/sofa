@@ -500,7 +500,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::POINTSADDED:
             {
                 const sofa::helper::vector<unsigned int>& tab= ( static_cast< const PointsAdded *>( *changeIt ) )->pointIndexArray;
-                for (int i=0; i<tab.size(); i++)
+                for (unsigned int i=0; i<tab.size(); i++)
                 {
                     addInputPoint(tab[i], toPointMod);
                 }
