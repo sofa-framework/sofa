@@ -39,8 +39,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 
-#include <tinyxml.h>
-
 namespace sofa
 {
 
@@ -222,11 +220,6 @@ protected:
     Vec3 currentLookAt;
     double currentDistance;
     double currentZNear, currentZFar;
-
-
-
-    void exportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comments = std::string());
-    bool importSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data);
 };
 
 

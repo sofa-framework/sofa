@@ -91,6 +91,9 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_CONSTRAINT" )
-set(LINKER_DEPENDENCIES SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaEigen2Solver SofaUserInteraction )
-        
+set(LINKER_DEPENDENCIES SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction )
+if(SOFA-EXTERNAL_HAVE_EIGEN2)
+    list(APPEND LINKER_DEPENDENCIES SofaEigen2Solver)
+endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
