@@ -69,6 +69,7 @@
 // Include of sofaFlexible classes
 #ifdef SOFA_HAVE_PLUGIN_Flexible
 #include <shapeFunction/VoronoiShapeFunction.h>
+#include <shapeFunction/ShepardShapeFunction.h>
 #include <quadrature/ImageGaussPointSampler.h>
 #include <material/HookeForceField.h>
 #include <deformationMapping/LinearMapping.h>
@@ -155,6 +156,7 @@ typedef sofa::component::forcefield::HookeForceField< E332(double) > HookeForceF
 
 // shape function
 typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageUC> VoronoiShapeFunction;
+typedef sofa::component::shapefunction::ShepardShapeFunction< ShapeFunctionTypes<3,double>> ShepardShapeFunction;
 
 // Uniform Mass
 typedef sofa::component::mass::UniformMass< Affine3(double), double > UniformMass_Affine;
@@ -185,7 +187,7 @@ simulation::Node::SPtr createScene()
     root->setGravity( Coord3(0,-9.81,0) );
     root->setAnimate(false);
     root->setDt(0.005);
-    addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
+    addVisualStyle(root)->setShowVisual(true).setShowCollision(false).setShowMapping(false).setShowBehavior(false);
 	
 	// Solver
     EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
@@ -198,7 +200,9 @@ simulation::Node::SPtr createScene()
 	// *********************************************************************************
     Node::SPtr mainScene = root->createChild("main");
 	
+	/**********************************************************************************/
 	/********************************** Rigid Node  ***********************************/
+	/**********************************************************************************/
 	// Bones gravity center - rigid node which contains bones, articuated system and ...
     Node::SPtr rigidNode = mainScene->createChild("rigidNode");
     MechanicalObjectRigid3d::SPtr rigid_dof = addNew<MechanicalObjectRigid3d>(rigidNode, "dof");
@@ -323,39 +327,75 @@ simulation::Node::SPtr createScene()
     r_clavicle->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_clavicle.obj") );
 	
 	// Humerus
-	Node::SPtr r_humerusNode = visuNode->createChild("r_humerus");	
-    component::visualmodel::OglModel::SPtr r_humerus = addNew< component::visualmodel::OglModel >(torsoNode,"r_humerus");
-    r_humerus->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_humerus.obj") );
-    RigidMappingRigid3d_to_Ext3f::SPtr r_humerusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_humerusNode,"mapping");
-    r_humerusMapping->setModels( rigid_dof.get(), r_humerus.get() );
-	r_humerusMapping->index.setValue(1);
+	//Node::SPtr r_humerusNode = visuNode->createChild("r_humerus");	
+    //component::visualmodel::OglModel::SPtr r_humerus = addNew< component::visualmodel::OglModel >(r_humerusNode,"r_humerus");
+    //r_humerus->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_humerus.obj") );
+    //RigidMappingRigid3d_to_Ext3f::SPtr r_humerusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_humerusNode,"mapping");
+    //r_humerusMapping->setModels( rigid_dof.get(), r_humerus.get() );
+	//r_humerusMapping->index.setValue(1);
 
 	// Raduis
-	Node::SPtr r_radiusNode = visuNode->createChild("r_radius");	
-    component::visualmodel::OglModel::SPtr r_radius = addNew< component::visualmodel::OglModel >(torsoNode,"r_radius");
-    r_radius->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_radius.obj") );
-    RigidMappingRigid3d_to_Ext3f::SPtr r_radiusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_radiusNode,"mapping");
-    r_radiusMapping->setModels( rigid_dof.get(), r_radius.get() );
-	r_radiusMapping->index.setValue(2);
+	//Node::SPtr r_radiusNode = visuNode->createChild("r_radius");	
+    //component::visualmodel::OglModel::SPtr r_radius = addNew< component::visualmodel::OglModel >(r_radiusNode,"r_radius");
+    //r_radius->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_radius.obj") );
+    //RigidMappingRigid3d_to_Ext3f::SPtr r_radiusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_radiusNode,"mapping");
+    //r_radiusMapping->setModels( rigid_dof.get(), r_radius.get() );
+	//r_radiusMapping->index.setValue(2);
 
-	// Ulna
-	Node::SPtr r_ulnaNode = visuNode->createChild("r_ulna");	
-    component::visualmodel::OglModel::SPtr r_ulna = addNew< component::visualmodel::OglModel >(torsoNode,"r_ulna");
-    r_ulna->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_ulna.obj") );
-    RigidMappingRigid3d_to_Ext3f::SPtr r_ulnaMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_ulnaNode,"mapping");
-    r_ulnaMapping->setModels( rigid_dof.get(), r_ulna.get() );
-	r_ulnaMapping->index.setValue(3);
+	//// Ulna
+	//Node::SPtr r_ulnaNode = visuNode->createChild("r_ulna");	
+    //component::visualmodel::OglModel::SPtr r_ulna = addNew< component::visualmodel::OglModel >(r_ulnaNode,"r_ulna");
+    //r_ulna->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_ulna.obj") );
+    //RigidMappingRigid3d_to_Ext3f::SPtr r_ulnaMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_ulnaNode,"mapping");
+    //r_ulnaMapping->setModels( rigid_dof.get(), r_ulna.get() );
+	//r_ulnaMapping->index.setValue(3);
 
-	// Hand
-	Node::SPtr r_handNode = visuNode->createChild("r_hand");	
-    component::visualmodel::OglModel::SPtr r_hand = addNew< component::visualmodel::OglModel >(torsoNode,"r_hand");
-    r_hand->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_hand.obj") );
-    RigidMappingRigid3d_to_Ext3f::SPtr r_handMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_handNode,"mapping");
-    r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
-	r_handMapping->index.setValue(4);
+	//// Hand
+	//Node::SPtr r_handNode = visuNode->createChild("r_hand");	
+    //component::visualmodel::OglModel::SPtr r_hand = addNew< component::visualmodel::OglModel >(r_handNode,"r_hand");
+    //r_hand->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_hand.obj") );
+    //RigidMappingRigid3d_to_Ext3f::SPtr r_handMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_handNode,"mapping");
+    //r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
+	//r_handMapping->index.setValue(4);
+
+	/**********************************************************************************/
+	/************************* Muscles attach in bones (Node)  ************************/
+	/**********************************************************************************/
+    Node::SPtr attachNode = mainScene->createChild("attach");
+
+	//r_bicep_med origin on scapula
+	Node::SPtr originNode = attachNode->createChild("r_bicep_med_origin");
+
+	//Add mesh obj loader
+	sofa::component::loader::MeshObjLoader::SPtr originLoader = addNew< sofa::component::loader::MeshObjLoader >(originNode,"loader");
+	originLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
+	originLoader->triangulate.setValue(true);
+    originLoader->load();
+
+	//Bones gravity center - rigid node which contains bones, articuated system and ...
+    MechanicalObjectRigid3d::SPtr originRigid_dof = addNew<MechanicalObjectRigid3d>(originNode, "dof");
+	// write position of dof
+    originRigid_dof->resize(1);	// number of degree of freedom
+    MechanicalObjectRigid3d::WriteVecCoord xoriginrigid = originRigid_dof->writePositions();
+    xoriginrigid[0].getCenter()=Vec3d(-0.15882, 0.22436, -0.009336);
+
+	// Shepard shape function
+	ShepardShapeFunction::SPtr originShapeFunction = addNew<ShepardShapeFunction>(originNode, "shapeFunction");
+	originShapeFunction->f_nbRef.setValue(1);
+
+	// affine node
+	Node::SPtr frameAttachNode = attachNode->createChild("frame_attach");
+
+	// affine position
+
+	// linear mapping
+
+	//r_bicep_med insertion on radius
 	
 	
+	/**********************************************************************************/
 	/*************************** Deformable Structure Node  ***************************/
+	/**********************************************************************************/
     Node::SPtr musclesNode = mainScene->createChild("muscles");
 	
 	// ==================================r_bicep_med  ==================================
@@ -416,7 +456,7 @@ simulation::Node::SPtr createScene()
 	gaussPtsSampler->f_order.setValue(4);
 	gaussPtsSampler->targetNumber.setValue(100);
 	
-	//// define gauss point container
+	// define gauss point container
 	MechanicalObjectF332d::SPtr F = addNew<MechanicalObjectF332d>(passiveBehaviorNode, "F");
 	F->setSrc("", gaussPtsSampler.get());
 
@@ -485,7 +525,6 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
 
     //=================================================
-    //sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0, 100 );
 	sofa::simulation::Node::SPtr groot = createScene();
     //=================================================
 
