@@ -2209,9 +2209,9 @@ void RealGUI::setExportGnuplot ( bool exp )
 
 //------------------------------------
 
+#ifdef SOFA_DUMP_VISITOR_INFO
 void RealGUI::setExportVisitor ( bool exp )
 {
-#ifdef SOFA_DUMP_VISITOR_INFO
     if (exp)
     {
         windowTraceVisitor->show();
@@ -2221,8 +2221,12 @@ void RealGUI::setExportVisitor ( bool exp )
     {
         windowTraceVisitor->hide();
     }
-#endif
 }
+#else
+void RealGUI::setExportVisitor ( bool )
+{
+}
+#endif
 
 //------------------------------------
 

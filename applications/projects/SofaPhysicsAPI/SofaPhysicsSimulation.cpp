@@ -164,14 +164,14 @@ useGUI(useGUI_)
           sofa::gui::initMain();
 
           int argc= 1;
-          char* argv[]= { "a" };
+          char* argv[]= { const_cast<char*>("a") };
           glutInit(&argc,argv);
 
-          if (int err = sofa::gui::GUIManager::Init(argv[0],"qt"))
-            printf ( "Error sofa::gui::GUIManager::Init\n" );
+          if (sofa::gui::GUIManager::Init(argv[0],"qt"))
+              std::cerr << "ERROR in sofa::gui::GUIManager::Init()" << std::endl;
 
-          if (int err=sofa::gui::GUIManager::createGUI(NULL))
-            printf ( "Error sofa::gui::GUIManager::Init\n" );
+          if (sofa::gui::GUIManager::createGUI(NULL))
+              std::cerr << "ERROR in sofa::gui::GUIManager::CreateGUI()" << std::endl;
 
           sofa::gui::GUIManager::SetDimension(1,600);
         }
