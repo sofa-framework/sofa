@@ -3,7 +3,14 @@ cmake_minimum_required(VERSION 2.8)
 # extlibs
 RegisterDependencies("ARTrackLib" PATH "${SOFA_EXTLIBS_DIR}/ARTrack")
 RegisterDependencies("newmat" PATH "${SOFA_EXTLIBS_DIR}/newmat")
-RegisterDependencies("tinyxml" COMPILE_DEFINITIONS SOFA_XML_PARSER_TINYXML TIXML_USE_STL PATH "${SOFA_EXTLIBS_DIR}/tinyxml")
+if(NOT SOFA-EXTERNAL_TINYXML_AVAILABLE)
+	RegisterDependencies("tinyxml" COMPILE_DEFINITIONS SOFA_XML_PARSER_TINYXML TIXML_USE_STL PATH "${SOFA_EXTLIBS_DIR}/tinyxml")
+else()
+	# import a precompiled tinyxml library instead of the tinyxml project
+	add_library(tinyxml UNKNOWN IMPORTED)
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_RELEASE "${SOFA-EXTERNAL_TINYXML_LIBRARY}")
+	set_property(TARGET tinyxml PROPERTY IMPORTED_LOCATION_DEBUG   "${SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY}")
+endif()
 RegisterDependencies("csparse" OPTION SOFA-EXTERNAL_HAVE_CSPARSE COMPILE_DEFINITIONS SOFA_HAVE_CSPARSE PATH "${SOFA_EXTLIBS_DIR}/csparse")
 RegisterDependencies("eigen" OPTION SOFA-EXTERNAL_HAVE_EIGEN2 COMPILE_DEFINITIONS SOFA_HAVE_EIGEN2 PATH "${SOFA_EXTLIBS_DIR}/eigen-3.1.1")
 
