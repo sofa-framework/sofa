@@ -137,15 +137,17 @@ typedef sofa::component::engine::ImageSampler<ImageUC> ImageSampler_ImageUC;
 #define U321(type)  PrincipalStretchesStrainTypes<3,2,0,type>
 //////////////////////////////////////////////////////////////////////////////////
 
-// mapping
+// container
 typedef sofa::component::container::MechanicalObject< E332(double) > MechanicalObjectE332d;
 typedef sofa::component::container::MechanicalObject< F332(double) > MechanicalObjectF332d;
 typedef sofa::component::container::MechanicalObject< Affine3(double) > MechanicalObjectAffine3d;
 
+// mapping
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , V3(double) > LinearMapping_Affine_Vec3d;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , EV3(float) > LinearMapping_Affine_ExtVec3f;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , F332(double) > LinearMapping_Affine_F332;
-
+typedef sofa::component::mapping::LinearMapping< Rigid3(double), Affine3(double)  > LinearMapping_Rigid_Affine;
+												
 typedef sofa::component::mapping::CorotationalStrainMapping< F332(double), E332(double) > CorotationalStrainMapping_F332_E332;
 
 // sampler
@@ -155,8 +157,8 @@ typedef sofa::component::engine::ImageGaussPointSampler<ImageD> ImageGaussPointS
 typedef sofa::component::forcefield::HookeForceField< E332(double) > HookeForceField_E332;
 
 // shape function
-typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageUC> VoronoiShapeFunction;
-typedef sofa::component::shapefunction::ShepardShapeFunction< ShapeFunctionTypes<3,double>> ShepardShapeFunction;
+typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageUC > VoronoiShapeFunction;
+typedef sofa::component::shapefunction::ShepardShapeFunction< ShapeFunctionTypes<3,double> > ShepardShapeFunction;
 
 // Uniform Mass
 typedef sofa::component::mass::UniformMass< Affine3(double), double > UniformMass_Affine;
@@ -245,7 +247,7 @@ simulation::Node::SPtr createScene()
     xmrigid[8].getCenter()=Vec3d(-0.0128552, -0.1367464, 0.0503870); xmrigid[8].getOrientation()=Quat(0, 0.609994, -0.121999,  0.782958);
     xmrigid[9].getCenter()=Vec3d(0.00765, 0.0569, -0.0227938);
 	
-	// Mapping between bones and 
+	// Mapping between bones and joint
     RigidRigidMappingRigid3d_to_Rigid3d::SPtr mapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(jointNode,"mapping");
     mapping->setModels( rigid_dof.get(), mapped_rigid_dof.get() );
 	sofa::helper::vector<unsigned int> repartition;
@@ -327,43 +329,45 @@ simulation::Node::SPtr createScene()
     r_clavicle->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_clavicle.obj") );
 	
 	// Humerus
-	//Node::SPtr r_humerusNode = visuNode->createChild("r_humerus");	
-    //component::visualmodel::OglModel::SPtr r_humerus = addNew< component::visualmodel::OglModel >(r_humerusNode,"r_humerus");
-    //r_humerus->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_humerus.obj") );
-    //RigidMappingRigid3d_to_Ext3f::SPtr r_humerusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_humerusNode,"mapping");
-    //r_humerusMapping->setModels( rigid_dof.get(), r_humerus.get() );
-	//r_humerusMapping->index.setValue(1);
+	Node::SPtr r_humerusNode = visuNode->createChild("r_humerus");	
+    component::visualmodel::OglModel::SPtr r_humerus = addNew< component::visualmodel::OglModel >(r_humerusNode,"r_humerus");
+    r_humerus->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_humerus.obj") );
+    RigidMappingRigid3d_to_Ext3f::SPtr r_humerusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_humerusNode,"mapping");
+    r_humerusMapping->setModels( rigid_dof.get(), r_humerus.get() );
+	r_humerusMapping->index.setValue(1);
 
 	// Raduis
-	//Node::SPtr r_radiusNode = visuNode->createChild("r_radius");	
-    //component::visualmodel::OglModel::SPtr r_radius = addNew< component::visualmodel::OglModel >(r_radiusNode,"r_radius");
-    //r_radius->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_radius.obj") );
-    //RigidMappingRigid3d_to_Ext3f::SPtr r_radiusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_radiusNode,"mapping");
-    //r_radiusMapping->setModels( rigid_dof.get(), r_radius.get() );
-	//r_radiusMapping->index.setValue(2);
+	Node::SPtr r_radiusNode = visuNode->createChild("r_radius");	
+    component::visualmodel::OglModel::SPtr r_radius = addNew< component::visualmodel::OglModel >(r_radiusNode,"r_radius");
+    r_radius->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_radius.obj") );
+    RigidMappingRigid3d_to_Ext3f::SPtr r_radiusMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_radiusNode,"mapping");
+    r_radiusMapping->setModels( rigid_dof.get(), r_radius.get() );
+	r_radiusMapping->index.setValue(2);
 
-	//// Ulna
-	//Node::SPtr r_ulnaNode = visuNode->createChild("r_ulna");	
-    //component::visualmodel::OglModel::SPtr r_ulna = addNew< component::visualmodel::OglModel >(r_ulnaNode,"r_ulna");
-    //r_ulna->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_ulna.obj") );
-    //RigidMappingRigid3d_to_Ext3f::SPtr r_ulnaMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_ulnaNode,"mapping");
-    //r_ulnaMapping->setModels( rigid_dof.get(), r_ulna.get() );
-	//r_ulnaMapping->index.setValue(3);
+	// Ulna
+	Node::SPtr r_ulnaNode = visuNode->createChild("r_ulna");	
+    component::visualmodel::OglModel::SPtr r_ulna = addNew< component::visualmodel::OglModel >(r_ulnaNode,"r_ulna");
+    r_ulna->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_ulna.obj") );
+    RigidMappingRigid3d_to_Ext3f::SPtr r_ulnaMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_ulnaNode,"mapping");
+    r_ulnaMapping->setModels( rigid_dof.get(), r_ulna.get() );
+	r_ulnaMapping->index.setValue(3);
 
-	//// Hand
-	//Node::SPtr r_handNode = visuNode->createChild("r_hand");	
-    //component::visualmodel::OglModel::SPtr r_hand = addNew< component::visualmodel::OglModel >(r_handNode,"r_hand");
-    //r_hand->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_hand.obj") );
-    //RigidMappingRigid3d_to_Ext3f::SPtr r_handMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_handNode,"mapping");
-    //r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
-	//r_handMapping->index.setValue(4);
+	// Hand
+	Node::SPtr r_handNode = visuNode->createChild("r_hand");	
+    component::visualmodel::OglModel::SPtr r_hand = addNew< component::visualmodel::OglModel >(r_handNode,"r_hand");
+    r_hand->setFilename( sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_hand.obj") );
+    RigidMappingRigid3d_to_Ext3f::SPtr r_handMapping = addNew<RigidMappingRigid3d_to_Ext3f>(r_handNode,"mapping");
+    r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
+	r_handMapping->index.setValue(4);
 
 	/**********************************************************************************/
 	/************************* Muscles attach in bones (Node)  ************************/
 	/**********************************************************************************/
     Node::SPtr attachNode = mainScene->createChild("attach");
 
+	///////////////////////////////////////////
 	//r_bicep_med origin on scapula
+	///////////////////////////////////////////
 	Node::SPtr originNode = attachNode->createChild("r_bicep_med_origin");
 
 	//Add mesh obj loader
@@ -373,24 +377,91 @@ simulation::Node::SPtr createScene()
     originLoader->load();
 
 	//Bones gravity center - rigid node which contains bones, articuated system and ...
-    MechanicalObjectRigid3d::SPtr originRigid_dof = addNew<MechanicalObjectRigid3d>(originNode, "dof");
+    MechanicalObjectRigid3d::SPtr originRigidDof = addNew<MechanicalObjectRigid3d>(originNode, "dof");
 	// write position of dof
-    originRigid_dof->resize(1);	// number of degree of freedom
-    MechanicalObjectRigid3d::WriteVecCoord xoriginrigid = originRigid_dof->writePositions();
+    originRigidDof->resize(1);	// number of degree of freedom
+    MechanicalObjectRigid3d::WriteVecCoord xoriginrigid = originRigidDof->writePositions();
     xoriginrigid[0].getCenter()=Vec3d(-0.15882, 0.22436, -0.009336);
 
 	// Shepard shape function
 	ShepardShapeFunction::SPtr originShapeFunction = addNew<ShepardShapeFunction>(originNode, "shapeFunction");
 	originShapeFunction->f_nbRef.setValue(1);
+	
+	// Mapping between bones and 
+    RigidRigidMappingRigid3d_to_Rigid3d::SPtr originMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(originNode,"mapping");
+    originMapping->setModels( rigid_dof.get(), originRigidDof.get() );
+	sofa::helper::vector<unsigned int> originRepartition;
+	originRepartition.resize(5);
+	originRepartition[0] = 1;
+	originRepartition[1] = 0;
+	originRepartition[2] = 0;
+	originRepartition[3] = 0;
+	originRepartition[4] = 0;
+	originMapping->setRepartition(originRepartition);
 
-	// affine node
-	Node::SPtr frameAttachNode = attachNode->createChild("frame_attach");
-
-	// affine position
-
-	// linear mapping
-
+	// **** affine node ****
+	Node::SPtr frameOriginAttachNode = originNode->createChild("frame_attach");
+	
+	// mstate
+	MechanicalObjectAffine3d::SPtr originFrameDof = addNew<MechanicalObjectAffine3d>(frameOriginAttachNode, "dof");
+	originFrameDof->showObject.setValue(true);
+	originFrameDof->showObjectScale.setValue(0.05);
+    originFrameDof->resize(1);	// number of degree of freedom
+    MechanicalObjectAffine3d::WriteVecCoord xoriginaffine = originFrameDof->writePositions();
+    xoriginaffine[0].getCenter()=Vec3d(-0.15882, 0.22436, -0.009336);
+	
+	// Linear mapping between rigid and affine
+	LinearMapping_Rigid_Affine::SPtr originLinearMapping = addNew<LinearMapping_Rigid_Affine>(frameOriginAttachNode, "Mapping");
+	originLinearMapping->setModels( originRigidDof.get(), originFrameDof.get() );
+	
+	///////////////////////////////////////////
 	//r_bicep_med insertion on radius
+	///////////////////////////////////////////
+	Node::SPtr insertionNode = attachNode->createChild("r_bicep_med_insertion");
+
+	//Add mesh obj loader
+	sofa::component::loader::MeshObjLoader::SPtr insertionLoader = addNew< sofa::component::loader::MeshObjLoader >(insertionNode,"loader");
+	insertionLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
+	insertionLoader->triangulate.setValue(true);
+    insertionLoader->load();
+
+	//Bones gravity center - rigid node which contains bones, articuated system and ...
+    MechanicalObjectRigid3d::SPtr insertionRigidDof = addNew<MechanicalObjectRigid3d>(insertionNode, "dof");
+	// write position of dof
+    insertionRigidDof->resize(1);	// number of degree of freedom
+    MechanicalObjectRigid3d::WriteVecCoord xinsertionrigid = insertionRigidDof->writePositions();
+    xinsertionrigid[0].getCenter()=Vec3d(0.0175631, 0.0783997, -0.0253493);
+
+	// Shepard shape function
+	ShepardShapeFunction::SPtr insertionShapeFunction = addNew<ShepardShapeFunction>(insertionNode, "shapeFunction");
+	insertionShapeFunction->f_nbRef.setValue(1);
+	
+	// Mapping between bones and 
+    RigidRigidMappingRigid3d_to_Rigid3d::SPtr insertionMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(insertionNode,"mapping");
+    insertionMapping->setModels( rigid_dof.get(), insertionRigidDof.get() );
+	sofa::helper::vector<unsigned int> insertionRepartition;
+	insertionRepartition.resize(5);
+	insertionRepartition[0] = 0;
+	insertionRepartition[1] = 0;
+	insertionRepartition[2] = 1;
+	insertionRepartition[3] = 0;
+	insertionRepartition[4] = 0;
+	insertionMapping->setRepartition(insertionRepartition);
+
+	// **** affine node ****
+	Node::SPtr frameInsertionAttachNode = insertionNode->createChild("frame_attach");
+	
+	// mstate
+	MechanicalObjectAffine3d::SPtr insertionFrameDof = addNew<MechanicalObjectAffine3d>(frameInsertionAttachNode, "dof");
+	insertionFrameDof->showObject.setValue(true);
+	insertionFrameDof->showObjectScale.setValue(0.05);
+    insertionFrameDof->resize(1);	// number of degree of freedom
+    MechanicalObjectAffine3d::WriteVecCoord xinsertionaffine = insertionFrameDof->writePositions();
+    xinsertionaffine[0].getCenter()=Vec3d(0.0175631, 0.0783997, -0.0253493);
+	
+	// Linear mapping between rigid and affine
+	LinearMapping_Rigid_Affine::SPtr insertionLinearMapping = addNew<LinearMapping_Rigid_Affine>(frameInsertionAttachNode, "Mapping");
+	insertionLinearMapping->setModels( insertionRigidDof.get(), insertionFrameDof.get() );
 	
 	
 	/**********************************************************************************/
