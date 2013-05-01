@@ -41,6 +41,9 @@ typedef QListViewItem Q3ListViewItem;
 
 
 //Tinyxml library
+#ifndef TIXML_USE_STL
+#define TIXML_USE_STL
+#endif
 #include <tinyxml.h>
 #include <tinystr.h>
 

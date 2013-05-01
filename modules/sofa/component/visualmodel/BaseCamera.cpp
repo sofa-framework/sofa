@@ -29,6 +29,11 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/helper/gl/Axis.h>
 
+#ifndef TIXML_USE_STL
+#define TIXML_USE_STL
+#endif
+#include <tinyxml.h>
+
 namespace sofa
 {
 
@@ -455,7 +460,7 @@ void BaseCamera::setDefaultView(const Vec3 & gravity)
     computeZ();
 }
 
-void BaseCamera::exportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+void BaseCameraXMLExportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comment)
 {
     TiXmlElement* node = new TiXmlElement( data.getName().c_str() );
     node->SetAttribute("value", data.getValueString().c_str() );
@@ -477,19 +482,19 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
     root->SetAttribute("version", "1.0" );
     doc.LinkEndChild( root );
 
-    exportSingleParameter(root, p_position, "Vector of 3 reals (x, y, z)");
-    exportSingleParameter(root, p_orientation, "Quaternion (x, y, z, w)");
-    exportSingleParameter(root, p_lookAt, "Vector of 3 reals (x, y, z)");
-    exportSingleParameter(root, p_fieldOfView, "Real");
-    exportSingleParameter(root, p_distance, "Real");
-    exportSingleParameter(root, p_zNear, "Real");
-    exportSingleParameter(root, p_zFar, "Real");
-    exportSingleParameter(root, p_type, "Int (0 -> Perspective, 1 -> Orthographic)");
+    BaseCameraXMLExportSingleParameter(root, p_position, "Vector of 3 reals (x, y, z)");
+    BaseCameraXMLExportSingleParameter(root, p_orientation, "Quaternion (x, y, z, w)");
+    BaseCameraXMLExportSingleParameter(root, p_lookAt, "Vector of 3 reals (x, y, z)");
+    BaseCameraXMLExportSingleParameter(root, p_fieldOfView, "Real");
+    BaseCameraXMLExportSingleParameter(root, p_distance, "Real");
+    BaseCameraXMLExportSingleParameter(root, p_zNear, "Real");
+    BaseCameraXMLExportSingleParameter(root, p_zFar, "Real");
+    BaseCameraXMLExportSingleParameter(root, p_type, "Int (0 -> Perspective, 1 -> Orthographic)");
 
     return doc.SaveFile( viewFilename.c_str() );
 }
 
-bool BaseCamera::importSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data)
+bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
 {
     if(root)
     {
@@ -506,24 +511,24 @@ bool BaseCamera::importSingleParameter(TiXmlElement* root, core::objectmodel::Ba
                     std::string m_string; m_string.assign(attrValue);
                     bool retvalue = data.read(m_string);
                     if(!retvalue)
-                        serr << "Unreadable value for " << data.getName() << " field." << sendl;
+                        c->serr << "Unreadable value for " << data.getName() << " field." << c->sendl;
                     return retvalue;
                 }
                 else
                 {
-                    serr << "Attribute value has not been found for " << data.getName() << " field." << sendl;
+                    c->serr << "Attribute value has not been found for " << data.getName() << " field." << c->sendl;
                     return false;
                 }
             }
             else
             {
-                serr << "Unknown error occured for " << data.getName() << " field." << sendl;
+                c->serr << "Unknown error occured for " << data.getName() << " field." << c->sendl;
                 return false;
             }
         }
         else
         {
-            serr << "Field " << data.getName() << " has not been found." << sendl;
+            c->serr << "Field " << data.getName() << " has not been found." << c->sendl;
             return false;
         }
     }
@@ -600,14 +605,14 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     //std::string camVersion;
     //root->QueryStringAttribute ("version", &camVersion);
 
-    importSingleParameter(root, p_position);
-    importSingleParameter(root, p_orientation);
-    importSingleParameter(root, p_lookAt);
-    importSingleParameter(root, p_fieldOfView);
-    importSingleParameter(root, p_distance);
-    importSingleParameter(root, p_zNear);
-    importSingleParameter(root, p_zFar);
-    importSingleParameter(root, p_type);
+    BaseCameraXMLImportSingleParameter(root, p_position, this);
+    BaseCameraXMLImportSingleParameter(root, p_orientation, this);
+    BaseCameraXMLImportSingleParameter(root, p_lookAt, this);
+    BaseCameraXMLImportSingleParameter(root, p_fieldOfView, this);
+    BaseCameraXMLImportSingleParameter(root, p_distance, this);
+    BaseCameraXMLImportSingleParameter(root, p_zNear, this);
+    BaseCameraXMLImportSingleParameter(root, p_zFar, this);
+    BaseCameraXMLImportSingleParameter(root, p_type, this);
 
     return true;
 }

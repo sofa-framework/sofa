@@ -194,7 +194,7 @@ function(RegisterDependencies)
 			elseif(${mode} EQUAL 1) # OPTION parameter
 				set(mode 5)
 				set(optionName ${arg})
-			elseif(${mode} EQUAL 2) # OPTION parameter
+			elseif(${mode} EQUAL 2) # NO_OPTION parameter
 				set(mode 5)
 				set(noOptionName ${arg})
 			elseif(${mode} EQUAL 3) # COMPILE_DEFINITIONS parameter
@@ -272,6 +272,7 @@ function(RegisterProjectDependencies projectName)
 	# if we manually added an optional project to be generated, we must set its option to ON
 	if(GLOBAL_PROJECT_OPTION_${projectName})
 		if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
+			message(WARNING " - Adding needed project option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
 			get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
 			set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)	
 		endif()
@@ -323,7 +324,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 				if(NOT ${${GLOBAL_PROJECT_OPTION_${projectName}}})
 					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_OPTION_${projectName}} PROPERTY HELPSTRING)
 					set(${GLOBAL_PROJECT_OPTION_${projectName}} 1 CACHE BOOL "${variableDocumentation}" FORCE)
-					message(STATUS " - Adding needed option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
+					message(WARNING " - Adding needed option : ${GLOBAL_PROJECT_OPTION_${projectName}}")
 				endif()
 			endif()
 			
@@ -332,7 +333,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
 				if(NOT ${${GLOBAL_PROJECT_NO_OPTION_${projectName}}})
 					get_property(variableDocumentation CACHE ${GLOBAL_PROJECT_NO_OPTION_${projectName}} PROPERTY HELPSTRING)
 					set(${GLOBAL_PROJECT_NO_OPTION_${projectName}} 0 CACHE BOOL "${variableDocumentation}" FORCE)
-					message(STATUS " - Disabling option : ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
+					message(WARNING " - Disabling option : ${GLOBAL_PROJECT_NO_OPTION_${projectName}}")
 				endif()
 			endif()
 			

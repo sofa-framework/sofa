@@ -11,7 +11,6 @@ RegisterDependencies("SofaBaseLinearSolver" OPTION "SOFA-LIB_COMPONENT_BASE_LINE
 RegisterDependencies("SofaBaseMechanics" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics")
 RegisterDependencies("SofaBaseTopology" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology")
 RegisterDependencies("SofaBaseVisual" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual")
-RegisterDependencies("SofaBoundaryCondition" OPTION "SOFA-LIB_COMPONENT_BOUNDARY_CONDITION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBoundaryCondition")
 
 RegisterDependencies("SofaComponentAdvanced" OPTION "SOFA-LIB_COMPONENT_COMPONENT_ADVANCED" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentAdvanced")
 RegisterDependencies("SofaComponentCommon" OPTION "SOFA-LIB_COMPONENT_COMPONENT_COMMON" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentCommon")
@@ -20,11 +19,13 @@ RegisterDependencies("SofaComponentMisc" OPTION "SOFA-LIB_COMPONENT_COMPONENT_MI
 RegisterDependencies("SofaComponentBase" OPTION "SOFA-LIB_COMPONENT_COMPONENT_BASE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentBase")
 RegisterDependencies("SofaComponentMain" OPTION "SOFA-LIB_COMPONENT_COMPONENT_MAIN" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentMain")
 
+RegisterDependencies("SofaBoundaryCondition" OPTION "SOFA-LIB_COMPONENT_BOUNDARY_CONDITION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBoundaryCondition")
 RegisterDependencies("SofaConstraint" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraint")
 RegisterDependencies("SofaDeformable" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable")
 RegisterDependencies("SofaDenseSolver" OPTION "SOFA-LIB_COMPONENT_DENSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDenseSolver")
-RegisterDependencies("SofaEigen2Solver" OPTION "SOFA-LIB_COMPONENT_EIGEN2_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEigen2Solver") # previous option was : SOFA-EXTERNAL_HAVE_EIGEN2
-
+if(SOFA-EXTERNAL_HAVE_EIGEN2)
+	RegisterDependencies("SofaEigen2Solver" OPTION "SOFA-LIB_COMPONENT_EIGEN2_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEigen2Solver") # previous option was : SOFA-EXTERNAL_HAVE_EIGEN2
+endif()
 RegisterDependencies("SofaEngine" OPTION "SOFA-LIB_COMPONENT_ENGINE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEngine")
 RegisterDependencies("SofaEulerianFluid" OPTION "SOFA-LIB_COMPONENT_EULERIAN_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEulerianFluid")
 RegisterDependencies("SofaExplicitOdeSolver" OPTION "SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExplicitOdeSolver")
@@ -45,11 +46,14 @@ RegisterDependencies("SofaMiscTopology" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY
 RegisterDependencies("SofaNonUniformFem" OPTION "SOFA-LIB_COMPONENT_NON_UNIFORM_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaNonUniformFem")
 RegisterDependencies("SofaObjectInteraction" OPTION "SOFA-LIB_COMPONENT_OBJECT_INTERACTION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaObjectInteraction")
 RegisterDependencies("SofaOpenglVisual" OPTION "SOFA-LIB_COMPONENT_OPENGL_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaOpenglVisual") # NOT SOFA-MISC_NO_OPENGL
-RegisterDependencies("SofaPardisoSolver" OPTION "SOFA-LIB_COMPONENT_PARDISO_SOLVER" COMPILE_DEFINITIONS SOFA_HAVE_PARDISO PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaPardisoSolver") # previous option was : SOFA-LIB_PARDISO_SOLVER
+if(SOFA-EXTERNAL_HAVE_PARDISO)
+	RegisterDependencies("SofaPardisoSolver" OPTION "SOFA-LIB_COMPONENT_PARDISO_SOLVER" COMPILE_DEFINITIONS SOFA_HAVE_PARDISO PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaPardisoSolver") # previous option was : SOFA-LIB_PARDISO_SOLVER
+endif()
 RegisterDependencies("SofaRigid" OPTION "SOFA-LIB_COMPONENT_RIGID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaRigid")
 RegisterDependencies("SofaSimpleFem" OPTION "SOFA-LIB_COMPONENT_SIMPLE_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimpleFem")
-RegisterDependencies("SofaSparseSolver" OPTION "SOFA-LIB_COMPONENT_SPARSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSparseSolver") # previous option was : SOFA-EXTERNAL_HAVE_CSPARSE
-
+if(SOFA-EXTERNAL_HAVE_CSPARSE)
+	RegisterDependencies("SofaSparseSolver" OPTION "SOFA-LIB_COMPONENT_SPARSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSparseSolver") # previous option was : SOFA-EXTERNAL_HAVE_CSPARSE
+endif()
 RegisterDependencies("SofaPreconditioner" OPTION "SOFA-LIB_COMPONENT_PRECONDITIONER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaPreconditioner")
 RegisterDependencies("SofaSphFluid" OPTION "SOFA-LIB_COMPONENT_SPH_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSphFluid")
 #RegisterDependencies("SofaTaucsSolver" OPTION "SOFA-LIB_COMPONENT_TAUCS_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaTaucsSolver") #missing LIBS *= -lblas_win32_MT, etc..

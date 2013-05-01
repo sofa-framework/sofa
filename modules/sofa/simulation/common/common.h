@@ -33,4 +33,9 @@
 #	define SOFA_SIMULATION_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+// tinyxml is currently the default XML parser
+#ifndef SOFA_XML_PARSER_LIBXML
+#define SOFA_XML_PARSER_TINYXML
+#endif
+
 #endif

@@ -31,6 +31,6 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_BASE_VISUAL")
-set(LINKER_DEPENDENCIES SofaBaseTopology)
+set(LINKER_DEPENDENCIES SofaBaseTopology tinyxml)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

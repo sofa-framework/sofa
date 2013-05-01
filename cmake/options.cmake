@@ -88,13 +88,13 @@ mark_as_advanced(SOFA-EXTERNAL_TINYXML_LIBRARY)
 mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
 
 ## zlib
-option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" OFF)
+option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" ON)
 if(SOFA-EXTERNAL_HAVE_ZLIB)
 	list(APPEND compilerDefines SOFA_HAVE_ZLIB)
 endif()
 
 ## libpng
-option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" OFF)
+option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" ON)
 if(SOFA-EXTERNAL_HAVE_PNG)
 	list(APPEND compilerDefines SOFA_HAVE_PNG)
 endif()
@@ -106,7 +106,7 @@ if(SOFA-EXTERNAL_HAVE_FREEGLUT)
 endif()
 
 ## glew
-option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" OFF)
+option(SOFA-EXTERNAL_HAVE_GLEW "Use the GLEW library" ON)
 if(SOFA-EXTERNAL_HAVE_GLEW)
 	list(APPEND compilerDefines SOFA_HAVE_GLEW)
 endif()

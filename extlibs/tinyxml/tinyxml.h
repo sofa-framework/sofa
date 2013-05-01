@@ -43,17 +43,13 @@ distribution.
 #define DEBUG
 #endif
 
-#ifndef TIXML_USE_STL
-#warning FORCING TIXML_USE_STL FLAG
-#define TIXML_USE_STL
-#endif
-
 #ifdef TIXML_USE_STL
 	#include <string>
  	#include <iostream>
 	#include <sstream>
 	#define TIXML_STRING		std::string
 #else
+	#error TIXML_USE_STL not defined!
 	#include "tinystr.h"
 	#define TIXML_STRING		TiXmlString
 #endif
