@@ -46,6 +46,11 @@ foreach(devPluginDir ${devPluginDirs})
 	endif()
 endforeach()
 
+# configurable paths to use pre-compiled dependencies outside of the Sofa directory
+
+set (SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
+set (SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
+
 # extlibs
 
 ## qt
@@ -73,6 +78,15 @@ else()
 	set(SOFA-EXTERNAL_HAVE_BOOST 0 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 endif()
 
+## tinyxml
+option(SOFA-EXTERNAL_TINYXML_AVAILABLE "A pre-compiled tinyxml library is available" OFF)
+set(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR "" CACHE PATH "For pre-compiled tinyxml: library where headers are available")
+set(SOFA-EXTERNAL_TINYXML_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: release-mode library name")
+set(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY "" CACHE PATH "For pre-compiled tinyxml: debug-mode library name")
+mark_as_advanced(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR)
+mark_as_advanced(SOFA-EXTERNAL_TINYXML_LIBRARY)
+mark_as_advanced(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY)
+
 ## zlib
 option(SOFA-EXTERNAL_HAVE_ZLIB "Use the ZLib library" OFF)
 if(SOFA-EXTERNAL_HAVE_ZLIB)
@@ -83,6 +97,12 @@ endif()
 option(SOFA-EXTERNAL_HAVE_PNG "Use the LibPNG library" OFF)
 if(SOFA-EXTERNAL_HAVE_PNG)
 	list(APPEND compilerDefines SOFA_HAVE_PNG)
+endif()
+
+## freeglut
+option(SOFA-EXTERNAL_HAVE_FREEGLUT "Use the FreeGLUT library (instead of regular GLUT)" OFF)
+if(SOFA-EXTERNAL_HAVE_FREEGLUT)
+	list(APPEND compilerDefines SOFA_HAVE_FREEGLUT)
 endif()
 
 ## glew
