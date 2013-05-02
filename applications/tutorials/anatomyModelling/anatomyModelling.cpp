@@ -74,6 +74,7 @@
 #include <material/HookeForceField.h>
 #include <deformationMapping/LinearMapping.h>
 #include <strainMapping/CorotationalStrainMapping.h>
+#include <strainMapping/GreenStrainMapping.h>
 #endif
 
 #ifdef SOFA_HAVE_SOHUSIM
@@ -147,8 +148,10 @@ typedef sofa::component::mapping::LinearMapping< Affine3(double) , V3(double) > 
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , EV3(float) > LinearMapping_Affine_ExtVec3f;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , F332(double) > LinearMapping_Affine_F332;
 typedef sofa::component::mapping::LinearMapping< Rigid3(double), Affine3(double)  > LinearMapping_Rigid_Affine;
-												
+
+typedef sofa::component::mapping::SubsetMultiMapping< Affine3(double), Affine3(double) > SubsetMultiMapping_Affine_Affine;
 typedef sofa::component::mapping::CorotationalStrainMapping< F332(double), E332(double) > CorotationalStrainMapping_F332_E332;
+typedef sofa::component::mapping::GreenStrainMapping< F332(double), E332(double) > GreenStrainMapping_F332_E332;
 
 // sampler
 typedef sofa::component::engine::ImageGaussPointSampler<ImageD> ImageGaussPointSampler_ImageD;
@@ -217,16 +220,37 @@ simulation::Node::SPtr createScene()
     xrigid[2].getCenter()=Vec3d(-0.24487, -0.17229, -0.01618);
     xrigid[3].getCenter()=Vec3d(-0.22625, -0.13082, -0.04326);
     xrigid[4].getCenter()=Vec3d(-0.24653, -0.32916,  0.02977);
-
+	
     DiagonalMassRigid3d::SPtr rigid_mass = addNew<DiagonalMassRigid3d>(rigidNode,"mass");
-    rigid_mass->addMass(1.701798355);
-    rigid_mass->addMass(0.685277744);
-    rigid_mass->addMass(0.618109080);
-    rigid_mass->addMass(0.640758879);
-    rigid_mass->addMass(0.700385585);
-		
-    FixedConstraintRigid3d::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3d>(rigidNode,"fixedConstraint");
+	rigid_mass->showAxisSize.setValue(0.025);
+	// set mass
+    float in = 0.1f;	
+    DiagonalMassRigid3d::MassType::Mat3x3 inertia; inertia.fill(0.0);
+    inertia[0][0] = in; inertia[1][1] = in; inertia[2][2] = in;
+    DiagonalMassRigid3d::MassType m0, m1, m2, m3, m4;
+	// m0
+	m0.mass=1.701798355; m0.volume=1;
+    m0.inertiaMatrix = inertia; m0.recalc();
+	// m1
+    m1.mass=0.685277744; m1.volume=0.685277744;
+    m1.inertiaMatrix = inertia; m1.recalc();
+	// m2
+    m2.mass=0.618109080; m2.volume=0.618109080;
+    m2.inertiaMatrix = inertia; m2.recalc();
+	// m3
+    m3.mass=0.640758879; m3.volume=0.640758879;
+    m3.inertiaMatrix = inertia; m3.recalc();
+	// m4
+    m4.mass=0.700385585; m4.volume=0.700385585;
+    m4.inertiaMatrix = inertia; m4.recalc();
 
+    rigid_mass->addMass(m0);
+    rigid_mass->addMass(m1);
+    rigid_mass->addMass(m2);
+    rigid_mass->addMass(m3);
+    rigid_mass->addMass(m4);
+	
+    FixedConstraintRigid3d::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3d>(rigidNode,"fixedConstraint");
 	
 	// ================================== Joint Node  ==================================
 	Node::SPtr jointNode = rigidNode->createChild("joint");
@@ -282,19 +306,19 @@ simulation::Node::SPtr createScene()
 
 	// s3
 	JointSpringForceFieldRigid3d::Spring s3(3, 7, softKst, hardKst, softKsr, hardKsr, blocKsr, -0.00001, 0.00001, -2.26893, 0.00001, -0.00001, 0.00001, kd);
-	s3.setFreeAxis(true, true, true, false, true, false);
+	//s3.setFreeAxis(true, true, true, false, false, false);	//s3.setFreeAxis(true, true, true, false, true, false);
 	Vec<3,double> t3; t3[0]=1.E-4; t3[1]=1.E-4; t3[2]=1.E-4;
 	s3.setInitLength(t3);
 
 	// s4
 	JointSpringForceFieldRigid3d::Spring s4(4, 8, softKst, hardKst, softKsr, hardKsr, blocKsr, -0.00001, 0.00001, -2.26893, 0.00001, -0.00001, 0.00001, kd);
-	s4.setFreeAxis(true, true, true, false, true, false);
+	s4.setFreeAxis(true, true, true, false, false, false);	//s4.setFreeAxis(true, true, true, false, true, false);
 	Vec<3,double> t4; t4[0]=1.E-4; t4[1]=1.E-4; t4[2]=1.E-4;
 	s4.setInitLength(t4);
 
 	// s5
 	JointSpringForceFieldRigid3d::Spring s5(5, 9, softKst, hardKst, softKsr, hardKsr, blocKsr, -0.95993, 1.134465, -0.00001, 0.00001, -0.04906, 0.34906, kd);
-	s5.setFreeAxis(true, true, true, true, false, true);
+	s5.setFreeAxis(true, true, true, false, false, false);	//s5.setFreeAxis(true, true, true, true, false, true);
 	Vec<3,double> t5; t5[0]=1.E-4; t5[1]=1.E-4; t5[2]=1.E-4;
 	s5.setInitLength(t5);
 
@@ -360,9 +384,9 @@ simulation::Node::SPtr createScene()
     r_handMapping->setModels( rigid_dof.get(), r_hand.get() );
 	r_handMapping->index.setValue(4);
 
-	/**********************************************************************************/
-	/************************* Muscles attach in bones (Node)  ************************/
-	/**********************************************************************************/
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////// Muscles attach in bones (Node) //////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
     Node::SPtr attachNode = mainScene->createChild("attach");
 
 	///////////////////////////////////////////
@@ -380,6 +404,8 @@ simulation::Node::SPtr createScene()
     MechanicalObjectRigid3d::SPtr originRigidDof = addNew<MechanicalObjectRigid3d>(originNode, "dof");
 	// write position of dof
     originRigidDof->resize(1);	// number of degree of freedom
+	originRigidDof->showObject.setValue(true);
+	originRigidDof->showObjectScale.setValue(0.05);
     MechanicalObjectRigid3d::WriteVecCoord xoriginrigid = originRigidDof->writePositions();
     xoriginrigid[0].getCenter()=Vec3d(-0.15882, 0.22436, -0.009336);
 
@@ -429,6 +455,8 @@ simulation::Node::SPtr createScene()
     MechanicalObjectRigid3d::SPtr insertionRigidDof = addNew<MechanicalObjectRigid3d>(insertionNode, "dof");
 	// write position of dof
     insertionRigidDof->resize(1);	// number of degree of freedom
+	insertionRigidDof->showObject.setValue(true);
+	insertionRigidDof->showObjectScale.setValue(0.05);
     MechanicalObjectRigid3d::WriteVecCoord xinsertionrigid = insertionRigidDof->writePositions();
     xinsertionrigid[0].getCenter()=Vec3d(0.0175631, 0.0783997, -0.0253493);
 
@@ -448,7 +476,7 @@ simulation::Node::SPtr createScene()
 	insertionRepartition[4] = 0;
 	insertionMapping->setRepartition(insertionRepartition);
 
-	// **** affine node ****
+	// //// affine node ////
 	Node::SPtr frameInsertionAttachNode = insertionNode->createChild("frame_attach");
 	
 	// mstate
@@ -463,14 +491,26 @@ simulation::Node::SPtr createScene()
 	LinearMapping_Rigid_Affine::SPtr insertionLinearMapping = addNew<LinearMapping_Rigid_Affine>(frameInsertionAttachNode, "Mapping");
 	insertionLinearMapping->setModels( insertionRigidDof.get(), insertionFrameDof.get() );
 	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////// Independents particles Node /////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+    Node::SPtr independentParticlesNode = mainScene->createChild("independentParticles");
+    MechanicalObjectAffine3d::SPtr independentParticlesDof = addNew< MechanicalObjectAffine3d>(independentParticlesNode,"dof");
+	independentParticlesDof->showObject.setValue(true);
+	independentParticlesDof->showObjectScale.setValue(0.05);
+    independentParticlesDof->resize(3);	// number of degree of freedom
+    MechanicalObjectAffine3d::WriteVecCoord xindependentaffine = independentParticlesDof->writePositions();
+    xindependentaffine[0].getCenter()=Vec3d(-0.19065, 0.05786,  -0.02014);
+    xindependentaffine[1].getCenter()=Vec3d(-0.18565, 0.119865, -0.01714);
+    xindependentaffine[2].getCenter()=Vec3d(-0.20165,-0.001135, -0.02214);
 	
-	/**********************************************************************************/
-	/*************************** Deformable Structure Node  ***************************/
-	/**********************************************************************************/
+	////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////// Deformable Structure Node /////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
     Node::SPtr musclesNode = mainScene->createChild("muscles");
 	
 	// ==================================r_bicep_med  ==================================
-	Node::SPtr rbicepmedNode = musclesNode->createChild("r_bicep_med");
+	Node::SPtr rbicepmedNode = independentParticlesNode->createChild("r_bicep_med");
 
 	// Add mesh obj loader
 	sofa::component::loader::MeshObjLoader::SPtr loader = addNew< sofa::component::loader::MeshObjLoader >(rbicepmedNode,"loader");
@@ -498,22 +538,57 @@ simulation::Node::SPtr createScene()
 	sampler->method.setValue(methodOptions);
 	helper::WriteAccessor< Data< vector<double> > > p(sampler->param); 	p.push_back(3); 
 	sampler->setSrc("", image.get());
-
+	// sampler computed position	
+	vector< Vec<3,double> > r_bicep_med_movingframe; r_bicep_med_movingframe.resize(3);
+	r_bicep_med_movingframe[0][0]=-0.19065; r_bicep_med_movingframe[0][1]=0.05786; r_bicep_med_movingframe[0][2]=-0.02014;
+	r_bicep_med_movingframe[1][0]=-0.18565; r_bicep_med_movingframe[1][1]=0.119865; r_bicep_med_movingframe[1][2]=-0.01714; 
+	r_bicep_med_movingframe[2][0]=-0.20165; r_bicep_med_movingframe[2][1]=-0.001135; r_bicep_med_movingframe[2][2]=-0.02214;
+	// fixed position
+	vector< Vec<3,double> > r_bicep_med_fixedframe; r_bicep_med_fixedframe.resize(2);
+	r_bicep_med_fixedframe[0][0]=-0.15882; r_bicep_med_fixedframe[0][1]=0.22436; r_bicep_med_fixedframe[0][2]=-0.009336;
+	r_bicep_med_fixedframe[1][0]=-0.22731; r_bicep_med_fixedframe[1][1]=-0.09389; r_bicep_med_fixedframe[1][2]=-0.041530; 
+	
 	// define frame container
 	MechanicalObjectAffine3d::SPtr frameDof = addNew<MechanicalObjectAffine3d>(rbicepmedNode, "dof");
 	frameDof->showObject.setValue(true);
 	frameDof->showObjectScale.setValue(0.05);
-	frameDof->setSrc("", sampler.get());
+	//frameDof->setSrc("", sampler.get());
+	unsigned int r_bicep_med_NbFrameFree = r_bicep_med_fixedframe.size() + r_bicep_med_movingframe.size();
+	frameDof->resize( r_bicep_med_NbFrameFree );	// number of degree of freedom
+    MechanicalObjectAffine3d::WriteVecCoord xframeX = frameDof->writePositions();
+	// origin and insertion (attach frame) / ind = 0,1
+	for(unsigned int i=0; i<r_bicep_med_fixedframe.size(); ++i)
+		xframeX[i].getCenter()=Vec3d(r_bicep_med_fixedframe[i][0], r_bicep_med_fixedframe[i][1], r_bicep_med_fixedframe[i][2]);
+	// moving frame  / ind = 2,3,4
+	for(unsigned int i=0; i<r_bicep_med_movingframe.size(); ++i)
+		xframeX[i+r_bicep_med_fixedframe.size()].getCenter()=Vec3d(r_bicep_med_movingframe[i][0], r_bicep_med_movingframe[i][1], r_bicep_med_movingframe[i][2]);
 
 	// Voronoi shape functions
 	VoronoiShapeFunction::SPtr shapeFunction = addNew<VoronoiShapeFunction>(rbicepmedNode, "shapeFunction");
 	shapeFunction->useDijkstra.setValue(1);
-	shapeFunction->f_nbRef.setValue(3);
+	shapeFunction->f_nbRef.setValue(8);
 	shapeFunction->method.setValue(0);
 	shapeFunction->setSrc("",image.get());
 	shapeFunction->f_position.setParent("@"+frameDof->getName()+".rest_position");
-		
-	/**** Passive Behavior Node  ****/
+	
+	// MultiMapping
+	originNode->addChild(rbicepmedNode);  // second parent
+	insertionNode->addChild(rbicepmedNode);  // third parent
+	SubsetMultiMapping_Affine_Affine::SPtr multiMapping = addNew<SubsetMultiMapping_Affine_Affine>(rbicepmedNode,"mapping");
+    multiMapping->addInputModel(independentParticlesDof.get()); // first parent
+    multiMapping->addInputModel(originFrameDof.get()); // second parent
+    multiMapping->addInputModel(insertionFrameDof.get()); // third parent
+    multiMapping->addOutputModel(frameDof.get()); // deformable structure
+	////////// init subsetmultimapping position //////////
+	// origin and inertion
+	multiMapping->addPoint( originFrameDof.get(), 0 );
+	multiMapping->addPoint( insertionFrameDof.get(), 0 );
+	// moving frame
+	multiMapping->addPoint( independentParticlesDof.get(), 0 );
+	multiMapping->addPoint( independentParticlesDof.get(), 1 );
+	multiMapping->addPoint( independentParticlesDof.get(), 2 );
+	
+	///// Passive Behavior Node  /////
 	Node::SPtr passiveBehaviorNode = rbicepmedNode->createChild("passiveBehavior");
 
 	// Gauss Sampler
@@ -525,7 +600,7 @@ simulation::Node::SPtr createScene()
     gaussPtsSamplerMethodOptions.setSelectedItem(2);
 	gaussPtsSampler->f_method.setValue(gaussPtsSamplerMethodOptions);
 	gaussPtsSampler->f_order.setValue(4);
-	gaussPtsSampler->targetNumber.setValue(100);
+	gaussPtsSampler->targetNumber.setValue(1);
 	
 	// define gauss point container
 	MechanicalObjectF332d::SPtr F = addNew<MechanicalObjectF332d>(passiveBehaviorNode, "F");
@@ -535,13 +610,13 @@ simulation::Node::SPtr createScene()
 	LinearMapping_Affine_F332::SPtr FG = addNew<LinearMapping_Affine_F332>(passiveBehaviorNode, "Mapping");
 	FG->setModels(frameDof.get(), F.get());
 
-	/** strain E **/
+	/// strain E ///
 	Node::SPtr ENode = passiveBehaviorNode->createChild("E");
 	// strain container
 	MechanicalObjectE332d::SPtr E = addNew<MechanicalObjectE332d>(ENode, "E");
 
 	// Mapping
-	CorotationalStrainMapping_F332_E332::SPtr EF = addNew<CorotationalStrainMapping_F332_E332>(ENode, "mapping");
+	GreenStrainMapping_F332_E332::SPtr EF = addNew<GreenStrainMapping_F332_E332>(ENode, "mapping");
 	EF->setModels(F.get(), E.get());
 
 	// Material property	
@@ -551,7 +626,7 @@ simulation::Node::SPtr createScene()
 	material->_youngModulus.setValue(v_youngModulus);
 	material->_poissonRatio.setValue(v_poissonRatio);
 
-	/**** Mass Node  ****/
+	///// Mass Node  /////
 	Node::SPtr massNode = rbicepmedNode->createChild("mass");
 	MechanicalObject3d::SPtr particles_dof = addNew< MechanicalObject3d>(massNode,"dof");
 	particles_dof->x.setParent("@../"+passiveBehaviorNode->getName()+"/"+gaussPtsSampler->getName()+".position");
@@ -562,14 +637,14 @@ simulation::Node::SPtr createScene()
 	LinearMapping_Affine_Vec3d::SPtr mass_mapping = addNew<LinearMapping_Affine_Vec3d>(massNode, "mapping");
 	mass_mapping->setModels(frameDof.get(), particles_dof.get());
 		
-	/**** Visual Node  ****/
+	///// Visual Node  /////
 	Node::SPtr muscleVisuNode = rbicepmedNode->createChild("visual");    
 	component::visualmodel::OglModel::SPtr m_visual = addNew< component::visualmodel::OglModel >(muscleVisuNode,"visual");
 	m_visual->setSrc("", loader.get());
 	m_visual->setColor(0.75f, 0.25f, 0.25f, 1.0f);
 	LinearMapping_Affine_ExtVec3f::SPtr m_visualMapping = addNew<LinearMapping_Affine_ExtVec3f>(muscleVisuNode,"mapping");
     m_visualMapping->setModels(frameDof.get(), m_visual.get());
-
+	
 	return root;
 }
 
