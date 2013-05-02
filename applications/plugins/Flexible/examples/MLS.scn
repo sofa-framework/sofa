@@ -60,7 +60,8 @@
 		    <MechanicalObject  template="E331" name="E"  /> 
 		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-		</Node>
+<!--		    <PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" assembleJ="false" method="polar" />-->
+<!--		    <StabilizedNeoHookeanForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>-->		</Node>
 	    </Node>
 
 	    <Node 	name="collision"   >
