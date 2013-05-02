@@ -158,7 +158,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     if (f_fixAll.getValue() == true)
     {
         // fix everyting
-        for (int i = 0; i < topology->getNbPoints(); i++)
+        for( unsigned i=0; i<res.size(); i++ )
         {
             for (unsigned j = 0; j < NumDimensions; j++)
             {
@@ -171,7 +171,8 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        unsigned i=0;
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
             for (unsigned j = 0; j < NumDimensions; j++)
             {
@@ -213,9 +214,8 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        unsigned i=0;
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
             res[*it] = Deriv();
         }
@@ -341,8 +341,8 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it
-                    != indices.end(); ++it)
+            unsigned i=0;
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
@@ -364,7 +364,8 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
         }
         else
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            unsigned i=0;
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
