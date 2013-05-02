@@ -83,6 +83,11 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Pt=block.Pt;
+        Pa=block.Pa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
@@ -164,6 +169,11 @@ public:
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;   ///< =  w.q0      =  dp/dA
 
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Pt=block.Pt;
+        Pa=block.Pa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
@@ -248,6 +258,12 @@ public:
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
+
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Ft=block.Ft;
+        PFa=block.PFa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
@@ -340,6 +356,12 @@ public:
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
 
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Ft=block.Ft;
+        PFa=block.PFa;
+    }
+
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
         Ft=M.transposed()*dw;
@@ -431,6 +453,12 @@ public:
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
     OutCoord PFa;      ///< =   q0.grad w.M + w.A0^{-1}.M   =  dF/dA
+
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Ft=block.Ft;
+        PFa=block.PFa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
@@ -526,6 +554,13 @@ public:
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
     OutCoord PFdFa;      ///< =   q0.grad w + w.A0^{-1}, [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w]   =  dF/dA , d (grad F)_k/dA
+
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Ft=block.Ft;
+        dFt=block.dFt;
+        PFdFa=block.PFdFa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
@@ -632,6 +667,12 @@ public:
 
     Real Pt;      ///< =   w         =  dp/dt
     OutCoord Pa;      ///< =   w.q0      =  dp/dA  , w.A0^{-1}.F0   =  dF/dA
+
+    void init( const LinearJacobianBlock<In,Out>& block) // copy
+    {
+        Pt=block.Pt;
+        Pa=block.Pa;
+    }
 
     void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {

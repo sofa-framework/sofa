@@ -66,8 +66,6 @@
 		    <MechanicalObject  template="E331" name="E"  /> 
 		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false"  />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
-		    <!-- pyhon script takes a path to a node containing a static mesh named 'mesh' and mapped points -->
-		    <PythonScriptController filename="VonMisesStressFrames" classname="ColorMap" variables="  ../../collision "/> 
 		</Node>
 
 	    </Node>

@@ -158,16 +158,22 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index]);
                 else defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index],&(*ddw)[index]);
                 ref[index]=ind-1;
-                if(w[index]<0) // clamp negative weights
+                if(w[index]<=0) // clamp negative weights
                 {
                     w[index]=0;
                     if(dw) (*dw)[index].fill(0);
                     if(ddw) (*ddw)[index].fill(0);
+                    index--;
                 }
                 index++;
 
             }
         }
+        // remove unecessary weights
+        ref.resize(index);
+        w.resize(index);
+        if(dw)  dw->resize(index);
+        if(ddw) ddw->resize(index);
 
         // normalize
         bisf->normalize(w,dw,ddw);
@@ -294,16 +300,22 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMA
                 else if(!ddw) defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index]);
                 else defaulttype::getPolynomialFit_differential(coeff,w[index],&(*dw)[index],&(*ddw)[index]);
                 ref[index]=ind-1;
-                if(w[index]<0) // clamp negative weights
+                if(w[index]<=0) // clamp negative weights
                 {
                     w[index]=0;
                     if(dw) (*dw)[index].fill(0);
                     if(ddw) (*ddw)[index].fill(0);
+                    index--;
                 }
                 index++;
 
             }
         }
+        // remove unecessary weights
+        ref.resize(index);
+        w.resize(index);
+        if(dw)  dw->resize(index);
+        if(ddw) ddw->resize(index);
 
         // normalize
         bisf->normalize(w,dw,ddw);
