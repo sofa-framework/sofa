@@ -23,9 +23,9 @@ class SOFA_Compliant_API SolverFlags  : public virtual core::objectmodel::BaseOb
 	// if flags are not set in xml, use this value to initialize it
 	Data< value_type > value;
 	
-	// TODO using boost::any would probably be safer 
-	typedef void* data_value_type;
-	typedef std::vector< data_value_type > data_type;
+	// TODO using boost::any here would probably be safer but who cares
+	// :)
+	typedef void* data_type;
 	data_type data;
 	
   public:
@@ -46,10 +46,9 @@ class SOFA_Compliant_API SolverFlags  : public virtual core::objectmodel::BaseOb
 	void init();
 	
 	// writes mask into out buffer, returns written count
-	unsigned write_flags(value_type* out) const;
+	unsigned write(value_type* out) const;
 	
-	// writes data into out buffer, returns written count
-	unsigned write_data(data_value_type* out) const;
+
 };
 
 }

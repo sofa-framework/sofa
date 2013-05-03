@@ -411,17 +411,15 @@ AssemblyVisitor::chunk::flags_type AssemblyVisitor::flags(simulation::Node* node
 		node->mechanicalState->getContext()->get<component::linearsolver::SolverFlags>(core::objectmodel::BaseContext::Local);
 	
 	AssemblyVisitor::chunk::flags_type res;
-	
+	res.data = 0;
 	
 	if( flags ) {
 		unsigned n = node->mechanicalState->getMatrixSize();
 		res.value.resize( n );
-		unsigned written = flags->write_flags( res.value.data() );
+		unsigned written = flags->write( res.value.data() );
 		assert( written == n );
 
-		res.data.resize(n);
-		res.data.setConstant( 0 );
-		flags->write_data( res.data.data() );
+		res.data = flags->data;
 		
 		return res;
 	}
@@ -1069,13 +1067,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				// equation flags
 				if( c.flags.value.size() ) {
 					res.flags.segment(off_c, c.size) = c.flags.value;
-					res.data.segment(off_c, c.size) = c.flags.data;
 				}
 				
 				// add a block
 				AssembledSystem::block block;
 				block.offset = off_c;
 				block.size = c.size;
+				block.data = c.flags.data;
 				
 				res.blocks.push_back( block );
 				
@@ -1108,7 +1106,7 @@ bool AssemblyVisitor::chunk::check() const {
 		if(!empty(C)) {
 			assert( phi.size() == int(size) );
 			assert( damping >= 0 );
-			assert( !flags.size() || flags.size() == int(size) );
+			assert( !flags.value.size() || flags.value.size() == int(size) );
 		}
 
 	}

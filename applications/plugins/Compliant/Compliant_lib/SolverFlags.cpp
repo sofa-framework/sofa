@@ -13,13 +13,15 @@ int SolverFlagsClass = core::RegisterObject("Arbitrary solver flags for DOFs").a
 
 SolverFlags::SolverFlags() 
 	: flags(initData(&flags, "mask", "inequality mask: 1 for greater than, -1 for lower than")),
-	  value(initData(&value, unsigned(NO_FLAG), "value", "default mask value when mask is not given explicitly"))
+	  value(initData(&value, unsigned(NO_FLAG), "value", "default mask value when mask is not given explicitly")),
+	  data(0)
+	  
 {
 	
 }
 
 
-unsigned SolverFlags::write_flags(value_type* out) const {
+unsigned SolverFlags::write(value_type* out) const {
 	
 	const flags_type& f = flags.getValue();
 	
@@ -46,23 +48,6 @@ unsigned SolverFlags::write_flags(value_type* out) const {
 }
 
 
-
-
-unsigned SolverFlags::write_data(data_value_type* out) const {
-	
-	// use default value ?
-	if( data.empty() ) return 0;
-
-	unsigned n = getContext()->getMechanicalState()->getMatrixSize();
-	
-	assert( data.size() == n );
-	
-	for( unsigned i = 0; i < n; ++i) {
-		*(out++) = data[i];
-	}
-	
-	return data.size();
-}
 
 
 
