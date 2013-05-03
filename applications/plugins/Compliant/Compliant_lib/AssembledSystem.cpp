@@ -29,6 +29,7 @@ namespace sofa {
 					phi = vec::Zero(n); 
 
 					flags.setConstant(n, SolverFlags::NO_FLAG);
+					data.setConstant(n, 0);
 				}
 				
 			}
