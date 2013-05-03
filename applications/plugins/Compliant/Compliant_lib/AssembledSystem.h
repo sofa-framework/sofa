@@ -52,8 +52,13 @@ public:
 	flags_type flags;
 	
 	struct block {
+		block(unsigned off, unsigned size);
+		
 		unsigned offset, size;
+
+		// TODO obselete ?
 		void* data;
+		
 	};
 
 	typedef std::vector<block> blocks_type;

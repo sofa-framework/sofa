@@ -1070,9 +1070,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				}
 				
 				// add a block
-				AssembledSystem::block block;
-				block.offset = off_c;
-				block.size = c.size;
+				AssembledSystem::block block(off_c, c.size);
+
 				block.data = c.flags.data;
 				
 				res.blocks.push_back( block );
