@@ -103,7 +103,7 @@ public:
 
 		struct flags_type {
 			system_type::flags_type value;
-			system_type::data_type data;
+			component::linearsolver::SolverFlags::data_type data;
 		};
 		
 		flags_type flags;

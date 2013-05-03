@@ -8,7 +8,8 @@ namespace sofa {
 			AssembledSystem::AssembledSystem(unsigned m, unsigned n) 
 				: m(m), 
 				  n(n),
-				  dt(0)
+				  dt(0),
+				  blocks()
 			{
 				if( !m ) return;
 				
@@ -29,7 +30,6 @@ namespace sofa {
 					phi = vec::Zero(n); 
 
 					flags.setConstant(n, SolverFlags::NO_FLAG);
-					data.setConstant(n, 0);
 				}
 				
 			}
