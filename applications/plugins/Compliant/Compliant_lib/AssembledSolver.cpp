@@ -202,7 +202,7 @@ void AssembledSolver::solve(const core::ExecParams* params,
 		kkt->factor( sys );
 		kkt->solve(x, sys, rhs( sys ) );
 	}
-	
+	 
 	// distribute (projected) velocities
 	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
 	if( sys.n ) vis.distribute_compliant( core::VecId::force(), lambda(sys, x) );
