@@ -333,7 +333,7 @@ public:
         // no pure copy constructor (spectrum is needed to be able to copy the ConnectionVoxel)
         ConnectionVoxel( const ConnectionVoxel& ) { assert(false); }
         void operator=( const ConnectionVoxel& ) { assert(false); }
-        bool operator==( const ConnectionVoxel& ) const { assert(false); }
+        bool operator==( const ConnectionVoxel& ) const { assert(false); return false; }
 
     }; // class ConnectionVoxel
 
@@ -475,7 +475,7 @@ public:
         void push_back( const ConnectionVoxel& ) { assert(false); }
         SuperimposedVoxels( const SuperimposedVoxels& ) : Inherited() { assert(false); }
         void operator=( const SuperimposedVoxels& ) { assert(false); }
-        bool operator==( const SuperimposedVoxels& ) const { assert(false); }
+        bool operator==( const SuperimposedVoxels& ) const { assert(false); return false; }
         void resize( size_t ) { assert(false); }
         void resizeAndKeep( size_t ) { assert(false); }
         void fill( const ConnectionVoxel& ) { assert(false); }
@@ -496,7 +496,7 @@ public:
         /// copy
         void clone( const BranchingImage3D& other, unsigned spectrum )
         {
-            resize( other._size );
+            this->resize( other._size );
             for( unsigned i=0 ; i<this->_size ; ++i )
             {
                 this->_array[i].clone( other._array[i], spectrum );
@@ -507,7 +507,7 @@ public:
         template<typename T2>
         void cloneTopology( const typename BranchingImage<T2>::BranchingImage3D& other, unsigned spectrum, const T defaultValue=(T)0)
         {
-            resize( other.size() );
+            this->resize( other.size() );
             for( unsigned i=0 ; i<this->_size ; ++i )
             {
                 this->_array[i].cloneTopology<T2>( other[i], spectrum, defaultValue );
@@ -537,7 +537,7 @@ public:
         /// impossible to copy a ConnectedVoxel without the spectrum size
         BranchingImage3D( const BranchingImage3D& ) : Inherited() { assert(false); }
         void operator=( const BranchingImage3D& ) { assert(false); }
-        bool operator==( const BranchingImage3D& ) const { assert(false); }
+        bool operator==( const BranchingImage3D& ) const { assert(false); return false; }
         void push_back( const SuperimposedVoxels& ) { assert(false); }
         void resizeAndKeep( size_t ) { assert(false); }
         void fill( const SuperimposedVoxels& ) { assert(false); }
