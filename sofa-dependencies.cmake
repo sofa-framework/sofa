@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # extlibs
+set(SOFA_PROJECT_FOLDER "SofaExternal")
 RegisterDependencies("ARTrackLib" PATH "${SOFA_EXTLIBS_DIR}/ARTrack")
 RegisterDependencies("newmat" PATH "${SOFA_EXTLIBS_DIR}/newmat")
 if(NOT SOFA-EXTERNAL_TINYXML_AVAILABLE)
@@ -21,18 +22,22 @@ if(NOT SOFA-EXTERNAL_HAVE_FLOWVR)
 endif()
 
 RegisterDependencies("QGLViewer" OPTION SOFA-LIB_GUI_QGLVIEWER COMPILE_DEFINITIONS SOFA_GUI_QGLVIEWER PATH "${SOFA_EXTLIBS_DIR}/libQGLViewer-2.3.3/QGLViewer")
+RegisterDependencies("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
 endif()
 
+
 # framework
+set(SOFA_PROJECT_FOLDER "SofaFramework")
 RegisterDependencies("SofaHelper" OPTION "SOFA-LIB_HELPER" PATH "${SOFA_FRAMEWORK_DIR}/sofa/helper")
 RegisterDependencies("SofaDefaultType" OPTION "SOFA-LIB_DEFAULTTYPE" PATH "${SOFA_FRAMEWORK_DIR}/sofa/defaulttype")
 RegisterDependencies("SofaCore" OPTION "SOFA-LIB_CORE" PATH "${SOFA_FRAMEWORK_DIR}/sofa/core")
 
 # modules
+set(SOFA_PROJECT_FOLDER "SofaLib")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
 
@@ -48,6 +53,7 @@ RegisterDependencies("SofaGpuOpenCL" SOFA-LIB_COMPONENT_GPU_OPENCL COMPILE_DEFIN
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/sofa/gui")
 
 ## projects
+set(SOFA_PROJECT_FOLDER "SofaApplication")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/projects/BoostKernel")
 
 RegisterDependencies("GenerateDoc" OPTION SOFA-APPLICATION_GENERATE_DOC PATH "${SOFA_APPLICATIONS_DIR}/projects/generateDoc")
@@ -57,7 +63,6 @@ RegisterDependencies("MeshConv" OPTION SOFA-APPLICATION_MESH_CONV PATH "${SOFA_A
 RegisterDependencies("RunSofa" OPTION SOFA-APPLICATION_RUN_SOFA PATH "${SOFA_APPLICATIONS_DIR}/projects/runSofa")
 RegisterDependencies("SofaBatch" OPTION SOFA-APPLICATION_SOFA_BATCH PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaBatch")
 #RegisterDependencies("SofaConfiguration" OPTION SOFA-APPLICATION_SOFA_CONFIGURATION PATH "${SOFA_APPLICATIONS_DIR}/projects/sofaConfiguration") # not yet converted" comment in the qmake scripts...
-RegisterDependencies("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 RegisterDependencies("SofaModeler" PATH "${SOFA_APPLICATIONS_DIR}/projects/Modeler/lib")
 RegisterDependencies("Modeler" OPTION SOFA-APPLICATION_MODELER PATH "${SOFA_APPLICATIONS_DIR}/projects/Modeler/exec")
 RegisterDependencies("SofaFlowVR" OPTION SOFA-APPLICATION_SOFA_FLOWVR COMPILE_DEFINITIONS SOFA_HAVE_FLOWVR PATH "${SOFA_APPLICATIONS_DIR}/projects/SofaFlowVR")
@@ -75,7 +80,10 @@ RegisterDependencies("SofaVerification" OPTION SOFA-APPLICATION_SOFA_VERIFICATIO
 RegisterDependencies("Standard_test" OPTION SOFA-MISC_TESTS PATH "${SOFA_APPLICATIONS_DIR}/projects/Standard_test")
 
 ## tutorials
+set(SOFA_PROJECT_FOLDER "SofaTutorial")
 add_subdirectory("${SOFA_APPLICATIONS_DIR}/tutorials")
+
+set(SOFA_PROJECT_FOLDER "")
 
 # retrieve dependencies and include directories (always do this after all your 'add_subdirectory')
 message(STATUS "> Computing Dependencies : In progress")

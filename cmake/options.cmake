@@ -9,6 +9,7 @@ include(CMakeDependentOption)
 set(compilerDefines)
 
 # plugins (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaPlugin")
 file(GLOB pluginDirs "${SOFA_APPLICATIONS_PLUGINS_DIR}/*")
 foreach(pluginDir ${pluginDirs})
 	if(IS_DIRECTORY ${pluginDir})
@@ -28,6 +29,7 @@ foreach(pluginDir ${pluginDirs})
 endforeach()
 
 # dev-plugins (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaDevPlugin")
 file(GLOB devPluginDirs "${SOFA_APPLICATIONS_DEV_PLUGINS_DIR}/*")
 foreach(devPluginDir ${devPluginDirs})
 	if(IS_DIRECTORY ${devPluginDir})
@@ -46,6 +48,7 @@ foreach(devPluginDir ${devPluginDirs})
 	endif()
 endforeach()
 
+set(SOFA_PROJECT_FOLDER "")
 # configurable paths to use pre-compiled dependencies outside of the Sofa directory
 
 set (SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
