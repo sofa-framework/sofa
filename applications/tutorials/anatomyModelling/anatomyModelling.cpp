@@ -191,12 +191,19 @@ simulation::Node::SPtr createScene()
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord3(0,-9.81,0) );
     root->setAnimate(false);
-    root->setDt(0.005);
+    root->setDt(0.001);
     addVisualStyle(root)->setShowVisual(true).setShowCollision(false).setShowMapping(false).setShowBehavior(false);
 	
 	// Solver
     EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
+	eulerImplicitSolver->f_rayleighMass.setValue(0.000);
+	eulerImplicitSolver->f_rayleighStiffness.setValue(0.005);
+
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
+	cgLinearSolver->f_maxIter.setValue(1000);
+	cgLinearSolver->f_tolerance.setValue(1E-3);
+	cgLinearSolver->f_smallDenominatorThreshold.setValue(1E-3);
+
     root->addObject(eulerImplicitSolver);
     root->addObject(cgLinearSolver);
 
@@ -498,11 +505,13 @@ simulation::Node::SPtr createScene()
     MechanicalObjectAffine3d::SPtr independentParticlesDof = addNew< MechanicalObjectAffine3d>(independentParticlesNode,"dof");
 	independentParticlesDof->showObject.setValue(true);
 	independentParticlesDof->showObjectScale.setValue(0.05);
-    independentParticlesDof->resize(3);	// number of degree of freedom
+    independentParticlesDof->resize(5);	// number of degree of freedom
     MechanicalObjectAffine3d::WriteVecCoord xindependentaffine = independentParticlesDof->writePositions();
-    xindependentaffine[0].getCenter()=Vec3d(-0.19065, 0.05786,  -0.02014);
-    xindependentaffine[1].getCenter()=Vec3d(-0.18565, 0.119865, -0.01714);
-    xindependentaffine[2].getCenter()=Vec3d(-0.20165,-0.001135, -0.02214);
+    xindependentaffine[0].getCenter()=Vec3d(-0.19065, 0.058865, -0.02014);
+    xindependentaffine[1].getCenter()=Vec3d(-0.18365, 0.140865, -0.01514);
+    xindependentaffine[2].getCenter()=Vec3d(-0.20765, -0.021135, -0.02314);
+    xindependentaffine[3].getCenter()=Vec3d(-0.19465, 0.020865, -0.02114);
+    xindependentaffine[4].getCenter()=Vec3d(-0.18765, 0.096865, -0.01914);
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////// Deformable Structure Node /////////////////////////////
@@ -536,13 +545,15 @@ simulation::Node::SPtr createScene()
 	helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) ","1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)");
     methodOptions.setSelectedItem(1);
 	sampler->method.setValue(methodOptions);
-	helper::WriteAccessor< Data< vector<double> > > p(sampler->param); 	p.push_back(3); 
+	helper::WriteAccessor< Data< vector<double> > > p(sampler->param); 	p.push_back(5); 
 	sampler->setSrc("", image.get());
 	// sampler computed position	
-	vector< Vec<3,double> > r_bicep_med_movingframe; r_bicep_med_movingframe.resize(3);
-	r_bicep_med_movingframe[0][0]=-0.19065; r_bicep_med_movingframe[0][1]=0.05786; r_bicep_med_movingframe[0][2]=-0.02014;
-	r_bicep_med_movingframe[1][0]=-0.18565; r_bicep_med_movingframe[1][1]=0.119865; r_bicep_med_movingframe[1][2]=-0.01714; 
-	r_bicep_med_movingframe[2][0]=-0.20165; r_bicep_med_movingframe[2][1]=-0.001135; r_bicep_med_movingframe[2][2]=-0.02214;
+	vector< Vec<3,double> > r_bicep_med_movingframe; r_bicep_med_movingframe.resize(5);
+	r_bicep_med_movingframe[0][0]=-0.19065; r_bicep_med_movingframe[0][1]=0.058865; r_bicep_med_movingframe[0][2]=-0.02014;
+	r_bicep_med_movingframe[1][0]=-0.18565; r_bicep_med_movingframe[1][1]=0.140865; r_bicep_med_movingframe[1][2]=-0.01514; 
+	r_bicep_med_movingframe[2][0]=-0.20765; r_bicep_med_movingframe[2][1]=-0.021135; r_bicep_med_movingframe[2][2]=-0.02314;
+	r_bicep_med_movingframe[3][0]=-0.19465; r_bicep_med_movingframe[3][1]=0.020865; r_bicep_med_movingframe[3][2]=-0.02114; 
+	r_bicep_med_movingframe[4][0]=-0.18765; r_bicep_med_movingframe[4][1]=0.096865; r_bicep_med_movingframe[4][2]=-0.01914;
 	// fixed position
 	vector< Vec<3,double> > r_bicep_med_fixedframe; r_bicep_med_fixedframe.resize(2);
 	r_bicep_med_fixedframe[0][0]=-0.15882; r_bicep_med_fixedframe[0][1]=0.22436; r_bicep_med_fixedframe[0][2]=-0.009336;
@@ -559,14 +570,14 @@ simulation::Node::SPtr createScene()
 	// origin and insertion (attach frame) / ind = 0,1
 	for(unsigned int i=0; i<r_bicep_med_fixedframe.size(); ++i)
 		xframeX[i].getCenter()=Vec3d(r_bicep_med_fixedframe[i][0], r_bicep_med_fixedframe[i][1], r_bicep_med_fixedframe[i][2]);
-	// moving frame  / ind = 2,3,4
+	// moving frame  / ind = 2,3,4,5,6
 	for(unsigned int i=0; i<r_bicep_med_movingframe.size(); ++i)
 		xframeX[i+r_bicep_med_fixedframe.size()].getCenter()=Vec3d(r_bicep_med_movingframe[i][0], r_bicep_med_movingframe[i][1], r_bicep_med_movingframe[i][2]);
 
 	// Voronoi shape functions
 	VoronoiShapeFunction::SPtr shapeFunction = addNew<VoronoiShapeFunction>(rbicepmedNode, "shapeFunction");
 	shapeFunction->useDijkstra.setValue(1);
-	shapeFunction->f_nbRef.setValue(8);
+	shapeFunction->f_nbRef.setValue(7);
 	shapeFunction->method.setValue(0);
 	shapeFunction->setSrc("",image.get());
 	shapeFunction->f_position.setParent("@"+frameDof->getName()+".rest_position");
@@ -587,6 +598,8 @@ simulation::Node::SPtr createScene()
 	multiMapping->addPoint( independentParticlesDof.get(), 0 );
 	multiMapping->addPoint( independentParticlesDof.get(), 1 );
 	multiMapping->addPoint( independentParticlesDof.get(), 2 );
+	multiMapping->addPoint( independentParticlesDof.get(), 3 );
+	multiMapping->addPoint( independentParticlesDof.get(), 4 );
 	
 	///// Passive Behavior Node  /////
 	Node::SPtr passiveBehaviorNode = rbicepmedNode->createChild("passiveBehavior");
@@ -600,7 +613,7 @@ simulation::Node::SPtr createScene()
     gaussPtsSamplerMethodOptions.setSelectedItem(2);
 	gaussPtsSampler->f_method.setValue(gaussPtsSamplerMethodOptions);
 	gaussPtsSampler->f_order.setValue(4);
-	gaussPtsSampler->targetNumber.setValue(1);
+	gaussPtsSampler->targetNumber.setValue(100);
 	
 	// define gauss point container
 	MechanicalObjectF332d::SPtr F = addNew<MechanicalObjectF332d>(passiveBehaviorNode, "F");
