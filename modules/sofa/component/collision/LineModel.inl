@@ -103,7 +103,7 @@ void TLineModel<DataTypes>::init()
         serr <<"LineModel requires a MeshTopology" << sendl;
         return;
     }
-
+	this->topology = bmt;
     resize( bmt->getNbEdges() );
 
     for(int i = 0; i < bmt->getNbEdges(); i++)
