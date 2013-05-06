@@ -24,8 +24,10 @@
 ******************************************************************************/
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
-
-
+#if defined(_MSC_VER)
+// intrusive_ptr.hpp has to be ahead of python.h on windows to support debug compilation.
+#include <boost/intrusive_ptr.hpp>
+#endif
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of
 // python and pyconfig.h automatically links debug version if _DEBUG is
