@@ -25,6 +25,7 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
+#ifndef PS3
 #include "system/gl.h"
 #include <sofa/helper/vector.h>
 
@@ -944,5 +945,5 @@ protected:
 } // namespace helper
 
 } // namespace sofa
-
+#endif //ndef PS3
 #endif //SOFA_HELPER_VECTOR_DEVICE_H

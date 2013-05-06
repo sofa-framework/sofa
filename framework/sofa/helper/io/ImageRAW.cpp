@@ -25,8 +25,12 @@
 #include <sofa/helper/io/ImageRAW.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
+#ifdef PS3
+#include <stdio.h>
+#else
+#include <cstdio>		// fopen and friends
+#endif
 
-#include <cstdio>		// fopen
 
 namespace sofa
 {

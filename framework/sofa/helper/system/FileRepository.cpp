@@ -62,7 +62,7 @@ FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resourc
 FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation");
 #endif
 
-#ifdef _XBOX
+#if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 #endif
 

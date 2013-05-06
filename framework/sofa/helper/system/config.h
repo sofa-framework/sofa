@@ -46,6 +46,13 @@
 #include <xtl.h>
 #endif
 
+#ifdef PS3
+#include<typeinfo>
+#include<ctype.h>
+#include<sys/timer.h>
+#define usleep(x) sys_timer_usleep((usecond_t)x)
+#endif
+
 #ifdef _MSC_VER
 #ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES 1 // required to get M_PI from math.h

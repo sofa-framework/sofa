@@ -36,7 +36,8 @@ typedef HANDLE fd_t;
 typedef SOCKET socket_t;
 #elif defined(_XBOX)
 #include <xtl.h>
-#else
+#elif defined(PS3)
+#elif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -80,7 +81,7 @@ PipeProcess::~PipeProcess()
 
 bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &filenameStdin, std::string & outString, std::string & errorString)
 {
-#ifdef _XBOX
+#if defined (_XBOX) || defined(PS3)
 	return false; // not supported
 #else
     std::string fileIN = filenameStdin;

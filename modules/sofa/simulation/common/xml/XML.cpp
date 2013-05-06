@@ -319,7 +319,7 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
 BaseElement* loadFromFile(const char *filename)
 {
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(PS3)
     // Reset local settings to make sure that floating-point values are interpreted correctly
     setlocale(LC_ALL,"C");
     setlocale(LC_NUMERIC,"C");

@@ -26,11 +26,13 @@
 ******************************************************************/
 #include <ftl/type.h>
 
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32) || defined(_XBOX) || defined(PS3)
 #include <string.h>
+#ifndef PS3
 #define strcasecmp stricmp
 #define atoll atoi
 #define snprintf _snprintf
+#endif
 #else
 #include <strings.h>
 #endif

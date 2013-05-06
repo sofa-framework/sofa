@@ -27,7 +27,11 @@
 
 #include <sofa/helper/LCPSolver.h>
 
-#include <cstdio> 		// printf
+#ifdef PS3
+#include <stdio.h>
+#else
+#include <cstdio>		// fopen and friends
+#endif
 
 namespace sofa
 {
