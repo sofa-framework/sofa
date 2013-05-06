@@ -212,6 +212,7 @@ public:
     void clear();
     void process();
     void print();
+    void print(std::ostream& result);
 };
 
 std::map< AdvancedTimer::IdTimer, TimerData > timers;
@@ -336,6 +337,50 @@ void AdvancedTimer::begin(IdTimer id)
     r.type = Record::RBEGIN;
     r.id = id;
     curRecords->push_back(r);
+}
+
+void AdvancedTimer::end(IdTimer id, std::ostream& result)
+{
+    std::stack<AdvancedTimer::IdTimer>& curTimer = getCurTimer();
+
+    if (curTimer.empty())
+    {
+        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") called while begin was not" << std::endl;
+        return;
+    }
+    if (id != curTimer.top())
+    {
+        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") does not correspond to last call to begin(" << curTimer.top() << ")" << std::endl;
+        return;
+    }
+    helper::vector<Record>* curRecords = getCurRecords();
+    if (curRecords)
+    {
+        if (syncCallBack) (*syncCallBack)(syncCallBackData);
+        Record r;
+        r.time = CTime::getTime();
+        r.type = Record::REND;
+        r.id = id;
+        curRecords->push_back(r);
+
+        TimerData& data = timers[curTimer.top()];
+        data.process();
+        if (data.nbIter == data.interval)
+        {
+            data.print(result);
+            data.clear();
+        }
+    }
+    curTimer.pop();
+    if (curTimer.empty())
+    {
+        setCurRecords(NULL);
+    }
+    else
+    {
+        TimerData& data = timers[curTimer.top()];
+        setCurRecords((data.interval == 0) ? NULL : &(data.records));
+    }
 }
 
 void AdvancedTimer::end(IdTimer id)
@@ -942,6 +987,77 @@ void TimerData::print()
     }
 
     out << "\n==== END ====\n";
+    out << std::endl;
+}
+
+void TimerData::print(std::ostream& result)
+{
+    static ctime_t tmargin = CTime::getTicksPerSec() / 100000;
+    std::ostream& out = result;
+    out << "Timer: " << id << "\n";
+    if (!steps.empty())
+    {
+        //out << "\nSteps Duration Statistics (in ms) :\n";
+        out << " LEVEL      START       NUM         MIN        MAX       MEAN       DEV        TOTAL     PERCENT     ID\n";
+        ctime_t ttotal = stepData[AdvancedTimer::IdStep()].ttotal;
+        for (unsigned int s=0; s<steps.size(); ++s)
+        {
+            StepData& data = stepData[steps[s]];
+            printVal(out, data.level);
+            out << "    ";
+            printTime(out, data.tstart, data.numIt);
+            out << "    ";
+            printVal(out, data.num, (s == 0) ? 1 : nbIter);
+            out << "    ";
+            printTime(out, data.tmin);
+            out << "    ";
+            printTime(out, data.tmax);
+            out << "    ";
+            double mean = (double)data.ttotal / data.num;
+            printTime(out, (ctime_t)mean);
+            out << "    ";
+            printTime(out, (ctime_t)(sqrt((double)data.ttotal2/data.num - mean*mean)));
+            out << "    ";
+            printTime(out, data.ttotal, (s == 0) ? 1 : nbIter);
+            out << "    ";
+            printVal(out, 100.0*data.ttotal / (double) ttotal);
+            out << "    ";
+            if (s == 0)
+                out << "TOTAL";
+            else
+            {
+                for(int ii=0; ii<data.level; ii++) out<<".";  // indentation to show the hierarchy level
+                out << steps[s];
+            }
+            out << std::endl;
+        }
+    }
+    if (!vals.empty())
+    {
+        out << "\nValues Statistics :\n";
+        out << " NUM\t  MIN\t  MAX\t MEAN\t  DEV\t TOTAL\tID\n";
+        for (unsigned int s=0; s<vals.size(); ++s)
+        {
+            ValData& data = valData[vals[s]];
+            printVal(out, data.num, nbIter);
+            out << '\t';
+            printVal(out, data.vmin);
+            out << '\t';
+            printVal(out, data.vmax);
+            out << '\t';
+            double mean = data.vtotal / data.num;
+            printVal(out, mean);
+            out << '\t';
+            printVal(out, sqrt(data.vtotal2/data.num - mean*mean) );
+            out << '\t';
+            printVal(out, data.vtotal, nbIter);
+            out << '\t';
+            out << vals[s];
+            out << std::endl;
+        }
+    }
+
+    //out << "\n==== END ====\n";
     out << std::endl;
 }
 

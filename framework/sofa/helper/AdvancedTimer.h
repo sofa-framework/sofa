@@ -187,6 +187,7 @@ public:
     static void clear();
     static void begin(IdTimer id);
     static void end  (IdTimer id);
+    static void end  (IdTimer id, std::ostream& result);
     static bool isActive();
 
     class TimerVar
