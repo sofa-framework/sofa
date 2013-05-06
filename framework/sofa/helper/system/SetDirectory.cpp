@@ -51,7 +51,7 @@ namespace system
 #if defined(WIN32)
 	#define chdir _chdir
 	#define getcwd _getcwd
-#elif defined(_XBOX)
+#elif defined(_XBOX) || defined(PS3)
 	int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
 	char* getcwd(char *buffer, int maxlen) { return NULL; } // NOT IMPLEMENTED
 #else

@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
@@ -91,7 +90,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(PS3)
     // Reset local settings to make sure that floating-point values are interpreted correctly
     setlocale(LC_ALL,"C");
     setlocale(LC_NUMERIC,"C");

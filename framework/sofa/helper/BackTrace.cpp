@@ -24,14 +24,14 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
 #include <signal.h>
 #endif
-#if !defined(WIN32) && !defined(_XBOX) && !defined(__APPLE__)
+#if !defined(WIN32) && !defined(_XBOX) && !defined(__APPLE__) && !defined(PS3)
 #include <execinfo.h>
 #include <unistd.h>
 #endif
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(PS3)
 #include <cxxabi.h>
 #endif
 #include <stdio.h>
@@ -48,7 +48,7 @@ namespace helper
 /// Currently only works on Linux. NOOP on other architectures.
 void BackTrace::dump()
 {
-#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(_XBOX)
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
     void *array[128];
     int size = backtrace(array, sizeof(array) / sizeof(array[0]));
     if (size > 0)
@@ -112,7 +112,7 @@ void BackTrace::dump()
 /// Currently only works on Linux. NOOP on other architectures
 void BackTrace::autodump()
 {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
     signal(SIGFPE, BackTrace::sig);
@@ -124,7 +124,7 @@ void BackTrace::autodump()
 
 void BackTrace::sig(int sig)
 {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
     fprintf(stderr,"\n########## SIG %d ##########\n",sig);
     dump();
     signal(sig,SIG_DFL);

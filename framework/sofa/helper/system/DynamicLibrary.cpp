@@ -27,6 +27,8 @@
 #include <Windows.h>
 #elif defined(_XBOX)
 #include <xtl.h>
+#elif defined(PS3)
+#include <sys/prx.h>
 #else
 #include <dlfcn.h>
 #endif
@@ -76,7 +78,7 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
         (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
         (*errlog) << std::endl;
     }
-#elif defined(_XBOX)
+#elif defined(_XBOX) || defined(PS3)
 	return NULL; // not supported
 #else
     handle = ::dlopen(name.c_str(), RTLD_NOW);
@@ -105,7 +107,7 @@ void * DynamicLibrary::getSymbol(const std::string & symbol, std::ostream* errlo
 
 #ifdef WIN32
     symbolAddress =  ::GetProcAddress((HMODULE)m_handle, symbol.c_str());
-#elif defined(_XBOX)
+#elif defined(_XBOX) || defined(PS3)
 	return NULL; // not supported
 #else
     symbolAddress =  ::dlsym(m_handle, symbol.c_str());
@@ -123,6 +125,8 @@ const char* DynamicLibrary::getExtension()
     return "dylib";
 #elif defined(WIN32)
     return "dll";
+#elif defined(PS3)
+	return "prx";
 #else
     return "so";
 #endif

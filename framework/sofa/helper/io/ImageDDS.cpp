@@ -25,8 +25,11 @@
 #include <sofa/helper/io/ImageDDS.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
-
+#ifdef PS3
+#include <stdio.h>
+#else
 #include <cstdio>		// fopen and friends
+#endif
 
 #define _FOURCC(a, b, c, d) (a | (b << 8) | (c << 16) | (d << 24))
 

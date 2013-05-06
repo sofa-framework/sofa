@@ -134,7 +134,7 @@ private:
 class SOFA_HELPER_API PluginManager
 {
 public:
-    typedef std::map<const std::string, Plugin > PluginMap;
+    typedef std::map<std::string, Plugin > PluginMap;
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();

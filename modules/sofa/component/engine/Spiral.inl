@@ -34,6 +34,9 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
+#ifndef M_PI_2
+#define M_PI_2 1.570796326794897f
+#endif
 namespace sofa
 {
 

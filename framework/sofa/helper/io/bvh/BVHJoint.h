@@ -28,7 +28,11 @@
 #include <sofa/helper/io/bvh/BVHChannels.h>
 #include <sofa/helper/io/bvh/BVHOffset.h>
 #include <sofa/helper/io/bvh/BVHMotion.h>
-#include <cstdio>
+#ifdef PS3
+#include <stdio.h>
+#else
+#include <cstdio>		// fopen and friends
+#endif
 #include <string.h>
 #include <sofa/helper/helper.h>
 

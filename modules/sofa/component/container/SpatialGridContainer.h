@@ -66,8 +66,13 @@
 #      include <tr1/unordered_map>
 #      define HASH_NAMESPACE std::tr1
 #    else
+#		ifndef PS3
 #      include <ext/hash_map>
 #      define HASH_NAMESPACE __gnu_cxx
+#		else
+#		include <hash_map>
+#      define HASH_NAMESPACE std
+#		endif
 #    endif
 #  endif
 #endif
@@ -229,7 +234,7 @@ public:
     }
 
     class key_hash_fun
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(PS3)
         : public HASH_NAMESPACE::hash_compare<Key>
     {
     public:
