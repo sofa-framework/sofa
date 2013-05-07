@@ -1461,8 +1461,8 @@ public:
                 const Bloc& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
-                while( m.rowIndex[mr]<col ) mr++;
-                if( m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+                while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
+                if( mr==m.rowIndex.size() || m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
 
                 // Accumulate  res[row] += b * m[col]
                 Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
@@ -1515,8 +1515,8 @@ public:
                 const Bloc& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
-                while( m.rowIndex[mr]<col ) mr++;
-                if( m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+                while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
+                if( mr==m.rowIndex.size() || m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
 
                 // Accumulate  res[row] += b^T * m[col]
                 Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
