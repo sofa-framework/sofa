@@ -40,6 +40,7 @@
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
+#include "Binding_LinearSpring.h"
 
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of
@@ -74,7 +75,11 @@ void bindSofaPythonModule()
     SofaPythonModule = SP_INIT_MODULE(Sofa)
     SP_ADD_CLASS(SofaPythonModule,Data)
         SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
+
     SP_ADD_CLASS(SofaPythonModule,Vector3)
+
+    SP_ADD_CLASS(SofaPythonModule,LinearSpring)
+
 
         SP_ADD_CLASS(SofaPythonModule,Base)
             SP_ADD_CLASS(SofaPythonModule,BaseContext)

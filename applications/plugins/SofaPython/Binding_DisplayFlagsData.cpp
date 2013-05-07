@@ -85,7 +85,7 @@ extern "C" int DisplayFlagsData_setAttr_showBehaviorModels(PyObject *self, PyObj
         Data<DisplayFlags>* data= dynamic_cast<Data<DisplayFlags>*>( ((PyPtr<BaseData>*)self)->object ); \
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
-        flags->setShowBehaviorModels(b); \
+        flags->setShow##flagName(b); \
         printf("%s %d\n",#flagName,b); \
         data->endEdit(); \
         return 0; \

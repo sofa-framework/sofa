@@ -33,6 +33,7 @@ set(HEADER_FILES
     Binding_MechanicalObject.h
     Binding_BaseMechanicalState.h
     Binding_PythonScriptController.h
+    Binding_LinearSpring.h
     SceneLoaderPY.h
     ScriptEnvironment.h
 	)
@@ -64,6 +65,7 @@ set(SOURCE_FILES
     Binding_MechanicalObject.cpp
     Binding_BaseMechanicalState.cpp
     Binding_PythonScriptController.cpp
+    Binding_LinearSpring.cpp
     SceneLoaderPY.cpp
     ScriptEnvironment.cpp
 	)

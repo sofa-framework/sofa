@@ -40,6 +40,7 @@ Despite the ability of Python to support multi-heritage, this feature has not be
 			[.BaseObject [.BaseState [.BaseMechanicalState MechanicalObject ] ] [.BaseLoader MeshLoader ] 
 			[.Topology MeshTopology ] ] ]
 \Tree [.Vector3 ]
+\Tree [.LinearSpring ]
 \Tree [.Data DisplayFlagsData ]
 \caption{Sofa python types hierarchy}
 \label{default}
@@ -55,6 +56,17 @@ Attributes :
 \item \textcode{x} 
 \item \textcode{y}
 \item \textcode{z}
+\end{itemize}
+
+%Sofa.LinearSpring
+\subsubsection{Sofa.LinearSpring}
+Attributes :
+\begin{itemize}
+\item \textcode{Index1} : the first extremity of the spring
+\item \textcode{Index2} : the second extremity of the spring
+\item \textcode{Ks} : spring stiffness
+\item \textcode{Kd} : damping factor
+\item \textcode{L} : rest length of the spring
 \end{itemize}
 
 %BASE

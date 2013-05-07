@@ -37,7 +37,7 @@ typedef SOCKET socket_t;
 #elif defined(_XBOX)
 #include <xtl.h>
 #elif defined(PS3)
-#elif
+#else
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
