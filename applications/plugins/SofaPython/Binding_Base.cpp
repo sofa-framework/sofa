@@ -44,6 +44,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return 0;
     }
+
     if (dynamic_cast<Data<DisplayFlags>*>(data))
         return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,data,false);
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
