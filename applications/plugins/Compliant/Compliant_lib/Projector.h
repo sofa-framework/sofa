@@ -13,6 +13,8 @@ namespace linearsolver {
 // empty ::project method
 struct SOFA_Compliant_API Projector : core::objectmodel::BaseObject {
 
+	// SOFA_CLASS(Projector, sofa::core::objectmodel::BaseObject);
+ 
 	virtual ~Projector(); 
 	
 	virtual void project(SReal* out, unsigned n) const = 0;

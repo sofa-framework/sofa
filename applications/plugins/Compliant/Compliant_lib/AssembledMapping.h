@@ -75,6 +75,8 @@ namespace sofa {
 				in_pos_type in_pos() {
 
 					const core::State<In>* fromModel = this->getFromModel();
+					assert( fromModel );
+					
 					core::ConstMultiVecCoordId inPos = core::ConstVecCoordId::position();
 	  
 					const typename self::InDataVecCoord* in = inPos[fromModel].read();
