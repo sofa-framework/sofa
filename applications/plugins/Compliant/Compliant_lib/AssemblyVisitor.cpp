@@ -4,6 +4,7 @@
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
 
 #include "SolverFlags.h"
+#include "Projector.h"
 
 #include "./utils/scoped.h"
 #include "./utils/find.h"
@@ -404,24 +405,31 @@ AssemblyVisitor::vec AssemblyVisitor::rhs(simulation::Node* node) {
 	return res;
 }
 
-AssemblyVisitor::chunk::flags_type AssemblyVisitor::flags(simulation::Node* node) {
+AssemblyVisitor::chunk::extra_type AssemblyVisitor::extra(simulation::Node* node) { 
+	// hacks !
+
+	assert( node->mechanicalState );
+	
+	// look for a projector
+	return 
+		node->mechanicalState->getContext()->get<component::linearsolver::Projector>(core::objectmodel::BaseContext::Local);
+	
+}
+
+AssemblyVisitor::system_type::flags_type AssemblyVisitor::flags(simulation::Node* node) {
 	assert( node->mechanicalState );
 	
 	component::linearsolver::SolverFlags* flags = 
 		node->mechanicalState->getContext()->get<component::linearsolver::SolverFlags>(core::objectmodel::BaseContext::Local);
 	
-	AssemblyVisitor::chunk::flags_type res;
-	res.data = 0;
+	system_type::flags_type res;
 	
 	if( flags ) {
 		unsigned n = node->mechanicalState->getMatrixSize();
-		res.value.resize( n );
-		unsigned written = flags->write( res.value.data() );
+		res.resize( n );
+		unsigned written = flags->write( res.data() );
 		assert( written == n );
-
-		res.data = flags->data;
 		
-		return res;
 	}
 	
 	return res;
@@ -472,6 +480,9 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 			c.damping = damping( node );
 			c.flags = flags( node );
 
+			// hack
+			c.extra = extra( node );
+			
 			c.mechanical = true;
 			c.vertex = boost::add_vertex(v, graph);
 		}
@@ -1065,14 +1076,15 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 				// res.damping.segment(off_c, c.size).setConstant( c.damping );
 				
 				// equation flags
-				if( c.flags.value.size() ) {
-					res.flags.segment(off_c, c.size) = c.flags.value;
+				if( c.flags.size() ) {
+					res.flags.segment(off_c, c.size) = c.flags;
 				}
 				
 				// add a block
 				AssembledSystem::block block(off_c, c.size);
 
-				block.data = c.flags.data;
+				// hack
+				block.data = c.extra;
 				
 				res.blocks.push_back( block );
 				
@@ -1105,7 +1117,7 @@ bool AssemblyVisitor::chunk::check() const {
 		if(!empty(C)) {
 			assert( phi.size() == int(size) );
 			assert( damping >= 0 );
-			assert( !flags.value.size() || flags.value.size() == int(size) );
+			assert( !flags.size() || flags.size() == int(size) );
 		}
 
 	}

@@ -101,13 +101,12 @@ public:
 		// TODO lambda ?
 		vec f, v, phi;
 
-		struct flags_type {
-			system_type::flags_type value;
-			component::linearsolver::SolverFlags::data_type data;
-		};
-		
-		flags_type flags;
+		system_type::flags_type flags;
 
+		// extra info, hacks go here :)
+		typedef system_type::block::data_type extra_type;
+		extra_type extra;
+		
 		real damping;
 
 		// this is to remove f*cking mouse dofs
@@ -138,8 +137,9 @@ public:
 			
 	vec force(simulation::Node* node);
 	
+	chunk::extra_type extra(simulation::Node* node);
 
-	chunk::flags_type flags(simulation::Node* node);
+	system_type::flags_type flags(simulation::Node* node);
 	
 	vec vel(simulation::Node* node);
 	vec rhs(simulation::Node* node);

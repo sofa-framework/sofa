@@ -23,11 +23,6 @@ class SOFA_Compliant_API SolverFlags  : public virtual core::objectmodel::BaseOb
 	// if flags are not set in xml, use this value to initialize it
 	Data< value_type > value;
 	
-	// TODO using boost::any here would probably be safer but who cares
-	// :)
-	typedef void* data_type;
-	data_type data;
-	
   public:
 	
 	// standard flags

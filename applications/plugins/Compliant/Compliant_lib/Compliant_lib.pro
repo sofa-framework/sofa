@@ -23,7 +23,7 @@ SOURCES = \
 		AssemblyVisitor.cpp \
 		AssembledSystem.cpp \
 		AssembledSolver.cpp \
-		
+				Projector.cpp \
 
 HEADERS = \
     initCompliant.h \
@@ -45,7 +45,7 @@ HEADERS = \
 		AssemblyVisitor.h \
 		AssembledSystem.h \
 		AssembledSolver.h \
-		
+		Projector.h \
 
 
 README_FILE = Compliant.txt
