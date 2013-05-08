@@ -56,8 +56,8 @@ public:
 		
 		unsigned offset, size;
 
-		// TODO obselete ?
-		void* data;
+		typedef core::objectmodel::Base* data_type;
+		data_type data;
 		
 	};
 

@@ -13,9 +13,7 @@ int SolverFlagsClass = core::RegisterObject("Arbitrary solver flags for DOFs").a
 
 SolverFlags::SolverFlags() 
 	: flags(initData(&flags, "mask", "inequality mask: 1 for greater than, -1 for lower than")),
-	  value(initData(&value, unsigned(NO_FLAG), "value", "default mask value when mask is not given explicitly")),
-	  data(0)
-	  
+	  value(initData(&value, unsigned(NO_FLAG), "value", "default mask value when mask is not given explicitly"))  
 {
 	
 }
