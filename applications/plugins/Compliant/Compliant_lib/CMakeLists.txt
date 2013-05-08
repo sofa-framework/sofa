@@ -8,14 +8,14 @@ include_directories(${SOFACOMPLIANTPLUGIN_INCLUDE_DIRS})
 
 set(HEADER_FILES
 
-    initCompliant.h 
-    CompliantAttachButtonSetting.h 
-    CompliantAttachPerformer.h 
-    CompliantAttachPerformer.inl 
-    UniformCompliance.h 
-    UniformCompliance.inl 
-    ComplianceSolver.h 
-    DampingCompliance.h 
+  initCompliant.h 
+  CompliantAttachButtonSetting.h 
+  CompliantAttachPerformer.h 
+  CompliantAttachPerformer.inl 
+  UniformCompliance.h 
+  UniformCompliance.inl 
+  ComplianceSolver.h 
+  DampingCompliance.h 
 	RigidMass.h 
 	UnilateralMask.h 
 	RigidJointMapping.h 
@@ -26,18 +26,18 @@ set(HEADER_FILES
 	AssemblyVisitor.h 
 	AssembledSystem.h 
 	AssembledSolver.h 
-
+	Projector.h
 	)
 
 set(SOURCE_FILES
 
-    initCompliant.cpp 
-    CompliantAttachButtonSetting.cpp 
-    CompliantAttachPerformer.cpp 
-    UniformCompliance.cpp 
-    DiagonalCompliance.cpp 
-    ComplianceSolver.cpp 
-    DampingCompliance.cpp 
+  initCompliant.cpp 
+  CompliantAttachButtonSetting.cpp 
+  CompliantAttachPerformer.cpp 
+  UniformCompliance.cpp 
+  DiagonalCompliance.cpp 
+  ComplianceSolver.cpp 
+  DampingCompliance.cpp 
 	RigidMass.cpp 
 	UnilateralMask.cpp 
 	RigidJointMapping.cpp 
@@ -47,7 +47,7 @@ set(SOURCE_FILES
 	AssemblyVisitor.cpp 
 	AssembledSystem.cpp 
 	AssembledSolver.cpp 
-
+	Projector.cpp
 	)
 
 set(README_FILES
