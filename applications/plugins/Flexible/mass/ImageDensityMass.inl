@@ -418,6 +418,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const
     // add weight
     m_massMatrix.addMul_by_line( _f, theGravity );
 
+    f.endEdit();
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
