@@ -1379,7 +1379,7 @@ protected:
           assert( vec.size()%bRowSize() == 0 ); // vec.size() must be a multiple of block size.
 
           ((Matrix*)this)->compress();
-          vresize( res, rowBSize(), rowSize() );
+          vresize( res, colBSize(), colSize() );
           for (unsigned int xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
           {
               // copy the corresponding chunk of the input to a local vector
