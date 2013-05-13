@@ -992,7 +992,7 @@ void TimerData::print()
 
 void TimerData::print(std::ostream& result)
 {
-    static ctime_t tmargin = CTime::getTicksPerSec() / 100000;
+    //static ctime_t tmargin = CTime::getTicksPerSec() / 100000;
     std::ostream& out = result;
     out << "Timer: " << id << "\n";
     if (!steps.empty())
