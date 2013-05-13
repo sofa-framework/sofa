@@ -1080,13 +1080,23 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const{
 					res.flags.segment(off_c, c.size) = c.flags;
 				}
 				
-				// add a block
-				AssembledSystem::block block(off_c, c.size);
-
-				// hack
-				block.data = c.extra;
+				{
+					// add blocks, one per compliant dof
+					unsigned off = off_c;
+					unsigned dim = c.dofs->getDerivDimension();
 				
-				res.blocks.push_back( block );
+					for( unsigned k = 0, max = c.dofs->getSize(); k < max; ++k) {
+					
+						AssembledSystem::block block(off, dim);
+					
+						// hack
+						block.data = c.extra;
+					
+						res.blocks.push_back( block );
+						off += dim;
+					}
+					assert( off == off_c + c.size );
+				}
 				
 				off_c += c.size;
 			}
