@@ -136,7 +136,7 @@ public:
 
     RasterizedVol** getRasterizedVolumes() const;
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams* vparams);
 
     virtual bool canLoad();
     virtual bool load();

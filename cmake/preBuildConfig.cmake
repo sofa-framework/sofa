@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 # retrieve and set project name
 set(projectName)
 get_directory_property(properties VARIABLES)

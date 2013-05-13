@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if(TARGET ${PROJECT_NAME})
 	# group files (headers, sources, etc.)
 	get_directory_property(properties VARIABLES)

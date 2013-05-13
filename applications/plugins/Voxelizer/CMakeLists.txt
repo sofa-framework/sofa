@@ -11,14 +11,12 @@ set(HEADER_FILES
     initVoxelizer.h 
     Voxelizer.h 
     Voxelizer.inl 
-
 	)
 
 set(SOURCE_FILES
 
     initVoxelizer.cpp 
     Voxelizer.cpp 
-
 	)
 
 set(README_FILES
@@ -29,6 +27,6 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_VOXELIZER")
-set(LINKER_DEPENDENCIES SofaGpuCuda)
+set(LINKER_DEPENDENCIES SofaCUDALDI)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

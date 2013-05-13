@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if(PRECONFIGURE_DONE)
 	# print report
 	if(SOFA_ERROR_MESSAGE)

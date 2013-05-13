@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 include(CMakeDependentOption)
 
 # hide unused default cmake variables
@@ -38,9 +36,9 @@ foreach(devPluginDir ${devPluginDirs})
 		file(GLOB_RECURSE devPluginPathes "${devPluginDir}/*CMakeLists.txt") # WARNING: this wildcard expression can catch "example/badCMakeLists.txt"
 		if(NOT devPluginPathes STREQUAL "")
 			option("SOFA-DEVPLUGIN_${devPluginToUpperName}" "Enable dev plugin ${devPluginProjectName}" OFF)
-			foreach(pluginPath ${pluginPathes})
-				get_filename_component(devProjectFilename ${pluginPath} NAME)
-				string(REPLACE "/${devProjectFilename}" "" devPluginFolder ${pluginPath})
+			foreach(devPluginPath ${devPluginPathes})
+				get_filename_component(devProjectFilename ${devPluginPath} NAME)
+				string(REPLACE "/${devProjectFilename}" "" devPluginFolder ${devPluginPath})
 				get_filename_component(devPluginProjectName ${devPluginFolder} NAME)
 				RegisterDependencies(${devPluginProjectName} OPTION "SOFA-DEVPLUGIN_${devPluginToUpperName}" COMPILE_DEFINITIONS "SOFA_HAVE_DEVPLUGIN_${devPluginToUpperName}" PATH "${devPluginFolder}")
 			endforeach()

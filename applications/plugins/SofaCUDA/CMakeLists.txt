@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 find_package(CUDA REQUIRED)
@@ -172,9 +170,9 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
     )
 
-if (CUDA_VERBOSE_PTXAS)
+if(CUDA_VERBOSE_PTXAS)
 	set(VERBOSE_PTXAS --ptxas-options=-v)
-endif (CUDA_VERBOSE_PTXAS)
+endif()
 
 set(README_FILES
 
@@ -197,14 +195,13 @@ endif()
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
 
 set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
-
 set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
-if(SOFA-MISC_HAVE_CUDPP)
+if(SOFA-EXTERNAL_HAVE_CUDPP)
 	list(APPEND LINKER_DEPENDENCIES cudpp)
 endif()
 
-if(SOFA-MISC_HAVE_THRUST)
+if(SOFA-EXTERNAL_HAVE_THRUST)
 	list(APPEND LINKER_DEPENDENCIES thrust)
 endif()
 
