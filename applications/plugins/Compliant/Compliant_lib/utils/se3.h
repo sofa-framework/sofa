@@ -109,12 +109,18 @@ struct SE3 {
 	}
 
 
-	// sofa -> body, matrix version
+	// sofa -> spatial, matrix version
 	static mat66 spatial(const coord_type& at) {
 		// TODO optimize !!!
 		return Ad(at) * body(at);
 	}
 
+	static mat66 spatial_to_sofa(const coord_type& at) {
+		// TODO optimize !!!
+		coord_type i = inv(at);
+		return body( i ) * Ad( i );
+	}
+	
 
 	// body -> sofa velocity coordinates conversion
 	static deriv_type sofa(const coord_type& at, const twist& body) {
