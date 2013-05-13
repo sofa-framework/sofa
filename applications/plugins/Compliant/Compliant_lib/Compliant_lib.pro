@@ -14,7 +14,6 @@ SOURCES = \
     ComplianceSolver.cpp \
 		DampingCompliance.cpp \
 		RigidMass.cpp \
-#		UnilateralMask.cpp \
 		SolverFlags.cpp \
 		RigidJointMapping.cpp \
 		AssembledRigidRigidMapping.cpp \
@@ -23,7 +22,7 @@ SOURCES = \
 		AssemblyVisitor.cpp \
 		AssembledSystem.cpp \
 		AssembledSolver.cpp \
-				Projector.cpp \
+		Projector.cpp \
 
 HEADERS = \
     initCompliant.h \
@@ -35,7 +34,6 @@ HEADERS = \
     ComplianceSolver.h \
 		DampingCompliance.h \
 		RigidMass.h \
-#		UnilateralMask.h \
 		SolverFlags.h \
 		RigidJointMapping.h \
 		AssembledRigidRigidMapping.h \
