@@ -17,7 +17,6 @@
 // TODO include boost::math in sofa or implement SE3::sinc more precisely
 // #include <boost/math/special_functions/sinc.hpp>
 
-// TODO this should probably be non-template and use SReal instead
 template<class U>
 struct SE3 {
 
@@ -107,6 +106,13 @@ struct SE3 {
 			mat33::Zero(), R.transpose();
 
 		return res;
+	}
+
+
+	// sofa -> body, matrix version
+	static mat66 spatial(const coord_type& at) {
+		// TODO optimize !!!
+		return Ad(at) * body(at);
 	}
 
 
