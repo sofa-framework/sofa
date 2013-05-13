@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 project("SofaHAPI")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)

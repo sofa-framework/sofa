@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 # release/debug
 
 ## unless cmake is called with CMAKE_BUILD_TYPE=Debug, release build is forced

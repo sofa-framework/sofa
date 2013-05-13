@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 
+#include <sofa/gpu/cuda/CudaRasterizer.inl>
 
 namespace sofa
 {
@@ -108,7 +109,7 @@ void Voxelizer<DataTypes>::init()
     }
 
     // Get the rasterizer
-    ((simulation::Node*)simulation::getSimulation()->getContext())->get(rasterizer);
+    ((simulation::Node*)simulation::getSimulation()->GetRoot()->getContext())->get(rasterizer);
     if ( ! rasterizer)
     {
         serr << "Rasterizer not found" << sendl;
@@ -133,7 +134,7 @@ void Voxelizer<DataTypes>::init()
 
     // Get the triangular models
     //simulation::Node* currentNode = static_cast<simulation::Node*>(this->getContext());
-    simulation::Node* rootNode = static_cast<simulation::Node*>(simulation::getSimulation()->getContext());
+    simulation::Node* rootNode = static_cast<simulation::Node*>(simulation::getSimulation()->GetRoot()->getContext());
     for (std::list<std::string>::const_iterator it = allPaths.begin(); it != allPaths.end(); ++it)
     {
         if ( it->compare( "NULL") == 0)
@@ -885,14 +886,14 @@ typename Voxelizer<DataTypes>::RasterizedVol** Voxelizer<DataTypes>::getRasteriz
 
 
 template <class DataTypes>
-void Voxelizer<DataTypes>::draw()
+void Voxelizer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const Real& psize = std::min( std::min(voxelSize.getValue()[0],voxelSize.getValue()[1]),voxelSize.getValue()[2]);
 
     // Display volumes retrieved from depth peeling textures
     if ( showRasterizedVolumes.getValue())
     {
-        if (this->getContext()->getShowWireFrame() || showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if (vparams->displayFlags().getShowWireFrame() || showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable( GL_LIGHTING);
         for ( unsigned int axis=0; axis<3; ++axis )
@@ -982,7 +983,7 @@ void Voxelizer<DataTypes>::draw()
                 }
             }
         }
-        if (showWireFrameMode.getValue() && !this->getContext()->getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if (showWireFrameMode.getValue() && !vparams->displayFlags().getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glPopAttrib();
     }
 

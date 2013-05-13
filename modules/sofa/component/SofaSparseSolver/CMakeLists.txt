@@ -12,7 +12,6 @@ set(HEADER_FILES
     ../linearsolver/SparseLDLSolverImpl.h 
     ../linearsolver/SparseLDLSolver.h 
     ../linearsolver/SparseLDLSolver.inl
-
     )
     
 set(SOURCE_FILES
@@ -22,9 +21,7 @@ set(SOURCE_FILES
     ../linearsolver/SparseCholeskySolver.cpp 
     ../linearsolver/SparseLUSolver.cpp 
     ../linearsolver/SparseLDLSolver.cpp
- 
     )
-
 
 set(GROUP_BASE_DIR "..")
 
@@ -34,7 +31,6 @@ set(COMPILER_DEFINES "SOFA_BUILD_SPARSE_SOLVER" )
 set(LINKER_DEPENDENCIES SofaBaseLinearSolver SofaImplicitOdeSolver csparse)
 
 if(SOFA-EXTERNAL_HAVE_METIS)
-
 	list(APPEND LINKER_DEPENDENCIES metis)
 endif()
     

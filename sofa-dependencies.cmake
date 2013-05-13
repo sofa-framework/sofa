@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 # extlibs
 set(SOFA_PROJECT_FOLDER "SofaExternal")
 RegisterDependencies("ARTrackLib" PATH "${SOFA_EXTLIBS_DIR}/ARTrack")
@@ -28,7 +26,6 @@ RegisterDependencies("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 if(SOFA-MISC_BUILD_GTEST)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
 endif()
-
 
 # framework
 set(SOFA_PROJECT_FOLDER "SofaFramework")

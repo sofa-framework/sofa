@@ -36,6 +36,7 @@ extern "C" {
     SOFA_VOXELIZER_API void initExternalModule();
     SOFA_VOXELIZER_API const char* getModuleName();
     SOFA_VOXELIZER_API const char* getModuleVersion();
+	SOFA_VOXELIZER_API const char* getModuleLicense();
     SOFA_VOXELIZER_API const char* getModuleDescription();
     SOFA_VOXELIZER_API const char* getModuleComponentList();
 }
@@ -59,6 +60,11 @@ SOFA_VOXELIZER_API const char* getModuleName()
 SOFA_VOXELIZER_API const char* getModuleVersion()
 {
     return "0.1";
+}
+
+SOFA_VOXELIZER_API const char* getModuleLicense()
+{
+    return "LGPL";
 }
 
 SOFA_VOXELIZER_API const char* getModuleDescription()
