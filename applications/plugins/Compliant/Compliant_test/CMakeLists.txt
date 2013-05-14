@@ -1,27 +1,29 @@
-cmake_minimum_required(VERSION 2.8)
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
-##plugin external dependencies
-find_package( SofaCompliantPluginTestLibs REQUIRED)
-include_directories(${SOFACOMPLIANTPLUGINTEST_INCLUDE_DIRS})
 
 set(SOURCE_FILES
 
     Compliant_test.cpp
-
 	)
 
 if(APPLE)
-
     set(RC_FILES "runSOFA.icns")
-
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
+link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
+
+if(WIN32)
+	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+endif()
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 set(COMPILER_DEFINES "")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible)
+set(LINKER_DEPENDENCIES Compliant_lib SofaComponentMain SofaSimulationGraph gtest gtest_main)
+
+if(WIN32)
+	set(COMPILER_FLAGS ${COMPILER_FLAGS} "/MT")
+endif()
 
 if(UNIX)
     list(APPEND LINKER_DEPENDENCIES "dl")
