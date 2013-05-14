@@ -24,6 +24,9 @@
 ******************************************************************************/
 #ifndef ENDPOINT_H
 #define ENDPOINT_H
+#include <iostream>
+#include <stdio.h>
+#include <limits>
 
 namespace sofa
 {
@@ -36,7 +39,7 @@ namespace collision
 
 class EndPoint{
 public:
-    EndPoint() : data(0){}
+    EndPoint() : value(std::numeric_limits<double>::max()),data(0){}
 
     double value;
 
@@ -48,6 +51,8 @@ public:
     int boxID()const;
     bool max()const;
     bool min()const;
+    void show()const;
+
 private:
     int data;//box ID | MinMax flag;
 };
@@ -77,21 +82,32 @@ inline void EndPoint::setMin(){
     data <<= 1;
 }
 
+inline void EndPoint::show()const{
+    std::cout<<"\tvalue";printf("%lf\n",value);
+    std::cout<<"\tdata "<<data<<std::endl;
+}
 
 class EndPointID : public EndPoint{
 public:
+    EndPointID() : EndPoint(), ID(-1){}
+
     int ID;//index of end point in an list
 };
 
 
 struct CompPEndPoint{
+    static double tol(){return (double)(1e-15);}
+
     bool operator()(const EndPoint * ep1,const EndPoint * ep2)const{
-        if(ep1->value != ep2->value)
+        if(ep1->value != ep2->value){
             return ep1->value < ep2->value;
-        else if(ep1->boxID() == ep2->boxID())
+        }
+        else if(ep1->boxID() == ep2->boxID()){
             return ep2->max();
-        else
+        }
+        else{
             return ep1->boxID() < ep2->boxID();
+        }
     }
 };
 

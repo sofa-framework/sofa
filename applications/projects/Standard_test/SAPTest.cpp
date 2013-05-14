@@ -98,7 +98,7 @@ struct IncrSAPTest: public ::testing::Test{
 double IncrSAPTest::extent = 1.2;
 
 //intersection method used for the narrow phase
-DiscreteIntersection::SPtr discreteIntersection = New<DiscreteIntersection>();
+NewProximityIntersection::SPtr proxIntersection = New<NewProximityIntersection>();
 
 
 //GENERAL FUNCTIONS
@@ -139,6 +139,8 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
 
     dvelocities.endEdit();
     dpositions.endEdit();
+
+    cm->computeBoundingTree(0);
 }
 
 //CLASS FUNCTIONS
@@ -215,7 +217,7 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
 
-    col_detection.setIntersectionMethod(discreteIntersection.get());
+    col_detection.setIntersectionMethod(proxIntersection.get());
 
     col_detection.addCollisionModel(cm1);
     if(cm2 != 0x0)
@@ -263,7 +265,6 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     col_detection.endBroadPhase();
     col_detection.beginNarrowPhase();
-    col_detection.endNarrowPhase();
 
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > SAPInter;
 
@@ -292,7 +293,9 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     std::sort(SAPInter.begin(),SAPInter.end(),c);
 
-    if(brutInter.size() != brutInter.size())
+    col_detection.endNarrowPhase();
+
+    if(brutInter.size() != SAPInter.size())
         return false;
 
     unsigned int i;
@@ -477,6 +480,12 @@ bool IncrSAPTest::randTest(int seed,int nb1,int nb2,const Vector3 & min,const Ve
     randMoving(obbm1.get(),min,max);
     randMoving(obbm2.get(),min,max);
 
+    if(!GENTest(obbm1.get(),obbm2.get(),sap))
+        return false;
+
+    randMoving(obbm1.get(),min,max);
+    randMoving(obbm2.get(),min,max);
+
     return GENTest(obbm1.get(),obbm2.get(),sap);
 }
 
@@ -495,8 +504,8 @@ bool IncrSAPTest::randDense(){
 
 bool IncrSAPTest::randSparse(){
     for(int i = 0 ; i < 100 ; ++i){
-        if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,2,Vector3(-5,-5,-5),Vector3(5,5,5))){
-            //std::cout<<"FAIL seed number "<<i<<std::endl;
+        if(!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))/*!randTest(i,1,1,Vector3(-5,-5,-5),Vector3(5,5,5))*/){
+            std::cout<<"FAIL seed number "<<i<<std::endl;
             return false;
         }
     }
@@ -535,3 +544,4 @@ TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
+

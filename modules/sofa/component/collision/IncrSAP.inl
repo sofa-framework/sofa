@@ -33,11 +33,27 @@ namespace component
 namespace collision
 {
 
-inline EndPointID & ISAPBox::min(int dim){return *_min[dim];}
-inline const EndPointID & ISAPBox::min(int dim)const{return *_min[dim];}
+inline EndPointID & ISAPBox::min(int dim){return *(_min[dim]);}
+inline const EndPointID & ISAPBox::min(int dim)const{return *(_min[dim]);}
 
-inline EndPointID & ISAPBox::max(int dim){return *_max[dim];}
-inline const EndPointID & ISAPBox::max(int dim)const{return *_max[dim];}
+inline EndPointID & ISAPBox::max(int dim){return *(_max[dim]);}
+inline const EndPointID & ISAPBox::max(int dim)const{return *(_max[dim]);}
+
+inline double ISAPBox::curMin(int dim){return cube.minVect()[dim];}
+inline double ISAPBox::curMin(int dim)const{return cube.minVect()[dim];}
+
+inline double ISAPBox::curMax(int dim){return cube.maxVect()[dim];}
+inline double ISAPBox::curMax(int dim)const{return cube.maxVect()[dim];}
+
+inline void ISAPBox::updatedMin(int dim,EndPointID & end_point)const{
+    end_point = (*_min[dim]);
+    end_point.value = cube.minVect()[dim];
+}
+
+inline void ISAPBox::updatedMax(int dim,EndPointID & end_point)const{
+    end_point = (*_max[dim]);
+    end_point.value = cube.maxVect()[dim];
+}
 
 inline void ISAPBox::update(){
     for(int i = 0 ; i < 3 ; ++i){
@@ -45,6 +61,15 @@ inline void ISAPBox::update(){
         _max[i]->value = cube.maxVect()[i];
     }
 }
+
+inline void ISAPBox::updateMin(int dim){
+    _min[dim]->value = cube.minVect()[dim];
+}
+
+inline void ISAPBox::updateMax(int dim){
+    _max[dim]->value = cube.maxVect()[dim];
+}
+
 
 inline void ISAPBox::init(int boxID,EndPointID ** endPts){
     for(int i = 0 ; i < 3 ; ++i){
@@ -65,70 +90,86 @@ inline void ISAPBox::init(int boxID,EndPointID ** endPts){
 inline bool ISAPBox::overlaps(const ISAPBox & other, int axis) const{
     assert(axis >= 0);
     assert(axis < 3);
-    if(((this->_min[axis])->value >= other._max[axis]->value) || (other._min[axis]->value >= this->_max[axis]->value))
+    const Vector3 & minVect_this = cube.minVect();
+    const Vector3 & maxVect_this = cube.maxVect();
+    const Vector3 & minVect_other = other.cube.minVect();
+    const Vector3 & maxVect_other = other.cube.maxVect();
+
+
+    if((minVect_this[axis] >= maxVect_other[axis]) || (minVect_other[axis] >= maxVect_this[axis]))
         return false;
 
     return true;
 }
 
+inline bool ISAPBox::minMoving(int axis) const{
+    return min(axis).value != cube.minVect()[axis];
+}
+
+inline bool ISAPBox::maxMoving(int axis) const{
+    return max(axis).value != cube.maxVect()[axis];
+}
+
 inline bool ISAPBox::moving(int axis) const{
-    const core::CollisionElementIterator & finE = finalElement();
+    return minMoving(axis) || maxMoving(axis);
+//    const core::CollisionElementIterator & finE = finalElement();
 
-    const core::CollisionModel * cm = finE.getCollisionModel();
+//    const core::CollisionModel * cm = finE.getCollisionModel();
 
-    switch (cm->getEnumType()){
-        case core::CollisionModel::OBB_TYPE:
-            return fabs(((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        case core::CollisionModel::CAPSULE_TYPE:
-            return fabs(((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        case core::CollisionModel::SPHERE_TYPE:
-            return fabs(((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        case core::CollisionModel::TRIANGLE_TYPE:
-            return fabs(((static_cast<const TriangleModel*>(cm))-> velocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        case core::CollisionModel::LINE_TYPE:
-            return fabs(((static_cast<const LineModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        case core::CollisionModel::POINT_TYPE:
-            return fabs(((static_cast<const PointModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-            break;
-        default:
-            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
-            return true;
-    }
+//    switch (cm->getEnumType()){
+//        case core::CollisionModel::OBB_TYPE:
+//            return fabs(((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        case core::CollisionModel::CAPSULE_TYPE:
+//            return fabs(((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        case core::CollisionModel::SPHERE_TYPE:
+//            return fabs(((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        case core::CollisionModel::TRIANGLE_TYPE:
+//            return fabs(((static_cast<const TriangleModel*>(cm))-> velocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        case core::CollisionModel::LINE_TYPE:
+//            return fabs(((static_cast<const LineModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        case core::CollisionModel::POINT_TYPE:
+//            return fabs(((static_cast<const PointModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
+//            break;
+//        default:
+//            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
+//            return true;
+//    }
 }
 
 inline bool ISAPBox::moving() const{
-    const core::CollisionElementIterator & finE = finalElement();
+    return moving(0) || moving(1) || moving(2);
+//    const core::CollisionElementIterator & finE = finalElement();
 
-    const core::CollisionModel * cm = finE.getCollisionModel();
+//    const core::CollisionModel * cm = finE.getCollisionModel();
 
-    switch (cm->getEnumType()){
-        case core::CollisionModel::OBB_TYPE:
-            return ((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        case core::CollisionModel::CAPSULE_TYPE:
-            return ((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        case core::CollisionModel::SPHERE_TYPE:
-            return ((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        case core::CollisionModel::TRIANGLE_TYPE:
-            return ((static_cast<const TriangleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        case core::CollisionModel::LINE_TYPE:
-            return ((static_cast<const LineModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        case core::CollisionModel::POINT_TYPE:
-            return ((static_cast<const PointModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-            break;
-        default:
-            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
-            return true;
-    }
+//    switch (cm->getEnumType()){
+//        case core::CollisionModel::OBB_TYPE:
+//            return ((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        case core::CollisionModel::CAPSULE_TYPE:
+//            return ((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        case core::CollisionModel::SPHERE_TYPE:
+//            return ((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        case core::CollisionModel::TRIANGLE_TYPE:
+//            return ((static_cast<const TriangleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        case core::CollisionModel::LINE_TYPE:
+//            return ((static_cast<const LineModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        case core::CollisionModel::POINT_TYPE:
+//            return ((static_cast<const PointModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
+//            break;
+//        default:
+//            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
+//            return true;
+//    }
 }
 
 inline const core::CollisionElementIterator ISAPBox::finalElement()const{
@@ -276,32 +317,31 @@ void TIncrSAP<List,Allocator>::updateEndPoints(){
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::setEndPointsID(){
-    //std::cout<<"SETID"<<std::endl;
     for(int dim = 0 ; dim < 3 ; ++dim){
         int ID = 0;
         for(typename EndPointList::iterator it = _end_points[dim].begin() ; it != _end_points[dim].end() ; ++it){
-            (**it).ID = ID++;
+            (**it).ID = ID;
+            ++ID;
         }
     }
-    //std::cout<<"SETID==========="<<std::endl;
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::reinitDetection(){
-    //std::cout<<"REINIT"<<std::endl;
     _colliding_elems.clear();
     CompPEndPoint comp;
     for(int j = 0 ; j < 3 ; ++j){
         std::sort(_end_points[j].begin(),_end_points[j].end(),comp);
     }
-    //std::cout<<"SORT SUCCESS"<<std::endl;
     setEndPointsID();
-    //std::cout<<"REINIT============END"<<std::endl;
 }
 
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
-void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
+void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2){
+    if(boxID1 == boxID2)
+        return;
+
     assert(boxID1 < (int)(_boxes.size()));
     assert(boxID2 < (int)(_boxes.size()));
 
@@ -310,21 +350,13 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int 
     core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
-//    if(!(finalcm1->isSimulated() || finalcm2->isSimulated()))
-//        std::cout<<"not simulated"<<std::endl;
-//    if(!((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)))
-//        std::cout<<"cannot collide"<<std::endl;
-//    if(!box0.overlaps(box1,axis1))
-//        std::cout<<"not overlapping by axis1 "<<axis1<<std::endl;
-//    if(!box0.overlaps(box1,axis2))
-//        std::cout<<"not overlapping by axis2 "<<axis2<<std::endl;
-
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,axis1) && box0.overlaps(box1,axis2))){//intersection on all axes
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1))){//intersection on all axes
+
         //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
     //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
     //                    //std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
-    //                    //std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+        //std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
 
         //std::cout<<"A TRUE COLLISION !!"<<std::endl;
         bool swapModels = false;
@@ -345,23 +377,66 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int 
             }
         }
         else{
-//                            std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
-//                            std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
+//                std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+//                std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
+        }
+    }
+}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
+    if(boxID1 == boxID2)
+        return;
+
+    assert(boxID1 < (int)(_boxes.size()));
+    assert(boxID2 < (int)(_boxes.size()));
+
+    ISAPBox & box0 = _boxes[boxID1];
+    ISAPBox & box1 = _boxes[boxID2];
+    core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+    core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
+
+    if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,axis1) && box0.overlaps(box1,axis2))){//intersection on all axes
+
+        //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
+    //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
+    //                    //std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
+        //std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+
+        //std::cout<<"A TRUE COLLISION !!"<<std::endl;
+        bool swapModels = false;
+        core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
+
+        assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
+        assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
+
+        if((!swapModels) && finalcm1->getClass() == finalcm2->getClass() && finalcm1 > finalcm2)//we do that to have only pair (p1,p2) without having (p2,p1)
+            swapModels = true;
+
+        if(finalintersector != 0x0){
+            if(swapModels){
+                _colliding_elems.add(boxID1,boxID2,box1.finalElement(),box0.finalElement(),finalintersector);
+            }
+            else{
+                _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement(),finalintersector);
+            }
+        }
+        else{
+//                std::cout<<"Final phase "<<finalcm1->getClass()->className<<" - "<<finalcm2->getClass()->className<<std::endl;
+//                std::cout<<"not found with intersectionMethod : "<<intersectionMethod->getClass()->className<<std::endl;
         }
     }
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::boxPrune(){
-    //std::cout<<"boxPrune"<<std::endl;
-    core::collision::NarrowPhaseDetection::beginNarrowPhase();
-
     _cur_axis = greatestVarianceAxis();
 
     int axis1 = (1  << _cur_axis) & 3;
     int axis2 = (1  << axis1) & 3;
 
-    sofa::helper::AdvancedTimer::stepBegin("Incr SAP intersection");
+    sofa::helper::AdvancedTimer::stepBegin("Box Prune SAP intersection");
 
     std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
@@ -379,9 +454,7 @@ void TIncrSAP<List,Allocator>::boxPrune(){
         else{//we encounter a min possible intersection between it and active_boxes
             int new_box = (**it).boxID();
 
-            //SAPBox & box0 = _boxes[new_box];
             for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
-                //SAPBox & box1 = _boxes[active_boxes[i]];
 
                 addIfCollide(new_box,active_boxes[i],axis1,axis2);
             }
@@ -389,19 +462,22 @@ void TIncrSAP<List,Allocator>::boxPrune(){
         }
     }
 
-    //std::cout<<"boxPrune==============="<<std::endl;
-    sofa::helper::AdvancedTimer::stepEnd("Incr SAP intersection");
+    sofa::helper::AdvancedTimer::stepEnd("Box Prune SAP intersection");
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::removeCollision(int a,int b){
+    if(a == b)
+        return;
+
+    //assert(!(_boxes[a].overlaps(_boxes[b])));
     core::CollisionModel *finalcm1 = _boxes[a].cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = _boxes[b].cube.getCollisionModel()->getLast();
 
     bool swap;
-    if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&//check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
+    if((!(_boxes[a].overlaps(_boxes[b]))) && //check if it really doesn't overlap
+            (finalcm1->isSimulated() || finalcm2->isSimulated()) &&//check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2))) && (intersectionMethod->findIntersector(finalcm1,finalcm2,swap) != 0x0)){
-        //std::cout<<"REMOVING !!"<<std::endl;
         _colliding_elems.remove(a,b);
     }
 }
@@ -409,187 +485,354 @@ void TIncrSAP<List,Allocator>::removeCollision(int a,int b){
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::beginNarrowPhase(){
     this->NarrowPhaseDetection::beginNarrowPhase();
-    updateEndPoints();
 
     if(_nothing_added){
         updateMovingBoxes();
     }
     else{
+        updateEndPoints();
         reinitDetection();
-
+        assert(assertion_end_points_sorted());
         boxPrune();
+        assert(assertion_end_points_sorted());
     }
 
-    //std::cout<<"number of collisions "<<_colliding_elems.size()<<std::endl;
-
     _colliding_elems.intersect(this);
+    assert(assertion_end_points_sorted());
     _nothing_added = true;
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
+bool TIncrSAP<List,Allocator>::assertion_order(typename EndPointList::iterator it,typename EndPointList::iterator begin,typename EndPointList::iterator end){
+    CompPEndPoint comp;
+    typename EndPointList::iterator next_it = it;++next_it;
+    if(next_it != end && comp(*next_it,*it))
+        return false;
+
+    if(it != begin){
+        typename EndPointList::iterator prev_it = it;--prev_it;
+        if(comp(*it,*prev_it))
+            return false;
+    }
+
+    return true;
+}
+
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+bool TIncrSAP<List,Allocator>::assertion_list_order(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it){
+    CompPEndPoint inferior;
+    typename EndPointList::iterator next_it = begin_it;
+    ++next_it;
+    for(;next_it != end_it ; ++next_it,++begin_it){
+        if(inferior(*next_it,*begin_it))
+            return false;
+    }
+
+    return true;
+}
+
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+bool TIncrSAP<List,Allocator>::assertion_superior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point){
+    CompPEndPoint inferior;
+    for(;begin_it != end_it ;++begin_it){
+        if(inferior(point,*begin_it)){
+            inferior(point,*begin_it);
+            inferior(*begin_it,point);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+bool TIncrSAP<List,Allocator>::assertion_inferior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point){
+    CompPEndPoint inferior;
+    for(;begin_it != end_it ;++begin_it){
+        if(inferior(*begin_it,point))
+            return false;
+    }
+
+    return true;
+}
+
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+bool TIncrSAP<List,Allocator>::assertion_end_points_sorted() const{
+    CompPEndPoint inferior;
+    std::cout<<"ZOZO"<<std::endl;
+    int n = 0;
+    for(int dim = 0 ; dim < 3 ; ++dim){
+        int ID = 0;
+        typename EndPointList::const_iterator next_it2;
+        int equality_number = 0;
+        for(typename EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
+            assert((**it2).ID == ID);
+
+            next_it2 = it2;
+            ++next_it2;
+            if(next_it2 != _end_points[dim].end()){
+                assert((**next_it2).ID == ID + 1);
+
+                if(!inferior(*it2,*next_it2)){
+//                    (**it2).show();
+//                    (**next_it2).show();
+                    ++n;
+
+                    if((**it2).value == (**next_it2).value)
+                        ++equality_number;
+                }
+                //assert((**it).value < (**next_it).value);
+            }
+
+            ++ID;
+        }
+
+//        std::cout<<"n "<<n<<std::endl;
+//        std::cout<<"equality_number "<<equality_number<<std::endl;
+        if(n != 0){
+            std::cout<<"STOP !"<<std::endl;
+        }
+    }
+
+    return n == 0;
+}
+
+//template <template<class T,class Allocator> class List,template <class T> class Allocator>
+//EndPointID & TIncrSAP<List,Allocator>::findEndPoint(int dim,int data){
+//    for(int i = 0 ; i < _end_points[dim].size() ; ++i){
+//        if((*_end_points[dim][i]).data == data)
+//            return *_end_points[dim][i];
+//    }
+//}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::moveMinForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it){
+    CompPEndPoint inferior;
+    do{
+        if((**next_it).max())
+            removeCollision(cur_end_point->boxID(),(**next_it).boxID());
+
+        ++(cur_end_point->ID);
+        --((**next_it).ID);
+        (*it) = (*next_it);
+        it = next_it;
+        ++next_it;
+    }
+    while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
+
+    (*it) = cur_end_point;
+    assert(assertion_end_points_sorted());
+}
+
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::moveMaxForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it){
+    CompPEndPoint inferior;
+    do{
+        if((**next_it).min())
+            addIfCollide(cur_end_point->boxID(),(**next_it).boxID());
+
+        ++(cur_end_point->ID);
+        --((**next_it).ID);
+        (*it) = (*next_it);
+        it = next_it;
+        ++next_it;
+        }
+    while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
+
+    (*it) = cur_end_point;
+    assert(assertion_end_points_sorted());
+}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::moveMinBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it){
+    CompPEndPoint inferior;
+    do{
+        if((**prev_it).max())
+            addIfCollide(cur_end_point->boxID(),(**prev_it).boxID());
+
+        ++((**prev_it).ID);
+        --(cur_end_point->ID);
+        (*it) = (*prev_it);
+        it = prev_it;
+
+        if(prev_it == _end_points[dim].begin())
+            break;
+
+        --prev_it;
+    }
+    while(inferior(cur_end_point,*prev_it));
+
+    (*it) = cur_end_point;
+    assert(assertion_end_points_sorted());
+}
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
+void TIncrSAP<List,Allocator>::moveMaxBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it){
+    CompPEndPoint inferior;
+    do{
+        if((**prev_it).min())
+            removeCollision(cur_end_point->boxID(),(**prev_it).boxID());
+
+        ++((**prev_it).ID);
+        --(cur_end_point->ID);
+        (*it) = (*prev_it);
+        it = prev_it;
+
+        if(prev_it == _end_points[dim].begin())
+            break;
+
+        --prev_it;
+    }
+    while(inferior(cur_end_point,*prev_it));
+
+    (*it) = cur_end_point;
+    assert(assertion_end_points_sorted());
+}
+
+
+template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::updateMovingBoxes(){
+    assert(assertion_end_points_sorted());
+    CompPEndPoint inferior;
+
     if(_boxes.size() < 2)
         return;
 
     //std::cout<<__LINE__<<std::endl;
-    //std::cout<<"begin moving boxes"<<std::endl;
-    EndPointID * cur_end_point;
-    int axis1,axis2;
-    typename EndPointList::iterator it,next_it,prev_it;
+    EndPointID * cur_end_point_min,*cur_end_point_max;
+    cur_end_point_min = cur_end_point_max = 0x0;
 
-    //std::cout<<__LINE__<<std::endl;
+    typename EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
+    bool min_updated,max_updated,min_moving,max_moving;
+    EndPointID updated_min;
+    EndPointID updated_max;
 
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
         //std::cout<<__LINE__<<std::endl;
         ISAPBox & cur_box = _boxes[i];
-        if(_boxes[i].moving()){
-            //std::cout<<"\tMOVED!"<<std::endl;
-            for(int dim = 0 ; dim < 3 ; ++dim){
-                //std::cout<<"axis number "<<dim<<std::endl;
-                //std::cout<<"position "<<(_boxes[i].cube.minVect() + _boxes[i].cube.maxVect())/2.0<<std::endl;
-                //std::cout<<__LINE__<<std::endl;
-                //first handle moving of min
-                cur_end_point = &(cur_box.min(dim));
-                it = _end_points[dim].begin() + cur_end_point->ID;
+        //std::cout<<"\tMOVED!"<<std::endl;
+        assert(assertion_end_points_sorted());
+        for(int dim = 0 ; dim < 3 ; ++dim){
+            min_updated = false;
+            max_updated = false;
 
-                //std::cout<<__LINE__<<std::endl;
+            //FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
 
-                next_it = it;
-                ++next_it;
+            //MOVING MAX FOREWARD
+            if((max_moving = cur_box.maxMoving(dim))){
+                cur_box.updatedMax(dim,updated_max);//we don't update directly update the max of the box but a copy of it, because when
+                                                    //moving an end point, only one end point can change its value. In this case, we could
+                                                    //update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
+                                                    //the min backward (below), the list would not be sorted...
+                cur_end_point_max = &(cur_box.max(dim));
+                it_max = _end_points[dim].begin() + cur_end_point_max->ID;
+                base_it_max = it_max;
+                assert((**it_max).ID == cur_end_point_max->ID);
 
-                //std::cout<<__LINE__<<std::endl;
+                next_it_max = it_max;
+                ++next_it_max;
 
-                prev_it = it;
-                if(it != _end_points[dim].begin())
-                    --prev_it;
+                prev_it_max = it_max;
+                if(it_max != _end_points[dim].begin())
+                    --prev_it_max;
 
-                //std::cout<<__LINE__<<std::endl;
-
-                if((next_it != _end_points[dim].end()) && cur_end_point->value > (**next_it).value){
-                    do{//moving the min forward
-                        if((**next_it).max())//cur_min becomes greater than a max, so removing this contact if it exists
-                            removeCollision(cur_end_point->boxID(),(**next_it).boxID());
-
-                        //std::cout<<__LINE__<<std::endl;
-
-                        --((**next_it).ID);
-                        ++(cur_end_point->ID);
-                        (*it) = (*next_it);
-                        it = next_it;
-                        ++next_it;
-                    }
-                    while((next_it != _end_points[dim].end()) && cur_end_point->value > (**next_it).value);
-
-                    //std::cout<<__LINE__<<std::endl;
-
-                    (*it) = cur_end_point;
+                if(next_it_max != _end_points[dim].end() && inferior(*next_it_max,&updated_max)){//moving the max foreward
+                    cur_end_point_max->value = updated_max.value;//the real update of the end point (belonging to the end point list) is done
+                                                                 //here because this end point will be put at its right place
+                    moveMaxForward(dim,cur_end_point_max,it_max,next_it_max);
+                    //MOVE_MAX_FOR(dim,cur_end_point_max,it_max,next_it_max);
+                    max_updated = true;
+                }//after, cases when the end point is at its right place
+                else if(next_it_max == _end_points[dim].end() && inferior(*prev_it_max,&updated_max)){
+                    cur_end_point_max->value = updated_max.value;
+                    max_updated = true;
                 }
-                else if(cur_end_point->value < (**prev_it).value){//moving the min backward
-                    axis1 = (1  << dim) & 3;
-                    axis2 = (1  << axis1) & 3;
-
-                    do{
-                        if((**prev_it).max())//min becomes inferior to a max => begginning of an intersection on this axis
-                            addIfCollide(i,(**prev_it).boxID(),axis1,axis2);
-
-                        //std::cout<<__LINE__<<std::endl;
-
-                        ++((**prev_it).ID);
-                        --(cur_end_point->ID);
-                        (*it) = (*prev_it);
-                        it = prev_it;
-
-                        if(prev_it == _end_points[dim].begin())
-                            break;
-
-                        --prev_it;
-//                        //std::cout<<"5.4"<<std::endl;
-//                        //std::cout<<"THE ID "<<cur_end_point->ID<<std::endl;
-//                        //std::cout<<"size "<<_end_points[dim].size()<<std::endl;
-//                        if((**prev_it).value < 5){
-//                            //std::cout<<"ha"<<std::endl;
-//                        }
-//                        //std::cout<<"5.5"<<std::endl;
-                    }
-                    while(cur_end_point->value < (**prev_it).value);
-
-                    //std::cout<<__LINE__<<std::endl;
-
-                    (*it) = cur_end_point;
+                else if(it_max == _end_points[dim].begin() && inferior(&updated_max,*next_it_max)){
+                    cur_end_point_max->value = updated_max.value;
+                    max_updated = true;
                 }
-
-                //std::cout<<__LINE__<<std::endl;
-
-                //handling moving of max
-                cur_end_point = &(cur_box.max(dim));
-                it = _end_points[dim].begin() + cur_end_point->ID;
-
-                next_it = it;
-                ++next_it;
-
-                //std::cout<<__LINE__<<std::endl;
-                //std::cout<<"cur_end_point->ID "<<cur_end_point->ID<<std::endl;
-                //std::cout<<"(*next_it) "<<(*next_it)<<std::endl;
-
-                prev_it = it;
-                if(it != _end_points[dim].begin())
-                    --prev_it;
-
-                //std::cout<<"(*prev_it) "<<(*prev_it)<<std::endl;
-
-                //std::cout<<__LINE__<<std::endl;
-
-                if((next_it != _end_points[dim].end()) && cur_end_point->value > (**next_it).value){
-                    axis1 = (1  << dim) & 3;
-                    axis2 = (1  << axis1) & 3;
-                    //std::cout<<__LINE__<<std::endl;
-
-                    do{
-                        if((**next_it).min())
-                            addIfCollide(i,(**next_it).boxID(),axis1,axis2);
-
-                        //std::cout<<__LINE__<<std::endl;
-
-                        --((**next_it).ID);
-                        ++(cur_end_point->ID);
-                        (*it) = (*next_it);
-                        it = next_it;
-                        ++next_it;
-                    }
-                    while((next_it != _end_points[dim].end()) && cur_end_point->value > (**next_it).value);
-
-                    (*it) = cur_end_point;
-                }
-                else if(cur_end_point->value < (**prev_it).value){//moving the max backward
-                    do{
-                        //std::cout<<__LINE__<<std::endl;
-
-                        if((**prev_it).min())//max becomes inferior to a min => end of an intersection on this axis
-                            removeCollision(cur_end_point->boxID(),(**prev_it).boxID());
-
-                        //std::cout<<__LINE__<<std::endl;
-
-                        ++((**prev_it).ID);
-                        --(cur_end_point->ID);
-                        (*it) = (*prev_it);
-                        it = prev_it;
-
-                        if(prev_it == _end_points[dim].begin())
-                            break;
-
-                        --prev_it;
-                    }
-                    while(cur_end_point->value < (**prev_it).value);
-
-                    //std::cout<<__LINE__<<std::endl;
-
-                    (*it) = cur_end_point;
+                else if(inferior(*prev_it_max,&updated_max) && inferior(&updated_max,*next_it_max)){
+                    cur_end_point_max->value = updated_max.value;
+                    max_updated = true;
                 }
             }
-        }
-    }
 
-    //std::cout<<"end updateMovingBoxes"<<std::endl;
+            assert(assertion_end_points_sorted());
+
+            //MOVING MIN BACKWARD
+            if((min_moving = cur_box.minMoving(dim))){
+                cur_box.updatedMin(dim,updated_min);
+                cur_end_point_min = &(cur_box.min(dim));
+                it_min = _end_points[dim].begin() + cur_end_point_min->ID;
+                base_it_min = it_min;
+                assert((**it_min).ID == cur_end_point_min->ID);
+
+                next_it_min = it_min;
+                ++next_it_min;
+
+                prev_it_min = it_min;
+                if(it_min != _end_points[dim].begin())
+                    --prev_it_min;
+
+                if((it_min != _end_points[dim].begin()) && inferior(&updated_min,*prev_it_min)){//moving the min backward
+                    cur_end_point_min->value = updated_min.value;
+                    //MOVE_MIN_BACK(dim,cur_end_point_min,it_min,prev_it_min);
+                    moveMinBackward(dim,cur_end_point_min,it_min,prev_it_min);
+                    min_updated = true;
+                }//after, cases when the end point is at its right place
+                else if(it_min == _end_points[dim].begin() && inferior(&updated_min,*next_it_min)){
+                    cur_end_point_min->value = updated_min.value;
+                    min_updated = true;
+                }
+                else if(next_it_min == _end_points[dim].end() && inferior(*prev_it_min,&updated_min)){
+                    cur_end_point_min->value = updated_min.value;
+                    min_updated = true;
+                }
+                else if(inferior(&updated_min,*next_it_min) && inferior(*prev_it_min,&updated_min)){
+                    cur_end_point_min->value = updated_min.value;
+                    min_updated = true;
+                }
+            }
+
+            assert(assertion_end_points_sorted());
+
+            //THEN DELETING
+            if(min_moving && (!min_updated)){
+                cur_end_point_min->value = updated_min.value;
+
+                //MOVING MIN FOREWARD
+                if((next_it_min != _end_points[dim].end()) && (inferior(*next_it_min,cur_end_point_min))){
+                    moveMinForward(dim,cur_end_point_min,it_min,next_it_min);
+                    //MOVE_MIN_FOR(dim,cur_end_point_min,it_min,next_it_min);
+                }
+            }
+
+            assert(assertion_end_points_sorted());
+
+            //MOVING MAX BACKWARD
+            if(max_moving && (!max_updated)){
+                cur_end_point_max->value = updated_max.value;
+
+                it_max = _end_points[dim].begin() + cur_end_point_max->ID;
+                prev_it_max = it_max;
+                if(it_max != _end_points[dim].begin())
+                    --prev_it_max;
+
+
+                if((prev_it_max != it_max && inferior(cur_end_point_max,*prev_it_max))){
+                    moveMaxBackward(dim,cur_end_point_max,it_max,prev_it_max);
+                    //MOVE_MAX_BACK(dim,cur_end_point_max,it_max,prev_it_max);
+                }
+            }
+
+            assert(assertion_end_points_sorted());
+        }
+        assert(assertion_end_points_sorted());
+    }
 }
 
 
