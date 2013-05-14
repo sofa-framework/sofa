@@ -1,33 +1,26 @@
-cmake_minimum_required(VERSION 2.8)
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
-##plugin external dependencies
-find_package( SofaCompliantPluginRunLibs REQUIRED)
-include_directories(${SOFACOMPLIANTPLUGINRUN_INCLUDE_DIRS})
 
 set(SOURCE_FILES
 
     Compliant_run.cpp
-
 	)
 
 if(UNIX)
-
     set(RC_FILES sofa.rc)
-
 endif()
 
 if(APPLE)
-
-    list(APPEND RC_FILES "runSOFA.incs")
-
+    set(RC_FILES "runSOFA.incs")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+if(WIN32)
+	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+endif()
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 set(COMPILER_DEFINES "")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaEigen2Solver SofaFlexible)
+set(LINKER_DEPENDENCIES Compliant_lib SofaComponentMain SofaGuiMain SofaGuiQt)
 
 if(UNIX)
     list(APPEND LINKER_DEPENDECIES "dl")
