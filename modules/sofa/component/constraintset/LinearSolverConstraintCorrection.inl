@@ -75,6 +75,9 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     odesolver=getOdeSolver(c);
 
     const helper::vector<std::string>& solverNames = solverName.getValue();
+
+    linearsolvers.clear();
+
     if (solverNames.size() == 0)
     {
         linearsolvers.push_back(c->get<behavior::LinearSolver>());
