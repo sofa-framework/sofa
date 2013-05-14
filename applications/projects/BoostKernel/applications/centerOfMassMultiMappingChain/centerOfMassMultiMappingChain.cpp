@@ -36,7 +36,7 @@
 using namespace sofa::simulation;
 
 #include <sofa/gui/GUIManager.h>
-
+#include <sofa/gui/Main.h>
 
 #include <sofa/component/loader/MeshGmshLoader.h>
 using namespace sofa::component::loader;
@@ -258,6 +258,8 @@ int main(int argc, char** argv)
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
+
+	sofa::gui::initMain();
 
     if (simulationType == "bgl")
         sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());

@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 list(APPEND OTHER_FILES "OpenCLMechanicalObject.cl")
 list(APPEND OTHER_FILES "OpenCLMemoryManager.cl")
 list(APPEND OTHER_FILES "OpenCLSpringForceField.cl")

@@ -33,6 +33,7 @@
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/gui/GUIManager.h>
+#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
@@ -102,6 +103,8 @@ int main( int argc, char** argv )
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&implicit,'i',"implicit","Implicit Integration Scheme")
     (argc,argv);
+
+	sofa::gui::initMain();
 
     sofa::simulation::setSimulation( new sofa::simulation::bgl::BglSimulation() );
     sofa::gui::GUIManager::Init(argv[0]);

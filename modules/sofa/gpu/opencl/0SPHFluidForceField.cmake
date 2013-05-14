@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 list(APPEND HEADER_FILES "OpenCLSPHFluidForceField.h")
 list(APPEND HEADER_FILES "OpenCLSPHFluidForceField.inl")
 list(APPEND HEADER_FILES "CPUSPHFluidForceField.h")

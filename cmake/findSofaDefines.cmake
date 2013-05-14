@@ -21,8 +21,6 @@ if(_FIND_SOFA_DEFINES_INCLUDED_)
 endif()
 set(_FIND_SOFA_DEFINES_INCLUDED_ true)
 
-cmake_minimum_required(VERSION 2.8)
-
 function(FindSofaDefines VERBOSE_SOFA)
 
     ## check we can run this function
