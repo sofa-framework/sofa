@@ -149,6 +149,15 @@ struct SE3 {
 	};
 
 	
+	// sofa adT
+	static vec6 move_wrench(const vec6& w, const vec3& delta) {
+		vec6 res;
+
+		res.template head<3>() = w.template head<3>();
+		res.template tail<3>() = w.template tail<3>() + delta.cross( w.template head<3>() );
+
+		return res;
+	}
 
 
 	// skew-symmetric mapping: hat(v) * x = v.cross(x)
