@@ -27,7 +27,7 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/gui/GUIManager.h>
-
+#include <sofa/gui/Main.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -106,6 +106,8 @@ int main(int argc, char** argv)
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
 //       .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
+
+	sofa::gui::initMain();
 
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::gui::GUIManager::Init(argv[0]);

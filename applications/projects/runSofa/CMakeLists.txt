@@ -12,8 +12,10 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain)
-if(SIMULATION_GRAPH_DAG)
+
+if(SOFA-LIB_SIMULATION_GRAPH_DAG)
     list(APPEND LINKER_DEPENDENCIES SofaSimulationGraph)
 endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

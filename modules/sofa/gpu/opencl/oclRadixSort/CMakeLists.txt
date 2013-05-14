@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 list(APPEND HEADER_FILES "oclRadixSort/RadixSort.h")
 list(APPEND HEADER_FILES "oclRadixSort/Scan.h")
 list(APPEND HEADER_FILES "oclRadixSort/CPUSortWithOpenCL.h")
