@@ -1,1 +1,0 @@
-list(APPEND SOURCE_FILES "OpenCLBoxROI.cpp")

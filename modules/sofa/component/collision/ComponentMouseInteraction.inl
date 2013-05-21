@@ -28,7 +28,7 @@
 #include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/mapping/IdentityMapping.inl>
