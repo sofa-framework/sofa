@@ -1,29 +1,128 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEADER_FILES  )
-set(SOURCE_FILES  )
-set(OTHER_FILES  )
+find_package(OpenCL REQUIRED)
 
-include("0BoxROI.cmake")
-include("0Core.cmake")
-include("0FixedConstraint.cmake")
-include("0IdentityMapping.cmake")
-include("0MechanicalObject.cmake")
-include("0MemoryManager.cmake")
-include("0PlaneForceField.cmake")
-include("0SpatialGridContainer.cmake")
-include("0SphereForceField.cmake")
-include("0SPHFluidForceField.cmake")
-include("0SpringForceField.cmake")
-include("0UniformMass.cmake")
+set(HEADER_FILES
 
-add_subdirectory("kernels")
-add_subdirectory("oclRadixSort")
-add_subdirectory("tools")
-    
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${OTHER_FILES} ${SOURCE_FILES})
+	myopencl.h
+    OpenCLKernel.h
+    OpenCLProgram.h
+    OpenCLProgramParser.h
+    OpenCLTypes.h
+    gpuopencl.h
+    OpenCLCommon.h
+	
+	OpenCLSphereForceField.h
+	OpenCLSphereForceField.inl
+	
+	OpenCLSPHFluidForceField.h
+    OpenCLSPHFluidForceField.inl
+    CPUSPHFluidForceField.h
+    CPUSPHFluidForceFieldWithOpenCL.h
+	
+	OpenCLSpringForceField.h
+	OpenCLSpringForceField.inl
+	
+	OpenCLUniformMass.h
+	OpenCLUniformMass.inl
+	
+	OpenCLFixedConstraint.h
+	OpenCLFixedConstraint.inl
+	
+	OpenCLIdentityMapping.h
+	OpenCLIdentityMapping.inl
+	
+	OpenCLMechanicalObject.h
+	OpenCLMechanicalObject.inl
+	
+	OpenCLMemoryManager.h
+	
+	OpenCLPlaneForceField.h
+	OpenCLPlaneForceField.inl
+	
+	OpenCLSpatialGridContainer.h
+	OpenCLSpatialGridContainer.inl
+	
+	oclRadixSort/RadixSort.h
+    oclRadixSort/Scan.h
+    oclRadixSort/CPUSortWithOpenCL.h
+	oclRadixSort/CPUSortWithCuda.h
+	
+	tools/top.h
+	tools/showvector.h
+	)
+
+set(SOURCE_FILES
+
+	myopencl.cpp
+    OpenCLCommon.cpp
+    OpenCLProgram.cpp
+    OpenCLMouseInteraction.cpp
+	
+	OpenCLSphereForceField.cpp
+	
+	OpenCLSPHFluidForceField.cpp
+    CPUSPHFluidForceField.cpp
+    CPUSPHFluidForceFieldWithOpenCL.cpp
+	
+	OpenCLSpringForceField.cpp
+	
+	OpenCLUniformMass.cpp
+	
+	OpenCLBoxROI.cpp
+	
+	OpenCLFixedConstraint.cpp
+	
+	OpenCLIdentityMapping.cpp
+	
+	OpenCLMechanicalObject.cpp
+	
+	OpenCLMemoryManager.cpp
+	
+	OpenCLPlaneForceField.cpp
+	
+	OpenCLSpatialGridContainer.cpp
+	
+	oclRadixSort/RadixSort.cpp
+    oclRadixSort/Scan.cpp
+	
+	tools/top.cpp
+	tools/showvector.cpp
+	)
+	
+set(OTHER_FILES
+
+	kernels/OpenCLGenericParticleForceField.cl
+	
+	kernels/OpenCLSPHFluidForceField.cl
+	
+	kernels/OpenCLSpringForceField.cl
+	
+	kernels/OpenCLUniformMass.cl
+	
+	kernels/OpenCLFixedConstraint.cl
+	
+	kernels/OpenCLMechanicalObject.cl
+	
+	kernels/OpenCLMemoryManager.cl
+	
+	kernels/OpenCLGenericParticleForceField_Plane.macrocl
+	
+	kernels/OpenCLGenericParticleForceField_Sphere.macrocl
+	
+	kernels/OpenCLSpatialGridContainer.cl
+
+    kernels/OpenCLSpatialGridForce.cl
+	
+	kernels/oclRadixSort/RadixSort.cl
+    kernels/oclRadixSort/Scan_b.cl
+	)
+
+include_directories(${OPENCL_INCLUDE_DIRS})
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_GPU_OPENCL")
-set(LINKER_DEPENDENCIES SofaHelper SofaEngine SofaSphFluid SofaUserInteraction opencl csparse taucs taucs_mt system-taucs)
+set(LINKER_DEPENDENCIES ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

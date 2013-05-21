@@ -44,7 +44,7 @@ namespace component
 
 namespace collision
 {
-
+	
 using namespace sofa::gpu::opencl;
 
 template class MouseInteractor<OpenCLVec3fTypes>;
@@ -88,7 +88,7 @@ int MouseInteractorOpenCLClass = core::RegisterObject("Supports Mouse Interactio
         .add< component::collision::MouseInteractor<OpenCLVec3dTypes> >()
 #endif
         ;
-
+		
 }
 
 }

@@ -42,7 +42,7 @@ RegisterDependencies("Lml" PATH "${SOFA_EXTLIBS_DIR}/LML")
 RegisterDependencies("Pml" COMPILE_DEFINITIONS SOFA_HAVE_PML PATH "${SOFA_EXTLIBS_DIR}/PML")
 RegisterDependencies("SofaPml" OPTION SOFA-LIB_COMPONENT_SOFA_PML PATH "${SOFA_MODULES_DIR}/sofa/filemanager/sofapml")
 
-RegisterDependencies("SofaGpuOpenCL" SOFA-LIB_COMPONENT_GPU_OPENCL COMPILE_DEFINITIONS SOFA_GPU_OPENCL PATH "${SOFA_MODULES_DIR}/sofa/gpu/opencl")
+RegisterDependencies("SofaGpuOpenCL" OPTION SOFA-LIB_COMPONENT_GPU_OPENCL COMPILE_DEFINITIONS SOFA_GPU_OPENCL PATH "${SOFA_MODULES_DIR}/sofa/gpu/opencl")
 
 # applications
 

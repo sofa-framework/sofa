@@ -233,6 +233,9 @@ option(SOFA-LIB_COMPONENT_SOFA_PML "" OFF)
 
 option(SOFA-LIB_COMPONENT_GPU_OPENCL "" OFF)	
 
+# i don't know if we mark default components as advanced or not
+# it would enhance readability but thinking to look for
+# advanced options is not really obvious
 if(false)
 mark_as_advanced(SOFA-LIB_COMPONENT_BASE_ANIMATION_LOOP)
 mark_as_advanced(SOFA-LIB_COMPONENT_BASE_COLLISION)
@@ -252,7 +255,7 @@ mark_as_advanced(SOFA-LIB_COMPONENT_COMPONENT_MAIN)
 mark_as_advanced(SOFA-LIB_COMPONENT_CONSTRAINT)
 mark_as_advanced(SOFA-LIB_COMPONENT_DEFORMABLE)
 mark_as_advanced(SOFA-LIB_COMPONENT_DENSE_SOLVER)
-mark_as_advanced(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
+#mark_as_advanced(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
 
 mark_as_advanced(SOFA-LIB_COMPONENT_ENGINE)
 mark_as_advanced(SOFA-LIB_COMPONENT_EULERIAN_FLUID)
@@ -274,22 +277,22 @@ mark_as_advanced(SOFA-LIB_COMPONENT_MISC_TOPOLOGY)
 mark_as_advanced(SOFA-LIB_COMPONENT_NON_UNIFORM_FEM)
 mark_as_advanced(SOFA-LIB_COMPONENT_OBJECT_INTERACTION)
 mark_as_advanced(SOFA-LIB_COMPONENT_OPENGL_VISUAL)
-mark_as_advanced(SOFA-LIB_COMPONENT_PARDISO_SOLVER)
+#mark_as_advanced(SOFA-LIB_COMPONENT_PARDISO_SOLVER)
 mark_as_advanced(SOFA-LIB_COMPONENT_RIGID)
 mark_as_advanced(SOFA-LIB_COMPONENT_SIMPLE_FEM)
-mark_as_advanced(SOFA-LIB_COMPONENT_SPARSE_SOLVER)
+#mark_as_advanced(SOFA-LIB_COMPONENT_SPARSE_SOLVER)
 
 mark_as_advanced(SOFA-LIB_PRECONDITIONER)
 mark_as_advanced(SOFA-LIB_SPH_FLUID)
-mark_as_advanced(SOFA-LIB_TAUCS_SOLVER)
+#mark_as_advanced(SOFA-LIB_TAUCS_SOLVER)
 mark_as_advanced(SOFA-LIB_TOPOLOGY_MAPPING)
 mark_as_advanced(SOFA-LIB_USER_INTERACTION)
 mark_as_advanced(SOFA-LIB_VALIDATION)
 mark_as_advanced(SOFA-LIB_VOLUMETRIC_DATA)
 
-mark_as_advanced(SOFA-LIB_COMPONENT_SOFA_PML)
+#mark_as_advanced(SOFA-LIB_COMPONENT_SOFA_PML)
 
-mark_as_advanced(SOFA-LIB_COMPONENT_GPU_OPENCL)
+#mark_as_advanced(SOFA-LIB_COMPONENT_GPU_OPENCL)
 endif()
 
 # simulation

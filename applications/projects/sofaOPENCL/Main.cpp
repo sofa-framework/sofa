@@ -59,8 +59,9 @@ int main(int argc, char** argv)
 
     sofa::gui::initMain();
 
-    sofa::gui::SofaGUI::SetProgramName(argv[0]);
-    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    /*sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string gui = sofa::gui::SofaGUI::GetGUIName();*/
+	std::string gui = "";
     sofa::gui::GUIManager::ListSupportedGUI('|');
     //std::string fileName = "OPENCL/beam10x10x46-spring-rk4-OPENCL.scn";
 
