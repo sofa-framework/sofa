@@ -355,22 +355,27 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
 	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
 		updateJ = false;
 		
-		unsigned rows = NOut * this->toModel->getSize();
-		unsigned cols = NIn * this->fromModel->getSize();
+        const unsigned rowsBlock = this->toModel->getSize();
+        const unsigned colsBlock = this->fromModel->getSize();
 		
-		assert( rows == cols );
-		
-		eigen.compressedMatrix.resize( rows, cols );
+        assert( rowsBlock == colsBlock );
+
+        const unsigned rows = rowsBlock * NOut;
+        const unsigned cols = rowsBlock * NIn;
+
+        eigen.compressedMatrix.resize( rows, cols );
 		eigen.compressedMatrix.setZero();
-		eigen.compressedMatrix.reserve( rows );
+        eigen.compressedMatrix.reserve( rows );
 		
-		for( unsigned i = 0; i < rows; ++i) {
-			eigen.compressedMatrix.startVec( i );
-			eigen.compressedMatrix.insertBack(i, i) = 1.0;
+        for( unsigned i = 0; i < rowsBlock; ++i) {
+            for( unsigned j = 0; j < NOut; ++j) {
+                eigen.compressedMatrix.startVec( i*NOut+j );
+                eigen.compressedMatrix.insertBack( i*NOut+j, i*NIn+j ) = 1.0;
+            }
 		}
 		
 		eigen.compressedMatrix.finalize();
-	}
+    }
 	
 	js.resize( 1 );
 	js[0] = &eigen;
