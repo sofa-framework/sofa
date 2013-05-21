@@ -38,6 +38,7 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
@@ -129,6 +130,8 @@ public:
     Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
     
+    Data <int> scroll;
+
     typedef component::visualmodel::VisualModelImpl VisuModelType;
         
     std::string getTemplateName() const  {	return templateName(this);	}
@@ -140,6 +143,7 @@ public:
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
+      , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
@@ -264,6 +268,47 @@ public:
             case '2':
                 pc = wplane->getPlane();
                 if (pc[2] < zmax) pc[2]++;
+                wplane->setPlane(pc);
+                break;
+            }
+        }
+
+        if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event) && this->scroll.getValue() > 0)
+        {
+            waPlane wplane(this->plane);
+            unsigned int xmax = this->image.getValue().getDimensions()[0];
+            unsigned int ymax = this->image.getValue().getDimensions()[1];
+            unsigned int zmax = this->image.getValue().getDimensions()[2];
+            switch(this->scroll.getValue())
+            {
+            case 1:
+                pc = wplane->getPlane();
+                if (pc[0] > 1) pc[0]--;
+                wplane->setPlane(pc);
+                break;
+            case 2:
+                pc = wplane->getPlane();
+                if (pc[0] < xmax-1) pc[0]++;
+                wplane->setPlane(pc);
+                break;
+            case 3:
+                pc = wplane->getPlane();
+                if (pc[1] > 1) pc[1]--;
+                wplane->setPlane(pc);
+                break;
+            case 4:
+                pc = wplane->getPlane();
+                if (pc[1] < ymax-1) pc[1]++;
+                wplane->setPlane(pc);
+                break;
+            case 5:
+                pc = wplane->getPlane();
+                if (pc[2] > 1) pc[2]--;
+                wplane->setPlane(pc);
+                break;
+            case 6:
+                pc = wplane->getPlane();
+                if (pc[2] < zmax-1) pc[2]++;
                 wplane->setPlane(pc);
                 break;
             }
