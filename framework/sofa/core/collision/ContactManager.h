@@ -49,7 +49,6 @@ public:
     SOFA_ABSTRACT_CLASS(ContactManager, CollisionAlgorithm);
 
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-    typedef NarrowPhaseDetection::DetectionOutputVectors DetectionOutputVectors;
     typedef sofa::helper::vector<Contact::SPtr> ContactVector;
 protected:
     /// Constructor
@@ -64,7 +63,7 @@ public:
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
-    virtual void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec = DetectionOutputVectors(0) ) = 0;
+    virtual void createContacts(const DetectionOutputMap& outputs) = 0;
 
     virtual const ContactVector& getContacts() { return contacts; }
 

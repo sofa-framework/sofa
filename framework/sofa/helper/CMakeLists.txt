@@ -35,6 +35,7 @@ set(HEADER_FILES
     LCPSolver.h
     LCPSolver.inl
     map.h
+    map_ptr_stable_compare.h
     MatEigen.h
     list.h
     MarchingCubeUtility.h

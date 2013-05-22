@@ -73,7 +73,7 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::~StickContactConstrai
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
 {
-    std::cout << "CLEANUP" << std::endl;
+    sout << "CLEANUP" << sendl;
     if (m_constraint)
     {
         //m_constraint->cleanup();
@@ -99,6 +99,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
     this->f_printLog.setValue(true);
+    sout << "setDetectionOutputs(" << (o == NULL ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")" << sendl;
     contacts.clear();
     if (!o) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
@@ -149,13 +150,14 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 {
     if (!m_constraint)
     {
-        serr << "Creating StickContactConstraint bilateral constraints"<<sendl;
+        sout << "Creating StickContactConstraint bilateral constraints"<<sendl;
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
         m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<Vec3Types> >(mstate1, mstate2);
         m_constraint->setName( getName() );
     }
 
+    sout << "activateMappers(" << contacts.size() << ")" << sendl;
 
     int size = contacts.size();
     m_constraint->clear(size);
@@ -237,9 +239,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         mapper1.update();
         mapper2.update();
     */
-    sout << contacts.size() << "StickContactConstraint created"<<sendl;
-    sout << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getX()->size() << " xfree = " << m_constraint->getMState1()->getXfree()->size() << std::endl;
-    sout << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getX()->size() << " xfree = " << m_constraint->getMState2()->getXfree()->size() << std::endl;
+    sout << contacts.size() << " StickContactConstraint created"<<sendl;
+    sout << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getX()->size() << " xfree = " << m_constraint->getMState1()->getXfree()->size() << sendl;
+    sout << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getX()->size() << " xfree = " << m_constraint->getMState2()->getXfree()->size() << sendl;
     //std::cerr<<" end activateMappers call"<<std::endl;
 
 }
@@ -247,12 +249,10 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-    //std::cout << "createResponse" << std::endl;
+	sout << "->createResponse(" << group->getName() << ")" << sendl;
     if (!contacts.empty() || !keepAlive())
+	{
         activateMappers();
-
-    if (m_constraint!=NULL)
-    {
         int i = 0;
         for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
@@ -269,7 +269,10 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 
             //m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
+	}
 
+    if (m_constraint!=NULL)
+    {
         if (parent!=NULL)
         {
             parent->removeObject(this);
@@ -288,6 +291,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
+	sout << "->removeResponse()" << sendl;
     if (m_constraint)
     {
         //mapper1.resize(0);

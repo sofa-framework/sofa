@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
 
 #include <sofa/core/collision/Detection.h>
+#include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -48,8 +49,8 @@ class NarrowPhaseDetection : virtual public Detection
 public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
 
-    typedef std::map< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
-    typedef std::vector< std::pair< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector** > > DetectionOutputVectors;
+    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
+
 protected:
     /// Destructor
     virtual ~NarrowPhaseDetection() { }
@@ -57,9 +58,9 @@ public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
     {
-        for (DetectionOutputVectors::iterator it = m_outputsVec.begin(); it != m_outputsVec.end(); it++)
+        for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
         {
-            DetectionOutputVector *do_vec = *(it->second);
+            DetectionOutputVector *do_vec = (it->second);
 
             if (do_vec != 0)
                 do_vec->clear();
@@ -78,24 +79,18 @@ public:
 
     virtual void endNarrowPhase()
     {
-        DetectionOutputVectors::iterator it = m_outputsVec.begin();
+        DetectionOutputMap::iterator it = m_outputsMap.begin();
         
-        while (it != m_outputsVec.end())
+        while (it != m_outputsMap.end())
         {
-            DetectionOutputVector *do_vec = *(it->second);
+            DetectionOutputVector *do_vec = (it->second);
 
             if (!do_vec || do_vec->empty())
             {
                 /// @TODO Optimization
-                DetectionOutputMap::iterator it_map = m_outputsMap.find(it->first);
-
-                if (it_map != m_outputsMap.end())
-                {
-                        m_outputsMap.erase(it_map);
-                }
-
-                it = m_outputsVec.erase(it);
-
+                DetectionOutputMap::iterator iterase = it;
+				++it;
+				m_outputsMap.erase(iterase);
                 if (do_vec) do_vec->release();
             }
             else
@@ -112,11 +107,6 @@ public:
         return m_outputsMap;
     }
 
-    const DetectionOutputVectors& getDetectionOutputsVector()
-    {
-        return m_outputsVec;
-    }
-
     DetectionOutputVector*& getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
     {
         std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
@@ -127,29 +117,21 @@ public:
         {
             // new contact
             it = m_outputsMap.insert( std::make_pair(cm_pair, static_cast< DetectionOutputVector * >(0)) ).first;
-
-            m_outputsVec.push_back( std::make_pair(cm_pair, &(it->second)) );
         }
 
         return it->second;
     }
 
 protected:
-    std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
-
-    DetectionOutputVectors m_outputsVec;
-    std::map<Instance, DetectionOutputVectors> m_storedOutputsVec;
-
     virtual void changeInstanceNP(Instance inst)
     {
         m_storedOutputsMap[instance].swap(m_outputsMap);
         m_outputsMap.swap(m_storedOutputsMap[inst]);
-
-        m_storedOutputsVec[instance].swap(m_outputsVec);
-        m_outputsVec.swap(m_storedOutputsVec[inst]);
     }
 
 private:
+    std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
+
     DetectionOutputMap m_outputsMap;
 };
 
