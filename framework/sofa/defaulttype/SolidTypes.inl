@@ -367,7 +367,7 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 }
 
 template<class R>
-void SolidTypes<R>::Transform::writeOpenGlMatrix( double *m ) const
+void SolidTypes<R>::Transform::writeOpenGlMatrix( GLdouble *m ) const
 {
     /*    std::cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, this = "<<*this<<std::endl;
         std::cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, origin_ = "<<origin_<<std::endl;*/

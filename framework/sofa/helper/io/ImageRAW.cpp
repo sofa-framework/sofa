@@ -53,6 +53,8 @@ void ImageRAW::initHeader(unsigned hsize)
 
 bool ImageRAW::load(std::string filename)
 {
+	m_bLoaded = 0;
+
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
         std::cerr << "File " << filename << " not found " << std::endl;
@@ -98,7 +100,7 @@ bool ImageRAW::load(std::string filename)
     }
 
     fclose(file);
-
+	m_bLoaded = 1;
     return true;
 }
 

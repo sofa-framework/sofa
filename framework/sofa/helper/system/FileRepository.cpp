@@ -54,7 +54,7 @@ FileRepository PluginRepository("SOFA_PLUGIN_PATH","../bin");
 #else
 FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib");
 #endif
-#if defined (WIN32) || defined (_XBOX)
+#if defined (WIN32) || defined (_XBOX) || defined(PS3)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");

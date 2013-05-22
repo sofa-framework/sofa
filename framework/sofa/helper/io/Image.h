@@ -140,6 +140,10 @@ public:
     {
         return new Object(arg);
     }
+	bool isLoaded() const { return (m_bLoaded>0); }
+
+protected:
+	unsigned char m_bLoaded;
 
 private:
     unsigned width, height, depth, mipmaps;

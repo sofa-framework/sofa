@@ -277,6 +277,9 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot);
 
+#ifdef PS3
+	groot->setAnimate(true);
+#endif
 
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot))

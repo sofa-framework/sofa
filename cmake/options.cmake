@@ -149,10 +149,18 @@ option(SOFA-APPLICATION_GENERATE_RIGID "Build GenerateRigid application " OFF)
 option(SOFA-APPLICATION_GENERATE_TYPEDEFS "Build GenerateTypedefs application " OFF)
 option(SOFA-APPLICATION_BOOST_KERNEL "Build BoostKernel application " OFF)
 option(SOFA-APPLICATION_MESH_CONV "Build MeshConv application " OFF)
+if(PS3)
+option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " OFF)
+option(SOFA-APPLICATION_SOFA_BATCH "Build SofaBatch application " OFF)
+option(SOFA-APPLICATION_MODELER "Build Modeler application " OFF)
+else()
 option(SOFA-APPLICATION_RUN_SOFA "Build RunSofa application " ON)
 option(SOFA-APPLICATION_SOFA_BATCH "Build SofaBatch application " ON)
-#option(SOFA-APPLICATION_SOFA_CONFIGURATION "Build SofaConfiguration application " OFF)
 option(SOFA-APPLICATION_MODELER "Build Modeler application " ON)
+endif()
+
+#option(SOFA-APPLICATION_SOFA_CONFIGURATION "Build SofaConfiguration application " OFF)
+
 option(SOFA-APPLICATION_SOFA_FLOWVR "Build SofaFlowVR application " OFF)
 option(SOFA-APPLICATION_SOFA_INFO "Build SofaInfo application " OFF)
 option(SOFA-APPLICATION_SOFA_INIT_TIMER "Build SofaInitTimer application " OFF)
@@ -301,9 +309,9 @@ option(SOFA-LIB_SIMULATION_GRAPH_BGL "Boost graph library" OFF)
 
 
 # optionnal features
-CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT" OFF)
+CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QTVIEWER "Use QT Viewer" ON "NOT OPTION_NO_OPENGL;NOT OPTION_NO_QT;NOT PS3" OFF)
 CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_QGLVIEWER "Use QGLViewer" OFF
-	"NOT SOFA-MISC_NO_OPENGL; NOT SOFA-MISC_NO_QT" OFF)
+	"NOT SOFA-MISC_NO_OPENGL; NOT SOFA-MISC_NO_QT;NOT PS3" OFF)
 CMAKE_DEPENDENT_OPTION(SOFA-LIB_GUI_GLUT "Use GLUT interface" ON
 	"NOT SOFA-MISC_NO_OPENGL" OFF)
 option(SOFA-LIB_GUI_INTERACTION "Enable interaction mode" OFF)

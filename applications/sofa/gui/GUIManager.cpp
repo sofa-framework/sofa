@@ -55,15 +55,19 @@ const std::string &GUIManager::GetCurrentGUIName() {return currentGUI->GetGUINam
 
 int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
 {
-    std::list<GUICreator>::iterator it = guiCreators.begin();
-    std::list<GUICreator>::iterator itend = guiCreators.end();
-    while (it != itend && strcmp(name, it->name))
-        ++it;
-    if (it != itend)
-    {
-        std::cerr << "ERROR(GUIManager): GUI "<<name<<" duplicate registration."<<std::endl;
-        return 1;
-    }
+	if(guiCreators.size())
+	{
+		std::list<GUICreator>::iterator it = guiCreators.begin();
+		std::list<GUICreator>::iterator itend = guiCreators.end();
+		while (it != itend && strcmp(name, it->name))
+			++it;
+		if (it != itend)
+		{
+			std::cerr << "ERROR(GUIManager): GUI "<<name<<" duplicate registration."<<std::endl;
+			return 1;
+		}
+	}
+
     GUICreator entry;
     entry.name = name;
     entry.creator = creator;

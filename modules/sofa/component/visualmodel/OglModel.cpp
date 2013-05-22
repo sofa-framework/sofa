@@ -708,9 +708,11 @@ void OglModel::initVisual()
 #ifdef NO_VBO
     canUseVBO = false;
 #else
-#ifdef SOFA_HAVE_GLEW
+#if defined (SOFA_HAVE_GLEW) && !defined(PS3)
     //This test is not enough to detect if we can enable the VBO.
     canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
+#elif PS3
+	canUseVBO = true;
 #else
     canUseVBO = CanUseGlExtension("GL_ARB_vertex_buffer_object");
 #endif
@@ -723,7 +725,7 @@ void OglModel::initVisual()
 
 #endif
 
-#ifdef SOFA_HAVE_GLEW
+#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         serr << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." << sendl;

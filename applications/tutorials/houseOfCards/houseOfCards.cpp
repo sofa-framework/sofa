@@ -59,8 +59,8 @@ const std::string colors[7]= {"red","green","blue","cyan","magenta","yellow","wh
 
 SReal convertDegreeToRadian(const SReal& angle)
 {
-    const SReal PI=3.14159265;
-    return angle*PI/180.0;
+    const SReal pi=3.14159265;
+    return angle*pi/180.0;
 }
 
 Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& rotation)

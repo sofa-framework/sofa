@@ -232,7 +232,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 
     if (p_swapMainView.getValue())
     {
-        double matrix[16];
+        GLdouble matrix[16];
         glGetDoublev(GL_PROJECTION_MATRIX, matrix);
         double mainRatio = (double)viewport[2]/(double)viewport[3];
         double scale = mainRatio/ratio;

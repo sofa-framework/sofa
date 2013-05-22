@@ -48,6 +48,15 @@ std::map < std::pair<std::pair<float,float>,float>, Cylinder* > Cylinder::Cylind
 
 void Cylinder::initDraw()
 {
+#ifdef PS3
+	// No display lists
+	if (quadratic==NULL)
+	{
+		quadratic=gluNewQuadric();
+		gluQuadricNormals(quadratic, GLU_SMOOTH);
+		gluQuadricTexture(quadratic, GL_TRUE);
+	}
+#else
     if (quadratic!=NULL) return;
 
     quadratic=gluNewQuadric();
@@ -57,6 +66,7 @@ void Cylinder::initDraw()
     displayList=glGenLists(1);
 
     glNewList(displayList, GL_COMPILE);
+#endif
 
     glColor3f(1,1,0);
     //gluSphere(quadratic,l[0],quadricDiscretisation,quadricDiscretisation/2);
@@ -93,7 +103,10 @@ void Cylinder::initDraw()
         gluSphere(quadratic,length[2]/15,quadricDiscretisation,quadricDiscretisation/2);
         glTranslated(0,0,-length[2]/2);
     }
-    glEndList();
+
+#ifndef PS3
+	glEndList();
+#endif
 }
 
 void Cylinder::draw()

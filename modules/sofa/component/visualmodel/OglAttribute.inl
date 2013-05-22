@@ -151,8 +151,10 @@ void OglAttribute< size, type, DataTypes>::enable()
 {
 
     glBindBufferARB(GL_ARRAY_BUFFER, _abo);
+#ifndef PS3
     glEnableVertexAttribArrayARB ( _index );
     glVertexAttribPointerARB ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
+#endif
     //glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 
@@ -160,8 +162,10 @@ void OglAttribute< size, type, DataTypes>::enable()
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::disable()
 {
+#ifndef PS3
     glDisableVertexAttribArrayARB ( _index );
     glBindBufferARB(GL_ARRAY_BUFFER,0);
+#endif
 }
 
 template < int size, unsigned int type, class DataTypes>
