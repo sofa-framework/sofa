@@ -181,6 +181,7 @@ public:
             return vect[outputDerivative];
     }
 
+    sofa::core::MultiVecDerivId xID;
 };
 
 } // namespace odesolver

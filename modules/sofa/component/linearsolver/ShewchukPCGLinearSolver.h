@@ -54,7 +54,6 @@ public:
 
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
-    Data<unsigned> f_normType;
     Data<bool> f_verbose;
     Data<unsigned> f_update_iteration;
     Data<unsigned> f_update_step;
