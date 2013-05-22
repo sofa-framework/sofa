@@ -46,7 +46,10 @@ public:
 	
 	// force, velocity and deformation vectors
 	vec p, f, v, phi; 					// should we have lambda ?
-	
+	 
+
+	void debug(SReal threshold = 0) const;
+
 	// only for compliant dofs for now
 	typedef Eigen::Matrix< SolverFlags::value_type, Eigen::Dynamic, 1> flags_type;
 	flags_type flags;

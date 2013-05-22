@@ -42,6 +42,33 @@ AssembledSystem::AssembledSystem(unsigned m, unsigned n)
 
 unsigned AssembledSystem::size() const { return m + n; }
 			
+
+void AssembledSystem::debug(SReal thres) const {
+
+	std::cerr << "f: " << std::endl
+	          << f.transpose() << std::endl
+	          << "v: " << std::endl
+	          << v.transpose() << std::endl
+	          << "p:" << std::endl
+	          << p.transpose() << std::endl;
+	
+	std::cerr << "H:" << std::endl
+	          << H << std::endl
+	          << "P:" << std::endl
+	          << P << std::endl;
+	if( n ) { 
+		std::cerr << "phi:" << std::endl
+		          << phi.transpose() << std::endl;
+		
+		std::cerr << "J:" << std::endl 
+		          << J << std::endl
+		          << "C:" << std::endl
+		          << C << std::endl;
+	}
+
+}
+
+
 }
 }
 }
