@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 
 
@@ -47,7 +48,7 @@ public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
 protected:
-    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
+    typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
     ContactMap contactMap;
 
     void cleanup();
@@ -63,7 +64,7 @@ public:
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
-    void createContacts(const DetectionOutputMap& outputs, const DetectionOutputVectors &outputsVec = DetectionOutputVectors(0) );
+    void createContacts(const DetectionOutputMap& outputs);
 
     void init();
     void draw(const core::visual::VisualParams* vparams);

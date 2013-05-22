@@ -98,23 +98,22 @@ void DefaultContactManager::cleanup()
     contactMap.clear();
 }
 
-void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap, const DetectionOutputVectors &outputsVec)
+void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 {
-    bool vectorIsNotFilled = outputsMap.size() != outputsVec.size();
-
     using core::CollisionModel;
     using core::collision::Contact;
 
-    // Remove any inactive contacts or add any new contact
-    DetectionOutputMap::const_iterator outputsIt = outputsMap.begin();
-    std::map< std::pair< CollisionModel*, CollisionModel* >, Contact::SPtr >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
 
-    //static DetectionOutputVector emptyContacts;
-    while (outputsIt != outputsMap.end() || contactIt != contactMap.end())
-    {
-        if (outputsIt != outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
-        {
+	// First iterate on the collision detection outputs and look for existing or new contacts
+	for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
+		outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
+	{
+		std::pair<ContactMap::iterator,bool> contactInsert =
+			contactMap.insert(ContactMap::value_type(outputsIt->first,Contact::SPtr()));
+		ContactMap::iterator contactIt = contactInsert.first;
+		if (contactInsert.second)
+		{
             // new contact
             //sout << "Creation new "<<contacttype<<" contact"<<sendl;
             CollisionModel* model1 = outputsIt->first.first;
@@ -124,110 +123,106 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap,
             // We can create rules in order to not respond to specific collisions
             if (!responseUsed.compare("null"))
             {
-                ++outputsIt;
-                continue;
+				contactMap.erase(contactIt);
             }
+			else
+			{
+				Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod,
+					this->f_printLog.getValue());
 
-			Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod, this->f_printLog.getValue());
+				if (contact == NULL)
+				{
+					std::string model1class = model1->getClassName();
+					std::string model2class = model2->getClassName();
+					int count = ++errorMsgCount[std::make_pair(responseUsed,
+						std::make_pair(model1class, model2class))];
+					if (count <= 10)
+					{
+						serr << "Contact " << responseUsed << " between " << model1->getClassName()
+							<< " and " << model2->getClassName() << " creation failed" << sendl;
+						if (count == 1)
+						{
+							serr << "Supported models for contact " << responseUsed << ":" << sendl;
+							for (Contact::Factory::const_iterator it =
+								Contact::Factory::getInstance()->begin(),
+								itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
+							{
+								if (it->first != responseUsed) continue;
+								serr << "   " << helper::gettypename(it->second->type()) << sendl;
+							}
+							serr << sendl;
+						}
+						if (count == 10) serr << "further messages suppressed" << sendl;
+					}
+					contactMap.erase(contactIt);
+				}
+				else
+				{
+					contactIt->second = contact;
+					contact->setName(model1->getName() + std::string("-") + model2->getName());
+					setContactTags(model1, model2, contact);
+					contact->f_printLog.setValue(this->f_printLog.getValue());
+					contact->init();
+					contact->setDetectionOutputs(outputsIt->second);
+					++nbContact;
+				}
+			}
+		}
+		else
+		{
+            // pre-existing and still active contact
+            contactIt->second->setDetectionOutputs(outputsIt->second);
+            ++nbContact;
+		}
+	}
 
-            if (contact == NULL)
-            {
-                std::string model1class = model1->getClassName();
-                std::string model2class = model2->getClassName();
-                int count = ++errorMsgCount[std::make_pair(responseUsed, std::make_pair(model1class, model2class))];
-                if (count <= 10)
-                {
-                    serr << "Contact " << responseUsed << " between " << model1->getClassName() << " and " << model2->getClassName() << " creation failed" << sendl;
-                    if (count == 1)
-                    {
-                        serr << "Supported models for contact " << responseUsed << ":" << sendl;
-                        for (Contact::Factory::const_iterator it = Contact::Factory::getInstance()->begin(), itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
-                        {
-                            if (it->first != responseUsed) continue;
-                            serr << "   " << helper::gettypename(it->second->type()) << sendl;
-                        }
-                        serr << sendl;
-                    }
-                    if (count == 10) serr << "further messages suppressed" << sendl;
-                }
-            }
-            else
-            {
-                contactMap[std::make_pair(model1, model2)] = contact;
-                contact->setName(model1->getName() + std::string("-") + model2->getName());
-                setContactTags(model1, model2, contact);
-                contact->f_printLog.setValue(this->f_printLog.getValue());
-                contact->init();
-
-                if( vectorIsNotFilled ) contact->setDetectionOutputs(outputsIt->second);
-
-                ++nbContact;
-            }
-            ++outputsIt;
-        }
-        else if (contactIt != contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
-        {
+	// Then look at previous contacts
+	// and remove inactive contacts
+	std::stack<ContactMap::iterator> deadContacts;
+	for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
+		contactIt != contactItEnd;)
+	{
+		bool remove = false;
+		DetectionOutputMap::const_iterator outputsIt = outputsMap.find(contactIt->first);
+		if (outputsIt == outputsMap.end())
+		{
             // inactive contact
-            //sout << "Deleting inactive "<<contacttype<<" contact"<<sendl;
             if (contactIt->second->keepAlive())
             {
+				contactIt->second->setDetectionOutputs(NULL);
                 ++nbContact;
-                ++contactIt;
             }
             else
             {
-                std::map< std::pair< CollisionModel*, CollisionModel* >, Contact::SPtr >::iterator contactIt2 = contactIt;
-                ++contactIt2;
+				remove = true;
+			}
+		}
+		if (remove)
+		{
+			if (contactIt->second)
+			{
                 contactIt->second->removeResponse();
                 contactIt->second->cleanup();
                 contactIt->second.reset();
-                contactMap.erase(contactIt);
-                contactIt = contactIt2;
-            }
-        }
-        else
-        {
-            // corresponding contact and outputs
-
-            if( vectorIsNotFilled ) contactIt->second->setDetectionOutputs(outputsIt->second);
-
-            ++nbContact;
-            ++outputsIt;
-            ++contactIt;
-        }
-    }
+			}
+			ContactMap::iterator eraseIt = contactIt;
+			++contactIt;
+			contactMap.erase(eraseIt);
+		}
+		else
+		{
+			++contactIt;
+		}
+	}
 
     // now update contactVec
     contacts.clear();
     contacts.reserve(nbContact);
-
-
-    if( vectorIsNotFilled )
+    for (ContactMap::const_iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
+		contactIt != contactItEnd; ++contactIt)
     {
-        contactIt = contactMap.begin();
-        while (contactIt!=contactMap.end())
-        {
-            contacts.push_back(contactIt->second);
-            ++contactIt;
-        }
+        contacts.push_back(contactIt->second);
     }
-    else
-    {
-        // Store contacts in the collision detection saved order (fixes reproducibility problems)
-        DetectionOutputVectors::const_iterator it = outputsVec.begin();
-        while (it != outputsVec.end())
-        {
-            contactIt = contactMap.find(it->first);
-            if (contactIt != contactMap.end())
-            {
-                contactIt->second->setDetectionOutputs(*(it->second));
-                contacts.push_back(contactIt->second);
-            }
-
-            ++it;
-        }
-    }
-
 
     // compute number of contacts attached to each collision model
     std::map< CollisionModel*, int > nbContactsMap;
@@ -239,6 +234,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap,
             nbContactsMap[cms.second]++;
     }
 
+	// TODO: this is VERY inefficient, should be replaced with a visitor
     helper::vector< CollisionModel* > collisionModels;
     simulation::Node* context = dynamic_cast< simulation::Node* >(getContext());
     context->getTreeObjects< CollisionModel >(&collisionModels);

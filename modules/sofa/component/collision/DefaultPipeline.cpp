@@ -185,7 +185,7 @@ void DefaultPipeline::doCollisionResponse()
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
     VERBOSE(sout << "Create Contacts "<<contactManager->getName()<<sendl);
-    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs(), narrowPhaseDetection->getDetectionOutputsVector());
+    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
 
     // finally we start the creation of collisionGroup
 
