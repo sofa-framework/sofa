@@ -25,13 +25,15 @@
 #ifndef SOFA_HELPER_SYSTEM_GLU_H
 #define SOFA_HELPER_SYSTEM_GLU_H
 
-#ifndef SOFA_NO_OPENGL
-
+#if !defined(SOFA_NO_OPENGL)
 #if defined (__APPLE__)
 #include <OpenGL/glu.h>
+#elif PS3
+#include <PSGL/psglu.h>
 #else
 #include <GL/glu.h>
 #endif
 #endif
+
 
 #endif /* SOFA_NO_OPENGL */

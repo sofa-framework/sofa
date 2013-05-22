@@ -42,7 +42,12 @@ namespace gl
 template<int N>
 inline void glVertexNv(const float* p)
 {
-    glVertex3f(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glVertexNv<3>(const float* p)
+{
+	glVertex3f(p[0],p[1],p[2]);
 }
 
 template<>
@@ -97,9 +102,13 @@ inline void glVertexT<float>(const float& c)
 
 ////////////////////////////////////////
 
-
 template<int N>
 inline void glTexCoordNv(const float* p)
+{
+}
+
+template<>
+inline void glTexCoordNv<3>(const float* p)
 {
     glTexCoord3f(p[0],p[1],p[2]);
 }
@@ -307,7 +316,17 @@ inline void glMultMatrix(const float* p)
 
 inline void glMultMatrix(const double* p)
 {
+#ifdef PS3
+	float f[16];
+	
+	for(int i=0; i<16; i++)
+	{
+		f[i] = (float) p[i];
+	}
+	glMultMatrixf(f);
+#else
     glMultMatrixd(p);
+#endif
 }
 
 

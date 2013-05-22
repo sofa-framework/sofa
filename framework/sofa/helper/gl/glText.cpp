@@ -80,6 +80,7 @@ void GlText::update ( const double& scale )
 
 void GlText::draw()
 {
+#ifndef PS3
     Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
@@ -108,6 +109,7 @@ void GlText::draw()
     }
 
     glPopMatrix();
+#endif
 }
 
 } // namespace gl

@@ -216,7 +216,7 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 #endif /* SOFA_NO_OPENGL */
 }
 
-void BaseCamera::getOpenGLMatrix(double mat[16])
+void BaseCamera::getOpenGLMatrix(GLdouble mat[16])
 {
     defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);

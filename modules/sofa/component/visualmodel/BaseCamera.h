@@ -199,7 +199,7 @@ public:
     //be according to the gravity.
     void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
 
-    void getOpenGLMatrix(double mat[16]);
+    void getOpenGLMatrix(GLdouble mat[16]);
 
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);

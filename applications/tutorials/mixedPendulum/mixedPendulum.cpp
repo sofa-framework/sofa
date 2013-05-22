@@ -182,6 +182,9 @@ int main(int, char** argv)
     /*    groot->setAnimate(false);
     */
 
+#ifdef PS3
+	groot->setAnimate(true);
+#endif
 
 
     //=========================== Run the main loop

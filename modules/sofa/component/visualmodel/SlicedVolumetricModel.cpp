@@ -169,7 +169,7 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
         _first = false;
 
-#ifdef SOFA_HAVE_GLEW
+#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
         glewInit();
 #endif
 

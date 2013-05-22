@@ -144,6 +144,8 @@ struct DDSHeader
 bool ImageDDS::load(const std::string &filename)
 {
     FILE *file = fopen(filename.c_str(), "rb");
+	m_bLoaded = 0;
+
     if (!file)
     {
         std::cerr << "ImageDDS::load: Cannot open file " << filename << std::endl;
@@ -328,7 +330,7 @@ bool ImageDDS::load(const std::string &filename)
     if (read != size)
     {
         std::cerr << "ImageDDS::load: Cannot read file " + filename + ", a part of the file is missing." << std::endl;
-        return false; // "
+		return false; // "
     }
 
     std::cout << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
@@ -336,6 +338,7 @@ bool ImageDDS::load(const std::string &filename)
             << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
             << ", Mipmaps: " << getMipmapCount() << std::endl;
 
+	m_bLoaded = 1;
     return true;
 }
 

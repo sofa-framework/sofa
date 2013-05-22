@@ -71,6 +71,7 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
 std::string Capture::findFilename()
 {
     std::string filename;
+#ifndef PS3
     char buf[32];
     int c;
     c = 0;
@@ -98,7 +99,7 @@ std::string Capture::findFilename()
 #else
     filename += ".bmp";
 #endif
-
+#endif
     return filename;
 }
 

@@ -471,6 +471,7 @@ GLint OglShader::getUniform(const unsigned int index, const char* name)
     return res;
 }
 
+#ifdef GL_GEOMETRY_SHADER_EXT
 GLint OglShader::getGeometryInputType(const unsigned int index)
 {
     return shaderVector[index]->GetGeometryInputType();
@@ -500,6 +501,7 @@ void  OglShader::setGeometryVerticesOut(const unsigned int index, GLint v)
 {
     shaderVector[index]->SetGeometryVerticesOut(v);
 }
+#endif
 
 OglShaderElement::OglShaderElement()
     : id(initData(&id, std::string(""), "id", "Set an ID name"))

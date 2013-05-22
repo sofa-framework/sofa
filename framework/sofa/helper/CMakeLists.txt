@@ -177,10 +177,23 @@ if(SOFA-EXTERNAL_HAVE_FFMPEG)
 	list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
 endif()
 
+if(PS3)
+	list(APPEND HEADER_FILES "gl/ps3gl_compat.h")
+	list(APPEND SOURCE_FILES "gl/ps3gl_compat.cpp")
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(COMPILER_DEFINES "SOFA_BUILD_HELPER")
 set(LINKER_DEPENDENCIES ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
+
+if(PS3)
+list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libsysmodule_stub.a")
+list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libc.a")
+list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libstdc++.a")
+list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libm.a")
+list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libpthread.a")
+endif()
 
 if(SOFA-EXTERNAL_HAVE_BOOST)
     list(APPEND LINKER_DEPENDENCIES ${Boost_LIBRARIES})

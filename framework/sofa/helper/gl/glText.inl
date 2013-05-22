@@ -58,6 +58,7 @@ void GlText::setText ( const T& text )
 template <typename T>
 void GlText::draw ( const T& text )
 {
+#ifndef PS3
     defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
@@ -84,12 +85,14 @@ void GlText::draw ( const T& text )
     }
 
     glPopMatrix();
+#endif
 }
 
 
 template <typename T>
 void GlText::draw ( const T& text, const defaulttype::Vector3& position )
 {
+#ifndef PS3
     defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
@@ -119,6 +122,7 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position )
     }
 
     glPopMatrix();
+#endif
 }
 
 
@@ -126,6 +130,7 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position )
 template <typename T>
 void GlText::draw ( const T& text, const defaulttype::Vector3& position, const double& scale )
 {
+#ifndef PS3
     defaulttype::Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
@@ -154,6 +159,7 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position, const d
     }
 
     glPopMatrix();
+#endif
 }
 
 } // namespace gl

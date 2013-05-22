@@ -49,6 +49,7 @@ namespace component
 namespace interactionforcefield
 {
 
+static const double pi=3.14159265358979323846264338327950288;
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
@@ -146,14 +147,10 @@ void JointSpringForceField<DataTypes>::bwdInit()
     springs.endEdit();
 }
 
-
-
-static const double PI=3.14159265358979323846264338327950288;
-
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 {
-    Real pi2=(Real)2.*(Real)PI;
+    Real pi2=(Real)2.*(Real)pi;
 
     //std::cout<<"torsion:=";
 
@@ -218,7 +215,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
 
     // get relative orientation in axis/angle format
     Real phi; Mp1p2.getOrientation().quatToAxis(spring.torsion,phi);
-    Real pi2=(Real)2.*(Real)PI; while(phi<-PI) phi+=pi2; while(phi>PI) phi-=pi2; 		// remove modulo(2PI) from torsion
+    Real pi2=(Real)2.*(Real)pi; while(phi<-pi) phi+=pi2; while(phi>pi) phi-=pi2; 		// remove modulo(2PI) from torsion
     spring.torsion*=phi;
 
     //compute forces
@@ -267,7 +264,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
         // update lawfull torsion
         projectTorsion(spring);
         Vector extraTorsion=spring.torsion-spring.lawfulTorsion;
-        Real psi=extraTorsion.norm(); extraTorsion/=psi;		while(psi<-PI) psi+=pi2; while(psi>PI) psi-=pi2; 		extraTorsion*=psi;
+        Real psi=extraTorsion.norm(); extraTorsion/=psi;		while(psi<-pi) psi+=pi2; while(psi>pi) psi-=pi2; 		extraTorsion*=psi;
 
         for (unsigned int i=0; i<3; i++)
             if(spring.freeMovements[3+i] && spring.torsion[i]!=spring.lawfulTorsion[i]) // outside limits

@@ -48,6 +48,8 @@ Creator<Image::FactoryImage,ImageBMP> ImageBMPClass("bmp");
 
 bool ImageBMP::load(std::string filename)
 {
+	m_bLoaded = 0;
+
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
         std::cerr << "File " << filename << " not found " << std::endl;
@@ -93,21 +95,30 @@ bool ImageBMP::load(std::string filename)
     /* get the width of the bitmap */
     int width;
     if (fread(&width, sizeof(int), 1, file) != 1)
+	{
         std::cerr << "Error: fread can't read the width of the bitmap." << std::endl;
+		return false;
+	}
 
     if (width < 0) width = -width;
     //printf("Width of Bitmap: %d\n", texture->width);
     /* get the height of the bitmap */
     int height;
     if (fread(&height, sizeof(int), 1, file) != 1)
+	{
         std::cerr << "Error: fread can't read the height of the bitmap." << std::endl;
+		return false;
+	}
 
     bool upsidedown = false;
     if (height < 0) { height = -height; upsidedown = true; }
     //printf("Height of Bitmap: %d\n", texture->height);
     /* get the number of planes (must be set to 1) */
     if (fread(&biPlanes, sizeof(short int), 1, file) != 1)
+	{
         std::cerr << "Error: fread can't read the number of planes." << std::endl;
+		return false;
+	}
 
     if (biPlanes != 1)
     {
@@ -149,7 +160,7 @@ bool ImageBMP::load(std::string filename)
         break;
     default:
         fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
-        return false;
+		return false;
     }
     init(width, height, 1, 1, Image::UNORM8, channels);
     unsigned char *data = getPixels();
@@ -197,6 +208,7 @@ bool ImageBMP::load(std::string filename)
     }
 
     fclose(file);
+	m_bLoaded = 1;
     return true;
 }
 

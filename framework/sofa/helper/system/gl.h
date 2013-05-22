@@ -29,8 +29,10 @@
 
 #include <sofa/helper/system/config.h>
 
-#if defined (SOFA_HAVE_GLEW)
+#if defined (SOFA_HAVE_GLEW) && !defined(PS3)
 #include <GL/glew.h>
+#elif defined(PS3)
+#include <sofa/helper/gl/ps3gl_compat.h>
 #elif defined (__APPLE__)
 #include <OpenGL/gl.h>
 #else

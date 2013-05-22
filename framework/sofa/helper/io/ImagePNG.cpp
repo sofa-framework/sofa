@@ -79,6 +79,8 @@ void png_my_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 
 bool ImagePNG::load(std::string filename)
 {
+	m_bLoaded = 0;
+
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
         std::cerr << "File " << filename << " not found " << std::endl;
@@ -223,7 +225,7 @@ bool ImagePNG::load(std::string filename)
 
     png_destroy_read_struct(&PNG_reader, &PNG_info, &PNG_end_info);
     fclose(file);
-
+	m_bLoaded = 1;
     return true;
 }
 
