@@ -78,7 +78,7 @@ namespace collision
 
     class CollidingPM{
     public:
-        typedef boost::unordered::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
+        typedef boost::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
 
         void add(int a,int b,const core::CollisionElementIterator & elem1,const core::CollisionElementIterator & elem2,core::collision::ElementIntersector * inter){
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
