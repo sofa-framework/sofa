@@ -30,8 +30,10 @@
 #include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-
+#include <sofa/core/topology/Topology.h>
 #include <vector>
+
+
 
 namespace sofa
 {
@@ -52,8 +54,8 @@ public:
 template <class TIn, class TInRoot, class TOut>
 class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, TOut>
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE3(DeformableOnRigidFrameMapping, TIn, TInRoot, TOut), SOFA_TEMPLATE3(core::Multi2Mapping, TIn, TInRoot, TOut));
+ public:
+    SOFA_CLASS(SOFA_TEMPLATE3(DeformableOnRigidFrameMapping, TIn, TInRoot, TOut), SOFA_TEMPLATE3(core::Multi2Mapping, TIn, TInRoot, TOut) );
 
     typedef core::Multi2Mapping<TIn, TInRoot, TOut> Inherit;
 
@@ -115,6 +117,8 @@ public:
     int addPoint ( const OutCoord& c, int indexFrom );
 
     void init();
+
+	void handleTopologyChange(core::topology::Topology* t);
 
     /// Return true if the destination model has the same topology as the source model.
     ///

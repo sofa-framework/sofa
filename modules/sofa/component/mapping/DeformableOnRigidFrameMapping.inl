@@ -27,9 +27,11 @@
 
 #include <sofa/component/mapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
+
+#include <sofa/core/VecId.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -124,6 +126,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
         m_fromRootModel = this->getFromModels2()[0];
         sout << "Root Model found : Name = " << m_fromRootModel->getName() << sendl;
     }
+
     Inherit::init();
 }
 
@@ -571,6 +574,42 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
 
     //}
 }
+
+
+
+template <class TIn, class TInRoot, class TOut>
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(core::topology::Topology* t)
+{
+	core::topology::BaseMeshTopology* from = dynamic_cast<core::topology::BaseMeshTopology*>(t);
+    if(from == NULL ) {
+		this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl; 
+		return;
+	}
+	std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
+
+    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+            changeIt != itEnd; ++changeIt )
+    {
+        const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+        switch ( changeType )
+        {
+			case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
+			{
+				this->Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+				if(this->f_applyRestPosition.getValue() )
+					this->Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, core::VecCoordId::position(), core::ConstVecCoordId::position());
+				break;
+			}
+			default:
+				break;
+
+		}
+
+	}
+
+}
+
 
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>
