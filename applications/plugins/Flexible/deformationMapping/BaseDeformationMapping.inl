@@ -78,10 +78,12 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     methodOptions.setSelectedItem(0);
     showColorOnTopology.setValue(methodOptions);
 
-    helper::OptionsGroup styleOptions(4,"0 - All axis"
+    helper::OptionsGroup styleOptions(6,"0 - All axis"
             ,"1 - First axis"
             ,"2 - Second axis"
-            ,"3 - Third axis");
+            ,"3 - Third axis"
+            ,"4 - deformation"
+            ,"5 - 1st piola stress" );
     styleOptions.setSelectedItem(0);
     showDeformationGradientStyle.setValue(styleOptions);
 }
@@ -296,7 +298,9 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     OutVecCoord&  out = *dOut.beginEdit();
     const InVecCoord&  in = dIn.getValue();
 
-    //#pragma omp parallel for
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
     for(unsigned int i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
@@ -326,7 +330,9 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 
         if ((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
         {
-            //#pragma omp parallel for
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 out[i]=OutDeriv();
@@ -608,6 +614,36 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
     return index;
 }
 
+template<int matdim,typename Real>
+void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const float& scale)
+{
+    glPushMatrix();
+
+    GLdouble transformMatrix[16];
+    for(int i=0; i<3; i++) for(int j=0; j<matdim; j++) transformMatrix[4*j+i] = (double)F(i,j)*scale;
+
+    if(matdim==1)
+    {
+        for(int i=0; i<3; i++) for(int j=1; j<3; j++) transformMatrix[4*j+i] = 0;
+    }
+    else if(matdim==2)
+    {
+        Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
+        for(int i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
+    }
+
+    for(int i=0; i<3; i++)  transformMatrix[i+12]=p[i];
+    for(int i=0; i<3; i++)  transformMatrix[4*i+3]=0; transformMatrix[15] = 1;
+    glMultMatrixd(transformMatrix);
+
+    GLUquadricObj* ellipsoid = gluNewQuadric();
+    gluSphere(ellipsoid, 1.0, 10, 10);
+    gluDeleteQuadric(ellipsoid);
+
+    glPopMatrix();
+}
+
+
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
@@ -616,6 +652,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    helper::ReadAccessor<Data<OutVecDeriv> > outf (*this->toModel->read(core::ConstVecDerivId::force()));
     helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
     helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
 
@@ -678,6 +715,19 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                     Coord u=F.transposed()(2)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,3);
                 }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
+                {
+                    vparams->drawTool()->setMaterial(col);
+                    drawEllipsoid(F,p,0.5*scale);
+                }
+            else if(showDeformationGradientStyle.getValue().getSelectedId()==5) // stress
+                if(OutDataTypesInfo<Out>::FMapped)
+                {
+                    F=OutDataTypesInfo<Out>::getF(outf[i]);
+                    vparams->drawTool()->setMaterial(col);
+                    drawEllipsoid(F,p,0.5*scale);
+                }
+
         }
         //                glPopAttrib();
     }
@@ -733,6 +783,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         glPopAttrib();
     }
 }
+
 
 
 
