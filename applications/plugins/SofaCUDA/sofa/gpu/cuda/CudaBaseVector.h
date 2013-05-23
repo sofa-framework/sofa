@@ -41,8 +41,27 @@ template<class real> class CudaVectorUtilsKernels;
 
 using namespace sofa::defaulttype;
 
+template<class T>
+class CudaBaseVectorType : public BaseVector {
+public :
+    typedef T Real;
+
+    virtual void resize(int nbRow) = 0;
+    virtual unsigned int size() const = 0;
+    virtual SReal element(int i) const = 0;
+    virtual void clear() = 0;
+    virtual void set(int i, SReal val) = 0;
+    virtual void add(int i, SReal val) = 0;
+    virtual const void* deviceRead(int off=0) const = 0;
+    virtual void * deviceWrite(int off=0) = 0;
+    virtual const T* hostRead(int off=0) const = 0;
+    virtual T * hostWrite(int off=0) = 0;
+    virtual void invalidateDevice() = 0;
+    virtual void invalidateHost() = 0;
+};
+
 template <class T>
-class CudaBaseVector : public BaseVector
+class CudaBaseVector : public CudaBaseVectorType<T>
 {
 public :
     typedef T Real;
@@ -80,6 +99,11 @@ public :
     void resize(int nbRow)
     {
         v.resize(nbRow);
+    }
+
+    void recreate(int nbRow)
+    {
+        v.recreate(nbRow);
     }
 
     void resize(int nbRow,int warp_size)
@@ -144,6 +168,11 @@ public :
     void invalidateDevice()
     {
         v.invalidateDevice();
+    }
+
+    void invalidateHost()
+    {
+        v.invalidateHost();
     }
 
     const T* hostRead(int off=0) const

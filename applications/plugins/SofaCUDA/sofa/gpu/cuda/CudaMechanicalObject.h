@@ -86,14 +86,14 @@ public:
     //loadToBaseVector
     static void copyFromBaseVector(Main* m, VecId dest, const defaulttype::BaseVector * src, unsigned int &offset);
     //loadInCudaBaseVector
-    static void copyToCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, ConstVecId src, unsigned int &offset);
+    static void copyToCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVectorType<Real> * dest, ConstVecId src, unsigned int &offset);
     //loadInCudaBaseVector
-    static void copyFromCudaBaseVector(Main* m, VecId src, const sofa::gpu::cuda::CudaBaseVector<Real> * dest, unsigned int &offset);
+    static void copyFromCudaBaseVector(Main* m, VecId src, const sofa::gpu::cuda::CudaBaseVectorType<Real> * dest, unsigned int &offset);
 
     //addBaseVectorToState
     static void addFromBaseVectorSameSize(Main* m, VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);
     //addCudaBaseVectorToState
-    static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
+    static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> *src, unsigned int &offset);
 };
 
 
@@ -134,14 +134,14 @@ public:
 
 
     // static void loadInCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, VecId src, unsigned int &offset);
-    static void copyToCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, ConstVecId src, unsigned int &offset);
+    static void copyToCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVectorType<Real> * dest, ConstVecId src, unsigned int &offset);
     // static void loadInCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, VecId src, unsigned int &offset);
-    static void copyFromCudaBaseVector(Main* m, VecId src, const sofa::gpu::cuda::CudaBaseVector<Real> * dest,  unsigned int &offset);
+    static void copyFromCudaBaseVector(Main* m, VecId src, const sofa::gpu::cuda::CudaBaseVectorType<Real> * dest,  unsigned int &offset);
 
 //    static void addBaseVectorToState(Main* m, VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
     static void addFromBaseVectorSameSize(Main* m, VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);
 //    static void addCudaBaseVectorToState(Main* m, VecId dest, sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
-    static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
+    static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> *src, unsigned int &offset);
 };
 
 

@@ -1501,15 +1501,15 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyToCudaBaseVector(Main* m, sofa::gpu::cuda::CudaBaseVector<Real> * dest, ConstVecId src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyToCudaBaseVector(Main* m, sofa::gpu::cuda::CudaBaseVectorType<Real> * dest, ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
         unsigned int elemDim = DataTypeInfo<Coord>::size();
         const VecCoord& va = m->read(ConstVecCoordId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
-        dest->getCudaVector().invalidateHost();
-        Kernels::vAssign(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
+        dest->invalidateHost();
+        Kernels::vAssign(nbEntries, dest->deviceWrite(), va.deviceRead(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
     }
@@ -1518,8 +1518,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         unsigned int elemDim = DataTypeInfo<Deriv>::size();
         const VecCoord& va = m->read(ConstVecDerivId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
-        dest->getCudaVector().invalidateHost();
-        Kernels::vAssign(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
+        dest->invalidateHost();
+        Kernels::vAssign(nbEntries, dest->deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
     }
@@ -1566,7 +1566,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyFromCudaBaseVector(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> * src,  unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyFromCudaBaseVector(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> * src,  unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -1636,7 +1636,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 };
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -1645,7 +1645,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         VecCoord* va = d_va->beginEdit();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vPEq(nbEntries, va->deviceWrite(), ((Real *) src->getCudaVector().deviceRead())+(offset*elemDim));
+        Kernels::vPEq(nbEntries, va->deviceWrite(), src->deviceRead(offset*elemDim));
 
         offset += va->size() * elemDim;
         d_va->endEdit();
@@ -1658,7 +1658,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         VecDeriv* va = d_va->beginEdit();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vPEq(nbEntries, va->deviceWrite(), ((Real *) src->getCudaVector().deviceRead())+(offset*elemDim));
+        Kernels::vPEq(nbEntries, va->deviceWrite(), src->deviceRead(offset*elemDim));
 
         offset += va->size() * elemDim;
         d_va->endEdit();
@@ -2195,7 +2195,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToB
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToCudaBaseVector(Main* m, sofa::gpu::cuda::CudaBaseVector<Real> * dest, ConstVecId src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToCudaBaseVector(Main* m, sofa::gpu::cuda::CudaBaseVectorType<Real> * dest, ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
@@ -2203,7 +2203,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToC
         const VecCoord& va = m->read(ConstVecCoordId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
 
-        Kernels::vAssignCoord(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
+        Kernels::vAssignCoord(nbEntries, dest->deviceWrite(), va.deviceRead(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
     }
@@ -2213,7 +2213,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToC
         const VecDeriv& va = m->read(ConstVecDerivId(src))->getValue();
         const unsigned int nbEntries = dest->size()/elemDim;
 
-        Kernels::vAssignDeriv(nbEntries, dest->getCudaVector().deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
+        Kernels::vAssignDeriv(nbEntries, dest->deviceWrite(), va.deviceRead(offset*elemDim));
 
 // 		offset += va->size() * elemDim;
     }
@@ -2259,7 +2259,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFro
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFromCudaBaseVector(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> * src,  unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFromCudaBaseVector(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> * src,  unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -2268,7 +2268,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFro
         unsigned int elemDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vAssignCoord(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->getCudaVector().deviceRead() );
+        Kernels::vAssignCoord(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->deviceRead() );
 
 // 		offset += vDest->size() * elemDim;
         d_vDest->endEdit();
@@ -2280,7 +2280,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFro
         unsigned int elemDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vAssignDeriv(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->getCudaVector().deviceRead());
+        Kernels::vAssignDeriv(nbEntries, vDest->deviceWriteAt(offset*elemDim), src->deviceRead());
 
 // 		offset += vDest->size() * elemDim;
         d_vDest->endEdit();
@@ -2348,7 +2348,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 };
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -2357,7 +2357,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
         VecCoord* va = d_va->beginEdit();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vPEqDeriv(nbEntries, va->deviceWrite(), ((Real *) src->getCudaVector().deviceRead())+(offset*elemDim));
+        Kernels::vPEqDeriv(nbEntries, va->deviceWrite(), src->deviceRead(offset*elemDim));
 
         offset += va->size() * elemDim;
         d_va->endEdit();
@@ -2369,7 +2369,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
         VecDeriv* va = d_va->beginEdit();
         const unsigned int nbEntries = src->size()/elemDim;
 
-        Kernels::vPEqDeriv(nbEntries, va->deviceWrite(), ((Real *) src->getCudaVector().deviceRead())+(offset*elemDim));
+        Kernels::vPEqDeriv(nbEntries, va->deviceWrite(), src->deviceRead(offset*elemDim));
 
         offset += va->size() * elemDim;
         d_va->endEdit();
@@ -2391,13 +2391,13 @@ template<> double MechanicalObject< T >::vDot(const core::ExecParams* /* params 
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
 { data.resetForce(this); } \
 template<> void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
-{ if (CudaBaseVector<Real> * vec = dynamic_cast<CudaBaseVector<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
+{ if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
 else data.copyToBaseVector(this, dest,src,offset); } \
 template<> void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src, unsigned int &offset) \
-{ if (const CudaBaseVector<Real> * vec = dynamic_cast<const CudaBaseVector<Real> *>(src)) data.copyFromCudaBaseVector(this, dest,vec,offset); \
+{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.copyFromCudaBaseVector(this, dest,vec,offset); \
 else data.copyFromBaseVector(this, dest,src,offset); } \
 template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset) \
-{ if (const CudaBaseVector<Real> * vec = dynamic_cast<const CudaBaseVector<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
+{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
 else data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec1fTypes);
