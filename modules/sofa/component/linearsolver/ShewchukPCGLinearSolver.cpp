@@ -214,8 +214,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     const core::ExecParams* params = core::ExecParams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
     Vector& r = *vtmp.createTempVector();
-    Vector& d = *vtmp.createTempVector();
-    Vector& q = *vtmp.createTempVector();
+    Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
     bool apply_precond = false;
@@ -226,12 +225,12 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     double tol = f_tolerance.getValue() * f_tolerance.getValue() * b_norm;
 
     r = M * x;
-    cgstep_beta(r,b,-1);// r = b + (M * x) * -1
+    cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
 
     if (apply_precond) {
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
         sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
-        preconditioners[0]->setSystemLHVector(d);
+        preconditioners[0]->setSystemLHVector(w);
         preconditioners[0]->setSystemRHVector(r);
         preconditioners[0]->solveSystem();
 
@@ -240,8 +239,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             Vector& t = *vtmp.createTempVector();
             for (unsigned int i=1; i<preconditioners.size(); ++i)
             {
-                t = d;
-                preconditioners[i]->setSystemLHVector(d);
+                t = w;
+                preconditioners[i]->setSystemLHVector(w);
                 preconditioners[i]->setSystemRHVector(t);
                 preconditioners[i]->solveSystem();
             }
@@ -250,21 +249,21 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
         sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
     } else {
-        d = r;
+        w = r;
     }
 
-    double r_norm = r.dot(d);
+    double r_norm = r.dot(w);
 
     unsigned iter=1;
     while ((iter <= f_maxIter.getValue()) && (r_norm > tol)) {
         graph_error.push_back(sqrt(r_norm/b_norm));
 
-        q = M * d;
-        double dtq = d.dot(q);
+        s = M * w;
+        double dtq = w.dot(s);
         double alpha = r_norm / dtq;
 
-        cgstep_alpha(x,d,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
-        cgstep_alpha(r,q,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
+        cgstep_alpha(x,w,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
+        cgstep_alpha(r,s,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
 
         if (apply_precond) {
             sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
@@ -297,7 +296,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
         double beta = r_norm / deltaOld;
 
-        cgstep_beta(d,s,beta);//for (int i=0; i<n; i++) d[i] = r[i] + beta * d[i];
+        cgstep_beta(w,s,beta);//for (int i=0; i<n; i++) d[i] = r[i] + beta * d[i];
 
         iter++;
     }
@@ -308,8 +307,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
     f_graph.endEdit();
     vtmp.deleteTempVector(&r);
-    vtmp.deleteTempVector(&q);
-    vtmp.deleteTempVector(&d);
+    vtmp.deleteTempVector(&w);
     vtmp.deleteTempVector(&s);
 
     sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");

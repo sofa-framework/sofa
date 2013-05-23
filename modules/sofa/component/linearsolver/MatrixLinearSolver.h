@@ -208,6 +208,10 @@ public:
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
 
+    unsigned getSystemSize() {
+        return currentGroup->systemSize;
+    }
+
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v);
 
