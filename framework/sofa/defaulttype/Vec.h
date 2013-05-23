@@ -30,7 +30,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
-
+#include <limits>
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -570,7 +570,7 @@ public:
     }
 
     /// Normalize the vector with the given norm
-    void normalizeWithNorm(real norm, real threshold=(real)1e-20)
+    void normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
     {
         if (norm>threshold)
             for (int i=0; i<N; i++)
@@ -578,10 +578,13 @@ public:
     }
 
     /// Normalize the vector.
-    void normalize(real threshold=(real)1e-20)
+    void normalize(real threshold=std::numeric_limits<real>::epsilon())
     {
         normalizeWithNorm(norm(),threshold);
     }
+
+    /// return true iff norm()==1
+    bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const { return helper::rabs<real>( norm2()-(real)1 ) <= threshold; }
 
     template<typename R>
     Vec cross( const Vec<3,R>& b ) const
