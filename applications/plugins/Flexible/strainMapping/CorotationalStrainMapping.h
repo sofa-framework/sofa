@@ -136,6 +136,9 @@ protected:
         {
         case SMALL:
         {
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
@@ -145,6 +148,9 @@ protected:
         }
         case QR:
         {
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
@@ -154,6 +160,9 @@ protected:
         }
         case POLAR:
         {
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
@@ -163,6 +172,9 @@ protected:
         }
         case SVD:
         {
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();

@@ -167,6 +167,9 @@ public:
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
         for(unsigned int i=0; i<jacobian.size(); i++)
         {
             out[i]=OutCoord();
@@ -185,6 +188,9 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp parallel for
+#endif
             for(unsigned int i=0; i<jacobian.size(); i++)
             {
                 out[i]=OutDeriv();
