@@ -40,7 +40,7 @@ namespace gl
 {
 
 template<int N>
-inline void glVertexNv(const float* p)
+inline void glVertexNv(const float* /*p*/)
 {
 }
 

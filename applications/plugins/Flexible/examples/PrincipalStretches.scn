@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -10 0 " dt="0.1"  >
+<Node 	name="Root" gravity="0 -10 0 " dt="0.05"  >
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
@@ -10,7 +10,8 @@
     
 
 <Node name="CorotationalStrain 3D"  >
-	 <EulerImplicitSolver /><CGLinearSolver  />
+	  <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -60,7 +61,8 @@
 	    
 
   <Node name="PrincipalStreches 3D U"  >
-	  <EulerImplicitSolver /><CGLinearSolver  />
+	   <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -108,7 +110,8 @@
     
 
   <Node name="PrincipalStreches 3D D"  >
-	  <EulerImplicitSolver /><CGLinearSolver  />
+	  <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
@@ -157,7 +160,8 @@
     
     
     <Node name="Corotational 2D" >
-<EulerImplicitSolver /><CGLinearSolver  />
+ <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
@@ -189,7 +193,8 @@
 
 
     <Node name="PrincipalStreches 2D U" >
-<EulerImplicitSolver /><CGLinearSolver  />
+ <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
@@ -220,7 +225,8 @@
 </Node>
 
 <Node name="PrincipalStreches 2D D" >
-<EulerImplicitSolver /><CGLinearSolver  />
+ <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />

@@ -45,7 +45,7 @@ public:
 	unsigned int operator()(T* p)
 	{
 		unsigned int id = 0;
-		std::map<T*,unsigned int>::iterator it = idMap.find(p);
+        typename std::map<T*,unsigned int>::iterator it = idMap.find(p);
 		if (it != idMap.end())
 		{
 			id = it->second;
