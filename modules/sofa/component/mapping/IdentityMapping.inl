@@ -356,9 +356,8 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
 		updateJ = false;
 		
         const unsigned rowsBlock = this->toModel->getSize();
-        const unsigned colsBlock = this->fromModel->getSize();
 		
-        assert( rowsBlock == colsBlock );
+        assert( rowsBlock == this->fromModel->getSize()/*colsBlock*/ );
 
         const unsigned rows = rowsBlock * NOut;
         const unsigned cols = rowsBlock * NIn;

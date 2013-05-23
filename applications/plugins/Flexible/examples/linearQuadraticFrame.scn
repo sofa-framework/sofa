@@ -10,7 +10,7 @@
 
     <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 
-     <Node 	name="FEM"   >
+     <Node 	name="FEM"   activated="0" >
     	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	      <Mesh name="mesh" src="@loader" />

@@ -7,7 +7,7 @@
     <EulerImplicitSolver />
     <CGLinearSolver iterations="100"/>
 
-     <Node 	name="FEM"   >
+     <Node 	name="FEM"  activated="0" >
 	          <VisualStyle displayFlags="hideBehavior" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	      <Mesh name="mesh" src="@loader" />
@@ -53,7 +53,7 @@
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="polar" />
+		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="false" method="svd" geometricStiffness="1"/>
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
 		</Node>
 	    </Node>

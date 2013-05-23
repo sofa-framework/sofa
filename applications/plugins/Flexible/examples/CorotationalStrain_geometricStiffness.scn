@@ -104,7 +104,8 @@
     
     
     <Node name="WITHOUT 2D" >
-<EulerImplicitSolver /><CGLinearSolver  />
+      <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="100" tolerance="1e-10" threshold="1e-10"  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
@@ -136,7 +137,8 @@
 
 
     <Node name="WITH 2D" >
-<EulerImplicitSolver /><CGLinearSolver  />
+      <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+      <CGLinearSolver iterations="100" tolerance="1e-10" threshold="1e-10"  />
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
