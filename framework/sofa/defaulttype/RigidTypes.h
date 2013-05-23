@@ -196,7 +196,7 @@ public:
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
-
+    
 
     Vec3& getVCenter() { return vCenter; }
     Vec3& getVOrientation() { return vOrientation; }
@@ -259,6 +259,22 @@ public:
         else
             return this->vOrientation(i-3);
     }
+
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const RigidDeriv<3,real>& b) const
+    {
+        return vCenter == b.vCenter && vOrientation == b.vOrientation;
+    }
+
+    bool operator!=(const RigidDeriv<3,real>& b) const
+    {
+        return vCenter != b.vCenter || vOrientation != b.vOrientation;
+    }
+
+    /// @}
+
 };
 
 
@@ -609,6 +625,21 @@ public:
         else
             return this->orientation[i-3];
     }
+    
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const RigidCoord<3,real>& b) const
+    {
+        return center == b.center && orientation == b.orientation;
+    }
+
+    bool operator!=(const RigidCoord<3,real>& b) const
+    {
+        return center != b.center || orientation != b.orientation;
+    }
+
+    /// @}
 
 };
 
@@ -1108,6 +1139,22 @@ public:
         else
             return this->vOrientation;
     }
+
+    
+    /// @name Tests operators
+    /// @{
+    
+    bool operator==(const RigidDeriv<2,real>& b) const
+    {
+        return vCenter == b.vCenter && vOrientation == b.vOrientation;
+    }
+
+    bool operator!=(const RigidDeriv<2,real>& b) const
+    {
+        return vCenter != b.vCenter || vOrientation != b.vOrientation;
+    }
+
+    /// @}
 };
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
@@ -1368,6 +1415,21 @@ public:
         else
             return this->orientation;
     }
+
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const RigidCoord<2,real>& b) const
+    {
+        return center == b.center && orientation == b.orientation;
+    }
+
+    bool operator!=(const RigidCoord<2,real>& b) const
+    {
+        return center != b.center || orientation != b.orientation;
+    }
+
+    /// @}
 };
 
 template<class real>
