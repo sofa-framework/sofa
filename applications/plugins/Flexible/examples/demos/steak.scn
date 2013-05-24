@@ -8,7 +8,7 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-  <ImageContainer name="loader" filename="mesh/steak-seg-highres.ppm" drawBB="false" />
+  <ImageContainer name="loader" filename="../data/mesh/steak-seg-highres.ppm" drawBB="false" />
   <ImageFilter name="selectchannel" src="@loader" filter="21" param="0"/>
   <ImageFilter name="extruder" inputImage="@selectchannel.outputImage" filter="20" param="-5 -3.75 -1 64 64 15 0.15 0.15 0.15 0" inputTransform="-5 -3.75 0 0 0 0 0.025 0.025 0.8 0 1 0"/>
 
@@ -56,14 +56,14 @@
     </Node>
 		<Node name="Collision">
 		        <VisualStyle displayFlags="hideBehaviorModels" />
-			<MeshObjLoader name="MeshLoader" filename="mesh/steak.obj"/>
+			<MeshObjLoader name="MeshLoader" filename="../data/mesh/steak.obj"/>
 			<Mesh src="@MeshLoader" /> 
 			<MechanicalObject  name="PointSet" useMask="1" />
 			<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
 		</Node>
 
 		<Node name="Visu">
-			<OglModel name="Beam" fileMesh="mesh/steak.obj" texturename="mesh/steak.png" normals="0" color="1 .8 .3 1" />
+			<OglModel name="Beam" fileMesh="../data/mesh/steak.obj" texturename="../data/mesh/steak.png" normals="0" color="1 .8 .3 1" />
 			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 		</Node>
     </Node>

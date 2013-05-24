@@ -8,7 +8,7 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-  <ImageContainer name="loader" filename="mesh/degrade.bmp" drawBB="false" />
+  <ImageContainer name="loader" filename="../data/mesh/degrade.bmp" drawBB="false" />
   <ImageFilter name="selectchannel" src="@loader" filter="21" param="0"/>
   <ImageContainer name="image" image="@selectchannel.outputImage" transform="-4.95 -1.95 0 0 0 0 0.1 0.1 0.1 0 1 0" drawBB="false"/>
 
@@ -52,7 +52,7 @@
 
 	    <Node 	name="collision"   >
 	    	<VisualStyle displayFlags="showVisual hideBehaviorModels" />
-		<MeshObjLoader name="mesh" filename="beam/beam_100-40-1.obj" triangulate="1"/>
+		<MeshObjLoader name="mesh" filename="../beam/beam_100-40-1.obj" triangulate="1"/>
 		<Mesh name="mesh" src="@mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
 		<UniformMass totalMass="1000" />
@@ -60,7 +60,7 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel name="Beam" fileMesh="beam/beam_100-40-1.obj" texturename="mesh/degrade-stiffness.png" />
+		<OglModel name="Beam" fileMesh="../beam/beam_100-40-1.obj" texturename="../data/mesh/degrade-stiffness.png" />
 	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 	    </Node>
 

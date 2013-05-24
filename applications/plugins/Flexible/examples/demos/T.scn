@@ -20,7 +20,7 @@
     	<EulerImplicitSolver />
     	<CGLinearSolver iterations="20" tolerance="1e-15" threshold="1e-15"/>
 
-	  <MeshObjLoader name="mesh" filename="mesh/T.obj" scale3d="10 10 10" triangulate="1"/>
+	  <MeshObjLoader name="mesh" filename="../data/mesh/T.obj" scale3d="10 10 10" triangulate="1"/>
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.2" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
@@ -58,7 +58,7 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/T.obj" color="0.8 0.6 0.5" scale3d="10 10 10" />
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="../data/mesh/T.obj" color="0.8 0.6 0.5" scale3d="10 10 10" />
 	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
 	    </Node>
     </Node>

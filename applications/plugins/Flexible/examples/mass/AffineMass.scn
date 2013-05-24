@@ -30,13 +30,6 @@
 
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
 
-	    
-<!-- 	    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 10"/> -->
-<!-- 	    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform"  />  -->
-
-<!-- 	<UniformMass template="Affine3d,AffineMass3d" totalMass="100"  /> -->
-	    
-	    
 	    <Node 	name="behavior"   >
 
 <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
