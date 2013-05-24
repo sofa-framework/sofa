@@ -29,7 +29,7 @@
 	<ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	<ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
 	<TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1"/>
-  <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
+<!-- 	<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@image.transform" /> -->
 	<ImageDensityMass template="Vec3d,ShapeFunction3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="0"  printMassMatrix="true"/>
 		
 
