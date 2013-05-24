@@ -1,6 +1,7 @@
 #ifndef FLEXIBLE_QuadraticComponents_H
 #define FLEXIBLE_QuadraticComponents_H
 
+#include "../initFlexible.h"
 
 #include "QuadraticTypes.h"
 
@@ -90,6 +91,23 @@ double UniformMass<defaulttype::Quadratic3fTypes, defaulttype::Quadratic3fMass>:
 } // namespace mass
 
 } // namespace component
+
+
+
+namespace core
+{
+
+namespace behavior
+{
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineComponents_CPP)
+extern template class SOFA_Flexible_API ForceField<defaulttype::Quadratic3Types>;
+#endif
+
+} // namespace behavior
+
+} // namespace core
+
 
 } // namespace sofa
 

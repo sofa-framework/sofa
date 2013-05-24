@@ -621,4 +621,17 @@ namespace engine
 
 } // namespace component
 
+
+namespace core
+{
+
+namespace behavior
+{
+
+template class SOFA_Flexible_API ForceField< defaulttype::Quadratic3Types >;
+
+} // namespace behavior
+
+} // namespace core
+
 } // namespace sofa

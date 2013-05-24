@@ -15,7 +15,7 @@
 
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-#include <Flexible/forceField/FlexibleForceField.h>
+#include <Flexible/types/AffineComponents.h>
 #include <Flexible/shapeFunction/BaseShapeFunction.h>
 
 #include "../deformationMapping/LinearJacobianBlock_point.inl"

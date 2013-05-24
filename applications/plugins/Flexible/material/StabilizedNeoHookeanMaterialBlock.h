@@ -61,7 +61,7 @@ public:
     /**
       * DOFs: principal stretches U1,U2,U3   J=U1*U2*U3
       *
-      * classic Neo-Hookean
+      * stabilized Neo-Hookean
       *     - W = mu/2(I1-3)-mu.ln(J)+lambda/2(ln(J))^2
       * see maple file ./doc/StabilizedNeoHookean_principalStretches.mw for derivative
       */

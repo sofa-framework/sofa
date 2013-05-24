@@ -42,8 +42,7 @@ SOURCES = initFlexible.cpp \
     material/MooneyRivlinForceField.cpp \
     material/OgdenForceField.cpp \
     material/VolumePreservationForceField.cpp \
-    #forceField/FlexibleTetrahedronFEMForceField.cpp \
-	forceField/FlexibleForceField.cpp
+    #forceField/FlexibleTetrahedronFEMForceField.cpp
 
 
 
@@ -118,8 +117,7 @@ HEADERS = initFlexible.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
-    #forceField/FlexibleTetrahedronFEMForceField.h \
-    forceField/FlexibleForceField.h 
+    #forceField/FlexibleTetrahedronFEMForceField.h
 
 
 

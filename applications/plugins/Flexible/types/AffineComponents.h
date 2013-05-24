@@ -2,6 +2,8 @@
 #define FLEXIBLE_AffineComponents_H
 
 
+#include "../initFlexible.h"
+
 #include "AffineTypes.h"
 
 #include <sofa/component/container/MechanicalObject.h>
@@ -90,6 +92,24 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
 } // namespace mass
 
 } // namespace component
+
+
+
+namespace core
+{
+
+namespace behavior
+{
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_AffineComponents_CPP)
+extern template class SOFA_Flexible_API ForceField<defaulttype::Affine3Types>;
+#endif
+
+} // namespace behavior
+
+} // namespace core
+
+
 
 } // namespace sofa
 
