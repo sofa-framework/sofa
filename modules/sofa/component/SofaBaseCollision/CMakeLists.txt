@@ -23,8 +23,6 @@ set(HEADER_FILES
     ../collision/CapsuleIntTool.h 
     ../collision/OBBModel.inl 
     ../collision/OBBModel.h 
-    ../collision/RigidSphereModel.h 
-    ../collision/RigidSphereModel.inl 
     ../collision/OBBIntTool.h 
     ../collision/IntrOBBOBB.h 
     ../collision/IntrOBBOBB.inl 
@@ -53,7 +51,6 @@ set(SOURCE_FILES
     ../collision/NewProximityIntersection.cpp 
     ../collision/BaseProximityIntersection.cpp
     ../collision/CapsuleIntTool.cpp 
-    ../collision/RigidSphereModel.cpp 
     ../collision/OBBModel.cpp 
     ../collision/OBBIntTool.cpp 
     ../collision/IntrOBBOBB.cpp 
