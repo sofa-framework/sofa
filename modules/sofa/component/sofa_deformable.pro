@@ -32,6 +32,8 @@ HEADERS += initDeformable.h \
            interactionforcefield/SpringForceField.inl \
            interactionforcefield/StiffSpringForceField.h \
            interactionforcefield/StiffSpringForceField.inl \
+           interactionforcefield/AdaptativeSpringForceField.h \
+           interactionforcefield/AdaptativeSpringForceField.inl \
            interactionforcefield/TriangleBendingSprings.h \
            interactionforcefield/TriangleBendingSprings.inl \
            interactionforcefield/VectorSpringForceField.h \
@@ -51,6 +53,7 @@ SOURCES += initDeformable.cpp \
            interactionforcefield/RegularGridSpringForceField.cpp \
            interactionforcefield/SpringForceField.cpp \
            interactionforcefield/StiffSpringForceField.cpp \
+           interactionforcefield/AdaptativeSpringForceField.cpp \
            interactionforcefield/TriangleBendingSprings.cpp \
            interactionforcefield/VectorSpringForceField.cpp
 
