@@ -113,16 +113,47 @@ __global__ void UniformMassCuda3t1_addMDx_kernel(int size, const real mass, Cuda
 template<class real>
 __global__ void UniformMassCudaRigid3t_addMDx_kernel(const unsigned int size, const real mass, real* res, const real* dx)
 {
+	__shared__ real tmp[6*BSIZE];
+	
+	int bid = 6*BSIZE*blockIdx.x;
 	int gid = BSIZE*blockIdx.x + threadIdx.x;
+	
+	tmp[threadIdx.x] = dx[bid+threadIdx.x];
+	tmp[BSIZE+threadIdx.x] = dx[BSIZE+bid+threadIdx.x];
+	tmp[2*BSIZE+threadIdx.x] = dx[2*BSIZE+bid+threadIdx.x];
+	tmp[3*BSIZE+threadIdx.x] = dx[3*BSIZE+bid+threadIdx.x];
+	tmp[4*BSIZE+threadIdx.x] = dx[4*BSIZE+bid+threadIdx.x];
+	tmp[5*BSIZE+threadIdx.x] = dx[5*BSIZE+bid+threadIdx.x];
+	
+	__syncthreads();
 	
 	if( gid < size )
 	{
-		real dxi = dx[gid];
-		real ri = res[gid];
-		ri += dxi * mass;
-		res[gid] = ri;
-// 		printf("%d : dx = %f - ri = %f\n", gid, dxi, ri);
+		tmp[6*threadIdx.x] *= mass;
+		tmp[6*threadIdx.x+1] *= mass;
+		tmp[6*threadIdx.x+2] *= mass;
 	}
+	
+	__syncthreads();
+	
+	res[bid+threadIdx.x] += tmp[threadIdx.x];
+	res[BSIZE+bid+threadIdx.x] += tmp[BSIZE+threadIdx.x];
+	res[2*BSIZE+bid+threadIdx.x] += tmp[2*BSIZE+threadIdx.x];
+	res[3*BSIZE+bid+threadIdx.x] += tmp[3*BSIZE+threadIdx.x];
+	res[4*BSIZE+bid+threadIdx.x] += tmp[4*BSIZE+threadIdx.x];
+	res[5*BSIZE+bid+threadIdx.x] += tmp[5*BSIZE+threadIdx.x];
+	
+// 	if( gid < size )
+// 		printf("%d : %f %f %f %f %f %f\n", gid, res[6*gid+0], res[6*gid+1], res[6*gid+2], res[6*gid+3], res[6*gid+4], res[6*gid+5]);
+	
+// 	if( gid < size )
+// 	{
+// 		real dxi = dx[gid];
+// 		real ri = res[gid];
+// 		ri += dxi * mass;
+// 		res[gid] = ri;
+// // 		printf("%d : dx = %f - ri = %f\n", gid, dxi, ri);
+// 	}
 }
 
 template<class real>
@@ -164,16 +195,44 @@ __global__ void UniformMassCuda3t1_accFromF_kernel(int size, const real inv_mass
 }
 
 
+/**
+ * 
+ * */
 template<class real>
 __global__ void UniformMassCudaRigid3t_accFromF_kernel(const unsigned int size, const real inv_mass, real* a, const real* f)
 {
-	unsigned int gid = BSIZE*blockIdx.x + threadIdx.x;
+	__shared__ real tmp[6*BSIZE];
+	unsigned int bid = 6*BSIZE*blockIdx.x;
 	
-	if( gid < size )
+
+// 		real fi = f[gid] * inv_mass;
+// 		a[gid] = fi;
+	tmp[threadIdx.x] = f[bid+threadIdx.x];
+	tmp[BSIZE+threadIdx.x] = f[BSIZE+bid+threadIdx.x];
+	tmp[2*BSIZE+threadIdx.x] = f[2*BSIZE+bid+threadIdx.x];
+	tmp[3*BSIZE+threadIdx.x] = f[3*BSIZE+bid+threadIdx.x];
+	tmp[4*BSIZE+threadIdx.x] = f[4*BSIZE+bid+threadIdx.x];
+	tmp[5*BSIZE+threadIdx.x] = f[5*BSIZE+bid+threadIdx.x];
+	
+	__syncthreads();
+	
+	if( (BSIZE*blockIdx.x + threadIdx.x) < size )
 	{
-		real fi = f[gid] * inv_mass;
-		a[gid] = fi;		
+		tmp[6*threadIdx.x] *= inv_mass;
+		tmp[6*threadIdx.x+1] *= inv_mass;
+		tmp[6*threadIdx.x+2] *= inv_mass;
 	}
+	
+	__syncthreads();
+	
+
+	a[bid+threadIdx.x] = tmp[threadIdx.x];
+	a[BSIZE+bid+threadIdx.x] = tmp[BSIZE+threadIdx.x];
+	a[2*BSIZE+bid+threadIdx.x] = tmp[2*BSIZE+threadIdx.x];
+	a[3*BSIZE+bid+threadIdx.x] = tmp[3*BSIZE+threadIdx.x];
+	a[4*BSIZE+bid+threadIdx.x] = tmp[4*BSIZE+threadIdx.x];
+	a[5*BSIZE+bid+threadIdx.x] = tmp[5*BSIZE+threadIdx.x];
+
 }
 
 template<class real>
@@ -234,34 +293,62 @@ __global__ void UniformMassCuda3t1_addForce_kernel(int size, real mg_x, real mg_
 template<class real>
 __global__ void UniformMassCudaRigid3t_addForce_kernel(const unsigned int size, const real mg_x, const real mg_y, const real mg_z, real* f)
 {
-	__shared__ real sf[6*BSIZE];
-	unsigned int gid = BSIZE*blockIdx.x + threadIdx.x;
+	__shared__ real tmp[6*BSIZE];
+	const unsigned int bid = 6*BSIZE*blockIdx.x;
 	
-	sf[threadIdx.x] = f[gid];
-	sf[BSIZE+threadIdx.x] = f[BSIZE+gid];
-	sf[2*BSIZE+threadIdx.x] = f[2*BSIZE+gid];
-	sf[3*BSIZE+threadIdx.x] = f[3*BSIZE+gid];
-	sf[4*BSIZE+threadIdx.x] = f[4*BSIZE+gid];
-	sf[5*BSIZE+threadIdx.x] = f[5*BSIZE+gid];
+	tmp[threadIdx.x] = f[bid+threadIdx.x];
+	tmp[BSIZE+threadIdx.x] = f[BSIZE+bid+threadIdx.x];
+	tmp[2*BSIZE+threadIdx.x] = f[2*BSIZE+bid+threadIdx.x];
+	tmp[3*BSIZE+threadIdx.x] = f[3*BSIZE+bid+threadIdx.x];
+	tmp[4*BSIZE+threadIdx.x] = f[4*BSIZE+bid+threadIdx.x];
+	tmp[5*BSIZE+threadIdx.x] = f[5*BSIZE+bid+threadIdx.x];
 	
 	__syncthreads();
 	
-	if( gid < size  )
+	if( (BSIZE*blockIdx.x + threadIdx.x) < size )
 	{
-		sf[6*threadIdx.x] += mg_x;
-		sf[6*threadIdx.x+1] += mg_y;
-		sf[6*threadIdx.x+2] += mg_z;
+		tmp[6*threadIdx.x] += mg_x;
+		tmp[6*threadIdx.x+1] += mg_y;
+		tmp[6*threadIdx.x+2] += mg_z;
 	}
 	
 	__syncthreads();
 	
 
-	f[gid] = sf[threadIdx.x];
-	f[BSIZE+gid] = sf[BSIZE+threadIdx.x];
-	f[2*BSIZE+gid] = sf[2*BSIZE+threadIdx.x];
-	f[3*BSIZE+gid] = sf[3*BSIZE+threadIdx.x];
-	f[4*BSIZE+gid] = sf[4*BSIZE+threadIdx.x];
-	f[5*BSIZE+gid] = sf[5*BSIZE+threadIdx.x];
+	f[bid+threadIdx.x] = tmp[threadIdx.x];
+	f[BSIZE+bid+threadIdx.x] = tmp[BSIZE+threadIdx.x];
+	f[2*BSIZE+bid+threadIdx.x] = tmp[2*BSIZE+threadIdx.x];
+	f[3*BSIZE+bid+threadIdx.x] = tmp[3*BSIZE+threadIdx.x];
+	f[4*BSIZE+bid+threadIdx.x] = tmp[4*BSIZE+threadIdx.x];
+	f[5*BSIZE+bid+threadIdx.x] = tmp[5*BSIZE+threadIdx.x];	
+// 	__shared__ real sf[6*BSIZE];
+// 	unsigned int gid = BSIZE*blockIdx.x + threadIdx.x;
+// 	
+// 	sf[threadIdx.x] = f[gid];
+// 	sf[BSIZE+threadIdx.x] = f[BSIZE+gid];
+// 	sf[2*BSIZE+threadIdx.x] = f[2*BSIZE+gid];
+// 	sf[3*BSIZE+threadIdx.x] = f[3*BSIZE+gid];
+// 	sf[4*BSIZE+threadIdx.x] = f[4*BSIZE+gid];
+// 	sf[5*BSIZE+threadIdx.x] = f[5*BSIZE+gid];
+// 	
+// 	__syncthreads();
+// 	
+// 	if( gid < size  )
+// 	{
+// 		sf[6*threadIdx.x] += mg_x;
+// 		sf[6*threadIdx.x+1] += mg_y;
+// 		sf[6*threadIdx.x+2] += mg_z;
+// 	}
+// 	
+// 	__syncthreads();
+// 	
+// 
+// 	f[gid] = sf[threadIdx.x];
+// 	f[BSIZE+gid] = sf[BSIZE+threadIdx.x];
+// 	f[2*BSIZE+gid] = sf[2*BSIZE+threadIdx.x];
+// 	f[3*BSIZE+gid] = sf[3*BSIZE+threadIdx.x];
+// 	f[4*BSIZE+gid] = sf[4*BSIZE+threadIdx.x];
+// 	f[5*BSIZE+gid] = sf[5*BSIZE+threadIdx.x];
 }
 
 //////////////////////
@@ -289,10 +376,9 @@ void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const v
 void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx)
 {
     dim3 threads(BSIZE,1);
-    dim3 grid((6*size+BSIZE-1)/BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
 	
-	UniformMassCudaRigid3t_addMDx_kernel<float><<< grid, threads >>>(6*size, mass, (float*)res, (float*)dx);
-	
+	UniformMassCudaRigid3t_addMDx_kernel<float><<< grid, threads >>>(size, mass, (float*)res, (float*)dx);
 	mycudaDebugError("UniformMassCudaRigid3t_addMDx_kernel<float>");
 }
 
@@ -317,9 +403,9 @@ void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const v
 void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx)
 {
     dim3 threads(BSIZE,1);
-    dim3 grid(6*(size+BSIZE-1)/BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
 	
-	UniformMassCudaRigid3t_accFromF_kernel<float><<< grid, threads >>>(6*size, 1.0f/mass, (float*)a, (float*)dx);
+	UniformMassCudaRigid3t_accFromF_kernel<float><<< grid, threads >>>(size, 1.0f/mass, (float*)a, (float*)dx);
 	
 	mycudaDebugError("UniformMassCudaRigid3f_accFromF");
 }

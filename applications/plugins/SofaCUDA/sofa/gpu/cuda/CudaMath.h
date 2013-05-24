@@ -349,7 +349,7 @@ __device__ CudaVec3<real> mul(CudaVec3<real> a, CudaVec3<real> b)
 }
 
 template<class real>
-__device__ real dot(CudaVec3<real> a, CudaVec3<real> b)
+__device__ __inline__ real dot(const CudaVec3<real>& a, const CudaVec3<real>& b)
 {
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }
