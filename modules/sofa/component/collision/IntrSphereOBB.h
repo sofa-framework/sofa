@@ -49,9 +49,11 @@ typedef TIntrSphereOBB<Vec3Types,Rigid3Types> IntrSphereOBB;
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Vec3dTypes,Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Rigid3dTypes,Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Vec3fTypes,Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<Rigid3fTypes,Rigid3fTypes>;
 #endif
 #endif
 

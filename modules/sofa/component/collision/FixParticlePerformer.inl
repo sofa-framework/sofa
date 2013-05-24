@@ -36,7 +36,6 @@
 #include <sofa/component/collision/TriangleModel.h>
 
 #include <sofa/component/collision/CapsuleModel.h>
-#include <sofa/component/collision/RigidSphereModel.h>
 
 
 namespace sofa

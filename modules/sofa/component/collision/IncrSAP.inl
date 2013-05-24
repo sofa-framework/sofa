@@ -39,35 +39,32 @@ inline const EndPointID & ISAPBox::min(int dim)const{return *(_min[dim]);}
 inline EndPointID & ISAPBox::max(int dim){return *(_max[dim]);}
 inline const EndPointID & ISAPBox::max(int dim)const{return *(_max[dim]);}
 
-inline double ISAPBox::curMin(int dim){return cube.minVect()[dim];}
 inline double ISAPBox::curMin(int dim)const{return cube.minVect()[dim];}
-
-inline double ISAPBox::curMax(int dim){return cube.maxVect()[dim];}
 inline double ISAPBox::curMax(int dim)const{return cube.maxVect()[dim];}
 
-inline void ISAPBox::updatedMin(int dim,EndPointID & end_point)const{
+inline void ISAPBox::updatedMin(int dim,EndPointID & end_point, double alarmDist)const{
     end_point = (*_min[dim]);
-    end_point.value = cube.minVect()[dim];
+    end_point.value = cube.minVect()[dim] - alarmDist;
 }
 
-inline void ISAPBox::updatedMax(int dim,EndPointID & end_point)const{
+inline void ISAPBox::updatedMax(int dim,EndPointID & end_point,double alarmDist)const{
     end_point = (*_max[dim]);
-    end_point.value = cube.maxVect()[dim];
+    end_point.value = cube.maxVect()[dim] + alarmDist;
 }
 
-inline void ISAPBox::update(){
+inline void ISAPBox::update(double alarmDist){
     for(int i = 0 ; i < 3 ; ++i){
-        _min[i]->value = cube.minVect()[i];
-        _max[i]->value = cube.maxVect()[i];
+        _min[i]->value = cube.minVect()[i] - alarmDist;
+        _max[i]->value = cube.maxVect()[i] + alarmDist;
     }
 }
 
-inline void ISAPBox::updateMin(int dim){
-    _min[dim]->value = cube.minVect()[dim];
+inline void ISAPBox::updateMin(int dim,double alarmDist){
+    _min[dim]->value = cube.minVect()[dim] - alarmDist;
 }
 
-inline void ISAPBox::updateMax(int dim){
-    _max[dim]->value = cube.maxVect()[dim];
+inline void ISAPBox::updateMax(int dim,double alarmDist){
+    _max[dim]->value = cube.maxVect()[dim] + alarmDist;
 }
 
 
@@ -87,31 +84,31 @@ inline void ISAPBox::init(int boxID,EndPointID ** endPts){
     //update();
 }
 
-inline bool ISAPBox::overlaps(const ISAPBox & other, int axis) const{
+inline bool ISAPBox::endPointsOverlap(const ISAPBox & other, int axis) const{
     assert(axis >= 0);
     assert(axis < 3);
-    const Vector3 & minVect_this = cube.minVect();
-    const Vector3 & maxVect_this = cube.maxVect();
-    const Vector3 & minVect_other = other.cube.minVect();
-    const Vector3 & maxVect_other = other.cube.maxVect();
+//    const Vector3 & minVect_this = cube.minVect();
+//    const Vector3 & maxVect_this = cube.maxVect();
+//    const Vector3 & minVect_other = other.cube.minVect();
+//    const Vector3 & maxVect_other = other.cube.maxVect();
 
 
-    if((minVect_this[axis] >= maxVect_other[axis]) || (minVect_other[axis] >= maxVect_this[axis]))
+    if((min(axis).value >= other.max(axis).value) || (other.min(axis).value >= max(axis).value))
         return false;
 
     return true;
 }
 
-inline bool ISAPBox::minMoving(int axis) const{
-    return min(axis).value != cube.minVect()[axis];
+inline bool ISAPBox::minMoving(int axis,double alarmDist) const{
+    return min(axis).value  != cube.minVect()[axis] - alarmDist;
 }
 
-inline bool ISAPBox::maxMoving(int axis) const{
-    return max(axis).value != cube.maxVect()[axis];
+inline bool ISAPBox::maxMoving(int axis,double alarmDist) const{
+    return max(axis).value != cube.maxVect()[axis] + alarmDist;
 }
 
-inline bool ISAPBox::moving(int axis) const{
-    return minMoving(axis) || maxMoving(axis);
+inline bool ISAPBox::moving(int axis,double alarmDist) const{
+    return minMoving(axis,alarmDist) || maxMoving(axis,alarmDist);
 //    const core::CollisionElementIterator & finE = finalElement();
 
 //    const core::CollisionModel * cm = finE.getCollisionModel();
@@ -141,8 +138,8 @@ inline bool ISAPBox::moving(int axis) const{
 //    }
 }
 
-inline bool ISAPBox::moving() const{
-    return moving(0) || moving(1) || moving(2);
+inline bool ISAPBox::moving(double alarmDist) const{
+    return moving(0,alarmDist) || moving(1,alarmDist) || moving(2,alarmDist);
 //    const core::CollisionElementIterator & finE = finalElement();
 
 //    const core::CollisionModel * cm = finE.getCollisionModel();
@@ -218,7 +215,8 @@ void TIncrSAP<List,Allocator>::init()
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::reinit()
-{
+{ 
+
     if (box.getValue()[0][0] >= box.getValue()[1][0])
     {
         boxModel.reset();
@@ -312,7 +310,7 @@ int TIncrSAP<List,Allocator>::greatestVarianceAxis()const{
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::updateEndPoints(){
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i)
-        _boxes[i].update();
+        _boxes[i].update(_alarmDist_d2);
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
@@ -351,7 +349,7 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2){
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1))){//intersection on all axes
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,_alarmDist))){//intersection on all axes
 
         //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
     //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
@@ -382,6 +380,7 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2){
         }
     }
 }
+
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
@@ -397,7 +396,7 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int 
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,axis1) && box0.overlaps(box1,axis2))){//intersection on all axes
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.endPointsOverlap(box1,axis1) && box0.endPointsOverlap(box1,axis2))){//intersection on all axes
 
         //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
     //                    //std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
@@ -429,10 +428,10 @@ void TIncrSAP<List,Allocator>::addIfCollide(int boxID1,int boxID2,int axis1,int 
     }
 }
 
+
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::boxPrune(){
     _cur_axis = greatestVarianceAxis();
-
     int axis1 = (1  << _cur_axis) & 3;
     int axis2 = (1  << axis1) & 3;
 
@@ -470,12 +469,11 @@ void TIncrSAP<List,Allocator>::removeCollision(int a,int b){
     if(a == b)
         return;
 
-    //assert(!(_boxes[a].overlaps(_boxes[b])));
     core::CollisionModel *finalcm1 = _boxes[a].cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = _boxes[b].cube.getCollisionModel()->getLast();
 
     bool swap;
-    if((!(_boxes[a].overlaps(_boxes[b]))) && //check if it really doesn't overlap
+    if((!(_boxes[a].overlaps(_boxes[b],_alarmDist))) && //check if it really doesn't overlap
             (finalcm1->isSimulated() || finalcm2->isSimulated()) &&//check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2))) && (intersectionMethod->findIntersector(finalcm1,finalcm2,swap) != 0x0)){
         _colliding_elems.remove(a,b);
@@ -485,6 +483,8 @@ void TIncrSAP<List,Allocator>::removeCollision(int a,int b){
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::beginNarrowPhase(){
     this->NarrowPhaseDetection::beginNarrowPhase();
+    _alarmDist = getIntersectionMethod()->getAlarmDistance();
+    _alarmDist_d2 = _alarmDist/2.0;
 
     if(_nothing_added){
         updateMovingBoxes();
@@ -562,7 +562,7 @@ bool TIncrSAP<List,Allocator>::assertion_inferior(typename EndPointList::iterato
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 bool TIncrSAP<List,Allocator>::assertion_end_points_sorted() const{
     CompPEndPoint inferior;
-    std::cout<<"ZOZO"<<std::endl;
+    //std::cout<<"ZOZO"<<std::endl;
     int n = 0;
     for(int dim = 0 ; dim < 3 ; ++dim){
         int ID = 0;
@@ -624,7 +624,7 @@ void TIncrSAP<List,Allocator>::moveMinForward(int dim,EndPointID * cur_end_point
     while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
 
     (*it) = cur_end_point;
-    assert(assertion_end_points_sorted());
+    //assert(assertion_end_points_sorted());
 }
 
 
@@ -644,7 +644,7 @@ void TIncrSAP<List,Allocator>::moveMaxForward(int dim,EndPointID * cur_end_point
     while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
 
     (*it) = cur_end_point;
-    assert(assertion_end_points_sorted());
+    //assert(assertion_end_points_sorted());
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
@@ -667,7 +667,7 @@ void TIncrSAP<List,Allocator>::moveMinBackward(int dim,EndPointID * cur_end_poin
     while(inferior(cur_end_point,*prev_it));
 
     (*it) = cur_end_point;
-    assert(assertion_end_points_sorted());
+    //assert(assertion_end_points_sorted());
 }
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
@@ -690,7 +690,7 @@ void TIncrSAP<List,Allocator>::moveMaxBackward(int dim,EndPointID * cur_end_poin
     while(inferior(cur_end_point,*prev_it));
 
     (*it) = cur_end_point;
-    assert(assertion_end_points_sorted());
+    //assert(assertion_end_points_sorted());
 }
 
 
@@ -715,7 +715,6 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
         //std::cout<<__LINE__<<std::endl;
         ISAPBox & cur_box = _boxes[i];
         //std::cout<<"\tMOVED!"<<std::endl;
-        assert(assertion_end_points_sorted());
         for(int dim = 0 ; dim < 3 ; ++dim){
             min_updated = false;
             max_updated = false;
@@ -723,8 +722,8 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
             //FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
 
             //MOVING MAX FOREWARD
-            if((max_moving = cur_box.maxMoving(dim))){
-                cur_box.updatedMax(dim,updated_max);//we don't update directly update the max of the box but a copy of it, because when
+            if((max_moving = cur_box.maxMoving(dim,_alarmDist_d2))){
+                cur_box.updatedMax(dim,updated_max,_alarmDist_d2);//we don't update directly update the max of the box but a copy of it, because when
                                                     //moving an end point, only one end point can change its value. In this case, we could
                                                     //update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
                                                     //the min backward (below), the list would not be sorted...
@@ -761,11 +760,11 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
                 }
             }
 
-            assert(assertion_end_points_sorted());
+            //assert(assertion_end_points_sorted());
 
             //MOVING MIN BACKWARD
-            if((min_moving = cur_box.minMoving(dim))){
-                cur_box.updatedMin(dim,updated_min);
+            if((min_moving = cur_box.minMoving(dim,_alarmDist_d2))){
+                cur_box.updatedMin(dim,updated_min,_alarmDist_d2);
                 cur_end_point_min = &(cur_box.min(dim));
                 it_min = _end_points[dim].begin() + cur_end_point_min->ID;
                 base_it_min = it_min;
@@ -798,7 +797,7 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
                 }
             }
 
-            assert(assertion_end_points_sorted());
+            //assert(assertion_end_points_sorted());
 
             //THEN DELETING
             if(min_moving && (!min_updated)){
@@ -811,7 +810,7 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
                 }
             }
 
-            assert(assertion_end_points_sorted());
+            //assert(assertion_end_points_sorted());
 
             //MOVING MAX BACKWARD
             if(max_moving && (!max_updated)){
@@ -829,9 +828,11 @@ void TIncrSAP<List,Allocator>::updateMovingBoxes(){
                 }
             }
 
-            assert(assertion_end_points_sorted());
+            if(min_moving || max_moving){
+                assert(assertion_end_points_sorted());
+            }
         }
-        assert(assertion_end_points_sorted());
+        //assert(assertion_end_points_sorted());
     }
 }
 

@@ -15,8 +15,42 @@ public:
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
     static bool computeIntersection(OBB&, OBB&,double alarmDist,double contactDist,OutputVector* contacts);
-    static bool computeIntersection(Sphere &sphere, OBB &box,double alarmDist,double contactDist,OutputVector* contacts);
+
+    template <class DataTypes>
+    static bool computeIntersection(TSphere<DataTypes> &sphere, OBB &box,double alarmDist,double contactDist,OutputVector* contacts);
 };
+
+template <class DataTypes>
+bool OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,double alarmDist,double contactDist,OutputVector* contacts){
+    TIntrSphereOBB<DataTypes,OBB::DataTypes> intr(sphere,box);
+    //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
+    if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find()){
+        OBB::Real dist = intr.distance();
+        if((!intr.colliding()) && dist > alarmDist)
+            return 0;
+
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
+
+        detection->normal = intr.separatingAxis();
+        detection->point[0] = intr.pointOnFirst();
+        detection->point[1] = intr.pointOnSecond();
+
+        if(intr.colliding())
+            detection->value = -dist - contactDist;
+        else
+            detection->value = dist - contactDist;
+
+        detection->elem.first = sphere;
+        detection->elem.second = box;
+        detection->id = (box.getCollisionModel()->getSize() > sphere.getCollisionModel()->getSize()) ? box.getIndex() : sphere.getIndex();
+
+        return 1;
+    }
+
+    return 0;
+}
+
 
 }
 }

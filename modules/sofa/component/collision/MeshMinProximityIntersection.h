@@ -61,7 +61,7 @@ public:
     bool testIntersection(Capsule&,Triangle&);
     bool testIntersection(Capsule&,Line&);
 
-    int computeIntersection(Point&, Point&, OutputVector*);
+    int computeIntersection(Point&, Point&, OutputVector*);        
     int computeIntersection(Sphere&, Point&, OutputVector*);
     int computeIntersection(Line&, Point&, OutputVector*);
     int computeIntersection(Line&, Sphere&, OutputVector*);

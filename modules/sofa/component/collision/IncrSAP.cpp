@@ -36,9 +36,38 @@ namespace collision
 
 double ISAPBox::tolerance = (double)(1e-7);
 
-bool ISAPBox::overlaps(const ISAPBox & other) const{
-    assert(dynamic_cast<OBBModel*>(cube.getCollisionModel()->getNext()) != 0x0);
-    assert(dynamic_cast<OBBModel*>(other.cube.getCollisionModel()->getNext()) != 0x0);
+double ISAPBox::squaredDistance(const ISAPBox & other) const{
+//    assert(dynamic_cast<OBBModel*>(cube.getCollisionModel()->getNext()) != 0x0);
+//    assert(dynamic_cast<OBBModel*>(other.cube.getCollisionModel()->getNext()) != 0x0);
+    const Vector3 & min_vect0 = cube.minVect();
+    const Vector3 & max_vect0 = cube.maxVect();
+    const Vector3 & min_vect1 = other.cube.minVect();
+    const Vector3 & max_vect1 = other.cube.maxVect();
+
+    double temp;
+    double dist2 = 0;
+
+    for(int i = 0 ; i < 3 ; ++i){
+        assert(min_vect0[i] <= max_vect0[i]);
+        assert(min_vect0[i] <= max_vect0[i]);
+        assert(min_vect1[i] <= max_vect1[i]);
+        assert(min_vect1[i] <= max_vect1[i]);
+        if(max_vect0[i] <= min_vect1[i]){
+            temp = max_vect0[i] - min_vect1[i];
+            dist2 += temp * temp;
+        }
+        else if(max_vect1[i] <= min_vect0[i]){
+            temp = max_vect1[i] - min_vect0[i];
+            dist2 += temp * temp;
+        }
+    }
+
+    return dist2;
+}
+
+bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
+//    assert(dynamic_cast<OBBModel*>(cube.getCollisionModel()->getNext()) != 0x0);
+//    assert(dynamic_cast<OBBModel*>(other.cube.getCollisionModel()->getNext()) != 0x0);
     const Vector3 & min_vect0 = cube.minVect();
     const Vector3 & max_vect0 = cube.maxVect();
     const Vector3 & min_vect1 = other.cube.minVect();
@@ -49,12 +78,13 @@ bool ISAPBox::overlaps(const ISAPBox & other) const{
         assert(min_vect0[i] <= max_vect0[i]);
         assert(min_vect1[i] <= max_vect1[i]);
         assert(min_vect1[i] <= max_vect1[i]);
-        if((max_vect0[i] <= min_vect1[i]) || (max_vect1[i] <= min_vect0[i]))
+        if(max_vect0[i] + alarmDist <= min_vect1[i] || max_vect1[i] + alarmDist <= min_vect0[i])
             return false;
     }
 
     return true;
 }
+
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;

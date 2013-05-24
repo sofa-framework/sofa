@@ -27,7 +27,6 @@
 
 #include <sofa/component/collision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/RigidSphereModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
@@ -59,27 +58,38 @@ public:
     virtual void init();
 
     bool testIntersection(Cube& ,Cube&);
-    bool testIntersection(Sphere&, Sphere&);
+
+    template <class DataTypes1,class DataTypes2>
+    bool testIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&);
+
     bool testIntersection(Capsule&,Capsule&);
-    bool testIntersection(Capsule&,Sphere&);
-    bool testIntersection(RigidSphere&, RigidSphere&);
+
+    template <class DataTypes>
+    bool testIntersection(Capsule&,TSphere<DataTypes>&);
+
     bool testIntersection(OBB&, OBB&);
     bool testIntersection(Capsule&, OBB&);
-    bool testIntersection(Sphere&, OBB&);
 
-
-
+    template <class DataTypes>
+    bool testIntersection(TSphere<DataTypes>&, OBB&);
 
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-    int computeIntersection(RigidSphere&, RigidSphere&, OutputVector*);
-    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
-    int computeIntersection(Capsule&, Sphere&,OutputVector* contacts);
-    int computeIntersection(OBB&, OBB&,OutputVector* contacts);
-    int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
-    int computeIntersection(Sphere&,OBB&,OutputVector * contacts);
 
+    template <class DataTypes1,class DataTypes2>
+    int computeIntersection(TSphere<DataTypes1>&, TSphere<DataTypes2>&, OutputVector*);
+
+    int computeIntersection(Capsule&, Capsule&,OutputVector* contacts);
+
+    template <class DataTypes>
+    int computeIntersection(Capsule&, TSphere<DataTypes>&,OutputVector* contacts);
+
+    int computeIntersection(OBB&, OBB&,OutputVector* contacts);
+
+    int computeIntersection(Capsule&,OBB&,OutputVector * contacts);
+
+    template <class DataTypes>
+    int computeIntersection(TSphere<DataTypes>&,OBB&,OutputVector * contacts);
 
     static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
 

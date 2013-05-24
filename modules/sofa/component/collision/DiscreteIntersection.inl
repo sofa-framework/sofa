@@ -50,6 +50,7 @@ using namespace sofa::core::collision;
 template <class Sphere>
 int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
 {
+    std::cout<<"HEy !"<<std::endl;
     double r = sph1.r() + sph2.r();
     Vector3 dist = sph2.center() - sph1.center();
 

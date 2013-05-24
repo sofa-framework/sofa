@@ -47,9 +47,9 @@ SOFA_DECL_CLASS(Sphere)
 
 int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
 #ifdef SOFA_FLOAT
-        .add<  TSphereModel<Vec3fTypes> >()
+        .add<  TSphereModel<Vec3fTypes> >().add<TSphereModel<Rigid3fTypes> >()
 #else
-        .add < TSphereModel<Vec3dTypes> >()
+        .add < TSphereModel<Vec3dTypes> >().add<TSphereModel<Rigid3dTypes> >()
 #endif
         .addAlias("Sphere")
         .addAlias("SphereModel")
@@ -59,9 +59,11 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
 
 #ifndef SOFA_FLOAT
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
 #endif
 
 } // namespace collision

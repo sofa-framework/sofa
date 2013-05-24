@@ -51,18 +51,40 @@ namespace component
 namespace collision
 {
 
-inline void DSAPBox::update(int axis){
-    min->value = (cube.minVect())[axis];
-    max->value = (cube.maxVect())[axis];
+inline void DSAPBox::update(int axis, double alarmDist){
+    min->value = (cube.minVect())[axis] - alarmDist;
+    max->value = (cube.maxVect())[axis] + alarmDist;
 }
 
-inline bool DSAPBox::overlaps(const DSAPBox &other, int axis) const{
+
+inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
     const Vector3 & min0 = this->cube.minVect();
     const Vector3 & max0 = this->cube.maxVect();
     const Vector3 & min1 = other.cube.minVect();
     const Vector3 & max1 = other.cube.maxVect();
 
-    if(min0[axis] >= max1[axis] || min1[axis] >= max0[axis])
+    double temp;
+
+    if(min0[axis] > max1[axis]){
+        temp = (min0[axis] - max1[axis]);
+        return temp * temp;
+    }
+    else if(min1[axis] > max0[axis]){
+        temp = (min1[axis] - max0[axis]);
+        return temp * temp;
+    }
+
+    return 0;
+}
+
+
+inline bool DSAPBox::overlaps(const DSAPBox &other, int axis, double alarmDist) const{
+    const Vector3 & min0 = this->cube.minVect();
+    const Vector3 & max0 = this->cube.maxVect();
+    const Vector3 & min1 = other.cube.minVect();
+    const Vector3 & max1 = other.cube.maxVect();
+
+    if(min0[axis] >= max1[axis] + alarmDist || min1[axis] >= max0[axis] + alarmDist)
         return false;
 
     return true;
@@ -299,20 +321,29 @@ template <template<class T,class Allocator> class List,template <class T> class 
 void TDirectSAP<List,Allocator>::update(){
     _cur_axis = greatestVarianceAxis();
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        _boxes[i].update(_cur_axis);
+        _boxes[i].update(_cur_axis,_alarmDist_d2);
     }
 }
+
+//template <template<class T,class Allocator> class List,template <class T> class Allocator>
+//void TDirectSAP<List,Allocator>::collidingBoxes(std::vector<std::pair<Cube,Cube> > & col_cubes){
+//    for()
+//}
 
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TDirectSAP<List,Allocator>::beginNarrowPhase()
-{
+{    
 //    timeval time1,time2;
 //    gettimeofday(&time1,NULL);
 //    rusage start, end;
 //    getrusage(RUSAGE_SELF,&start);
 
     core::collision::NarrowPhaseDetection::beginNarrowPhase();
+    _alarmDist = getIntersectionMethod()->getAlarmDistance();
+    _sq_alarmDist = _alarmDist * _alarmDist;
+    _alarmDist_d2 = _alarmDist/2.0;
+
     update();
 
     CompPEndPoint comp;
@@ -325,8 +356,8 @@ void TDirectSAP<List,Allocator>::beginNarrowPhase()
 
     //std::cout<<"sort time "<<elapsed(start,end)<<std::endl;
 
-    int axis1 = (1  << _cur_axis) & 3;
-    int axis2 = (1  << axis1) & 3;
+//    int axis1 = (1  << _cur_axis) & 3;
+//    int axis2 = (1  << axis1) & 3;
 
     //getrusage(RUSAGE_SELF,&start);
 //    std::cout<<"sorted"<<std::endl;
@@ -367,7 +398,9 @@ void TDirectSAP<List,Allocator>::beginNarrowPhase()
                 core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
                 core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
                 if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-                        (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,axis1) && box0.overlaps(box1,axis2))){//intersection on all axes
+                        (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) &&
+                         /*box0.overlaps(box1,axis1,_alarmDist) && box0.overlaps(box1,axis2,_alarmDist)*/
+                         box0.squaredDistance(box1) <= _sq_alarmDist)){//intersection on all axes
                     //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
 //                    std::cout<<"finalcm1 finalcm2 "<<finalcm1<<" "<<finalcm2<<std::endl;
 //                    std::cout<<"intersectionMethod "<<intersectionMethod->getClass()->className<<std::endl;
