@@ -157,6 +157,36 @@ public:
 
     SReal getStiffness() const { return ks.getValue(); }
     SReal getDamping() const { return kd.getValue(); }
+    void setStiffness(SReal _ks) { ks.setValue(_ks); }
+    void setDamping(SReal _kd) { kd.setValue(_kd); }
+    SReal getArrowSize() const {return showArrowSize.getValue();}
+    void setArrowSize(float s) {showArrowSize.setValue(s);}
+    int getDrawMode() const {return drawMode.getValue();}
+    void setDrawMode(int m) {drawMode.setValue(m);}
+
+    virtual void draw(const core::visual::VisualParams* vparams);
+
+    // -- Modifiers
+
+    void clear(int reserve=0)
+    {
+        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
+        springs.clear();
+        if (reserve) springs.reserve(reserve);
+        this->springs.endEdit();
+    }
+
+    void removeSpring(unsigned int idSpring)
+    {
+        if (idSpring >= (this->springs.getValue()).size())
+            return;
+
+        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
+        springs.erase(springs.begin() +idSpring );
+        this->springs.endEdit();
+
+        updateMaskStatus();
+    }
 
     void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
     {
