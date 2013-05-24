@@ -110,7 +110,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
     {
         size = sampler->getNbSamples();
-        if(rest.size()==size) restPositionSet=true;
+        if(rest.size()==size && size!=1) restPositionSet=true;
         this->toModel->resize(size);
         pos0.resize(size);  for(unsigned int i=0; i<size; i++) pos0[i]=sampler->getSample(i);
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
