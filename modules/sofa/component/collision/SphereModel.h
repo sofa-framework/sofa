@@ -46,7 +46,14 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template<class T>
-struct _SphereDataTypes;
+struct _SphereDataTypes{
+    typedef T DataTypes;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+
+    static const Coord & position(const typename DataTypes::Coord & c){return c;}
+    static const Deriv & lvelocity(const typename DataTypes::Deriv & d){return d;}
+};
 
 template <class MyReal>
 struct _SphereDataTypes<StdRigidTypes<3,MyReal> >{
@@ -57,25 +64,25 @@ struct _SphereDataTypes<StdRigidTypes<3,MyReal> >{
     static const Coord & lvelocity(const typename DataTypes::Deriv & d){return d.getLinear();}
 };
 
-template <>
-struct _SphereDataTypes<defaulttype::Vec3dTypes>{
-    typedef defaulttype::Vec3dTypes DataTypes;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Deriv Deriv;
+//template <>
+//struct _SphereDataTypes<defaulttype::Vec3dTypes>{
+//    typedef defaulttype::Vec3dTypes DataTypes;
+//    typedef DataTypes::Coord Coord;
+//    typedef DataTypes::Deriv Deriv;
 
-    static const Coord & position(const DataTypes::Coord & c){return c;}
-    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
-};
+//    static const Coord & position(const DataTypes::Coord & c){return c;}
+//    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
+//};
 
-template <>
-struct _SphereDataTypes<defaulttype::Vec3fTypes>{
-    typedef defaulttype::Vec3fTypes DataTypes;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Deriv Deriv;
+//template <>
+//struct _SphereDataTypes<defaulttype::Vec3fTypes>{
+//    typedef defaulttype::Vec3fTypes DataTypes;
+//    typedef DataTypes::Coord Coord;
+//    typedef DataTypes::Deriv Deriv;
 
-    static const Coord & position(const DataTypes::Coord & c){return c;}
-    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
-};
+//    static const Coord & position(const DataTypes::Coord & c){return c;}
+//    static const Deriv & lvelocity(const DataTypes::Deriv & d){return d;}
+//};
 
 
 template<class DataTypes>
