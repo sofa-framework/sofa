@@ -108,6 +108,8 @@ void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
     cubeModel->resize(size);
     if (!empty())
     {
+        const typename TOBBModel<DataTypes>::Real distance = (typename TOBBModel<DataTypes>::Real)this->proximity.getValue();
+
         std::vector<Coord> vs;
         vs.reserve(8);
         for (int i=0; i<size; i++)
@@ -125,6 +127,11 @@ void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
                     else if(maxElem[jj] < vs[j][jj])
                         maxElem[jj] = vs[j][jj];;
                 }
+            }
+
+            for(int jj = 0 ; jj < 3 ; ++jj){
+                minElem[jj] -= distance;
+                maxElem[jj] += distance;
             }
 
             cubeModel->setParentOf(i, minElem, maxElem);

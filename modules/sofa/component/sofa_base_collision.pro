@@ -26,8 +26,6 @@ HEADERS += initBaseCollision.h \
     collision/CapsuleIntTool.h \
     collision/OBBModel.inl \
     collision/OBBModel.h \
-    collision/RigidSphereModel.h \
-    collision/RigidSphereModel.inl \
     collision/OBBIntTool.h \
     collision/IntrOBBOBB.h \
     collision/IntrOBBOBB.inl \
@@ -57,7 +55,6 @@ SOURCES += initBaseCollision.cpp \
            collision/NewProximityIntersection.cpp \
     collision/BaseProximityIntersection.cpp \    
     collision/CapsuleIntTool.cpp \
-    collision/RigidSphereModel.cpp \
     collision/OBBModel.cpp \
     collision/OBBIntTool.cpp \
     collision/IntrOBBOBB.cpp \

@@ -63,10 +63,14 @@ void NewProximityIntersection::init()
     intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
     intersectors.add<CapsuleModel,CapsuleModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, NewProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,RigidSphereModel, NewProximityIntersection> (this);
     intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<SphereModel,OBBModel, NewProximityIntersection> (this);
+
+    intersectors.add<RigidSphereModel,RigidSphereModel, NewProximityIntersection> (this);
+    intersectors.add<SphereModel,RigidSphereModel, NewProximityIntersection> (this);
+    intersectors.add<CapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
+    intersectors.add<RigidSphereModel,OBBModel, NewProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }
@@ -90,56 +94,8 @@ bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 }
 
 
-bool NewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
-{
-    OutputVector contacts;
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1);
-    return n>0;
-}
-
-bool NewProximityIntersection::testIntersection(Capsule&, Sphere&){
-    //you can do but not useful because it is not called
-    return false;
-}
-
-
 bool NewProximityIntersection::testIntersection(Capsule&, Capsule&){    
     return true;
-}
-
-
-int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
-{
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
-}
-
-int NewProximityIntersection::computeIntersection(RigidSphere& e1, RigidSphere& e2, OutputVector* contacts)
-{
-    const double alarmDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    //const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
-    if (n>0)
-    {
-        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
-        }
-    }
-    return n;
 }
 
 
@@ -147,18 +103,10 @@ int NewProximityIntersection::computeIntersection(Capsule & e1,Capsule & e2,Outp
     return CapsuleIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
 }
 
-int NewProximityIntersection::computeIntersection(Capsule & cap, Sphere & sph,OutputVector* contacts){
-    return CapsuleIntTool::computeIntersection(cap,sph,getAlarmDistance(),getContactDistance(),contacts);
-}
-
 
 int NewProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
 {
     return 0; /// \todo
-}
-
-bool NewProximityIntersection::testIntersection(RigidSphere&, RigidSphere&){
-    return true;
 }
 
 bool NewProximityIntersection::testIntersection(OBB&, OBB&){
@@ -176,14 +124,6 @@ int NewProximityIntersection::computeIntersection(Capsule& cap,OBB& obb,OutputVe
 
 
 bool NewProximityIntersection::testIntersection(Capsule&, OBB&){
-    return true;
-}
-
-int NewProximityIntersection::computeIntersection(Sphere & sph, OBB & box,OutputVector* contacts){
-    return OBBIntTool::computeIntersection(sph,box,sph.getProximity() + box.getProximity() + getAlarmDistance(),box.getProximity() + sph.getProximity() + getContactDistance(),contacts);
-}
-
-bool NewProximityIntersection::testIntersection(Sphere &,OBB &){
     return true;
 }
 

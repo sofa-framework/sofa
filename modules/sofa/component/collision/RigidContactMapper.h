@@ -40,7 +40,6 @@
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/RigidSphereModel.h>
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/core/VecId.h>
@@ -151,10 +150,11 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             RigidSphere e(this->model, index);
-            const typename TVec3Types::Coord & cP = P - e.center();
-            const RigidSphereModel::Quaternion & ori = e.orientation();
+            const typename RigidSphereModel::DataTypes::Coord & rCenter = e.rigidCenter();
+            const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
+            const Quaternion & ori = rCenter.getOrientation();
 
-            r = e.r();
+            //r = e.r();
 
             return RigidContactMapper<RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -167,7 +167,7 @@ class ContactMapper<OBBModel,TVec3Types > : public RigidContactMapper<OBBModel, 
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const RigidSphereModel::Quaternion & ori = this->model->orientation(index);
+            const Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<OBBModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }

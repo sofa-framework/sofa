@@ -74,29 +74,43 @@ public:
       *For the two following methods, end points are not used but real positions
       *of end points of the field cube.
       */
-    bool overlaps(const ISAPBox & other,int axis)const;
+    bool endPointsOverlap(const ISAPBox & other,int axis)const;
 
     /**
       *Returns true if this overlaps other along the three dimensions.
       */
-    bool overlaps(const ISAPBox & other)const;
+    bool overlaps(const ISAPBox & other,double alarmDist)const;
+
+    double squaredDistance(const ISAPBox & other)const;
 
     inline void show()const{
         std::cout<<"MIN "<<cube.minVect()<<std::endl;
         std::cout<<"MAX "<<cube.maxVect()<<std::endl;
     }
 
+    inline void showEndPoints()const{
+        std::cout<<"MIN ";
+        for(int i = 0 ; i < 3 ; ++i)
+            std::cout<<min(i).value<<" ";
+        std::cout<<std::endl;
+
+        std::cout<<"MAX ";
+        for(int i = 0 ; i < 3 ; ++i)
+            std::cout<<max(i).value<<" ";
+        std::cout<<std::endl;
+    }
+
     /**
       *Returns true if the ISAPBox is moving along the dimension axis. i.e., returns true if the value of the end point of dimension axis is different
       *from the end point of the field cube (which is the real position of the ISAPBox).
       */
-    bool moving(int axis)const;
+    bool moving(int axis,double alarmDist)const;
 
     /**
       *The same than the previous one except that this one checks the three dimensions, i.e. it returns true if
       *the ISAPBox is moving at least along one dimension.
       */
-    bool moving()const;
+    bool moving(double alarmDist)const;
 
     /**
       *Inits _min and _max fiels with endPts. endPts is an one dimension array of EndPointID pointers.
@@ -106,17 +120,17 @@ public:
       */
     void init(int boxID,EndPointID ** endPts);
 
-    void update();
+    void update(double alarmDist);
 
-    void updatedMin(int dim,EndPointID &end_point)const;
-    void updatedMax(int dim,EndPointID &end_point)const;
+    void updatedMin(int dim,EndPointID &end_point,double alarmDist)const;
+    void updatedMax(int dim,EndPointID &end_point,double alarmDist)const;
 
 
-    void updateMin(int dim);
-    void updateMax(int dim);
+    void updateMin(int dim,double alarmDist);
+    void updateMax(int dim,double alarmDist);
 
-    bool minMoving(int axis) const;
-    bool maxMoving(int axis) const;
+    bool minMoving(int axis,double alarmDist) const;
+    bool maxMoving(int axis,double alarmDist) const;
 
     const core::CollisionElementIterator finalElement()const;
 
@@ -125,9 +139,7 @@ public:
     EndPointID & max(int dim);
     const EndPointID & max(int dim)const;
 
-    double curMin(int dim);
-    double curMin(int dim)const;
-    double curMax(int dim);
+    double curMin(int dim) const;
     double curMax(int dim)const;
 
     Cube cube;
@@ -233,6 +245,9 @@ private:
 
     int _cur_axis;
     bool _nothing_added;
+    double _alarmDist;
+    double _alarmDist_d2;
+
 
     std::set<core::CollisionModel*> collisionModels;
 protected:

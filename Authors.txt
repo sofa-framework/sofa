@@ -6,7 +6,7 @@
 *                                                                         *
 **************************************************************************/
 
-:: SOFA Framework :: 
+:: SOFA Framework ::
 
     The following authors contributed to the design and implementation
     of the core SOFA APIs, as well as base features and applications :
@@ -48,6 +48,7 @@
         Francois Poyer
         Frederick Roy
         Hugo Talbot
+        Moreno Trlin
 
 :: SOFA Modules ::
 

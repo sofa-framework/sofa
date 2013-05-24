@@ -61,11 +61,18 @@ class DSAPBox{
 public:
     DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
 
-    void update(int axis);
+    void update(int axis,double alarmDist);
 
-    bool overlaps(const DSAPBox & other,int axis)const;
+    bool overlaps(const DSAPBox & other,int axis,double alarmDist)const;
 
-    bool overlaps(const DSAPBox &other)const;
+    bool overlaps(const DSAPBox &other,double alarmDist)const;
+
+    bool sqOverlaps(const DSAPBox &other,double squaredAlarmDist)const;
+
+    double squaredDistance(const DSAPBox & other)const;
+
+    double squaredDistance(const DSAPBox & other,int axis)const;
+
 
     inline void show()const{
         std::cout<<"MIN "<<cube.minVect()<<std::endl;
@@ -95,6 +102,8 @@ public:
     typedef List<EndPoint*,Allocator<EndPoint*> > EndPointList;
 
     typedef DSAPBox SAPBox;
+
+    //void collidingCubes(std::vector<std::pair<Cube,Cube> > & col_cubes)const;
 private:
     /**
       *Returns the axis number which have the greatest variance for the primitive end points.
@@ -125,6 +134,10 @@ private:
 
     std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
     std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
+
+    double _alarmDist;
+    double _alarmDist_d2;
+    double _sq_alarmDist;
 protected:
     TDirectSAP();
 

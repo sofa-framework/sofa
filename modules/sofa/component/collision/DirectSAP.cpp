@@ -48,7 +48,20 @@ namespace component
 namespace collision
 {
 
-bool DSAPBox::overlaps(const DSAPBox &other) const{return overlaps(other,0) && overlaps(other,1) && overlaps(other,2);}
+bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{
+    return overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist);
+    //return overlaps(other,0,alarmDist) && overlaps(other,1,alarmDist) && overlaps(other,2,alarmDist);
+}
+
+double DSAPBox::squaredDistance(const DSAPBox & other)const{
+    double dist2 = 0;
+
+    for(int axis = 0 ; axis < 3 ; ++axis){
+        dist2 += squaredDistance(other,axis);
+    }
+
+    return dist2;
+}
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
