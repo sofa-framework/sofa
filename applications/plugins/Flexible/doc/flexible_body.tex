@@ -75,7 +75,7 @@ New mappings are introduced to compute material deformations based on node posit
 FEM and mesh-less models use different position-deformation mappings. The remaining components (strain measures, constitutive laws) are common to the two approaches.
 \end{abstract}
 
-\section{Overview}
+\section{Motivation}
 
 In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator.
 Figure~\ref{fig modularity mass-spring} shows an example of the increased modularity.
@@ -105,6 +105,15 @@ In Flexible, we have leveraged this property to propose a unified approach to th
  \caption{Improved modularity. $X$ denotes a state component, $M$ is mass, and $F$ a force field, while arrows represent mappings. $X_p$ represents particle positions while $X_e$ represents spring extensions, and $F_s$ represents spring forces while $F_e$ represent extension forces.}
  \label{fig modularity mass-spring}
 \end{figure}
+
+
+\subsection{Continuous media mechanics}
+
+
+
+
+
+
 
 
 The numerical simulation of continuous deformable objects is based on a discrete number of independent degrees of freedom (DOFs) which we will call the nodes. They are kinematic primitives (can be points, frames, etc.).
