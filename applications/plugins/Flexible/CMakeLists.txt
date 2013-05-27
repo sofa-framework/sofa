@@ -143,7 +143,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_Flexible" "EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET")
+set(COMPILER_DEFINES "SOFA_BUILD_Flexible" )
 set(LINKER_DEPENDENCIES SofaGuiQt)
 
 if(SOFA-PLUGIN_IMAGE)
@@ -167,5 +167,10 @@ if(WIN32)
 else()
 	include_directories("/usr/include/suitesparse/")
 endif()
+if(UNIX)
+    link_directories("/usr/lib/x86_64-linux-gnu/")
+    list(APPEND LINKER_DEPENDENCIES "pthread")
+endif()
+
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
