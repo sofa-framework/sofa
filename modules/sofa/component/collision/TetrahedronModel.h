@@ -52,7 +52,7 @@ class Tetrahedron : public core::TCollisionElementIterator<TetrahedronModel>
 public:
     Tetrahedron(TetrahedronModel* model, int index);
     Tetrahedron() {};
-    explicit Tetrahedron(core::CollisionElementIterator& i);
+    explicit Tetrahedron(const core::CollisionElementIterator& i);
 
     const Vector3& p1() const;
     const Vector3& p2() const;
@@ -138,7 +138,7 @@ inline Tetrahedron::Tetrahedron(TetrahedronModel* model, int index)
     : core::TCollisionElementIterator<TetrahedronModel>(model, index)
 {}
 
-inline Tetrahedron::Tetrahedron(core::CollisionElementIterator& i)
+inline Tetrahedron::Tetrahedron(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<TetrahedronModel>(static_cast<TetrahedronModel*>(i.getCollisionModel()), i.getIndex())
 {}
 

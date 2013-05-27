@@ -49,7 +49,7 @@ class Ray : public core::TCollisionElementIterator<RayModel>
 public:
     Ray(RayModel* model, int index);
 
-    explicit Ray(core::CollisionElementIterator& i);
+    explicit Ray(const core::CollisionElementIterator& i);
 
     const Vector3& origin() const;
     const Vector3& direction() const;
@@ -114,7 +114,7 @@ inline Ray::Ray(RayModel* model, int index)
     : core::TCollisionElementIterator<RayModel>(model, index)
 {}
 
-inline Ray::Ray(core::CollisionElementIterator& i)
+inline Ray::Ray(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
 {
 }

@@ -61,7 +61,7 @@ public:
     TLine(ParentModel* model, int index);
     TLine() {}
 
-    explicit TLine(core::CollisionElementIterator& i);
+    explicit TLine(const core::CollisionElementIterator& i);
 
     unsigned i1() const;
     unsigned i2() const;
@@ -211,7 +211,7 @@ inline TLine<DataTypes>::TLine(ParentModel* model, int index)
 }
 
 template<class DataTypes>
-inline TLine<DataTypes>::TLine(core::CollisionElementIterator& i)
+inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 //	LineModel* CM = static_cast<LineModel*>(i.getCollisionModel());

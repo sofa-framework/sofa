@@ -66,7 +66,7 @@ public:
 
     TCapsule(ParentModel* model, int index);
 
-    explicit TCapsule(core::CollisionElementIterator& i);
+    explicit TCapsule(const core::CollisionElementIterator& i);
 
     /**
       *Gives one apex of the capsule segment.
@@ -177,7 +177,7 @@ inline TCapsule<DataTypes>::TCapsule(ParentModel* model, int index)
 {}
 
 template<class DataTypes>
-inline TCapsule<DataTypes>::TCapsule(core::CollisionElementIterator& i)
+inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
