@@ -54,7 +54,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
 
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
     //std::cout<<"addForce with p_0 ="<<p_0<<" getX0"<<(*this->mstate->getX0())<<std::endl;
 
@@ -200,7 +200,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
         const VecIndex& indices = points.getValue();
         const VecIndex& ext_indices=external_points.getValue();
 
-        sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
         sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
         //  if(ext_indices.size() == indices.size())
@@ -235,7 +235,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
         const VecIndex& indices = points.getValue();
         const VecIndex& ext_indices=external_points.getValue();
 
-        sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+        sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
         sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
 
@@ -284,7 +284,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
 
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
     f1.resize(p1.size());
 
@@ -385,7 +385,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
     const VecIndex& indices = points.getValue();
     const VecIndex& ext_indices=external_points.getValue();
 
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
 //  if(ext_indices.size() == indices.size())
@@ -454,7 +454,7 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualPara
     if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 

@@ -167,11 +167,17 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
 
 template<class DataTypes>
+const typename RestShapeSpringsForceField<DataTypes>::DataVecCoord* RestShapeSpringsForceField<DataTypes>::getExtPosition() const
+{
+    return (useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+}
+
+template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
     f1.resize(p1.size());
 

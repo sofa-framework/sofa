@@ -119,6 +119,10 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const sofa::core::MechanicalParams* mparams);
 #endif
 
+    const DataVecCoord* getExtPosition() const;
+    const VecIndex& getIndices() const { return m_indices; }
+    const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
+
 protected :
 
     void recomputeIndices();
