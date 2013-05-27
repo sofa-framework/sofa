@@ -18,7 +18,9 @@ HEADERS += initGraphComponent.h \
            contextobject/Gravity.h \
            misc/PauseAnimation.h \
            misc/PauseAnimationOnEvent.h \
-           misc/RequiredPlugin.h
+           misc/RequiredPlugin.h \
+           misc/InteractingBehaviorModel.h \
+
 
 SOURCES += initGraphComponent.cpp \
            configurationsetting/AddFrameButtonSetting.cpp \

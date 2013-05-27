@@ -16,6 +16,7 @@ set(HEADER_FILES
     ../misc/PauseAnimation.h 
     ../misc/PauseAnimationOnEvent.h 
     ../misc/RequiredPlugin.h
+    ../misc/InteractingBehaviorModel.h
 
     )
     
