@@ -61,7 +61,7 @@ public:
 
     TTriangle(ParentModel* model, int index);
     TTriangle() {}
-    explicit TTriangle(core::CollisionElementIterator& i);
+    explicit TTriangle(const core::CollisionElementIterator& i);
 
     const Coord& p1() const;
     const Coord& p2() const;
@@ -236,7 +236,7 @@ inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
 {}
 
 template<class DataTypes>
-inline TTriangle<DataTypes>::TTriangle(core::CollisionElementIterator& i)
+inline TTriangle<DataTypes>::TTriangle(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {}
 

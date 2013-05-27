@@ -60,7 +60,7 @@ public:
     TPoint(ParentModel* model, int index);
     TPoint() {}
 
-    explicit TPoint(core::CollisionElementIterator& i);
+    explicit TPoint(const core::CollisionElementIterator& i);
 
     const Coord& p() const;
     const Coord& pFree() const;
@@ -190,7 +190,7 @@ inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
 }
 
 template<class DataTypes>
-inline TPoint<DataTypes>::TPoint(core::CollisionElementIterator& i)
+inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 

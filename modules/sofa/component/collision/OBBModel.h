@@ -74,7 +74,7 @@ public:
 
     TOBB(ParentModel* model, int index);
 
-    explicit TOBB(core::CollisionElementIterator& i);
+    explicit TOBB(const core::CollisionElementIterator& i);
 
     /**
       *Returns the axis of the local frame at i-th dimension.
@@ -274,7 +274,7 @@ inline TOBB<DataTypes>::TOBB(ParentModel* model, int index)
 {}
 
 template<class DataTypes>
-inline TOBB<DataTypes>::TOBB(core::CollisionElementIterator& i)
+inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }

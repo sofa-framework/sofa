@@ -62,7 +62,7 @@ public:
 
     RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
 
-    explicit RigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
+    explicit RigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
     DistanceGrid* getGrid();
 
@@ -220,7 +220,7 @@ inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(Rigi
     : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(model, index)
 {}
 
-inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(core::CollisionElementIterator& i)
+inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(static_cast<RigidDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
@@ -255,7 +255,7 @@ public:
 
     FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
 
-    explicit FFDDistanceGridCollisionElement(core::CollisionElementIterator& i);
+    explicit FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
     DistanceGrid* getGrid();
 
@@ -483,7 +483,7 @@ inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDista
     : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(model, index)
 {}
 
-inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(core::CollisionElementIterator& i)
+inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(static_cast<FFDDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }

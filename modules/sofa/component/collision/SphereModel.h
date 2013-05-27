@@ -103,7 +103,7 @@ public:
 
     TSphere(ParentModel* model, int index);
 
-    explicit TSphere(core::CollisionElementIterator& i);
+    explicit TSphere(const core::CollisionElementIterator& i);
 
     const Coord& center() const;
     const typename TDataTypes::Coord & rigidCenter() const;
@@ -227,7 +227,7 @@ protected:
 
 //    TSphere(ParentModel* model, int index);
 
-//    explicit TSphere(core::CollisionElementIterator& i);
+//    explicit TSphere(const core::CollisionElementIterator& i);
 
 //    const Coord& center() const;
 //    const Coord& p() const;
@@ -340,7 +340,7 @@ inline TSphere<DataTypes>::TSphere(ParentModel* model, int index)
 {}
 
 template<class DataTypes>
-inline TSphere<DataTypes>::TSphere(core::CollisionElementIterator& i)
+inline TSphere<DataTypes>::TSphere(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
