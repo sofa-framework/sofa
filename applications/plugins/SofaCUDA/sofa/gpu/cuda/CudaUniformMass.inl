@@ -165,8 +165,8 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::Rigid3fMass>::a
 
 	UniformMassCudaRigid3f_addMDx(_dx.size(), (float)(mass.getValue().mass*factor), _f.deviceWrite(), _dx.deviceRead());
 
-	for(int i = 0 ; i < _f.size() ; ++i)
-		std::cout << "CPU "<< i << "  : " << _f[i] << std::endl;
+//	for(int i = 0 ; i < _f.size() ; ++i)
+//		std::cout << "CPU "<< i << "  : " << _f[i] << std::endl;
 
 	f.endEdit();
 }
