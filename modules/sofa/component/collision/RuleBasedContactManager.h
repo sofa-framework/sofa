@@ -111,13 +111,25 @@ public:
         }
     };
 
+    Data< std::string > d_variables;
     Data< helper::vector<Rule> > rules;
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
 
+    void createVariableData ( std::string variable )
+    {
+        Data<double>* d = new Data<double>("", true, false);
+        d->setName(variable);
+        this->addData(d);
+    }
+
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+
 protected:
     RuleBasedContactManager();
     ~RuleBasedContactManager();
+
+    std::string replaceVariables(std::string response);
 };
 
 } // namespace collision
