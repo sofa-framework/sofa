@@ -196,7 +196,11 @@ void SofaHAPIHapticsDevice::bwdInit()
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     vector<ForceFeedback*> ffs;
     context->get<ForceFeedback>(&ffs, sofa::core::objectmodel::BaseContext::SearchRoot);
-    sout << ffs.size()<<" ForceFeedback objects found"<<sendl;
+    sout << ffs.size()<<" ForceFeedback objects found:";
+    for ( size_t i= 0; i < ffs.size(); ++i ) {
+        sout << " " << ffs[i]->getContext()->getName()<<"/"<<ffs[i]->getName();
+    }
+    sout << sendl;
 
     setDataValue();
     setForceFeedbacks(ffs);

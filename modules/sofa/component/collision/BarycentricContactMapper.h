@@ -129,7 +129,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
     {
-        return this->mapper->createPointInLine(P, index, this->model->getMechanicalState()->getX());
+        return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), this->model->getMechanicalState()->getX());
     }
 
 };

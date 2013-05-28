@@ -153,6 +153,9 @@ public:
 
     LineLocalMinDistanceFilter *getFilter() const;
 
+    virtual int getElemEdgeIndex(int index) const { return index; }
+
+
     //template< class TFilter >
     //TFilter *getFilter() const
     //{

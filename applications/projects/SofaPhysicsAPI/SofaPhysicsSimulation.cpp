@@ -173,7 +173,7 @@ useGUI(useGUI_)
           if (sofa::gui::GUIManager::createGUI(NULL))
               std::cerr << "ERROR in sofa::gui::GUIManager::CreateGUI()" << std::endl;
 
-          sofa::gui::GUIManager::SetDimension(1,600);
+          sofa::gui::GUIManager::SetDimension(600,600);
         }
         first = false;
     }
