@@ -364,10 +364,23 @@ SOFA_DECL_CLASS ( AffineMechanicalObject )
 using namespace sofa::defaulttype;
 
 int AffineMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-        .add< MechanicalObject<Affine3Types> >()
+    #ifndef SOFA_FLOAT
+        .add< MechanicalObject<Affine3dTypes> >()
+    #endif
+    #ifndef SOFA_DOUBLE
+        .add< MechanicalObject<Affine3fTypes> >()
+    #endif
         ;
 
-template class SOFA_Flexible_API MechanicalObject<Affine3Types>;
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API MechanicalObject<Affine3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API MechanicalObject<Affine3fTypes>;
+#endif
+
 
 
 } // namespace container
@@ -491,10 +504,23 @@ double UniformMass<defaulttype::Affine3fTypes, defaulttype::Affine3fMass>::getPo
     using namespace sofa::defaulttype;
 
     int AffineUniformMassClass = core::RegisterObject ( "Define the same mass for all the particles" )
-            .add< UniformMass<Affine3Types,Affine3Mass> >()
+#ifndef SOFA_FLOAT
+    .add< UniformMass<Affine3dTypes,Affine3dMass> >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< UniformMass<Affine3fTypes,Affine3fMass> >()
+#endif
             ;
 
-    template class SOFA_Flexible_API UniformMass<Affine3Types,Affine3Mass>;
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UniformMass<Affine3dTypes,Affine3dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UniformMass<Affine3fTypes,Affine3fMass>;
+#endif
+
 
 } // namespace mass
 
@@ -505,15 +531,46 @@ namespace misc
 SOFA_DECL_CLASS( AffineMonitor )
 // Register in the Factory
 int AffineMonitorClass = core::RegisterObject("Monitoring of particles")
-        .add< Monitor<defaulttype::Affine3Types> >();
-template class SOFA_Flexible_API Monitor<defaulttype::Affine3Types>;
+#ifndef SOFA_FLOAT
+        .add< Monitor<defaulttype::Affine3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< Monitor<defaulttype::Affine3fTypes> >()
+#endif
+    ;
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API Monitor<defaulttype::Affine3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API Monitor<defaulttype::Affine3fTypes>;
+#endif
+
+
+
 
 
 SOFA_DECL_CLASS( AffineExtraMonitor )
 // Register in the Factory
 int AffineExtraMonitorClass = core::RegisterObject("Monitoring of particles")
-        .add< ExtraMonitor<defaulttype::Affine3Types> >();
-template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3Types>;
+#ifndef SOFA_FLOAT
+    .add< ExtraMonitor<defaulttype::Affine3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< ExtraMonitor<defaulttype::Affine3fTypes> >()
+#endif
+;
+
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API ExtraMonitor<defaulttype::Affine3fTypes>;
+#endif
+
+
 
 } // namespace misc
 
@@ -557,8 +614,21 @@ void UncoupledConstraintCorrection< defaulttype::Affine3Types >::init()
 SOFA_DECL_CLASS( AffineUncoupledConstraintCorrection )
 // Register in the Factory
 int AffineUncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
-        .add< UncoupledConstraintCorrection<defaulttype::Affine3Types> >();
-template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affine3Types>;
+#ifndef SOFA_FLOAT
+    .add< UncoupledConstraintCorrection<defaulttype::Affine3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< UncoupledConstraintCorrection<defaulttype::Affine3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affine3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::Affine3fTypes>;
+#endif
+
 
 } // namespace constraintset
 
@@ -569,13 +639,49 @@ SOFA_DECL_CLASS(AffineIdentityMapping)
 
 // Register in the Factory
 int AffineIdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
-        .add< IdentityMapping< defaulttype::Affine3Types, defaulttype::Vec3Types > >()
-        .add< IdentityMapping< defaulttype::Affine3Types, defaulttype::ExtVec3fTypes > >()
+#ifndef SOFA_FLOAT
+        .add< IdentityMapping< defaulttype::Affine3dTypes, defaulttype::Vec3dTypes > >()
+        .add< IdentityMapping< defaulttype::Affine3dTypes, defaulttype::ExtVec3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< IdentityMapping< defaulttype::Affine3fTypes, defaulttype::Vec3fTypes > >()
+        .add< IdentityMapping< defaulttype::Affine3fTypes, defaulttype::ExtVec3fTypes > >()
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< IdentityMapping< defaulttype::Affine3fTypes, defaulttype::Vec3fTypes > >()
+        .add< IdentityMapping< defaulttype::Affine3fTypes, defaulttype::ExtVec3fTypes > >()
+        .add< IdentityMapping< defaulttype::Affine3dTypes, defaulttype::Vec3fTypes > >()
+        .add< IdentityMapping< defaulttype::Affine3dTypes, defaulttype::ExtVec3fTypes > >()
+#endif
+#endif
         ;
 
 
-template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::Vec3Types >;
-template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3Types, defaulttype::ExtVec3fTypes >;
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3dTypes, defaulttype::Vec3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3dTypes, defaulttype::ExtVec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3fTypes, defaulttype::Vec3fTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3fTypes, defaulttype::ExtVec3fTypes >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3fTypes, defaulttype::Vec3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3fTypes, defaulttype::ExtVec3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3dTypes, defaulttype::Vec3fTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::Affine3dTypes, defaulttype::ExtVec3fTypes >;
+#endif
+#endif
+
+
+
+///////////////////////////////
+
+
 
 int AffineSubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT
@@ -587,10 +693,10 @@ int AffineSubsetMultiMappingClass = core::RegisterObject("Compute a subset of th
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_Flexible_API SubsetMultiMapping< Affine3dTypes, Affine3dTypes >;
+    template class SOFA_Flexible_API SubsetMultiMapping< Affine3dTypes, Affine3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API SubsetMultiMapping< Affine3fTypes, Affine3fTypes >;
+    template class SOFA_Flexible_API SubsetMultiMapping< Affine3fTypes, Affine3fTypes >;
 #endif
 
 
@@ -603,9 +709,21 @@ namespace engine
 
     // Register in the Factory
     int AffineBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
-            .add< BoxROI< defaulttype::Affine3Types > >();
+#ifndef SOFA_FLOAT
+            .add< BoxROI< defaulttype::Affine3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+            .add< BoxROI< defaulttype::Affine3fTypes > >()
+#endif
+    ;
 
-    template class SOFA_Flexible_API BoxROI< defaulttype::Affine3Types >;
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API BoxROI< defaulttype::Affine3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API BoxROI< defaulttype::Affine3fTypes >;
+#endif
 
 } // namespace engine
 
@@ -619,7 +737,14 @@ namespace core
 namespace behavior
 {
 
-template class SOFA_Flexible_API ForceField< defaulttype::Affine3Types >;
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API ForceField< defaulttype::Affine3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API ForceField< defaulttype::Affine3fTypes >;
+#endif
+
 
 } // namespace behavior
 

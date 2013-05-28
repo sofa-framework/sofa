@@ -8,8 +8,6 @@
 //#include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 
-#include <Flexible/types/AffineTypes.h>
-
 #include <sofa/helper/gl/template.h>
 
 namespace sofa
