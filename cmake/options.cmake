@@ -79,6 +79,15 @@ else()
 	set(SOFA-EXTERNAL_HAVE_BOOST 0 CACHE INTERNAL "Use the system / user compiled boost library instead of extlib/miniBoost" FORCE)
 endif()
 
+## geometric tools
+set(SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH "" CACHE PATH "Path to Geometric tools folder containing the cmake project")
+if(EXISTS ${SOFA-EXTERNAL_GEOMETRIC_TOOLS_PATH})
+	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 1 CACHE INTERNAL "Build and use geometric tools" FORCE)
+	list(APPEND compilerDefines SOFA_HAVE_GEOMETRIC_TOOLS)
+else()
+	set(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS 0 CACHE INTERNAL "Build and use geometric tools" FORCE)
+endif()
+
 ## tinyxml
 option(SOFA-EXTERNAL_TINYXML_AVAILABLE "A pre-compiled tinyxml library is available" OFF)
 set(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR "" CACHE PATH "For pre-compiled tinyxml: library where headers are available")

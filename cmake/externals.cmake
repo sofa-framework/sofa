@@ -140,7 +140,7 @@ RegisterDependencies(${GLEW_LIBRARIES} OPTION SOFA-EXTERNAL_HAVE_GLEW COMPILE_DE
 RegisterDependencies(${GLUT_LIBRARIES})
 RegisterDependencies(${PNG_LIBRARIES} OPTION SOFA-EXTERNAL_HAVE_PNG COMPILE_DEFINITIONS SOFA_HAVE_PNG)
 
-# unit tests
+# enable unit tests
 if(SOFA-MISC_TESTS)
 	enable_testing()
 endif()

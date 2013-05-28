@@ -99,7 +99,11 @@ void SofaPluginManager::addLibrary()
 {
     // compute the plugin directory path
     QDir dir = QCoreApplication::applicationDirPath();
+#if defined (WIN32)
+	dir.cd("../bin");
+#else
     dir.cd("../lib");
+#endif
     QString pluginPath = dir.canonicalPath();
     //get the lib to load
 #if defined (__APPLE__)

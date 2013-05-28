@@ -49,17 +49,65 @@ namespace helper
 
 namespace system
 {
+
+#ifndef SOFA_SRC_BIN_DIR
+#define SOFA_SRC_BIN_DIR ""
+#endif
+
+#ifndef SOFA_BUILD_DIR
+#define SOFA_BUILD_DIR "../"
+#endif
+
 #if defined (WIN32) || defined (_XBOX)
-FileRepository PluginRepository("SOFA_PLUGIN_PATH","../bin");
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", sofa_concat(SOFA_BUILD_DIR, "../bin"));
 #else
-FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib");
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", sofa_concat(SOFA_BUILD_DIR, "../lib"));
 #endif
 #if defined (WIN32) || defined (_XBOX) || defined(PS3)
-FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
+FileRepository DataRepository("SOFA_DATA_PATH", sofa_concat(
+													sofa_concat(SOFA_BUILD_DIR, ";"),
+													sofa_concat(
+														sofa_concat(SOFA_SRC_BIN_DIR, "../share;"),
+														sofa_concat(SOFA_SRC_BIN_DIR, "../examples")
+																)
+															)
+							 );
 #elif defined (__APPLE__)
-FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
-#else
-FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation");
+FileRepository DataRepository("SOFA_DATA_PATH", sofa_concat(
+													sofa_concat(SOFA_BUILD_DIR, ":"),
+													sofa_concat(
+														sofa_concat(SOFA_SRC_BIN_DIR, "../share:",),
+														sofa_concat(
+															sofa_concat(SOFA_SRC_BIN_DIR, "../examples:"),
+															sofa_concat(
+																sofa_concat(SOFA_SRC_BIN_DIR, "../Resources/examples:"),
+																sofa_concat(
+																	sofa_concat(SOFA_SRC_BIN_DIR, "../Resources:"),
+																	sofa_concat(
+																		sofa_concat(SOFA_SRC_BIN_DIR, "../../../../examples:"),
+																		sofa_concat(SOFA_SRC_BIN_DIR, "../../../../share")
+																				)
+																			)
+																		)
+																	)
+																)
+															)
+								);
+#else // LINUX
+FileRepository DataRepository("SOFA_DATA_PATH", sofa_concat(
+													sofa_concat(SOFA_BUILD_DIR, ":"),
+													sofa_concat(
+														sofa_concat(SOFA_SRC_BIN_DIR, "../share:"),
+														sofa_concat(
+															sofa_concat(SOFA_SRC_BIN_DIR, "../examples:"),
+															sofa_concat(
+																sofa_concat(SOFA_SRC_BIN_DIR, "../../Verification/data:"),
+																sofa_concat(SOFA_SRC_BIN_DIR, "../../Verification/simulation")
+																		)
+																	)
+																)
+															)
+								);
 #endif
 
 #if defined (_XBOX) || defined(PS3)

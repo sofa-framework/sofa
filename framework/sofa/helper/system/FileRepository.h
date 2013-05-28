@@ -53,14 +53,14 @@ namespace system
 ///
 /// For file name starting with '/', './' or '../' only the first step is used.
 ///
-/// A path is considered as a concatenation of directories separated by :
+/// A path is considered as a concatenation of directories separated by : on linux / mac and ; on windows
 // A small utility class to temporarly set the current directory to the same as a specified file
 class SOFA_HELPER_API FileRepository
 {
 public:
 
     /// Initialize the set of paths from an environment variable.
-    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = "../share" );
+    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = 0);
 
     ~FileRepository();
 
