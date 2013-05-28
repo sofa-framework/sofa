@@ -43,7 +43,8 @@ int RuleBasedContactManagerClass = core::RegisterObject("Create different respon
         ;
 
 RuleBasedContactManager::RuleBasedContactManager()
-    : rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
+    : d_variables(initData(&d_variables, "variables", "Define a list of variables to be used inside the rules"))
+    , rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
             "The first two define either the name of the collision model, its group number, or * meaning any model.\n"
             "The last string define the response algorithm to use for contacts matched by this rule.\n"
             "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
@@ -52,6 +53,20 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
+}
+
+
+std::string RuleBasedContactManager::replaceVariables(std::string response)
+{
+/*    std::string::size_type var = it->response.find('$');
+    std::string res;
+    while (var != std::string::npos)
+    {
+        std::string::size_type next = it->response.find('$');
+        std::string val(response, var+1, (next == std::string::npos ? response.size() : next) - (var+1));
+
+    }*/
+    return response;
 }
 
 
@@ -67,10 +82,25 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     for (helper::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
     {
         if (it->match(model1, model2) || it->match(model2, model1))
-            return it->response; // rule it matched
+            return replaceVariables(it->response); // rule it matched
     }
     // no rule matched
     return DefaultContactManager::getContactResponse(model1, model2);
+}
+
+void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    const char* v = arg->getAttribute(d_variables.getName().c_str());
+    if (v)
+    {
+        std::istringstream variavlesStr(v);
+        std::string var;
+        while(!variavlesStr.eof())
+        {
+            variavlesStr >> var;
+            createVariableData(var);
+        }
+    }
 }
 
 } // namespace collision
