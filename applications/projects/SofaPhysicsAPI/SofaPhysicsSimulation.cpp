@@ -27,8 +27,8 @@
 #include <math.h>
 #include <iostream>
 
-SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI)
-    : impl(new Impl(useGUI))
+SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI, int GUIFramerate)
+    : impl(new Impl(useGUI, GUIFramerate))
 {
 }
 
@@ -151,8 +151,8 @@ using namespace sofa::helper::gl;
 
 static sofa::core::ObjectFactory::ClassEntry* classVisualModel = NULL;
 
-SofaPhysicsSimulation::Impl::Impl(bool useGUI_) :
-useGUI(useGUI_)
+SofaPhysicsSimulation::Impl::Impl(bool useGUI_, int GUIFramerate_) :
+useGUI(useGUI_), GUIFramerate(GUIFramerate_)
 {
     static bool first = true;
     if (first)
@@ -201,6 +201,7 @@ useGUI(useGUI_)
     timeTicks = sofa::helper::system::thread::CTime::getRefTicksPerSec();
     frameCounter = 0;
     currentFPS = 0.0;
+    lastRedrawTime = 0;
 }
 
 SofaPhysicsSimulation::Impl::~Impl()
@@ -252,6 +253,7 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
     initTexturesDone = false;
     lastW = 0;
     lastH = 0;
+    lastRedrawTime = sofa::helper::system::thread::CTime::getRefTime();
 
 //    if (isAnimated() != wasAnimated)
 //        animatedChanged();
@@ -376,6 +378,15 @@ void SofaPhysicsSimulation::Impl::step()
     if ( useGUI ) {
       sofa::gui::qt::RealGUI* gui= static_cast<sofa::gui::qt::RealGUI*>(sofa::gui::GUIManager::getGUI());
       gui->stepMainLoop();
+      if (GUIFramerate)
+      {
+          sofa::helper::system::thread::ctime_t curtime = sofa::helper::system::thread::CTime::getRefTime();
+          if ((curtime-lastRedrawTime) > (double)timeTicks/GUIFramerate)
+          {
+              lastRedrawTime = curtime;
+              gui->redraw();
+          }
+      }
     }
     endStep();
 }
@@ -407,6 +418,10 @@ void SofaPhysicsSimulation::Impl::updateCurrentFPS()
             int i = ((frameCounter/10)%10);
             currentFPS = ((double)timeTicks / (curtime - stepTime[i]))*(frameCounter<100?frameCounter:100);
             stepTime[i] = curtime;
+            if ( useGUI ) {
+                sofa::gui::qt::RealGUI* gui= static_cast<sofa::gui::qt::RealGUI*>(sofa::gui::GUIManager::getGUI());
+                gui->showFPS(currentFPS);
+            }
         }
     }
     ++frameCounter;
