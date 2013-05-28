@@ -1,0 +1,28 @@
+
+
+
+// preprocessor functions to concatenate 2 variables
+#undef PASTER
+#undef EVALUATOR
+
+// define all needed types based on TYPEABSTRACTNAME
+#undef TYPEABSTRACTNAME3Types
+#undef TYPEABSTRACTNAME3dTypes
+#undef TYPEABSTRACTNAME3fTypes
+#undef StdTYPEABSTRACTNAMETypes
+#undef TYPEABSTRACTNAMEMass
+#undef TYPEABSTRACTNAME3Mass
+#undef TYPEABSTRACTNAME3dMass
+#undef TYPEABSTRACTNAME3fMass
+#undef FLEXIBLE_TYPEABSTRACTNAMEComponents_CPP
+
+
+
+#undef XSTRINGINFICATION
+#undef STRINGINFICATION
+
+#undef HEADERINCLUDE
+#undef HEADERTYPESINCLUDE
+
+
+#undef TYPEABSTRACTNAME
