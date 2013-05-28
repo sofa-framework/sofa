@@ -1417,18 +1417,7 @@ void RealGUI::eventNewStep()
         ctime_t curtime = CTime::getRefTime();
         int i = ( ( frameCounter/10 ) %10 );
         double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
-
-#ifndef SOFA_GUI_QT_NO_RECORDER
-        if (recorder)
-            recorder->setFPS(fps);
-#else
-        if (fpsLabel)
-        {
-            char buf[100];
-            sprintf ( buf, "%.1f FPS", fps );
-            fpsLabel->setText ( buf );
-        }
-#endif
+        showFPS(fps);
 
         beginTime[i] = curtime;
     }
@@ -1437,6 +1426,21 @@ void RealGUI::eventNewStep()
     {
         /// @TODO: use AdvancedTimer in GUI to display time statistics
     }
+}
+
+void RealGUI::showFPS(double fps)
+{
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder)
+        recorder->setFPS(fps);
+#else
+    if (fpsLabel)
+    {
+        char buf[100];
+        sprintf ( buf, "%.1f FPS", fps );
+        fpsLabel->setText ( buf );
+    }
+#endif
 }
 
 //------------------------------------

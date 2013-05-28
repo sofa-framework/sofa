@@ -17,7 +17,7 @@
 class SofaPhysicsSimulation::Impl
 {
 public:
-    Impl(bool useGUI_ = false);
+    Impl(bool useGUI_ = false, int GUIFramerate_ = 0);
     ~Impl();
 
     bool load(const char* filename);
@@ -75,11 +75,13 @@ protected:
     bool initGLDone;
     bool initTexturesDone;
     bool useGUI;
+    int GUIFramerate;
     sofa::core::visual::VisualParams* vparams;
     sofa::core::visual::DrawToolGL   drawTool;
 
     sofa::helper::system::thread::ctime_t stepTime[10];
     sofa::helper::system::thread::ctime_t timeTicks;
+    sofa::helper::system::thread::ctime_t lastRedrawTime;
     int frameCounter;
     double currentFPS;
 

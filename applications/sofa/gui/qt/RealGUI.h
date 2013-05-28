@@ -153,6 +153,7 @@ public:
     virtual void setTraceVisitors(bool);
 #endif
 
+    virtual void showFPS(double fps);
 
 public slots:
 #ifdef SOFA_QT4
