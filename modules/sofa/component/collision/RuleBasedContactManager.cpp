@@ -53,20 +53,67 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
+    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
+        itend = variablesData.end(); it != itend; ++it)
+    {
+        //this->removeData(it->second);
+        delete it->second;
+    }
 }
 
+void RuleBasedContactManager::createVariableData ( std::string variable )
+{
+    Data<std::string>* d = new Data<std::string>("", true, false);
+    d->setName(variable);
+    d->setGroup("Variables");
+    this->addData(d);
+    variablesData[variable] = d;
+}
 
 std::string RuleBasedContactManager::replaceVariables(std::string response)
 {
-/*    std::string::size_type var = it->response.find('$');
     std::string res;
-    while (var != std::string::npos)
+    std::string::size_type next = 0;
+    while(next < response.size())
     {
-        std::string::size_type next = it->response.find('$');
-        std::string val(response, var+1, (next == std::string::npos ? response.size() : next) - (var+1));
-
-    }*/
-    return response;
+        std::string::size_type var = response.find('$', next);
+        if (var == std::string::npos) // no more variables
+        {
+            res.append(response.substr(next));
+            break;
+        }
+        else
+        {
+            if (var > next)
+                res.append(response.substr(next,var-next));
+            std::string::size_type varEnd = response.find('$', var+1);
+            if (varEnd == std::string::npos) // parse error
+            {
+                serr << "Error parsing variables in rule " << response << sendl;
+                res.append(response.substr(var));
+                break;
+            }
+            else
+            {
+                std::string varname = response.substr(var+1,varEnd-var-1);
+                std::string varvalue;
+                std::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
+                if (it == variablesData.end())
+                {
+                    serr << "Unknown variables " << varname << sendl;
+                }
+                else
+                {
+                    varvalue = it->second->getValue();
+                }
+                res.append(varvalue);
+                next = varEnd+1;
+            }
+        }
+    }
+    if (this->f_printLog.getValue())
+        sout << "Output response string : " << res << sendl;
+    return res;
 }
 
 
@@ -85,7 +132,7 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
             return replaceVariables(it->response); // rule it matched
     }
     // no rule matched
-    return DefaultContactManager::getContactResponse(model1, model2);
+    return replaceVariables(DefaultContactManager::getContactResponse(model1, model2));
 }
 
 void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
@@ -93,14 +140,14 @@ void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescrip
     const char* v = arg->getAttribute(d_variables.getName().c_str());
     if (v)
     {
-        std::istringstream variavlesStr(v);
+        std::istringstream variablesStr(v);
         std::string var;
-        while(!variavlesStr.eof())
+        while(variablesStr >> var)
         {
-            variavlesStr >> var;
             createVariableData(var);
         }
     }
+    Inherit1::parse(arg);
 }
 
 } // namespace collision

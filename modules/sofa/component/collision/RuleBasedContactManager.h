@@ -116,18 +116,15 @@ public:
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
 
-    void createVariableData ( std::string variable )
-    {
-        Data<double>* d = new Data<double>("", true, false);
-        d->setName(variable);
-        this->addData(d);
-    }
+    void createVariableData ( std::string variable );
 
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
 protected:
     RuleBasedContactManager();
     ~RuleBasedContactManager();
+
+    std::map<std::string,Data<std::string>* > variablesData;
 
     std::string replaceVariables(std::string response);
 };
