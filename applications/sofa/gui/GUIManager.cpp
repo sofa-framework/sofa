@@ -102,7 +102,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 const char* GUIManager::GetValidGUIName()
 {
     const char* name;
-    std::string lastGuiFilename = "config/lastUsedGUI.ini";
+    std::string lastGuiFilename = "share/config/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
@@ -219,7 +219,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
         //Save this GUI type as the last used GUI
         std::string lastGUIfileName;
         std::string path = sofa::helper::system::DataRepository.getFirstPath();
-        lastGUIfileName = path.append("/config/lastUsedGUI.ini");
+        lastGUIfileName = path.append("/share/config/lastUsedGUI.ini");
 
         std::ofstream out(lastGUIfileName.c_str(),std::ios::out);
         out << valid_guiname << std::endl;

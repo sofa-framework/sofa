@@ -22,9 +22,17 @@ endif()
 RegisterDependencies("QGLViewer" OPTION SOFA-LIB_GUI_QGLVIEWER COMPILE_DEFINITIONS SOFA_GUI_QGLVIEWER PATH "${SOFA_EXTLIBS_DIR}/libQGLViewer-2.3.3/QGLViewer")
 RegisterDependencies("Qwt" PATH "${SOFA_EXTLIBS_DIR}/qwt-6.0.1/src")
 
+## geometric tools
+if(SOFA-EXTERNAL_HAVE_GEOMETRIC_TOOLS)
+	add_subdirectory("${SOFA_EXTERNAL_GEOMETRIC_TOOLS_PATH}")
+	# try to replace with : RegisterDependencies
+endif()
+
 ## google test
 if(SOFA-MISC_BUILD_GTEST)
 	add_subdirectory("${SOFA_EXTLIBS_DIR}/gtest")
+	# try to replace with :
+	# RegisterDependencies("gtest" "gtest_main" PATH "${SOFA_EXTLIBS_DIR}/gtest")
 endif()
 
 # framework
@@ -103,7 +111,7 @@ endforeach()
 message(STATUS "> Applying global compiler definitions : Done")
 message(STATUS "")
 
-# copy external shared objects (.dll) to the Sofa bin directory
+# copy external shared objects (.dll) to the Sofa bin directory (Windows only)
 if(WIN32)
 	## common external dlls
 	file(GLOB sharedObjects "${SOFA_SRC_DIR}/bin/dll_x86/*.dll")
@@ -119,3 +127,12 @@ if(WIN32)
 		endforeach()
 	endif()
 endif()
+
+# copying config files but .ini
+file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/*.*")
+foreach(configFile ${configFiles})
+	get_filename_component(fileExtension "${configFile}" EXT)
+	if(NOT fileExtension STREQUAL ".ini")
+		file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
+	endif()
+endforeach()

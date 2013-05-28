@@ -303,7 +303,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     backgroundImage(NULL),
     left_stack(NULL),
     pluginManager_dialog(NULL),
-    recentlyOpenedFilesManager("config/Sofa.ini"),
+    recentlyOpenedFilesManager("share/config/Sofa.ini"),
     saveReloadFile(false),
     displayFlag(NULL),
     descriptionScene(NULL),
@@ -903,7 +903,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 
 void RealGUI::fileNew()
 {
-    std::string newScene("config/newScene.scn");
+    std::string newScene("share/config/newScene.scn");
     if (sofa::helper::system::DataRepository.findFile (newScene))
         fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
 }
