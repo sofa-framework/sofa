@@ -160,7 +160,7 @@ void PythonScriptController::loadScript()
 */
 }
 
-using namespace simulation::tree;
+//using namespace simulation::tree;
 using namespace sofa::core::objectmodel;
 
 

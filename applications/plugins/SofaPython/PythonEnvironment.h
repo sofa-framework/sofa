@@ -26,7 +26,7 @@
 #define PYTHONENVIRONMENT_H
 
 
-#include <sofa/simulation/tree/GNode.h>
+//#include <sofa/simulation/tree/GNode.h>
 
 #if defined(_MSC_VER)
 // undefine _DEBUG since we want to always link to the release version of

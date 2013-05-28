@@ -3,7 +3,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/simulation/tree/GNode.h>
+//#include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -14,7 +14,7 @@
 #include "PythonScriptController.h"
 
 using namespace sofa::simulation;
-using namespace sofa::simulation::tree;
+//using namespace sofa::simulation::tree;
 using namespace sofa::core::objectmodel;
 using namespace sofa::core;
 using namespace sofa::core::loader;
