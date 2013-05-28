@@ -25,7 +25,8 @@
 #ifndef SCRIPTENVIRONMENT_H
 #define SCRIPTENVIRONMENT_H
 
-#include <sofa/simulation/tree/GNode.h>
+//#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {

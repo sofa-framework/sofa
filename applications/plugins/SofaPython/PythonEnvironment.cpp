@@ -32,7 +32,7 @@
 #include "PythonScriptController.h"
 using namespace sofa::component::controller;
 
-using namespace sofa::simulation::tree;
+//using namespace sofa::simulation::tree;
 
 namespace sofa
 {

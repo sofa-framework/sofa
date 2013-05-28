@@ -52,7 +52,10 @@ void SubsetMultiMapping<TIn, TOut>::init()
 {
 
     Inherit::init();
-    this->toModels[0]->resize(indexPairs.size());
+
+    const unsigned indexPairSize = indexPairs.getValue().size()*0.5;
+
+    this->toModels[0]->resize( indexPairSize );
 
 #ifdef SOFA_HAVE_EIGEN2
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
@@ -66,15 +69,15 @@ void SubsetMultiMapping<TIn, TOut>::init()
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
-        jacobians[i]->resize(Nout*indexPairs.size(),Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
+        jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
     }
 
     // fill the jacobians
-    for(unsigned i=0; i<indexPairs.size(); i++)
+    for(unsigned i=0; i<indexPairSize; i++)
     {
-        unsigned parent = indexPairs[i].first;
+        unsigned parent = indexPairs.getValue()[i*2];
         Jacobian* jacobian = jacobians[parent];
-        unsigned bcol = indexPairs[i].second;  // parent particle
+        unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
         for(unsigned k=0; k<Nin; k++ )
         {
             unsigned row = i*Nout + k;
@@ -83,15 +86,15 @@ void SubsetMultiMapping<TIn, TOut>::init()
     }
 //    // fill the jacobians
 //    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
-//    for(unsigned i=0; i<indexPairs.size(); i++)
+//    for(unsigned i=0; i<indexPairSize; i++)
 //    {
-//        unsigned parent = indexPairs[i].first;
+//        unsigned parent = indexPairs[i*2];
 //        Jacobian* jacobian = jacobians[parent];
 //        unsigned& brow = rowIndex[parent];
-//        unsigned bcol = indexPairs[i].second;  // parent particle
+//        unsigned bcol = indexPairs[i*2+1];  // parent particle
 //        for(unsigned k=0; k<Nin; k++ )
 //        {
-////            baseMatrices[ indexPairs[i].first ]->set( Nout*i+k, Nin*indexPairs[i].second, (SReal)1. );
+////            baseMatrices[ indexPairs[i*2] ]->set( Nout*i+k, Nin*indexPairs[i*2+1], (SReal)1. );
 //            jacobian->beginRow(Nout*brow+k);
 //            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
 //        }
@@ -138,7 +141,12 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
         serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
         assert(0);
     }
-    indexPairs.push_back(IndexPair(i,index));
+
+
+    vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
+    indexPairsVector.push_back(i);
+    indexPairsVector.push_back(index);
+    indexPairs.endEdit();
 
 }
 
@@ -147,14 +155,14 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
 {
     OutVecCoord& out = *outPos[0];
-    out.resize(indexPairs.size());
-    for(unsigned i=0; i<indexPairs.size(); i++)
+    out.resize(indexPairs.getValue().size()*0.5);
+    for(unsigned i=0; i<out.size(); i++)
     {
-//        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i].first << ", " << indexPairs[i].second <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i].first]) << endl;
+//        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i*2] << ", " << indexPairs[i*2+1] <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i*2]]) << endl;
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, out = "<< out << endl;
         out[i] =
-                (*inPos[indexPairs[i].first])
-                [indexPairs[i].second];
+                (*inPos[indexPairs.getValue()[i*2]])
+                [indexPairs.getValue()[i*2+1]];
     }
 
 }
@@ -163,10 +171,10 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename SubsetMultiMapping<TIn, TOut>::OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
     OutVecDeriv& out = *outDeriv[0];
-    out.resize(indexPairs.size());
-    for(unsigned i=0; i<indexPairs.size(); i++)
+    out.resize(indexPairs.getValue().size()*0.5);
+    for(unsigned i=0; i<out.size(); i++)
     {
-        out[i] = (*inDeriv[indexPairs[i].first])[indexPairs[i].second];
+        out[i] = (*inDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]];
     }
 }
 
@@ -181,9 +189,9 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
     const InVecDeriv& cder = *childDeriv[0];
-    for(unsigned i=0; i<indexPairs.size(); i++)
+    for(unsigned i=0; i<cder.size(); i++)
     {
-        (*parentDeriv[indexPairs[i].first])[indexPairs[i].second] += cder[i];
+        (*parentDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]] += cder[i];
     }
 }
 

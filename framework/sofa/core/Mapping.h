@@ -48,7 +48,7 @@ template <class TIn, class TOut>
 class Mapping : public BaseMapping
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(Mapping,TIn,TOut), BaseMapping);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(Mapping,TIn,TOut), BaseMapping);
 
     /// Input Data Type
     typedef TIn In;

@@ -88,10 +88,13 @@ public:
 #endif
 
 
+    Data< vector<unsigned> > indexPairs;                     ///< for each child, its parent and index in parent (two by two)
+
 protected :
 
     SubsetMultiMapping()
         : Inherit()
+        , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
     {
     }
 
@@ -103,8 +106,6 @@ protected :
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    typedef std::pair<unsigned, unsigned> IndexPair;  ///< first is the parent, second is the index in the parent
-    vector<IndexPair> indexPairs;                     ///< for each child, its parent and index in parent
 };
 
 
@@ -115,9 +116,11 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 #endif
 
