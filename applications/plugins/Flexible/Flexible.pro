@@ -56,6 +56,10 @@ HEADERS = initFlexible.h \
     types/QuadraticTypes.h \
     types/QuadraticComponents.h \
     types/PolynomialBasis.h \
+    types/ComponentSpecializations.h.inl \
+    types/ComponentSpecializations.cpp.inl \
+    types/ComponentSpecializationsDefines.h \
+    types/ComponentSpecializationsUndef.h \
     quadrature/BaseGaussPointSampler.h \
     quadrature/TopologyGaussPointSampler.h \
     shapeFunction/BaseShapeFunction.h \
@@ -117,7 +121,7 @@ HEADERS = initFlexible.h \
     material/VolumePreservationForceField.h \
     material/VolumePreservationMaterialBlock.h \
     material/VolumePreservationMaterialBlock.inl \
-    #forceField/FlexibleTetrahedronFEMForceField.h
+    #forceField/FlexibleTetrahedronFEMForceField.h \
 
 
 
