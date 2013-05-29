@@ -192,9 +192,15 @@ void SMPSimulation::init( Node* root )
 }
 
 /// Create a new node
-Node* SMPSimulation::createNewGraph(const std::string& name)
+Node::SPtr SMPSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
 {
-    return new GNode(name);
+    if( setAsMainSimulation )
+    {
+        sRoot = sofa::core::objectmodel::New<GNode>(name);
+        return sRoot;
+    }
+    else
+        return sofa::core::objectmodel::New<GNode>(name);
 }
 
 // Execute one timestep. If dt is 0, the dt parameter in the graph will be used

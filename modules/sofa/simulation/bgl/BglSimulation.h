@@ -61,7 +61,7 @@ public:
     void unload(Node::SPtr root);
 
     ///create a new graph(or tree) and return its root node
-    Node::SPtr createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="",bool setAsMainSimulation=true);
 
 
 
