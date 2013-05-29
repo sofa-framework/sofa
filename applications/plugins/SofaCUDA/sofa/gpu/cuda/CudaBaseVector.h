@@ -37,7 +37,58 @@ namespace gpu
 namespace cuda
 {
 
+///////////////
+//  KERNELS  //
+///////////////
+
+extern "C"
+{
+    void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
+    void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r);
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
+    void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b, void * r);
+#endif
+}
+
 template<class real> class CudaVectorUtilsKernels;
+
+template<> class CudaVectorUtilsKernels<float>
+{
+public:
+    // copy the dim first value of a(float) in b(float)
+    static void copy_vector(int dim,const void * a,void * b)
+    {   copy_vectorf(dim,a,b); }
+
+    // compute b = b + a*f
+    static void vector_vector_peq(int dim,float f,const void * a,void * b)
+    {   vector_vector_peqf(dim,f,a,b); }
+
+    // compute b = b + a*f
+    static void sub_vector_vector(int dim,const void * a,const void * b,void * r)
+    {   sub_vector_vectorf(dim,a,b,r); }
+};
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template<> class CudaVectorUtilsKernels<double>
+{
+public:
+    // copy the dim first value of a(float) in b(float)
+    static void copy_vector(int dim,const void * a,void * b)
+    {   copy_vectord(dim,a,b); }
+
+    // compute b = b + a*f
+    static void vector_vector_peq(int dim,double f,const void * a,void * b)
+    {   vector_vector_peqd(dim,f,a,b); }
+
+    // compute b = b + a*f
+    static void sub_vector_vector(int dim,const void * a,const void * b,void * r)
+    {   sub_vector_vectord(dim,a,b,r); }
+};
+#endif
 
 using namespace sofa::defaulttype;
 
@@ -58,6 +109,25 @@ public :
     virtual T * hostWrite(int off=0) = 0;
     virtual void invalidateDevice() = 0;
     virtual void invalidateHost() = 0;
+
+    /// this += a*f
+    template<typename Real>
+    void peq(const CudaBaseVectorType<Real> & a, double f) {
+        CudaVectorUtilsKernels<Real>::vector_vector_peq(this->size(),
+                                                        (Real)f,
+                                                        a.deviceRead(),
+                                                        this->deviceWrite());
+    }
+
+    /// this = a - b
+    template<typename Real>
+    void sub(const CudaBaseVectorType<Real>& a, const CudaBaseVectorType<Real>& b)
+    {
+        CudaVectorUtilsKernels<Real>::sub_vector_vector(this->size(),
+                                                        a.deviceRead(),
+                                                        b.deviceRead(),
+                                                        this->deviceWrite());
+    }
 };
 
 template <class T>
@@ -140,17 +210,12 @@ public :
         v[i] += (T)val;
     }
 
-    /// v += a*f
-    template<typename Real2,typename Real3>
-    void peq(const CudaBaseVector<Real2>& a, Real3 f)
+    void operator=(const CudaBaseVector<Real> & e)
     {
-        CudaVectorUtilsKernels<Real>::vector_vector_peq(v.size(),
-                (Real)f,
-                a.deviceRead(),
-                this->deviceWrite());
+        v = e.v;
     }
 
-    void operator=(const CudaBaseVector<Real> & e)
+    void eq(const CudaBaseVector<Real> & e)
     {
         v = e.v;
     }
@@ -173,6 +238,11 @@ public :
     void invalidateHost()
     {
         v.invalidateHost();
+    }
+
+    void memsetDevice()
+    {
+        v.memsetDevice();
     }
 
     const T* hostRead(int off=0) const
@@ -217,50 +287,6 @@ extern template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
 extern template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
 #endif
 
-#endif
-
-///////////////
-//  KERNELS  //
-///////////////
-
-extern "C"
-{
-    extern void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
-#ifdef SOFA_GPU_CUDA_DOUBLE
-    extern void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
-#endif
-
-    extern void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
-#ifdef SOFA_GPU_CUDA_DOUBLE
-    extern void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
-#endif
-}
-
-
-template<> class CudaVectorUtilsKernels<float>
-{
-public:
-    // copy the dim first value of a(float) in b(float)
-    static void copy_vector(int dim,const void * a,void * b)
-    {   copy_vectorf(dim,a,b); }
-
-    // compute b = b + a*f
-    static void vector_vector_peq(int dim,float f,const void * a,void * b)
-    {   vector_vector_peqf(dim,f,a,b); }
-};
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template<> class CudaVectorUtilsKernels<double>
-{
-public:
-    // copy the dim first value of a(float) in b(float)
-    static void copy_vector(int dim,const void * a,void * b)
-    {   copy_vectord(dim,a,b); }
-
-    // compute b = b + a*f
-    static void vector_vector_peq(int dim,double f,const void * a,void * b)
-    {   vector_vector_peqd(dim,f,a,b); }
-};
 #endif
 
 } // namespace cuda
