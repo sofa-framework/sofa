@@ -52,8 +52,9 @@ namespace externalBehaviorModel
 
 template <class DataTypes>
 FEMGridBehaviorModel<DataTypes>::FEMGridBehaviorModel() : Inherited()
-        , _youngModulus( initData( &_youngModulus, (Real)50000, "youngModulus", "Uniform Young Modulus" ) )
-        , _density( initData( &_density, (Real)1, "density", "Uniform Density" ) )
+        , _youngModulus( initData( &_youngModulus, (Real)50000, "youngModulus", "Uniform Young modulus" ) )
+        , _poissonRatio( initData( &_poissonRatio, (Real)0.3, "poissonRatio", "Uniform Poisson ratio" ) )
+        , _totalMass( initData( &_totalMass, (Real)1, "totalMass", "Total Mass (lumped and uniformly distributed on particles" ) )
         , _subdivisions( initData( &_subdivisions, (unsigned)1, "subdivisions", "nb grid subdivisions" ) )
 {
 }
@@ -74,7 +75,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
     // create internal model (here by using SOFA components but could be done by any library)
     /////////////////////////////
 
-    m_internalNode = sofa::core::objectmodel::New< sofa::simulation::tree::GNode >();
+    m_internalNode = simulation::Node::create("internal hidden node"); //sofa::simulation::getSimulation()->createNewGraph("internal hidden node");
 
     m_internalTopology = sofa::core::objectmodel::New< component::topology::RegularGridTopology >();
     m_internalTopology->setSize(_subdivisions.getValue()+1,_subdivisions.getValue()+1,_subdivisions.getValue()+1);
@@ -83,7 +84,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
 
     const Data<typename Dofs::VecCoord>* points = this->m_exposedDofs->read(core::ConstVecCoordId::position());
 
-    Vec3 min(0,0,0), max(-9999,-9999,-9999);
+    Vec3 min(9999,9999,9999), max(-9999,-9999,-9999);
     const unsigned nbNodes = points->getValue().size();
     for( unsigned i=0; i<nbNodes ; ++i )
     {
@@ -94,23 +95,34 @@ void FEMGridBehaviorModel<DataTypes>::init()
             if( p[j]>max[j] ) max[j]=p[j];
         }
     }
+
     m_internalTopology->setPos( min[0], max[0], min[1], max[1], min[2], max[2] );
 
-    m_internalForceFieldAndMass = sofa::core::objectmodel::New< component::forcefield::HexahedronFEMForceFieldAndMass<DataTypes> >();
-    m_internalForceFieldAndMass->setYoungModulus( _youngModulus.getValue() );
-    m_internalForceFieldAndMass->setDensity( _density.getValue() );
-    m_internalForceFieldAndMass->setPoissonRatio( 0.3 );
+    m_internalForceField = sofa::core::objectmodel::New< component::forcefield::HexahedronFEMForceField<DataTypes> >();
+    m_internalForceField->setYoungModulus( _youngModulus.getValue() );
+    m_internalForceField->setPoissonRatio( _poissonRatio.getValue() );
+
+
+    m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes,Real> >();
+    m_internalMass->totalMass.setValue( _totalMass.getValue() );
 
 
     // to constrain certain internal dof to exposed sofa dofs. Here there are exactly at the same place, they could be interpolated
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr constraint = sofa::core::objectmodel::New< component::projectiveconstraintset::FixedConstraint<DataTypes> >();
     typename component::odesolver::EulerImplicitSolver::SPtr odesolver = sofa::core::objectmodel::New< component::odesolver::EulerImplicitSolver >();
+    odesolver->f_rayleighStiffness.setValue(0);
+    odesolver->f_rayleighMass.setValue(0);
+    odesolver->f_velocityDamping.setValue(0);
     typename component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::SPtr cg = sofa::core::objectmodel::New< component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+    cg->f_maxIter.setValue(100);
+    cg->f_smallDenominatorThreshold.setValue(1e-10);
+    cg->f_tolerance.setValue(1e-10);
 
 
     m_internalNode->addObject( m_internalDofs );
     m_internalNode->addObject( m_internalTopology );
-    m_internalNode->addObject( m_internalForceFieldAndMass );
+    m_internalNode->addObject( m_internalForceField );
+    m_internalNode->addObject( m_internalMass );
     m_internalNode->addObject( constraint );
     m_internalNode->addObject( odesolver );
     m_internalNode->addObject( cg );
@@ -166,7 +178,7 @@ void FEMGridBehaviorModel<DataTypes>::handleEvent(sofa::core::objectmodel::Event
         internalDataX.endEdit();
         internalDataV.endEdit();
 
-        // start the internal model ode solver (where the sofa dof states must be constrained)
+//        // start the internal model ode solver (where the sofa dof states must be constrained)
         simulation::AnimateVisitor av( core::ExecParams::defaultInstance(), m_internalNode->getDt() );
         m_internalNode->execute( av );
     }
@@ -198,8 +210,8 @@ void FEMGridBehaviorModel<DataTypes>::addForce( const core::MechanicalParams* mp
     }
 
 
-    m_internalForceFieldAndMass->addForce( mparams, internalDataF, internalDataX, internalDataV );
-
+    m_internalForceField->addForce( mparams, internalDataF, internalDataX, internalDataV );
+    m_internalMass->addForce( mparams, internalDataF, internalDataX, internalDataV );
 
     internalDataX.endEdit();
     internalDataV.endEdit();
@@ -241,7 +253,8 @@ void FEMGridBehaviorModel<DataTypes>::addDForce( const core::MechanicalParams* m
     }
 
 
-    m_internalForceFieldAndMass->addDForce( mparams, internalDataDF, internalDataDX );
+    m_internalForceField->addDForce( mparams, internalDataDF, internalDataDX );
+    m_internalMass->addDForce( mparams, internalDataDF, internalDataDX );
 
 
     internalDataDX.endEdit();
@@ -282,7 +295,7 @@ void FEMGridBehaviorModel<DataTypes>::addMDx(const core::MechanicalParams* mpara
     }
 
 
-    m_internalForceFieldAndMass->addMDx( mparams, internalDataF, internalDataDX, factor );
+    m_internalMass->addMDx( mparams, internalDataF, internalDataDX, factor );
 
     internalDataDX.endEdit();
 
@@ -311,7 +324,7 @@ template<class DataTypes>
 void FEMGridBehaviorModel<DataTypes>::draw( const core::visual::VisualParams* vparams )
 {
     // debug drawing of the internal model (here calling the drawing of the hexaFEM component)
-    m_internalForceFieldAndMass->draw( vparams );
+    m_internalForceField->draw( vparams );
 }
 
 
