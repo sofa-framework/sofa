@@ -50,19 +50,8 @@ namespace helper
 namespace system
 {
 
-#ifndef SOFA_SRC_BIN_DIR
-#define SOFA_SRC_BIN_DIR ./
-#endif
-
-#ifndef SOFA_BUILD_DIR
-#define SOFA_BUILD_DIR ../
-#endif
-
-
 #define ADD_SOFA_BUILD_DIR( x ) sofa_tostring(SOFA_BUILD_DIR)sofa_tostring(x)
 #define ADD_SOFA_SRC_BIN_DIR( x ) sofa_tostring(SOFA_SRC_BIN_DIR)sofa_tostring(x)
-
-
 
 #if defined (WIN32) || defined (_XBOX)
 #define SOFA_PLUGIN_SUBDIR bin
@@ -72,10 +61,7 @@ namespace system
 
 FileRepository PluginRepository("SOFA_PLUGIN_PATH", ADD_SOFA_BUILD_DIR(SOFA_PLUGIN_SUBDIR));
 
-
 #undef SOFA_PLUGIN_SUBDIR
-
-
 
 static FileRepository createSofaDataPath()
 {
@@ -104,11 +90,8 @@ static FileRepository createSofaDataPath()
 
 FileRepository DataRepository = createSofaDataPath();
 
-
 #undef ADD_SOFA_BUILD_DIR
 #undef ADD_SOFA_SRC_BIN_DIR
-
-
 
 #if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
