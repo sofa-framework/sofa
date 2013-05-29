@@ -28,9 +28,14 @@ namespace component
 namespace container
 {
 
-
+#ifndef SOFA_FLOAT
 template <> SOFA_Flexible_API
-void MechanicalObject<defaulttype::TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualParams* vparams);
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams);
+#endif
+#ifndef SOFA_DOUBLE
+template <> SOFA_Flexible_API
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams);
+#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TYPEABSTRACTNAMEComponents_CPP)
 #ifndef SOFA_FLOAT
@@ -89,6 +94,8 @@ template <> SOFA_Flexible_API
 double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const;
 #endif
 
+
+
 } // namespace mass
 
 } // namespace component
@@ -116,7 +123,8 @@ extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME
 
 
 
-} // namespace sofa
+
+}// namespace sofa
 
 
 #include "ComponentSpecializationsUndef.h"

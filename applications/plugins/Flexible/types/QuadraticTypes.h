@@ -449,7 +449,7 @@ typedef Quadratic3fTypes Quadratic3Types;
 #else
 typedef Quadratic3dTypes Quadratic3Types;
 #endif
-typedef Quadratic3Types QuadraticTypes;
+//typedef Quadratic3Types QuadraticTypes;
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template

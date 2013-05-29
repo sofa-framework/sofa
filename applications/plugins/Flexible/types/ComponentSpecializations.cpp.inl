@@ -52,9 +52,9 @@ using namespace sofa::helper;
 // ==========================================================================
 // FixedConstraint
 
-
-template <>
-void FixedConstraint<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualParams* vparams)
+#ifndef SOFA_FLOAT
+template<>
+void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -116,7 +116,72 @@ void FixedConstraint<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualPar
         }
     }
 }
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::VisualParams* vparams)
+{
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
+    const SetIndexArray & indices = f_indices.getValue();
+    const VecCoord& x = *mstate->getX();
+
+    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    {
+        std::vector< Vector3 > points;
+
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[i].getCenter());
+        else
+        {
+            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+        }
+
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    }
+    else
+//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+    {
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[i].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        else
+        {
+            if( x.size() < indices.size() )
+                for (unsigned i=0; i<x.size(); i++ )
+                {
+                    vparams->drawTool()->pushMatrix();
+                    float glTransform[16];
+                    x[indices[i]].writeOpenGlMatrix ( glTransform );
+                    vparams->drawTool()->multMatrix( glTransform );
+                    vparams->drawTool()->scale ( f_drawSize.getValue() );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->popMatrix();
+                }
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[*it].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        }
+    }
+}
+#endif
 
 
 SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,FixedConstraint) )
@@ -145,9 +210,9 @@ template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3fTypes>;
 // PartialFixedConstraint
 
 
-
+#ifndef SOFA_FLOAT
 template <>
-void PartialFixedConstraint<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualParams* vparams)
+void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -209,7 +274,72 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3Types>::draw(const core::visual::Vi
         }
     }
 }
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
+    const SetIndexArray & indices = f_indices.getValue();
+    const VecCoord& x = *mstate->getX();
+
+    if( _drawSize.getValue() == 0) // old classical drawing by points
+    {
+        std::vector< Vector3 > points;
+
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+                points.push_back(x[i].getCenter());
+        else
+        {
+            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
+        }
+
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    }
+    else
+//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+    {
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[i].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        else
+        {
+            if( x.size() < indices.size() )
+                for (unsigned i=0; i<x.size(); i++ )
+                {
+                    vparams->drawTool()->pushMatrix();
+                    float glTransform[16];
+                    x[indices[i]].writeOpenGlMatrix ( glTransform );
+                    vparams->drawTool()->multMatrix( glTransform );
+                    vparams->drawTool()->scale ( _drawSize.getValue() );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->popMatrix();
+                }
+            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                vparams->drawTool()->pushMatrix();
+                float glTransform[16];
+                x[*it].writeOpenGlMatrix ( glTransform );
+                vparams->drawTool()->multMatrix( glTransform );
+                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->popMatrix();
+            }
+        }
+    }
+}
+#endif
 
 SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraint) )
 int EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraintClass) = core::RegisterObject ( "Attach given cinematic dofs to their initial positions" )
@@ -320,8 +450,9 @@ namespace container
 
 // ==========================================================================
 // Draw Specializations
+#ifndef SOFA_FLOAT
 template <> SOFA_Flexible_API
-void MechanicalObject<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -375,7 +506,7 @@ void MechanicalObject<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualPa
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        const TYPEABSTRACTNAME3Types::VecCoord& x = ( *getX() );
+        const TYPEABSTRACTNAME3dTypes::VecCoord& x = ( *getX() );
 
         for (int i = 0; i < this->getSize(); ++i)
         {
@@ -401,7 +532,90 @@ void MechanicalObject<TYPEABSTRACTNAME3Types>::draw(const core::visual::VisualPa
         }
     }
 }
+#endif
+#ifndef SOFA_DOUBLE
+template <> SOFA_Flexible_API
+void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
+    if ( showIndices.getValue() )
+    {
+        glColor3f ( 1.0,1.0,1.0 );
+        glPushAttrib(GL_LIGHTING_BIT);
+        glDisable ( GL_LIGHTING );
+        float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
+
+        Mat<4,4, GLfloat> modelviewM;
+
+        for ( int i=0 ; i< vsize ; i++ )
+        {
+            std::ostringstream oss;
+            oss << i;
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
+            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
+            glPushMatrix();
+
+            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            glScalef ( scale,scale,scale );
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            temp = modelviewM.transform ( temp );
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef ( temp[0], temp[1], temp[2] );
+            glScalef ( scale,scale,scale );
+
+            while ( *s )
+            {
+                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
+                s++;
+            }
+
+            glPopMatrix();
+        }
+        glPopAttrib();
+    }
+
+
+    if (showObject.getValue())
+    {
+        const float& scale = showObjectScale.getValue();
+        const TYPEABSTRACTNAME3fTypes::VecCoord& x = ( *getX() );
+
+        for (int i = 0; i < this->getSize(); ++i)
+        {
+            vparams->drawTool()->pushMatrix();
+            float glTransform[16];
+            x[i].writeOpenGlMatrix ( glTransform );
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale);
+
+            switch( drawMode.getValue() )
+            {
+                case 1:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    break;
+                case 2:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    break;
+                default:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            }
+
+            vparams->drawTool()->popMatrix();
+        }
+    }
+}
+#endif
 // ==========================================================================
 // Instanciation
 
@@ -622,9 +836,9 @@ int EVALUATOR(TYPEABSTRACTNAME,ExtraMonitorClass) = core::RegisterObject("Monito
 
 namespace constraintset
 {
-
+#ifndef SOFA_FLOAT
 template<> SOFA_Flexible_API
-void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3Types >::init()
+void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >::init()
 {
     Inherit::init();
 
@@ -632,10 +846,10 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3Types >::init(
 
     const double dt2 = dt * dt;
 
-    TYPEABSTRACTNAME3Mass massValue;
+    TYPEABSTRACTNAME3dMass massValue;
     VecReal usedComp;
 
-    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3Types, TYPEABSTRACTNAME3Mass >* uniformMass;
+    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dMass >* uniformMass;
 
     this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
     if( uniformMass )
@@ -656,6 +870,42 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3Types >::init(
 
     compliance.setValue(usedComp);
 }
+#endif
+#ifndef SOFA_DOUBLE
+template<> SOFA_Flexible_API
+void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init()
+{
+    Inherit::init();
+
+    const double dt = this->getContext()->getDt();
+
+    const double dt2 = dt * dt;
+
+    TYPEABSTRACTNAME3fMass massValue;
+    VecReal usedComp;
+
+    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fMass >* uniformMass;
+
+    this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
+    if( uniformMass )
+    {
+        massValue = uniformMass->getMass();
+
+        Real H = dt2 / (Real)massValue;
+
+        //for( int i=0 ; i<12 ; ++i )
+            usedComp.push_back( H );
+    }
+    // todo add ImageDensityMass
+    /*else
+    {
+        for( int i=0 ; i<1 ; ++i )
+            usedComp.push_back( defaultCompliance.getValue() );
+    }*/
+
+    compliance.setValue(usedComp);
+}
+#endif
 
 SOFA_DECL_CLASS( EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrection) )
 // Register in the Factory

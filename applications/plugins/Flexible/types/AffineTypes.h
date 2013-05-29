@@ -326,7 +326,7 @@ typedef Affine3fTypes Affine3Types;
 #else
 typedef Affine3dTypes Affine3Types;
 #endif
-typedef Affine3Types AffineTypes;
+//typedef Affine3Types AffineTypes;
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
