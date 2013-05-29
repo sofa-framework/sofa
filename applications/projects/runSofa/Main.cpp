@@ -161,7 +161,7 @@ int main(int argc, char** argv)
     if(gui!="batch") glutInit(&argc,argv);
 #endif
 
-#ifdef SOFA_HAVE_BGL
+#ifdef SOFA_HAVE_DAG
     if (simulationType == "dag")
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     else
