@@ -53,7 +53,8 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     Inherit::init();
 
-    const unsigned indexPairSize = indexPairs.getValue().size()*0.5;
+    assert( indexPairs.getValue().size()%2==0 );
+    const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
     this->toModels[0]->resize( indexPairSize );
 
@@ -155,7 +156,7 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
 {
     OutVecCoord& out = *outPos[0];
-    out.resize(indexPairs.getValue().size()*0.5);
+    out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i*2] << ", " << indexPairs[i*2+1] <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i*2]]) << endl;
@@ -171,7 +172,7 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename SubsetMultiMapping<TIn, TOut>::OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
     OutVecDeriv& out = *outDeriv[0];
-    out.resize(indexPairs.getValue().size()*0.5);
+    out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
         out[i] = (*inDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]];
