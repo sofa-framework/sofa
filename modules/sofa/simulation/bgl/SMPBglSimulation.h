@@ -58,7 +58,7 @@ public:
     void unload(Node* root);
 
     ///create a new graph(or tree) and return its root node
-    Node* createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="",bool setAsMainSimulation=true);
 
     Node *getVisualRoot();
 

@@ -215,9 +215,15 @@ void SMPBglSimulation::init( Node* root )
 }
 
 /// Create a graph node and attach a new Node to it, then return the Node
-Node* SMPBglSimulation::createNewGraph(const std::string& name)
+Node::SPtr SMPBglSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
 {
-    return new BglNode(name);
+    if( setAsMainSimulation )
+    {
+        sRoot = sofa::core::objectmodel::New<BglNode>(name);
+        return sRoot;
+    }
+    else
+        return sofa::core::objectmodel::New<BglNode>(name);
 }
 
 /**

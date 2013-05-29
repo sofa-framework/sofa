@@ -105,8 +105,8 @@ public:
     /// Unload a scene from a Node.
     virtual void unload(Node::SPtr root);
 
-    /// create a new graph(or tree) and return its root node
-    virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    /// create a new graph(or tree) and return its root node. Keep a static variable of the simulation iff @param setAsMainSimulation is true.
+    virtual Node::SPtr createNewGraph(const std::string& name,bool setAsMainSimulation=true)=0;//Todo replace newNode method
 
     /// Get the top root simulation::Node of the Sofa scene
     static sofa::simulation::Node::SPtr GetRoot();

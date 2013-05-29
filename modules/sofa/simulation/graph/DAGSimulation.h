@@ -53,7 +53,7 @@ public:
     ~DAGSimulation(); // this is a terminal class
 
     ///create a new graph(or tree) and return its root node
-    Node::SPtr createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="",bool setAsMainSimulation=true);
 
 //protected:
 //	std::auto_ptr<Node> visualNode;

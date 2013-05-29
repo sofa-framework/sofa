@@ -73,7 +73,7 @@ public:
     virtual void generateTasks(Node* root, double dt=0.0);
 
     ///create a new graph(or tree) and return its root node
-    Node* createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="",bool setAsMainSimulation=true);
 protected:
     Node *visualNode;
     Data<bool> parallelCompile;

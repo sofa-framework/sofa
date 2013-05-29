@@ -71,10 +71,15 @@ TreeSimulation::~TreeSimulation()
 
 
 /// Create a new graph and so we create the new Sofa root (in sofa you can't have more than one scene graph)
-Node::SPtr TreeSimulation::createNewGraph(const std::string& name)
+Node::SPtr TreeSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
 {
-    sRoot = sofa::core::objectmodel::New<GNode>(name);
-    return sRoot;
+    if( setAsMainSimulation )
+    {
+        sRoot = sofa::core::objectmodel::New<GNode>(name);
+        return sRoot;
+    }
+    else
+        return sofa::core::objectmodel::New<GNode>(name);
 }
 
 

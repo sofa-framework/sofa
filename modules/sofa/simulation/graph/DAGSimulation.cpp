@@ -71,10 +71,15 @@ DAGSimulation::~DAGSimulation()
 
 
 /// Create a new graph
-Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
+Node::SPtr DAGSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
 {
-    sRoot = sofa::core::objectmodel::New<DAGNode>(name);
-    return sRoot;
+    if( setAsMainSimulation )
+    {
+        sRoot = sofa::core::objectmodel::New<DAGNode>(name);
+        return sRoot;
+    }
+    else
+        return sofa::core::objectmodel::New<DAGNode>(name);
 }
 
 
