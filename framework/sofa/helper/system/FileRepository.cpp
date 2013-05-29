@@ -65,9 +65,9 @@ namespace system
 
 
 #if defined (WIN32) || defined (_XBOX)
-#define SOFA_PLUGIN_SUBDIR ../bin
+#define SOFA_PLUGIN_SUBDIR bin
 #else
-#define SOFA_PLUGIN_SUBDIR ../lib
+#define SOFA_PLUGIN_SUBDIR lib
 #endif
 
 FileRepository PluginRepository("SOFA_PLUGIN_PATH", ADD_SOFA_BUILD_DIR(SOFA_PLUGIN_SUBDIR));
