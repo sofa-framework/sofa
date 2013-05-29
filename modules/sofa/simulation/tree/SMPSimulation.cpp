@@ -191,17 +191,17 @@ void SMPSimulation::init( Node* root )
     changeListener->addChild ( NULL,  dynamic_cast< GNode *>(root) );
 }
 
-/// Create a new node
-Node::SPtr SMPSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
+Node::SPtr SMPSimulation::createNewGraph(const std::string& name)
 {
-    if( setAsMainSimulation )
-    {
-        sRoot = sofa::core::objectmodel::New<GNode>(name);
-        return sRoot;
-    }
-    else
-        return sofa::core::objectmodel::New<GNode>(name);
+    sRoot = sofa::core::objectmodel::New<GNode>(name);
+    return sRoot;
 }
+
+Node::SPtr SMPSimulation::createNewNode(const std::string& name)
+{
+    return sofa::core::objectmodel::New<GNode>(name);
+}
+
 
 // Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void SMPSimulation::animate ( Node* root, double dt )

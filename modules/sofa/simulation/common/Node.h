@@ -477,6 +477,10 @@ public:
 
     template <class RealObject>
     static Node::SPtr create( RealObject* obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
+
+
+    static Node::SPtr create( const std::string& name );
+
 protected:
     bool debug_;
     bool initialized;

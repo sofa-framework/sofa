@@ -1122,10 +1122,17 @@ Iterative::IterativePartition* Node::getFirstPartition()
 template <class RealObject>
 Node::SPtr Node::create( RealObject*, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg)
 {
-    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
+//    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
+    Node::SPtr obj=getSimulation()->createNewNode(arg->getName());
     obj->parse(arg);
     return obj;
 }
+
+Node::SPtr Node::create( const std::string& name )
+{
+    return getSimulation()->createNewNode(name);
+}
+
 
 SOFA_DECL_CLASS(Node)
 //create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.

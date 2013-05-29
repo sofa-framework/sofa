@@ -67,16 +67,15 @@ BglSimulation::BglSimulation()
 }
 
 
-/// Create a graph node and attach a new Node to it, then return the Node
-Node::SPtr BglSimulation::createNewGraph(const std::string& name,bool setAsMainSimulation)
+Node::SPtr BglSimulation::createNewGraph(const std::string& name)
 {
-    if( setAsMainSimulation )
-    {
-        sRoot = sofa::core::objectmodel::New<BglNode>(name);
-        return sRoot;
-    }
-    else
-        return sofa::core::objectmodel::New<BglNode>(name);
+    sRoot = sofa::core::objectmodel::New<BglNode>(name);
+    return sRoot;
+}
+
+Node::SPtr BglSimulation::createNewNode(const std::string& name)
+{
+    return sofa::core::objectmodel::New<BglNode>(name);
 }
 
 /**
