@@ -35,9 +35,10 @@
 
 // internal stuff, here it is using SOFA components that could be replaced by any library
 #include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.h>
-#include <sofa/simulation/tree/GNode.h>
-
+#include <sofa/component/forcefield/HexahedronFEMForceField.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -120,7 +121,8 @@ public:
     // in this simple example, there is only one young modulus for all elements and one similar mass to every particle
     // Note that Data must be initialized in the constructor, giving the default value, the field name and a description
     Data<Real> _youngModulus;
-    Data<Real> _density;
+    Data<Real> _poissonRatio;
+    Data<Real> _totalMass;
     Data<unsigned> _subdivisions;
 
 
@@ -139,8 +141,9 @@ protected:
     /// @{
     typename Dofs::SPtr m_internalDofs;
     component::topology::RegularGridTopology::SPtr m_internalTopology;
-    typename component::forcefield::HexahedronFEMForceFieldAndMass<DataTypes>::SPtr m_internalForceFieldAndMass;
-    simulation::tree::GNode::SPtr m_internalNode;
+    typename component::forcefield::HexahedronFEMForceField<DataTypes>::SPtr m_internalForceField;
+    typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
+    sofa::simulation::Node::SPtr m_internalNode;
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
     /// @}
 
