@@ -41,13 +41,13 @@ using namespace sofa::gpu::cuda;
 extern "C"
 {
     void SOFA_GPU_CUDA_API copy_vectorf(int dim,const void * a, void * b);
+    void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r);
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
     void SOFA_GPU_CUDA_API copy_vectord(int dim,const void * a, void * b);
-#endif
-
-    void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b);
-#ifdef SOFA_GPU_CUDA_DOUBLE
     void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void * b);
+    void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b, void * r);
 #endif
 }
 
@@ -55,7 +55,7 @@ template<class real>
 __global__ void Cuda_CopyVector_kernel(int dim, const real * a, real * b)
 {
     int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
-    if (ti > dim) return;
+    if (ti >= dim) return;
     b[ti] = a[ti];
 }
 
@@ -81,7 +81,7 @@ template<class real>
 __global__ void Cuda_vector_vector_peq_kernel(int dim,real f, const real * a, real * b)
 {
     int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
-    if (ti > dim) return;
+    if (ti >= dim) return;
     b[ti] += a[ti]*f;
 }
 
@@ -100,6 +100,33 @@ void SOFA_GPU_CUDA_API vector_vector_peqd(int dim,double f,const void * a,void *
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
 
     {Cuda_vector_vector_peq_kernel<double><<< grid, threads >>>(dim,f,(const double *) a,(double *) b); mycudaDebugError("Cuda_vector_vector_peq_kernel<double>");}
+}
+#endif
+
+
+template<class real>
+__global__ void Cuda_sub_vector_kernel(int dim,const real * a, const real * b, real * r)
+{
+    int ti = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    if (ti >= dim) return;
+    r[ti] = a[ti] - b[ti];
+}
+
+void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+
+    {Cuda_sub_vector_kernel<float><<< grid, threads >>>(dim,(const float *) a,(const float *) b,(float *) r); mycudaDebugError("Cuda_sub_vector_kernel<float>");}
+}
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+void SOFA_GPU_CUDA_API sub_vector_vectord(int dim,const void * a, const void * b, void * r)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+
+    {Cuda_sub_vector_kernel<double><<< grid, threads >>>(dim,(const double *) a,(const double *) b,(double *) r); mycudaDebugError("Cuda_sub_vector_kernel<double>");}
 }
 #endif
 
