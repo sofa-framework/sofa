@@ -60,8 +60,11 @@ public:
     Node::SPtr load(const char* filename);
     void unload(Node::SPtr root);
 
-    ///create a new graph(or tree) and return its root node
-    Node::SPtr createNewGraph(const std::string& name="",bool setAsMainSimulation=true);
+    /// create a new graph(or tree) and return its root node.
+    virtual Node::SPtr createNewGraph(const std::string& name);
+
+    /// creates and returns a new node.
+    virtual Node::SPtr createNewNode(const std::string& name);
 
 
 
