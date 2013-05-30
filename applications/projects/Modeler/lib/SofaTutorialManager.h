@@ -79,7 +79,7 @@ public slots:
     void dynamicChangeOfScene( const QString&);
 #endif
 signals:
-    void runInSofa(const std::string& sceneFilename, GNode *root);
+    void runInSofa(const std::string& sceneFilename, Node *root);
     void undo();
     void redo();
     void editInModeler(const std::string& sceneFilename);

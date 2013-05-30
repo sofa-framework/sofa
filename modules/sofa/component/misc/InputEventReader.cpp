@@ -246,9 +246,9 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
 
         //Pedals Value
         //get root
-        //sofa::simulation::common::GNode* node = static_cast<sofa::simulation::tree::GNode*>(this->getContext());
+        //sofa::simulation::Node* node = static_cast<sofa::simulation::Node*>(this->getContext());
         //while (node->getParent() != NULL)
-        //	node = static_cast<sofa::simulation::tree::GNode*>(node->getParent());
+        //	node = static_cast<sofa::simulation::Node*>(node->getParent());
 
         if (currentPedalState != NO_PEDAL)
         {

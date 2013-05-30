@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ParallelCollisionModel.h>
 #include <sofa/core/collision/ParallelNarrowPhaseDetection.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <athapascan-1>
@@ -131,7 +131,7 @@ void ParallelCollisionPipeline::doCollisionReset()
 void ParallelCollisionPipeline::doRealCollisionReset()
 {
     core::objectmodel::BaseContext* scene = getContext();
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
+    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";
@@ -224,7 +224,7 @@ void ParallelCollisionPipeline::doCollisionDetection(const sofa::helper::vector<
 void ParallelCollisionPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
+    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";

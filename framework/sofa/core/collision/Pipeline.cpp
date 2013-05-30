@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/collision/Pipeline.h>
 //#include <sofa/component/collision/DiscreteIntersection.h>
-//#include <sofa/simulation/tree/GNode.h>
+//#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -66,7 +66,7 @@ const NarrowPhaseDetection *Pipeline::getNarrowPhaseDetection() const
 
 void Pipeline::init()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
@@ -95,7 +95,7 @@ void Pipeline::reset()
 
 void Pipeline::computeCollisionReset()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
@@ -108,7 +108,7 @@ void Pipeline::computeCollisionReset()
 
 void Pipeline::computeCollisionDetection()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     sofa::helper::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
@@ -117,7 +117,7 @@ void Pipeline::computeCollisionDetection()
 
 void Pipeline::computeCollisionResponse()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     doCollisionResponse();
 }

@@ -26,7 +26,7 @@
 #define ADDPRESET_H
 
 #include "DialogAddPreset.h"
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -36,7 +36,7 @@ namespace gui
 
 namespace qt
 {
-using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 
 class AddPreset : public DialogAddPreset
 {
@@ -45,7 +45,7 @@ public:
 
     AddPreset(  QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
     void setElementPresent(bool *elementPresent);
-    void setParentNode(GNode* parentNode) {node=parentNode;}
+    void setParentNode(Node* parentNode) {node=parentNode;}
     void setPresetFile(std::string p) {presetFile=p;}
     void setPath(std::string p) {fileName=p;}
     void setRelativePath(std::string p) {relative=p;}
@@ -56,7 +56,7 @@ public slots:
     void accept();
 
 signals:
-    void loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string);
+    void loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string);
 
 
 
@@ -64,7 +64,7 @@ protected:
     std::string fileName;
     std::string relative;
     std::string presetFile;
-    GNode *node;
+    Node *node;
 };
 
 } // namespace qt

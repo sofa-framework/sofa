@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <qobject.h>
 #include <vector>
@@ -42,7 +42,7 @@ namespace qt
 {
 
 using sofa::core::objectmodel::Base;
-using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 
 class GraphModeler;
 
@@ -57,12 +57,12 @@ public:
     {
     public:
         Operation() {};
-        enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE, NODE_MODIFICATION, COMPONENT_MODIFICATION};
+        enum op {DELETE_OBJECT,DELETE_Node, ADD_OBJECT,ADD_Node, NODE_MODIFICATION, COMPONENT_MODIFICATION};
         Operation(Base::SPtr sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
         {}
 
         Base::SPtr sofaComponent;
-        GNode::SPtr parent;
+        Node::SPtr parent;
         Base::SPtr above;
         op ID;
         std::string info;

@@ -40,7 +40,7 @@
 #endif
 
 #ifdef SOFA_PML
-#   include <sofa/simulation/tree/GNode.h>
+#   include <sofa/simulation/common/Node.h>
 #endif
 
 #include "QSofaListView.h"
@@ -617,7 +617,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         return;
     }
     this->unloadScene();
-    GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
+    Node *simuNode = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
     getSimulation()->init(simuNode);
     if ( simuNode )
     {

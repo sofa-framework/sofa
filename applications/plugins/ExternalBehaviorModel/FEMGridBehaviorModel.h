@@ -40,6 +40,8 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/simulation/common/Node.h>
 
+
+
 namespace sofa
 {
 
@@ -144,7 +146,13 @@ protected:
     typename component::forcefield::HexahedronFEMForceField<DataTypes>::SPtr m_internalForceField;
     typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
+
+
+
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
+
+
+
     /// @}
 
 

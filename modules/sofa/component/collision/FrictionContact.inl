@@ -232,8 +232,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::ob
     activateMappers();
     const double mu_ = this->mu.getValue();
     // Checks if friction is considered
-    if (mu_ < 0.0) // || mu_ > 1.0)
-        serr << sendl << "Error: mu has to take values between 0.0 and 1.0" << sendl;
+    if ( mu_ < 0.0 )
+        serr << sendl << "Error: mu has to take positive values" << sendl;
 
     int i=0;
     if (m_constraint)

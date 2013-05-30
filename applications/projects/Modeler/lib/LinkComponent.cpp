@@ -112,9 +112,9 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*
             if(dynamic_cast<sofa::core::loader::BaseLoader*>(mainGraph->getObject(curChild)))
                 isLoader = true;
 
-            // is the object a valid GNode
+            // is the object a valid Node
             bool isValidNode = false;
-            if(dynamic_cast<GNode*>(mainGraph->getComponent(curChild)) && curChild == next)
+            if(dynamic_cast<Node*>(mainGraph->getComponent(curChild)) && curChild == next)
                 isValidNode = true;
 
             // is the object the selected object
