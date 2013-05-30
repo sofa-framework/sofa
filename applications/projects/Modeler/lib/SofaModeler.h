@@ -85,7 +85,7 @@ typedef QPopupMenu Q3PopupMenu;
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 typedef sofa::core::ObjectFactory::Creator    Creator;
 
-using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 
 
 
@@ -146,7 +146,7 @@ public slots:
     //File Menu
     /// Creation of a new scene (new tab will be created)
     void fileNew() {fileNew(NULL);};
-    void fileNew(GNode* root);
+    void fileNew(Node* root);
 
     /// Open an existing simulation (new tab will be created)
     void fileOpen();
@@ -174,7 +174,7 @@ public slots:
     void openTutorial();
     /// Launch the current simulation into Sofa
     void runInSofa();
-    void runInSofa(const std::string &sceneFilename, GNode *groot);
+    void runInSofa(const std::string &sceneFilename, Node *groot);
     void sofaExited();
     void removeTemporaryFiles(const std::string &filename);
 

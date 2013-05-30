@@ -38,7 +38,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
@@ -53,7 +52,6 @@ namespace component
 namespace controller
 {
 
-using namespace sofa::simulation::tree;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 

@@ -161,7 +161,7 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     xml::BaseElement* newXML = xml::loadFromFile ( filename.c_str() );
     if (newXML == NULL) return;
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-    GNode *root = dynamic_cast<GNode*> ( newXML->getObject() );
+    Node *root = dynamic_cast<Node*> ( newXML->getObject() );
     graph->setRoot(root, false);
     graph->setFilename(filename);
     selector->usingScene(filename);

@@ -29,7 +29,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {

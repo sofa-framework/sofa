@@ -38,7 +38,6 @@
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.inl>

@@ -163,9 +163,9 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini"
 
 
     //----------------------------------------------------------------------
-    //Add the button to create GNode
+    //Add the button to create Node
     QPushButton *GNodeButton = new QPushButton( leftPartWidget, "GNodeButton");
-    GNodeButton->setText("GNode");
+    GNodeButton->setText("Node");
     leftPartLayout->addWidget(GNodeButton);
     connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
 
@@ -386,11 +386,11 @@ void SofaModeler::closeEvent( QCloseEvent *e)
     else e->ignore();
 }
 
-void SofaModeler::fileNew( GNode* root)
+void SofaModeler::fileNew( Node* root)
 {
     if (!root) graph->setFilename("");
     changeNameWindow("");
-    //no parent, adding root: if root is NULL, then an empty GNode will be created
+    //no parent, adding root: if root is NULL, then an empty Node will be created
     graph->setRoot( root, false);
     sceneTab->setCurrentPage( sceneTab->count()-1);
 }
@@ -553,8 +553,8 @@ void SofaModeler::fileOpen(std::string filename)
     {
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-        GNode::SPtr root = NULL;
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<GNode> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
+        Node::SPtr root = NULL;
+        root = sofa::core::objectmodel::SPtr_dynamic_cast<Node> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
         if (root)
         {
             createTab();
@@ -735,8 +735,8 @@ void SofaModeler::changeComponent(const std::string &description)
 
 void SofaModeler::newGNode()
 {
-    Q3TextDrag *dragging = new Q3TextDrag(QString("GNode"), (QPushButton*)sender());
-    dragging->setText(QString("GNode"));
+    Q3TextDrag *dragging = new Q3TextDrag(QString("Node"), (QPushButton*)sender());
+    dragging->setText(QString("Node"));
     dragging->dragCopy();
 }
 
@@ -820,7 +820,7 @@ void SofaModeler::openTutorial()
     }
 
     tuto=new SofaTutorialManager(this, "tutorial");
-    connect(tuto, SIGNAL(runInSofa(const std::string&, GNode*)), this, SLOT(runInSofa(const std::string&, GNode*)));
+    connect(tuto, SIGNAL(runInSofa(const std::string&, Node*)), this, SLOT(runInSofa(const std::string&, Node*)));
     connect(tuto, SIGNAL(editInModeler(const std::string&)), this, SLOT(editTutorial(const std::string& ) ));
     GraphModeler *graphTuto=tuto->getGraph();
     graphTuto->setSofaLibrary(library);
@@ -837,16 +837,16 @@ void SofaModeler::openTutorial()
 void SofaModeler::runInSofa()
 {
     if (sceneTab->count() == 0) return;
-    GNode* root=graph->getRoot();
+    Node* root=graph->getRoot();
     runInSofa(graph->getFilename(), root);
 }
-void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
+void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 {
     if (!root) return;
     // Init the scene
     sofa::gui::GUIManager::Init("Modeler");
 
-    //Saving the scene in a temporary file ==> doesn't modify the current GNode of the simulation
+    //Saving the scene in a temporary file ==> doesn't modify the current Node of the simulation
     std::string path;
     if (sceneFilename.empty()) path=presetPath;
     else path = sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str())+std::string("/");

@@ -72,8 +72,8 @@ AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	D
     clear();
 
     //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string)),
-            parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string)));
+    connect( this, SIGNAL(loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string)),
+            parent, SLOT(loadPreset(Node*,std::string,std::string*, std::string,std::string,std::string)));
 }
 
 void AddPreset::setElementPresent(bool *elementPresent)
