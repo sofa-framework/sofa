@@ -10,6 +10,7 @@
 
 #include "utils/scoped.h"
 
+
 using std::cerr;
 using std::endl;
 
@@ -87,7 +88,7 @@ void ComplianceSolver::solveEquation()
         schur += _matC ;
 
         // factorization
-        Cholesky schurDcmp(schur); // TODO check singularity ?
+        LDLT schurDcmp(schur); // TODO check singularity ?
 
         // right-hand side term
         VectorEigen& lambda = _vecLambda =  _vecPhi - _matJ * ( PMinvP() * _vecF );
@@ -118,7 +119,7 @@ void ComplianceSolver::solveEquation()
     } else {
         // unconstrained dynamics, solve M.dv = f
 
-        Cholesky ldlt;
+        LDLT ldlt;
         ldlt.compute( _matM );	// TODO check singularity ?
         
         dv() = P() * f();
@@ -560,11 +561,16 @@ const ComplianceSolver::SMatrix& ComplianceSolver::PMinvP()
 {
     if( _PMinvP_isDirty ) // update it
     {
-        if( !inverseDiagonalMatrix( _PMinvP_Matrix.compressedMatrix, _matM ) ) {
-            assert(false);
-        }
-        _PMinvP_Matrix.compressedMatrix = P().transpose() * _PMinvP_Matrix.compressedMatrix * P();
+        LDLT M_ldlt(_matM); // The type must be instanciated on a row-dominant matrix, even if it is applied to a row-major matrix, otherwise the solution of the corresponding equation system can not be copied to a matrix.
+        if(M_ldlt.info()==Eigen::NumericalIssue)
+            cerr<<"ComplianceSolver::PMinvP(), M is not psd" << endl;
+        Eigen::SparseMatrix<SReal, Eigen::ColMajor> MinvP( _matM.rows(), _matM.rows() ), Pc;
+        Pc=P();
+        MinvP = M_ldlt.solve( Pc );
+        _PMinvP_Matrix.compressedMatrix = P().transpose() * MinvP;
         _PMinvP_isDirty = false;
+//        cerr<<"M = "<< M << endl;
+//        cerr<<"P^T.M^{-1}.P = "<< _PMinvP_Matrix.compressedMatrix << endl;
     }
     return _PMinvP_Matrix.compressedMatrix;
 }
@@ -581,7 +587,6 @@ ComplianceSolver::SMatrix ComplianceSolver::createShiftMatrix( unsigned rows, un
     for(unsigned i=0; i<rows; i++ ){
         m.startVec(i);
         m.insertBack( i, offset+i) =1;
-        //        m.coeffRef(i,offset+i)=1;
     }
     m.finalize();
     return m;
@@ -622,45 +627,6 @@ ComplianceSolver::SMatrix ComplianceSolver::MatrixAssemblyVisitor::getSMatrix( c
     assert( false && "not an eigen sparse matrix");
     return SMatrix();
 }
-
-
-bool ComplianceSolver::inverseDiagonalMatrix( SMatrix& Minv, const SMatrix& M )
-{
-    if( (M.rows() != M.cols()) || (M.nonZeros() != M.rows()) ) // test if diagonal. WARNING: some non-diagonal matrix pass the test, but they are unlikely in this context.
-        return false;
-    Minv.resize(M.rows(),M.rows());
-    for (int i=0; i<M.outerSize(); ++i){
-        Minv.startVec(i);
-        for (SMatrix::InnerIterator it(M,i); it; ++it)
-        {
-            assert(i==it.col() && "ComplianceSolver::inverseDiagonalMatrix needs a diagonal matrix");
-            assert( it.value() );
-
-            Minv.insertBack(i,i) = 1.0 / it.value();
-        }
-    }
-    Minv.finalize();
-
-    assert( Minv.rows() == M.rows() );
-    assert( Minv.cols() == M.cols() );
-
-    return true;
-}
-
-bool ComplianceSolver::inverseMatrix( SMatrix& , const SMatrix&  )
-{
-    cerr<<"ComplianceSolver::inverseMatrix is not yet implemented" << endl;
-    return false;
-    //    Cholesky cholesky(M);
-    //    if( cholesky.info()!=Eigen::Success ) return false;
-    //    SMatrixC id = createIdentityMatrixC(M.rows());
-    //    SMatrixC MinvC = cholesky.solve( id ) ;
-    //    Minv = MinvC;
-    //    return true;
-}
-
-
-
 
 }
 }

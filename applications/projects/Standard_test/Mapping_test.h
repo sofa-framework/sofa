@@ -48,7 +48,14 @@ using namespace core;
   - to validate mapping->applyJ, dXin is converted to input velocity vIn and mapping->applyJ is called. dXout and the output velocity vOut must be the same (up to linear approximations errors, thus we apply a very small change of position).
   - to validate mapping->getJs, we use it to get the Jacobian, then we check that J.vIn = vOut
   - to validate mapping->applyJT, we apply it after setting the child force fc=vOut, then we check that parent force fp = J^T.fc
+  - to validate mapping->applyDJT, we set the child force, and we compare the parent force before and after a small displacement
 
+  To create mapping tests, derive a fixture from this class, and for each test:
+  - create a simple scene with a parent state, a mapping and a child state, and register the mapping using this->setMapping(typename core::Mapping<In,Out>::SPtr)
+  - set the parent position
+  - write the expected child position in attribute expectedChildCoords
+  - init the scene
+  - check if methods test_apply() and test_Jacobian() return true.
   */
 
 template <typename _InDataTypes, typename _OutDataTypes>
@@ -270,38 +277,6 @@ protected:
         }
     }
 
-    template<class C1, class C2>
-    Real maxDiff( const C1& c1, const C2& c2 )
-    {
-        if( c1.size()!=c2.size() ){
-            ADD_FAILURE() << "containers have different sizes";
-            return this->infinity();
-        }
-
-        Real maxdiff = 0;
-        for(unsigned i=0; i<c1.size(); i++ ){
-//            cout<< c2[i]-c1[i] << " ";
-            if( (c1[i]-c2[i]).norm()>maxdiff )
-                maxdiff = (c1[i]-c2[i]).norm();
-        }
-        return maxdiff;
-    }
-
-    /// Resize the Vector and copy it from the Data
-    template<class Vector, class ReadData>
-    void copyFromData( Vector& v, const ReadData& d){
-        v.resize(d.size());
-        for( unsigned i=0; i<v.size(); i++)
-            v[i] = d[i];
-    }
-
-    /// Copy the Data from the Vector. They must have the same size.
-    template<class WriteData, class Vector>
-    void copyToData( WriteData d, const Vector& v){
-        for( unsigned i=0; i<d.size(); i++)
-            d[i] = v[i];
-    }
-
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     static EigenSparseMatrix* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
@@ -315,6 +290,8 @@ protected:
         }
         return ei;
     }
+
+
 
 private:
     core::Mapping<In,Out>* mapping;
