@@ -79,7 +79,7 @@ protected:
 
 public:
     typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SMatrix;
-    typedef Eigen::SparseMatrix<SReal>                  SMatrixC; // Column-major order is returned by some solve methods.
+    typedef Eigen::SparseMatrix<SReal, Eigen::ColMajor> SMatrixC; // Column-major order is returned by some solve methods.
     typedef linearsolver::EigenVector<SReal>            VectorSofa;
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>     VectorEigen;
     typedef core::behavior::BaseMechanicalState         MechanicalState;
@@ -243,18 +243,12 @@ protected:
     virtual MatrixAssemblyVisitor* newAssemblyVisitor(const core::MechanicalParams& );
 
 
-//    typedef Eigen::SimplicialCholesky<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix
-    typedef Eigen::SimplicialLLT<SMatrixC>  Cholesky;  // for some reason, this must be instanciated on a column-major order matrix
+    typedef Eigen::SimplicialLDLT<SMatrixC>  LDLT;  // for some reason, this must be instanciated on a column-major order matrix
 
     /// Return a rectangular matrix (cols>rows), with (offset-1) null columns, then the (rows*rows) identity, then null columns.
     /// This is used to shift a "local" matrix to the global indices of an assembly matrix.
     static SMatrix createShiftMatrix( unsigned rows, unsigned cols, unsigned offset );
 
-    /// Compute the inverse of the matrix. The input matrix MUST be diagonal. Return false if the matrix is not diagonal. The threshold parameter is currently unused.
-    static bool inverseDiagonalMatrix( SMatrix& minv, const SMatrix& m );
-
-    /// Compute the inverse of the matrix.
-    static bool inverseMatrix( SMatrix& minv, const SMatrix& m );
 
     /// Return an identity matrix of the given size
     static SMatrix createIdentityMatrix( unsigned size );
@@ -265,57 +259,6 @@ protected:
     /// resize state vectors
     virtual void resize(unsigned sizeM, unsigned sizeC );
     
-    // /** @name Global matrix-vector product */
-    // ///@{
-
-    // /// Compute the product of a vector with implicit matrix M, which may not be assembled. M may be the implicit matrix e.g. M-h²K
-    // struct MatrixProduct
-    // {
-    // protected:
-    //     ComplianceSolver& solver;
-    //     mutable VectorEigen product;
-    // public:
-
-    //     MatrixProduct( ComplianceSolver& s ) : solver(s){}
-
-    //     /// Product of a vector with matrix M. The default implementation assumes that M is assembled.
-    //     virtual const VectorEigen& operator()(const VectorEigen& x) const
-    //     {
-    //         product.noalias() = solver.M() * x;
-    //         return product;
-    //     }
-    // };
-
-
-    // /// Compute the product of a vector with matrix M, in case the J products are computed but matrix M is not assembled
-    // struct JtAJProduct: public MatrixProduct
-    // {
-    //     JtAJProduct( ComplianceSolver& s ) : MatrixProduct(s){}
-
-    //     /// Product of a vector with matrix M.
-    //     virtual const VectorEigen& operator()(const VectorEigen& x) const
-    //     {
-    //         product.resize(x.size());
-    //         solver.multM(product,x);
-    //         return product;
-    //     }
-    // };
-
-
-
-    // /// Compute the product of the non-assembled implicit matrix with a vector, using local M as implicit matrix
-    // void multM(VectorEigen& Mx, const VectorEigen& x)
-    // {
-    //     for( State_2_LocalMatrices::iterator i=localMatrices.begin(), iend=localMatrices.end(); i!=iend; i++ )
-    //     {
-    //         const SMatrix& J = (*i).second.J;
-    //         const SMatrix& M = (*i).second.M;
-    //         Mx += J.transpose() * (M * (J * x));
-    //     }
-    // }
-    // ///@}  // end group matrix-vector product
-
-
 
 };
 

@@ -202,7 +202,38 @@ struct Sofa_test : public ::testing::Test
         return result;
     }
 
+    /// Return the maximum difference between two containers. Issues a failure if sizes are different.
+    template<class Container1, class Container2>
+    Real maxDiff( const Container1& c1, const Container2& c2 )
+    {
+        if( c1.size()!=c2.size() ){
+            ADD_FAILURE() << "containers have different sizes";
+            return this->infinity();
+        }
 
+        Real maxdiff = 0;
+        for(unsigned i=0; i<c1.size(); i++ ){
+//            cout<< c2[i]-c1[i] << " ";
+            if( (c1[i]-c2[i]).norm()>maxdiff )
+                maxdiff = (c1[i]-c2[i]).norm();
+        }
+        return maxdiff;
+    }
+
+    /// Resize the Vector and copy it from the Data
+    template<class Vector, class ReadData>
+    void copyFromData( Vector& v, const ReadData& d){
+        v.resize(d.size());
+        for( unsigned i=0; i<v.size(); i++)
+            v[i] = d[i];
+    }
+
+    /// Copy the Vector to the Data. They must have the same size.
+    template<class WriteData, class Vector>
+    void copyToData( WriteData d, const Vector& v){
+        for( unsigned i=0; i<d.size(); i++)
+            d[i] = v[i];
+    }
 
 };
 

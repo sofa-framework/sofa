@@ -61,8 +61,8 @@ static AssembledSystem::mat shift_right(unsigned off, unsigned size, unsigned to
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
 	
-	pimpl->H = sys.H.selfadjointView<Eigen::Upper>();
-	
+    pimpl->H = sys.H.selfadjointView<Eigen::Upper>();
+
 	pimpl->Hinv.compute( pimpl->H );
 	
 	if( pimpl->Hinv.info() == Eigen::NumericalIssue ) {

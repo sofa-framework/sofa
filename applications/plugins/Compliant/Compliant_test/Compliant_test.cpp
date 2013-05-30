@@ -336,6 +336,7 @@ public:
 //        sofa::simulation::setSimulation(simulation = new sofa::simulation::bgl::BglSimulation());
         root = simulation->createNewGraph("root");
         root->setName("Scene root");
+        //cerr<<"CompliantTestFixture created" << endl;
 
     }
 
@@ -415,15 +416,15 @@ public:
         sofa::simulation::getSimulation()->init(root.get());
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
-        //        // actual results
-        //        cout<<"M = " << complianceSolver->M() << endl;
-        //        cout<<"J = " << complianceSolver->J() << endl;
-        //        cout<<"C = " << complianceSolver->C() << endl;
-        //        cout<<"P = " << complianceSolver->P() << endl;
-        //        cout<<"f = " << complianceSolver->f().transpose() << endl;
-        //        cout<<"phi = " << complianceSolver->phi().transpose() << endl;
-        //        cout<<"dv = " << complianceSolver->getDv().transpose() << endl;
-        //        cout<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
+//                // actual results
+//                cout<<"M = " << complianceSolver->M() << endl;
+//                cout<<"J = " << complianceSolver->J() << endl;
+//                cout<<"C = " << complianceSolver->C() << endl;
+//                cout<<"P = " << complianceSolver->P() << endl;
+//                cout<<"f = " << complianceSolver->f().transpose() << endl;
+//                cout<<"phi = " << complianceSolver->phi().transpose() << endl;
+//                cout<<"dv = " << complianceSolver->getDv().transpose() << endl;
+//                cout<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
 
         // Expected results
         expected.M = expected.P = DenseMatrix::Identity( 3*n, 3*n );
@@ -1071,6 +1072,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testHardString results compared"<< endl;
 
     ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a projective constraint (FixedConstraint)";
     testAttachedHardString(numParticles);
@@ -1080,6 +1082,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testAttachedHardString results compared"<< endl;
 
     numParticles=4;
     ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a distance constraint";
@@ -1090,6 +1093,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testConstrainedHardString results compared"<< endl;
 
     numParticles=2;
     ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
@@ -1100,6 +1104,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testExternallyConstrainedHardString results compared"<< endl;
 
     numParticles=2;
     ::testing::Message() << "CompliantTestFixture: hard strings of " << numParticles << " particles connected using a MultiMapping";
@@ -1110,6 +1115,7 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testAttachedConnectedHardString results compared"<< endl;
 
     numParticles=2;
     ::testing::Message() << "CompliantTestFixture: hard string of " << numParticles << " particles connected to a rigid";
@@ -1120,6 +1126,9 @@ TEST_F( CompliantTestFixture, test_CompliantSolver_assembly )
     ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
     ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+//    cout<<"testRigidConnectedToString results compared"<< endl;
+
+//    cout<<"all tests done" << endl;
 }
 
 
