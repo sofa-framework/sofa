@@ -58,9 +58,10 @@ class OglVariable : public core::visual::VisualModel, public OglShaderElement
 {
 public:
     SOFA_CLASS2(OglVariable, core::visual::VisualModel, OglShaderElement);
-protected:
+
     Data< DataTypes > value;
 
+protected:
     OglVariable(): value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
     {
         addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
