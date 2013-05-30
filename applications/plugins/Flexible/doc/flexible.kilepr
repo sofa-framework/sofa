@@ -38,10 +38,10 @@ ReadWrite=true
 
 [item:Flexible.tex]
 archive=true
-column=34
+column=7
 encoding=UTF-8
 highlight=LaTeX
-line=28
+line=29
 mode=LaTeX
 open=true
 order=0
@@ -67,8 +67,8 @@ open=true
 order=1
 
 [view-settings,view=0,item:Flexible.tex]
-CursorColumn=34
-CursorLine=28
+CursorColumn=7
+CursorLine=29
 JumpList=
 ViMarks=
 

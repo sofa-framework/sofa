@@ -47,6 +47,7 @@
 \newcommand{\mparam}{\theta}           % material parameter
 \newcommand{\vmparam}{\vect{\mparam}}           % material points
 \newcommand{\defograd}{F}           % deformation gradient
+\newcommand{\fdefograd}{\mathcal{F}}           % deformation gradient generalized force
 \newcommand{\strain}{\epsilon}           % strain
 \newcommand{\stress}{\sigma}           % stress
 \newcommand{\W}{\mathcal{W}}           % elastic energy
@@ -70,24 +71,23 @@
 \newcommand{\MappingArrows}{\ensuremath{\left. \begin{array}{c} \stackrel{\JNL}{\longrightarrow} \\ \stackrel{\J}{\longrightarrow} \\ \stackrel{\Jt}{\longleftarrow} \end{array}\right.} }
 
 \begin{abstract}
-This plugin provides a unified approach to the simulation of deformable solids using mass-spring, FEM and mesh-less models.
-New mappings are introduced to compute material deformations based on node positions, and strain from deformations.
-FEM and mesh-less models use different position-deformation mappings. The remaining components (strain measures, constitutive laws) are common to the two approaches.
+This plugin provides a unified approach to the simulation of deformable solids using a three-level kinematic structure: control nodes, deformation gradients, strains, and new mappings between these.
+This approach maximizes the modularity of the implementation.
+FEM and meshless models use different position-deformation mappings. The remaining components (strain measures, constitutive laws) are common to the two approaches.
 \end{abstract}
 
-\section{Motivation}
+\section{Introduction Example}
 
 In this plugin, our goal is to separate each stage of the simulation into individual components to improve the modularity of the simulator.
 Figure~\ref{fig modularity mass-spring} shows an example of the increased modularity.
 In \sofa{}, mass-spring systems are traditionally modeled using three components for  state, mass and penalty force. 
 The force component $F_s$ in fig.\ref{fig mass-spring-traditional} is in charge of computing the distance and its gradient between the two particles, as well as to apply a constitutive law (typically linear viscoelastic).
 In this plugin, we provide new components to split these computations and make the framework more modular.
-In the example shown in fig.\ref{fig mass-spring-flexible}, a mapping is used to compute spring extensions $X_e$ based on particle positions $X_p$. 
+In the example shown in fig.\ref{fig mass-spring-flexible}, a mapping represented by an arrow is used to compute spring extensions $X_e$ based on particle positions $X_p$. 
 A constitutive law $F_e$ is applied to the extensions, and the corresponding force is mapped upward to the particles through the mapping.
 This is more modular since the linear viscoelastic constitutive law can be replaced with a different one, while re-using the same mapping from positions to extensions. In the traditional approach, extension computation would have to be re-implemented in the new force field.
 Moreover, in the new approach, the penalty force can also be replaced with a hard constraint, while re-using the same mapping (see also the Compliant plugin about soft and hard constraints).
-More generally, complex components cam be decomposed in simple (and re-usable) components using  mappings.
-In Flexible, we have leveraged this property to propose a unified approach to the simulation of deformable solids using mass-spring, FEM and mesh-less models.
+More generally, complex components are decomposed in simple and re-usable components using mappings, to allow a unified approach to the simulation of deformable solids using mass-spring, FEM and mesh-less models.
 \begin{figure}
  \centering
  \begin{subfigure}[t]{0.36\linewidth} \centering
@@ -107,7 +107,43 @@ In Flexible, we have leveraged this property to propose a unified approach to th
 \end{figure}
 
 
-\subsection{Continuous media mechanics}
+
+\section{Three-level Continuum Mechanics}
+The Flexible plugin provides components to model Lagrangian deformable solids using three levels, as illustrated in fig.\ref{fig tree levels}.
+We present an overview of these and refer to subsequent sections for more detail.
+\begin{figure}
+ \centering
+ \includegraphics[height=0.3\linewidth]{threeLevels.pdf}
+ \caption{The deformable solid in the left is modeled using the three kinematic levels shown in the right.
+ The red disks, the grey squares and the local frames respectively represent the control nodes, the integration points and the deformation gradients at these points.
+ }\label{fig tree levels}
+\end{figure}
+
+The top level contains the control nodes, which carry the independent degrees of freedom (DOF) of the object in state vectors $\vect \dof$ 
+and $\dot{\vect\dof}$ for positions and velocities, respectively . 
+In this example we use standard finite element (FE) nodes, but these could be any set of generalized coordinates such as moving frames, or deformation modes.
+The shape functions represent how the material space of the object is mapped to the world space, based on the DOF. They are discussed in sec.\ref{sec shape functions}.
+
+The second level contains deformation gradients, which represent the local state of the continuum, like small reference frames painted on the object.
+Each of these is typically influenced by several control nodes in the upper level.
+Their basis vectors are orthonormal in the undeformed configuration, while departure from unity corresponds to compression or extension, and departure from orthogonality corresponds to shear.
+
+The deformation gradients are computed using a mapping based on the control nodes and their associated shape functions.
+Different mappings are used depending on the type of control nodes (points, frame, etc.) and shape functions (linear or higher level interpolation, RBF, etc.). These mappings are presented in sec.\ref{sec deformation mapping}.
+The deformation gradients are evaluated at carefully chosen sample points associated with object regions, which volumes are used to compute spatial integrals across the object. Sampling and quadrature are discussed in sec.\ref{sec quadrature}.
+
+The lower level contains measures of deformation, typically called strains.
+Each of these typically correspond to one deformation gradient at the upper level.
+There are several ways of measuring deformation, including the well-known Cauchy strain, Green-Lagrange strain and corotational strain which for 3D objects are $3 \times 3$ symmetric tensors, or scalar values such as the determinant of the deformation gradient.
+Different mappings are used to evaluate the different types of strain, as presented in sec.\ref{sec strain mapping}.
+
+The constitutive law of the object material is applied at the lower level to compute stress $\stress$ based on strain $\strain$. 
+More detail is given in sec.\ref{sec materials}.
+The vector of stresses $\vect \stress$ is mapped upward to generalized forces $\vect \fdefograd$ homogeneous to deformation gradients, which are multiplied by the sample size and possibly other volume moments to integrate across the object volume.
+These generalized forces are then mapped upward to node forces.
+
+
+Mass can be integrated at the middle level using volume samples, or set at the top level.
 
 
 
@@ -115,6 +151,208 @@ In Flexible, we have leveraged this property to propose a unified approach to th
 
 
 
+%--------------------------------------------------------------------------------------------
+\section{Shape functions} \label{sec shape functions}
+
+\subsection{Shepard}
+
+Shepard shape functions correspond to inverse distance weights (\url{http://en.wikipedia.org/wiki/Inverse_distance_weighting}).
+
+They are defined as $\shapef_i(\mCoord)=1/|| \mCoord-\mCoord_i ||^p$ followed by normalization.
+
+\subsection{Barycentric}
+
+Barycentric shape functions are the barycentric coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra).
+They achieve first order consistency: $\mCoord= \sum \shapef_i \mCoord_i$
+ 
+\subsection{Natural Neighbors}
+
+Natural neighbor interpolants are based on Voronoi diagrams.
+Currently, Voronoi diagrams are computed from an image (a rasterized object).
+
+\subsection{to do}
+
+\begin{itemize}
+ \item higher order FEM
+ \item clarify material vs. spatial coordinates
+ \item 
+\end{itemize}
+
+
+
+
+
+
+
+%--------------------------------------------------------------------------------------------
+\section{Deformation mapping} \label{sec deformation mapping}
+
+\subsection{linear mapping}
+
+Child positions are computed as a linear combination of parent node dofs.
+For instance, the mapping from points to points is : $\p = \sum_i w_i (\vdof - \vdofinit)$.
+The mapping from affine frames to points in homogeneous coordinates is : $\p = \sum_i w_i \vdof \vdofinit^{-1} \pinit$.
+
+\subsection{Extension mapping}
+
+\subsection{Distance mapping}
+
+\subsection{Log rigid mapping}
+
+\subsection{Relative rigid mapping}
+
+\subsection{Triangle deformation mapping}
+
+\subsection{to do}
+
+\begin{itemize}
+ \item Moving Least squares
+ \item non-linear skinning
+ \item clarify material vs. spatial coordinates
+ \item model plasticity/control using relative mappings
+ \item 
+\end{itemize}
+
+
+
+
+
+%--------------------------------------------------------------------------------------------
+\section{Strain mapping} \label{sec strain mapping}
+
+\subsection{Green-Lagrangian strain}
+
+The strain is mapped from the deformation gradient as : $\mat{E} = (\defograd^T\defograd - \mat{I} )/2$.
+Here the strain is stored into vectors using Voigt notation. In 3d, we have: $\strain = [\strain_{xx} , \strain_{yy} , \strain_{zz} , 2\strain_{xy} , 2\strain_{yx} , 2\strain_{xz} ] $
+The energy conjugate SPK stress vector is $\stress = [\stress_{xx} , \stress_{yy} , \stress_{zz} , \stress_{xy} , \stress_{yx} , \stress_{xz} ] $
+
+\subsection{Corotational strain}
+
+The rigid displacement $\mat{R}$ is first extracted from the deformation gradient using, for instance, SVD, polar or QR decomposition.
+Then, supposing that the non-rigid deformation $\mat{R}^T \defograd$ is small enough, we can apply the Cauchy strain formulation:  $\mat{E} = [\mat{R}^T \defograd + \defograd^T \mat{R} ) /2 - \mat{I} $.
+
+
+The geometric stiffness contribution does not seem necessary because it does not visually change the behaviour but can compromise the stability.
+\begin{itemize}
+\item analytical QR decomposition jacobians given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf (UNSTABLE)
+\item Polar decomposition gradients inspired by Jernej Barbic, Yili Zhao, "Real-time Large-deformation Substructuring" SIGGRAPH 2011 (UNSTABLE)
+\item SVD gradients given in Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10 (QUITE STABLE)
+\end{itemize}
+
+\subsection{Principal stretches}
+
+The principles streches $\mat{U}$ are directly extracted from the deformation gradient using a SVD, where the principal streches can be deduce from the eigen-values.
+Note that the corresponding stress is also represented by 3 values, so isotropic materials are not applicable.
+
+The geometric stiffness contribution is important.
+\begin{itemize}
+\item SVD gradients given in T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000 (STABLE)
+\end{itemize}
+
+\subsection{Diagonal strain}
+
+The diagonal strain $\mat{D}$ is the principles streches + additional terms to allow anisotropic materials. 
+
+
+\subsection{Invariants of deformation tensor}
+
+The elastic energy of some materials are expressed using the three invariants of the right Cauchy deformation tensor $\mat{C}=\defograd^T \defograd$ :
+
+\begin{itemize}
+ \item $I1(\mat{C}) = trace(\mat{C})$
+ \item $I2(\mat{C}) = ( trace(\mat{C}^2)+trace(\mat{C})^2 )/2$
+ \item $I3(\mat{C}) = det(\mat{C})$
+\end{itemize}
+
+In practice, deviatoric invariants are used:
+\begin{itemize}
+ \item $\tilde{I1}(\mat{C}) = I1(\mat{C})/det(\defograd)^{2/3}$
+ \item $\tilde{I2}(\mat{C}) = I2(\mat{C})/det(\defograd)^{4/3}$
+\end{itemize}
+
+Invariants are homogeneous with energies, so we use their squared roots as the state vectors.
+
+\subsection{to do}
+
+\begin{itemize}
+ \item fix undefined invariants for inverted/flat elements
+ \item 
+ \item 
+\end{itemize}
+
+
+
+
+
+
+
+%--------------------------------------------------------------------------------------------
+\section{Materials} \label{sec materials}
+
+\subsection{Hooke Force field}
+
+Hooke materials have linear strain/stress relationships: $\stress=\mat{H}\strain$. 
+The potential energy is $W= \int_{\volume} \strain^T\mat{H}\strain /2$. 
+
+\subsection{Mooney Rivlin}
+
+The potential energy is $W= \int_{\volume} [ C1 ( I1 - 3)  + C2 ( I2 - 3) ]$, where $C1$ and $C2$ are material constants.
+
+\subsection{Volume preservation}
+
+Possible energy formulations for volume conservation are :
+\begin{itemize}
+ \item $W= \frac{k}{2} \int_{\volume} log( det(\defograd) )^2$
+ \item $W= \frac{k}{2} \int_{\volume} (det(\defograd)-1)^2$
+\end{itemize}
+where $k$ is the bulk modulus.
+
+\subsection{to do}
+
+\begin{itemize}
+ \item merge with implemented fem materials (Costa, Arruda-Boyce, NeoHookean, Veronda)
+ \item 
+ \item 
+\end{itemize}
+
+\newpage
+%--------------------------------------------------------------------------------------------
+\section{Quadrature} \label{sec quadrature}
+
+Quadrature points are sampled using one of the GaussPointSampler component.
+Currently, samplers can take meshes or images as inputs.
+
+Quadrature methods estimate integrals using a sum of weighted evaluations at sample positions: $\int_{\volume} f(\pinit) d\volume \approx \sum_i v_i f(\pinit_i) $
+
+\subsection{Mid-point}
+
+The simplest method is to take one point per region and weight the value by its volume.
+This is exact only for constant functions (e.g., elastic energy in a first order tetrahedral FEM)
+
+\subsection{Gauss-Legendre}
+
+Several points are used to approximate the intergral of higher order functions.
+Currently only first order Gauss-Legendre quadrature on hexahedra is implemented.
+
+\subsection{Elastons}
+
+The idea is to decompose $f$ on a basis: $f(\pinit)=\mat{c}(\pinit_0) \polynomial{(\pinit-\pinit_0)}{*}$, 
+where $\mat{c}$ are the coeficients and $\polynomial{()}{*}$ the basis vector (for instance the first order polynomial basis $[1,x,y,z]$).
+The integral is then estimated as  $\int_{\volume} f(\pinit) d\volume \approx \mat{c}(\pinit_0)  \int_{\volume} \polynomial{(\pinit-\pinit_0)}{*} d\volume = \sum_i v_i c_i(\pinit_0) $
+where the coeeficient $v_i$ part can be precomputed using an arbitrary fine discretization.
+
+\subsection{to do}
+
+\begin{itemize}
+ \item Newton Cotes
+ \item Finish implementation of elastons. Required instanciations for all force fields..
+ \item 
+\end{itemize}
+
+\appendix
+
+\section{Background - to rephrase}
+This section contains material which needs rephrasing.
 
 The numerical simulation of continuous deformable objects is based on a discrete number of independent degrees of freedom (DOFs) which we will call the nodes. They are kinematic primitives (can be points, frames, etc.).
 
@@ -196,188 +434,4 @@ Force variations are updated at each mapping by combining material and geometric
 
 \end{itemize}
 
-\newpage
-%--------------------------------------------------------------------------------------------
-\section{Shape functions}
 
-\subsection{Shepard}
-
-Shepard shape functions correspond to inverse distance weights (\url{http://en.wikipedia.org/wiki/Inverse_distance_weighting}).
-
-They are defined as $\shapef_i(\mCoord)=1/|| \mCoord-\mCoord_i ||^p$ followed by normalization.
-
-\subsection{Barycentric}
-
-Barycentric shape functions are the barycentric coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra).
-They achieve first order consistency: $\mCoord= \sum \shapef_i \mCoord_i$
- 
-\subsection{Natural Neighbors}
-
-Natural neighbor interpolants are based on Voronoi diagrams.
-Currently, Voronoi diagrams are computed from an image (a rasterized object).
-
-\subsection{to do}
-
-\begin{itemize}
- \item higher order FEM
- \item clarify material vs. spatial coordinates
- \item 
-\end{itemize}
-
-\newpage
-%--------------------------------------------------------------------------------------------
-\section{Deformation mapping}
-
-\subsection{linear mapping}
-
-Child positions are computed as a linear combination of parent node dofs.
-For instance, the mapping from points to points is : $\p = \sum_i w_i (\vdof - \vdofinit)$.
-The mapping from affine frames to points in homogeneous coordinates is : $\p = \sum_i w_i \vdof \vdofinit^{-1} \pinit$.
-
-\subsection{Extension mapping}
-
-\subsection{Distance mapping}
-
-\subsection{Log rigid mapping}
-
-\subsection{Relative rigid mapping}
-
-\subsection{Triangle deformation mapping}
-
-\subsection{to do}
-
-\begin{itemize}
- \item Moving Least squares
- \item non-linear skinning
- \item clarify material vs. spatial coordinates
- \item model plasticity/control using relative mappings
- \item 
-\end{itemize}
-
-\newpage
-%--------------------------------------------------------------------------------------------
-\section{Strain mapping}
-
-\subsection{Green-Lagrangian strain}
-
-The strain is mapped from the deformation gradient as : $\mat{E} = (\defograd^T\defograd - \mat{I} )/2$.
-Here the strain is stored into vectors using Voigt notation. In 3d, we have: $\strain = [\strain_{xx} , \strain_{yy} , \strain_{zz} , 2\strain_{xy} , 2\strain_{yx} , 2\strain_{xz} ] $
-The energy conjugate SPK stress vector is $\stress = [\stress_{xx} , \stress_{yy} , \stress_{zz} , \stress_{xy} , \stress_{yx} , \stress_{xz} ] $
-
-\subsection{Corotational strain}
-
-The rigid displacement $\mat{R}$ is first extracted from the deformation gradient using, for instance, SVD, polar or QR decomposition.
-Then, supposing that the non-rigid deformation $\mat{R}^T \defograd$ is small enough, we can apply the Cauchy strain formulation:  $\mat{E} = [\mat{R}^T \defograd + \defograd^T \mat{R} ) /2 - \mat{I} $.
-
-
-The geometric stiffness contribution does not seem necessary because it does not visually change the behaviour but can compromise the stability.
-\begin{itemize}
-\item analytical QR decomposition jacobians given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf (UNSTABLE)
-\item Polar decomposition gradients inspired by Jernej Barbic, Yili Zhao, "Real-time Large-deformation Substructuring" SIGGRAPH 2011 (UNSTABLE)
-\item SVD gradients given in Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10 (QUITE STABLE)
-\end{itemize}
-
-\subsection{Principal stretches}
-
-The principles streches $\mat{U}$ are directly extracted from the deformation gradient using a SVD, where the principal streches can be deduce from the eigen-values.
-Note that the corresponding stress is also represented by 3 values, so isotropic materials are not applicable.
-
-The geometric stiffness contribution is important.
-\begin{itemize}
-\item SVD gradients given in T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000 (STABLE)
-\end{itemize}
-
-\subsection{Diagonal strain}
-
-The diagonal strain $\mat{D}$ is the principles streches + additional terms to allow anisotropic materials. 
-
-
-\subsection{Invariants of deformation tensor}
-
-The elastic energy of some materials are expressed using the three invariants of the right Cauchy deformation tensor $\mat{C}=\defograd^T \defograd$ :
-
-\begin{itemize}
- \item $I1(\mat{C}) = trace(\mat{C})$
- \item $I2(\mat{C}) = ( trace(\mat{C}^2)+trace(\mat{C})^2 )/2$
- \item $I3(\mat{C}) = det(\mat{C})$
-\end{itemize}
-
-In practice, deviatoric invariants are used:
-\begin{itemize}
- \item $\tilde{I1}(\mat{C}) = I1(\mat{C})/det(\defograd)^{2/3}$
- \item $\tilde{I2}(\mat{C}) = I2(\mat{C})/det(\defograd)^{4/3}$
-\end{itemize}
-
-Invariants are homogeneous with energies, so we use their squared roots as the state vectors.
-
-\subsection{to do}
-
-\begin{itemize}
- \item fix undefined invariants for inverted/flat elements
- \item 
- \item 
-\end{itemize}
-
-\newpage
-%--------------------------------------------------------------------------------------------
-\section{Materials}
-
-\subsection{Hooke Force field}
-
-Hooke materials have linear strain/stress relationships: $\stress=\mat{H}\strain$. 
-The potential energy is $W= \int_{\volume} \strain^T\mat{H}\strain /2$. 
-
-\subsection{Mooney Rivlin}
-
-The potential energy is $W= \int_{\volume} [ C1 ( I1 - 3)  + C2 ( I2 - 3) ]$, where $C1$ and $C2$ are material constants.
-
-\subsection{Volume preservation}
-
-Possible energy formulations for volume conservation are :
-\begin{itemize}
- \item $W= \frac{k}{2} \int_{\volume} log( det(\defograd) )^2$
- \item $W= \frac{k}{2} \int_{\volume} (det(\defograd)-1)^2$
-\end{itemize}
-where $k$ is the bulk modulus.
-
-\subsection{to do}
-
-\begin{itemize}
- \item merge with implemented fem materials (Costa, Arruda-Boyce, NeoHookean, Veronda)
- \item 
- \item 
-\end{itemize}
-
-\newpage
-%--------------------------------------------------------------------------------------------
-\section{Quadrature}
-
-Quadrature points are sampled using one of the GaussPointSampler component.
-Currently, samplers can take meshes or images as inputs.
-
-Quadrature methods estimate integrals using a sum of weighted evaluations at sample positions: $\int_{\volume} f(\pinit) d\volume \approx \sum_i v_i f(\pinit_i) $
-
-\subsection{Mid-point}
-
-The simplest method is to take one point per region and weight the value by its volume.
-This is exact only for constant functions (e.g., elastic energy in a first order tetrahedral FEM)
-
-\subsection{Gauss-Legendre}
-
-Several points are used to approximate the intergral of higher order functions.
-Currently only first order Gauss-Legendre quadrature on hexahedra is implemented.
-
-\subsection{Elastons}
-
-The idea is to decompose $f$ on a basis: $f(\pinit)=\mat{c}(\pinit_0) \polynomial{(\pinit-\pinit_0)}{*}$, 
-where $\mat{c}$ are the coeficients and $\polynomial{()}{*}$ the basis vector (for instance the first order polynomial basis $[1,x,y,z]$).
-The integral is then estimated as  $\int_{\volume} f(\pinit) d\volume \approx \mat{c}(\pinit_0)  \int_{\volume} \polynomial{(\pinit-\pinit_0)}{*} d\volume = \sum_i v_i c_i(\pinit_0) $
-where the coeeficient $v_i$ part can be precomputed using an arbitrary fine discretization.
-
-\subsection{to do}
-
-\begin{itemize}
- \item Newton Cotes
- \item Finish implementation of elastons. Required instanciations for all force fields..
- \item 
-\end{itemize}
