@@ -92,7 +92,7 @@ public:
         DEBUG_OUT_M(spaceDebug = 0);
     }
 
-    void resize_allocated(size_type x,size_t y,size_t WARP_SIZE) {
+    void resize_allocated(size_type y,size_t x,size_t WARP_SIZE) {
         size_type d_x = x;
         size_type d_y = y;
 
@@ -106,10 +106,10 @@ public:
 
         DEBUG_OUT_M(SPACEN << "Ask resize from " << sizeX << "(" << allocSizeX << ")," << sizeY << "(" << allocSizeY << ")" << " to " << d_x << " " << d_y << std::endl);
 
-        if (d_x < allocSizeX) {
+        if (d_x <= allocSizeX) {
             //We keep the same pitch!
 
-            if (d_y >= allocSizeY) {
+            if (d_y > allocSizeY) {
                 DEBUG_OUT_M(SPACEN << "Is in d_y >= allocSizeY" << std::endl);
 
                 allocSizeY = d_y;
@@ -135,11 +135,11 @@ public:
                 if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
                 if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
             }
-        } else { //d_x >= allocSizeX
+        } else { //d_x > allocSizeX
             DEBUG_OUT_M(SPACEN << "Is in d_x >= allocSizeX" << std::endl);
 
             allocSizeX = d_x;
-            if (d_y >= allocSizeY) allocSizeY = d_y;
+            if (d_y > allocSizeY) allocSizeY = d_y;
 
             void* prevDevicePointer = devicePointer;
             T* prevHostPointer = hostPointer;
@@ -152,13 +152,13 @@ public:
             MemoryManager::hostAlloc( (void **) &hostPointer, pitch_host*allocSizeY);
 
             if (sizeX!=0 && sizeY!=0) {
-                if (deviceIsValid) {
+                if (deviceIsValid && prevDevicePointer!= NULL) {
                     for (unsigned j=0;j<sizeY;j++) {
                         DEBUG_OUT_M(SPACEN << "MemcpyDevice from line " << j << " : from " << (oldpitch_device*j) << " to " << ((oldpitch_device*j) + (sizeX*sizeof(T))) << "(" << (sizeX*sizeof(T)) << " data)" << std::endl);
                         MemoryManager::memcpyDeviceToDevice (0, ((char*)devicePointer) + (pitch_device*j), ((char*)prevDevicePointer) + (oldpitch_device*j), sizeX * sizeof(T));
                     }
                 }
-                if (hostIsValid) {
+                if (hostIsValid && prevHostPointer!= NULL) {
                     for (unsigned j=0;j<sizeY;j++) {
                         DEBUG_OUT_M(SPACEN << "MemcpyHost from line " << j << " : from " << (oldpitch_host*j) << " to " << ((oldpitch_host*j) + (sizeX*sizeof(T))) << "(" << (sizeX*sizeof(T)) << " data)" << std::endl);
                         std::copy ((T*) ((char*)prevHostPointer+ (oldpitch_host*j)), (T*) (((char*)prevHostPointer) + (oldpitch_host*j) + (sizeX*sizeof(T))), (T*) ((char*)hostPointer+ (pitch_host*j)));
@@ -258,7 +258,7 @@ public:
             return;
         }
 
-        resize_allocated(x,y,WARP_SIZE);
+        resize_allocated(y,x,WARP_SIZE);
 
         sizeX = x;
         sizeY = y;
@@ -283,7 +283,7 @@ public:
         if ( !sizeX && !sizeY) {//special case anly reserve
             DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
 
-            resize_allocated(x,y,WARP_SIZE);
+            resize_allocated(y,x,WARP_SIZE);
 
             if (hostIsValid) {
                 DEBUG_OUT_M(SPACEN << "MemsetHost from 0 to " << (pitch_host*y) << std::endl);
@@ -299,7 +299,7 @@ public:
         } else { // there is data in the matrix that we want to keep
             DEBUG_OUT_M(SPACEN << "Is in (x <= pitch)" << std::endl);
 
-            resize_allocated(x,y,WARP_SIZE);
+            resize_allocated(y,x,WARP_SIZE);
 
             if (x>sizeX) {
                 if (hostIsValid) {
@@ -385,14 +385,9 @@ public:
 //        deviceIsValid = m.deviceIsValid; /// finally we get the correct device valid
     }
 
-
-
-
-
     const void* deviceRead ( int y=0, int x=0 ) const {
         copyToDevice();
-        return ((T*) ((char*)devicePointer) + pitch_device*y) + x;
-
+        return ((const T*) (((const char*)devicePointer) + pitch_device*y)) + x;
     }
 
     void* deviceWrite ( int y=0, int x=0 ) {
@@ -403,13 +398,13 @@ public:
 
     const T* hostRead ( int y=0, int x=0 ) const {
         copyToHost();
-        return ((const T*) (((char*) hostPointer)+(y*pitch_host))) + x;
+        return ((const T*) (((const char*) hostPointer) + pitch_host*y)) + x;
     }
 
     T* hostWrite ( int y=0, int x=0 ) {
         copyToHost();
         deviceIsValid = false;
-        return ((T*) (((char*) hostPointer)+(y*pitch_host))) + x;
+        return ((T*) (((char*) hostPointer) + pitch_host*y)) + x;
     }
 
     const T& operator() (size_type y,size_type x) const {
@@ -476,8 +471,9 @@ protected:
         hostIsValid = true;
     }
 
-    void copyToDevice() const {
+    void copyToDevice() const {        
         if ( deviceIsValid ) return;
+
 
 //#ifndef NDEBUG
         if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
