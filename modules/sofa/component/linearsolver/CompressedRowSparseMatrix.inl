@@ -41,9 +41,9 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
 {
     M.compress();
     nRow = M.rowSize();
-    nCol = 0;
-    nBlocRow = M.rowBSize()*3;
-    nBlocCol = 0;
+    nCol = M.colSize();
+    nBlocRow = 1;
+    nBlocCol = 1;
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -52,8 +52,8 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
     btemp.clear();
     rowIndex.reserve(M.rowIndex.size()*3);
     rowBegin.reserve(M.rowBegin.size()*3);
-    colsIndex.reserve(M.colsIndex.size()*3);
-    colsValue.reserve(M.colsValue.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*9);
+    colsValue.reserve(M.colsValue.size()*9);
 
     int vid = 0;
     for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
@@ -106,9 +106,9 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
 {
     M.compress();
     nRow = M.rowSize();
-    nCol = 0;
-    nBlocRow = M.rowBSize()*3;
-    nBlocCol = 0;
+    nCol = M.colSize();
+    nBlocRow = 1;
+    nBlocCol = 1;
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -117,8 +117,8 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
     btemp.clear();
     rowIndex.reserve(M.rowIndex.size()*3);
     rowBegin.reserve(M.rowBegin.size()*3);
-    colsIndex.reserve(M.colsIndex.size()*3);
-    colsValue.reserve(M.colsValue.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*9);
+    colsValue.reserve(M.colsValue.size()*9);
 
     int vid = 0;
     for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
@@ -171,9 +171,9 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
 {
     M.compress();
     nRow = M.rowSize();
-    nCol = 0;
-    nBlocRow = M.rowBSize()*3;
-    nBlocCol = 0;
+    nCol = M.colSize();
+    nBlocRow = 1;
+    nBlocCol = 1;
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -182,8 +182,8 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     btemp.clear();
     rowIndex.reserve(M.rowIndex.size()*3);
     rowBegin.reserve(M.rowBegin.size()*3);
-    colsIndex.reserve(M.colsIndex.size()*3);
-    colsValue.reserve(M.colsValue.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*9);
+    colsValue.reserve(M.colsValue.size()*9);
 
     int vid = 0;
     for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
@@ -236,9 +236,9 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
 {
     M.compress();
     nRow = M.rowSize();
-    nCol = 0;
-    nBlocRow = M.rowBSize()*3;
-    nBlocCol = 0;
+    nCol = M.colSize();
+    nBlocRow = 1;
+    nBlocCol = 1;
     rowIndex.clear();
     rowBegin.clear();
     colsIndex.clear();
@@ -247,8 +247,8 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     btemp.clear();
     rowIndex.reserve(M.rowIndex.size()*3);
     rowBegin.reserve(M.rowBegin.size()*3);
-    colsIndex.reserve(M.colsIndex.size()*3);
-    colsValue.reserve(M.colsValue.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*9);
+    colsValue.reserve(M.colsValue.size()*9);
 
     int vid = 0;
     for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
