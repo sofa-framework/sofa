@@ -46,7 +46,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_LOADER" )
-set(LINKER_DEPENDENCIES ${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree tinyxml)
+AddCompilerDefinitions("SOFA_BUILD_LOADER" )
+AddLinkerDependencies(${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree tinyxml)
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

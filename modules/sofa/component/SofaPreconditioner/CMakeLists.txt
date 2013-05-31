@@ -31,11 +31,11 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_PRECONDITIONER" )
-set(LINKER_DEPENDENCIES SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
+AddCompilerDefinitions("SOFA_BUILD_PRECONDITIONER" )
+AddLinkerDependencies(SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem )
 
 if(SOFA-EXTERNAL_HAVE_CSPARSE)
-    list(APPEND LINKER_DEPENDENCIES SofaSparseSolver)
+    AddLinkerDependencies(SofaSparseSolver)
 endif()
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

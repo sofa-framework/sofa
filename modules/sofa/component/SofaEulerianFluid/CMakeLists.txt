@@ -24,7 +24,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_EULERIAN_FLUID")
-set(LINKER_DEPENDENCIES SofaSimulationTree)
+AddCompilerDefinitions("SOFA_BUILD_EULERIAN_FLUID")
+AddLinkerDependencies(SofaSimulationTree)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

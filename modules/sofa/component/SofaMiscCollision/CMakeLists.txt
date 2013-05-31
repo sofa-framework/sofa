@@ -54,15 +54,15 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MISC_COLLISION" )
-set(LINKER_DEPENDENCIES SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver )
+AddCompilerDefinitions("SOFA_BUILD_MISC_COLLISION" )
+AddLinkerDependencies(SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver )
 
 if(SOFA-LIB_SIMULATION_GRAPH_BGL)
-    list(APPEND LINKER_DEPENDENCIES SofaSimulationBGL)
+    AddLinkerDependencies(SofaSimulationBGL)
 endif()
 
 #if(SOFA-EXTERNAL_HAVE_EIGEN2)
-#    list(APPEND LINKER_DEPENDENCIES eigen)
+#    AddLinkerDependencies(eigen)
 #endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

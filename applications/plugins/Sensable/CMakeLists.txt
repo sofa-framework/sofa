@@ -26,14 +26,14 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SENSABLEPLUGIN")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaComponentGeneral SofaHaptics )
+AddCompilerDefinitions("SOFA_BUILD_SENSABLEPLUGIN")
+AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics )
 
 if(UNIX)
-    list(APPEND LINKER_DEPENDENCIES "HD")
-    list(APPEND LINKER_DEPENDENCIES "HL")
-    list(APPEND LINKER_DEPENDENCIES "HDU")
-    list(APPEND LINKER_DEPENDENCIES "HLU")
+    AddLinkerDependencies("HD")
+    AddLinkerDependencies("HL")
+    AddLinkerDependencies("HDU")
+    AddLinkerDependencies("HLU")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

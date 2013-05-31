@@ -24,14 +24,14 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_TAUCS_SOLVER")
+AddCompilerDefinitions("SOFA_BUILD_TAUCS_SOLVER")
 
 if(WIN32 OR SOFA-EXTERNAL_HAVE_TAUCS_MT)
-	set(LINKER_DEPENDENCIES metis)
+	AddLinkerDependencies(metis)
 endif()
 
 if(WIN32)
-	list(APPEND LINKER_DEPENDENCIES blas_win32_MT lapack_win32_MT)
+	AddLinkerDependencies(blas_win32_MT lapack_win32_MT)
 endif()
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

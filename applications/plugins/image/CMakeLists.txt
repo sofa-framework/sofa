@@ -88,23 +88,23 @@ endif()
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_IMAGE")
-set(LINKER_DEPENDENCIES SofaGuiQt ${OPENGL_LIBRARIES})
+AddCompilerDefinitions("SOFA_BUILD_IMAGE")
+AddLinkerDependencies(SofaGuiQt ${OPENGL_LIBRARIES})
 
 if(SOFA-EXTERNAL_HAVE_OPENCV)
 
-    list(APPEND LINKER_DEPENDENCIES "ml")
-    list(APPEND LINKER_DEPENDENCIES "cvaux")
-    list(APPEND LINKER_DEPENDENCIES "highgui")
-    list(APPEND LINKER_DEPENDENCIES "cv")
-    list(APPEND LINKER_DEPENDENCIES "cxcore")
+    AddLinkerDependencies("ml")
+    AddLinkerDependencies("cvaux")
+    AddLinkerDependencies("highgui")
+    AddLinkerDependencies("cv")
+    AddLinkerDependencies("cxcore")
 
 endif()
 
 if(SOFA-EXTERNAL_HAVE_LIBFREENECT)
 
-    list(APPEND LINKER_DEPENDENCIES "freenect")
-    list(APPEND LINKER_DEPENDENCIES "freenect_sync")
+    AddLinkerDependencies("freenect")
+    AddLinkerDependencies("freenect_sync")
 
 endif()
 

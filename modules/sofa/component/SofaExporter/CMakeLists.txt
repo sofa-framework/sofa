@@ -28,7 +28,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_EXPORTER" )
-set(LINKER_DEPENDENCIES ${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree )
+AddCompilerDefinitions("SOFA_BUILD_EXPORTER" )
+AddLinkerDependencies(${ZLIB_LIBRARIES_OPTIONAL} SofaSimulationTree )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

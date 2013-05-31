@@ -24,7 +24,7 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_HAPTIONPLUGIN")
-set(LINKER_DEPENDENCIES SofaComponentMain )
+AddCompilerDefinitions("SOFA_BUILD_HAPTIONPLUGIN")
+AddLinkerDependencies(SofaComponentMain )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

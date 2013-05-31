@@ -180,9 +180,9 @@ set(MOC_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
+AddCompilerDefinitions("QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
 if(UNIX AND NOT APPLE)
-	set(LINKER_DEPENDENCIES rt)
+	AddLinkerDependencies(rt)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

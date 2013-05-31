@@ -153,8 +153,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SIMULATION_COMMON")
-set(LINKER_DEPENDENCIES SofaCore tinyxml)
+AddCompilerDefinitions("SOFA_BUILD_SIMULATION_COMMON")
+AddLinkerDependencies(SofaCore tinyxml)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

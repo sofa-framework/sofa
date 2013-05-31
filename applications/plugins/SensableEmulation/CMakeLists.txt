@@ -26,7 +26,7 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SENSABLEEMULATIONPLUGIN")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaComponentGeneral SofaHaptics )
+AddCompilerDefinitions("SOFA_BUILD_SENSABLEEMULATIONPLUGIN")
+AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

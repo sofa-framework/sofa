@@ -18,15 +18,14 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-set(COMPILER_DEFINES "")
-set(LINKER_DEPENDENCIES Compliant_lib SofaComponentMain SofaSimulationGraph gtest gtest_main)
+AddLinkerDependencies(Compliant_lib SofaComponentMain SofaSimulationGraph gtest gtest_main)
 
 if(WIN32)
-	set(COMPILER_FLAGS ${COMPILER_FLAGS} "/MT")
+	AddCompilerFlags("/MT")
 endif()
 
 if(UNIX)
-    list(APPEND LINKER_DEPENDENCIES "dl")
+    AddLinkerDependencies("dl")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

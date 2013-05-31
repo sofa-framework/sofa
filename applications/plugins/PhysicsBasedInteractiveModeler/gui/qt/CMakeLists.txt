@@ -18,7 +18,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_PIMGUIQT")
-set(LINKER_DEPENDENCIES SofaPimGui SofaComponentCollision SofaPim)
+AddCompilerDefinitions("SOFA_BUILD_PIMGUIQT")
+AddLinkerDependencies(SofaPimGui SofaComponentCollision SofaPim)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

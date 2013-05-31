@@ -11,8 +11,8 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
-#set(LINKER_DEPENDENCIES  )
+AddCompilerDefinitions("SOFA_PROJECT_TEST")
+#AddLinkerDependencies( )
 
 include(${SOFA_CMAKE_DIR}/post.cmake)
 

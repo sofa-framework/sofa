@@ -19,8 +19,8 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SIMULATION_GRAPH")
-set(LINKER_DEPENDENCIES SofaSimulationCommon)
+AddCompilerDefinitions("SOFA_BUILD_SIMULATION_GRAPH")
+AddLinkerDependencies(SofaSimulationCommon)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

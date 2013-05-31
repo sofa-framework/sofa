@@ -32,16 +32,16 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MESHSTEPLOADERPLUGIN")
-set(LINKER_DEPENDENCIES SofaBaseTopology )
+AddCompilerDefinitions("SOFA_BUILD_MESHSTEPLOADERPLUGIN")
+AddLinkerDependencies(SofaBaseTopology )
 
 if(UNIX)
-    list(APPEND LINKER_DEPENDENCIES "TK")
-    list(APPEND LINKER_DEPENDENCIES "GL")
+    AddLinkerDependencies("TK")
+    AddLinkerDependencies("GL")
 endif()
 
 if(WIN32)
-    list(APPEND LINKER_DEPENDENCIES "OpenCascade" )
+    AddLinkerDependencies("OpenCascade" )
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

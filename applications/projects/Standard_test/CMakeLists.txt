@@ -23,11 +23,11 @@ if(UNIT-TESTS_BUILD_GTEST OR WIN32)
     include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 endif()
 
-set(COMPILER_DEFINES "SOFA_PROJECT_TEST")
-set(LINKER_DEPENDENCIES ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
+AddCompilerDefinitions("SOFA_PROJECT_TEST")
+AddLinkerDependencies(ObjectCreator SofaEigen2Solver SofaComponentMain SofaBaseCollision SofaSimulationGraph SofaBoundaryCondition gtest gtest_main)
 
 if(WIN32)
-	set(COMPILER_FLAGS ${COMPILER_FLAGS} "/MT")
+	AddCompilerFlags("/MT")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

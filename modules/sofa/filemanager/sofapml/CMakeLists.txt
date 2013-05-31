@@ -35,7 +35,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_FILEMANAGER_PML")
-set(LINKER_DEPENDENCIES SofaSimulationCommon )
+AddCompilerDefinitions("SOFA_BUILD_FILEMANAGER_PML")
+AddLinkerDependencies(SofaSimulationCommon )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

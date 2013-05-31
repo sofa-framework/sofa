@@ -143,19 +143,19 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_Flexible" )
-set(LINKER_DEPENDENCIES SofaGuiQt)
+AddCompilerDefinitions("SOFA_BUILD_Flexible" )
+AddLinkerDependencies(SofaGuiQt)
 
 if(SOFA-PLUGIN_IMAGE)
     if(SOFA-PLUGIN_OPENCV)
 	
 		include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/opencv")
 	
-        list(APPEND LINKER_DEPENDENCIES "ml")
-        list(APPEND LINKER_DEPENDENCIES "cvaux")
-        list(APPEND LINKER_DEPENDENCIES "highgui")
-        list(APPEND LINKER_DEPENDENCIES "cv")
-        list(APPEND LINKER_DEPENDENCIES "cxcore")
+        AddLinkerDependencies("ml")
+        AddLinkerDependencies("cvaux")
+        AddLinkerDependencies("highgui")
+        AddLinkerDependencies("cv")
+        AddLinkerDependencies("cxcore")
 		
     endif()
 endif()
@@ -163,13 +163,13 @@ endif()
 if(WIN32)
 	include_directories("${SOFA_APPLICATIONS_PLUGINS_DIR}/SuiteSparse/cholmod/Include")
 
-	list(APPEND COMPILER_DEFINES "EIGEN_DONT_ALIGN")
+	AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 else()
 	include_directories("/usr/include/suitesparse/")
 endif()
 if(UNIX)
     link_directories("/usr/lib/x86_64-linux-gnu/")
-    list(APPEND LINKER_DEPENDENCIES "pthread")
+    AddLinkerDependencies("pthread")
 endif()
 
 

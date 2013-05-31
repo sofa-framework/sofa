@@ -22,7 +22,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_DENSE_SOLVER")
-set(LINKER_DEPENDENCIES SofaBaseLinearSolver newmat)
+AddCompilerDefinitions("SOFA_BUILD_DENSE_SOLVER")
+AddLinkerDependencies(SofaBaseLinearSolver newmat)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

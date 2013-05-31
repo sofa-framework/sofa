@@ -26,7 +26,7 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_INVERTIBLEFVM")
-set(LINKER_DEPENDENCIES SofaGuiQt )
+AddCompilerDefinitions("SOFA_BUILD_INVERTIBLEFVM")
+AddLinkerDependencies(SofaGuiQt )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

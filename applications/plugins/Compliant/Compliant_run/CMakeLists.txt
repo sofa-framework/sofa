@@ -11,11 +11,10 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-set(COMPILER_DEFINES "")
-set(LINKER_DEPENDENCIES Compliant_lib SofaComponentMain SofaGuiMain SofaGuiQt)
+AddLinkerDependencies(Compliant_lib SofaComponentMain SofaGuiMain SofaGuiQt)
 
 if(UNIX)
-    list(APPEND LINKER_DEPENDENCIES "dl")
+    AddLinkerDependencies("dl")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

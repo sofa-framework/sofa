@@ -7,12 +7,12 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaSimulationTree SofaComponentMain SofaGuiMain)
+AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
-    list(APPEND LINKER_DEPENDENCIES SofaSimulationGraph)
+    AddLinkerDependencies(SofaSimulationGraph)
 endif()
 if(SOFA-LIB_SIMULATION_GRAPH_BGL)
-    list(APPEND LINKER_DEPENDENCIES SofaSimulationBGL)
+    AddLinkerDependencies(SofaSimulationBGL)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

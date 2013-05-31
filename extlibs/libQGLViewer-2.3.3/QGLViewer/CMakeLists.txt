@@ -41,7 +41,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 # fix link errors when linked with shared libraries
 if(${CMAKE_COMPILER_IS_GNUCC})
-    set(COMPILER_FLAGS "-fPIC")
+    AddCompilerFlags("-fPIC")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

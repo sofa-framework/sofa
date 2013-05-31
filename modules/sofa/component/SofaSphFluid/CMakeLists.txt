@@ -32,7 +32,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SPH_FLUID")
-set(LINKER_DEPENDENCIES SofaBaseMechanics)
+AddCompilerDefinitions("SOFA_BUILD_SPH_FLUID")
+AddLinkerDependencies(SofaBaseMechanics)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
