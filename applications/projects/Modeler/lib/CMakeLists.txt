@@ -73,7 +73,7 @@ set(FORM_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
-set(LINKER_DEPENDENCIES SofaGuiMain SofaComponentMain)
+AddLinkerDependencies(SofaGuiMain SofaComponentMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -18,11 +18,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_ARTRACKPLUGIN")
-set(LINKER_DEPENDENCIES ARTrackLib SofaUserInteraction)
+AddCompilerDefinitions("SOFA_BUILD_ARTRACKPLUGIN")
+AddLinkerDependencies(ARTrackLib SofaUserInteraction)
 
 if(WIN32)
-	set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} Ws2_32)
+	AddLinkerDependencies(Ws2_32)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

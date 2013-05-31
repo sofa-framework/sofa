@@ -42,18 +42,18 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_REGISTRATION")
-set(LINKER_DEPENDENCIES SofaGuiQt )
+AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
+AddLinkerDependencies(SofaGuiQt )
 
 if(SOFA_HAVE_IMAGE)
 
     if(SOFA_IMAGE_HAVE_OPENCV)
     
-        list(APPEND LINKER_DEPENDENCIES "ml")
-        list(APPEND LINKER_DEPENDENCIES "cvaux")
-        list(APPEND LINKER_DEPENDENCIES "highgui")
-        list(APPEND LINKER_DEPENDENCIES "cv")
-        list(APPEND LINKER_DEPENDENCIES "cxcore")
+        AddLinkerDependencies("ml")
+        AddLinkerDependencies("cvaux")
+        AddLinkerDependencies("highgui")
+        AddLinkerDependencies("cv")
+        AddLinkerDependencies("cxcore")
 
     endif()
 

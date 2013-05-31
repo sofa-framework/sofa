@@ -39,7 +39,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_VOLUMETRIC_DATA" )
-set(LINKER_DEPENDENCIES SofaBaseCollision SofaMeshCollision SofaUserInteraction miniFlowVR )
+AddCompilerDefinitions("SOFA_BUILD_VOLUMETRIC_DATA" )
+AddLinkerDependencies(SofaBaseCollision SofaMeshCollision SofaUserInteraction miniFlowVR )
         
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

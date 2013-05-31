@@ -46,7 +46,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_BASE_LINEAR_SOLVER")
-set(LINKER_DEPENDENCIES SofaSimulationTree)
+AddCompilerDefinitions("SOFA_BUILD_BASE_LINEAR_SOLVER")
+AddLinkerDependencies(SofaSimulationTree)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -10,6 +10,6 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_custom_command(	TARGET ${PROJECT_NAME} POST_BUILD
 					COMMAND ${PROJECT_NAME})
 					
-set(LINKER_DEPENDENCIES SofaComponentMain)
+AddLinkerDependencies(SofaComponentMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

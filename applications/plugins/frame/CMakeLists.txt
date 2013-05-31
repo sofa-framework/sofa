@@ -87,11 +87,11 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_FRAME")
-set(LINKER_DEPENDENCIES SofaGuiQt SofaSparseSolver SofaEigen2Solver)
+AddCompilerDefinitions("SOFA_BUILD_FRAME")
+AddLinkerDependencies(SofaGuiQt SofaSparseSolver SofaEigen2Solver)
 
 if(UNIX)
-    list(APPEND LINKER_DEPENDENCIES "X11")
+    AddLinkerDependencies("X11")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

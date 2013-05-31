@@ -184,23 +184,23 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_HELPER")
-set(LINKER_DEPENDENCIES ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
+AddCompilerDefinitions("SOFA_BUILD_HELPER")
+AddLinkerDependencies(${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${PNG_LIBRARIES})
 
 # required to define base search path for resource / config
-list(APPEND COMPILER_DEFINES "SOFA_SRC_BIN_DIR=${SOFA_SRC_DIR}/bin/")
-list(APPEND COMPILER_DEFINES "SOFA_BUILD_DIR=${SOFA_BUILD_DIR}/")
+AddCompilerDefinitions("SOFA_SRC_BIN_DIR=${SOFA_SRC_DIR}/bin/")
+AddCompilerDefinitions("SOFA_BUILD_DIR=${SOFA_BUILD_DIR}/")
 
 if(PS3)
-	list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libsysmodule_stub.a")
-	list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libc.a")
-	list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libstdc++.a")
-	list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libm.a")
-	list (APPEND LINKER_DEPENDENCIES "$(SCE_PS3_ROOT)/target/ppu/lib/libpthread.a")
+	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libsysmodule_stub.a")
+	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libc.a")
+	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libstdc++.a")
+	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libm.a")
+	AddLinkerDependencies("$(SCE_PS3_ROOT)/target/ppu/lib/libpthread.a")
 endif()
 
 if(SOFA-EXTERNAL_HAVE_BOOST)
-    list(APPEND LINKER_DEPENDENCIES ${Boost_LIBRARIES})
+    AddLinkerDependencies(${Boost_LIBRARIES})
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

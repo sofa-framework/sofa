@@ -16,10 +16,10 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_COMPONENT_ADVANCED")
-set(LINKER_DEPENDENCIES SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem)
+AddCompilerDefinitions("SOFA_BUILD_COMPONENT_ADVANCED")
+AddLinkerDependencies(SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem)
 if(SOFA-EXTERNAL_HAVE_EIGEN2)
-    list(APPEND LINKER_DEPENDENCIES SofaEigen2Solver)
+    AddLinkerDependencies(SofaEigen2Solver)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

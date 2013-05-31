@@ -26,7 +26,7 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_COLLADASCENELOADER")
-set(LINKER_DEPENDENCIES SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual assimp)
+AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
+AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual assimp)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

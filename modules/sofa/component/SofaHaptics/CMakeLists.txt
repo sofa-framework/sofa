@@ -27,7 +27,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_HAPTICS" )
-set(LINKER_DEPENDENCIES SofaConstraint )
+AddCompilerDefinitions("SOFA_BUILD_HAPTICS" )
+AddLinkerDependencies(SofaConstraint )
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

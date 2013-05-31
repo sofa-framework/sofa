@@ -122,7 +122,7 @@ include_directories(${OPENCL_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_GPU_OPENCL")
-set(LINKER_DEPENDENCIES ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+AddCompilerDefinitions("SOFA_BUILD_GPU_OPENCL")
+AddLinkerDependencies(${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

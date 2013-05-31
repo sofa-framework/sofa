@@ -15,8 +15,8 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAHAPI")
-set(LINKER_DEPENDENCIES SofaComponentGeneral SofaHaptics H3DUtil HAPI)
+AddCompilerDefinitions("SOFA_BUILD_SOFAHAPI")
+AddLinkerDependencies(SofaComponentGeneral SofaHaptics H3DUtil HAPI)
 IF( H3D_USE_DEPENDENCIES_ONLY )
   # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
   INCLUDE_DIRECTORIES( ${EXTERNAL_INCLUDE_DIR} ) 

@@ -73,7 +73,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MESH_COLLISION")
-set(LINKER_DEPENDENCIES SofaObjectInteraction SofaBaseCollision)
+AddCompilerDefinitions("SOFA_BUILD_MESH_COLLISION")
+AddLinkerDependencies(SofaObjectInteraction SofaBaseCollision)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

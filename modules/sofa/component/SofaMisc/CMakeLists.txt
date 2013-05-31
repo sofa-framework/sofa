@@ -25,7 +25,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MISC" )
-set(LINKER_DEPENDENCIES SofaMeshCollision SofaMiscTopology SofaTopologyMapping )
+AddCompilerDefinitions("SOFA_BUILD_MISC" )
+AddLinkerDependencies(SofaMeshCollision SofaMiscTopology SofaTopologyMapping )
         
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

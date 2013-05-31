@@ -18,8 +18,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIGLUT")
-set(LINKER_DEPENDENCIES SofaGuiCommon ${GLUT_LIBRARIES})
+AddCompilerDefinitions("SOFA_BUILD_SOFAGUIGLUT")
+AddLinkerDependencies(SofaGuiCommon ${GLUT_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -57,8 +57,8 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MISC_MAPPING" )
-set(LINKER_DEPENDENCIES SofaSimpleFem SofaRigid)
+AddCompilerDefinitions("SOFA_BUILD_MISC_MAPPING" )
+AddLinkerDependencies(SofaSimpleFem SofaRigid)
 
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

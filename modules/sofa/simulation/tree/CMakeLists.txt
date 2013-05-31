@@ -26,8 +26,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SIMULATION_TREE")
-set(LINKER_DEPENDENCIES SofaSimulationCommon)
+AddCompilerDefinitions("SOFA_BUILD_SIMULATION_TREE")
+AddLinkerDependencies(SofaSimulationCommon)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

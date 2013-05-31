@@ -121,7 +121,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_ENGINE")
-set(LINKER_DEPENDENCIES SofaMeshCollision)
+AddCompilerDefinitions("SOFA_BUILD_ENGINE")
+AddLinkerDependencies(SofaMeshCollision)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -156,11 +156,11 @@ set(FORM_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAGUIQT")
-set(LINKER_DEPENDENCIES SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+AddCompilerDefinitions("SOFA_BUILD_SOFAGUIQT")
+AddLinkerDependencies(SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 
 if(SOFA-LIB_GUI_QGLVIEWER)
-    list(APPEND LINKER_DEPENDENCIES QGLViewer)
+    AddLinkerDependencies(QGLViewer)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

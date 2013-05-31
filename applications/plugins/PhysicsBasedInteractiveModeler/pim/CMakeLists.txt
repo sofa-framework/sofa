@@ -32,7 +32,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_PIM")
-set(LINKER_DEPENDENCIES SofaSimulationCommon SofaComponentLinearSolver SofaComponentOdeSolver SofaComponentMass SofaComponentForcefield SofaComponentCollision SofaComponentConstraint SofaComponentMisc SofaComponentBase SofaComponentMapping SofaComponentEngine SofaComponentVisualModel SofaCGALPlugin SofaGui SofaGuiMain)
+AddCompilerDefinitions("SOFA_BUILD_PIM")
+AddLinkerDependencies(SofaSimulationCommon SofaComponentLinearSolver SofaComponentOdeSolver SofaComponentMass SofaComponentForcefield SofaComponentCollision SofaComponentConstraint SofaComponentMisc SofaComponentBase SofaComponentMapping SofaComponentEngine SofaComponentVisualModel SofaCGALPlugin SofaGui SofaGuiMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

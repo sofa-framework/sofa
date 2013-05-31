@@ -18,7 +18,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-set(LINKER_DEPENDENCIES SofaModeler SofaComponentMain )
+AddLinkerDependencies(SofaModeler SofaComponentMain )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -29,13 +29,13 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES})
 
 if(WIN32)
 
-    set(LINKER_DEPENDENCIES "shell32")
+    AddLinkerDependencies("shell32")
 
 endif()
 
 if(APPLE)
 
-    set(LINKER_DEPENDENCIES "CoreFoundation")
+    AddLinkerDependencies("CoreFoundation")
 
 endif()
 

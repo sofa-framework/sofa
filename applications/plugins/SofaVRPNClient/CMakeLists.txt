@@ -42,7 +42,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_SOFAVRPNCLIENT")
-set(LINKER_DEPENDENCIES SofaCore SofaSimulationCommon vrpn_quat vrpn_client)
+AddCompilerDefinitions("SOFA_BUILD_SOFAVRPNCLIENT")
+AddLinkerDependencies(SofaCore SofaSimulationCommon vrpn_quat vrpn_client)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

@@ -44,7 +44,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_VALIDATION" )
-set(LINKER_DEPENDENCIES SofaBaseCollision SofaLoader SofaMeshCollision )
+AddCompilerDefinitions("SOFA_BUILD_VALIDATION" )
+AddLinkerDependencies(SofaBaseCollision SofaLoader SofaMeshCollision )
         
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

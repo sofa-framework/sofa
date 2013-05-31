@@ -34,7 +34,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_MISC_FORCEFIELD" )
-set(LINKER_DEPENDENCIES SofaDeformable SofaBoundaryCondition SofaMiscTopology )
+AddCompilerDefinitions("SOFA_BUILD_MISC_FORCEFIELD" )
+AddLinkerDependencies(SofaDeformable SofaBoundaryCondition SofaMiscTopology )
     
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

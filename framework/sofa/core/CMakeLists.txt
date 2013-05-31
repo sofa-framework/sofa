@@ -248,8 +248,8 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_CORE")
-set(LINKER_DEPENDENCIES SofaDefaultType ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+AddCompilerDefinitions("SOFA_BUILD_CORE")
+AddLinkerDependencies(SofaDefaultType ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

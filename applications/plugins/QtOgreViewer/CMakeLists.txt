@@ -54,16 +54,16 @@ set(README_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_QTOGREVIEWERPLUGIN SOFA_GUI_QT")
-set(LINKER_DEPENDENCIES )
+AddCompilerDefinitions("SOFA_BUILD_QTOGREVIEWERPLUGIN SOFA_GUI_QT")
+AddLinkerDependencies()
 
 if(APPLE)
-    list(APPEND LINKER_DEPENDENCIES "Ogre")
-    list(APPEND LINKER_DEPENDENCIES "CoreFoundation")
+    AddLinkerDependencies("Ogre")
+    AddLinkerDependencies("CoreFoundation")
 endif()
 
 if(WIN32)
-    list(APPEND LINKER_DEPENDENCIES "OgreMain")
+    AddLinkerDependencies("OgreMain")
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

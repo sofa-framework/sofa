@@ -40,8 +40,8 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_DEFAULTTYPE")
-set(LINKER_DEPENDENCIES SofaHelper)
+AddCompilerDefinitions("SOFA_BUILD_DEFAULTTYPE")
+AddLinkerDependencies(SofaHelper)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

@@ -44,7 +44,7 @@ set(MOC_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
-set(COMPILER_DEFINES "SOFA_BUILD_PLUGINEXAMPLE")
-set(LINKER_DEPENDENCIES SofaGuiQt)
+AddCompilerDefinitions("SOFA_BUILD_PLUGINEXAMPLE")
+AddLinkerDependencies(SofaGuiQt)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

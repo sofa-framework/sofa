@@ -194,15 +194,15 @@ endif()
 #Get nvcc compiler to build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
 
-set(COMPILER_DEFINES "SOFA_BUILD_GPU_CUDA")
-set(LINKER_DEPENDENCIES SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
+AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
+AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
 if(SOFA-EXTERNAL_HAVE_CUDPP)
-	list(APPEND LINKER_DEPENDENCIES cudpp)
+	AddLinkerDependencies(cudpp)
 endif()
 
 if(SOFA-EXTERNAL_HAVE_THRUST)
-	list(APPEND LINKER_DEPENDENCIES thrust)
+	AddLinkerDependencies(thrust)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

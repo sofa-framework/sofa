@@ -18,11 +18,11 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-set(LINKER_DEPENDENCIES SofaComponentMain )
+AddLinkerDependencies(SofaComponentMain )
 
 if(UNIX)
 
-    list(APPEND LINKER_DEPENDENCIES "dl")
+    AddLinkerDependencies("dl")
 
 endif()
 
