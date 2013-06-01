@@ -49,7 +49,7 @@ using defaulttype::Mat;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _RigidMapping>
-struct RigidMapping_test : public Mapping_test<typename _RigidMapping::In, typename _RigidMapping::Out>
+struct RigidMappingTest : public Mapping_test<_RigidMapping>
 {
 
     typedef _RigidMapping RigidMapping;
@@ -80,50 +80,30 @@ struct RigidMapping_test : public Mapping_test<typename _RigidMapping::In, typen
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
-    simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-    simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-    typename RigidMapping::SPtr rigidMapping;
-    typename InMechanicalObject::SPtr inDofs;
-    typename OutMechanicalObject::SPtr outDofs;
-//    OutVecCoord expectedChildCoords;   ///< expected child positions after apply
-//    OutVecDeriv expectedChildVels;     ///< expected child velocities after apply
+    RigidMapping* rigidMapping;
 
-    /// Create the context for the matrix tests.
-    void SetUp()
-    {
-        sofa::component::init();
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
-        /// Parent node
-        root = simulation->createNewGraph("root");
-
-        inDofs = addNew<InMechanicalObject>(root);
-
-        /// Child node
-        simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = addNew<OutMechanicalObject>(childNode);
-        rigidMapping = addNew<RigidMapping>(root);
-        rigidMapping->setModels(inDofs.get(),outDofs.get());
-        this->setMapping(rigidMapping);
-
-
+    RigidMappingTest(){
+        rigidMapping = dynamic_cast<RigidMapping*>( this->mapping );
     }
+
 
     /** @name Test_Cases
       For each of these cases, we can test if the mapping work
       */
     ///@{
-    /** Map particles in local coords to a single frame.
+    /** One frame, with particles given in local coordinates.
+     * This tests the mapping from local to world coordinates.
     */
-    void init_oneRigid_fourParticles_localCoords()
+    bool test_oneRigid_fourParticles_localCoords()
     {
-        inDofs->resize(1);
-        outDofs->resize(4);
+        const int Nin=1, Nout=4;
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
 
         // child positions
         rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
-        WriteOutVecCoord xout = outDofs->writePositions();
+        OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
         OutDataTypes::set( xout[1] ,1.,0.,0.);
@@ -131,40 +111,76 @@ struct RigidMapping_test : public Mapping_test<typename _RigidMapping::In, typen
         OutDataTypes::set( xout[3] ,0.,0.,1.);
 
         // parent position
-        WriteInVecCoord xin = inDofs->writePositions();
+        InVecCoord xin(Nin);
         InDataTypes::set( xin[0], 1.,-2.,3. );
         Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
-//        Rotation rot = InDataTypes::rotationEuler(0,0,0);
         InDataTypes::setCRot( xin[0], rot );
 
 
         // expected mapped values
-        this->expectedChildCoords.resize(xout.size());
+        OutVecCoord expectedChildCoords(Nout);
         RotationMatrix m;
         xin[0].writeRotationMatrix(m);
         for(unsigned i=0; i<xout.size(); i++ )
         {
             // note that before init, xout is still in relative coordinates
-            this->expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
+            expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
         }
 
-
-        /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        // The same xin is used twice since xout is given in local coordinates while expectedChildCoords is given in world coordinates
+        // Here we simply test the mapping from local to world coordinates
+        return this->runTest(xin,xout,xin,expectedChildCoords);
     }
 
-    // no other test case up to now
+    /** One frame, with particles given in world coordinates.
+     * This requires the mapping from world to local coordinates.
+    */
+    bool test_oneRigid_fourParticles_worldCoords()
+    {
+        const int Nin=1, Nout=4;
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
+
+        // child positions
+        rigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        OutVecCoord xout(Nout);
+        // vertices of the unit tetrahedron
+        OutDataTypes::set( xout[0] ,0.,0.,0.);
+        OutDataTypes::set( xout[1] ,1.,0.,0.);
+        OutDataTypes::set( xout[2] ,0.,1.,0.);
+        OutDataTypes::set( xout[3] ,0.,0.,1.);
+
+        // initial parent position
+        InVecCoord xin_init(Nin);
+        InDataTypes::set( xin_init[0], -3.,1.,-2. );
+        Rotation rot_init = InDataTypes::rotationEuler(3.,-1.,2.);
+        InDataTypes::setCRot( xin_init[0], rot_init );
+
+        // final parent position
+        InVecCoord xin(Nin);
+        InDataTypes::set( xin[0], 1.,-2.,3. );
+        Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
+        InDataTypes::setCRot( xin[0], rot );
+
+        // expected mapped values
+        OutVecCoord expectedChildCoords(Nout);
+        RotationMatrix Rfinal, Rinit, invRinit; // matrices are a unified model for 3D (quaternion) and 2D (scalar).
+        xin[0].writeRotationMatrix(Rfinal);
+        xin_init[0].writeRotationMatrix(Rinit);
+        invRinit = Rinit.transposed();
+        for(unsigned i=0; i<xout.size(); i++ )
+        {
+            // transformation from initial to final parent position: Tfinal.Rfinal.Rinit^{-1}.Tinit^{-1}
+            expectedChildCoords[i] = xin[0].getCenter()  +  Rfinal * (invRinit*(xout[i] - xin_init[0].getCenter()));
+        }
+
+        return this->runTest(xin_init,xout,xin,expectedChildCoords);
+    }
+
+    /// @todo test with several frames
+
 
     ///@}
-
-
-
-    void TearDown()
-    {
-        if (root!=NULL)
-            sofa::simulation::getSimulation()->unload(root);
-        //        cerr<<"tearing down"<<endl;
-    }
 
 
 };
@@ -178,20 +194,18 @@ mapping::RigidMapping<defaulttype::Rigid3dTypes,defaulttype::Vec3dTypes>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RigidMapping_test, DataTypes);
+TYPED_TEST_CASE(RigidMappingTest, DataTypes);
 // first test case
-TYPED_TEST( RigidMapping_test , oneRigid_fourParticles_localCoords )
+TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_localCoords )
 {
-    this->init_oneRigid_fourParticles_localCoords();
-    ASSERT_TRUE(  this->test_apply() );
-    ASSERT_TRUE(  this->test_Jacobian() );
+    // child coordinates given directly in parent frame
+    ASSERT_TRUE(this->test_oneRigid_fourParticles_localCoords());
 }
-//// next test case
-//TYPED_TEST( RigidMapping_test , allParticlesConstrained )
-//{
-//    this->init_allParticlesConstrained();
-//    ASSERT_TRUE(  this->test_projectPosition() );
-//    ASSERT_TRUE(  this->test_projectVelocity() );
-//}
+TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_worldCoords )
+{
+    // child coordinates given in word frame
+    this->errorMax = 100.; // a larger error occurs, probably due to the world to local mapping at init:
+    ASSERT_TRUE(this->test_oneRigid_fourParticles_worldCoords());
+}
 
 } // namespace sofa

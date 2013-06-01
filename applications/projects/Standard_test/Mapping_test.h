@@ -26,10 +26,13 @@
 /* Francois Faure, 2013 */
 
 #include "Sofa_test.h"
+#include <sofa/component/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 namespace sofa {
 
@@ -40,9 +43,15 @@ using namespace core;
 
 
 /** Base class for the Mapping tests.
-  The derived classes just need to create a mapping with an input and an output, set input positions and compute the expected output positions.
-  Then test_apply() compares the actual output positions with the expected ones.
-  The jacobians are tested automatically in test_Jacobian() :
+  Specific test cases can be created using a derived class instantiated on the mapping class to test,
+  and calling function runTest( const InVecCoord& parentInit,
+                  const OutVecCoord& childInit,
+                  const InVecCoord parentNew,
+                  const OutVecCoord expectedChildNew);
+
+
+  This function compares the actual output positions with the expected ones, then automatically tests the methods related to
+  the Jacobian using finite differences.
   - A small change of the input positions dxIn is randomly chosen and added to the current position. The same is set as velocity.
   - mapping->apply is called, and the difference dXout between the new output positions and the previous positions is computed
   - to validate mapping->applyJ, dXin is converted to input velocity vIn and mapping->applyJ is called. dXout and the output velocity vOut must be the same (up to linear approximations errors, thus we apply a very small change of position).
@@ -50,98 +59,123 @@ using namespace core;
   - to validate mapping->applyJT, we apply it after setting the child force fc=vOut, then we check that parent force fp = J^T.fc
   - to validate mapping->applyDJT, we set the child force, and we compare the parent force before and after a small displacement
 
-  To create mapping tests, derive a fixture from this class, and for each test:
-  - create a simple scene with a parent state, a mapping and a child state, and register the mapping using this->setMapping(typename core::Mapping<In,Out>::SPtr)
-  - set the parent position
-  - write the expected child position in attribute expectedChildCoords
-  - init the scene
-  - check if methods test_apply() and test_Jacobian() return true.
+  The magnitude of the small random changes applied in finite differences is between 0 and deltaMax*epsilon,
+  and a failure is issued if the error is greater than errorMax*epsilon,
+  where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
+
+  Francois Faure, LJK-INRIA, 2013
   */
 
-template <typename _InDataTypes, typename _OutDataTypes>
-struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
+template< class _Mapping>
+struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 {
-    typedef _InDataTypes In;
-    typedef core::State<In> InState;
-    typedef typename InState::Real  Real;
-    typedef typename InState::Deriv  InDeriv;
-    typedef typename InState::VecCoord  InVecCoord;
-    typedef typename InState::VecDeriv  InVecDeriv;
-    typedef typename InState::ReadVecCoord  ReadInVecCoord;
-    typedef typename InState::WriteVecCoord WriteInVecCoord;
-    typedef typename InState::ReadVecDeriv  ReadInVecDeriv;
-    typedef typename InState::WriteVecDeriv WriteInVecDeriv;
+    typedef _Mapping Mapping;
+    typedef typename Mapping::In In;
+    typedef component::container::MechanicalObject<In> InDOFs;
+    typedef typename InDOFs::Real  Real;
+    typedef typename InDOFs::Deriv  InDeriv;
+    typedef typename InDOFs::VecCoord  InVecCoord;
+    typedef typename InDOFs::VecDeriv  InVecDeriv;
+    typedef typename InDOFs::ReadVecCoord  ReadInVecCoord;
+    typedef typename InDOFs::WriteVecCoord WriteInVecCoord;
+    typedef typename InDOFs::ReadVecDeriv  ReadInVecDeriv;
+    typedef typename InDOFs::WriteVecDeriv WriteInVecDeriv;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
 
-    typedef _OutDataTypes Out;
-    typedef core::State<Out> OutState;
-    typedef typename OutState::Coord     OutCoord;
-    typedef typename OutState::VecCoord  OutVecCoord;
-    typedef typename OutState::VecDeriv  OutVecDeriv;
-    typedef typename OutState::ReadVecCoord  ReadOutVecCoord;
-    typedef typename OutState::WriteVecCoord WriteOutVecCoord;
-    typedef typename OutState::ReadVecDeriv  ReadOutVecDeriv;
-    typedef typename OutState::WriteVecDeriv WriteOutVecDeriv;
+    typedef typename Mapping::Out Out;
+    typedef component::container::MechanicalObject<Out> OutDOFs;
+    typedef typename OutDOFs::Coord     OutCoord;
+    typedef typename OutDOFs::VecCoord  OutVecCoord;
+    typedef typename OutDOFs::VecDeriv  OutVecDeriv;
+    typedef typename OutDOFs::ReadVecCoord  ReadOutVecCoord;
+    typedef typename OutDOFs::WriteVecCoord WriteOutVecCoord;
+    typedef typename OutDOFs::ReadVecDeriv  ReadOutVecDeriv;
+    typedef typename OutDOFs::WriteVecDeriv WriteOutVecDeriv;
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
 
     typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
-    OutVecCoord expectedChildCoords;   ///< expected child positions after apply
 
-    /** This tests assumes that init() has been applied,
-      and that the expected output positions have been written in variable expectedChildCoords.
-      It compares the actual output positions to the expected output positions.
-      The velocities are not tested, they will be in test_Jacobian()
-    */
-    virtual bool test_apply()
+    core::Mapping<In,Out>* mapping; ///< the mapping to be tested
+    typename InDOFs::SPtr  inDofs;  ///< mapping input
+    typename OutDOFs::SPtr outDofs; ///< mapping output
+    simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
+    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
+
+
+    Mapping_test():deltaMax(1000),errorMax(10)
     {
-        // apply has been done in the init();
-        ReadOutVecCoord xout = toModel->readPositions();
+        sofa::component::init();
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
+        /// Parent node
+        root = simulation->createNewGraph("root");
+        inDofs = addNew<InDOFs>(root);
+
+        /// Child node
+        simulation::Node::SPtr childNode = root->createChild("childNode");
+        outDofs = addNew<OutDOFs>(childNode);
+        mapping = addNew<Mapping>(root).get();
+        mapping->setModels(inDofs.get(),outDofs.get());
+    }
+
+    /** Test the mapping using the given values and small changes.
+     * Return true in case of success, if all errors are below maxError*epsilon.
+     * The mapping is initialized using the two first parameters,
+     * then a new parent position is applied,
+     * and the new child position is compared with the expected one.
+     * Additionally, the Jacobian-related methods are tested using finite differences.
+     *
+     *\param parentInit initial parent position
+     *\param childInit initial child position
+     *\param parentNew new parent position
+     *\param expectedChildNew expected position of the child corresponding to the new parent position
+     */
+    bool runTest( const InVecCoord& parentInit,
+                  const OutVecCoord& childInit,
+                  const InVecCoord parentNew,
+                  const OutVecCoord expectedChildNew)
+    {
+        typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        MechanicalParams mparams;
+        mparams.setKFactor(1.0);
+        mparams.setSymmetricMatrix(false);
+
+        inDofs->resize(parentInit.size());
+        WriteInVecCoord xin = inDofs->writePositions();
+        this->copyToData(xin,parentInit); // xin = parentInit
+
+        outDofs->resize(childInit.size());
+        WriteOutVecCoord xout = outDofs->writePositions();
+        this->copyToData(xout,childInit);
+
+        /// Init based on parentInit
+        sofa::simulation::getSimulation()->init(root.get());
+
+        /// Updated to parentNew
+        this->copyToData(xin,parentNew);
+        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
+
+
+
+        /// test apply: check if the child positions are the expected ones
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
         {
-            OutCoord xdiff = xout[i] - expectedChildCoords[i];
+            OutCoord xdiff = xout[i] - expectedChildNew[i];
             if( !isSmall(  xdiff.norm() ) ) {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildCoords[i];
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildNew[i];
                 succeed = false;
             }
         }
 
-        return succeed;
-    }
-
-
-
-
-    /** Test all the uses of the Jacobian of the mapping.
-        applyJ is tested by comparing its result with a the consequence of a small displacement.
-
-        The Jacobian matrix J is obtained using getJs(), and validated by comparison of its product with the result of applyJ().
-
-        Matrix J is then used to validate applyJT.
-
-        Function applyDJT() is validated by comparing the parent forces created by the same child forces, before and after the small displacement.
-
-        The small displacement and the child forces are generated using random numbers.
-
-        If the sensitivity of the mapping is high (i.e. a small change of input generates a large change of output),
-        and the mapping is nonlinear,
-        then this test may return false even if applyJ works correctly.
-        To avoid this, choose examples where the output changes have the same order of magnitude as the input changes.
-
-    \param perturbation The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
-    \param maxError The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
-*/
-    virtual bool test_Jacobian( Real perturbation=1000, Real maxError=10 )
-    {
-        MechanicalParams mparams;
-        mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
-        bool result = true;
-        const unsigned Np=fromModel->getSize(), Nc=toModel->getSize();
+        /// test applyJ and everything related to Jacobians
+        const unsigned Np=inDofs->getSize(), Nc=outDofs->getSize();
 
         InVecCoord xp(Np),xp1(Np);
         InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);
@@ -149,8 +183,8 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         OutVecDeriv vc(Nc),fc(Nc);
 
         // get position data
-        copyFromData( xp,fromModel->readPositions() );
-        copyFromData( xc,  toModel->readPositions() ); // positions and have already been propagated
+        copyFromData( xp,inDofs->readPositions() );
+        copyFromData( xc,  outDofs->readPositions() ); // positions and have already been propagated
 //        cout<<"parent positions xp = "<< xp << endl;
 //        cout<<"child  positions xc = "<< xc << endl;
 
@@ -158,15 +192,17 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         for( unsigned i=0; i<Nc; i++ ){
             fc[i] = Out::randomDeriv( 1.0 );
         }
+        fp2.fill( InDeriv() );
+        copyToData( inDofs->writeForces(), fp2 );  // reset parent forces before accumulating child forces
 //        cout<<"random child forces  fc = "<<fc<<endl;
-        copyToData( toModel->writeForces(), fc );
+        copyToData( outDofs->writeForces(), fc );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        copyFromData( fp, fromModel->readForces() );
+        copyFromData( fp, inDofs->readForces() );
 //        cout<<"parent forces fp = "<<fp<<endl;
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * perturbation );
+            vp[i] = In::randomDeriv( this->epsilon() * deltaMax );
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
@@ -175,22 +211,22 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
 
         // propagate small velocity
-        copyToData( fromModel->writeVelocities(), vp );
+        copyToData( inDofs->writeVelocities(), vp );
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
-        copyFromData( vc, toModel->readVelocities() );
+        copyFromData( vc, outDofs->readVelocities() );
 //        cout<<"child velocity vc = " << vc << endl;
 
 
         // apply geometric stiffness
-        copyToData( fromModel->writeDx(), vp );
+        copyToData( inDofs->writeDx(), vp );
         dfp.fill( InDeriv() );
-        copyToData( fromModel->writeForces(), dfp );
+        copyToData( inDofs->writeForces(), dfp );
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        copyFromData( dfp, fromModel->readForces() ); // fp + df due to geometric stiffness
+        copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
 //        cout<<"dfp = " << dfp << endl;
 
         // Jacobian will be obsolete after applying new positions
-        EigenSparseMatrix* J = getMatrix(mapping->getJs());
+        EigenSparseMatrix* J = this->getMatrix(mapping->getJs());
 //        cout<<"J = "<< endl << *J << endl;
         OutVecDeriv Jv(Nc);
         J->mult(Jv,vp);
@@ -198,10 +234,10 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
         // ================ test applyJT()
         InVecDeriv jfc( (long)Np,InDeriv());
         J->addMultTranspose(jfc,fc);
-//        cout<<"jfc = " << jfc << endl;
-//        cout<<" fp = " << fp << endl;
-        if( this->maxDiff(jfc,fp)>this->epsilon()*maxError ){
-            result = false;
+        cout<<"jfc = " << jfc << endl;
+        cout<<" fp = " << fp << endl;
+        if( this->maxDiff(jfc,fp)>this->epsilon()*errorMax ){
+            succeed = false;
             ADD_FAILURE() << "applyJT test failed";
         }
         // ================ test getJs()
@@ -209,17 +245,17 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
 //        cout<<"vp = " << vp << endl;
 //        cout<<"Jvp = " << Jv << endl;
 //        cout<<"vc  = " << vc << endl;
-        if( this->maxDiff(Jv,vc)>this->epsilon()*maxError ){
-            result = false;
+        if( this->maxDiff(Jv,vc)>this->epsilon()*errorMax ){
+            succeed = false;
             ADD_FAILURE() << "getJs() test failed";
         }
 
 
         // propagate small displacement
-        copyToData( fromModel->writePositions(), xp1 );
+        copyToData( inDofs->writePositions(), xp1 );
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        copyFromData( xc1, toModel->readPositions() );
+        copyFromData( xc1, outDofs->readPositions() );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
@@ -229,17 +265,17 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
             dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
 //        cout<<"dxc = " << dxc << endl;
-        if( this->maxDiff(dxc,dxcv)>this->epsilon()*maxError ){
-            result = false;
+        if( this->maxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
+            succeed = false;
             ADD_FAILURE() << "applyJ test failed";
         }
 
 
         // update parent force based on the same child forces
         fp2.fill( InDeriv() );
-        copyToData( fromModel->writeForces(), fp2 );  // reset parent forces before accumulating child forces
+        copyToData( inDofs->writeForces(), fp2 );  // reset parent forces before accumulating child forces
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        copyFromData( fp2, fromModel->readForces() );
+        copyFromData( fp2, inDofs->readForces() );
 //        cout<<"updated parent forces fp2 = "<< fp2 << endl;
         InVecDeriv fp12(Np);
         for(unsigned i=0; i<Np; i++){
@@ -250,31 +286,22 @@ struct Mapping_test : public Sofa_test<typename _InDataTypes::Real>
 
 
         // ================ test applyDJT()
-        if( this->maxDiff(dfp,fp12)>this->epsilon()*maxError ){
-            result = false;
+        if( this->maxDiff(dfp,fp12)>this->epsilon()*errorMax ){
+            succeed = false;
             ADD_FAILURE() << "applyDJT test failed" << endl <<
                              "dfp    = " << dfp << endl <<
                              "fp2-fp = " << fp12 << endl;
         }
 
 
-        return result;
+        return succeed;
+
     }
 
-
-protected:
-    /// To be done by the derived class after the mapping is created and connected to its input and output.
-    void setMapping( typename core::Mapping<In,Out>::SPtr m )
+    virtual ~Mapping_test()
     {
-        mapping = m.get();
-        fromModel = mapping->getFromModel();
-        toModel =   mapping->getToModel();
-        if(!fromModel){
-            ADD_FAILURE() << "Could not find fromModel";
-        }
-        if(!toModel){
-            ADD_FAILURE() << "Could not find toModel";
-        }
+        if (root!=NULL)
+            sofa::simulation::getSimulation()->unload(root);
     }
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
@@ -282,7 +309,6 @@ protected:
     {
         if( matrices->size() != 1 ){
             ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
-//            return 0;
         }
         EigenSparseMatrix* ei = dynamic_cast<EigenSparseMatrix*>((*matrices)[0] );
         if( ei == NULL ){
@@ -292,11 +318,6 @@ protected:
     }
 
 
-
-private:
-    core::Mapping<In,Out>* mapping;
-    InState* fromModel;
-    OutState*  toModel;
 
 };
 

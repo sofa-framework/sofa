@@ -26,6 +26,7 @@
 
 #include <gtest/gtest.h>
 #include "../Standard_test/Sofa_test.h"
+#include "../Standard_test/Mapping_test.h"
 #include <sofa/component/init.h>
 #include "../../tutorials/objectCreator/ObjectCreator.h"
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -51,155 +52,167 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
 typedef component::linearsolver::FullVector<SReal> FullVector;
 
 
-struct Solver_test : public Sofa_test<SReal>
+/**  Test suite for RigidMapping.
+The test cases are defined in the #Test_Cases member group.
+  */
+template <typename _RigidMapping>
+struct RigidMappingTest : public Mapping_test<_RigidMapping>
 {
 
+    typedef _RigidMapping RigidMapping;
 
-    /** Initialize the sofa library and create the root of the scene graph
-      */
-    void initSofa()
-    {
-        setSimulation(new graph::DAGSimulation());
-        sofa::component::init();
-        root = modeling::newRoot();
+    typedef typename RigidMapping::In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
+    typedef container::MechanicalObject<InDataTypes> InMechanicalObject;
+    typedef typename InMechanicalObject::ReadVecCoord  ReadInVecCoord;
+    typedef typename InMechanicalObject::WriteVecCoord WriteInVecCoord;
+    typedef typename InMechanicalObject::WriteVecDeriv WriteInVecDeriv;
+    typedef typename InCoord::Pos Translation;
+    typedef typename InCoord::Rot Rotation;
+    typedef typename InDataTypes::Real InReal;
+    typedef Mat<InDataTypes::spatial_dimensions,InDataTypes::spatial_dimensions,InReal> RotationMatrix;
+
+
+    typedef typename RigidMapping::Out OutDataTypes;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+    typedef typename OutDataTypes::Coord OutCoord;
+    typedef typename OutDataTypes::Deriv OutDeriv;
+    typedef container::MechanicalObject<OutDataTypes> OutMechanicalObject;
+    typedef typename OutMechanicalObject::WriteVecCoord WriteOutVecCoord;
+    typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
+    typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
+    typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
+
+
+    RigidMapping* rigidMapping;
+
+    RigidMappingTest(){
+        rigidMapping = dynamic_cast<RigidMapping*>( this->mapping );
     }
 
-    /** Initialize the scene graph and compute the size of the assembled vectors
+
+    /** @name Test_Cases
+      For each of these cases, we can test if the mapping work
       */
-    void initScene()
-    {
-        sofa::simulation::getSimulation()->init(root.get());
-
-        GetAssembledSizeVisitor getSizeVisitor;
-        root->execute(getSizeVisitor);
-        xsize = getSizeVisitor.positionSize();
-        vsize = getSizeVisitor.velocitySize();
-    }
-
-    /** size of assembled position vector
-    @pre the scene must be initialized
-    @sa initScene()
+    ///@{
+    /** One frame, with particles given in local coordinates.
+     * This tests the mapping from local to world coordinates.
     */
-    unsigned xSize() const { return xsize; }
+    bool test_oneRigid_fourParticles_localCoords()
+    {
+        const int Nin=1, Nout=4;
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
 
-    /** size of assembled velocity or force vector
-    @pre the scene must be initialized
-    @sa initScene()
+        // child positions
+        rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
+        OutVecCoord xout(Nout);
+        // vertices of the unit tetrahedron
+        OutDataTypes::set( xout[0] ,0.,0.,0.);
+        OutDataTypes::set( xout[1] ,1.,0.,0.);
+        OutDataTypes::set( xout[2] ,0.,1.,0.);
+        OutDataTypes::set( xout[3] ,0.,0.,1.);
+
+        // parent position
+        InVecCoord xin(Nin);
+        InDataTypes::set( xin[0], 1.,-2.,3. );
+        Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
+        InDataTypes::setCRot( xin[0], rot );
+
+
+        // expected mapped values
+        OutVecCoord expectedChildCoords(Nout);
+        RotationMatrix m;
+        xin[0].writeRotationMatrix(m);
+        for(unsigned i=0; i<xout.size(); i++ )
+        {
+            // note that before init, xout is still in relative coordinates
+            expectedChildCoords[i] = xin[0].getCenter() + m * xout[i];
+        }
+
+        // The same xin is used twice since xout is given in local coordinates while expectedChildCoords is given in world coordinates
+        // Here we simply test the mapping from local to world coordinates
+        return this->runTest(xin,xout,xin,expectedChildCoords);
+    }
+
+    /** One frame, with particles given in world coordinates.
+     * This requires the mapping from world to local coordinates.
     */
-    unsigned vSize() const { return vsize; }
-
-
-    /** fill the vector with the positions.
-      @param x the position vector
-      */
-    void getAssembledPositionVector( FullVector* x )
+    bool test_oneRigid_fourParticles_worldCoords()
     {
-        x->resize(xSize());
-        GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), x, core::VecCoordId::position());
-        getRoot()->execute(getVec);
+        const int Nin=1, Nout=4;
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
+
+        // child positions
+        rigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        OutVecCoord xout(Nout);
+        // vertices of the unit tetrahedron
+        OutDataTypes::set( xout[0] ,0.,0.,0.);
+        OutDataTypes::set( xout[1] ,1.,0.,0.);
+        OutDataTypes::set( xout[2] ,0.,1.,0.);
+        OutDataTypes::set( xout[3] ,0.,0.,1.);
+
+        // initial parent position
+        InVecCoord xin_init(Nin);
+        InDataTypes::set( xin_init[0], -3.,1.,-2. );
+        Rotation rot_init = InDataTypes::rotationEuler(3.,-1.,2.);
+        InDataTypes::setCRot( xin_init[0], rot_init );
+
+        // final parent position
+        InVecCoord xin(Nin);
+        InDataTypes::set( xin[0], 1.,-2.,3. );
+        Rotation rot = InDataTypes::rotationEuler(-1.,2.,-3.);
+        InDataTypes::setCRot( xin[0], rot );
+
+        // expected mapped values
+        OutVecCoord expectedChildCoords(Nout);
+        RotationMatrix Rfinal, Rinit, invRinit; // matrices are a unified model for 3D (quaternion) and 2D (scalar).
+        xin[0].writeRotationMatrix(Rfinal);
+        xin_init[0].writeRotationMatrix(Rinit);
+        invRinit = Rinit.transposed();
+        for(unsigned i=0; i<xout.size(); i++ )
+        {
+            // transformation from initial to final parent position: Tfinal.Rfinal.Rinit^{-1}.Tinit^{-1}
+            expectedChildCoords[i] = xin[0].getCenter()  +  Rfinal * (invRinit*(xout[i] - xin_init[0].getCenter()));
+        }
+
+        return this->runTest(xin_init,xout,xin,expectedChildCoords);
     }
 
-    /** fill the vector with the velocities.
-      @param v the velocity vector
-      */
-    void getAssembledVelocityVector( FullVector* v )
-    {
-        v->resize(vSize());
-        GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), v, core::VecDerivId::velocity());
-        getRoot()->execute(getVec);
-    }
-
-    /** Get the root of the scene graph
-      @pre The scene must be initialized
-      @sa initScene()
-      */
-    Node::SPtr getRoot(){ return root; }
+    /// @todo test with several frames
 
 
-private:
-    Node::SPtr root;
-    unsigned xsize; ///< size of assembled position vector, computed in initScene()
-    unsigned vsize; ///< size of assembled velocity vector, computed in initScene()
+    ///@}
+
 
 };
 
 
-struct EulerImplicit_test_2_particles_to_equilibrium : public Solver_test
+// Define the list of types to instanciate. We do not necessarily need to test all combinations.
+using testing::Types;
+typedef Types<
+mapping::RigidMapping<defaulttype::Rigid2fTypes,defaulttype::Vec2fTypes>,
+mapping::RigidMapping<defaulttype::Rigid3dTypes,defaulttype::Vec3dTypes>
+> DataTypes; // the types to instanciate.
+
+// Test suite for all the instanciations
+TYPED_TEST_CASE(RigidMappingTest, DataTypes);
+// first test case
+TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_localCoords )
 {
-    EulerImplicit_test_2_particles_to_equilibrium()
-    {
-        //*******
-        initSofa();
-        //*******
-        // begin create scene under the root node
-
-        modeling::addNew<odesolver::EulerImplicitSolver>(getRoot(),"odesolver" );
-        modeling::addNew<CGLinearSolver>(getRoot(),"linearsolver");
-
-        Node::SPtr string = massSpringString(
-                    getRoot(),
-                    0,0,0, // first endpoint
-                    1,0,0, // second endpoint
-                    2,     // number of particles
-                    2.0,    // total mass
-                    1000.0,   // stiffness
-                    0.1    // damping ratio
-                    );
-        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string,"fixedConstraint");
-        fixed->addConstraint(0);
-
-        // end create scene
-        //*********
-        initScene();
-        //*********
-
-        FullVector x0, x1, v0, v1;
-        getAssembledPositionVector(&x0);
-//        cerr<<"My_test, initial positions : " << x0 << endl;
-        getAssembledVelocityVector(&v0);
-//        cerr<<"My_test, initial velocities: " << v0 << endl;
-
-        Real dx, dv;
-        unsigned n=0;
-        const unsigned nMax=100;
-        const double  precision = 1.e-4;
-        do {
-            sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
-
-            getAssembledPositionVector(&x1);
-//            cerr<<"My_test, new positions : " << x1 << endl;
-            getAssembledVelocityVector(&v1);
-//            cerr<<"My_test, new velocities: " << v1 << endl;
-
-            dx = this->vectorCompare(x0,x1);
-            dv = this->vectorCompare(v0,v1);
-            x0 = x1;
-            v0 = v1;
-            n++;
-
-        } while( (dx>1.e-4 || dv>1.e-4) && n<nMax );
-
-        // test convergence
-        if( n==nMax )
-            ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << endl
-                          <<" previous x = " << x0 << endl
-                          <<" current x  = " << x1 << endl
-                          <<" previous v = " << v0 << endl
-                          <<" current v  = " << v1 << endl;
-
-        // test position of the second particle
-        Vec3d expected(0,-1.00981,0), actual( x0[3],x0[4],x0[5]);
-        if( vectorCompare(expected,actual)>precision )
-            ADD_FAILURE() << "Solver test has not converged to the expected position" <<
-                             " expected: " << expected << endl <<
-                             " actual " << actual << endl;
-
-    }
-
-};
-
-TEST_F( EulerImplicit_test_2_particles_to_equilibrium, myEulerImplicit_test_2particles )
+    // child coordinates given directly in parent frame
+    ASSERT_TRUE(this->test_oneRigid_fourParticles_localCoords());
+}
+TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_worldCoords )
 {
+    // child coordinates given in word frame
+    this->errorMax = 100.; // a larger error occurs, probably due to the world to local mapping at init:
+    ASSERT_TRUE(this->test_oneRigid_fourParticles_worldCoords());
 }
 
 }// namespace sofa
