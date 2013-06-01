@@ -159,7 +159,7 @@ public:
     /** Return pointers to the geometric stiffness matrices. 
 	This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product. 
 	These matrices are associated with the parent DOFs. 
-	@todo Change this API to take into account the cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks.
+    @todo Are there  cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks ? I do not think so but I am not totally sure (FF, June 2013)
     */
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getKs() { return NULL; }
 

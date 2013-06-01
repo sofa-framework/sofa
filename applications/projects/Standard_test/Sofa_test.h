@@ -235,6 +235,8 @@ struct Sofa_test : public ::testing::Test
             d[i] = v[i];
     }
 
+
+
 };
 
 /// helper for more compact component creation
