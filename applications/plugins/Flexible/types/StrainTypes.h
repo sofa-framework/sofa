@@ -151,6 +151,12 @@ public:
             in>>c.getVec();
             return in;
         }
+
+        /// Euclidean norm
+        Real norm() const
+        {
+            return getVec().norm();
+        }
     };
 
     typedef vector<Deriv> VecDeriv;
@@ -181,6 +187,16 @@ public:
     template<typename T>
     static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}
+
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real maxValue )
+    {
+        Deriv result;
+        for( unsigned int i=0 ; i<VSize ; ++i )
+            result[i] = rand()*maxValue/RAND_MAX;
+        return result;
+    }
 
 };
 

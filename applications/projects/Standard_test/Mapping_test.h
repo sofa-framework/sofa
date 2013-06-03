@@ -168,7 +168,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         for( unsigned i=0; i<xout.size(); i++ )
         {
             OutCoord xdiff = xout[i] - expectedChildNew[i];
-            if( !isSmall(  xdiff.norm() ) ) {
+            if( !isSmall(  xdiff.norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildNew[i];
                 succeed = false;
             }
@@ -234,8 +234,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // ================ test applyJT()
         InVecDeriv jfc( (long)Np,InDeriv());
         J->addMultTranspose(jfc,fc);
-        cout<<"jfc = " << jfc << endl;
-        cout<<" fp = " << fp << endl;
+//        cout<<"jfc = " << jfc << endl;
+//        cout<<" fp = " << fp << endl;
         if( this->maxDiff(jfc,fp)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJT test failed";
@@ -265,9 +265,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
 //        cout<<"dxc = " << dxc << endl;
+//        cout<<"dxcv = " << dxcv << endl;
         if( this->maxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed";
+            ADD_FAILURE() << "applyJ test failed " << this->maxDiff(dxc,dxcv) / this->epsilon();
         }
 
 
