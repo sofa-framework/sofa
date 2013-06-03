@@ -400,22 +400,22 @@ endfunction()
 
 # AddCompilerDefinitions(compiler_definition0 [compiler_definition1 [...]])
 function(AddCompilerDefinitions)
-	set(COMPILER_DEFINES ${ARGV} PARENT_SCOPE)
+	set(COMPILER_DEFINES ${COMPILER_DEFINES} ${ARGV} PARENT_SCOPE)
 endfunction()
 
 # AddCompilerFlags(compiler_flag0 [compiler_flag1 [...]])
 function(AddCompilerFlags)
-	set(COMPILER_FLAGS ${ARGV} PARENT_SCOPE)
+	set(COMPILER_FLAGS ${COMPILER_FLAGS} ${ARGV} PARENT_SCOPE)
 endfunction()
 
 # AddLinkerDependencies(linker_dependency0 [linker_dependency1 [...]])
 function(AddLinkerDependencies)
-	set(LINKER_DEPENDENCIES ${ARGV} PARENT_SCOPE)
+	set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} ${ARGV} PARENT_SCOPE)
 endfunction()
 
 # AddLinkerFlags(linker_flag0 [linker_flag1 [...]])
 function(AddLinkerFlags)
-	set(LINKER_FLAGS ${ARGV} PARENT_SCOPE)
+	set(LINKER_FLAGS ${LINKER_FLAGS} ${ARGV} PARENT_SCOPE)
 endfunction()
 
 # low-level function computing an intersection between two lists
