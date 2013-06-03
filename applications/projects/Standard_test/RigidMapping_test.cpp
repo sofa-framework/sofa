@@ -84,7 +84,7 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
     RigidMapping* rigidMapping;
 
     RigidMappingTest(){
-        rigidMapping = dynamic_cast<RigidMapping*>( this->mapping );
+        rigidMapping = static_cast<RigidMapping*>( this->mapping );
     }
 
 
