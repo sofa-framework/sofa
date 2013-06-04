@@ -46,7 +46,9 @@ Sections \ref{sec constraint forces} and \ref{sec:time integration} explain the 
 
 \section{Constraint forces} \label{sec constraint forces}
 \subsection{Generalized constraints}
-This approach unifies soft and hard constraints, by providing constraints with compliance. Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
+This approach unifies soft and hard constraints, by providing constraints with compliance. 
+For a good introduction on hard constraints, see~\cite{witkinconstraints}.
+Hard constraints are usually implemented using Lagrange multipliers $\lambda$ in the following equation:
 \begin{equation} \label{eq acc hard}
 \left( \begin{array}{cc}
 \M & -\Jt \\
@@ -55,18 +57,18 @@ This approach unifies soft and hard constraints, by providing constraints with c
 \acc \\ \lam
 \end{array}\right) = \left( \begin{array}{c}
 \forcext  \\
--\violation
+-\ddot \violation
 \end{array}\right) 
 \end{equation}
-where $\M$ is the mass matrix (or, more generally, a dynamics matrix such as $\M-h²\K$ used in implicit time integration), $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force and $\violation$ is the constraint violation.
-$\lam$ and $\violation$ are vectors with as many entries as scalar constraints. The equation system is typically solved using a Schur complement to compute the constraint forces:
+where $\M$ is the mass matrix (or, more generally, a dynamics matrix such as $\M-h²\K$ used in implicit time integration), $\J$ is the Jacobian matrix of the constraint(s), $\acc$ is the acceleration, $\forcext$ is the net external force applied to the system, $\lam$ is the constraint force $\violation$ is the constraint violation and $\ddot \violation$ is the second time derivative of the violation (i.e. the error on accelerations).
+$\lam$ and $\ddot \violation$ are vectors with as many entries as scalar constraints. The equation system is typically solved using a Schur complement to compute the constraint forces:
 \begin{equation}\label{eq schur rigid}
-\J \Minv \Jt \lam = -\violation - \J \Minv \forcext
+\J \Minv \Jt \lam = -\ddot \violation - \J \Minv \forcext
 \end{equation}
 and then the acceleration is computed as $\acc = \Minv( \forcext + \Jt \lam)$.
 
 
-In the generalized approach, the constraint forces are considered proportional to the constraint violations:
+In the generalized approach, the constraint forces are considered directly proportional to the constraint violations $\violation$ and their first time derivative (error on velocity) $\dviolation$:
 \begin{equation}\label{eq generalized constraint}
 \lam = - \frac{1}{\cmp} \left( \violation + \dampingratio \dviolation \right)
 \end{equation}
