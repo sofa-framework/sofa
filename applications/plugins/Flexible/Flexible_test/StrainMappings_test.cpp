@@ -30,6 +30,7 @@ namespace sofa {
     using namespace component::mapping;
 
 
+    /// Base class to compare StrainMapping
     template <typename _Mapping>
     struct StrainMappingTest : public Mapping_test<_Mapping>
     {
@@ -153,6 +154,27 @@ namespace sofa {
         typedef typename Inherited::In In;
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
+        typedef typename Inherited::OutCoord OutCoord;
+
+
+        OutCoord sort( const OutCoord& a )
+        {
+            OutCoord aa;
+            std::vector<Real> v;
+            v.assign( &a[0], &a[0] + OutCoord::total_size );
+            std::sort( v.begin(), v.end() );
+            for( unsigned i=0 ; i<OutCoord::total_size ; ++i ) aa[i] = v[i];
+            return aa;
+        }
+
+
+        /// since principal stretches are oder-independent, sort them before comparison
+        virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+        {
+            return sort(a)-sort(b);
+        }
+
+
 
         bool runTest()
         {
@@ -163,13 +185,11 @@ namespace sofa {
 
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
             {
-                strain[i][i] = (i+1)*2; // todo randomize it
+                strain[i][i] = (i+1)*2; // todo randomize it being careful not to obtain negative (even too small) eigenvalues
             }
 
             helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation);
 
-
-            // TODO: principal stretches are not sorted... hard to compare
             OutVecCoord expectedChildCoords(1);
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
                 expectedChildCoords[0].getVec()[i] = strain[i][i] - 1;
@@ -181,18 +201,18 @@ namespace sofa {
 
 
     // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-//    typedef Types<
-//    component::mapping::PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::U331Types>,
-//    component::mapping::PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::U321Types>
-//    > PrincipalStretchesDataTypes; // the types to instanciate.
+    typedef Types<
+    component::mapping::PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::U331Types>,
+    component::mapping::PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::U321Types>
+    > PrincipalStretchesDataTypes; // the types to instanciate.
 
-//    // Test suite for all the instanciations
-//    TYPED_TEST_CASE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
-//    // first test case
-//    TYPED_TEST( PrincipalStretchesMappingTest , test_auto )
-//    {
-//        ASSERT_TRUE(  this->runTest() );
-//    }
+    // Test suite for all the instanciations
+    TYPED_TEST_CASE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
+    // first test case
+    TYPED_TEST( PrincipalStretchesMappingTest , test_auto )
+    {
+        ASSERT_TRUE(  this->runTest() );
+    }
 
 
 

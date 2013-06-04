@@ -318,7 +318,7 @@ public:
         computeJ();
     }
 
-    void addmult( OutDeriv& result,const InDeriv& data )
+    void addmult( OutDeriv& result, const InDeriv& data )
     {
         for( int i=0 ; i<spatial_dimensions ; ++i )
             for( int j=0 ; j<material_dimensions ; ++j )
