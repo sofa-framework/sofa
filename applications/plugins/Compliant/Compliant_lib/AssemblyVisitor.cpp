@@ -11,6 +11,7 @@
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
 
+#include <boost/graph/graphviz.hpp>
 
 namespace sofa {
 namespace simulation {
@@ -43,6 +44,9 @@ static void add(LValue& lval, const RValue& rval) {
 }
 
 
+static std::string pretty(AssemblyVisitor::dofs_type* dofs) {
+	return dofs->getContext()->getName() + " / " + dofs->getName();
+}
 
 
 		
@@ -441,6 +445,9 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	assert( node->mechanicalState );
 	assert( chunks.find( node->mechanicalState ) == chunks.end() );
 	
+	// std::cerr << "prefix fill " << pretty(node->mechanicalState) << std::endl;
+
+
 	// backup prefix order
 	prefix.push_back( node->mechanicalState );
 
@@ -457,13 +464,13 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	
 	if( !zero(c.M) || !zero(c.K) ) {
 		c.mechanical = true;
-		c.vertex = boost::add_vertex(v, graph);
-		
 		c.v = vel( node );
 	}
 
 	c.map = mapping( node );
 	c.f = force( node );
+	
+	c.vertex = boost::add_vertex(v, graph);
 	
 	if( c.map.empty() ) {
 		// independent
@@ -486,10 +493,12 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 			c.extra = extra( node );
 			
 			c.mechanical = true;
-			c.vertex = boost::add_vertex(v, graph);
+		
 		}
 
 	}
+
+	// if( c.mechanical ) std::cerr << "mechanincal !" << std::endl;
 	
 }
 
@@ -503,48 +512,22 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
 
-	if( !c.map.empty() && c.mechanical ) {
+	for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end(); 
+	    it != end; ++it) {
+				
+		chunk& p = chunks[it->first];
 		
-		for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end(); 
-		    it != end; ++it) {
-				
-			chunk& parent = chunks[it->first];
-				
-			// propagate geometric stiffness
-			if(!zero(it->second.K)) { 
-				add(parent.K, it->second.K);
-			}
-
-			if( !parent.mechanical ) {
-				parent.mechanical = true;
-				
-				vertex p; p.dofs = it->first;
-				parent.vertex = boost::add_vertex(p, graph);
-			}
-				
-			edge e;
-			e.data = &it->second;
-				
-			// the edge is child -> parent
-			boost::add_edge(c.vertex, parent.vertex, e, graph); 
-		}
-
+		edge e;
+		e.data = &it->second;
+			
+		// the edge is child -> parent
+		boost::add_edge(c.vertex, p.vertex, e, graph); 
 	}
+	
 }
 
 
-		
 
-		
-Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
-	if( node->mechanicalState ) fill_prefix( node );
-	return RESULT_CONTINUE;
-}
-
-void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
-	if( node->mechanicalState ) fill_postfix( node );
-}
-		
 
 void AssemblyVisitor::debug_chunk(const AssemblyVisitor::chunks_type::const_iterator& i) {
 	using namespace std;
@@ -636,31 +619,67 @@ void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
  
 // this is used to propagate mechanical flag upwards mappings (prefix
 // in the graph order)
-struct AssemblyVisitor::propagation {
+struct AssemblyVisitor::propagation_helper {
 
+	// should be const lol
 	chunks_type& chunks;
 
-	propagation(chunks_type& chunks) : chunks(chunks) {} 
-
-	template<class G>
-	void operator()(unsigned v, const G& g) const {
-
-		// TODO use out_edges instead lol
-		chunk& c = chunks[ g[v].dofs ];
+	propagation_helper(chunks_type& chunks) : chunks(chunks) {} 
+	
+	void operator()( dofs_type* dofs) const {
+		// TODO use out_edges instead lol ?
+		chunk& c = chunks[ dofs ];
 		
+		// std::cerr << "propagating from " << pretty(c.dofs) << std::endl;
+
 		if( c.mechanical ) {
 			
 			for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
 			    mi != me; ++mi) {
-				chunks[ mi->first ].mechanical = true;
+
+				chunk& p = chunks[ mi->first ];
+				p.mechanical = true;
+							
+				if(!zero(mi->second.K)) { 
+					add(p.K, mi->second.K);
+				}
+				// std::cerr << "becomes mechanical lol " << pretty(mi->first) << std::endl;
 			}
 		
 		}
+	}
 
-		
+	template<class G>
+	void operator()(unsigned v, const G& g) const {
+		(*this)(g[v].dofs);
 	}
 	
 };
+
+
+
+template<class G>
+struct writer {
+	const G& g;
+	writer(const G& g) :g(g) { }
+	
+	void operator()(std::ostream& out, typename G::vertex_descriptor vertex) const {
+		out << "[label=\"" << g[vertex].dofs->getContext()->getName() << "\"]";
+	}
+
+	void operator()(std::ostream& out, typename G::edge_descriptor edge) const {
+		// out << g[vertex].dofs->getContext()->getName();
+	}
+	
+	
+};
+
+template<class G>
+static void debug_graph(const G& g) {
+	std::ofstream out("/tmp/graph");
+	boost::write_graphviz(out, g, writer<G>(g));
+}
+
 
 struct AssemblyVisitor::process_helper {
 	
@@ -671,7 +690,7 @@ struct AssemblyVisitor::process_helper {
 	               const chunks_type& chunks)
 		: res(res),
 		  chunks(chunks) {
-		std::cerr << "avanti" << std::endl;
+		// std::cerr << "avanti" << std::endl;
 	}
 
 	template<class G>
@@ -680,7 +699,7 @@ struct AssemblyVisitor::process_helper {
 	}
 
 	void operator()(dofs_type* curr) const {
-		cerr << "processing " << curr->getContext()->getName() << " / " << curr->getName() << std::endl;
+		// cerr << "processing " << pretty( curr ) << std::endl;
 
 		const unsigned& size_m = res.size_m;
 		full_type& full = res.full;
@@ -725,6 +744,9 @@ struct AssemblyVisitor::process_helper {
 					
 					// TODO optimize this, it is the most costly part
 					add(Jc, jc * Jp );
+				} else {
+					std::cerr << "parent: " << pretty(p.dofs) << " has empty J matrix" << std::endl;
+					assert( false );
 				}
 			}
  
@@ -733,12 +755,12 @@ struct AssemblyVisitor::process_helper {
 
 				cerr << "houston we have a problem with " << c.dofs->getName()  << " under " << c.dofs->getContext()->getName() << endl
 				     << "master: " << c.master() << endl 
-				     << "mapped: " << !c.map.empty() << endl
+				     << "mapped: " << (c.map.empty() ? string("nope") : p.dofs->getName() )<< endl
 				     << "p mechanical ? " << p.mechanical << endl
-				     << "empty jp " << empty(Jp) << endl
-				     << "empty jc " << empty(Jc) << endl;
+				     << "empty Jp " << empty(Jp) << endl
+				     << "empty Jc " << empty(Jc) << endl;
 				
-				// assert( false );
+				assert( false );
 				
 				// { 
 				// 	// scoped::timer step("geometric stiffness propagation");
@@ -766,10 +788,26 @@ struct AssemblyVisitor::process_helper {
 
 };
 
+struct AssemblyVisitor::prefix_helper {
+	prefix_type& res;
+
+	prefix_helper(prefix_type& res) : res(res) {
+		res.clear();
+	}
+	
+	template<class G>
+	void operator()(unsigned v, const G& g) const {
+		res.push_back(g[v].dofs);
+	}
+	
+};
+
+
 
 AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	// scoped::timer step("mapping processing");
-			
+
+
 	process_type res;
 
 	unsigned& size_m = res.size_m;
@@ -784,7 +822,7 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	unsigned off_c = 0;
 	
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-
+		
 		const chunk& c = find(chunks, prefix[i]);
 		// independent
 		if( c.master() ) {
@@ -795,25 +833,17 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 		}
 				
 	}
-
+	
 	// update total sizes
 	size_m = off_m;
 	size_c = off_c;
-		
-	// propagate mechanical flags
-	utils::prefix(graph, propagation(chunks));
 	
-	// utils::postfix(graph, process_helper(res, chunks));
-	// return res;
-	
-	process_helper help(res, chunks);
-	utils::postfix( graph, help ); 
-	std::cerr << "ciao" << std::endl;
-	
-	// for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-	// 	help( prefix[i] );
-	// }
+	// postfix mechanical flags propagation
+	std::for_each(prefix.rbegin(), prefix.rend(), propagation_helper(chunks) );
 
+	// prefix mapping propagation TODO merge with offsets computation
+	std::for_each(prefix.begin(), prefix.end(), process_helper(res, chunks) );
+	
 	return res;
 }
 
@@ -1103,6 +1133,21 @@ void AssemblyVisitor::clear() {
 	
 }
 
+
+		
+Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
+	if( node->mechanicalState ) fill_prefix( node );
+	return RESULT_CONTINUE;
+}
+
+void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
+	if( node->mechanicalState ) fill_postfix( node );
+
+	// are we finished ?
+	if( node->getParents().empty() ) utils::dfs( graph, prefix_helper( prefix ) );
+	
+}
+		
 
 }
 }
