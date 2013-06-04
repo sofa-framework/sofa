@@ -136,7 +136,7 @@ endif()
 ## CSPARSE
 option(SOFA-EXTERNAL_HAVE_CSPARSE "Use CSparse" OFF)
 option(SOFA-EXTERNAL_HAVE_FLOWVR "Use FlowVR (otherwise miniFlowVR will be used from extlib)" OFF) #TODO port features/sofa/flowvr.prf
-option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" ON)
+option(SOFA-EXTERNAL_HAVE_EIGEN2 "Use Eigen" OFF)
 
 # Miscellaneous features
 
@@ -211,7 +211,7 @@ option(SOFA-LIB_COMPONENT_COMPONENT_MAIN "" ON)
 option(SOFA-LIB_COMPONENT_CONSTRAINT "" ON)
 option(SOFA-LIB_COMPONENT_DEFORMABLE "" ON)
 option(SOFA-LIB_COMPONENT_DENSE_SOLVER "" ON)
-option(SOFA-LIB_COMPONENT_EIGEN2_SOLVER "" ON)
+option(SOFA-LIB_COMPONENT_EIGEN2_SOLVER "" OFF)
 
 option(SOFA-LIB_COMPONENT_ENGINE "" ON)
 option(SOFA-LIB_COMPONENT_EULERIAN_FLUID "" ON)
