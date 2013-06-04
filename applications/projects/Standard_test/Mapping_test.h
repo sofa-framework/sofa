@@ -123,6 +123,17 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
+
+
+
+    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
+      */
+    virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+    {
+        return a-b;
+    }
+
+
     /** Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
      * The mapping is initialized using the two first parameters,
@@ -167,8 +178,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
         {
-            OutCoord xdiff = xout[i] - expectedChildNew[i];
-            if( !isSmall(  xdiff.norm(), errorMax ) ) {
+            if( !isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: " << xout[i] <<", expected: " << expectedChildNew[i];
                 succeed = false;
             }
@@ -234,20 +244,18 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // ================ test applyJT()
         InVecDeriv jfc( (long)Np,InDeriv());
         J->addMultTranspose(jfc,fc);
-//        cout<<"jfc = " << jfc << endl;
-//        cout<<" fp = " << fp << endl;
         if( this->maxDiff(jfc,fp)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJT test failed";
+            ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
         }
         // ================ test getJs()
         // check that J.vp = vc
-//        cout<<"vp = " << vp << endl;
-//        cout<<"Jvp = " << Jv << endl;
-//        cout<<"vc  = " << vc << endl;
         if( this->maxDiff(Jv,vc)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "getJs() test failed";
+                    cout<<"vp = " << vp << endl;
+                    cout<<"Jvp = " << Jv << endl;
+                    cout<<"vc  = " << vc << endl;
+            ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
         }
 
 
@@ -261,14 +269,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         OutVecCoord dxc(Nc),dxcv(Nc);
         for(unsigned i=0; i<Nc; i++ ){
-            dxc[i] = xc1[i] - xc[i];
+            dxc[i] = difference( xc1[i], xc[i] );
             dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
-//        cout<<"dxc = " << dxc << endl;
-//        cout<<"dxcv = " << dxcv << endl;
         if( this->maxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed " << this->maxDiff(dxc,dxcv) / this->epsilon();
+            ADD_FAILURE() << "applyJ test failed " << std::endl << "dxc = " << dxc << endl <<"dxcv = " << dxcv << endl;
         }
 
 

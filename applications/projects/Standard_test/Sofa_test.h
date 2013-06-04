@@ -214,8 +214,9 @@ struct Sofa_test : public ::testing::Test
         Real maxdiff = 0;
         for(unsigned i=0; i<c1.size(); i++ ){
 //            cout<< c2[i]-c1[i] << " ";
-            if( (c1[i]-c2[i]).norm()>maxdiff )
-                maxdiff = (c1[i]-c2[i]).norm();
+            Real n = (c1[i]-c2[i]).norm();
+            if( n>maxdiff )
+                maxdiff = n;
         }
         return maxdiff;
     }
