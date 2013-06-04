@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="0.05"  >
-    <RequiredPlugin pluginName="sofaimage"/>
-    <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="sofaimage"/>
+  <RequiredPlugin pluginName="Flexible"/>
 
-    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+  <VisualStyle displayFlags="showVisual showBehaviorModels" />
 
-    <DefaultAnimationLoop />
-    <DefaultVisualManagerLoop />
+  <DefaultAnimationLoop />
+  <DefaultVisualManagerLoop />
 
-  <ImageContainer name="loader" filename="mesh/steak-seg-highres.ppm" drawBB="false" />
+  <ImageContainer name="loader" filename="./data/mesh/steak-seg-highres.ppm" drawBB="false" />
   <ImageFilter name="selectchannel" src="@loader" filter="21" param="0"/>
   <ImageFilter name="extruder" inputImage="@selectchannel.outputImage" filter="20" param="-5 -3.75 -1 64 64 15 0.15 0.15 0.15 0" inputTransform="-5 -3.75 0 0 0 0 0.025 0.025 0.8 0 1 0"/>
 
   <ImageContainer name="image" image="@extruder.outputImage" transform="@extruder.outputTransform" drawBB="false"/>
 
   <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 20000 254 5000 255 15000000000"/>
-<!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
+  <!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
 
   <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 1 0.01"/>
 
@@ -23,49 +23,49 @@
   <EulerImplicitSolver rayleighStiffness="0.05"  rayleighMass="0.05" />
   <CGLinearSolver template="GraphScattered" iterations="10"  threshold="1e-008" />
 
- <Node 	name="Flexible"   >
-		
-	    <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="1" fixedPosition="2.4 0.45 0 1.5 2.5 0" /> 
-            <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/> 
-	    <FixedConstraint indices="0" />
+  <Node 	name="Flexible"   >
+
+    <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="1" fixedPosition="2.4 0.45 0 1.5 2.5 0" />
+    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/>
+    <FixedConstraint indices="0" />
 
     <VoronoiShapeFunction name="SF" template="ShapeFunction3d,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
-<!--           <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>-->
-           <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>
+    <!--           <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>-->
+    <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>
 
-   <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
+    <ImageDensityMass  template="Affine3d,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" />
 
     <Node 	name="behavior"   >
 
-	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
-	   <!--  <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 4"/>    -->
-	   <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
- 
-	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamples="false" printLog="false" targetNumber="1"/>
+      <!--  <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 4"/>    -->
+      <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
 
-	<Node 	name="E"   >
-	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
+      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+      <LinearMapping template="Mapping&lt;Affine,F332&gt;" assembleJ="false"/>
 
-	    <MechanicalObject  template="E333" name="E"  />
-	    <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"/>
-	    <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0" assembleK="false"/>
-	</Node>
-		
+      <Node 	name="E"   >
+        <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
+
+        <MechanicalObject  template="E333" name="E"  />
+        <GreenStrainMapping template="Mapping&lt;F332,E333&gt;" assembleJ="false"/>
+        <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0" assembleK="false"/>
+      </Node>
+
     </Node>
-		<Node name="Collision">
-		        <VisualStyle displayFlags="hideBehaviorModels" />
-			<MeshObjLoader name="MeshLoader" filename="mesh/steak.obj"/>
-			<Mesh src="@MeshLoader" /> 
-			<MechanicalObject  name="PointSet" useMask="1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
-		</Node>
-
-		<Node name="Visu">
-			<OglModel name="Beam" fileMesh="mesh/steak.obj" texturename="mesh/steak.png" normals="0" color="1 .8 .3 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
-		</Node>
+    <Node name="Collision">
+      <VisualStyle displayFlags="hideBehaviorModels" />
+      <MeshObjLoader name="MeshLoader" filename="./data/mesh/steak.obj"/>
+      <Mesh src="@MeshLoader" />
+      <MechanicalObject  name="PointSet" useMask="1" />
+      <LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
     </Node>
+
+    <Node name="Visu">
+      <OglModel name="Beam" fileMesh="./data/mesh/steak.obj" texturename="./data/mesh/steak.png" normals="0" color="1 .8 .3 1" />
+      <LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+    </Node>
+  </Node>
 </Node>
 
