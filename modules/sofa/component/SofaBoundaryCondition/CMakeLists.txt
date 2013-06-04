@@ -91,7 +91,7 @@ set(SOURCE_FILES
     ../projectiveconstraintset/SkeletalMotionConstraint.cpp
     )
     
-if(SOFA-EXTERNAL_HAVE_EIGEN2)
+if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToLineConstraint.h")
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToLineConstraint.inl")
     list(APPEND HEADER_FILES "../projectiveconstraintset/ProjectToPlaneConstraint.h")
@@ -113,7 +113,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BOUNDARY_CONDITION")
 AddLinkerDependencies(SofaBaseTopology)
-if(SOFA-EXTERNAL_HAVE_EIGEN2)
+if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
     AddLinkerDependencies(SofaEigen2Solver)
 endif()
 

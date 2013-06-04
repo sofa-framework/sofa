@@ -59,7 +59,7 @@ set(SOURCE_FILES
 
     )
     
-if( SOFA-EXTERNAL_HAVE_EIGEN2 )
+if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
 	list(APPEND HEADER_FILES "../collision/BarycentricDistanceLMConstraintContact.h")
 	list(APPEND HEADER_FILES "../collision/BarycentricDistanceLMConstraintContact.inl")
 	list(APPEND HEADER_FILES "../constraintset/DOFBlockerLMConstraint.h")
@@ -90,7 +90,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_CONSTRAINT" )
 AddLinkerDependencies(SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction )
-if(SOFA-EXTERNAL_HAVE_EIGEN2)
+if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
     AddLinkerDependencies(SofaEigen2Solver)
 endif()
 
