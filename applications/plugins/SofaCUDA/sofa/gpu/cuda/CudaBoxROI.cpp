@@ -67,6 +67,7 @@ int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using
         .add< component::engine::BoxROI<CudaVec2dTypes> >()
         .add< component::engine::BoxROI<CudaVec3dTypes> >()
         .add< component::engine::BoxROI<CudaVec3d1Types> >()
+		.add< component::engine::BoxROI<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

@@ -343,6 +343,13 @@ void mycudaThreadSynchronize()
     cudaThreadSynchronize();
 }
 
+void mycudaDeviceSynchronize()
+{
+	if(!cudaInitCalled) return;
+	
+	cudaDeviceSynchronize();
+}
+
 void mycudaCheckError(const char* src)
 {
     if (!cudaInitCalled) return; // no need to check errors if no-one used cuda yet

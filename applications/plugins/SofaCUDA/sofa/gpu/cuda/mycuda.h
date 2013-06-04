@@ -69,8 +69,11 @@ extern "C" {
     extern void SOFA_GPU_CUDA_API mycudaGLUnmapBufferObject(int id);
 
     extern void SOFA_GPU_CUDA_API mycudaMemset(void * devPtr, int val , size_t size,int d = mycudaGetBufferDevice());
+
+	/*CAUTION : DEPRECATED SINCE CUDA 4.0 */
     extern void SOFA_GPU_CUDA_API mycudaThreadSynchronize();
 
+	extern void SOFA_GPU_CUDA_API mycudaDeviceSynchronize();
     extern void SOFA_GPU_CUDA_API mycudaCheckError(const char* src);
 
     extern void SOFA_GPU_CUDA_API displayStack(const char * name);

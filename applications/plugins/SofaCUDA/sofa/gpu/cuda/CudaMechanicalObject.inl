@@ -2006,7 +2006,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops)
 {
-    std::cerr<<"MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !"<<std::endl;
+#ifdef DEBUG
+	std::cerr<<"MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !"<<std::endl;
+#endif
     // TODO : make corresponding kernels
 
     // optimize common integration case: v += a*dt, x += v*dt

@@ -267,13 +267,13 @@ typedef CudaVec6<double> CudaVec6d;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 template<class real>
-__device__ CudaVec3<real> operator+(CudaVec3<real> a, CudaVec3<real> b)
+__device__ __inline__ CudaVec3<real> operator+(const CudaVec3<real>& a, const CudaVec3<real>& b)
 {
     return CudaVec3<real>::make(a.x+b.x, a.y+b.y, a.z+b.z);
 }
 
 template<class real>
-__device__ void operator+=(CudaVec3<real>& a, CudaVec3<real> b)
+__device__ __inline__ void operator+=(CudaVec3<real>& a, const CudaVec3<real>& b)
 {
     a.x += b.x;
     a.y += b.y;
@@ -281,7 +281,7 @@ __device__ void operator+=(CudaVec3<real>& a, CudaVec3<real> b)
 }
 
 template<class real>
-__device__ void operator+=(CudaVec3<real>& a, real b)
+__device__  __inline__ void operator+=(CudaVec3<real>& a, const real& b)
 {
     a.x += b;
     a.y += b;
@@ -289,7 +289,7 @@ __device__ void operator+=(CudaVec3<real>& a, real b)
 }
 
 template<class real>
-__device__ CudaVec3<real> operator-(CudaVec3<real> a, CudaVec3<real> b)
+__device__ __inline__ CudaVec3<real> operator-(const CudaVec3<real>& a, const CudaVec3<real>& b)
 {
     return CudaVec3<real>::make(a.x-b.x, a.y-b.y, a.z-b.z);
 }
@@ -317,13 +317,13 @@ __device__ CudaVec3<real> operator-(CudaVec3<real>& a)
 }
 
 template<class real>
-__device__ CudaVec3<real> operator*(CudaVec3<real> a, real b)
+__device__ __inline__ CudaVec3<real> operator*(const CudaVec3<real>& a, const real& b)
 {
     return CudaVec3<real>::make(a.x*b, a.y*b, a.z*b);
 }
 
 template<class real>
-__device__ CudaVec3<real> operator/(CudaVec3<real> a, real b)
+__device__ __inline__ CudaVec3<real> operator/(const CudaVec3<real>& a, const real b)
 {
     return CudaVec3<real>::make(a.x/b, a.y/b, a.z/b);
 }
@@ -337,7 +337,7 @@ __device__ void operator*=(CudaVec3<real>& a, real b)
 }
 
 template<class real>
-__device__ CudaVec3<real> operator*(real a, CudaVec3<real> b)
+__device__ __inline__ CudaVec3<real> operator*(const real& a, const CudaVec3<real>& b)
 {
     return CudaVec3<real>::make(a*b.x, a*b.y, a*b.z);
 }
@@ -361,7 +361,7 @@ __device__ CudaVec3<real> cross(CudaVec3<real> a, CudaVec3<real> b)
 }
 
 template<class real>
-__device__ real norm2(CudaVec3<real> a)
+__device__ __inline__ real norm2(const CudaVec3<real>& a)
 {
     return a.x*a.x+a.y*a.y+a.z*a.z;
 }
