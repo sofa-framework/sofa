@@ -76,9 +76,7 @@ public:
 	void debug() const; 
 
 public:
-
-
-			
+	
 	typedef core::behavior::BaseMechanicalState dofs_type;
 			
 	// data chunk for each dofs
@@ -146,7 +144,8 @@ public:
 	real damping(simulation::Node* node);
 
 	// fill data chunk for node
-	void fill(simulation::Node* node);
+	void fill_prefix(simulation::Node* node);
+	void fill_postfix(simulation::Node* node);
 
 protected:
 
