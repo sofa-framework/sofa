@@ -205,7 +205,10 @@ void AssembledSolver::solve(const core::ExecParams* params,
 	 
 	// distribute (projected) velocities
 	vis.distribute_master( core::VecId::velocity(), velocity(sys, x) );
-	if( sys.n ) vis.distribute_compliant( core::VecId::force(), lambda(sys, x) );
+	if( sys.n ) {
+		vis.distribute_compliant( core::VecId::force(), lambda(sys, x) );
+
+	}
 	
 	// update positions TODO use xResult/vResult
 	integrate( &mparams );
