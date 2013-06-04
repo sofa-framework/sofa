@@ -177,7 +177,8 @@ public:
 	virtual process_type process() const;
 			
 	struct process_helper;
-	struct propagation;
+	struct propagation_helper;
+	struct prefix_helper;
 
 	// data chunks
 	typedef std::map< dofs_type*, chunk > chunks_type;
@@ -187,7 +188,7 @@ public:
 
 	// traversal order
 	typedef std::vector< dofs_type* > prefix_type;
-	prefix_type prefix;
+	mutable prefix_type prefix;
 			
 	// mapping graph
 	struct vertex {
