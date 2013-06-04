@@ -434,11 +434,16 @@ AssemblyVisitor::system_type::flags_type AssemblyVisitor::flags(simulation::Node
 	
 	return res;
 }
-			
-// this **MUST** be called in postfix order (children first) 
-void AssemblyVisitor::fill(simulation::Node* node) {
-	assert( node->mechanicalState );
 	
+
+// top-down
+void AssemblyVisitor::fill_prefix(simulation::Node* node) {
+	assert( node->mechanicalState );
+	assert( chunks.find( node->mechanicalState ) == chunks.end() );
+	
+	// backup prefix order
+	prefix.push_back( node->mechanicalState );
+
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
 			
@@ -446,9 +451,6 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 	c.dofs = node->mechanicalState;
 	
 	vertex v; v.dofs = c.dofs;
-	
-	// c.offset = size;
-	// size += c.size;
 	
 	c.M = mass( node );
 	add(c.K, stiff( node ));
@@ -462,7 +464,7 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 
 	c.map = mapping( node );
 	c.f = force( node );
-
+	
 	if( c.map.empty() ) {
 		// independent
 		// TODO this makes a lot of allocs :-/
@@ -487,37 +489,47 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 			c.vertex = boost::add_vertex(v, graph);
 		}
 
-		// propagate mechanical to parents
-		if( c.mechanical ) {
-			for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end(); 
-			    it != end; ++it) {
-				
-				chunk& parent = chunks[it->first];
-				
-				// propagate geometric stiffness
-				if(!zero(it->second.K)) { 
-					add(parent.K, it->second.K);
-				}
-
-				if( !parent.mechanical ) {
-					parent.mechanical = true;
-				
-					vertex p; p.dofs = it->first;
-					parent.vertex = boost::add_vertex(p, graph);
-					
-				}
-				
-				edge e;
-				e.data = &it->second;
-				
-				// the edge is child -> parent
-				boost::add_edge(c.vertex, parent.vertex, e, graph); 
-			}
-		}
 	}
+	
+}
+
+
+
+// bottom-up
+void AssemblyVisitor::fill_postfix(simulation::Node* node) {
+	assert( node->mechanicalState );
+	assert( chunks.find( node->mechanicalState ) != chunks.end() );
+	
+	// fill chunk for current dof
+	chunk& c = chunks[ node->mechanicalState ];
+
+	if( !c.map.empty() && c.mechanical ) {
 		
-	// c.check();
-	// std::cerr << "dof " << node->mechanicalState->getName() << " is master: " << c.master() << std::endl;
+		for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end(); 
+		    it != end; ++it) {
+				
+			chunk& parent = chunks[it->first];
+				
+			// propagate geometric stiffness
+			if(!zero(it->second.K)) { 
+				add(parent.K, it->second.K);
+			}
+
+			if( !parent.mechanical ) {
+				parent.mechanical = true;
+				
+				vertex p; p.dofs = it->first;
+				parent.vertex = boost::add_vertex(p, graph);
+			}
+				
+			edge e;
+			e.data = &it->second;
+				
+			// the edge is child -> parent
+			boost::add_edge(c.vertex, parent.vertex, e, graph); 
+		}
+
+	}
 }
 
 
@@ -525,13 +537,12 @@ void AssemblyVisitor::fill(simulation::Node* node) {
 
 		
 Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
-	if( node->mechanicalState ) prefix.push_back( node->mechanicalState );
+	if( node->mechanicalState ) fill_prefix( node );
 	return RESULT_CONTINUE;
 }
 
 void AssemblyVisitor::processNodeBottomUp(simulation::Node* node) {
-	if( !node->mechanicalState ) return;
-	fill( node );
+	if( node->mechanicalState ) fill_postfix( node );
 }
 		
 
@@ -623,7 +634,8 @@ void AssemblyVisitor::distribute_compliant(core::VecId id, const vec& data) {
 }
 
  
-// this is used to propagate mechanical flag upwards mappings
+// this is used to propagate mechanical flag upwards mappings (prefix
+// in the graph order)
 struct AssemblyVisitor::propagation {
 
 	chunks_type& chunks;
@@ -632,7 +644,8 @@ struct AssemblyVisitor::propagation {
 
 	template<class G>
 	void operator()(unsigned v, const G& g) const {
-		
+
+		// TODO use out_edges instead lol
 		chunk& c = chunks[ g[v].dofs ];
 		
 		if( c.mechanical ) {
@@ -660,12 +673,14 @@ struct AssemblyVisitor::process_helper {
 		  chunks(chunks) {
 		std::cerr << "avanti" << std::endl;
 	}
-	
+
 	template<class G>
 	void operator()(unsigned v, const G& g) const {
-		dofs_type* curr = g[v].dofs;
+		(*this)(g[v].dofs);
+	}
 
-		cerr << "processing " << curr->getName() << std::endl;
+	void operator()(dofs_type* curr) const {
+		cerr << "processing " << curr->getContext()->getName() << " / " << curr->getName() << std::endl;
 
 		const unsigned& size_m = res.size_m;
 		full_type& full = res.full;
@@ -725,6 +740,18 @@ struct AssemblyVisitor::process_helper {
 				
 				// assert( false );
 				
+				// { 
+				// 	// scoped::timer step("geometric stiffness propagation");
+				// 	// geometric stiffness
+				// 	const mat& kc = mi->second.K;
+
+				// 	if( !zero(kc) ) {
+				// 		// std::cerr << "geometric stiffness lol" << std::endl;
+				// 		// contribute stiffness block to parent
+				// 		mat& Kp = fp.K;
+				// 		add(Kp, kc);
+				// 	}
+				// }
 
 			}
 			
@@ -774,92 +801,19 @@ AssemblyVisitor::process_type AssemblyVisitor::process() const {
 	size_c = off_c;
 		
 	// propagate mechanical flags
-	utils::postfix(graph, propagation(chunks));
+	utils::prefix(graph, propagation(chunks));
 	
-
 	// utils::postfix(graph, process_helper(res, chunks));
 	// return res;
 	
-	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-		
-		// current dofs
-		dofs_type* curr = prefix[i];
-
-		// current data chunk/mapping matrix
-		const chunk& c = find(chunks, curr);
-
-		if( !c.mechanical ) continue;
-
-		mat& Jc = full[ curr ];
-		assert( empty(Jc) );
-		
-		// add regular stiffness 
-		// mat& Kc = fc.K;
-		// add(Kc, c.K);
-		
-		// concatenate mapping wrt independent dofs
-		for(chunk::map_type::const_iterator mi = c.map.begin(), me = c.map.end();
-		    mi != me; ++mi) {
-
-			// parent data chunk/mapping matrix
-			const chunk& p = find(chunks, mi->first);
-			mat& Jp = full[ mi->first ];
-			{
-				// scoped::timer step("mapping concatenation");
-				
-				// mapping blocks
-				const mat& jc = mi->second.J;
-				
-				// parent is not mapped: we put a shift matrix with the
-				// correct offset as its full mapping matrix, so that its
-				// children will get the right place on multiplication
-				if( p.master() && empty(Jp) ) {
-					// scoped::timer step("shift matrix");
-					Jp = shift_right( find(offsets, mi->first), p.size, size_m);
-				}
-				
-				// Jp is empty for children of a non-master dof (e.g. mouse)
-				if(!empty(Jp) ){
-					// scoped::timer step("mapping matrix product");
-					
-					// TODO optimize this, it is the most costly part
-					add(Jc, jc * Jp );
-				}
-			}
- 
-			if( ! (c.master() || !zero(Jc) )  )  {
-				using namespace std;
-				
-				cerr << "houston we have a problem with " << c.dofs->getName() << endl
-				     << "master: " << c.master() << endl 
-				     << "mapped: " << !c.map.empty() << endl
-				     << "p mechanical ? " << p.mechanical << endl
-				     << "empty jp " << empty(Jp) << endl
-				     << "empty jc " << empty(Jc) << endl;
-				
-				assert( false );
-
-
-			}
-			
-			// { 
-			// 	// scoped::timer step("geometric stiffness propagation");
-			// 	// geometric stiffness
-			// 	const mat& kc = mi->second.K;
-
-			// 	if( !zero(kc) ) {
-			// 		// std::cerr << "geometric stiffness lol" << std::endl;
-			// 		// contribute stiffness block to parent
-			// 		mat& Kp = fp.K;
-			// 		add(Kp, kc);
-			// 	}
-			// }
-			
-		}
-
+	process_helper help(res, chunks);
+	utils::postfix( graph, help ); 
+	std::cerr << "ciao" << std::endl;
 	
-	}
-		
+	// for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+	// 	help( prefix[i] );
+	// }
+
 	return res;
 }
 
