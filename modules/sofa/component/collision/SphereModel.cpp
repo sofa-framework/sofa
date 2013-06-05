@@ -46,10 +46,13 @@ using namespace helper;
 SOFA_DECL_CLASS(Sphere)
 
 int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
-#ifdef SOFA_FLOAT
-        .add<  TSphereModel<Vec3fTypes> >().add<TSphereModel<Rigid3fTypes> >()
-#else
-        .add < TSphereModel<Vec3dTypes> >().add<TSphereModel<Rigid3dTypes> >()
+#ifndef SOFA_FLOAT
+        .add<  TSphereModel<Vec3dTypes> >()
+        .add<TSphereModel<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add < TSphereModel<Vec3fTypes> >()
+        .add<TSphereModel<Rigid3fTypes> >()
 #endif
         .addAlias("Sphere")
         .addAlias("SphereModel")
