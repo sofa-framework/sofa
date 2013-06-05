@@ -53,10 +53,10 @@ extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     obj->setFilename(filename);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)

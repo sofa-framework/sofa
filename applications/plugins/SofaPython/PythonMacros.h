@@ -198,6 +198,16 @@ SP_CLASS_ATTRS_END
 #define SP_CLASS_ATTR(C,A) {(char*)#A, C##_getAttr_##A, C##_setAttr_##A, NULL, 0},
 #define SP_CLASS_ATTRS_END {NULL,NULL,NULL,NULL,NULL} };
 
+/*
+extern "C" PyObject * Data_getAttr_name(PyObject *self, void*)
+
+becomes...
+
+SP_CLASS_ATTR_GET(Datamname)(PyObject *self, void*)
+ */
+#define SP_CLASS_ATTR_GET(C,A) extern "C" PyObject * C##_getAttr_##A
+#define SP_CLASS_ATTR_SET(C,A) extern "C" int C##_setAttr_##A
+
 
 
 /*

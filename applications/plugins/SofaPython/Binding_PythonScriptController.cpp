@@ -44,7 +44,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -53,7 +53,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
     std::cerr << obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args)
@@ -62,7 +62,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -71,7 +71,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
     std::cerr << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject * args)
@@ -80,7 +80,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -89,7 +89,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     std::cerr << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
@@ -98,7 +98,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -106,7 +106,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
     std::cerr << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args)
@@ -115,7 +115,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -123,7 +123,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
     std::cerr << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, PyObject * /*args*/)
@@ -134,7 +134,7 @@ extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/
     std::cerr << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /*args*/)
@@ -145,7 +145,7 @@ extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject
     std::cerr << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject * /*args*/)
@@ -156,7 +156,7 @@ extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObje
     std::cerr << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObject * args)
@@ -167,7 +167,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
     if (!PyArg_ParseTuple(args, "sss",&controlID,&valueName,&value))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -175,7 +175,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
     std::cerr << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObject * args)
@@ -184,7 +184,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -192,7 +192,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     std::cerr << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args)
@@ -201,7 +201,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -209,7 +209,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     std::cerr << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)
@@ -219,7 +219,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -227,7 +227,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/, PyObject * args)
@@ -237,7 +237,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -245,7 +245,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/, PyObject * args)
@@ -255,7 +255,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -263,7 +263,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
     std::cerr << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObject * args)
@@ -272,7 +272,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "iii",&x,&y,&delta))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -280,7 +280,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
     std::cerr << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyObject * args)
@@ -291,13 +291,13 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "OsO",&pySenderNode,&eventName,&pyData))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     Node* senderNode=dynamic_cast<Node*>(((PySPtr<Base>*)pySenderNode)->object.get());
     if (!senderNode)
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     // TODO check pyData
 
@@ -306,7 +306,7 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     std::cerr << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

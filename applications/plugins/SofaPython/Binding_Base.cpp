@@ -37,12 +37,12 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
-        return 0;
+        Py_RETURN_NONE;
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
     if (dynamic_cast<Data<DisplayFlags>*>(data))
@@ -74,7 +74,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
     // attribue does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
     char *dataName = PyString_AsString(attr_name);
-    //printf("Base_GetAttr name=%s\n",name);
+//    printf("Base_SetAttr name=%s\n",dataName);
     BaseData * data = obj->findData(dataName);
     if (!data)
         return PyObject_GenericSetAttr(o,attr_name,v);

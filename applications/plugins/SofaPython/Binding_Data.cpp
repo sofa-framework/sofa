@@ -37,12 +37,12 @@ using namespace sofa::defaulttype;
 
 #include "Binding_Data.h"
 
-extern "C" PyObject * Data_getAttr_name(PyObject *self, void*)
+SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
     return PyString_FromString(data->getName().c_str());
 }
-extern "C" int Data_setAttr_name(PyObject *self, PyObject * args, void*)
+SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
     char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
@@ -556,13 +556,13 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
 
 
 
-extern "C" PyObject * Data_getAttr_value(PyObject *self, void*)
+SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
     return GetDataValuePython(data);
 }
 
-extern "C" int Data_setAttr_value(PyObject *self, PyObject * args, void*)
+SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
     if (SetDataValuePython(data,args))
@@ -583,14 +583,14 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&index))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         printf("<SofaPython> Error: Data.getValue index overflow\n");
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     if (typeinfo->Scalar())
         return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
@@ -602,7 +602,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     // should never happen....
     printf("<SofaPython> Error: Data.getValue unknown data type\n");
     PyErr_BadArgument();
-    return 0;
+    Py_RETURN_NONE;
 }
 extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
@@ -613,14 +613,14 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "iO",&index,&value))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         printf("<SofaPython> Error: Data.setValue index overflow\n");
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
@@ -641,7 +641,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     // should never happen....
     printf("<SofaPython> Error: Data.setValue type mismatch\n");
     PyErr_BadArgument();
-    return 0;
+    Py_RETURN_NONE;
 }
 
 

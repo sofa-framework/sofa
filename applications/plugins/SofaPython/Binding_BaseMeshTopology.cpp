@@ -22,77 +22,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaPython.h"
-#include "SceneLoaderPY.h"
 
-namespace sofa
+#include "Binding_BaseMeshTopology.h"
+#include "Binding_Topology.h"
+
+#include <sofa/core/topology/BaseMeshTopology.h>
+using namespace sofa::core::topology;
+
+extern "C" PyObject * BaseMeshTopology_getNbEdges(PyObject *self, PyObject * /*args*/)
 {
+    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    return PyInt_FromLong(obj->getNbEdges());
+}
 
-namespace component
+extern "C" PyObject * BaseMeshTopology_getNbTriangles(PyObject *self, PyObject * /*args*/)
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    return PyInt_FromLong(obj->getNbTriangles());
 }
 
-void initExternalModule()
+extern "C" PyObject * BaseMeshTopology_getNbQuads(PyObject *self, PyObject * /*args*/)
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;        
-    }
+    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    return PyInt_FromLong(obj->getNbQuads());
 }
 
-const char* getModuleName()
+extern "C" PyObject * BaseMeshTopology_getNbTetrahedra(PyObject *self, PyObject * /*args*/)
 {
-    return "SofaPython";
+    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    return PyInt_FromLong(obj->getNbTetrahedra());
 }
 
-const char* getModuleVersion()
+extern "C" PyObject * BaseMeshTopology_getNbHexahedra(PyObject *self, PyObject * /*args*/)
 {
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
+    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    return PyInt_FromLong(obj->getNbHexahedra());
 }
 
 
-const char* getModuleDescription()
-{
-    return "Imbeds Python scripts in Sofa";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
-}
+SP_CLASS_METHODS_BEGIN(BaseMeshTopology)
+SP_CLASS_METHOD(BaseMeshTopology,getNbEdges)
+SP_CLASS_METHOD(BaseMeshTopology,getNbTriangles)
+SP_CLASS_METHOD(BaseMeshTopology,getNbQuads)
+SP_CLASS_METHOD(BaseMeshTopology,getNbTetrahedra)
+SP_CLASS_METHOD(BaseMeshTopology,getNbHexahedra)
+SP_CLASS_METHODS_END
 
 
-
-}
-
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-SOFA_LINK_CLASS(PythonController)
-
-
-// register the loader in the factory
-static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+SP_CLASS_TYPE_SPTR(BaseMeshTopology,BaseMeshTopology,Topology)
 
 
 

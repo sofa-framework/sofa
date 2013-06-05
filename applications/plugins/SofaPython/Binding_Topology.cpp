@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+
 #include "Binding_Topology.h"
 #include "Binding_BaseObject.h"
 
@@ -49,10 +50,10 @@ extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        return PyInt_FromLong(0);
+        Py_RETURN_NONE;
     }
     obj->setNbPoints(nb);
-    return PyInt_FromLong(0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
@@ -62,7 +63,7 @@ extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&i))
     {
         PyErr_BadArgument();
-        return PyFloat_FromDouble(0.0);
+        Py_RETURN_NONE;
     }
     return PyFloat_FromDouble(obj->getPX(i));
 }
@@ -74,7 +75,7 @@ extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&i))
     {
         PyErr_BadArgument();
-        return PyFloat_FromDouble(0.0);
+        Py_RETURN_NONE;
     }
     return PyFloat_FromDouble(obj->getPY(i));
 }
@@ -86,11 +87,10 @@ extern "C" PyObject * Topology_getPZ(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&i))
     {
         PyErr_BadArgument();
-        return PyFloat_FromDouble(0.0);
+        Py_RETURN_NONE;
     }
     return PyFloat_FromDouble(obj->getPZ(i));
 }
-
 
 
 

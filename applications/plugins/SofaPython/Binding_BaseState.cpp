@@ -37,9 +37,9 @@ extern "C" PyObject * BaseState_resize(PyObject *self, PyObject * args)
     BaseState* obj=dynamic_cast<BaseState*>(((PySPtr<Base>*)self)->object.get());
     int newSize;
     if (!PyArg_ParseTuple(args, "i",&newSize))
-        return 0;
+        Py_RETURN_NONE;
     obj->resize(newSize);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

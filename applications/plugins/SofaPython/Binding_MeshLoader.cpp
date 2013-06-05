@@ -34,7 +34,7 @@ extern "C" PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
 {
     MeshLoader* obj=dynamic_cast<MeshLoader*>(((PySPtr<Base>*)self)->object.get());
     obj->reinit();
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 

@@ -1,32 +1,25 @@
 load(sofa/pre)
 defineAsPlugin(SofaPython)
-
 TARGET = SofaPython
-
 DEFINES += SOFA_BUILD_SOFAPYTHON
-
 unix:macx {
     #QMAKE_LFLAGS_SHLIB *= -Wl,--no-undefined
     #python
     LIBS += -F/opt/local/Library/Frameworks/ -framework Python
     INCLUDEPATH += /opt/local/Library/Frameworks/Python.framework/Headers
-
     #SofaGUI
     LIBS += -lsofaguimain
 }
-
 unix:!macx {
     #python
     INCLUDEPATH *= $$system(python-config --includes | sed -e s/\\ -I/\\ /g -e s/^-I//g)
     LIBS *= $$system(python-config --libs)
 }
-
 win32 {
 	#python
     INCLUDEPATH *= "C:\Python27\include"
     LIBS *= -L"C:\Python27\libs" -lpython27
 }
-
 SOURCES = initSofaPython.cpp \
     ScriptController.cpp \
     PythonScriptController.cpp \
@@ -49,13 +42,17 @@ SOURCES = initSofaPython.cpp \
     Binding_MeshLoader.cpp \
     Binding_Vector.cpp \
     Binding_Topology.cpp \
+    Binding_BaseMeshTopology.cpp \
+    Binding_MeshTopology.cpp \
+    Binding_GridTopology.cpp \
+    Binding_RegularGridTopology.cpp \
     Binding_MechanicalObject.cpp \
     Binding_BaseMechanicalState.cpp \
     Binding_PythonScriptController.cpp \
     Binding_LinearSpring.cpp \
     SceneLoaderPY.cpp \
     ScriptEnvironment.cpp
-
+    
 HEADERS = initSofaPython.h \
     ScriptController.h \
     PythonScriptController.h \
@@ -78,18 +75,19 @@ HEADERS = initSofaPython.h \
     Binding_MeshLoader.h \
     Binding_Vector.h \
     Binding_Topology.h \
+    Binding_BaseMeshTopology.h \
+    Binding_MeshTopology.h \
+    Binding_GridTopology.h \
+    Binding_RegularGridTopology.h \
     Binding_MechanicalObject.h \
     Binding_BaseMechanicalState.h \
     Binding_PythonScriptController.h \
     Binding_LinearSpring.h \
     SceneLoaderPY.h \
     ScriptEnvironment.h
-
+    
 README_FILE = SofaPython.txt
-
 #TODO: add an install target for README files
-
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
-
 load(sofa/post)

@@ -180,7 +180,7 @@ option(SOFA-APPLICATION_SOFA_VERIFICATION "Build SofaVerification application " 
 ## tutorial
 option(SOFA-TUTORIAL_CHAIN_HYBRID "Build Chain hybrid tutorial" ON)
 option(SOFA-TUTORIAL_COMPOSITE_OBJECT "Build Composite object tutorial" ON)
-option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" ON)
+option(SOFA-TUTORIAL_HOUSE_OF_CARDS "Build House of cards tutorial" OFF)
 option(SOFA-TUTORIAL_MIXED_PENDULUM "Build Mixed Pendulum tutorial" ON)
 option(SOFA-TUTORIAL_ONE_PARTICLE "Build One particle tutorial" ON)
 #option(SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS "Build One particle with sofa typedefs tutorial" OFF)

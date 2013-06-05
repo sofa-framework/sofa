@@ -42,9 +42,9 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
     BaseContext* obj=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
     PyPtr<Vector3>* pyVec;
     if (!PyArg_ParseTuple(args, "O",&pyVec))
-        return 0;
+        Py_RETURN_NONE;
     obj->setGravity(*pyVec->object);
-    return Py_BuildValue("i",0);
+    Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
@@ -82,7 +82,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
     if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
     // temporarily, the name is set to the type name.
@@ -112,7 +112,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
     {
         std::cerr << "<SofaPython> ERROR createObject " << desc.getName() << " of type " << desc.getAttribute("type","")<< " in node "<<context->getName()<<std::endl;
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
 
     Node *node = dynamic_cast<Node*>(context);
@@ -134,11 +134,11 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
-        return 0;
+        Py_RETURN_NONE;
     if (!context || !path)
     {
         PyErr_BadArgument();
-        return 0;
+        Py_RETURN_NONE;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
@@ -168,7 +168,7 @@ extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
     obj->setAnimate(args==Py_True);
     return 0;
@@ -185,7 +185,7 @@ extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
     obj->setActive(args==Py_True);
     return 0;
