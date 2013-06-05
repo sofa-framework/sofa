@@ -124,10 +124,11 @@ namespace sofa {
   };
 
 
-  // Define the list of types to instanciate. We do not necessarily need to test all combinations.
+  // Define the list of types to instanciate.
   typedef Types<
   CorotationalStrainMapping<defaulttype::F331Types,defaulttype::E331Types>,
-  CorotationalStrainMapping<defaulttype::F321Types,defaulttype::E321Types>
+  CorotationalStrainMapping<defaulttype::F321Types,defaulttype::E321Types>,
+  CorotationalStrainMapping<defaulttype::F311Types,defaulttype::E311Types>
   > CorotationalDataTypes; // the types to instanciate.
 
   // Test suite for all the instanciations
@@ -145,6 +146,77 @@ namespace sofa {
   //////////////////////////////////////////////////////
 
 
+    /// layer over PrincipalStretchesJacobianBlock that is able to order given child forces in the same order while computing J
+    template<class TIn, class TOut>
+    class PrincipalStretchesJacobianBlockTester : public defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut>
+    {
+    public :
+        typedef defaulttype::PrincipalStretchesJacobianBlock<TIn,TOut> Inherited;
+
+        static const int material_dimensions = Inherited::material_dimensions;
+        typedef typename Inherited::OutCoord OutCoord;
+        typedef typename Inherited::OutDeriv OutDeriv;
+        typedef typename Inherited::InCoord InCoord;
+        typedef typename Inherited::InDeriv InDeriv;
+        typedef typename Inherited::Real Real;
+
+        unsigned _order[material_dimensions];
+
+        void findOrder( const OutCoord& d )
+        {
+            OutCoord tmp = d;
+
+            for( int i=0 ; i<material_dimensions ; ++i )
+            {
+                Real min = 999999999999999;
+                for( int j=0 ; j<material_dimensions ; ++j )
+                    if( tmp.getStrain()[j] < min )
+                    {
+                        _order[i] = j;
+                        min = tmp.getStrain()[j];
+                    }
+                tmp.getStrain()[_order[i]] = 999999999999999999;
+            }
+        }
+
+        virtual OutDeriv preTreatment( const OutDeriv& f )
+        {
+            // re-order child forces with the same order used while computing J in addapply
+            OutDeriv g;
+            for( int i=0 ; i<material_dimensions ; ++i )
+                g[i] = f[_order[i]];
+            return g;
+        }
+
+
+        void addapply( OutCoord& result, const InCoord& data )
+        {
+            Inherited::addapply( result, data );
+
+            // find order result.getStrain()[i]
+            findOrder( result.getStrain() );
+        }
+    };
+
+    /// layer over PrincipalStretchesMapping that is able to order given child forces in the same order while computing J
+    template <class TIn, class TOut>
+    class PrincipalStretchesMappingTester : public BaseStrainMappingT<PrincipalStretchesJacobianBlockTester<TIn,TOut> >
+    {
+    public:
+        typedef BaseStrainMappingT<PrincipalStretchesJacobianBlockTester<TIn,TOut> > Inherited;
+        typedef typename Inherited::OutVecDeriv OutVecDeriv;
+
+        virtual OutVecDeriv preTreatment( const OutVecDeriv& f )
+        {
+            OutVecDeriv g(f.size());
+            for(unsigned int i=0; i<this->jacobian.size(); i++)
+            {
+                g[i] = this->jacobian[i].preTreatment(f[i]);
+            }
+            return g;
+        }
+    };
+
 
     template <typename _Mapping>
     struct PrincipalStretchesMappingTest : public StrainMappingTest<_Mapping>
@@ -155,6 +227,7 @@ namespace sofa {
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
         typedef typename Inherited::OutCoord OutCoord;
+        typedef typename Inherited::OutVecDeriv OutVecDeriv;
 
 
         OutCoord sort( const OutCoord& a )
@@ -175,13 +248,18 @@ namespace sofa {
         }
 
 
+        /// re-order child forces with the same order used while computing J in apply
+        virtual OutVecDeriv preTreatment( const OutVecDeriv& f )
+        {
+            return static_cast<_Mapping*>(this->mapping)->preTreatment( f );
+        }
+
+
 
         bool runTest()
         {
-            static_cast<_Mapping*>(this->mapping)->asStrain.setValue(1);
-
             defaulttype::Mat<3,3,Real> rotation;
-            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch + shear
+            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch only
 
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
             {
@@ -192,7 +270,7 @@ namespace sofa {
 
             OutVecCoord expectedChildCoords(1);
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
-                expectedChildCoords[0].getVec()[i] = strain[i][i] - 1;
+                expectedChildCoords[0].getVec()[i] = strain[i][i];
 
             return Inherited::runTest( rotation, strain, expectedChildCoords );
         }
@@ -200,10 +278,12 @@ namespace sofa {
     };
 
 
-    // Define the list of types to instanciate. We do not necessarily need to test all combinations.
+    // Define the list of types to instanciate.
     typedef Types<
-    component::mapping::PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::U331Types>,
-    component::mapping::PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::U321Types>
+         PrincipalStretchesMappingTester<defaulttype::F331Types,defaulttype::U331Types>
+        ,PrincipalStretchesMappingTester<defaulttype::F321Types,defaulttype::U321Types>
+//        ,PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::D331Types> // not fully implemented yet (getJ)
+//        ,PrincipalStretchesMapping<defaulttype::F321Types,defaulttype::D321Types> // not fully implemented yet (getJ)
     > PrincipalStretchesDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations

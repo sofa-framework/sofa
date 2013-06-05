@@ -97,6 +97,8 @@ public:
     bool _asStrain;
     Real _threshold;
 
+    PrincipalStretchesJacobianBlock() : _asStrain(false), _threshold(-std::numeric_limits<Real>::max()) {}
+
     void init( bool asStrain, Real threshold/*, bool*/ )
     {
         _asStrain = asStrain;
@@ -138,7 +140,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )
     {
         //order 0
-        result.getStrain() = StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
+        result.getStrain() += StrainMatToVoigt( _U.multTranspose( data.getF() * _V ) );
 
         if( order > 0 )
         {
@@ -285,7 +287,9 @@ public:
 
     bool _asStrain;
     Real _threshold;
-    bool _PSDStabilization;
+//    bool _PSDStabilization;
+
+    PrincipalStretchesJacobianBlock() : _asStrain(false), _threshold(-std::numeric_limits<Real>::max()) {}
 
     void init( bool asStrain, Real threshold/*, bool PSDStabilization*/ )
     {
